@@ -13,19 +13,19 @@ data_files_server = [
 
 
 a = Analysis(['omnidb-server.py'],
-             pathex=['C:\\Users\\omnidb\\OmniDB\\OmniDB\\OmniDB'],
-             binaries=[],
-             datas=data_files_server,
-             hiddenimports=['cheroot.ssl','cheroot.ssl.builtin','psycopg2','paramiko'],
-             hookspath=[],
-             runtime_hooks=[],
-             excludes=[],
-             win_no_prefer_redirects=False,
-             win_private_assemblies=False,
-             cipher=block_cipher,
-             noarchive=False)
+	pathex=['C:\\Users\\omnidb\\OmniDB\\OmniDB\\OmniDB'],
+	binaries=[],
+	datas=data_files_server,
+	hiddenimports=['cheroot.ssl','cheroot.ssl.builtin','psycopg2','paramiko'],
+	hookspath=[],
+	runtime_hooks=[],
+	excludes=[],
+	win_no_prefer_redirects=False,
+	win_private_assemblies=False,
+	cipher=block_cipher,
+	noarchive=False)
 pyz = PYZ(a.pure, a.zipped_data,
-             cipher=block_cipher)
+	cipher=block_cipher)
 exe = EXE(pyz,
           a.scripts,
           [],
@@ -37,10 +37,10 @@ exe = EXE(pyz,
           upx=True,
           console=True )
 coll = COLLECT(exe,
-               a.binaries,
-               a.zipfiles,
-               a.datas,
-               strip=False,
-               upx=True,
-               upx_exclude=[],
-               name='omnidb-server')
+	  a.binaries,
+	  a.zipfiles,
+	  a.datas,
+	  strip=False,
+	  upx=True,
+	  upx_exclude=[],
+	  name='omnidb-server')

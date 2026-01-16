@@ -64,7 +64,7 @@ body {
 	display: block;
 	position: absolute;
 	right: 34px;
-  bottom: 10px;
+	bottom: 10px;
 }
 .omnidb__login .omnidb__login__input-wrapper {
 	position: relative;
@@ -82,11 +82,11 @@ body {
 	display: block;
 	font-size: 12px;
 	left: 20px;
-  padding: 2px 6px;
+	padding: 2px 6px;
 	position: absolute;
-  top: -5px;
+	top: -5px;
 	transform: translateX(200px);
-  z-index: 1;
+	z-index: 1;
 }
 .omnidb__login .omnidb__login__input-wrapper.isEmpty label {
 	background-color: #EB8585;
@@ -155,22 +155,22 @@ button {
 }
 
 .modal_background_dark {
-    position: fixed;
-    z-index: 100000;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 100%;
-    background: rgba( 0, 0, 0, .4 );
-    vertical-align: top;
+		position: fixed;
+		z-index: 100000;
+		top: 0;
+		left: 0;
+		height: 100%;
+		width: 100%;
+		background: rgba( 0, 0, 0, .4 );
+		vertical-align: top;
 }
 
 .white_box {
-    border-radius: 3px;
-    border: 1px solid #FFFFFF;
-    background-color: #FFFFFF;
-    position: fixed;
-    font-size: 12px;
+		border-radius: 3px;
+		border: 1px solid #FFFFFF;
+		background-color: #FFFFFF;
+		position: fixed;
+		font-size: 12px;
 }
 
 .div_alert_text {
@@ -190,26 +190,26 @@ button {
 }
 
 body.loading .div_loading {
-    display: block;
+		display: block;
 }
 /*
 .div_loading {
-  display: none;
-  position: absolute;
-  z-index: 100005;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 100%;
-  background: rgba(252, 253, 253, 0.6) url(../images/omnidb_loading.svg) 50% 50% no-repeat
+	display: none;
+	position: absolute;
+	z-index: 100005;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: rgba(252, 253, 253, 0.6) url(../images/omnidb_loading.svg) 50% 50% no-repeat
 }
 */
 /* MODAL State controls */
 .isModal {
-  display: none;
+	display: none;
 }
 .isModal.isActive {
-  display: block;
+	display: block;
 }
 
 

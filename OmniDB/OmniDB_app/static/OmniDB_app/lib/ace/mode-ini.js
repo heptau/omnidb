@@ -7,70 +7,70 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 var escapeRe = "\\\\(?:[\\\\0abtrn;#=:]|x[a-fA-F\\d]{4})";
 
 var IniHighlightRules = function() {
-    this.$rules = {
-        start: [{
-            token: 'punctuation.definition.comment.ini',
-            regex: '#.*',
-            push_: [{
-                token: 'comment.line.number-sign.ini',
-                regex: '$|^',
-                next: 'pop'
-            }, {
-                defaultToken: 'comment.line.number-sign.ini'
-            }]
-        }, {
-            token: 'punctuation.definition.comment.ini',
-            regex: ';.*',
-            push_: [{
-                token: 'comment.line.semicolon.ini',
-                regex: '$|^',
-                next: 'pop'
-            }, {
-                defaultToken: 'comment.line.semicolon.ini'
-            }]
-        }, {
-            token: ['keyword.other.definition.ini', 'text', 'punctuation.separator.key-value.ini'],
-            regex: '\\b([a-zA-Z0-9_.-]+)\\b(\\s*)(=)'
-        }, {
-            token: ['punctuation.definition.entity.ini', 'constant.section.group-title.ini', 'punctuation.definition.entity.ini'],
-            regex: '^(\\[)(.*?)(\\])'
-        }, {
-            token: 'punctuation.definition.string.begin.ini',
-            regex: "'",
-            push: [{
-                token: 'punctuation.definition.string.end.ini',
-                regex: "'",
-                next: 'pop'
-            }, {
-                token: "constant.language.escape",
-                regex: escapeRe
-            }, {
-                defaultToken: 'string.quoted.single.ini'
-            }]
-        }, {
-            token: 'punctuation.definition.string.begin.ini',
-            regex: '"',
-            push: [{
-                token: "constant.language.escape",
-                regex: escapeRe
-            }, {
-                token: 'punctuation.definition.string.end.ini',
-                regex: '"',
-                next: 'pop'
-            }, {
-                defaultToken: 'string.quoted.double.ini'
-            }]
-        }]
-    };
+	this.$rules = {
+		start: [{
+			token: 'punctuation.definition.comment.ini',
+			regex: '#.*',
+			push_: [{
+				token: 'comment.line.number-sign.ini',
+				regex: '$|^',
+				next: 'pop'
+			}, {
+				defaultToken: 'comment.line.number-sign.ini'
+			}]
+		}, {
+			token: 'punctuation.definition.comment.ini',
+			regex: ';.*',
+			push_: [{
+				token: 'comment.line.semicolon.ini',
+				regex: '$|^',
+				next: 'pop'
+			}, {
+				defaultToken: 'comment.line.semicolon.ini'
+			}]
+		}, {
+			token: ['keyword.other.definition.ini', 'text', 'punctuation.separator.key-value.ini'],
+			regex: '\\b([a-zA-Z0-9_.-]+)\\b(\\s*)(=)'
+		}, {
+			token: ['punctuation.definition.entity.ini', 'constant.section.group-title.ini', 'punctuation.definition.entity.ini'],
+			regex: '^(\\[)(.*?)(\\])'
+		}, {
+			token: 'punctuation.definition.string.begin.ini',
+			regex: "'",
+			push: [{
+				token: 'punctuation.definition.string.end.ini',
+				regex: "'",
+				next: 'pop'
+			}, {
+				token: "constant.language.escape",
+				regex: escapeRe
+			}, {
+				defaultToken: 'string.quoted.single.ini'
+			}]
+		}, {
+			token: 'punctuation.definition.string.begin.ini',
+			regex: '"',
+			push: [{
+				token: "constant.language.escape",
+				regex: escapeRe
+			}, {
+				token: 'punctuation.definition.string.end.ini',
+				regex: '"',
+				next: 'pop'
+			}, {
+				defaultToken: 'string.quoted.double.ini'
+			}]
+		}]
+	};
 
-    this.normalizeRules();
+	this.normalizeRules();
 };
 
 IniHighlightRules.metaData = {
-    fileTypes: ['ini', 'conf'],
-    keyEquivalent: '^~I',
-    name: 'Ini',
-    scopeName: 'source.ini'
+	fileTypes: ['ini', 'conf'],
+	keyEquivalent: '^~I',
+	name: 'Ini',
+	scopeName: 'source.ini'
 };
 
 
@@ -92,39 +92,39 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 (function() {
 
-    this.foldingStartMarker = /^\s*\[([^\])]*)]\s*(?:$|[;#])/;
+	this.foldingStartMarker = /^\s*\[([^\])]*)]\s*(?:$|[;#])/;
 
-    this.getFoldWidgetRange = function(session, foldStyle, row) {
-        var re = this.foldingStartMarker;
-        var line = session.getLine(row);
-        
-        var m = line.match(re);
-        
-        if (!m) return;
-        
-        var startName = m[1] + ".";
-        
-        var startColumn = line.length;
-        var maxRow = session.getLength();
-        var startRow = row;
-        var endRow = row;
+	this.getFoldWidgetRange = function(session, foldStyle, row) {
+		var re = this.foldingStartMarker;
+		var line = session.getLine(row);
 
-        while (++row < maxRow) {
-            line = session.getLine(row);
-            if (/^\s*$/.test(line))
-                continue;
-            m = line.match(re);
-            if (m && m[1].lastIndexOf(startName, 0) !== 0)
-                break;
+		var m = line.match(re);
 
-            endRow = row;
-        }
+		if (!m) return;
 
-        if (endRow > startRow) {
-            var endColumn = session.getLine(endRow).length;
-            return new Range(startRow, startColumn, endRow, endColumn);
-        }
-    };
+		var startName = m[1] + ".";
+
+		var startColumn = line.length;
+		var maxRow = session.getLength();
+		var startRow = row;
+		var endRow = row;
+
+		while (++row < maxRow) {
+			line = session.getLine(row);
+			if (/^\s*$/.test(line))
+				continue;
+			m = line.match(re);
+			if (m && m[1].lastIndexOf(startName, 0) !== 0)
+				break;
+
+			endRow = row;
+		}
+
+		if (endRow > startRow) {
+			var endColumn = session.getLine(endRow).length;
+			return new Range(startRow, startColumn, endRow, endColumn);
+		}
+	};
 
 }).call(FoldMode.prototype);
 
@@ -139,16 +139,16 @@ var IniHighlightRules = require("./ini_highlight_rules").IniHighlightRules;
 var FoldMode = require("./folding/ini").FoldMode;
 
 var Mode = function() {
-    this.HighlightRules = IniHighlightRules;
-    this.foldingRules = new FoldMode();
-    this.$behaviour = this.$defaultBehaviour;
+	this.HighlightRules = IniHighlightRules;
+	this.foldingRules = new FoldMode();
+	this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
-    this.lineCommentStart = ";";
-    this.blockComment = null;
-    this.$id = "ace/mode/ini";
+	this.lineCommentStart = ";";
+	this.blockComment = null;
+	this.$id = "ace/mode/ini";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

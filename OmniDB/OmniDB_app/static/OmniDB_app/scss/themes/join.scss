@@ -1,0 +1,555 @@
+/*
+OmniDB macOS Native Theme (Auto Dark/Light)
+Based on OmniDB Open Source styles, refactored for modern macOS standards.
+*/
+
+:root {
+	/* --- macOS Light Palette (Default) --- */
+	--bg-app: #F5F5F7; /* System Gray 6 (macOS Window background) */
+	--bg-panel: #FFFFFF; /* Content background */
+	--bg-sidebar: rgba(240, 240, 245, 0.8); /* Translucent Sidebar */
+	--bg-input: #FFFFFF;
+	--bg-hover: #F2F2F7;
+	--bg-selection: #B3D7FF;
+	
+	--text-primary: #1C1C1E; /* Label Color */
+	--text-secondary: #8E8E93; /* Secondary Label Color */
+	--text-tertiary: #C7C7CC;
+	--text-inverse: #FFFFFF;
+
+	--border-color: #D1D1D6; /* System Separator */
+	--border-focus: #007AFF;
+
+	--accent-color: #007AFF; /* System Blue */
+	--accent-hover: #0051A8;
+	--danger-color: #FF3B30; /* System Red */
+	--success-color: #34C759; /* System Green */
+	--warning-color: #FF9500; /* System Orange */
+
+	--shadow-sm: 0 1px 2px rgba(0,0,0,0.05);
+	--shadow-md: 0 4px 12px rgba(0,0,0,0.08);
+	--shadow-modal: 0 20px 40px rgba(0,0,0,0.2);
+
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 12px;
+
+	--font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    
+	/* Syntax Highlighting / Grid Colors (Light) */
+	--code-bg: #FFFFFF;
+	--grid-header-bg: #F9F9F9;
+	--grid-line: #E2E2E2;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		/* --- macOS Dark Palette --- */
+		--bg-app: #1E1E1E; /* Dark base */
+		--bg-panel: #2C2C2E; /* Secondary grouped background */
+		--bg-sidebar: rgba(40, 40, 42, 0.7);
+		--bg-input: #3A3A3C;
+		--bg-hover: #3A3A3C;
+		--bg-selection: #2B5075;
+
+		--text-primary: #F5F5F7;
+		--text-secondary: #98989D;
+		--text-tertiary: #48484A;
+		--text-inverse: #FFFFFF;
+
+		--border-color: #38383A;
+		--border-focus: #0A84FF; /* Dark Mode Blue is slightly lighter */
+
+		--accent-color: #0A84FF;
+		--accent-hover: #409CFF;
+		--danger-color: #FF453A;
+		--success-color: #32D74B;
+		--warning-color: #FF9F0A;
+
+		--shadow-sm: 0 1px 2px rgba(0,0,0,0.3);
+		--shadow-md: 0 4px 12px rgba(0,0,0,0.4);
+		--shadow-modal: 0 20px 50px rgba(0,0,0,0.6);
+        
+		/* Syntax Highlighting / Grid Colors (Dark) */
+		--code-bg: #1F1F24; /* Xcode Dark-ish */
+		--grid-header-bg: #252525;
+		--grid-line: #38383A;
+	}
+}
+
+/* --- GLOBAL RESET & BASE --- */
+body {
+	color: var(--text-primary);
+	background-color: var(--bg-app);
+	font-family: var(--font-stack);
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+a {
+	color: var(--accent-color);
+	text-decoration: none;
+	transition: color 0.2s;
+    
+	&:hover {
+		color: var(--accent-hover);
+		text-decoration: none;
+	}
+}
+
+/* --- SCROLLBARS (macOS Style) --- */
+::-webkit-scrollbar {
+	width: 10px;
+	height: 10px;
+	background-color: transparent;
+}
+
+::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+	background: var(--text-tertiary);
+	border-radius: 10px;
+	border: 3px solid transparent; /* Creates padding around thumb */
+	background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+	background-color: var(--text-secondary);
+}
+
+/* --- LAYOUT STRUCTURE --- */
+
+/* Main Container */
+.omnidb__main {
+	background-color: var(--bg-app);
+}
+
+/* Sidebar / Menu Primary */
+.omnidb__theme-bg--menu-primary {
+	background-color: var(--bg-sidebar);
+	border-right: 1px solid var(--border-color);
+	backdrop-filter: blur(20px); /* macOS Vibrancy Effect */
+	-webkit-backdrop-filter: blur(20px);
+}
+
+/* Utilities Menu (Left thin strip) */
+.omnidb__theme-bg--menu-utilities {
+	background-color: var(--bg-panel);
+	border-right: 1px solid var(--border-color);
+    
+	.omnidb__menu__btn, 
+	.omnidb__menu__btn-user,
+	.omnidb__menu__btn-text,
+	.fa-code-branch {
+		color: var(--text-secondary) !important;
+		&:hover {
+			color: var(--accent-color) !important;
+		}
+	}
+    
+	/* Branding Icon */
+	.omnidb-icon__theme--branding path {
+		fill: var(--accent-color);
+	}
+}
+
+/* Workspace Divisions */
+.omnidb__workspace__div-left,
+.omnidb__snippets__div-left {
+	background-color: var(--bg-sidebar);
+	border-right: 1px solid var(--border-color);
+}
+
+.omnidb__workspace__div-right,
+.omnidb__snippets__div-right {
+	background-color: var(--bg-app);
+}
+
+/* Borders */
+.omnidb__theme-border--primary,
+.omnidb__theme-border-top--primary,
+iframe {
+	border-color: var(--border-color) !important;
+}
+
+/* --- UI ELEMENTS --- */
+
+/* Buttons */
+.btn {
+	border-radius: var(--radius-sm);
+	font-size: 13px;
+	padding: 4px 12px;
+	font-weight: 500;
+	transition: all 0.2s;
+	border: none;
+	box-shadow: var(--shadow-sm);
+}
+
+.omnidb__theme__btn--primary, .btn-primary {
+	background-color: var(--accent-color);
+	color: var(--text-inverse);
+    
+	&:hover {
+		background-color: var(--accent-hover);
+		color: var(--text-inverse);
+	}
+}
+
+.omnidb__theme__btn--secondary, .btn-secondary {
+	background-color: var(--bg-panel);
+	color: var(--text-primary);
+	border: 1px solid var(--border-color);
+    
+	&:hover {
+		background-color: var(--bg-hover);
+		border-color: var(--text-secondary);
+	}
+}
+
+.btn-danger {
+	background-color: var(--danger-color);
+	color: var(--text-inverse);
+	&:hover { background-color: #D73328; }
+}
+
+.btn-success {
+	background-color: var(--success-color);
+	color: var(--text-inverse);
+	&:hover { background-color: #2DB342; }
+}
+
+/* Icons */
+.close, i.icon-close {
+	color: var(--text-secondary);
+	transition: color 0.2s;
+	&:hover { color: var(--text-primary); }
+}
+
+/* Forms & Inputs */
+.form-control, select, input, textarea {
+    background-color: var(--bg-input) !important;
+    border: 1px solid var(--border-color) !important;
+    color: var(--text-primary) !important;
+    border-radius: var(--radius-sm);
+    box-shadow: none;
+    
+    &:focus {
+        border-color: var(--accent-color) !important;
+        box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.25) !important; /* macOS Focus Ring */
+        outline: none;
+    }
+
+    &:disabled, &[readonly] {
+        background-color: var(--bg-app) !important;
+        color: var(--text-secondary) !important;
+        opacity: 0.7;
+    }
+}
+
+::placeholder { color: var(--text-tertiary); }
+
+/* Custom Checkbox (macOS style) */
+.omnidb__form-check {
+    .form-check-label::before {
+        background-color: var(--bg-input) !important;
+        border: 1px solid var(--border-color) !important;
+        border-radius: 4px;
+    }
+    input:checked ~ .form-check-label::after {
+        background-color: var(--accent-color);
+    }
+}
+
+/* --- TABS & NAVIGATION --- */
+
+/* Tabs Container */
+.nav-tabs {
+    border-bottom: 1px solid var(--border-color);
+    
+    .nav-link {
+        color: var(--text-secondary);
+        border: none;
+        background: transparent;
+        font-weight: 500;
+        
+        &:hover {
+            color: var(--text-primary);
+        }
+        
+        &.active {
+            color: var(--accent-color);
+            background-color: transparent;
+            border-bottom: 2px solid var(--accent-color); /* macOS Underline Style */
+        }
+    }
+}
+
+/* Primary Vertical Tab (Left Sidebar) */
+.omnidb__tab-menu--primary {
+    .nav-tabs {
+        border-bottom: none;
+    }
+    .nav-tabs .nav-link {
+        border-radius: var(--radius-sm);
+        margin: 4px 8px;
+        border: none;
+        
+        &.active {
+            background-color: var(--bg-selection); /* Light Blue bg */
+            color: var(--accent-color);
+            
+             /* Dark mode specific override for selection */
+            @media (prefers-color-scheme: dark) {
+                color: #FFFFFF;
+            }
+        }
+    }
+    
+    .omnidb__tab-menu__link-name { color: inherit; }
+    .omnidb__tab-menu__link-icon { color: inherit; background: transparent !important;}
+}
+
+/* Secondary Tabs (Workspace Top) */
+.omnidb__tab-menu--secondary {
+    background-color: var(--bg-app);
+    border-bottom: 1px solid var(--border-color);
+    padding-top: 4px;
+
+    .nav-tabs { border: none; }
+    
+    .omnidb__tab-menu__link {
+        background-color: transparent;
+        color: var(--text-secondary) !important;
+        border: 1px solid transparent;
+        border-bottom: none;
+        margin-right: 2px;
+        border-radius: 6px 6px 0 0;
+        padding: 6px 12px 6px 28px !important;
+        
+        /* Close Icon */
+        .omnidb__tab-menu__link-close {
+            left: 6px;
+            right: auto;
+            opacity: 0;
+            width: 16px;
+            height: 16px;
+            background-color: transparent;
+            color: var(--text-secondary);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            
+            &:hover {
+                background-color: rgba(0,0,0,0.1);
+                color: var(--text-primary);
+            }
+        }
+        
+        &:hover .omnidb__tab-menu__link-close { opacity: 1; }
+        
+        &.active {
+            background-color: var(--bg-panel);
+            color: var(--text-primary) !important;
+            border-color: var(--border-color);
+            box-shadow: 0 -2px 5px rgba(0,0,0,0.02);
+        }
+    }
+    
+    .omnidb__tab-menu__link-name { color: inherit !important; }
+}
+
+/* --- CARDS & PANELS --- */
+.card {
+    background-color: var(--bg-panel);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+    overflow: hidden;
+
+    .card-header {
+        background-color: var(--bg-app);
+        border-bottom: 1px solid var(--border-color);
+        font-weight: 600;
+        color: var(--text-primary);
+    }
+}
+
+/* --- MODALS (macOS Sheet Style) --- */
+.modal-content {
+    background-color: var(--bg-panel);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-modal);
+}
+
+.modal-header {
+    border-bottom: 1px solid var(--border-color);
+    background-color: var(--bg-app);
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    
+    .modal-title {
+        color: var(--text-primary);
+        font-weight: 600;
+    }
+    
+    /* MacOS Style Traffic Light Close Button (Fake) or standard X */
+    .close {
+        color: var(--text-secondary);
+        opacity: 1;
+        &:hover { color: var(--danger-color); }
+    }
+}
+
+.modal-footer {
+    border-top: 1px solid var(--border-color);
+    background-color: var(--bg-app);
+    border-radius: 0 0 var(--radius-lg) var(--radius-lg);
+}
+
+/* --- TOASTS --- */
+.toast {
+    background-color: var(--bg-panel);
+    backdrop-filter: blur(15px);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+    color: var(--text-primary);
+    
+    .toast-header {
+        background-color: rgba(120, 120, 128, 0.1); /* Subtle header */
+        color: var(--text-primary);
+        border-bottom: 1px solid var(--border-color);
+    }
+}
+
+/* --- EDITORS & GRIDS --- */
+
+/* Ace Editor */
+.ace_editor {
+    background-color: var(--code-bg) !important;
+    color: var(--text-primary) !important;
+    border: 1px solid var(--border-color) !important;
+    font-family: 'Menlo', 'Monaco', 'Courier New', monospace;
+
+    .ace_gutter {
+        background-color: var(--bg-app) !important;
+        color: var(--text-tertiary) !important;
+        border-right: 1px solid var(--border-color);
+    }
+    
+    .ace_cursor {
+        color: var(--text-primary) !important;
+    }
+    
+    .ace_active-line {
+        background-color: var(--bg-selection) !important;
+        opacity: 0.2;
+    }
+
+    /* Force sensible syntax colors for both modes if default theme is weird */
+    /* This assumes generic Ace classes */
+    &.ace_dark {
+        /* Adjustments for dark mode if specific ace theme class is present */
+    }
+}
+
+/* Handsontable (Data Grid) */
+.handsontable {
+    color: var(--text-primary);
+    
+    th {
+        background-color: var(--grid-header-bg);
+        color: var(--text-secondary);
+        font-weight: 600;
+        border-color: var(--grid-line) !important;
+    }
+    
+    tr, td {
+        background-color: var(--bg-panel);
+        border-color: var(--grid-line) !important;
+        color: var(--text-primary);
+    }
+    
+    /* Alternating rows */
+    tr:nth-child(even) td {
+        background-color: var(--bg-app); 
+    }
+}
+
+/* OmniDB Specific Highlighting */
+.omnis {
+    background-color: rgba(0, 122, 255, 0.1);
+    &.omnis--active {
+        background-color: rgba(0, 122, 255, 0.25);
+    }
+}
+
+/* Resize Lines */
+.resize_line_horizontal { border-bottom: 1px dashed var(--accent-color) !important; }
+.resize_line_vertical { border-right: 1px dashed var(--accent-color) !important; }
+
+/* Tree View */
+.aimara_tree {
+    background-color: var(--bg-sidebar);
+    
+    a.nav-link {
+        color: var(--text-primary);
+        &:hover {
+            background-color: var(--bg-selection);
+            color: var(--text-primary) !important;
+        }
+    }
+    
+    span.node_selected span {
+        color: var(--accent-color);
+        font-weight: 600;
+    }
+}
+
+/* Autocomplete */
+.omnidb__autocomplete {
+	background: var(--bg-panel);
+	border: 1px solid var(--border-color);
+	box-shadow: var(--shadow-md);
+    
+	&__data {
+		background-color: var(--bg-app);
+	}
+    
+	.omnidb__autocomplete__data-row:hover,
+	.omnidb__autocomplete__data-row--selected {
+		background-color: var(--accent-color) !important;
+		color: #FFF !important;
+	}
+}
+
+/* Date Range Picker Overrides */
+.daterangepicker {
+	background-color: var(--bg-panel);
+	border-color: var(--border-color);
+	box-shadow: var(--shadow-md);
+    
+	.calendar-table {
+		background-color: var(--bg-panel);
+		border-color: var(--border-color);
+	}
+    
+	td.off {
+		background-color: var(--bg-app);
+		color: var(--text-tertiary);
+	}
+    
+	td.active, td.active:hover {
+		background-color: var(--accent-color);
+	}
+}
+
+/* OmniDB Console/Log */
+.omnidb__txt-console {
+	background-color: var(--bg-app);
+	border-color: var(--border-color);
+	color: var(--text-primary);
+}

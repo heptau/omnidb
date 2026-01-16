@@ -32,14 +32,14 @@ SOFTWARE.
 // p_contextMenu: Object containing all the context menus. Set null for no context menu;
 
 /**
- * ## createTree
- * @desc Creating the tree component.
- *
- * @param  {string} p_div         ID of the div where the tree will be rendered.
- * @param  {string} p_backColor   Background color of the region where the tree is being rendered.
- * @param  {object} p_contextMenu Object containing all the context menus. Set null for no context menu.
- * @return {object}               Tree component.
- */
+	* ## createTree
+	* @desc Creating the tree component.
+	*
+	* @param  {string} p_div         ID of the div where the tree will be rendered.
+	* @param  {string} p_backColor   Background color of the region where the tree is being rendered.
+	* @param  {object} p_contextMenu Object containing all the context menus. Set null for no context menu.
+	* @return {object}               Tree component.
+	*/
 function createTree(p_div,p_backColor,p_contextMenu) {
 	var v_tree_object = {
 		name: 'tree_' + p_div,

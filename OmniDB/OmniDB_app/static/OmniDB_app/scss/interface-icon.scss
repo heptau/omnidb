@@ -27,69 +27,69 @@ SOFTWARE.
 */
 
 i.tab-icon {
-  display: inline-block;
-  font-size: 12px;
-  line-height: 16px;
-  width: 16px;
-  height: 16px;
-  vertical-align: middle;
-  text-align: center;
+	display: inline-block;
+	font-size: 12px;
+	line-height: 16px;
+	width: 16px;
+	height: 16px;
+	vertical-align: middle;
+	text-align: center;
 }
 
 i.icon-key-large {
-  color: #4a81d4;
-  font-size: 40px;
-  margin-top: 20px;
+	color: #4a81d4;
+	font-size: 40px;
+	margin-top: 20px;
 }
 
 i.icon-tab-title {
-  color: #4a81d4;
-  line-height: 16px;
-  font-size: 12px;
-  line-height: 16px;
-  vertical-align: middle;
-  display: inline-block;
-  margin-right: 6px;
+	color: #4a81d4;
+	line-height: 16px;
+	font-size: 12px;
+	line-height: 16px;
+	vertical-align: middle;
+	display: inline-block;
+	margin-right: 6px;
 }
 
 i.icon-group {
-  color: #4a81d4;
+	color: #4a81d4;
 }
 
 i.icon-conn-string {
-  color: #4a81d4;
-  font-size: 9px;
+	color: #4a81d4;
+	font-size: 9px;
 }
 
 i.icon-close {
-  color: #d85656;
+	color: #d85656;
 }
 
 i.icon-check {
-  color: #1f8e79;
-  width: 16px;
+	color: #1f8e79;
+	width: 16px;
 }
 
 i.tab-status {
-  cursor: pointer;
+	cursor: pointer;
 }
 
 i.tab-status-closed {
-  color: gray
+	color: gray
 }
 
 i.tab-status-idle {
-  color: #2cb32c;
+	color: #2cb32c;
 }
 
 i.tab-status-running {
-  color: #2196f3;
+	color: #2196f3;
 }
 
 i.tab-status-idle_in_transaction {
-  color: orange
+	color: orange
 }
 
 i.tab-status-idle_in_transaction_aborted {
-  color: red
+	color: red
 }

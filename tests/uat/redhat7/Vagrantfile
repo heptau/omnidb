@@ -8,8 +8,8 @@ REDHAT_USERNAME=""
 REDHAT_PASSWORD=""
 
 if ! subscription-manager status; then
-  sudo subscription-manager register --username=$REDHAT_USERNAME --password=$REDHAT_PASSWORD --auto-attach
-  sudo yum-config-manager --disable rhel-7-server-rt-beta-rpms
+	sudo subscription-manager register --username=$REDHAT_USERNAME --password=$REDHAT_PASSWORD --auto-attach
+	sudo yum-config-manager --disable rhel-7-server-rt-beta-rpms
 fi
 PG_VERSION=12
 yum -y update
@@ -40,22 +40,22 @@ SCRIPT
 
 $unregister = <<SCRIPT
 sudo subscription-manager unregister \
-  && echo "Machine successfully unregistered." \
-  || echo "Something went wrong, please remove the machine manually from https://access.redhat.com/management/subscriptions"
+	&& echo "Machine successfully unregistered." \
+	|| echo "Something went wrong, please remove the machine manually from https://access.redhat.com/management/subscriptions"
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.provision "shell", inline: $script
-  config.vm.box = "generic/rhel7"
-  config.vm.box_url = "https://app.vagrantup.com/generic/boxes/rhel7"
-  config.vm.host_name = "omnidbuatredhat7"
-  config.vm.provider :virtualbox do |vb|
-    vb.name = "omnidb_uat_redhat7"
-    vb.gui = true
-    vb.memory = 2048
-    vb.cpus = 2
-  end
-  config.trigger.before :destroy do |trigger|
-    trigger.run_remote = {inline: $unregister}
-  end
+	config.vm.provision "shell", inline: $script
+	config.vm.box = "generic/rhel7"
+	config.vm.box_url = "https://app.vagrantup.com/generic/boxes/rhel7"
+	config.vm.host_name = "omnidbuatredhat7"
+	config.vm.provider :virtualbox do |vb|
+		vb.name = "omnidb_uat_redhat7"
+		vb.gui = true
+		vb.memory = 2048
+		vb.cpus = 2
+	end
+	config.trigger.before :destroy do |trigger|
+		trigger.run_remote = {inline: $unregister}
+	end
 end

@@ -13,9 +13,8 @@ transparent as possible, whether it's:
 
 ## OmniDB Database Support
 
-Currently OmniDB supports `PostgreSQL`, `Oracle`, `MySQL` and `MariaDB`. We plan
-to support `Firebird`, `MSSQL Server`, `SQLite` and `IBM DB2` in the foreseeable
-future. Suggestions and even pull requests for other databases are welcome.
+Currently OmniDB supports `PostgreSQL`, `Oracle`, `MySQL` and `MariaDB`.
+Suggestions and even pull requests for other databases are welcome.
 
 
 ## OmniDB Operating System Support
@@ -76,8 +75,8 @@ easy!
 - OmniDB flavor you are using (app or server) and version
 - Operating system and version
 - Steps to reproduce
-  - Be specific!
-  - Give sample code if you can.
+	- Be specific!
+	- Give sample code if you can.
 - What you expected would happen
 - What actually happens
 - Notes (possibly including why you think this might be happening, or stuff you tried that didn't work)

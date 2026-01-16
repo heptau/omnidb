@@ -29,17 +29,17 @@ SOFTWARE.
 function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="password") {
-  	Handsontable.renderers.PasswordRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="checkbox") {
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="password") {
+		Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="checkbox") {
 	  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-  }
-  else {
+	}
+	else {
 	  Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+	}
 
 	td.className ='cellEven';
 }
@@ -47,17 +47,17 @@ function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 function greenHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="password") {
-  	Handsontable.renderers.PasswordRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="checkbox") {
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="password") {
+		Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="checkbox") {
 	  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-  }
-  else {
+	}
+	else {
 	  Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+	}
 
 	td.className ='cellNew';
 }
@@ -65,17 +65,17 @@ function greenHtmlRenderer(instance, td, row, col, prop, value, cellProperties) 
 function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="password") {
-  	Handsontable.renderers.PasswordRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="checkbox") {
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="password") {
+		Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="checkbox") {
 	  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-  }
-  else {
+	}
+	else {
 	  Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+	}
 
 	td.className ='cellEdit';
 }
@@ -85,17 +85,17 @@ function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProperties)
 function whiteHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="password") {
-  	Handsontable.renderers.PasswordRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="checkbox") {
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="password") {
+		Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="checkbox") {
 	  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-  }
-  else {
+	}
+	else {
 	  Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+	}
 
 	td.className ='cellOdd';
 }
@@ -103,17 +103,17 @@ function whiteHtmlRenderer(instance, td, row, col, prop, value, cellProperties) 
 function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="password") {
-  	Handsontable.renderers.PasswordRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="checkbox") {
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="password") {
+		Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="checkbox") {
 	  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-  }
-  else {
+	}
+	else {
 	  Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+	}
 
 	td.style.textAlign ='right';
 }
@@ -121,17 +121,17 @@ function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellPropert
 function redHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="password") {
-  	Handsontable.renderers.PasswordRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="checkbox") {
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="password") {
+		Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="checkbox") {
 	  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-  }
-  else {
+	}
+	else {
 	  Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+	}
 
 	td.className ='cellRemove';
 }
@@ -139,17 +139,17 @@ function redHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 function grayHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="password") {
-  	Handsontable.renderers.PasswordRenderer.apply(this, arguments);
-  }
-  else if (cellProperties.__proto__.type=="checkbox") {
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="password") {
+		Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+	}
+	else if (cellProperties.__proto__.type=="checkbox") {
 	  Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
-  }
-  else {
+	}
+	else {
 	  Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+	}
 
 	td.className ='cellReadOnly';
 }
@@ -157,11 +157,11 @@ function grayHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 function yellowRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else {
-  	Handsontable.renderers.TextRenderer.apply(this, arguments);
-  }
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else {
+		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	}
 
 	td.className ='cellEdit';
 }
@@ -169,11 +169,11 @@ function yellowRenderer(instance, td, row, col, prop, value, cellProperties) {
 function blueRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else {
-  	Handsontable.renderers.TextRenderer.apply(this, arguments);
-  }
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else {
+		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	}
 
 	td.className ='cellEven';
 }
@@ -181,11 +181,11 @@ function blueRenderer(instance, td, row, col, prop, value, cellProperties) {
 function whiteRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else {
-  	Handsontable.renderers.TextRenderer.apply(this, arguments);
-  }
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else {
+		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	}
 
 	td.className ='cellOdd';
 }
@@ -193,11 +193,11 @@ function whiteRenderer(instance, td, row, col, prop, value, cellProperties) {
 function redRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else {
-  	Handsontable.renderers.TextRenderer.apply(this, arguments);
-  }
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else {
+		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	}
 
 	td.className ='cellRemove';
 }
@@ -205,11 +205,11 @@ function redRenderer(instance, td, row, col, prop, value, cellProperties) {
 function grayRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else {
-  	Handsontable.renderers.TextRenderer.apply(this, arguments);
-  }
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else {
+		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	}
 
 	td.className ='cellReadOnly';
 }
@@ -217,11 +217,11 @@ function grayRenderer(instance, td, row, col, prop, value, cellProperties) {
 function greenRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else {
-  	Handsontable.renderers.TextRenderer.apply(this, arguments);
-  }
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else {
+		Handsontable.renderers.TextRenderer.apply(this, arguments);
+	}
 
 	td.className ='cellNew';
 
@@ -286,11 +286,11 @@ function showPluginDataActionRenderer(instance, td, row, col, prop, value, cellP
 function monitorStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
 
 	if (cellProperties.__proto__.type=="dropdown" || cellProperties.__proto__.type=="autocomplete") {
-  	Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
-  }
-  else {
-  	Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-  }
+		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+	}
+	else {
+		Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+	}
 	if (value == 'unknown')
 		td.setAttribute('style', 'background-color: rgb(165, 84, 175) !important');
 	else if (value == 'ok' || value == 'recovery')

@@ -27,14 +27,14 @@ date > /etc/vagrant_provisioned_at
 SCRIPT
 
 Vagrant.configure("2") do |config|
-  config.vm.provision "shell", inline: $script
-  config.vm.box = "debian/stretch64"
-  config.vm.box_url = "https://app.vagrantup.com/debian/boxes/stretch64"
-  config.vm.host_name = "omnidbuatdebian9"
-  config.vm.provider :virtualbox do |vb|
-    vb.name = "omnidb_uat_debian9"
-    vb.gui = true
-    vb.memory = 2048
-    vb.cpus = 2
-  end
+	config.vm.provision "shell", inline: $script
+	config.vm.box = "debian/stretch64"
+	config.vm.box_url = "https://app.vagrantup.com/debian/boxes/stretch64"
+	config.vm.host_name = "omnidbuatdebian9"
+	config.vm.provider :virtualbox do |vb|
+		vb.name = "omnidb_uat_debian9"
+		vb.gui = true
+		vb.memory = 2048
+		vb.cpus = 2
+	end
 end

@@ -1,13 +1,13 @@
 CREATE TABLE mon_units_temp AS
 SELECT unit_id,
-       dbt_st_name,
-       script_chart,
-       script_data,
-       type,
-       title,
-       is_default,
-       user_id,
-       interval
+	dbt_st_name,
+	script_chart,
+	script_data,
+	type,
+	title,
+	is_default,
+	user_id,
+	interval
 FROM mon_units;--omnidb--
 
 DELETE FROM mon_units;--omnidb--
@@ -33,14 +33,14 @@ INSERT INTO mon_units VALUES(18,'postgresql',replace('result = {\n    "type": "l
 
 INSERT INTO mon_units
 SELECT unit_id + 2 AS unit_id,
-       dbt_st_name,
-       script_chart,
-       script_data,
-       type,
-       title,
-       is_default,
-       user_id,
-       interval
+	dbt_st_name,
+	script_chart,
+	script_data,
+	type,
+	title,
+	is_default,
+	user_id,
+	interval
 FROM mon_units_temp
 WHERE unit_id > 16;--omnidb--
 

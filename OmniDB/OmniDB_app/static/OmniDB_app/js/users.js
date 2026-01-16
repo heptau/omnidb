@@ -90,7 +90,7 @@ function removeUserConfirm(p_id) {
 function removeUser(p_id) {
 
 	showConfirm('Are you sure you want to remove this user?',
-  function() {
+	function() {
 		removeUserConfirm(p_id);
 	});
 
@@ -121,7 +121,7 @@ function removeNewUserConfirm(p_index) {
 function removeNewUser(p_index) {
 
 	showConfirm('Are you sure you want to undo adding this user?',
-  function() {
+	function() {
 		removeNewUserConfirm(p_index);
 	});
 
@@ -189,7 +189,7 @@ function hideUsers() {
 
 $('#modal_users').on('shown.bs.modal', function (e) {
 
-  getUsers();
+	getUsers();
 
 });
 
@@ -385,25 +385,25 @@ function getUsers(p_options = false) {
 /// </summary>
 function listUsers(p_refresh,p_options = false) {
 
-  startLoading();
+	startLoading();
 
-  var v_save_button = document.getElementById('div_save_users');
+	var v_save_button = document.getElementById('div_save_users');
 	if (v_save_button !== null) {
 		if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0) {
 			document.getElementById('div_save_users').style.visibility = 'hidden';
 		}
 	}
 
-  var v_div_result = document.getElementById('div_user_list');
+	var v_div_result = document.getElementById('div_user_list');
 
 	if (v_div_result.innerHTML!='' && !p_options.adding_user) {
 		v_div_result.innerHTML = '';
 	}
 
-  if (p_refresh==null) {
+	if (p_refresh==null) {
 		$('#modal_users').modal();
 	}
-  else {
+	else {
 		getUsers(p_options);
 	}
 }

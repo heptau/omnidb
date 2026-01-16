@@ -1,0 +1,338 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>14 Monitoring Dashboard - OmniDB Documentation</title>
+	<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+	<nav>
+		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
+		<div style="margin-bottom: 20px;"><a href="index.html"><strong>&larr; Back to Index</strong></a></div>
+				<a href="01_introduction.html">01 Introduction</a>
+		<a href="02_installation.html">02 Installation</a>
+		<a href="03_creating_users_and_connections.html">03 Creating Users And Connections</a>
+		<a href="04_managing_databases.html">04 Managing Databases</a>
+		<a href="05_creating_changing_and_removing_tables.html">05 Creating Changing And Removing Tables</a>
+		<a href="06_managing_table_data.html">06 Managing Table Data</a>
+		<a href="07_writing_sql_queries.html">07 Writing Sql Queries</a>
+		<a href="08_visualizing_query_plans.html">08 Visualizing Query Plans</a>
+		<a href="09_visualizing_data.html">09 Visualizing Data</a>
+		<a href="10_managing_other_elements.html">10 Managing Other Elements</a>
+		<a href="11_additional_features.html">11 Additional Features</a>
+		<a href="12_omnidb_config_tool.html">12 Omnidb Config Tool</a>
+		<a href="13_writing_and_debugging_plpgsql_functions.html">13 Writing And Debugging Plpgsql Functions</a>
+		<a href="14_monitoring_dashboard.html" class="active">14 Monitoring Dashboard</a>
+		<a href="15_logical_replication.html">15 Logical Replication</a>
+		<a href="16_pglogical.html">16 Pglogical</a>
+		<a href="17_postgres-bdr.html">17 Postgres-Bdr</a>
+		<a href="18_postgres-xl.html">18 Postgres-Xl</a>
+		<a href="19_deploying_omnidb-server.html">19 Deploying Omnidb-Server</a>
+		<a href="20_console_tab.html">20 Console Tab</a>
+		<a href="21_plugin_system.html">21 Plugin System</a>
+		<a href="22_advanced_object_search.html">22 Advanced Object Search</a>
+		<a href="23_debugger_plugin_installation.html">23 Debugger Plugin Installation</a>
+	</nav>
+	<main>
+		<h1>14. Monitoring Dashboard</h1>
+<p>OmniDB 2.4.0 introduced a new cool feature called <em>Monitoring Dashboard</em>. We
+know a picture is worth a thousand words, so please take a look:</p>
+<p><img alt="" src="../assets/img/image_091.png" /></p>
+<p>As you can see, this is a new kind of inner tab showing some charts and grids.
+This <em>Monitoring</em> inner tab is automatically opened once you expand the tree
+root node (the <em>PostgreSQL</em> node). You can keep it open or close it at any time.
+To open it again, right-click the root node and click on <em>Dashboard</em>.</p>
+<p><img alt="" src="../assets/img/image_092.png" /></p>
+<p>The dashboard is composed of handy information rectangles called <em>Monitoring
+Units</em>. Here is an example of Monitoring Unit and its interface elements:</p>
+<p><img alt="" src="../assets/img/image_093.png" /></p>
+<ul>
+<li><strong>1</strong>: Title of the Monitoring Unit;</li>
+<li><strong>2</strong>: Refresh the Monitoring Unit. Depending on the type, clicking on this
+button will refresh the entire drawing area or just make the chart acquire a new
+set of values;</li>
+<li><strong>3</strong>: Pause the Monitoring Unit;</li>
+<li><strong>4</strong>: Interval in seconds for automatic refreshing;</li>
+<li><strong>5</strong>: Remove the Monitoring Unit of the Monitoring Dashboard;</li>
+<li><strong>6</strong>: Drawing area, that will be different depending on the type of the
+Monitoring Unit.</li>
+</ul>
+<h4>Types of Monitoring Units</h4>
+<p>Currently there are 3 types of Monitoring Units:</p>
+<ul>
+<li><strong>Grid</strong>: The most simple kind, just executes a query from time to time and
+shows the results in a data grid.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_094.png" /></p>
+<ul>
+<li><strong>Chart</strong>: Every time it refreshes, it renders a new complete chart. The old
+set of values is lost. This is most useful for pie charts, but other kind of
+charts can be used too.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_095.png" /></p>
+<ul>
+<li><strong>Chart-Append</strong>: Perhaps this is the most useful kind of Monitoring Unit.
+It is a chart that appends a new set of values every time it refreshes. Line or
+bar charts fit best for this type. The last 50 set of values are kept by the
+component client-side to be viewed by the user.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_096.png" /></p>
+<h4>Showing and hiding units in the dashboard</h4>
+<p>If you click in the button <em>Refresh All</em>, then all Monitoring Units will be
+refreshed at once. You can also remove undesired Monitoring Units by clicking in
+the <em>Remove</em> button. Let us go ahead and remove all units from the dashboard,
+making it empty:</p>
+<p><img alt="" src="../assets/img/image_097.png" /></p>
+<p>All Monitoring Units that come with OmniDB are open source and available in this
+<a href="https://github.com/OmniDB/monitors">repository</a> (feel free to contribute). But
+be aware that some Monitoring Units require the <code>plpythonu</code> script to be
+installed in the database. Please refer to the instructions specific to your
+operating system on how to install <code>plpythonu</code> if you desire to use and create
+Monitoring Units that use <code>plpythonu</code>.</p>
+<p><img alt="" src="../assets/img/image_098.png" /></p>
+<p>Now that our dashboard is empty, let us add some units. Click on the <em>Manage
+Units</em> button.</p>
+<p><img alt="" src="../assets/img/image_099.png" /></p>
+<p>Click on the green action to add the Monitoring Units called <em>CPU Usage</em> and
+<em>Memory Usage</em>. Bear in mind that both units require <code>plpythonu</code> extension in
+the database. <em>CPU Usage</em> also requires that the tool <code>mpstat</code> should be
+installed in the server. Also both units are of type <em>Chart-Append</em>. Wait for
+some seconds and you will have a dashboard like this:</p>
+<p><img alt="" src="../assets/img/image_100.png" /></p>
+<p>In a similar way, you can add and remove any unit you want to customize the
+dashboard the way you want.</p>
+<h4>Writing custom Monitoring Units: Grid</h4>
+<p>OmniDB provides you the power to write your own units and customize existing
+ones. Everything is done through Python scripts that run inside a sandbox.
+Beware that units powered by <code>plpythonu</code> can have access to the file system
+the database user also has access to, and any Monitoring Unit have the same
+permission as the database user you configured in the Connection.</p>
+<p>To create a new Monitoring Unit, click on the <em>Manage Units</em> button in the
+dashboard, then click on the <em>New Unit</em> button. It will open a new kind of inner
+tab like this:</p>
+<p><img alt="" src="../assets/img/image_101.png" /></p>
+<p>The easiest way to write a custom unit is to use an existing one as template. Go
+ahead and select the <em>(Grid) Activity</em> template:</p>
+<p><img alt="" src="../assets/img/image_102.png" /></p>
+<p>Note how OmniDB fills the <em>Data Script</em> source code. This script is responsible
+for generating data for the unit every time it refreshes. As a grid unit is
+nothing else but a grid of data, we can rely on only this script for now.</p>
+<p>Now let us take a look at the source code of this template:</p>
+<pre><code class="language-python">from datetime import datetime
+
+data = connection.Query('''
+    SELECT *
+    FROM pg_stat_activity
+''')
+
+result = {
+    &quot;columns&quot;: data.Columns,
+    &quot;data&quot;: data.Rows
+}
+</code></pre>
+<p>It is simple enough. It executes an SQL query into the current connection using
+the reserved <code>connection</code> variable. Also, the grid unit type expects its results
+in a JSON variable that must be called <code>result</code> and must have the attributes
+<code>"columns"</code> (an array of column names) and <code>"data"</code> (an array of rows, each row
+being an array of values). The <code>connection.Query()</code> function already does the
+job pretty well, so let us just change the SQL query this way:</p>
+<pre><code class="language-python">from datetime import datetime
+
+data = connection.Query('''
+    SELECT random() as &quot;Random Number&quot;
+''')
+
+result = {
+    &quot;columns&quot;: data.Columns,
+    &quot;data&quot;: data.Rows
+}
+</code></pre>
+<p>Copy and paste the above Python code into the <em>Data Script</em> text field and then
+click on the <em>Test</em> (lighting) button:</p>
+<p><img alt="" src="../assets/img/image_103.png" /></p>
+<p>Note how the grid was rendered in the preview drawing area. You can click the
+<em>Test</em> button as many times as you want. Now we will give the unit a name, set
+a refresh interval and then hit the <em>Save</em> button:</p>
+<p><img alt="" src="../assets/img/image_104.png" /></p>
+<p>Click the <em>OK</em> button and then close the edit tab. Our new Monitoring Unit will
+be in the list of available units. As we created this unit, we can either add it
+to the dashboard, edit it or remove it. Let us add it to the dashboard (green
+action):</p>
+<p><img alt="" src="../assets/img/image_105.png" /></p>
+<h4>Writing custom Monitoring Units: Chart</h4>
+<p>Click in the <em>Manage Units</em> button and then in the <em>New Unit</em> button. This time
+we will create a Chart Monitoring Unit. So choose <em>(Chart) Database Size</em> as a
+template.</p>
+<p><img alt="" src="../assets/img/image_106.png" /></p>
+<p>The source code of this kind of unit is more complex. There are two scripts:</p>
+<ul>
+<li><strong>Data Script</strong>: Executed every time the unit is refreshed;</li>
+<li><strong>Chart Script</strong>: Executed only at the beginning to build the chart.</li>
+</ul>
+<p>The chart units are based in the component <a href="http://www.chartjs.org/">Chart.js</a>
+and each chart type contains a specific JSON structure. The best approach to
+build new chart units is to start from a template and also check the
+<a href="http://www.chartjs.org/docs/latest/">Chart.js docs</a> to see every property that
+can be added to make the output even better for each situation.</p>
+<p>Let us take a look at the <strong>Data Script</strong>:</p>
+<pre><code class="language-python">from datetime import datetime
+from random import randint
+
+databases = connection.Query('''
+    SELECT d.datname AS datname,
+           round(pg_catalog.pg_database_size(d.datname)/1048576.0,2) AS size
+    FROM pg_catalog.pg_database d
+    WHERE d.datname not in ('template0','template1')
+''')
+
+data = []
+color = []
+label = []
+
+for db in databases.Rows:
+    data.append(db[&quot;size&quot;])
+    color.append(&quot;rgb(&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;)&quot;)
+    label.append(db[&quot;datname&quot;])
+
+result = {
+    &quot;labels&quot;: label,
+    &quot;datasets&quot;: [
+        {
+            &quot;data&quot;: data,
+            &quot;backgroundColor&quot;: color,
+            &quot;label&quot;: &quot;Dataset 1&quot;
+        }
+    ]
+}
+</code></pre>
+<p>Here we can see that the reserved variable <code>connection</code> is still being used to
+retrieve data from the database. Bear in mind that this variable is always
+pointing to the current Connection.</p>
+<p>This template is for a Pie chart, which contains only one dataset and three arrays
+for the data:</p>
+<ul>
+<li><code>data</code>: One value per slice;</li>
+<li><code>color</code>: One color per slice;</li>
+<li><code>label</code>: One label per slice.</li>
+</ul>
+<p>This way, <code>data[0]</code>, <code>color[0]</code> and <code>label[0]</code> refer to the first slice, while
+<code>data[1]</code>, <code>color[1]</code> and <code>label[1]</code> refer to the second slice, and so on.</p>
+<p>This script must return a variable called <code>result</code> and also needs to be a JSON
+like in the above script.</p>
+<p>So right now you are probably guessing that you just need to change the SQL
+query to make the chart behave different. Well, in terms of data and datasets,
+you guessed right. So let's change the SQL query of this chart to compare sizes
+of tables of schema <code>public</code>. Also change the references from <code>datname</code> to
+<code>tablename</code>, as we have changed the column name.</p>
+<pre><code class="language-python">from datetime import datetime
+from random import randint
+
+databases = connection.Query('''
+    SELECT c.relname as tablename,
+           round(pg_catalog.pg_total_relation_size(c.oid)/1048576.0,2) AS size
+    FROM pg_catalog.pg_class c
+    INNER JOIN pg_catalog.pg_namespace n
+    ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relkind = 'r'
+''')
+
+data = []
+color = []
+label = []
+
+for db in databases.Rows:
+    data.append(db[&quot;size&quot;])
+    color.append(&quot;rgb(&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;)&quot;)
+    label.append(db[&quot;tablename&quot;])
+
+result = {
+    &quot;labels&quot;: label,
+    &quot;datasets&quot;: [
+        {
+            &quot;data&quot;: data,
+            &quot;backgroundColor&quot;: color,
+            &quot;label&quot;: &quot;Dataset 1&quot;
+        }
+    ]
+}
+</code></pre>
+<p>Copy and paste the above script into the <em>Data Script</em> field and then hit the
+<em>Test</em> button:</p>
+<p><img alt="" src="../assets/img/image_107.png" /></p>
+<p>Apparently the chart is almost done. We need to fix the title, it still says
+<em>Database Size</em>, when this chart is about table size. Any information about the
+format of the chart itself is defined in the <em>Chart Script</em> text field. Let us
+understand the current source code:</p>
+<pre><code class="language-python">total_size = connection.ExecuteScalar('''
+    SELECT round(sum(pg_catalog.pg_database_size(datname)/1048576.0),2)
+    FROM pg_catalog.pg_database
+    WHERE NOT datistemplate
+''')
+
+result = {
+    &quot;type&quot;: &quot;pie&quot;,
+    &quot;data&quot;: None,
+    &quot;options&quot;: {
+        &quot;responsive&quot;: True,
+        &quot;title&quot;:{
+            &quot;display&quot;:True,
+            &quot;text&quot;:&quot;Database Size (Total: &quot; + str(total_size) + &quot;)&quot;
+        }
+    }
+}
+</code></pre>
+<p>Easy enough. We can make use of the reserved variable <code>connection</code> to retrieve
+data in the <em>Chart Script</em> too. This is mainly used to put information in the
+chart title. The variable <code>result</code> must be defined here. Note how its JSON
+value defines a pie chart and the title. So we just need to change the query and
+adjust the title, this way:</p>
+<pre><code class="language-python">total_size = connection.ExecuteScalar('''
+    SELECT round(sum(pg_catalog.pg_total_relation_size(c.oid)/1048576.0),2) AS size
+    FROM pg_catalog.pg_class c
+    INNER JOIN pg_catalog.pg_namespace n
+    ON n.oid = c.relnamespace
+    WHERE n.nspname = 'public'
+      AND c.relkind = 'r'
+''')
+
+result = {
+    &quot;type&quot;: &quot;pie&quot;,
+    &quot;data&quot;: None,
+    &quot;options&quot;: {
+        &quot;responsive&quot;: True,
+        &quot;title&quot;:{
+            &quot;display&quot;:True,
+            &quot;text&quot;:&quot;Table Size (Total: &quot; + str(total_size) + &quot;)&quot;
+        }
+    }
+}
+</code></pre>
+<p>Copy and paste the above Python code into the <em>Chart Script</em>. Then click in the
+<em>Test</em> button:</p>
+<p><img alt="" src="../assets/img/image_108.png" /></p>
+<p>Now that the chart finally works the way we want, we can give it a title, adjust
+the refresh interval and then click in the <em>Save</em> button. After that we can add
+it to the dashboard.</p>
+<p><img alt="" src="../assets/img/image_109.png" /></p>
+<p><img alt="" src="../assets/img/image_110.png" /></p>
+<h4>Writing custom Monitoring Units: Chart-Append</h4>
+<p>Now for the last, but most interesting kind of Monitoring Unit: <em>Chart-Append</em>.
+It is interesting because there is a wide range of applications for these units,
+since they keep recent historic data that allows us to see a comparison of
+values.</p>
+<p>Go ahead and add a new chart using <em>(Chart (Append)) Size: Top 5 Tables</em> as
+template:</p>
+<p><img alt="" src="../assets/img/image_111.png" /></p>
+<p>Now take a look at the source code of both <em>Data Script</em> and <em>Chart Script</em>. It
+is not too different from the Chart units. The dataset creation is a bit more
+complex as it involves other JSON settings, but that's all.</p>
+<p>As an exercise, based on this chart, create another one called <em>Size: Top 20
+Tables</em>. It should look like this:</p>
+<p><img alt="" src="../assets/img/image_112.png" /></p>
+<p>Now save it and add it to your dashboard:</p>
+<p><img alt="" src="../assets/img/image_113.png" /></p>
+	</main>
+</body>
+</html>

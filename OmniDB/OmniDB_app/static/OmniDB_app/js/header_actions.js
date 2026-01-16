@@ -64,10 +64,10 @@ var v_current_terminal_theme;
 /// <summary>
 /// Startup function.
 /// </summary>
-$(function() {
+$(function () {
 
 	// var v_fileref = document.getElementById("ss_theme");
-  // v_fileref.setAttribute("href", v_url_folder + '/static/OmniDB_app/new/css/themes/' + v_theme + '.css');
+	// v_fileref.setAttribute("href", v_url_folder + '/static/OmniDB_app/new/css/themes/' + v_theme + '.css');
 
 
 	//var v_configTabControl = createTabControl('config_tabs',0,null);
@@ -76,27 +76,25 @@ $(function() {
 	//setting font size of body
 	document.getElementsByTagName('html')[0].style['font-size'] = v_font_size + 'px';
 
-	if (v_theme=='light') {
-		v_current_terminal_theme = v_light_terminal_theme;
-		document.body.classList.remove('omnidb--theme-dark');
-		document.body.classList.add('omnidb--theme-light');
-	}
-	else {
-		v_current_terminal_theme = v_dark_terminal_theme;
-		document.body.classList.remove('omnidb--theme-light');
-		document.body.classList.add('omnidb--theme-dark');
-	}
+	// Always default to auto/OS theme
+	changeTheme('auto');
+
+	// Listen for system theme changes
+	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+		changeTheme('auto');
+	});
+
 });
 
 function adjustChartTheme(p_chart) {
 	var v_chart_font_color = '#666666';
 	var v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
 
-	if (v_theme=='light') {
+	if (v_theme == 'light') {
 		v_chart_font_color = '#666666';
 		v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
 	}
- 	else {
+	else {
 		v_chart_font_color = '#DCDDDE';
 		v_chart_grid_color = "rgba(100, 100, 100, 0.3)";
 	}
@@ -111,7 +109,7 @@ function adjustChartTheme(p_chart) {
 		p_chart.scales["x-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
 		p_chart.scales["x-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
 	}
-	catch(err) {
+	catch (err) {
 	}
 	p_chart.update();
 }
@@ -119,7 +117,7 @@ function adjustChartTheme(p_chart) {
 function adjustGraphTheme(p_graph) {
 	var v_font_color = '#666666';
 
-	if (v_theme=='light') {
+	if (v_theme == 'light') {
 		v_font_color = '#666666';
 	}
 	else {
@@ -132,15 +130,20 @@ function adjustGraphTheme(p_graph) {
 		p_graph.nodes().updateStyle();
 		p_graph.edges().updateStyle();
 	}
-	catch(err) {
+	catch (err) {
 	}
 }
 
 function changeTheme(p_option) {
-	// var v_fileref = document.getElementById("ss_theme");
+	// Always auto
+	v_theme = 'auto';
+	var v_actual_theme = 'light';
 
-	if (p_option=='dark') {
-		// v_fileref.setAttribute("href", v_url_folder + '/static/OmniDB_app/new/css/themes/dark.css');
+	if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+		v_actual_theme = 'dark';
+	}
+
+	if (v_actual_theme == 'dark') {
 		v_theme = 'dark';
 		v_editor_theme = 'omnidb_dark';
 		v_current_terminal_theme = v_dark_terminal_theme;
@@ -148,7 +151,6 @@ function changeTheme(p_option) {
 		document.body.classList.add('omnidb--theme-dark');
 	}
 	else {
-		// v_fileref.setAttribute("href", v_url_folder + '/static/OmniDB_app/new/css/themes/light.css');
 		v_theme = 'light';
 		v_editor_theme = 'omnidb';
 		v_current_terminal_theme = v_light_terminal_theme;
@@ -183,48 +185,52 @@ function changeTheme(p_option) {
 
 	var els = document.getElementsByClassName("ace_editor");
 
-	Array.prototype.forEach.call(els, function(el) {
-			ace.edit(el).setTheme("ace/theme/" + v_editor_theme);
+	Array.prototype.forEach.call(els, function (el) {
+		ace.edit(el).setTheme("ace/theme/" + v_editor_theme);
 	});
 
-	Chart.helpers.each(Chart.instances, function(instance){
-		adjustChartTheme(instance.chart);
-	})
-
-	//Adjusting terminal themes
-	for (var i=0; i < v_connTabControl.tabList.length; i++) {
-		var v_tab = v_connTabControl.tabList[i];
-		if (v_tab.tag!=null) {
-			if (v_tab.tag.mode=='outer_terminal') {
-				v_tab.tag.editor_console.setOption('theme',v_current_terminal_theme);
-			}
-		}
+	if (typeof Chart !== 'undefined') {
+		Chart.helpers.each(Chart.instances, function (instance) {
+			adjustChartTheme(instance.chart);
+		})
 	}
 
-	//Adjusting graph themes
-	for (var i=0; i < v_connTabControl.tabList.length; i++) {
-		var v_tab = v_connTabControl.tabList[i];
-		if (v_tab.tag!=null) {
-			if (v_tab.tag.mode=='connection') {
-				for (var j=0; j < v_tab.tag.tabControl.tabList.length; j++) {
-					var v_inner_tab = v_tab.tag.tabControl.tabList[j];
-					if (v_inner_tab.tag!=null) {
-						if (v_inner_tab.tag.mode=='monitor_dashboard') {
-							for (var k=0; k < v_inner_tab.tag.units.length; k++) {
-								if (v_inner_tab.tag.units[k].type=='graph')
-									adjustGraphTheme(v_inner_tab.tag.units[k].object);
+	//Adjusting terminal themes
+	if (typeof v_connTabControl !== 'undefined') {
+		for (var i = 0; i < v_connTabControl.tabList.length; i++) {
+			var v_tab = v_connTabControl.tabList[i];
+			if (v_tab.tag != null) {
+				if (v_tab.tag.mode == 'outer_terminal') {
+					v_tab.tag.editor_console.setOption('theme', v_current_terminal_theme);
+				}
+			}
+		}
+
+		//Adjusting graph themes
+		for (var i = 0; i < v_connTabControl.tabList.length; i++) {
+			var v_tab = v_connTabControl.tabList[i];
+			if (v_tab.tag != null) {
+				if (v_tab.tag.mode == 'connection') {
+					for (var j = 0; j < v_tab.tag.tabControl.tabList.length; j++) {
+						var v_inner_tab = v_tab.tag.tabControl.tabList[j];
+						if (v_inner_tab.tag != null) {
+							if (v_inner_tab.tag.mode == 'monitor_dashboard') {
+								for (var k = 0; k < v_inner_tab.tag.units.length; k++) {
+									if (v_inner_tab.tag.units[k].type == 'graph')
+										adjustGraphTheme(v_inner_tab.tag.units[k].object);
+								}
 							}
 						}
 					}
 				}
 			}
 		}
-	}
 
-	//Hooks
-	if (v_connTabControl.tag.hooks.changeTheme.length>0) {
-		for (var i=0; i<v_connTabControl.tag.hooks.changeTheme.length; i++)
-			v_connTabControl.tag.hooks.changeTheme[i](null,v_theme);
+		//Hooks
+		if (v_connTabControl.tag.hooks.changeTheme.length > 0) {
+			for (var i = 0; i < v_connTabControl.tag.hooks.changeTheme.length; i++)
+				v_connTabControl.tag.hooks.changeTheme[i](null, v_theme);
+		}
 	}
 }
 
@@ -233,26 +239,26 @@ function changeFontSize(p_option) {
 	v_font_size = p_option;
 
 	//Adjusting terminal themes
-	for (var i=0; i < v_connTabControl.tabList.length; i++) {
+	for (var i = 0; i < v_connTabControl.tabList.length; i++) {
 		var v_tab = v_connTabControl.tabList[i];
-		if (v_tab.tag!=null) {
-			if (v_tab.tag.mode=='outer_terminal') {
-				v_tab.tag.editor_console.setOption('fontSize',p_option);
+		if (v_tab.tag != null) {
+			if (v_tab.tag.mode == 'outer_terminal') {
+				v_tab.tag.editor_console.setOption('fontSize', p_option);
 				v_tab.tag.editor_console.fit();
 			}
 		}
 	}
 
-	Array.prototype.forEach.call(els, function(el) {
-	    // Do stuff here
-			ace.edit(el).setFontSize(Number(p_option));
+	Array.prototype.forEach.call(els, function (el) {
+		// Do stuff here
+		ace.edit(el).setFontSize(Number(p_option));
 	});
 }
 
 function changeInterfaceFontSize(p_option) {
 	v_font_size = p_option;
 	document.getElementsByTagName('html')[0].style['font-size'] = v_font_size + 'px';
-	$('.ace_editor').each(function(index) {
+	$('.ace_editor').each(function (index) {
 		let editor = ace.edit(this);
 		editor.setFontSize(v_font_size + 'px');
 	});
@@ -284,7 +290,7 @@ function changeInterfaceFontSize(p_option) {
 function showConfigUser() {
 
 	document.getElementById('sel_interface_font_size').value = v_font_size;
-	document.getElementById('sel_editor_theme').value = v_theme;
+	// document.getElementById('sel_editor_theme').value = v_theme;
 
 	document.getElementById('txt_confirm_new_pwd').value = '';
 	document.getElementById('txt_new_pwd').value = '';
@@ -302,9 +308,9 @@ function showConfigUser() {
 function goToConnections() {
 
 	showConfirm('You will lose existing changes. Would you like to continue?',
-		function() {
+		function () {
 
-			window.open("../connections","_self");
+			window.open("../connections", "_self");
 
 		});
 
@@ -316,9 +322,9 @@ function goToConnections() {
 function confirmSignout() {
 
 	showConfirm('Are you sure you want to sign out?',
-		function() {
+		function () {
 
-			window.open("../logout","_self");
+			window.open("../logout", "_self");
 
 		});
 
@@ -331,7 +337,7 @@ function showWebsite(p_name, p_url) {
 
 	if (v_connTabControl)
 		$('#modal_about').modal('hide');
-		v_connTabControl.tag.createWebsiteOuterTab(p_name,p_url);
+	v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
 
 }
 
@@ -341,7 +347,7 @@ function showWebsite(p_name, p_url) {
 function saveConfigUser() {
 
 	v_font_size = document.getElementById('sel_interface_font_size').value;
-	v_theme_id = document.getElementById('sel_editor_theme').value.split('/')[0];
+	// v_theme_id = document.getElementById('sel_editor_theme').value.split('/')[0];
 
 	var v_confirm_pwd = document.getElementById('txt_confirm_new_pwd');
 	var v_pwd = document.getElementById('txt_new_pwd');
@@ -349,25 +355,24 @@ function saveConfigUser() {
 	v_csv_encoding = document.getElementById('sel_csv_encoding').value;
 	v_csv_delimiter = document.getElementById('txt_csv_delimiter').value;
 
-	if ((v_confirm_pwd.value!='' || v_pwd.value!='') && (v_pwd.value!=v_confirm_pwd.value))
+	if ((v_confirm_pwd.value != '' || v_pwd.value != '') && (v_pwd.value != v_confirm_pwd.value))
 		showAlert('New Password and Confirm New Password fields do not match.');
 	else {
 		var input = JSON.stringify(
 			{
-				"p_font_size" : v_font_size,
-				"p_theme" : v_theme,
-				"p_pwd" : v_pwd.value,
+				"p_font_size": v_font_size,
+				"p_pwd": v_pwd.value,
 				"p_csv_encoding": v_csv_encoding,
 				"p_csv_delimiter": v_csv_delimiter
 			});
 
 		execAjax('/save_config_user/',
-				input,
-				function(p_return) {
-					$('#modal_config').modal('hide');
-					showAlert('Configuration saved.');
+			input,
+			function (p_return) {
+				$('#modal_config').modal('hide');
+				showAlert('Configuration saved.');
 
-				});
+			});
 	}
 }
 
@@ -379,10 +384,10 @@ function saveShortcuts() {
 	var v_shortcut_list = [];
 
 	for (var property in v_shortcut_object.shortcuts) {
-    if (v_shortcut_object.shortcuts.hasOwnProperty(property)) {
-        v_shortcut_list.push(v_shortcut_object.shortcuts[property]);
-    }
-  }
+		if (v_shortcut_object.shortcuts.hasOwnProperty(property)) {
+			v_shortcut_list.push(v_shortcut_object.shortcuts[property]);
+		}
+	}
 
 	var input = JSON.stringify({
 		"p_shortcuts": v_shortcut_list,
@@ -390,11 +395,11 @@ function saveShortcuts() {
 	});
 
 	execAjax('/save_shortcuts/',
-			input,
-			function(p_return) {
-				showAlert('Shortcuts saved.');
+		input,
+		function (p_return) {
+			showAlert('Shortcuts saved.');
 
-			});
+		});
 }
 
 /// <summary>
@@ -409,10 +414,10 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	var v_edit_modal = document.getElementById('div_edit_content');
 	if (!v_edit_modal) {
 		v_edit_modal = document.createElement('div');
-		v_edit_modal.setAttribute('id','div_edit_content');
-		v_edit_modal.setAttribute('tabindex','-1');
-		v_edit_modal.setAttribute('role','dialog');
-		v_edit_modal.setAttribute('aria-hidden','true');
+		v_edit_modal.setAttribute('id', 'div_edit_content');
+		v_edit_modal.setAttribute('tabindex', '-1');
+		v_edit_modal.setAttribute('role', 'dialog');
+		v_edit_modal.setAttribute('aria-hidden', 'true');
 		v_edit_modal.classList = 'modal fade';
 
 		document.body.append(v_edit_modal);
@@ -424,29 +429,29 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 		v_save_btn_attr = ' disabled title="Unable to manually edit data without primary key" ';
 	}
 	v_edit_modal.innerHTML =
-	'<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;">' +
+		'<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;">' +
 		'<div class="modal-content">' +
-			'<div class="modal-header">' +
-				'<h4 class="mb-0">Edit Data</h4>' +
-				'<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancelEditContent()">' +
-					'<span aria-hidden="true">&times;</span>' +
-				'</button>' +
-			'</div>' +
-			'<div id="modal_message_content" class="modal-body" style="white-space: pre-line;">' +
-				'<div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);">' +
-				'</div>' +
-			'</div>' +
-			'<div class="modal-footer">' +
-				'<button ' + v_save_btn_attr + ' type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal" onclick="saveEditContent()">Save</button>' +
-				'<button type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal" onclick="cancelEditContent()">Cancel</button>' +
-			'</div>' +
+		'<div class="modal-header">' +
+		'<h4 class="mb-0">Edit Data</h4>' +
+		'<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancelEditContent()">' +
+		'<span aria-hidden="true">&times;</span>' +
+		'</button>' +
 		'</div>' +
-	'</div>';
+		'<div id="modal_message_content" class="modal-body" style="white-space: pre-line;">' +
+		'<div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);">' +
+		'</div>' +
+		'</div>' +
+		'<div class="modal-footer">' +
+		'<button ' + v_save_btn_attr + ' type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal" onclick="saveEditContent()">Save</button>' +
+		'<button type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal" onclick="cancelEditContent()">Cancel</button>' +
+		'</div>' +
+		'</div>' +
+		'</div>';
 
-	if (v_editContentObject!=null)
-		if (v_editContentObject.editor!=null) {
-			 v_editContentObject.editor.destroy();
-			 document.getElementById('txt_edit_content').innerHTML = '';
+	if (v_editContentObject != null)
+		if (v_editContentObject.editor != null) {
+			v_editContentObject.editor.destroy();
+			document.getElementById('txt_edit_content').innerHTML = '';
 		}
 
 	var langTools = ace.require("ace/ext/language_tools");
@@ -457,13 +462,13 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 
 	v_editor.setFontSize(Number(v_font_size));
 
-	v_editor.setOptions({enableBasicAutocompletion: true});
+	v_editor.setOptions({ enableBasicAutocompletion: true });
 
-	document.getElementById('txt_edit_content').onclick = function() {
-  		v_editor.focus();
-    };
+	document.getElementById('txt_edit_content').onclick = function () {
+		v_editor.focus();
+	};
 
-	if (p_content!=null)
+	if (p_content != null)
 		v_editor.setValue(String(p_content));
 	else
 		v_editor.setValue('');
@@ -488,9 +493,9 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	v_editContentObject.ht = p_ht;
 
 	$('#div_edit_content').modal({
-    backdrop: 'static',
-    keyboard: false
-  });
+		backdrop: 'static',
+		keyboard: false
+	});
 
 }
 

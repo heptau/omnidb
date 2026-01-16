@@ -27,120 +27,120 @@ SOFTWARE.
 */
 
 var toggleSnippetPanel = function(p_set_state = false) {
-  v_element = $('#' + v_connTabControl.snippet_tag.divPanel.getAttribute('id'));
-  var v_snippet_tag = v_connTabControl.snippet_tag;
+	v_element = $('#' + v_connTabControl.snippet_tag.divPanel.getAttribute('id'));
+	var v_snippet_tag = v_connTabControl.snippet_tag;
 
-  let v_set_state = p_set_state;
-  if (v_set_state === 'visible') {
-    v_element.addClass('omnidb__panel--slide-in');
-  }
-  else if (v_set_state === 'hidden') {
-    v_element.removeClass('omnidb__panel--slide-in');
-  }
-  else {
-    v_element.toggleClass('omnidb__panel--slide-in');
-  }
+	let v_set_state = p_set_state;
+	if (v_set_state === 'visible') {
+		v_element.addClass('omnidb__panel--slide-in');
+	}
+	else if (v_set_state === 'hidden') {
+		v_element.removeClass('omnidb__panel--slide-in');
+	}
+	else {
+		v_element.toggleClass('omnidb__panel--slide-in');
+	}
 
-  resizeSnippetPanel();
+	resizeSnippetPanel();
 }
 
 var v_createSnippetPanelFunction = function(p_index) {
 
-  // v_connTabControl.removeLastTab();
+	// v_connTabControl.removeLastTab();
 
-  var v_tab = v_connTabControl.createTab({
-    p_icon: `<i class="fas fa-book"></i>`,
-    p_name: `Snippets`,
-    p_close: false,
-    p_selectable: false,
-    p_clickFunction: function() {
-      toggleSnippetPanel();
-    },
-    p_omnidb_tooltip_name: '<h5 class="my-1">Snippets Panel</h5>'
-  });
+	var v_tab = v_connTabControl.createTab({
+		p_icon: `<i class="fas fa-book"></i>`,
+		p_name: `Snippets`,
+		p_close: false,
+		p_selectable: false,
+		p_clickFunction: function() {
+			toggleSnippetPanel();
+		},
+		p_omnidb_tooltip_name: '<h5 class="my-1">Snippets Panel</h5>'
+	});
 
-  v_connTabControl.selectTab(v_tab);
+	v_connTabControl.selectTab(v_tab);
 
-  var v_html =
-  "<div id='" + v_tab.id + "_panel_snippet' class='omnidb__panel omnidb__panel--snippet'>" +
+	var v_html =
+	"<div id='" + v_tab.id + "_panel_snippet' class='omnidb__panel omnidb__panel--snippet'>" +
 
-    "<button type='button' onclick='toggleSnippetPanel()' class='px-4 btn omnidb__theme__btn--secondary omnidb__panel__toggler'><i class='fas fa-arrows-alt-v'></i></button>" +
+		"<button type='button' onclick='toggleSnippetPanel()' class='px-4 btn omnidb__theme__btn--secondary omnidb__panel__toggler'><i class='fas fa-arrows-alt-v'></i></button>" +
 
-    "<div class='container-fluid h-100' style='position: relative;'>" +
-      "<div id='" + v_tab.id + "_snippet_div_layout_grid' class='row h-100'>" +
-        "<div id='" + v_tab.id + "_snippet_div_left' class='omnidb__snippets__div-left col h-100' style='flex: 0 0 300px;'>" +
-          "<div class='row h-100'>" +
-            "<div class='omnidb__snippets__content-left'>" +
-              "<div id='" + v_tab.id + "_snippet_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
-            "</div>" +
-          "</div>" +
-          "<div class='resize_line_vertical omnidb__resize-line__container' onmousedown='resizeSnippetHorizontal(event)' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;'></div>" +
-        "</div>" +//.div_left
-        "<div id='" + v_tab.id + "_snippet_div_right' class='omnidb__snippets__div-right col pt-0' style='position: relative;'>" +
-          // "<div class='row'>" +
-            "<div id='" + v_tab.id + "_snippet_tabs' class='w-100'></div>" +
-          // "</div>" +
-        "</div>" +//.div_right
-      "</div>" +//.row
+		"<div class='container-fluid h-100' style='position: relative;'>" +
+			"<div id='" + v_tab.id + "_snippet_div_layout_grid' class='row h-100'>" +
+				"<div id='" + v_tab.id + "_snippet_div_left' class='omnidb__snippets__div-left col h-100' style='flex: 0 0 300px;'>" +
+					"<div class='row h-100'>" +
+						"<div class='omnidb__snippets__content-left'>" +
+							"<div id='" + v_tab.id + "_snippet_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
+						"</div>" +
+					"</div>" +
+					"<div class='resize_line_vertical omnidb__resize-line__container' onmousedown='resizeSnippetHorizontal(event)' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;'></div>" +
+				"</div>" +//.div_left
+				"<div id='" + v_tab.id + "_snippet_div_right' class='omnidb__snippets__div-right col pt-0' style='position: relative;'>" +
+					// "<div class='row'>" +
+						"<div id='" + v_tab.id + "_snippet_tabs' class='w-100'></div>" +
+					// "</div>" +
+				"</div>" +//.div_right
+			"</div>" +//.row
 
-    "</div>" +//.container-fluid
+		"</div>" +//.container-fluid
 
-  "</div>";
+	"</div>";
 
-  v_connTabControl.snippet_div = document.createElement('div');
-  v_connTabControl.snippet_div.id = v_tab.id + '_snippet';
-  v_connTabControl.snippet_div.innerHTML = v_html;
-  document.getElementById(v_connTabControl.id).append(v_connTabControl.snippet_div);
+	v_connTabControl.snippet_div = document.createElement('div');
+	v_connTabControl.snippet_div.id = v_tab.id + '_snippet';
+	v_connTabControl.snippet_div.innerHTML = v_html;
+	document.getElementById(v_connTabControl.id).append(v_connTabControl.snippet_div);
 
-  var v_currTabControl = createTabControl({
-    p_div: v_tab.id + '_snippet_tabs',
-    p_hierarchy: 'secondary'
-  });
+	var v_currTabControl = createTabControl({
+		p_div: v_tab.id + '_snippet_tabs',
+		p_hierarchy: 'secondary'
+	});
 
-  v_currTabControl.createTab(
-  {
-    p_name: '+',
-    p_close: false,
-    p_selectable: false,
-    p_clickFunction: function(e) {
-      showMenuNewTab(e);
-    }
-  });
+	v_currTabControl.createTab(
+	{
+		p_name: '+',
+		p_close: false,
+		p_selectable: false,
+		p_clickFunction: function(e) {
+			showMenuNewTab(e);
+		}
+	});
 
-  var v_tag = {
-    tab_id: v_tab.id,
-    tabControl: v_currTabControl,
-    tabTitle: 'teste',
-    divLayoutGrid: document.getElementById(v_tab.id + '_snippet_div_layout_grid'),
-    divLeft: document.getElementById(v_tab.id + '_snippet_div_left'),
-    divPanel: document.getElementById(v_tab.id + '_panel_snippet'),
-    divRight: document.getElementById(v_tab.id + '_snippet_div_right'),
-    divTree: document.getElementById(v_tab.id + '_snippet_tree'),
-    connTabControl: v_connTabControl,
-    isVisible: false,
-    mode: 'snippets'
-  };
+	var v_tag = {
+		tab_id: v_tab.id,
+		tabControl: v_currTabControl,
+		tabTitle: 'teste',
+		divLayoutGrid: document.getElementById(v_tab.id + '_snippet_div_layout_grid'),
+		divLeft: document.getElementById(v_tab.id + '_snippet_div_left'),
+		divPanel: document.getElementById(v_tab.id + '_panel_snippet'),
+		divRight: document.getElementById(v_tab.id + '_snippet_div_right'),
+		divTree: document.getElementById(v_tab.id + '_snippet_tree'),
+		connTabControl: v_connTabControl,
+		isVisible: false,
+		mode: 'snippets'
+	};
 
-  v_tab.tag = v_tag;
+	v_tab.tag = v_tag;
 
-  v_connTabControl.snippet_tag = v_tag;
+	v_connTabControl.snippet_tag = v_tag;
 
-  getTreeSnippets(v_tag.divTree.id);
+	getTreeSnippets(v_tag.divTree.id);
 
-  if (v_connTabControl.snippet_tag.tabControl.tabList.length > 0) {
-    v_connTabControl.snippet_tag.tabControl.selectTab(v_connTabControl.snippet_tag.tabControl.tabList[0]);
-  }
-  v_connTabControl.tag.createSnippetTextTab();
-  v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.setValue('');
-  v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
-  v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+	if (v_connTabControl.snippet_tag.tabControl.tabList.length > 0) {
+		v_connTabControl.snippet_tag.tabControl.selectTab(v_connTabControl.snippet_tag.tabControl.tabList[0]);
+	}
+	v_connTabControl.tag.createSnippetTextTab();
+	v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.setValue('');
+	v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
+	v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
 
-  // Creating `Add` tab in the outer tab list
-  // v_connTabControl.createAddTab();
-  // v_connTabControl.createTab('+',false,v_connTabControl.tag.createConnTab,false);
+	// Creating `Add` tab in the outer tab list
+	// v_connTabControl.createAddTab();
+	// v_connTabControl.createTab('+',false,v_connTabControl.tag.createConnTab,false);
 
-  //setTimeout(function() {
-  //  refreshTreeHeight();
-  //},10);
+	//setTimeout(function() {
+	//  refreshTreeHeight();
+	//},10);
 
 }

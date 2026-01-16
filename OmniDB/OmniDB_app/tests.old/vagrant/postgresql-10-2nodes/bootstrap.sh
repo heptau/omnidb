@@ -17,27 +17,27 @@ PG_LOCAL_PORT=5432
 # Changes below this line are probably not necessary
 ###########################################################
 print_db_usage () {
-  echo "Your PostgreSQL database has been setup and can be accessed on your local machine on the forwarded port (default: $PG_LOCAL_PORT)"
-  echo "  Host: localhost"
-  echo "  Port: $PG_LOCAL_PORT"
-  echo "  Database: $APP_DB_NAME"
-  echo "  Username: $APP_DB_USER"
-  echo "  Password: $APP_DB_PASS"
-  echo ""
-  echo "Admin access to postgres user via VM:"
-  echo "  vagrant ssh"
-  echo "  sudo su - postgres"
-  echo ""
-  echo "psql access to app database user via VM:"
-  echo "  vagrant ssh"
-  echo "  sudo su - postgres"
-  echo "  PGUSER=$APP_DB_USER PGPASSWORD=$APP_DB_PASS psql -h localhost $APP_DB_NAME"
-  echo ""
-  echo "Env variable for application development:"
-  echo "  DATABASE_URL=postgresql://$APP_DB_USER:$APP_DB_PASS@localhost:$PG_LOCAL_PORT/$APP_DB_NAME"
-  echo ""
-  echo "Local command to access the database via psql:"
-  echo "  PGUSER=$APP_DB_USER PGPASSWORD=$APP_DB_PASS psql -h localhost -p $PG_LOCAL_PORT $APP_DB_NAME"
+	echo "Your PostgreSQL database has been setup and can be accessed on your local machine on the forwarded port (default: $PG_LOCAL_PORT)"
+	echo "  Host: localhost"
+	echo "  Port: $PG_LOCAL_PORT"
+	echo "  Database: $APP_DB_NAME"
+	echo "  Username: $APP_DB_USER"
+	echo "  Password: $APP_DB_PASS"
+	echo ""
+	echo "Admin access to postgres user via VM:"
+	echo "  vagrant ssh"
+	echo "  sudo su - postgres"
+	echo ""
+	echo "psql access to app database user via VM:"
+	echo "  vagrant ssh"
+	echo "  sudo su - postgres"
+	echo "  PGUSER=$APP_DB_USER PGPASSWORD=$APP_DB_PASS psql -h localhost $APP_DB_NAME"
+	echo ""
+	echo "Env variable for application development:"
+	echo "  DATABASE_URL=postgresql://$APP_DB_USER:$APP_DB_PASS@localhost:$PG_LOCAL_PORT/$APP_DB_NAME"
+	echo ""
+	echo "Local command to access the database via psql:"
+	echo "  PGUSER=$APP_DB_USER PGPASSWORD=$APP_DB_PASS psql -h localhost -p $PG_LOCAL_PORT $APP_DB_NAME"
 }
 
 export DEBIAN_FRONTEND=noninteractive
@@ -45,21 +45,21 @@ export DEBIAN_FRONTEND=noninteractive
 PROVISIONED_ON=/etc/vm_provision_on_timestamp
 if [ -f "$PROVISIONED_ON" ]
 then
-  echo "VM was already provisioned at: $(cat $PROVISIONED_ON)"
-  echo "To run system updates manually login via 'vagrant ssh' and run 'apt-get update && apt-get upgrade'"
-  echo ""
-  print_db_usage
-  exit
+	echo "VM was already provisioned at: $(cat $PROVISIONED_ON)"
+	echo "To run system updates manually login via 'vagrant ssh' and run 'apt-get update && apt-get upgrade'"
+	echo ""
+	print_db_usage
+	exit
 fi
 
 PG_REPO_APT_SOURCE=/etc/apt/sources.list.d/pgdg.list
 if [ ! -f "$PG_REPO_APT_SOURCE" ]
 then
-  # Add PG apt repo:
-  echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" > "$PG_REPO_APT_SOURCE"
+	# Add PG apt repo:
+	echo "deb http://apt.postgresql.org/pub/repos/apt/ stretch-pgdg main" > "$PG_REPO_APT_SOURCE"
 
-  # Add PGDG repo key:
-  wget --quiet -O - https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
+	# Add PGDG repo key:
+	wget --quiet -O - https://apt.postgresql.org/pub/repos/apt/ACCC4CF8.asc | apt-key add -
 fi
 
 # Update package list and upgrade all packages
@@ -94,10 +94,10 @@ CREATE USER $APP_DB_USER WITH PASSWORD '$APP_DB_PASS' SUPERUSER;
 
 -- Create the database:
 CREATE DATABASE $APP_DB_NAME WITH OWNER=$APP_DB_USER
-                                  LC_COLLATE='en_US.utf8'
-                                  LC_CTYPE='en_US.utf8'
-                                  ENCODING='UTF8'
-                                  TEMPLATE=template0;
+																	LC_COLLATE='en_US.utf8'
+																	LC_CTYPE='en_US.utf8'
+																	ENCODING='UTF8'
+																	TEMPLATE=template0;
 EOF
 
 # Tag the provision time:

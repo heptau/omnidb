@@ -29,55 +29,55 @@ ALLOWED_HOSTS = ['*']
 
 # Database
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(HOME_DIR, 'omnidb.db')
-    }
+	'default': {
+		'ENGINE': 'django.db.backends.sqlite3',
+		'NAME': os.path.join(HOME_DIR, 'omnidb.db')
+	}
 }
 
 if DEBUG:
-    SECRET_KEY = 'ijbq-+%n_(_^ct+qnqp%ir8fzu3n#q^i71j4&y#-6#qe(dx!h3'
+	SECRET_KEY = 'ijbq-+%n_(_^ct+qnqp%ir8fzu3n#q^i71j4&y#-6#qe(dx!h3'
 else:
-    SECRET_KEY = ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(50))
+	SECRET_KEY = ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(50))
 
 INSTALLED_APPS = [
-    'OmniDB_app',
-    'django.contrib.admin',
-    'django.contrib.auth',
-    'django.contrib.contenttypes',
-    'django.contrib.sessions',
-    'django.contrib.messages',
-    'django.contrib.staticfiles',
-    'social_django',
-    'django_sass'
+	'OmniDB_app',
+	'django.contrib.admin',
+	'django.contrib.auth',
+	'django.contrib.contenttypes',
+	'django.contrib.sessions',
+	'django.contrib.messages',
+	'django.contrib.staticfiles',
+	'social_django',
+	'django_sass'
 ]
 
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
-    'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
-    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+	'django.middleware.security.SecurityMiddleware',
+	'django.contrib.sessions.middleware.SessionMiddleware',
+	'django.middleware.common.CommonMiddleware',
+	'django.middleware.csrf.CsrfViewMiddleware',
+	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	'django.contrib.messages.middleware.MessageMiddleware',
+	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
 
 ROOT_URLCONF = 'OmniDB.urls'
 
 TEMPLATES = [
-    {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
-    },
+	{
+		'BACKEND': 'django.template.backends.django.DjangoTemplates',
+		'DIRS': [],
+		'APP_DIRS': True,
+		'OPTIONS': {
+			'context_processors': [
+				'django.template.context_processors.debug',
+				'django.template.context_processors.request',
+				'django.contrib.auth.context_processors.auth',
+				'django.contrib.messages.context_processors.messages',
+			],
+		},
+	},
 ]
 
 WSGI_APPLICATION = 'OmniDB.wsgi.application'
@@ -112,26 +112,26 @@ WSGI_APPLICATION = 'OmniDB.wsgi.application'
 #AUTH_LDAP_GROUP_CACHE_TIMEOUT = 1  # 1 hour cache
 
 AUTHENTICATION_BACKENDS = [
-    #'django_auth_ldap.backend.LDAPBackend',
-    'django.contrib.auth.backends.ModelBackend',
+	#'django_auth_ldap.backend.LDAPBackend',
+	'django.contrib.auth.backends.ModelBackend',
 ]
 
 SOCIAL_AUTH_GITHUB_KEY = 'Iv1.b66f09dc30df16f3'
 SOCIAL_AUTH_GITHUB_SECRET = '3403a3cc31a991d48ef72fbd73fa45e3af5b62ba'
 
 AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
+	{
+		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+	},
+	{
+		'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+	},
 ]
 
 LANGUAGE_CODE = 'en-us'
@@ -143,12 +143,12 @@ USE_TZ = True
 PATH = custom_settings.PATH
 # Processing PATH
 if PATH == '/':
-    PATH = ''
+	PATH = ''
 elif PATH != '':
-    if PATH[0] != '/':
-        PATH = '/' + PATH
-    if PATH[len(PATH)-1] == '/':
-        PATH = PATH[:-1]
+	if PATH[0] != '/':
+		PATH = '/' + PATH
+	if PATH[len(PATH)-1] == '/':
+		PATH = PATH[:-1]
 
 
 LOGIN_URL = PATH + '/omnidb_login'
@@ -162,56 +162,56 @@ SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
 #OMNIDB LOGGING
 
 LOGGING = {
-    'version': 1,
-    'disable_existing_loggers': False,
-    'formatters': {
-        'standard': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
-            'datefmt' : "%m/%d/%Y %H:%M:%S"
-        },
-    },
-    'handlers': {
-        'logfile_omnidb': {
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(HOME_DIR, 'omnidb.log'),
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
-        },
-        'logfile_django': {
-            'class':'logging.handlers.RotatingFileHandler',
-            'filename': os.path.join(HOME_DIR, 'omnidb.log'),
-            'maxBytes': 1024*1024*5, # 5 MB
-            'backupCount': 5,
-            'formatter': 'standard',
-            'level':'ERROR',
-        },
-        'console_django':{
-            'class':'logging.StreamHandler',
-            'formatter': 'standard'
-        },
-        'console_omnidb_app':{
-            'class':'logging.StreamHandler',
-            'formatter': 'standard',
-            'level':'ERROR',
-        },
-    },
-    'loggers': {
-        'django': {
-            'handlers':['logfile_django','console_django'],
-            'propagate': False,
-        },
-        'OmniDB_app': {
-            'handlers': ['logfile_omnidb','console_omnidb_app'],
-            'propagate': False,
-            'level':'INFO',
-        },
-        'cherrypy.error': {
-            'handlers': ['logfile_django','console_omnidb_app'],
-            'level': 'INFO',
-            'propagate': False
-        }
-    }
+	'version': 1,
+	'disable_existing_loggers': False,
+	'formatters': {
+		'standard': {
+			'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+			'datefmt' : "%m/%d/%Y %H:%M:%S"
+		},
+	},
+	'handlers': {
+		'logfile_omnidb': {
+			'class':'logging.handlers.RotatingFileHandler',
+			'filename': os.path.join(HOME_DIR, 'omnidb.log'),
+			'maxBytes': 1024*1024*5, # 5 MB
+			'backupCount': 5,
+			'formatter': 'standard',
+		},
+		'logfile_django': {
+			'class':'logging.handlers.RotatingFileHandler',
+			'filename': os.path.join(HOME_DIR, 'omnidb.log'),
+			'maxBytes': 1024*1024*5, # 5 MB
+			'backupCount': 5,
+			'formatter': 'standard',
+			'level':'ERROR',
+		},
+		'console_django':{
+			'class':'logging.StreamHandler',
+			'formatter': 'standard'
+		},
+		'console_omnidb_app':{
+			'class':'logging.StreamHandler',
+			'formatter': 'standard',
+			'level':'ERROR',
+		},
+	},
+	'loggers': {
+		'django': {
+			'handlers':['logfile_django','console_django'],
+			'propagate': False,
+		},
+		'OmniDB_app': {
+			'handlers': ['logfile_omnidb','console_omnidb_app'],
+			'propagate': False,
+			'level':'INFO',
+		},
+		'cherrypy.error': {
+			'handlers': ['logfile_django','console_omnidb_app'],
+			'level': 'INFO',
+			'propagate': False
+		}
+	}
 }
 
 #OMNIDB PARAMETERS

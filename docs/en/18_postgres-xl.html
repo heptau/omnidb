@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>18 Postgres-Xl - OmniDB Documentation</title>
+	<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+	<nav>
+		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
+		<div style="margin-bottom: 20px;"><a href="index.html"><strong>&larr; Back to Index</strong></a></div>
+				<a href="01_introduction.html">01 Introduction</a>
+		<a href="02_installation.html">02 Installation</a>
+		<a href="03_creating_users_and_connections.html">03 Creating Users And Connections</a>
+		<a href="04_managing_databases.html">04 Managing Databases</a>
+		<a href="05_creating_changing_and_removing_tables.html">05 Creating Changing And Removing Tables</a>
+		<a href="06_managing_table_data.html">06 Managing Table Data</a>
+		<a href="07_writing_sql_queries.html">07 Writing Sql Queries</a>
+		<a href="08_visualizing_query_plans.html">08 Visualizing Query Plans</a>
+		<a href="09_visualizing_data.html">09 Visualizing Data</a>
+		<a href="10_managing_other_elements.html">10 Managing Other Elements</a>
+		<a href="11_additional_features.html">11 Additional Features</a>
+		<a href="12_omnidb_config_tool.html">12 Omnidb Config Tool</a>
+		<a href="13_writing_and_debugging_plpgsql_functions.html">13 Writing And Debugging Plpgsql Functions</a>
+		<a href="14_monitoring_dashboard.html">14 Monitoring Dashboard</a>
+		<a href="15_logical_replication.html">15 Logical Replication</a>
+		<a href="16_pglogical.html">16 Pglogical</a>
+		<a href="17_postgres-bdr.html">17 Postgres-Bdr</a>
+		<a href="18_postgres-xl.html" class="active">18 Postgres-Xl</a>
+		<a href="19_deploying_omnidb-server.html">19 Deploying Omnidb-Server</a>
+		<a href="20_console_tab.html">20 Console Tab</a>
+		<a href="21_plugin_system.html">21 Plugin System</a>
+		<a href="22_advanced_object_search.html">22 Advanced Object Search</a>
+		<a href="23_debugger_plugin_installation.html">23 Debugger Plugin Installation</a>
+	</nav>
+	<main>
+		<h1>18. Postgres-XL</h1>
+<p><a href="https://www.2ndquadrant.com/en/resources/postgres-xl/">Postgres-XL</a> (or just
+<strong>XL</strong>, for short) is an open source project from 2ndQuadrant. It is a massively
+parallel database built on top of PostgreSQL, and it is designed to be
+horizontally scalable and flexible enough to handle various workloads.</p>
+<p>In this chapter, we will use a cluster with 4 virtual machines: 1 GTM, 1
+coordinator and 2 data nodes.</p>
+<p>| Machine | IP | Role |
+|---|---|---|---|
+| xlgtm | 10.33.1.114 | GTM |
+| xlcoord | 10.33.1.115 | coordinator |
+| xldata1 | 10.33.1.116 | data node |
+| xldata2 | 10.33.1.117 | data node |</p>
+<p>On each machine, you need to clone Postgres-XL repository and compile it. You
+also need to set specific XL parameters on file <code>postgresql.conf</code> and make sure
+all machines are communicating to each other by adjusting file <code>pg_hba.conf</code>.
+More information on how Postgres-XL works and how to install it on
+<a href="https://www.postgres-xl.org/documentation/index.html">Postgres-XL documentation</a>.
+You can also refer to <a href="https://blog.2ndquadrant.com/postgres-xl-omnidb/">this blog post</a>.</p>
+<h4>Creating a test environment</h4>
+<p>OmniDB repository provides a 4-node Vagrant test environment. If you want to
+use it, please do the following:</p>
+<pre><code>git clone --depth 1 https://github.com/OmniDB/OmniDB
+cd OmniDB/OmniDB_app/tests/vagrant/xl-9.5/
+vagrant up
+</code></pre>
+<p>It will take a while, but once finished, 4 virtual machines with IP addresses
+<code>10.33.1.114</code>, <code>10.33.1.115</code>, <code>10.33.1.116</code> and <code>10.33.1.117</code> will be up and
+each of them will have Postgres-XL 9.5 up and listening to port <code>5432</code>, with all
+settings needed. To create all nodes, please do:</p>
+<pre><code>vagrant ssh xlcoord -c '/vagrant/setup.sh 10.33.1.115 10.33.1.116 10.33.1.117'
+vagrant ssh xldata1 -c '/vagrant/setup.sh 10.33.1.115 10.33.1.116 10.33.1.117'
+vagrant ssh xldata2 -c '/vagrant/setup.sh 10.33.1.115 10.33.1.116 10.33.1.117'
+</code></pre>
+<p>Then connect to the coordinator and define a password for the <code>postgres</code> user:</p>
+<pre><code>$ vagrant ssh xlcoord -c 'sudo su - postgres -c /usr/local/pgsql/bin/psql'
+psql (PGXL 9.5r1.6, based on PG 9.5.12 (Postgres-XL 9.5r1.6))
+Type &quot;help&quot; for help.
+
+postgres=# ALTER USER postgres PASSWORD 'omnidb';
+ALTER ROLE
+postgres=#
+</code></pre>
+<p>Now the XL cluster will be ready for you to use.</p>
+<h4>Install OmniDB XL plugin</h4>
+<p>OmniDB core does not support XL by default. You will need to download and
+install XL plugin. If you are using OmniDB server, these are the steps:</p>
+<pre><code>wget https://omnidb.org/dist/plugins/omnidb-xl_1.0.0.zip
+unzip omnidb-xl_1.0.0.zip
+sudo cp -r plugins/ static/ /opt/omnidb-server/OmniDB_app/
+sudo systemctl restart omnidb
+</code></pre>
+<p>And then refresh the OmniDB web page in the browser.</p>
+<p>For OmniDB app, these are the steps:</p>
+<pre><code>wget https://omnidb.org/dist/plugins/omnidb-xl_1.0.0.zip
+unzip omnidb-xl_1.0.0.zip
+sudo cp -r plugins/ static/ /opt/omnidb-app/resources/app/omnidb-server/OmniDB_app/
+</code></pre>
+<p>And then restart OmniDB app.</p>
+<p>If everything worked correctly, by clicking on the "plugins" icon in the top
+right corner, you will see the plugin installed and enabled:</p>
+<p><img alt="" src="../assets/img/image_202.png" /></p>
+<h4>Connecting to the cluster</h4>
+<p>Let's use OmniDB to connect to the coordinator node. First of all, fill out
+connection info in the connection grid:</p>
+<p><img alt="" src="../assets/img/image_157.png" /></p>
+<p>Then select the connection. You will see OmniDB workspace window. Expand the
+tree root node. Note that OmniDB identifies it is connected to a Postgres-XL
+cluster and shows a specific node called <em>Postgres-XL</em> just inside the tree root
+node. Expand this node to see all the nodes we have in our cluster:</p>
+<p><img alt="" src="../assets/img/image_158.png" /></p>
+<h4>Creating a HASH table</h4>
+<p>From the root node, expand <em>Schemas</em>, then <em>public</em>, then right click on the
+<em>Tables</em> node. Click on <em>Create Table</em>. Name your new table, add some columns to
+it and do not forget to add a primary key too:</p>
+<p><img alt="" src="../assets/img/image_159.png" /></p>
+<p><img alt="" src="../assets/img/image_160.png" /></p>
+<p>When done, click on the <em>Save Changes</em> button. Now right click on the <em>Tables</em>
+node and click on <em>Refresh</em>. You will see the new table created. Expand it to
+see that there is also a <em>Postgres-XL</em> node inside of it. Check its properties.</p>
+<p><img alt="" src="../assets/img/image_161.png" /></p>
+<p>By default, Postgres-XL always try to create a table distributed by HASH. It
+means that the data will be split into the nodes regularly, through a hash
+function applied on the specified column. If present, it will use the primary
+key, or a unique constraint otherwise. If there is no primary key nor unique
+constraint, Postgres-XL uses the first eligible column. If not possible to
+distribute by HASH, then Postgres-XL will create the table distributed by
+ROUNDROBIN, which means that the data will be split in a way that every new
+row will be added to a different data node.</p>
+<p>Now let's add some rows in our new table. Right click on the table, then go to
+<em>Data Actions</em> and then click on <em>Edit Data</em>. Add some rows and then click on
+the <em>Save Changes</em> button:</p>
+<p><img alt="" src="../assets/img/image_162.png" /></p>
+<p>Right click on the table again, <em>Data Actions</em>, <em>Query Data</em>. You will see that
+cluster-wide the table has all data inside.</p>
+<p><img alt="" src="../assets/img/image_163.png" /></p>
+<p>But how the data was distributed in the data nodes? In the <em>Postgres-XL</em> main
+node, right click on each node and click on <em>Execute Direct</em>. Adjust the query
+that will be executed directly into the data node, as you can see below.</p>
+<p><img alt="" src="../assets/img/image_164.png" /></p>
+<p><img alt="" src="../assets/img/image_165.png" /></p>
+<h4>Creating a REPLICATION table</h4>
+<p>While HASH distribution is great for write-only and write-mainly tables,
+REPLICATION distribution is great for read-only and read-mainly tables. However,
+a table distributed by REPLICATION will store all data in all nodes it is
+located.</p>
+<p>In order to create a REPLICATION table, let us create a new table like we did
+before:</p>
+<p><img alt="" src="../assets/img/image_166.png" /></p>
+<p><img alt="" src="../assets/img/image_167.png" /></p>
+<p>Note how by default it was created as a HASH table:</p>
+<p><img alt="" src="../assets/img/image_168.png" /></p>
+<p>Let us change the distribution type of the table by right-clicking on the
+<em>Postgres-XL</em> node inside the table, and then clicking on <em>Alter Distribution</em>.
+Uncomment the "REPLICATION" line and execute the command:</p>
+<p><img alt="" src="../assets/img/image_169.png" /></p>
+<p>You can check the distribution was successfully changed by right-clicking on the
+<em>Postgres-XL</em> node and clicking on <em>Refresh</em>. The properties will now show
+<em>Distributed by: replication</em>.</p>
+<p><img alt="" src="../assets/img/image_170.png" /></p>
+<p>Now add some data to the table:</p>
+<p><img alt="" src="../assets/img/image_171.png" /></p>
+<p>And then check that all data exist on all data nodes:</p>
+<p><img alt="" src="../assets/img/image_172.png" /></p>
+<p><img alt="" src="../assets/img/image_173.png" /></p>
+	</main>
+</body>
+</html>

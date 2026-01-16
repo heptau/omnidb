@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>12 Omnidb Config Tool - OmniDB Documentation</title>
+	<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+	<nav>
+		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
+		<div style="margin-bottom: 20px;"><a href="index.html"><strong>&larr; Back to Index</strong></a></div>
+				<a href="01_introduction.html">01 Introduction</a>
+		<a href="02_installation.html">02 Installation</a>
+		<a href="03_creating_users_and_connections.html">03 Creating Users And Connections</a>
+		<a href="04_managing_databases.html">04 Managing Databases</a>
+		<a href="05_creating_changing_and_removing_tables.html">05 Creating Changing And Removing Tables</a>
+		<a href="06_managing_table_data.html">06 Managing Table Data</a>
+		<a href="07_writing_sql_queries.html">07 Writing Sql Queries</a>
+		<a href="08_visualizing_query_plans.html">08 Visualizing Query Plans</a>
+		<a href="09_visualizing_data.html">09 Visualizing Data</a>
+		<a href="10_managing_other_elements.html">10 Managing Other Elements</a>
+		<a href="11_additional_features.html">11 Additional Features</a>
+		<a href="12_omnidb_config_tool.html" class="active">12 Omnidb Config Tool</a>
+		<a href="13_writing_and_debugging_plpgsql_functions.html">13 Writing And Debugging Plpgsql Functions</a>
+		<a href="14_monitoring_dashboard.html">14 Monitoring Dashboard</a>
+		<a href="15_logical_replication.html">15 Logical Replication</a>
+		<a href="16_pglogical.html">16 Pglogical</a>
+		<a href="17_postgres-bdr.html">17 Postgres-Bdr</a>
+		<a href="18_postgres-xl.html">18 Postgres-Xl</a>
+		<a href="19_deploying_omnidb-server.html">19 Deploying Omnidb-Server</a>
+		<a href="20_console_tab.html">20 Console Tab</a>
+		<a href="21_plugin_system.html">21 Plugin System</a>
+		<a href="22_advanced_object_search.html">22 Advanced Object Search</a>
+		<a href="23_debugger_plugin_installation.html">23 Debugger Plugin Installation</a>
+	</nav>
+	<main>
+		<h1>12. OmniDB Config Tool</h1>
+<p>Every installation of OmniDB also comes with a small CLI utility called <em>OmniDB
+Config</em>. It will have a different file name, depending on the way you installed
+OmniDB:</p>
+<ul>
+<li>If you are using a tarball or zip package, it is called <strong>omnidb-config</strong>, for
+both server and app versions;</li>
+<li>If you used an installer (like the .deb file) of server version, it is called
+<strong>omnidb-config-server</strong>;</li>
+<li>If you used an installer of app version, it is called <strong>omnidb-config-app</strong>.</li>
+</ul>
+<p>Despite having different names, the utility does exactly the same. If you used
+an installer, it will be put in your <code>$PATH</code>.</p>
+<pre><code class="language-bash">user@machine:~$  omnidb-config-app --help
+Usage: omnidb-config-app [options]
+
+Options:
+  --version             show program\'s version number and exit
+  -h, --help            show this help message and exit
+  -d HOMEDIR, --homedir=HOMEDIR
+                        home directory containing local databases config and
+                        log files
+  -c username password, --createsuperuser=username password
+                        create super user: -c username password
+  -a, --vacuum          databases maintenance
+  -r, --resetdatabase   reset user and session databases
+  -t, --deletetemp      delete temporary files
+</code></pre>
+<h4>Set home directory</h4>
+<p>Option <code>-d</code> allows you to set the path to the OmniDB folder that contains the
+config and database files where you want to execute other options, like creating
+a new super user (<code>-c</code>).</p>
+<h4>Create super user</h4>
+<p>Option <code>-c</code> allows you to create a new super user, without needing to open
+OmniDB interface.</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-config-app -c william password
+Creating superuser...
+Superuser created.
+</code></pre>
+<h4>Vacuum</h4>
+<p>OmniDB has two databases:</p>
+<ul>
+<li><code>omnidb.db</code>: Stores all users and connections, and other OmniDB related stuff;</li>
+<li><em>Sessions database</em>: Stores Django user sessions.</li>
+</ul>
+<p>Both databases are SQLite, so it can be useful to vacuum them sometimes to
+reduce file size. This can be done with the <code>-a</code> option.</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-config-app -a
+Vacuuming OmniDB database...
+Done.
+Vacuuming Sessions database...
+Done.
+</code></pre>
+<h4>Reset database</h4>
+<p>If you wish to wipe out all OmniDB information and get a clean database as it
+was just installed, you can use the <code>-r</code> option. Use it with caution!</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-config-app -r
+*** ATENTION *** ALL USERS DATA WILL BE LOST
+Would you like to continue? (y/n) y
+Cleaning users...
+Done.
+Cleaning sessions...
+Vacuuming OmniDB database...
+Done.
+Vacuuming Sessions database...
+Done.
+</code></pre>
+<h4>Delete temporary files</h4>
+<p>If you desire to remove temporary files that OmniDB creates along its execution,
+like exported queries in CSV/XLSX format, you can use the <code>-t</code> option.</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-config-app -t
+Cleaning temp folder...
+Done.
+</code></pre>
+	</main>
+</body>
+</html>

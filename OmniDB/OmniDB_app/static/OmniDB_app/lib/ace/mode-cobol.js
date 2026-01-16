@@ -18,50 +18,50 @@ var keywords = "ACCEPT|MERGE|SUM|ADD||MESSAGE|TABLE|ADVANCING|MODE|TAPE|" +
 "ELSE|SEARCH|ENABLE|SECTION|END|SELECT|ENVIRONMENT|SENTENCE|EQUAL|SET|ERROR|SIGN|EXIT|SEQUENTIAL|" +
 "EXTERNAL|SIZE|FLASE|SORT|FILE|SOURCE|LENGTH|SPACE|LESS|STANDARD|LIMIT|START|LINE|STOP|LOCK|STRING|LOW-VALUE|SUBTRACT";
 
-    var builtinConstants = (
-        "true|false|null"
-    );
+	var builtinConstants = (
+		"true|false|null"
+	);
 
-    var builtinFunctions = (
-        "count|min|max|avg|sum|rank|now|coalesce|main"
-    );
+	var builtinFunctions = (
+		"count|min|max|avg|sum|rank|now|coalesce|main"
+	);
 
-    var keywordMapper = this.createKeywordMapper({
-        "support.function": builtinFunctions,
-        "keyword": keywords,
-        "constant.language": builtinConstants
-    }, "identifier", true);
+	var keywordMapper = this.createKeywordMapper({
+		"support.function": builtinFunctions,
+		"keyword": keywords,
+		"constant.language": builtinConstants
+	}, "identifier", true);
 
-    this.$rules = {
-        "start" : [ {
-            token : "comment",
-            regex : "\\*.*$"
-        }, {
-            token : "string",           // " string
-            regex : '".*?"'
-        }, {
-            token : "string",           // ' string
-            regex : "'.*?'"
-        }, {
-            token : "constant.numeric", // float
-            regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-        }, {
-            token : keywordMapper,
-            regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
-        }, {
-            token : "keyword.operator",
-            regex : "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
-        }, {
-            token : "paren.lparen",
-            regex : "[\\(]"
-        }, {
-            token : "paren.rparen",
-            regex : "[\\)]"
-        }, {
-            token : "text",
-            regex : "\\s+"
-        } ]
-    };
+	this.$rules = {
+		"start" : [ {
+			token : "comment",
+			regex : "\\*.*$"
+		}, {
+			token : "string",           // " string
+			regex : '".*?"'
+		}, {
+			token : "string",           // ' string
+			regex : "'.*?'"
+		}, {
+			token : "constant.numeric", // float
+			regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+		}, {
+			token : keywordMapper,
+			regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+		}, {
+			token : "keyword.operator",
+			regex : "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
+		}, {
+			token : "paren.lparen",
+			regex : "[\\(]"
+		}, {
+			token : "paren.rparen",
+			regex : "[\\)]"
+		}, {
+			token : "text",
+			regex : "\\s+"
+		} ]
+	};
 };
 
 oop.inherits(CobolHighlightRules, TextHighlightRules);
@@ -77,16 +77,16 @@ var TextMode = require("./text").Mode;
 var CobolHighlightRules = require("./cobol_highlight_rules").CobolHighlightRules;
 
 var Mode = function() {
-    this.HighlightRules = CobolHighlightRules;
-    this.$behaviour = this.$defaultBehaviour;
+	this.HighlightRules = CobolHighlightRules;
+	this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
 
-    this.lineCommentStart = "*";
+	this.lineCommentStart = "*";
 
-    this.$id = "ace/mode/cobol";
+	this.$id = "ace/mode/cobol";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

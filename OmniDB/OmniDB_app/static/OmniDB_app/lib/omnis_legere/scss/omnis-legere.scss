@@ -27,89 +27,89 @@ SOFTWARE.
 */
 
 .omnis-legere__wrapper {
-  opacity: 0;
-  -o-animation-name:legereWrapperFadeIn;
-  -moz-animation-name:legereWrapperFadeIn;
-  -webkit-animation-name:legereWrapperFadeIn;
-  animation-name:legereWrapperFadeIn;
-  -o-animation-fill-mode:forwards;
-  -moz-animation-fill-mode:forwards;
-  -webkit-animation-fill-mode:forwards;
-  animation-fill-mode:forwards;
-  -o-animation-timing-function:linear;
-  -moz-animation-timing-function:linear;
-  -webkit-animation-timing-function:linear;
-  animation-timing-function:linear;
-  -o-animation-duration:.25s;
-  -moz-animation-duration:.25s;
-  -webkit-animation-duration:.25s;
-  animation-duration:.25s;
-  -o-animation-delay:0s;
-  -moz-animation-delay:0s;
-  -webkit-animation-delay:0s;
-  animation-delay:0s;
+	opacity: 0;
+	-o-animation-name:legereWrapperFadeIn;
+	-moz-animation-name:legereWrapperFadeIn;
+	-webkit-animation-name:legereWrapperFadeIn;
+	animation-name:legereWrapperFadeIn;
+	-o-animation-fill-mode:forwards;
+	-moz-animation-fill-mode:forwards;
+	-webkit-animation-fill-mode:forwards;
+	animation-fill-mode:forwards;
+	-o-animation-timing-function:linear;
+	-moz-animation-timing-function:linear;
+	-webkit-animation-timing-function:linear;
+	animation-timing-function:linear;
+	-o-animation-duration:.25s;
+	-moz-animation-duration:.25s;
+	-webkit-animation-duration:.25s;
+	animation-duration:.25s;
+	-o-animation-delay:0s;
+	-moz-animation-delay:0s;
+	-webkit-animation-delay:0s;
+	animation-delay:0s;
 }
 
 .omnis-legere__item.omnis-legere__item--is_collapsed .alert-info {
-  display: none;
+	display: none;
 }
 
 .omnis-legere__svg path {
-  -o-animation-name:legereSvgDrawStrokes;
-  -moz-animation-name:legereSvgDrawStrokes;
-  -webkit-animation-name:legereSvgDrawStrokes;
-  animation-name:legereSvgDrawStrokes;
-  -o-animation-fill-mode:forwards;
-  -moz-animation-fill-mode:forwards;
-  -webkit-animation-fill-mode:forwards;
-  animation-fill-mode:forwards;
-  -o-animation-timing-function:linear;
-  -moz-animation-timing-function:linear;
-  -webkit-animation-timing-function:linear;
-  animation-timing-function:linear;
-  -o-animation-duration:.5s;
-  -moz-animation-duration:.5s;
-  -webkit-animation-duration:.5s;
-  animation-duration:.5s;
-  -o-animation-delay:.20s;
-  -moz-animation-delay:.20s;
-  -webkit-animation-delay:.20s;
-  animation-delay:.20s;
+	-o-animation-name:legereSvgDrawStrokes;
+	-moz-animation-name:legereSvgDrawStrokes;
+	-webkit-animation-name:legereSvgDrawStrokes;
+	animation-name:legereSvgDrawStrokes;
+	-o-animation-fill-mode:forwards;
+	-moz-animation-fill-mode:forwards;
+	-webkit-animation-fill-mode:forwards;
+	animation-fill-mode:forwards;
+	-o-animation-timing-function:linear;
+	-moz-animation-timing-function:linear;
+	-webkit-animation-timing-function:linear;
+	animation-timing-function:linear;
+	-o-animation-duration:.5s;
+	-moz-animation-duration:.5s;
+	-webkit-animation-duration:.5s;
+	animation-duration:.5s;
+	-o-animation-delay:.20s;
+	-moz-animation-delay:.20s;
+	-webkit-animation-delay:.20s;
+	animation-delay:.20s;
 }
 
 .omnis-legere__svg text {
-  fill: #d2d2d2;
-  font-size: 0.9rem;
+	fill: #d2d2d2;
+	font-size: 0.9rem;
 }
 
 @-o-keyframes legereWrapperFadeIn{
-  to{opacity:1;}
+	to{opacity:1;}
 }
 @-moz-keyframes legereWrapperFadeIn{
-  to{opacity:1;}
+	to{opacity:1;}
 }
 @-webkit-keyframes legereWrapperFadeIn{
-  to{opacity:1;}
+	to{opacity:1;}
 }
 @-keyframes legereWrapperFadeIn{
-  to{opacity:1;}
+	to{opacity:1;}
 }
 @keyframes legereWrapperFadeIn{
-  to{opacity:1;}
+	to{opacity:1;}
 }
 
 @-o-keyframes legereSvgDrawStrokes{
-  to{stroke-dashoffset:0;}
+	to{stroke-dashoffset:0;}
 }
 @-moz-keyframes legereSvgDrawStrokes{
-  to{stroke-dashoffset:0;}
+	to{stroke-dashoffset:0;}
 }
 @-webkit-keyframes legereSvgDrawStrokes{
-  to{stroke-dashoffset:0;}
+	to{stroke-dashoffset:0;}
 }
 @-keyframes legereSvgDrawStrokes{
-  to{stroke-dashoffset:0;}
+	to{stroke-dashoffset:0;}
 }
 @keyframes legereSvgDrawStrokes{
-  to{stroke-dashoffset:0;}
+	to{stroke-dashoffset:0;}
 }

@@ -1,7 +1,7 @@
 CREATE TABLE db_type (
-    dbt_st_name varchar(40),
-    dbt_in_enabled integer,
-    constraint pk_db_type primary key (dbt_st_name)
+	dbt_st_name varchar(40),
+	dbt_in_enabled integer,
+	constraint pk_db_type primary key (dbt_st_name)
 );--omnidb--
 INSERT INTO db_type VALUES('sqlite',0);--omnidb--
 INSERT INTO db_type VALUES('mysql',1);--omnidb--
@@ -16,10 +16,10 @@ INSERT INTO db_type VALUES('filedb',0);--omnidb--
 INSERT INTO db_type VALUES('terminal',1);--omnidb--
 
 CREATE TABLE data_categories (
-    cat_st_name varchar(40),
-    cat_st_description varchar(100),
-    cat_st_class varchar(40),
-    constraint pk_data_categories primary key (cat_st_name)
+	cat_st_name varchar(40),
+	cat_st_description varchar(100),
+	cat_st_class varchar(40),
+	constraint pk_data_categories primary key (cat_st_name)
 );--omnidb--
 INSERT INTO data_categories VALUES('bigint','Big Integer','numeric');--omnidb--
 INSERT INTO data_categories VALUES('boolean','Boolean','other');--omnidb--
@@ -35,16 +35,16 @@ INSERT INTO data_categories VALUES('time','Time Only','other');--omnidb--
 INSERT INTO data_categories VALUES('varchar','Var String','text');--omnidb--
 
 CREATE TABLE data_types (
-    cat_st_name varchar(40),
-    dbt_st_name varchar(40),
-    dt_type varchar(100),
-    dt_in_sufix integer,
-    dt_st_writeformat varchar(1000),
-    dt_st_readformat varchar(1000),
-    dt_st_compareformat varchar(1000),
-    constraint pk_data_types primary key (dbt_st_name, dt_type),
-    constraint data_types_fk_0 foreign key (cat_st_name) references data_categories (cat_st_name),
-    constraint data_types_fk_1 foreign key (dbt_st_name) references db_type (dbt_st_name)
+	cat_st_name varchar(40),
+	dbt_st_name varchar(40),
+	dt_type varchar(100),
+	dt_in_sufix integer,
+	dt_st_writeformat varchar(1000),
+	dt_st_readformat varchar(1000),
+	dt_st_compareformat varchar(1000),
+	constraint pk_data_types primary key (dbt_st_name, dt_type),
+	constraint data_types_fk_0 foreign key (cat_st_name) references data_categories (cat_st_name),
+	constraint data_types_fk_1 foreign key (dbt_st_name) references db_type (dbt_st_name)
 );--omnidb--
 INSERT INTO data_types VALUES('text','access','binary',0,'''#''','#','#');--omnidb--
 INSERT INTO data_types VALUES('boolean','access','boolean',0,'''#''','#','#');--omnidb--
@@ -219,14 +219,14 @@ INSERT INTO data_types VALUES('varchar','mariadb','varchar',1,'''#''','#','#');-
 INSERT INTO data_types VALUES('varchar','filedb','varchar',0,'''#''','#','#');--omnidb--
 
 CREATE TABLE representatives (
-    cat_st_name varchar(40),
-    dbt_st_name varchar(40),
-    rep_st_default varchar(100),
-    dt_type varchar(100),
-    constraint pk_rep primary key (cat_st_name, dbt_st_name),
-    constraint fk_rep_dc foreign key (cat_st_name) references data_categories (cat_st_name),
-    constraint fk_rep_dbt foreign key (dbt_st_name) references db_type (dbt_st_name),
-    constraint fk_rep_dt foreign key (dbt_st_name, dt_type) references data_types (dbt_st_name, dt_type)
+	cat_st_name varchar(40),
+	dbt_st_name varchar(40),
+	rep_st_default varchar(100),
+	dt_type varchar(100),
+	constraint pk_rep primary key (cat_st_name, dbt_st_name),
+	constraint fk_rep_dc foreign key (cat_st_name) references data_categories (cat_st_name),
+	constraint fk_rep_dbt foreign key (dbt_st_name) references db_type (dbt_st_name),
+	constraint fk_rep_dt foreign key (dbt_st_name, dt_type) references data_types (dbt_st_name, dt_type)
 );--omnidb--
 INSERT INTO representatives VALUES('smallint','oracle','number(5,0)','number');--omnidb--
 INSERT INTO representatives VALUES('integer','oracle','number(10,0)','number');--omnidb--
@@ -339,10 +339,10 @@ INSERT INTO representatives VALUES('time','mariadb','time','time');--omnidb--
 INSERT INTO representatives VALUES('varchar','filedb','varchar(1000)','varchar');--omnidb--
 
 CREATE TABLE themes (
-    theme_id integer not null,
-    theme_name varchar(50),
-    theme_type varchar(50),
-    constraint pk_themes primary key (theme_id)
+	theme_id integer not null,
+	theme_name varchar(50),
+	theme_type varchar(50),
+	constraint pk_themes primary key (theme_id)
 );--omnidb--
 INSERT INTO themes VALUES(1,'omnidb','light');--omnidb--
 INSERT INTO themes VALUES(2,'chrome','light');--omnidb--
@@ -382,167 +382,167 @@ INSERT INTO themes VALUES(35,'twilight','dark');--omnidb--
 INSERT INTO themes VALUES(36,'vibrant_ink','dark');--omnidb--
 
 CREATE TABLE users (
-    user_id integer not null,
-    user_name varchar(30),
-    password varchar(100),
-    theme_id integer,
-    editor_font_size varchar(10),
-    chat_enabled integer,
-    super_user integer,
-    csv_encoding varchar(20),
-    csv_delimiter varchar(10),
-    interface_font_size text,
-    welcome_closed integer,
-    constraint pk_users primary key (user_id),
-    constraint users_fk_0 foreign key (theme_id) references themes (theme_id)  on update NO ACTION  on delete NO ACTION,
-    constraint uq_users_0 unique (user_name)
+	user_id integer not null,
+	user_name varchar(30),
+	password varchar(100),
+	theme_id integer,
+	editor_font_size varchar(10),
+	chat_enabled integer,
+	super_user integer,
+	csv_encoding varchar(20),
+	csv_delimiter varchar(10),
+	interface_font_size text,
+	welcome_closed integer,
+	constraint pk_users primary key (user_id),
+	constraint users_fk_0 foreign key (theme_id) references themes (theme_id)  on update NO ACTION  on delete NO ACTION,
+	constraint uq_users_0 unique (user_name)
 );--omnidb--
 INSERT INTO users VALUES(1,'admin','48b19163bdb02cadab1a09c9dd4eafae',1,'14',1,1,'utf-8',';','11',0);--omnidb--
 
 CREATE TABLE messages (
-    mes_in_code integer not null,
-    mes_st_text text,
-    mes_dt_timestamp text not null,
-    user_id integer not null,
-    mes_bo_image integer not null,
-    constraint pk_messages primary key (mes_in_code),
-    constraint messages_fk_0 foreign key (user_id) references users (user_id)  on update NO ACTION  on delete CASCADE
+	mes_in_code integer not null,
+	mes_st_text text,
+	mes_dt_timestamp text not null,
+	user_id integer not null,
+	mes_bo_image integer not null,
+	constraint pk_messages primary key (mes_in_code),
+	constraint messages_fk_0 foreign key (user_id) references users (user_id)  on update NO ACTION  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE messages_users (
-    mes_in_code integer not null,
-    user_id integer not null,
-    constraint pk_messages_users primary key (mes_in_code, user_id),
-    constraint messages_users_fk_0 foreign key (mes_in_code) references messages (mes_in_code)  on update NO ACTION  on delete CASCADE,
-    constraint messages_users_fk_1 foreign key (user_id) references users (user_id)  on update NO ACTION  on delete CASCADE
+	mes_in_code integer not null,
+	user_id integer not null,
+	constraint pk_messages_users primary key (mes_in_code, user_id),
+	constraint messages_users_fk_0 foreign key (mes_in_code) references messages (mes_in_code)  on update NO ACTION  on delete CASCADE,
+	constraint messages_users_fk_1 foreign key (user_id) references users (user_id)  on update NO ACTION  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE snippets_nodes (
-    sn_id integer not null,
-    sn_name text,user_id integer not null,
-    sn_date_create text,
-    sn_date_modify text,
-    sn_id_parent integer,
-    constraint pk_snippets_nodes primary key (sn_id),
-    constraint fk_sn_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE,
-    constraint fk_sn_sn foreign key (sn_id_parent) references snippets_nodes (sn_id)  on update CASCADE  on delete CASCADE
+	sn_id integer not null,
+	sn_name text,user_id integer not null,
+	sn_date_create text,
+	sn_date_modify text,
+	sn_id_parent integer,
+	constraint pk_snippets_nodes primary key (sn_id),
+	constraint fk_sn_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE,
+	constraint fk_sn_sn foreign key (sn_id_parent) references snippets_nodes (sn_id)  on update CASCADE  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE snippets_texts (
-    st_id integer not null,
-    st_name text,
-    st_text text,
-    st_date_create text,
-    st_date_modify text,
-    sn_id_parent integer,
-    user_id integer not null,
-    constraint pk_snippets_texts primary key (st_id),
-    constraint fk_st_sn foreign key (sn_id_parent) references snippets_nodes (sn_id)  on update CASCADE  on delete CASCADE,
-    constraint fk_st_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE
+	st_id integer not null,
+	st_name text,
+	st_text text,
+	st_date_create text,
+	st_date_modify text,
+	sn_id_parent integer,
+	user_id integer not null,
+	constraint pk_snippets_texts primary key (st_id),
+	constraint fk_st_sn foreign key (sn_id_parent) references snippets_nodes (sn_id)  on update CASCADE  on delete CASCADE,
+	constraint fk_st_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE connections (
-    conn_id integer,
-    user_id integer,
-    dbt_st_name varchar(40),
-    server varchar(500),
-    port varchar(20),
-    service varchar(500),
-    user varchar(100),
-    alias varchar(100),
-    ssh_server varchar(500),
-    ssh_port varchar(20),
-    ssh_user varchar(100),
-    ssh_password varchar(100),
-    ssh_key text,
-    use_tunnel integer,
-    conn_string text,
-    constraint pk_connections primary key (conn_id),
-    constraint connections_fk_0 foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE,
-    constraint connections_fk_1 foreign key (dbt_st_name) references db_type (dbt_st_name)  on update CASCADE  on delete CASCADE
+	conn_id integer,
+	user_id integer,
+	dbt_st_name varchar(40),
+	server varchar(500),
+	port varchar(20),
+	service varchar(500),
+	user varchar(100),
+	alias varchar(100),
+	ssh_server varchar(500),
+	ssh_port varchar(20),
+	ssh_user varchar(100),
+	ssh_password varchar(100),
+	ssh_key text,
+	use_tunnel integer,
+	conn_string text,
+	constraint pk_connections primary key (conn_id),
+	constraint connections_fk_0 foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE,
+	constraint connections_fk_1 foreign key (dbt_st_name) references db_type (dbt_st_name)  on update CASCADE  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE conversions (
-    conv_id integer,conn_id_src integer,
-    conn_id_dst integer,
-    conv_st_start varchar(100),
-    conv_st_end varchar(100),
-    conv_re_perc real,
-    conv_ch_status char,
-    conv_st_comments varchar(500),
-    conv_st_duration varchar(100),
-    user_id integer,process_id integer,
-    constraint pk_conversions primary key (conv_id),
-    constraint conversions_fk_0 foreign key (conn_id_src) references connections (conn_id)  on update CASCADE  on delete CASCADE,
-    constraint conversions_fk_1 foreign key (conn_id_dst) references connections (conn_id)  on update CASCADE  on delete CASCADE
+	conv_id integer,conn_id_src integer,
+	conn_id_dst integer,
+	conv_st_start varchar(100),
+	conv_st_end varchar(100),
+	conv_re_perc real,
+	conv_ch_status char,
+	conv_st_comments varchar(500),
+	conv_st_duration varchar(100),
+	user_id integer,process_id integer,
+	constraint pk_conversions primary key (conv_id),
+	constraint conversions_fk_0 foreign key (conn_id_src) references connections (conn_id)  on update CASCADE  on delete CASCADE,
+	constraint conversions_fk_1 foreign key (conn_id_dst) references connections (conn_id)  on update CASCADE  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE conv_tables_data (
-    conv_id integer,
-    ctd_st_table text,
-    ctd_ch_droprecords char,
-    ctd_ch_createtable char,
-    ctd_ch_createpk char,
-    ctd_ch_createfk char,
-    ctd_ch_createuq char,
-    ctd_ch_createidx char,
-    ctd_ch_transferdata char,
-    ctd_in_totalrecords integer,
-    ctd_in_transfrecords integer,
-    ctd_re_transfperc real,
-    ctd_re_transferrate real,
-    ctd_st_starttransfer text,
-    ctd_st_endtransfer text,
-    ctd_st_duration text,
-    ctd_st_status_droprecords text,
-    ctd_st_status_createtable text,
-    ctd_st_status_createpk text,
-    ctd_st_status_createfk text,
-    ctd_st_status_createuq text,
-    ctd_st_status_createidx text,
-    ctd_st_status_transferdata text,
-    ctd_st_transferfilter text,
-    constraint pk_conv_tables_data primary key (conv_id, ctd_st_table),
-    constraint conv_tables_data_fk_0 foreign key (conv_id) references conversions (conv_id)  on update CASCADE  on delete CASCADE
+	conv_id integer,
+	ctd_st_table text,
+	ctd_ch_droprecords char,
+	ctd_ch_createtable char,
+	ctd_ch_createpk char,
+	ctd_ch_createfk char,
+	ctd_ch_createuq char,
+	ctd_ch_createidx char,
+	ctd_ch_transferdata char,
+	ctd_in_totalrecords integer,
+	ctd_in_transfrecords integer,
+	ctd_re_transfperc real,
+	ctd_re_transferrate real,
+	ctd_st_starttransfer text,
+	ctd_st_endtransfer text,
+	ctd_st_duration text,
+	ctd_st_status_droprecords text,
+	ctd_st_status_createtable text,
+	ctd_st_status_createpk text,
+	ctd_st_status_createfk text,
+	ctd_st_status_createuq text,
+	ctd_st_status_createidx text,
+	ctd_st_status_transferdata text,
+	ctd_st_transferfilter text,
+	constraint pk_conv_tables_data primary key (conv_id, ctd_st_table),
+	constraint conv_tables_data_fk_0 foreign key (conv_id) references conversions (conv_id)  on update CASCADE  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE command_list (
-    user_id integer not null,
-    cl_in_codigo integer not null,
-    cl_st_command text,
-    cl_st_start text,
-    cl_st_end text,
-    cl_st_status text,
-    cl_st_duration text,
-    conn_id integer not null,
-    constraint pk_command_list primary key (cl_in_codigo),
-    constraint command_list_fk_0 foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE,
-    constraint fk_cl_conn foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE
+	user_id integer not null,
+	cl_in_codigo integer not null,
+	cl_st_command text,
+	cl_st_start text,
+	cl_st_end text,
+	cl_st_status text,
+	cl_st_duration text,
+	conn_id integer not null,
+	constraint pk_command_list primary key (cl_in_codigo),
+	constraint command_list_fk_0 foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE,
+	constraint fk_cl_conn foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE
 );--omnidb--
 
 CREATE TABLE tabs (
-    conn_id integer not null,
-    user_id integer not null,
-    tab_id integer not null,
-    snippet text,
-    title text,
-    constraint fk_tabs_conn foreign key (conn_id) references connections (conn_id)  on update CASCADE  on delete CASCADE,
-    constraint fk_tabs_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE
+	conn_id integer not null,
+	user_id integer not null,
+	tab_id integer not null,
+	snippet text,
+	title text,
+	constraint fk_tabs_conn foreign key (conn_id) references connections (conn_id)  on update CASCADE  on delete CASCADE,
+	constraint fk_tabs_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE
 );--omnidb--
 
 CREATE TABLE mon_units (
-    unit_id integer not null,
-    dbt_st_name text,
-    script_chart text,
-    script_data text,
-    type text,
-    title text,
-    is_default integer,
-    user_id integer,
-    interval integer,
-    constraint pk_mon_units primary key (unit_id),
-    constraint fk_mu_dbt foreign key (dbt_st_name) references db_type (dbt_st_name)  on update NO ACTION  on delete NO ACTION,
-    constraint fk_mu_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE
+	unit_id integer not null,
+	dbt_st_name text,
+	script_chart text,
+	script_data text,
+	type text,
+	title text,
+	is_default integer,
+	user_id integer,
+	interval integer,
+	constraint pk_mon_units primary key (unit_id),
+	constraint fk_mu_dbt foreign key (dbt_st_name) references db_type (dbt_st_name)  on update NO ACTION  on delete NO ACTION,
+	constraint fk_mu_users foreign key (user_id) references users (user_id)  on update CASCADE  on delete CASCADE
 );--omnidb--
 INSERT INTO mon_units VALUES(1,'postgresql',replace('max_connections = connection.ExecuteScalar(''SHOW max_connections'')\n\nresult = {\n    "type": "line",\n    "data": None,\n    "options": {\n        "responsive": True,\n        "title":{\n            "display":True,\n            "text":"Backends (max_connections: " + str(max_connections) + ")"\n        },\n        "tooltips": {\n            "mode": "index",\n            "intersect": False\n        },\n        "hover": {\n            "mode": "nearest",\n            "intersect": True\n        },\n        "scales": {\n            "xAxes": [{\n                "display": True,\n                "scaleLabel": {\n                    "display": True,\n                    "labelString": "Time"\n                }\n            }],\n            "yAxes": [{\n                "display": True,\n                "scaleLabel": {\n                    "display": True,\n                    "labelString": "Value"\n                },\n                "ticks": {\n                    "beginAtZero": True,\n                    "max": int(max_connections)\n                }\n            }]\n        }\n    }\n}\n','\n',char(10)),replace('from datetime import datetime\nfrom random import randint\n\ndatabases = connection.Query(''''''\n    SELECT d.datname,\n           s.numbackends\n    FROM pg_stat_database s\n    INNER JOIN pg_database d\n    ON d.oid = s.datid\n    WHERE NOT d.datistemplate\n'''''')\n\ndatasets = []\nfor db in databases.Rows:\n    color = "rgb(" + str(randint(125, 225)) + "," + str(randint(125, 225)) + "," + str(randint(125, 225)) + ")"\n    datasets.append({\n            "label": db[''datname''],\n            "fill": False,\n            "backgroundColor": color,\n            "borderColor": color,\n            "lineTension": 0,\n            "pointRadius": 1,\n            "borderWidth": 1,\n            "data": [db["numbackends"]]\n        })\n\nresult = {\n    "labels": [datetime.now().strftime(''%H:%M:%S'')],\n    "datasets": datasets\n}\n','\n',char(10)),'chart_append','Backends',1,NULL,5);--omnidb--
 INSERT INTO mon_units VALUES(2,'postgresql',replace('total_size = connection.ExecuteScalar(''''''\n    SELECT round(sum(pg_catalog.pg_database_size(datname)/1048576.0),2)\n    FROM pg_catalog.pg_database\n    WHERE NOT datistemplate\n'''''')\n\nresult = {\n    "type": "line",\n    "data": None,\n    "options": {\n        "responsive": True,\n        "title":{\n            "display":True,\n            "text":"Database Size (Total: " + str(total_size) + " MB)"\n        },\n        "tooltips": {\n            "mode": "index",\n            "intersect": False\n        },\n        "hover": {\n            "mode": "nearest",\n            "intersect": True\n        },\n        "scales": {\n            "xAxes": [{\n                "display": True,\n                "scaleLabel": {\n                    "display": True,\n                    "labelString": "Time"\n                }\n            }],\n            "yAxes": [{\n                "display": True,\n                "scaleLabel": {\n                    "display": True,\n                    "labelString": "Size (MB)"\n                }\n            }]\n        }\n    }\n}\n','\n',char(10)),replace('from datetime import datetime\nfrom random import randint\n\ndatabases = connection.Query(''''''\n    SELECT datname AS datname,\n           round(pg_catalog.pg_database_size(datname)/1048576.0,2) AS size\n    FROM pg_catalog.pg_database\n    WHERE NOT datistemplate\n    ORDER BY\n        CASE WHEN pg_catalog.has_database_privilege(datname, ''CONNECT'')\n             THEN pg_catalog.pg_database_size(datname)\n             ELSE NULL\n        END DESC\n'''''')\n\ndatasets = []\nfor db in databases.Rows:\n    color = "rgb(" + str(randint(125, 225)) + "," + str(randint(125, 225)) + "," + str(randint(125, 225)) + ")"\n    datasets.append({\n            "label": db[''datname''],\n            "fill": False,\n            "backgroundColor": color,\n            "borderColor": color,\n            "lineTension": 0,\n            "pointRadius": 1,\n            "borderWidth": 1,\n            "data": [db["size"]]\n        })\n\ntotal_size = connection.ExecuteScalar(''''''\n    SELECT round(sum(pg_catalog.pg_database_size(datname)/1048576.0),2)\n    FROM pg_catalog.pg_database\n    WHERE NOT datistemplate\n'''''')\n\nresult = {\n    "labels": [datetime.now().strftime(''%H:%M:%S'')],\n    "datasets": datasets,\n    "title": "Database Size (Total: " + str(total_size) + " MB)"\n}\n','\n',char(10)),'chart_append','Database Size',1,NULL,30);--omnidb--
@@ -567,27 +567,27 @@ INSERT INTO mon_units VALUES(20,'postgresql',replace('result = {\n    "type": "l
 INSERT INTO mon_units VALUES(21,'postgresql',replace('from random import randint\n\nresult = {\n    "container": None,\n    "boxSelectionEnabled": False,\n    "autounselectify": True,\n    "layout": {\n        "name": "spread",\n        "minDist": 1000\n    },\n    "style": [\n        {\n            "selector": "node",\n            "style": {\n                "content": "data(label)",\n                "text-opacity": 1,\n                "text-valign": "top",\n                "text-halign": "right",\n                "text-wrap": "wrap",\n                "color": "gray",\n                "text-rotation": "autorotate",\n                "font-size": 12\n            }\n        },\n        {\n            "selector": "node.node_local",\n            "style": {\n                "background-color": "rgb(" + str(randint(125, 225)) + "," + str(randint(125, 225)) + "," + str(randint(125, 225)) + ")",\n                "shape": ''square''\n            }\n        },\n        {\n            "selector": "node.node_remote",\n            "style": {\n                "background-color": "rgb(" + str(randint(125, 225)) + "," + str(randint(125, 225)) + "," + str(randint(125, 225)) + ")",\n            }\n        },\n        {\n            "selector": "edge",\n            "style": {\n                "curve-style": "bezier",\n                "control-point-step-size": 40,\n                "target-arrow-shape": "triangle",\n                "text-opacity": 1,\n                "width": 2,\n                "control-point-distances": 50,\n                "content": "data(label)",\n                "text-wrap": "wrap",\n                "line-style": "solid",\n                "width": 1,\n                "color": "gray",\n                "text-outline-color": ''gray'',\n                "text-outline-width": 0\n            }\n        }\n    ],\n    "elements": {\n        "nodes": None,\n        "edges": None\n    }\n}','\n',char(10)),replace('from datetime import datetime\nfrom random import randint\n\nnodes = []\nedges = []\n\ntry:\n    repl_nodes = connection.Query(''''''\n    select application_name,\n           pg_size_pretty(pg_wal_lsn_diff(pg_current_wal_lsn(),coalesce(replay_lsn,flush_lsn))) lag_size\n    from pg_stat_replication\n    '''''')\nexcept:\n    repl_nodes = connection.Query(''''''\n    select application_name,\n           pg_size_pretty(pg_xlog_location_diff(pg_current_xlog_location(),coalesce(replay_location,flush_location)) lag_size\n    from pg_stat_replication\n    '''''')\n\nif len(repl_nodes.Rows) == 0:\n    raise Exception(''There are no nodes replicating from this instance.'')\n\nnodes.append({\n            "data": {\n                "id": ''local'',\n                "label": ''local'',\n            },\n            "classes": ''node_local''\n        })\n\nfor repl_node in repl_nodes.Rows:\n    nodes.append({\n            "data": {\n                "id": ''node_'' + repl_node[''application_name''],\n                "label": repl_node[''application_name'']\n            },\n            "classes": ''node_remote''\n        })\n    edges.append({\n            "data": {\n                "id": ''edge_'' + repl_node[''application_name''],\n                "label": repl_node[''lag_size''],\n                "source": ''local'',\n                "target": ''node_'' + repl_node[''application_name'']\n            }\n        })\n\nresult = {\n    "nodes": nodes,\n    "edges": edges\n}','\n',char(10)),'graph','Replication',0,NULL,10);--omnidb--
 
 CREATE TABLE units_users_connections (
-    uuc_id integer not null,
-    unit_id integer not null,
-    user_id integer not null,
-    conn_id integer not null,
-    interval integer not null,
-    plugin_name text,
-    constraint pk_units_users_connections primary key (uuc_id),
-    constraint units_users_connections_fk_0 foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE,
-    constraint units_users_connections_fk_1 foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE
+	uuc_id integer not null,
+	unit_id integer not null,
+	user_id integer not null,
+	conn_id integer not null,
+	interval integer not null,
+	plugin_name text,
+	constraint pk_units_users_connections primary key (uuc_id),
+	constraint units_users_connections_fk_0 foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE,
+	constraint units_users_connections_fk_1 foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE
 );--omnidb--
 
 CREATE TABLE shortcuts (
-    user_id integer,
-    shortcut_code text,
-    ctrl_pressed integer,
-    shift_pressed integer,
-    alt_pressed integer,
-    meta_pressed integer,
-    shortcut_key text,
-    constraint pk_shortcuts primary key (user_id, shortcut_code),
-    constraint fk_shortcuts_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE
+	user_id integer,
+	shortcut_code text,
+	ctrl_pressed integer,
+	shift_pressed integer,
+	alt_pressed integer,
+	meta_pressed integer,
+	shortcut_key text,
+	constraint pk_shortcuts primary key (user_id, shortcut_code),
+	constraint fk_shortcuts_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE
 );--omnidb--
 INSERT INTO shortcuts VALUES(NULL,'shortcut_analyze',0,0,1,0,'S');--omnidb--
 INSERT INTO shortcuts VALUES(NULL,'shortcut_explain',0,0,1,0,'A');--omnidb--
@@ -607,12 +607,12 @@ INSERT INTO shortcuts VALUES(NULL,'shortcut_previous_console_command',1,0,0,0,'A
 INSERT INTO shortcuts VALUES(NULL,'shortcut_autocomplete',1,0,0,0,'SPACE');--omnidb--
 
 CREATE TABLE console_history (
-    user_id integer,
-    conn_id integer,
-    command_text text,
-    command_date text,
-    constraint fk_ch_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE,
-    constraint fk_ch_conn foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE
+	user_id integer,
+	conn_id integer,
+	command_text text,
+	command_date text,
+	constraint fk_ch_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE,
+	constraint fk_ch_conn foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE
 );--omnidb--
 
 CREATE TABLE cgroups (
@@ -628,7 +628,7 @@ CREATE TABLE cgroups_connections (
 );--omnidb--
 
 CREATE TABLE version (
-    ver_id text not null,
-    constraint pk_versions primary key (ver_id)
+	ver_id text not null,
+	constraint pk_versions primary key (ver_id)
 );--omnidb--
 INSERT INTO version VALUES('2.17.0');--omnidb--

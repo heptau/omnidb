@@ -4,13 +4,13 @@
 var getLayout = require('./layout');
 
 var register = function( cytoscape ){
-  var layout = getLayout( cytoscape );
+	var layout = getLayout( cytoscape );
 
-  cytoscape('layout', 'spread', layout);
+	cytoscape('layout', 'spread', layout);
 };
 
 if( typeof cytoscape !== 'undefined' ){ // expose to global cytoscape (i.e. window.cytoscape)
-  register( cytoscape );
+	register( cytoscape );
 }
 
 module.exports = register;

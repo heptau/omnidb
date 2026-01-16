@@ -4,8 +4,8 @@ OmniDB is open-source software, distributed "AS IS" under the MIT license in the
 
 The MIT License (MIT)
 
-Portions Copyright (c) 2015-2020, The OmniDB Team
-Portions Copyright (c) 2017-2020, 2ndQuadrant Limited
+Portions Copyright (c) 2015-2026, The OmniDB Team
+Portions Copyright (c) 2017-2026, 2ndQuadrant Limited
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -31,19 +31,19 @@ SOFTWARE.
 /// </summary>
 $(function () {
 	v_connections_data = new Object();
-  v_connections_data.technologies = null;
-  v_connections_data.card_list = [];
-  v_connections_data.current_id = -1;
+	v_connections_data.technologies = null;
+	v_connections_data.card_list = [];
+	v_connections_data.current_id = -1;
 
 	// $('#modal_connections').on('hide.bs.modal', function (e) {
-  //   startConnectionManagement();
-  // });
+	//   startConnectionManagement();
+	// });
 });
 
 function startConnectionManagement() {
 	getDatabaseList();
-  getGroups();
-  showConnectionList(true,true);
+	getGroups();
+	showConnectionList(true,true);
 }
 
 
@@ -66,20 +66,20 @@ function showConnectionList(p_open_modal, p_change_group) {
 		input,
 		function(p_return) {
 
-      v_connections_data.card_list = [];
-      v_connections_data.technologies = p_return.v_data.v_technologies;
+			v_connections_data.card_list = [];
+			v_connections_data.technologies = p_return.v_data.v_technologies;
 
-      //Building connection cards
+			//Building connection cards
 			var v_container = null;
-      var v_container = document.createElement('div');
-      v_container.className = 'container-fluid';
+			var v_container = document.createElement('div');
+			v_container.className = 'container-fluid';
 
-      var v_row = null;
+			var v_row = null;
 
-      var v_target_div = document.getElementById('connection_card_list');
+			var v_target_div = document.getElementById('connection_card_list');
 
-      var v_row = document.createElement('div');
-      v_row.className = 'row';
+			var v_row = document.createElement('div');
+			v_row.className = 'row';
 
 			v_row.innerHTML =
 			'<div id="connections_management_empty_all" class="my-4 text-center w-100" style="display:none;">' +
@@ -97,28 +97,28 @@ function showConnectionList(p_open_modal, p_change_group) {
 				'<button type="button" class="mt-4 btn omnidb__theme__btn--primary" onclick="manageGroup();">Manage Groups</button>' +
 			'</div>';
 
-      for (var i=0; i<p_return.v_data.v_conn_list.length; i++) {
-        var v_conn_obj = p_return.v_data.v_conn_list[i];
+			for (var i=0; i<p_return.v_data.v_conn_list.length; i++) {
+				var v_conn_obj = p_return.v_data.v_conn_list[i];
 
-        var v_col_div = document.createElement('div');
-        v_col_div.className = 'omnidb__connections__cols';
-        v_row.appendChild(v_col_div);
+				var v_col_div = document.createElement('div');
+				v_col_div.className = 'omnidb__connections__cols';
+				v_row.appendChild(v_col_div);
 				if (v_conn_obj.public && !v_connections_data.show_public && !v_conn_obj.is_mine) {
 					v_col_div.classList.add('d-none');
 				}
 
-        var v_card_div = document.createElement('div');
-        v_card_div.className = 'card omnidb__connections__card';
-        v_col_div.appendChild(v_card_div);
+				var v_card_div = document.createElement('div');
+				v_card_div.className = 'card omnidb__connections__card';
+				v_col_div.appendChild(v_card_div);
 
-        var v_cover_div = document.createElement('label');
-        v_cover_div.className = 'connection-card-cover m-0';
+				var v_cover_div = document.createElement('label');
+				v_cover_div.className = 'connection-card-cover m-0';
 				v_cover_div.setAttribute('for','connection_item_input_' + i);
 
-        var v_checkbox = document.createElement('input');
-        v_checkbox.className = 'connection-card-checkbox';
+				var v_checkbox = document.createElement('input');
+				v_checkbox.className = 'connection-card-checkbox';
 				v_checkbox.id = 'connection_item_input_' + i;
-        v_checkbox.type="checkbox";
+				v_checkbox.type="checkbox";
 
 
 				var v_check_svg =
@@ -129,9 +129,9 @@ function showConnectionList(p_open_modal, p_change_group) {
 
 				v_cover_div.innerHTML = v_check_svg;
 
-        var v_card_body_div = document.createElement('div');
-        v_card_body_div.className = 'card-body';
-        v_card_div.appendChild(v_card_body_div);
+				var v_card_body_div = document.createElement('div');
+				v_card_body_div.className = 'card-body';
+				v_card_div.appendChild(v_card_body_div);
 				// Empty icon info
 				var v_icon = '';
 				// Empty title info
@@ -142,7 +142,7 @@ function showConnectionList(p_open_modal, p_change_group) {
 				var v_tunnel = '<div class="card-subtitle tunnel text-muted">No Tunnel Configured</div>';
 
 				// Showing terminal connection info
-        if (v_conn_obj.technology=='terminal') {
+				if (v_conn_obj.technology=='terminal') {
 					v_icon = '<i class="fas fa-terminal"></i>';
 					// Showing connection string info
 					if (v_conn_obj.alias && v_conn_obj.alias !== '') {
@@ -154,15 +154,15 @@ function showConnectionList(p_open_modal, p_change_group) {
 					// Showing tunnel info
 					v_tunnel = '<h6 class="card-subtitle text-muted">' + v_conn_obj.tunnel.user + '@' + v_conn_obj.tunnel.server + ':' + v_conn_obj.tunnel.port + '</h6>';
 				}
-        else {
+				else {
 					v_icon = '<i class="technology-icon node-' + v_conn_obj.technology + '"></i>';
 					v_title = '<h5 class="card-title">' + v_conn_obj.alias + '</h5>';
 					// Showing connection string info
-          if (v_conn_obj.conn_string && v_conn_obj.conn_string!='') {
+					if (v_conn_obj.conn_string && v_conn_obj.conn_string!='') {
 						v_details += '<h6 class="card-subtitle mb-2 text-muted"><i title="Connection String" class="fas fa-quote-left"></i> ' + v_conn_obj.conn_string + '</h6>';
 					}
 					// Showing connection server and port info
-          else {
+					else {
 						v_details +=
 						'<h6 class="card-subtitle mb-2 text-muted">' + v_conn_obj.server + ':' + v_conn_obj.port + '</h6>' +
 						'<p class="card-text">' + v_conn_obj.user + '@' + v_conn_obj.service + '</p>';
@@ -171,7 +171,7 @@ function showConnectionList(p_open_modal, p_change_group) {
 					if (v_conn_obj.tunnel.enabled===true) {
 						v_tunnel = '<div class="card-subtitle tunnel text-muted">' + v_conn_obj.tunnel.user + '@' + v_conn_obj.tunnel.server + ':' + v_conn_obj.tunnel.port + '</div>';
 					}
-        }
+				}
 
 
 				v_card_body_div.innerHTML +=
@@ -203,23 +203,23 @@ function showConnectionList(p_open_modal, p_change_group) {
 				v_button_select.innerHTML = '<svg width="15px" height="160px" viewBox="0 0 15 160" style="width: auto;height: 100%;stroke: none;stroke-width: 0;"><path stroke-width="0" stroke="none" d="M 0 0 L 15 80 L 0 160 Z"></path></svg><i class="fas fa-plug"></i>';
 				v_card_body_buttons.appendChild(v_button_select);
 
-        var v_button_edit = document.createElement('button');
-        v_button_edit.className = 'btn btn-sm mx-1 omnidb__theme__btn--primary';
-        v_button_edit.title = "Edit";
-        /*if (v_conn_obj.locked==true) {
+				var v_button_edit = document.createElement('button');
+				v_button_edit.className = 'btn btn-sm mx-1 omnidb__theme__btn--primary';
+				v_button_edit.title = "Edit";
+				/*if (v_conn_obj.locked==true) {
 					v_button_edit.setAttribute("disabled",true);
 				}*/
-        v_button_edit.innerHTML = '<i class="fas fa-pen"</i>'
-        v_card_body_buttons.appendChild(v_button_edit);
+				v_button_edit.innerHTML = '<i class="fas fa-pen"</i>'
+				v_card_body_buttons.appendChild(v_button_edit);
 
-        var v_button_delete = document.createElement('button');
-        v_button_delete.className = 'btn btn-danger btn-sm mx-1';
-        v_button_delete.title = "Delete";
-        if (v_conn_obj.locked==true) {
+				var v_button_delete = document.createElement('button');
+				v_button_delete.className = 'btn btn-danger btn-sm mx-1';
+				v_button_delete.title = "Delete";
+				if (v_conn_obj.locked==true) {
 					v_button_delete.setAttribute("disabled",true);
 				}
-        v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>'
-        v_card_body_buttons.appendChild(v_button_delete);
+				v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>'
+				v_card_body_buttons.appendChild(v_button_delete);
 
 				v_button_select.onclick = (function(conn_obj) {
 					return function() {
@@ -227,17 +227,17 @@ function showConnectionList(p_open_modal, p_change_group) {
 					};
 				}(v_conn_obj));
 
-        v_button_edit.onclick = (function(conn_obj) {
-          return function() {
-            editConnection(conn_obj);
-          };
-        }(v_conn_obj));
+				v_button_edit.onclick = (function(conn_obj) {
+					return function() {
+						editConnection(conn_obj);
+					};
+				}(v_conn_obj));
 
-        v_button_delete.onclick = (function(conn_obj) {
-          return function() {
-            deleteConnection(conn_obj);
-          };
-        }(v_conn_obj));
+				v_button_delete.onclick = (function(conn_obj) {
+					return function() {
+						deleteConnection(conn_obj);
+					};
+				}(v_conn_obj));
 
 				// Adding public visuals.
 				if (v_conn_obj.public) {
@@ -256,27 +256,27 @@ function showConnectionList(p_open_modal, p_change_group) {
 					}
 				}
 
-        v_connections_data.card_list.push(
-          {
-            'data': v_conn_obj,
-            'card_div': v_col_div,
-            'cover_div': v_cover_div,
-            'checkbox': v_checkbox
-          }
-        );
-      }
+				v_connections_data.card_list.push(
+					{
+						'data': v_conn_obj,
+						'card_div': v_col_div,
+						'cover_div': v_cover_div,
+						'checkbox': v_checkbox
+					}
+				);
+			}
 
 			v_container.appendChild(v_row);
 
-      v_target_div.innerHTML = '';
-      v_target_div.appendChild(v_container);
+			v_target_div.innerHTML = '';
+			v_target_div.appendChild(v_container);
 
 
-      if (p_open_modal) {
+			if (p_open_modal) {
 				$('#modal_connections').modal();
 			}
 
-      if (p_change_group) {
+			if (p_change_group) {
 				groupChange(document.getElementById('group_selector').value);
 			}
 
@@ -295,19 +295,19 @@ function showConnectionList(p_open_modal, p_change_group) {
 function groupChange(p_value) {
 	var v_empty_group_div = document.getElementById('connections_management_empty_group');
 
-  if (p_value!=-1) {
-    document.getElementById('button_group_actions').style.display = '';
+	if (p_value!=-1) {
+		document.getElementById('button_group_actions').style.display = '';
 
-    // Filtering group cards
-    var v_group_obj = {conn_list:[]};
+		// Filtering group cards
+		var v_group_obj = {conn_list:[]};
 
-    // Finding the selected group object
-    for (var i=0; i<v_connections_data.v_group_list.length; i++) {
-      if (p_value == v_connections_data.v_group_list[i].id) {
-        v_group_obj = v_connections_data.v_group_list[i];
-        break;
-      }
-    }
+		// Finding the selected group object
+		for (var i=0; i<v_connections_data.v_group_list.length; i++) {
+			if (p_value == v_connections_data.v_group_list[i].id) {
+				v_group_obj = v_connections_data.v_group_list[i];
+				break;
+			}
+		}
 
 		var v_group_valid_conn = 0;
 
@@ -335,28 +335,28 @@ function groupChange(p_value) {
 			}
 		}
 
-  }
-  else {
+	}
+	else {
 		// Updating visibility of empty group.
 		if (v_empty_group_div) {
 			v_empty_group_div.style.display = 'none';
 		}
-    document.getElementById('button_group_actions').style.display = 'none';
-    document.getElementById('group_selector').value = -1;
+		document.getElementById('button_group_actions').style.display = 'none';
+		document.getElementById('group_selector').value = -1;
 
-    // Going over the cards and adjusting cover div and checkbox
-    for (var i=0; i<v_connections_data.card_list.length; i++) {
-      var v_conn_obj = v_connections_data.card_list[i];
-      $(v_conn_obj.card_div).fadeIn(400);
-    }
-  }
+		// Going over the cards and adjusting cover div and checkbox
+		for (var i=0; i<v_connections_data.card_list.length; i++) {
+			var v_conn_obj = v_connections_data.card_list[i];
+			$(v_conn_obj.card_div).fadeIn(400);
+		}
+	}
 
 	updateConnectionsTitleInfo();
 }
 
 function manageGroup() {
-  document.getElementById('group_actions_1').style.display = 'none';
-  document.getElementById('group_actions_2').style.display = '';
+	document.getElementById('group_actions_1').style.display = 'none';
+	document.getElementById('group_actions_2').style.display = '';
 	document.getElementById('button_new_connection').setAttribute('disabled',true);
 	document.getElementById('group_selector').setAttribute('disabled',true);
 	document.getElementById('button_new_group').setAttribute('disabled',true);
@@ -369,36 +369,36 @@ function manageGroup() {
 
 	$('.omnidb__connections__card-list').addClass('omnidb__connections__card-list--connection-management');
 
-  var v_current_group_id = document.getElementById('group_selector').value;
-  var v_group_obj = null;
+	var v_current_group_id = document.getElementById('group_selector').value;
+	var v_group_obj = null;
 
-  // Finding the selected group object
-  for (var i=0; i<v_connections_data.v_group_list.length; i++) {
-    if (v_current_group_id == v_connections_data.v_group_list[i].id) {
-      v_group_obj = v_connections_data.v_group_list[i];
-      break;
-    }
-  }
+	// Finding the selected group object
+	for (var i=0; i<v_connections_data.v_group_list.length; i++) {
+		if (v_current_group_id == v_connections_data.v_group_list[i].id) {
+			v_group_obj = v_connections_data.v_group_list[i];
+			break;
+		}
+	}
 
-  // Going over the cards and adjusting cover div and checkbox
-  for (var i=0; i<v_connections_data.card_list.length; i++) {
-    var v_conn_obj = v_connections_data.card_list[i];
-    // v_conn_obj.cover_div.style.display = '';
-    $(v_conn_obj.card_div).fadeIn(400);
+	// Going over the cards and adjusting cover div and checkbox
+	for (var i=0; i<v_connections_data.card_list.length; i++) {
+		var v_conn_obj = v_connections_data.card_list[i];
+		// v_conn_obj.cover_div.style.display = '';
+		$(v_conn_obj.card_div).fadeIn(400);
 
-    // Check the div if it belongs to the currently selected group
-    if (v_group_obj.conn_list.includes(v_conn_obj.data.id)) {
-      v_conn_obj.checkbox.checked = true;
-    }
-  }
+		// Check the div if it belongs to the currently selected group
+		if (v_group_obj.conn_list.includes(v_conn_obj.data.id)) {
+			v_conn_obj.checkbox.checked = true;
+		}
+	}
 
 	updateConnectionsTitleInfo();
 }
 
 function manageGroupSave() {
 
-  document.getElementById('group_actions_1').style.display = '';
-  document.getElementById('group_actions_2').style.display = 'none';
+	document.getElementById('group_actions_1').style.display = '';
+	document.getElementById('group_actions_2').style.display = 'none';
 
 	document.getElementById('button_new_connection').removeAttribute('disabled');
 	document.getElementById('group_selector').removeAttribute('disabled');
@@ -409,15 +409,15 @@ function manageGroupSave() {
 
 	v_conn_data = [];
 
-  // Going over the cards and adjusting cover div and checkbox
-  for (var i=0; i<v_connections_data.card_list.length; i++) {
-    var v_conn_obj = v_connections_data.card_list[i];
+	// Going over the cards and adjusting cover div and checkbox
+	for (var i=0; i<v_connections_data.card_list.length; i++) {
+		var v_conn_obj = v_connections_data.card_list[i];
 		v_conn_data.push({
 			'id': v_conn_obj.data.id,
 			'selected': v_conn_obj.checkbox.checked
 		});
-    v_conn_obj.checkbox.checked = false;
-  }
+		v_conn_obj.checkbox.checked = false;
+	}
 
 	execAjax('/save_group_connections/',
 		JSON.stringify({
@@ -486,7 +486,7 @@ function newGroup() {
 		}
 	);
 
-  var v_input = document.getElementById('group_name_input');
+	var v_input = document.getElementById('group_name_input');
 
 	v_input.onkeydown = function() {
 		if (event.keyCode == 13) {
@@ -496,9 +496,9 @@ function newGroup() {
 			document.getElementById('modal_message_cancel').click();
 		}
 	}
-  setTimeout(function () {
-  	v_input.focus();
-  },500);
+	setTimeout(function () {
+		v_input.focus();
+	},500);
 }
 
 function renameGroup() {
@@ -520,10 +520,10 @@ function renameGroup() {
 			document.getElementById('modal_message_cancel').click();
 		}
 	}
-  setTimeout(function () {
-  	v_input.focus();
-    v_input.selectionStart = v_input.selectionEnd = 10000;
-  },500);
+	setTimeout(function () {
+		v_input.focus();
+		v_input.selectionStart = v_input.selectionEnd = 10000;
+	},500);
 }
 
 function getGroups() {
@@ -536,7 +536,7 @@ function getGroups() {
 			select.innerHTML = '';
 			var option = document.createElement('option');
 			option.value = -1;
-			option.textContent = 'Select group';
+			option.textContent = 'All Connections';
 			select.appendChild(option);
 			var found = false;
 			for (var i=0; i<p_return.v_data.length; i++) {
@@ -552,9 +552,9 @@ function getGroups() {
 			if (!found==true && current_value!=-1) {
 				groupChange(-1);
 			}
-      else {
-        groupChange(document.getElementById('group_selector').value);
-      }
+			else {
+				groupChange(document.getElementById('group_selector').value);
+			}
 		},
 		null,
 		'box'
@@ -567,23 +567,23 @@ function getGroups() {
 function testConnection(p_password = null) {
 	var input = JSON.stringify({
 		"id": v_connections_data.current_id,
-    "type": document.getElementById('conn_form_type').value,
-    "connstring": document.getElementById('conn_form_connstring').value,
-    "server": document.getElementById('conn_form_server').value,
-    "port": document.getElementById('conn_form_port').value,
-    "database": document.getElementById('conn_form_database').value,
-    "user": document.getElementById('conn_form_user').value,
+		"type": document.getElementById('conn_form_type').value,
+		"connstring": document.getElementById('conn_form_connstring').value,
+		"server": document.getElementById('conn_form_server').value,
+		"port": document.getElementById('conn_form_port').value,
+		"database": document.getElementById('conn_form_database').value,
+		"user": document.getElementById('conn_form_user').value,
 		"password": document.getElementById('conn_form_user_pass').value,
 		"temp_password": p_password,
-    "tunnel": {
-      "enabled": document.getElementById('conn_form_use_tunnel').checked,
-      "server": document.getElementById('conn_form_ssh_server').value,
-      "port": document.getElementById('conn_form_ssh_port').value,
-      "user": document.getElementById('conn_form_ssh_user').value,
-      "password": document.getElementById('conn_form_ssh_password').value,
-      "key": document.getElementById('conn_form_ssh_key').value
-    }
-  });
+		"tunnel": {
+			"enabled": document.getElementById('conn_form_use_tunnel').checked,
+			"server": document.getElementById('conn_form_ssh_server').value,
+			"port": document.getElementById('conn_form_ssh_port').value,
+			"user": document.getElementById('conn_form_ssh_user').value,
+			"password": document.getElementById('conn_form_ssh_password').value,
+			"key": document.getElementById('conn_form_ssh_key').value
+		}
+	});
 
 	execAjax('/test_connection/',
 		input,
@@ -591,30 +591,30 @@ function testConnection(p_password = null) {
 			if (p_return.v_data=="Connection successful.")
 				showAlert(p_return.v_data);
 			else
-        showError(p_return.v_data);
+				showError(p_return.v_data);
 		},
 		function(p_return) {
-      showConfirm(
-        p_return.v_data +
-        '<input id="txt_test_password_prompt" class="form-control" type="password" placeholder="Password" style="margin-bottom:20px; margin-top: 20px; text-align: center;"/>',
-      function() {
-        testConnection(document.getElementById('txt_test_password_prompt').value);
-      },
-      null,
-      function() {
-        var v_input = document.getElementById('txt_test_password_prompt');
-        v_input.focus();
-      });
+			showConfirm(
+				p_return.v_data +
+				'<input id="txt_test_password_prompt" class="form-control" type="password" placeholder="Password" style="margin-bottom:20px; margin-top: 20px; text-align: center;"/>',
+			function() {
+				testConnection(document.getElementById('txt_test_password_prompt').value);
+			},
+			null,
+			function() {
+				var v_input = document.getElementById('txt_test_password_prompt');
+				v_input.focus();
+			});
 
-      var v_input = document.getElementById('txt_test_password_prompt');
-    	v_input.onkeydown = function() {
-    		if (event.keyCode == 13)
-    			document.getElementById('modal_message_ok').click();
-    		else if (event.keyCode == 27)
-    			document.getElementById('modal_message_cancel').click();
-    	}
+			var v_input = document.getElementById('txt_test_password_prompt');
+			v_input.onkeydown = function() {
+				if (event.keyCode == 13)
+					document.getElementById('modal_message_ok').click();
+				else if (event.keyCode == 27)
+					document.getElementById('modal_message_cancel').click();
+			}
 
-    },
+		},
 		'box',
 		true,
 		true
@@ -624,32 +624,32 @@ function testConnection(p_password = null) {
 function saveConnection() {
 
 	var input = JSON.stringify({
-    "id": v_connections_data.current_id,
-    "type": document.getElementById('conn_form_type').value,
+		"id": v_connections_data.current_id,
+		"type": document.getElementById('conn_form_type').value,
 		"public": document.getElementById('conn_form_public').checked,
-    "connstring": document.getElementById('conn_form_connstring').value,
-    "server": document.getElementById('conn_form_server').value,
-    "port": document.getElementById('conn_form_port').value,
-    "database": document.getElementById('conn_form_database').value,
-    "user": document.getElementById('conn_form_user').value,
+		"connstring": document.getElementById('conn_form_connstring').value,
+		"server": document.getElementById('conn_form_server').value,
+		"port": document.getElementById('conn_form_port').value,
+		"database": document.getElementById('conn_form_database').value,
+		"user": document.getElementById('conn_form_user').value,
 		"password": document.getElementById('conn_form_user_pass').value,
-    "title": document.getElementById('conn_form_title').value,
-    "tunnel": {
-      "enabled": document.getElementById('conn_form_use_tunnel').checked,
-      "server": document.getElementById('conn_form_ssh_server').value,
-      "port": document.getElementById('conn_form_ssh_port').value,
-      "user": document.getElementById('conn_form_ssh_user').value,
-      "password": document.getElementById('conn_form_ssh_password').value,
-      "key": document.getElementById('conn_form_ssh_key').value
-    }
-  });
+		"title": document.getElementById('conn_form_title').value,
+		"tunnel": {
+			"enabled": document.getElementById('conn_form_use_tunnel').checked,
+			"server": document.getElementById('conn_form_ssh_server').value,
+			"port": document.getElementById('conn_form_ssh_port').value,
+			"user": document.getElementById('conn_form_ssh_user').value,
+			"password": document.getElementById('conn_form_ssh_password').value,
+			"key": document.getElementById('conn_form_ssh_key').value
+		}
+	});
 
 	execAjax('/save_connection/',
 		input,
 		function(p_return) {
-      $('#modal_edit_connection').modal('hide');
+			$('#modal_edit_connection').modal('hide');
 			getDatabaseList();
-      showConnectionList(false,true);
+			showConnectionList(false,true);
 		},
 		null,
 		'box'
@@ -657,7 +657,7 @@ function saveConnection() {
 }
 
 function deleteConnection(p_conn_obj) {
-  showConfirm("Are you sure you want to delete this connection?",
+	showConfirm("Are you sure you want to delete this connection?",
 	  function() {
 
 	    var input = JSON.stringify({
@@ -678,39 +678,39 @@ function deleteConnection(p_conn_obj) {
 }
 
 function adjustTechSelector() {
-  var select = document.getElementById('conn_form_type');
-  select.innerHTML = '';
-  var option = document.createElement('option');
-  option.value = -1;
-  option.textContent = 'Select Type';
-  select.appendChild(option);
-  for (var i=0; i<v_connections_data.technologies.length; i++) {
-    option = document.createElement('option');
-    option.value = v_connections_data.technologies[i];
-    option.textContent = v_connections_data.technologies[i];
-    select.appendChild(option);
-  }
+	var select = document.getElementById('conn_form_type');
+	select.innerHTML = '';
+	var option = document.createElement('option');
+	option.value = -1;
+	option.textContent = 'Select Type';
+	select.appendChild(option);
+	for (var i=0; i<v_connections_data.technologies.length; i++) {
+		option = document.createElement('option');
+		option.value = v_connections_data.technologies[i];
+		option.textContent = v_connections_data.technologies[i];
+		select.appendChild(option);
+	}
 }
 
 function editConnection(p_conn_obj) {
 
-  v_connections_data.current_id = p_conn_obj.id;
-  adjustTechSelector();
+	v_connections_data.current_id = p_conn_obj.id;
+	adjustTechSelector();
 
-  document.getElementById('conn_form_type').value = p_conn_obj.technology;
-  document.getElementById('conn_form_title').value = p_conn_obj.alias;
-  document.getElementById('conn_form_connstring').value = p_conn_obj.conn_string;
-  document.getElementById('conn_form_server').value = p_conn_obj.server;
-  document.getElementById('conn_form_port').value = p_conn_obj.port;
-  document.getElementById('conn_form_database').value = p_conn_obj.service;
-  document.getElementById('conn_form_user').value = p_conn_obj.user;
+	document.getElementById('conn_form_type').value = p_conn_obj.technology;
+	document.getElementById('conn_form_title').value = p_conn_obj.alias;
+	document.getElementById('conn_form_connstring').value = p_conn_obj.conn_string;
+	document.getElementById('conn_form_server').value = p_conn_obj.server;
+	document.getElementById('conn_form_port').value = p_conn_obj.port;
+	document.getElementById('conn_form_database').value = p_conn_obj.service;
+	document.getElementById('conn_form_user').value = p_conn_obj.user;
 	document.getElementById('conn_form_user_pass').value = '';
-  document.getElementById('conn_form_use_tunnel').checked = p_conn_obj.tunnel.enabled;
-  document.getElementById('conn_form_ssh_server').value = p_conn_obj.tunnel.server;
-  document.getElementById('conn_form_ssh_port').value = p_conn_obj.tunnel.port;
-  document.getElementById('conn_form_ssh_user').value = p_conn_obj.tunnel.user;
-  document.getElementById('conn_form_ssh_password').value = '';
-  document.getElementById('conn_form_ssh_key').value = '';
+	document.getElementById('conn_form_use_tunnel').checked = p_conn_obj.tunnel.enabled;
+	document.getElementById('conn_form_ssh_server').value = p_conn_obj.tunnel.server;
+	document.getElementById('conn_form_ssh_port').value = p_conn_obj.tunnel.port;
+	document.getElementById('conn_form_ssh_user').value = p_conn_obj.tunnel.user;
+	document.getElementById('conn_form_ssh_password').value = '';
+	document.getElementById('conn_form_ssh_key').value = '';
 	document.getElementById('conn_form_public').checked = (p_conn_obj.public);
 
 	let v_enable_list = [];
@@ -847,32 +847,32 @@ function editConnection(p_conn_obj) {
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list);
 
-  $('#modal_edit_connection').modal();
+	$('#modal_edit_connection').modal();
 
 }
 
 function newConnection() {
 
-  v_connections_data.current_id = -1;
-  adjustTechSelector();
+	v_connections_data.current_id = -1;
+	adjustTechSelector();
 
 	document.getElementById('conn_form_button_test_connection').setAttribute('disabled',true);
 	document.getElementById('conn_form_button_save_connection').setAttribute('disabled',true);
-  document.getElementById('conn_form_type').value = -1;
+	document.getElementById('conn_form_type').value = -1;
 	document.getElementById('conn_form_title').value = '';
 	document.getElementById('conn_form_public').checked = false;
-  document.getElementById('conn_form_connstring').value = '';
-  document.getElementById('conn_form_server').value = '';
-  document.getElementById('conn_form_port').value = '';
-  document.getElementById('conn_form_database').value = '';
-  document.getElementById('conn_form_user').value = '';
+	document.getElementById('conn_form_connstring').value = '';
+	document.getElementById('conn_form_server').value = '';
+	document.getElementById('conn_form_port').value = '';
+	document.getElementById('conn_form_database').value = '';
+	document.getElementById('conn_form_user').value = '';
 	document.getElementById('conn_form_user_pass').value = '';
-  document.getElementById('conn_form_use_tunnel').checked = false;
-  document.getElementById('conn_form_ssh_server').value = '';
-  document.getElementById('conn_form_ssh_port').value = '22';
-  document.getElementById('conn_form_ssh_user').value = '';
-  document.getElementById('conn_form_ssh_password').value = '';
-  document.getElementById('conn_form_ssh_key').value = '';
+	document.getElementById('conn_form_use_tunnel').checked = false;
+	document.getElementById('conn_form_ssh_server').value = '';
+	document.getElementById('conn_form_ssh_port').value = '22';
+	document.getElementById('conn_form_ssh_user').value = '';
+	document.getElementById('conn_form_ssh_password').value = '';
+	document.getElementById('conn_form_ssh_key').value = '';
 	document.getElementById('conn_form_ssh_key_input').value = null;
 	document.getElementById('conn_form_ssh_key_input_label').innerHTML = 'Click to select';
 
@@ -880,7 +880,7 @@ function newConnection() {
 	$('#conn_form_ssh_password_check_icon').remove();
 	$('#conn_form_ssh_key_check_icon').remove();
 
-  $('#modal_edit_connection').modal();
+	$('#modal_edit_connection').modal();
 }
 
 function selectConnection(p_conn_obj) {
@@ -941,13 +941,13 @@ function toggleConnectionsPublic() {
  * @param  {Object} e Event.
  */
 function updateModalEditConnectionState(e) {
-  let v_e_target = e.target;
-  let v_e_target_id = v_e_target.getAttribute('id');
-  let v_e_value = e.target.value;
+	let v_e_target = e.target;
+	let v_e_target_id = v_e_target.getAttribute('id');
+	let v_e_value = e.target.value;
 	// IDs of elements that should be disabled.
-  let v_disable_list = [];
+	let v_disable_list = [];
 	// IDs of elements that should be enabled.
-  let v_enable_list = [];
+	let v_enable_list = [];
 	// IDs of elements that should be required.
 	let v_form_cases = ['conn_form_type'];
 	let v_technology = document.getElementById('conn_form_type').value;
@@ -1016,35 +1016,35 @@ function updateModalEditConnectionState(e) {
 
 		let v_block_conn_string = false;
 		let v_check_inputs = [
-      'conn_form_server',
-      'conn_form_port',
-      'conn_form_database',
-      'conn_form_user',
-      'conn_form_user_pass'
-    ];
-    let v_check_inputs_empty = true;
-    for (let i = 0; i < v_check_inputs.length; i++) {
-      var v_check_input_value = document.getElementById(v_check_inputs[i]).value;
-      if (typeof v_check_input_value === 'string') {
-        v_check_input_value = v_check_input_value.trim();
-      }
-      if (v_check_input_value !== '' && v_check_input_value !== null) {
-        v_check_inputs_empty = false;
-      }
-    }
+			'conn_form_server',
+			'conn_form_port',
+			'conn_form_database',
+			'conn_form_user',
+			'conn_form_user_pass'
+		];
+		let v_check_inputs_empty = true;
+		for (let i = 0; i < v_check_inputs.length; i++) {
+			var v_check_input_value = document.getElementById(v_check_inputs[i]).value;
+			if (typeof v_check_input_value === 'string') {
+				v_check_input_value = v_check_input_value.trim();
+			}
+			if (v_check_input_value !== '' && v_check_input_value !== null) {
+				v_check_inputs_empty = false;
+			}
+		}
 		// Case where at least one server single input is being type.
-    if (!v_check_inputs_empty) {
+		if (!v_check_inputs_empty) {
 			v_block_conn_string = true;
 		}
 		if (v_block_conn_string) {
 			v_disable_list.push('conn_form_connstring');
 		}
 		// Case where connection string is avaiable.
-    else {
-      v_enable_list.push('conn_form_connstring');
+		else {
+			v_enable_list.push('conn_form_connstring');
 			// Form cases will check the connection string.
 			v_form_cases.push('conn_form_connstring');
-    }
+		}
 	}
 
 
@@ -1074,30 +1074,30 @@ function updateModalEditConnectionState(e) {
 
 	if (v_e_target_id === 'conn_form_type') {
 		// Case where the user picked a terminal needs to lock all server config inputs.
-    if (v_e_value === 'terminal') {
-      v_disable_list = [
-        'conn_form_connstring',
-        'conn_form_server',
-        'conn_form_port',
-        'conn_form_database',
-        'conn_form_user',
-        'conn_form_user_pass'
-      ];
-      v_enable_list = [
-        'conn_form_ssh_server',
-        'conn_form_ssh_port',
-        'conn_form_ssh_user',
-        'conn_form_ssh_password',
-        'conn_form_ssh_key',
+		if (v_e_value === 'terminal') {
+			v_disable_list = [
+				'conn_form_connstring',
+				'conn_form_server',
+				'conn_form_port',
+				'conn_form_database',
+				'conn_form_user',
+				'conn_form_user_pass'
+			];
+			v_enable_list = [
+				'conn_form_ssh_server',
+				'conn_form_ssh_port',
+				'conn_form_ssh_user',
+				'conn_form_ssh_password',
+				'conn_form_ssh_key',
 				'conn_form_ssh_key_input'
-      ];
+			];
 			document.getElementById('conn_form_use_tunnel').checked = true;
 			document.getElementById('conn_form_use_tunnel').setAttribute('disabled', true);
 			v_form_cases.push('conn_form_ssh_server');
 			v_form_cases.push('conn_form_ssh_port');
 			v_form_cases.push('conn_form_ssh_user');
-    }
-  }
+		}
+	}
 
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
@@ -1114,17 +1114,17 @@ function updateModalEditConnectionState(e) {
 function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
 	// Disabling elements.
 	for (let i = 0; i < p_disable_list.length; i++) {
-    var v_item = document.getElementById(p_disable_list[i]);
-    v_item.setAttribute('readonly',true);
+		var v_item = document.getElementById(p_disable_list[i]);
+		v_item.setAttribute('readonly',true);
 		v_item.setAttribute('disabled', true);
-    v_item.value = null;
-  }
+		v_item.value = null;
+	}
 	// Enabling elements.
-  for (let i = 0; i < p_enable_list.length; i++) {
-    var v_item = document.getElementById(p_enable_list[i]);
-    v_item.removeAttribute('readonly');
+	for (let i = 0; i < p_enable_list.length; i++) {
+		var v_item = document.getElementById(p_enable_list[i]);
+		v_item.removeAttribute('readonly');
 		v_item.removeAttribute('disabled');
-  }
+	}
 	// Removing 'required' class from elements inside the connection modal.
 	$('#modal_edit_connection .required').removeClass('required');
 	let v_has_invalid = false;
@@ -1163,22 +1163,22 @@ function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_c
 }
 
 function updateConnectionKey(e) {
-  var file = (e.target.files) ? e.target.files[0] : false;
+	var file = (e.target.files) ? e.target.files[0] : false;
 	var v_input = document.getElementById('conn_form_ssh_key');
-  if (!file) {
+	if (!file) {
 		v_input.value = null;
 		document.getElementById('conn_form_ssh_key_input_label').innerHTML = 'Click to select';
 		updateModalEditConnectionState({target:document.getElementById('conn_form_ssh_key_input')});
-    return;
-  }
-  var reader = new FileReader();
-  reader.onload = function(e) {
-    var v_contents = e.target.result;
+		return;
+	}
+	var reader = new FileReader();
+	reader.onload = function(e) {
+		var v_contents = e.target.result;
 		v_input.value = v_contents;
 		document.getElementById('conn_form_ssh_key_input_label').innerHTML = 'Key text loaded';
 		updateModalEditConnectionState({target:document.getElementById('conn_form_ssh_key_input')});
-  };
-  reader.readAsText(file);
+	};
+	reader.readAsText(file);
 }
 
 function updateConnectionsTitleInfo() {

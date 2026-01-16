@@ -36,18 +36,18 @@ var v_terminalState = {
 }
 
 function clearTerminal() {
-  var v_tag = v_connTabControl.selectedTab.tag;
-  v_tag.editor_console.clear();
+	var v_tag = v_connTabControl.selectedTab.tag;
+	v_tag.editor_console.clear();
 
 }
 
 function startTerminal(p_conn_id) {
-  var v_tag = v_connTabControl.selectedTab.tag;
-  var v_context = {
-    tab_tag: v_tag,
-    acked: false
-  }
-  v_tag.context = createContext(v_context);
+	var v_tag = v_connTabControl.selectedTab.tag;
+	var v_context = {
+		tab_tag: v_tag,
+		acked: false
+	}
+	v_tag.context = createContext(v_context);
 	v_tag.editor_console.focus();
 	v_tag.editor_console.write('Starting terminal...')
 	v_tag.clear_terminal = true;
@@ -122,32 +122,32 @@ function terminalContextMenu(e,p_tab) {
 }
 
 function terminalRun(p_spawn = false, p_query = '') {
-  var v_tag = v_connTabControl.selectedTab.tag;
+	var v_tag = v_connTabControl.selectedTab.tag;
 	v_tag.tempData = '';
-  var v_content = p_query;
+	var v_content = p_query;
 
 		v_tag.last_command = v_content;
 
-    var v_message_data = {
-      v_cmd : v_content,
-      v_tab_id: v_tag.tab_id,
-      v_db_index: null,
-      v_spawn: p_spawn,
+		var v_message_data = {
+			v_cmd : v_content,
+			v_tab_id: v_tag.tab_id,
+			v_db_index: null,
+			v_spawn: p_spawn,
 			v_ssh_id: v_tag.connId
-    }
+		}
 
-    var d = new Date,
-    dformat = [(d.getMonth()+1).padLeft(),
-               d.getDate().padLeft(),
-               d.getFullYear()].join('/') +' ' +
-              [d.getHours().padLeft(),
-               d.getMinutes().padLeft(),
-               d.getSeconds().padLeft()].join(':');
+		var d = new Date,
+		dformat = [(d.getMonth()+1).padLeft(),
+							 d.getDate().padLeft(),
+							 d.getFullYear()].join('/') +' ' +
+							[d.getHours().padLeft(),
+							 d.getMinutes().padLeft(),
+							 d.getSeconds().padLeft()].join(':');
 
-    //sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.Terminal, v_message_data, false, v_tag.context.code);
-    createRequest(v_queryRequestCodes.Terminal, v_message_data, v_tag.context.code);
+		//sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.Terminal, v_message_data, false, v_tag.context.code);
+		createRequest(v_queryRequestCodes.Terminal, v_message_data, v_tag.context.code);
 
-    v_tag.state = v_consoleState.Executing;
+		v_tag.state = v_consoleState.Executing;
 
 }
 
@@ -163,10 +163,10 @@ function terminalReturnRender(p_message,p_context) {
 		p_context.tab_tag.clear_terminal = false;
 	}
 
-  p_context.tab_tag.state = v_consoleState.Idle;
+	p_context.tab_tag.state = v_consoleState.Idle;
 
-  v_tag.editor_console.write(p_message.v_data.v_data)
-  //appendToEditor(v_tag.editor_console,p_message.v_data.v_data);
+	v_tag.editor_console.write(p_message.v_data.v_data)
+	//appendToEditor(v_tag.editor_console,p_message.v_data.v_data);
 
-  //v_tag.query_info.innerHTML = "<b>Start time</b>: " + p_context.start_datetime + " <b>Duration</b>: " + p_message.v_data.v_duration;
+	//v_tag.query_info.innerHTML = "<b>Start time</b>: " + p_context.start_datetime + " <b>Duration</b>: " + p_message.v_data.v_duration;
 }

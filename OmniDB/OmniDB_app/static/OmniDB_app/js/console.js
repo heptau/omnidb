@@ -60,12 +60,12 @@ function deleteConsoleHistoryList() {
 }
 
 function showConsoleHistory() {
-  // var input = JSON.stringify({
+	// var input = JSON.stringify({
 	// 	"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 	// 	"p_tab_id": v_connTabControl.selectedTab.id
 	// });
 	var v_conn_tag = v_connTabControl.selectedTab.tag;
-  var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	v_tab_tag.consoleHistory.headerDiv.innerHTML =
 	"<div class='mb-2 form-inline justify-content-center'>" +
@@ -92,8 +92,8 @@ function showConsoleHistory() {
 		"<button id='bt_clear_" + v_tab_tag.tab_id + "' onclick='deleteConsoleHistoryList()' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button>" +
 	"</div>";
 
-  var v_grid_div = v_tab_tag.consoleHistory.gridDiv;
-  v_grid_div.innerHTML = '';
+	var v_grid_div = v_tab_tag.consoleHistory.gridDiv;
+	v_grid_div.innerHTML = '';
 
 	if(v_tab_tag.consoleHistory.grid != null) {
 		v_tab_tag.consoleHistory.grid.destroy();
@@ -270,7 +270,7 @@ function consoleHistoryOpenCmd(p_index) {
 /// </summary>
 function refreshConsoleHistoryList() {
 	var v_conn_tag = v_connTabControl.selectedTab.tag;
-  var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value;
@@ -328,107 +328,107 @@ function closeConsoleHistory() {
 }
 
 function consoleHistorySelectCommand() {
-  var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-  var v_grid = v_tab_tag.consoleHistory.grid;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_grid = v_tab_tag.consoleHistory.grid;
 
-  var v_command = v_grid.getDataAtRow(v_grid.getSelected()[0][0])[2];
-  closeConsoleHistory();
-  v_tab_tag.editor_input.setValue(v_command);
-  v_tab_tag.editor_input.clearSelection();
-  v_tab_tag.editor_input.focus();
+	var v_command = v_grid.getDataAtRow(v_grid.getSelected()[0][0])[2];
+	closeConsoleHistory();
+	v_tab_tag.editor_input.setValue(v_command);
+	v_tab_tag.editor_input.clearSelection();
+	v_tab_tag.editor_input.focus();
 }
 
 function appendToEditor(p_editor, p_text) {
-  /*var v_last_row = p_editor.session.getLength() - 1;
-  var v_last_col = p_editor.session.getLine(v_last_row).length;
-  p_editor.session.insert({ row: v_last_row, column: v_last_col},p_text);
-  p_editor.gotoLine(Infinity);
-  p_editor.resize();*/
+	/*var v_last_row = p_editor.session.getLength() - 1;
+	var v_last_col = p_editor.session.getLine(v_last_row).length;
+	p_editor.session.insert({ row: v_last_row, column: v_last_col},p_text);
+	p_editor.gotoLine(Infinity);
+	p_editor.resize();*/
 	//let v_text = p_text.replace(/(\r\n|\n|\r)/gm, "XXX");
 
 	p_editor.write(p_text);
 }
 
 function clearConsole() {
-  var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	v_tag.editor_console.write('\x1b[H\x1b[2J');
-  v_tag.editor_console.write(v_connTabControl.selectedTab.tag.consoleHelp);
-  //v_tag.editor_console.clear();
+	v_tag.editor_console.write(v_connTabControl.selectedTab.tag.consoleHelp);
+	//v_tag.editor_console.clear();
 
 }
 
 function consoleSQL(p_check_command = true, p_mode = 0) {
-  var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	v_tag.tempData = '';
-  var v_content = v_tag.editor_input.getValue().trim();
-  //var v_cursor_position = v_tag.editor_input.getCursorPosition();
-  //var v_last_row = v_tag.editor_input.session.getLength() - 1;
-  //var v_last_col = v_tag.editor_input.session.getLine(v_last_row).length;
+	var v_content = v_tag.editor_input.getValue().trim();
+	//var v_cursor_position = v_tag.editor_input.getCursorPosition();
+	//var v_last_row = v_tag.editor_input.session.getLength() - 1;
+	//var v_last_col = v_tag.editor_input.session.getLine(v_last_row).length;
 
-    //last character is semi-colon or first is backslash
-  //if (!p_check_command || (v_content[v_content.length-1]==';' || v_content[0]=='\\') {
-  if (!p_check_command || v_content[0]=='\\') {
+		//last character is semi-colon or first is backslash
+	//if (!p_check_command || (v_content[v_content.length-1]==';' || v_content[0]=='\\') {
+	if (!p_check_command || v_content[0]=='\\') {
 
 
-    if (v_tag.state!=v_consoleState.Idle) {
-  		showAlert('Tab with activity in progress.');
-  	}
-  	else {
+		if (v_tag.state!=v_consoleState.Idle) {
+			showAlert('Tab with activity in progress.');
+		}
+		else {
 
-      if (v_content=='' && p_mode == 0) {
-  			showAlert('Please provide a string.');
-  		}
-  		else {
+			if (v_content=='' && p_mode == 0) {
+				showAlert('Please provide a string.');
+			}
+			else {
 
 				//append to command history list
 				if (v_connTabControl.selectedTab.tag.consoleHistoryList)
 					v_connTabControl.selectedTab.tag.consoleHistoryList.unshift(v_content);
 				v_tag.console_history_cmd_index = -1;
 
-        //appendToEditor(v_tag.editor_console,'\n');
-        v_tag.editor_input.setValue('');
-        v_tag.editor_input.clearSelection();
-        v_tag.editor_input.setReadOnly(false);
+				//appendToEditor(v_tag.editor_console,'\n');
+				v_tag.editor_input.setValue('');
+				v_tag.editor_input.clearSelection();
+				v_tag.editor_input.setReadOnly(false);
 				v_tag.last_command = v_content;
 
-        var v_message_data = {
-          v_sql_cmd : v_content,
+				var v_message_data = {
+					v_sql_cmd : v_content,
 					v_mode: p_mode,
-          v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+					v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 					v_conn_tab_id: v_connTabControl.selectedTab.id,
-          v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
+					v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
 					v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
-        }
+				}
 
-        v_tag.editor_input.setReadOnly(true);
+				v_tag.editor_input.setReadOnly(true);
 
-        var d = new Date,
-        dformat = [(d.getMonth()+1).padLeft(),
-                   d.getDate().padLeft(),
-                   d.getFullYear()].join('/') +' ' +
-                  [d.getHours().padLeft(),
-                   d.getMinutes().padLeft(),
-                   d.getSeconds().padLeft()].join(':');
+				var d = new Date,
+				dformat = [(d.getMonth()+1).padLeft(),
+									 d.getDate().padLeft(),
+									 d.getFullYear()].join('/') +' ' +
+									[d.getHours().padLeft(),
+									 d.getMinutes().padLeft(),
+									 d.getSeconds().padLeft()].join(':');
 
-        var v_context = {
-          tab_tag: v_tag,
-          start_datetime: dformat,
-          database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-          acked: false,
+				var v_context = {
+					tab_tag: v_tag,
+					start_datetime: dformat,
+					database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+					acked: false,
 					last_command: v_content,
 					check_command: p_check_command,
 					mode: p_mode
-        }
-        v_context.tab_tag.context = v_context;
+				}
+				v_context.tab_tag.context = v_context;
 
-        //sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.Console, v_message_data, false, v_context);
+				//sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.Console, v_message_data, false, v_context);
 				createRequest(v_queryRequestCodes.Console, v_message_data, v_context);
 
-        v_tag.state = v_consoleState.Executing;
-        v_tag.tab_loading_span.style.visibility = 'visible';
-        v_tag.tab_check_span.style.display = 'none';
-        v_tag.bt_cancel.style.display = '';
-        v_tag.query_info.innerHTML = '<b>Start time</b>: ' + dformat + '<br><b>Running...</b>';
+				v_tag.state = v_consoleState.Executing;
+				v_tag.tab_loading_span.style.visibility = 'visible';
+				v_tag.tab_check_span.style.display = 'none';
+				v_tag.bt_cancel.style.display = '';
+				v_tag.query_info.innerHTML = '<b>Start time</b>: ' + dformat + '<br><b>Running...</b>';
 				v_tag.bt_fetch_more.style.display = 'none';
 				v_tag.bt_fetch_all.style.display = 'none';
 				v_tag.bt_skip_fetch.style.display = 'none';
@@ -436,13 +436,13 @@ function consoleSQL(p_check_command = true, p_mode = 0) {
 				v_tag.bt_rollback.style.display = 'none';
 				setTabStatus(v_tag,2);
 
-      }
-    }
-  }
+			}
+		}
+	}
 }
 
 function cancelConsole(p_tab_tag) {
-  var v_tab_tag;
+	var v_tab_tag;
 	if (p_tab_tag)
 		v_tab_tag = p_tab_tag;
 	else
@@ -458,7 +458,7 @@ function cancelConsole(p_tab_tag) {
 
 function cancelConsoleTab(p_tab_tag) {
 
-  var v_tab_tag;
+	var v_tab_tag;
 	if (p_tab_tag)
 		v_tab_tag = p_tab_tag;
 	else
@@ -510,23 +510,23 @@ function consoleReturn(p_data,p_context) {
 }
 
 function consoleReturnRender(p_message,p_context) {
-  p_context.tab_tag.state = v_consoleState.Idle;
+	p_context.tab_tag.state = v_consoleState.Idle;
 
-  var v_tag = p_context.tab_tag;
+	var v_tag = p_context.tab_tag;
 
 	setTabStatus(p_context.tab_tag,p_message.v_data.v_con_status);
 
-  v_tag.editor_input.setReadOnly(false);
+	v_tag.editor_input.setReadOnly(false);
 
-  appendToEditor(v_tag.editor_console,v_tag.tempData);
+	appendToEditor(v_tag.editor_console,v_tag.tempData);
 
-  v_tag.editor_input.setValue('');
-  v_tag.editor_input.clearSelection();
+	v_tag.editor_input.setValue('');
+	v_tag.editor_input.clearSelection();
 
-  v_tag.query_info.innerHTML = "<b>Start time</b>: " + p_context.start_datetime + " <b>Duration</b>: " + p_message.v_data.v_duration;
-  v_tag.tab_loading_span.style.visibility = 'hidden';
-  v_tag.tab_check_span.style.display = 'none';
-  v_tag.bt_cancel.style.display = 'none';
+	v_tag.query_info.innerHTML = "<b>Start time</b>: " + p_context.start_datetime + " <b>Duration</b>: " + p_message.v_data.v_duration;
+	v_tag.tab_loading_span.style.visibility = 'hidden';
+	v_tag.tab_check_span.style.display = 'none';
+	v_tag.bt_cancel.style.display = 'none';
 	if (p_message.v_data.v_show_fetch_button) {
 		v_tag.bt_fetch_more.style.display = '';
 		v_tag.bt_fetch_all.style.display = '';

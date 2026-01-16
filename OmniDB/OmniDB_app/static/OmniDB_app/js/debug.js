@@ -33,15 +33,15 @@ var v_debugState = {
 	Initial: 0,
 	Starting: 1,
 	Ready: 2,
-  Step: 3,
-  Finished: 4,
+	Step: 3,
+	Finished: 4,
 	Cancel: 5
 }
 
 function setupDebug(p_node, p_type) {
 	getDebugFunctionDefinitionPostgresql(p_node);
 
-  var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	v_tab_tag.database_index = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
 	v_tab_tag.function = p_node.parent.parent.text + '.' + p_node.text;
 	v_tab_tag.type = p_type;
@@ -55,7 +55,7 @@ function setupDebug(p_node, p_type) {
 	};
 	v_tab_tag.selectParameterTabFunc();
 
-  //Instantiate grids
+	//Instantiate grids
 
 	//Retrieve parameters
 	execAjax('/get_function_fields_postgresql/',
@@ -100,7 +100,7 @@ function setupDebug(p_node, p_type) {
 			    rowHeaders : true,
 			    //copyRowsLimit : 1000000000,
 			    //copyColsLimit : 1000000000,
-                copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
+								copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
 			    manualColumnResize: true,
 			    fillHandle:false,
 			        cells: function (row, col, prop) {
@@ -121,51 +121,51 @@ function setupDebug(p_node, p_type) {
 			'box',
 			false);
 
-  var columnProperties = [];
-  var col = new Object();
-  col.readOnly = true;
-  col.title =  'Variable';
-  columnProperties.push(col);
+	var columnProperties = [];
 	var col = new Object();
-  col.readOnly = true;
-  col.title =  'Attribute';
-  columnProperties.push(col);
-  var col = new Object();
-  col.readOnly = true;
-  col.title =  'Type';
-  columnProperties.push(col);
-  var col = new Object();
-  col.readOnly = true;
-  col.title =  'Value';
-  columnProperties.push(col);
-  v_tab_tag.div_result.innerHTML = '';
+	col.readOnly = true;
+	col.title =  'Variable';
+	columnProperties.push(col);
+	var col = new Object();
+	col.readOnly = true;
+	col.title =  'Attribute';
+	columnProperties.push(col);
+	var col = new Object();
+	col.readOnly = true;
+	col.title =  'Type';
+	columnProperties.push(col);
+	var col = new Object();
+	col.readOnly = true;
+	col.title =  'Value';
+	columnProperties.push(col);
+	v_tab_tag.div_result.innerHTML = '';
 
 	if (v_tab_tag.htVariable) {
 		v_tab_tag.htVariable.destroy();
 		v_tab_tag.div_variable.innerHTML = '';
 	}
 
-  v_tab_tag.htVariable = new Handsontable(v_tab_tag.div_variable,
-  {
+	v_tab_tag.htVariable = new Handsontable(v_tab_tag.div_variable,
+	{
 	licenseKey: 'non-commercial-and-evaluation',
-    data: [],
-    columns : columnProperties,
-    colHeaders : true,
-    rowHeaders : true,
-    //copyRowsLimit : 1000000000,
-    //copyColsLimit : 1000000000,
-    copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
-    manualColumnResize: true,
-    fillHandle:false,
-        cells: function (row, col, prop) {
-        var cellProperties = {};
-        if (row % 2 == 0)
-        cellProperties.renderer = blueRenderer;
-      else
-        cellProperties.renderer = whiteRenderer;
-        return cellProperties;
-    }
-  });
+		data: [],
+		columns : columnProperties,
+		colHeaders : true,
+		rowHeaders : true,
+		//copyRowsLimit : 1000000000,
+		//copyColsLimit : 1000000000,
+		copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
+		manualColumnResize: true,
+		fillHandle:false,
+				cells: function (row, col, prop) {
+				var cellProperties = {};
+				if (row % 2 == 0)
+				cellProperties.renderer = blueRenderer;
+			else
+				cellProperties.renderer = whiteRenderer;
+				return cellProperties;
+		}
+	});
 
 	//Remove markers
 	for (var i=0; i<v_tab_tag.markerList.length; i++) {
@@ -250,25 +250,25 @@ function startDebug() {
 }
 
 function stepDebug(p_mode) {
-  var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
+	var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
 	if (v_state==v_debugState.Initial) {
-    showAlert('Debugger wasn\'t started.');
-  }
-  else if (v_state==v_debugState.Starting) {
-    showAlert('Debugger is starting.');
-  }
-  else if (v_state==v_debugState.Step) {
-    showAlert('Step in progress.');
-  }
-  else if (v_state==v_debugState.Finished) {
-    showAlert('Function already finished.');
-  }
+		showAlert('Debugger wasn\'t started.');
+	}
+	else if (v_state==v_debugState.Starting) {
+		showAlert('Debugger is starting.');
+	}
+	else if (v_state==v_debugState.Step) {
+		showAlert('Step in progress.');
+	}
+	else if (v_state==v_debugState.Finished) {
+		showAlert('Function already finished.');
+	}
 	else if (v_state==v_debugState.Cancel) {
-    showAlert('Debugger is being canceled.');
-  }
-  //Ready to step
-  else {
-    var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+		showAlert('Debugger is being canceled.');
+	}
+	//Ready to step
+	else {
+		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 		var d = new Date,
 		dformat = [(d.getMonth()+1).padLeft(),
@@ -281,7 +281,7 @@ function stepDebug(p_mode) {
 		v_tab_tag.debug_info.innerHTML = '<b>Start time</b>: ' + dformat + '<br><b>Stepping...</b>';
 		v_tab_tag.tab_loading_span.style.visibility = '';
 		v_tab_tag.tab_check_span.style.display = 'none';
-    v_tab_tag.state = v_debugState.Step;
+		v_tab_tag.state = v_debugState.Step;
 
 		var v_next_breakpoint = 0;
 		//Not next stmt, check breakpoint
@@ -293,50 +293,50 @@ function stepDebug(p_mode) {
 				v_next_breakpoint = v_tab_tag.breakPoint+1;
 		}
 
-    var v_message_data = {
-      v_db_index: v_tab_tag.database_index,
-      v_state: v_tab_tag.state,
-      v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
+		var v_message_data = {
+			v_db_index: v_tab_tag.database_index,
+			v_state: v_tab_tag.state,
+			v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
 			v_next_breakpoint: v_next_breakpoint,
 			v_type: v_tab_tag.type
-    }
+		}
 
-    var v_context = {
-      tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
+		var v_context = {
+			tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
 			acked: false
-    }
-    v_context.tab_tag.context = v_context;
+		}
+		v_context.tab_tag.context = v_context;
 
 		createRequest(v_queryRequestCodes.Debug, v_message_data, v_context);
 
-  }
+	}
 }
 
 function ctPointLabels(options) {
-    return function ctPointLabels(chart) {
-        var defaultOptions = {
-            labelClass: 'ct-label',
-            labelOffset: {
-                x: 0,
-                y: -10
-            },
-            textAnchor: 'middle'
-        };
+		return function ctPointLabels(chart) {
+				var defaultOptions = {
+						labelClass: 'ct-label',
+						labelOffset: {
+								x: 0,
+								y: -10
+						},
+						textAnchor: 'middle'
+				};
 
-        options = Chartist.extend({}, defaultOptions, options);
+				options = Chartist.extend({}, defaultOptions, options);
 
-        if (chart instanceof Chartist.Line) {
-            chart.on('draw', function (data) {
-                if (data.type === 'point') {
-                    data.group.elem('text', {
-                        x: data.x + options.labelOffset.x,
-                        y: data.y + options.labelOffset.y,
-                        style: 'text-anchor: ' + options.textAnchor
-                    }, options.labelClass).text(data.value.y);  // 07.11.17 added ".y"
-                }
-            });
-        }
-    }
+				if (chart instanceof Chartist.Line) {
+						chart.on('draw', function (data) {
+								if (data.type === 'point') {
+										data.group.elem('text', {
+												x: data.x + options.labelOffset.x,
+												y: data.y + options.labelOffset.y,
+												style: 'text-anchor: ' + options.textAnchor
+										}, options.labelClass).text(data.value.y);  // 07.11.17 added ".y"
+								}
+						});
+				}
+		}
 }
 
 function cancelDebug() {
@@ -421,7 +421,7 @@ function debugResponseRender(p_message, p_context) {
 
 	if (p_context.tab_tag.state != v_debugState.Finished) {
 
-  p_context.tab_tag.state = p_message.v_data.v_state;
+	p_context.tab_tag.state = p_message.v_data.v_state;
 
 	//Cancelled
 	if (p_context.tab_tag.state==v_debugState.Cancel) {
@@ -434,7 +434,7 @@ function debugResponseRender(p_message, p_context) {
 			p_context.tab_tag.debug_info.innerHTML = '<b>Ready</b>';
 
 	  var Range = ace.require('ace/range').Range;
-		
+
 	  if (p_message.v_data.v_lineno) {
 			p_context.tab_tag.editor.scrollToLine(p_message.v_data.v_lineno, true, true, function () {});
 	    if (p_context.tab_tag.markerId)
@@ -475,7 +475,7 @@ function debugResponseRender(p_message, p_context) {
 						rowHeaders : true,
 						//copyRowsLimit : 1000000000,
 						//copyColsLimit : 1000000000,
-                        copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
+												copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
 						manualColumnResize: true,
 						fillHandle:false,
 								cells: function (row, col, prop) {

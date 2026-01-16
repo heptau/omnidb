@@ -1,4 +1,4 @@
-Django
+Django<4.0
 CherryPy
 social-auth-app-django
 django-auth-ldap
@@ -11,5 +11,6 @@ RestrictedPython
 cx_Oracle
 PyMySQL
 sqlparse
-pgspecial
+pgspecial==1.11.1
 django-sass
+pyinstaller

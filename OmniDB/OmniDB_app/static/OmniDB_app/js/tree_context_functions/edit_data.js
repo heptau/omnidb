@@ -33,8 +33,8 @@ var v_editDataState = {
 	Idle: 0,
 	Querying: 1,
 	QueryReady: 2,
-  Saving: 3,
-  SaveReady: 4
+	Saving: 3,
+	SaveReady: 4
 }
 
 /// <summary>

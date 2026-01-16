@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>06 Managing Table Data - OmniDB Documentation</title>
+	<link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+	<nav>
+		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
+		<div style="margin-bottom: 20px;"><a href="index.html"><strong>&larr; Back to Index</strong></a></div>
+				<a href="01_introduction.html">01 Introduction</a>
+		<a href="02_installation.html">02 Installation</a>
+		<a href="03_creating_users_and_connections.html">03 Creating Users And Connections</a>
+		<a href="04_managing_databases.html">04 Managing Databases</a>
+		<a href="05_creating_changing_and_removing_tables.html">05 Creating Changing And Removing Tables</a>
+		<a href="06_managing_table_data.html" class="active">06 Managing Table Data</a>
+		<a href="07_writing_sql_queries.html">07 Writing Sql Queries</a>
+		<a href="08_visualizing_query_plans.html">08 Visualizing Query Plans</a>
+		<a href="09_visualizing_data.html">09 Visualizing Data</a>
+		<a href="10_managing_other_elements.html">10 Managing Other Elements</a>
+		<a href="11_additional_features.html">11 Additional Features</a>
+		<a href="12_omnidb_config_tool.html">12 Omnidb Config Tool</a>
+		<a href="13_writing_and_debugging_plpgsql_functions.html">13 Writing And Debugging Plpgsql Functions</a>
+		<a href="14_monitoring_dashboard.html">14 Monitoring Dashboard</a>
+		<a href="15_logical_replication.html">15 Logical Replication</a>
+		<a href="16_pglogical.html">16 Pglogical</a>
+		<a href="17_postgres-bdr.html">17 Postgres-Bdr</a>
+		<a href="18_postgres-xl.html">18 Postgres-Xl</a>
+		<a href="19_deploying_omnidb-server.html">19 Deploying Omnidb-Server</a>
+		<a href="20_console_tab.html">20 Console Tab</a>
+		<a href="21_plugin_system.html">21 Plugin System</a>
+		<a href="22_advanced_object_search.html">22 Advanced Object Search</a>
+		<a href="23_debugger_plugin_installation.html">23 Debugger Plugin Installation</a>
+	</nav>
+	<main>
+		<h1>6. Managing Table Data</h1>
+<p>The tool allows us to edit records contained in tables through a very simple and
+intuitive interface. Given that only a few DBMS have unique identifiers for
+table records, we opted to allow data editing and removal only for tables that
+have a primary key. Tables that do not have it can only receive new records.</p>
+<p>To access the record editing interface, right click the table node and select
+the action <em>Data Actions &gt; Edit Data</em>:</p>
+<p><img alt="" src="../assets/img/image_041.png" /></p>
+<p><img alt="" src="../assets/img/image_042.png" /></p>
+<p>The interface has a SQL editor where you can filter and order records. To
+prevent that the interface requests too many records, there is a field that
+limits the number of records to be displayed. The records grid has column names
+and data types. Columns that belong to the primary key have a key icon next to
+their names.</p>
+<p>The row of the grid that have the symbol <code>+</code> is the row to add new records. Let
+us insert some records in the table <code>customers</code>:</p>
+<p><img alt="" src="../assets/img/image_043.png" /></p>
+<p>After saving, the records will be inserted and can be edited (only because this
+table has a primary key). Let’s change the <em>cust_name</em> of some of the existing
+records and, at the same time, let's remove one of the rows:</p>
+<p><img alt="" src="../assets/img/image_044.png" /></p>
+<p>Tables can have fields with values represented by very long strings. To help
+edit these fields, OmniDB has an interface that can be accessed by right
+clicking the specific cell:</p>
+<p><img alt="" src="../assets/img/image_045.png" /></p>
+<p><img alt="" src="../assets/img/image_046.png" /></p>
+<p>The interface detects errors that may occur during operations related to
+records. To demonstrate, let us insert two records with existing <code>cust_id</code>
+(primary key):</p>
+<p><img alt="" src="../assets/img/image_047.png" /></p>
+<p>It shows which commands tried to be executed and the respective errors.</p>
+<p>To complete this chapter, let’s add some records to the <em>Address</em> table:</p>
+<p><img alt="" src="../assets/img/image_048.png" /></p>
+	</main>
+</body>
+</html>

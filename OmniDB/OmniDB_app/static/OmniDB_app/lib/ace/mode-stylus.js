@@ -16,172 +16,172 @@ var pseudoClasses  = exports.pseudoClasses =  "(:)\\b(active|checked|disabled|em
 
 var CssHighlightRules = function() {
 
-    var keywordMapper = this.createKeywordMapper({
-        "support.function": supportFunction,
-        "support.constant": supportConstant,
-        "support.type": supportType,
-        "support.constant.color": supportConstantColor,
-        "support.constant.fonts": supportConstantFonts
-    }, "text", true);
+	var keywordMapper = this.createKeywordMapper({
+		"support.function": supportFunction,
+		"support.constant": supportConstant,
+		"support.type": supportType,
+		"support.constant.color": supportConstantColor,
+		"support.constant.fonts": supportConstantFonts
+	}, "text", true);
 
-    this.$rules = {
-        "start" : [{
-            include : ["strings", "url", "comments"]
-        }, {
-            token: "paren.lparen",
-            regex: "\\{",
-            next:  "ruleset"
-        }, {
-            token: "paren.rparen",
-            regex: "\\}"
-        }, {
-            token: "string",
-            regex: "@",
-            next:  "media"
-        }, {
-            token: "keyword",
-            regex: "#[a-z0-9-_]+"
-        }, {
-            token: "keyword",
-            regex: "%"
-        }, {
-            token: "variable",
-            regex: "\\.[a-z0-9-_]+"
-        }, {
-            token: "string",
-            regex: ":[a-z0-9-_]+"
-        }, {
-            token : "constant.numeric",
-            regex : numRe
-        }, {
-            token: "constant",
-            regex: "[a-z0-9-_]+"
-        }, {
-            caseInsensitive: true
-        }],
-        
-        "media": [{
-            include : ["strings", "url", "comments"]
-        }, {
-            token: "paren.lparen",
-            regex: "\\{",
-            next:  "start"
-        }, {
-            token: "paren.rparen",
-            regex: "\\}",
-            next:  "start"
-        }, {
-            token: "string",
-            regex: ";",
-            next:  "start"
-        }, {
-            token: "keyword",
-            regex: "(?:media|supports|document|charset|import|namespace|media|supports|document"
-                + "|page|font|keyframes|viewport|counter-style|font-feature-values"
-                + "|swash|ornaments|annotation|stylistic|styleset|character-variant)"
-        }],
+	this.$rules = {
+		"start" : [{
+			include : ["strings", "url", "comments"]
+		}, {
+			token: "paren.lparen",
+			regex: "\\{",
+			next:  "ruleset"
+		}, {
+			token: "paren.rparen",
+			regex: "\\}"
+		}, {
+			token: "string",
+			regex: "@",
+			next:  "media"
+		}, {
+			token: "keyword",
+			regex: "#[a-z0-9-_]+"
+		}, {
+			token: "keyword",
+			regex: "%"
+		}, {
+			token: "variable",
+			regex: "\\.[a-z0-9-_]+"
+		}, {
+			token: "string",
+			regex: ":[a-z0-9-_]+"
+		}, {
+			token : "constant.numeric",
+			regex : numRe
+		}, {
+			token: "constant",
+			regex: "[a-z0-9-_]+"
+		}, {
+			caseInsensitive: true
+		}],
 
-        "comments" : [{
-            token: "comment", // multi line comment
-            regex: "\\/\\*",
-            push: [{
-                token : "comment",
-                regex : "\\*\\/",
-                next : "pop"
-            }, {
-                defaultToken : "comment"
-            }]
-        }],
+		"media": [{
+			include : ["strings", "url", "comments"]
+		}, {
+			token: "paren.lparen",
+			regex: "\\{",
+			next:  "start"
+		}, {
+			token: "paren.rparen",
+			regex: "\\}",
+			next:  "start"
+		}, {
+			token: "string",
+			regex: ";",
+			next:  "start"
+		}, {
+			token: "keyword",
+			regex: "(?:media|supports|document|charset|import|namespace|media|supports|document"
+				+ "|page|font|keyframes|viewport|counter-style|font-feature-values"
+				+ "|swash|ornaments|annotation|stylistic|styleset|character-variant)"
+		}],
 
-        "ruleset" : [{
-            regex : "-(webkit|ms|moz|o)-",
-            token : "text"
-        }, {
-            token : "paren.rparen",
-            regex : "\\}",
-            next : "start"
-        }, {
-            include : ["strings", "url", "comments"]
-        }, {
-            token : ["constant.numeric", "keyword"],
-            regex : "(" + numRe + ")(ch|cm|deg|em|ex|fr|gd|grad|Hz|in|kHz|mm|ms|pc|pt|px|rad|rem|s|turn|vh|vm|vw|%)"
-        }, {
-            token : "constant.numeric",
-            regex : numRe
-        }, {
-            token : "constant.numeric",  // hex6 color
-            regex : "#[a-f0-9]{6}"
-        }, {
-            token : "constant.numeric", // hex3 color
-            regex : "#[a-f0-9]{3}"
-        }, {
-            token : ["punctuation", "entity.other.attribute-name.pseudo-element.css"],
-            regex : pseudoElements
-        }, {
-            token : ["punctuation", "entity.other.attribute-name.pseudo-class.css"],
-            regex : pseudoClasses
-        }, {
-            include: "url"
-        }, {
-            token : keywordMapper,
-            regex : "\\-?[a-zA-Z_][a-zA-Z0-9_\\-]*"
-        }, {
-            caseInsensitive: true
-        }],
-        
-        url: [{
-            token : "support.function",
-            regex : "(?:url(:?-prefix)?|domain|regexp)\\(",
-            push: [{
-                token : "support.function",
-                regex : "\\)",
-                next : "pop"
-            }, {
-                defaultToken: "string"
-            }]
-        }],
-        
-        strings: [{
-            token : "string.start",
-            regex : "'",
-            push : [{
-                token : "string.end",
-                regex : "'|$",
-                next: "pop"
-            }, {
-                include : "escapes"
-            }, {
-                token : "constant.language.escape",
-                regex : /\\$/,
-                consumeLineEnd: true
-            }, {
-                defaultToken: "string"
-            }]
-        }, {
-            token : "string.start",
-            regex : '"',
-            push : [{
-                token : "string.end",
-                regex : '"|$',
-                next: "pop"
-            }, {
-                include : "escapes"
-            }, {
-                token : "constant.language.escape",
-                regex : /\\$/,
-                consumeLineEnd: true
-            }, {
-                defaultToken: "string"
-            }]
-        }],
-        escapes: [{
-            token : "constant.language.escape",
-            regex : /\\([a-fA-F\d]{1,6}|[^a-fA-F\d])/
-        }]
-        
-    };
+		"comments" : [{
+			token: "comment", // multi line comment
+			regex: "\\/\\*",
+			push: [{
+				token : "comment",
+				regex : "\\*\\/",
+				next : "pop"
+			}, {
+				defaultToken : "comment"
+			}]
+		}],
 
-    this.normalizeRules();
+		"ruleset" : [{
+			regex : "-(webkit|ms|moz|o)-",
+			token : "text"
+		}, {
+			token : "paren.rparen",
+			regex : "\\}",
+			next : "start"
+		}, {
+			include : ["strings", "url", "comments"]
+		}, {
+			token : ["constant.numeric", "keyword"],
+			regex : "(" + numRe + ")(ch|cm|deg|em|ex|fr|gd|grad|Hz|in|kHz|mm|ms|pc|pt|px|rad|rem|s|turn|vh|vm|vw|%)"
+		}, {
+			token : "constant.numeric",
+			regex : numRe
+		}, {
+			token : "constant.numeric",  // hex6 color
+			regex : "#[a-f0-9]{6}"
+		}, {
+			token : "constant.numeric", // hex3 color
+			regex : "#[a-f0-9]{3}"
+		}, {
+			token : ["punctuation", "entity.other.attribute-name.pseudo-element.css"],
+			regex : pseudoElements
+		}, {
+			token : ["punctuation", "entity.other.attribute-name.pseudo-class.css"],
+			regex : pseudoClasses
+		}, {
+			include: "url"
+		}, {
+			token : keywordMapper,
+			regex : "\\-?[a-zA-Z_][a-zA-Z0-9_\\-]*"
+		}, {
+			caseInsensitive: true
+		}],
+
+		url: [{
+			token : "support.function",
+			regex : "(?:url(:?-prefix)?|domain|regexp)\\(",
+			push: [{
+				token : "support.function",
+				regex : "\\)",
+				next : "pop"
+			}, {
+				defaultToken: "string"
+			}]
+		}],
+
+		strings: [{
+			token : "string.start",
+			regex : "'",
+			push : [{
+				token : "string.end",
+				regex : "'|$",
+				next: "pop"
+			}, {
+				include : "escapes"
+			}, {
+				token : "constant.language.escape",
+				regex : /\\$/,
+				consumeLineEnd: true
+			}, {
+				defaultToken: "string"
+			}]
+		}, {
+			token : "string.start",
+			regex : '"',
+			push : [{
+				token : "string.end",
+				regex : '"|$',
+				next: "pop"
+			}, {
+				include : "escapes"
+			}, {
+				token : "constant.language.escape",
+				regex : /\\$/,
+				consumeLineEnd: true
+			}, {
+				defaultToken: "string"
+			}]
+		}],
+		escapes: [{
+			token : "constant.language.escape",
+			regex : /\\([a-fA-F\d]{1,6}|[^a-fA-F\d])/
+		}]
+
+	};
+
+	this.normalizeRules();
 };
 
 oop.inherits(CssHighlightRules, TextHighlightRules);
@@ -199,147 +199,147 @@ var CssHighlightRules = require("./css_highlight_rules");
 
 var StylusHighlightRules = function() {
 
-    var keywordMapper = this.createKeywordMapper({
-        "support.type": CssHighlightRules.supportType,
-        "support.function": CssHighlightRules.supportFunction,
-        "support.constant": CssHighlightRules.supportConstant,
-        "support.constant.color": CssHighlightRules.supportConstantColor,
-        "support.constant.fonts": CssHighlightRules.supportConstantFonts
-    }, "text", true);
+	var keywordMapper = this.createKeywordMapper({
+		"support.type": CssHighlightRules.supportType,
+		"support.function": CssHighlightRules.supportFunction,
+		"support.constant": CssHighlightRules.supportConstant,
+		"support.constant.color": CssHighlightRules.supportConstantColor,
+		"support.constant.fonts": CssHighlightRules.supportConstantFonts
+	}, "text", true);
 
-    this.$rules = {
-    start: [
-        {
-            token : "comment",
-            regex : /\/\/.*$/
-        },
-        {
-            token : "comment", // multi line comment
-            regex : /\/\*/,
-            next : "comment"
-        },
-        {
-            token: ["entity.name.function.stylus", "text"],
-            regex: "^([-a-zA-Z_][-\\w]*)?(\\()"
-        },
-        {
-            token: ["entity.other.attribute-name.class.stylus"],
-            regex: "\\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*"
-        },
-        {
-            token: ["entity.language.stylus"],
-            regex: "^ *&"
-        },
-        {
-            token: ["variable.language.stylus"],
-            regex: "(arguments)"
-        },
-        {
-            token: ["keyword.stylus"],
-            regex: "@[-\\w]+"
-        },
-        {
-            token : ["punctuation", "entity.other.attribute-name.pseudo-element.css"],
-            regex : CssHighlightRules.pseudoElements
-        }, {
-            token : ["punctuation", "entity.other.attribute-name.pseudo-class.css"],
-            regex : CssHighlightRules.pseudoClasses
-        }, 
-        {
-            token: ["entity.name.tag.stylus"],
-            regex: "(?:\\b)(a|abbr|acronym|address|area|article|aside|audio|b|base|big|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|datalist|dd|del|details|dfn|dialog|div|dl|dt|em|eventsource|fieldset|figure|figcaption|footer|form|frame|frameset|(?:h[1-6])|head|header|hgroup|hr|html|i|iframe|img|input|ins|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|ul|var|video)(?:\\b)"
-        },
-        {
-            token : "constant.numeric",  // hex6 color
-            regex : "#[a-f0-9]{6}"
-        }, 
-        {
-            token : "constant.numeric", // hex3 color
-            regex : "#[a-f0-9]{3}"
-        }, 
-        {
-            token: ["punctuation.definition.entity.stylus", "entity.other.attribute-name.id.stylus"],
-            regex: "(#)([a-zA-Z][a-zA-Z0-9_-]*)"
-        },
-        {
-            token: "meta.vendor-prefix.stylus",
-            regex: "-webkit-|-moz\\-|-ms-|-o-"
-        },
-        {
-            token: "keyword.control.stylus",
-            regex: "(?:!important|for|in|return|true|false|null|if|else|unless|return)\\b"
-        },
-        {
-            token: "keyword.operator.stylus",
-            regex: "!|~|\\+|-|(?:\\*)?\\*|\\/|%|(?:\\.)\\.\\.|<|>|(?:=|:|\\?|\\+|-|\\*|\\/|%|<|>)?=|!="
-        },
-        {
-            token: "keyword.operator.stylus",
-            regex: "(?:in|is(?:nt)?|not)\\b"
-        },
-        {
-            token : "string",
-            regex : "'(?=.)",
-            next  : "qstring"
-        }, {
-            token : "string",
-            regex : '"(?=.)',
-            next  : "qqstring"
-        }, 
-        {
-            token : "constant.numeric",
-            regex : CssHighlightRules.numRe
-        }, 
-        {
-            token : "keyword",
-            regex : "(?:ch|cm|deg|em|ex|fr|gd|grad|Hz|in|kHz|mm|ms|pc|pt|px|rad|rem|s|turn|vh|vm|vw|%)\\b"
-        }, 
-        {
-            token : keywordMapper,
-            regex : "\\-?[a-zA-Z_][a-zA-Z0-9_\\-]*"
-        }
-    ],
-    "comment" : [
-        {
-            token : "comment", // closing comment
-            regex : "\\*\\/",
-            next : "start"
-        }, {
-            defaultToken : "comment"
-        }
-    ],
-    "qqstring" : [
-        {
-            token : "string",
-            regex : '[^"\\\\]+'
-        }, 
-        {
-            token : "string",
-            regex : "\\\\$",
-            next  : "qqstring"
-        }, 
-        {
-            token : "string",
-            regex : '"|$',
-            next  : "start"
-        }
-    ],
-    "qstring" : [
-        {
-            token : "string",
-            regex : "[^'\\\\]+"
-        }, 
-        {
-            token : "string",
-            regex : "\\\\$",
-            next  : "qstring"
-        }, 
-        {
-            token : "string",
-            regex : "'|$",
-            next  : "start"
-        }
-    ]
+	this.$rules = {
+	start: [
+		{
+			token : "comment",
+			regex : /\/\/.*$/
+		},
+		{
+			token : "comment", // multi line comment
+			regex : /\/\*/,
+			next : "comment"
+		},
+		{
+			token: ["entity.name.function.stylus", "text"],
+			regex: "^([-a-zA-Z_][-\\w]*)?(\\()"
+		},
+		{
+			token: ["entity.other.attribute-name.class.stylus"],
+			regex: "\\.-?[_a-zA-Z]+[_a-zA-Z0-9-]*"
+		},
+		{
+			token: ["entity.language.stylus"],
+			regex: "^ *&"
+		},
+		{
+			token: ["variable.language.stylus"],
+			regex: "(arguments)"
+		},
+		{
+			token: ["keyword.stylus"],
+			regex: "@[-\\w]+"
+		},
+		{
+			token : ["punctuation", "entity.other.attribute-name.pseudo-element.css"],
+			regex : CssHighlightRules.pseudoElements
+		}, {
+			token : ["punctuation", "entity.other.attribute-name.pseudo-class.css"],
+			regex : CssHighlightRules.pseudoClasses
+		},
+		{
+			token: ["entity.name.tag.stylus"],
+			regex: "(?:\\b)(a|abbr|acronym|address|area|article|aside|audio|b|base|big|blockquote|body|br|button|canvas|caption|cite|code|col|colgroup|datalist|dd|del|details|dfn|dialog|div|dl|dt|em|eventsource|fieldset|figure|figcaption|footer|form|frame|frameset|(?:h[1-6])|head|header|hgroup|hr|html|i|iframe|img|input|ins|kbd|label|legend|li|link|map|mark|menu|meta|meter|nav|noframes|noscript|object|ol|optgroup|option|output|p|param|pre|progress|q|samp|script|section|select|small|span|strike|strong|style|sub|summary|sup|table|tbody|td|textarea|tfoot|th|thead|time|title|tr|tt|ul|var|video)(?:\\b)"
+		},
+		{
+			token : "constant.numeric",  // hex6 color
+			regex : "#[a-f0-9]{6}"
+		},
+		{
+			token : "constant.numeric", // hex3 color
+			regex : "#[a-f0-9]{3}"
+		},
+		{
+			token: ["punctuation.definition.entity.stylus", "entity.other.attribute-name.id.stylus"],
+			regex: "(#)([a-zA-Z][a-zA-Z0-9_-]*)"
+		},
+		{
+			token: "meta.vendor-prefix.stylus",
+			regex: "-webkit-|-moz\\-|-ms-|-o-"
+		},
+		{
+			token: "keyword.control.stylus",
+			regex: "(?:!important|for|in|return|true|false|null|if|else|unless|return)\\b"
+		},
+		{
+			token: "keyword.operator.stylus",
+			regex: "!|~|\\+|-|(?:\\*)?\\*|\\/|%|(?:\\.)\\.\\.|<|>|(?:=|:|\\?|\\+|-|\\*|\\/|%|<|>)?=|!="
+		},
+		{
+			token: "keyword.operator.stylus",
+			regex: "(?:in|is(?:nt)?|not)\\b"
+		},
+		{
+			token : "string",
+			regex : "'(?=.)",
+			next  : "qstring"
+		}, {
+			token : "string",
+			regex : '"(?=.)',
+			next  : "qqstring"
+		},
+		{
+			token : "constant.numeric",
+			regex : CssHighlightRules.numRe
+		},
+		{
+			token : "keyword",
+			regex : "(?:ch|cm|deg|em|ex|fr|gd|grad|Hz|in|kHz|mm|ms|pc|pt|px|rad|rem|s|turn|vh|vm|vw|%)\\b"
+		},
+		{
+			token : keywordMapper,
+			regex : "\\-?[a-zA-Z_][a-zA-Z0-9_\\-]*"
+		}
+	],
+	"comment" : [
+		{
+			token : "comment", // closing comment
+			regex : "\\*\\/",
+			next : "start"
+		}, {
+			defaultToken : "comment"
+		}
+	],
+	"qqstring" : [
+		{
+			token : "string",
+			regex : '[^"\\\\]+'
+		},
+		{
+			token : "string",
+			regex : "\\\\$",
+			next  : "qqstring"
+		},
+		{
+			token : "string",
+			regex : '"|$',
+			next  : "start"
+		}
+	],
+	"qstring" : [
+		{
+			token : "string",
+			regex : "[^'\\\\]+"
+		},
+		{
+			token : "string",
+			regex : "\\\\$",
+			next  : "qstring"
+		},
+		{
+			token : "string",
+			regex : "'|$",
+			next  : "start"
+		}
+	]
 };
 
 };
@@ -361,76 +361,76 @@ oop.inherits(FoldMode, BaseFoldMode);
 
 (function() {
 
-    this.getFoldWidgetRange = function(session, foldStyle, row) {
-        var range = this.indentationBlock(session, row);
-        if (range)
-            return range;
+	this.getFoldWidgetRange = function(session, foldStyle, row) {
+		var range = this.indentationBlock(session, row);
+		if (range)
+			return range;
 
-        var re = /\S/;
-        var line = session.getLine(row);
-        var startLevel = line.search(re);
-        if (startLevel == -1 || line[startLevel] != "#")
-            return;
+		var re = /\S/;
+		var line = session.getLine(row);
+		var startLevel = line.search(re);
+		if (startLevel == -1 || line[startLevel] != "#")
+			return;
 
-        var startColumn = line.length;
-        var maxRow = session.getLength();
-        var startRow = row;
-        var endRow = row;
+		var startColumn = line.length;
+		var maxRow = session.getLength();
+		var startRow = row;
+		var endRow = row;
 
-        while (++row < maxRow) {
-            line = session.getLine(row);
-            var level = line.search(re);
+		while (++row < maxRow) {
+			line = session.getLine(row);
+			var level = line.search(re);
 
-            if (level == -1)
-                continue;
+			if (level == -1)
+				continue;
 
-            if (line[level] != "#")
-                break;
+			if (line[level] != "#")
+				break;
 
-            endRow = row;
-        }
+			endRow = row;
+		}
 
-        if (endRow > startRow) {
-            var endColumn = session.getLine(endRow).length;
-            return new Range(startRow, startColumn, endRow, endColumn);
-        }
-    };
-    this.getFoldWidget = function(session, foldStyle, row) {
-        var line = session.getLine(row);
-        var indent = line.search(/\S/);
-        var next = session.getLine(row + 1);
-        var prev = session.getLine(row - 1);
-        var prevIndent = prev.search(/\S/);
-        var nextIndent = next.search(/\S/);
+		if (endRow > startRow) {
+			var endColumn = session.getLine(endRow).length;
+			return new Range(startRow, startColumn, endRow, endColumn);
+		}
+	};
+	this.getFoldWidget = function(session, foldStyle, row) {
+		var line = session.getLine(row);
+		var indent = line.search(/\S/);
+		var next = session.getLine(row + 1);
+		var prev = session.getLine(row - 1);
+		var prevIndent = prev.search(/\S/);
+		var nextIndent = next.search(/\S/);
 
-        if (indent == -1) {
-            session.foldWidgets[row - 1] = prevIndent!= -1 && prevIndent < nextIndent ? "start" : "";
-            return "";
-        }
-        if (prevIndent == -1) {
-            if (indent == nextIndent && line[indent] == "#" && next[indent] == "#") {
-                session.foldWidgets[row - 1] = "";
-                session.foldWidgets[row + 1] = "";
-                return "start";
-            }
-        } else if (prevIndent == indent && line[indent] == "#" && prev[indent] == "#") {
-            if (session.getLine(row - 2).search(/\S/) == -1) {
-                session.foldWidgets[row - 1] = "start";
-                session.foldWidgets[row + 1] = "";
-                return "";
-            }
-        }
+		if (indent == -1) {
+			session.foldWidgets[row - 1] = prevIndent!= -1 && prevIndent < nextIndent ? "start" : "";
+			return "";
+		}
+		if (prevIndent == -1) {
+			if (indent == nextIndent && line[indent] == "#" && next[indent] == "#") {
+				session.foldWidgets[row - 1] = "";
+				session.foldWidgets[row + 1] = "";
+				return "start";
+			}
+		} else if (prevIndent == indent && line[indent] == "#" && prev[indent] == "#") {
+			if (session.getLine(row - 2).search(/\S/) == -1) {
+				session.foldWidgets[row - 1] = "start";
+				session.foldWidgets[row + 1] = "";
+				return "";
+			}
+		}
 
-        if (prevIndent!= -1 && prevIndent < indent)
-            session.foldWidgets[row - 1] = "start";
-        else
-            session.foldWidgets[row - 1] = "";
+		if (prevIndent!= -1 && prevIndent < indent)
+			session.foldWidgets[row - 1] = "start";
+		else
+			session.foldWidgets[row - 1] = "";
 
-        if (indent < nextIndent)
-            return "start";
-        else
-            return "";
-    };
+		if (indent < nextIndent)
+			return "start";
+		else
+			return "";
+	};
 
 }).call(FoldMode.prototype);
 
@@ -445,17 +445,17 @@ var StylusHighlightRules = require("./stylus_highlight_rules").StylusHighlightRu
 var FoldMode = require("./folding/coffee").FoldMode;
 
 var Mode = function() {
-    this.HighlightRules = StylusHighlightRules;
-    this.foldingRules = new FoldMode();
-    this.$behaviour = this.$defaultBehaviour;
+	this.HighlightRules = StylusHighlightRules;
+	this.foldingRules = new FoldMode();
+	this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
-    this.lineCommentStart = "//";
-    this.blockComment = {start: "/*", end: "*/"};
-    
-    this.$id = "ace/mode/stylus";
+	this.lineCommentStart = "//";
+	this.blockComment = {start: "/*", end: "*/"};
+
+	this.$id = "ace/mode/stylus";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

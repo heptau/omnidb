@@ -32,9 +32,9 @@ snippet if\n\
 	}\n\
 \n\
 # While\n\
-  while (${1?:condition}) {\n\
-    ${2:// body...}	\n\
-  }\n\
+	while (${1?:condition}) {\n\
+		${2:// body...}	\n\
+	}\n\
 ";
 exports.scope = "gobstones";
 

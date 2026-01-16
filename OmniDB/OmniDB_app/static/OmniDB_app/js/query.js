@@ -76,8 +76,8 @@ var v_queryResponseCodes = {
 
 //Adding padLeft function to Number
 Number.prototype.padLeft = function(base,chr){
-    var  len = (String(base || 10).length - String(this).length)+1;
-    return len > 0? new Array(len).join(chr || '0')+this : this;
+	var  len = (String(base || 10).length - String(this).length)+1;
+	return len > 0? new Array(len).join(chr || '0')+this : this;
 }
 
 function cancelSQL(p_tab_tag) {
@@ -477,7 +477,7 @@ function querySQLReturnRender(p_message,p_context) {
 							autoRowSize: false,
 							//copyRowsLimit : 1000000000,
 							//copyColsLimit : 1000000000,
-                            copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
+							copyPaste: {pasteMode: '', rowsLimit: 1000000000, columnsLimit: 1000000000},
 							manualColumnResize: true,
 							// modifyColWidth: function(width, col){
 					    //   if(width > 300){

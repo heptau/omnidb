@@ -11,50 +11,50 @@ var keywords = "abort|else|new|return|abs|elsif|not|reverse|abstract|end|null|ac
 "body|private|then|if|procedure|type|case|in|protected|constant|interface|until|" +
 "|is|raise|use|declare|range|delay|limited|record|when|delta|loop|rem|while|digits|renames|with|do|mod|requeue|xor";
 
-    var builtinConstants = (
-        "true|false|null"
-    );
+	var builtinConstants = (
+		"true|false|null"
+	);
 
-    var builtinFunctions = (
-        "count|min|max|avg|sum|rank|now|coalesce|main"
-    );
+	var builtinFunctions = (
+		"count|min|max|avg|sum|rank|now|coalesce|main"
+	);
 
-    var keywordMapper = this.createKeywordMapper({
-        "support.function": builtinFunctions,
-        "keyword": keywords,
-        "constant.language": builtinConstants
-    }, "identifier", true);
+	var keywordMapper = this.createKeywordMapper({
+		"support.function": builtinFunctions,
+		"keyword": keywords,
+		"constant.language": builtinConstants
+	}, "identifier", true);
 
-    this.$rules = {
-        "start" : [ {
-            token : "comment",
-            regex : "--.*$"
-        }, {
-            token : "string",           // " string
-            regex : '".*?"'
-        }, {
-            token : "string",           // ' string
-            regex : "'.*?'"
-        }, {
-            token : "constant.numeric", // float
-            regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
-        }, {
-            token : keywordMapper,
-            regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
-        }, {
-            token : "keyword.operator",
-            regex : "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
-        }, {
-            token : "paren.lparen",
-            regex : "[\\(]"
-        }, {
-            token : "paren.rparen",
-            regex : "[\\)]"
-        }, {
-            token : "text",
-            regex : "\\s+"
-        } ]
-    };
+	this.$rules = {
+		"start" : [ {
+			token : "comment",
+			regex : "--.*$"
+		}, {
+			token : "string",           // " string
+			regex : '".*?"'
+		}, {
+			token : "string",           // ' string
+			regex : "'.*?'"
+		}, {
+			token : "constant.numeric", // float
+			regex : "[+-]?\\d+(?:(?:\\.\\d*)?(?:[eE][+-]?\\d+)?)?\\b"
+		}, {
+			token : keywordMapper,
+			regex : "[a-zA-Z_$][a-zA-Z0-9_$]*\\b"
+		}, {
+			token : "keyword.operator",
+			regex : "\\+|\\-|\\/|\\/\\/|%|<@>|@>|<@|&|\\^|~|<|>|<=|=>|==|!=|<>|="
+		}, {
+			token : "paren.lparen",
+			regex : "[\\(]"
+		}, {
+			token : "paren.rparen",
+			regex : "[\\)]"
+		}, {
+			token : "text",
+			regex : "\\s+"
+		} ]
+	};
 };
 
 oop.inherits(AdaHighlightRules, TextHighlightRules);
@@ -70,16 +70,16 @@ var TextMode = require("./text").Mode;
 var AdaHighlightRules = require("./ada_highlight_rules").AdaHighlightRules;
 
 var Mode = function() {
-    this.HighlightRules = AdaHighlightRules;
-    this.$behaviour = this.$defaultBehaviour;
+	this.HighlightRules = AdaHighlightRules;
+	this.$behaviour = this.$defaultBehaviour;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
 
-    this.lineCommentStart = "--";
+	this.lineCommentStart = "--";
 
-    this.$id = "ace/mode/ada";
+	this.$id = "ace/mode/ada";
 }).call(Mode.prototype);
 
 exports.Mode = Mode;

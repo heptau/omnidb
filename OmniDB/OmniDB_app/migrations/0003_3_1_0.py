@@ -4,18 +4,18 @@ from django.db import migrations
 
 
 def populate_technologies(apps, schema_editor):
-    Technology = apps.get_model('OmniDB_app', 'Technology')
-    Technology(name='sqlite').save()
+	Technology = apps.get_model('OmniDB_app', 'Technology')
+	Technology(name='sqlite').save()
 
 
 class Migration(migrations.Migration):
 
-    dependencies = [
-        ('OmniDB_app', '0002_3_0_1'),
-    ]
+	dependencies = [
+		('OmniDB_app', '0002_3_0_1'),
+	]
 
-    operations = [
-        migrations.RunPython(
-            code=populate_technologies,
-        )
-    ]
+	operations = [
+		migrations.RunPython(
+			code=populate_technologies,
+		)
+	]

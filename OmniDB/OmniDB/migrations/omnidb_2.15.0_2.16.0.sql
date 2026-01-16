@@ -2,23 +2,23 @@ ALTER TABLE users ADD COLUMN welcome_closed integer;--omnidb--
 
 CREATE TABLE mon_units_temp AS
 SELECT unit_id,
-       dbt_st_name,
-       script_chart,
-       script_data,
-       type,
-       title,
-       is_default,
-       user_id,
-       interval
+	dbt_st_name,
+	script_chart,
+	script_data,
+	type,
+	title,
+	is_default,
+	user_id,
+	interval
 FROM mon_units;--omnidb--
 
 CREATE TABLE units_users_connections_temp AS
 SELECT uuc_id,
-       unit_id,
-       user_id,
-       conn_id,
-       interval,
-       plugin_name
+	unit_id,
+	user_id,
+	conn_id,
+	interval,
+	plugin_name
 FROM units_users_connections;--omnidb--
 
 DELETE FROM mon_units;--omnidb--
@@ -48,34 +48,34 @@ INSERT INTO mon_units VALUES(21,'postgresql',replace('from random import randint
 
 INSERT INTO units_users_connections
 SELECT uuc_id,
-       unit_id,
-       user_id,
-       conn_id,
-       interval,
-       plugin_name
+	unit_id,
+	user_id,
+	conn_id,
+	interval,
+	plugin_name
 FROM units_users_connections_temp
 WHERE unit_id <= 18;--omnidb--
 
 INSERT INTO mon_units
 SELECT unit_id + 3 AS unit_id,
-       dbt_st_name,
-       script_chart,
-       script_data,
-       type,
-       title,
-       is_default,
-       user_id,
-       interval
+	dbt_st_name,
+	script_chart,
+	script_data,
+	type,
+	title,
+	is_default,
+	user_id,
+	interval
 FROM mon_units_temp
 WHERE unit_id > 18;--omnidb--
 
 INSERT INTO units_users_connections
 SELECT uuc_id,
-       unit_id + 3 AS unit_id,
-       user_id,
-       conn_id,
-       interval,
-       plugin_name
+	unit_id + 3 AS unit_id,
+	user_id,
+	conn_id,
+	interval,
+	plugin_name
 FROM units_users_connections_temp
 WHERE unit_id > 18;--omnidb--
 

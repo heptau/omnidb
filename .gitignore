@@ -16,3 +16,6 @@ omnidb_app/omnidb-gui*
 omnidb_app/package-lock.json
 *.DS_Store
 *.idea
+build
+build_deps
+build_work

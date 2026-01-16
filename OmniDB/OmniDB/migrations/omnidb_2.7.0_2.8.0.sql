@@ -7,10 +7,10 @@ ALTER TABLE connections ADD COLUMN use_tunnel integer;--omnidb--
 
 UPDATE connections
 SET ssh_server = '',
-    ssh_port = '22',
-    ssh_user = '',
-    ssh_password = '',
-    ssh_key = '',
-    use_tunnel = ''--omnidb--
+	ssh_port = '22',
+	ssh_user = '',
+	ssh_password = '',
+	ssh_key = '',
+	use_tunnel = ''--omnidb--
 
 UPDATE version SET ver_id = '2.8.0';--omnidb--

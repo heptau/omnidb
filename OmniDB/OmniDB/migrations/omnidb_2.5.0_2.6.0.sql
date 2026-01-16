@@ -6,15 +6,15 @@ UPDATE mon_units SET script_chart = replace('total_size = connection.ExecuteScal
 WHERE unit_id = 10;--omnidb--
 
 CREATE TABLE shortcuts (
-    user_id integer,
-    shortcut_code text,
-    ctrl_pressed integer,
-    shift_pressed integer,
-    alt_pressed integer,
-    meta_pressed integer,
-    shortcut_key text,
-    constraint pk_shortcuts primary key (user_id, shortcut_code),
-    constraint fk_shortcuts_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE
+	user_id integer,
+	shortcut_code text,
+	ctrl_pressed integer,
+	shift_pressed integer,
+	alt_pressed integer,
+	meta_pressed integer,
+	shortcut_key text,
+	constraint pk_shortcuts primary key (user_id, shortcut_code),
+	constraint fk_shortcuts_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE
 );--omnidb--
 INSERT INTO shortcuts VALUES(NULL,'shortcut_analyze',0,0,1,0,'S');--omnidb--
 INSERT INTO shortcuts VALUES(NULL,'shortcut_explain',0,0,1,0,'A');--omnidb--
@@ -33,12 +33,12 @@ INSERT INTO shortcuts VALUES(NULL,'shortcut_next_console_command',1,0,0,0,'ARROW
 INSERT INTO shortcuts VALUES(NULL,'shortcut_previous_console_command',1,0,0,0,'ARROWUP');--omnidb--
 
 CREATE TABLE console_history (
-    user_id integer,
-    conn_id integer,
-    command_text text,
-    command_date text,
-    constraint fk_ch_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE,
-    constraint fk_ch_conn foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE
+	user_id integer,
+	conn_id integer,
+	command_text text,
+	command_date text,
+	constraint fk_ch_users foreign key (user_id) references users (user_id) on update CASCADE on delete CASCADE,
+	constraint fk_ch_conn foreign key (conn_id) references connections (conn_id) on update CASCADE on delete CASCADE
 );--omnidb--
 
 UPDATE version SET ver_id = '2.6.0';--omnidb--

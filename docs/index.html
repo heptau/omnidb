@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8">
+	<title>OmniDB - Documentation</title>
+
+	<!-- SEO & Indexing -->
+	<link rel="canonical" href="https://omnidb.80.cz/" />
+	<meta name="robots" content="index, follow">
+	<link rel="manifest" href="manifest.json">
+	<meta name="theme-color" content="#0066cc">
+	<link rel="apple-touch-icon" href="assets/omnidb-icon.png">
+
+	<link rel="alternate" hreflang="x-default" href="https://www.pgarachne.com/" />
+	<link rel="alternate" hreflang="en" href="https://www.pgarachne.com/en/" />
+
+	<!-- Open Graph / Social Media -->
+	<meta property="og:title" content="OmniDB - Instant PostgreSQL API" />
+	<meta property="og:description"
+		content="Turn OmniDB into a secure API instantly. Middleware-free, high-performance JSON-RPC gateway." />
+	<meta property="og:image" content="https://omnidb.80.cz/assets/omnidb-logo.jpeg" />
+	<meta property="og:url" content="https://omnidb.80.cz/" />
+	<meta property="og:type" content="website" />
+	<!-- Fallback for users with JavaScript disabled: Redirect to English after 2 seconds -->
+	<meta http-equiv="refresh" content="2; url=en/index.html" />
+	<script>
+		(function () {
+			// Supported languages (ISO 2-letter codes)
+			// The path will be automatically constructed as: code + '/index.html'
+			var supported = ['en'];
+
+			// Get user's preferred languages
+			var userLangs = navigator.languages || [navigator.language || navigator.userLanguage];
+			var target = 'en/index.html'; // Default fallback
+
+			// Find the first matching language
+			for (var i = 0; i < userLangs.length; i++) {
+				if (!userLangs[i]) continue;
+				var code = userLangs[i].substring(0, 2).toLowerCase();
+
+				// Check direct support
+				if (supported.indexOf(code) !== -1) {
+					target = code + '/index.html';
+					break;
+				}
+			}
+
+			// Redirect
+			window.location.href = target;
+		})();
+	</script>
+	<style>
+		body {
+			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			text-align: center;
+			padding-top: 50px;
+			color: #333;
+		}
+
+		ul {
+			list-style-type: none;
+			padding: 0;
+		}
+
+		li {
+			display: inline;
+			margin: 0 10px;
+		}
+
+		a {
+			text-decoration: none;
+			color: #0066cc;
+			font-size: 1.2em;
+		}
+	</style>
+</head>
+
+<body>
+	<p>Redirecting you to the documentation...</p>
+	<p>If you are not redirected automatically, please choose a language:</p>
+	<ul>
+		<li><a href="en/index.html">English</a></li>
+	</ul>
+</body>
+
+</html>
