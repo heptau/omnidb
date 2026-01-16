@@ -1466,14 +1466,35 @@ result = {
 """,
 'script_data': """
 
+
 from datetime import datetime
 
-if previous_data != None:
-	query = "select (checkpoints_timed+checkpoints_req) - " + str(previous_data["current_checkpoints"]) + " as checkpoints_diff, (checkpoints_timed+checkpoints_req) as current_checkpoints FROM pg_stat_bgwriter"
+is_pg17_plus = False
+try:
+    check_table = connection.Query("SELECT 1 FROM pg_class WHERE relname = 'pg_stat_checkpointer'")
+    if check_table and len(check_table.Rows) > 0:
+        is_pg17_plus = True
+except:
+    pass
+
+if is_pg17_plus:
+    stat_table = "pg_stat_checkpointer"
+    col_timed = "num_timed"
+    col_req = "num_requested"
 else:
-	query = 'select 0 as checkpoints_diff, (checkpoints_timed+checkpoints_req) as current_checkpoints FROM pg_stat_bgwriter'
+    stat_table = "pg_stat_bgwriter"
+    col_timed = "checkpoints_timed"
+    col_req = "checkpoints_req"
+
+sum_expression = "(" + col_timed + "+" + col_req + ")"
+
+if previous_data != None:
+    query = "select " + sum_expression + " - " + str(previous_data["current_checkpoints"]) + " as checkpoints_diff, " + sum_expression + " as current_checkpoints FROM " + stat_table
+else:
+    query = "select 0 as checkpoints_diff, " + sum_expression + " as current_checkpoints FROM " + stat_table
 
 query_data = connection.Query(query)
+
 
 datasets = []
 datasets.append({

@@ -1,4 +1,4 @@
-Django==3.2.25
+Django==4.2.27
 CherryPy
 social-auth-app-django
 django-auth-ldap
