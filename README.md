@@ -67,6 +67,18 @@
 		- Updated jQuery to 3.7.1
 		- Updated Chart.js to 2.7.3
 
+- 3.1.1 changes
+	- Core & Dependencies
+		- Upgraded to Django 4.2.27 (Security & Stability)
+		- Added compatibility for PostgreSQL 17+ (Fixed checkpoint monitoring)
+		- Pinned social-auth-app-django to 5.4.1 for compatibility
+	- UI/UX
+		- Fixed CSS padding to correctly center the "tab" button
+	- Documentation
+		- Modernized CSS with support for mobile devices and dark mode
+	- Build System
+		- Updated Makefile to automatically install dependencies
+
 **Website**: https://omnidb.80.cz
 
 **Full Documentation**: https://omnidb.readthedocs.io
