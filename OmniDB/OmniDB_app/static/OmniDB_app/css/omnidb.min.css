@@ -5526,8 +5526,13 @@ textarea {
 	margin: 0 4px 0 0 !important;
 	border: 1px solid var(--border-color) !important;
 	border-radius: var(--tab-radius) var(--tab-radius) 0 0 !important;
-	padding: 0 36px !important;
+	padding: 0 0 0 36px !important;
 	font-size: 13px !important;
+}
+
+.omnidb__tab-menu--container--menu-shown .nav-item:last-child .omnidb__tab-menu__link,
+.omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link:last-child {
+	padding-left: 12px !important;
 }
 
 /*# sourceMappingURL=../css/omnidb.min.css.map */
