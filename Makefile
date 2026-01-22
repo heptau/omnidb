@@ -21,7 +21,11 @@ APP_RESOURCES_DIR = $(BUILD_DIR)/$(APP_NAME)/Contents/Resources
 
 .PHONY: all clean clean-deps build dist
 
-all: build
+all: install-deps build
+
+install-deps:
+	@echo "Checking and installing dependencies..."
+	pip3 install -r requirements.txt pyinstaller --break-system-packages
 
 clean:
 	rm -rf $(BUILD_DIR) $(WORK_DIR)
