@@ -1,18 +1,272 @@
-body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; display: flex; margin: 0; line-height: 1.6; color: #333; }
-nav { width: 300px; background: #f8f9fa; padding: 20px; height: 100vh; overflow-y: auto; position: fixed; border-right: 1px solid #e9ecef; box-sizing: border-box; }
-main { margin-left: 300px; padding: 40px; max-width: 900px; box-sizing: border-box; }
-h1, h2, h3 { color: #2c3e50; margin-top: 1.5em; }
-h1 { margin-top: 0; border-bottom: 2px solid #eee; padding-bottom: 10px; }
-a { text-decoration: none; color: #0366d6; }
-a:hover { text-decoration: underline; }
-nav a { display: block; padding: 5px 0; color: #495057; }
-nav a:hover { color: #000; text-decoration: none; background-color: rgba(0,0,0,0.05); border-radius: 4px; padding-left: 5px; }
-nav a.active { font-weight: 600; color: #007bff; }
-pre { background: #f6f8fa; padding: 15px; border-radius: 6px; overflow-x: auto; line-height: 1.45; }
-code { background: rgba(27,31,35,0.05); padding: 0.2em 0.4em; border-radius: 3px; font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace; font-size: 85%; }
-pre code { background: transparent; padding: 0; font-size: 100%; }
-blockquote { margin: 0; padding: 0 1em; color: #6a737d; border-left: 0.25em solid #dfe2e5; }
-img { max-width: 100%; border: 1px solid #ddd; borderRadius: 4px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-table { border-collapse: collapse; width: 100%; margin: 15px 0; }
-th, td { border: 1px solid #dfe2e5; padding: 6px 13px; }
-tr:nth-child(2n) { background-color: #f6f8fa; }
+/* --- CSS VARIABLES (Light Mode Default) --- */
+:root {
+	--primary-color: #0366d6;
+	--text-color: #24292e;
+	--text-secondary: #586069;
+	--bg-color: #ffffff;
+	--sidebar-bg: #f8f9fa;
+	--border-color: #e1e4e8;
+
+	--nav-hover-bg: rgba(0, 0, 0, 0.05);
+	--nav-active-bg: #f1f8ff;
+	--nav-active-text: #0366d6;
+
+	--code-block-bg: #1f2428;
+	--code-block-text: #e1e4e8;
+	--inline-code-bg: rgba(27, 31, 35, 0.05);
+
+	--table-header-bg: #fafbfc;
+	--table-stripe-bg: #f6f8fa;
+
+	--blockquote-text: #6a737d;
+	--blockquote-border: #dfe2e5;
+
+	--font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+/* --- DARK MODE VARIABLES --- */
+@media (prefers-color-scheme: dark) {
+	:root {
+		--primary-color: #58a6ff;
+		--text-color: #c9d1d9;
+		--text-secondary: #8b949e;
+		--bg-color: #0d1117;
+		--sidebar-bg: #161b22;
+		--border-color: #30363d;
+
+		--nav-hover-bg: rgba(177, 186, 196, 0.12);
+		--nav-active-bg: rgba(56, 139, 253, 0.15);
+		--nav-active-text: #58a6ff;
+
+		--code-block-bg: #161b22;
+		--code-block-text: #c9d1d9;
+		--inline-code-bg: rgba(240, 246, 252, 0.15);
+
+		--table-header-bg: #161b22;
+		--table-stripe-bg: #161b22;
+
+		--blockquote-text: #8b949e;
+		--blockquote-border: #30363d;
+	}
+}
+
+/* --- GLOBAL RESET & BASE --- */
+* {
+	box-sizing: border-box;
+}
+
+body {
+	font-family: var(--font-stack);
+	margin: 0;
+	line-height: 1.6;
+	color: var(--text-color);
+	background-color: var(--bg-color);
+	display: flex;
+	min-height: 100vh;
+	transition: background-color 0.3s, color 0.3s;
+}
+
+/* --- NAVIGATION (SIDEBAR) --- */
+nav {
+	width: 300px;
+	background: var(--sidebar-bg);
+	padding: 20px;
+	height: 100vh;
+	overflow-y: auto;
+	position: fixed;
+	left: 0;
+	top: 0;
+	border-right: 1px solid var(--border-color);
+	z-index: 100;
+}
+
+nav h2 {
+	color: var(--text-color);
+	font-size: 1.2em;
+	padding-bottom: 10px;
+	margin-bottom: 20px;
+	border-bottom: 1px solid var(--border-color);
+}
+
+nav a {
+	display: block;
+	padding: 8px 12px;
+	color: var(--text-secondary);
+	text-decoration: none;
+	font-size: 0.95em;
+	border-radius: 6px;
+	transition: all 0.2s ease;
+	margin-bottom: 2px;
+}
+
+nav a:hover {
+	color: var(--text-color);
+	background-color: var(--nav-hover-bg);
+	text-decoration: none;
+}
+
+nav a.active {
+	font-weight: 600;
+	color: var(--nav-active-text);
+	background-color: var(--nav-active-bg);
+}
+
+nav div>a {
+	font-weight: bold;
+	color: var(--text-color);
+	margin-bottom: 15px;
+	display: inline-block;
+}
+
+/* --- MAIN CONTENT --- */
+main {
+	margin-left: 300px;
+	padding: 40px 60px;
+	width: 100%;
+	max-width: 1200px;
+}
+
+/* --- TYPOGRAPHY & ELEMENTS --- */
+h1,
+h2,
+h3 {
+	color: var(--text-color);
+	margin-top: 1.5em;
+	font-weight: 600;
+}
+
+h1 {
+	margin-top: 0;
+	padding-bottom: 0.3em;
+	border-bottom: 1px solid var(--border-color);
+	font-size: 2em;
+}
+
+p {
+	margin-bottom: 16px;
+}
+
+a {
+	color: var(--primary-color);
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+/* --- IMAGES --- */
+img {
+	max-width: 100%;
+	height: auto;
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+	margin: 20px 0;
+	opacity: 0.9;
+}
+
+/* --- CODE BLOCKS --- */
+pre {
+	background: var(--code-block-bg);
+	color: var(--code-block-text);
+	padding: 16px;
+	border-radius: 6px;
+	overflow-x: auto;
+	line-height: 1.45;
+	margin: 16px 0;
+	border: 1px solid var(--border-color);
+}
+
+code {
+	font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+	font-size: 85%;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	background-color: var(--inline-code-bg);
+	color: var(--text-color);
+}
+
+pre code {
+	background: transparent;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+/* --- TABLES --- */
+table {
+	border-collapse: collapse;
+	width: 100%;
+	margin: 20px 0;
+	display: block;
+	overflow-x: auto;
+}
+
+th,
+td {
+	border: 1px solid var(--border-color);
+	padding: 10px 13px;
+	color: var(--text-color);
+}
+
+th {
+	background-color: var(--table-header-bg);
+	font-weight: 600;
+	text-align: left;
+}
+
+tr:nth-child(2n) {
+	background-color: var(--table-stripe-bg);
+}
+
+/* --- BLOCKQUOTES --- */
+blockquote {
+	margin: 0 0 16px;
+	padding: 0 1em;
+	color: var(--blockquote-text);
+	border-left: 0.25em solid var(--blockquote-border);
+}
+
+/* --- LISTS --- */
+ul,
+ol {
+	padding-left: 2em;
+	margin-bottom: 16px;
+}
+
+/* --- MOBILE RESPONSIVENESS --- */
+@media (max-width: 768px) {
+	body {
+		flex-direction: column;
+	}
+
+	nav {
+		width: 100%;
+		height: auto;
+		position: relative;
+		max-height: 250px;
+		border-right: none;
+		border-bottom: 2px solid var(--border-color);
+		padding: 15px;
+	}
+
+	nav::-webkit-scrollbar {
+		width: 6px;
+	}
+
+	nav::-webkit-scrollbar-thumb {
+		background-color: var(--border-color);
+		border-radius: 3px;
+	}
+
+	main {
+		margin-left: 0;
+		padding: 20px;
+		width: 100%;
+	}
+
+	h1 {
+		font-size: 1.6em;
+	}
+}
