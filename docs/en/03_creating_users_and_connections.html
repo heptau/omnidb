@@ -7,10 +7,11 @@
 	<link rel="stylesheet" href="../assets/style.css">
 </head>
 <body>
+	<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"> ☰ </button>
+	<div class="menu-overlay" id="menuOverlay"></div>
 	<nav>
 		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
-		<div style="margin-bottom: 20px;"><a href="index.html"><strong>&larr; Back to Index</strong></a></div>
-				<a href="01_introduction.html">01 Introduction</a>
+		<a href="01_introduction.html">01 Introduction</a>
 		<a href="02_installation.html">02 Installation</a>
 		<a href="03_creating_users_and_connections.html" class="active">03 Creating Users And Connections</a>
 		<a href="04_managing_databases.html">04 Managing Databases</a>
@@ -136,5 +137,6 @@ in the same machine as the <em>SSH Server</em>.</p>
 <p>Here the database <em>Server</em> needs to be <code>192.168.0.10</code>, as it is the relative
 address for the SSH server to connect to the database server.</p>
 	</main>
+	<script src="../assets/script.js"></script>
 </body>
 </html>

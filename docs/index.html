@@ -23,7 +23,7 @@
 	<meta property="og:url" content="https://omnidb.80.cz/" />
 	<meta property="og:type" content="website" />
 	<!-- Fallback for users with JavaScript disabled: Redirect to English after 2 seconds -->
-	<meta http-equiv="refresh" content="2; url=en/index.html" />
+	<meta http-equiv="refresh" content="2; url=en/01_introduction.html" />
 	<script>
 		(function () {
 			// Supported languages (ISO 2-letter codes)
@@ -32,7 +32,7 @@
 
 			// Get user's preferred languages
 			var userLangs = navigator.languages || [navigator.language || navigator.userLanguage];
-			var target = 'en/index.html'; // Default fallback
+			var target = 'en/01_introduction.html'; // Default fallback
 
 			// Find the first matching language
 			for (var i = 0; i < userLangs.length; i++) {
@@ -41,7 +41,7 @@
 
 				// Check direct support
 				if (supported.indexOf(code) !== -1) {
-					target = code + '/index.html';
+					target = code + '/01_introduction.html';
 					break;
 				}
 			}
@@ -80,7 +80,7 @@
 	<p>Redirecting you to the documentation...</p>
 	<p>If you are not redirected automatically, please choose a language:</p>
 	<ul>
-		<li><a href="en/index.html">English</a></li>
+		<li><a href="en/01_introduction.html">English</a></li>
 	</ul>
 </body>
 
