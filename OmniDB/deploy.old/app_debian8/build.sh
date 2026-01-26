@@ -116,7 +116,7 @@ Priority: optional
 Architecture: amd64
 Installed-Size: $(du -s)
 Maintainer: The OmniDB Team
-Homepage: http://omnidb.org
+Homepage: http://www.omnidb.net
 Description: OmniDB is a web tool that simplifies database management focusing on interactivity, designed to be powerful and lightweight.
  Server package includes web server and requires a web browser to be used. Ideal for network and server usage.
  App package includes everything, even a simple web browser.

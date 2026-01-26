@@ -3,45 +3,41 @@
 
 <head>
 	<meta charset="UTF-8">
-	<title>OmniDB - Documentation</title>
+	<title>OmniDB | Open Source Database Management Tool</title>
 
-	<!-- SEO & Indexing -->
-	<link rel="canonical" href="https://omnidb.80.cz/" />
+	<link rel="canonical" href="https://www.omnidb.net/" />
 	<meta name="robots" content="index, follow">
 	<link rel="manifest" href="manifest.json">
-	<meta name="theme-color" content="#0066cc">
+	<meta name="theme-color" content="#192e4d">
 	<link rel="apple-touch-icon" href="assets/omnidb-icon.png">
 
-	<link rel="alternate" hreflang="x-default" href="https://www.pgarachne.com/" />
-	<link rel="alternate" hreflang="en" href="https://www.pgarachne.com/en/" />
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/" />
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/" />
 
-	<!-- Open Graph / Social Media -->
-	<meta property="og:title" content="OmniDB - Instant PostgreSQL API" />
-	<meta property="og:description"
-		content="Turn OmniDB into a secure API instantly. Middleware-free, high-performance JSON-RPC gateway." />
-	<meta property="og:image" content="https://omnidb.80.cz/assets/omnidb-logo.jpeg" />
-	<meta property="og:url" content="https://omnidb.80.cz/" />
+	<meta property="og:title" content="OmniDB - Lightweight Database Management" />
+	<meta property="og:description" content="The open-source database tool revival. Lightweight, fast, and collaborative. Maintained by the PgArachne team." />
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb-logo.jpeg" />
+	<meta property="og:url" content="https://www.omnidb.net/" />
 	<meta property="og:type" content="website" />
-	<!-- Fallback for users with JavaScript disabled: Redirect to English after 2 seconds -->
-	<meta http-equiv="refresh" content="2; url=en/01_introduction.html" />
+
+	<meta http-equiv="refresh" content="2; url=en/" />
+
 	<script>
 		(function () {
-			// Supported languages (ISO 2-letter codes)
-			// The path will be automatically constructed as: code + '/index.html'
+			// Supported languages
 			var supported = ['en'];
 
 			// Get user's preferred languages
 			var userLangs = navigator.languages || [navigator.language || navigator.userLanguage];
-			var target = 'en/01_introduction.html'; // Default fallback
+			var target = 'en/'; // Default fallback
 
 			// Find the first matching language
 			for (var i = 0; i < userLangs.length; i++) {
 				if (!userLangs[i]) continue;
 				var code = userLangs[i].substring(0, 2).toLowerCase();
 
-				// Check direct support
 				if (supported.indexOf(code) !== -1) {
-					target = code + '/01_introduction.html';
+					target = code + '/';
 					break;
 				}
 			}
@@ -52,35 +48,64 @@
 	</script>
 	<style>
 		body {
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+			font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif;
 			text-align: center;
-			padding-top: 50px;
-			color: #333;
+			padding-top: 100px;
+			color: #192e4d;
+			background-color: #f4f7f9;
+		}
+
+		.loader {
+			border: 4px solid #f3f3f3;
+			border-top: 4px solid #192e4d;
+			border-radius: 50%;
+			width: 40px;
+			height: 40px;
+			animation: spin 1s linear infinite;
+			margin: 20px auto;
+		}
+
+		@keyframes spin {
+			0% {
+				transform: rotate(0deg);
+			}
+
+			100% {
+				transform: rotate(360deg);
+			}
 		}
 
 		ul {
 			list-style-type: none;
 			padding: 0;
+			margin-top: 30px;
 		}
 
 		li {
 			display: inline;
-			margin: 0 10px;
+			margin: 0 15px;
 		}
 
 		a {
 			text-decoration: none;
-			color: #0066cc;
-			font-size: 1.2em;
+			color: #8199bf;
+			font-size: 1.1em;
+			font-weight: 600;
+			transition: color 0.2s;
+		}
+
+		a:hover {
+			color: #192e4d;
 		}
 	</style>
 </head>
 
 <body>
-	<p>Redirecting you to the documentation...</p>
+	<div class="loader"></div>
+	<p>Redirecting to OmniDB Project...</p>
 	<p>If you are not redirected automatically, please choose a language:</p>
 	<ul>
-		<li><a href="en/01_introduction.html">English</a></li>
+		<li><a href="en/">English</a></li>
 	</ul>
 </body>
 

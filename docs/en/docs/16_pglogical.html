@@ -3,37 +3,37 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>16 Pglogical - OmniDB Documentation</title>
-	<link rel="stylesheet" href="../assets/style.css">
+	<title>16. pglogical - OmniDB Documentation</title>
+	<link rel="stylesheet" href="../../assets/style.css">
 </head>
 <body>
 	<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"> ☰ </button>
 	<div class="menu-overlay" id="menuOverlay"></div>
 	<nav>
 		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
-		<a href="01_introduction.html">01 Introduction</a>
-		<a href="02_installation.html">02 Installation</a>
-		<a href="03_creating_users_and_connections.html">03 Creating Users And Connections</a>
-		<a href="04_managing_databases.html">04 Managing Databases</a>
-		<a href="05_creating_changing_and_removing_tables.html">05 Creating Changing And Removing Tables</a>
-		<a href="06_managing_table_data.html">06 Managing Table Data</a>
-		<a href="07_writing_sql_queries.html">07 Writing Sql Queries</a>
-		<a href="08_visualizing_query_plans.html">08 Visualizing Query Plans</a>
-		<a href="09_visualizing_data.html">09 Visualizing Data</a>
-		<a href="10_managing_other_elements.html">10 Managing Other Elements</a>
-		<a href="11_additional_features.html">11 Additional Features</a>
-		<a href="12_omnidb_config_tool.html">12 Omnidb Config Tool</a>
-		<a href="13_writing_and_debugging_plpgsql_functions.html">13 Writing And Debugging Plpgsql Functions</a>
-		<a href="14_monitoring_dashboard.html">14 Monitoring Dashboard</a>
-		<a href="15_logical_replication.html">15 Logical Replication</a>
-		<a href="16_pglogical.html" class="active">16 Pglogical</a>
-		<a href="17_postgres-bdr.html">17 Postgres-Bdr</a>
-		<a href="18_postgres-xl.html">18 Postgres-Xl</a>
-		<a href="19_deploying_omnidb-server.html">19 Deploying Omnidb-Server</a>
-		<a href="20_console_tab.html">20 Console Tab</a>
-		<a href="21_plugin_system.html">21 Plugin System</a>
-		<a href="22_advanced_object_search.html">22 Advanced Object Search</a>
-		<a href="23_debugger_plugin_installation.html">23 Debugger Plugin Installation</a>
+		<a href="01_introduction.html">&nbsp;1. Introduction</a>
+		<a href="02_installation.html">&nbsp;2. Installation</a>
+		<a href="03_creating_users_and_connections.html">&nbsp;3. Creating Users and Connections</a>
+		<a href="04_managing_databases.html">&nbsp;4. Managing Databases</a>
+		<a href="05_creating_changing_and_removing_tables.html">&nbsp;5. Creating, Changing and Removing Tables</a>
+		<a href="06_managing_table_data.html">&nbsp;6. Managing Table Data</a>
+		<a href="07_writing_sql_queries.html">&nbsp;7. Writing SQL Queries</a>
+		<a href="08_visualizing_query_plans.html">&nbsp;8. Visualizing Query Plans</a>
+		<a href="09_visualizing_data.html">&nbsp;9. Visualizing Data</a>
+		<a href="10_managing_other_elements.html">10. Managing other Elements</a>
+		<a href="11_additional_features.html">11. Additional Features</a>
+		<a href="12_omnidb_config_tool.html">12. OmniDB Config Tool</a>
+		<a href="13_writing_and_debugging_plpgsql_functions.html">13. Writing and Debugging PL/pgSQL Functions</a>
+		<a href="14_monitoring_dashboard.html">14. Monitoring Dashboard</a>
+		<a href="15_logical_replication.html">15. Logical Replication</a>
+		<a href="16_pglogical.html" class="active">16. pglogical</a>
+		<a href="17_postgres-bdr.html">17. Postgres-BDR</a>
+		<a href="18_postgres-xl.html">18. Postgres-XL</a>
+		<a href="19_deploying_omnidb-server.html">19. Deploying omnidb-server</a>
+		<a href="20_console_tab.html">20. Console Tab</a>
+		<a href="21_plugin_system.html">21. Plugin System</a>
+		<a href="22_advanced_object_search.html">22. Advanced Object Search</a>
+		<a href="23_debugger_plugin_installation.html">23. Debugger Plugin Installation</a>
 	</nav>
 	<main>
 		<h1>16. pglogical</h1>
@@ -56,7 +56,7 @@ between the 2 nodes.</p>
 <h4>Creating a test environment</h4>
 <p>OmniDB repository provides a 2-node Vagrant test environment. If you want to
 use it, please do the following:</p>
-<pre><code>git clone --depth 1 https://github.com/OmniDB/OmniDB
+<pre><code>git clone --depth 1 https://github.com/heptau/omnidb
 cd OmniDB/OmniDB_app/tests/vagrant/pglogical-2-postgresql-10-2nodes/
 vagrant up
 </code></pre>
@@ -82,29 +82,29 @@ sudo cp -r plugins/ static/ /opt/omnidb-app/resources/app/omnidb-server/OmniDB_a
 <p>And then restart OmniDB app.</p>
 <p>If everything worked correctly, by clicking on the "plugins" icon in the top
 right corner, you will see the plugin installed and enabled:</p>
-<p><img alt="" src="../assets/img/image_193.png" /></p>
+<p><img alt="" src="../../assets/img/image_193.png" /></p>
 <h4>Connecting to both nodes</h4>
 <p>Let's use OmniDB to connect to both PostgreSQL nodes. First of all, fill out
 connection info in the connection grid:</p>
-<p><img alt="" src="../assets/img/image_128.png" /></p>
+<p><img alt="" src="../../assets/img/image_128.png" /></p>
 <p>Then select both connections.</p>
 <h4>Create pglogical extension in both nodes</h4>
 <p>pglogical requires an extension to be installed in both nodes. Inside OmniDB,
 you can create the extension by right clicking on the <em>Extensions</em> node, and
 choosing the action <em>Create Extension</em>. OmniDB will open a SQL template tab with
 the <code>CREATE EXTENSION</code> command ready for you to make some adjustments and run:</p>
-<p><img alt="" src="../assets/img/image_129.png" /></p>
+<p><img alt="" src="../../assets/img/image_129.png" /></p>
 <p>After you have created the extension, you need to refresh the root node of the
 treeview, by right-clicking on it and choosing <em>Refresh</em>. Then you will see that
 OmniDB already acknowledges the existence of pglogical in this database.
 However, pglogical is not active yet.</p>
-<p><img alt="" src="../assets/img/image_130.png" /></p>
+<p><img alt="" src="../../assets/img/image_130.png" /></p>
 <h4>Create pglogical nodes</h4>
 <p>To activate pglogical in this database, we need to create a pglogical node on
 each machine. Inside the <em>pglogical</em> node of the treeview, right click <em>Nodes</em>,
 then choose <em>Create Node</em>. In the SQL template that will open, adjust the node
 name and the DSN and run the command.</p>
-<p><img alt="" src="../assets/img/image_131.png" /></p>
+<p><img alt="" src="../../assets/img/image_131.png" /></p>
 <p>Then right click <em>Nodes</em> again, but this time choose <em>Refresh</em>. You will see
 the node you just created. Note how OmniDB understands that this node is local.
 Expand the local node to see its interface inside. You can manage the interfaces
@@ -112,7 +112,7 @@ of the nodes using OmniDB too.</p>
 <p>Go ahead and expand the <em>Replication Sets</em> node. You can see pglogical default
 replication sets are already created: <em>ddl_sql</em>, <em>default</em> and
 <em>default_insert_only</em>. You can also manage replication sets using OmniDB.</p>
-<p><img alt="" src="../assets/img/image_132.png" /></p>
+<p><img alt="" src="../../assets/img/image_132.png" /></p>
 <p>Now create a node on the other machine too. Choose a different name for the
 node.</p>
 <h4>Create a table on the first machine</h4>
@@ -120,48 +120,48 @@ node.</p>
 right-click the <em>Tables</em> node and choose <em>Create Table</em>. In the form tab that
 will open, give the new table a name and some columns. Also add a primary key in
 the <em>Constraints</em> tab. When done, click in the <em>Save Changes</em> button.</p>
-<p><img alt="" src="../assets/img/image_133.png" /></p>
-<p><img alt="" src="../assets/img/image_134.png" /></p>
+<p><img alt="" src="../../assets/img/image_133.png" /></p>
+<p><img alt="" src="../../assets/img/image_134.png" /></p>
 <h4>Add the new table to a replication set on the first machine</h4>
 <p>In the first machine, under the <em>default_insert_only</em> replication set, right
 click the <em>Tables</em> node and choose <em>Add Table</em>. In the SQL template tab that
 will open, change the table name in the <em>relation</em> argument and then execute the
 command.</p>
-<p><img alt="" src="../assets/img/image_135.png" /></p>
+<p><img alt="" src="../../assets/img/image_135.png" /></p>
 <p>Refresh the <em>Tables</em> node to check the table was added to the replication set.</p>
-<p><img alt="" src="../assets/img/image_136.png" /></p>
+<p><img alt="" src="../../assets/img/image_136.png" /></p>
 <h4>Add a subscription on the second machine</h4>
 <p>In the second machine, right-click the <em>Subscriptions</em> node and choose <em>Create
 Subscription</em>. In the SQL template tab that will open, change DSN of the first
 machine and then execute the command.</p>
-<p><img alt="" src="../assets/img/image_137.png" /></p>
+<p><img alt="" src="../../assets/img/image_137.png" /></p>
 <p>Refresh and expand both <em>Nodes</em> and <em>Subscriptions</em> nodes of the treeview. Note
 how now the second machine knows about the first machine. Also check the
 information OmniDB shows about the subscription we just created.</p>
-<p><img alt="" src="../assets/img/image_138.png" /></p>
+<p><img alt="" src="../../assets/img/image_138.png" /></p>
 <p>Also verify that the table <em>public.test_table</em> was created automatically in the
 second machine:</p>
-<p><img alt="" src="../assets/img/image_139.png" /></p>
+<p><img alt="" src="../../assets/img/image_139.png" /></p>
 <h4>Add some data in the table on the first machine</h4>
 <p>In the first machine, under the <em>Schemas</em> node, expand the <em>public</em> node and
 the <em>Tables</em> node. Right-click in our table, <em>test_table</em>, move the mouse
 pointer to <em>Data Actions</em> and then click on <em>Edit Data</em>. Insert some data to the
 table. When finished, click on the <em>Save Changes</em> button.</p>
-<p><img alt="" src="../assets/img/image_140.png" /></p>
+<p><img alt="" src="../../assets/img/image_140.png" /></p>
 <p>Now let us check the data was replicated. Go to the second machine and
 right-click the table, move the mouse pointer to <em>Data Actions</em> and then click
 on <em>Query Data</em>.</p>
-<p><img alt="" src="../assets/img/image_141.png" /></p>
+<p><img alt="" src="../../assets/img/image_141.png" /></p>
 <h4>Check if delete is being replicated</h4>
 <p>In the <em>Edit Data</em> tab in the first machine, remove Pete and Stuart. Click on
 the button <em>Save Changes</em> when done.</p>
-<p><img alt="" src="../assets/img/image_142.png" /></p>
+<p><img alt="" src="../../assets/img/image_142.png" /></p>
 <p>Check if these 2 rows were deleted in the second machine.</p>
-<p><img alt="" src="../assets/img/image_143.png" /></p>
+<p><img alt="" src="../../assets/img/image_143.png" /></p>
 <p>They were not removed in the second machine because the table
 <em>public.test_table</em> is in the replication set <em>default_insert_only</em>, that does
 not replicate <em>updates</em> and <em>deletes</em>.</p>
 	</main>
-	<script src="../assets/script.js"></script>
+	<script src="../../assets/script.js"></script>
 </body>
 </html>

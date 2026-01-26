@@ -52,7 +52,7 @@ Priority: optional
 Architecture: amd64
 Installed-Size: $(du -s)
 Maintainer: The OmniDB Team
-Homepage: http://omnidb.org
+Homepage: http://www.omnidb.net
 Description: OmniDB is a very flexible, secure and work-effective environment for multiple DBMS.
  Server package includes web server and requires a web browser to be used. Ideal for network and server usage.
  App package includes everything, even a simple web browser.
@@ -144,7 +144,7 @@ Priority: optional
 Architecture: amd64
 Installed-Size: $(du -s)
 Maintainer: The OmniDB Team
-Homepage: http://omnidb.org
+Homepage: http://www.omnidb.net
 Description: OmniDB is a very flexible, secure and work-effective environment for multiple DBMS.
  Server package includes web server and requires a web browser to be used. Ideal for network and server usage.
  App package includes everything, even a simple web browser.

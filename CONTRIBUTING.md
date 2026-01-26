@@ -27,10 +27,8 @@ or architectures and even perform pull requests, we will appreciate that.
 
 ## OmniDB Repositories
 
-- [https://github.com/OmniDB/OmniDB](https://github.com/OmniDB/OmniDB): Main
-application and server, deployment scripts and tests.
-- [https://github.com/OmniDB/doc](https://github.com/OmniDB/doc): OmniDB
-documentation.
+- [https://github.com/heptau/omnidb](https://github.com/heptau/omnidb): Main
+application and server, deployment scripts and tests, documentation.
 - [https://github.com/OmniDB/monitors](https://github.com/OmniDB/monitors)
 Monitors (charts, grids) for the Monitoring Dashboard.
 - [https://github.com/OmniDB/plugins](https://github.com/OmniDB/plugins): OmniDB
@@ -60,10 +58,10 @@ under the same [MIT License](http://choosealicense.com/licenses/mit/) that
 covers the project. Feel free to contact the maintainers if that's a concern.
 
 
-## Report bugs using Github's [issues](https://github.com/OmniDB/OmniDB/issues)
+## Report bugs using Github's [issues](https://github.com/heptau/omnidb/issues)
 
 We use GitHub issues to track public bugs. Report a bug by
-[opening a new issue](https://github.com/OmniDB/OmniDB/issues/new); it's that
+[opening a new issue](https://github.com/heptau/omnidb/issues/new); it's that
 easy!
 
 

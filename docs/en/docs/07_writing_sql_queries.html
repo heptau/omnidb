@@ -3,43 +3,43 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>07 Writing Sql Queries - OmniDB Documentation</title>
-	<link rel="stylesheet" href="../assets/style.css">
+	<title>7. Writing SQL Queries - OmniDB Documentation</title>
+	<link rel="stylesheet" href="../../assets/style.css">
 </head>
 <body>
 	<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"> ☰ </button>
 	<div class="menu-overlay" id="menuOverlay"></div>
 	<nav>
 		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
-		<a href="01_introduction.html">01 Introduction</a>
-		<a href="02_installation.html">02 Installation</a>
-		<a href="03_creating_users_and_connections.html">03 Creating Users And Connections</a>
-		<a href="04_managing_databases.html">04 Managing Databases</a>
-		<a href="05_creating_changing_and_removing_tables.html">05 Creating Changing And Removing Tables</a>
-		<a href="06_managing_table_data.html">06 Managing Table Data</a>
-		<a href="07_writing_sql_queries.html" class="active">07 Writing Sql Queries</a>
-		<a href="08_visualizing_query_plans.html">08 Visualizing Query Plans</a>
-		<a href="09_visualizing_data.html">09 Visualizing Data</a>
-		<a href="10_managing_other_elements.html">10 Managing Other Elements</a>
-		<a href="11_additional_features.html">11 Additional Features</a>
-		<a href="12_omnidb_config_tool.html">12 Omnidb Config Tool</a>
-		<a href="13_writing_and_debugging_plpgsql_functions.html">13 Writing And Debugging Plpgsql Functions</a>
-		<a href="14_monitoring_dashboard.html">14 Monitoring Dashboard</a>
-		<a href="15_logical_replication.html">15 Logical Replication</a>
-		<a href="16_pglogical.html">16 Pglogical</a>
-		<a href="17_postgres-bdr.html">17 Postgres-Bdr</a>
-		<a href="18_postgres-xl.html">18 Postgres-Xl</a>
-		<a href="19_deploying_omnidb-server.html">19 Deploying Omnidb-Server</a>
-		<a href="20_console_tab.html">20 Console Tab</a>
-		<a href="21_plugin_system.html">21 Plugin System</a>
-		<a href="22_advanced_object_search.html">22 Advanced Object Search</a>
-		<a href="23_debugger_plugin_installation.html">23 Debugger Plugin Installation</a>
+		<a href="01_introduction.html">&nbsp;1. Introduction</a>
+		<a href="02_installation.html">&nbsp;2. Installation</a>
+		<a href="03_creating_users_and_connections.html">&nbsp;3. Creating Users and Connections</a>
+		<a href="04_managing_databases.html">&nbsp;4. Managing Databases</a>
+		<a href="05_creating_changing_and_removing_tables.html">&nbsp;5. Creating, Changing and Removing Tables</a>
+		<a href="06_managing_table_data.html">&nbsp;6. Managing Table Data</a>
+		<a href="07_writing_sql_queries.html" class="active">&nbsp;7. Writing SQL Queries</a>
+		<a href="08_visualizing_query_plans.html">&nbsp;8. Visualizing Query Plans</a>
+		<a href="09_visualizing_data.html">&nbsp;9. Visualizing Data</a>
+		<a href="10_managing_other_elements.html">10. Managing other Elements</a>
+		<a href="11_additional_features.html">11. Additional Features</a>
+		<a href="12_omnidb_config_tool.html">12. OmniDB Config Tool</a>
+		<a href="13_writing_and_debugging_plpgsql_functions.html">13. Writing and Debugging PL/pgSQL Functions</a>
+		<a href="14_monitoring_dashboard.html">14. Monitoring Dashboard</a>
+		<a href="15_logical_replication.html">15. Logical Replication</a>
+		<a href="16_pglogical.html">16. pglogical</a>
+		<a href="17_postgres-bdr.html">17. Postgres-BDR</a>
+		<a href="18_postgres-xl.html">18. Postgres-XL</a>
+		<a href="19_deploying_omnidb-server.html">19. Deploying omnidb-server</a>
+		<a href="20_console_tab.html">20. Console Tab</a>
+		<a href="21_plugin_system.html">21. Plugin System</a>
+		<a href="22_advanced_object_search.html">22. Advanced Object Search</a>
+		<a href="23_debugger_plugin_installation.html">23. Debugger Plugin Installation</a>
 	</nav>
 	<main>
 		<h1>7. Writing SQL Queries</h1>
 <p>The most common kind of inner tab is the <em>Query Tab</em>, containing the following
 elements:</p>
-<p><img alt="" src="../assets/img/image_049.png" /></p>
+<p><img alt="" src="../../assets/img/image_049.png" /></p>
 <ul>
 <li><strong>1) Tab Header</strong>: You can see the name of the tab and an icon to close it. If
 there is a query running in the tab, you will see an indicator. If the tab
@@ -99,19 +99,19 @@ the <code>omnidb.log</code> file too.</p>
 code completion. With this feature it is possible to autocomplete columns
 contained in a table referenced by an alias. To open the autocomplete interface
 you just have to type the alias, the character <code>.</code> and then hit <code>Ctrl-Space</code>:</p>
-<p><img alt="" src="../assets/img/image_050.png" /></p>
+<p><img alt="" src="../../assets/img/image_050.png" /></p>
 <p>If the user does not start the autocomplete with the cursor close to a table
 alias, the component will show multiple categories of data. By typing in the
 filter textbox, elements in all categories will be filtered:</p>
-<p><img alt="" src="../assets/img/image_051.png" /></p>
+<p><img alt="" src="../../assets/img/image_051.png" /></p>
 <p>The autocomplete component is also able to identify some contextual information.
 For example, if you type a name of a schema, then type the character <code>.</code>, then
 hit <code>Ctrl-Space</code>, you will be able to filter among objects contained only in
 that schema:</p>
-<p><img alt="" src="../assets/img/image_052.png" /></p>
+<p><img alt="" src="../../assets/img/image_052.png" /></p>
 <p>Please note that for RDBMS other than PostgreSQL, the autocomplete component
 only works for table columns.</p>
 	</main>
-	<script src="../assets/script.js"></script>
+	<script src="../../assets/script.js"></script>
 </body>
 </html>

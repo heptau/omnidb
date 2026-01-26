@@ -3,37 +3,37 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>15 Logical Replication - OmniDB Documentation</title>
-	<link rel="stylesheet" href="../assets/style.css">
+	<title>15. Logical Replication - OmniDB Documentation</title>
+	<link rel="stylesheet" href="../../assets/style.css">
 </head>
 <body>
 	<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"> ☰ </button>
 	<div class="menu-overlay" id="menuOverlay"></div>
 	<nav>
 		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
-		<a href="01_introduction.html">01 Introduction</a>
-		<a href="02_installation.html">02 Installation</a>
-		<a href="03_creating_users_and_connections.html">03 Creating Users And Connections</a>
-		<a href="04_managing_databases.html">04 Managing Databases</a>
-		<a href="05_creating_changing_and_removing_tables.html">05 Creating Changing And Removing Tables</a>
-		<a href="06_managing_table_data.html">06 Managing Table Data</a>
-		<a href="07_writing_sql_queries.html">07 Writing Sql Queries</a>
-		<a href="08_visualizing_query_plans.html">08 Visualizing Query Plans</a>
-		<a href="09_visualizing_data.html">09 Visualizing Data</a>
-		<a href="10_managing_other_elements.html">10 Managing Other Elements</a>
-		<a href="11_additional_features.html">11 Additional Features</a>
-		<a href="12_omnidb_config_tool.html">12 Omnidb Config Tool</a>
-		<a href="13_writing_and_debugging_plpgsql_functions.html">13 Writing And Debugging Plpgsql Functions</a>
-		<a href="14_monitoring_dashboard.html">14 Monitoring Dashboard</a>
-		<a href="15_logical_replication.html" class="active">15 Logical Replication</a>
-		<a href="16_pglogical.html">16 Pglogical</a>
-		<a href="17_postgres-bdr.html">17 Postgres-Bdr</a>
-		<a href="18_postgres-xl.html">18 Postgres-Xl</a>
-		<a href="19_deploying_omnidb-server.html">19 Deploying Omnidb-Server</a>
-		<a href="20_console_tab.html">20 Console Tab</a>
-		<a href="21_plugin_system.html">21 Plugin System</a>
-		<a href="22_advanced_object_search.html">22 Advanced Object Search</a>
-		<a href="23_debugger_plugin_installation.html">23 Debugger Plugin Installation</a>
+		<a href="01_introduction.html">&nbsp;1. Introduction</a>
+		<a href="02_installation.html">&nbsp;2. Installation</a>
+		<a href="03_creating_users_and_connections.html">&nbsp;3. Creating Users and Connections</a>
+		<a href="04_managing_databases.html">&nbsp;4. Managing Databases</a>
+		<a href="05_creating_changing_and_removing_tables.html">&nbsp;5. Creating, Changing and Removing Tables</a>
+		<a href="06_managing_table_data.html">&nbsp;6. Managing Table Data</a>
+		<a href="07_writing_sql_queries.html">&nbsp;7. Writing SQL Queries</a>
+		<a href="08_visualizing_query_plans.html">&nbsp;8. Visualizing Query Plans</a>
+		<a href="09_visualizing_data.html">&nbsp;9. Visualizing Data</a>
+		<a href="10_managing_other_elements.html">10. Managing other Elements</a>
+		<a href="11_additional_features.html">11. Additional Features</a>
+		<a href="12_omnidb_config_tool.html">12. OmniDB Config Tool</a>
+		<a href="13_writing_and_debugging_plpgsql_functions.html">13. Writing and Debugging PL/pgSQL Functions</a>
+		<a href="14_monitoring_dashboard.html">14. Monitoring Dashboard</a>
+		<a href="15_logical_replication.html" class="active">15. Logical Replication</a>
+		<a href="16_pglogical.html">16. pglogical</a>
+		<a href="17_postgres-bdr.html">17. Postgres-BDR</a>
+		<a href="18_postgres-xl.html">18. Postgres-XL</a>
+		<a href="19_deploying_omnidb-server.html">19. Deploying omnidb-server</a>
+		<a href="20_console_tab.html">20. Console Tab</a>
+		<a href="21_plugin_system.html">21. Plugin System</a>
+		<a href="22_advanced_object_search.html">22. Advanced Object Search</a>
+		<a href="23_debugger_plugin_installation.html">23. Debugger Plugin Installation</a>
 	</nav>
 	<main>
 		<h1>15. Logical Replication</h1>
@@ -50,7 +50,7 @@ to grant access to <code>replication</code> between the 2 nodes.</p>
 <h4>Creating a test environment</h4>
 <p>OmniDB repository provides a 2-node Vagrant test environment. If you want to
 use it, please do the following:</p>
-<pre><code>git clone --depth 1 https://github.com/OmniDB/OmniDB
+<pre><code>git clone --depth 1 https://github.com/heptau/omnidb
 cd OmniDB/OmniDB_app/tests/vagrant/postgresql-10-2nodes/
 vagrant up
 </code></pre>
@@ -62,12 +62,12 @@ both machines. To connect, user is <code>omnidb</code> and password is <code>omn
 <h4>Connecting to both nodes</h4>
 <p>Let's use OmniDB to connect to both PostgreSQL nodes. First of all, fill out
 connection info in the connection grid:</p>
-<p><img alt="" src="../assets/img/image_117.png" /></p>
+<p><img alt="" src="../../assets/img/image_117.png" /></p>
 <p>Then select both connections. Note how OmniDB understands it is connected to
 PostgreSQL 10 and enables a new node in the current connection tree view: it is
 called <em>Logical Replication</em>. Inside of it, we can see <em>Publications</em> and
 <em>Subscriptions</em>.</p>
-<p><img alt="" src="../assets/img/image_118.png" /></p>
+<p><img alt="" src="../../assets/img/image_118.png" /></p>
 <h4>Creating a test table on both nodes</h4>
 <p>On both nodes, create a table like this:</p>
 <pre><code class="language-sql">CREATE TABLE customers (
@@ -76,48 +76,48 @@ called <em>Logical Replication</em>. Inside of it, we can see <em>Publications</
  registration_date timestamptz NOT NULL DEFAULT now()
 )
 </code></pre>
-<p><img alt="" src="../assets/img/image_119.png" /></p>
+<p><img alt="" src="../../assets/img/image_119.png" /></p>
 <h4>Create a publication on the first machine</h4>
 <p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
 click in the <em>Publications</em> node, and choose the action <em>Create Publication</em>.
 OmniDB will open a SQL template tab with the <code>CREATE PUBLICATION</code> command ready
 for you to make some adjustments and run:</p>
-<p><img alt="" src="../assets/img/image_120.png" /></p>
+<p><img alt="" src="../../assets/img/image_120.png" /></p>
 <p>After adjusting and executing the command, you can right click the <em>Publications</em>
 node again and click on the <em>Refresh</em> action. You will see that will be created
 a new node with the same name you gave to the publication. Expanding this node,
 you will see the details and the tables for the publication:</p>
-<p><img alt="" src="../assets/img/image_121.png" /></p>
+<p><img alt="" src="../../assets/img/image_121.png" /></p>
 <h4>Create a subscription on the second machine</h4>
 <p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
 click in the <em>Subscriptions</em> node, and choose the action <em>Create Subscription</em>.
 OmniDB will open a SQL template tab with the <code>CREATE SUBSCRIPTION</code> command ready
 for you to make some adjustments and run:</p>
-<p><img alt="" src="../assets/img/image_122.png" /></p>
+<p><img alt="" src="../../assets/img/image_122.png" /></p>
 <p>After adjusting and executing the command, you can right click the <em>Subscriptions</em>
 node again and click on the <em>Refresh</em> action. You will see that will be created
 a new node with the same name you gave to the subscription. Expanding this node,
 you will see the details, the referenced publications and the tables for the
 subscription:</p>
-<p><img alt="" src="../assets/img/image_123.png" /></p>
+<p><img alt="" src="../../assets/img/image_123.png" /></p>
 <p>Also, the <code>CREATE SUBSCRIPTION</code> command created a <em>logical replication slot</em>
 called <code>testsub</code> (the same name as the subscription) in the first machine:</p>
-<p><img alt="" src="../assets/img/image_124.png" /></p>
+<p><img alt="" src="../../assets/img/image_124.png" /></p>
 <h4>Testing the logical replication</h4>
 <p>To test the replication is working, let's create some data on the node 1. Right
 click on the table <code>public.customers</code>, then point to <em>Data Actions</em>, then click
 on the action <em>Edit Data</em>. In this grid, you are able to add, edit and remove
 data from the table. Add 2 sample rows, like this:</p>
-<p><img alt="" src="../assets/img/image_125.png" /></p>
+<p><img alt="" src="../../assets/img/image_125.png" /></p>
 <p>Then, on the other node, check if the table <code>public.customers</code> was automatically
 populated. Right click on the table <code>public.customers</code>, then point to <em>Data
 Actions</em>, then click on the action <em>Query Data</em>:</p>
-<p><img alt="" src="../assets/img/image_126.png" /></p>
+<p><img alt="" src="../../assets/img/image_126.png" /></p>
 <p>As we can see, both rows created in the first machine were replicated into the
 second machine. This tell us that the logical replication is working.</p>
 <p>Now you can perform other actions, such as adding/removing tables to the
 publication and creating a new publication that publishes all tables.</p>
 	</main>
-	<script src="../assets/script.js"></script>
+	<script src="../../assets/script.js"></script>
 </body>
 </html>

@@ -1,4 +1,4 @@
-# OmniDB 3.1.0
+# OmniDB 3.1.1
 
 ## Release Notes
 
@@ -79,8 +79,6 @@
 	- Build System
 		- Updated Makefile to automatically install dependencies
 
-**Website**: https://omnidb.80.cz
-
-**Full Documentation**: https://omnidb.readthedocs.io
+**Website**: https://www.omnidb.net
 
 ![](https://raw.githubusercontent.com/docs/assets/dashboard.png)

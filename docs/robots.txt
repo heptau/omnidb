@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://omnidb.80.cz/sitemap.xml
+Sitemap: https://www.omnidb.net/sitemap.xml
