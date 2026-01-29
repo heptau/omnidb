@@ -4,6 +4,7 @@
 "window": {
 				"frame": false,
 				"transparent": false,
-				"icon": "omnidb_icon.png"
-		}
+    "icon": "omnidb_icon.png"
+  },
+  "chromium-args": "--enable-spell-checking --password-store=basic"
 }
