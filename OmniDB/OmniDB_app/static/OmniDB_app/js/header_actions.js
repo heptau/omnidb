@@ -146,14 +146,14 @@ function changeTheme(p_option) {
 
 	if (v_actual_theme == 'dark') {
 		v_theme = 'dark';
-		v_editor_theme = 'omnidb_dark';
+		v_editor_theme = 'sqlserver_dark';
 		v_current_terminal_theme = v_dark_terminal_theme;
 		document.body.classList.remove('omnidb--theme-light');
 		document.body.classList.add('omnidb--theme-dark');
 	}
 	else {
 		v_theme = 'light';
-		v_editor_theme = 'omnidb';
+		v_editor_theme = 'sqlserver';
 		v_current_terminal_theme = v_light_terminal_theme;
 		document.body.classList.remove('omnidb--theme-dark');
 		document.body.classList.add('omnidb--theme-light');
