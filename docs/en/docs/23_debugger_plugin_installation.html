@@ -81,10 +81,10 @@ section 5.</p>
 <h2>23.1.2. Installing from DEB/RPM packages</h2>
 <h3>23.1.2.1. Install the package</h3>
 <pre><code class="language-bash"># For example, Debian-like 64 bits:
-sudo dpkg -i omnidb-plugin_2.16.0-debian-amd64.deb
+sudo dpkg -i omnidb-plugin_2.17.0-debian-amd64.deb
 
 # For example, for CentOS-like 64 bits:
-sudo rpm -ivU omnidb-plugin_2.16.0-centos-amd64.rpm
+sudo rpm -ivU omnidb-plugin_2.17.0-centos-amd64.rpm
 </code></pre>
 <h3>23.1.2.2. Create a symlink</h3>
 <pre><code class="language-bash"># Find the PostgreSQL version and path for $libdir and create a link to the specific library. For example:
@@ -157,13 +157,13 @@ section 5.</p>
 <h1>23.3. FreeBSD Installation</h1>
 <h2>23.3.1. Downloading the plugin</h2>
 <p>Download the tar.gz corresponding to your architecture from the website.</p>
-<pre><code class="language-bash">wget --no-check-certificate https://omnidb.org/dist/2.16.0/omnidb-plugin_2.16.0-freebsd.tar.gz
+<pre><code class="language-bash">wget --no-check-certificate https://github.com/OmniDB/OmniDB/releases/download/2.17.0/omnidb-plugin_2.17.0-freebsd-amd64.tar.gz
 </code></pre>
 <h2>23.3.1. Installing the plugin</h2>
 <p>Move the omnidb_plugin.so corresponding to your PostgreSQL version to the folder
 <em>lib</em>, which is inside the folder where PostgreSQL was installed.</p>
-<pre><code class="language-bash">tar -xzvf omnidb-plugin_2.16.0-freebsd.tar.gz
-cp omnidb-plugin_2.16.0-freebsd/omnidb_plugin_10.so /usr/local/lib/postgresql/omnidb_plugin.so
+<pre><code class="language-bash">tar -xzvf omnidb-plugin_2.17.0-freebsd.tar.gz
+cp omnidb-plugin_2.17.0-freebsd/omnidb_plugin_10.so /usr/local/lib/postgresql/omnidb_plugin.so
 </code></pre>
 <h2>23.3.3. Set shared_preload_libraries</h2>
 <p>Change the file <em>PostgreSQL_directory/data/postgresql.conf</em>, including the
