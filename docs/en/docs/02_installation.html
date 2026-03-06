@@ -47,36 +47,70 @@
 				management, ideal to be hosted on a server on users' networks.</li>
 		</ul>
 		<p>Both application and server can be installed on the same machine.</p>
-		<h4>OmniDB Application</h4>
+
+		<h3>OmniDB Application</h3>
+
+		<p><strong>Important:</strong> The original repository <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> contains only old versions (up to ~2020) and is no longer maintained.</p>
+
+		<p>For current versions (3.1.x and newer) use the revived project at <a href="https://github.com/heptau/omnidb/releases">https://github.com/heptau/omnidb/releases</a>.</p>
+
 		<p>In order to run OmniDB app, you don't need to install any additional piece of
-			software. Just head to <a href="https://github.com/heptau/omnidb/releases">https://github.com/heptau/omnidb/releases</a>
-			(or <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> for older versions)
+			software. Just head to the <a href="https://github.com/heptau/omnidb/releases">releases page</a>
 			and download the latest package for your specific operating system and architecture:</p>
+
 		<ul>
 			<li>MacOS
 				<ul>
-					<li>ZIP archive for Apple Silicon or Intel x86</li>
-					<li>DMG installer (older version)</li>
+					<li>ZIP archive for Apple Silicon or Intel x86 (recommended)</li>
+					<li>DMG installer (older versions only)</li>
 				</ul>
 			</li>
 			<li>Linux 64 bits
 				<ul>
-					<li>DEB installer (older version)</li>
-					<li>RPM installer (older version)</li>
+					<li>DEB installer (older versions only)</li>
+					<li>RPM installer (older versions only)</li>
 				</ul>
 			</li>
 			<li>Windows 64 bits
 				<ul>
-					<li>EXE installer (older version)</li>
+					<li>EXE installer (older versions only)</li>
 				</ul>
 			</li>
 		</ul>
+
+		<h4>Installation via Homebrew (macOS only – recommended)</h4>
+
+		<p>For macOS users who prefer using a package manager, OmniDB is available through a custom Homebrew tap:</p>
+
+		<pre><code class="language-bash"># Install the latest version:
+brew install --cask heptau/tap/omnidb</code></pre>
+		<pre><code class="language-bash"># To upgrade later:
+brew upgrade heptau/tap/omnidb</code></pre>
+
+		<p>Homebrew will automatically download the correct ZIP for your architecture (Apple Silicon or Intel), unzip it and place <code>OmniDB.app</code> into your Applications folder.</p>
+
+		<p>The cask definition is maintained here: <a href="https://github.com/heptau/homebrew-tap/blob/main/Casks/omnidb.rb">heptau/homebrew-tap – omnidb.rb</a></p>
+
+		<h4>Direct download of the latest version (macOS)</h4>
+
+		<p>Download the ZIP for your architecture directly from the <strong>latest release</strong>:</p>
+
+		<ul>
+			<li>Apple Silicon (arm64): <a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip">OmniDB-macOS-osx-arm64.zip</a></li>
+			<li>Intel (x64): <a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip">OmniDB-macOS-osx-x64.zip</a></li>
+		</ul>
+
+		<p>These links always point to the most recent release assets.
+		For all platforms, older releases or release notes visit the full <a href="https://github.com/heptau/omnidb/releases">releases page</a>.</p>
+
 		<p>Use the specific installer for your Operational System and it will be available
 			through your desktop environment application menu or via command line with
 			<code>omnidb-app</code>.
 		</p>
+
 		<p><img alt="" src="../../assets/img/image_001.png" /></p>
-		<h4>OmniDB Server</h4>
+
+		<h3>OmniDB Server</h3>
 		<p>Like OmniDB app, OmniDB server doesn't require any additional piece of software
 			and the same options for operating system and architecture are provided.</p>
 		<p>Use the specific installer for your Operational System and it will be available
@@ -105,7 +139,8 @@ Starting migration of user database from version 0.0.0 to version 3.1.0
 OmniDB successfully migrated user database from version 0.0.0 to version 3.1.0
 Press Ctrl+C to exit
 </code></pre>
-		<h4>OmniDB with Oracle</h4>
+
+		<h3>OmniDB with Oracle</h3>
 		<p>OmniDB app and server does not require any piece of additional software, as
 			explained above. But if you are going to connect to an <em>Oracle</em> database, then
 			you need to download and install <em>Oracle Instant Client</em> (or extract it to a
@@ -127,7 +162,7 @@ Press Ctrl+C to exit
 			need to extract Oracle Instant Client libraries inside of folder
 			<code>OMNIDBAPPINSTALLFOLDER\resources\app\omnidb-server</code>.
 		</p>
-		<h4>OmniDB User Database</h4>
+		<h3>OmniDB User Database</h3>
 		<p>Since version 2.4.0, upon initialization both server and app will create a file
 			<code>~/.omnidb/omnidb-app/omnidb.db</code> (for OmniDB app) or
 			<code>~/.omnidb/omnidb-server/omnidb.db</code> (for OmniDB server) in the user home
@@ -164,7 +199,7 @@ Starting migration of user database from version 3.1.0 to version 3.2.0
 OmniDB successfully migrated user database from version 3.1.0 to version 3.2.0
 Press Ctrl+C to exit
 </code></pre>
-		<h4>OmniDB configuration file</h4>
+		<h3>OmniDB configuration file</h3>
 		<p>Starting on version 2.1.0, OmniDB server comes with a configuration file
 			<code>omnidb.conf</code> that enables the user to specify parameters such as port and
 			listening address. Also, 2.1.0 enables us to start the server with SSL, this
@@ -174,7 +209,7 @@ Press Ctrl+C to exit
 		<p>Starting on version 2.4.0, this file is located in
 			<code>~/.omnidb/omnidb-server/omnidb.conf</code> in the user home directory.
 		</p>
-		<h4>OmniDB in the browser</h4>
+		<h3>OmniDB in the browser</h3>
 		<p>Now that the web server is running, you may access OmniDB browser-based app on
 			your favorite browser. Type in address bar: <code>localhost:8000</code> and hit <code>Enter</code>. If
 			everything went fine, you shall see a page like this:</p>

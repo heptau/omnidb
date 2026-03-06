@@ -256,3 +256,60 @@ footer p a {
 		}
 	}
 }
+
+.get-started {
+	text-align: center;
+	margin: 3rem auto 5rem;
+	max-width: 720px;
+	padding: 0 1.5rem;
+}
+
+.install-block {
+	margin: 2rem auto;
+	max-width: 620px;
+}
+
+.install-label {
+	font-size: 1.1rem;
+	font-weight: 600;
+	color: var(--dark-blue);
+	margin: 1.8rem 0 0.8rem;
+	text-align: left;
+}
+
+.install-command {
+	background: var(--bg-light);
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	padding: 1.1rem 1.4rem;
+	margin: 0;
+	font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+	font-size: 0.95rem;
+	line-height: 1.65;
+	color: var(--text-main);
+	white-space: pre;
+	overflow-x: auto;
+	text-align: left;
+	box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+	.install-command {
+		background: rgba(45, 55, 72, 0.65);
+		border-color: #4a5568;
+		color: #e2e8f0;
+	}
+}
+
+@media (max-width: 600px) {
+	.install-command {
+		font-size: 0.9rem;
+		padding: 1rem 1.2rem;
+		line-height: 1.7;
+	}
+
+	.install-label {
+		font-size: 1rem;
+	}
+}
