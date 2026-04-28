@@ -62,12 +62,12 @@ both machines. To connect, user is <code>omnidb</code> and password is <code>omn
 <h4>Connecting to both nodes</h4>
 <p>Let's use OmniDB to connect to both PostgreSQL nodes. First of all, fill out
 connection info in the connection grid:</p>
-<p><img alt="" src="../../assets/img/image_117.png" /></p>
+<p><img alt="" src="../../assets/img/image_117.webp"/></p>
 <p>Then select both connections. Note how OmniDB understands it is connected to
 PostgreSQL 10 and enables a new node in the current connection tree view: it is
 called <em>Logical Replication</em>. Inside of it, we can see <em>Publications</em> and
 <em>Subscriptions</em>.</p>
-<p><img alt="" src="../../assets/img/image_118.png" /></p>
+<p><img alt="" src="../../assets/img/image_118.webp"/></p>
 <h4>Creating a test table on both nodes</h4>
 <p>On both nodes, create a table like this:</p>
 <pre><code class="language-sql">CREATE TABLE customers (
@@ -76,43 +76,43 @@ called <em>Logical Replication</em>. Inside of it, we can see <em>Publications</
  registration_date timestamptz NOT NULL DEFAULT now()
 )
 </code></pre>
-<p><img alt="" src="../../assets/img/image_119.png" /></p>
+<p><img alt="" src="../../assets/img/image_119.webp"/></p>
 <h4>Create a publication on the first machine</h4>
 <p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
 click in the <em>Publications</em> node, and choose the action <em>Create Publication</em>.
 OmniDB will open a SQL template tab with the <code>CREATE PUBLICATION</code> command ready
 for you to make some adjustments and run:</p>
-<p><img alt="" src="../../assets/img/image_120.png" /></p>
+<p><img alt="" src="../../assets/img/image_120.webp"/></p>
 <p>After adjusting and executing the command, you can right click the <em>Publications</em>
 node again and click on the <em>Refresh</em> action. You will see that will be created
 a new node with the same name you gave to the publication. Expanding this node,
 you will see the details and the tables for the publication:</p>
-<p><img alt="" src="../../assets/img/image_121.png" /></p>
+<p><img alt="" src="../../assets/img/image_121.webp"/></p>
 <h4>Create a subscription on the second machine</h4>
 <p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
 click in the <em>Subscriptions</em> node, and choose the action <em>Create Subscription</em>.
 OmniDB will open a SQL template tab with the <code>CREATE SUBSCRIPTION</code> command ready
 for you to make some adjustments and run:</p>
-<p><img alt="" src="../../assets/img/image_122.png" /></p>
+<p><img alt="" src="../../assets/img/image_122.webp"/></p>
 <p>After adjusting and executing the command, you can right click the <em>Subscriptions</em>
 node again and click on the <em>Refresh</em> action. You will see that will be created
 a new node with the same name you gave to the subscription. Expanding this node,
 you will see the details, the referenced publications and the tables for the
 subscription:</p>
-<p><img alt="" src="../../assets/img/image_123.png" /></p>
+<p><img alt="" src="../../assets/img/image_123.webp"/></p>
 <p>Also, the <code>CREATE SUBSCRIPTION</code> command created a <em>logical replication slot</em>
 called <code>testsub</code> (the same name as the subscription) in the first machine:</p>
-<p><img alt="" src="../../assets/img/image_124.png" /></p>
+<p><img alt="" src="../../assets/img/image_124.webp"/></p>
 <h4>Testing the logical replication</h4>
 <p>To test the replication is working, let's create some data on the node 1. Right
 click on the table <code>public.customers</code>, then point to <em>Data Actions</em>, then click
 on the action <em>Edit Data</em>. In this grid, you are able to add, edit and remove
 data from the table. Add 2 sample rows, like this:</p>
-<p><img alt="" src="../../assets/img/image_125.png" /></p>
+<p><img alt="" src="../../assets/img/image_125.webp"/></p>
 <p>Then, on the other node, check if the table <code>public.customers</code> was automatically
 populated. Right click on the table <code>public.customers</code>, then point to <em>Data
 Actions</em>, then click on the action <em>Query Data</em>:</p>
-<p><img alt="" src="../../assets/img/image_126.png" /></p>
+<p><img alt="" src="../../assets/img/image_126.webp"/></p>
 <p>As we can see, both rows created in the first machine were replicated into the
 second machine. This tell us that the logical replication is working.</p>
 <p>Now you can perform other actions, such as adding/removing tables to the

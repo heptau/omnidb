@@ -97,26 +97,26 @@ sudo cp -r plugins/ static/ /opt/omnidb-app/resources/app/omnidb-server/OmniDB_a
 <p>And then restart OmniDB app.</p>
 <p>If everything worked correctly, by clicking on the "plugins" icon in the top
 right corner, you will see the plugin installed and enabled:</p>
-<p><img alt="" src="../../assets/img/image_202.png" /></p>
+<p><img alt="" src="../../assets/img/image_202.webp"/></p>
 <h4>Connecting to the cluster</h4>
 <p>Let's use OmniDB to connect to the coordinator node. First of all, fill out
 connection info in the connection grid:</p>
-<p><img alt="" src="../../assets/img/image_157.png" /></p>
+<p><img alt="" src="../../assets/img/image_157.webp"/></p>
 <p>Then select the connection. You will see OmniDB workspace window. Expand the
 tree root node. Note that OmniDB identifies it is connected to a Postgres-XL
 cluster and shows a specific node called <em>Postgres-XL</em> just inside the tree root
 node. Expand this node to see all the nodes we have in our cluster:</p>
-<p><img alt="" src="../../assets/img/image_158.png" /></p>
+<p><img alt="" src="../../assets/img/image_158.webp"/></p>
 <h4>Creating a HASH table</h4>
 <p>From the root node, expand <em>Schemas</em>, then <em>public</em>, then right click on the
 <em>Tables</em> node. Click on <em>Create Table</em>. Name your new table, add some columns to
 it and do not forget to add a primary key too:</p>
-<p><img alt="" src="../../assets/img/image_159.png" /></p>
-<p><img alt="" src="../../assets/img/image_160.png" /></p>
+<p><img alt="" src="../../assets/img/image_159.webp"/></p>
+<p><img alt="" src="../../assets/img/image_160.webp"/></p>
 <p>When done, click on the <em>Save Changes</em> button. Now right click on the <em>Tables</em>
 node and click on <em>Refresh</em>. You will see the new table created. Expand it to
 see that there is also a <em>Postgres-XL</em> node inside of it. Check its properties.</p>
-<p><img alt="" src="../../assets/img/image_161.png" /></p>
+<p><img alt="" src="../../assets/img/image_161.webp"/></p>
 <p>By default, Postgres-XL always try to create a table distributed by HASH. It
 means that the data will be split into the nodes regularly, through a hash
 function applied on the specified column. If present, it will use the primary
@@ -128,15 +128,15 @@ row will be added to a different data node.</p>
 <p>Now let's add some rows in our new table. Right click on the table, then go to
 <em>Data Actions</em> and then click on <em>Edit Data</em>. Add some rows and then click on
 the <em>Save Changes</em> button:</p>
-<p><img alt="" src="../../assets/img/image_162.png" /></p>
+<p><img alt="" src="../../assets/img/image_162.webp"/></p>
 <p>Right click on the table again, <em>Data Actions</em>, <em>Query Data</em>. You will see that
 cluster-wide the table has all data inside.</p>
-<p><img alt="" src="../../assets/img/image_163.png" /></p>
+<p><img alt="" src="../../assets/img/image_163.webp"/></p>
 <p>But how the data was distributed in the data nodes? In the <em>Postgres-XL</em> main
 node, right click on each node and click on <em>Execute Direct</em>. Adjust the query
 that will be executed directly into the data node, as you can see below.</p>
-<p><img alt="" src="../../assets/img/image_164.png" /></p>
-<p><img alt="" src="../../assets/img/image_165.png" /></p>
+<p><img alt="" src="../../assets/img/image_164.webp"/></p>
+<p><img alt="" src="../../assets/img/image_165.webp"/></p>
 <h4>Creating a REPLICATION table</h4>
 <p>While HASH distribution is great for write-only and write-mainly tables,
 REPLICATION distribution is great for read-only and read-mainly tables. However,
@@ -144,23 +144,23 @@ a table distributed by REPLICATION will store all data in all nodes it is
 located.</p>
 <p>In order to create a REPLICATION table, let us create a new table like we did
 before:</p>
-<p><img alt="" src="../../assets/img/image_166.png" /></p>
-<p><img alt="" src="../../assets/img/image_167.png" /></p>
+<p><img alt="" src="../../assets/img/image_166.webp"/></p>
+<p><img alt="" src="../../assets/img/image_167.webp"/></p>
 <p>Note how by default it was created as a HASH table:</p>
-<p><img alt="" src="../../assets/img/image_168.png" /></p>
+<p><img alt="" src="../../assets/img/image_168.webp"/></p>
 <p>Let us change the distribution type of the table by right-clicking on the
 <em>Postgres-XL</em> node inside the table, and then clicking on <em>Alter Distribution</em>.
 Uncomment the "REPLICATION" line and execute the command:</p>
-<p><img alt="" src="../../assets/img/image_169.png" /></p>
+<p><img alt="" src="../../assets/img/image_169.webp"/></p>
 <p>You can check the distribution was successfully changed by right-clicking on the
 <em>Postgres-XL</em> node and clicking on <em>Refresh</em>. The properties will now show
 <em>Distributed by: replication</em>.</p>
-<p><img alt="" src="../../assets/img/image_170.png" /></p>
+<p><img alt="" src="../../assets/img/image_170.webp"/></p>
 <p>Now add some data to the table:</p>
-<p><img alt="" src="../../assets/img/image_171.png" /></p>
+<p><img alt="" src="../../assets/img/image_171.webp"/></p>
 <p>And then check that all data exist on all data nodes:</p>
-<p><img alt="" src="../../assets/img/image_172.png" /></p>
-<p><img alt="" src="../../assets/img/image_173.png" /></p>
+<p><img alt="" src="../../assets/img/image_172.webp"/></p>
+<p><img alt="" src="../../assets/img/image_173.webp"/></p>
 	</main>
 	<script src="../../assets/script.js"></script>
 </body>

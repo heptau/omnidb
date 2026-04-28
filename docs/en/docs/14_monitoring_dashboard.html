@@ -39,15 +39,15 @@
 		<h1>14. Monitoring Dashboard</h1>
 <p>OmniDB 2.4.0 introduced a new cool feature called <em>Monitoring Dashboard</em>. We
 know a picture is worth a thousand words, so please take a look:</p>
-<p><img alt="" src="../../assets/img/image_091.png" /></p>
+<p><img alt="" src="../../assets/img/image_091.webp"/></p>
 <p>As you can see, this is a new kind of inner tab showing some charts and grids.
 This <em>Monitoring</em> inner tab is automatically opened once you expand the tree
 root node (the <em>PostgreSQL</em> node). You can keep it open or close it at any time.
 To open it again, right-click the root node and click on <em>Dashboard</em>.</p>
-<p><img alt="" src="../../assets/img/image_092.png" /></p>
+<p><img alt="" src="../../assets/img/image_092.webp"/></p>
 <p>The dashboard is composed of handy information rectangles called <em>Monitoring
 Units</em>. Here is an example of Monitoring Unit and its interface elements:</p>
-<p><img alt="" src="../../assets/img/image_093.png" /></p>
+<p><img alt="" src="../../assets/img/image_093.webp"/></p>
 <ul>
 <li><strong>1</strong>: Title of the Monitoring Unit;</li>
 <li><strong>2</strong>: Refresh the Monitoring Unit. Depending on the type, clicking on this
@@ -65,42 +65,42 @@ Monitoring Unit.</li>
 <li><strong>Grid</strong>: The most simple kind, just executes a query from time to time and
 shows the results in a data grid.</li>
 </ul>
-<p><img alt="" src="../../assets/img/image_094.png" /></p>
+<p><img alt="" src="../../assets/img/image_094.webp"/></p>
 <ul>
 <li><strong>Chart</strong>: Every time it refreshes, it renders a new complete chart. The old
 set of values is lost. This is most useful for pie charts, but other kind of
 charts can be used too.</li>
 </ul>
-<p><img alt="" src="../../assets/img/image_095.png" /></p>
+<p><img alt="" src="../../assets/img/image_095.webp"/></p>
 <ul>
 <li><strong>Chart-Append</strong>: Perhaps this is the most useful kind of Monitoring Unit.
 It is a chart that appends a new set of values every time it refreshes. Line or
 bar charts fit best for this type. The last 50 set of values are kept by the
 component client-side to be viewed by the user.</li>
 </ul>
-<p><img alt="" src="../../assets/img/image_096.png" /></p>
+<p><img alt="" src="../../assets/img/image_096.webp"/></p>
 <h4>Showing and hiding units in the dashboard</h4>
 <p>If you click in the button <em>Refresh All</em>, then all Monitoring Units will be
 refreshed at once. You can also remove undesired Monitoring Units by clicking in
 the <em>Remove</em> button. Let us go ahead and remove all units from the dashboard,
 making it empty:</p>
-<p><img alt="" src="../../assets/img/image_097.png" /></p>
+<p><img alt="" src="../../assets/img/image_097.webp"/></p>
 <p>All Monitoring Units that come with OmniDB are open source and available in this
 <a href="https://github.com/OmniDB/monitors">repository</a> (feel free to contribute). But
 be aware that some Monitoring Units require the <code>plpythonu</code> script to be
 installed in the database. Please refer to the instructions specific to your
 operating system on how to install <code>plpythonu</code> if you desire to use and create
 Monitoring Units that use <code>plpythonu</code>.</p>
-<p><img alt="" src="../../assets/img/image_098.png" /></p>
+<p><img alt="" src="../../assets/img/image_098.webp"/></p>
 <p>Now that our dashboard is empty, let us add some units. Click on the <em>Manage
 Units</em> button.</p>
-<p><img alt="" src="../../assets/img/image_099.png" /></p>
+<p><img alt="" src="../../assets/img/image_099.webp"/></p>
 <p>Click on the green action to add the Monitoring Units called <em>CPU Usage</em> and
 <em>Memory Usage</em>. Bear in mind that both units require <code>plpythonu</code> extension in
 the database. <em>CPU Usage</em> also requires that the tool <code>mpstat</code> should be
 installed in the server. Also both units are of type <em>Chart-Append</em>. Wait for
 some seconds and you will have a dashboard like this:</p>
-<p><img alt="" src="../../assets/img/image_100.png" /></p>
+<p><img alt="" src="../../assets/img/image_100.webp"/></p>
 <p>In a similar way, you can add and remove any unit you want to customize the
 dashboard the way you want.</p>
 <h4>Writing custom Monitoring Units: Grid</h4>
@@ -112,10 +112,10 @@ permission as the database user you configured in the Connection.</p>
 <p>To create a new Monitoring Unit, click on the <em>Manage Units</em> button in the
 dashboard, then click on the <em>New Unit</em> button. It will open a new kind of inner
 tab like this:</p>
-<p><img alt="" src="../../assets/img/image_101.png" /></p>
+<p><img alt="" src="../../assets/img/image_101.webp"/></p>
 <p>The easiest way to write a custom unit is to use an existing one as template. Go
 ahead and select the <em>(Grid) Activity</em> template:</p>
-<p><img alt="" src="../../assets/img/image_102.png" /></p>
+<p><img alt="" src="../../assets/img/image_102.webp"/></p>
 <p>Note how OmniDB fills the <em>Data Script</em> source code. This script is responsible
 for generating data for the unit every time it refreshes. As a grid unit is
 nothing else but a grid of data, we can rely on only this script for now.</p>
@@ -151,21 +151,21 @@ result = {
 </code></pre>
 <p>Copy and paste the above Python code into the <em>Data Script</em> text field and then
 click on the <em>Test</em> (lighting) button:</p>
-<p><img alt="" src="../../assets/img/image_103.png" /></p>
+<p><img alt="" src="../../assets/img/image_103.webp"/></p>
 <p>Note how the grid was rendered in the preview drawing area. You can click the
 <em>Test</em> button as many times as you want. Now we will give the unit a name, set
 a refresh interval and then hit the <em>Save</em> button:</p>
-<p><img alt="" src="../../assets/img/image_104.png" /></p>
+<p><img alt="" src="../../assets/img/image_104.webp"/></p>
 <p>Click the <em>OK</em> button and then close the edit tab. Our new Monitoring Unit will
 be in the list of available units. As we created this unit, we can either add it
 to the dashboard, edit it or remove it. Let us add it to the dashboard (green
 action):</p>
-<p><img alt="" src="../../assets/img/image_105.png" /></p>
+<p><img alt="" src="../../assets/img/image_105.webp"/></p>
 <h4>Writing custom Monitoring Units: Chart</h4>
 <p>Click in the <em>Manage Units</em> button and then in the <em>New Unit</em> button. This time
 we will create a Chart Monitoring Unit. So choose <em>(Chart) Database Size</em> as a
 template.</p>
-<p><img alt="" src="../../assets/img/image_106.png" /></p>
+<p><img alt="" src="../../assets/img/image_106.webp"/></p>
 <p>The source code of this kind of unit is more complex. There are two scripts:</p>
 <ul>
 <li><strong>Data Script</strong>: Executed every time the unit is refreshed;</li>
@@ -261,7 +261,7 @@ result = {
 </code></pre>
 <p>Copy and paste the above script into the <em>Data Script</em> field and then hit the
 <em>Test</em> button:</p>
-<p><img alt="" src="../../assets/img/image_107.png" /></p>
+<p><img alt="" src="../../assets/img/image_107.webp"/></p>
 <p>Apparently the chart is almost done. We need to fix the title, it still says
 <em>Database Size</em>, when this chart is about table size. Any information about the
 format of the chart itself is defined in the <em>Chart Script</em> text field. Let us
@@ -312,12 +312,12 @@ result = {
 </code></pre>
 <p>Copy and paste the above Python code into the <em>Chart Script</em>. Then click in the
 <em>Test</em> button:</p>
-<p><img alt="" src="../../assets/img/image_108.png" /></p>
+<p><img alt="" src="../../assets/img/image_108.webp"/></p>
 <p>Now that the chart finally works the way we want, we can give it a title, adjust
 the refresh interval and then click in the <em>Save</em> button. After that we can add
 it to the dashboard.</p>
-<p><img alt="" src="../../assets/img/image_109.png" /></p>
-<p><img alt="" src="../../assets/img/image_110.png" /></p>
+<p><img alt="" src="../../assets/img/image_109.webp"/></p>
+<p><img alt="" src="../../assets/img/image_110.webp"/></p>
 <h4>Writing custom Monitoring Units: Chart-Append</h4>
 <p>Now for the last, but most interesting kind of Monitoring Unit: <em>Chart-Append</em>.
 It is interesting because there is a wide range of applications for these units,
@@ -325,15 +325,15 @@ since they keep recent historic data that allows us to see a comparison of
 values.</p>
 <p>Go ahead and add a new chart using <em>(Chart (Append)) Size: Top 5 Tables</em> as
 template:</p>
-<p><img alt="" src="../../assets/img/image_111.png" /></p>
+<p><img alt="" src="../../assets/img/image_111.webp"/></p>
 <p>Now take a look at the source code of both <em>Data Script</em> and <em>Chart Script</em>. It
 is not too different from the Chart units. The dataset creation is a bit more
 complex as it involves other JSON settings, but that's all.</p>
 <p>As an exercise, based on this chart, create another one called <em>Size: Top 20
 Tables</em>. It should look like this:</p>
-<p><img alt="" src="../../assets/img/image_112.png" /></p>
+<p><img alt="" src="../../assets/img/image_112.webp"/></p>
 <p>Now save it and add it to your dashboard:</p>
-<p><img alt="" src="../../assets/img/image_113.png" /></p>
+<p><img alt="" src="../../assets/img/image_113.webp"/></p>
 	</main>
 	<script src="../../assets/script.js"></script>
 </body>

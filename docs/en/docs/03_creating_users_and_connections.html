@@ -41,30 +41,30 @@
 <p>OmniDB comes only with the user <em>admin</em>. If you are using the server version,
 the first thing to do is sign in as <em>admin</em>, the default password is <em>admin</em>.
 You don't need to login in the app version.</p>
-<p><img alt="" src="../../assets/img/image_003.png" /></p>
+<p><img alt="" src="../../assets/img/image_003.webp"/></p>
 <p>The next window is the initial window.</p>
-<p><img alt="" src="../../assets/img/image_004.png" /></p>
+<p><img alt="" src="../../assets/img/image_004.webp"/></p>
 <h4>Creating another user</h4>
 <p>Click on the <em>Users</em> icon on the upper right corner. It will open a popup
 that allows the current OmniDB super user to create a new OmniDB user.</p>
-<p><img alt="" src="../../assets/img/image_005.png" /></p>
+<p><img alt="" src="../../assets/img/image_005.webp"/></p>
 <p>After clicking on the <em>Users</em> icon the tool inserts a new user called <em>user2</em>
 (if that is the first user after <em>admin</em>).</p>
-<p><img alt="" src="../../assets/img/image_006.png" /></p>
+<p><img alt="" src="../../assets/img/image_006.webp"/></p>
 <p>You will have to change the <em>username</em> and <em>password</em>. Check if you want this
 new user to be a <em>super user</em>. This user management window is only seem by super
 users. When you are done, click on the <em>Save Data</em> button inside the popup.</p>
-<p><img alt="" src="../../assets/img/image_007.png" /></p>
+<p><img alt="" src="../../assets/img/image_007.webp"/></p>
 <p>You can create as many users as you want, edit existing users and also delete
 users by clicking on the red cross at the actions column. Now you can logout by
 clicking in the <em>Sign Out</em> button in the top right corner.</p>
 <h4>Signing in as the new user</h4>
 <p>Let us sign in as the user we just created.</p>
-<p><img alt="" src="../../assets/img/image_008.png" /></p>
+<p><img alt="" src="../../assets/img/image_008.webp"/></p>
 <p>And we can see the window again. Note that now there is no <em>Users</em> icon, because
 the <em>test</em> user is not a super user. Go ahead and click on <strong>Connections</strong> on
 the upper left corner. You will see a popup like this:</p>
-<p><img alt="" src="../../assets/img/image_009.png" /></p>
+<p><img alt="" src="../../assets/img/image_009.webp"/></p>
 <h4>Creating connections</h4>
 <p>At the moment, OmniDB supports PostgreSQL, Oracle, MySQL and MariaDB. More DBMS
 support is being added as you read this.</p>
@@ -73,10 +73,10 @@ Oracle database and one connection to a MariaDB database. To create the
 connections you have to click on the button <em>New Connection</em> and then choose the
 connection and fill the other fields. After filling all the fields for both
 connections, click on the <em>Save Data</em> button.</p>
-<p><img alt="" src="../../assets/img/image_010.png" /></p>
+<p><img alt="" src="../../assets/img/image_010.webp"/></p>
 <p>For each connection there is an <em>Actions</em> column where you can delete, test and
 select them. Go ahead and test the PostgreSQL connection.</p>
-<p><img alt="" src="../../assets/img/image_011.png" /></p>
+<p><img alt="" src="../../assets/img/image_011.webp"/></p>
 <p>Notice a pop-up appears with the message <em>fe_sendauth: no password supplied</em>.
 This is happening because OmniDB does not store the database user password on
 disk. Not having any password at hand, OmniDB will try to connect without one,
@@ -87,21 +87,21 @@ a password is required and asks it to the user. When the user types a password
 in this popup, the password is encrypted and stored in memory.</p>
 <p>After you type the password and hit <em>Enter</em>, if the connection to the database
 is successful you will see a confirmation pop-up.</p>
-<p><img alt="" src="../../assets/img/image_012.png" /></p>
+<p><img alt="" src="../../assets/img/image_012.webp"/></p>
 <p>But, if you have trouble of any kind connecting to your PostgreSQL database,
 the same popup will remain showing the error OmniDB got.</p>
-<p><img alt="" src="../../assets/img/image_013.png" /></p>
+<p><img alt="" src="../../assets/img/image_013.webp"/></p>
 <p>For Oracle, the behavior is similar. When OmniDB first tries to connect to an
 Oracle database without a password, you will see a message like this:</p>
-<p><img alt="" src="../../assets/img/image_115.png" /></p>
+<p><img alt="" src="../../assets/img/image_115.webp"/></p>
 <p>If you have any trouble connection to your Oracle database, the same popup will
 remain showing the error OmniDB got:</p>
-<p><img alt="" src="../../assets/img/image_116.png" /></p>
+<p><img alt="" src="../../assets/img/image_116.webp"/></p>
 <p>MariaDB and MySQL databases also works in the same way. First time, no password
 was given:</p>
-<p><img alt="" src="../../assets/img/image_184.png" /></p>
+<p><img alt="" src="../../assets/img/image_184.webp"/></p>
 <p>But if you have any problems, such as database server down:</p>
-<p><img alt="" src="../../assets/img/image_185.png" /></p>
+<p><img alt="" src="../../assets/img/image_185.webp"/></p>
 <p>Finally, in the connections grid, if you click on the <em>Select Connection</em>
 action, OmniDB will open it in a new <strong>Connection Outer Tab</strong> as we can see in
 the next chapter.</p>
@@ -109,7 +109,7 @@ the next chapter.</p>
 <p>Starting from 2.8, OmniDB allows the user to connect to any remote database
 through SSH tunnels. The user needs to fill SSH tunnel information in each
 connection in the <em>Connections Grid</em>.</p>
-<p><img alt="" src="../../assets/img/image_186.png" /></p>
+<p><img alt="" src="../../assets/img/image_186.webp"/></p>
 <ul>
 <li><em>SSH Server</em>: The server you are connecting to via SSH;</li>
 <li><em>SSH Port</em>: The port of the SSH server (default is 22, but it can be any port
@@ -129,11 +129,11 @@ But instead of being relative to the OmniDB server, they will be relative to the
 SSH Server. This can be done in 2 scenarios as explained below.</p>
 <p>If the database is inside the same server as you are connecting to via SSH, then
 you will have a situation like this:</p>
-<p><img alt="" src="../assets/ssh_tunnels_1.png" /></p>
+<p><img alt="" src="../assets/ssh_tunnels_1.png"/></p>
 <p>In this scenario, the database <em>Server</em> will be <code>127.0.0.1</code>, as the database is
 in the same machine as the <em>SSH Server</em>.</p>
 <p>But the database can be outside the SSH server, like this:</p>
-<p><img alt="" src="../assets/ssh_tunnels_2.png" /></p>
+<p><img alt="" src="../assets/ssh_tunnels_2.png"/></p>
 <p>Here the database <em>Server</em> needs to be <code>192.168.0.10</code>, as it is the relative
 address for the SSH server to connect to the database server.</p>
 	</main>
