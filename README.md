@@ -1,5 +1,8 @@
 # OmniDB
 
+[![Tests](https://github.com/heptau/omnidb/actions/workflows/tests.yml/badge.svg)](https://github.com/heptau/omnidb/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 A user-friendly, lightweight, cross-platform database management tool with strong support for PostgreSQL and compatibility with several other databases.
 
 **Website**: https://www.omnidb.net
