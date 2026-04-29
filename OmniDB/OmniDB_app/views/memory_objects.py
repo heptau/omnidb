@@ -36,7 +36,7 @@ def cleanup_thread():
 		time.sleep(30)
 
 t = threading.Thread(target=cleanup_thread)
-t.setDaemon(True)
+t.daemon = True
 t.start()
 
 def user_authenticated(function):
