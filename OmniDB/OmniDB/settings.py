@@ -154,7 +154,7 @@ LOGIN_REDIRECT_URL = PATH + '/'
 STATIC_URL = PATH + '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "OmniDB_app/static")
 
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.PickleSerializer'
+SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
 
 #OMNIDB LOGGING
 
