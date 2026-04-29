@@ -11,5 +11,5 @@ RestrictedPython
 cx_Oracle
 PyMySQL
 sqlparse
-pgspecial>=2.1.0
+pgspecial==1.11.1
 pyinstaller
