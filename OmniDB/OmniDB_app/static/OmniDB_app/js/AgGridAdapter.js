@@ -232,15 +232,8 @@ class AgGridAdapter {
         
         const menu = document.createElement('div');
         menu.className = 'custom-context-menu';
-        menu.style.position = 'fixed';
         menu.style.left = event.clientX + 'px';
         menu.style.top = event.clientY + 'px';
-        menu.style.backgroundColor = '#fff';
-        menu.style.border = '1px solid #ccc';
-        menu.style.boxShadow = '2px 2px 5px rgba(0,0,0,0.2)';
-        menu.style.zIndex = '999999';
-        menu.style.minWidth = '150px';
-        menu.style.padding = '5px 0';
         
         const items = this.options.contextMenu.items;
         const callback = this.options.contextMenu.callback;
@@ -249,11 +242,6 @@ class AgGridAdapter {
             const item = items[key];
             const div = document.createElement('div');
             div.innerHTML = item.name;
-            div.style.padding = '5px 15px';
-            div.style.cursor = 'pointer';
-            
-            div.onmouseover = () => div.style.backgroundColor = '#f0f0f0';
-            div.onmouseout = () => div.style.backgroundColor = 'transparent';
             
             div.onclick = () => {
                 this._hideContextMenu();
