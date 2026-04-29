@@ -10,7 +10,9 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/lib/bootstrap/bootstrap.min.css?v{{omnidb_short_version}}">
 	<link rel="stylesheet" type="text/css"
-		href="{{url_folder}}/static/OmniDB_app/lib/handsontable/handsontable.full.css?v{{omnidb_short_version}}" />
+		href="{{url_folder}}/static/OmniDB_app/lib/ag-grid/ag-grid.css?v{{omnidb_short_version}}" />
+	<link rel="stylesheet" type="text/css"
+		href="{{url_folder}}/static/OmniDB_app/lib/ag-grid/ag-theme-alpine.css?v{{omnidb_short_version}}" />
 	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/lib/fa/css/all.css?v{{omnidb_short_version}}">
 	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/css/xterm.css">
 	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/lib/explain/css/bootstrap.min.css">
@@ -24,6 +26,7 @@
 	<!-- <link rel="stylesheet" type="text/css" href="{{url_folder}}/static/OmniDB_app/new/lib/json_html/styles/template-2.css?v{{omnidb_short_version}}"/> -->
 	<!-- <link rel="stylesheet" type="text/css" href="{{url_folder}}/static/OmniDB_app/new/lib/omnis_legere/css/omnis-legere.css?v{{omnidb_short_version}}"/> -->
 	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/css/omnidb.min.css?v{{omnidb_short_version}}">
+	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/css/ag-grid-custom.css?v{{omnidb_short_version}}">
 	<link id="ss_theme" rel="stylesheet" type="text/css">
 	<title>OmniDB</title>
 </head>
@@ -942,7 +945,8 @@
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/ace/ace.js?v{{omnidb_short_version}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/ace/mode-sql.js?v{{omnidb_short_version}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/ace/ext-language_tools.js?v{{omnidb_short_version}}"></script>
-	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/handsontable/handsontable.full.js?v{{omnidb_short_version}}"></script>
+	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/ag-grid/ag-grid-community.min.js?v{{omnidb_short_version}}"></script>
+	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/AgGridAdapter.js?v{{omnidb_short_version}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/cytoscape/cytoscape.min.js"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/cytoscape/cytoscape-spread.js"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/cytoscape/klay.js"></script>

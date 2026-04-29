@@ -1,0 +1,36 @@
+.ag-theme-omnidb {
+    font-size: 13px;
+}
+
+.ag-theme-omnidb .ag-root-wrapper {
+    border: none !important;
+}
+
+.ag-theme-omnidb .ag-header {
+    background-color: #e9ecef !important;
+}
+
+.ag-theme-omnidb .ag-header-cell {
+    font-weight: 600;
+}
+
+.ag-theme-omnidb .ag-row {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.ag-theme-omnidb .ag-cell {
+    padding: 0 8px;
+    line-height: 28px;
+}
+
+.ag-theme-omnidb .ag-cell-focus {
+    border: 2px solid #007bff !important;
+}
+
+.ag-theme-omnidb .ag-row-hover {
+    background-color: #f8f9fa !important;
+}
+
+.ag-theme-omnidb .ag-row-selected {
+    background-color: #e3f2fd !important;
+}
