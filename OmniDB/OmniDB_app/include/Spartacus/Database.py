@@ -1331,6 +1331,16 @@ class PostgreSQL(Generic):
 		else:
 			raise Spartacus.Database.Exception("PostgreSQL is not supported. Please install it with 'pip install Spartacus[postgresql]'.")
 
+	def __getstate__(self):
+		state = self.__dict__.copy()
+		del state['v_special']
+		return state
+
+	def __setstate__(self, state):
+		self.__dict__.update(state)
+		if 'PostgreSQL' in v_supported_rdbms:
+			self.v_special = PGSpecial()
+
 	def GetConnectionString(self):
 		if self.v_conn_string != '':
 			if self.v_conn_string_parsed.query == '':
