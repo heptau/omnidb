@@ -116,9 +116,6 @@ AUTHENTICATION_BACKENDS = [
 	'django.contrib.auth.backends.ModelBackend',
 ]
 
-SOCIAL_AUTH_GITHUB_KEY = 'Iv1.b66f09dc30df16f3'
-SOCIAL_AUTH_GITHUB_SECRET = '3403a3cc31a991d48ef72fbd73fa45e3af5b62ba'
-
 AUTH_PASSWORD_VALIDATORS = [
 	{
 		'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
