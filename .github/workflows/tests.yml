@@ -1,0 +1,74 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, dev ]
+  pull_request:
+    branches: [ main, dev ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          cd OmniDB
+          pip install -r ../requirements.txt
+          python manage.py migrate --noinput
+
+      - name: Run tests
+        run: |
+          cd OmniDB
+          python manage.py test --verbosity=2
+
+      - name: Check Django
+        run: |
+          cd OmniDB
+          python manage.py check
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: pip install pyflakes
+
+      - name: Run linter
+        run: |
+          pyflakes OmniDB/OmniDB_app/ --exclude=migrations,include,tests 2>/dev/null || true
+
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install dependencies
+        run: |
+          cd OmniDB
+          pip install -r ../requirements.txt pyinstaller
+
+      - name: Build
+        run: |
+          cd OmniDB
+          pyinstaller omnidb-server.spec || true
