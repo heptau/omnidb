@@ -1,12 +1,12 @@
 Django>=5.2
 CherryPy
-social-auth-app-django==5.4.1
+social-auth-app-django>=5.4.1
 django-auth-ldap
 pyscrypt
 pyaes
 openpyxl
 sshtunnel
-psycopg2-binary
+psycopg2-binary>=2.9.9
 RestrictedPython
 cx_Oracle
 PyMySQL
