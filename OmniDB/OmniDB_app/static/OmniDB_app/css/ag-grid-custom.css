@@ -6,16 +6,8 @@
     border: none !important;
 }
 
-.ag-theme-omnidb .ag-header {
-    background-color: #e9ecef !important;
-}
-
 .ag-theme-omnidb .ag-header-cell {
     font-weight: 600;
-}
-
-.ag-theme-omnidb .ag-row {
-    border-bottom: 1px solid #dee2e6;
 }
 
 .ag-theme-omnidb .ag-cell {
@@ -23,14 +15,32 @@
     line-height: 28px;
 }
 
-.ag-theme-omnidb .ag-cell-focus {
+/* Light mode specific overrides */
+.ag-theme-alpine.ag-theme-omnidb .ag-header {
+    background-color: #e9ecef !important;
+}
+
+.ag-theme-alpine.ag-theme-omnidb .ag-row {
+    border-bottom: 1px solid #dee2e6;
+}
+
+.ag-theme-alpine.ag-theme-omnidb .ag-cell-focus {
     border: 2px solid #007bff !important;
 }
 
-.ag-theme-omnidb .ag-row-hover {
+.ag-theme-alpine.ag-theme-omnidb .ag-row-hover {
     background-color: #f8f9fa !important;
 }
 
-.ag-theme-omnidb .ag-row-selected {
+.ag-theme-alpine.ag-theme-omnidb .ag-row-selected {
     background-color: #e3f2fd !important;
+}
+
+/* Dark mode specific overrides (rely more on ag-grid dark defaults, just tweak selection color) */
+.ag-theme-alpine-dark.ag-theme-omnidb .ag-cell-focus {
+    border: 2px solid #375a7f !important;
+}
+
+.ag-theme-alpine-dark.ag-theme-omnidb .ag-row-selected {
+    background-color: #2b3b4d !important;
 }

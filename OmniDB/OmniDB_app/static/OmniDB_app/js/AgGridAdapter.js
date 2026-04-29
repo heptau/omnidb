@@ -67,9 +67,21 @@ class AgGridAdapter {
         };
         
         this._gridDiv = document.createElement('div');
-        this._gridDiv.className = 'ag-theme-alpine ag-theme-omnidb';
         this._gridDiv.style.width = '100%';
         this._gridDiv.style.height = '100%';
+        
+        const applyTheme = () => {
+            const isDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+            this._gridDiv.className = isDark ? 'ag-theme-alpine-dark ag-theme-omnidb' : 'ag-theme-alpine ag-theme-omnidb';
+        };
+        
+        applyTheme();
+        
+        if (window.matchMedia) {
+            this._mediaQueryListener = (e) => applyTheme();
+            window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', this._mediaQueryListener);
+        }
+        
         this.container.appendChild(this._gridDiv);
         
         this._agGrid = new agGrid.Grid(this._gridDiv, this.gridOptions);
@@ -194,6 +206,9 @@ class AgGridAdapter {
         }
         if (this._gridDiv && this._gridDiv.parentNode) {
             this._gridDiv.parentNode.removeChild(this._gridDiv);
+        }
+        if (this._mediaQueryListener && window.matchMedia) {
+            window.matchMedia('(prefers-color-scheme: dark)').removeEventListener('change', this._mediaQueryListener);
         }
         this._hideContextMenu();
     }
