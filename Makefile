@@ -160,8 +160,8 @@ _build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	mv $(BUILD_DIR)/omnidb-server $(APP_RESOURCES)/app.nw/
 	
 	@echo "Signing..."
-	xattr -cr $(BUILD_DIR)/$(APP_NAME).app
-	codesign --force --deep --sign - $(BUILD_DIR)/$(APP_NAME).app
+	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
+	-codesign --force --deep --sign - $(BUILD_DIR)/$(APP_NAME).app || echo "Signing skipped or failed (non-fatal)"
 	
 	@echo "Packaging Mac Dist..."
 	mkdir -p $(BUILD_DIR)/dist
