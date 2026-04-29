@@ -274,7 +274,7 @@ function showConnectionList(p_open_modal, p_change_group) {
 
 
 			if (p_open_modal) {
-				$('#modal_connections').modal();
+				$('#modal_connections').modal('show');
 			}
 
 			if (p_change_group) {
@@ -848,7 +848,7 @@ function editConnection(p_conn_obj) {
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list);
 
-	$('#modal_edit_connection').modal();
+	$('#modal_edit_connection').modal('show');
 
 }
 
@@ -881,7 +881,7 @@ function newConnection() {
 	$('#conn_form_ssh_password_check_icon').remove();
 	$('#conn_form_ssh_key_check_icon').remove();
 
-	$('#modal_edit_connection').modal();
+	$('#modal_edit_connection').modal('show');
 }
 
 function selectConnection(p_conn_obj) {

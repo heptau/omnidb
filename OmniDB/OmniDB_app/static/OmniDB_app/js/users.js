@@ -402,7 +402,7 @@ function listUsers(p_refresh,p_options = false) {
 	}
 
 	if (p_refresh==null) {
-		$('#modal_users').modal();
+		$('#modal_users').modal('show');
 	}
 	else {
 		getUsers(p_options);

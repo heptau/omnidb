@@ -71,7 +71,7 @@ function showPasswordPrompt(p_database_index, p_callback_function, p_cancel_call
 	if (p_message)
 		v_content_div.innerHTML = p_message;
 
-	$('#modal_password').modal();
+	$('#modal_password').modal('show');
 
 	v_modal_password_ok_function = function() {
 		v_modal_password_ok_clicked = true;

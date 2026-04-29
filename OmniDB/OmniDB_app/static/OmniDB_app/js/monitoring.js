@@ -611,7 +611,7 @@ function testMonitorScript() {
 	v_div_result.innerHTML = '';
 	v_div_result.className = '';
 
-	$('#modal_monitoring_unit_test').modal();
+	$('#modal_monitoring_unit_test').modal('show');
 
 }
 
@@ -724,7 +724,7 @@ function showMonitorUnitList() {
 
 	var v_grid_div = document.getElementById('monitoring_units_grid');
 	v_grid_div.innerHTML = '';
-	$('#modal_monitoring_units').modal();
+	$('#modal_monitoring_units').modal('show');
 
 }
 

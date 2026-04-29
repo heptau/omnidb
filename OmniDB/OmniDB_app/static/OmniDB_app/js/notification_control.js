@@ -60,7 +60,7 @@ $(function () {
 		if (v_message_modal_queued == true) {
 			if (v_message_modal_queued_function!=null)
 				v_message_modal_queued_function();
-			$('#modal_message').modal();
+			$('#modal_message').modal('show');
 		}
 		v_message_modal_queued = false;
 		v_message_modal_queued_function = null;
@@ -88,7 +88,7 @@ function showMessageModal(p_content_function, p_large) {
 	if (!v_message_modal_animating) {
 		if (p_content_function!=null)
 			p_content_function();
-		$('#modal_message').modal();
+		$('#modal_message').modal('show');
 	}
 	else {
 		v_message_modal_queued = true;

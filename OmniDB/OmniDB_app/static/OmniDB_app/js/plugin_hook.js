@@ -432,7 +432,7 @@ function showPlugins() {
 		v_connTabControl.tag.plugin_ht.destroy();
 	}
 
-	$('#modal_plugins').modal();
+	$('#modal_plugins').modal('show');
 
 }
 

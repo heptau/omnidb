@@ -32,7 +32,7 @@ SOFTWARE.
 /// </summary>
 function showAbout() {
 
-	$('#modal_about').modal();
+	$('#modal_about').modal('show');
 
 }
 /*

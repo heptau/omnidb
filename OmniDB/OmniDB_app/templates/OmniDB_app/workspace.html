@@ -943,28 +943,6 @@
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/xterm.js?v{{omnidb_short_version}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/fit.js?v{{omnidb_short_version}}"></script>
 	<script src="{{url_folder}}/static/OmniDB_app/lib/bootstrap/bootstrap.min.js?v{{omnidb_short_version}}"></script>
-		<script>
-			$.fn.modal = function(method) {
-				if (method === undefined || method === 'show' || method === true) {
-					return this.each(function() {
-						var modal = bootstrap.Modal.getOrCreateInstance(this);
-						if (!modal) modal = new bootstrap.Modal(this);
-						modal.show();
-					});
-				} else if (method === 'hide' || method === false) {
-					return this.each(function() {
-						var modal = bootstrap.Modal.getOrCreateInstance(this);
-						if (modal) modal.hide();
-					});
-				} else if (method === 'toggle') {
-					return this.each(function() {
-						var modal = bootstrap.Modal.getOrCreateInstance(this);
-						if (modal) modal.toggle();
-					});
-				}
-				return this;
-			};
-		</script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/ace/ace.js?v{{omnidb_short_version}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/ace/mode-sql.js?v{{omnidb_short_version}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/ace/ext-language_tools.js?v{{omnidb_short_version}}"></script>
