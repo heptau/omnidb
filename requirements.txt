@@ -11,6 +11,5 @@ RestrictedPython
 cx_Oracle
 PyMySQL
 sqlparse
-pgspecial==1.11.1
-django-sass
+pgspecial>=2.1.0
 pyinstaller
