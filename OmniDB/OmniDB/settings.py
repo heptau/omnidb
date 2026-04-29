@@ -154,7 +154,14 @@ LOGIN_REDIRECT_URL = PATH + '/'
 STATIC_URL = PATH + '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, "OmniDB_app/static")
 
-SESSION_SERIALIZER = 'django.contrib.sessions.serializers.JSONSerializer'
+import pickle
+class PickleSerializer:
+    def dumps(self, obj):
+        return pickle.dumps(obj, protocol=pickle.HIGHEST_PROTOCOL)
+    def loads(self, byte_data):
+        return pickle.loads(byte_data)
+
+SESSION_SERIALIZER = 'OmniDB.settings.PickleSerializer'
 
 #OMNIDB LOGGING
 
