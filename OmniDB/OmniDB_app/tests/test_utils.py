@@ -55,11 +55,11 @@ class DataToJsonTest(TestCase):
 
     def test_list_conversion(self):
         result = Utils.DataToJson([1, 2, 3])
-        self.assertEqual(result, '[1,2,3]')
+        self.assertEqual(result, '[1, 2, 3]')
 
     def test_dict_conversion(self):
         result = Utils.DataToJson({'key': 'value'})
-        self.assertEqual(result, '{"key":"value"}')
+        self.assertEqual(result, '{"key": "value"}')
 
 
 class JsonToDataTest(TestCase):

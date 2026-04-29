@@ -39,6 +39,51 @@ import hashlib
 
 import OmniDB_app.include.Spartacus as Spartacus
 
+
+def Base64Encode(p_string):
+	return base64.b64encode(p_string.encode('utf-8')).decode('utf-8')
+
+
+def Base64Decode(p_string):
+	return base64.b64decode(p_string.encode('utf-8')).decode('utf-8')
+
+
+def DataToJson(p_data):
+	import json
+	return json.dumps(p_data)
+
+
+def JsonToData(p_json):
+	import json
+	return json.loads(p_json)
+
+
+def GetDateTime():
+	from datetime import datetime
+	return datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+
+def GetDate():
+	from datetime import datetime
+	return datetime.now().strftime('%Y-%m-%d')
+
+
+def GetTimestamp():
+	from datetime import datetime
+	return str(int(datetime.now().timestamp()))
+
+
+def GetFileSize(p_bytes):
+	if p_bytes < 1024:
+		return str(p_bytes) + ' B'
+	elif p_bytes < 1024 * 1024:
+		return str(round(p_bytes / 1024, 2)) + ' KB'
+	elif p_bytes < 1024 * 1024 * 1024:
+		return str(round(p_bytes / (1024 * 1024), 2)) + ' MB'
+	else:
+		return str(round(p_bytes / (1024 * 1024 * 1024), 2)) + ' GB'
+
+
 class Exception(Exception):
 	pass
 
