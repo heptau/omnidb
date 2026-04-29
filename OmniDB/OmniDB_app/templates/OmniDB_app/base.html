@@ -642,6 +642,29 @@
 		<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/explain/react-dom.js?v{{omnidb_short_version}}"></script>
 		<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/explain/d3.js?v{{omnidb_short_version}}"></script>
 		<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/explain/pgplan.js?v{{omnidb_short_version}}"></script>
+		<script type="text/javascript">
+			// Bootstrap 5 compatibility shim for old .modal() syntax
+			$.fn.modal = function(method) {
+				if (method === undefined || method === 'show' || method === true) {
+					return this.each(function() {
+						var modal = bootstrap.Modal.getOrCreateInstance(this);
+						if (!modal) modal = new bootstrap.Modal(this);
+						modal.show();
+					});
+				} else if (method === 'hide' || method === false) {
+					return this.each(function() {
+						var modal = bootstrap.Modal.getOrCreateInstance(this);
+						if (modal) modal.hide();
+					});
+				} else if (method === 'toggle') {
+					return this.each(function() {
+						var modal = bootstrap.Modal.getOrCreateInstance(this);
+						if (modal) modal.toggle();
+					});
+				}
+				return this;
+			};
+		</script>
 		<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/popper.min.js?v{{omnidb_short_version}}"></script>
 		<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/tooltip.min.js?v{{omnidb_short_version}}"></script>
 		<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/jquery.dd.min.js?v{{omnidb_short_version}}"></script>
