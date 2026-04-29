@@ -1800,7 +1800,7 @@ class PostgreSQL(Generic):
 			if v_command == '\\?':
 				v_table = self.v_help
 			elif v_command == '\\h' and len(p_sql.lstrip().split(' ')[1:]) == 0:
-				v_title = 'Type "\h [parameter]" where "parameter" is a SQL Command from the list below:'
+				v_title = r'Type "\h [parameter]" where "parameter" is a SQL Command from the list below:'
 				v_table = self.v_helpcommands
 			else:
 				v_aux = self.v_help.Select('Command', v_command)
