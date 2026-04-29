@@ -56,6 +56,13 @@ class AgGridAdapter {
                 setTimeout(() => {
                     self.gridApi.sizeColumnsToFit();
                 }, 100);
+            },
+            
+            onCellContextMenu: function(params) {
+                if (self.options.contextMenu) {
+                    params.event.preventDefault();
+                    self._showContextMenu(params.event, params);
+                }
             }
         };
         
@@ -127,7 +134,7 @@ class AgGridAdapter {
     
     getDataAtCell(row, col) {
         if (this.gridApi) {
-            const rowNode = this.gridApi.getRowNode(row);
+            const rowNode = this.gridApi.getDisplayedRowAtIndex(row);
             if (rowNode && rowNode.data) {
                 return rowNode.data['col_' + col];
             }
@@ -147,7 +154,7 @@ class AgGridAdapter {
     
     setDataAtCell(row, col, value) {
         if (this.gridApi) {
-            const rowNode = this.gridApi.getRowNode(row);
+            const rowNode = this.gridApi.getDisplayedRowAtIndex(row);
             if (rowNode) {
                 const newData = Object.assign({}, rowNode.data);
                 newData['col_' + col] = value;
@@ -158,7 +165,7 @@ class AgGridAdapter {
     
     alter(action, index, amount) {
         if (this.gridApi && action === 'remove_row') {
-            const rowNode = this.gridApi.getRowNode(index);
+            const rowNode = this.gridApi.getDisplayedRowAtIndex(index);
             if (rowNode) {
                 this.gridApi.applyTransaction({ remove: [rowNode.data] });
             }
@@ -174,7 +181,7 @@ class AgGridAdapter {
     selectCell(row, col, endRow, endCol) {
         if (this.gridApi) {
             this.gridApi.setFocusedCell(row, 'col_' + col);
-            const rowNode = this.gridApi.getRowNode(row);
+            const rowNode = this.gridApi.getDisplayedRowAtIndex(row);
             if (rowNode) {
                 rowNode.setSelected(true, true);
             }
@@ -188,6 +195,7 @@ class AgGridAdapter {
         if (this._gridDiv && this._gridDiv.parentNode) {
             this._gridDiv.parentNode.removeChild(this._gridDiv);
         }
+        this._hideContextMenu();
     }
     
     getActive() {
@@ -202,6 +210,68 @@ class AgGridAdapter {
     
     getGridDiv() {
         return this._gridDiv;
+    }
+    
+    _showContextMenu(event, params) {
+        this._hideContextMenu();
+        
+        const menu = document.createElement('div');
+        menu.className = 'custom-context-menu';
+        menu.style.position = 'fixed';
+        menu.style.left = event.clientX + 'px';
+        menu.style.top = event.clientY + 'px';
+        menu.style.backgroundColor = '#fff';
+        menu.style.border = '1px solid #ccc';
+        menu.style.boxShadow = '2px 2px 5px rgba(0,0,0,0.2)';
+        menu.style.zIndex = '999999';
+        menu.style.minWidth = '150px';
+        menu.style.padding = '5px 0';
+        
+        const items = this.options.contextMenu.items;
+        const callback = this.options.contextMenu.callback;
+        
+        for (let key in items) {
+            const item = items[key];
+            const div = document.createElement('div');
+            div.innerHTML = item.name;
+            div.style.padding = '5px 15px';
+            div.style.cursor = 'pointer';
+            
+            div.onmouseover = () => div.style.backgroundColor = '#f0f0f0';
+            div.onmouseout = () => div.style.backgroundColor = 'transparent';
+            
+            div.onclick = () => {
+                this._hideContextMenu();
+                let colIndex = parseInt(params.column.colId.replace('col_', ''));
+                if (isNaN(colIndex)) colIndex = 0;
+                let htOptions = [{
+                    start: {row: params.rowIndex, col: colIndex},
+                    end: {row: params.rowIndex, col: colIndex}
+                }];
+                if (callback) {
+                    callback.call(this, key, htOptions);
+                }
+            };
+            menu.appendChild(div);
+        }
+        
+        document.body.appendChild(menu);
+        this._contextMenuElement = menu;
+        
+        const hideHandler = (e) => {
+            if (!menu.contains(e.target)) {
+                this._hideContextMenu();
+                document.removeEventListener('click', hideHandler);
+            }
+        };
+        setTimeout(() => document.addEventListener('click', hideHandler), 0);
+    }
+    
+    _hideContextMenu() {
+        if (this._contextMenuElement && this._contextMenuElement.parentNode) {
+            this._contextMenuElement.parentNode.removeChild(this._contextMenuElement);
+            this._contextMenuElement = null;
+        }
     }
 }
 
