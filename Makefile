@@ -6,7 +6,7 @@ APP_NAME = OmniDB
 SERVER_DIR = OmniDB
 BUNDLE_ID = net.omnidb
 APP_DISPLAY_NAME = OmniDB
-NWJS_VERSION = v0.107.0
+NWJS_VERSION = v0.111.0
 
 # --- Platform Defaults (can be overridden by targets) ---
 NWJS_ARCH = osx-arm64
@@ -122,7 +122,7 @@ _build_server:
 		--distpath ../$(BUILD_DIR) \
 		--workpath ../$(WORK_DIR) \
 		--clean --noconfirm
-	
+
 	@echo "Cleaning up unnecessary artifacts from build..."
 	find $(BUILD_DIR)/omnidb-server -name "*.spec" -delete
 
@@ -130,39 +130,39 @@ _build_server:
 _build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	@echo "Unzipping NW.js for Mac..."
 	unzip -q -o "$(DEPS_DIR)/$(NWJS_ZIP)" -d "$(DEPS_DIR)"
-	
+
 	@echo "Setting up .app structure..."
 	rm -rf $(BUILD_DIR)/$(APP_NAME).app
 	mv "$(DEPS_DIR)/$(NWJS_FILENAME)/nwjs.app" "$(BUILD_DIR)/$(APP_NAME).app"
 	rm -rf "$(DEPS_DIR)/$(NWJS_FILENAME)"
-	
+
 	# Variables for Mac paths
 	$(eval APP_CONTENT := $(BUILD_DIR)/$(APP_NAME).app/Contents)
 	$(eval APP_RESOURCES := $(APP_CONTENT)/Resources)
 	$(eval APP_MACOS := $(APP_CONTENT)/MacOS)
-	
+
 	@echo "Configuring metadata and icon..."
 	cp "deploy/macosx/mac-icon.icns" "$(APP_RESOURCES)/app.icns"
 	$(SED_CMD) 's/io.nwjs.nwjs/$(BUNDLE_ID)/g' "$(APP_CONTENT)/Info.plist"
 	$(SED_CMD) 's/nw.icns/app.icns/g' "$(APP_CONTENT)/Info.plist"
 	$(SED_CMD) 's/nwjs/$(APP_DISPLAY_NAME)/g' "$(APP_CONTENT)/Info.plist"
 	mv "$(APP_MACOS)/nwjs" "$(APP_MACOS)/$(APP_DISPLAY_NAME)"
-	
+
 	@echo "Copying web app..."
 	rm -rf $(APP_RESOURCES)/app.nw/*
 	mkdir -p $(APP_RESOURCES)/app.nw
 	cp -R deploy/app/* $(APP_RESOURCES)/app.nw/
-	
+
 	# Build server
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-	
+
 	@echo "Integrating server..."
 	mv $(BUILD_DIR)/omnidb-server $(APP_RESOURCES)/app.nw/
-	
+
 	@echo "Signing..."
 	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
 	-codesign --force --deep --sign - $(BUILD_DIR)/$(APP_NAME).app || echo "Signing skipped or failed (non-fatal)"
-	
+
 	@echo "Packaging Mac Dist..."
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && zip -ry dist/OmniDB-macOS-$(NWJS_ARCH).zip $(APP_NAME).app
@@ -172,23 +172,23 @@ _build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 _build_linux: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	@echo "Extracting NW.js for Linux..."
 	tar -xzf "$(DEPS_DIR)/$(NWJS_ZIP)" -C "$(DEPS_DIR)"
-	
+
 	@echo "Setting up Linux structure..."
 	mv "$(DEPS_DIR)/$(NWJS_FILENAME)" "$(BUILD_DIR)/$(APP_NAME)-linux"
-	
+
 	@echo "Copying web app..."
 	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw"
 	cp -R deploy/app/* "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw/"
-	
+
 	# Build server
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-	
+
 	@echo "Integrating server..."
 	mv $(BUILD_DIR)/omnidb-server "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw/"
-	
+
 	@echo "Renaming executable..."
 	mv "$(BUILD_DIR)/$(APP_NAME)-linux/nw" "$(BUILD_DIR)/$(APP_NAME)-linux/$(APP_NAME)"
-	
+
 	@echo "Packaging Linux Dist..."
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && tar -czf dist/OmniDB-linux-x64.tar.gz $(APP_NAME)-linux
@@ -198,24 +198,24 @@ _build_linux: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 _build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	@echo "Unzipping NW.js for Windows..."
 	unzip -q -o "$(DEPS_DIR)/$(NWJS_ZIP)" -d "$(DEPS_DIR)"
-	
+
 	@echo "Setting up Windows structure..."
 	mv "$(DEPS_DIR)/$(NWJS_FILENAME)" "$(BUILD_DIR)/$(APP_NAME)-win"
-	
+
 	@echo "Copying web app..."
 	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-win/package.nw"
 	cp -R deploy/app/* "$(BUILD_DIR)/$(APP_NAME)-win/package.nw/"
-	
+
 	# Build server
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-	
+
 	@echo "Integrating server..."
 	# WARNING: PyInstaller on Mac generates a Mac binary, not Windows .exe!
 	mv $(BUILD_DIR)/omnidb-server* "$(BUILD_DIR)/$(APP_NAME)-win/package.nw/"
-	
+
 	@echo "Renaming executable..."
 	mv "$(BUILD_DIR)/$(APP_NAME)-win/nw.exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
-	
+
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && zip -r dist/OmniDB-win-x64.zip $(APP_NAME)-win

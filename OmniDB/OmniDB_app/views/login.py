@@ -83,7 +83,8 @@ def index(request):
 def logout(request):
 
 	v_session = request.session.get('omnidb_session')
-	logger.info('User "{0}" logged out.'.format(v_session.v_user_name))
+	if v_session:
+		logger.info('User "{0}" logged out.'.format(v_session.v_user_name))
 	logout_django(request)
 
 	return redirect(settings.PATH + '/omnidb_login')
