@@ -717,7 +717,7 @@ class PostgreSQL:
 			'YEAR',
 			'ZONE',
 		]
-		self.v_console_help = "Console tab. Type the commands in the editor below this box. \? to view command list."
+		self.v_console_help = r"Console tab. Type the commands in the editor below this box. \? to view command list."
 		self.v_version = ''
 		self.v_version_num = ''
 		self.v_use_server_cursor = True
@@ -4259,7 +4259,7 @@ CREATE MATERIALIZED VIEW {0}.{1} AS
 			v_inSchemas = v_inSchemas[:-2]
 
 		if not p_regex:
-			if '%' not in p_textPattern.replace('\%', ''):
+			if '%' not in p_textPattern.replace(r'\%', ''):
 				p_textPattern = '%{0}%'.format(p_textPattern)
 
 		for v_category in p_categoryList:
@@ -8516,7 +8516,7 @@ FROM #table_name#
 					FROM pg_database
 					WHERE quote_ident(datname) = '{0}'
 				)
-				select format(E'CREATE DATABASE %s\nOWNER %s\nENCODING %s\nLC_COLLATE ''%s''\nLC_CTYPE ''%s''\nTABLESPACE %s\CONNECTION LIMIT %s;%s',
+				select format(r'CREATE DATABASE %s\nOWNER %s\nENCODING %s\nLC_COLLATE ''%s''\nLC_CTYPE ''%s''\nTABLESPACE %s\\CONNECTION LIMIT %s;%s',
 							  quote_ident(d.datname),
 							  quote_ident(r.rolname),
 							  pg_encoding_to_char(encoding),
@@ -11747,7 +11747,7 @@ FROM #table_name#
 			),
 			comment_on AS (
 				SELECT format(
-						   E'\n\COMMENT ON DOMAIN {0}.{1} IS %s',
+						   r'\n\\COMMENT ON DOMAIN {0}.{1} IS %s',
 						   quote_literal(description)
 					   ) AS sql
 				FROM comments

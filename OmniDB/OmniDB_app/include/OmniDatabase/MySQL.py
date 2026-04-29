@@ -157,7 +157,7 @@ class MySQL:
 			"CASCADE"
 		]
 		self.v_reserved_words = []
-		self.v_console_help = "Console tab. Type the commands in the editor below this box. \? to view command list."
+		self.v_console_help = r"Console tab. Type the commands in the editor below this box. \? to view command list."
 		self.v_use_server_cursor = False
 
 	# Decorator to acquire lock before performing action
