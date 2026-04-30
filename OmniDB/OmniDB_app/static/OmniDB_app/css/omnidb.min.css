@@ -390,16 +390,18 @@ button.close {
 .omnidb__tab-menu--secondary .nav-tabs,
 .omnidb__tree-tabs .nav-tabs,
 .omnidb__query-result-tabs .nav-tabs {
-	border-bottom: none;
+	border-bottom: 1px solid #e5e5ea;
 }
 
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link,
 .omnidb__tree-tabs .omnidb__tab-menu__link,
 .omnidb__query-result-tabs .omnidb__tab-menu__link,
 .omnidb__modal-config .nav-link {
-	font-size: 1.15rem;
+	font-size: 13px;
 	line-height: 1;
-	margin-right: 5px;
+	margin-right: 4px;
+	padding: 6px 12px;
+	border-radius: 6px 6px 0 0;
 }
 
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link-icon,
@@ -1532,7 +1534,8 @@ body {
 	left: 0;
 	height: 100%;
 	width: 100%;
-	background-color: rgba(0, 0, 0, 0.25);
+	background-color: rgba(255, 255, 255, 0.7);
+	backdrop-filter: blur(4px);
 }
 
 .div_loading_content {
@@ -1541,6 +1544,10 @@ body {
 	top: 50%;
 	transform: translate(-50%, -50%);
 	text-align: center;
+	background-color: #fff;
+	padding: 20px;
+	border-radius: 12px;
+	box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
 }
 
 .tab-icon {
@@ -2758,21 +2765,24 @@ a {
 }
 
 .omnidb__modal-config .nav-tabs {
-	border-bottom-color: transparent !important;
+	border-bottom: 1px solid #e5e5ea;
+	margin-bottom: 0;
 }
 
 .omnidb__modal-config .nav-link {
 	background-color: transparent;
-	border-color: #e2e2e2;
-	border-bottom-color: #fff;
-	color: #585858 !important;
+	border: none;
+	border-radius: 6px 6px 0 0;
+	color: #8e8e93 !important;
+	padding: 8px 16px;
+	margin-right: 4px;
 }
 
 .omnidb__modal-config .nav-link.active {
-	background-color: transparent;
-	border-color: #dedede;
-	border-bottom-color: #fff;
-	border-top: 2px solid #68a4ff;
+	background-color: #f5f5f7;
+	border: none;
+	border-bottom: 2px solid #007aff;
+	color: #007aff !important;
 }
 
 .omnidb__modal-config .nav-link:focus,
@@ -3001,11 +3011,11 @@ label.omnidb__switch--label span {
 }
 
 .toast {
-	background-color: rgba(255, 255, 255, 0.9);
-	backdrop-filter: blur(10px);
-	border-radius: 10px;
-	border: 1px solid #d1d1d6;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+	background-color: rgba(255, 255, 255, 0.95);
+	backdrop-filter: blur(20px);
+	border-radius: 14px;
+	border: none;
+	box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
 }
 
 .toast .toast-header {
