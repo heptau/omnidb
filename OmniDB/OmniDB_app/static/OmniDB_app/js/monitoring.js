@@ -135,10 +135,32 @@ function buildMonitorUnit(p_unit, p_first) {
 	'</div>';
 
 	var div_header = document.createElement('div');
-	div_header.className = 'form-inline'
+	div_header.className = 'd-flex flex-column gap-2';
+
+	var div_header_row1 = document.createElement('div');
+	div_header_row1.className = 'd-flex justify-content-between align-items-center';
+
+	var button_close = document.createElement('button');
+	button_close.className = 'omnidb__macos-close-btn';
+	button_close.style.cssText = 'width: 12px; height: 12px; border-radius: 50%; border: none; background: #ff5f56; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0;';
+	button_close.onclick = (function(div) {
+		return function() {
+			closeMonitorUnit(div);
+		}
+	})(div);
+	button_close.innerHTML = '<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1L7 7M7 1L1 7" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>';
+
 	var title = document.createElement('span');
-	title.className = ' mr-1';
+	title.className = 'flex-grow-1 text-center fw-bold';
 	title.innerHTML = v_return_unit.v_title;
+
+	div_header_row1.appendChild(button_close);
+	div_header_row1.appendChild(title);
+	div_header_row1.appendChild(document.createElement('div'));
+
+	var div_header_row2 = document.createElement('div');
+	div_header_row2.className = 'd-flex align-items-center gap-2';
+
 	var button_refresh = document.createElement('button');
 	button_refresh.onclick = (function(div) {
 		return function() {
@@ -146,7 +168,7 @@ function buildMonitorUnit(p_unit, p_first) {
 		}
 	})(div);
 	button_refresh.innerHTML = "<i class='fas fa-sync-alt fa-light'></i>";
-	button_refresh.className = 'btn omnidb__theme__btn--secondary btn-sm mr-1';
+	button_refresh.className = 'btn omnidb__theme__btn--secondary btn-sm';
 	button_refresh.title = 'Refresh';
 	var button_pause = document.createElement('button');
 	button_pause.onclick = (function(div) {
@@ -155,7 +177,7 @@ function buildMonitorUnit(p_unit, p_first) {
 		}
 	})(div);
 	button_pause.innerHTML = "<i class='fas fa-pause-circle fa-light'></i>";
-	button_pause.className = 'btn omnidb__theme__btn--secondary btn-sm mr-1';
+	button_pause.className = 'btn omnidb__theme__btn--secondary btn-sm';
 	button_pause.title = 'Pause';
 	var button_play = document.createElement('button');
 	button_play.onclick = (function(div) {
@@ -164,12 +186,12 @@ function buildMonitorUnit(p_unit, p_first) {
 		}
 	})(div);
 	button_play.innerHTML = "<i class='fas fa-play-circle fa-light'></i>";
-	button_play.className = 'btn omnidb__theme__btn--secondary btn-sm my-2 mr-1';
+	button_play.className = 'btn omnidb__theme__btn--secondary btn-sm';
 	button_play.title = 'Play';
 	button_play.style.display = 'none';
 	var interval = document.createElement('input');
 	interval.value = v_return_unit.v_interval;
-	interval.className = 'form-control form-control-sm mr-2';
+	interval.className = 'form-control form-control-sm';
 	interval.style.width = '60px';
 	interval.onkeypress= function() {
 		return event.charCode >= 48 && event.charCode <= 57;
@@ -182,19 +204,22 @@ function buildMonitorUnit(p_unit, p_first) {
 		updateUnitSavedInterval(div);
 	}
 	var interval_text = document.createElement('span');
-	interval_text.classList.add('unit_header_element');
+	interval_text.className = 'text-nowrap';
 	interval_text.innerHTML = 'seconds';
-	var button_close = document.createElement('button');
-	button_close.className = 'close';
-	button_close.onclick = (function(div) {
-		return function() {
-			closeMonitorUnit(div);
-		}
-	})(div);
-	button_close.innerHTML = '<span aria-hidden="true">&times;</span>';
 	var details = document.createElement('span');
 	details.classList.add('unit_header_element');
 	details.innerHTML = '';
+
+	div_header_row2.appendChild(button_refresh);
+	div_header_row2.appendChild(button_pause);
+	div_header_row2.appendChild(button_play);
+	div_header_row2.appendChild(interval);
+	div_header_row2.appendChild(interval_text);
+	div_header_row2.appendChild(details);
+
+	div_header.appendChild(div_header_row1);
+	div_header.appendChild(div_header_row2);
+
 	var div_error = document.createElement('div');
 	div_error.classList.add('error_text');
 	var div_content = document.createElement('div');
@@ -203,15 +228,6 @@ function buildMonitorUnit(p_unit, p_first) {
 
 	var div_content_group = document.createElement('div');
 	div_content_group.className = 'dashboard_unit_content_group';
-
-	div_header.appendChild(title);
-	div_header.appendChild(button_refresh);
-	div_header.appendChild(button_pause);
-	div_header.appendChild(button_play);
-	div_header.appendChild(interval);
-	div_header.appendChild(interval_text);
-	div_header.appendChild(details);
-	div_card_body.appendChild(button_close);
 	div_card_body.appendChild(div_loading);
 	div_card_body.appendChild(div_header);
 	div_card_body.appendChild(div_error);
@@ -633,6 +649,8 @@ function refreshMonitorUnitsList() {
 					var col = new Object();
 					col.readOnly = true;
 					col.title =  'Actions';
+					col.renderer = 'html';
+					col.width = 80;
 
 					columnProperties.push(col);
 

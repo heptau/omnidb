@@ -42,7 +42,7 @@ var v_createEditDataTabFunction = function(p_table) {
 		p_selectFunction: function() {
 			if(this.tag != null) {
 				this.tag.resize();
-				$('[data-toggle="tooltip"]').tooltip({animation:true});// Loads or Updates all tooltips
+				$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads or Updates all tooltips
 			}
 			if(this.tag != null && this.tag.editor != null) {
 					this.tag.editor.focus();

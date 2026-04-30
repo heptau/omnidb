@@ -660,8 +660,8 @@ button.close {
 }
 
 .omnidb__resize-line__container {
-	opacity: 0;
-	transition: opacity 0.3s 0.4s;
+	opacity: 0.4;
+	transition: opacity 0.2s;
 }
 
 .omnidb__resize-line__container:hover {
@@ -870,6 +870,13 @@ button.close {
 .omnidb__form-check .form-check-label {
 	cursor: pointer;
 	padding-left: 0.25rem;
+	position: relative;
+	padding-left: 1.5rem;
+}
+
+.omnidb__form-check .form-check-input {
+	opacity: 0;
+	position: absolute;
 }
 
 .omnidb__form-check .form-check-label::before {

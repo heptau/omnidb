@@ -485,7 +485,7 @@ function queryEditDataReturnRender(p_message,p_context) {
 	p_context.tab_tag.tab_check_span.style.display = 'none';
 	p_context.tab_tag.bt_cancel.style.display = 'none';
 
-	$('[data-toggle="tooltip"]').tooltip({animation:true});// Loads or Updates all tooltips
+	$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads or Updates all tooltips
 
 }
 

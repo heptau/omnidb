@@ -114,20 +114,20 @@ var v_createQueryTabFunction = function(p_table, p_tab_db_id) {
 			'<button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" onclick="getExplain(0)" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button>' +
 			'<button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" onclick="getExplain(1)" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button>' +
 			'<div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">Autocommit</label></div>' +
-			'<div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="Not connected" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ml-1">Not connected</span></div>' +
+			'<div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="Not connected" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ms-1">Not connected</span></div>' +
 			'<button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(1);">Fetch more</button>' +
-			'<button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="margin-left: 5px; display: none;" onclick="querySQL(2);">Fetch all</button>' +
-			'<button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="margin-left: 5px; display: none;" onclick="querySQL(3);">Commit</button>' +
-			'<button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="margin-left: 5px; display: none;" onclick="querySQL(4);">Rollback</button>' +
+			'<button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(2);">Fetch all</button>' +
+			'<button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(3);">Commit</button>' +
+			'<button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(4);">Rollback</button>' +
 			'<button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;" onclick="cancelSQL();">Cancel</button>' +
 			'<div id="div_query_info_' + v_tab.id + '" class="omnidb__query-info"></div>' +
-			'<button class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ml-auto" title="Export Data" onclick="v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.exportData();"><i class="far fa-file fa-light"></i></button>' +
+			'<button class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data" onclick="v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.exportData();"><i class="far fa-file fa-light"></i></button>' +
 			'<select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="xlsx">XLSX</option></select>' +
 		'</div>' +
 	'</div>' +
 	'<div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs">' +
-		'<div style="position:absolute;top:0.25rem;right:2.5rem;">' +
-			'<div class="omnidb__switch--explain omnidb__switch--explain--sm float-right" data-toggle="tooltip" data-placement="left" data-html="true" title="" data-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>">' +
+		'<div style="position:absolute;top:0.25rem;right:2.75rem;">' +
+			'<div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>">' +
 				'<input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input" onclick="toggleExplainContext()">' +
 				'<label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label">' +
 					'<span><i class="fas fa-th"></i></span>' +
@@ -166,7 +166,7 @@ var v_createQueryTabFunction = function(p_table, p_tab_db_id) {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currQueryTab = 'explain';
 		v_tab.tag.resize();
 		// Loads or Updates all tooltips.
-		$('[data-toggle="tooltip"]').tooltip({animation:true});
+$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});
 	}
 
 	// Creating the `data` tab.
@@ -430,7 +430,7 @@ var v_createQueryTabFunction = function(p_table, p_tab_db_id) {
 	}
 
 	// Loads or Updates all tooltips.
-	$('[data-toggle="tooltip"]').tooltip({animation:true});
+	$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});
 
 	// Requesting an update on the workspace layout and sizes.
 	setTimeout(function() {

@@ -371,7 +371,7 @@ function getUsers(p_options = false) {
 					}
 					if (v_usersObject.v_cellChanges.length > 0 || window.newUsersObject.newUsers.length > 0)
 						document.getElementById('div_save_users').style.visibility = 'visible';
-					$('[data-toggle="tooltip"]').tooltip({animation:true});// Loads or Updates all tooltips
+					$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads or Updates all tooltips
 	        endLoading();
 				},
 				null,

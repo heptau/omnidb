@@ -118,6 +118,7 @@ function showCommandList() {
 	v_column.title =  'Status';
 	v_column.readOnly = true;
 	v_column.width = 50;
+	v_column.renderer = 'html';
 	v_columnProperties.push(v_column);
 
 	// var v_column = new Object();

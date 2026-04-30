@@ -44,9 +44,9 @@
 
 	<div class="toast" data-autohide="false" style="position: absolute; top: 0; right: 0;">
 		<div class="toast-header">
-			<strong class="mr-auto">Bootstrap</strong>
+			<strong class="me-auto">Bootstrap</strong>
 			<small>11 mins ago</small>
-			<button type="button" class="ml-2 mb-1 close" data-bs-dismiss="toast" aria-label="Close">
+			<button type="button" class="ms-2 mb-1 close" data-bs-dismiss="toast" aria-label="Close">
 				<span aria-hidden="true">&times;</span>
 			</button>
 		</div>
@@ -155,11 +155,11 @@
 								style='display: inline-block; width: 200px;'>
 								<option value=-1 selected>Select Group</option>
 							</select>
-							<button id="button_new_group" type="button" class="btn ml-2 omnidb__theme__btn--primary"
+							<button id="button_new_group" type="button" class="btn ms-2 omnidb__theme__btn--primary"
 								onclick="newGroup();">New group</button>
 							<button id="button_group_actions" type="button"
-								class="btn ml-2 omnidb__theme__btn--secondary dropdown-toggle" style='display: none;'
-								data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								class="btn ms-2 omnidb__theme__btn--secondary dropdown-toggle" style='display: none;'
+								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Group Actions
 							</button>
 							<div class="dropdown-menu dropdown-menu-left">
@@ -169,13 +169,13 @@
 							</div>
 						</span>
 						<span id="group_actions_2" style='display: none;'>
-							<button id="button_new_group" type="button" class="btn btn-success ml-2" onclick="manageGroupSave();">Save
+							<button id="button_new_group" type="button" class="btn btn-success ms-2" onclick="manageGroupSave();">Save
 								changes</button>
 						</span>
-						<div class="d-inline-block ml-4">
+						<div class="d-inline-block ms-4">
 							<span>Show Public Connections (<span id="conn_list_public_counter">0</span>)</span>
-							<div class="d-inline-block omnidb__switch ml-2" data-toggle="tooltip" data-placement="right"
-								data-html="true"
+							<div class="d-inline-block omnidb__switch ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
+								data-bs-html="true"
 								title="<h5>Show Public Connections.</h5><div>Switch ON shows all public connections.</div>">
 								<input type="checkbox" id="conn_list_public" class="omnidb__switch--input"
 									onchange="toggleConnectionsPublic(event)">
@@ -207,7 +207,7 @@
 				</div>
 				<div class="modal-body">
 
-					<div class="form-row">
+					<div class="row">
 						<div class="col-md-4 mb-3 required">
 							<label for="conn_form_type">Connection Type</label>
 							<select id="conn_form_type" class="form-control" oninput="updateModalEditConnectionState(event)">
@@ -219,9 +219,9 @@
 							<input type="text" class="form-control" id="conn_form_title" placeholder="Title">
 						</div>
 						<div class="col-md-4 mt-auto mb-3">
-							<span class="ml-2">Public connection?</span>
-							<div class="d-inline-block ml-2">
-								<div class="omnidb__switch mr-2" data-toggle="tooltip" data-placement="bottom" data-html="true"
+							<span class="ms-2">Public connection?</span>
+							<div class="d-inline-block ms-2">
+								<div class="omnidb__switch me-2" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
 									title="<h5>Toggle public status.</h5><div>Switch ON sets connection as usable for all other omnidb users.</div>">
 									<input type="checkbox" id="conn_form_public" class="omnidb__switch--input">
 									<label for="conn_form_public" class="omnidb__switch--label"><span><i
@@ -236,7 +236,7 @@
 							<h6 class="mb-0">Host Connection Info</h6>
 						</div>
 						<div class="card-body">
-							<div class="form-row">
+							<div class="row">
 								<div class="col-md-3 mb-3">
 									<label for="conn_form_server">Server</label>
 									<input type="text" class="form-control" id="conn_form_server" placeholder="ex: 127.0.0.1"
@@ -259,7 +259,7 @@
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="conn_form_user_pass">User Password <i class="fas fa-question-circle text-info"
-											data-toggle="tooltip" data-html="true" data-placement="bottom"
+											data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
 											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional user password</h5></h4><ul><li><strong>If provided:</strong> password will be stored to omnidb configuration's database and used when connecting to this connection.</li><li><strong>Leaving blank:</strong> No password will be saved and it will be requested to be manually type everytime the user tries to use this connection. If it's a <strong>PostgreSQL</strong> connection, OmniDB will try to retrieve password from <strong>.pgpass</strong>.</li></ul>"></i></label>
 									<input type="password" class="form-control" id="conn_form_user_pass" placeholder="User Password">
 								</div>
@@ -271,10 +271,10 @@
 								<hr />
 							</div>
 
-							<div class="form-row">
+							<div class="row">
 								<div class="col-md mb-3">
 									<label for="conn_form_connstring">Connection string <i class="fas fa-question-circle text-info"
-											data-toggle="tooltip" data-html="true" data-placement="bottom"
+											data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
 											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional connection string</h5></h4><ul><li><strong>If provided:</strong> OmniDB will use this as the default config, and single inputs for server should not be filled.</li><li><strong>If blank:</strong> In this case, if this is not a terminal connection, you should instead fill the required single inputs for server above.</li></ul>"></i></label>
 									<input type="text" class="form-control" id="conn_form_connstring"
 										placeholder="ex: postgresql://postgres@localhost:5432/postgres"
@@ -297,7 +297,7 @@
 							</div>
 						</div>
 						<div class="card-body">
-							<div class="form-row">
+							<div class="row">
 								<div class="col-md-4 mb-3">
 									<label for="conn_form_ssh_server">SSH Server</label>
 									<input type="text" class="form-control" id="conn_form_ssh_server" placeholder="SSH server" readonly
@@ -316,25 +316,25 @@
 								<div class="col-md-3 mb-3">
 									<label for="conn_form_ssh_password">
 										Password / Passphrase
-										<i class="fas fa-question-circle text-info ml-2" data-toggle="tooltip" data-html="true"
-											data-placement="bottom"
+										<i class="fas fa-question-circle text-info ms-2" data-bs-toggle="tooltip" data-bs-html="true"
+											data-bs-placement="bottom"
 											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional ssh password / passphrase</h5></h4><div>Leave this blank if you dont want the password to be stored.</div><ul><li><strong>If provided:</strong> OmniDB will use this password when opening a SSH tunnel.</li><li><strong>Leaving blank:</strong> When the SSH tunnel is requested, OmniDB will prompt an input requesting for this password to be used exclusively to open the connection, but it wont be stored.</li></ul>"></i>
 									</label>
 									<input type="password" class="form-control" id="conn_form_ssh_password"
 										placeholder="SSH password / passphrase" oninput="updateConnectionKey(event)" readonly>
 								</div>
 							</div>
-							<div class="form-row">
+							<div class="row">
 								<div class="col-md mb-3">
 									<label for="conn_form_ssh_key">
 										SSH Key Text File
-										<i class="fas fa-question-circle text-info ml-2" data-toggle="tooltip" data-html="true"
-											data-placement="bottom"
+										<i class="fas fa-question-circle text-info ms-2" data-bs-toggle="tooltip" data-bs-html="true"
+											data-bs-placement="bottom"
 											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional ssh key</h5></h4><div>Leave this blank if you dont want the key to be stored.</div><ul><li><strong>If provided:</strong> When saving this SSH tunnel, OmniDB will read the content of this file and store just the text, but not the file.</li></ul>"></i>
 									</label>
 									<textarea style="display:none;" class="form-control" id="conn_form_ssh_key" rows="4"
 										readonly></textarea>
-									<div class="ml-4 d-inline-block custom-file" style="width: 200px;">
+									<div class="ms-4 d-inline-block custom-file" style="width: 200px;">
 										<input type="file" id="conn_form_ssh_key_input" onchange="updateConnectionKey(event)"
 											style="width: 200px;height: 100%;" disabled />
 										<label id="conn_form_ssh_key_input_label" class="custom-file-label"
@@ -369,7 +369,7 @@
 				</div>
 				<div class="modal-body">
 
-					<div class="form-row">
+					<div class="row">
 						<div class="col-md-3 mb-3">
 							<label for="query_history_from">From</label>
 							<input type="text" class="form-control" id="query_history_from" placeholder="From Date">
@@ -385,11 +385,11 @@
 					</div>
 
 					<div class="text-center">
-						<button class="btn omnidb__theme__btn--secondary btn-sm mr-1">First</button>
-						<button class="btn omnidb__theme__btn--secondary btn-sm mr-1">Previous</button>
-						<span class="mr-1"> 1 / 217 </span>
-						<button class="btn omnidb__theme__btn--secondary btn-sm mr-1">Next</button>
-						<button class="btn omnidb__theme__btn--secondary btn-sm mr-1">Last</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">First</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Previous</button>
+						<span class="me-1"> 1 / 217 </span>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Next</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Last</button>
 					</div>
 
 					<div id="query_history_grid" style="width: 100%; height: 300px; overflow: hidden;"></div>
@@ -581,7 +581,7 @@
 
 							<div class="tab-pane fade" id="config_options" role="tabpanel" aria-labelledby="config_options-tab">
 
-								<div class="form-row">
+								<div class="row">
 									<div class="col-md-6 mb-3">
 										<label for="sel_interface_font_size">Font Size</label>
 										<input type="range" min="10"  max="20"  step="1" value="12"
@@ -591,7 +591,7 @@
 											id="sel_interface_font_size">
 									</div>
 								</div>
-								<div class="form-row">
+								<div class="row">
 									<div class="col-md-6 mb-3">
 										<label for="sel_csv_encoding">CSV Encoding</label>
 										<select id="sel_csv_encoding" class="form-control">
@@ -708,7 +708,7 @@
 							</div>
 
 							<div class="tab-pane fade" id="config_password" role="tabpanel" aria-labelledby="config_password-tab">
-								<div class="form-row">
+								<div class="row">
 									<div class="col-md-6 mb-3">
 										<label for="txt_new_pwd">New Password</label>
 										<input id="txt_new_pwd" type="password" class="form-control">

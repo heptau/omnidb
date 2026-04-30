@@ -116,7 +116,7 @@ var v_createOuterTerminalTabFunction = function(p_conn_id = -1, p_alias = 'Termi
 	// Creating `Add` tab in the outer tab list
 	// v_connTabControl.createAddTab();
 
-	$('[data-toggle="tooltip"]').tooltip({animation:true});// Loads or Updates all tooltips
+	$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads or Updates all tooltips
 
 	setTimeout(function() {
 		refreshHeights();

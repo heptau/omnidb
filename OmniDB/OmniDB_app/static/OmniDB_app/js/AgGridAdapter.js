@@ -93,13 +93,24 @@ class AgGridAdapter {
     
     _createColumnDefs(columns) {
         return columns.map((col, index) => {
-            return {
+            const colDef = {
                 field: 'col_' + index,
                 headerName: col.title || ('Column ' + (index + 1)),
                 width: col.width || 120,
                 resizable: true,
                 sortable: true
             };
+            
+            if (col.renderer === 'html') {
+                colDef.cellRenderer = function(params) {
+                    if (params.value) {
+                        return params.value;
+                    }
+                    return '';
+                };
+            }
+            
+            return colDef;
         });
     }
     

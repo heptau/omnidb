@@ -129,7 +129,7 @@ $(function () {
 	});
 
 	// Loads or Updates all tooltips.
-	$('[data-toggle="tooltip"]').tooltip({animation:true});
+	$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});
 
 });
 

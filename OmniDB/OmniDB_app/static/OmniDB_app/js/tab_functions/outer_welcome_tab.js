@@ -36,7 +36,7 @@ var v_createWelcomeTabFunction = function(p_index,p_create_query_tab = true, p_n
 		p_name: 'Welcome',
 		p_selectFunction: function() {
 			document.title = 'Welcome to OmniDB'
-			$('[data-toggle="tooltip"]').tooltip({animation:true});// Loads or Updates all tooltips
+			$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads or Updates all tooltips
 		},
 		p_close: false,// Replacing default close icon with contextMenu.
 		p_closeFunction: function(e,p_tab) {
@@ -273,7 +273,7 @@ var v_createWelcomeTabFunction = function(p_index,p_create_query_tab = true, p_n
 	// Creating `Add` tab in the outer tab list
 	// v_connTabControl.createAddTab();
 
-	$('[data-toggle="tooltip"]').tooltip({animation:true});// Loads or Updates all tooltips
+	$('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads or Updates all tooltips
 
 	endLoading();
 
