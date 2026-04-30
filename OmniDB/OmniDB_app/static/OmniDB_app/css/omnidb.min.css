@@ -630,7 +630,7 @@ button.close {
 	height: 100%;
 	padding: 8px 12px;
 	width: 100%;
-	background-color: rgba(252, 252, 252, 0.95);
+	background-color: var(--panel-bg);
 }
 
 .omnidb__workspace__connection-details b {
@@ -707,7 +707,7 @@ button.close {
 	opacity: 0.7;
 	z-index: 100;
 	padding: 8px 4px;
-	background-color: #f5f5f7;
+	background-color: var(--app-bg);
 	border-radius: 0 6px 6px 0;
 }
 }
@@ -723,8 +723,8 @@ button.close {
 	display: flex;
 	justify-content: flex-start;
 	min-height: 38px;
-	background-color: #fafafa;
-	border-bottom: 1px solid #e5e5ea;
+	background-color: var(--tab-bg);
+	border-bottom: 1px solid var(--border-color);
 	padding: 0 8px;
 }
 
@@ -831,7 +831,7 @@ button.close {
 	width: 100%;
 	z-index: 200;
 	border-radius: 12px 12px 0 0;
-	background-color: rgba(255, 255, 255, 0.97);
+	background-color: var(--glass-bg);
 	backdrop-filter: blur(20px);
 }
 
@@ -2467,11 +2467,11 @@ iframe {
 }
 
 .omnidb__theme-text {
-	color: #007aff;
+	color: var(--accent-color);
 }
 
 .omnidb__theme-text--primary {
-	color: #007aff;
+	color: var(--accent-color);
 }
 
 .omnidb__theme-text--secondary {
@@ -2521,7 +2521,7 @@ i.icon-close {
 }
 
 .omnidb__theme__btn--primary {
-	background-color: #007aff;
+	background-color: var(--accent-color);
 	color: #fff;
 	border-radius: 8px;
 	border: none;
@@ -2590,15 +2590,15 @@ i.icon-close {
 .nav-tabs .nav-link:focus,
 .nav-tabs .nav-link:hover {
 	border-color: transparent;
-	color: #007aff;
-	background-color: #f5f5f7;
+	color: var(--accent-color);
+	background-color: var(--app-bg);
 	border-radius: 6px 6px 0 0;
 }
 
 .nav-tabs .nav-link.active {
 	border-top: none;
-	border-bottom: 2px solid #007aff;
-	color: #007aff;
+	border-bottom: 2px solid var(--accent-color);
+	color: var(--accent-color);
 	background-color: transparent;
 }
 
@@ -2787,15 +2787,15 @@ a {
 }
 
 .omnidb__modal-config .nav-link.active {
-	background-color: #f5f5f7;
+	background-color: var(--app-bg);
 	border: none;
-	border-bottom: 2px solid #007aff;
-	color: #007aff !important;
+	border-bottom: 2px solid var(--accent-color);
+	color: var(--accent-color) !important;
 }
 
 .omnidb__modal-config .nav-link:focus,
 .omnidb__modal-config .nav-link:hover {
-	border-bottom-color: #fff;
+	border-bottom-color: var(--panel-bg);
 }
 
 .omnidb__monitoring-result-tabs {
@@ -2811,8 +2811,8 @@ a {
 }
 
 .card .card-header {
-	border-bottom-color: #e5e5ea;
-	background-color: #f5f5f7;
+	border-bottom-color: var(--border-color);
+	background-color: var(--app-bg);
 }
 
 .card .card-header .nav.nav-tabs {
@@ -2820,8 +2820,8 @@ a {
 }
 
 .daterangepicker {
-	background-color: #fff;
-	border: 1px solid #dfdfdf;
+	background-color: var(--panel-bg);
+	border: 1px solid var(--border-color);
 }
 
 .daterangepicker:after,
@@ -2891,17 +2891,17 @@ a {
 }
 
 .omnidb__form-check .form-check-label::before {
-	background-color: #fafafa !important;
-	border: 1px solid #d1d1d6 !important;
+	background-color: var(--input-bg) !important;
+	border: 1px solid var(--border-color) !important;
 	border-radius: 4px;
 }
 
 .omnidb__form-check input:checked~.form-check-label::after {
-	background-color: #007aff;
+	background-color: var(--accent-color);
 }
 
 .required>label::after {
-	color: #ff3b30;
+	color: var(--close-red);
 }
 
 label.omnidb__switch--label {
@@ -2916,22 +2916,23 @@ label.omnidb__switch--label span {
 }
 
 .form-control, .form-select {
-	background-color: #fafafa;
-	border: 1px solid #d1d1d6;
+	background-color: var(--input-bg);
+	border: 1px solid var(--border-color);
 	border-radius: 8px;
 	padding: 0.375rem 2rem 0.375rem 0.75rem;
 	appearance: none;
 	-webkit-appearance: none;
 	-moz-appearance: none;
-	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%238e8e93%22%20d%3D%22M6%208L2%204h8z%22%2F%3E%3C%2Fsvg%3E");
+	background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%2212%22%20height%3D%2212%22%20viewBox%3D%220%200%2012%2012%22%3E%3Cpath%20fill%3D%22%236e6e73%22%20d%3D%22M6%208L2%204h8z%22%2F%3E%3C%2Fsvg%3E");
 	background-repeat: no-repeat;
 	background-position: right 10px center;
 	transition: all 0.15s ease;
+	color: var(--text-primary);
 }
 
 .form-control:focus, .form-select:focus {
-	border-color: #007aff;
-	box-shadow: 0 0 0 3px rgba(0, 122, 255, 0.15);
+	border-color: var(--accent-color);
+	box-shadow: 0 0 0 3px var(--hover-bg);
 	outline: none;
 }
 
@@ -3014,7 +3015,7 @@ label.omnidb__switch--label span {
 }
 
 .modal-content {
-	background-color: rgba(255, 255, 255, 0.95);
+	background-color: var(--panel-bg);
 	backdrop-filter: blur(20px);
 	border-radius: 14px;
 	border: none;
@@ -5174,6 +5175,7 @@ ul.aimara_sub-menu.aimara_menu_bottom {
 :root {
 	--app-bg: #f5f5f7;
 	--panel-bg: #ffffff;
+	--input-bg: #fafafa;
 	--border-color: #d1d1d6;
 	--accent-color: #007aff;
 	--text-primary: #1d1d1f;
@@ -5181,6 +5183,9 @@ ul.aimara_sub-menu.aimara_menu_bottom {
 	--sidebar-bg: #e8e8ed;
 	--tab-inactive: #e5e5ea;
 	--close-red: #ff3b30;
+	--tab-bg: #fafafa;
+	--hover-bg: rgba(0, 122, 255, 0.12);
+	--title-color: #1c1c1e;
 
 	--tab-radius: 6px;
 	--tab-height: 28px;
@@ -5190,13 +5195,34 @@ ul.aimara_sub-menu.aimara_menu_bottom {
 	:root {
 		--app-bg: #1e1e1e;
 		--panel-bg: #2c2c2e;
+		--input-bg: #3a3a3c;
 		--border-color: #38383a;
 		--accent-color: #0a84ff;
 		--text-primary: #f5f5f7;
 		--text-secondary: #98989d;
 		--sidebar-bg: #252525;
 		--tab-inactive: #3a3a3c;
+		--glass-bg: rgba(44, 44, 46, 0.95);
+		--tab-bg: #3a3a3c;
+		--hover-bg: rgba(10, 132, 255, 0.2);
+		--title-color: #f5f5f7;
 	}
+}
+
+body.omnidb--theme-dark {
+	--app-bg: #1e1e1e;
+	--panel-bg: #2c2c2e;
+	--input-bg: #3a3a3c;
+	--border-color: #38383a;
+	--accent-color: #0a84ff;
+	--text-primary: #f5f5f7;
+	--text-secondary: #98989d;
+	--sidebar-bg: #252525;
+	--tab-inactive: #3a3a3c;
+	--glass-bg: rgba(44, 44, 46, 0.95);
+	--tab-bg: #3a3a3c;
+	--hover-bg: rgba(10, 132, 255, 0.2);
+	--title-color: #f5f5f7;
 }
 
 body,
