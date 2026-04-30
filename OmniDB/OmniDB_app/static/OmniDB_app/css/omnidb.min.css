@@ -337,6 +337,15 @@ button.close {
 	transition: 0.35s;
 }
 
+.omnidb__menu__btn i {
+	color: var(--icon-color);
+	transition: color 0.2s ease;
+}
+
+.omnidb__menu__btn:hover i {
+	color: var(--icon-hover-color);
+}
+
 .nav-item:nth-of-type(n + 2):hover .omnidb__menu__btn,
 .nav-item.omnidb__menu__btn:nth-of-type(n + 2):hover {
 	border-radius: 5px;
@@ -2044,13 +2053,13 @@ i.tab-icon {
 }
 
 i.icon-key-large {
-	color: #4a81d4;
+	color: var(--text-primary);
 	font-size: 40px;
 	margin-top: 20px;
 }
 
 i.icon-tab-title {
-	color: #4a81d4;
+	color: var(--text-primary);
 	line-height: 16px;
 	font-size: 12px;
 	line-height: 16px;
@@ -2060,11 +2069,11 @@ i.icon-tab-title {
 }
 
 i.icon-group {
-	color: #4a81d4;
+	color: var(--text-primary);
 }
 
 i.icon-conn-string {
-	color: #4a81d4;
+	color: var(--text-secondary);
 	font-size: 9px;
 }
 
@@ -2148,23 +2157,23 @@ i.tab-status-idle_in_transaction_aborted {
 }
 
 .node-keyword {
-	color: #cc933f;
+	color: var(--text-primary);
 }
 
 .node-database-list {
-	color: #4a81d4;
+	color: var(--text-primary);
 }
 
 .node-database {
-	color: #4a81d4;
+	color: var(--text-primary);
 }
 
 .node-snippet-list {
-	color: #4a81d4;
+	color: var(--text-primary);
 }
 
 .node-snippet-folder {
-	color: #5078b3;
+	color: var(--text-primary);
 }
 
 .node-snippet-snippet {
@@ -2216,19 +2225,19 @@ i.tab-status-idle_in_transaction_aborted {
 }
 
 .node-fdw-list {
-	color: #4a81d4;
+	color: var(--text-primary);
 }
 
 .node-fdw {
-	color: #4a81d4;
+	color: var(--text-primary);
 }
 
 .node-server {
-	color: #de5252;
+	color: var(--text-primary);
 }
 
 .node-table-list {
-	color: #4a81d4;
+	color: var(--text-primary);
 }
 
 .node-table {
@@ -5223,6 +5232,8 @@ body.omnidb--theme-dark {
 	--tab-bg: #3a3a3c;
 	--hover-bg: rgba(10, 132, 255, 0.2);
 	--title-color: #f5f5f7;
+	--icon-color: #98989d;
+	--icon-hover-color: #f5f5f7;
 }
 
 body,
