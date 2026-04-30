@@ -714,16 +714,19 @@ button.close {
 	align-items: center;
 	display: flex;
 	justify-content: flex-start;
-	min-height: 35px;
+	min-height: 38px;
+	background-color: #fafafa;
+	border-bottom: 1px solid #e5e5ea;
+	padding: 0 8px;
 }
 
 .tab_actions.omnidb__tab-actions {
-	padding-bottom: 3px;
-	padding-top: 3px;
+	padding: 4px 8px;
 }
 
 .omnidb__tab-actions .omnidb__tab-actions__btn {
-	margin-right: 5px;
+	margin-right: 6px;
+	border-radius: 6px;
 }
 
 .omnidb__tab-status {
@@ -811,19 +814,20 @@ button.close {
 }
 
 .omnidb__panel {
-	box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+	box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.08);
 	left: 0;
 	position: fixed;
 	top: 100%;
 	transform: translateY(0);
-	transition: 0.35s;
+	transition: 0.25s ease;
 	width: 100%;
 	z-index: 200;
+	border-radius: 12px 12px 0 0;
 }
 
 .omnidb__panel--slide-in {
 	display: block;
-	box-shadow: -3px 0 8px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.12);
 }
 
 .omnidb__panel__toggler {
@@ -2450,12 +2454,13 @@ iframe {
 
 .omnidb__workspace__div-left,
 .omnidb__snippets__div-left {
-	background-color: #fff;
+	background-color: #fcfcfc;
+	border-right: 1px solid #e5e5ea;
 }
 
 .omnidb__workspace__div-right,
 .omnidb__snippets__div-right {
-	background-color: #f4f4f4;
+	background-color: #f9f9fb;
 }
 
 .omnis {
@@ -2492,24 +2497,33 @@ i.icon-close {
 .omnidb__theme__btn--primary {
 	background-color: #007aff;
 	color: #fff;
-	border-radius: 6px;
+	border-radius: 8px;
 	border: none;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+	transition: all 0.15s ease;
 }
 
 .omnidb__theme__btn--primary:hover {
 	background-color: #0062cc;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
 	color: #fff;
 }
 
+.omnidb__theme__btn--primary:active {
+	transform: scale(0.98);
+}
+
 .omnidb__theme__btn--secondary {
-	background-color: #e5e5ea;
+	background-color: #f2f2f7;
 	color: #3a3a3c;
-	border-radius: 6px;
+	border-radius: 8px;
 	border: none;
+	box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+	transition: all 0.15s ease;
 }
 
 .omnidb__theme__btn--secondary:hover {
-	background-color: #d1d1d6;
+	background-color: #e5e5ea;
 	color: #1c1c1e;
 }
 
@@ -2517,6 +2531,8 @@ i.icon-close {
 	background-color: #ff3b30;
 	border: none;
 	color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn-danger:hover {
@@ -2528,6 +2544,8 @@ i.icon-close {
 	background-color: #34c759;
 	border: none;
 	color: #fff;
+	border-radius: 8px;
+	box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn-success:hover {
@@ -2545,18 +2563,25 @@ i.icon-close {
 
 .nav-tabs .nav-link:focus,
 .nav-tabs .nav-link:hover {
-	border-color: #e9ecef #e9ecef #dee2e6;
-	color: #555;
+	border-color: transparent;
+	color: #007aff;
+	background-color: #f5f5f7;
+	border-radius: 6px 6px 0 0;
 }
 
 .nav-tabs .nav-link.active {
-	border-top: 2px solid #68a4ff;
+	border-top: none;
+	border-bottom: 2px solid #007aff;
+	color: #007aff;
+	background-color: transparent;
 }
 
 .omnidb__tab-menu--primary .nav-tabs .nav-link.active {
 	border-top: none;
-	background-color: rgba(0, 122, 255, 0.1);
+	border-bottom: none;
+	background-color: rgba(0, 122, 255, 0.12);
 	border-right: 3px solid #007aff;
+	border-radius: 8px 0 0 8px;
 }
 
 .omnidb__tab-menu--primary .omnidb__tab-menu__link-name {
@@ -2750,14 +2775,15 @@ a {
 
 .card {
 	background-color: #fff;
-	border-radius: 12px;
-	border: 1px solid #d1d1d6;
+	border-radius: 10px;
+	border: 1px solid #e5e5ea;
 	overflow: hidden;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
 }
 
 .card .card-header {
-	border-bottom-color: #d2d2d2;
-	background-color: #f2f2f7;
+	border-bottom-color: #e5e5ea;
+	background-color: #f5f5f7;
 }
 
 .card .card-header .nav.nav-tabs {
@@ -2918,9 +2944,9 @@ label.omnidb__switch--label span {
 
 .modal-content {
 	background-color: #fff;
-	border-radius: 16px;
+	border-radius: 14px;
 	border: none;
-	box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15), 0 0 0 1px rgba(0, 0, 0, 0.05);
 	overflow: hidden;
 }
 
