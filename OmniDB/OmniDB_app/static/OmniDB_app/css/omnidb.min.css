@@ -3,8 +3,8 @@
 }
 
 ::-webkit-scrollbar {
-	width: 8px;
-	height: 8px;
+	width: 6px;
+	height: 6px;
 }
 
 ::-webkit-scrollbar-track {
@@ -12,12 +12,12 @@
 }
 
 ::-webkit-scrollbar-thumb {
-	background: rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
+	background: rgba(0, 0, 0, 0.15);
+	border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-	background: rgba(0, 0, 0, 0.2);
+	background: rgba(0, 0, 0, 0.25);
 }
 
 ::-webkit-scrollbar-corner {
@@ -931,10 +931,21 @@ button.close {
 
 .omnidb__connections__card-list--cards .row {
 	justify-content: center;
+	gap: 12px;
+}
+
+.omnidb__connections__card-list--cards .omnidb__connections__card {
+	transition: all 0.2s ease;
+}
+
+.omnidb__connections__card-list--cards .omnidb__connections__card:hover {
+	transform: translateY(-2px);
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
 }
 
 .omnidb__connections__card-list--cards .omnidb__connections__card .card-body {
 	position: relative;
+	border-radius: 12px;
 }
 
 .omnidb__connections__card-list--cards .omnidb__connections__btn--select {
@@ -2862,16 +2873,28 @@ a {
 }
 
 .omnidb__form-check .form-check-label::before {
-	background-color: #f4f4f4 !important;
-	border: 1px solid #dedede !important;
+	background-color: #fafafa !important;
+	border: 1px solid #d1d1d6 !important;
+	border-radius: 4px;
 }
 
 .omnidb__form-check input:checked~.form-check-label::after {
-	background-color: #43afd2;
+	background-color: #007aff;
 }
 
 .required>label::after {
-	color: #ec2424;
+	color: #ff3b30;
+}
+
+label.omnidb__switch--label {
+	background-color: #e5e5ea;
+	border-radius: 16px;
+}
+
+label.omnidb__switch--label span {
+	background-color: #fff;
+	border-radius: 50%;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
 }
 
 .form-control:disabled,
@@ -3019,13 +3042,17 @@ label.omnidb__switch--label span {
 
 .bs-tooltip-auto[x-placement^="bottom"] .arrow::before,
 .bs-tooltip-bottom .arrow::before {
-	border-bottom-color: #d2d2d2;
+	border-bottom-color: #3a3a3c;
 }
 
 .tooltip-inner {
-	color: #555;
-	background-color: #fff;
-	border: 1px solid #d2d2d2;
+	color: #fff;
+	background-color: #3a3a3c;
+	border: none;
+	border-radius: 8px;
+	padding: 8px 12px;
+	font-size: 12px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
 }
 
 .omnidb__connections__btn--select svg {
