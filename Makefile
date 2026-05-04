@@ -162,6 +162,7 @@ _build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	@echo "Fixing bundled server library rpaths..."
 	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -name "*.dylib" -exec install_name_tool -delete_rpath @loader_path/../.. {} \; 2>/dev/null
 	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -name "*.dylib" -exec install_name_tool -add_rpath @loader_path {} \; 2>/dev/null
+	find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec codesign --force --sign - {} \;
 
 	@echo "Signing..."
 	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
