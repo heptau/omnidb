@@ -2,11 +2,25 @@ import site
 import os
 
 psycopg_dylibs = []
-for s in site.getsitepackages() + [site.getusersitepackages()]:
+search_paths = site.getsitepackages() + [site.getusersitepackages(), '../.venv/lib/python3.13/site-packages', '../venv/lib/python3.14/site-packages']
+try:
+    import psycopg2
+    search_paths.append(os.path.dirname(psycopg2.__file__))
+except:
+    pass
+
+for s in search_paths:
 	# Check for psycopg2 (v2)
-	p2 = os.path.join(s, 'psycopg2', '.dylibs')
+	p2 = os.path.join(s, '.dylibs') if s.endswith('psycopg2') else os.path.join(s, 'psycopg2', '.dylibs')
 	if os.path.exists(p2):
 		psycopg_dylibs.append((p2, 'psycopg2/.dylibs'))
+		break
+
+for s in search_paths:
+	# Check for psycopg (v3) binary
+	p3 = os.path.join(s, '.dylibs') if s.endswith('psycopg_binary') else os.path.join(s, 'psycopg_binary', '.dylibs')
+	if os.path.exists(p3):
+		psycopg_dylibs.append((p3, 'psycopg_binary/.dylibs'))
 		break
 
 data_files_server = [

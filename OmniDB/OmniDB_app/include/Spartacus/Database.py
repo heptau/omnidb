@@ -35,6 +35,8 @@ from urllib.parse import urlparse
 
 v_supported_rdbms = []
 
+v_import_error = None
+
 try:
 	import sqlite3
 	v_supported_rdbms.append('SQLite')
@@ -44,13 +46,25 @@ except ImportError:
 try:
 	import psycopg2
 	from psycopg2 import extras
-	from pgspecial.main import PGSpecial
-	from pgspecial.namedqueries import NamedQueries
-	from pgspecial.help.commands import helpcommands as HelpCommands
 	import uuid
 	import sqlparse
+	try:
+		from pgspecial.main import PGSpecial
+		from pgspecial.namedqueries import NamedQueries
+		from pgspecial.help.commands import helpcommands as HelpCommands
+	except ImportError:
+		class PGSpecial:
+			def __init__(self):
+				pass
+		HelpCommands = {}
 	v_supported_rdbms.append('PostgreSQL')
-except ImportError:
+except ImportError as exc:
+	v_import_error = str(exc)
+	try:
+		with open('psycopg2_debug.txt', 'w') as f:
+			f.write(v_import_error)
+	except:
+		pass
 	pass
 try:
 	import pymysql
@@ -1329,7 +1343,7 @@ class PostgreSQL(Generic):
 			psycopg2.extensions.register_type(psycopg2.extensions.new_type(psycopg2.extensions.INTERVAL.values, 'INTERVAL_STR', psycopg2.STRING), self.v_cur)
 			self.v_encoding = p_encoding
 		else:
-			raise Spartacus.Database.Exception("PostgreSQL is not supported. Please install it with 'pip install Spartacus[postgresql]'.")
+			raise Spartacus.Database.Exception("PostgreSQL is not supported. Error: {0}. Please install it with 'pip install Spartacus[postgresql]'.".format(v_import_error))
 
 	def __getstate__(self):
 		state = self.__dict__.copy()
