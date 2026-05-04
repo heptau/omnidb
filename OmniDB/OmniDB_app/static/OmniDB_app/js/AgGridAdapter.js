@@ -92,15 +92,19 @@ class AgGridAdapter {
     }
     
     _createColumnDefs(columns) {
+        const self = this;
         return columns.map((col, index) => {
             const colDef = {
                 field: 'col_' + index,
                 headerName: col.title || ('Column ' + (index + 1)),
                 width: col.width || 120,
                 resizable: true,
-                sortable: true
+                sortable: true,
+                comparator: function(valueA, valueB, nodeA, nodeB, isAscending) {
+                    return self._numericCompare(valueA, valueB, isAscending);
+                }
             };
-            
+
             if (col.renderer === 'html') {
                 colDef.cellRenderer = function(params) {
                     if (params.value) {
@@ -109,9 +113,46 @@ class AgGridAdapter {
                     return '';
                 };
             }
-            
+
             return colDef;
         });
+    }
+
+    _numericCompare(valueA, valueB, isAscending) {
+        const numA = this._parseNumeric(valueA);
+        const numB = this._parseNumeric(valueB);
+
+        if (numA !== null && numB !== null) {
+            return numA - numB;
+        }
+
+        if (valueA === null || valueA === undefined || valueA === '') {
+            return isAscending ? 1 : -1;
+        }
+        if (valueB === null || valueB === undefined || valueB === '') {
+            return isAscending ? -1 : 1;
+        }
+
+        const strA = String(valueA).toLowerCase();
+        const strB = String(valueB).toLowerCase();
+        if (strA < strB) return isAscending ? -1 : 1;
+        if (strA > strB) return isAscending ? 1 : -1;
+        return 0;
+    }
+
+    _parseNumeric(value) {
+        if (value === null || value === undefined || value === '') {
+            return null;
+        }
+        if (typeof value === 'number') {
+            return value;
+        }
+        const str = String(value).trim();
+        const num = parseFloat(str.replace(/,/g, ''));
+        if (!isNaN(num) && isFinite(num)) {
+            return num;
+        }
+        return null;
     }
     
     _createRowData(data) {
