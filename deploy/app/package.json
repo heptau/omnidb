@@ -1,10 +1,10 @@
 {
-	"name": "OmniDB",
+	"name": "omnidb",
 	"main": "index.html",
 "window": {
 				"frame": false,
 				"transparent": false,
     "icon": "omnidb_icon.png"
   },
-  "chromium-args": "--enable-spell-checking --password-store=basic"
+  "chromium-args": "--enable-spell-checking --password-store=basic --disable-crash-handler=true --disable-crash-reporter --disable-breakpad"
 }

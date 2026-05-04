@@ -544,6 +544,64 @@
 			const path = require('path')
 			const url = require('url')
 
+			function prependEnvPath(p_env, p_name, p_values) {
+				let v_existing = p_env[p_name] || '';
+				let v_parts = p_values.filter(function (p_value) {
+					return p_value && p_value.length > 0;
+				});
+
+				if (v_existing.length > 0) {
+					v_parts.push(v_existing);
+				}
+
+				p_env[p_name] = v_parts.join(path.delimiter);
+			}
+
+			function buildServerSpawnOptions(p_server_dir) {
+				let v_internal_dir = path.join(p_server_dir, '_internal');
+				let v_psycopg_dylibs_dir = path.join(v_internal_dir, 'psycopg2', '.dylibs');
+				let v_env = Object.assign({}, process.env);
+
+				prependEnvPath(v_env, 'PATH', [
+					p_server_dir,
+					v_internal_dir,
+					'/usr/local/bin',
+					'/opt/homebrew/bin',
+					'/usr/bin',
+					'/bin',
+					'/usr/sbin',
+					'/sbin'
+				]);
+
+				prependEnvPath(v_env, 'DYLD_LIBRARY_PATH', [
+					v_internal_dir,
+					v_psycopg_dylibs_dir
+				]);
+
+				prependEnvPath(v_env, 'DYLD_FALLBACK_LIBRARY_PATH', [
+					v_internal_dir,
+					v_psycopg_dylibs_dir
+				]);
+
+				return {
+					cwd: p_server_dir,
+					detached: false,
+					env: v_env
+				};
+			}
+
+			function bringWindowToFront() {
+				try {
+					v_window.show();
+					v_window.focus();
+					if (v_window.requestAttention) {
+						v_window.requestAttention(1);
+					}
+				}
+				catch (e) {
+				}
+			}
+
 			// Prepare loading interface
 			v_window.width = 600;
 			v_window.height = 600;
@@ -552,6 +610,9 @@
 			v_window.y = Math.floor((window.screen.availHeight / 2) - (v_window.height / 2));
 
 			v_loading_data_container.style.display = '';
+
+			gui.App.on('open', bringWindowToFront);
+			gui.App.on('reopen', bringWindowToFront);
 
 			v_window.on('close', function () {
 				if (django != null) {
@@ -566,7 +627,10 @@
 
 			setTimeout(function () {
 
-				django = child_process.spawn(path.join(global.__dirname, 'omnidb-server/omnidb-server'), ['-A'], { detached: false });
+				let v_server_dir = path.join(global.__dirname, 'omnidb-server');
+				let v_server_executable = path.join(v_server_dir, 'omnidb-server');
+
+				django = child_process.spawn(v_server_executable, ['-A'], buildServerSpawnOptions(v_server_dir));
 
 				django.stderr.on('data', (data) => {
 					v_loading_data_content.innerHTML += `${data}` + '<br/>';
