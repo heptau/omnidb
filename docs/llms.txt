@@ -1,0 +1,304 @@
+# OmniDB Documentation
+
+## Overview
+
+OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle and MySQL. OmniDB can run either as an App or via Browser, combining the flexibility needed for various access paths with a design that puts security first.
+
+---
+
+## 1. Introduction
+
+URL: https://www.omnidb.net/en/docs/01_introduction.html
+
+**Description:** Introduction to OmniDB - a browser-based database management tool supporting PostgreSQL, Oracle, MySQL, and more. Features unified workspace, WebSocket technology for parallel queries, and encrypted data storage.
+
+**Key Topics:**
+- History and origins of OmniDB
+- Multi-DBMS support
+- Security features
+- 2025-2026 revival with Django 6
+
+---
+
+## 2. Installation
+
+URL: https://www.omnidb.net/en/docs/02_installation.html
+
+**Description:** Installation instructions for OmniDB on various platforms.
+
+**Key Topics:**
+- Installation procedures
+- Platform setup
+- Dependencies
+
+---
+
+## 3. Creating Users and Connections
+
+URL: https://www.omnidb.net/en/docs/03_creating_users_and_connections.html
+
+**Description:** How to create users and manage database connections in OmniDB.
+
+**Key Topics:**
+- User creation
+- Connection management
+- Database authentication
+
+---
+
+## 4. Managing Databases
+
+URL: https://www.omnidb.net/en/docs/04_managing_databases.html
+
+**Description:** Managing database objects and properties.
+
+**Key Topics:**
+- Database management
+- Schema handling
+- Object properties
+
+---
+
+## 5. Creating, Changing and Removing Tables
+
+URL: https://www.omnidb.net/en/docs/05_creating_changing_and_removing_tables.html
+
+**Description:** Table creation, modification and deletion operations.
+
+**Key Topics:**
+- CREATE TABLE
+- ALTER TABLE
+- DROP TABLE
+- Column management
+- Constraints
+
+---
+
+## 6. Managing Table Data
+
+URL: https://www.omnidb.net/en/docs/06_managing_table_data.html
+
+**Description:** Data manipulation within tables.
+
+**Key Topics:**
+- INSERT data
+- UPDATE data
+- DELETE data
+- Data editing
+
+---
+
+## 7. Writing SQL Queries
+
+URL: https://www.omnidb.net/en/docs/07_writing_sql_queries.html
+
+**Description:** SQL query writing and execution.
+
+**Key Topics:**
+- Query editor
+- Query execution
+- Result handling
+
+---
+
+## 8. Visualizing Query Plans
+
+URL: https://www.omnidb.net/en/docs/08_visualizing_query_plans.html
+
+**Description:** Query plan visualization and analysis.
+
+**Key Topics:**
+- EXPLAIN plans
+- Query optimization
+- Plan visualization
+
+---
+
+## 9. Visualizing Data
+
+URL: https://www.omnidb.net/en/docs/09_visualizing_data.html
+
+**Description:** Data visualization features in OmniDB.
+
+**Key Topics:**
+- Charts and graphs
+- Data representation
+- Visualization tools
+
+---
+
+## 10. Managing Other Elements
+
+URL: https://www.omnidb.net/en/docs/10_managing_other_elements.html
+
+**Description:** Managing indexes, views, sequences, and other database elements.
+
+**Key Topics:**
+- Indexes
+- Views
+- Sequences
+- Functions
+
+---
+
+## 11. Additional Features
+
+URL: https://www.omnidb.net/en/docs/11_additional_features.html
+
+**Description:** Additional features and tools in OmniDB.
+
+**Key Topics:**
+- SSH tunnels
+- Code snippets
+- Export tools
+
+---
+
+## 12. OmniDB Config Tool
+
+URL: https://www.omnidb.net/en/docs/12_omnidb_config_tool.html
+
+**Description:** Configuration tool for OmniDB server.
+
+**Key Topics:**
+- Server configuration
+- Settings management
+- Config tool usage
+
+---
+
+## 13. Writing and Debugging PL/pgSQL Functions
+
+URL: https://www.omnidb.net/en/docs/13_writing_and_debugging_plpgsql_functions.html
+
+**Description:** PL/pgSQL function development and debugging.
+
+**Key Topics:**
+- Function creation
+- Debugging
+- PL/pgSQL editor
+
+---
+
+## 14. Monitoring Dashboard
+
+URL: https://www.omnidb.net/en/docs/14_monitoring_dashboard.html
+
+**Description:** Database monitoring and dashboard features.
+
+**Key Topics:**
+- Performance monitoring
+- Dashboard customization
+- Metrics
+
+---
+
+## 15. Logical Replication
+
+URL: https://www.omnidb.net/en/docs/15_logical_replication.html
+
+**Description:** PostgreSQL logical replication management.
+
+**Key Topics:**
+- Replication setup
+- Publication management
+- Subscription management
+
+---
+
+## 16. pglogical
+
+URL: https://www.omnidb.net/en/docs/16_pglogical.html
+
+**Description:** pglogical extension support.
+
+**Key Topics:**
+- pglogical setup
+- Replication with pglogical
+
+---
+
+## 17. Postgres-BDR
+
+URL: https://www.omnidb.net/en/docs/17_postgres-bdr.html
+
+**Description:** BDR (Bi-directional Replication) support.
+
+**Key Topics:**
+- BDR configuration
+- Multi-master replication
+
+---
+
+## 18. Postgres-XL
+
+URL: https://www.omnidb.net/en/docs/18_postgres-xl.html
+
+**Description:** Postgres-XL database support.
+
+**Key Topics:**
+- Postgres-XL specific features
+- Cluster management
+
+---
+
+## 19. Deploying OmniDB Server
+
+URL: https://www.omnidb.net/en/docs/19_deploying_omnidb-server.html
+
+**Description:** Deploying and configuring OmniDB server.
+
+**Key Topics:**
+- Server deployment
+- Django setup
+- WebSocket configuration
+
+---
+
+## 20. Console Tab
+
+URL: https://www.omnidb.net/en/docs/20_console_tab.html
+
+**Description:** Using the console tab for command execution.
+
+**Key Topics:**
+- Console commands
+- Shell access
+
+---
+
+## 21. Plugin System
+
+URL: https://www.omnidb.net/en/docs/21_plugin_system.html
+
+**Description:** OmniDB plugin system and extensions.
+
+**Key Topics:**
+- Plugin development
+- Plugin installation
+
+---
+
+## 22. Advanced Object Search
+
+URL: https://www.omnidb.net/en/docs/22_advanced_object_search.html
+
+**Description:** Advanced search capabilities for database objects.
+
+**Key Topics:**
+- Object search
+- Search filters
+
+---
+
+## 23. Debugger Plugin Installation
+
+URL: https://www.omnidb.net/en/docs/23_debugger_plugin_installation.html
+
+**Description:** Installing and configuring the debugger plugin.
+
+**Key Topics:**
+- Debugger setup
+- Plugin configuration
+
+---
