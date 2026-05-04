@@ -51,6 +51,20 @@ Note that the `dev` branch is only used in the main repo. For other repos, issue
 your pull request to the `master` branch.
 
 
+## Use Conventional Commits
+
+Please write commit messages using the
+[Conventional Commits](https://www.conventionalcommits.org/) format. This keeps
+the project history easier to read and helps maintainers understand the intent
+of each change.
+
+Examples:
+
+- `feat: add DuckDB connection support`
+- `fix: handle empty query results`
+- `docs: update installation instructions`
+
+
 ## Any contributions you make will be under the MIT Software License
 
 In short, when you submit code changes, your submissions are understood to be

@@ -1,7 +1,10 @@
 # OmniDB
 
-[![Tests](https://github.com/heptau/omnidb/actions/workflows/tests.yml/badge.svg)](https://github.com/heptau/omnidb/actions/workflows/tests.yml)
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/heptau/omnidb.svg?label=Release)](https://github.com/heptau/omnidb/releases)
+[![Install with Homebrew](https://img.shields.io/badge/install%20with-Homebrew-orange?logo=homebrew&logoColor=white)](https://www.omnidb.net#installation)
+[![docs](https://img.shields.io/badge/docs-OmniDB.net-darkgreen?logo=read-the-docs&logoColor=white&label=Docs)](https://www.omnidb.net)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-9.2%2B-336791?logo=postgresql&logoColor=white)](https://www.postgresql.org/)
 
 A user-friendly, lightweight, cross-platform database management tool with strong support for PostgreSQL and compatibility with several other databases.
 

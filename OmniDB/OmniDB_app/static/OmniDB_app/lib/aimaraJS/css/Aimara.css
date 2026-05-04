@@ -68,6 +68,7 @@ SOFTWARE.
 
 .aimara_tree .nav-link {
 	align-items: center;
+	color: inherit;
 	cursor: pointer;
 	display: flex;
 	justify-content: flex-start;

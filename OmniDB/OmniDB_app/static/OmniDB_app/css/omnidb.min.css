@@ -3199,7 +3199,7 @@ label.omnidb__switch--label span {
 }
 
 span.node_selected span {
-	color: #284ac6;
+	color: inherit;
 }
 
 .cellNew {
@@ -3268,6 +3268,7 @@ span.node_selected span {
 
 .aimara_tree .nav-link {
 	align-items: center;
+	color: inherit;
 	cursor: pointer;
 	display: flex;
 	justify-content: flex-start;
