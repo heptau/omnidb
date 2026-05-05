@@ -158,11 +158,11 @@ $('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads o
 
 		var v_html =
 		'<div style="position: relative;">' +
-			'<div style="display: grid; grid-template-areas: \'left right\'; grid-template-columns: auto minmax(0, 1fr);">' +
+			'<div style="display: grid; grid-template-areas: \'left right\'; grid-template-columns: auto minmax(0, 1fr); height: 100%;">' +
 				'<div id="' + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="max-width: 300px; width: 300px;">' +
 						'<div class="omnidb__workspace__content-left">' +
 							'<div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div>' +
-							'<div id="' + v_tab.id + '_tree" style="overflow: auto; flex-grow: 1; transition: scroll 0.3s;"></div>' +
+							'<div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div>' +
 							'<div id="' + v_tab.id + '_left_resize_line_horizontal" onmousedown="resizeTreeVertical(event)" style="width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"></div>' +
 							'<div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;">' +
 								'<div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;">' +
@@ -393,13 +393,17 @@ $('[data-bs-toggle="tooltip"]').tooltip({animation:true, html: true});// Loads o
 function refreshOuterConnectionHeights() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	if (v_tab_tag.divLeft) {
+		var v_div_left = v_tab_tag.divLeft;
+		var v_div_right = v_tab_tag.divRight;
+
+		var v_totalHeight = window.innerHeight - $(v_div_left).offset().top;
+		v_div_left.style['height'] = v_totalHeight + 'px';
+
 		// Checking if the element is shrunk before resizing children elements.
-		var v_is_shrunk = $(v_tab_tag.divLeft).hasClass('omnidb__workspace__div-left--shrink');
+		var v_is_shrunk = $(v_div_left).hasClass('omnidb__workspace__div-left--shrink');
 		// if (!v_is_shrunk) {
-			var v_div_left = v_connTabControl.selectedTab.tag.divLeft;
-			var v_div_right = v_connTabControl.selectedTab.tag.divRight;
 			var v_totalWidth = v_connTabControl.selectedDiv.getBoundingClientRect().width;
-			var v_div_left_width_value = v_connTabControl.selectedTab.tag.divLeft.getBoundingClientRect().width;
+			var v_div_left_width_value = v_div_left.getBoundingClientRect().width;
 			var v_right_width_value = v_totalWidth - v_div_left_width_value;
 			// v_div_left.style['max-width'] = v_div_left_width_value + 'px';
 			// v_div_left.style['width'] = v_div_left_width_value + 'px';
