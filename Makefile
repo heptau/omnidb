@@ -6,7 +6,8 @@ APP_NAME = OmniDB
 SERVER_DIR = OmniDB
 BUNDLE_ID = net.omnidb
 APP_DISPLAY_NAME = OmniDB
-NWJS_VERSION = v0.111.0
+NWJS_VERSION = v0.111.1
+VERSION := $(shell cat VERSION | tr -d '\n')
 
 # --- Platform Defaults (can be overridden by targets) ---
 NWJS_ARCH = osx-arm64
@@ -29,7 +30,7 @@ NWJS_ZIP = ${NWJS_FILENAME}${NWJS_EXT}
 NWJS_URL = https://dl.nwjs.io/${NWJS_VERSION}/${NWJS_ZIP}
 
 # --- Phony Targets ---
-.PHONY: help all clean clean-deps install-deps \
+.PHONY: help all clean clean-deps install-deps _sync_version \
         build-mac-arm64 build-mac-intel build-linux build-win \
         _prepare_dirs _download_nwjs _build_server _bundle_mac _bundle_linux _bundle_win
 
@@ -99,8 +100,17 @@ build-win:
 
 # --- Internal Build Steps ---
 
+# 0. Sync version from VERSION file
+_sync_version:
+	@echo "Syncing version $(VERSION) to all files..."
+	$(SED_CMD) "s/OMNIDB_VERSION = 'OmniDB .*'/OMNIDB_VERSION = 'OmniDB $(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
+	$(SED_CMD) "s/OMNIDB_SHORT_VERSION = '.*'/OMNIDB_SHORT_VERSION = '$(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
+	$(SED_CMD) "s/<small>v.*<\/small>/<small>v$(VERSION)<\/small>/g" deploy/app/index.html
+	$(SED_CMD) 's/VERSION=".*"/VERSION="$(VERSION)"/g' deploy/linux/deploy.sh
+	$(SED_CMD) 's/ARG OMNIDB_VERSION=.*/ARG OMNIDB_VERSION=$(VERSION)/g' Dockerfile
+
 # 1. Common preparation
-_prepare_dirs:
+_prepare_dirs: _sync_version
 	@echo "Cleaning previous builds..."
 	rm -rf $(BUILD_DIR) $(WORK_DIR)
 	rm -rf $(SERVER_DIR)/build $(SERVER_DIR)/dist
@@ -148,6 +158,16 @@ _build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	$(SED_CMD) 's/nwjs/$(APP_DISPLAY_NAME)/g' "$(APP_CONTENT)/Info.plist"
 	mv "$(APP_MACOS)/nwjs" "$(APP_MACOS)/$(APP_DISPLAY_NAME)"
 
+	@echo "Updating macOS metadata..."
+	plutil -replace CFBundleShortVersionString -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
+	plutil -replace CFBundleVersion -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
+	plutil -replace NSHumanReadableCopyright -string "$$(printf "Portions Copyright (c) 2015-2026, The OmniDB Team\nPortions Copyright (c) 2017-2026, 2ndQuadrant Limited\nPortions Copyright (c) 2025-2026, Zbyněk Vanžura")" "$(APP_CONTENT)/Info.plist"
+
+	@echo "Updating localized metadata..."
+	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -convert xml1 {} \;
+	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -replace NSHumanReadableCopyright -string "$$(printf "Portions Copyright (c) 2015-2026, The OmniDB Team\nPortions Copyright (c) 2017-2026, 2ndQuadrant Limited\nPortions Copyright (c) 2025-2026, Zbyněk Vanžura")" {} \;
+	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -replace CFBundleGetInfoString -string "OmniDB $(VERSION), Portions Copyright (c) 2015-2026" {} \;
+
 	@echo "Copying web app..."
 	rm -rf $(APP_RESOURCES)/app.nw/*
 	mkdir -p $(APP_RESOURCES)/app.nw
@@ -172,8 +192,8 @@ _build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 
 	@echo "Packaging Mac Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -ry dist/OmniDB-macOS-$(NWJS_ARCH).zip $(APP_NAME).app
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-macOS-$(NWJS_ARCH).zip"
+	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip $(APP_NAME).app
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip"
 
 # --- LINUX BUILD LOGIC ---
 _build_linux: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
@@ -198,8 +218,8 @@ _build_linux: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 
 	@echo "Packaging Linux Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && tar -czf dist/OmniDB-linux-x64.tar.gz $(APP_NAME)-linux
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-linux-x64.tar.gz"
+	cd $(BUILD_DIR) && tar -czf dist/OmniDB-$(VERSION)-linux-x64.tar.gz $(APP_NAME)-linux
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-linux-x64.tar.gz"
 
 # --- WINDOWS BUILD LOGIC ---
 _build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
@@ -225,5 +245,5 @@ _build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -r dist/OmniDB-win-x64.zip $(APP_NAME)-win
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-win-x64.zip"
+	cd $(BUILD_DIR) && zip -r dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
