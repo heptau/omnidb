@@ -100,8 +100,8 @@ class AgGridAdapter {
                 width: col.width || 120,
                 resizable: true,
                 sortable: true,
-                comparator: function(valueA, valueB, nodeA, nodeB, isAscending) {
-                    return self._numericCompare(valueA, valueB, isAscending);
+                comparator: function(valueA, valueB, nodeA, nodeB, isInverted) {
+                    return self._numericCompare(valueA, valueB, isInverted);
                 }
             };
 
@@ -118,7 +118,7 @@ class AgGridAdapter {
         });
     }
 
-    _numericCompare(valueA, valueB, isAscending) {
+    _numericCompare(valueA, valueB, isInverted) {
         const numA = this._parseNumeric(valueA);
         const numB = this._parseNumeric(valueB);
 
@@ -127,16 +127,16 @@ class AgGridAdapter {
         }
 
         if (valueA === null || valueA === undefined || valueA === '') {
-            return isAscending ? 1 : -1;
+            return 1;
         }
         if (valueB === null || valueB === undefined || valueB === '') {
-            return isAscending ? -1 : 1;
+            return -1;
         }
 
         const strA = String(valueA).toLowerCase();
         const strB = String(valueB).toLowerCase();
-        if (strA < strB) return isAscending ? -1 : 1;
-        if (strA > strB) return isAscending ? 1 : -1;
+        if (strA < strB) return -1;
+        if (strA > strB) return 1;
         return 0;
     }
 
@@ -147,10 +147,14 @@ class AgGridAdapter {
         if (typeof value === 'number') {
             return value;
         }
-        const str = String(value).trim();
-        const num = parseFloat(str.replace(/,/g, ''));
-        if (!isNaN(num) && isFinite(num)) {
-            return num;
+        const str = String(value).trim().replace(/,/g, '');
+        if (str === '') return null;
+
+        if (!isNaN(str)) {
+            const num = parseFloat(str);
+            if (isFinite(num)) {
+                return num;
+            }
         }
         return null;
     }
