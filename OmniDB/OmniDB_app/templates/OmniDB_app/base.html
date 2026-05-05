@@ -428,23 +428,37 @@
 
 		<div id="div_about" class="isModal">
 			<div class="modal_background_dark">
-				<div class="white_box" style="width: 40%; left: 30%; top: 30%;">
-					<a class="modal-closer" onclick="hideAbout()">x</a>
-					<div style="width: 100%; text-align: center;">
-						<div style="margin: 20px;">
-							<h1>{{ omnidb_version }}</h1>
+				<div class="white_box pt-0 text-center" style="width: 500px; left: calc(50% - 250px); top: 20%; padding: 30px; border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3);">
+					<a class="modal-closer" onclick="document.getElementById('div_about').style.display='none'" style="position: absolute; right: 15px; top: 10px; cursor: pointer; font-size: 20px; text-decoration: none; color: #666;">&times;</a>
+					<div class="mb-4">
+						<img src="{{url_folder}}/static/OmniDB_app/images/omnidb_icon.svg" style="width: 80px; height: 80px;" alt="OmniDB Logo">
+						<h3 class="mt-3 fw-bold" style="margin-top: 15px; font-weight: bold;">OmniDB</h3>
+						<p class="text-secondary" style="color: #6c757d;">Version {{ omnidb_version }}</p>
+					</div>
+
+					<div class="my-4 px-3" style="margin: 25px 0;">
+						<p>OmniDB is a user-friendly, lightweight, cross-platform database management tool with strong support for PostgreSQL and compatibility with other databases.</p>
+					</div>
+
+					<div class="my-4" style="margin: 25px 0;">
+						<div style="display: flex; justify-content: center; gap: 30px;">
+							<a href="javascript:void(0)" onclick="showWebsite('OmniDB', 'https://www.omnidb.net')" style="text-decoration: none; font-weight: bold; color: #007bff;">
+								<i class="fas fa-globe"></i> www.omnidb.net
+							</a>
+							<a href="javascript:void(0)" onclick="showWebsite('GitHub', 'https://github.com/heptau/omnidb')" style="text-decoration: none; font-weight: bold; color: #007bff; margin-left: 20px;">
+								<i class="fab fa-github"></i> GitHub
+							</a>
 						</div>
-						<div style="margin: 20px;">
-							<img src="{{url_folder}}/static/OmniDB_app/images/postgresql_medium.png" title="PostgreSQL" />
-							<img src="{{url_folder}}/static/OmniDB_app/images/oracle_medium.png" title="Oracle" />
-							<img src="{{url_folder}}/static/OmniDB_app/images/mysql_medium.png" title="MySQL" />
-							<img src="{{url_folder}}/static/OmniDB_app/images/mariadb_medium.png" title="MariaDB" />
-							<!--<img src="{{url_folder}}/static/OmniDB_app/images/sqlserver_medium.png" title="SQL Server"/>
-										<img src="{{url_folder}}/static/OmniDB_app/images/firebird_medium.png" title="Firebird"/>
-										<img src="{{url_folder}}/static/OmniDB_app/images/sqlite_medium.png" title="SQLite"/>
-										<img src="{{url_folder}}/static/OmniDB_app/images/access_medium.png" title="Microsoft Access"/>-->
-						</div>
-						<div style="margin: 20px;"><a onclick="showWebsite('OmniDB', 'https://www.omnidb.net')">www.omnidb.net</a></div>
+					</div>
+
+					<div class="mt-4 mb-2" style="margin-top: 30px;">
+						<span style="background: #f8f9fa; color: #212529; border: 1px solid #dee2e6; padding: 8px 12px; border-radius: 4px; font-size: 14px;">
+							<i class="fas fa-balance-scale"></i> License: MIT
+						</span>
+					</div>
+
+					<div class="mt-4 small text-muted" style="margin-top: 25px; font-size: 12px; color: #6c757d;">
+						Copyright &copy; 2015-2026 The OmniDB Team
 					</div>
 				</div>
 			</div>

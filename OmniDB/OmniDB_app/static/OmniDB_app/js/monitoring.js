@@ -148,7 +148,7 @@ function buildMonitorUnit(p_unit, p_first) {
 			closeMonitorUnit(div);
 		}
 	})(div);
-	button_close.innerHTML = '<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1L7 7M7 1L1 7" stroke="white" stroke-width="1.2" stroke-linecap="round"/></svg>';
+	button_close.innerHTML = '<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1L7 7M7 1L1 7" stroke="black" stroke-width="1.2" stroke-linecap="round"/></svg>';
 
 	var title = document.createElement('span');
 	title.className = 'flex-grow-1 text-center fw-bold';
