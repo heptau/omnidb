@@ -92,7 +92,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="${{ needs.prepare.outputs.version }}"
+          VERSION="$(cat VERSION | tr -d '\r\n')"
           for f in build/dist/OmniDB-${VERSION}-*; do
             [[ "$f" == *checksums* ]] && continue
             gh release upload "v${VERSION}" "$f"
