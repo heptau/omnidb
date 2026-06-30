@@ -117,9 +117,9 @@ _sync_version:
 	$(SED_CMD) "s/OMNIDB_VERSION = 'OmniDB .*'/OMNIDB_VERSION = 'OmniDB $(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
 	$(SED_CMD) "s/OMNIDB_SHORT_VERSION = '.*'/OMNIDB_SHORT_VERSION = '$(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
 	$(SED_CMD) "s/<small>v.*<\/small>/<small>v$(VERSION)<\/small>/g" deploy/app/index.html
-	$(SED_CMD) 's/VERSION=".*"/VERSION="$(VERSION)"/g' deploy/linux/deploy.sh
-	$(SED_CMD) 's/ARG OMNIDB_VERSION=.*/ARG OMNIDB_VERSION=$(VERSION)/g' Dockerfile
-	$(SED_CMD) 's/^version = ".*"/version = "$(VERSION)"/g' pyproject.toml
+	$(SED_CMD) "s/VERSION=\".*\"/VERSION=\"$(VERSION)\"/g" deploy/linux/deploy.sh
+	$(SED_CMD) "s/ARG OMNIDB_VERSION=.*/ARG OMNIDB_VERSION=$(VERSION)/g" Dockerfile
+	$(SED_CMD) "s/^version = \".*\"/version = \"$(VERSION)\"/g" pyproject.toml
 
 # 1. Common preparation
 _prepare_dirs: _sync_version
