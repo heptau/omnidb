@@ -67,6 +67,10 @@ jobs:
         run: choco install make --no-progress -y
         shell: powershell
 
+      - name: Install LDAP headers (Linux)
+        if: runner.os == 'Linux'
+        run: sudo apt-get install -y libldap2-dev libsasl2-dev
+
       - name: Cache NW.js
         uses: actions/cache@v4
         with:

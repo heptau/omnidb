@@ -2,7 +2,7 @@ setuptools
 Django>=5.2
 CherryPy
 social-auth-app-django>=5.8.0
-django-auth-ldap
+django-auth-ldap; sys_platform != "win32"
 pyscrypt
 pyaes
 openpyxl
