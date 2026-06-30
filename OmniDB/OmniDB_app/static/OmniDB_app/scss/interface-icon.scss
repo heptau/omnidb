@@ -76,7 +76,7 @@ i.tab-status {
 }
 
 i.tab-status-closed {
-	color: gray
+	color: gray;
 }
 
 i.tab-status-idle {
@@ -88,9 +88,9 @@ i.tab-status-running {
 }
 
 i.tab-status-idle_in_transaction {
-	color: orange
+	color: orange;
 }
 
 i.tab-status-idle_in_transaction_aborted {
-	color: red
+	color: red;
 }

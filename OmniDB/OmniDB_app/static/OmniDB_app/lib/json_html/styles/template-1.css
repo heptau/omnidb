@@ -19,14 +19,14 @@
 }
 
 .jsonBuilder--template-1 .jsonBuilder__li .jsonBuilder__li::after {
-		display: block;
-		content: " ";
-		width: 10px;
-		height: 1px;
-		border-bottom: 1px dotted #d2d2d2;
-		position: absolute;
-		top: 12px;
-		left: -27px;
+	display: block;
+	content: " ";
+	width: 10px;
+	height: 1px;
+	border-bottom: 1px dotted #d2d2d2;
+	position: absolute;
+	top: 12px;
+	left: -27px;
 }
 
 .jsonBuilder--template-1 .jsonBuilder__li:last-child::before {

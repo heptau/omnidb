@@ -53,7 +53,7 @@ result = {
 from datetime import datetime
 from random import randint
 
-if previous_data != None:
+if previous_data is not None:
 	query = "select round((sum(xact_commit+xact_rollback) - " + previous_data["current_count"] + ")/(extract(epoch from now()::time - '" + previous_data["current_time"] + "'::time))::numeric,2) as tps, sum(xact_commit+xact_rollback) as current_count, now()::time as current_time FROM pg_stat_database"
 else:
 	query = 'select 0 as tps, sum(xact_commit+xact_rollback) as current_count, now()::time as current_time FROM pg_stat_database'
@@ -296,7 +296,7 @@ from random import randint
 version = int(connection.Query('show server_version_num').Rows[0][0])
 
 if version < 100000:
-	if previous_data == None:
+	if previous_data is None:
 		r = connection.Query(\"\"\"
 		SELECT 0 as rate,
 			   current_lsn,
@@ -319,7 +319,7 @@ if version < 100000:
 			   now() as current_time) t
 		\"\"\")
 else:
-	if previous_data == None:
+	if previous_data is None:
 		r = connection.Query(\"\"\"
 		SELECT 0 as rate,
 			   current_lsn,
@@ -415,7 +415,7 @@ result = {
 from datetime import datetime
 from random import randint
 
-if previous_data == None:
+if previous_data is None:
 	r = connection.Query(\"\"\"
 	SELECT 0 as rate,
 		   sum(temp_bytes) current_temp_bytes,
@@ -743,7 +743,7 @@ result = {
 
 from datetime import datetime
 
-if previous_data != None:
+if previous_data is not None:
 	query = '''
 		SELECT round(
 				   ((sum(pg_database_size(datname)) - {0})/1048576.0) / (extract(epoch from now()::time - '{1}'::time))::numeric,
@@ -844,7 +844,7 @@ result = {
 'script_data': """
 from datetime import datetime
 
-if previous_data != None:
+if previous_data is not None:
 	query = '''
 		SELECT sum(heap_blks_read) AS current_reads,
 			   sum(heap_blks_hit) AS current_hits,
@@ -949,7 +949,7 @@ result = {
 'script_data': """
 from datetime import datetime
 
-if previous_data != None:
+if previous_data is not None:
 	query = '''
 		SELECT sum(idx_blks_read) AS current_reads,
 			   sum(idx_blks_hit) AS current_hits,
@@ -1054,7 +1054,7 @@ result = {
 'script_data': """
 from datetime import datetime
 
-if previous_data != None:
+if previous_data is not None:
 	query = '''
 		SELECT sum(seq_scan) as current_seq,
 			   sum(idx_scan) as current_idx,
@@ -1474,7 +1474,7 @@ try:
     check_table = connection.Query("SELECT 1 FROM pg_class WHERE relname = 'pg_stat_checkpointer'")
     if check_table and len(check_table.Rows) > 0:
         is_pg17_plus = True
-except:
+except Exception:
     pass
 
 if is_pg17_plus:
@@ -1488,7 +1488,7 @@ else:
 
 sum_expression = "(" + col_timed + "+" + col_req + ")"
 
-if previous_data != None:
+if previous_data is not None:
     query = "select " + sum_expression + " - " + str(previous_data["current_checkpoints"]) + " as checkpoints_diff, " + sum_expression + " as current_checkpoints FROM " + stat_table
 else:
     query = "select 0 as checkpoints_diff, " + sum_expression + " as current_checkpoints FROM " + stat_table

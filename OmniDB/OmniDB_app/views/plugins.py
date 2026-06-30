@@ -13,6 +13,15 @@ import importlib
 from configparser import ConfigParser
 from itertools import chain
 import time
+
+def _parse_post_data(request):
+    raw = request.POST.get('data', None)
+    if not raw:
+        raise json.JSONDecodeError('Missing POST data', '', 0)
+    return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+    return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
 import shutil
 import os
 
@@ -106,8 +115,8 @@ def load_plugin(plugin_folder, p_load):
 		plugin_object = plugins[plugin_name]
 		#didn't raise exception, so plugin was already loaded. Exit
 		return
-	except:
-		None
+	except Exception:
+		pass
 
 	loaded_folder_name = '{0}_{1}'.format(plugin_name,str(time.time()).replace('.','_'))
 	loaded_folder_complete_backend_name = join(settings.PLUGINS_DIR,'temp_loaded',loaded_folder_name)
@@ -176,8 +185,8 @@ def load_plugins():
 	# Attempt to create plugins dir inside HOME_DIR, to make sure it exists
 	try:
 		os.mkdir(join(settings.HOME_DIR,'plugins'))
-	except:
-		None
+	except Exception:
+		pass
 
 	#delete temp loaded python files
 	for folder in [settings.PLUGINS_DIR, settings.PLUGINS_STATIC_DIR]:
@@ -217,7 +226,10 @@ def list_plugins(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	plugin_list = []
 	plugin_message_list = []
 
@@ -294,7 +306,10 @@ def get_plugins(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	plugin_list = []
 	for key, plugin in plugins.items():
 		if plugin['message']=='' and plugin['js_exists']:
@@ -502,7 +517,10 @@ def delete_plugin(request):
 		v_return['v_data'] = 'You must be superuser to delete a plugin.'
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_plugin_name = json_object['p_plugin_name']
 	p_plugin_folder = json_object['p_plugin_folder']
 
@@ -510,25 +528,25 @@ def delete_plugin(request):
 		plugin = plugins[p_plugin_name]
 		try:
 			shutil.rmtree(join(settings.HOME_DIR,'plugins',plugin['folder']))
-		except:
-			None
+		except Exception:
+			pass
 		del plugins[p_plugin_name]
-	except:
-		None
+	except Exception:
+		pass
 
 	try:
 		plugin = failed_plugins[p_plugin_folder]
 		try:
 			shutil.rmtree(join(settings.PLUGINS_STATIC_DIR,plugin['folder']))
-		except:
-			None
+		except Exception:
+			pass
 		try:
 			shutil.rmtree(join(settings.PLUGINS_DIR,plugin['folder']))
-		except:
-			None
+		except Exception:
+			pass
 		del plugins[p_plugin_name]
-	except:
-		None
+	except Exception:
+		pass
 
 	v_return['v_data'] = 'Please restart OmniDB to unload plugin libraries.'
 
@@ -545,10 +563,13 @@ def exec_plugin_function(request, v_database):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_plugin_name = json_object['p_plugin_name']
 	p_function_name = json_object['p_function_name']
-	if 'p_data' not in json_object or json_object['p_data'] == None:
+	if 'p_data' not in json_object or json_object['p_data'] is None:
 		p_data = {}
 	else:
 		p_data = json_object['p_data']

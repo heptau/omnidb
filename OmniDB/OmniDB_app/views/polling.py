@@ -1,3 +1,4 @@
+import re
 from django.http import HttpResponse
 from django.template import loader
 from django.http import JsonResponse
@@ -6,6 +7,7 @@ from django.shortcuts import redirect
 from datetime import datetime
 from math import ceil
 import json
+import os
 import time
 import threading
 import OmniDB_app.include.Spartacus as Spartacus
@@ -111,7 +113,15 @@ def long_polling(request):
 		v_return['v_error_id'] = 1
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		raw = request.POST.get('data', None)
+		if not raw:
+			raise json.JSONDecodeError('Missing POST data', '', 0)
+		json_object = json.loads(raw)
+	except (json.JSONDecodeError, ValueError):
+		v_return['v_data'] = 'Invalid or missing request data.'
+		v_return['v_error'] = True
+		return JsonResponse(v_return)
 	startup = json_object['p_startup']
 
 	#get client attribute in global object or create if it doesn't exist
@@ -120,8 +130,8 @@ def long_polling(request):
 	if startup:
 		try:
 			client_object['polling_lock'].release()
-		except:
-			None
+		except Exception:
+			pass
 
 	# Acquire client polling lock to read returning data
 	client_object['polling_lock'].acquire()
@@ -170,7 +180,15 @@ def create_request(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		raw = request.POST.get('data', None)
+		if not raw:
+			raise json.JSONDecodeError('Missing POST data', '', 0)
+		json_object = json.loads(raw)
+	except (json.JSONDecodeError, ValueError):
+		v_return['v_data'] = 'Invalid or missing request data.'
+		v_return['v_error'] = True
+		return JsonResponse(v_return)
 	v_code = json_object['v_code']
 	v_context_code = json_object['v_context_code']
 	v_data = json_object['v_data']
@@ -180,8 +198,8 @@ def create_request(request):
 	# Release lock to avoid dangling ajax polling requests
 	try:
 		client_object['polling_lock'].release()
-	except:
-		None
+	except Exception:
+		pass
 
 	#Cancel thread
 	if v_code == requestType.CancelThread:
@@ -213,10 +231,10 @@ def create_request(request):
 			#remove from tabs table if db_tab_id is not null
 			if v_tab_close_data['tab_db_id']:
 				try:
-					tab = Tab.objects.get(id=v_tab_close_data['tab_db_id'])
+					tab = Tab.objects.get(id=v_tab_close_data['tab_db_id'], user=request.user)
 					tab.delete()
 				except Exception as exc:
-					None
+					logger.error('tab delete error: %s', exc)
 
 	else:
 
@@ -241,8 +259,8 @@ def create_request(request):
 				try:
 					tab_object['last_update'] = datetime.now()
 					tab_object['terminal_object'].send(v_data['v_cmd'])
-				except:
-					None
+				except Exception as exc:
+					logger.error('terminal send error: %s', exc)
 			except Exception as exc:
 				tab_object = create_tab_object(
 					request.session,
@@ -268,6 +286,7 @@ def create_request(request):
 						v_full_file_name = os.path.join(settings.TEMP_DIR, v_file_name)
 						with open(v_full_file_name,'w') as f:
 							f.write(v_conn_object['tunnel']['key'])
+						os.chmod(v_full_file_name, 0o600)
 						client.connect(hostname=v_conn_object['tunnel']['server'],username=v_conn_object['tunnel']['user'],key_filename=v_full_file_name,passphrase=v_conn_object['tunnel']['password'],port=int(v_conn_object['tunnel']['port']))
 					else:
 						client.connect(hostname=v_conn_object['tunnel']['server'],username=v_conn_object['tunnel']['user'],password=v_conn_object['tunnel']['password'],port=int(v_conn_object['tunnel']['port']))
@@ -403,6 +422,12 @@ def create_request(request):
 
 			#New debugger, create connections
 			if v_data['v_state'] == debugState.Starting:
+				v_response = {
+					'v_code': response.MessageException,
+					'v_context_code': v_context_code,
+					'v_error': False,
+					'v_data': ''
+				}
 				try:
 					v_conn_tab_connection = v_session.v_databases[v_data['v_db_index']]['database']
 
@@ -479,12 +504,15 @@ def thread_debug(self,args):
 			v_database_debug.v_connection.Execute('delete from omnidb.contexts t where t.pid not in (select pid from pg_stat_activity where pid = t.pid)')
 
 			connections_details = v_database_debug.v_connection.Query('select pg_backend_pid()',True)
+			if not connections_details.Rows:
+				raise Exception('pg_backend_pid() returned no rows')
 			pid = connections_details.Rows[0][0]
 
-			v_database_debug.v_connection.Execute('insert into omnidb.contexts (pid, function, hook, lineno, stmttype, breakpoint, finished) values ({0}, null, null, null, null, 0, false)'.format(pid))
+			v_pid = int(pid)
+			v_database_debug.v_connection.Execute('insert into omnidb.contexts (pid, function, hook, lineno, stmttype, breakpoint, finished) values (%d, null, null, null, null, 0, false)' % v_pid)
 
 			#lock row for current pid
-			v_database_control.v_connection.Execute('select pg_advisory_lock({0}) from omnidb.contexts where pid = {0}'.format(pid))
+			v_database_control.v_connection.Execute('select pg_advisory_lock(%d) from omnidb.contexts where pid = %d' % (v_pid, v_pid))
 
 			#updating pid and port in tab object
 			v_tab_object['debug_pid'] = pid
@@ -499,15 +527,15 @@ def thread_debug(self,args):
 
 			v_lineno = None
 			#wait for context to be ready or thread ends
-			while v_lineno == None and t.isAlive():
+			while v_lineno is None and t.isAlive():
 				time.sleep(0.5)
-				v_lineno = v_database_control.v_connection.ExecuteScalar('select lineno from omnidb.contexts where pid = {0} and lineno is not null'.format(pid))
+				v_lineno = v_database_control.v_connection.ExecuteScalar('select lineno from omnidb.contexts where pid = %d and lineno is not null' % v_pid)
 
 			# Function ended instantly
 			if not t.isAlive():
 				v_database_control.v_connection.Close()
 			else:
-				v_variables = v_database_control.v_connection.Query('select name,attribute,vartype,value from omnidb.variables where pid = {0}'.format(pid),True)
+				v_variables = v_database_control.v_connection.Query('select name,attribute,vartype,value from omnidb.variables where pid = %d' % v_pid, True)
 
 				v_response['v_code'] = response.DebugResponse
 				v_response['v_data'] = {
@@ -520,16 +548,19 @@ def thread_debug(self,args):
 
 		elif v_state == debugState.Step:
 
-			v_database_control.v_connection.Execute('update omnidb.contexts set breakpoint = {0} where pid = {1}'.format(args['v_next_breakpoint'],v_tab_object['debug_pid']))
+			v_debug_pid = int(v_tab_object['debug_pid'])
+			v_database_control.v_connection.Execute('update omnidb.contexts set breakpoint = %d where pid = %d' % (int(args['v_next_breakpoint']), v_debug_pid))
 
 			try:
-				v_database_control.v_connection.Execute('select pg_advisory_unlock({0}) from omnidb.contexts where pid = {0}; select pg_advisory_lock({0}) from omnidb.contexts where pid = {0};'.format(v_tab_object['debug_pid']))
+				v_database_control.v_connection.Execute('select pg_advisory_unlock(%d) from omnidb.contexts where pid = %d; select pg_advisory_lock(%d) from omnidb.contexts where pid = %d;' % (v_debug_pid, v_debug_pid, v_debug_pid, v_debug_pid))
 
 				#acquired the lock, get variables and lineno
-				v_variables = v_database_control.v_connection.Query('select name,attribute,vartype,value from omnidb.variables where pid = {0}'.format(v_tab_object['debug_pid']),True)
-				v_context_data = v_database_control.v_connection.Query('select lineno,finished from omnidb.contexts where pid = {0}'.format(v_tab_object['debug_pid']),True)
+				v_variables = v_database_control.v_connection.Query('select name,attribute,vartype,value from omnidb.variables where pid = %d' % v_debug_pid, True)
+				v_context_data = v_database_control.v_connection.Query('select lineno,finished from omnidb.contexts where pid = %d' % v_debug_pid, True)
 
 				#not last statement
+				if not v_context_data.Rows:
+					raise Exception('context data query returned no rows for pid %d' % v_debug_pid)
 				if (v_context_data.Rows[0][1]!='True'):
 					v_response['v_code'] = response.DebugResponse
 					v_response['v_data'] = {
@@ -540,7 +571,7 @@ def thread_debug(self,args):
 					}
 					queue_response(v_client_object,v_response)
 				else:
-					v_database_control.v_connection.Execute('select pg_advisory_unlock({0}) from omnidb.contexts where pid = {0};'.format(v_tab_object['debug_pid']))
+					v_database_control.v_connection.Execute('select pg_advisory_unlock(%d) from omnidb.contexts where pid = %d;' % (v_debug_pid, v_debug_pid))
 					v_database_control.v_connection.Close()
 					v_response['v_code'] = response.RemoveContext
 					queue_response(v_client_object,v_response)
@@ -592,27 +623,31 @@ def thread_debug_run_func(self,args):
 		v_database_debug.v_connection.Execute("select omnidb.omnidb_enable_debugger('{0}')".format(v_conn_string))
 
 		#run function it will lock until the function ends
+		v_func_name = args['v_function']
+		if not re.match(r'^[a-zA-Z_][a-zA-Z0-9_.]*(\([^)]*\))?$', v_func_name):
+			raise Exception('Invalid function name: ' + v_func_name)
 		if args['v_type'] == 'f':
-			v_func_return = v_database_debug.v_connection.Query('select * from {0} limit 1000'.format(args['v_function']),True)
+			v_func_return = v_database_debug.v_connection.Query('select * from {0} limit 1000'.format(v_func_name),True)
 		else:
-			v_func_return = v_database_debug.v_connection.Query('call {0}'.format(args['v_function']),True)
+			v_func_return = v_database_debug.v_connection.Query('call {0}'.format(v_func_name),True)
 
 		#Not cancelled, return all data
 		if not v_tab_object['cancelled']:
 
 			#retrieve variables
-			v_variables = v_database_debug.v_connection.Query('select name,attribute,vartype,value from omnidb.variables where pid = {0}'.format(v_tab_object['debug_pid']),True)
+			v_run_pid = int(v_tab_object['debug_pid'])
+			v_variables = v_database_debug.v_connection.Query('select name,attribute,vartype,value from omnidb.variables where pid = %d' % v_run_pid, True)
 
 			#retrieve statistics
-			v_statistics = v_database_debug.v_connection.Query('select lineno,coalesce(trunc((extract("epoch" from tend)  - extract("epoch" from tstart))::numeric,4),0) as msec from omnidb.statistics where pid = {0} order by step'.format(v_tab_object['debug_pid']),True)
+			v_statistics = v_database_debug.v_connection.Query('select lineno,coalesce(trunc((extract("epoch" from tend)  - extract("epoch" from tstart))::numeric,4),0) as msec from omnidb.statistics where pid = %d order by step' % v_run_pid, True)
 
 			#retrieve statistics summary
 			v_statistics_summary = v_database_debug.v_connection.Query('''
 			select lineno, max(msec) as msec
-			from (select lineno,coalesce(trunc((extract("epoch" from tend) - extract("epoch" from tstart))::numeric,4),0) as msec from omnidb.statistics where pid = {0}) t
+			from (select lineno,coalesce(trunc((extract("epoch" from tend) - extract("epoch" from tstart))::numeric,4),0) as msec from omnidb.statistics where pid = %d) t
 			group by lineno
 			order by lineno
-			'''.format(v_tab_object['debug_pid']),True)
+			''' % v_run_pid, True)
 
 			#retrieve notices
 			v_notices = v_database_debug.v_connection.GetNotices()
@@ -767,7 +802,7 @@ def thread_terminal(self,args):
 
 			except Exception as exc:
 				transport = v_terminal_ssh_client.get_transport()
-				if transport == None or transport.is_active() == False:
+				if transport is None or not transport.is_active():
 					break
 				if 'EOF' in str(exc):
 					break
@@ -1068,7 +1103,7 @@ def thread_query(self,args):
 					if len(v_notices) > 0:
 						for v_notice in v_notices:
 							v_notices_text += v_notice.replace('\n','<br/>')
-				except:
+				except Exception:
 					v_notices = []
 					v_notices_text = ''
 
@@ -1110,12 +1145,12 @@ def thread_query(self,args):
 		#if mode=0 save tab
 		if v_mode==0 and v_tab_object['tab_db_id'] and v_log_query:
 			try:
-				tab = Tab.objects.get(id=v_tab_object['tab_db_id'])
+				tab = Tab.objects.get(id=v_tab_object['tab_db_id'], user=request.user)
 				tab.snippet=v_tab_object['sql_save']
 				tab.title=v_tab_title
 				tab.save()
 			except Exception as exc:
-				None
+				logger.error('tab save error: %s', exc)
 	except Exception as exc:
 		raise
 		logger.error('''*** Exception ***\n{0}'''.format(traceback.format_exc()))
@@ -1377,7 +1412,7 @@ def thread_query_edit_data(self,args):
 
 				v_row_data.append('')
 				for v_col in v_data1.Columns:
-					if v_row[v_col] == None:
+					if v_row[v_col] is None:
 						v_row_data.append('[null]')
 					else:
 						v_row_data.append(str(v_row[v_col]))
@@ -1448,7 +1483,7 @@ def thread_save_edit_data(self,args):
 					try:
 						v_type_details = v_database.v_data_types[v_pk['v_type']]
 					# Type not found
-					except:
+					except KeyError:
 						v_type_details = {
 							'quoted': True
 						}
@@ -1494,7 +1529,7 @@ def thread_save_edit_data(self,args):
 					v_first = False
 
 					v_value = ''
-					if v_data_rows[i][j] != None:
+					if v_data_rows[i][j] is not None:
 						v_value = v_data_rows[i][j]
 
 					v_value = v_value.replace("'","''")
@@ -1503,7 +1538,7 @@ def thread_save_edit_data(self,args):
 					try:
 						v_type_details = v_database.v_data_types[v_columns[j-1]['v_type']]
 					# Type not found
-					except:
+					except KeyError:
 						v_type_details = {
 							'quoted': True
 						}
@@ -1544,7 +1579,7 @@ def thread_save_edit_data(self,args):
 					v_first = False
 
 					v_value = ''
-					if v_data_rows[i][v_col_index+1] != None:
+					if v_data_rows[i][v_col_index+1] is not None:
 						v_value = v_data_rows[i][v_col_index+1]
 
 					v_value = v_value.replace("'","''")
@@ -1555,7 +1590,7 @@ def thread_save_edit_data(self,args):
 					try:
 						v_type_details = v_database.v_data_types[v_columns[v_col_index]['v_type']]
 					# Type not found
-					except:
+					except KeyError:
 						v_type_details = {
 							'quoted': True
 						}
@@ -1580,7 +1615,7 @@ def thread_save_edit_data(self,args):
 					try:
 						v_type_details = v_database.v_data_types[v_pk['v_type']]
 					# Type not found
-					except:
+					except KeyError:
 						v_type_details = {
 							'quoted': True
 						}

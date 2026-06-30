@@ -17,6 +17,15 @@ from OmniDB_app.models.main import *
 from datetime import datetime
 from django.utils.timezone import make_aware
 
+def _parse_post_data(request):
+    raw = request.POST.get('data', None)
+    if not raw:
+        raise json.JSONDecodeError('Missing POST data', '', 0)
+    return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+    return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
+
 def get_all_snippets(request):
 	v_return = {}
 	v_return['v_data'] = ''
@@ -48,7 +57,7 @@ def build_snippets_object_recursive(p_folders,p_files,p_current_object):
 	# Adding files
 	for file in p_files:
 		# Match
-		if ((file.parent == None and p_current_object['id'] == None) or (file.parent!=None and file.parent.id == p_current_object['id'])):
+		if ((file.parent is None and p_current_object['id'] is None) or (file.parent!=None and file.parent.id == p_current_object['id'])):
 			p_current_object['files'].append(
 			{
 				'id': file.id,
@@ -58,7 +67,7 @@ def build_snippets_object_recursive(p_folders,p_files,p_current_object):
 	# Adding folders
 	for folder in p_folders:
 		# Match
-		if ((folder.parent == None and p_current_object['id'] == None) or (folder.parent!=None and folder.parent.id == p_current_object['id'])):
+		if ((folder.parent is None and p_current_object['id'] is None) or (folder.parent!=None and folder.parent.id == p_current_object['id'])):
 			v_folder = {
 				'id': folder.id,
 				'name': folder.name,
@@ -86,7 +95,10 @@ def get_node_children(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_sn_id_parent = json_object['p_sn_id_parent']
 
 	v_return['v_data'] = {
@@ -131,11 +143,14 @@ def get_snippet_text(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_st_id = json_object['p_st_id']
 
 	try:
-		v_return['v_data'] = SnippetFile.objects.get(id=v_st_id).text
+		v_return['v_data'] = SnippetFile.objects.get(id=v_st_id, user=request.user).text
 	except Exception as exc:
 		None
 
@@ -156,13 +171,16 @@ def new_node_snippet(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_sn_id_parent = json_object['p_sn_id_parent']
 	v_mode = json_object['p_mode']
 	v_name = json_object['p_name']
 
 	if v_sn_id_parent:
-		v_parent = SnippetFolder.objects.get(id=v_sn_id_parent)
+		v_parent = SnippetFolder.objects.get(id=v_sn_id_parent, user=request.user)
 	else:
 		v_parent = None
 
@@ -211,16 +229,19 @@ def delete_node_snippet(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_id = json_object['p_id']
 	v_mode = json_object['p_mode']
 
 	try:
 		if v_mode == 'node':
-			folder = SnippetFolder.objects.get(id=v_id)
+			folder = SnippetFolder.objects.get(id=v_id, user=request.user)
 			folder.delete()
 		else:
-			file = SnippetFile.objects.get(id=v_id)
+			file = SnippetFile.objects.get(id=v_id, user=request.user)
 			file.delete()
 
 	except Exception as exc:
@@ -248,14 +269,17 @@ def save_snippet_text(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_id = json_object['p_id']
 	v_name = json_object['p_name']
 	v_parent_id = json_object['p_parent']
 	v_text = json_object['p_text']
 
 	if v_parent_id:
-		v_parent = SnippetFolder.objects.get(id=v_parent_id)
+		v_parent = SnippetFolder.objects.get(id=v_parent_id, user=request.user)
 	else:
 		v_parent = None
 
@@ -274,7 +298,7 @@ def save_snippet_text(request):
 			file.save()
 		#existing snippet
 		else:
-			file = SnippetFile.objects.get(id=v_id)
+			file = SnippetFile.objects.get(id=v_id, user=request.user)
 			file.text = v_text.replace("'", "''")
 			file.modify_date=new_date
 			file.save()
@@ -310,7 +334,10 @@ def rename_node_snippet(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_id = json_object['p_id']
 	v_name = json_object['p_name']
 	v_mode = json_object['p_mode']
@@ -318,13 +345,13 @@ def rename_node_snippet(request):
 	try:
 		#node
 		if v_mode=='node':
-			folder = SnippetFolder.objects.get(id=v_id)
+			folder = SnippetFolder.objects.get(id=v_id, user=request.user)
 			folder.name = v_name.replace("'", "''")
 			folder.modify_date=make_aware(datetime.now())
 			folder.save()
 		#snippet
 		else:
-			file = SnippetFile.objects.get(id=v_id)
+			file = SnippetFile.objects.get(id=v_id, user=request.user)
 			file.name = v_name.replace("'", "''")
 			file.modify_date=make_aware(datetime.now())
 			file.save()

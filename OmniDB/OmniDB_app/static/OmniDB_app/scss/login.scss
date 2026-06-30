@@ -33,10 +33,12 @@ html {
 body {
 	margin: 0px;
 	height: 100%;
-	font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,"Noto Sans",sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol","Noto Color Emoji";
+	font-family:
+		-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
+		"Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
 	font-weight: 400;
 	line-height: 1.5;
-	background-color: #F2F2F2;
+	background-color: #f2f2f2;
 }
 .omnidb__login {
 	display: flex;
@@ -49,7 +51,7 @@ body {
 	padding: 10px;
 	width: 280px;
 	text-align: center;
-	background-color: #FFFFFF;
+	background-color: #ffffff;
 	box-shadow: 5px 5px 8px rgba(0, 0, 0, 0.2);
 	border-radius: 3px;
 	box-sizing: border-box;
@@ -73,11 +75,11 @@ body {
 	margin: 20px 0px;
 	padding-top: 2px;
 	padding-bottom: 2px;
-	background-color: #FFFFFF;
+	background-color: #ffffff;
 	transition: 0.45s;
 }
 .omnidb__login .omnidb__login__input-wrapper label {
-	background-color: #8DEB85;
+	background-color: #8deb85;
 	border-radius: 6px;
 	color: #152d50;
 	display: block;
@@ -90,7 +92,7 @@ body {
 	z-index: 1;
 }
 .omnidb__login .omnidb__login__input-wrapper.isEmpty label {
-	background-color: #EB8585;
+	background-color: #eb8585;
 }
 .omnidb__login .omnidb__login__input-wrapper.isEmpty label::after {
 	content: " (empty)";
@@ -112,13 +114,13 @@ body {
 }
 .omnidb__login input {
 	appearance: unset !important;
-	background-color: #FBFBFB !important;
-	box-shadow: 2px 2px 4px inset rgba(0,0,0,0.1) !important;
+	background-color: #fbfbfb !important;
+	box-shadow: 2px 2px 4px inset rgba(0, 0, 0, 0.1) !important;
 	border-radius: 6px;
 	border-width: 1px !important;
 	border-color: #e2e2e2 !important;
 	box-sizing: border-box;
-	color: #2461BE !important;
+	color: #2461be !important;
 	display: block;
 	padding: 14px 18px 6px 18px;
 	position: relative;
@@ -128,13 +130,13 @@ body {
 }
 .omnidb__login input:-internal-autofill-selected {
 	appearance: unset !important;
-	background-color: #FBFBFB !important;
-	box-shadow: 2px 2px 4px inset rgba(0,0,0,0.1) !important;
+	background-color: #fbfbfb !important;
+	box-shadow: 2px 2px 4px inset rgba(0, 0, 0, 0.1) !important;
 	border-radius: 6px;
 	border-width: 1px !important;
 	border-color: #e2e2e2 !important;
 	box-sizing: border-box;
-	color: #2461BE !important;
+	color: #2461be !important;
 	display: block;
 	padding: 14px 18px 6px 18px;
 	position: relative;
@@ -150,28 +152,28 @@ button {
 	padding: 6px 10px;
 	font-size: 18px;
 	border: none;
-	color: #FFFFFF;
+	color: #ffffff;
 	background-color: #839ec7;
 	cursor: pointer;
 }
 
 .modal_background_dark {
-		position: fixed;
-		z-index: 100000;
-		top: 0;
-		left: 0;
-		height: 100%;
-		width: 100%;
-		background: rgba( 0, 0, 0, .4 );
-		vertical-align: top;
+	position: fixed;
+	z-index: 100000;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 100%;
+	background: rgba(0, 0, 0, 0.4);
+	vertical-align: top;
 }
 
 .white_box {
-		border-radius: 3px;
-		border: 1px solid #FFFFFF;
-		background-color: #FFFFFF;
-		position: fixed;
-		font-size: 12px;
+	border-radius: 3px;
+	border: 1px solid #ffffff;
+	background-color: #ffffff;
+	position: fixed;
+	font-size: 12px;
 }
 
 .div_alert_text {
@@ -191,7 +193,7 @@ button {
 }
 
 body.loading .div_loading {
-		display: block;
+	display: block;
 }
 /*
 .div_loading {
@@ -213,8 +215,6 @@ body.loading .div_loading {
 	display: block;
 }
 
-
-
 /** ANIMATIONS **/
 .omnidb__login {
 	opacity: 0;
@@ -226,7 +226,7 @@ body.loading .div_loading {
 	height: 0px;
 	overflow: hidden;
 
-	animation:	growInFromTop 0.4s linear forwards 1.4s;
+	animation: growInFromTop 0.4s linear forwards 1.4s;
 }
 
 .omnidb__login .omnidb__login__version,
@@ -234,7 +234,7 @@ body.loading .div_loading {
 .omnidb__login button {
 	opacity: 0;
 
-	animation:	fadeIn 0.6s linear forwards 1.8s;
+	animation: fadeIn 0.6s linear forwards 1.8s;
 }
 
 #user_title {
@@ -261,19 +261,21 @@ body.loading .div_loading {
 
 .logo_omnidb_to-blue path,
 .logo_omnidb_to-blue rect {
-	animation:  svgDrawStrokes 1s linear forwards 0.3s,
-				svgToBlue 0.6s linear forwards 1.3s,
-				svgFadeStrokes 0.6s linear forwards 1.3s;
+	animation:
+		svgDrawStrokes 1s linear forwards 0.3s,
+		svgToBlue 0.6s linear forwards 1.3s,
+		svgFadeStrokes 0.6s linear forwards 1.3s;
 }
 
 .logo_omnidb_to-darkblue path,
 .logo_omnidb_to-darkblue rect {
-	animation:  svgDrawStrokes 1s linear forwards 0.3s,
-				svgToDarkblue 0.6s linear forwards 1.3s,
-				svgFadeStrokes 0.6s linear forwards 1.3s;
+	animation:
+		svgDrawStrokes 1s linear forwards 0.3s,
+		svgToDarkblue 0.6s linear forwards 1.3s,
+		svgFadeStrokes 0.6s linear forwards 1.3s;
 }
 
-@keyframes  svgDrawStrokes {
+@keyframes svgDrawStrokes {
 	to {
 		stroke-dashoffset: 0;
 	}
@@ -285,7 +287,7 @@ body.loading .div_loading {
 }
 @keyframes svgToBlue {
 	to {
-		fill: #878FC6;
+		fill: #878fc6;
 	}
 }
 @keyframes svgToDarkblue {

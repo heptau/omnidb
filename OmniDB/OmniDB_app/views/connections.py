@@ -4,8 +4,12 @@ from django.http import JsonResponse
 from django.core import serializers
 from django.shortcuts import redirect
 import json
+import logging
+import os
 
 import sys
+
+logger = logging.getLogger(__name__)
 
 import OmniDB_app.include.Spartacus as Spartacus
 import OmniDB_app.include.Spartacus.Database as Database
@@ -40,7 +44,10 @@ def get_connections(request):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_tab_conn_id_list = json_object['p_conn_id_list']
 
 	v_tech_list = []
@@ -50,8 +57,6 @@ def get_connections(request):
 	v_connection_list = []
 	try:
 		for conn in Connection.objects.filter(Q(user=request.user) | Q(public=True)):
-
-			conn.user.id != request.user.id
 
 			v_conn_object = {
 				'id': conn.id,
@@ -87,9 +92,8 @@ def get_connections(request):
 				v_conn_object['password'] = False if conn.password.strip() == '' else True
 
 			v_connection_list.append(v_conn_object)
-	# No connections
 	except Exception as exc:
-		None
+		logger.error('get_connections error: %s', exc)
 
 	v_return['v_data'] = {
 		'v_conn_list': v_connection_list,
@@ -134,9 +138,8 @@ def get_groups(request):
 
 			v_group_list.append(v_current_group_data)
 
-	# No group connections
 	except Exception as exc:
-		None
+		logger.error('get_groups error: %s', exc)
 
 	v_return['v_data'] = v_group_list
 
@@ -155,7 +158,10 @@ def new_group(request):
 		v_return['v_error_id'] = 1
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_name = json_object['p_name']
 
 	try:
@@ -177,12 +183,19 @@ def edit_group(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_id = json_object['p_id']
 	p_name = json_object['p_name']
 
 	try:
 		group = Group.objects.get(id=p_id)
+		if group.user.id != request.user.id:
+			v_return['v_data'] = 'This group does not belong to you.'
+			v_return['v_error'] = True
+			return JsonResponse(v_return)
 		group.name = p_name
 		group.save()
 	except Exception as exc:
@@ -201,11 +214,18 @@ def delete_group(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_id = json_object['p_id']
 
 	try:
 		group = Group.objects.get(id=p_id)
+		if group.user.id != request.user.id:
+			v_return['v_data'] = 'This group does not belong to you.'
+			v_return['v_error'] = True
+			return JsonResponse(v_return)
 		group.delete()
 	except Exception as exc:
 		v_return['v_data'] = str(exc)
@@ -229,7 +249,10 @@ def test_connection(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_type = json_object['type']
 
 	password=json_object['password'].strip()
@@ -237,7 +260,7 @@ def test_connection(request):
 	ssh_key=json_object['tunnel']['key']
 
 	if json_object['id']!=-1:
-		conn = Connection.objects.get(id=json_object['id'])
+		conn = Connection.objects.get(id=json_object['id'], user=request.user)
 		if json_object['password'].strip()=='':
 			password=conn.password
 		if json_object['tunnel']['password'].strip()=='':
@@ -255,14 +278,16 @@ def test_connection(request):
 		client.load_system_host_keys()
 		client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 
+		v_key_file = None
 		try:
 			#ssh key provided
 			if ssh_key.strip() != '':
 				v_file_name = '{0}'.format(str(time.time())).replace('.','_')
-				v_full_file_name = os.path.join(settings.TEMP_DIR, v_file_name)
-				with open(v_full_file_name,'w') as f:
+				v_key_file = os.path.join(settings.TEMP_DIR, v_file_name)
+				with open(v_key_file,'w') as f:
 					f.write(ssh_key)
-				client.connect(hostname=json_object['tunnel']['server'],username=json_object['tunnel']['user'],key_filename=v_full_file_name,passphrase=ssh_password,port=int(json_object['tunnel']['port']))
+				os.chmod(v_key_file, 0o600)
+				client.connect(hostname=json_object['tunnel']['server'],username=json_object['tunnel']['user'],key_filename=v_key_file,passphrase=ssh_password,port=int(json_object['tunnel']['port']))
 			else:
 				client.connect(hostname=json_object['tunnel']['server'],username=json_object['tunnel']['user'],password=ssh_password,port=int(json_object['tunnel']['port']))
 
@@ -271,6 +296,9 @@ def test_connection(request):
 		except Exception as exc:
 			v_return['v_data'] = str(exc)
 			v_return['v_error'] = True
+		finally:
+			if v_key_file and os.path.exists(v_key_file):
+				os.remove(v_key_file)
 	else:
 
 		database = OmniDatabase.Generic.InstantiateDatabase(
@@ -287,19 +315,21 @@ def test_connection(request):
 		)
 
 		# create tunnel if enabled
-		if json_object['tunnel']['enabled'] == True:
+		if json_object['tunnel']['enabled']:
 
+			v_key_file2 = None
 			try:
 				if ssh_key.strip() != '':
 					v_file_name = '{0}'.format(str(time.time())).replace('.','_')
-					v_full_file_name = os.path.join(settings.TEMP_DIR, v_file_name)
-					with open(v_full_file_name,'w') as f:
+					v_key_file2 = os.path.join(settings.TEMP_DIR, v_file_name)
+					with open(v_key_file2,'w') as f:
 						f.write(ssh_key)
+					os.chmod(v_key_file2, 0o600)
 					server = SSHTunnelForwarder(
 						(json_object['tunnel']['server'], int(json_object['tunnel']['port'])),
 						ssh_username=json_object['tunnel']['user'],
 						ssh_private_key_password=ssh_password,
-						ssh_pkey = v_full_file_name,
+						ssh_pkey = v_key_file2,
 						remote_bind_address=(database.v_active_server, int(database.v_active_port)),
 						logger=None
 					)
@@ -326,6 +356,9 @@ def test_connection(request):
 			except Exception as exc:
 				v_return['v_data'] = str(exc)
 				v_return['v_error'] = True
+			finally:
+				if v_key_file2 and os.path.exists(v_key_file2):
+					os.remove(v_key_file2)
 
 		else:
 			message = database.TestConnection()
@@ -350,7 +383,10 @@ def save_connection(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_id = json_object['id']
 	try:
 		# New connection
@@ -457,7 +493,10 @@ def delete_connection(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_id = json_object['id']
 
 	try:
@@ -492,25 +531,35 @@ def save_group_connections(request):
 		v_return['v_error_id'] = 1
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_group = json_object['p_group']
 	p_conn_data_list = json_object['p_conn_data_list']
 
-	group_obj = Group.objects.get(id=p_group)
+	try:
+		group_obj = Group.objects.get(id=p_group)
+	except Group.DoesNotExist:
+		v_return['v_data'] = 'Group not found.'
+		v_return['v_error'] = True
+		return JsonResponse(v_return)
+
+	if group_obj.user.id != request.user.id:
+		v_return['v_data'] = 'This group does not belong to you.'
+		v_return['v_error'] = True
+		return JsonResponse(v_return)
 
 	for v_conn_data in p_conn_data_list:
 		try:
+			conn_obj = Connection.objects.get(id=v_conn_data['id'], user=request.user)
 			if not v_conn_data['selected']:
-				conn = GroupConnection.objects.get(group=group_obj,connection=Connection.objects.get(id=v_conn_data['id']))
-				conn.delete()
+				GroupConnection.objects.filter(group=group_obj, connection=conn_obj).delete()
 			else:
-				conn = GroupConnection(
-					group=group_obj,
-					connection=Connection.objects.get(id=v_conn_data['id'])
-				)
-				conn.save()
-
+				GroupConnection.objects.get_or_create(group=group_obj, connection=conn_obj)
+		except Connection.DoesNotExist:
+			logger.error('save_group_connections: connection %s not found or not owned by user', v_conn_data['id'])
 		except Exception as exc:
-			None
+			logger.error('save_group_connections error: %s', exc)
 
 	return JsonResponse(v_return)

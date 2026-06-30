@@ -28,8 +28,6 @@ SOFTWARE.
 */
 
 function initCreateTabFunctions() {
-
-
 	// var v_createAlterTableTabFunction = function(p_table) {
 	//
 	// 	v_connTabControl.selectedTab.tag.tabControl.removeTabIndex(v_connTabControl.selectedTab.tag.tabControl.tabList.length-1);
@@ -376,20 +374,18 @@ function initCreateTabFunctions() {
 	// };
 
 	// Functions to create a default `add` tab
-	v_connTabControl.createAddTab = function(){
-		v_connTabControl.createTab(
-	    {
-	      p_icon: '<i class="fas fa-plus"></i>',
-	      p_name: 'Add Connection',
-	      p_close: false,
-	      p_selectable: false,
-	      p_clickFunction: function(e) {
-	        showMenuNewTabOuter(e);
-	      },
-	      p_omnidb_tooltip_name: '<h5 class="my-1">Add/Select Connections</h5>'
-	    }
-	  );
-	}
+	v_connTabControl.createAddTab = function () {
+		v_connTabControl.createTab({
+			p_icon: '<i class="fas fa-plus"></i>',
+			p_name: "Add Connection",
+			p_close: false,
+			p_selectable: false,
+			p_clickFunction: function (e) {
+				showMenuNewTabOuter(e);
+			},
+			p_omnidb_tooltip_name: '<h5 class="my-1">Add/Select Connections</h5>',
+		});
+	};
 
 	// Functions to create tabs globally
 	v_connTabControl.tag.createConnTab = v_createConnTabFunction;
@@ -423,40 +419,36 @@ function initCreateTabFunctions() {
 	//v_connTabControl.tag.createNewMonitorNodeTab = v_createNewMonitorNodeTabFunction;
 }
 
-function beforeCloseTab(e,p_confirm_function) {
+function beforeCloseTab(e, p_confirm_function) {
 	if (e) {
-		if (e.clientX==0 && e.clientY==0)
-		showConfirm('Are you sure you want to remove this tab?',
-			function() {
+		if (e.clientX == 0 && e.clientY == 0)
+			showConfirm("Are you sure you want to remove this tab?", function () {
 				p_confirm_function();
-			}
-		);
+			});
 		else {
 			customMenu(
 				{
-					x:e.clientX+5,
-					y:e.clientY+5
+					x: e.clientX + 5,
+					y: e.clientY + 5,
 				},
 				[
 					{
-						text: 'Confirm',
-						icon: 'fas cm-all fa-check',
-						action: function() {
+						text: "Confirm",
+						icon: "fas cm-all fa-check",
+						action: function () {
 							p_confirm_function();
-						}
+						},
 					},
 					{
-						text: 'Cancel',
-						icon: 'fas cm-all fa-times',
-						action: function() {
-						}
-					}
+						text: "Cancel",
+						icon: "fas cm-all fa-times",
+						action: function () {},
+					},
 				],
-				null
+				null,
 			);
 		}
-	}
-	else {
+	} else {
 		p_confirm_function();
 	}
 }

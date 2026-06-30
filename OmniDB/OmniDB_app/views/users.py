@@ -21,6 +21,15 @@ from django.contrib.auth.models import User
 
 from OmniDB_app.views.memory_objects import *
 
+def _parse_post_data(request):
+    raw = request.POST.get('data', None)
+    if not raw:
+        raise json.JSONDecodeError('Missing POST data', '', 0)
+    return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+    return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
+
 @user_authenticated
 def get_users(request):
 
@@ -75,7 +84,10 @@ def new_user(request):
 		v_return['v_error'] = True
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_data = json_object['p_data']
 
 	try:
@@ -112,7 +124,10 @@ def remove_user(request):
 		v_return['v_error'] = True
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_id = json_object['p_id']
 
 	try:
@@ -141,7 +156,10 @@ def save_users(request):
 		v_return['v_error'] = True
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 
 	try:
 		v_data = json_object['p_data']

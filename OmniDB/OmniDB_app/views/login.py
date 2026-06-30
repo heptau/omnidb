@@ -150,7 +150,15 @@ def sign_in(request):
 		v_return['v_data'] = -2
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		raw = request.POST.get('data', None)
+		if not raw:
+			raise json.JSONDecodeError('Missing POST data', '', 0)
+		json_object = json.loads(raw)
+	except (json.JSONDecodeError, ValueError):
+		v_return['v_data'] = 'Invalid or missing request data.'
+		v_return['v_error'] = True
+		return JsonResponse(v_return)
 	username = json_object['p_username']
 	pwd = json_object['p_pwd']
 

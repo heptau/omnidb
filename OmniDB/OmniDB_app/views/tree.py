@@ -11,6 +11,15 @@ import OmniDB_app.include.Spartacus.Database as Database
 import OmniDB_app.include.Spartacus.Utils as Utils
 from OmniDB_app.include.Session import Session
 
+def _parse_post_data(request):
+    raw = request.POST.get('data', None)
+    if not raw:
+        raise json.JSONDecodeError('Missing POST data', '', 0)
+    return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+    return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
+
 def get_tree_info(request):
 
 	v_return = {}
@@ -26,7 +35,10 @@ def get_tree_info(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 
 	v_database = v_session.v_databases[v_database_index]
@@ -60,7 +72,10 @@ def get_tables(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 
 	v_database = v_session.v_databases[v_database_index]
@@ -102,7 +117,10 @@ def get_columns(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_table = json_object['p_table']
 
@@ -143,7 +161,10 @@ def get_pk(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_database_index = json_object['p_database_index']
 	p_table = json_object['p_table']
 
@@ -181,7 +202,10 @@ def get_fks(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_database_index = json_object['p_database_index']
 	p_table = json_object['p_table']
 
@@ -223,7 +247,10 @@ def get_uniques(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_database_index = json_object['p_database_index']
 	p_table = json_object['p_table']
 
@@ -261,7 +288,10 @@ def get_indexes(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_database_index = json_object['p_database_index']
 	p_table = json_object['p_table']
 
@@ -300,7 +330,10 @@ def get_functions(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 
 	v_database = v_session.v_databases[v_database_index]
@@ -338,7 +371,10 @@ def get_function_fields(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	p_function = json_object['p_function']
 
@@ -377,7 +413,10 @@ def get_function_definition(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	p_function = json_object['p_function']
 
@@ -408,7 +447,10 @@ def get_procedures(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 
 	v_database = v_session.v_databases[v_database_index]
@@ -446,7 +488,10 @@ def get_procedure_fields(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	p_procedure = json_object['p_procedure']
 
@@ -485,7 +530,10 @@ def get_procedure_definition(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	p_procedure = json_object['p_procedure']
 
@@ -516,7 +564,10 @@ def get_sequences(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 
 	v_database = v_session.v_databases[v_database_index]

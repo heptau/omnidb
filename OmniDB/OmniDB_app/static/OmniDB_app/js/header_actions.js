@@ -31,9 +31,7 @@ SOFTWARE.
 /// Opens OmniDB about window.
 /// </summary>
 function showAbout() {
-
-	$('#modal_about').modal('show');
-
+	$("#modal_about").modal("show");
 }
 /*
 var v_light_terminal_theme = {
@@ -47,18 +45,18 @@ var v_light_terminal_theme = {
 }
 */
 var v_light_terminal_theme = {
-	background: '#f4f4f4',
-	brightBlue: '#006de2',
-	brightGreen: '#4b9800',
-	foreground: '#454545',
-	cursor: '#454545',
-	cursorAccent: '#454545',
-	selection: '#00000030'
-}
+	background: "#f4f4f4",
+	brightBlue: "#006de2",
+	brightGreen: "#4b9800",
+	foreground: "#454545",
+	cursor: "#454545",
+	cursorAccent: "#454545",
+	selection: "#00000030",
+};
 
 var v_dark_terminal_theme = {
-	background: '#1a1a1d'
-}
+	background: "#1a1a1d",
+};
 
 var v_current_terminal_theme;
 
@@ -66,37 +64,33 @@ var v_current_terminal_theme;
 /// Startup function.
 /// </summary>
 $(function () {
-
 	// var v_fileref = document.getElementById("ss_theme");
 	// v_fileref.setAttribute("href", v_url_folder + '/static/OmniDB_app/new/css/themes/' + v_theme + '.css');
-
 
 	//var v_configTabControl = createTabControl('config_tabs',0,null);
 	//v_configTabControl.selectTabIndex(0);
 
 	//setting font size of body
-	document.getElementsByTagName('html')[0].style['font-size'] = v_font_size + 'px';
+	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
 
 	// Always default to auto/OS theme
-	changeTheme('auto');
+	changeTheme("auto");
 
 	// Listen for system theme changes
-	window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
-		changeTheme('auto');
+	window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+		changeTheme("auto");
 	});
-
 });
 
 function adjustChartTheme(p_chart) {
-	var v_chart_font_color = '#666666';
+	var v_chart_font_color = "#666666";
 	var v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
 
-	if (v_theme == 'light') {
-		v_chart_font_color = '#666666';
+	if (v_theme == "light") {
+		v_chart_font_color = "#666666";
 		v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
-	}
-	else {
-		v_chart_font_color = '#DCDDDE';
+	} else {
+		v_chart_font_color = "#DCDDDE";
 		v_chart_grid_color = "rgba(100, 100, 100, 0.3)";
 	}
 
@@ -109,54 +103,48 @@ function adjustChartTheme(p_chart) {
 		p_chart.scales["y-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
 		p_chart.scales["x-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
 		p_chart.scales["x-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
-	}
-	catch (err) {
-	}
+	} catch (err) {}
 	p_chart.update();
 }
 
 function adjustGraphTheme(p_graph) {
-	var v_font_color = '#666666';
+	var v_font_color = "#666666";
 
-	if (v_theme == 'light') {
-		v_font_color = '#666666';
-	}
-	else {
-		v_font_color = '#DCDDDE';
+	if (v_theme == "light") {
+		v_font_color = "#666666";
+	} else {
+		v_font_color = "#DCDDDE";
 	}
 
 	try {
-		p_graph.style().selector('node').style('color', v_font_color);
-		p_graph.style().selector('edge').style('color', v_font_color);
+		p_graph.style().selector("node").style("color", v_font_color);
+		p_graph.style().selector("edge").style("color", v_font_color);
 		p_graph.nodes().updateStyle();
 		p_graph.edges().updateStyle();
-	}
-	catch (err) {
-	}
+	} catch (err) {}
 }
 
 function changeTheme(p_option) {
 	// Always auto
-	v_theme = 'auto';
-	var v_actual_theme = 'light';
+	v_theme = "auto";
+	var v_actual_theme = "light";
 
-	if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-		v_actual_theme = 'dark';
+	if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+		v_actual_theme = "dark";
 	}
 
-	if (v_actual_theme == 'dark') {
-		v_theme = 'dark';
-		v_editor_theme = 'sqlserver_dark';
+	if (v_actual_theme == "dark") {
+		v_theme = "dark";
+		v_editor_theme = "sqlserver_dark";
 		v_current_terminal_theme = v_dark_terminal_theme;
-		document.body.classList.remove('omnidb--theme-light');
-		document.body.classList.add('omnidb--theme-dark');
-	}
-	else {
-		v_theme = 'light';
-		v_editor_theme = 'sqlserver';
+		document.body.classList.remove("omnidb--theme-light");
+		document.body.classList.add("omnidb--theme-dark");
+	} else {
+		v_theme = "light";
+		v_editor_theme = "sqlserver";
 		v_current_terminal_theme = v_light_terminal_theme;
-		document.body.classList.remove('omnidb--theme-dark');
-		document.body.classList.add('omnidb--theme-light');
+		document.body.classList.remove("omnidb--theme-dark");
+		document.body.classList.add("omnidb--theme-light");
 	}
 	// Updating theme of all consoles.
 	try {
@@ -169,18 +157,15 @@ function changeTheme(p_option) {
 							var v_inner_tab_tag = v_outer_tab.tag.tabControl.tabList[j].tag;
 							if (v_inner_tab_tag.editor) {
 								v_inner_tab_tag.editor.setTheme("ace/theme/" + v_editor_theme);
-							}
-							else if (v_inner_tab_tag.editor_console) {
-								v_inner_tab_tag.editor_console.setOption('theme', v_current_terminal_theme);
+							} else if (v_inner_tab_tag.editor_console) {
+								v_inner_tab_tag.editor_console.setOption("theme", v_current_terminal_theme);
 							}
 						}
 					}
 				}
 			}
-
 		}
-	}
-	catch (e) {
+	} catch (e) {
 		console.warn(e);
 	}
 
@@ -190,19 +175,19 @@ function changeTheme(p_option) {
 		ace.edit(el).setTheme("ace/theme/" + v_editor_theme);
 	});
 
-	if (typeof Chart !== 'undefined') {
+	if (typeof Chart !== "undefined") {
 		Chart.helpers.each(Chart.instances, function (instance) {
 			adjustChartTheme(instance.chart);
-		})
+		});
 	}
 
 	//Adjusting terminal themes
-	if (typeof v_connTabControl !== 'undefined') {
+	if (typeof v_connTabControl !== "undefined") {
 		for (var i = 0; i < v_connTabControl.tabList.length; i++) {
 			var v_tab = v_connTabControl.tabList[i];
 			if (v_tab.tag != null) {
-				if (v_tab.tag.mode == 'outer_terminal') {
-					v_tab.tag.editor_console.setOption('theme', v_current_terminal_theme);
+				if (v_tab.tag.mode == "outer_terminal") {
+					v_tab.tag.editor_console.setOption("theme", v_current_terminal_theme);
 				}
 			}
 		}
@@ -211,14 +196,13 @@ function changeTheme(p_option) {
 		for (var i = 0; i < v_connTabControl.tabList.length; i++) {
 			var v_tab = v_connTabControl.tabList[i];
 			if (v_tab.tag != null) {
-				if (v_tab.tag.mode == 'connection') {
+				if (v_tab.tag.mode == "connection") {
 					for (var j = 0; j < v_tab.tag.tabControl.tabList.length; j++) {
 						var v_inner_tab = v_tab.tag.tabControl.tabList[j];
 						if (v_inner_tab.tag != null) {
-							if (v_inner_tab.tag.mode == 'monitor_dashboard') {
+							if (v_inner_tab.tag.mode == "monitor_dashboard") {
 								for (var k = 0; k < v_inner_tab.tag.units.length; k++) {
-									if (v_inner_tab.tag.units[k].type == 'graph')
-										adjustGraphTheme(v_inner_tab.tag.units[k].object);
+									if (v_inner_tab.tag.units[k].type == "graph") adjustGraphTheme(v_inner_tab.tag.units[k].object);
 								}
 							}
 						}
@@ -243,8 +227,8 @@ function changeFontSize(p_option) {
 	for (var i = 0; i < v_connTabControl.tabList.length; i++) {
 		var v_tab = v_connTabControl.tabList[i];
 		if (v_tab.tag != null) {
-			if (v_tab.tag.mode == 'outer_terminal') {
-				v_tab.tag.editor_console.setOption('fontSize', p_option);
+			if (v_tab.tag.mode == "outer_terminal") {
+				v_tab.tag.editor_console.setOption("fontSize", p_option);
 				v_tab.tag.editor_console.fit();
 			}
 		}
@@ -258,10 +242,10 @@ function changeFontSize(p_option) {
 
 function changeInterfaceFontSize(p_option) {
 	v_font_size = p_option;
-	document.getElementsByTagName('html')[0].style['font-size'] = v_font_size + 'px';
-	$('.ace_editor').each(function (index) {
+	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
+	$(".ace_editor").each(function (index) {
 		let editor = ace.edit(this);
-		editor.setFontSize(v_font_size + 'px');
+		editor.setFontSize(v_font_size + "px");
 	});
 	var v_outer_tab_list = v_connTabControl.tabList;
 	for (let i = 0; i < v_outer_tab_list.length; i++) {
@@ -274,7 +258,7 @@ function changeInterfaceFontSize(p_option) {
 					var v_inner_tab_tag = v_outer_tab_tag_inner_tab_list[j].tag;
 					if (v_inner_tab_tag) {
 						if (v_inner_tab_tag.editor_console) {
-							v_inner_tab_tag.editor_console.setOption('fontSize', Number(v_font_size));
+							v_inner_tab_tag.editor_console.setOption("fontSize", Number(v_font_size));
 						}
 					}
 				}
@@ -289,92 +273,72 @@ function changeInterfaceFontSize(p_option) {
 /// Opens user config window.
 /// </summary>
 function showConfigUser() {
-
-	document.getElementById('sel_interface_font_size').value = v_font_size;
+	document.getElementById("sel_interface_font_size").value = v_font_size;
 	// document.getElementById('sel_editor_theme').value = v_theme;
 
-	document.getElementById('txt_confirm_new_pwd').value = '';
-	document.getElementById('txt_new_pwd').value = '';
+	document.getElementById("txt_confirm_new_pwd").value = "";
+	document.getElementById("txt_new_pwd").value = "";
 
-	document.getElementById('sel_csv_encoding').value = v_csv_encoding;
-	document.getElementById('txt_csv_delimiter').value = v_csv_delimiter;
+	document.getElementById("sel_csv_encoding").value = v_csv_encoding;
+	document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
 
-	var configModal = new bootstrap.Modal(document.getElementById('modal_config'), { backdrop: 'static', keyboard: false });
-configModal.show();
-
+	var configModal = new bootstrap.Modal(document.getElementById("modal_config"), { backdrop: "static", keyboard: false });
+	configModal.show();
 }
 
 /// <summary>
 /// Go to connections.
 /// </summary>
 function goToConnections() {
-
-	showConfirm('You will lose existing changes. Would you like to continue?',
-		function () {
-
-			window.open("../connections", "_self");
-
-		});
-
+	showConfirm("You will lose existing changes. Would you like to continue?", function () {
+		window.open("../connections", "_self");
+	});
 }
 
 /// <summary>
 /// Go to connections.
 /// </summary>
 function confirmSignout() {
-
-	showConfirm('Are you sure you want to sign out?',
-		function () {
-
-			window.open("../logout", "_self");
-
-		});
-
+	showConfirm("Are you sure you want to sign out?", function () {
+		window.open("../logout", "_self");
+	});
 }
 
 /// <summary>
 /// Shows website in outer tab.
 /// </summary>
 function showWebsite(p_name, p_url) {
-
-	if (v_connTabControl)
-		$('#modal_about').modal('hide');
+	if (v_connTabControl) $("#modal_about").modal("hide");
 	v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
-
 }
 
 /// <summary>
 /// Saves user config to OmniDB database.
 /// </summary>
 function saveConfigUser() {
-
-	v_font_size = document.getElementById('sel_interface_font_size').value;
+	v_font_size = document.getElementById("sel_interface_font_size").value;
 	// v_theme_id = document.getElementById('sel_editor_theme').value.split('/')[0];
 
-	var v_confirm_pwd = document.getElementById('txt_confirm_new_pwd');
-	var v_pwd = document.getElementById('txt_new_pwd');
+	var v_confirm_pwd = document.getElementById("txt_confirm_new_pwd");
+	var v_pwd = document.getElementById("txt_new_pwd");
 
-	v_csv_encoding = document.getElementById('sel_csv_encoding').value;
-	v_csv_delimiter = document.getElementById('txt_csv_delimiter').value;
+	v_csv_encoding = document.getElementById("sel_csv_encoding").value;
+	v_csv_delimiter = document.getElementById("txt_csv_delimiter").value;
 
-	if ((v_confirm_pwd.value != '' || v_pwd.value != '') && (v_pwd.value != v_confirm_pwd.value))
-		showAlert('New Password and Confirm New Password fields do not match.');
+	if ((v_confirm_pwd.value != "" || v_pwd.value != "") && v_pwd.value != v_confirm_pwd.value)
+		showAlert("New Password and Confirm New Password fields do not match.");
 	else {
-		var input = JSON.stringify(
-			{
-				"p_font_size": v_font_size,
-				"p_pwd": v_pwd.value,
-				"p_csv_encoding": v_csv_encoding,
-				"p_csv_delimiter": v_csv_delimiter
-			});
+		var input = JSON.stringify({
+			p_font_size: v_font_size,
+			p_pwd: v_pwd.value,
+			p_csv_encoding: v_csv_encoding,
+			p_csv_delimiter: v_csv_delimiter,
+		});
 
-		execAjax('/save_config_user/',
-			input,
-			function (p_return) {
-				$('#modal_config').modal('hide');
-				showAlert('Configuration saved.');
-
-			});
+		execAjax("/save_config_user/", input, function (p_return) {
+			$("#modal_config").modal("hide");
+			showAlert("Configuration saved.");
+		});
 	}
 }
 
@@ -382,7 +346,6 @@ function saveConfigUser() {
 /// Saves shortcuts to OmniDB database.
 /// </summary>
 function saveShortcuts() {
-
 	var v_shortcut_list = [];
 
 	for (var property in v_shortcut_object.shortcuts) {
@@ -392,16 +355,13 @@ function saveShortcuts() {
 	}
 
 	var input = JSON.stringify({
-		"p_shortcuts": v_shortcut_list,
-		"p_current_os": v_current_os
+		p_shortcuts: v_shortcut_list,
+		p_current_os: v_current_os,
 	});
 
-	execAjax('/save_shortcuts/',
-		input,
-		function (p_return) {
-			showAlert('Shortcuts saved.');
-
-		});
+	execAjax("/save_shortcuts/", input, function (p_return) {
+		showAlert("Shortcuts saved.");
+	});
 }
 
 /// <summary>
@@ -413,20 +373,20 @@ function saveShortcuts() {
 /// <param name="p_content">Cell content.</param>
 /// <param name="p_can_alter">If ready only or not.</param>
 function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
-	var v_edit_modal = document.getElementById('div_edit_content');
+	var v_edit_modal = document.getElementById("div_edit_content");
 	if (!v_edit_modal) {
-		v_edit_modal = document.createElement('div');
-		v_edit_modal.setAttribute('id', 'div_edit_content');
-		v_edit_modal.setAttribute('tabindex', '-1');
-		v_edit_modal.setAttribute('role', 'dialog');
-		v_edit_modal.setAttribute('aria-hidden', 'true');
-		v_edit_modal.classList = 'modal fade';
+		v_edit_modal = document.createElement("div");
+		v_edit_modal.setAttribute("id", "div_edit_content");
+		v_edit_modal.setAttribute("tabindex", "-1");
+		v_edit_modal.setAttribute("role", "dialog");
+		v_edit_modal.setAttribute("aria-hidden", "true");
+		v_edit_modal.classList = "modal fade";
 
 		document.body.append(v_edit_modal);
 	}
 
 	v_canEditContent = p_can_alter;
-	var v_save_btn_attr = '';
+	var v_save_btn_attr = "";
 	if (!v_canEditContent) {
 		v_save_btn_attr = ' disabled title="Unable to manually edit data without primary key" ';
 	}
@@ -437,27 +397,29 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 		'<h4 class="mb-0">Edit Data</h4>' +
 		'<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancelEditContent()">' +
 		'<span aria-hidden="true">&times;</span>' +
-		'</button>' +
-		'</div>' +
+		"</button>" +
+		"</div>" +
 		'<div id="modal_message_content" class="modal-body" style="white-space: pre-line;">' +
 		'<div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);">' +
-		'</div>' +
-		'</div>' +
+		"</div>" +
+		"</div>" +
 		'<div class="modal-footer">' +
-		'<button ' + v_save_btn_attr + ' type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal" onclick="saveEditContent()">Save</button>' +
+		"<button " +
+		v_save_btn_attr +
+		' type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal" onclick="saveEditContent()">Save</button>' +
 		'<button type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal" onclick="cancelEditContent()">Cancel</button>' +
-		'</div>' +
-		'</div>' +
-		'</div>';
+		"</div>" +
+		"</div>" +
+		"</div>";
 
 	if (v_editContentObject != null)
 		if (v_editContentObject.editor != null) {
 			v_editContentObject.editor.destroy();
-			document.getElementById('txt_edit_content').innerHTML = '';
+			document.getElementById("txt_edit_content").innerHTML = "";
 		}
 
 	var langTools = ace.require("ace/ext/language_tools");
-	var v_editor = ace.edit('txt_edit_content');
+	var v_editor = ace.edit("txt_edit_content");
 	v_editor.setTheme("ace/theme/" + v_editor_theme);
 	v_editor.session.setMode("ace/mode/text");
 	v_editor.$blockScrolling = Infinity;
@@ -466,27 +428,23 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 
 	v_editor.setOptions({ enableBasicAutocompletion: true });
 
-	document.getElementById('txt_edit_content').onclick = function () {
+	document.getElementById("txt_edit_content").onclick = function () {
 		v_editor.focus();
 	};
 
-	if (p_content != null)
-		v_editor.setValue(String(p_content));
-	else
-		v_editor.setValue('');
+	if (p_content != null) v_editor.setValue(String(p_content));
+	else v_editor.setValue("");
 
 	v_editor.clearSelection();
 
-	if (p_can_alter)
-		v_editor.setReadOnly(false);
-	else
-		v_editor.setReadOnly(true);
+	if (p_can_alter) v_editor.setReadOnly(false);
+	else v_editor.setReadOnly(true);
 
 	//Remove shortcuts from ace in order to avoid conflict with omnidb shortcuts
-	v_editor.commands.bindKey("Cmd-,", null)
-	v_editor.commands.bindKey("Ctrl-,", null)
-	v_editor.commands.bindKey("Cmd-Delete", null)
-	v_editor.commands.bindKey("Ctrl-Delete", null)
+	v_editor.commands.bindKey("Cmd-,", null);
+	v_editor.commands.bindKey("Ctrl-,", null);
+	v_editor.commands.bindKey("Cmd-Delete", null);
+	v_editor.commands.bindKey("Ctrl-Delete", null);
 
 	v_editContentObject = new Object();
 	v_editContentObject.editor = v_editor;
@@ -494,42 +452,46 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	v_editContentObject.col = p_col;
 	v_editContentObject.ht = p_ht;
 
-	$('#div_edit_content').modal({
-		backdrop: 'static',
-		keyboard: false
+	$("#div_edit_content").modal({
+		backdrop: "static",
+		keyboard: false,
 	});
-
 }
 
 function saveEditContent() {
-	$('#div_edit_content').modal('hide');
+	$("#div_edit_content").modal("hide");
 
 	if (v_canEditContent) {
-		v_editContentObject.ht.setDataAtCell(v_editContentObject.row, v_editContentObject.col, v_editContentObject.editor.getValue());
-	}
-	else {
-		alert('No permissions.');
+		v_editContentObject.ht.setDataAtCell(
+			v_editContentObject.row,
+			v_editContentObject.col,
+			v_editContentObject.editor.getValue(),
+		);
+	} else {
+		alert("No permissions.");
 	}
 
-	v_editContentObject.editor.setValue('');
+	v_editContentObject.editor.setValue("");
 }
 
 function cancelEditContent() {
-	$('#div_edit_content').modal('hide');
+	$("#div_edit_content").modal("hide");
 
-	v_editContentObject.editor.setValue('');
+	v_editContentObject.editor.setValue("");
 }
 
 /// <summary>
 /// Hides edit cell window.
 /// </summary>
 function hideEditContent() {
-
-	$('#div_edit_content').modal('hide');
+	$("#div_edit_content").modal("hide");
 
 	if (v_canEditContent)
-		v_editContentObject.ht.setDataAtCell(v_editContentObject.row, v_editContentObject.col, v_editContentObject.editor.getValue());
+		v_editContentObject.ht.setDataAtCell(
+			v_editContentObject.row,
+			v_editContentObject.col,
+			v_editContentObject.editor.getValue(),
+		);
 
-	v_editContentObject.editor.setValue('');
-
+	v_editContentObject.editor.setValue("");
 }

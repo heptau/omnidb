@@ -14,6 +14,15 @@ from datetime import datetime
 
 from OmniDB_app.views.memory_objects import *
 
+def _parse_post_data(request):
+    raw = request.POST.get('data', None)
+    if not raw:
+        raise json.JSONDecodeError('Missing POST data', '', 0)
+    return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+    return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
+
 
 @user_authenticated
 @database_required(p_check_timeout=False, p_open_connection=True)
@@ -58,7 +67,10 @@ def get_tables(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 
@@ -100,7 +112,10 @@ def get_columns(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -136,7 +151,10 @@ def get_pk(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -168,7 +186,10 @@ def get_pk_columns(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -200,7 +221,10 @@ def get_fks(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -236,7 +260,10 @@ def get_fks_columns(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_fkey = json_object['p_fkey']
@@ -273,7 +300,10 @@ def get_uniques(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -305,7 +335,10 @@ def get_uniques_columns(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_unique = json_object['p_unique']
@@ -340,7 +373,10 @@ def get_indexes(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -373,7 +409,10 @@ def get_indexes_columns(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_index = json_object['p_index']
@@ -406,7 +445,10 @@ def get_views(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 
@@ -438,7 +480,10 @@ def get_views_columns(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -473,7 +518,10 @@ def get_view_definition(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_view = json_object['p_view']
@@ -495,7 +543,10 @@ def get_triggers(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -528,7 +579,10 @@ def template_select(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -557,7 +611,10 @@ def template_insert(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -583,7 +640,10 @@ def template_update(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -609,7 +669,10 @@ def get_version(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 
@@ -632,7 +695,10 @@ def get_properties(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_data = json_object['p_data']

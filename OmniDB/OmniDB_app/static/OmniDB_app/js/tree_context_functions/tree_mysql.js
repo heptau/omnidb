@@ -31,42 +31,42 @@ SOFTWARE.
 /// Retrieving tree.
 /// </summary>
 function getTreeMysql(p_div) {
-
 	var context_menu = {
-		'cm_server': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}]
+		cm_server: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+			],
 		},
-		'cm_databases': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Database',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Database', node.tree
-						.tag.create_database);
-				}
-			}/*, {
+		cm_databases: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Create Database",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Create Database", node.tree.tag.create_database);
+					},
+				} /*, {
 				text: 'Doc: Databases',
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
@@ -76,75 +76,72 @@ function getTreeMysql(p_div) {
 						getMajorVersionMysql(node.tree.tag.version) +
 						'/static/managing-databases.html');
 				}
-			}*/]
+			}*/,
+			],
 		},
-		'cm_database': {
+		cm_database: {
 			elements: [
-			  {
-				  text: 'Render Graph',
-				  icon: 'fab cm-all fa-hubspot',
-				  action: function(node) {
-
-				  },
-				  submenu: {
-					  elements: [{
-						  text: 'Simple Graph',
-						  icon: 'fab cm-all fa-hubspot',
-						  action: function(node) {
-							  v_connTabControl.tag.createGraphTab(
-								  node.text)
-							  drawGraph(false, node.text);
-						  }
-					  }, {
-						  text: 'Complete Graph',
-						  icon: 'fab cm-all fa-hubspot',
-						  action: function(node) {
-							  v_connTabControl.tag.createGraphTab(
-								  node.text)
-							  drawGraph(true, node.text);
-						  }
-					  }]
-				  }
-			  },
-			  {
-				  text: 'Alter Database',
-				  icon: 'fas cm-all fa-edit',
-				  action: function(node) {
-					  tabSQLTemplate('Alter Database', node.tree.tag
-						  .alter_database.replace(
-							  '#database_name#', node.text));
-				  }
-			  }, {
-				  text: 'Drop Database',
-				  icon: 'fas cm-all fa-times',
-				  action: function(node) {
-					  tabSQLTemplate('Drop Database', node.tree.tag
-						  .drop_database.replace(
-							  '#database_name#', node.text));
-				  }
-			  }
-			]
+				{
+					text: "Render Graph",
+					icon: "fab cm-all fa-hubspot",
+					action: function (node) {},
+					submenu: {
+						elements: [
+							{
+								text: "Simple Graph",
+								icon: "fab cm-all fa-hubspot",
+								action: function (node) {
+									v_connTabControl.tag.createGraphTab(node.text);
+									drawGraph(false, node.text);
+								},
+							},
+							{
+								text: "Complete Graph",
+								icon: "fab cm-all fa-hubspot",
+								action: function (node) {
+									v_connTabControl.tag.createGraphTab(node.text);
+									drawGraph(true, node.text);
+								},
+							},
+						],
+					},
+				},
+				{
+					text: "Alter Database",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Alter Database", node.tree.tag.alter_database.replace("#database_name#", node.text));
+					},
+				},
+				{
+					text: "Drop Database",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate("Drop Database", node.tree.tag.drop_database.replace("#database_name#", node.text));
+					},
+				},
+			],
 		},
-		'cm_roles': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Role',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Role', node.tree.tag
-						.create_role);
-				}
-			}/*, {
+		cm_roles: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Create Role",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Create Role", node.tree.tag.create_role);
+					},
+				} /*, {
 				text: 'Doc: Roles',
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
@@ -154,46 +151,47 @@ function getTreeMysql(p_div) {
 						getMajorVersionMysql(node.tree.tag.version) +
 						'/static/user-manag.html');
 				}
-			}*/]
+			}*/,
+			],
 		},
-		'cm_role': {
-			elements: [{
-				text: 'Alter Role',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Alter Role', node.tree.tag.alter_role
-						.replace('#role_name#', node.text));
-				}
-			}, {
-				text: 'Drop Role',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Role', node.tree.tag.drop_role
-						.replace('#role_name#', node.text));
-				}
-			}]
+		cm_role: {
+			elements: [
+				{
+					text: "Alter Role",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Alter Role", node.tree.tag.alter_role.replace("#role_name#", node.text));
+					},
+				},
+				{
+					text: "Drop Role",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate("Drop Role", node.tree.tag.drop_role.replace("#role_name#", node.text));
+					},
+				},
+			],
 		},
-		'cm_tables': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Table',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Table', node.tree.tag
-						.create_table.replace(
-							'#schema_name#', node.parent.text));
-				}
-			}/*, {
+		cm_tables: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Create Table",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Create Table", node.tree.tag.create_table.replace("#schema_name#", node.parent.text));
+					},
+				} /*, {
 				text: 'Doc: Basics',
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
@@ -223,305 +221,341 @@ function getTreeMysql(p_div) {
 						getMajorVersionMysql(node.tree.tag.version) +
 						'/static/ddl-alter.html');
 				}
-			}*/]
+			}*/,
+			],
 		},
-		'cm_table': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Data Actions',
-				icon: 'fas cm-all fa-list',
-				submenu: {
-					elements: [{
-						text: 'Query Data',
-						icon: 'fas cm-all fa-search',
-						action: function(node) {
-							TemplateSelectMysql(node.parent
-							  .parent.text, node.text);
+		cm_table: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}, {
-						text: 'Edit Data',
-						icon: 'fas cm-all fa-table',
-						action: function(node) {
-							v_startEditData(node.text,
-								node.parent.parent.text
-							);
+					},
+				},
+				{
+					text: "Data Actions",
+					icon: "fas cm-all fa-list",
+					submenu: {
+						elements: [
+							{
+								text: "Query Data",
+								icon: "fas cm-all fa-search",
+								action: function (node) {
+									TemplateSelectMysql(node.parent.parent.text, node.text);
+								},
+							},
+							{
+								text: "Edit Data",
+								icon: "fas cm-all fa-table",
+								action: function (node) {
+									v_startEditData(node.text, node.parent.parent.text);
+								},
+							},
+							{
+								text: "Insert Record",
+								icon: "fas cm-all fa-edit",
+								action: function (node) {
+									TemplateInsertMysql(node.parent.parent.text, node.text);
+								},
+							},
+							{
+								text: "Update Records",
+								icon: "fas cm-all fa-edit",
+								action: function (node) {
+									TemplateUpdateMysql(node.parent.parent.text, node.text);
+								},
+							},
+							{
+								text: "Delete Records",
+								icon: "fas cm-all fa-times",
+								action: function (node) {
+									tabSQLTemplate(
+										"Delete Records",
+										node.tree.tag.delete.replace("#table_name#", node.parent.parent.text + "." + node.text),
+									);
+								},
+							},
+						],
+					},
+				},
+				{
+					text: "Table Actions",
+					icon: "fas cm-all fa-list",
+					submenu: {
+						elements: [
+							{
+								text: "Alter Table",
+								icon: "fas cm-all fa-table",
+								action: function (node) {
+									startAlterTable(true, "alter", node.text, node.parent.parent.text);
+								},
+							},
+							{
+								text: "Alter Table (SQL)",
+								icon: "fas cm-all fa-edit",
+								action: function (node) {
+									tabSQLTemplate(
+										"Alter Table",
+										node.tree.tag.alter_table.replace("#table_name#", node.parent.parent.text + "." + node.text),
+									);
+								},
+							},
+							{
+								text: "Drop Table",
+								icon: "fas cm-all fa-times",
+								action: function (node) {
+									tabSQLTemplate(
+										"Drop Table",
+										node.tree.tag.drop_table.replace("#table_name#", node.parent.parent.text + "." + node.text),
+									);
+								},
+							},
+						],
+					},
+				},
+			],
+		},
+		cm_columns: {
+			elements: [
+				{
+					text: "Create Column",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate(
+							"Create Field",
+							node.tree.tag.create_column.replace(
+								"#table_name#",
+								node.parent.parent.parent.text + "." + node.parent.text,
+							),
+						);
+					},
+				},
+			],
+		},
+		cm_column: {
+			elements: [
+				{
+					text: "Alter Column",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate(
+							"Alter Column",
+							node.tree.tag.alter_column
+								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
+								.replace(/#column_name#/g, node.text),
+						);
+					},
+				},
+				{
+					text: "Drop Column",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate(
+							"Drop Column",
+							node.tree.tag.drop_column
+								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
+								.replace(/#column_name#/g, node.text),
+						);
+					},
+				},
+			],
+		},
+		cm_pks: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}, {
-						text: 'Insert Record',
-						icon: 'fas cm-all fa-edit',
-						action: function(node) {
-							TemplateInsertMysql(node.parent
-							  .parent.text, node.text);
+					},
+				},
+				{
+					text: "Create Primary Key",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate(
+							"Create Primary Key",
+							node.tree.tag.create_primarykey.replace(
+								"#table_name#",
+								node.parent.parent.parent.text + "." + node.parent.text,
+							),
+						);
+					},
+				},
+			],
+		},
+		cm_pk: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}, {
-						text: 'Update Records',
-						icon: 'fas cm-all fa-edit',
-						action: function(node) {
-							TemplateUpdateMysql(node.parent
-							  .parent.text, node.text);
+					},
+				},
+				{
+					text: "Drop Primary Key",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate(
+							"Drop Primary Key",
+							node.tree.tag.drop_primarykey
+								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
+								.replace("#constraint_name#", node.text),
+						);
+					},
+				},
+			],
+		},
+		cm_fks: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}, {
-						text: 'Delete Records',
-						icon: 'fas cm-all fa-times',
-						action: function(node) {
-						  tabSQLTemplate(
-							  'Delete Records',
-							  node.tree.tag.delete
-							  .replace(
-								  '#table_name#',
-								  node.parent.parent
-								  .text + '.' +
-								  node.text));
+					},
+				},
+				{
+					text: "Create Foreign Key",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate(
+							"Create Foreign Key",
+							node.tree.tag.create_foreignkey.replace(
+								"#table_name#",
+								node.parent.parent.parent.text + "." + node.parent.text,
+							),
+						);
+					},
+				},
+			],
+		},
+		cm_fk: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}]
-				}
-			}, {
-				text: 'Table Actions',
-				icon: 'fas cm-all fa-list',
-				submenu: {
-					elements: [{
-						text: 'Alter Table',
-						icon: 'fas cm-all fa-table',
-						action: function(node) {
-							startAlterTable(true,
-								'alter', node.text,
-								node.parent.parent.text
-							);
+					},
+				},
+				{
+					text: "Drop Foreign Key",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate(
+							"Drop Foreign Key",
+							node.tree.tag.drop_foreignkey
+								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
+								.replace("#constraint_name#", node.text),
+						);
+					},
+				},
+			],
+		},
+		cm_uniques: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}, {
-						text: 'Alter Table (SQL)',
-						icon: 'fas cm-all fa-edit',
-						action: function(node) {
-							tabSQLTemplate('Alter Table', node.tree.tag
-								.alter_table.replace(
-									'#table_name#', node.parent.parent.text
-									+ '.' + node.text));
+					},
+				},
+				{
+					text: "Create Unique",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate(
+							"Create Unique",
+							node.tree.tag.create_unique.replace(
+								"#table_name#",
+								node.parent.parent.parent.text + "." + node.parent.text,
+							),
+						);
+					},
+				},
+			],
+		},
+		cm_unique: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}, {
-						text: 'Drop Table',
-						icon: 'fas cm-all fa-times',
-						action: function(node) {
-							tabSQLTemplate('Drop Table',
-								node.tree.tag.drop_table
-								.replace(
-									'#table_name#',
-									node.parent.parent.text + '.' + node.text));
+					},
+				},
+				{
+					text: "Drop Unique",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate(
+							"Drop Unique",
+							node.tree.tag.drop_unique
+								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
+								.replace("#constraint_name#", node.text),
+						);
+					},
+				},
+			],
+		},
+		cm_indexes: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
 						}
-					}]
-				}
-			}]
-		},
-		'cm_columns': {
-			elements: [{
-				text: 'Create Column',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Field', node.tree.tag
-						.create_column.replace(
-							'#table_name#', node.parent.parent.parent.text + '.' + node.parent
-							.text));
-				}
-			}]
-		},
-		'cm_column': {
-			elements: [{
-				text: 'Alter Column',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Alter Column', node.tree.tag
-						.alter_column.replace(
-							'#table_name#', node.parent.parent.parent.parent.text + '.' +
-							node.parent.parent.text).replace(
-							/#column_name#/g, node.text));
-				}
-			}, {
-				text: 'Drop Column',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Column', node.tree.tag
-						.drop_column.replace('#table_name#',
-							node.parent.parent.parent.parent.text + '.' + node.parent.parent
-							.text).replace(/#column_name#/g,
-							node.text));
-				}
-			}]
-		},
-		'cm_pks': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Primary Key',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Primary Key', node.tree
-						.tag.create_primarykey.replace(
-							'#table_name#', node.parent.parent.parent.text + '.' + node.parent
-							.text));
-				}
-			}]
-		},
-		'cm_pk': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Drop Primary Key',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Primary Key', node.tree
-						.tag.drop_primarykey.replace(
-							'#table_name#', node.parent.parent.parent.parent.text + '.' +
-							node.parent.parent.text).replace(
-							'#constraint_name#', node.text)
-					);
-				}
-			}]
-		},
-		'cm_fks': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Foreign Key',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Foreign Key', node.tree
-						.tag.create_foreignkey.replace(
-							'#table_name#', node.parent.parent.parent.text + '.' + node.parent
-							.text));
-				}
-			}]
-		},
-		'cm_fk': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Drop Foreign Key',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Foreign Key', node.tree
-						.tag.drop_foreignkey.replace(
-							'#table_name#', node.parent.parent.parent.parent.text + '.' +
-							node.parent.parent.text).replace(
-							'#constraint_name#', node.text)
-					);
-				}
-			}]
-		},
-		'cm_uniques': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Unique',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Unique', node.tree.tag
-						.create_unique.replace(
-							'#table_name#', node.parent.parent.parent.text + '.' + node.parent
-							.text));
-				}
-			}]
-		},
-		'cm_unique': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Drop Unique',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Unique', node.tree.tag
-						.drop_unique.replace('#table_name#',
-							node.parent.parent.parent.parent.text + '.' + node.parent.parent
-							.text).replace(
-							'#constraint_name#', node.text)
-					);
-				}
-			}]
-		},
-		'cm_indexes': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Index',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Index', node.tree.tag
-						.create_index.replace(
-							'#table_name#', node.parent.parent.parent.text + '.' + node.parent
-							.text));
-				}
-			}/*, {
+					},
+				},
+				{
+					text: "Create Index",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate(
+							"Create Index",
+							node.tree.tag.create_index.replace(
+								"#table_name#",
+								node.parent.parent.parent.text + "." + node.parent.text,
+							),
+						);
+					},
+				} /*, {
 				text: 'Doc: Indexes',
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
@@ -531,53 +565,59 @@ function getTreeMysql(p_div) {
 						getMajorVersionMysql(node.tree.tag.version) +
 						'/static/indexes.html');
 				}
-			}*/]
+			}*/,
+			],
 		},
-		'cm_index': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Drop Index',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Index', node.tree.tag.drop_index
-						.replace('#index_name#', node.parent.parent.parent.parent.text + '.' + node.text.replace(
-								' (Unique)', '').replace(
-								' (Non Unique)', '')));
-				}
-			}]
+		cm_index: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Drop Index",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate(
+							"Drop Index",
+							node.tree.tag.drop_index.replace(
+								"#index_name#",
+								node.parent.parent.parent.parent.text +
+									"." +
+									node.text.replace(" (Unique)", "").replace(" (Non Unique)", ""),
+							),
+						);
+					},
+				},
+			],
 		},
-		'cm_views': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create View',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create View', node.tree.tag
-						.create_view.replace(
-							'#schema_name#', node.parent.text
-						));
-				}
-			}/*, {
+		cm_views: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Create View",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Create View", node.tree.tag.create_view.replace("#schema_name#", node.parent.text));
+					},
+				} /*, {
 				text: 'Doc: Views',
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
@@ -587,62 +627,61 @@ function getTreeMysql(p_div) {
 						getMajorVersionMysql(node.tree.tag.version) +
 						'/static/sql-createview.html');
 				}
-			}*/]
+			}*/,
+			],
 		},
-		'cm_view': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Query Data',
-				icon: 'fas cm-all fa-search',
-				action: function(node) {
+		cm_view: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Query Data",
+					icon: "fas cm-all fa-search",
+					action: function (node) {
+						var v_table_name = "";
+						v_table_name = node.parent.parent.text + "." + node.text;
 
-					var v_table_name = '';
-					v_table_name = node.parent.parent.text + '.' + node.text;
+						v_connTabControl.tag.createQueryTab(node.text);
 
-					v_connTabControl.tag.createQueryTab(
-						node.text);
+						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(
+							"-- Querying Data\nselect t.*\nfrom " + v_table_name + " t",
+						);
+						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+						renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
 
-					v_connTabControl.selectedTab.tag.tabControl
-						.selectedTab.tag.editor.setValue(
-							'-- Querying Data\nselect t.*\nfrom ' +
-							v_table_name + ' t');
-					v_connTabControl.selectedTab.tag.tabControl
-						.selectedTab.tag.editor.clearSelection();
-					renameTabConfirm(v_connTabControl.selectedTab
-						.tag.tabControl.selectedTab, node.text
-					);
+						//minimizeEditor();
 
-					//minimizeEditor();
-
-					querySQL(0);
-				}
-			}, {
-				text: 'Edit View',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					v_connTabControl.tag.createQueryTab(
-						node.text);
-					getViewDefinitionMysql(node);
-				}
-			}, {
-				text: 'Drop View',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop View', node.tree.tag.drop_view
-						.replace('#view_name#', node.parent.parent.text + '.' + node.text)
-					);
-				}
-			}]
+						querySQL(0);
+					},
+				},
+				{
+					text: "Edit View",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						v_connTabControl.tag.createQueryTab(node.text);
+						getViewDefinitionMysql(node);
+					},
+				},
+				{
+					text: "Drop View",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate(
+							"Drop View",
+							node.tree.tag.drop_view.replace("#view_name#", node.parent.parent.text + "." + node.text),
+						);
+					},
+				},
+			],
 		},
 		/*'cm_triggers': {
 			elements: [{
@@ -807,28 +846,26 @@ function getTreeMysql(p_div) {
 				}
 			}]
 		},*/
-		'cm_functions': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Function',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Function', node.tree
-						.tag.create_function.replace(
-							'#schema_name#', node.parent.text
-						));
-				}
-			}/*, {
+		cm_functions: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Create Function",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Create Function", node.tree.tag.create_function.replace("#schema_name#", node.parent.text));
+					},
+				} /*, {
 				text: 'Doc: Functions',
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
@@ -838,61 +875,59 @@ function getTreeMysql(p_div) {
 						getMajorVersionMysql(node.tree.tag.version) +
 						'/static/sql-createfunction.html');
 				}
-			}*/]
+			}*/,
+			],
 		},
-		'cm_function': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Edit Function',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					v_connTabControl.tag.createQueryTab(
-						node.text);
-					getFunctionDefinitionMysql(node);
-				}
-			}, {
-				text: 'Drop Function',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Function', node.tree.tag
-						.drop_function.replace(
-							'#function_name#', node.tag.id)
-					);
-				}
-			}]
+		cm_function: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Edit Function",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						v_connTabControl.tag.createQueryTab(node.text);
+						getFunctionDefinitionMysql(node);
+					},
+				},
+				{
+					text: "Drop Function",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate("Drop Function", node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+					},
+				},
+			],
 		},
-		'cm_procedures': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Create Procedure',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					tabSQLTemplate('Create Procedure', node.tree
-						.tag.create_procedure.replace(
-							'#schema_name#', node.parent.text
-						));
-				}
-			}/*, {
+		cm_procedures: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Create Procedure",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						tabSQLTemplate("Create Procedure", node.tree.tag.create_procedure.replace("#schema_name#", node.parent.text));
+					},
+				} /*, {
 				text: 'Doc: Procedures',
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
@@ -902,103 +937,114 @@ function getTreeMysql(p_div) {
 						getMajorVersionMysql(node.tree.tag.version) +
 						'/static/sql-createfunction.html');
 				}
-			}*/]
+			}*/,
+			],
 		},
-		'cm_procedure': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}, {
-				text: 'Edit Procedure',
-				icon: 'fas cm-all fa-edit',
-				action: function(node) {
-					v_connTabControl.tag.createQueryTab(
-						node.text);
-					getProcedureDefinitionMysql(node);
-				}
-			}, {
-				text: 'Drop Procedure',
-				icon: 'fas cm-all fa-times',
-				action: function(node) {
-					tabSQLTemplate('Drop Procedure', node.tree.tag
-						.drop_procedure.replace(
-							'#function_name#', node.tag.id)
-					);
-				}
-			}]
+		cm_procedure: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+				{
+					text: "Edit Procedure",
+					icon: "fas cm-all fa-edit",
+					action: function (node) {
+						v_connTabControl.tag.createQueryTab(node.text);
+						getProcedureDefinitionMysql(node);
+					},
+				},
+				{
+					text: "Drop Procedure",
+					icon: "fas cm-all fa-times",
+					action: function (node) {
+						tabSQLTemplate("Drop Procedure", node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+					},
+				},
+			],
 		},
-		'cm_refresh': {
-			elements: [{
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
-					else {
-						node.collapseNode();
-						node.expandNode();
-					}
-				}
-			}]
+		cm_refresh: {
+			elements: [
+				{
+					text: "Refresh",
+					icon: "fas cm-all fa-sync-alt",
+					action: function (node) {
+						if (node.childNodes == 0) refreshTreeMysql(node);
+						else {
+							node.collapseNode();
+							node.expandNode();
+						}
+					},
+				},
+			],
+		},
+	};
+	var tree = createTree(p_div, "#fcfdfd", context_menu);
+	v_connTabControl.selectedTab.tag.tree = tree;
+	let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
+	v_connTabControl.selectedTab.tag.divDetails.innerHTML =
+		'<i class="fas fa-server me-1"></i>selected DB: ' +
+		"<b>" +
+		escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) +
+		"</b>" +
+		'<div class="omnidb__switch omnidb__switch--sm float-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle autocomplete.</h5><div>Switch OFF <b>disables the autocomplete</b> on the inner tabs for this connection.</div>">' +
+		'<input type="checkbox" ' +
+		v_autocomplete_switch_status +
+		' id="autocomplete_toggler_' +
+		v_connTabControl.selectedTab.tag.tab_id +
+		'" class="omnidb__switch--input" onchange="toggleConnectionAutocomplete(\'autocomplete_toggler_' +
+		v_connTabControl.selectedTab.tag.tab_id +
+		"')\">" +
+		'<label for="autocomplete_toggler_' +
+		v_connTabControl.selectedTab.tag.tab_id +
+		'" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label>' +
+		"</div>";
+
+	tree.nodeAfterOpenEvent = function (node) {
+		refreshTreeMysql(node);
+	};
+
+	tree.clickNodeEvent = function (node) {
+		if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
+			getPropertiesMysql(node);
+		} else {
+			// Do nothing
 		}
 	};
-	var tree = createTree(p_div, '#fcfdfd', context_menu);
-	v_connTabControl.selectedTab.tag.tree = tree;
-	let v_autocomplete_switch_status = (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) ? ' checked ' : '';
-	v_connTabControl.selectedTab.tag.divDetails.innerHTML =
-	'<i class="fas fa-server me-1"></i>selected DB: ' +
-	'<b>' + v_connTabControl.selectedTab.tag.selectedDatabase + '</b>' +
-	'<div class="omnidb__switch omnidb__switch--sm float-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle autocomplete.</h5><div>Switch OFF <b>disables the autocomplete</b> on the inner tabs for this connection.</div>">' +
-			'<input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input" onchange="toggleConnectionAutocomplete(\'autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '\')">' +
-			'<label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label>' +
-		'</div>';
 
-	tree.nodeAfterOpenEvent = function(node) {
-	  refreshTreeMysql(node);
-
-	}
-
-	tree.clickNodeEvent = function(node) {
-	  if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
-		getPropertiesMysql(node);
-	  }
-	  else {
-		// Do nothing
-	  }
-	}
-
-	tree.beforeContextMenuEvent = function(node, callback) {
-
+	tree.beforeContextMenuEvent = function (node, callback) {
 		var v_elements = [];
 		//Hooks
-		if (v_connTabControl.tag.hooks.mysqlTreeContextMenu.length>0) {
-		  for (var i=0; i<v_connTabControl.tag.hooks.mysqlTreeContextMenu.length; i++)
-			v_elements = v_elements.concat(v_connTabControl.tag.hooks.mysqlTreeContextMenu[i](node));
+		if (v_connTabControl.tag.hooks.mysqlTreeContextMenu.length > 0) {
+			for (var i = 0; i < v_connTabControl.tag.hooks.mysqlTreeContextMenu.length; i++)
+				v_elements = v_elements.concat(v_connTabControl.tag.hooks.mysqlTreeContextMenu[i](node));
 		}
 
-		var v_customCallback = function() {
-		  callback(v_elements);
-		}
+		var v_customCallback = function () {
+			callback(v_elements);
+		};
 		v_customCallback();
-	}
+	};
 
-	var node_server = tree.createNode('MySQL', false,
-		'node-mysql', null, {
-			type: 'server'
-		}, 'cm_server');
-	node_server.createChildNode('', true, 'node-spin',
-		null, null);
+	var node_server = tree.createNode(
+		"MySQL",
+		false,
+		"node-mysql",
+		null,
+		{
+			type: "server",
+		},
+		"cm_server",
+	);
+	node_server.createChildNode("", true, "node-spin", null, null);
 	tree.drawTree();
-
-
 }
 
 /// <summary>
@@ -1007,47 +1053,43 @@ function getTreeMysql(p_div) {
 /// <param name="node">Node object.</param>
 function getPropertiesMysql(node) {
 	if (node.tag != undefined)
-		if (node.tag.type == 'table') {
-		getProperties('/get_properties_mysql/',
-		  {
-			p_schema: node.parent.parent.text,
-			p_table: null,
-			p_object: node.text,
-			p_type: node.tag.type
-		  });
-	  } else if (node.tag.type == 'view') {
-		getProperties('/get_properties_mysql/',
-		  {
-			p_schema: node.parent.parent.text,
-			p_table: null,
-			p_object: node.text,
-			p_type: node.tag.type
-		  });
-	  } else if (node.tag.type == 'function') {
-		getProperties('/get_properties_mysql/',
-		  {
-			p_schema: node.parent.parent.text,
-			p_table: null,
-			p_object: node.text,
-			p_type: node.tag.type
-		  });
-	  } else if (node.tag.type == 'procedure') {
-		getProperties('/get_properties_mysql/',
-		  {
-			p_schema: node.parent.parent.text,
-			p_table: null,
-			p_object: node.text,
-			p_type: node.tag.type
-		  });
-	  } else {
-		clearProperties();
-	  }
+		if (node.tag.type == "table") {
+			getProperties("/get_properties_mysql/", {
+				p_schema: node.parent.parent.text,
+				p_table: null,
+				p_object: node.text,
+				p_type: node.tag.type,
+			});
+		} else if (node.tag.type == "view") {
+			getProperties("/get_properties_mysql/", {
+				p_schema: node.parent.parent.text,
+				p_table: null,
+				p_object: node.text,
+				p_type: node.tag.type,
+			});
+		} else if (node.tag.type == "function") {
+			getProperties("/get_properties_mysql/", {
+				p_schema: node.parent.parent.text,
+				p_table: null,
+				p_object: node.text,
+				p_type: node.tag.type,
+			});
+		} else if (node.tag.type == "procedure") {
+			getProperties("/get_properties_mysql/", {
+				p_schema: node.parent.parent.text,
+				p_table: null,
+				p_object: node.text,
+				p_type: node.tag.type,
+			});
+		} else {
+			clearProperties();
+		}
 
-	  //Hooks
-	  if (v_connTabControl.tag.hooks.mysqlTreeNodeClick.length>0) {
-		for (var i=0; i<v_connTabControl.tag.hooks.mysqlTreeNodeClick.length; i++)
-		  v_connTabControl.tag.hooks.mysqlTreeNodeClick[i](node);
-	  }
+	//Hooks
+	if (v_connTabControl.tag.hooks.mysqlTreeNodeClick.length > 0) {
+		for (var i = 0; i < v_connTabControl.tag.hooks.mysqlTreeNodeClick.length; i++)
+			v_connTabControl.tag.hooks.mysqlTreeNodeClick[i](node);
+	}
 }
 
 /// <summary>
@@ -1056,64 +1098,63 @@ function getPropertiesMysql(node) {
 /// <param name="node">Node object.</param>
 function refreshTreeMysql(node) {
 	if (node.tag != undefined)
-		if (node.tag.type == 'table_list') {
+		if (node.tag.type == "table_list") {
 			getTablesMysql(node);
-	} else if (node.tag.type == 'table') {
-		getColumnsMysql(node);
-	} else if (node.tag.type == 'primary_key') {
-		getPKMysql(node);
-	} else if (node.tag.type == 'pk') {
-		getPKColumnsMysql(node);
-	} else if (node.tag.type == 'uniques') {
-		getUniquesMysql(node);
-	} else if (node.tag.type == 'unique') {
-		getUniquesColumnsMysql(node);
-	} else if (node.tag.type == 'foreign_keys') {
-		getFKsMysql(node);
-	} else if (node.tag.type == 'foreign_key') {
-		getFKsColumnsMysql(node);
-	} else if (node.tag.type == 'view_list') {
-		getViewsMysql(node);
-	} else if (node.tag.type == 'view') {
-		getViewsColumnsMysql(node);
-	} else if (node.tag.type == 'indexes') {
-		getIndexesMysql(node);
-	} else if (node.tag.type == 'index') {
-		getIndexesColumnsMysql(node);
-	} else if (node.tag.type == 'function_list') {
-		getFunctionsMysql(node);
-	} else if (node.tag.type == 'function') {
-		getFunctionFieldsMysql(node);
-	} else if (node.tag.type == 'procedure_list') {
-		getProceduresMysql(node);
-	} else if (node.tag.type == 'procedure') {
-		getProcedureFieldsMysql(node);
-	} else if (node.tag.type == 'database_list') {
-		getDatabasesMysql(node);
-	} else if (node.tag.type == 'database') {
-		getDatabaseObjectsMysql(node);
-	} else if (node.tag.type == 'role_list') {
-		getRolesMysql(node);
-	} /*else if (node.tag.type == 'trigger_list') {
+		} else if (node.tag.type == "table") {
+			getColumnsMysql(node);
+		} else if (node.tag.type == "primary_key") {
+			getPKMysql(node);
+		} else if (node.tag.type == "pk") {
+			getPKColumnsMysql(node);
+		} else if (node.tag.type == "uniques") {
+			getUniquesMysql(node);
+		} else if (node.tag.type == "unique") {
+			getUniquesColumnsMysql(node);
+		} else if (node.tag.type == "foreign_keys") {
+			getFKsMysql(node);
+		} else if (node.tag.type == "foreign_key") {
+			getFKsColumnsMysql(node);
+		} else if (node.tag.type == "view_list") {
+			getViewsMysql(node);
+		} else if (node.tag.type == "view") {
+			getViewsColumnsMysql(node);
+		} else if (node.tag.type == "indexes") {
+			getIndexesMysql(node);
+		} else if (node.tag.type == "index") {
+			getIndexesColumnsMysql(node);
+		} else if (node.tag.type == "function_list") {
+			getFunctionsMysql(node);
+		} else if (node.tag.type == "function") {
+			getFunctionFieldsMysql(node);
+		} else if (node.tag.type == "procedure_list") {
+			getProceduresMysql(node);
+		} else if (node.tag.type == "procedure") {
+			getProcedureFieldsMysql(node);
+		} else if (node.tag.type == "database_list") {
+			getDatabasesMysql(node);
+		} else if (node.tag.type == "database") {
+			getDatabaseObjectsMysql(node);
+		} else if (node.tag.type == "role_list") {
+			getRolesMysql(node);
+		} /*else if (node.tag.type == 'trigger_list') {
 		getTriggersMysql(node);
 	} else if (node.tag.type == 'triggerfunction_list') {
 		getTriggerFunctionsMysql(node);
 	} else if (node.tag.type == 'partition_list') {
 		getPartitionsMysql(node);
-	} */else if (node.tag.type == 'server') {
-		getTreeDetailsMysql(node);
-	}
-	else {
-	  afterNodeOpenedCallbackMysql(node);
-	}
+	} */ else if (node.tag.type == "server") {
+			getTreeDetailsMysql(node);
+		} else {
+			afterNodeOpenedCallbackMysql(node);
+		}
 }
 
 function afterNodeOpenedCallbackMysql(node) {
-  //Hooks
-  if (v_connTabControl.tag.hooks.mysqlTreeNodeOpen.length>0) {
-	for (var i=0; i<v_connTabControl.tag.hooks.mysqlTreeNodeOpen.length; i++)
-	  v_connTabControl.tag.hooks.mysqlTreeNodeOpen[i](node);
-  }
+	//Hooks
+	if (v_connTabControl.tag.hooks.mysqlTreeNodeOpen.length > 0) {
+		for (var i = 0; i < v_connTabControl.tag.hooks.mysqlTreeNodeOpen.length; i++)
+			v_connTabControl.tag.hooks.mysqlTreeNodeOpen[i](node);
+	}
 }
 
 /// <summary>
@@ -1121,30 +1162,27 @@ function afterNodeOpenedCallbackMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getTreeDetailsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_tree_info_mysql/',
+	execAjax(
+		"/get_tree_info_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
 		}),
-		function(p_return) {
-
-			node.tree.contextMenu.cm_server.elements = []
+		function (p_return) {
+			node.tree.contextMenu.cm_server.elements = [];
 			node.tree.contextMenu.cm_server.elements.push({
-				text: 'Refresh',
-				icon: 'fas cm-all fa-sync-alt',
-				action: function(node) {
-					if (node.childNodes == 0)
-						refreshTreeMysql(node);
+				text: "Refresh",
+				icon: "fas cm-all fa-sync-alt",
+				action: function (node) {
+					if (node.childNodes == 0) refreshTreeMysql(node);
 					else {
 						node.collapseNode();
 						node.expandNode();
 					}
-				}
+				},
 			});
 
 			/*node.tree.contextMenu.cm_server.elements.push({
@@ -1181,8 +1219,7 @@ function getTreeDetailsMysql(node) {
 				}
 			});*/
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			node.tree.tag = {
 				v_database: p_return.v_data.v_database_return.v_database,
@@ -1228,72 +1265,85 @@ function getTreeDetailsMysql(node) {
 				//create_partition: p_return.v_data.v_database_return.create_partition,
 				//noinherit_partition: p_return.v_data.v_database_return.noinherit_partition,
 				//drop_partition: p_return.v_data.v_database_return.drop_partition
-				delete: p_return.v_data.v_database_return.delete
-			}
+				delete: p_return.v_data.v_database_return.delete,
+			};
 
 			node.tree.contextMenu.cm_server.elements.push({
-				text: 'Monitoring',
-				icon: 'fas cm-all fa-chart-line',
-				action: function(node) {},
+				text: "Monitoring",
+				icon: "fas cm-all fa-chart-line",
+				action: function (node) {},
 				submenu: {
-					elements: [/*{
+					elements: [
+						/*{
 						text: 'Dashboard',
 						icon: 'fas cm-all fa-chart-line',
 						action: function(node) {
 							v_connTabControl.tag.createMonitorDashboardTab();
 							startMonitorDashboard();
 						}
-					}, */{
-						text: 'Process List',
-						icon: 'fas cm-all fa-chart-line',
-						action: function(node) {
-							v_connTabControl.tag.createMonitoringTab(
-								'Process List',
-								'select * from information_schema.processlist', [{
-									icon: 'fas cm-all fa-times',
-									title: 'Terminate',
-									action: 'mysqlTerminateBackend'
-								}]);
-						}
-					}]
-				}
+					}, */ {
+							text: "Process List",
+							icon: "fas cm-all fa-chart-line",
+							action: function (node) {
+								v_connTabControl.tag.createMonitoringTab(
+									"Process List",
+									"select * from information_schema.processlist",
+									[
+										{
+											icon: "fas cm-all fa-times",
+											title: "Terminate",
+											action: "mysqlTerminateBackend",
+										},
+									],
+								);
+							},
+						},
+					],
+				},
 			});
 
 			node.setText(p_return.v_data.v_database_return.version);
 
-			var node_databases = node.createChildNode('Databases', false,
-				'fas node-all fa-database node-database-list', {
-				type: 'database_list',
-				num_databases: 0
-			}, 'cm_databases');
-			node_databases.createChildNode('', true,
-				'node-spin', null, null);
+			var node_databases = node.createChildNode(
+				"Databases",
+				false,
+				"fas node-all fa-database node-database-list",
+				{
+					type: "database_list",
+					num_databases: 0,
+				},
+				"cm_databases",
+			);
+			node_databases.createChildNode("", true, "node-spin", null, null);
 
 			if (node.tree.tag.superuser) {
-				var node_roles = node.createChildNode('Roles', false,
-					'fas node-all fa-users node-user-list', {
-						type: 'role_list',
-						num_roles: 0
-				}, 'cm_roles');
-				node_roles.createChildNode('', true,
-					'node-spin', null, null);
+				var node_roles = node.createChildNode(
+					"Roles",
+					false,
+					"fas node-all fa-users node-user-list",
+					{
+						type: "role_list",
+						num_roles: 0,
+					},
+					"cm_roles",
+				);
+				node_roles.createChildNode("", true, "node-spin", null, null);
 			}
 
 			if (v_connTabControl.selectedTab.tag.firstTimeOpen) {
-			  v_connTabControl.selectedTab.tag.firstTimeOpen = false;
-			  //v_connTabControl.tag.createMonitorDashboardTab();
-			  //startMonitorDashboard();
+				v_connTabControl.selectedTab.tag.firstTimeOpen = false;
+				//v_connTabControl.tag.createMonitorDashboardTab();
+				//startMonitorDashboard();
 			}
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
-
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1301,44 +1351,59 @@ function getTreeDetailsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getDatabaseObjectsMysql(node) {
-
 	node.removeChildNodes();
 
-	var node_tables = node.createChildNode('Tables', false,
-		'fas node-all fa-th node-table-list', {
-			type: 'table_list',
+	var node_tables = node.createChildNode(
+		"Tables",
+		false,
+		"fas node-all fa-th node-table-list",
+		{
+			type: "table_list",
 			num_tables: 0,
-			database: v_connTabControl.selectedTab.tag.selectedDatabase
-		}, 'cm_tables');
-	node_tables.createChildNode('', true,
-		'node-spin', null, null);
+			database: v_connTabControl.selectedTab.tag.selectedDatabase,
+		},
+		"cm_tables",
+	);
+	node_tables.createChildNode("", true, "node-spin", null, null);
 
-	var node_views = node.createChildNode('Views', false,
-		'fas node-all fa-eye node-view-list', {
-			type: 'view_list',
+	var node_views = node.createChildNode(
+		"Views",
+		false,
+		"fas node-all fa-eye node-view-list",
+		{
+			type: "view_list",
 			num_views: 0,
-			database: v_connTabControl.selectedTab.tag.selectedDatabase
-		}, 'cm_views');
-	node_views.createChildNode('', true,
-		'node-spin', null, null);
+			database: v_connTabControl.selectedTab.tag.selectedDatabase,
+		},
+		"cm_views",
+	);
+	node_views.createChildNode("", true, "node-spin", null, null);
 
-	var node_functions = node.createChildNode('Functions',
-		false, 'fas node-all fa-cog node-function-list', {
-			type: 'function_list',
+	var node_functions = node.createChildNode(
+		"Functions",
+		false,
+		"fas node-all fa-cog node-function-list",
+		{
+			type: "function_list",
 			num_functions: 0,
-			database: v_connTabControl.selectedTab.tag.selectedDatabase
-		}, 'cm_functions');
-	node_functions.createChildNode('', true,
-		'node-spin', null, null);
+			database: v_connTabControl.selectedTab.tag.selectedDatabase,
+		},
+		"cm_functions",
+	);
+	node_functions.createChildNode("", true, "node-spin", null, null);
 
-	var node_functions = node.createChildNode('Procedures',
-		false, 'fas node-all fa-cog node-procedure-list', {
-			type: 'procedure_list',
+	var node_functions = node.createChildNode(
+		"Procedures",
+		false,
+		"fas node-all fa-cog node-procedure-list",
+		{
+			type: "procedure_list",
 			num_functions: 0,
-			database: v_connTabControl.selectedTab.tag.selectedDatabase
-		}, 'cm_procedures');
-	node_functions.createChildNode('', true,
-		'node-spin', null, null);
+			database: v_connTabControl.selectedTab.tag.selectedDatabase,
+		},
+		"cm_procedures",
+	);
+	node_functions.createChildNode("", true, "node-spin", null, null);
 
 	afterNodeOpenedCallbackMysql(node);
 }
@@ -1348,54 +1413,54 @@ function getDatabaseObjectsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getDatabasesMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-
-	execAjax('/get_databases_mysql/',
+	execAjax(
+		"/get_databases_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			node.setText('Databases (' + p_return.v_data.length + ')');
+			node.setText("Databases (" + p_return.v_data.length + ")");
 
 			node.tag.num_databases = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
+				var v_node = node.createChildNode(
+					p_return.v_data[i].v_name,
+					false,
+					"fas node-all fa-database node-database",
+					{
+						type: "database",
+						database: p_return.v_data[i].v_name.replace(/"/g, ""),
+					},
+					"cm_database",
+					null,
+					false,
+				);
 
-				var v_node = node.createChildNode(p_return.v_data[i].v_name,
-					false, 'fas node-all fa-database node-database', {
-						type: 'database',
-						database: p_return.v_data[i].v_name.replace(/"/g, '')
-					}, 'cm_database',null,false);
-
-				if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i].v_name.replace(/"/g, '')) {
-				  v_node.setNodeBold();
-				  v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node;
+				if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i].v_name.replace(/"/g, "")) {
+					v_node.setNodeBold();
+					v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node;
 				}
 
-				v_node.createChildNode('', true,
-					'node-spin', null, null,null,false);
-
+				v_node.createChildNode("", true, "node-spin", null, null, null, false);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1403,45 +1468,47 @@ function getDatabasesMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getRolesMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_roles_mysql/',
+	execAjax(
+		"/get_roles_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			node.setText('Roles (' + p_return.v_data.length + ')');
+			node.setText("Roles (" + p_return.v_data.length + ")");
 
 			node.tag.num_tablespaces = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = node.createChildNode(p_return.v_data[i].v_name,
-					false, 'fas node-all fa-user node-user', {
-						type: 'role',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_role',null,false);
-
+				v_node = node.createChildNode(
+					p_return.v_data[i].v_name,
+					false,
+					"fas node-all fa-user node-user",
+					{
+						type: "role",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_role",
+					null,
+					false,
+				);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1449,32 +1516,30 @@ function getRolesMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getTablesMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-
-	execAjax('/get_tables_mysql/',
+	execAjax(
+		"/get_tables_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_schema": node.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_schema: node.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			node.setText('Tables (' + p_return.v_data.length + ')');
+			node.setText("Tables (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = node.createChildNode(p_return.v_data[i].v_name,
-					false, 'fas node-all fa-table node-table', {
-						type: 'table',
+				v_node = node.createChildNode(
+					p_return.v_data[i].v_name,
+					false,
+					"fas node-all fa-table node-table",
+					{
+						type: "table",
 						has_primary_keys: p_return.v_data[i].v_has_primary_keys,
 						has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
 						has_uniques: p_return.v_data[i].v_has_uniques,
@@ -1485,26 +1550,36 @@ function getTablesMysql(node) {
 						has_triggers: p_return.v_data[i].v_has_triggers,
 						has_partitions: p_return.v_data[i].v_has_partitions,
 						has_statistics: p_return.v_data[i].v_has_statistics,
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_table',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', {
-						type: 'table_field',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, null,null,false);
-
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_table",
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"",
+					false,
+					"node-spin",
+					{
+						type: "table_field",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					null,
+					null,
+					false,
+				);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1512,50 +1587,61 @@ function getTablesMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getViewsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_views_mysql/',
+	execAjax(
+		"/get_views_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_schema": node.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_schema: node.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			node.setText('Views (' + p_return.v_data.length + ')');
+			node.setText("Views (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = node.createChildNode(p_return.v_data[i].v_name,
-					false, 'fas node-all fa-eye node-view', {
-						type: 'view',
+				v_node = node.createChildNode(
+					p_return.v_data[i].v_name,
+					false,
+					"fas node-all fa-eye node-view",
+					{
+						type: "view",
 						has_triggers: p_return.v_data[i].v_has_triggers,
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_view',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', {
-						type: 'view_field',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, null,null,false);
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_view",
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"",
+					false,
+					"node-spin",
+					{
+						type: "view_field",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					null,
+					null,
+					false,
+				);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1563,70 +1649,96 @@ function getViewsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getViewsColumnsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_views_columns_mysql/',
+	execAjax(
+		"/get_views_columns_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": node.text,
-			"p_schema": node.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: node.text,
+			p_schema: node.parent.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			v_list = node.createChildNode('Columns (' + p_return.v_data.length +
-				')', false, 'fas node-all fa-columns node-column', null,
-				null,null,false);
+			v_list = node.createChildNode(
+				"Columns (" + p_return.v_data.length + ")",
+				false,
+				"fas node-all fa-columns node-column",
+				null,
+				null,
+				null,
+				false,
+			);
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = v_list.createChildNode(p_return.v_data[i].v_column_name,
-					false, 'fas node-all fa-columns node-column', {
-						type: 'table_field',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, null,null,false);
-				v_node.createChildNode('Type: ' + p_return.v_data[i].v_data_type,
-					false, 'fas node-all fa-ellipsis-h node-bullet',
-					null, null,null,false);
-
+				v_node = v_list.createChildNode(
+					p_return.v_data[i].v_column_name,
+					false,
+					"fas node-all fa-columns node-column",
+					{
+						type: "table_field",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					null,
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"Type: " + p_return.v_data[i].v_data_type,
+					false,
+					"fas node-all fa-ellipsis-h node-bullet",
+					null,
+					null,
+					null,
+					false,
+				);
 			}
 
 			if (node.tag.has_rules) {
-				v_node = node.createChildNode('Rules', false,
-					'fas node-all fa-lightbulb node-rule', {
-						type: 'rule_list',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_rules',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Rules",
+					false,
+					"fas node-all fa-lightbulb node-rule",
+					{
+						type: "rule_list",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_rules",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			if (node.tag.has_triggers) {
-				v_node = node.createChildNode('Triggers', false,
-					'fas node-all fa-bolt node-trigger', {
-						type: 'trigger_list',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_view_triggers',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Triggers",
+					false,
+					"fas node-all fa-bolt node-trigger",
+					{
+						type: "trigger_list",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_view_triggers",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1634,48 +1746,38 @@ function getViewsColumnsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getViewDefinitionMysql(node) {
-
-	execAjax('/get_view_definition_mysql/',
+	execAjax(
+		"/get_view_definition_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_view": node.text,
-			"p_schema": node.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_view: node.text,
+			p_schema: node.parent.parent.text,
 		}),
-		function(p_return) {
-
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.setValue(p_return.v_data);
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.clearSelection();
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.gotoLine(0, 0, true);
+		function (p_return) {
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
 			//v_connTabControl.selectedTab.tag.tabControl.selectedTab.renameTab(node.text);
-			renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab,
-				node.text);
+			renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
 
-			var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab
-				.tag.div_result;
+			var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
 
-			if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-				.ht != null) {
-				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-					.ht.destroy();
-				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-					.ht = null;
+			if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
 			}
 
-			v_div_result.innerHTML = '';
+			v_div_result.innerHTML = "";
 
 			maximizeEditor();
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		true);
-
+		"box",
+		true,
+	);
 }
 
 /// <summary>
@@ -1683,115 +1785,172 @@ function getViewDefinitionMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getColumnsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_columns_mysql/',
+	execAjax(
+		"/get_columns_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": node.text,
-			"p_schema": node.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: node.text,
+			p_schema: node.parent.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			v_list = node.createChildNode('Columns (' + p_return.v_data.length +
-				')', false, 'fas node-all fa-columns node-column', {
-					type: 'column_list',
-					database: v_connTabControl.selectedTab.tag.selectedDatabase
-				}, 'cm_columns',null,false);
+			v_list = node.createChildNode(
+				"Columns (" + p_return.v_data.length + ")",
+				false,
+				"fas node-all fa-columns node-column",
+				{
+					type: "column_list",
+					database: v_connTabControl.selectedTab.tag.selectedDatabase,
+				},
+				"cm_columns",
+				null,
+				false,
+			);
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = v_list.createChildNode(p_return.v_data[i].v_column_name,
-					false, 'fas node-all fa-columns node-column', {
-						type: 'table_field',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_column',null,false);
-				v_node.createChildNode('Type: ' + p_return.v_data[i].v_data_type,
-					false, 'fas node-all fa-ellipsis-h node-bullet',
-					null, null,null,false);
-				v_node.createChildNode('Nullable: ' + p_return.v_data[i].v_nullable,
-					false, 'fas node-all fa-ellipsis-h node-bullet',
-					null, null,null,false);
-
+				v_node = v_list.createChildNode(
+					p_return.v_data[i].v_column_name,
+					false,
+					"fas node-all fa-columns node-column",
+					{
+						type: "table_field",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_column",
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"Type: " + p_return.v_data[i].v_data_type,
+					false,
+					"fas node-all fa-ellipsis-h node-bullet",
+					null,
+					null,
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"Nullable: " + p_return.v_data[i].v_nullable,
+					false,
+					"fas node-all fa-ellipsis-h node-bullet",
+					null,
+					null,
+					null,
+					false,
+				);
 			}
 
 			if (node.tag.has_primary_keys) {
-				v_node = node.createChildNode('Primary Key', false,
-					'fas node-all fa-key node-pkey', {
-						type: 'primary_key',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_pks',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Primary Key",
+					false,
+					"fas node-all fa-key node-pkey",
+					{
+						type: "primary_key",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_pks",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			if (node.tag.has_foreign_keys) {
-				v_node = node.createChildNode('Foreign Keys', false,
-					'fas node-all fa-key node-fkey', {
-						type: 'foreign_keys',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_fks',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Foreign Keys",
+					false,
+					"fas node-all fa-key node-fkey",
+					{
+						type: "foreign_keys",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_fks",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			if (node.tag.has_uniques) {
-				v_node = node.createChildNode('Uniques', false,
-					'fas node-all fa-key node-unique', {
-						type: 'uniques',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_uniques',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Uniques",
+					false,
+					"fas node-all fa-key node-unique",
+					{
+						type: "uniques",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_uniques",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			if (node.tag.has_indexes) {
-				v_node = node.createChildNode('Indexes', false,
-					'fas node-all fa-thumbtack node-index', {
-						type: 'indexes',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_indexes',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Indexes",
+					false,
+					"fas node-all fa-thumbtack node-index",
+					{
+						type: "indexes",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_indexes",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			if (node.tag.has_triggers) {
-				v_node = node.createChildNode('Triggers', false,
-					'fas node-all fa-bolt node-trigger', {
-						type: 'trigger_list',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_triggers',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Triggers",
+					false,
+					"fas node-all fa-bolt node-trigger",
+					{
+						type: "trigger_list",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_triggers",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			if (node.tag.has_partitions) {
-				v_node = node.createChildNode('Partitions', false,
-					'fas node-all fa-table node-partition', {
-						type: 'partition_list',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_partitions',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', null, null,null,false);
+				v_node = node.createChildNode(
+					"Partitions",
+					false,
+					"fas node-all fa-table node-partition",
+					{
+						type: "partition_list",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_partitions",
+					null,
+					false,
+				);
+				v_node.createChildNode("", false, "node-spin", null, null, null, false);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1799,21 +1958,19 @@ function getColumnsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getPKMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_pk_mysql/',
+	execAjax(
+		"/get_pk_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": node.parent.text,
-			"p_schema": node.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: node.parent.text,
+			p_schema: node.parent.parent.parent.text,
 		}),
-		function(p_return) {
-
-			node.setText('Primary Key (' + p_return.v_data.length + ')');
+		function (p_return) {
+			node.setText("Primary Key (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) {
 				node.removeChildNodes();
@@ -1823,26 +1980,36 @@ function getPKMysql(node) {
 			}
 
 			if (p_return.v_data.length > 0) {
-				v_node = node.createChildNode(p_return.v_data[0][0], false,
-					'fas node-all fa-key node-pkey', {
-						type: 'pk',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_pk');
-				v_node.createChildNode('', false,
-					'node-spin', {
-						type: 'pk_field',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, null);
+				v_node = node.createChildNode(
+					p_return.v_data[0][0],
+					false,
+					"fas node-all fa-key node-pkey",
+					{
+						type: "pk",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_pk",
+				);
+				v_node.createChildNode(
+					"",
+					false,
+					"node-spin",
+					{
+						type: "pk_field",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					null,
+				);
 			}
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1850,41 +2017,43 @@ function getPKMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getPKColumnsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_pk_columns_mysql/',
+	execAjax(
+		"/get_pk_columns_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_key": node.text,
-			"p_table": node.parent.parent.text,
-			"p_schema": node.parent.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_key: node.text,
+			p_table: node.parent.parent.text,
+			p_schema: node.parent.parent.parent.parent.text,
 		}),
-		function(p_return) {
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node.createChildNode(p_return.v_data[i][0], false,
-					'fas node-all fa-columns node-column', null, null,null,false);
-
+				v_node.createChildNode(
+					p_return.v_data[i][0],
+					false,
+					"fas node-all fa-columns node-column",
+					null,
+					null,
+					null,
+					false,
+				);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1892,56 +2061,62 @@ function getPKColumnsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getUniquesMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_uniques_mysql/',
+	execAjax(
+		"/get_uniques_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": node.parent.text,
-			"p_schema": node.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: node.parent.text,
+			p_schema: node.parent.parent.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			node.setText("Uniques (" + p_return.v_data.length + ")");
 
-			node.setText('Uniques (' + p_return.v_data.length + ')');
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			if (p_return.v_data.length > 0) {
-
 				for (i = 0; i < p_return.v_data.length; i++) {
-
-					v_node = node.createChildNode(p_return.v_data[i][0],
+					v_node = node.createChildNode(
+						p_return.v_data[i][0],
 						false,
-						'fas node-all fa-key node-unique', {
-							type: 'unique',
-							database: v_connTabControl.selectedTab.tag.selectedDatabase
-						}, 'cm_unique',null,false);
+						"fas node-all fa-key node-unique",
+						{
+							type: "unique",
+							database: v_connTabControl.selectedTab.tag.selectedDatabase,
+						},
+						"cm_unique",
+						null,
+						false,
+					);
 
-					v_node.createChildNode('', false,
-						'node-spin', {
-							type: 'unique_field',
-							database: v_connTabControl.selectedTab.tag.selectedDatabase
-						}, null,null,false);
-
+					v_node.createChildNode(
+						"",
+						false,
+						"node-spin",
+						{
+							type: "unique_field",
+							database: v_connTabControl.selectedTab.tag.selectedDatabase,
+						},
+						null,
+						null,
+						false,
+					);
 				}
 
 				node.drawChildNodes();
-
 			}
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1949,46 +2124,45 @@ function getUniquesMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getUniquesColumnsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_uniques_columns_mysql/',
+	execAjax(
+		"/get_uniques_columns_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_unique": node.text,
-			"p_table": node.parent.parent.text,
-			"p_schema": node.parent.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_unique: node.text,
+			p_table: node.parent.parent.text,
+			p_schema: node.parent.parent.parent.parent.text,
 		}),
-		function(p_return) {
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			if (p_return.v_data.length > 0) {
-
 				for (i = 0; i < p_return.v_data.length; i++) {
-
-					node.createChildNode(p_return.v_data[i][0], false,
-						'fas node-all fa-columns node-column', null, null,null,false
+					node.createChildNode(
+						p_return.v_data[i][0],
+						false,
+						"fas node-all fa-columns node-column",
+						null,
+						null,
+						null,
+						false,
 					);
-
 				}
 
 				node.drawChildNodes();
-
 			}
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -1996,57 +2170,63 @@ function getUniquesColumnsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getIndexesMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_indexes_mysql/',
+	execAjax(
+		"/get_indexes_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": node.parent.text,
-			"p_schema": node.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: node.parent.text,
+			p_schema: node.parent.parent.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			node.setText("Indexes (" + p_return.v_data.length + ")");
 
-			node.setText('Indexes (' + p_return.v_data.length + ')');
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			var v_node;
 
 			if (p_return.v_data.length > 0) {
-
 				for (i = 0; i < p_return.v_data.length; i++) {
+					v_node = node.createChildNode(
+						p_return.v_data[i][0] + " (" + p_return.v_data[i][1] + ")",
+						false,
+						"fas node-all fa-thumbtack node-index",
+						{
+							type: "index",
+							database: v_connTabControl.selectedTab.tag.selectedDatabase,
+						},
+						"cm_index",
+						null,
+						false,
+					);
 
-					v_node = node.createChildNode(p_return.v_data[i][0] +
-						' (' + p_return.v_data[i][1] + ')', false,
-						'fas node-all fa-thumbtack node-index', {
-							type: 'index',
-							database: v_connTabControl.selectedTab.tag.selectedDatabase
-						}, 'cm_index',null,false);
-
-					v_node.createChildNode('', false,
-						'node-spin', {
-							type: 'index_field'
-						}, null,null,false);
-
+					v_node.createChildNode(
+						"",
+						false,
+						"node-spin",
+						{
+							type: "index_field",
+						},
+						null,
+						null,
+						false,
+					);
 				}
 
 				node.drawChildNodes();
-
 			}
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -2054,47 +2234,45 @@ function getIndexesMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getIndexesColumnsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_indexes_columns_mysql/',
+	execAjax(
+		"/get_indexes_columns_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_index": node.text.replace(' (Non Unique)', '').replace(
-				' (Unique)', ''),
-			"p_table": node.parent.parent.text,
-			"p_schema": node.parent.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_index: node.text.replace(" (Non Unique)", "").replace(" (Unique)", ""),
+			p_table: node.parent.parent.text,
+			p_schema: node.parent.parent.parent.parent.text,
 		}),
-		function(p_return) {
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			if (p_return.v_data.length > 0) {
-
 				for (i = 0; i < p_return.v_data.length; i++) {
-
-					node.createChildNode(p_return.v_data[i][0], false,
-						'fas node-all fa-columns node-column', null, null,null,false
+					node.createChildNode(
+						p_return.v_data[i][0],
+						false,
+						"fas node-all fa-columns node-column",
+						null,
+						null,
+						null,
+						false,
 					);
-
 				}
 
 				node.drawChildNodes();
-
 			}
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -2102,60 +2280,76 @@ function getIndexesColumnsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getFKsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_fks_mysql/',
+	execAjax(
+		"/get_fks_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": node.parent.text,
-			"p_schema": node.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: node.parent.text,
+			p_schema: node.parent.parent.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			node.setText("Foreign Keys (" + p_return.v_data.length + ")");
 
-			node.setText('Foreign Keys (' + p_return.v_data.length + ')');
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = node.createChildNode(p_return.v_data[i][0],
+				v_node = node.createChildNode(
+					p_return.v_data[i][0],
 					false,
-					'fas node-all fa-key node-fkey', {
-						type: 'foreign_key',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_fk',null,false);
-				v_node.createChildNode('Referenced Table: ' + p_return.v_data[
-						i][1], false,
-					'fas node-all fa-table node-table', null,
-					null,null,false);
-				v_node.createChildNode('Delete Rule: ' + p_return.v_data[
-						i][2], false,
-					'fas node-all fa-ellipsis-h node-bullet',
-					null, null,null,false);
-				v_node.createChildNode('Update Rule: ' + p_return.v_data[
-						i][3], false,
-					'fas node-all fa-ellipsis-h node-bullet',
-					null, null,null,false);
+					"fas node-all fa-key node-fkey",
+					{
+						type: "foreign_key",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_fk",
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"Referenced Table: " + p_return.v_data[i][1],
+					false,
+					"fas node-all fa-table node-table",
+					null,
+					null,
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"Delete Rule: " + p_return.v_data[i][2],
+					false,
+					"fas node-all fa-ellipsis-h node-bullet",
+					null,
+					null,
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"Update Rule: " + p_return.v_data[i][3],
+					false,
+					"fas node-all fa-ellipsis-h node-bullet",
+					null,
+					null,
+					null,
+					false,
+				);
 
 				v_curr_fk = p_return.v_data[i][0];
-
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -2163,56 +2357,71 @@ function getFKsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getFKsColumnsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_fks_columns_mysql/',
+	execAjax(
+		"/get_fks_columns_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_fkey": node.text,
-			"p_table": node.parent.parent.text,
-			"p_schema": node.parent.parent.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_fkey: node.text,
+			p_table: node.parent.parent.text,
+			p_schema: node.parent.parent.parent.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			node.createChildNode('Referenced Table: ' + p_return.v_data[
-					0][0], false,
-				'fas node-all fa-table node-table', null,
-				null,null,false);
-			node.createChildNode('Delete Rule: ' + p_return.v_data[
-					0][1], false,
-				'fas node-all fa-ellipsis-h node-bullet',
-				null, null,null,false);
-			node.createChildNode('Update Rule: ' + p_return.v_data[
-					0][2], false,
-				'fas node-all fa-ellipsis-h node-bullet',
-				null, null,null,false);
+			node.createChildNode(
+				"Referenced Table: " + p_return.v_data[0][0],
+				false,
+				"fas node-all fa-table node-table",
+				null,
+				null,
+				null,
+				false,
+			);
+			node.createChildNode(
+				"Delete Rule: " + p_return.v_data[0][1],
+				false,
+				"fas node-all fa-ellipsis-h node-bullet",
+				null,
+				null,
+				null,
+				false,
+			);
+			node.createChildNode(
+				"Update Rule: " + p_return.v_data[0][2],
+				false,
+				"fas node-all fa-ellipsis-h node-bullet",
+				null,
+				null,
+				null,
+				false,
+			);
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				node.createChildNode(p_return.v_data[i][3] +
-					" <i class='fas node-all fa-arrow-right'></i> " +
-					p_return.v_data[i][4], false,
-					'fas node-all fa-columns node-column', null, null,null,false);
-
+				node.createChildNode(
+					p_return.v_data[i][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i][4],
+					false,
+					"fas node-all fa-columns node-column",
+					null,
+					null,
+					null,
+					false,
+				);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /*
@@ -2327,52 +2536,60 @@ function getPartitionsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getFunctionsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-
-	execAjax('/get_functions_mysql/',
+	execAjax(
+		"/get_functions_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_schema": node.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_schema: node.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			node.setText('Functions (' + p_return.v_data.length + ')');
+			node.setText("Functions (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = node.createChildNode(p_return.v_data[i].v_name,
-					false, 'fas node-all fa-cog node-function', {
-						type: 'function',
+				v_node = node.createChildNode(
+					p_return.v_data[i].v_name,
+					false,
+					"fas node-all fa-cog node-function",
+					{
+						type: "function",
 						id: p_return.v_data[i].v_id,
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_function',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', {
-						type: 'function_field'
-					}, null,null,false);
-
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_function",
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"",
+					false,
+					"node-spin",
+					{
+						type: "function_field",
+					},
+					null,
+					null,
+					false,
+				);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -2380,55 +2597,67 @@ function getFunctionsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getFunctionFieldsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_function_fields_mysql/',
+	execAjax(
+		"/get_function_fields_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_function": node.tag.id,
-			"p_schema": node.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_function: node.tag.id,
+			p_schema: node.parent.parent.text,
 		}),
-		function(p_return) {
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			node.tag.num_tables = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				if (p_return.v_data[i].v_type == 'O')
-					v_node = node.createChildNode(p_return.v_data[i].v_name,
-						false, 'fas node-all fa-arrow-right node-function-field', null,
-						null,null,false);
+				if (p_return.v_data[i].v_type == "O")
+					v_node = node.createChildNode(
+						p_return.v_data[i].v_name,
+						false,
+						"fas node-all fa-arrow-right node-function-field",
+						null,
+						null,
+						null,
+						false,
+					);
 				else {
-					if (p_return.v_data[i].v_type == 'I')
-						v_node = node.createChildNode(p_return.v_data[i].v_name,
-							false, 'fas node-all fa-arrow-left node-function-field',
-							null, null,null,false);
-					else
-						v_node = node.createChildNode(p_return.v_data[i].v_name,
+					if (p_return.v_data[i].v_type == "I")
+						v_node = node.createChildNode(
+							p_return.v_data[i].v_name,
 							false,
-							'fas node-all fa-exchange-alt node-function-field',
-							null, null,null,false);
+							"fas node-all fa-arrow-left node-function-field",
+							null,
+							null,
+							null,
+							false,
+						);
+					else
+						v_node = node.createChildNode(
+							p_return.v_data[i].v_name,
+							false,
+							"fas node-all fa-exchange-alt node-function-field",
+							null,
+							null,
+							null,
+							false,
+						);
 				}
-
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -2466,47 +2695,37 @@ function getFunctionFieldsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getFunctionDefinitionMysql(node) {
-
-	execAjax('/get_function_definition_mysql/',
+	execAjax(
+		"/get_function_definition_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_function": node.tag.id
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_function: node.tag.id,
 		}),
-		function(p_return) {
-
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.setValue(p_return.v_data);
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.clearSelection();
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.gotoLine(0, 0, true);
+		function (p_return) {
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
 			//v_connTabControl.selectedTab.tag.tabControl.selectedTab.renameTab(node.text);
-			renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab,
-				node.text);
+			renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
 
-			var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab
-				.tag.div_result;
+			var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
 
-			if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-				.ht != null) {
-				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-					.ht.destroy();
-				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-					.ht = null;
+			if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
 			}
 
-			v_div_result.innerHTML = '';
+			v_div_result.innerHTML = "";
 
 			maximizeEditor();
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		true);
-
+		"box",
+		true,
+	);
 }
 
 /// <summary>
@@ -2514,53 +2733,61 @@ function getFunctionDefinitionMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getProceduresMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-
-	execAjax('/get_procedures_mysql/',
+	execAjax(
+		"/get_procedures_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_schema": node.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_schema: node.parent.text,
 		}),
-		function(p_return) {
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
-
-			node.setText('Procedures (' + p_return.v_data.length + ')');
+			node.setText("Procedures (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				v_node = node.createChildNode(p_return.v_data[i].v_name,
-					false, 'fas node-all fa-cog node-procedure', {
-						type: 'procedure',
+				v_node = node.createChildNode(
+					p_return.v_data[i].v_name,
+					false,
+					"fas node-all fa-cog node-procedure",
+					{
+						type: "procedure",
 						id: p_return.v_data[i].v_id,
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, 'cm_procedure',null,false);
-				v_node.createChildNode('', false,
-					'node-spin', {
-						type: 'procedure_field',
-						database: v_connTabControl.selectedTab.tag.selectedDatabase
-					}, null,null,false);
-
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					"cm_procedure",
+					null,
+					false,
+				);
+				v_node.createChildNode(
+					"",
+					false,
+					"node-spin",
+					{
+						type: "procedure_field",
+						database: v_connTabControl.selectedTab.tag.selectedDatabase,
+					},
+					null,
+					null,
+					false,
+				);
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -2568,55 +2795,67 @@ function getProceduresMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getProcedureFieldsMysql(node) {
-
 	node.removeChildNodes();
-	node.createChildNode('', false, 'node-spin', null,
-		null);
+	node.createChildNode("", false, "node-spin", null, null);
 
-	execAjax('/get_procedure_fields_mysql/',
+	execAjax(
+		"/get_procedure_fields_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_procedure": node.tag.id,
-			"p_schema": node.parent.parent.text
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_procedure: node.tag.id,
+			p_schema: node.parent.parent.text,
 		}),
-		function(p_return) {
-
-			if (node.childNodes.length > 0)
-				node.removeChildNodes();
+		function (p_return) {
+			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			node.tag.num_tables = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
-
-				if (p_return.v_data[i].v_type == 'O')
-					v_node = node.createChildNode(p_return.v_data[i].v_name,
-						false, 'fas node-all fa-arrow-right node-function-field', null,
-						null,null,false);
+				if (p_return.v_data[i].v_type == "O")
+					v_node = node.createChildNode(
+						p_return.v_data[i].v_name,
+						false,
+						"fas node-all fa-arrow-right node-function-field",
+						null,
+						null,
+						null,
+						false,
+					);
 				else {
-					if (p_return.v_data[i].v_type == 'I')
-						v_node = node.createChildNode(p_return.v_data[i].v_name,
-							false, 'fas node-all fa-arrow-left node-function-field',
-							null, null,null,false);
-					else
-						v_node = node.createChildNode(p_return.v_data[i].v_name,
+					if (p_return.v_data[i].v_type == "I")
+						v_node = node.createChildNode(
+							p_return.v_data[i].v_name,
 							false,
-							'fas node-all fa-exchange-alt node-function-field',
-							null, null,null,false);
+							"fas node-all fa-arrow-left node-function-field",
+							null,
+							null,
+							null,
+							false,
+						);
+					else
+						v_node = node.createChildNode(
+							p_return.v_data[i].v_name,
+							false,
+							"fas node-all fa-exchange-alt node-function-field",
+							null,
+							null,
+							null,
+							false,
+						);
 				}
-
 			}
 
 			node.drawChildNodes();
 
 			afterNodeOpenedCallbackMysql(node);
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		false);
+		"box",
+		false,
+	);
 }
 
 /// <summary>
@@ -2654,47 +2893,37 @@ function getProcedureFieldsMysql(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 function getProcedureDefinitionMysql(node) {
-
-	execAjax('/get_procedure_definition_mysql/',
+	execAjax(
+		"/get_procedure_definition_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_procedure": node.tag.id
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_procedure: node.tag.id,
 		}),
-		function(p_return) {
-
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.setValue(p_return.v_data);
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.clearSelection();
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor
-				.gotoLine(0, 0, true);
+		function (p_return) {
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
 			//v_connTabControl.selectedTab.tag.tabControl.selectedTab.renameTab(node.text);
-			renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab,
-				node.text);
+			renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
 
-			var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab
-				.tag.div_result;
+			var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
 
-			if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-				.ht != null) {
-				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-					.ht.destroy();
-				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag
-					.ht = null;
+			if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
 			}
 
-			v_div_result.innerHTML = '';
+			v_div_result.innerHTML = "";
 
 			maximizeEditor();
-
 		},
-		function(p_return) {
+		function (p_return) {
 			nodeOpenError(p_return, node);
 		},
-		'box',
-		true);
-
+		"box",
+		true,
+	);
 }
 
 /*
@@ -2798,119 +3027,109 @@ function getTriggerFunctionDefinitionMysql(node) {
 /// Retrieving SELECT SQL template.
 /// </summary>
 function TemplateSelectMysql(p_schema, p_table) {
-
-	execAjax('/template_select_mysql/',
+	execAjax(
+		"/template_select_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": p_table,
-			"p_schema": p_schema
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: p_table,
+			p_schema: p_schema,
 		}),
-		function(p_return) {
-			v_connTabControl.tag.createQueryTab(
-				p_schema + '.' + p_table);
+		function (p_return) {
+			v_connTabControl.tag.createQueryTab(p_schema + "." + p_table);
 
-
-			v_connTabControl.selectedTab
-				.tag.tabControl.selectedTab
-				.tag.editor.setValue(p_return.v_data.v_template);
-			v_connTabControl.selectedTab
-				.tag.tabControl.selectedTab
-				.tag.editor.clearSelection();
-			renameTabConfirm(
-				v_connTabControl.selectedTab
-				.tag.tabControl.selectedTab,
-				p_schema + '.' + p_table);
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data.v_template);
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+			renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, p_schema + "." + p_table);
 
 			//minimizeEditor();
 
 			querySQL(0);
 		},
-		function(p_return) {
+		function (p_return) {
 			showError(p_return.v_data);
-			return '';
+			return "";
 		},
-		'box',
-		true);
+		"box",
+		true,
+	);
 }
 
 /// <summary>
 /// Retrieving INSERT SQL template.
 /// </summary>
 function TemplateInsertMysql(p_schema, p_table) {
-
-	execAjax('/template_insert_mysql/',
+	execAjax(
+		"/template_insert_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": p_table,
-			"p_schema": p_schema
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: p_table,
+			p_schema: p_schema,
 		}),
-		function(p_return) {
-		  tabSQLTemplate(
-			  'Insert ' + p_schema + '.' + p_table,
-			  p_return.v_data.v_template);
+		function (p_return) {
+			tabSQLTemplate("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
 		},
-		function(p_return) {
+		function (p_return) {
 			showError(p_return.v_data);
-			return '';
+			return "";
 		},
-		'box',
-		true);
+		"box",
+		true,
+	);
 }
 
 /// <summary>
 /// Retrieving UPDATE SQL template.
 /// </summary>
 function TemplateUpdateMysql(p_schema, p_table) {
-
-	execAjax('/template_update_mysql/',
+	execAjax(
+		"/template_update_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_table": p_table,
-			"p_schema": p_schema
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_table: p_table,
+			p_schema: p_schema,
 		}),
-		function(p_return) {
-		  tabSQLTemplate(
-			  'Update ' + p_schema + '.' + p_table,
-			  p_return.v_data.v_template);
+		function (p_return) {
+			tabSQLTemplate("Update " + p_schema + "." + p_table, p_return.v_data.v_template);
 		},
-		function(p_return) {
+		function (p_return) {
 			showError(p_return.v_data);
-			return '';
+			return "";
 		},
-		'box',
-		true);
+		"box",
+		true,
+	);
 }
 
 function nodeOpenError(p_return, p_node) {
-
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(
 			v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			function() {
+			function () {
 				p_node.expandNode();
 			},
 			null,
-			p_return.v_data.message
+			p_return.v_data.message,
 		);
 	} else {
-
-		if (p_node.childNodes.length > 0)
-			p_node.removeChildNodes();
+		if (p_node.childNodes.length > 0) p_node.removeChildNodes();
 
 		v_node = p_node.createChildNode(
 			"Error - <a class='a_link' onclick='showError(&quot;" +
-			p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, '') +
-			"&quot;)'>View Detail</a>", false,
-			'fas fa-times node-error', {
-				type: 'error',
-				message: p_return.v_data
-			}, null);
+				p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, "") +
+				"&quot;)'>View Detail</a>",
+			false,
+			"fas fa-times node-error",
+			{
+				type: "error",
+				message: p_return.v_data,
+			},
+			null,
+		);
 	}
-
 }
 
 /*function getMajorVersionMysql(p_version) {
@@ -2922,43 +3141,37 @@ function nodeOpenError(p_return, p_node) {
 }*/
 
 function mysqlTerminateBackendConfirm(p_pid) {
-	execAjax('/kill_backend_mysql/',
+	execAjax(
+		"/kill_backend_mysql/",
 		JSON.stringify({
-			"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			"p_tab_id": v_connTabControl.selectedTab.id,
-			"p_pid": p_pid
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_pid: p_pid,
 		}),
-		function(p_return) {
-
+		function (p_return) {
 			refreshMonitoring();
-
 		},
-		function(p_return) {
+		function (p_return) {
 			if (p_return.v_data.password_timeout) {
 				showPasswordPrompt(
 					v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-					function() {
+					function () {
 						mysqlTerminateBackendConfirm(p_pid);
 					},
 					null,
-					p_return.v_data.message
+					p_return.v_data.message,
 				);
 			} else {
 				showError(p_return.v_data);
 			}
 		},
-		'box',
-		true);
-
+		"box",
+		true,
+	);
 }
 
 function mysqlTerminateBackend(p_row) {
-
-	showConfirm('Are you sure you want to terminate process ' + p_row[0] + '?',
-		function() {
-
-			mysqlTerminateBackendConfirm(p_row[0]);
-
-		});
-
+	showConfirm("Are you sure you want to terminate process " + p_row[0] + "?", function () {
+		mysqlTerminateBackendConfirm(p_row[0]);
+	});
 }

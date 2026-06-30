@@ -170,7 +170,7 @@ with 2 parameters:
 		- p_data: optional paramater to send data from the javascript side.
 
 */
-var v_plugins = {}
+var v_plugins = {};
 
 $(function () {
 	v_connTabControl.tag.hooks = {
@@ -193,49 +193,47 @@ $(function () {
 		sqliteTreeNodeOpen: [],
 		sqliteTreeContextMenu: [],
 		sqliteTreeNodeClick: [],
-	}
+	};
 
-	execAjax('/get_plugins/',
-			JSON.stringify({}),
-			function(p_return) {
-				var timestamp = new Date().getTime();
-				for (var i=0; i<p_return.v_data.length; i++) {
-
-					// loading CSS
-					if (p_return.v_data[i].cssfile) {
-						var importedcss = document.createElement('link');
-						importedcss.rel = 'stylesheet';
-						importedcss.href = v_url_folder + p_return.v_data[i].cssfile + '?v' + timestamp;
-						document.head.appendChild(importedcss);
-					}
-
-					// loading JS
-					var importedjs = document.createElement('script');
-					importedjs.src = v_url_folder + p_return.v_data[i].file + '?v' + timestamp;
-					document.head.appendChild(importedjs);
-
-					v_plugins[p_return.v_data[i].name] = p_return.v_data[i];
+	execAjax(
+		"/get_plugins/",
+		JSON.stringify({}),
+		function (p_return) {
+			var timestamp = new Date().getTime();
+			for (var i = 0; i < p_return.v_data.length; i++) {
+				// loading CSS
+				if (p_return.v_data[i].cssfile) {
+					var importedcss = document.createElement("link");
+					importedcss.rel = "stylesheet";
+					importedcss.href = v_url_folder + p_return.v_data[i].cssfile + "?v" + timestamp;
+					document.head.appendChild(importedcss);
 				}
 
-			},
-			null,
-			'box');
+				// loading JS
+				var importedjs = document.createElement("script");
+				importedjs.src = v_url_folder + p_return.v_data[i].file + "?v" + timestamp;
+				document.head.appendChild(importedjs);
 
+				v_plugins[p_return.v_data[i].name] = p_return.v_data[i];
+			}
+		},
+		null,
+		"box",
+	);
 });
 
-var csrftoken = getCookie('omnidb_csrftoken');
+var csrftoken = getCookie("omnidb_csrftoken");
 
 function upload(p_file_selector) {
-
-var formData = new FormData();
-formData.append('file', p_file_selector.files[0]);
-p_file_selector.value = null;
-startLoading();
-$.ajax({
-		url: v_url_folder + '/upload/',
-		type: 'POST',
-		beforeSend: function(xhr, settings) {
-			if(!csrfSafeMethod(settings.type) && !this.crossDomain) {
+	var formData = new FormData();
+	formData.append("file", p_file_selector.files[0]);
+	p_file_selector.value = null;
+	startLoading();
+	$.ajax({
+		url: v_url_folder + "/upload/",
+		type: "POST",
+		beforeSend: function (xhr, settings) {
+			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
 				xhr.setRequestHeader("X-CSRFToken", csrftoken);
 			}
 		},
@@ -243,203 +241,198 @@ $.ajax({
 		cache: false,
 		processData: false,
 		contentType: false,
-		success: function(data) {
-				if (!data.v_error) {
-					showAlert('Plugin successfully installed, please restart OmniDB.');
-					showPluginsRender();
-				}
-				else
-				{
-					showError(data.v_message);
-				}
-				endLoading();
-		},
-		error: function(msg) {
+		success: function (data) {
+			if (!data.v_error) {
+				showAlert("Plugin successfully installed, please restart OmniDB.");
+				showPluginsRender();
+			} else {
+				showError(data.v_message);
+			}
 			endLoading();
-		}
-});
-return false;
+		},
+		error: function (msg) {
+			endLoading();
+		},
+	});
+	return false;
 }
 
-function activateHook(p_hook,p_function) {
+function activateHook(p_hook, p_function) {
 	try {
 		v_connTabControl.tag.hooks[p_hook].push(p_function);
-	}
-	catch(err) {
-	}
+	} catch (err) {}
 }
 
 function reloadPlugins() {
-	showConfirm('This operation will reload all plugins, are you sure you want to continue?',
-							function() {
-								execAjax('/reload_plugins/',
-										JSON.stringify({}),
-										function(p_return) {
-											showPluginsRender();
-											showAlert('Plugins reloaded, please reload this page to reload client changes.<br><br><button onclick="location.reload();">Reload now</button>')
-										},
-										null,
-										'box');
-
-							});
-
+	showConfirm("This operation will reload all plugins, are you sure you want to continue?", function () {
+		execAjax(
+			"/reload_plugins/",
+			JSON.stringify({}),
+			function (p_return) {
+				showPluginsRender();
+				showAlert(
+					'Plugins reloaded, please reload this page to reload client changes.<br><br><button onclick="location.reload();">Reload now</button>',
+				);
+			},
+			null,
+			"box",
+		);
+	});
 }
 
 function getPluginPath(p_name) {
 	try {
-		if (p_name == 'OmniDB') {
-			return '/static/OmniDB_app/'
+		if (p_name == "OmniDB") {
+			return "/static/OmniDB_app/";
 		} else {
 			return v_plugins[p_name].folder;
 		}
-	}
-	catch(err) {
-		return ''
+	} catch (err) {
+		return "";
 	}
 }
 
 function hidePlugins() {
-	document.getElementById('div_plugins').classList.remove('isActive');
+	document.getElementById("div_plugins").classList.remove("isActive");
 	v_connTabControl.tag.plugin_ht.destroy();
 	v_connTabControl.tag.plugin_ht = null;
 }
 
-function deletePlugin(p_plugin_name,p_plugin_folder) {
-	showConfirm('Are you sure you want to delete the following plugin? You will have to restart OmniDB after this operation.',
-	function() {
-		execAjax('/delete_plugin/',
-				JSON.stringify({'p_plugin_name': p_plugin_name, "p_plugin_folder": p_plugin_folder}),
-				function(p_return) {
+function deletePlugin(p_plugin_name, p_plugin_folder) {
+	showConfirm(
+		"Are you sure you want to delete the following plugin? You will have to restart OmniDB after this operation.",
+		function () {
+			execAjax(
+				"/delete_plugin/",
+				JSON.stringify({ p_plugin_name: p_plugin_name, p_plugin_folder: p_plugin_folder }),
+				function (p_return) {
 					showAlert(p_return.v_data);
 					showPluginsRender();
 				},
 				null,
-				'box');
-	})
+				"box",
+			);
+		},
+	);
 }
 
 function showPluginsRender() {
-	execAjax('/list_plugins/',
-			JSON.stringify({}),
-			function(p_return) {
-				var columnProperties = [];
+	execAjax(
+		"/list_plugins/",
+		JSON.stringify({}),
+		function (p_return) {
+			var columnProperties = [];
 
-				var col = new Object();
+			var col = new Object();
 
-				var col = new Object();
-				col.title =  'Folder';
-				col.width = '80';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Folder";
+			col.width = "80";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'Plugin Name';
-				col.width = '100';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Plugin Name";
+			col.width = "100";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'Version';
-				col.width = '60';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Version";
+			col.width = "60";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'Config file';
-				col.width = '70';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Config file";
+			col.width = "70";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'Javascript File';
-				col.width = '80';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Javascript File";
+			col.width = "80";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'Python File';
-				col.width = '80';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Python File";
+			col.width = "80";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'CSS File';
-				col.width = '60';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "CSS File";
+			col.width = "60";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'Status';
-				col.width = '50';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Status";
+			col.width = "50";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var col = new Object();
-				col.title =  'Actions';
-				col.width = '50';
-				col.readOnly = true;
-				columnProperties.push(col);
+			var col = new Object();
+			col.title = "Actions";
+			col.width = "50";
+			col.readOnly = true;
+			columnProperties.push(col);
 
-				var v_div_result = document.getElementById('plugin_grid');
-				v_connTabControl.tag.plugin_message_list = p_return.v_data.message;
+			var v_div_result = document.getElementById("plugin_grid");
+			v_connTabControl.tag.plugin_message_list = p_return.v_data.message;
 
-				if (v_div_result.innerHTML!='') {
-					v_connTabControl.tag.plugin_ht.destroy();
-				}
+			if (v_div_result.innerHTML != "") {
+				v_connTabControl.tag.plugin_ht.destroy();
+			}
 
-				v_connTabControl.tag.plugin_ht = new Handsontable(v_div_result,
-														{
-															licenseKey: 'non-commercial-and-evaluation',
-															data: p_return.v_data.list,
-															columns : columnProperties,
-															colHeaders : true,
-															manualColumnResize: true,
-															stretchH: 'all',
-															minSpareCols :0,
-															minSpareRows :0,
-															fillHandle:false,
-															disableVisualSelection: true,
-															cells: function (row, col, prop) {
+			v_connTabControl.tag.plugin_ht = new Handsontable(v_div_result, {
+				licenseKey: "non-commercial-and-evaluation",
+				data: p_return.v_data.list,
+				columns: columnProperties,
+				colHeaders: true,
+				manualColumnResize: true,
+				stretchH: "all",
+				minSpareCols: 0,
+				minSpareRows: 0,
+				fillHandle: false,
+				disableVisualSelection: true,
+				cells: function (row, col, prop) {
+					var cellProperties = {};
+					cellProperties.renderer = showPluginDataActionRenderer;
 
-																var cellProperties = {};
-																cellProperties.renderer = showPluginDataActionRenderer;
-
-																return cellProperties;
-
-															}
-														});
-
-					endLoading();
-
+					return cellProperties;
 				},
-				null,
-				'box');
+			});
+
+			endLoading();
+		},
+		null,
+		"box",
+	);
 }
 
-$('#modal_plugins').on('shown.bs.modal', function (e) {
-
+$("#modal_plugins").on("shown.bs.modal", function (e) {
 	showPluginsRender();
-
 });
 
 function showPlugins() {
-
 	startLoading();
 
-	var v_div_result = document.getElementById('plugin_grid');
+	var v_div_result = document.getElementById("plugin_grid");
 
-	if (v_div_result.innerHTML!='') {
+	if (v_div_result.innerHTML != "") {
 		v_connTabControl.tag.plugin_ht.destroy();
 	}
 
-	$('#modal_plugins').modal('show');
-
+	$("#modal_plugins").modal("show");
 }
 
 function getPluginMessage() {
-	var v_row = v_connTabControl.tag.plugin_ht.getSelected()[0][0];
-	if (v_connTabControl.tag.plugin_message_list[v_row]!='')
-		showError(v_connTabControl.tag.plugin_message_list[v_row])
+	var v_sel = v_connTabControl.tag.plugin_ht.getSelected();
+	if (!v_sel || v_sel.length === 0) return;
+	var v_row = v_sel[0][0];
+	if (v_connTabControl.tag.plugin_message_list[v_row] != "") showError(v_connTabControl.tag.plugin_message_list[v_row]);
 }
 
 /**
@@ -456,94 +449,111 @@ function getPluginMessage() {
  * @param  {String} p_onAjaxErrorCallBack = false       String mapping the name of the function to be run as callback if the ajax request fails with an error.
  * @return {Function}                                   Triggers the `p_callback` function with the returned data.
  */
-function callPluginFunction({ p_plugin_name, p_function_name, p_data = null, p_callback = null, p_loading = true, p_check_database_connection = true, p_cancel_button = null, p_onAjaxErrorCallBack = false }) {
+function callPluginFunction({
+	p_plugin_name,
+	p_function_name,
+	p_data = null,
+	p_callback = null,
+	p_loading = true,
+	p_check_database_connection = true,
+	p_cancel_button = null,
+	p_onAjaxErrorCallBack = false,
+}) {
 	var v_database_index = null;
 	if (v_connTabControl.selectedTab.tag.selectedDatabaseIndex) {
 		v_database_index = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
 	}
-	execAjax('/exec_plugin_function/',
-			JSON.stringify({'p_plugin_name': p_plugin_name,
-											'p_function_name': p_function_name,
-											'p_data': p_data,
-											'p_database_index': v_database_index,
-											'p_tab_id': v_connTabControl.selectedTab.id,
-											'p_check_database_connection': p_check_database_connection
-										}),
-			function(p_return) {
-				p_callback(p_return.v_data);
-			},
-			function(p_return) {
-				if (p_return.v_data.password_timeout) {
-						showPasswordPrompt(
-								v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-								function() {
-										callPluginFunction({ p_plugin_name, p_function_name, p_data, p_callback, p_loading, p_check_database_connection, p_cancel_button, p_onAjaxErrorCallBack })
-								},
-								null,
-								p_return.v_data.message
-						);
-				} else {
-						showError(p_return.v_data);
-				}
-			},
-			'box',
-			p_loading,
-			p_cancel_button,
-			p_onAjaxErrorCallBack);
+	execAjax(
+		"/exec_plugin_function/",
+		JSON.stringify({
+			p_plugin_name: p_plugin_name,
+			p_function_name: p_function_name,
+			p_data: p_data,
+			p_database_index: v_database_index,
+			p_tab_id: v_connTabControl.selectedTab.id,
+			p_check_database_connection: p_check_database_connection,
+		}),
+		function (p_return) {
+			p_callback(p_return.v_data);
+		},
+		function (p_return) {
+			if (p_return.v_data.password_timeout) {
+				showPasswordPrompt(
+					v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+					function () {
+						callPluginFunction({
+							p_plugin_name,
+							p_function_name,
+							p_data,
+							p_callback,
+							p_loading,
+							p_check_database_connection,
+							p_cancel_button,
+							p_onAjaxErrorCallBack,
+						});
+					},
+					null,
+					p_return.v_data.message,
+				);
+			} else {
+				showError(p_return.v_data);
+			}
+		},
+		"box",
+		p_loading,
+		p_cancel_button,
+		p_onAjaxErrorCallBack,
+	);
 }
 
-function createSQLTab({ p_name = '', p_template = '', p_show_tip = true }) {
+function createSQLTab({ p_name = "", p_template = "", p_show_tip = true }) {
 	tabSQLTemplate(p_name, p_template, p_show_tip);
 }
 
-function createInnerTab({ p_name = '', p_icon = '', p_select_function = null, p_before_close_function = null }) {
-
+function createInnerTab({ p_name = "", p_icon = "", p_select_function = null, p_before_close_function = null }) {
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
-	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab(
-		{
-			p_icon: p_icon,
-			p_name: '<span id="tab_title"> ' + p_name + '</span>',
-			p_selectFunction: function() {
-				if(p_select_function != null) {
-					p_select_function();
-				}
-			},
-			p_closeFunction: function(e) {
-				var v_current_tab = v_tab;
-				beforeCloseTab(e,
-					function() {
-						if(p_before_close_function != null) {
-							p_before_close_function();
-						}
-						v_current_tab.removeTab();
-					});
+	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
+		p_icon: p_icon,
+		p_name: '<span id="tab_title"> ' + p_name + "</span>",
+		p_selectFunction: function () {
+			if (p_select_function != null) {
+				p_select_function();
 			}
-		});
-
-		v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-		var v_div = document.getElementById('div_' + v_tab.id);
-		v_div.style.height = 'calc(100% - 137px)';
-		v_tab.tag = {
-			mode: '',
-			div: v_div
-		};
-
-		// Creating + tab in the outer tab list
-		var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab(
-			{
-				p_name: '+',
-				p_close: false,
-				p_selectable: false,
-				p_clickFunction: function(e) {
-					showMenuNewTab(e);
+		},
+		p_closeFunction: function (e) {
+			var v_current_tab = v_tab;
+			beforeCloseTab(e, function () {
+				if (p_before_close_function != null) {
+					p_before_close_function();
 				}
+				v_current_tab.removeTab();
 			});
-		v_add_tab.tag = {
-			mode: 'add'
-		}
+		},
+	});
 
-		return v_tab.tag;
+	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
+	var v_div = document.getElementById("div_" + v_tab.id);
+	v_div.style.height = "calc(100% - 137px)";
+	v_tab.tag = {
+		mode: "",
+		div: v_div,
+	};
+
+	// Creating + tab in the outer tab list
+	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
+		p_name: "+",
+		p_close: false,
+		p_selectable: false,
+		p_clickFunction: function (e) {
+			showMenuNewTab(e);
+		},
+	});
+	v_add_tab.tag = {
+		mode: "add",
+	};
+
+	return v_tab.tag;
 }
 
 function getSelectedInnerTabTag() {
@@ -554,56 +564,53 @@ function getSelectedOuterTabTag() {
 	return v_connTabControl.selectedTab.tag;
 }
 
-function createOuterTab({ p_name = '', p_icon = '', p_select_function = null, p_before_close_function = null }) {
+function createOuterTab({ p_name = "", p_icon = "", p_select_function = null, p_before_close_function = null }) {
 	v_connTabControl.removeLastTab();
 
-	var v_tab = v_connTabControl.createTab(
-		{
-			p_icon: p_icon,
-			p_name: '<span id="tab_title"> ' + p_name + '</span>',
-			p_selectFunction: function() {
-				if(p_select_function != null) {
-					p_select_function();
-				}
-			},
-			p_closeFunction: function(e) {
-				var v_current_tab = v_tab;
-				beforeCloseTab(e,
-					function() {
-						if(p_before_close_function != null) {
-							p_before_close_function();
-						}
-						v_current_tab.removeTab();
-					});
+	var v_tab = v_connTabControl.createTab({
+		p_icon: p_icon,
+		p_name: '<span id="tab_title"> ' + p_name + "</span>",
+		p_selectFunction: function () {
+			if (p_select_function != null) {
+				p_select_function();
 			}
-		});
-
-		v_connTabControl.selectTab(v_tab);
-		var v_tab_title_span = document.getElementById('tab_title');
-		v_tab_title_span.id = 'tab_title_' + v_tab.id;
-
-		v_tab.tag = {
-			tab_id: v_tab.id,
-			mode: '',
-			div: v_tab.elementDiv
-		};
-
-		// Creating + tab in the outer tab list
-		v_connTabControl.createTab(
-			{
-				p_name: '+',
-				p_close: false,
-				p_selectable: false,
-				p_clickFunction: function(e) {
-					showMenuNewTabOuter(e);
+		},
+		p_closeFunction: function (e) {
+			var v_current_tab = v_tab;
+			beforeCloseTab(e, function () {
+				if (p_before_close_function != null) {
+					p_before_close_function();
 				}
+				v_current_tab.removeTab();
 			});
+		},
+	});
 
-		return v_tab.tag;
+	v_connTabControl.selectTab(v_tab);
+	var v_tab_title_span = document.getElementById("tab_title");
+	v_tab_title_span.id = "tab_title_" + v_tab.id;
+
+	v_tab.tag = {
+		tab_id: v_tab.id,
+		mode: "",
+		div: v_tab.elementDiv,
+	};
+
+	// Creating + tab in the outer tab list
+	v_connTabControl.createTab({
+		p_name: "+",
+		p_close: false,
+		p_selectable: false,
+		p_clickFunction: function (e) {
+			showMenuNewTabOuter(e);
+		},
+	});
+
+	return v_tab.tag;
 }
 
-function setDDL({ p_ddl = '', p_select = true}) {
-	if (v_connTabControl.selectedTab.tag.mode=='connection') {
+function setDDL({ p_ddl = "", p_select = true }) {
+	if (v_connTabControl.selectedTab.tag.mode == "connection") {
 		var v_tab_tag = v_connTabControl.selectedTab.tag;
 		v_tab_tag.ddlEditor.setValue(p_ddl);
 		v_tab_tag.ddlEditor.clearSelection();
@@ -614,8 +621,8 @@ function setDDL({ p_ddl = '', p_select = true}) {
 	}
 }
 
-function setProperties({ p_properties = [], p_select = true}) {
-	if (v_connTabControl.selectedTab.tag.mode=='connection') {
+function setProperties({ p_properties = [], p_select = true }) {
+	if (v_connTabControl.selectedTab.tag.mode == "connection") {
 		var v_tab_tag = v_connTabControl.selectedTab.tag;
 		v_tab_tag.gridProperties.loadData(p_properties);
 		if (p_select) {

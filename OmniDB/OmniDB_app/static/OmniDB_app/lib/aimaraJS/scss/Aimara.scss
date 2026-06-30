@@ -44,7 +44,6 @@ SOFTWARE.
 	text-align: center;
 }
 
-
 .aimara_tree span.node,
 .aimara_tree span.node_selected {
 	display: inline-block;
@@ -87,7 +86,6 @@ SOFTWARE.
 	/* margin-left: 10px; */
 }
 
-
 .aimara_menu__overlay {
 	bottom: 0;
 	left: 0;
@@ -99,7 +97,8 @@ SOFTWARE.
 	z-index: 1051;
 }
 
-.aimara_menu,.aimara_sub-menu {
+.aimara_menu,
+.aimara_sub-menu {
 	margin: 0;
 	padding: 0;
 	font: 10px;
@@ -163,11 +162,10 @@ SOFTWARE.
 	cursor: default;
 	background-color: #fff;
 	background-clip: padding-box;
-	border: 1px solid rgba(0,0,0,.15);
-	border-radius: .25rem;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 0.25rem;
 	z-index: 999999;
 }
-
 
 .aimara_sub-menu {
 	display: none;
@@ -175,8 +173,8 @@ SOFTWARE.
 	min-width: 200px;
 	background-color: #fff;
 	background-clip: padding-box;
-	border: 1px solid rgba(0,0,0,.15);
-	border-radius: .25rem;
+	border: 1px solid rgba(0, 0, 0, 0.15);
+	border-radius: 0.25rem;
 	z-index: 2;
 }
 

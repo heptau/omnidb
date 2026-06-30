@@ -13,6 +13,15 @@ import OmniDB_app.include.Spartacus.Database as Database
 import OmniDB_app.include.Spartacus.Utils as Utils
 import OmniDB_app.include.OmniDatabase as OmniDatabase
 from OmniDB_app.include.Session import Session
+
+def _parse_post_data(request):
+    raw = request.POST.get('data', None)
+    if not raw:
+        raise json.JSONDecodeError('Missing POST data', '', 0)
+    return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+    return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
 from datetime import datetime
 
 from RestrictedPython import compile_restricted
@@ -70,7 +79,10 @@ def get_monitor_unit_list(request, v_database):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_mode = json_object['p_mode']
 
 	v_return['v_data'] = []
@@ -133,11 +145,14 @@ def get_monitor_unit_details(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_unit_id = json_object['p_unit_id']
 
 	try:
-		unit = MonUnits.objects.get(id=v_unit_id)
+		unit = MonUnits.objects.get(id=v_unit_id, user=request.user)
 		v_return['v_data'] = { 'title': unit.title, 'type': unit.type, 'interval': unit.interval, 'script_chart': unit.script_chart, 'script_data': unit.script_data }
 
 	except Exception as exc:
@@ -164,7 +179,10 @@ def get_monitor_units(request, v_database):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 
@@ -177,7 +195,7 @@ def get_monitor_units(request, v_database):
 		if len(user_units)==0:
 			conn_object = Connection.objects.get(id=v_database.v_conn_id)
 			for key, mon_unit in monitoring_units.items():
-				if mon_unit['default'] == True and mon_unit['dbms'] == v_database.v_db_type:
+				if mon_unit['default'] and mon_unit['dbms'] == v_database.v_db_type:
 					user_unit = MonUnitsConnections(
 						unit=mon_unit['id'],
 						user=request.user,
@@ -202,7 +220,7 @@ def get_monitor_units(request, v_database):
 						'v_interval': user_unit.interval
 					}
 					v_return['v_data'].append(v_unit_data)
-				except:
+				except Exception:
 					user_unit.delete()
 			else:
 				#search plugin data
@@ -246,7 +264,10 @@ def get_monitor_unit_template(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_unit_id = json_object['p_unit_id']
 	v_unit_plugin_name = json_object['p_unit_plugin_name']
 
@@ -255,7 +276,7 @@ def get_monitor_unit_template(request):
 		v_return['v_data'] = ''
 
 		try:
-			unit = MonUnits.objects.get(id=v_unit_id)
+			unit = MonUnits.objects.get(id=v_unit_id, user=request.user)
 			v_return['v_data'] = {
 				'script_chart': unit.script_chart,
 				'script_data': unit.script_data,
@@ -297,7 +318,10 @@ def save_monitor_unit(request, v_database):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_unit_id = json_object['p_unit_id']
 	v_unit_name = json_object['p_unit_name']
 	v_unit_type = json_object['p_unit_type']
@@ -327,7 +351,7 @@ def save_monitor_unit(request, v_database):
 		#existing unit
 		else:
 			v_return['v_data'] = v_unit_id
-			unit = MonUnits.objects.get(id=v_unit_id)
+			unit = MonUnits.objects.get(id=v_unit_id, user=request.user)
 			unit.script_chart = v_unit_script_chart
 			unit.script_data = v_unit_script_data
 			unit.type = v_unit_type
@@ -360,11 +384,14 @@ def delete_monitor_unit(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_unit_id = json_object['p_unit_id']
 
 	try:
-		MonUnits.objects.get(id=v_unit_id).delete()
+		MonUnits.objects.get(id=v_unit_id, user=request.user).delete()
 		del monitoring_units_database[v_unit_id]
 
 	except Exception as exc:
@@ -390,11 +417,14 @@ def remove_saved_monitor_unit(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_saved_id = json_object['p_saved_id']
 
 	try:
-		MonUnitsConnections.objects.get(id=v_saved_id).delete()
+		MonUnitsConnections.objects.get(id=v_saved_id, user=request.user).delete()
 
 	except Exception as exc:
 		v_return['v_data'] = str(exc)
@@ -419,12 +449,15 @@ def update_saved_monitor_unit_interval(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_saved_id = json_object['p_saved_id']
 	v_interval = json_object['p_interval']
 
 	try:
-		unit = MonUnitsConnections.objects.get(id=v_saved_id)
+		unit = MonUnitsConnections.objects.get(id=v_saved_id, user=request.user)
 		unit.interval = v_interval
 		unit.save()
 
@@ -453,7 +486,10 @@ def refresh_monitor_units(request, v_database):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_ids = json_object['p_ids']
@@ -608,7 +644,10 @@ def test_monitor_script(request, v_database):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_tab_id = json_object['p_tab_id']
 	v_script_chart = json_object['p_script_chart']
 	v_script_data = json_object['p_script_data']

@@ -9,6 +9,15 @@ import json
 
 import sys
 
+def _parse_post_data(request):
+	raw = request.POST.get('data', None)
+	if not raw:
+		raise json.JSONDecodeError('Missing POST data', '', 0)
+	return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+	return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
+
 import OmniDB_app.include.Spartacus as Spartacus
 import OmniDB_app.include.Spartacus.Database as Database
 import OmniDB_app.include.Spartacus.Utils as Utils
@@ -183,7 +192,10 @@ def save_config_user(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_font_size = json_object['p_font_size']
 	p_theme = json_object['p_theme']
 	p_pwd = json_object['p_pwd']
@@ -228,7 +240,10 @@ def save_shortcuts(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_shortcuts = json_object['p_shortcuts']
 	v_current_os = json_object['p_current_os']
 
@@ -380,7 +395,10 @@ def change_active_database(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_new_database = json_object['p_database']
@@ -410,7 +428,10 @@ def renew_password(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_password = json_object['p_password']
@@ -440,7 +461,10 @@ def draw_graph(request, v_database):
 		'v_error_id': -1
 	}
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_complete = json_object['p_complete']
@@ -485,7 +509,7 @@ def draw_graph(request, v_database):
 				#FK referencing other schema, create a new node if it isn't in v_nodes list.
 				if v_database.v_schema != v_curr_to_schema:
 					v_found = False
-					for k in range (len(v_nodes) - 1,0):
+					for k in range(len(v_nodes) - 1, -1, -1):
 						if v_nodes[k]['label'] == v_curr_to:
 							v_found = True
 							break
@@ -520,7 +544,7 @@ def draw_graph(request, v_database):
 			if v_database.v_schema != v_curr_to_schema:
 				v_found = False
 
-				for k in range (len(v_nodes) - 1,0):
+				for k in range(len(v_nodes) - 1, -1, -1):
 					if v_nodes[k]['label'] == v_curr_to:
 						v_found = True
 						break
@@ -555,7 +579,10 @@ def start_edit_data(request, v_database):
 		'v_error_id': -1
 	}
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_table = json_object['p_table']
@@ -580,7 +607,7 @@ def start_edit_data(request, v_database):
 			v_columns = v_database.QueryTablesFields(v_table)
 
 		v_pk_cols = None
-		if v_pk != None and len(v_pk.Rows) > 0:
+		if v_pk is not None and len(v_pk.Rows) > 0:
 			if v_database.v_has_schema:
 				v_pk_cols = v_database.QueryTablesPrimaryKeysColumns(v_pk.Rows[0]['constraint_name'], v_table, False, v_schema)
 			else:
@@ -600,7 +627,7 @@ def start_edit_data(request, v_database):
 			v_col['v_column'] = v_column['column_name']
 			v_col['v_is_pk'] = False
 			# Finding corresponding PK column
-			if v_pk_cols != None:
+			if v_pk_cols is not None:
 				for v_pk_col in v_pk_cols.Rows:
 					if v_pk_col['column_name'].lower() == v_column['column_name'].lower():
 						v_col['v_is_pk'] = True
@@ -674,7 +701,10 @@ def get_completions(request, v_database):
 		'v_error_id': -1
 	}
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_database_index = json_object['p_database_index']
 	p_tab_id = json_object['p_tab_id']
 	p_prefix = json_object['p_prefix']
@@ -766,7 +796,10 @@ def get_completions_table(request, v_database):
 		'v_error_id': -1
 	}
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	p_database_index = json_object['p_database_index']
 	p_tab_id = json_object['p_tab_id']
 	p_table = json_object['p_table']
@@ -814,7 +847,10 @@ def indent_sql(request):
 		v_return['v_error_id'] = 1
 		return JsonResponse(v_return)
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_sql = json_object['p_sql']
 
 	v_session = request.session.get('omnidb_session')
@@ -840,7 +876,10 @@ def refresh_monitoring(request, v_database):
 		'v_error_id': -1
 	}
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_tab_id = json_object['p_tab_id']
 	v_sql = json_object['p_query']
 
@@ -865,7 +904,10 @@ def get_command_list(request):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_current_page = json_object['p_current_page']
 	v_database_index = json_object['p_database_index']
 	v_command_contains = json_object['p_command_contains']
@@ -948,7 +990,10 @@ def clear_command_list(request):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 
 	v_database_index = json_object['p_database_index']
 	v_command_contains = json_object['p_command_contains']
@@ -1002,7 +1047,10 @@ def get_console_history(request):
 
 	v_session = request.session.get('omnidb_session')
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_current_page = json_object['p_current_page']
 	v_database_index = json_object['p_database_index']
 	v_command_contains = json_object['p_command_contains']
@@ -1081,7 +1129,10 @@ def clear_console_list(request):
 	v_return['v_error'] = False
 	v_return['v_error_id'] = -1
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 
 	v_database_index = json_object['p_database_index']
 	v_command_contains = json_object['p_console_contains']
@@ -1137,8 +1188,8 @@ def get_alias(p_sql,p_pos,p_val):
 								return item.get_real_name()
 							else:
 								return item.tokens[0].value + '.' + item.tokens[2].value
-					except:
-						None
+					except Exception:
+						pass
 
 	except Exception as exc:
 		return None
@@ -1155,7 +1206,10 @@ def get_autocomplete_results(request, v_database):
 		'v_error_id': -1
 	}
 
-	json_object = json.loads(request.POST.get('data', None))
+	try:
+		json_object = _parse_post_data(request)
+	except (json.JSONDecodeError, ValueError):
+		return _bad_request()
 	v_database_index = json_object['p_database_index']
 	v_tab_id = json_object['p_tab_id']
 	v_sql = json_object['p_sql']

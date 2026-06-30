@@ -17,8 +17,8 @@ def cleanup_thread():
 			while to_be_removed:
 				conn = to_be_removed.pop(0)
 				conn.v_connection.Close()
-		except:
-			None
+		except Exception:
+			pass
 		for client in list(global_object):
 
 			# Client reached timeout
@@ -29,7 +29,7 @@ def cleanup_thread():
 					# Tab reached timeout
 					tab_timeout_reached = datetime.now() > global_object[client]['tab_list'][tab_id]['last_update'] + timedelta(0,3600)
 
-					if client_timeout_reached or tab_timeout_reached or global_object[client]['tab_list'][tab_id]['to_be_removed'] == True:
+					if client_timeout_reached or tab_timeout_reached or global_object[client]['tab_list'][tab_id]['to_be_removed']:
 						close_tab_handler(global_object[client],tab_id)
 				except Exception as exc:
 					None
@@ -66,11 +66,18 @@ def database_required(p_check_timeout = True, p_open_connection = True):
 
 			v_session = request.session.get('omnidb_session')
 
-			json_object = json.loads(request.POST.get('data', None))
+			try:
+				raw = request.POST.get('data', None)
+				if not raw:
+					raise json.JSONDecodeError('Missing POST data', '', 0)
+				json_object = json.loads(raw)
+			except (json.JSONDecodeError, ValueError):
+				v_return = {'v_data': 'Invalid or missing request data.', 'v_error': True, 'v_error_id': -1}
+				return JsonResponse(v_return)
 			v_database_index = json_object['p_database_index']
 			v_tab_id = json_object['p_tab_id']
 
-			if v_database_index != None:
+			if v_database_index is not None:
 				try:
 					if p_check_timeout:
 						#Check database prompt timeout
@@ -153,12 +160,12 @@ def clear_client_object(
 
 		try:
 			client_object['polling_lock'].release()
-		except:
-			None
+		except Exception:
+			pass
 		try:
 			client_object['returning_data_lock'].release()
-		except:
-			None
+		except Exception:
+			pass
 	except Exception as exc:
 		None
 
@@ -241,7 +248,7 @@ def get_database_tab_object(
 	p_tab_object['last_update'] = datetime.now()
 
 
-	if (p_tab_object['omnidatabase'] == None or
+	if (p_tab_object['omnidatabase'] is None or
 		(v_global_database_object.v_db_type!=p_tab_object['omnidatabase'].v_db_type or
 			v_global_database_object.v_connection.v_host!=p_tab_object['omnidatabase'].v_connection.v_host or
 			str(v_global_database_object.v_connection.v_port)!=str(p_tab_object['omnidatabase'].v_connection.v_port) or

@@ -32,50 +32,58 @@ function startTutorial(p_tutorial_name) {
 		v_omnis.omnis_ui_assistant.self_destruct();
 	}
 	// Disabling interactions with omnis.
-	v_omnis.div.classList.add('omnis--active');
+	v_omnis.div.classList.add("omnis--active");
 	// Instantiate the component.
 	v_omnis.omnis_ui_assistant = createOmnisUiAssistant({
-		p_callback_end: function(){
+		p_callback_end: function () {
 			// Configuring to delete the componente when it's no longer used.
 			delete v_omnis.omnis_ui_assistant;
 			// Enabling interactions with omnis.
-			v_omnis.div.classList.remove('omnis--active');
+			v_omnis.div.classList.remove("omnis--active");
 		},
 		// Omnis Object
-		p_omnis: v_omnis
+		p_omnis: v_omnis,
 	});
 	// Setting the tutorial to the default example tutorial `main`.
-	var v_tutorial_name = (p_tutorial_name) ? p_tutorial_name : 'main';
+	var v_tutorial_name = p_tutorial_name ? p_tutorial_name : "main";
 	var v_button_inner_query_attr = ' disabled title="Open a new connection first." ';
 	if (v_connTabControl.selectedTab.tag.tabControl) {
 		if (v_connTabControl.selectedTab.tag.tabControl.tabList.length > 0) {
-			v_button_inner_query_attr = '';
+			v_button_inner_query_attr = "";
 		}
 	}
 	var v_button_inner_query =
-	'<li class="mb-2">' +
-		`<button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connection_tab');">` +
-			'<i class="fas fa-list mr-2"></i>The Connection Tab' +
-		'</button>' +
-	'</li>';
+		'<li class="mb-2">' +
+		`<button ` +
+		v_button_inner_query_attr +
+		` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connection_tab');">` +
+		'<i class="fas fa-list mr-2"></i>The Connection Tab' +
+		"</button>" +
+		"</li>";
 	// Configuring the available tutorials.
 	var v_tutorials = {
-		'main': [
+		main: [
 			{
-				p_message: 'This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]',
-				p_target: document.getElementsByClassName('omnidb__tab-menu omnidb__tab-menu--primary')[0],
-				p_title: 'Primary menu'
+				p_message:
+					"This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]",
+				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+				p_title: "Primary menu",
 			},
 			{
-				p_message: 'This contains general settings and options, such as [ versioning, connections_list_manager, user_setting, plugins...]',
-				p_target: document.getElementsByClassName('omnidb__utilities-menu')[0],
-				p_title: 'Utilities menu'
-			}
+				p_message:
+					"This contains general settings and options, such as [ versioning, connections_list_manager, user_setting, plugins...]",
+				p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
+				p_title: "Utilities menu",
+			},
 		],
-		'utilities_menu': [
+		utilities_menu: [
 			{
-				p_callback_end: function() {$('.omnidb__utilities-menu').removeClass('omnidb__utilities-menu--show');},
-				p_callback_start: function() {$('.omnidb__utilities-menu').addClass('omnidb__utilities-menu--show');},
+				p_callback_end: function () {
+					$(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+				},
+				p_callback_start: function () {
+					$(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+				},
 				p_clone_target: true,
 				p_message: `
 				<p>Contains general settings and options:</p>
@@ -88,37 +96,45 @@ function startTutorial(p_tutorial_name) {
 				<li><i class="fas fa-sign-out-alt omnidb__theme__text--primary mr-2"></i>About.</li>
 				</ul>
 				`,
-				p_target: document.getElementsByClassName('omnidb__utilities-menu')[0],
-				p_title: 'Utilities Menu',
-				p_update_delay: 350
+				p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
+				p_title: "Utilities Menu",
+				p_update_delay: 350,
 			},
 			{
-				p_callback_end: function() {$('.omnidb__utilities-menu').removeClass('omnidb__utilities-menu--show');},
-				p_callback_start: function() {$('.omnidb__utilities-menu').addClass('omnidb__utilities-menu--show');},
+				p_callback_end: function () {
+					$(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+				},
+				p_callback_start: function () {
+					$(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+				},
 				p_clone_target: true,
 				p_message: `
 				<p>If you just configured OmniDB and logged with the default <strong>admin</strong> user, you should create the first user.</p>
 				<p>Follow this walkthrough if you want to create other users as well.</p>
 				`,
 				p_next_button: false,
-				p_target: document.getElementById('omnidb__utilities-menu__link-user'),
-				p_title: 'Managing Users'
+				p_target: document.getElementById("omnidb__utilities-menu__link-user"),
+				p_title: "Managing Users",
 			},
 			{
-				p_callback_after_update_start: function() {setTimeout(function(){
+				p_callback_after_update_start: function () {
+					setTimeout(function () {
 						if (v_omnis.omnis_ui_assistant.divClonedElement.children[0]) {
-							v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove('ml-2');
+							v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
 						}
-					},50);
+					}, 50);
 				},
 				p_clone_target: true,
 				p_message: `
 				<p>Click on <strong>Add new user</strong>.</p>
 				`,
 				p_next_button: false,
-				p_target: function() {var v_target = document.getElementById('omnidb_utilities_menu_btn_new_user'); return v_target},
-				p_title: 'Add a New User',
-				p_update_delay: 1000
+				p_target: function () {
+					var v_target = document.getElementById("omnidb_utilities_menu_btn_new_user");
+					return v_target;
+				},
+				p_title: "Add a New User",
+				p_update_delay: 1000,
 			},
 			{
 				p_message: `
@@ -129,12 +145,15 @@ function startTutorial(p_tutorial_name) {
 				</ul>
 				<div class="alert alert-danger">The default <strong>admin user</strong> should be deleted once a new super user has been created.</div>
 				`,
-				p_target: function() {var v_target = document.getElementById('omnidb_user_content'); return v_target},
-				p_title: 'User Options',
-				p_update_delay: 350
-			}
+				p_target: function () {
+					var v_target = document.getElementById("omnidb_user_content");
+					return v_target;
+				},
+				p_title: "User Options",
+				p_update_delay: 350,
+			},
 		],
-		'connections_menu': [
+		connections_menu: [
 			{
 				p_clone_target: true,
 				p_message: `
@@ -149,28 +168,41 @@ function startTutorial(p_tutorial_name) {
 				<p>Let's first <span class="badge badge-info">add a new connection</span>.</p>
 				<p>Please, click on the <i class="fas fa-plus"></i> button.</p>
 				`,
-				p_target: document.getElementsByClassName('omnidb__tab-menu omnidb__tab-menu--primary')[0],
-				p_title: 'Primary menu'
+				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+				p_title: "Primary menu",
 			},
 			{
-				p_callback_after_update_start: function() {setTimeout(function(){var v_target = document.getElementById('button_new_connection'); v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove('ml-2');},50);},
-				p_callback_start: function() {startConnectionManagement();},
+				p_callback_after_update_start: function () {
+					setTimeout(function () {
+						var v_target = document.getElementById("button_new_connection");
+						v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+					}, 50);
+				},
+				p_callback_start: function () {
+					startConnectionManagement();
+				},
 				p_clone_target: true,
 				p_message: `
 				<p>Click on <strong>New Connection</strong>.</p>
 				`,
 				p_next_button: false,
-				p_target: function() {var v_target = document.getElementById('button_new_connection'); return v_target},
-				p_title: 'Add a New Connection',
-				p_update_delay: 1000
+				p_target: function () {
+					var v_target = document.getElementById("button_new_connection");
+					return v_target;
+				},
+				p_title: "Add a New Connection",
+				p_update_delay: 1000,
 			},
 			{
 				p_message: `
 				<p>Select the proper DBMS technology.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_type'); return v_target},
-				p_title: 'Connection Type',
-				p_update_delay: 300
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_type");
+					return v_target;
+				},
+				p_title: "Connection Type",
+				p_update_delay: 300,
 			},
 			{
 				p_message: `
@@ -178,40 +210,55 @@ function startTutorial(p_tutorial_name) {
 				<p>This is used as name reference on many UI areas.</p>
 				<p>i.e: Local dvdrental barman.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_title'); return v_target},
-				p_title: 'Title'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_title");
+					return v_target;
+				},
+				p_title: "Title",
 			},
 			{
 				p_message: `
 				<p>Type the server address. Do not include ports.</p>
 				<p>i.e:127.0.0.1</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_server'); return v_target},
-				p_title: 'Server'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_server");
+					return v_target;
+				},
+				p_title: "Server",
 			},
 			{
 				p_message: `
 				<p>Type the port of the server.</p>
 				<p>i.e: PostgreSQL uses 5432 by default, but if you are using pgbouncer, you may want to use 6432 as the entry point.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_port'); return v_target},
-				p_title: 'Port'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_port");
+					return v_target;
+				},
+				p_title: "Port",
 			},
 			{
 				p_message: `
 				<p>Type the name of the database.</p>
 				<p>i.e: postgres, dvdrental.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_database'); return v_target},
-				p_title: 'Database'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_database");
+					return v_target;
+				},
+				p_title: "Database",
 			},
 			{
 				p_message: `
 				<p>Type the name of the user with priviledges to access the database.</p>
 				<p>i.e: postgres.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_user'); return v_target},
-				p_title: 'User'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_user");
+					return v_target;
+				},
+				p_title: "User",
 			},
 			{
 				p_message: `
@@ -219,47 +266,66 @@ function startTutorial(p_tutorial_name) {
 				<p>If you don't save the user password, you will be required to manually input it everytime a new connection to this database is started.</p>
 				<p>If saved, this password will be stored in the database configured for OmniDB (default is omnidb.db).</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_user_pass'); return v_target},
-				p_title: 'User password'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_user_pass");
+					return v_target;
+				},
+				p_title: "User password",
 			},
 			{
 				p_message: `
 				<p>You may want to hit 'test' before saving the conntion.</p>
 				<p>After that, click save.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_button_test_connection'); return v_target},
-				p_title: 'Test the Connection'
-			}
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_button_test_connection");
+					return v_target;
+				},
+				p_title: "Test the Connection",
+			},
 		],
-		'terminal_connection': [
+		terminal_connection: [
 			{
 				p_clone_target: true,
 				p_message: `
 				<p>First let's open the <strong>connections management</strong> interface.</p>
 				<p>Please, click on the OmniDB Icon button.</p>
 				`,
-				p_target: document.getElementsByClassName('omnidb__tab-menu omnidb__tab-menu--primary')[0],
-				p_title: 'Accessing connections managemnet'
+				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+				p_title: "Accessing connections managemnet",
 			},
 			{
-				p_callback_after_update_start: function() {setTimeout(function(){var v_target = document.getElementById('button_new_connection'); v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove('ml-2');},50);},
-				p_callback_start: function() {startConnectionManagement();},
+				p_callback_after_update_start: function () {
+					setTimeout(function () {
+						var v_target = document.getElementById("button_new_connection");
+						v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+					}, 50);
+				},
+				p_callback_start: function () {
+					startConnectionManagement();
+				},
 				p_clone_target: true,
 				p_message: `
 				<p>Click on <strong>New Connection</strong>.</p>
 				`,
 				p_next_button: false,
-				p_target: function() {var v_target = document.getElementById('button_new_connection'); return v_target},
-				p_title: 'Add a New Connection',
-				p_update_delay: 1000
+				p_target: function () {
+					var v_target = document.getElementById("button_new_connection");
+					return v_target;
+				},
+				p_title: "Add a New Connection",
+				p_update_delay: 1000,
 			},
 			{
 				p_message: `
 				<p>Select the Terminal technology.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_type'); return v_target},
-				p_title: 'Connection Type',
-				p_update_delay: 300
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_type");
+					return v_target;
+				},
+				p_title: "Connection Type",
+				p_update_delay: 300,
 			},
 			{
 				p_message: `
@@ -267,40 +333,55 @@ function startTutorial(p_tutorial_name) {
 				<p>This is used as name reference on many UI areas.</p>
 				<p>i.e: Local terminal.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_title'); return v_target},
-				p_title: 'Title'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_title");
+					return v_target;
+				},
+				p_title: "Title",
 			},
 			{
 				p_message: `
 				<p>The terminal utilizes SSH technology.</p>
 				<p>As you can see, in this case SSH parameters are mandatory.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_use_tunnel'); return v_target},
-				p_title: 'SSH parameters'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_use_tunnel");
+					return v_target;
+				},
+				p_title: "SSH parameters",
 			},
 			{
 				p_message: `
 				<p>Type the ssh server address. Do not include ports.</p>
 				<p>i.e:127.0.0.1</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_ssh_server'); return v_target},
-				p_title: 'SSH server'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_ssh_server");
+					return v_target;
+				},
+				p_title: "SSH server",
 			},
 			{
 				p_message: `
 				<p>Type the port of the SSH server.</p>
 				<p>i.e: 22 is a default port for working with SSH tunnels.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_ssh_port'); return v_target},
-				p_title: 'SSH Port'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_ssh_port");
+					return v_target;
+				},
+				p_title: "SSH Port",
 			},
 			{
 				p_message: `
 				<p>Type the name of the SSH user.</p>
 				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_ssh_user'); return v_target},
-				p_title: 'SSH User'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_ssh_user");
+					return v_target;
+				},
+				p_title: "SSH User",
 			},
 			{
 				p_message: `
@@ -308,39 +389,50 @@ function startTutorial(p_tutorial_name) {
 				<p>* Leaving this empty will force the tool to request for your password everytime you open a terminal connection.</p>
 				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_ssh_password'); return v_target},
-				p_title: 'SSH Password (optional)'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_ssh_password");
+					return v_target;
+				},
+				p_title: "SSH Password (optional)",
 			},
 			{
 				p_message: `
 				<p>This is <strong>optional</strong>.</p>
 				<p>It allows you to configure a SSH key.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_ssh_key_input_label'); return v_target},
-				p_title: 'SSH Key'
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_ssh_key_input_label");
+					return v_target;
+				},
+				p_title: "SSH Key",
 			},
 			{
 				p_message: `
 				<p>You may want to hit 'test' before saving the conntion.</p>
 				<p>After that, click save.</p>
 				`,
-				p_target: function() {var v_target = document.getElementById('conn_form_button_test_connection'); return v_target},
-				p_title: 'Test the Connection'
-			}
+				p_target: function () {
+					var v_target = document.getElementById("conn_form_button_test_connection");
+					return v_target;
+				},
+				p_title: "Test the Connection",
+			},
 		],
-		'snippets': [
+		snippets: [
 			{
 				p_clone_target: true,
 				p_message: `
 				<p>The snippet panel is now accessible globally.</p>
 				<p>Please, click on the <i class="fas fa-book"></i> button.</p>
 				`,
-				p_target: document.getElementsByClassName('omnidb__tab-menu omnidb__tab-menu--primary')[0],
-				p_title: 'Global Snippet Panel'
+				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+				p_title: "Global Snippet Panel",
 			},
 			{
 				// p_callback_after_update_start: function() {setTimeout(function(){var v_target = document.getElementById(v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editorDivId);},50);},
-				p_callback_start: function() {toggleSnippetPanel();},
+				p_callback_start: function () {
+					toggleSnippetPanel();
+				},
 				p_message: `
 				<p>Inside this tab you can create and edit a snippet.</p>
 				<p>Go ahead and try to create some simple snippet, i.e:</p>
@@ -348,9 +440,12 @@ function startTutorial(p_tutorial_name) {
 				<p>Then experiment clicking on the <strong>indent button</strong> below the editor, and then <strong>next</strong>.</p>
 				`,
 				p_next_button: true,
-				p_target: function() {var v_target = document.getElementById('a_' + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id); return v_target},
-				p_title: 'Snippets editor',
-				p_update_delay: 600
+				p_target: function () {
+					var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
+					return v_target;
+				},
+				p_title: "Snippets editor",
+				p_update_delay: 600,
 			},
 			{
 				p_message: `
@@ -358,8 +453,11 @@ function startTutorial(p_tutorial_name) {
 				<p>Now go ahead and click <strong>save</strong></p>
 				`,
 				p_next_button: true,
-				p_target: function() {var v_target = document.getElementById('a_' + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id); return v_target},
-				p_title: 'Indenting'
+				p_target: function () {
+					var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
+					return v_target;
+				},
+				p_title: "Indenting",
 			},
 			{
 				p_message: `
@@ -367,12 +465,15 @@ function startTutorial(p_tutorial_name) {
 				<p>The tree on the left allows you to easily access it by double-clicking on the snippet.</p>
 				`,
 				p_next_button: false,
-				p_target: function() {var v_target = document.getElementById(v_connTabControl.snippet_tag.divTree.getAttribute('id')); return v_target},
-				p_title: 'Saved Snippets',
-				p_update_delay: 600
-			}
+				p_target: function () {
+					var v_target = document.getElementById(v_connTabControl.snippet_tag.divTree.getAttribute("id"));
+					return v_target;
+				},
+				p_title: "Saved Snippets",
+				p_update_delay: 600,
+			},
 		],
-		'selecting_connection': [
+		selecting_connection: [
 			{
 				p_message: `
 				<p>The <strong>outer_tab</strong> contains global panels related to workspace and also access to created connections.</p>
@@ -389,18 +490,27 @@ function startTutorial(p_tutorial_name) {
 				</ol>
 				<p>Now you can close this walkthrough and open a new connection.</p>
 				`,
-				p_position: function() {var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA; return {x:v_target.getBoundingClientRect().x + 40,y:v_target.getBoundingClientRect().y}},
-				p_target: function(){var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA; return v_target;},
-				p_title: 'Selecting a Connection'
-			}
+				p_position: function () {
+					var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
+					return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
+				},
+				p_target: function () {
+					var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
+					return v_target;
+				},
+				p_title: "Selecting a Connection",
+			},
 		],
-		'connection_tab': [
+		connection_tab: [
 			{
 				p_message: `
 				<p>This identifies the database you are connected with:</p>
 				`,
-				p_target: function(){var v_target = v_connTabControl.selectedTab.tag.divDetails; return v_target;},
-				p_title: 'Current Connection'
+				p_target: function () {
+					var v_target = v_connTabControl.selectedTab.tag.divDetails;
+					return v_target;
+				},
+				p_title: "Current Connection",
 			},
 			{
 				p_message: `
@@ -415,8 +525,11 @@ function startTutorial(p_tutorial_name) {
 					</li>
 				</ul>
 				`,
-				p_target: function(){var v_target = v_connTabControl.selectedTab.tag.divTree; return v_target;},
-				p_title: 'Aimara Tree'
+				p_target: function () {
+					var v_target = v_connTabControl.selectedTab.tag.divTree;
+					return v_target;
+				},
+				p_title: "Aimara Tree",
 			},
 			{
 				p_message: `
@@ -425,8 +538,11 @@ function startTutorial(p_tutorial_name) {
 				<p>To minimize queries, these only run when one of these tabs is visible.</p>
 				<p><strong>Recommendation</strong>: Only open the property/ddl when you need to update this info.</p>
 				`,
-				p_target: function(){var v_target = v_connTabControl.selectedTab.tag.divTreeTabs; return v_target;},
-				p_title: 'Properties / DDL'
+				p_target: function () {
+					var v_target = v_connTabControl.selectedTab.tag.divTreeTabs;
+					return v_target;
+				},
+				p_title: "Properties / DDL",
 			},
 			{
 				p_message: `
@@ -441,8 +557,11 @@ function startTutorial(p_tutorial_name) {
 				</ol>
 				<div class="alert-info p-2">Keep in mind that when you run a query from the contextual menu of the Aimara Tree, it will open a new query tab and execute it.</div>
 				`,
-				p_target: function(){var v_target = v_connTabControl.selectedTab.tag.tabControl.tabList[0].elementA; return v_target;},
-				p_title: 'Inner Tabs'
+				p_target: function () {
+					var v_target = v_connTabControl.selectedTab.tag.tabControl.tabList[0].elementA;
+					return v_target;
+				},
+				p_title: "Inner Tabs",
 			},
 			{
 				p_message: `
@@ -450,9 +569,19 @@ function startTutorial(p_tutorial_name) {
 				<p>For example, you can <span class="bg-info rounded px-1 text-white">run</span> a query, <span class="bg-info rounded px-1 text-white">cancel</span> an ongoing query, <span class="bg-info rounded px-1 text-white">fetch more</span>, <span class="bg-info rounded px-1 text-white">explain</span>, <span class="bg-info rounded px-1 text-white">explain analyze</span>.</p>
 				<p>If you navigate the Tree on the left to find a table and use the action Query Table from it's context menu, the editor will autofill and the run query will be issued.</p>
 				`,
-				p_position: function() {var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find('.omnidb__tab-actions')[0]; return {x:v_target.getBoundingClientRect().x + 40,y:v_target.getBoundingClientRect().y}},
-				p_target: function(){var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find('.omnidb__tab-actions')[0]; return v_target;},
-				p_title: 'Actions Panel'
+				p_position: function () {
+					var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+						".omnidb__tab-actions",
+					)[0];
+					return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
+				},
+				p_target: function () {
+					var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+						".omnidb__tab-actions",
+					)[0];
+					return v_target;
+				},
+				p_title: "Actions Panel",
 			},
 			{
 				p_message: `
@@ -470,16 +599,24 @@ function startTutorial(p_tutorial_name) {
 					</li>
 				</ol>
 				`,
-				p_position: function() {var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result; return {x:v_target.getBoundingClientRect().x + 40,y:v_target.getBoundingClientRect().y + 40}},
-				p_target: function(){var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.divResult).find('.omnidb__tab-actions')[0]; return v_target;},
-				p_title: 'Query Result'
-			}
-		]
-	}
+				p_position: function () {
+					var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+					return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y + 40 };
+				},
+				p_target: function () {
+					var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.divResult).find(
+						".omnidb__tab-actions",
+					)[0];
+					return v_target;
+				},
+				p_title: "Query Result",
+			},
+		],
+	};
 	// Configuring tutorial getting started, changes based on gv_desktopMode
-	let v_tutorial_link_creating_user = (gv_desktopMode)
-	? ''
-	: `
+	let v_tutorial_link_creating_user = gv_desktopMode
+		? ""
+		: `
 	<li class="mb-2">
 		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('utilities_menu');">
 			<i class="fas fa-user-plus mr-2"></i>Create an omnidb user
@@ -488,7 +625,7 @@ function startTutorial(p_tutorial_name) {
 	v_tutorials.getting_started = [
 		{
 			p_message:
-			'<ol style="padding-left: 1.5rem;">' +
+				'<ol style="padding-left: 1.5rem;">' +
 				v_tutorial_link_creating_user +
 				`
 				<li class="mb-2">
@@ -513,9 +650,9 @@ function startTutorial(p_tutorial_name) {
 				</li>
 				` +
 				v_button_inner_query +
-			'</ol>',
-			p_title: '<i class="fas fa-list mr-2"></i> Getting started'
-		}
+				"</ol>",
+			p_title: '<i class="fas fa-list mr-2"></i> Getting started',
+		},
 	];
 
 	// Selecting a tutorial
