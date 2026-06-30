@@ -6,8 +6,8 @@ APP_NAME = OmniDB
 SERVER_DIR = OmniDB
 BUNDLE_ID = net.omnidb
 APP_DISPLAY_NAME = OmniDB
-NWJS_VERSION = v0.111.1
-VERSION := $(shell cat VERSION | tr -d '\n')
+NWJS_VERSION = v0.112.0
+VERSION := $(shell cat VERSION | tr -d '\r\n')
 
 # --- Platform Defaults (can be overridden by targets) ---
 NWJS_ARCH = osx-arm64
