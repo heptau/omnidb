@@ -78,10 +78,21 @@ try:
 except ImportError:
 	pass
 try:
-	import cx_Oracle
+	import oracledb
+	# Compatibility shim: oracledb is the official cx_Oracle replacement (Oracle 2022+)
+	oracledb.NUMBER = oracledb.DB_TYPE_NUMBER
+	oracledb.CLOB = oracledb.DB_TYPE_CLOB
+	oracledb.BLOB = oracledb.DB_TYPE_BLOB
+	oracledb.LONG_STRING = str
+	oracledb.LONG_BINARY = bytes
+	cx_Oracle = oracledb
 	v_supported_rdbms.append('Oracle')
 except ImportError:
-	pass
+	try:
+		import cx_Oracle
+		v_supported_rdbms.append('Oracle')
+	except ImportError:
+		pass
 try:
 	import pymssql
 	v_supported_rdbms.append('MSSQL')

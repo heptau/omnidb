@@ -75,9 +75,7 @@ jobs:
 
       - name: Install Python dependencies
         shell: bash
-        run: |
-          pip install --upgrade setuptools
-          pip install -r requirements.txt pyinstaller
+        run: pip install -r requirements.txt pyinstaller
 
       - name: Build
         shell: bash

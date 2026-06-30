@@ -10,7 +10,7 @@ sshtunnel
 psycopg2-binary>=2.9.12
 psycopg[binary]
 RestrictedPython
-cx_Oracle
+oracledb
 PyMySQL
 sqlparse
 pgspecial>=1.11.1
