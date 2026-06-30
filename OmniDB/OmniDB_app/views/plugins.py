@@ -45,7 +45,10 @@ def load_plugin(plugin_folder, p_load):
 	if plugin_folder[0]=='.':
 		return
 
-	complete_plugin_folder = join(settings.HOME_DIR,'plugins',plugin_folder)
+	plugins_root = os.path.realpath(join(settings.HOME_DIR, 'plugins'))
+	complete_plugin_folder = os.path.realpath(join(plugins_root, plugin_folder))
+	if not complete_plugin_folder.startswith(plugins_root + os.sep):
+		return
 
 	if isfile(join(complete_plugin_folder,'backend','plugin.conf')):
 		conf_exists = True
@@ -355,7 +358,8 @@ def handle_uploaded_file(f):
 
 	makedirs(v_dir_name)
 
-	v_file = join(v_dir_name,f.name)
+	safe_filename = os.path.basename(f.name)
+	v_file = join(v_dir_name, safe_filename)
 
 	with open(v_file, 'wb+') as destination:
 		for chunk in f.chunks():
@@ -373,6 +377,8 @@ def handle_uploaded_file(f):
 	v_plugin_folder_name = ''
 	plugin_dir_name = ''
 
+	safe_plugin_name = os.path.basename(os.path.splitext(safe_filename)[0])
+
 	# Old format
 	if v_has_plugins_folder:
 
@@ -383,7 +389,7 @@ def handle_uploaded_file(f):
 				'v_message': '''Package doesn't have the static/plugins directory.'''
 			}
 		else:
-			plugin_dir_name = os.path.splitext(f.name)[0]
+			plugin_dir_name = safe_plugin_name
 			v_plugin_folder_name = plugin_dir_name
 			makedirs(join(settings.HOME_DIR,'plugins',plugin_dir_name))
 
@@ -444,7 +450,7 @@ def handle_uploaded_file(f):
 				'v_message': '''Package doesn't have the frontend directory.'''
 			}
 		else:
-			plugin_dir_name = os.path.splitext(f.name)[0]
+			plugin_dir_name = safe_plugin_name
 			makedirs(join(settings.HOME_DIR,'plugins',plugin_dir_name))
 			try:
 				files = listdir(join(v_dir_name,'backend'))

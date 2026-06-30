@@ -276,7 +276,7 @@ def test_connection(request):
 
 		client = paramiko.SSHClient()
 		client.load_system_host_keys()
-		client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+		client.set_missing_host_key_policy(paramiko.WarningPolicy())
 
 		v_key_file = None
 		try:

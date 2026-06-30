@@ -13439,7 +13439,7 @@ FROM #table_name#
 			'''.format(
 				p_role,
 				'md5{0}'.format(
-					hashlib.md5(p_password.encode('utf-8') + p_role.encode('utf-8')).hexdigest()
+					hashlib.md5(p_password.encode('utf-8') + p_role.encode('utf-8')).hexdigest()  # noqa: S324 — PostgreSQL md5 auth protocol format
 				)
 			)
 		)
