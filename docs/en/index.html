@@ -12,14 +12,84 @@
 	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
 
 	<link rel="stylesheet" href="style.css">
+
+	<!-- Canonical & crawling -->
+	<link rel="canonical" href="https://www.omnidb.net/en/">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://www.omnidb.net/en/">
+	<meta property="og:title" content="OmniDB | Open Source Database Management Tool Revival">
+	<meta property="og:description" content="OmniDB is being actively revived — lightweight, fast, and open-source database management. PostgreSQL-focused, NW.js-based desktop app for macOS, Linux, and Windows.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:site_name" content="OmniDB">
+	<meta property="og:locale" content="en_US">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="OmniDB | Open Source Database Management Tool Revival">
+	<meta name="twitter:description" content="Lightweight, fast, and open-source database management. PostgreSQL-focused, NW.js-based desktop app.">
+	<meta name="twitter:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
+
+	<!-- LLM / AI discovery -->
 	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
 	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<!-- JSON-LD structured data -->
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "OmniDB",
+		"applicationCategory": "DeveloperApplication",
+		"operatingSystem": "macOS, Linux, Windows",
+		"description": "Revived open-source database management tool. Lightweight, PostgreSQL-focused, NW.js-based desktop application with support for MySQL, Oracle, MariaDB, and SQLite.",
+		"url": "https://www.omnidb.net",
+		"downloadUrl": "https://github.com/heptau/omnidb/releases",
+		"softwareVersion": "3.2.1",
+		"license": "https://opensource.org/licenses/MIT",
+		"screenshot": "https://www.omnidb.net/assets/dashboard.png",
+		"featureList": [
+			"PostgreSQL management",
+			"MySQL / MariaDB support",
+			"Oracle support",
+			"SQLite support",
+			"SQL editor with autocomplete",
+			"Query plan visualization",
+			"Monitoring dashboard",
+			"PL/pgSQL debugger",
+			"SSH tunneling"
+		],
+		"author": {
+			"@type": "Person",
+			"name": "Zbyněk Vanžura",
+			"url": "https://www.pgarachne.com"
+		},
+		"maintainer": {
+			"@type": "Organization",
+			"name": "heptau",
+			"url": "https://github.com/heptau"
+		},
+		"codeRepository": "https://github.com/heptau/omnidb",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		}
+	}
+	</script>
 </head>
 <body>
 
 	<header>
 		<div class="logo-wrapper">
-			<img src="logo.webp"alt="OmniDB Logo" class="logo">
+			<img src="logo.webp" alt="OmniDB Logo" class="logo" width="400" height="73">
 		</div>
 	</header>
 
@@ -48,7 +118,7 @@
 				<pre><code class="install-command">brew install --cask heptau/tap/omnidb</code></pre>
 			</div>
 			<p class="docs-link">
-				Full installation instructions: <a href="/en/docs/02_installation.html">→ Detailed Installation Guide</a>
+				Full installation instructions: <a href="docs/02_installation.html">→ Detailed Installation Guide</a>
 			</p>
 			<p class="small-note">
 				<small>Older versions (up to ~2020) from the original repository are no longer maintained.</small>
@@ -77,7 +147,7 @@
 		</section>
 
 		<div class="button-group">
-			<a href="/en/docs/01_introduction.html" class="btn btn-outline">Read Docs</a>
+			<a href="docs/01_introduction.html" class="btn btn-outline">Read Docs</a>
 
 			<a href="https://github.com/heptau/omnidb/releases" class="btn btn-outline" target="_blank">Downloads</a>
 

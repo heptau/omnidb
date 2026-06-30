@@ -1,5 +1,5 @@
 # Security Policy for OmniDB
-Contact: mailto:security@onnidb.net
+Contact: mailto:security@omnidb.net
 Expires: 2027-06-25T08:00:00.000Z
 Preferred-Languages: en, cs, sk
 Canonical: https://www.omnidb.net/.well-known/security.txt

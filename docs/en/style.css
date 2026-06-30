@@ -129,6 +129,17 @@ h2 {
 	border-bottom: 2px solid var(--light-blue);
 }
 
+.docs-link a {
+	color: var(--dark-blue);
+	font-weight: 600;
+	text-decoration: none;
+	border-bottom: 2px solid var(--light-blue);
+}
+
+.docs-link a:hover {
+	opacity: 0.8;
+}
+
 /* Features Grid */
 .features-grid {
 	display: grid;

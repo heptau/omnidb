@@ -1,32 +1,172 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-   <url>
-      <loc>https://www.omnidb.net/en/index.html</loc>
-      <lastmod>2026-01-26</lastmod>
-      <priority>1.00</priority>
-   </url>
 
-   <url><loc>https://www.omnidb.net/en/docs/01_introduction.html</loc><priority>0.80</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/02_installation.html</loc><priority>0.80</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/03_creating_users_and_connections.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/04_managing_databases.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/05_creating_changing_and_removing_tables.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/06_managing_table_data.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/07_writing_sql_queries.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/08_visualizing_query_plans.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/09_visualizing_data.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/10_managing_other_elements.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/11_additional_features.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/12_omnidb_config_tool.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/13_writing_and_debugging_plpgsql_functions.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/14_monitoring_dashboard.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/15_logical_replication.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/16_pglogical.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/17_postgres-bdr.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/18_postgres-xl.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/19_deploying_omnidb-server.html</loc><priority>0.70</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/20_console_tab.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/21_plugin_system.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/22_advanced_object_search.html</loc><priority>0.60</priority></url>
-   <url><loc>https://www.omnidb.net/en/docs/23_debugger_plugin_installation.html</loc><priority>0.60</priority></url>
+  <url>
+    <loc>https://www.omnidb.net/en/</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>1.00</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/01_introduction.html</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/02_installation.html</loc>
+    <lastmod>2026-06-30</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.80</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/03_creating_users_and_connections.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/04_managing_databases.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/05_creating_changing_and_removing_tables.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/06_managing_table_data.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/07_writing_sql_queries.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/08_visualizing_query_plans.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/09_visualizing_data.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/10_managing_other_elements.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/11_additional_features.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/12_omnidb_config_tool.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/13_writing_and_debugging_plpgsql_functions.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/14_monitoring_dashboard.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/15_logical_replication.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/16_pglogical.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/17_postgres-bdr.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/18_postgres-xl.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/19_deploying_omnidb-server.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.70</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/20_console_tab.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/21_plugin_system.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/22_advanced_object_search.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
+  <url>
+    <loc>https://www.omnidb.net/en/docs/23_debugger_plugin_installation.html</loc>
+    <lastmod>2026-01-26</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
 </urlset>
