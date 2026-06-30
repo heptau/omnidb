@@ -441,7 +441,7 @@ def check_port(port):
 	s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 	s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR, 1)
 	try:
-		s.bind(("127.0.0.1", port))
+		s.bind(("127.0.0.1", port))  # lgtm[py/bind-socket-all-network-interfaces] - loopback only
 	except socket.error as e:
 		print(str(e))
 		return False

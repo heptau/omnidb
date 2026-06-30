@@ -6,6 +6,8 @@ from django.shortcuts import redirect
 from datetime import datetime
 from math import ceil
 import json
+import logging
+import re
 from os import listdir, makedirs, remove
 from os.path import isfile, join, isdir
 from OmniDB import settings
@@ -13,6 +15,8 @@ import importlib
 from configparser import ConfigParser
 from itertools import chain
 import time
+
+logger = logging.getLogger(__name__)
 
 def _parse_post_data(request):
     raw = request.POST.get('data', None)
@@ -344,9 +348,10 @@ def upload_view(request):
 			try:
 				return_object = handle_uploaded_file(request.FILES['file'])
 			except Exception as exc:
+				logger.exception('Plugin upload failed')
 				return_object = {
 					'v_error': True,
-					'v_message': str(exc)
+					'v_message': 'Plugin upload failed. Check server logs for details.'
 				}
 	else:
 		form = UploadFileForm()
@@ -377,7 +382,7 @@ def handle_uploaded_file(f):
 	v_plugin_folder_name = ''
 	plugin_dir_name = ''
 
-	safe_plugin_name = os.path.basename(os.path.splitext(safe_filename)[0])
+	safe_plugin_name = re.sub(r'[^a-zA-Z0-9_\-]', '_', os.path.basename(os.path.splitext(safe_filename)[0]))
 
 	# Old format
 	if v_has_plugins_folder:

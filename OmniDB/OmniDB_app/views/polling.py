@@ -278,7 +278,7 @@ def create_request(request):
 
 					client = paramiko.SSHClient()
 					client.load_system_host_keys()
-					client.set_missing_host_key_policy(paramiko.WarningPolicy())
+					client.set_missing_host_key_policy(paramiko.RejectPolicy())
 
 					#ssh key provided
 					if v_conn_object['tunnel']['key'].strip() != '':

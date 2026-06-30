@@ -276,7 +276,7 @@ def test_connection(request):
 
 		client = paramiko.SSHClient()
 		client.load_system_host_keys()
-		client.set_missing_host_key_policy(paramiko.WarningPolicy())
+		client.set_missing_host_key_policy(paramiko.RejectPolicy())
 
 		v_key_file = None
 		try:
@@ -293,6 +293,13 @@ def test_connection(request):
 
 			client.close()
 			v_return['v_data'] = 'Connection successful.'
+		except paramiko.ssh_exception.SSHException as exc:
+			msg = str(exc)
+			if 'not found in known_hosts' in msg or 'Server .* not found' in msg:
+				v_return['v_data'] = 'SSH host key not in known_hosts. Run: ssh {server} to accept the key first.'.format(server=json_object['tunnel']['server'])
+			else:
+				v_return['v_data'] = msg
+			v_return['v_error'] = True
 		except Exception as exc:
 			v_return['v_data'] = str(exc)
 			v_return['v_error'] = True
