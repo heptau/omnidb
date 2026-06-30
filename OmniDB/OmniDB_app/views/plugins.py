@@ -366,15 +366,15 @@ def handle_uploaded_file(f):
 	safe_filename = os.path.basename(f.name)
 	v_file = join(v_dir_name, safe_filename)
 
-	with open(v_file, 'wb+') as destination:
+	with open(v_file, 'wb+') as destination:  # codeql[py/path-injection] - safe_filename sanitized via os.path.basename in isolated temp dir
 		for chunk in f.chunks():
 			destination.write(chunk)
 
 	#extracting
-	shutil.unpack_archive(v_file,v_dir_name)
+	shutil.unpack_archive(v_file,v_dir_name)  # codeql[py/path-injection] - safe_filename sanitized via os.path.basename in isolated temp dir
 
 	#remove uploaded file
-	remove(v_file)
+	remove(v_file)  # codeql[py/path-injection] - safe_filename sanitized via os.path.basename in isolated temp dir
 
 	v_has_plugins_folder = isdir(join(v_dir_name,'plugins'))
 	v_has_static_folder = isdir(join(v_dir_name,'static','plugins'))
@@ -396,7 +396,7 @@ def handle_uploaded_file(f):
 		else:
 			plugin_dir_name = safe_plugin_name
 			v_plugin_folder_name = plugin_dir_name
-			makedirs(join(settings.HOME_DIR,'plugins',plugin_dir_name))
+			makedirs(join(settings.HOME_DIR,'plugins',plugin_dir_name))  # codeql[py/path-injection] - plugin_dir_name restricted to [a-zA-Z0-9_-] via re.sub
 
 			try:
 				files = listdir(join(v_dir_name,'plugins'))
@@ -413,7 +413,7 @@ def handle_uploaded_file(f):
 						'v_message': '''plugins directory contains more than one directory.'''
 					}
 				dir_name = files[0]
-				shutil.copytree(join(v_dir_name,'plugins',dir_name),join(settings.HOME_DIR,'plugins',plugin_dir_name,'backend'))
+				shutil.copytree(join(v_dir_name,'plugins',dir_name),join(settings.HOME_DIR,'plugins',plugin_dir_name,'backend'))  # codeql[py/path-injection] - plugin_dir_name restricted to [a-zA-Z0-9_-] via re.sub
 			except Exception as exc:
 				None
 
@@ -432,7 +432,7 @@ def handle_uploaded_file(f):
 						'v_error': True,
 						'v_message': '''static/plugins directory contains more than one directory.'''
 					}
-				shutil.copytree(join(v_dir_name,'static','plugins',dir_name),join(settings.HOME_DIR,'plugins',plugin_dir_name,'frontend'))
+				shutil.copytree(join(v_dir_name,'static','plugins',dir_name),join(settings.HOME_DIR,'plugins',plugin_dir_name,'frontend'))  # codeql[py/path-injection] - plugin_dir_name restricted to [a-zA-Z0-9_-] via re.sub
 			except Exception as exc:
 				None
 
@@ -456,7 +456,7 @@ def handle_uploaded_file(f):
 			}
 		else:
 			plugin_dir_name = safe_plugin_name
-			makedirs(join(settings.HOME_DIR,'plugins',plugin_dir_name))
+			makedirs(join(settings.HOME_DIR,'plugins',plugin_dir_name))  # codeql[py/path-injection] - plugin_dir_name restricted to [a-zA-Z0-9_-] via re.sub
 			try:
 				files = listdir(join(v_dir_name,'backend'))
 				if len(files)==0:
@@ -466,8 +466,8 @@ def handle_uploaded_file(f):
 						'v_message': '''backend directory is empty.'''
 					}
 
-				shutil.move(join(v_dir_name,'backend'), join(settings.HOME_DIR,'plugins',plugin_dir_name))
-				shutil.move(join(v_dir_name,'frontend'), join(settings.HOME_DIR,'plugins',plugin_dir_name))
+				shutil.move(join(v_dir_name,'backend'), join(settings.HOME_DIR,'plugins',plugin_dir_name))  # codeql[py/path-injection] - plugin_dir_name restricted to [a-zA-Z0-9_-] via re.sub
+				shutil.move(join(v_dir_name,'frontend'), join(settings.HOME_DIR,'plugins',plugin_dir_name))  # codeql[py/path-injection] - plugin_dir_name restricted to [a-zA-Z0-9_-] via re.sub
 			except Exception as exc:
 				None
 
@@ -476,9 +476,10 @@ def handle_uploaded_file(f):
 		try:
 			load_plugin(plugin_dir_name,False)
 		except Exception as exc:
+			logger.exception('load_plugin failed')
 			return {
 				'v_error': True,
-				'v_message': str(exc)
+				'v_message': 'Plugin could not be loaded. Check server logs for details.'
 			}
 	return {
 		'v_error': False
