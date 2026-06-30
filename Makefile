@@ -32,6 +32,7 @@ NWJS_URL = https://dl.nwjs.io/${NWJS_VERSION}/${NWJS_ZIP}
 # --- Phony Targets ---
 .PHONY: help all clean clean-deps install-deps _sync_version \
         build-mac-arm64 build-mac-intel build-linux build-win \
+        release release-local \
         _prepare_dirs _download_nwjs _build_server _bundle_mac _bundle_linux _bundle_win
 
 # --- Default Target: Help ---
@@ -52,6 +53,10 @@ help:
 	@echo "  make build-mac-intel  - Build for Intel Mac (x64)"
 	@echo "  make build-linux      - Build for Linux (x64)"
 	@echo "  make build-win        - Build for Windows (x64)"
+	@echo ""
+	@echo "Release targets:"
+	@echo "  make release-local    - Build current platform, verify artifacts"
+	@echo "  make release          - Tag and push → GitHub Actions builds all platforms"
 	@echo ""
 	@echo "IMPORTANT NOTE ON CROSS-COMPILATION:"
 	@echo "  PyInstaller does NOT support cross-compilation."
@@ -98,6 +103,12 @@ build-win:
 		NWJS_EXT=.zip \
 		SERVER_SPEC=OmniDB-win.spec
 
+release-local:
+	scripts/release.sh --local
+
+release:
+	scripts/release.sh --github
+
 # --- Internal Build Steps ---
 
 # 0. Sync version from VERSION file
@@ -108,6 +119,7 @@ _sync_version:
 	$(SED_CMD) "s/<small>v.*<\/small>/<small>v$(VERSION)<\/small>/g" deploy/app/index.html
 	$(SED_CMD) 's/VERSION=".*"/VERSION="$(VERSION)"/g' deploy/linux/deploy.sh
 	$(SED_CMD) 's/ARG OMNIDB_VERSION=.*/ARG OMNIDB_VERSION=$(VERSION)/g' Dockerfile
+	$(SED_CMD) 's/^version = ".*"/version = "$(VERSION)"/g' pyproject.toml
 
 # 1. Common preparation
 _prepare_dirs: _sync_version
