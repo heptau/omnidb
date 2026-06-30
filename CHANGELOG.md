@@ -2,150 +2,150 @@
 
 All notable changes to this project will be documented in this file.
 
-## [3.2.0] - 2026-05-08 – The Modernization & UX Update
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-This major release introduces a complete UI/UX overhaul with macOS-inspired styling, a migration to Bootstrap 5 and AG Grid, critical dependency upgrades (including Django 6 support), and significantly improved stability for macOS users.
+## [Unreleased]
 
-### 🎨 UI/UX & Visual Styling
-- **macOS Aesthetic:** Introduced a cleaner look with softer button colors, rounded corners (8px), subtle shadows, and transparency/blur effects for modals and panels.
-- **Improved Workspace:** Added a vertical resizable splitter between the database tree and the editor for better layout control.
-- **Redesigned Interface:** Fully revamped icons and their placement in the menu.
-- **Native Look:** Enforced native OS appearance for text inputs and improved scrollbar styling (6px subtle bars).
-- **Dark Mode Excellence:** Comprehensive fixes for dark mode using consistent CSS variables, themed context menus, and improved focus visibility in grids.
-- **Dashboard & Dialogs:** Redesigned "About" dialog and refined the aesthetics of the monitoring dashboard.
+## [3.2.1] - 2026-06-30
 
-### 📊 Data Grid & Editor
-- **AG Grid Migration:** Replaced the deprecated Handsontable with **AG Grid v28**.
-- **AgGridAdapter:** Created a custom adapter for backwards compatibility, including a new custom context menu.
-- **Enhanced Sorting:** Improved numeric detection and fixed sorting inversion logic.
-- **ACE Editor:** Upgraded to v1.37.3 with native light/dark theme support.
-- **Query Editor:** Added 12px padding for better readability.
+### Fixed
+- Replace unsafe `innerHTML` assignments with `escapeHtml()`, `textContent`, or DOM API across
+  query, debug, connections, monitoring, users, notification_control, workspace, console,
+  autocomplete, tree (PostgreSQL/MySQL/Oracle/MariaDB/SQLite), edit_data, and tree_snippets
+- Add `sanitizeLegend()` to strip event handlers from Chart.js `generateLegend()` output
+- Add null guards before `getSelected()[0][0]` in console, autocomplete, plugin_hook, and edit_data
+- Replace `bare except: None` with `except Exception` + `logger.error()` in all views
+- Normalize `== None` / `!= None` comparisons to `is None` / `is not None` across all views
+- Apply consistent code formatting (Prettier) across all JS, SCSS, and CSS files
 
-### 🛠️ Technical Migration & Backend
-- **Bootstrap 5:** Migrated from v4 to **v5.3.3**, including a jQuery shim for modal compatibility and refactored grid/utility classes.
-- **Django 6 Support:** Upgraded Django from 4.2 to **6.0.4**.
-- **Session Handling:** Added a custom `PickleSerializer` to maintain compatibility with non-JSON serializable session data in newer Django versions.
-- **Python 3.14 Compatibility:** Fixed various `SyntaxWarnings` related to invalid escape sequences.
-- **Dependency Updates:** Updated `psycopg2-binary`, `social-auth-app-django`, and `pgspecial` for better stability.
+### Security
+- Replace `window[fn]()` dynamic dispatch with an explicit function whitelist in workspace.js
+- Add `_parse_post_data()` / `_bad_request()` helpers to all view endpoints — validates POST body
+  and returns HTTP 400 on malformed or missing input instead of crashing with an unhandled exception
+- Add `user=request.user` ownership filter to Connection, Group, Tab, MonUnits,
+  MonUnitsConnections, SnippetFile, and SnippetFolder ORM queries to prevent IDOR
+- Set `os.chmod(0o600)` with `try/finally` cleanup for SSH key temporary files
 
-### 🍎 macOS Improvements
-- **Native Fixes:** Resolved PostgreSQL connection issues specifically occurring in bundled macOS applications.
-- **Security:** Properly signed macOS server native libraries.
-- **Bundle Stability:** Fixed app launcher environment and library rpaths for the Electron/packaged build.
+## [3.2.0] - 2026-05-08
 
-### 📚 Documentation & Maintenance
-- **Performance:** Converted over 200 documentation images to **WebP**, reducing asset size by ~35%.
-- **CI/CD:** Added GitHub Actions workflows for automated testing, linting, and PyInstaller build checks.
-- **Testing:** Implemented a comprehensive test suite covering models, views, and utilities (75 tests total).
-- **Project Cleanup:** Removed obsolete tests, Vagrant configurations, and unused hardcoded OAuth credentials.
-- **SEO & AI:** Added `llms.txt` and `llms-full.txt` for better indexing and LLM-assisted development.
+### Added
+- AG Grid v28 to replace the deprecated Handsontable data grid
+- `AgGridAdapter` — custom wrapper providing backwards-compatible API and a custom context menu
+- ACE editor upgraded to v1.37.3 with native light/dark theme support
+- Bootstrap 5.3.3 migration (from v4), including a jQuery shim for modal compatibility
+- `PickleSerializer` for Django sessions to maintain compatibility with non-JSON-serializable data
+- GitHub Actions workflows for automated testing, linting, and PyInstaller build checks
+- Comprehensive test suite covering models, views, and utilities (75 tests)
+- `llms.txt` and `llms-full.txt` with SEO link tags across documentation pages
+- Vertical resizable splitter between the database tree and the editor panel
+- 12px padding to the query editor for improved readability
 
+### Changed
+- Django upgraded from 4.2 to 6.0.4
+- `psycopg2-binary`, `social-auth-app-django`, and `pgspecial` updated for better stability
+- Redesigned icons and their placement in the main menu
+- Redesigned "About" dialog and monitoring dashboard aesthetics
+- macOS UI: softer button colors, rounded corners (8px), subtle shadows, transparency/blur for
+  modals and panels
+- Scrollbar styling reduced to 6px subtle bars; native OS appearance enforced for text inputs
+- Over 200 documentation images converted to WebP, reducing asset size by ~35%
 
-## [3.1.2] - 2026-01-30 – Security & Improvements Release
+### Fixed
+- PostgreSQL connection issues in bundled macOS application
+- Sorting inversion and numeric detection in AgGridAdapter
+- Dark mode: use CSS variables consistently across all themed components, context menus, and grids
+- macOS bundled library rpaths and app launcher environment
+- `SyntaxWarnings` related to invalid escape sequences (Python 3.14 compatibility)
 
-This release focuses heavily on **security updates** for several frontend dependencies, enhanced editor theming, documentation relocation and mobile improvements, plus various build and code quality fixes.
+### Removed
+- Handsontable (replaced by AG Grid)
+- Bootstrap 4 CSS and JavaScript
+- Vagrant configuration files and unused hardcoded OAuth credentials
+- Unminified `bootstrap.css` from static files
 
-### 🔒 Security & Dependencies
-- Upgraded **Bootstrap** to 4.6.2 (addresses multiple XSS vulnerabilities)
-- Upgraded **ACE editor** to 1.43.6 (fixes unsafe dynamic method access)
-- Upgraded **Chart.js** to 2.9.4 (resolves prototype pollution vulnerability – CVE-2020-7746)
-- Upgraded **FontAwesome** to 5.15.4 (latest bug fixes & improvements)
-- Upgraded **Popper.js** to 1.16.1 (better compatibility with updated Bootstrap)
-- Upgraded font **Roboto** to v3.015 (improved variable font support + bug fixes)
-- Upgraded font **Roboto Mono** to v3.001 (variable font support + better rendering)
+### Security
+- Properly signed macOS server native libraries with ad-hoc code signing
 
-### 🎨 UI/UX & Editor
-- Added new **sqlserver-dark** theme for SQL Server syntax highlighting
-- Changed default editor theme to **sqlserver** (light), with automatic dark variant support
-- Removed unminified `bootstrap.css` from static files (project cleanup)
+## [3.1.2] - 2026-01-30
 
-### 📚 Documentation
-- Moved documentation to new domain **omnidb.net**
-- Added/enhanced landing page and overall content
-- Improved mobile responsive navigation
-- Separated JavaScript logic for better maintainability
-- Updated download URL
+### Added
+- `sqlserver-dark` theme for SQL Server syntax highlighting
+- `FUNDING.yml`
 
-### 🛠️ Build & Development
-- Refactored **Makefile** for improved cross-platform support and build reliability
-- Added `chromium-args` to `package.json` (ensures panels and data persist correctly in SQLite for packaged/Electron builds)
-
-### 🌐 Website & Other
-- Updated OmniDB website link to **HTTPS**
-- Removed obsolete sponsor information
-- Added **FUNDING.yml** file
-
-### 🧹 Code Quality & Maintenance
+### Changed
+- ACE editor upgraded to 1.43.6
+- Bootstrap upgraded to 4.6.2
+- Chart.js upgraded to 2.9.4
+- FontAwesome upgraded to 5.15.4
+- Popper.js upgraded to 1.16.1
+- Roboto upgraded to v3.015; Roboto Mono upgraded to v3.001
+- Documentation moved to new domain omnidb.net with improved mobile responsive navigation
+- Default editor theme changed to `sqlserver` (light) with automatic dark variant
+- Refactored Makefile for improved cross-platform support and build reliability
+- `chromium-args` added to `package.json` for correct panel and data persistence in packaged builds
 - Replaced hardcoded asset versioning with dynamic variable
-- Improved code formatting and added missing copyright notices
 
+### Removed
+- Unminified `bootstrap.css` from static files
 
-## [3.1.1] - 2026-01-22 – Maintenance & Compatibility Release
+### Security
+- Bootstrap 4.6.2 addresses multiple XSS vulnerabilities
+- ACE editor 1.43.6 fixes unsafe dynamic method access
+- Chart.js 2.9.4 resolves prototype pollution vulnerability (CVE-2020-7746)
 
-This is a smaller follow-up release to 3.1.0, focusing on security updates, PostgreSQL 17 support, documentation improvements and build process convenience.
+## [3.1.1] - 2026-01-22
 
-### 🔒 Core & Dependencies
-* Upgraded to **Django 4.2.27** (security & stability patches)
-* Added compatibility with **PostgreSQL 17+** (fixed checkpoint monitoring)
-* Pinned `social-auth-app-django` to **5.4.1** (restores working OAuth flows)
+### Added
+- PostgreSQL 17+ compatibility: fixed checkpoint monitoring query
 
-### 🎨 UI/UX Fixes
-* Fixed CSS padding – **tab button** is now properly centered
+### Changed
+- Django upgraded to 4.2.27
+- `social-auth-app-django` pinned to 5.4.1 to restore working OAuth flows
+- Documentation: full dark mode support synced with system preference, responsive design
+- Makefile now automatically calls `pip install -r requirements.txt` from build targets
 
-### 📚 Documentation
-* Modernized CSS
-  * Responsive design & good mobile readability
-  * Full dark mode support (syncs with system preference)
+### Fixed
+- CSS padding — tab button is now properly centered
 
-### 🛠️ Build System
-* Updated Makefile – **automatically installs dependencies**
-  (`pip install -r requirements.txt` is now called from make targets)
+## [3.1.0] - 2026-01-16
 
+### Added
+- Native Apple Silicon (arm64) support via NW.js v0.107.0
+- Automatic OS theme switching (light/dark) — removed manual theme selector
+- Comprehensive HTML documentation suite
+- Makefile: zero-config build with automatic NW.js dependency download and caching
+- Makefile: `make dist` target to package the app into a ZIP archive
 
-## [3.1.0] - 2026-01-16 - Apple Silicon Support, Auto-Theming & Enhanced macOS Build
+### Changed
+- NW.js updated to v0.107.0 (arm64)
+- jQuery upgraded to 3.7.1
+- Chart.js upgraded to 2.7.3
+- Bundle ID set to `cz.80.omnidb` to resolve keychain conflicts
+- Improved responsiveness and macOS integration
+- Refactored layout panels for a cleaner interface
 
-This release marks a significant update to version 3.1.0, introducing native Apple Silicon support, automatic theme switching, comprehensive documentation, and a completely overhauled build system for macOS.
-
-### 🎨 UI/UX Improvements
-*   **Automatic Theme Switching:** Removed the manual theme selector. The application now automatically adapts to the OS system theme (Light/Dark mode).
-*   **Responsive Design:** Improved responsiveness and integration, specifically optimized for macOS environments.
-*   **Layout Refactoring:** Refactored layout panels for a cleaner interface.
-
-### 🍎 macOS & Build System Overhaul
-*   **Native Apple Silicon Support:** The build is now based on NW.js `v0.107.0` (arm64), ensuring native performance on M1/M2/M3 chips.
-*   **Refactored Makefile:**
-    *   **Zero-Config Build:** Automatically downloads and caches NW.js dependencies (no manual setup required).
-    *   **Branding:** Fixed application identity. The app now properly displays as **OmniDB** (instead of "nwjs") in the menu bar and uses the correct icon.
-    *   **Bundle ID:** Set unique Bundle Identifier (`cz.80.omnidb`) to resolve keychain conflicts.
-    *   **Ad-Hoc Signing:** Implemented ad-hoc signing and quarantine removal to fix persistent "Safe Storage" permission prompts.
-    *   **Distribution:** Added `make dist` target to automatically package the app into a ZIP file.
-
-### 📚 Documentation
-*   **New HTML Documentation:** Added a comprehensive suite of HTML documentation.
-*   **Updated Guides:** Installation and feature guides have been updated to reflect v3.1.0 changes.
-
-### 🔧 Under the Hood
-*   **Dependencies Updated:**
-    *   jQuery upgraded to `3.7.1`.
-    *   Chart.js upgraded to `2.7.3`.
-*   **Code Quality:** General code cleanup and formatting across backend and frontend.
-
+### Fixed
+- Application now displays as "OmniDB" (not "nwjs") in the macOS menu bar with the correct icon
+- Ad-hoc signing and quarantine removal fix "Safe Storage" permission prompts on macOS
 
 ## [3.0.3] - 2023-05-10
 
-### Bug Fixes
-- Query Tab: Fixed editor key behaviours related to up/down arrows
-- Console Tab: Fixed issue describe command for tables in PostgreSQL 12+
-- Console Tab: Fixed background theme color on console output
+### Added
+- `--password` option to `--createconnection` CLI flag
 
-### Improvements
-- Reduced false-positives from security tools
+### Changed
 - Improved connection management UI
-- Added password option on --createconnection
+- Reduced false-positives from security tools
+
+### Fixed
+- Query tab: editor key behaviour for up/down arrows
+- Console tab: `\describe` command for tables in PostgreSQL 12+
+- Console tab: background theme color on console output
 
 ## [3.0.0] - 2022-08-01
 
-### New features
+### Added
 - PostgreSQL 13 support
 - Database structure tree and Properties/DDL tabs
 - LDAP/Active Directory authentication
@@ -153,8 +153,8 @@ This release marks a significant update to version 3.1.0, introducing native App
 - Graphical explain component
 - Connection sharing between users
 
-### Improvements
-- Switched from Websocket to Long Polling
+### Changed
+- Switched from WebSocket to Long Polling
 - Better connection pooling
-- NW.js instead of Electron
-- Enhanced shortcuts per OS
+- NW.js replaces Electron
+- Enhanced keyboard shortcuts per OS
