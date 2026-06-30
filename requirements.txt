@@ -1,3 +1,4 @@
+setuptools
 Django>=5.2
 CherryPy
 social-auth-app-django>=5.8.0
