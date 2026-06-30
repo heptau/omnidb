@@ -20,8 +20,13 @@ PLATFORM_TYPE = macos
 UNAME_S := $(shell uname -s)
 ifeq ($(UNAME_S),Darwin)
 	SED_CMD = sed -i ''
+	ZIP_CMD = zip -r
+else ifneq (,$(findstring MINGW,$(UNAME_S)))
+	SED_CMD = sed -i
+	ZIP_CMD = 7z a
 else
 	SED_CMD = sed -i
+	ZIP_CMD = zip -r
 endif
 
 # --- URLs ---
@@ -257,5 +262,5 @@ _build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -r dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
+	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
