@@ -19,7 +19,7 @@ jobs:
 
       - name: Read version
         id: version
-        run: echo "version=$(cat VERSION | tr -d '\n')" >> "$GITHUB_OUTPUT"
+        run: echo "version=$(cat VERSION | tr -d '\r\n')" >> "$GITHUB_OUTPUT"
 
       - name: Extract changelog notes
         id: notes
