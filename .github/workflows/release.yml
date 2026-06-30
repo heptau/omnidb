@@ -130,7 +130,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          VERSION="$(cat VERSION | tr -d '\n')"
+          VERSION="$(cat VERSION | tr -d '\r\n')"
           gh release upload "v${VERSION}" build/dist/checksums.txt
 
       - name: Generate Homebrew Cask
@@ -142,7 +142,7 @@ jobs:
         run: |
           TAP_REPO="${HOMEBREW_TAP_REPO:-heptau/homebrew-tap}"
           TAP_CASK="${HOMEBREW_TAP_CASK:-Casks/omnidb.rb}"
-          VERSION="$(cat VERSION | tr -d '\n')"
+          VERSION="$(cat VERSION | tr -d '\r\n')"
 
           CURRENT_SHA=$(gh api "repos/${TAP_REPO}/contents/${TAP_CASK}" \
             --jq '.sha' 2>/dev/null || true)

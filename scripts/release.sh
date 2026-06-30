@@ -30,7 +30,7 @@ fi
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR/.."
 
-VERSION="$(cat VERSION | tr -d '\n')"
+VERSION="$(cat VERSION | tr -d '\r\n')"
 GITHUB_REPO="${GITHUB_REPO:-heptau/omnidb}"
 
 echo "OmniDB release — v${VERSION} (${MODE})"

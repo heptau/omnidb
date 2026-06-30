@@ -15,7 +15,7 @@ set -euo pipefail
 DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$DIR/.."
 
-VERSION="$(cat VERSION | tr -d '\n')"
+VERSION="$(cat VERSION | tr -d '\r\n')"
 DIST="build/dist"
 
 # ── Detect platform ───────────────────────────────────────────────────────────
