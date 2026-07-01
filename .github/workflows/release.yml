@@ -119,11 +119,16 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           pattern: dist-*
-          path: build/dist/
-          merge-multiple: true
+          path: build/dist-tmp/
+          merge-multiple: false
 
       - name: Merge checksums
-        run: sort -u -k2 build/dist/checksums.txt -o build/dist/checksums.txt
+        run: |
+          mkdir -p build/dist
+          find build/dist-tmp/ -name 'checksums.txt' -exec cat {} \; \
+            | sort -u -k2 > build/dist/checksums.txt
+          find build/dist-tmp/ -not -name 'checksums.txt' -type f \
+            -exec cp {} build/dist/ \;
 
       - name: Upload checksums to GitHub release
         env:

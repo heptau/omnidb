@@ -1,6 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-set -x
 # =============================================================================
 # gen_cask.sh — Generate Homebrew Cask from build/dist/checksums.txt
 #
