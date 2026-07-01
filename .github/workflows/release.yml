@@ -51,7 +51,6 @@ jobs:
       matrix:
         include:
           - { runner: macos-latest,   label: macOS arm64,    make_target: build-mac-arm64 }
-          - { runner: macos-13,       label: macOS x64,      make_target: build-mac-intel }
           - { runner: ubuntu-latest,  label: Linux x64,      make_target: build-linux     }
           - { runner: windows-latest, label: Windows x64,    make_target: build-win       }
 
