@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.2.2] - 2026-07-03
+
+### Fixed
+- Connections dialog failing to open with an HTTP 500 error — `connections.py` was missing the
+  `_parse_post_data()` / `_bad_request()` helpers introduced in 3.2.1, causing a `NameError` on
+  every request to `/get_connections/`
+- Tooltips rendering raw HTML tags as literal text instead of formatted content —
+  `getAttributesOmniDBTooltip()` in workspace.js was escaping pre-built HTML fragments instead of
+  just their user-supplied data
+
+### Security
+- Escape connection alias, connection string, and tunnel details before interpolating them into
+  tooltip and tab-title HTML in workspace.js, outer_connection_tab.js, and outer_terminal_tab.js,
+  closing a stored-XSS gap left by the 3.2.1 hardening pass
+- Replace the deprecated Homebrew Cask `depends_on macos: ">= :ventura"` string-comparison syntax
+  with `depends_on macos: :ventura` in the release Cask generator
+
 ## [3.2.1] - 2026-06-30
 
 ### Fixed

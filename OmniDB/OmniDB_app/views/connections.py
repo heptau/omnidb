@@ -30,6 +30,15 @@ from OmniDB_app.views.memory_objects import *
 
 from django.db.models import Q
 
+def _parse_post_data(request):
+	raw = request.POST.get('data', None)
+	if not raw:
+		raise json.JSONDecodeError('Missing POST data', '', 0)
+	return json.loads(raw)
+
+def _bad_request(msg='Invalid or missing request data.'):
+	return JsonResponse({'v_data': msg, 'v_error': True, 'v_error_id': -1})
+
 @user_authenticated
 def get_connections(request):
 

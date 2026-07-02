@@ -40,7 +40,7 @@ cask "omnidb" do
   desc "Revived open-source database management tool (PostgreSQL-focused, NW.js-based)"
   homepage "${GITHUB}"
 
-  depends_on macos: ">= :ventura"
+  depends_on macos: :ventura
 
   app "OmniDB.app"
 

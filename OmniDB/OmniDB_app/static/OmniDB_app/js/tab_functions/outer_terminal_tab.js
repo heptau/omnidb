@@ -33,15 +33,15 @@ var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = "Term
 	let v_tooltip_name = "";
 
 	if (p_alias) {
-		v_tooltip_name += '<h5 class="my-1">' + p_alias + "</h5>";
+		v_tooltip_name += '<h5 class="my-1">' + escapeHtml(p_alias) + "</h5>";
 	}
 	if (p_details) {
-		v_tooltip_name += '<div class="mb-1">' + p_details + "</div>";
+		v_tooltip_name += '<div class="mb-1">' + escapeHtml(p_details) + "</div>";
 	}
 
 	var v_tab = v_connTabControl.createTab({
 		p_icon: '<i class="fas fa-terminal"></i>',
-		p_name: p_alias,
+		p_name: escapeHtml(p_alias),
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				refreshHeights();

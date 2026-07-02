@@ -141,15 +141,15 @@ function getDatabaseList(p_init, p_callback) {
 							for (let k = 0; k < v_connTabControl.tag.connections.length; k++) {
 								if (p_return.v_data.v_existing_tabs[i].index === v_connTabControl.tag.connections[k].v_conn_id) {
 									v_conn = v_connTabControl.tag.connections[k];
-									v_name = v_conn.v_alias ? v_conn.v_alias : "";
+									v_name = v_conn.v_alias ? escapeHtml(v_conn.v_alias) : "";
 									if (v_conn.v_alias) {
-										p_tooltip_name += '<h5 class="mb-1">' + v_conn.v_alias + "</h5>";
+										p_tooltip_name += '<h5 class="mb-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
 									}
 									if (v_conn.v_details1) {
-										p_tooltip_name += '<div class="mb-1">' + v_conn.v_details1 + "</div>";
+										p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
 									}
 									if (v_conn.v_details2) {
-										p_tooltip_name += '<div class="mb-1">' + v_conn.v_details2 + "</div>";
+										p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
 									}
 								}
 							}
@@ -1041,21 +1041,21 @@ function showMenuNewTabOuter(e) {
 							v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
 						}
 						if (v_conn.v_alias && v_conn.v_alias !== "") {
-							v_name = v_conn.v_alias;
-							v_conn_name += "(" + v_conn.v_alias + ")";
-							p_tooltip_name += '<h5 class="my-1">' + v_conn.v_alias + "</h5>";
+							v_name = escapeHtml(v_conn.v_alias);
+							v_conn_name += "(" + escapeHtml(v_conn.v_alias) + ")";
+							p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
 						}
 						if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
-							v_conn_name += " " + v_conn.v_conn_string;
-							p_tooltip_name += '<div class="mb-1">' + v_conn.v_conn_string + "</div>";
+							v_conn_name += " " + escapeHtml(v_conn.v_conn_string);
+							p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
 						} else {
 							if (v_conn.v_details1) {
-								v_conn_name += v_conn.v_details1;
-								p_tooltip_name += '<div class="mb-1">' + v_conn.v_details1 + "</div>";
+								v_conn_name += escapeHtml(v_conn.v_details1);
+								p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
 							}
 							if (v_conn.v_details2) {
-								v_conn_name += " - " + v_conn.v_details2;
-								p_tooltip_name += '<div class="mb-1">' + v_conn.v_details2 + "</div>";
+								v_conn_name += " - " + escapeHtml(v_conn.v_details2);
+								p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
 							}
 						}
 						v_submenu_connection_list.push({
@@ -1097,21 +1097,21 @@ function showMenuNewTabOuter(e) {
 										v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
 									}
 									if (v_conn.v_alias && v_conn.v_alias !== "") {
-										v_name = v_conn.v_alias;
-										v_conn_name += "(" + v_conn.v_alias + ")";
-										p_tooltip_name += '<h5 class="my-1">' + v_conn.v_alias + "</h5>";
+										v_name = escapeHtml(v_conn.v_alias);
+										v_conn_name += "(" + escapeHtml(v_conn.v_alias) + ")";
+										p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
 									}
 									if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
-										v_conn_name += " " + v_conn.v_conn_string;
-										p_tooltip_name += '<div class="mb-1">' + v_conn.v_conn_string + "</div>";
+										v_conn_name += " " + escapeHtml(v_conn.v_conn_string);
+										p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
 									} else {
 										if (v_conn.v_details1) {
-											v_conn_name += v_conn.v_details1;
-											p_tooltip_name += '<div class="mb-1">' + v_conn.v_details1 + "</div>";
+											v_conn_name += escapeHtml(v_conn.v_details1);
+											p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
 										}
 										if (v_conn.v_details2) {
-											v_conn_name += " - " + v_conn.v_details2;
-											p_tooltip_name += '<div class="mb-1">' + v_conn.v_details2 + "</div>";
+											v_conn_name += " - " + escapeHtml(v_conn.v_details2);
+											p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
 										}
 									}
 									v_group_connections.push({
@@ -1138,21 +1138,21 @@ function showMenuNewTabOuter(e) {
 											v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
 										}
 										if (v_conn.v_alias && v_conn.v_alias !== "") {
-											v_name = v_conn.v_alias;
-											v_conn_name += "(" + v_conn.v_alias + ")";
-											p_tooltip_name += '<h5 class="my-1">' + v_conn.v_alias + "</h5>";
+											v_name = escapeHtml(v_conn.v_alias);
+											v_conn_name += "(" + escapeHtml(v_conn.v_alias) + ")";
+											p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
 										}
 										if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
-											v_conn_name += " " + v_conn.v_conn_string;
-											p_tooltip_name += '<div class="mb-1">' + v_conn.v_conn_string + "</div>";
+											v_conn_name += " " + escapeHtml(v_conn.v_conn_string);
+											p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
 										} else {
 											if (v_conn.v_details1) {
-												v_conn_name += v_conn.v_details1;
-												p_tooltip_name += '<div class="mb-1">' + v_conn.v_details1 + "</div>";
+												v_conn_name += escapeHtml(v_conn.v_details1);
+												p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
 											}
 											if (v_conn.v_details2) {
-												v_conn_name += " - " + v_conn.v_details2;
-												p_tooltip_name += '<div class="mb-1">' + v_conn.v_details2 + "</div>";
+												v_conn_name += " - " + escapeHtml(v_conn.v_details2);
+												p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
 											}
 										}
 										if (v_conn.v_conn_id == v_current_group.conn_list[j]) {
@@ -1509,10 +1509,10 @@ function getStringTooltip(p_title, p_message, p_position = false) {
 function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_position = false) {
 	let v_html = '<div class="omnidb__tooltip__inner tooltip-inner"><div class="arrow"></div>';
 	if (p_message) {
-		v_html += p_title != undefined ? "<div>" + escapeHtml(p_title) + "</div>" : "";
-		v_html += p_message != undefined ? "<div>" + escapeHtml(p_message) + "</div>" : "";
+		v_html += p_title != undefined ? "<div>" + p_title + "</div>" : "";
+		v_html += p_message != undefined ? "<div>" + p_message + "</div>" : "";
 	} else {
-		v_html += p_title != undefined ? '<h4 class=\"mb-0\">' + escapeHtml(p_title) + "</h4>" : "";
+		v_html += p_title != undefined ? '<h4 class=\"mb-0\">' + p_title + "</h4>" : "";
 	}
 	v_html += "</div>";
 	let v_position = p_position ? p_position : "bottom";

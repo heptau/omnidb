@@ -46,25 +46,25 @@ var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_na
 			v_conn_name = p_name;
 		}
 		if (v_conn_name === "" && v_conn.v_alias && v_conn.v_alias !== "") {
-			v_conn_name = v_conn.v_alias;
+			v_conn_name = escapeHtml(v_conn.v_alias);
 		}
 		if (!p_tooltip_name) {
 			p_tooltip_name = "";
 
 			if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
 				if (v_conn.v_alias) {
-					p_tooltip_name += '<h5 class="my-1">' + v_conn.v_alias + "</h5>";
+					p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
 				}
-				p_tooltip_name += '<div class="mb-1">' + v_conn.v_conn_string + "</div>";
+				p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
 			} else {
 				if (v_conn.v_alias) {
-					p_tooltip_name += '<h5 class="my-1">' + v_conn.v_alias + "</h5>";
+					p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
 				}
 				if (v_conn.v_details1) {
-					p_tooltip_name += '<div class="mb-1">' + v_conn.v_details1 + "</div>";
+					p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
 				}
 				if (v_conn.v_details2) {
-					p_tooltip_name += '<div class="mb-1">' + v_conn.v_details2 + "</div>";
+					p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
 				}
 			}
 		}
