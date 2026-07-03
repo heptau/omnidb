@@ -35,7 +35,7 @@ omnidb/
 ├── Makefile                   # Build system for both shells (see "Building" below)
 ├── docs/                      # Public website source, deployed to omnidb.net
 ├── scripts/                   # Release/packaging helper scripts (Homebrew cask, etc.)
-├── deploy/windows/, deploy/linux/  # Legacy/secondary deploy scripts for those OSes
+├── deploy/macosx/mac-icon.icns # macOS app icon used by the NW.js and Wails builds
 ├── requirements.txt           # Python deps — keep venv in sync with this (see Gotchas)
 └── venv/                      # Project's own virtualenv (not committed)
 ```
