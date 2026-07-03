@@ -9,6 +9,18 @@ VERSION := $(shell cat VERSION | tr -d '\r\n')
 MAC_ARCH = osx-arm64
 SERVER_SPEC = OmniDB-mac.spec
 
+# --- Self-bootstrapping toolchain ---
+# `make build-*` should work with nothing pre-installed beyond Go, Python 3,
+# and platform build tools. It manages its own venv and installs the Wails
+# CLI itself rather than requiring either on PATH ahead of time.
+VENV_DIR = venv
+PYTHON := $(CURDIR)/$(VENV_DIR)/bin/python3
+GOBIN := $(shell go env GOPATH 2>/dev/null)/bin
+WAILS := $(shell command -v wails 2>/dev/null)
+ifeq ($(strip $(WAILS)),)
+	WAILS := $(GOBIN)/wails
+endif
+
 # --- Commands Detection ---
 # Detect OS for sed (Mac requires empty string '' after -i, Linux does not)
 UNAME_S := $(shell uname -s)
@@ -27,7 +39,7 @@ endif
 .PHONY: help all clean install-deps _sync_version \
         build-mac-arm64 build-linux build-win \
         release release-local \
-        _prepare_dirs _build_server _build_mac _build_linux _build_win
+        _prepare_dirs _ensure_venv _ensure_wails _build_server _build_mac _build_linux _build_win
 
 # --- Default Target: Help ---
 help:
@@ -38,13 +50,14 @@ help:
 	@echo ""
 	@echo "Available targets:"
 	@echo "  make help             - Show this help message"
-	@echo "  make install-deps     - Install Python dependencies"
+	@echo "  make install-deps     - Create/update the build venv (also done automatically"
+	@echo "                          by the build targets below)"
 	@echo "  make clean            - Remove build directories"
 	@echo ""
-	@echo "Build targets (Wails desktop shell, see wails-app/):"
+	@echo "Build targets (Wails desktop shell, see wails-app/). Each one manages its"
+	@echo "own venv and installs the Wails CLI automatically if missing — the only"
+	@echo "prerequisites are Go and Python 3 itself:"
 	@echo "  make build-mac-arm64  - Build for Apple Silicon (M1/M2/M3...)"
-	@echo "                          Requires the 'wails' CLI on PATH:"
-	@echo "                          go install github.com/wailsapp/wails/v2/cmd/wails@latest"
 	@echo "  make build-linux      - Build for Linux (x64) — must run ON Linux, Wails"
 	@echo "                          cannot cross-compile to Linux from another OS"
 	@echo "  make build-win        - Build for Windows (x64) — the Go/Wails part can"
@@ -63,9 +76,7 @@ help:
 
 all: help
 
-install-deps:
-	@echo "Checking and installing dependencies..."
-	pip3 install -r requirements.txt pyinstaller --break-system-packages
+install-deps: _ensure_venv
 
 clean:
 	rm -rf $(BUILD_DIR) $(WORK_DIR)
@@ -114,13 +125,35 @@ _prepare_dirs: _sync_version
 	@echo "Creating build directory..."
 	mkdir -p $(BUILD_DIR)
 
+# Create/update the venv used for the PyInstaller server build. Always runs
+# `pip install --upgrade`, even if the venv already exists — a venv with
+# dependencies older than requirements.txt's pins (e.g. Django < 5.2) breaks
+# `manage.py migrate` with a cryptic KeyError, so this keeps it in sync on
+# every build instead of only on first creation.
+_ensure_venv:
+	@if [ ! -x "$(PYTHON)" ]; then \
+		echo "Creating virtualenv in $(VENV_DIR)..."; \
+		python3 -m venv $(VENV_DIR); \
+	fi
+	@echo "Installing/updating Python dependencies..."
+	@$(PYTHON) -m pip install --upgrade --quiet pip
+	@$(PYTHON) -m pip install --upgrade --quiet -r requirements.txt pyinstaller
+
+# Install the Wails CLI (into `go env GOPATH`/bin) if it isn't already
+# available, so builds don't require it pre-installed on PATH.
+_ensure_wails:
+	@if [ ! -x "$(WAILS)" ]; then \
+		echo "Installing Wails CLI..."; \
+		go install github.com/wailsapp/wails/v2/cmd/wails@latest; \
+	fi
+
 # 2. Build Python server (PyInstaller)
-_build_server:
+_build_server: _ensure_venv
 	@echo "Initializing database..."
-	cd $(SERVER_DIR) && python3 manage.py migrate
+	cd $(SERVER_DIR) && $(PYTHON) manage.py migrate
 	@echo "Building Python server using $(SERVER_SPEC)..."
 	# WARNING: This builds the binary for the CURRENT RUNNING OS/ARCH
-	cd $(SERVER_DIR) && python3 -m PyInstaller $(SERVER_SPEC) \
+	cd $(SERVER_DIR) && $(PYTHON) -m PyInstaller $(SERVER_SPEC) \
 		--distpath ../$(BUILD_DIR) \
 		--workpath ../$(WORK_DIR) \
 		--clean --noconfirm
@@ -129,9 +162,9 @@ _build_server:
 	find $(BUILD_DIR)/omnidb-server -name "*.spec" -delete
 
 # --- MAC OS BUILD LOGIC (Wails) ---
-_build_mac: _prepare_dirs
+_build_mac: _prepare_dirs _ensure_wails
 	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
-	cd wails-app && wails build -clean -platform darwin/$(WAILS_GOARCH)
+	cd wails-app && $(WAILS) build -clean -platform darwin/$(WAILS_GOARCH)
 
 	@echo "Setting up .app structure..."
 	rm -rf $(BUILD_DIR)/$(APP_NAME).app
@@ -173,9 +206,9 @@ _build_mac: _prepare_dirs
 # PyInstaller. Needs libgtk-3-dev and libwebkit2gtk-4.1-dev (or 4.0 on older
 # distros) installed — Wails' Linux webview is a real CGO/GTK binding,
 # unlike the pure-Go one it uses for Windows.
-_build_linux: _prepare_dirs
+_build_linux: _prepare_dirs _ensure_wails
 	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
-	cd wails-app && wails build -clean -platform linux/$(WAILS_GOARCH)
+	cd wails-app && $(WAILS) build -clean -platform linux/$(WAILS_GOARCH)
 
 	@echo "Setting up directory structure..."
 	rm -rf "$(BUILD_DIR)/$(APP_NAME)-linux"
@@ -197,9 +230,9 @@ _build_linux: _prepare_dirs
 # The Go/Wails part genuinely cross-compiles from macOS/Linux (verified:
 # produces a real PE32+ .exe using Wails' pure-Go WebView2 loader, no
 # mingw/CGO needed) — but on CI this runs natively on windows-latest anyway.
-_build_win: _prepare_dirs
+_build_win: _prepare_dirs _ensure_wails
 	@echo "Building Wails desktop shell (windows/$(WAILS_GOARCH))..."
-	cd wails-app && wails build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed
+	cd wails-app && $(WAILS) build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed
 
 	@echo "Setting up directory structure..."
 	rm -rf "$(BUILD_DIR)/$(APP_NAME)-win"
