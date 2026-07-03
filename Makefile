@@ -36,9 +36,9 @@ NWJS_URL = https://dl.nwjs.io/${NWJS_VERSION}/${NWJS_ZIP}
 
 # --- Phony Targets ---
 .PHONY: help all clean clean-deps install-deps _sync_version \
-        build-mac-arm64 build-mac-intel build-linux build-win \
+        build-mac-arm64 build-mac-intel build-linux build-win build-mac-wails-arm64 \
         release release-local \
-        _prepare_dirs _download_nwjs _build_server _bundle_mac _bundle_linux _bundle_win
+        _prepare_dirs _download_nwjs _build_server _bundle_mac _bundle_linux _bundle_win _build_mac_wails
 
 # --- Default Target: Help ---
 help:
@@ -58,6 +58,10 @@ help:
 	@echo "  make build-mac-intel  - Build for Intel Mac (x64)"
 	@echo "  make build-linux      - Build for Linux (x64)"
 	@echo "  make build-win        - Build for Windows (x64)"
+	@echo ""
+	@echo "Wails migration (in progress, macOS Apple Silicon only for now):"
+	@echo "  make build-mac-wails-arm64 - Build the Wails-based shell (requires 'wails' CLI on PATH)"
+	@echo "                               NW.js build above is still the shipped shell."
 	@echo ""
 	@echo "Release targets:"
 	@echo "  make release-local    - Build current platform, verify artifacts"
@@ -80,6 +84,7 @@ install-deps:
 clean:
 	rm -rf $(BUILD_DIR) $(WORK_DIR)
 	rm -rf $(SERVER_DIR)/build $(SERVER_DIR)/dist
+	rm -rf wails-app/build/bin
 
 clean-deps: clean
 	rm -rf $(DEPS_DIR)
@@ -107,6 +112,12 @@ build-win:
 		NWJS_ARCH=win-x64 \
 		NWJS_EXT=.zip \
 		SERVER_SPEC=OmniDB-win.spec
+
+build-mac-wails-arm64:
+	$(MAKE) _build_mac_wails \
+		NWJS_ARCH=osx-arm64 \
+		WAILS_GOARCH=arm64 \
+		SERVER_SPEC=OmniDB-mac.spec
 
 release-local:
 	scripts/release.sh --local
@@ -264,3 +275,45 @@ _build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
+
+# --- MAC OS (WAILS) BUILD LOGIC ---
+# Parallel to _build_mac while the Wails shell (wails-app/) is being verified.
+# Does not touch the NW.js path above. Requires the `wails` CLI on PATH:
+#   go install github.com/wailsapp/wails/v2/cmd/wails@latest
+_build_mac_wails: _prepare_dirs
+	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
+	cd wails-app && wails build -clean -platform darwin/$(WAILS_GOARCH)
+
+	@echo "Setting up .app structure..."
+	rm -rf $(BUILD_DIR)/$(APP_NAME).app
+	mv "wails-app/build/bin/$(APP_NAME).app" "$(BUILD_DIR)/$(APP_NAME).app"
+
+	$(eval APP_CONTENT := $(BUILD_DIR)/$(APP_NAME).app/Contents)
+	$(eval APP_RESOURCES := $(APP_CONTENT)/Resources)
+
+	@echo "Updating macOS metadata..."
+	plutil -replace CFBundleShortVersionString -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
+	plutil -replace CFBundleVersion -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
+
+	# Build server
+	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
+
+	@echo "Integrating server..."
+	rm -rf $(APP_RESOURCES)/omnidb-server
+	mv $(BUILD_DIR)/omnidb-server $(APP_RESOURCES)/omnidb-server
+
+	@echo "Fixing bundled server library rpaths..."
+	-find "$(APP_RESOURCES)/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -delete_rpath @loader_path/../.. {} \; 2>/dev/null
+	-find "$(APP_RESOURCES)/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path {} \; 2>/dev/null
+	-find "$(APP_RESOURCES)/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path/.. {} \; 2>/dev/null
+	-find "$(APP_RESOURCES)/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path/../.. {} \; 2>/dev/null
+	find "$(APP_RESOURCES)/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec codesign --force --sign - {} \;
+
+	@echo "Signing..."
+	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
+	-codesign --force --deep --sign - $(BUILD_DIR)/$(APP_NAME).app || echo "Signing skipped or failed (non-fatal)"
+
+	@echo "Packaging Mac Dist..."
+	mkdir -p $(BUILD_DIR)/dist
+	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH)-wails.zip $(APP_NAME).app
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH)-wails.zip"
