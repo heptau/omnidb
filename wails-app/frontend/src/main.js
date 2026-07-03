@@ -3,9 +3,12 @@ import {
 	WindowMinimise,
 	WindowToggleMaximise,
 	WindowMaximise,
+	EventsOn,
 } from '../wailsjs/runtime/runtime';
 
 const loadingContainer = document.getElementById('loading_interface');
+const loadingLog = document.getElementById('loading');
+const loginWrapBody = document.getElementById('login_wrap_body');
 const barTop = document.getElementById('bar_top');
 const view = document.getElementById('view');
 
@@ -15,13 +18,15 @@ document.getElementById('gui_fullscreen').addEventListener('click', () => Window
 
 loadingContainer.style.display = '';
 
-// TEMPORARY placeholder transition for this step only — proves the frameless
-// window, custom titlebar and iframe layout work. Replaced in the next step
-// by real backend-readiness detection (omnidb-server startup instead of a timer).
-setTimeout(() => {
+EventsOn('backend:log', (line) => {
+	loadingLog.innerHTML += line + '<br/>';
+	loginWrapBody.scrollTo(0, 99999);
+});
+
+EventsOn('backend:ready', (url) => {
 	loadingContainer.style.display = 'none';
 	WindowMaximise();
 	barTop.style.display = '';
 	view.style.display = '';
-	view.src = 'about:blank';
-}, 1500);
+	view.src = url;
+});
