@@ -1,19 +1,13 @@
 # --- Global Config ---
 BUILD_DIR = build
 WORK_DIR = build_work
-DEPS_DIR = build_deps
 APP_NAME = OmniDB
 SERVER_DIR = OmniDB
-BUNDLE_ID = net.omnidb
-APP_DISPLAY_NAME = OmniDB
-NWJS_VERSION = v0.112.0
 VERSION := $(shell cat VERSION | tr -d '\r\n')
 
 # --- Platform Defaults (can be overridden by targets) ---
-NWJS_ARCH = osx-arm64
-NWJS_EXT = .zip
+MAC_ARCH = osx-arm64
 SERVER_SPEC = OmniDB-mac.spec
-PLATFORM_TYPE = macos
 
 # --- Commands Detection ---
 # Detect OS for sed (Mac requires empty string '' after -i, Linux does not)
@@ -29,18 +23,11 @@ else
 	ZIP_CMD = zip -r
 endif
 
-# --- URLs ---
-NWJS_FILENAME = nwjs-${NWJS_VERSION}-${NWJS_ARCH}
-NWJS_ZIP = ${NWJS_FILENAME}${NWJS_EXT}
-NWJS_URL = https://dl.nwjs.io/${NWJS_VERSION}/${NWJS_ZIP}
-
 # --- Phony Targets ---
-.PHONY: help all clean clean-deps install-deps _sync_version \
-        build-mac-arm64 build-mac-intel build-linux build-win \
-        build-mac-wails-arm64 build-linux-wails build-win-wails \
+.PHONY: help all clean install-deps _sync_version \
+        build-mac-arm64 build-linux build-win \
         release release-local \
-        _prepare_dirs _download_nwjs _build_server _bundle_mac _bundle_linux _bundle_win \
-        _build_mac_wails _build_linux_wails _build_win_wails
+        _prepare_dirs _build_server _build_mac _build_linux _build_win
 
 # --- Default Target: Help ---
 help:
@@ -53,21 +40,16 @@ help:
 	@echo "  make help             - Show this help message"
 	@echo "  make install-deps     - Install Python dependencies"
 	@echo "  make clean            - Remove build directories"
-	@echo "  make clean-deps       - Remove downloaded dependencies (NW.js)"
 	@echo ""
-	@echo "Build targets:"
+	@echo "Build targets (Wails desktop shell, see wails-app/):"
 	@echo "  make build-mac-arm64  - Build for Apple Silicon (M1/M2/M3...)"
-	@echo "  make build-mac-intel  - Build for Intel Mac (x64)"
-	@echo "  make build-linux      - Build for Linux (x64)"
-	@echo "  make build-win        - Build for Windows (x64)"
-	@echo ""
-	@echo "Wails migration (in progress, NW.js build above is still the shipped shell):"
-	@echo "  make build-mac-wails-arm64  - Build the Wails-based shell for macOS (requires 'wails' on PATH)"
-	@echo "  make build-linux-wails      - Build the Wails-based shell for Linux (must run ON Linux —"
-	@echo "                                Wails cannot cross-compile to Linux from another OS)"
-	@echo "  make build-win-wails        - Build the Wails-based shell for Windows (the Go/Wails part"
-	@echo "                                can cross-compile from macOS/Linux, but omnidb-server.exe"
-	@echo "                                still needs a real Windows PyInstaller build — see below)"
+	@echo "                          Requires the 'wails' CLI on PATH:"
+	@echo "                          go install github.com/wailsapp/wails/v2/cmd/wails@latest"
+	@echo "  make build-linux      - Build for Linux (x64) — must run ON Linux, Wails"
+	@echo "                          cannot cross-compile to Linux from another OS"
+	@echo "  make build-win        - Build for Windows (x64) — the Go/Wails part can"
+	@echo "                          cross-compile, but omnidb-server.exe needs a real"
+	@echo "                          Windows PyInstaller build (see cross-compilation note)"
 	@echo ""
 	@echo "Release targets:"
 	@echo "  make release-local    - Build current platform, verify artifacts"
@@ -77,8 +59,6 @@ help:
 	@echo "  PyInstaller does NOT support cross-compilation."
 	@echo "  - To build a working Linux binary, run this on Linux (or Docker)."
 	@echo "  - To build a working Windows .exe, run this on Windows."
-	@echo "  - To build Mac Intel on Mac ARM, ensure you use universal2"
-	@echo "    or run the terminal via Rosetta."
 	@echo "==========================================================="
 
 all: help
@@ -92,46 +72,21 @@ clean:
 	rm -rf $(SERVER_DIR)/build $(SERVER_DIR)/dist
 	rm -rf wails-app/build/bin
 
-clean-deps: clean
-	rm -rf $(DEPS_DIR)
-
 # --- Platform Specific Targets ---
 
 build-mac-arm64:
 	$(MAKE) _build_mac \
-		NWJS_ARCH=osx-arm64 \
-		SERVER_SPEC=OmniDB-mac.spec
-
-build-mac-intel:
-	$(MAKE) _build_mac \
-		NWJS_ARCH=osx-x64 \
+		MAC_ARCH=osx-arm64 \
+		WAILS_GOARCH=arm64 \
 		SERVER_SPEC=OmniDB-mac.spec
 
 build-linux:
 	$(MAKE) _build_linux \
-		NWJS_ARCH=linux-x64 \
-		NWJS_EXT=.tar.gz \
+		WAILS_GOARCH=amd64 \
 		SERVER_SPEC=OmniDB-lin.spec
 
 build-win:
 	$(MAKE) _build_win \
-		NWJS_ARCH=win-x64 \
-		NWJS_EXT=.zip \
-		SERVER_SPEC=OmniDB-win.spec
-
-build-mac-wails-arm64:
-	$(MAKE) _build_mac_wails \
-		NWJS_ARCH=osx-arm64 \
-		WAILS_GOARCH=arm64 \
-		SERVER_SPEC=OmniDB-mac.spec
-
-build-linux-wails:
-	$(MAKE) _build_linux_wails \
-		WAILS_GOARCH=amd64 \
-		SERVER_SPEC=OmniDB-lin.spec
-
-build-win-wails:
-	$(MAKE) _build_win_wails \
 		WAILS_GOARCH=amd64 \
 		SERVER_SPEC=OmniDB-win.spec
 
@@ -148,7 +103,6 @@ _sync_version:
 	@echo "Syncing version $(VERSION) to all files..."
 	$(SED_CMD) "s/OMNIDB_VERSION = 'OmniDB .*'/OMNIDB_VERSION = 'OmniDB $(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
 	$(SED_CMD) "s/OMNIDB_SHORT_VERSION = '.*'/OMNIDB_SHORT_VERSION = '$(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
-	$(SED_CMD) "s/<small>v.*<\/small>/<small>v$(VERSION)<\/small>/g" deploy/app/index.html
 	$(SED_CMD) "s/ARG OMNIDB_VERSION=.*/ARG OMNIDB_VERSION=$(VERSION)/g" Dockerfile
 	$(SED_CMD) "s/^version = \".*\"/version = \"$(VERSION)\"/g" pyproject.toml
 
@@ -158,14 +112,9 @@ _prepare_dirs: _sync_version
 	rm -rf $(BUILD_DIR) $(WORK_DIR)
 	rm -rf $(SERVER_DIR)/build $(SERVER_DIR)/dist
 	@echo "Creating build directory..."
-	mkdir -p $(BUILD_DIR) $(DEPS_DIR)
+	mkdir -p $(BUILD_DIR)
 
-# 2. Download NW.js (Universal logic)
-$(DEPS_DIR)/$(NWJS_ZIP):
-	@echo "Downloading NW.js $(NWJS_VERSION) for $(NWJS_ARCH)..."
-	curl -L -o "$@" "$(NWJS_URL)"
-
-# 3. Build Python server (PyInstaller)
+# 2. Build Python server (PyInstaller)
 _build_server:
 	@echo "Initializing database..."
 	cd $(SERVER_DIR) && python3 manage.py migrate
@@ -179,126 +128,8 @@ _build_server:
 	@echo "Cleaning up unnecessary artifacts from build..."
 	find $(BUILD_DIR)/omnidb-server -name "*.spec" -delete
 
-# --- MAC OS BUILD LOGIC ---
-_build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
-	@echo "Unzipping NW.js for Mac..."
-	unzip -q -o "$(DEPS_DIR)/$(NWJS_ZIP)" -d "$(DEPS_DIR)"
-
-	@echo "Setting up .app structure..."
-	rm -rf $(BUILD_DIR)/$(APP_NAME).app
-	mv "$(DEPS_DIR)/$(NWJS_FILENAME)/nwjs.app" "$(BUILD_DIR)/$(APP_NAME).app"
-	rm -rf "$(DEPS_DIR)/$(NWJS_FILENAME)"
-
-	# Variables for Mac paths
-	$(eval APP_CONTENT := $(BUILD_DIR)/$(APP_NAME).app/Contents)
-	$(eval APP_RESOURCES := $(APP_CONTENT)/Resources)
-	$(eval APP_MACOS := $(APP_CONTENT)/MacOS)
-
-	@echo "Configuring metadata and icon..."
-	cp "deploy/macosx/mac-icon.icns" "$(APP_RESOURCES)/app.icns"
-	$(SED_CMD) 's/io.nwjs.nwjs/$(BUNDLE_ID)/g' "$(APP_CONTENT)/Info.plist"
-	$(SED_CMD) 's/nw.icns/app.icns/g' "$(APP_CONTENT)/Info.plist"
-	$(SED_CMD) 's/nwjs/$(APP_DISPLAY_NAME)/g' "$(APP_CONTENT)/Info.plist"
-	mv "$(APP_MACOS)/nwjs" "$(APP_MACOS)/$(APP_DISPLAY_NAME)"
-
-	@echo "Updating macOS metadata..."
-	plutil -replace CFBundleShortVersionString -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
-	plutil -replace CFBundleVersion -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
-	plutil -replace NSHumanReadableCopyright -string "$$(printf "Portions Copyright (c) 2015-2026, The OmniDB Team\nPortions Copyright (c) 2017-2026, 2ndQuadrant Limited\nPortions Copyright (c) 2025-2026, Zbyněk Vanžura")" "$(APP_CONTENT)/Info.plist"
-
-	@echo "Updating localized metadata..."
-	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -convert xml1 {} \;
-	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -replace NSHumanReadableCopyright -string "$$(printf "Portions Copyright (c) 2015-2026, The OmniDB Team\nPortions Copyright (c) 2017-2026, 2ndQuadrant Limited\nPortions Copyright (c) 2025-2026, Zbyněk Vanžura")" {} \;
-	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -replace CFBundleGetInfoString -string "OmniDB $(VERSION), Portions Copyright (c) 2015-2026" {} \;
-
-	@echo "Copying web app..."
-	rm -rf $(APP_RESOURCES)/app.nw/*
-	mkdir -p $(APP_RESOURCES)/app.nw
-	cp -R deploy/app/* $(APP_RESOURCES)/app.nw/
-
-	# Build server
-	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-
-	@echo "Integrating server..."
-	mv $(BUILD_DIR)/omnidb-server $(APP_RESOURCES)/app.nw/
-
-	@echo "Fixing bundled server library rpaths..."
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -delete_rpath @loader_path/../.. {} \; 2>/dev/null
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path {} \; 2>/dev/null
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path/.. {} \; 2>/dev/null
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path/../.. {} \; 2>/dev/null
-	find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec codesign --force --sign - {} \;
-
-	@echo "Signing..."
-	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
-	-codesign --force --deep --sign - $(BUILD_DIR)/$(APP_NAME).app || echo "Signing skipped or failed (non-fatal)"
-
-	@echo "Packaging Mac Dist..."
-	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip $(APP_NAME).app
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip"
-
-# --- LINUX BUILD LOGIC ---
-_build_linux: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
-	@echo "Extracting NW.js for Linux..."
-	tar -xzf "$(DEPS_DIR)/$(NWJS_ZIP)" -C "$(DEPS_DIR)"
-
-	@echo "Setting up Linux structure..."
-	mv "$(DEPS_DIR)/$(NWJS_FILENAME)" "$(BUILD_DIR)/$(APP_NAME)-linux"
-
-	@echo "Copying web app..."
-	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw"
-	cp -R deploy/app/* "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw/"
-
-	# Build server
-	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-
-	@echo "Integrating server..."
-	mv $(BUILD_DIR)/omnidb-server "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw/"
-
-	@echo "Renaming executable..."
-	mv "$(BUILD_DIR)/$(APP_NAME)-linux/nw" "$(BUILD_DIR)/$(APP_NAME)-linux/$(APP_NAME)"
-
-	@echo "Packaging Linux Dist..."
-	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && tar -czf dist/OmniDB-$(VERSION)-linux-x64.tar.gz $(APP_NAME)-linux
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-linux-x64.tar.gz"
-
-# --- WINDOWS BUILD LOGIC ---
-_build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
-	@echo "Unzipping NW.js for Windows..."
-	unzip -q -o "$(DEPS_DIR)/$(NWJS_ZIP)" -d "$(DEPS_DIR)"
-
-	@echo "Setting up Windows structure..."
-	mv "$(DEPS_DIR)/$(NWJS_FILENAME)" "$(BUILD_DIR)/$(APP_NAME)-win"
-
-	@echo "Copying web app..."
-	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-win/package.nw"
-	cp -R deploy/app/* "$(BUILD_DIR)/$(APP_NAME)-win/package.nw/"
-
-	# Build server
-	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-
-	@echo "Integrating server..."
-	# WARNING: PyInstaller on Mac generates a Mac binary, not Windows .exe!
-	mv $(BUILD_DIR)/omnidb-server* "$(BUILD_DIR)/$(APP_NAME)-win/package.nw/"
-
-	@echo "Renaming executable..."
-	mv "$(BUILD_DIR)/$(APP_NAME)-win/nw.exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
-
-	@echo "Packaging Windows Dist..."
-	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
-
-# --- MAC OS (WAILS) BUILD LOGIC ---
-# This is now the release.yml build for macOS — see build-mac-arm64 above for
-# the still-present NW.js path (kept for local comparison/rollback, no longer
-# used by CI). Output archive name intentionally matches build-mac-arm64's
-# convention (no "-wails" suffix) since scripts/build_release.sh and
-# scripts/gen_cask.sh key off that exact naming.
-# Requires the `wails` CLI on PATH: go install github.com/wailsapp/wails/v2/cmd/wails@latest
-_build_mac_wails: _prepare_dirs
+# --- MAC OS BUILD LOGIC (Wails) ---
+_build_mac: _prepare_dirs
 	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
 	cd wails-app && wails build -clean -platform darwin/$(WAILS_GOARCH)
 
@@ -333,22 +164,16 @@ _build_mac_wails: _prepare_dirs
 
 	@echo "Packaging Mac Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip $(APP_NAME).app
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip"
+	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(MAC_ARCH).zip $(APP_NAME).app
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(MAC_ARCH).zip"
 
-# --- LINUX (WAILS) BUILD LOGIC ---
-# This is now the release.yml build for Linux — see build-linux above for the
-# still-present NW.js path (kept for local comparison/rollback, no longer
-# used by CI). UNTESTED end-to-end on real hardware as of writing — CI on
-# ubuntu-latest is the first real run this gets; watch that build closely.
-#
-# Wails itself refuses to cross-compile for Linux from another OS (confirmed:
-# `wails build -platform linux/amd64` errors out immediately on macOS), so
-# this target must run ON Linux — same constraint _build_server already has
-# for PyInstaller. Needs libgtk-3-dev and libwebkit2gtk-4.1-dev (or 4.0 on
-# older distros) installed — Wails' Linux webview is a real CGO/GTK binding,
+# --- LINUX BUILD LOGIC (Wails) ---
+# Wails refuses to cross-compile for Linux from another OS, so this target
+# must run ON Linux — same constraint _build_server already has for
+# PyInstaller. Needs libgtk-3-dev and libwebkit2gtk-4.1-dev (or 4.0 on older
+# distros) installed — Wails' Linux webview is a real CGO/GTK binding,
 # unlike the pure-Go one it uses for Windows.
-_build_linux_wails: _prepare_dirs
+_build_linux: _prepare_dirs
 	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
 	cd wails-app && wails build -clean -platform linux/$(WAILS_GOARCH)
 
@@ -368,14 +193,11 @@ _build_linux_wails: _prepare_dirs
 	cd $(BUILD_DIR) && tar -czf dist/OmniDB-$(VERSION)-linux-x64.tar.gz $(APP_NAME)-linux
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-linux-x64.tar.gz"
 
-# --- WINDOWS (WAILS) BUILD LOGIC ---
-# This is now the release.yml build for Windows — see build-win above for the
-# still-present NW.js path (kept for local comparison/rollback, no longer
-# used by CI). The Go/Wails part genuinely cross-compiles from macOS
-# (verified: produces a real PE32+ .exe using Wails' pure-Go WebView2 loader,
-# no mingw/CGO needed) — but on CI this runs natively on windows-latest
-# anyway, same as the NW.js target did.
-_build_win_wails: _prepare_dirs
+# --- WINDOWS BUILD LOGIC (Wails) ---
+# The Go/Wails part genuinely cross-compiles from macOS/Linux (verified:
+# produces a real PE32+ .exe using Wails' pure-Go WebView2 loader, no
+# mingw/CGO needed) — but on CI this runs natively on windows-latest anyway.
+_build_win: _prepare_dirs
 	@echo "Building Wails desktop shell (windows/$(WAILS_GOARCH))..."
 	cd wails-app && wails build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed
 
@@ -385,8 +207,9 @@ _build_win_wails: _prepare_dirs
 	mv "wails-app/build/bin/$(APP_NAME).exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
 
 	@echo "Building server..."
-	# WARNING: PyInstaller on Mac generates a Mac binary, not Windows .exe!
-	# Not an issue on CI, which runs this natively on windows-latest.
+	# WARNING: PyInstaller cannot cross-compile — must run on Windows for a
+	# working omnidb-server.exe. Not an issue on CI (runs natively on
+	# windows-latest).
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
 
 	@echo "Integrating server..."

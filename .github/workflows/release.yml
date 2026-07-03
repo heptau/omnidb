@@ -42,13 +42,10 @@ jobs:
             --notes "${{ steps.notes.outputs.notes }}"
 
   # ── Build each platform natively, upload asset as soon as it's ready ─────────
-  # NOTE: switched from the NW.js shell (deploy/app/) to the Wails shell
-  # (wails-app/) here. The macOS build target has been verified end-to-end
-  # against a real server; the Linux and Windows Wails targets have not been
-  # run on real hardware before this — treat their first few runs here as
-  # the actual test. The old NW.js make targets (build-mac-arm64,
-  # build-linux, build-win) still exist in the Makefile if a rollback is
-  # needed.
+  # The desktop shell is Wails (wails-app/) — the NW.js shell (deploy/app/)
+  # has been removed entirely, no fallback. The macOS build has been verified
+  # end-to-end against a real server; Linux and Windows have not run on real
+  # hardware before this — treat their first few runs here as the actual test.
   build:
     name: Build ${{ matrix.label }}
     needs: prepare
@@ -57,9 +54,9 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - { runner: macos-latest,   label: macOS arm64,    make_target: build-mac-wails-arm64 }
-          - { runner: ubuntu-latest,  label: Linux x64,      make_target: build-linux-wails     }
-          - { runner: windows-latest, label: Windows x64,    make_target: build-win-wails       }
+          - { runner: macos-latest,   label: macOS arm64,    make_target: build-mac-arm64 }
+          - { runner: ubuntu-latest,  label: Linux x64,      make_target: build-linux     }
+          - { runner: windows-latest, label: Windows x64,    make_target: build-win       }
 
     steps:
       - uses: actions/checkout@v4

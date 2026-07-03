@@ -7,7 +7,9 @@
 **Official Website:** https://www.omnidb.net (downloads, docs, news — deployed from `docs/`)
 **What it is:** A desktop database management tool (SQL editor, schema browser, data grid, user/connection management) with strong PostgreSQL support and compatibility with MySQL, MariaDB, Oracle, SQLite and others.
 
-The actual app is a **Django web application** (`OmniDB/`) wrapped in a native desktop **shell** that spawns the Django server as a local subprocess and points a window at `http://localhost:<port>`. There are currently **two shells in the repo**: NW.js (shipped today) and Wails/Go (in-progress replacement, not yet merged to `master`).
+The actual app is a **Django web application** (`OmniDB/`) wrapped in a native desktop **shell** (`wails-app/`, Go/Wails) that spawns the Django server as a local subprocess and points a window at `http://localhost:<port>`.
+
+The desktop shell used to be NW.js; it was fully replaced by Wails (see "Wails migration" below) and the NW.js code has been deleted — there is no fallback if Wails has problems on a given platform, that was a deliberate choice.
 
 ## Real Project Structure
 
@@ -22,20 +24,14 @@ omnidb/
 │   ├── OmniDB/                # Django settings/urls/custom_settings.py
 │   └── OmniDB_app/            # The actual application: views, models, static JS/CSS,
 │                              # templates, DB drivers (OmniDB_app/include/OmniDatabase)
-├── deploy/app/                # NW.js desktop shell — CURRENTLY SHIPPED.
-│   ├── index.html             # The entire shell: loading screen, custom frameless
-│   │                          # titlebar, spawns omnidb-server as a child_process,
-│   │                          # loads its URL into a <webview> tag.
-│   └── package.json           # NW.js window config (frameless, chromium-args)
-├── wails-app/                 # Wails (Go) desktop shell — IN PROGRESS, macOS only,
-│   │                          # not yet merged/shipped. See "Wails migration" below.
+├── wails-app/                 # The desktop shell (Go/Wails). See "Wails migration" below.
 │   ├── main.go, app.go, backend.go
 │   └── frontend/              # Loading screen only — no persistent chrome once the
 │                              # real app loads (see below for why).
-├── Makefile                   # Build system for both shells (see "Building" below)
+├── Makefile                   # Build system (see "Building" below)
 ├── docs/                      # Public website source, deployed to omnidb.net
 ├── scripts/                   # Release/packaging helper scripts (Homebrew cask, etc.)
-├── deploy/macosx/mac-icon.icns # macOS app icon used by the NW.js and Wails builds
+├── deploy/macosx/mac-icon.icns # macOS app icon (source asset for wails-app/build/appicon.png)
 ├── requirements.txt           # Python deps — keep venv in sync with this (see Gotchas)
 └── venv/                      # Project's own virtualenv (not committed)
 ```
@@ -50,21 +46,21 @@ omnidb/
 - **Frontend:** Server-rendered Django templates + jQuery-era JS/CSS under
   `OmniDB/OmniDB_app/static/` (ACE editor, AG Grid-like table, Bootstrap). No SPA
   framework, no build step for the frontend itself.
-- **Desktop shell (current):** NW.js — see `deploy/app/index.html`.
-- **Desktop shell (in progress):** Wails v2 (Go) — see `wails-app/`.
+- **Desktop shell:** Wails v2 (Go) — see `wails-app/`.
 - **Packaging:** PyInstaller bundles `omnidb-server.py` into a standalone binary
-  per-platform; the Makefile then wraps that binary + the chosen shell into a
+  per-platform; the Makefile then wraps that binary + the Wails shell into a
   platform-native app bundle.
 
 ## Desktop app mode ("-A" flag)
 
-`omnidb-server.py -A` is how both shells start the backend. In this mode:
+`omnidb-server.py -A` is how the shell starts the backend. In this mode:
 
 - `DESKTOP_MODE = True`, and a random `APP_TOKEN` is generated at startup.
 - Once the CherryPy server is listening, it prints a line to stdout starting with
   `http`: `http://localhost:<port>/omnidb_login/?user=admin&pwd=admin&token=<APP_TOKEN>`.
-  Both shells watch subprocess stdout for a line starting with `http` and navigate
-  to it — **never log/display this line**, it carries a live auth token.
+  `wails-app/backend.go` watches subprocess stdout for a line starting with `http`
+  and navigates the window to it — **never log/display this line**, it carries a
+  live auth token.
 - That URL auto-authenticates as the `admin` user (created by a data migration,
   `OmniDB_app/migrations/0001_3_0_0.py`, with a real Django password `admin`) via
   `OmniDB_app/views/login.py:sign_in_automatic`. This is why the desktop app never
@@ -76,13 +72,11 @@ omnidb/
 
 ```bash
 source venv/bin/activate                      # see Gotchas — keep this in sync!
-export PATH="$PATH:$(go env GOPATH)/bin"      # needed for the Wails target only
+export PATH="$PATH:$(go env GOPATH)/bin"      # needed to get the `wails` CLI on PATH
 
-make build-mac-arm64          # NW.js shell, Apple Silicon — currently shipped
-make build-mac-intel          # NW.js shell, Intel
-make build-linux              # NW.js shell, Linux x64
-make build-win                # NW.js shell, Windows x64
-make build-mac-wails-arm64    # Wails shell, Apple Silicon — in progress, macOS only
+make build-mac-arm64    # Apple Silicon
+make build-linux        # Linux x64 — must run ON Linux, see Wails migration notes
+make build-win          # Windows x64 — Go/Wails part cross-compiles, PyInstaller doesn't
 ```
 
 `make help` lists everything. PyInstaller cannot cross-compile — each platform must
@@ -90,13 +84,15 @@ be built on that platform (or via CI, see `.github/workflows/release.yml`).
 
 ## Wails migration — current status
 
-A branch (`feature/wails-migration`) is replacing the NW.js shell with a Wails
-(Go) one, keeping the Django backend and all its frontend JS/HTML completely
-unchanged. Rationale: smaller binary, no bundled Chromium, native OS webview.
+The desktop shell was migrated from NW.js to Wails (Go), keeping the Django
+backend and all its frontend JS/HTML completely unchanged. Rationale: smaller
+binary, no bundled Chromium, native OS webview. Still on branch
+`feature/wails-migration`, not yet merged to `master`.
 
-**What's different from NW.js, architecturally, and why:**
+**What's different from the old NW.js shell, architecturally, and why (useful
+context if something about window/login behavior looks odd):**
 
-- NW.js's `<webview>` tag is a fully independent browsing context (its own
+- NW.js's `<webview>` tag was a fully independent browsing context (its own
   process, its own cookie jar treated as first-party, no `X-Frame-Options`
   restriction). Wails has no equivalent element — its webview *is* the single
   top-level page.
@@ -111,12 +107,27 @@ unchanged. Rationale: smaller binary, no bundled Chromium, native OS webview.
   can't inject chrome that survives a full top-level navigation the way NW.js's
   host page could keep a `<webview>` embedded). The window uses the native OS
   frame instead.
-- `wails-app/backend.go` replicates the NW.js shell's subprocess spawn/env/kill
-  logic (`buildServerSpawnOptions` → `buildServerEnv`, including macOS
-  `DYLD_LIBRARY_PATH` for bundled psycopg2).
+- `wails-app/backend.go` replicates the old NW.js shell's subprocess
+  spawn/env/kill logic (`buildServerSpawnOptions` → `buildServerEnv`, including
+  macOS `DYLD_LIBRARY_PATH` for bundled psycopg2).
+- macOS bundle identifier is `net.omnidb` — the same one the NW.js builds used,
+  so this replaces the existing installed app cleanly rather than coexisting
+  with it (Launch Services, preferences, etc. all key off this).
 
-**Not yet done:** Linux/Windows Wails packaging (`resolveServerDir()` has a
-generic non-darwin branch but it's untested); merging to `master`.
+**Verification status — important, don't assume this is all equally solid:**
+
+- **macOS**: verified end-to-end against a real server (real login, real
+  workspace, clean process shutdown on window close).
+- **Linux and Windows**: the Go/Wails code is believed correct
+  (`resolveServerDir()`/`serverExecutableName()` already handle non-darwin
+  paths and `.exe` naming) but **has never run on real Linux or Windows
+  hardware**. `wails build -platform linux/amd64` outright refuses to
+  cross-compile from macOS; Windows cross-compiles fine from macOS for the
+  Go/Wails part (verified — produces a real PE32+ .exe) but PyInstaller still
+  can't cross-compile the server binary. `.github/workflows/release.yml` now
+  builds both live on GitHub-hosted runners — that CI run is the first real
+  test either of these gets. If a release comes back broken on one of these
+  platforms, that's why: there is no NW.js fallback anymore, by design.
 
 ## Gotchas learned the hard way
 
@@ -141,13 +152,12 @@ generic non-darwin branch but it's untested); merging to `master`.
 
 ## Instructions for AI assistants
 
-- Don't assume NW.js is the only shell anymore — check whether a change belongs
-  in `deploy/app/` (current shell), `wails-app/` (in-progress shell), or both.
-- Backend/frontend code in `OmniDB/` is shared by both shells; changes there
-  affect whichever shell is running, so test with whichever one is relevant to
-  the task (or both, if touching shared behavior like the login flow).
+- The desktop shell is Wails (`wails-app/`) — there is no NW.js code left in
+  the repo to consider.
+- Backend/frontend code in `OmniDB/` is shared with whatever shell runs it;
+  changes there affect the whole app, so test through the actual Wails build
+  when the change touches anything shell-adjacent (login, window lifecycle).
 - Treat anything under `OmniDB_app.Connection` (saved DB connections) and the
   `~/.omnidb` home directory as sensitive — ask before resetting, deleting, or
   bulk-modifying real installed data.
-- The public website in `docs/` should describe what's actually shipped;
-  don't announce unfinished migration work there as if it were done.
+- The public website in `docs/` should describe what's actually shipped.

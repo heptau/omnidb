@@ -1,8 +1,8 @@
 # wails-app
 
-The Wails (Go) desktop shell for OmniDB — an in-progress replacement for the
-NW.js shell in `../deploy/app/`. See `../AGENTS.md` for the full picture of
-how this fits into the project and why it's built the way it is.
+The Wails (Go) desktop shell for OmniDB — replaces the old NW.js shell
+(removed, no fallback). See `../AGENTS.md` for the full picture of how this
+fits into the project and why it's built the way it is.
 
 This shell only replaces the desktop wrapper: it spawns the `omnidb-server`
 binary as a subprocess, waits for it to report readiness, and navigates the
@@ -18,7 +18,7 @@ Normally you build this through the root `Makefile`, which also packages the
 cd ..
 source venv/bin/activate
 export PATH="$PATH:$(go env GOPATH)/bin"
-make build-mac-wails-arm64
+make build-mac-arm64
 ```
 
 For iterating on just this Go/frontend code without rebuilding the Python
@@ -40,5 +40,6 @@ hot-reload beyond that.
 
 ## Status
 
-macOS (Apple Silicon) only so far. Not yet merged to `master`; the NW.js
-shell in `../deploy/app/` is still what ships.
+Not yet merged to `master` (branch `feature/wails-migration`). macOS has been
+verified end-to-end against a real server. Linux and Windows have not run on
+real hardware yet — see `../AGENTS.md`'s "Wails migration" section.
