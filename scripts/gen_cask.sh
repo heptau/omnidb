@@ -37,7 +37,7 @@ cask "omnidb" do
   end
 
   name "OmniDB"
-  desc "Revived open-source database management tool (PostgreSQL-focused, NW.js-based)"
+  desc "Revived open-source database management tool (PostgreSQL-focused)"
   homepage "${GITHUB}"
 
   depends_on macos: :ventura
@@ -62,9 +62,8 @@ cask "omnidb" do
 
   caveats do
     <<~EOS
-      OmniDB runs as a desktop application built with NW.js.
-      It starts a local web server on first launch and opens its interface
-      in the embedded browser window (usually at http://localhost:some-port).
+      OmniDB starts a local web server on first launch and opens its
+      interface in the app window (usually at http://localhost:some-port).
 
       If the window does not open automatically, check the console output
       or try opening the reported address in your default browser.

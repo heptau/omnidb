@@ -293,9 +293,12 @@ _build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
 
 # --- MAC OS (WAILS) BUILD LOGIC ---
-# Parallel to _build_mac while the Wails shell (wails-app/) is being verified.
-# Does not touch the NW.js path above. Requires the `wails` CLI on PATH:
-#   go install github.com/wailsapp/wails/v2/cmd/wails@latest
+# This is now the release.yml build for macOS — see build-mac-arm64 above for
+# the still-present NW.js path (kept for local comparison/rollback, no longer
+# used by CI). Output archive name intentionally matches build-mac-arm64's
+# convention (no "-wails" suffix) since scripts/build_release.sh and
+# scripts/gen_cask.sh key off that exact naming.
+# Requires the `wails` CLI on PATH: go install github.com/wailsapp/wails/v2/cmd/wails@latest
 _build_mac_wails: _prepare_dirs
 	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
 	cd wails-app && wails build -clean -platform darwin/$(WAILS_GOARCH)
@@ -331,63 +334,66 @@ _build_mac_wails: _prepare_dirs
 
 	@echo "Packaging Mac Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH)-wails.zip $(APP_NAME).app
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH)-wails.zip"
+	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip $(APP_NAME).app
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip"
 
 # --- LINUX (WAILS) BUILD LOGIC ---
-# UNTESTED end-to-end (no Linux machine available while writing this) — the
-# macOS Wails target above was built and manually verified against a real
-# server; this one mirrors its structure and _build_linux's flat (no app
-# bundle) layout, but needs a real run on Linux to confirm.
+# This is now the release.yml build for Linux — see build-linux above for the
+# still-present NW.js path (kept for local comparison/rollback, no longer
+# used by CI). UNTESTED end-to-end on real hardware as of writing — CI on
+# ubuntu-latest is the first real run this gets; watch that build closely.
 #
 # Wails itself refuses to cross-compile for Linux from another OS (confirmed:
 # `wails build -platform linux/amd64` errors out immediately on macOS), so
 # this target must run ON Linux — same constraint _build_server already has
-# for PyInstaller.
+# for PyInstaller. Needs libgtk-3-dev and libwebkit2gtk-4.1-dev (or 4.0 on
+# older distros) installed — Wails' Linux webview is a real CGO/GTK binding,
+# unlike the pure-Go one it uses for Windows.
 _build_linux_wails: _prepare_dirs
 	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
 	cd wails-app && wails build -clean -platform linux/$(WAILS_GOARCH)
 
 	@echo "Setting up directory structure..."
-	rm -rf "$(BUILD_DIR)/$(APP_NAME)-linux-wails"
-	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-linux-wails"
-	mv "wails-app/build/bin/$(APP_NAME)" "$(BUILD_DIR)/$(APP_NAME)-linux-wails/$(APP_NAME)"
+	rm -rf "$(BUILD_DIR)/$(APP_NAME)-linux"
+	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-linux"
+	mv "wails-app/build/bin/$(APP_NAME)" "$(BUILD_DIR)/$(APP_NAME)-linux/$(APP_NAME)"
 
 	# Build server
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
 
 	@echo "Integrating server..."
-	mv $(BUILD_DIR)/omnidb-server "$(BUILD_DIR)/$(APP_NAME)-linux-wails/omnidb-server"
+	mv $(BUILD_DIR)/omnidb-server "$(BUILD_DIR)/$(APP_NAME)-linux/omnidb-server"
 
 	@echo "Packaging Linux Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && tar -czf dist/OmniDB-$(VERSION)-linux-x64-wails.tar.gz $(APP_NAME)-linux-wails
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-linux-x64-wails.tar.gz"
+	cd $(BUILD_DIR) && tar -czf dist/OmniDB-$(VERSION)-linux-x64.tar.gz $(APP_NAME)-linux
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-linux-x64.tar.gz"
 
 # --- WINDOWS (WAILS) BUILD LOGIC ---
-# The Go/Wails part genuinely cross-compiles from macOS (verified: produces a
-# real PE32+ .exe using Wails' pure-Go WebView2 loader, no mingw/CGO needed).
-# omnidb-server.exe does NOT: PyInstaller has the same no-cross-compile
-# limitation as the NW.js _build_win target already documents below, so
-# running this on macOS packages a real Windows shell with a non-functional
-# (Mac-native) server binary inside. Run on Windows for a working package.
+# This is now the release.yml build for Windows — see build-win above for the
+# still-present NW.js path (kept for local comparison/rollback, no longer
+# used by CI). The Go/Wails part genuinely cross-compiles from macOS
+# (verified: produces a real PE32+ .exe using Wails' pure-Go WebView2 loader,
+# no mingw/CGO needed) — but on CI this runs natively on windows-latest
+# anyway, same as the NW.js target did.
 _build_win_wails: _prepare_dirs
 	@echo "Building Wails desktop shell (windows/$(WAILS_GOARCH))..."
 	cd wails-app && wails build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed
 
 	@echo "Setting up directory structure..."
-	rm -rf "$(BUILD_DIR)/$(APP_NAME)-win-wails"
-	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-win-wails"
-	mv "wails-app/build/bin/$(APP_NAME).exe" "$(BUILD_DIR)/$(APP_NAME)-win-wails/$(APP_NAME).exe"
+	rm -rf "$(BUILD_DIR)/$(APP_NAME)-win"
+	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-win"
+	mv "wails-app/build/bin/$(APP_NAME).exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
 
 	@echo "Building server..."
 	# WARNING: PyInstaller on Mac generates a Mac binary, not Windows .exe!
+	# Not an issue on CI, which runs this natively on windows-latest.
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
 
 	@echo "Integrating server..."
-	mv $(BUILD_DIR)/omnidb-server* "$(BUILD_DIR)/$(APP_NAME)-win-wails/"
+	mv $(BUILD_DIR)/omnidb-server* "$(BUILD_DIR)/$(APP_NAME)-win/"
 
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64-wails.zip $(APP_NAME)-win-wails
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64-wails.zip"
+	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"

@@ -30,7 +30,7 @@ case "$OS" in
     else
       TARGET="build-mac-intel"
     fi
-    [[ "$TARGET" == "build-mac-arm64" ]] \
+    [[ "$TARGET" == *arm64* ]] \
       && ARCHIVE_NAME="OmniDB-${VERSION}-macOS-osx-arm64.zip" \
       || ARCHIVE_NAME="OmniDB-${VERSION}-macOS-osx-x64.zip"
     sha256() { shasum -a 256 "$1" | awk '{print $1}'; }
