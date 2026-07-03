@@ -4,6 +4,10 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"net"
+	"net/http"
+	"net/http/httputil"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
@@ -143,12 +147,65 @@ func (a *App) streamServerOutput(pipe io.Reader, watchForReadyURL bool) {
 		// so it must never be echoed into the visible log, only used to
 		// navigate the iframe — matching the NW.js shell's behaviour.
 		if watchForReadyURL && strings.HasPrefix(line, "http") {
+			readyURL := line
+			if proxied, err := a.startFrameProxy(line); err != nil {
+				wailsruntime.EventsEmit(a.ctx, "backend:log", fmt.Sprintf("Failed to start local frame proxy, opening server URL directly: %v", err))
+			} else {
+				readyURL = proxied
+			}
 			wailsruntime.EventsEmit(a.ctx, "backend:log", "Opening OmniDB...")
-			wailsruntime.EventsEmit(a.ctx, "backend:ready", line)
+			wailsruntime.EventsEmit(a.ctx, "backend:ready", readyURL)
 			continue
 		}
 
 		wailsruntime.EventsEmit(a.ctx, "backend:log", line)
+	}
+}
+
+// startFrameProxy runs a local reverse proxy in front of the Django server
+// and returns the equivalent of backendURL rewritten to go through it.
+//
+// Django's default XFrameOptionsMiddleware sends "X-Frame-Options: DENY" on
+// every response, which makes browsers refuse to render the page inside an
+// <iframe> (verified against the real omnidb-server: the login page loaded
+// fine directly but stayed blank when framed). NW.js's <webview> tag never
+// hit this because guest content in a <webview> is a top-level browsing
+// context to Chromium, not a "frame" the header applies to — Wails has no
+// such element, so an <iframe> is the closest equivalent and needs this
+// workaround. Stripping the header here (not in Django) keeps the backend
+// code untouched; it is a no-op from a security standpoint since the proxy
+// only listens on 127.0.0.1 and is only ever loaded by our own window.
+func (a *App) startFrameProxy(backendURL string) (string, error) {
+	target, err := url.Parse(backendURL)
+	if err != nil {
+		return "", fmt.Errorf("parse backend URL: %w", err)
+	}
+
+	listener, err := net.Listen("tcp", "127.0.0.1:0")
+	if err != nil {
+		return "", fmt.Errorf("open frame proxy listener: %w", err)
+	}
+
+	proxy := httputil.NewSingleHostReverseProxy(&url.URL{Scheme: target.Scheme, Host: target.Host})
+	proxy.ModifyResponse = func(resp *http.Response) error {
+		resp.Header.Del("X-Frame-Options")
+		return nil
+	}
+
+	server := &http.Server{Handler: proxy}
+	a.frameProxy = server
+	go server.Serve(listener)
+
+	proxied := *target
+	proxied.Host = listener.Addr().String()
+	return proxied.String(), nil
+}
+
+// stopFrameProxy shuts down the local reverse proxy started by
+// startFrameProxy, if any.
+func (a *App) stopFrameProxy() {
+	if a.frameProxy != nil {
+		_ = a.frameProxy.Close()
 	}
 }
 
