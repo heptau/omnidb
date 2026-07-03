@@ -149,6 +149,17 @@ context if something about window/login behavior looks odd):**
 - **PyInstaller builds are OS/arch-specific to the machine that ran them** —
   there's no cross-compilation; don't assume a Mac-built server binary works
   elsewhere.
+- **Static JS/CSS fixes can look like they "didn't work" after a rebuild.**
+  `omnidb-server.py`'s `mount_static()` serves static assets with a 24h
+  `Expires` header. Every `<script>`/`<link>` URL carries a `?v=` cache-busting
+  query param seeded from `settings.STATIC_CACHE_BUST`, a token generated
+  fresh on every server process start — so a rebuild + relaunch is enough to
+  force a refetch. If you ever see an edited JS/CSS file not taking effect
+  despite a confirmed-correct rebuild, suspect a webview/browser HTTP cache
+  from *before* this mechanism existed, or a manual edit to a template that
+  bypassed `static_cache_bust` — not a broken fix. Don't touch
+  `omnidb_short_version` for this purpose; it's the real version string,
+  shown to users and used for update checks.
 
 ## Instructions for AI assistants
 

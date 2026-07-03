@@ -4,6 +4,7 @@ import shutil
 import random
 import string
 import getpass
+import time
 from . import custom_settings
 
 #import ldap
@@ -220,6 +221,12 @@ LOGGING = {
 #OMNIDB PARAMETERS
 OMNIDB_VERSION                 = custom_settings.OMNIDB_VERSION
 OMNIDB_SHORT_VERSION           = custom_settings.OMNIDB_SHORT_VERSION
+# Cache-busting token for static asset URLs. Static files are served with a
+# 24h Expires header (see omnidb-server.py mount_static), so a query string
+# that only changes on manual version bumps lets webviews/browsers keep
+# serving stale JS/CSS across app restarts for up to a day. This token is
+# fresh on every process start, forcing a refetch after every restart.
+STATIC_CACHE_BUST              = str(int(time.time()))
 CH_CMDS_PER_PAGE               = 20
 PWD_TIMEOUT_TOTAL              = 1800
 PWD_TIMEOUT_REFRESH            = 300

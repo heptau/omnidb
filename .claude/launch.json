@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "docs/en"],
       "port": 8765
+    },
+    {
+      "name": "omnidb-web",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd OmniDB && ../venv/bin/python3 manage.py runserver 8001"],
+      "port": 8001
     }
   ]
 }

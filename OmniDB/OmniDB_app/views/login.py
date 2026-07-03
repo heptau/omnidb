@@ -61,6 +61,7 @@ def check_session(request):
 def index(request):
 	context = {
 		'omnidb_short_version': settings.OMNIDB_SHORT_VERSION,
+		'static_cache_bust': settings.STATIC_CACHE_BUST,
 		'url_folder': settings.PATH,
 		'csrf_cookie_name': settings.CSRF_COOKIE_NAME
 	}

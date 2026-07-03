@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.3.0] - 2026-07-03
+
+### Fixed
+- Properties and DDL panels showing nothing for any tree item (table, column, role, etc.) across
+  all database types — `outer_connection_tab.js` initialized a new connection tab's
+  `treeTabsVisible` flag to `false` while the panel is actually visible by default, so every
+  `tree.clickNodeEvent` handler silently no-opped its properties/DDL fetch
+- Static JS/CSS fixes not taking effect after an app rebuild — `omnidb-server.py` serves static
+  assets with a 24h `Expires` header, and the cache-busting query string only changed on a manual
+  version bump, so a browser/webview could keep serving a stale cached copy of a file across app
+  restarts for up to a day. Static asset URLs now carry a `STATIC_CACHE_BUST` token generated fresh
+  on every server process start, forcing a refetch after every restart
+
 ## [3.2.2] - 2026-07-03
 
 ### Fixed

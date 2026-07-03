@@ -110,6 +110,7 @@ def index(request):
 		'desktop_mode': settings.DESKTOP_MODE,
 		'omnidb_version': settings.OMNIDB_VERSION,
 		'omnidb_short_version': settings.OMNIDB_SHORT_VERSION,
+		'static_cache_bust': settings.STATIC_CACHE_BUST,
 		'menu_item': 'workspace',
 		'shortcuts': shortcut_object,
 		'tab_token': ''.join(random.choice(string.ascii_lowercase + string.digits) for i in range(20)),
@@ -145,7 +146,8 @@ def shortcuts(request):
 
 	context = {
 		'omnidb_version': settings.OMNIDB_VERSION,
-		'omnidb_short_version': settings.OMNIDB_SHORT_VERSION
+		'omnidb_short_version': settings.OMNIDB_SHORT_VERSION,
+		'static_cache_bust': settings.STATIC_CACHE_BUST
 	}
 
 	template = loader.get_template('OmniDB_app/shortcuts.html')
