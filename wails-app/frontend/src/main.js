@@ -1,43 +1,27 @@
-import './style.css';
-import './app.css';
+import {
+	Quit,
+	WindowMinimise,
+	WindowToggleMaximise,
+	WindowMaximise,
+} from '../wailsjs/runtime/runtime';
 
-import logo from './assets/images/logo-universal.png';
-import {Greet} from '../wailsjs/go/main/App';
+const loadingContainer = document.getElementById('loading_interface');
+const barTop = document.getElementById('bar_top');
+const view = document.getElementById('view');
 
-document.querySelector('#app').innerHTML = `
-    <img id="logo" class="logo">
-      <div class="result" id="result">Please enter your name below 👇</div>
-      <div class="input-box" id="input">
-        <input class="input" id="name" type="text" autocomplete="off" />
-        <button class="btn" onclick="greet()">Greet</button>
-      </div>
-    </div>
-`;
-document.getElementById('logo').src = logo;
+document.getElementById('gui_close').addEventListener('click', () => Quit());
+document.getElementById('gui_minimize').addEventListener('click', () => WindowMinimise());
+document.getElementById('gui_fullscreen').addEventListener('click', () => WindowToggleMaximise());
 
-let nameElement = document.getElementById("name");
-nameElement.focus();
-let resultElement = document.getElementById("result");
+loadingContainer.style.display = '';
 
-// Setup the greet function
-window.greet = function () {
-    // Get name
-    let name = nameElement.value;
-
-    // Check if the input is empty
-    if (name === "") return;
-
-    // Call App.Greet(name)
-    try {
-        Greet(name)
-            .then((result) => {
-                // Update result with data back from App.Greet()
-                resultElement.innerText = result;
-            })
-            .catch((err) => {
-                console.error(err);
-            });
-    } catch (err) {
-        console.error(err);
-    }
-};
+// TEMPORARY placeholder transition for this step only — proves the frameless
+// window, custom titlebar and iframe layout work. Replaced in the next step
+// by real backend-readiness detection (omnidb-server startup instead of a timer).
+setTimeout(() => {
+	loadingContainer.style.display = 'none';
+	WindowMaximise();
+	barTop.style.display = '';
+	view.style.display = '';
+	view.src = 'about:blank';
+}, 1500);
