@@ -2,15 +2,13 @@ package main
 
 import (
 	"context"
-	"net/http"
 	"os/exec"
 )
 
 // App struct
 type App struct {
-	ctx        context.Context
-	server     *exec.Cmd
-	frameProxy *http.Server
+	ctx    context.Context
+	server *exec.Cmd
 }
 
 // NewApp creates a new App application struct
@@ -30,5 +28,4 @@ func (a *App) startup(ctx context.Context) {
 // v_window.on('close', () => process.kill(django.pid)).
 func (a *App) shutdown(ctx context.Context) {
 	a.stopBackend()
-	a.stopFrameProxy()
 }

@@ -1,20 +1,8 @@
-import {
-	Quit,
-	WindowMinimise,
-	WindowToggleMaximise,
-	WindowMaximise,
-	EventsOn,
-} from '../wailsjs/runtime/runtime';
+import { WindowMaximise, EventsOn } from '../wailsjs/runtime/runtime';
 
 const loadingContainer = document.getElementById('loading_interface');
 const loadingLog = document.getElementById('loading');
 const loginWrapBody = document.getElementById('login_wrap_body');
-const barTop = document.getElementById('bar_top');
-const view = document.getElementById('view');
-
-document.getElementById('gui_close').addEventListener('click', () => Quit());
-document.getElementById('gui_minimize').addEventListener('click', () => WindowMinimise());
-document.getElementById('gui_fullscreen').addEventListener('click', () => WindowToggleMaximise());
 
 loadingContainer.style.display = '';
 
@@ -23,10 +11,13 @@ EventsOn('backend:log', (line) => {
 	loginWrapBody.scrollTo(0, 99999);
 });
 
+// Full top-level navigation, not an <iframe>: WKWebView treats iframed
+// content as third-party and silently drops the login session cookie
+// (verified — Django's redirect chain succeeds server-side, but the cookie
+// never survives the next request). Navigating the whole window avoids that
+// entirely, at the cost of the custom frameless titlebar the NW.js shell
+// had — see main.go, which uses the native window frame instead.
 EventsOn('backend:ready', (url) => {
-	loadingContainer.style.display = 'none';
 	WindowMaximise();
-	barTop.style.display = '';
-	view.style.display = '';
-	view.src = url;
+	window.location.href = url;
 });
