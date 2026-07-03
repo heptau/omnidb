@@ -1,19 +1,44 @@
-# README
+# wails-app
 
-## About
+The Wails (Go) desktop shell for OmniDB — an in-progress replacement for the
+NW.js shell in `../deploy/app/`. See `../AGENTS.md` for the full picture of
+how this fits into the project and why it's built the way it is.
 
-This is the official Wails Vanilla template.
-
-You can configure the project by editing `wails.json`. More information about the project settings can be found
-here: https://wails.io/docs/reference/project-config
-
-## Live Development
-
-To run in live development mode, run `wails dev` in the project directory. This will run a Vite development
-server that will provide very fast hot reload of your frontend changes. If you want to develop in a browser
-and have access to your Go methods, there is also a dev server that runs on http://localhost:34115. Connect
-to this in your browser, and you can call your Go code from devtools.
+This shell only replaces the desktop wrapper: it spawns the `omnidb-server`
+binary as a subprocess, waits for it to report readiness, and navigates the
+window to it. All frontend and backend application code lives in `../OmniDB/`
+and is unchanged.
 
 ## Building
 
-To build a redistributable, production mode package, use `wails build`.
+Normally you build this through the root `Makefile`, which also packages the
+`omnidb-server` binary into the app bundle:
+
+```bash
+cd ..
+source venv/bin/activate
+export PATH="$PATH:$(go env GOPATH)/bin"
+make build-mac-wails-arm64
+```
+
+For iterating on just this Go/frontend code without rebuilding the Python
+server each time, `wails build` here produces a standalone binary that looks
+for `omnidb-server` next to itself (or in `Contents/Resources/omnidb-server`
+in a packaged macOS `.app`). To test against a local server build (real or a
+throwaway stub script) without the full Makefile pipeline, point it at a
+directory via:
+
+```bash
+OMNIDB_SERVER_DIR=/path/to/dir/containing/omnidb-server wails build && \
+  OMNIDB_SERVER_DIR=/path/to/dir/containing/omnidb-server ./build/bin/OmniDB.app/Contents/MacOS/OmniDB
+```
+
+`wails dev` (live reload) also works for iterating on `frontend/`, but note
+the frontend here is just the loading screen shown before the window
+navigates away to the real (server-rendered) OmniDB UI — there isn't much to
+hot-reload beyond that.
+
+## Status
+
+macOS (Apple Silicon) only so far. Not yet merged to `master`; the NW.js
+shell in `../deploy/app/` is still what ships.
