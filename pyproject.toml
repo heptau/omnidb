@@ -1,7 +1,7 @@
 [project]
 name = "omnidb"
 version = "3.2.2"
-description = "Revived open-source database management tool (PostgreSQL-focused, NW.js-based)"
+description = "Revived open-source database management tool (PostgreSQL-focused)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "MIT" }

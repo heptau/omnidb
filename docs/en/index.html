@@ -24,7 +24,7 @@
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://www.omnidb.net/en/">
 	<meta property="og:title" content="OmniDB | Open Source Database Management Tool Revival">
-	<meta property="og:description" content="OmniDB is being actively revived — lightweight, fast, and open-source database management. PostgreSQL-focused, NW.js-based desktop app for macOS, Linux, and Windows.">
+	<meta property="og:description" content="OmniDB is being actively revived — lightweight, fast, and open-source database management. PostgreSQL-focused desktop app for macOS, Linux, and Windows, currently migrating its desktop shell from NW.js to Wails.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
@@ -34,7 +34,7 @@
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
 	<meta name="twitter:title" content="OmniDB | Open Source Database Management Tool Revival">
-	<meta name="twitter:description" content="Lightweight, fast, and open-source database management. PostgreSQL-focused, NW.js-based desktop app.">
+	<meta name="twitter:description" content="Lightweight, fast, and open-source database management. PostgreSQL-focused desktop app, migrating from NW.js to Wails.">
 	<meta name="twitter:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
 
 	<!-- LLM / AI discovery -->
@@ -49,7 +49,7 @@
 		"name": "OmniDB",
 		"applicationCategory": "DeveloperApplication",
 		"operatingSystem": "macOS, Linux, Windows",
-		"description": "Revived open-source database management tool. Lightweight, PostgreSQL-focused, NW.js-based desktop application with support for MySQL, Oracle, MariaDB, and SQLite.",
+		"description": "Revived open-source database management tool. Lightweight, PostgreSQL-focused desktop application with support for MySQL, Oracle, MariaDB, and SQLite. The desktop shell is currently migrating from NW.js to Wails.",
 		"url": "https://www.omnidb.net",
 		"downloadUrl": "https://github.com/heptau/omnidb/releases",
 		"softwareVersion": "3.2.1",
@@ -110,6 +110,9 @@
 			</p>
 			<p><strong>Current Release:</strong> Optimized version for <strong>macOS (Apple Silicon and Intel)</strong> is now
 				available. Support for Windows and Linux is in active development.</p>
+			<p><strong>Under the hood:</strong> we're migrating the desktop shell from NW.js to
+				<a href="https://wails.io" class="pg-link" target="_blank">Wails</a> (Go) for a smaller, faster app — in
+				progress, currently macOS-only. The version you download today still ships on NW.js.</p>
 		</div>
 
 		<section class="get-started">

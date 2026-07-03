@@ -41,17 +41,21 @@ python manage.py runserver
 ## Build
 
 ```bash
-# Build for current platform
-make build
+# Build for your platform (NW.js desktop shell — currently shipped)
+make build-mac-arm64    # or build-mac-intel / build-linux / build-win
 
-# Build for all platforms
-make build-all
+# Build the Wails desktop shell (in progress, macOS Apple Silicon only for now)
+make build-mac-wails-arm64
 ```
+
+Run `make help` for the full list of targets.
 
 ## Tech Stack
 
 - **Backend**: Python, Django 5+
-- **Frontend**: HTML, CSS, JavaScript (NW.js)
+- **Frontend**: HTML, CSS, JavaScript (server-rendered, no SPA framework)
+- **Desktop shell**: NW.js (shipped today); migrating to Wails/Go — see `wails-app/`
+  and `AGENTS.md` for details
 - **Database**: PostgreSQL, SQLite
 - **Libraries**: ACE Editor, AG Grid, Chart.js, Bootstrap
 
