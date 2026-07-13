@@ -10,6 +10,12 @@ base_urlpatterns = [
 
 	url(r'^upload/$', views.plugins.upload_view, name='sign_in'),
 
+	#INTERNAL (Go backend bridge, see /go-server and AGENTS.md)
+	url(r'^internal/whoami/$', views.internal.whoami, name='internal_whoami'),
+	url(r'^internal/connection/$', views.internal.connection_info, name='internal_connection_info'),
+	url(r'^internal/queue_response/$', views.internal.queue_response_internal, name='internal_queue_response'),
+	url(r'^internal/appdb_path/$', views.internal.appdb_path, name='internal_appdb_path'),
+
 	url(r'^long_polling/$', views.polling.long_polling, name='long_polling'),
 	url(r'^create_request/$', views.polling.create_request, name='create_request'),
 	url(r'^clear_client/$', views.polling.clear_client, name='clear_client'),

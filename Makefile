@@ -177,6 +177,9 @@ _build_mac: _prepare_dirs _ensure_wails
 	plutil -replace CFBundleShortVersionString -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
 	plutil -replace CFBundleVersion -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
 
+	@echo "Building Go reverse-proxy server..."
+	cd go-server && GOOS=darwin GOARCH=$(WAILS_GOARCH) go build -o "../$(APP_CONTENT)/MacOS/omnidb-go-server" .
+
 	# Build server
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
 
@@ -215,6 +218,9 @@ _build_linux: _prepare_dirs _ensure_wails
 	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-linux"
 	mv "wails-app/build/bin/$(APP_NAME)" "$(BUILD_DIR)/$(APP_NAME)-linux/$(APP_NAME)"
 
+	@echo "Building Go reverse-proxy server..."
+	cd go-server && GOOS=linux GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-linux/omnidb-go-server" .
+
 	# Build server
 	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
 
@@ -238,6 +244,9 @@ _build_win: _prepare_dirs _ensure_wails
 	rm -rf "$(BUILD_DIR)/$(APP_NAME)-win"
 	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-win"
 	mv "wails-app/build/bin/$(APP_NAME).exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
+
+	@echo "Building Go reverse-proxy server..."
+	cd go-server && GOOS=windows GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-win/omnidb-go-server.exe" .
 
 	@echo "Building server..."
 	# WARNING: PyInstaller cannot cross-compile — must run on Windows for a

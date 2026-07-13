@@ -13,105 +13,50 @@ import (
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// serverDirEnvOverride lets developers point at a local omnidb-server build
-// (or a stub script) without needing the full Makefile packaging pipeline.
-// Production builds never set this; resolveServerDir falls back to the
-// bundle-relative path below.
-const serverDirEnvOverride = "OMNIDB_SERVER_DIR"
+// goServerPathEnvOverride lets developers point at a local omnidb-go-server
+// build without needing the full Makefile packaging pipeline.
+const goServerPathEnvOverride = "OMNIDB_GO_SERVER_PATH"
 
-// resolveServerDir mirrors deploy/app/index.html's
-// path.join(global.__dirname, 'omnidb-server'): the server ships as a
-// sibling resource next to the shell. On a packaged macOS .app the Go
-// binary lives in Contents/MacOS, while resources (as copied by the
-// Makefile today for app.nw) belong in Contents/Resources.
-func resolveServerDir() (string, error) {
-	if dir := os.Getenv(serverDirEnvOverride); dir != "" {
-		return dir, nil
+// resolveGoServerPath locates the omnidb-go-server binary (see go-server/),
+// which now owns spawning/locating the actual omnidb-server (Python/Django)
+// process and reverse-proxying to it — see go-server/server_process.go for
+// that half of the contract. The proxy binary ships as a plain sibling of
+// this shell binary on every platform (no Resources-folder indirection
+// needed, unlike the Python bundle).
+func resolveGoServerPath() (string, error) {
+	if p := os.Getenv(goServerPathEnvOverride); p != "" {
+		return p, nil
 	}
 
 	exePath, err := os.Executable()
 	if err != nil {
 		return "", fmt.Errorf("resolve executable path: %w", err)
 	}
-	exeDir := filepath.Dir(exePath)
 
-	if runtime.GOOS == "darwin" {
-		return filepath.Join(exeDir, "..", "Resources", "omnidb-server"), nil
-	}
-	return filepath.Join(exeDir, "omnidb-server"), nil
-}
-
-func serverExecutableName() string {
+	name := "omnidb-go-server"
 	if runtime.GOOS == "windows" {
-		return "omnidb-server.exe"
+		name += ".exe"
 	}
-	return "omnidb-server"
+	return filepath.Join(filepath.Dir(exePath), name), nil
 }
 
-// buildServerEnv replicates buildServerSpawnOptions() from the NW.js shell:
-// PATH is extended so the bundled binary finds system tools, and on macOS
-// the bundled psycopg2 dylibs are made discoverable.
-func buildServerEnv(serverDir string) []string {
-	env := map[string]string{}
-	for _, kv := range os.Environ() {
-		if i := strings.IndexByte(kv, '='); i >= 0 {
-			env[kv[:i]] = kv[i+1:]
-		}
-	}
-
-	internalDir := filepath.Join(serverDir, "_internal")
-
-	prependPathEnv(env, "PATH", []string{
-		serverDir,
-		internalDir,
-		"/usr/local/bin",
-		"/opt/homebrew/bin",
-		"/usr/bin",
-		"/bin",
-		"/usr/sbin",
-		"/sbin",
-	})
-
-	if runtime.GOOS == "darwin" {
-		dylibDirs := []string{internalDir, filepath.Join(internalDir, "psycopg2", ".dylibs")}
-		prependPathEnv(env, "DYLD_LIBRARY_PATH", dylibDirs)
-		prependPathEnv(env, "DYLD_FALLBACK_LIBRARY_PATH", dylibDirs)
-	}
-
-	result := make([]string, 0, len(env))
-	for k, v := range env {
-		result = append(result, k+"="+v)
-	}
-	return result
-}
-
-func prependPathEnv(env map[string]string, name string, values []string) {
-	parts := make([]string, 0, len(values)+1)
-	for _, v := range values {
-		if v != "" {
-			parts = append(parts, v)
-		}
-	}
-	if existing := env[name]; existing != "" {
-		parts = append(parts, existing)
-	}
-	env[name] = strings.Join(parts, string(os.PathListSeparator))
-}
-
-// startBackend spawns the omnidb-server process and streams its output back
-// to the frontend as "backend:log" events, emitting "backend:ready" with the
-// login URL once the server reports it is listening (a stdout line starting
-// with "http" — see OmniDB/omnidb-server.py's DjangoApplication.run).
+// startBackend spawns the omnidb-go-server process (which in turn spawns the
+// real omnidb-server and proxies to it) and streams its output back to the
+// frontend as "backend:log" events, emitting "backend:ready" with the login
+// URL once it reports it is listening (a stdout line starting with "http").
 func (a *App) startBackend() {
-	serverDir, err := resolveServerDir()
+	goServerPath, err := resolveGoServerPath()
 	if err != nil {
 		wailsruntime.EventsEmit(a.ctx, "backend:log", fmt.Sprintf("Failed to locate OmniDB server: %v", err))
 		return
 	}
 
-	cmd := exec.Command(filepath.Join(serverDir, serverExecutableName()), "-A")
-	cmd.Dir = serverDir
-	cmd.Env = buildServerEnv(serverDir)
+	// Forward any args the shell itself was launched with (e.g. `open
+	// OmniDB.app --args -d /some/throwaway/dir` for isolated test runs) on
+	// top of the required -A. Without this, a caller-supplied -d is
+	// silently dropped and the server falls back to the real ~/.omnidb.
+	args := append([]string{"-A"}, os.Args[1:]...)
+	cmd := exec.Command(goServerPath, args...)
 
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {

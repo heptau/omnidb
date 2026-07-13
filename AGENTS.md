@@ -146,6 +146,16 @@ context if something about window/login behavior looks odd):**
   desktop mode), including any saved database connections and credentials the
   user actually has. For local testing, use `-d <some throwaway dir>` on
   `omnidb-server.py`/the built `omnidb-server` binary instead of the default.
+  **This does NOT work through the packaged Wails `.app`** — neither
+  `wails-app/main.go`/`app.go` nor `go-server/main.go` read/forward `os.Args`,
+  so `open OmniDB.app --args -d ...` is silently ignored and the app opens
+  against the real `~/.omnidb` (this has leaked real production connection
+  data into a screenshot at least twice). To test the actual desktop binary
+  chain safely, invoke `omnidb-go-server` directly (not through `open`/the
+  `.app`'s GUI launcher) with `OMNIDB_SERVER_DIR=<path to Contents/Resources/
+  omnidb-server>` and `-A -d <throwaway dir>` as args — it forwards them to
+  the real `omnidb-server` child untouched. A real CLI-args passthrough for
+  the packaged app is still an open gap, not yet fixed.
 - **PyInstaller builds are OS/arch-specific to the machine that ran them** —
   there's no cross-compilation; don't assume a Mac-built server binary works
   elsewhere.

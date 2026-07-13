@@ -20,3 +20,4 @@ omnidb_app/package-lock.json
 /build_deps
 /build_work
 .claude/settings.local.json
+/go-server/omnidb-go-server
