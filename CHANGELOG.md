@@ -7,7 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [3.5.0] - 2026-07-14
+## [3.6.0] - 2026-07-14
+
+### Removed
+- Django, CherryPy, and PyInstaller entirely — from the build, the runtime, and the source tree.
+  The Go backend (`go-server/`) is now the sole server implementation; the Wails shell only ever
+  spawns `omnidb-go-server`, never a Python process. The old Django source tree, `requirements.txt`,
+  `pyproject.toml`, `Dockerfile`, and the Python virtualenv are all gone from the repository.
+
+### Fixed
+- The desktop app could get stuck on the loading screen indefinitely: a fast-starting Go backend
+  could emit its "ready" event before the frontend had finished registering its listener, and the
+  event was silently dropped. This never surfaced while Django (slow to start) was the backend.
+  The frontend now explicitly signals the backend once it's listening, instead of the backend
+  guessing when that's safe.
+- The loading screen's version label was hardcoded and had drifted out of sync with the app's
+  actual version; it's now kept in sync automatically on every build.
+- A brand-new install (no pre-existing `~/.omnidb`) had no way to create the app database's schema
+  or a default account, now that Django's `manage.py migrate` no longer exists to do it — the Go
+  backend now bootstraps the schema and a default `admin`/`admin` account itself on first run
+  against an empty database, and is a no-op against any existing one.
+
+### Changed
+- CI (`tests.yml`) now builds, vets, and tests the Go backend and Wails shell directly, instead of
+  testing the now-removed Django application.
 
 ### Added
 - Native login/session handling in the Go backend (Django-compatible PBKDF2 password

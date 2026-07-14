@@ -13,6 +13,52 @@ import (
 //go:embed static/shortcuts.html
 var shortcutsHTMLTemplate string
 
+type indentSQLRequest struct {
+	PSQL string `json:"p_sql"`
+}
+
+// handleIndentSQL mirrors workspace.py's indent_sql — Python called
+// sqlparse.format(v_sql, reindent=True), a generic (not engine-specific)
+// tokenizer-based reformatter; reindentSQL (sql_indent.go) replicates that
+// same generic behavior natively, since indent_sql's wire contract only
+// ever carries the raw SQL text, no connection/technology context.
+//
+// A second, PostgreSQL-specific tier is planned on top of this: dispatch
+// to the user's own pg_procrustes (github.com/heptau/pg_procrustes, a
+// native Go formatter driven by the real PostgreSQL parser) specifically
+// for PostgreSQL connections, once its formatter/config packages are made
+// importable (they currently live under internal/, which Go blocks
+// external modules from importing) — that tier needs a wire contract
+// change (passing which engine a tab is connected to) this generic pass
+// doesn't need. See go-backend-migration memory for the full writeup,
+// including a real cgo/cross-compile caveat (pg_procrustes depends on
+// pg_query_go, which uses cgo to compile actual PostgreSQL parser source —
+// this build's other dependencies are deliberately pure-Go for exactly the
+// cross-compilation reasons this would reintroduce, so that tier needs to
+// be weighed, not just wired in, once the API is available).
+func handleIndentSQL(upstream *url.URL) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		who, err := resolveIdentity(upstream, r.Header.Get("Cookie"))
+		if err != nil || !who.Authenticated {
+			writeUnauthenticated(w)
+			return
+		}
+
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var req indentSQLRequest
+		if err := json.Unmarshal([]byte(raw), &req); err != nil {
+			writeBadRequest(w)
+			return
+		}
+
+		writeEnvelope(w, reindentSQLSafe(req.PSQL), false, -1)
+	}
+}
+
 // staticCacheBust mirrors settings.py's STATIC_CACHE_BUST — computed once at
 // process start for the same reason Django computes its own: busting
 // browser caches for static assets across deploys. The two processes' values

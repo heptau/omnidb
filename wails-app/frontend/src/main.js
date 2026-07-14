@@ -1,4 +1,5 @@
 import { WindowMaximise, EventsOn } from '../wailsjs/runtime/runtime';
+import { FrontendReady } from '../wailsjs/go/main/App';
 
 const loadingContainer = document.getElementById('loading_interface');
 const loadingLog = document.getElementById('loading');
@@ -21,3 +22,9 @@ EventsOn('backend:ready', (url) => {
 	WindowMaximise();
 	window.location.href = url;
 });
+
+// Tell Go it's safe to start the backend and start emitting events — only
+// after the listeners above are registered. See FrontendReady's comment in
+// app.go for why this handshake exists instead of starting from Go's own
+// OnStartup/OnDomReady lifecycle hooks.
+FrontendReady();

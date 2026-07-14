@@ -75,7 +75,7 @@ func applyRememberedPassword(r *http.Request, connID string, info *ConnectionInf
 	if info.Password != "" {
 		return
 	}
-	if pw, ok := recalledPassword(sessionCookieValue(r), connID); ok {
+	if pw, ok := recalledPassword(nativeSessionCookieValue(r), connID); ok {
 		info.Password = pw
 	}
 }

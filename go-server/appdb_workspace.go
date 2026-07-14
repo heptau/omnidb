@@ -16,6 +16,14 @@ func closeWelcome(db *sql.DB, userID int64) error {
 	return err
 }
 
+// deleteTab mirrors polling.py's create_request CloseTab branch's
+// Tab.objects.get(id=tab_db_id, user=request.user).delete() — scoped to the
+// caller's own user id, matching Python's ownership filter exactly.
+func deleteTab(db *sql.DB, userID, tabDBID int64) error {
+	_, err := db.Exec(`delete from OmniDB_app_tab where id = ? and user_id = ?`, tabDBID, userID)
+	return err
+}
+
 // saveConfigUser mirrors save_config_user's UserDetails write ONLY — the
 // password-change branch (json_object['p_pwd'] != ”) needs Django's
 // PBKDF2 hashing (update_session_auth_hash, etc.) and stays entirely

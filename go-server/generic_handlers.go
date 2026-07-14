@@ -304,7 +304,7 @@ func handleRenewPassword(upstream *url.URL, fallback http.Handler) http.HandlerF
 		}
 		db.Close()
 
-		rememberPassword(sessionCookieValue(r), connID, reqBody.PPassword)
+		rememberPassword(nativeSessionCookieValue(r), connID, reqBody.PPassword)
 		writeEnvelope(w, "", false, -1)
 	}
 }

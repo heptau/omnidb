@@ -292,7 +292,7 @@ func runTerminalReader(upstream *url.URL, cookie string, clientID, tabID string,
 	for {
 		n, err := t.stdout.Read(buf)
 		if n > 0 {
-			queueResponseOnDjango(upstream, cookie, map[string]any{
+			queueNativeResponse(cookie, map[string]any{
 				"v_code":         responseTerminalResult,
 				"v_context_code": contextCode,
 				"v_error":        false,
@@ -378,7 +378,7 @@ func handleTerminalRequest(upstream *url.URL, cookie, clientID string, q termina
 }
 
 func queueTerminalError(upstream *url.URL, cookie string, contextCode int, err error) {
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseMessageException,
 		"v_context_code": contextCode,
 		"v_error":        true,

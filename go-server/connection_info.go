@@ -1,15 +1,15 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
-	"net/http"
+	"database/sql"
 	"net/url"
 	"strconv"
 )
 
-// ConnectionInfo mirrors the JSON shape returned by Django's
-// internal/connection view (OmniDB_app/views/internal.py).
+// ConnectionInfo mirrors the JSON shape Django's internal/connection view
+// used to return (OmniDB_app/views/internal.py) — kept unchanged even
+// though resolveConnection no longer calls that endpoint, since every
+// existing native route already consumes this exact struct shape.
 type ConnectionInfo struct {
 	Found      bool   `json:"found"`
 	Technology string `json:"technology"`
@@ -22,50 +22,58 @@ type ConnectionInfo struct {
 	Public     bool   `json:"public"`
 }
 
-// resolveConnection asks Django for the raw saved-connection row behind a
-// p_database_index, already ownership-checked (owner or public) the same
-// way Session.RefreshDatabaseList() does. Go opens its own native driver
-// connection from this instead of reusing Django's in-memory OmniDatabase
-// instances.
+// resolveConnection resolves the raw saved-connection row behind a
+// p_database_index directly against Django's own app database (see
+// appdb_connections.go's fetchConnectionByID) — no HTTP round trip to
+// Django anymore. Go opens its own native driver connection from this
+// instead of reusing Django's in-memory OmniDatabase instances.
 //
-// This is a direct Go-as-HTTP-client call to Django, NOT a request this
-// process's own reverse proxy forwards — so main.go's Director (the only
-// place that injects X-Omnidb-Trusted-User-Id for proxied requests) never
-// runs for it. Before Fáze 7, that didn't matter: Django's own session
-// cookie (set by its own, then-still-active login.py) made
-// request.user.is_authenticated true independent of any trusted header.
-// Since Fáze 7 moved login to Go, a purely Go-native session never sets
-// Django's own session cookie at all, so connection_info's ownership check
-// (Q(user=request.user) | Q(public=True)) silently returned found:false for
-// every non-public connection — a real regression, found by testing a
-// brand-new Go-native session against a private connection. Fixed by
-// setting the trusted header here too, mirroring the Director exactly.
+// Before Fáze 8b this was a direct Go-as-HTTP-client call to Django's
+// /internal/connection/ bridge, on the hot path of every single query/
+// console/edit-data/export/terminal request — the last such per-request
+// bridge call remaining after native long-polling removed
+// queueResponseOnDjango's. Replicates the exact same ownership check
+// Django's own view did (Q(user=request.user) | Q(public=True), mirroring
+// Session.RefreshDatabaseList()) since fetchConnectionByID itself
+// deliberately doesn't filter by owner (it's shared with the terminal/
+// tunnel route, which resolves a different, already-trusted id).
 func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*ConnectionInfo, error) {
-	reqURL := fmt.Sprintf("%s://%s/internal/connection/?id=%s", upstream.Scheme, upstream.Host, url.QueryEscape(connID))
-	req, err := http.NewRequest(http.MethodGet, reqURL, nil)
-	if err != nil {
-		return nil, err
-	}
-	if cookieHeader != "" {
-		req.Header.Set("Cookie", cookieHeader)
-	}
-	if who, err := resolveIdentity(upstream, cookieHeader); err == nil && who.Authenticated {
-		req.Header.Set(trustedUserHeader, strconv.Itoa(who.UserID))
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("call connection info: %w", err)
-	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
+	who, err := resolveIdentity(upstream, cookieHeader)
+	if err != nil || !who.Authenticated {
 		return &ConnectionInfo{Found: false}, nil
 	}
 
-	var info ConnectionInfo
-	if err := json.NewDecoder(resp.Body).Decode(&info); err != nil {
-		return nil, fmt.Errorf("decode connection info response: %w", err)
+	id, err := strconv.ParseInt(connID, 10, 64)
+	if err != nil {
+		return &ConnectionInfo{Found: false}, nil
 	}
-	return &info, nil
+
+	db, err := openAppDB(upstream)
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
+	c, err := fetchConnectionByID(db, id)
+	if err == sql.ErrNoRows {
+		return &ConnectionInfo{Found: false}, nil
+	}
+	if err != nil {
+		return nil, err
+	}
+	if c.OwnerID != int64(who.UserID) && !c.Public {
+		return &ConnectionInfo{Found: false}, nil
+	}
+
+	return &ConnectionInfo{
+		Found:      true,
+		Technology: c.Technology,
+		Server:     c.Server,
+		Port:       c.Port,
+		Database:   c.Database,
+		Username:   c.Username,
+		Password:   c.Password,
+		Alias:      c.Alias,
+		Public:     c.Public,
+	}, nil
 }

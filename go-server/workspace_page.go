@@ -3,7 +3,6 @@ package main
 import (
 	_ "embed"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 	"net/url"
@@ -157,39 +156,20 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 	return html, nil
 }
 
-// ensureDjangoSession calls Django's internal prepare_workspace_session
-// bridge (see OmniDB_app/views/internal.py) so /long_polling/,
-// /client_keep_alive/, and the still-Django part of /create_request/ (Fáze
-// 8b's remaining item — none of these are natively ported yet) keep working:
-// all three key their in-memory client_object by request.session.session_key,
-// which only exists once a real Django session has been saved at least once.
-// Before this page became native, visiting Django's own check_session then
-// workspace.index() did this as an unavoidable side effect; this replicates
-// it explicitly instead. Returns the cookies (just omnidb_sessionid, and
-// only on this browser's first-ever call) the caller must relay onto its own
-// response — see handleWorkspacePage.
-func ensureDjangoSession(upstream *url.URL, cookie string, userID int) ([]*http.Cookie, error) {
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s://%s/internal/prepare_workspace_session/", upstream.Scheme, upstream.Host), nil)
-	if err != nil {
-		return nil, err
-	}
-	if cookie != "" {
-		req.Header.Set("Cookie", cookie)
-	}
-	req.Header.Set(trustedUserHeader, strconv.Itoa(userID))
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("prepare_workspace_session: unexpected status %d", resp.StatusCode)
-	}
-	return resp.Cookies(), nil
-}
-
 // handleWorkspacePage mirrors workspace.py's index() — the main SPA shell.
+//
+// Earlier revisions of this handler also called Django's internal
+// prepare_workspace_session bridge (OmniDB_app/views/internal.py) to keep
+// request.session.session_key non-empty for /long_polling/,
+// /client_keep_alive/, and create_request's queue_response_internal call —
+// all three used to key their in-memory client_object by that value.
+// Removed once native long-polling (native_polling.go) and native
+// resolveConnection (connection_info.go) eliminated every remaining
+// caller of those Django-session-dependent bridges: a route-by-route
+// audit against urls.py (excluding commented-out/dead routes and
+// expanding the mysql/mariadb suffix loop) confirmed every browser-
+// reachable Django route is now natively handled — the bridge is still
+// declared in internal.py but nothing in this process calls it anymore.
 func handleWorkspacePage(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cookie := r.Header.Get("Cookie")
@@ -220,17 +200,6 @@ func handleWorkspacePage(upstream *url.URL) http.HandlerFunc {
 			shortcuts = map[string]workspaceShortcut{}
 		}
 
-		// Deliberately non-fatal: a Django hiccup here degrades real-time
-		// query result delivery (still-Django long-polling), not the page
-		// render itself.
-		if setCookies, err := ensureDjangoSession(upstream, cookie, who.UserID); err != nil {
-			log.Printf("ensureDjangoSession: %v", err)
-		} else {
-			for _, c := range setCookies {
-				http.SetCookie(w, c)
-			}
-		}
-
 		html, err := renderWorkspacePage(who, ud, shortcuts)
 		if err != nil {
 			http.Error(w, "internal error", http.StatusInternalServerError)
@@ -242,12 +211,11 @@ func handleWorkspacePage(upstream *url.URL) http.HandlerFunc {
 	}
 }
 
-// handleCheckSession mirrors login.py's check_session — the root "/" route.
-// The Django-session bootstrap it used to perform now happens inside
-// handleWorkspacePage (via ensureDjangoSession) instead, right before the
-// redirect target actually renders — same effective ordering as before,
-// since Python's own check_session immediately redirected to /workspace/
-// too.
+// handleCheckSession mirrors login.py's check_session — the root "/"
+// route. Django's own version bootstrapped its session here before
+// redirecting; Go no longer needs to (see handleWorkspacePage's comment —
+// nothing downstream depends on Django's session anymore), so this is just
+// the auth check + redirect.
 func handleCheckSession(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		who, err := resolveIdentity(upstream, r.Header.Get("Cookie"))

@@ -277,7 +277,7 @@ func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][
 func runEditDataFetch(upstream *url.URL, cookie string, q editDataFetchRequestData, contextCode int, info *ConnectionInfo) {
 	db, err := openNativeQueryTarget(info)
 	if err != nil {
-		queueResponseOnDjango(upstream, cookie, map[string]any{
+		queueNativeResponse(cookie, map[string]any{
 			"v_code":         responseQueryEditDataResult,
 			"v_context_code": contextCode,
 			"v_error":        true,
@@ -294,7 +294,7 @@ func runEditDataFetch(upstream *url.URL, cookie string, q editDataFetchRequestDa
 
 	rows, rowPKs, queryInfo, err := fetchEditDataRows(db, info.Technology, schema, q.VTable, q.VFilter, q.VCount, q.VPKList, q.VColumns)
 	if err != nil {
-		queueResponseOnDjango(upstream, cookie, map[string]any{
+		queueNativeResponse(cookie, map[string]any{
 			"v_code":         responseQueryEditDataResult,
 			"v_context_code": contextCode,
 			"v_error":        true,
@@ -303,7 +303,7 @@ func runEditDataFetch(upstream *url.URL, cookie string, q editDataFetchRequestDa
 		return
 	}
 
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseQueryEditDataResult,
 		"v_context_code": contextCode,
 		"v_error":        false,
@@ -320,7 +320,7 @@ func runEditDataFetch(upstream *url.URL, cookie string, q editDataFetchRequestDa
 func runEditDataSave(upstream *url.URL, cookie string, q editDataSaveRequestData, contextCode int, info *ConnectionInfo) {
 	db, err := openNativeQueryTarget(info)
 	if err != nil {
-		queueResponseOnDjango(upstream, cookie, map[string]any{
+		queueNativeResponse(cookie, map[string]any{
 			"v_code":         responseSaveEditDataResult,
 			"v_context_code": contextCode,
 			"v_error":        true,
@@ -337,7 +337,7 @@ func runEditDataSave(upstream *url.URL, cookie string, q editDataSaveRequestData
 
 	results := saveEditDataRows(db, info.Technology, schema, q.VTable, q.VDataRows, q.VRowsInfo, q.VColumns)
 
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseSaveEditDataResult,
 		"v_context_code": contextCode,
 		"v_error":        false,

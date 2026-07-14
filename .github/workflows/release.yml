@@ -61,10 +61,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
       - uses: actions/setup-go@v5
         with:
           go-version: 'stable'
@@ -82,17 +78,9 @@ jobs:
         run: choco install make --no-progress -y
         shell: powershell
 
-      - name: Install LDAP headers (Linux)
-        if: runner.os == 'Linux'
-        run: sudo apt-get install -y libldap2-dev libsasl2-dev
-
       - name: Install Wails GTK/webkit2gtk dependencies (Linux)
         if: runner.os == 'Linux'
         run: sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
-
-      - name: Install Python dependencies
-        shell: bash
-        run: pip install -r requirements.txt pyinstaller
 
       - name: Build
         shell: bash

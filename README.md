@@ -22,45 +22,37 @@ A user-friendly, lightweight, cross-platform database management tool with stron
 
 ## Quick Start
 
+The easiest way to get OmniDB is a prebuilt release — see
+[Installation](https://www.omnidb.net#installation) (Homebrew cask on macOS,
+or a direct download from
+[Releases](https://github.com/heptau/omnidb/releases)).
+
+To build from source:
+
 ```bash
-# Clone and setup
 git clone https://github.com/heptau/omnidb.git
 cd omnidb
+export PATH="$PATH:$(go env GOPATH)/bin"   # picks up the Wails CLI once installed
 
-# Install dependencies
-pip install -r requirements.txt
-
-# Run migrations
-cd OmniDB
-python manage.py migrate
-
-# Start server
-python manage.py runserver
-```
-
-## Build
-
-```bash
 make build-mac-arm64    # macOS Apple Silicon
-make build-linux        # Linux x64
-make build-win          # Windows x64
+make build-linux        # Linux x64 — must run ON Linux
+make build-win          # Windows x64 — cross-compiles from macOS/Linux
 ```
 
-Run `make help` for the full list of targets.
+Run `make help` for the full list of targets. The only prerequisite is Go —
+the Makefile installs the Wails CLI itself if it's missing.
 
 ## Tech Stack
 
-- **Backend**: Python, Django 5+
+- **Backend**: Go — see `go-server/` and `AGENTS.md` for details
 - **Frontend**: HTML, CSS, JavaScript (server-rendered, no SPA framework)
 - **Desktop shell**: Wails/Go — see `wails-app/` and `AGENTS.md` for details
-- **Database**: PostgreSQL, SQLite
+- **Database**: PostgreSQL, MySQL, MariaDB, Oracle, SQLite
 - **Libraries**: ACE Editor, AG Grid, Chart.js, Bootstrap
 
 ## Requirements
 
-- Python 3.10+
-- PostgreSQL (optional, for backend storage)
-- See `requirements.txt` for full dependencies
+- Go (to build from source) — see `AGENTS.md` for the exact toolchain notes
 
 ## License
 

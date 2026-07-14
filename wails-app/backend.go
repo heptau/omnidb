@@ -20,12 +20,10 @@ import (
 // build without needing the full Makefile packaging pipeline.
 const goServerPathEnvOverride = "OMNIDB_GO_SERVER_PATH"
 
-// resolveGoServerPath locates the omnidb-go-server binary (see go-server/),
-// which now owns spawning/locating the actual omnidb-server (Python/Django)
-// process and reverse-proxying to it — see go-server/server_process.go for
-// that half of the contract. The proxy binary ships as a plain sibling of
-// this shell binary on every platform (no Resources-folder indirection
-// needed, unlike the Python bundle).
+// resolveGoServerPath locates the omnidb-go-server binary (see go-server/)
+// — the entire backend now, no Django/Python process involved anywhere
+// (Fáze 8c). Ships as a plain sibling of this shell binary on every
+// platform (no Resources-folder indirection needed).
 func resolveGoServerPath() (string, error) {
 	if p := os.Getenv(goServerPathEnvOverride); p != "" {
 		return p, nil
@@ -43,10 +41,10 @@ func resolveGoServerPath() (string, error) {
 	return filepath.Join(filepath.Dir(exePath), name), nil
 }
 
-// startBackend spawns the omnidb-go-server process (which in turn spawns the
-// real omnidb-server and proxies to it) and streams its output back to the
-// frontend as "backend:log" events, emitting "backend:ready" with the login
-// URL once it reports it is listening (a stdout line starting with "http").
+// startBackend spawns the omnidb-go-server process and streams its output
+// back to the frontend as "backend:log" events, emitting "backend:ready"
+// with the login URL once it reports it is listening (a stdout line
+// starting with "http").
 func (a *App) startBackend() {
 	goServerPath, err := resolveGoServerPath()
 	if err != nil {
@@ -85,8 +83,8 @@ func (a *App) startBackend() {
 // streamServerOutput forwards the server's output to the frontend as
 // "backend:log" events. Once the ready line (starting with "http") appears,
 // it's emitted as "backend:ready" instead of being logged verbatim — it
-// carries a one-time login token (see omnidb-server.py) that must not be
-// displayed, only navigated to.
+// carries a one-time login token (see go-server/main.go's run()) that must
+// not be displayed, only navigated to.
 func (a *App) streamServerOutput(pipe io.Reader, watchForReadyURL bool) {
 	scanner := bufio.NewScanner(pipe)
 	for scanner.Scan() {
@@ -110,16 +108,9 @@ func (a *App) streamServerOutput(pipe io.Reader, watchForReadyURL bool) {
 // stopBackend asks omnidb-go-server to shut down gracefully over loopback
 // HTTP (see go-server/main.go's handleShutdown) and waits for it to exit,
 // falling back to Process.Kill() only if that request fails or the process
-// doesn't exit within a few seconds.
-//
-// Previously this only ever called Process.Kill() directly, which sends
-// SIGKILL — a signal that cannot be caught, so omnidb-go-server's own
-// signal.Notify-based graceful shutdown (which is what actually kills its
-// Django child, see go-server/main.go's killChild) never got a chance to
-// run. That left the Python omnidb-server process orphaned (reparented to
-// launchd) on every app quit, a real leak this fixes rather than just
-// papering over: killChild still eventually runs, just inside
-// omnidb-go-server's own process instead of being unreachable.
+// doesn't exit within a few seconds — gives the HTTP server a chance to
+// finish in-flight requests and close its listener cleanly instead of
+// always going straight to an uncatchable SIGKILL.
 func (a *App) stopBackend() {
 	if a.server == nil || a.server.Process == nil {
 		return

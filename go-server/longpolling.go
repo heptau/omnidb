@@ -1,14 +1,12 @@
 package main
 
 import (
-	"bytes"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
-	"strconv"
 	"strings"
 	"time"
 )
@@ -100,34 +98,23 @@ func formatDuration(d time.Duration) string {
 	return fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
 }
 
-// sessionCookieValue extracts the Django session cookie — the same
-// identifier Django uses as request.session.session_key and thus as its
-// global_object client id. Used to key this proxy's own per-tab cursor
-// state so it lines up with "the same client" Django would recognize.
-func sessionCookieValue(r *http.Request) string {
-	c, err := r.Cookie("omnidb_sessionid")
-	if err != nil {
-		return ""
-	}
-	return c.Value
-}
-
-// handleCreateRequest serves /create_request/ for the one case this phase
-// of the migration owns — running a SQL query (requestType.Query) against a
-// sqlite connection, single-block or fetch-more, not an export and not a
-// "fetch everything" request. Everything else (other request types, other
-// technologies, export/all-data queries) proxies to Django completely
-// unchanged, exactly like before this handler existed.
+// handleCreateRequest serves /create_request/ — this proxy's dispatch point
+// for every real, still-used request type (Query/Console/QueryEditData/
+// SaveEditData/Terminal/CancelThread/CloseTab). The remaining IntEnum
+// values in Python's own requestType (Debug, Script, Execute,
+// AdvancedObjectSearch) are confirmed dead in the shipped frontend — see
+// go-backend-migration memory for how each was confirmed (the PostgreSQL
+// debugger's function is defined but never called; Script/Execute are never
+// sent by any JS; AdvancedObjectSearch's own JS calls
+// queryAdvancedObjectSearch/checkAdvancedObjectSearchStatus, neither of
+// which exist anywhere in the static tree) — so falling through to Django's
+// own create_request for a genuinely unrecognized v_code is a defensive
+// no-op, not a real feature gap.
 //
-// Delivery of the result goes back through Django's own long-polling queue
-// (see queueResponseOnDjango) rather than a parallel mechanism in this
-// process — /long_polling/ itself is never intercepted, it's a plain proxy
-// for the entire lifetime of this phase. Django's /long_polling/ blocks on a
-// per-client lock that only queue_response() releases; if this proxy ever
-// answered long-polling itself and let a forwarded-to-Django call time out,
-// that lock (and the Django thread waiting on it) would stay stuck forever,
-// since nothing would ever release it for a client whose queries all run
-// here. Routing the result through Django's real queue avoids that.
+// Delivery of the result goes through this process's own native long-poll
+// queue now (see native_polling.go's queueNativeResponse), not Django's —
+// /long_polling/ and /client_keep_alive/ are native too (main.go), so
+// there's no more risk of a stuck Django-side lock to worry about.
 func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
@@ -142,7 +129,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			return
 		}
 
-		clientID := sessionCookieValue(r)
+		clientID := nativeSessionCookieValue(r)
 
 		// Terminal requests are structurally separate in Python too (checked
 		// before the Query/Console/EditData dispatch, no v_database
@@ -151,10 +138,12 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			return
 		}
 
-		// Opportunistically release any Go-held cursor for a cancelled or
-		// closed tab, but ALWAYS still forward to Django too — Django may
-		// own the same tab id for a different (non-sqlite) connection, and
-		// its own cleanup must still run regardless of what Go did.
+		// CancelThread/CloseTab are fully native now — every request type
+		// that could still be running server-side (Query/Console/EditData/
+		// Terminal) is Go-native, so there's nothing left for Django's own
+		// create_request to do for these two codes (its only other
+		// consumer, AdvancedObjectSearch's thread-pool cancel, is dead
+		// code — see this function's package comment).
 		if body.VCode == requestTypeCancelThread {
 			var tabID string
 			if json.Unmarshal(body.VData, &tabID) == nil {
@@ -162,21 +151,25 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				closeConsoleSession(clientID, tabID)
 				closeTerminalSession(clientID, tabID)
 			}
-			fallback.ServeHTTP(w, r)
+			writeEnvelope(w, "", false, -1)
 			return
 		}
 		if body.VCode == requestTypeCloseTab {
 			var closes []struct {
-				TabID string `json:"tab_id"`
+				TabID   string `json:"tab_id"`
+				TabDBID *int64 `json:"tab_db_id"`
 			}
 			if json.Unmarshal(body.VData, &closes) == nil {
 				for _, c := range closes {
 					closeCursor(clientID, c.TabID)
 					closeConsoleSession(clientID, c.TabID)
 					closeTerminalSession(clientID, c.TabID)
+					if c.TabDBID != nil {
+						deleteTabRow(upstream, r.Header.Get("Cookie"), *c.TabDBID)
+					}
 				}
 			}
-			fallback.ServeHTTP(w, r)
+			writeEnvelope(w, "", false, -1)
 			return
 		}
 
@@ -426,7 +419,7 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 		closeCursor(clientID, q.VTabID)
 	}
 
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseQueryResult,
 		"v_context_code": contextCode,
 		"v_error":        false,
@@ -527,7 +520,7 @@ func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData,
 		}
 
 		lastBlock := len(block) < allDataBlockSize
-		queueResponseOnDjango(upstream, cookie, map[string]any{
+		queueNativeResponse(cookie, map[string]any{
 			"v_code":         responseQueryResult,
 			"v_context_code": contextCode,
 			"v_error":        false,
@@ -570,7 +563,7 @@ func handleCommitOrRollback(upstream *url.URL, cookie, clientID string, q queryR
 		return true
 	}
 
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseQueryResult,
 		"v_context_code": contextCode,
 		"v_error":        false,
@@ -591,7 +584,7 @@ func handleCommitOrRollback(upstream *url.URL, cookie, clientID string, q queryR
 }
 
 func queueQueryError(upstream *url.URL, cookie string, contextCode int, err error) {
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseMessageException,
 		"v_context_code": contextCode,
 		"v_error":        true,
@@ -599,58 +592,41 @@ func queueQueryError(upstream *url.URL, cookie string, contextCode int, err erro
 	})
 }
 
-// queueResponseOnDjango delivers a response through Django's own
-// /internal/queue_response/ bridge (see OmniDB_app/views/internal.py),
-// which calls the real queue_response()/get_client_object() Django uses for
-// every other feature — so the browser's existing long-polling loop, still
-// talking to Django exactly as before, picks this up with no changes on
-// either the frontend or the proxy's handling of /long_polling/ itself.
-//
-// This is a direct Go-as-HTTP-client call to Django, not something this
-// process's own reverse proxy forwards — so main.go's Director (the only
-// place X-Omnidb-Trusted-User-Id gets added to a proxied request) never
-// runs for it. queue_response_internal checks request.user.is_authenticated
-// same as connection_info does (see resolveConnection's comment for the
-// full explanation of why this broke specifically for a Go-native-only
-// login since Fáze 7) — same fix needed here.
-func queueResponseOnDjango(upstream *url.URL, cookie string, payload map[string]any) {
-	body, err := json.Marshal(payload)
-	if err != nil {
+// deleteTabRow mirrors polling.py's create_request CloseTab branch's Tab
+// row delete — best-effort (errors are logged, not surfaced: Python's own
+// version silently swallows any failure, including a missing/already-
+// deleted row, via its own try/except around the whole CloseTab loop).
+func deleteTabRow(upstream *url.URL, cookie string, tabDBID int64) {
+	who, err := resolveIdentity(upstream, cookie)
+	if err != nil || !who.Authenticated {
 		return
 	}
-
-	req, err := http.NewRequest(http.MethodPost, fmt.Sprintf("%s://%s/internal/queue_response/", upstream.Scheme, upstream.Host), bytes.NewReader(body))
+	db, err := openAppDB(upstream)
 	if err != nil {
+		log.Printf("deleteTabRow: open appdb: %v", err)
 		return
 	}
-	req.Header.Set("Content-Type", "application/json")
-	if cookie != "" {
-		req.Header.Set("Cookie", cookie)
+	defer db.Close()
+	if err := deleteTab(db, int64(who.UserID), tabDBID); err != nil {
+		log.Printf("deleteTabRow: %v", err)
 	}
-	if who, err := resolveIdentity(upstream, cookie); err == nil && who.Authenticated {
-		req.Header.Set(trustedUserHeader, strconv.Itoa(who.UserID))
-	}
-
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Printf("queueResponseOnDjango: %v", err)
-		return
-	}
-	resp.Body.Close()
 }
 
-// handleClearClient releases this proxy's own per-client cursor state (an
-// abandoned mid-page query would otherwise leak an open SQLite handle) and
-// always still forwards to Django too — Django owns the same client id for
-// every feature this phase doesn't natively implement, and needs its own
-// teardown regardless of what Go was holding.
-func handleClearClient(fallback http.Handler) http.HandlerFunc {
+// handleClearClient mirrors polling.py's clear_client — releases this
+// process's own per-client state (cursors, console/terminal sessions, and
+// the native long-polling queue, see native_polling.go) for a page
+// unloading/closing. Fully native: Django's own clear_client_object only
+// ever mattered for request types that are all confirmed dead now (see
+// handleCreateRequest's comment), so there's nothing left to forward to.
+func handleClearClient() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		if clientID := sessionCookieValue(r); clientID != "" {
+		if clientID := nativeSessionCookieValue(r); clientID != "" {
 			closeCursorsForClient(clientID)
 			closeConsoleSessionsForClient(clientID)
 			closeTerminalSessionsForClient(clientID)
+			removePollingClient(clientID)
 		}
-		fallback.ServeHTTP(w, r)
+		w.Header().Set("Content-Type", "application/json")
+		w.Write([]byte("{}"))
 	}
 }

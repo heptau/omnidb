@@ -13,8 +13,9 @@ import (
 // part of Django's own STATIC_ROOT serving in the first place:
 // OmniDB_app/static/plugins (the plugin system was dropped project-wide,
 // see the plan file's plugin note) and OmniDB_app/static/temp (a runtime
-// scratch dir for CSV/XLSX export, not static content — still reached via
-// the existing /internal/temp_dir/ bridge). Also excludes the two
+// scratch dir for CSV/XLSX export, not static content — served instead by
+// handleTempFiles below, a live filesystem handler, since new files can't
+// be added to a compiled-in embed.FS at runtime). Also excludes the two
 // .scss theme source files (never fetched by URL, confirmed by grepping
 // every template/JS file for ".scss" — only the compiled .css output is
 // served) and stray .DS_Store files.
@@ -44,4 +45,17 @@ func handleStaticAssets() http.Handler {
 		w.Header().Set("Cache-Control", "public, max-age=86400")
 		fileServer.ServeHTTP(w, r)
 	}))
+}
+
+// handleTempFiles serves export.go's generated CSV/XLSX/... files — a real
+// (non-embedded) filesystem directory, since files are written here at
+// runtime after this process has already started (see resolveTempDir in
+// appdb.go). Registered in main.go at the more specific "/static/temp/"
+// prefix, which Go's ServeMux prefers over the embedded catch-all
+// "/static/" registration automatically — no ordering dependency between
+// the two mux.Handle calls. No Cache-Control override here: each exported
+// file has a unique, timestamp-based name (see export.go), so there's
+// nothing to ever go stale.
+func handleTempFiles(dir string) http.Handler {
+	return http.StripPrefix("/static/temp/", http.FileServer(http.Dir(dir)))
 }

@@ -544,6 +544,41 @@ func handleGetRolesMySQL(upstream *url.URL, fallback http.Handler) http.HandlerF
 	}
 }
 
+// handleGetSequencesMariaDB mirrors MariaDB.py's get_sequences — MariaDB-
+// only, see mariadbSequences' comment for why (MySQL has no sequences, and
+// the real Django route is confirmed broken today independent of this
+// migration).
+func handleGetSequencesMariaDB(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var reqBody mysqlSchemaRequest
+		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		db, _, ok := decodeMySQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		names, err := mariadbSequences(db, reqBody.PSchema)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		data := make([]map[string]any, 0, len(names))
+		for _, n := range names {
+			data = append(data, map[string]any{"v_sequence_name": n})
+		}
+		writeEnvelope(w, data, false, -1)
+	}
+}
+
 func handleGetViewsMySQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)

@@ -540,7 +540,7 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 		return
 	}
 
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseQueryResult,
 		"v_context_code": contextCode,
 		"v_error":        false,

@@ -2,19 +2,24 @@ package main
 
 import (
 	"database/sql"
-	"encoding/json"
-	"fmt"
-	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"sync"
 )
 
-// appDBPathCache caches the resolved path to Django's own SQLite app
-// database (see OmniDB_app/views/internal.py's appdb_path) for this
-// process's lifetime — the path can't change while Django keeps running, so
-// there's no reason to ask again every request. A failed lookup is not
-// cached, so a request arriving before Django has finished starting up gets
-// a fresh attempt next time instead of being stuck failing forever.
+// appDBPathCache caches the resolved path to OmniDB's own SQLite app
+// database for this process's lifetime — HOME_DIR can't change at runtime,
+// so there's no reason to recompute it every request. A failed lookup is
+// not cached, so a transient failure (e.g. an explicit --homedir that
+// doesn't exist yet at the exact moment of a very first request) gets a
+// fresh attempt next time instead of being stuck failing forever.
+//
+// Before Fáze 8b's HOME_DIR work, this asked Django's own
+// /internal/appdb_path/ bridge (OmniDB_app/views/internal.py) — Go now
+// resolves the same path independently (see homedir.go's resolveHomeDir,
+// a direct port of omnidb-server.py's own -d/--homedir/app-mode logic), no
+// HTTP round trip or running Django process required at all.
 var (
 	appDBPathMu  sync.Mutex
 	appDBPathVal string
@@ -27,34 +32,21 @@ func resolveAppDBPath(upstream *url.URL) (string, error) {
 		return appDBPathVal, nil
 	}
 
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s://%s/internal/appdb_path/", upstream.Scheme, upstream.Host), nil)
+	dir, err := resolveHomeDir(os.Args[1:])
 	if err != nil {
 		return "", err
 	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return "", fmt.Errorf("call appdb_path: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return "", fmt.Errorf("appdb_path: unexpected status %d", resp.StatusCode)
-	}
-
-	var body struct {
-		Path string `json:"path"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return "", fmt.Errorf("decode appdb_path response: %w", err)
-	}
-	appDBPathVal = body.Path
+	appDBPathVal = filepath.Join(dir, "omnidb.db")
 	return appDBPathVal, nil
 }
 
-// tempDirInfo mirrors OmniDB_app/views/internal.py's temp_dir response —
-// where a Go-side export route should write its output file, and the URL
-// prefix Django serves its own static files under (so the response's
-// v_filename lines up with what Django's existing static-file serving,
-// still reached via the "/" reverse-proxy catch-all, already handles).
+// tempDirInfo mirrors OmniDB_app/views/internal.py's old temp_dir response
+// shape — where a Go-side export route should write its output file, and
+// the URL prefix static files are served under (settings.PATH, always ""
+// — see custom_settings.py). Path stays "" unconditionally now; kept as a
+// field rather than removed so export.go's existing v_filename
+// construction (tempDir.Path + "/static/temp/" + fileName) doesn't need to
+// change.
 type tempDirInfo struct {
 	TempDir string
 	Path    string
@@ -65,6 +57,14 @@ var (
 	tempDirVal *tempDirInfo
 )
 
+// resolveTempDir mirrors resolveAppDBPath's HOME_DIR-based approach —
+// before Fáze 8b this asked Django's /internal/temp_dir/ bridge, which
+// pointed at Django's own BASE_DIR/OmniDB_app/static/temp (a path that
+// only made sense while a Django source tree existed on disk). Go's own
+// temp directory instead lives under HOME_DIR, alongside omnidb.db —
+// served back to the browser by handleTempFiles (static_assets.go), a
+// live filesystem handler mounted at the more specific "/static/temp/"
+// prefix (wins over the embedded catch-all "/static/" registration).
 func resolveTempDir(upstream *url.URL) (*tempDirInfo, error) {
 	tempDirMu.Lock()
 	defer tempDirMu.Unlock()
@@ -72,27 +72,11 @@ func resolveTempDir(upstream *url.URL) (*tempDirInfo, error) {
 		return tempDirVal, nil
 	}
 
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s://%s/internal/temp_dir/", upstream.Scheme, upstream.Host), nil)
+	dir, err := resolveHomeDir(os.Args[1:])
 	if err != nil {
 		return nil, err
 	}
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("call temp_dir: %w", err)
-	}
-	defer resp.Body.Close()
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("temp_dir: unexpected status %d", resp.StatusCode)
-	}
-
-	var body struct {
-		TempDir string `json:"temp_dir"`
-		Path    string `json:"path"`
-	}
-	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
-		return nil, fmt.Errorf("decode temp_dir response: %w", err)
-	}
-	tempDirVal = &tempDirInfo{TempDir: body.TempDir, Path: body.Path}
+	tempDirVal = &tempDirInfo{TempDir: filepath.Join(dir, "temp"), Path: ""}
 	return tempDirVal, nil
 }
 
@@ -111,6 +95,10 @@ func openAppDB(upstream *url.URL) (*sql.DB, error) {
 		return nil, err
 	}
 	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, err
+	}
+	if err := bootstrapAppDB(db); err != nil {
 		db.Close()
 		return nil, err
 	}

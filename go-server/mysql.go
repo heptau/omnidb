@@ -140,6 +140,48 @@ func mysqlDatabases(db *sql.DB) ([]string, error) {
 	return names, rows.Err()
 }
 
+// mariadbSequences mirrors MariaDB.py's QuerySequences — MariaDB-only
+// (MySQL has no sequence concept at all, unlike every other object kind in
+// this file, which is why this isn't dispatched through the shared
+// mysql/mariadb suffix loop in main.go). Confirmed broken in the current
+// Django source, not just unported: get_sequences_mariadb's view function
+// only declares `request` but is wrapped by @database_required, which
+// always calls it with a second v_database argument — every real call
+// would 500 with a TypeError, independent of this migration. schema empty
+// means "the connection's own database" (Python's self.v_schema fallback,
+// always exercised in practice since tree_mariadb.js's
+// getSequencesMariadb always sends p_schema: null), matched here with
+// MariaDB's own database() function instead of needing the caller to pass
+// the connection's database through separately.
+func mariadbSequences(db *sql.DB, schema string) ([]string, error) {
+	filter := "table_schema = database()"
+	var args []any
+	if schema != "" {
+		filter = "table_schema = ?"
+		args = append(args, schema)
+	}
+	rows, err := db.Query(`
+		select table_name
+		from information_schema.tables
+		where table_type = 'SEQUENCE' and `+filter+`
+		order by table_schema, table_name
+	`, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var names []string
+	for rows.Next() {
+		var name string
+		if err := rows.Scan(&name); err != nil {
+			return nil, err
+		}
+		names = append(names, name)
+	}
+	return names, rows.Err()
+}
+
 // mysqlRoles mirrors MySQL.py's/MariaDB.py's QueryRoles.
 func mysqlRoles(db *sql.DB) ([]string, error) {
 	rows, err := db.Query(`

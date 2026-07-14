@@ -475,7 +475,7 @@ func runConsole(upstream *url.URL, cookie string, clientID string, q consoleRequ
 }
 
 func queueConsoleResult(upstream *url.URL, cookie string, contextCode int, text, duration string, conStatus int) {
-	queueResponseOnDjango(upstream, cookie, map[string]any{
+	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseConsoleResult,
 		"v_context_code": contextCode,
 		"v_error":        false,

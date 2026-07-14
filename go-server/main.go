@@ -1,44 +1,43 @@
-// Command omnidb-go-server is phase 0 of the Django-to-Go backend migration
-// (see /Users/zv/.claude/plans/recursive-petting-sphinx.md for the full
-// plan). Today it does nothing on its own: it spawns the existing
-// omnidb-server (Python/Django/CherryPy) as a child process and reverse
-// proxies every request to it unchanged. Future phases will start answering
-// individual routes here directly instead of forwarding them, one vertical
-// slice (DB engine) at a time, until the Python child is no longer needed.
+// Command omnidb-go-server is the OmniDB backend — originally phase 0 of
+// the Django-to-Go migration (see
+// /Users/zv/.claude/plans/recursive-petting-sphinx.md for the full plan),
+// now (Fáze 8c) the ONLY backend: every route is either natively
+// implemented here or a deliberate no-op/graceful-error stub (see
+// go-backend-migration memory for the full route-by-route audit that
+// confirmed this). There is no Django/CherryPy/Python child process left
+// to spawn — a `dev` mode still exists purely so a developer can point
+// this at an already-running Django instance for side-by-side comparison
+// during the remainder of this migration's cleanup (see devUpstreamEnv).
 //
-// It preserves the same process contract wails-app/backend.go already
-// depends on: forward all CLI args to the child, and once ready, print a
-// single stdout line starting with "http" carrying the login URL — just
-// with this proxy's own port substituted for the child's.
+// Process contract wails-app/backend.go depends on: print a single stdout
+// line starting with "http" carrying the login URL once ready, and answer
+// /internal/shutdown/ for graceful termination (see handleShutdown).
 package main
 
 import (
-	"bufio"
 	"context"
 	"fmt"
-	"io"
 	"log"
 	"net"
 	"net/http"
 	"net/http/httputil"
 	"net/url"
 	"os"
-	"os/exec"
 	"os/signal"
-	"path/filepath"
 	"strconv"
-	"strings"
 	"syscall"
 	"time"
 )
 
-// devUpstreamEnv lets a developer point the proxy at an already-running
-// Django dev server (e.g. `manage.py runserver`) instead of spawning the
-// packaged omnidb-server binary. Production builds never set this.
+// devUpstreamEnv lets a developer point this at an already-running Django
+// dev server (e.g. `manage.py runserver`) for side-by-side comparison
+// during the remainder of this migration's cleanup. Production builds
+// never set this — there is no Django to compare against outside a
+// developer's own checkout.
 const devUpstreamEnv = "OMNIDB_PROXY_UPSTREAM"
 
-// listenPortEnv pins the proxy's own listen port instead of picking a free
-// one. Useful for dev/testing; production lets the OS choose.
+// listenPortEnv pins this process's own listen port instead of picking a
+// free one. Useful for dev/testing; production lets the OS choose.
 const listenPortEnv = "OMNIDB_PROXY_LISTEN_PORT"
 
 func main() {
@@ -48,16 +47,15 @@ func main() {
 }
 
 func run() error {
-	var childCmd *exec.Cmd
 	var upstream *url.URL
-	readyPath := "" // path+query captured from the child's ready line, "" if none seen yet
+	standalone := false // true once there's no real Django to compare against — see devUpstreamEnv
 
-	// Fáze 7: Go now owns the desktop auto-login token natively (see
-	// native_login.go's handleSignInAutomatic) instead of deferring to
-	// whatever value omnidb-server.py independently generates for its own
-	// (now unreachable) copy of this check. Generated once, up front, so
-	// the ready-line rewrite below can substitute it into the URL actually
-	// shown to/navigated by the frontend.
+	// Fáze 7: Go owns the desktop auto-login token natively (see
+	// native_login.go's handleSignInAutomatic) — generated once, up front,
+	// so the ready-line construction below can embed it in the URL shown
+	// to/navigated by the frontend, matching the exact shape
+	// omnidb-server.py used to print for app-mode ("http://localhost:
+	// <port>/omnidb_login/?user=admin&pwd=admin&token=<token>").
 	if isAppMode(os.Args[1:]) {
 		token, err := generateAppToken()
 		if err != nil {
@@ -74,58 +72,57 @@ func run() error {
 		upstream = u
 		fmt.Fprintf(os.Stderr, "omnidb-go-server: dev mode, proxying to existing upstream %s\n", upstream)
 	} else {
-		cmd, childURL, err := spawnServer(os.Args[1:])
-		if err != nil {
-			return fmt.Errorf("spawn omnidb-server: %w", err)
-		}
-		childCmd = cmd
-		upstream = &url.URL{Scheme: childURL.Scheme, Host: childURL.Host}
-		readyPath = childURL.RequestURI()
+		// upstream is kept as a real (if inert) *url.URL purely so none of
+		// this file's ~250 mux.Handle(..., upstream, ...) call sites need
+		// to change — every one of them already resolved to fully native
+		// behavior long before this value stops being dereferenced at all
+		// (see connection_info.go/appdb.go's own comments on this same
+		// pattern, established back in Fáze 7). It is never used to make a
+		// real network call in this mode.
+		upstream = &url.URL{Scheme: "http", Host: "127.0.0.1:0"}
+		standalone = true
 	}
 
 	listener, err := net.Listen("tcp", listenAddr())
 	if err != nil {
-		killChild(childCmd)
 		return fmt.Errorf("listen: %w", err)
 	}
 	ownPort := listener.Addr().(*net.TCPAddr).Port
 
-	// Deliberately leave req.Host as the browser-facing address (this
-	// proxy's own host:port), not upstream.Host. Django's CSRF middleware
-	// compares the incoming Origin header against request.get_host() — if
-	// we rewrote Host to the upstream's port, that check would fail with a
-	// 403 (Origin says the proxy's port, Host would say Django's), since
-	// the browser's Origin always reflects the address it actually loaded
-	// the page from. ALLOWED_HOSTS=['*'] on the Django side means it never
-	// validates Host itself, so there's no downside to leaving it alone.
-	proxy := httputil.NewSingleHostReverseProxy(upstream)
-
-	// Fáze 7: Django no longer owns identity, but the routes it still
-	// serves (users.py, monitor_dashboard.py, workspace.py's own page
-	// render, static assets, ...) still need request.user/request.session
-	// to work — see OmniDB_app/middleware.py's TrustedUserMiddleware. Every
-	// request this proxy forwards gets an X-Omnidb-Trusted-User-Id header
-	// derived from the caller's own native session (see resolveIdentity),
-	// added here so every existing fallback/catch-all call site picks this
-	// up automatically without needing individual changes — this proxy
-	// value is reused as literally every native handler's own `fallback`
-	// argument. Any client-supplied header of the same name is always
-	// stripped first: Django's middleware trusts this header unconditionally
-	// (subject to its own loopback check), so a spoofed value reaching
-	// Django would be a full auth bypass if not for this.
-	baseDirector := proxy.Director
-	proxy.Director = func(req *http.Request) {
-		baseDirector(req)
-		req.Header.Del(trustedUserHeader)
-		if who, err := resolveIdentity(upstream, req.Header.Get("Cookie")); err == nil && who.Authenticated {
-			req.Header.Set(trustedUserHeader, strconv.Itoa(who.UserID))
+	// proxy is passed as literally every native handler's own `fallback`
+	// argument (a leftover name from when this really was a reverse proxy
+	// in front of Django — kept rather than renaming ~250 call sites).
+	// Fáze 8c: in standalone mode (the only mode any real build runs in
+	// now) there's no Django to fall back to at all — every route that
+	// still takes a fallback argument only ever reaches it for a
+	// confirmed-dead/unreachable Django-only code path (see go-backend-
+	// migration memory's full route-by-route audit), so a clean "not
+	// supported" envelope is strictly more honest than the connection-
+	// refused error a real reverse proxy would have produced. Dev mode
+	// (devUpstreamEnv set) keeps a real reverse proxy for side-by-side
+	// comparison against an actual running Django instance, including the
+	// trusted-header injection OmniDB_app/middleware.py's
+	// TrustedUserMiddleware relies on.
+	var proxy http.Handler
+	if standalone {
+		proxy = noUpstreamHandler()
+	} else {
+		realProxy := httputil.NewSingleHostReverseProxy(upstream)
+		baseDirector := realProxy.Director
+		realProxy.Director = func(req *http.Request) {
+			baseDirector(req)
+			req.Header.Del(trustedUserHeader)
+			if who, err := resolveIdentity(upstream, req.Header.Get("Cookie")); err == nil && who.Authenticated {
+				req.Header.Set(trustedUserHeader, strconv.Itoa(who.UserID))
+			}
 		}
+		proxy = realProxy
 	}
 
 	// Routes migrated to native Go handlers (migration-plan phase 2+) are
-	// registered here; everything else keeps forwarding to Django
-	// unchanged. mux.Handle requires an exact registered pattern to not
-	// fall through, so unmatched paths hit the "/" catch-all below.
+	// registered here; everything else falls back to proxy above.
+	// mux.Handle requires an exact registered pattern to not fall through,
+	// so unmatched paths hit the "/" catch-all below.
 	// shutdownCh lets wails-app/backend.go's stopBackend ask this process to
 	// shut down gracefully over loopback HTTP instead of relying on OS
 	// signal delivery — see handleShutdown's comment for why that matters.
@@ -244,9 +241,7 @@ func run() error {
 	// MySQL + MariaDB: one shared Go implementation registered under both
 	// URL suffixes, since Django itself exposes each engine as its own
 	// route prefix (views.tree_mysql vs views.tree_mariadb) even though the
-	// SQL involved is identical (see go-server/mysql*.go). kill_backend and
-	// MariaDB's sequences aren't wired up here — low-value/exotic enough to
-	// leave proxied, matching the deferral pattern used elsewhere.
+	// SQL involved is identical (see go-server/mysql*.go).
 	for _, suffix := range []string{"mysql", "mariadb"} {
 		mux.Handle("/get_tree_info_"+suffix+"/", handleGetTreeInfoMySQL(upstream, proxy))
 		mux.Handle("/get_tables_"+suffix+"/", handleGetTablesMySQL(upstream, proxy))
@@ -276,6 +271,10 @@ func run() error {
 		mux.Handle("/template_update_"+suffix+"/", handleTemplateUpdateMySQL(upstream, proxy))
 		mux.Handle("/kill_backend_"+suffix+"/", handleKillBackendMySQL(upstream, proxy))
 	}
+	// MariaDB-only (MySQL has no sequence concept) — see mariadbSequences'
+	// comment: the real Django route is confirmed broken today (decorator/
+	// signature mismatch), so this is also a bugfix, not just a port.
+	mux.Handle("/get_sequences_mariadb/", handleGetSequencesMariaDB(upstream, proxy))
 	// Oracle: tree/introspection routes + query execution (migration-plan
 	// phase 5). get_properties_oracle is served natively for the same kinds
 	// this slice's tree routes cover — everything else falls through to
@@ -312,14 +311,14 @@ func run() error {
 	mux.Handle("/template_update_oracle/", handleTemplateUpdateOracle(upstream, proxy))
 	mux.Handle("/kill_backend_oracle/", handleKillBackendOracle(upstream, proxy))
 	// DB-agnostic app-level views (migration-plan phase 6, now complete) —
-	// CRUD against Django's own SQLite app database (see go-server/appdb.go),
+	// CRUD against the app's own SQLite database (see go-server/appdb.go),
 	// not any user's saved target connection. save_connection/
 	// test_connection/delete_connection use golang.org/x/crypto/ssh directly
 	// (see ssh_tunnel.go/terminal.go) instead of Session.AddDatabase/
 	// RemoveDatabase — see the go-backend-migration memory for why that's
-	// safe. users.py (Django password hashing) and monitor_dashboard.py
-	// (RestrictedPython sandboxed eval) still stay proxied to Django —
-	// separate reasons, not SSH-related.
+	// safe. users.py and monitor_dashboard.py are both fully native too
+	// (see the dedicated comment further down) — stale note about them
+	// still proxying to Django removed, they haven't since Fáze 7/8a.
 	mux.Handle("/get_connections/", handleGetConnections(upstream))
 	mux.Handle("/save_connection/", handleSaveConnection(upstream))
 	mux.Handle("/test_connection/", handleTestConnection(upstream))
@@ -394,23 +393,40 @@ func run() error {
 	mux.Handle("/get_completions_table/", handleGetCompletionsTable(upstream, proxy))
 	mux.Handle("/renew_password/", handleRenewPassword(upstream, proxy))
 	mux.Handle("/create_request/", handleCreateRequest(upstream, proxy))
-	mux.Handle("/clear_client/", handleClearClient(proxy))
+	mux.Handle("/clear_client/", handleClearClient())
+	mux.Handle("/long_polling/", handleLongPolling())
+	mux.Handle("/client_keep_alive/", handleClientKeepAlive())
 	// Fáze 7: native login/session, replacing views.login entirely for the
-	// browser-facing auth front door (Django's own copies of these views
-	// still exist and still work if hit directly, but nothing routes to them
-	// anymore — see go-backend-migration memory for why that's fine to leave
-	// as unreachable code for now rather than deleting it).
+	// browser-facing auth front door.
 	mux.Handle("/omnidb_login/", handleLoginPage(upstream))
 	mux.Handle("/sign_in/", handleSignIn(upstream))
 	mux.Handle("/logout/", handleLogout())
 
 	// Fáze 8b: native /workspace/ page render + root "/" (check_session) +
-	// check_session_message — see workspace_page.go. Django's own copies of
-	// these views still exist and still work if hit directly (same
-	// leave-as-unreachable-code precedent as the Fáze 7 login views above).
+	// check_session_message — see workspace_page.go.
 	mux.Handle("/workspace/", handleWorkspacePage(upstream))
 	mux.Handle("/check_session_message/", handleCheckSessionMessage())
+
+	// Plugin routes — native no-op stubs, not ports (the plugin system was
+	// decided against project-wide, see plugins_stub.go's comment).
+	// indent_sql uses a generic, dialect-agnostic reindenter — see
+	// handleIndentSQL's comment for the planned PostgreSQL-specific
+	// pg_procrustes tier on top of this.
+	mux.Handle("/indent_sql/", handleIndentSQL(upstream))
+
+	mux.Handle("/get_plugins/", handleGetPlugins(upstream))
+	mux.Handle("/list_plugins/", handleListPlugins(upstream))
+	mux.Handle("/reload_plugins/", handleReloadPlugins(upstream))
+	mux.Handle("/delete_plugin/", handleDeletePlugin(upstream))
+	mux.Handle("/exec_plugin_function/", handlePluginsNotSupported())
+	mux.Handle("/upload/", handlePluginsNotSupported())
+
 	mux.Handle("/static/", handleStaticAssets())
+	if tempDir, err := resolveTempDir(upstream); err != nil {
+		log.Printf("resolveTempDir: %v (export downloads will fail until this is fixed)", err)
+	} else {
+		mux.Handle("/static/temp/", handleTempFiles(tempDir.TempDir))
+	}
 	mux.Handle("/", handleRoot(upstream, proxy))
 
 	httpServer := &http.Server{Handler: mux}
@@ -420,9 +436,18 @@ func run() error {
 		serveErrCh <- httpServer.Serve(listener)
 	}()
 
-	if readyPath != "" {
-		fmt.Printf("http://127.0.0.1:%d%s\n", ownPort, rewriteReadyPathToken(readyPath, appToken))
-	} else {
+	// Ready-line format matches exactly what omnidb-server.py used to print
+	// for app-mode ("http://localhost:<port>/omnidb_login/?user=admin&
+	// pwd=admin&token=<APP_TOKEN>") — wails-app/backend.go parses this
+	// line verbatim (see its own streamServerOutput), so the shape has to
+	// stay byte-compatible even though Go now constructs it directly
+	// instead of relaying/rewriting a spawned child's own copy.
+	switch {
+	case standalone && appToken != "":
+		fmt.Printf("http://127.0.0.1:%d/omnidb_login/?user=admin&pwd=admin&token=%s\n", ownPort, appToken)
+	case standalone:
+		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on 127.0.0.1:%d — open http://127.0.0.1:%d/omnidb_login/ in your browser\n", ownPort, ownPort)
+	default:
 		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on 127.0.0.1:%d, proxying to %s\n", ownPort, upstream)
 	}
 
@@ -434,14 +459,13 @@ func run() error {
 	case <-shutdownCh:
 	case err := <-serveErrCh:
 		if err != nil && err != http.ErrServerClosed {
-			fmt.Fprintf(os.Stderr, "omnidb-go-server: proxy server stopped: %v\n", err)
+			fmt.Fprintf(os.Stderr, "omnidb-go-server: server stopped: %v\n", err)
 		}
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 	_ = httpServer.Shutdown(ctx)
-	killChild(childCmd)
 	return nil
 }
 
@@ -452,106 +476,24 @@ func listenAddr() string {
 	return "127.0.0.1:0"
 }
 
-// rewriteReadyPathToken substitutes Go's own generated appToken into the
-// child's ready-line query string (see native_login.go's package comment
-// for why omnidb-server.py's own independently-generated token no longer
-// needs to match what Go itself validates). No-op if there's no token
-// query param at all (dev mode) or newToken is empty (not running in app
-// mode).
-func rewriteReadyPathToken(readyPath, newToken string) string {
-	if readyPath == "" || newToken == "" {
-		return readyPath
-	}
-	u, err := url.Parse(readyPath)
-	if err != nil {
-		return readyPath
-	}
-	q := u.Query()
-	if q.Get("token") == "" {
-		return readyPath
-	}
-	q.Set("token", newToken)
-	u.RawQuery = q.Encode()
-	return u.String()
-}
-
-// spawnServer starts the packaged omnidb-server child process, forwarding
-// args unchanged, and blocks until it prints its ready line (a stdout line
-// starting with "http") or exits early. The child's remaining stdout/stderr
-// keep streaming to our own stdout/stderr for the lifetime of the process,
-// since wails-app/backend.go now only watches *our* output.
-func spawnServer(args []string) (*exec.Cmd, *url.URL, error) {
-	serverDir, err := resolveServerDir()
-	if err != nil {
-		return nil, nil, fmt.Errorf("resolve server dir: %w", err)
-	}
-
-	cmd := exec.Command(filepath.Join(serverDir, serverExecutableName()), args...)
-	cmd.Dir = serverDir
-	cmd.Env = buildServerEnv(serverDir)
-
-	stdout, err := cmd.StdoutPipe()
-	if err != nil {
-		return nil, nil, fmt.Errorf("attach stdout: %w", err)
-	}
-	stderr, err := cmd.StderrPipe()
-	if err != nil {
-		return nil, nil, fmt.Errorf("attach stderr: %w", err)
-	}
-
-	if err := cmd.Start(); err != nil {
-		return nil, nil, fmt.Errorf("start: %w", err)
-	}
-
-	go streamPassthrough(stderr, os.Stderr)
-
-	readyCh := make(chan *url.URL, 1)
-	go func() {
-		defer close(readyCh)
-		sentReady := false
-		scanner := bufio.NewScanner(stdout)
-		for scanner.Scan() {
-			line := scanner.Text()
-			if !sentReady && strings.HasPrefix(line, "http") {
-				sentReady = true
-				if u, err := url.Parse(line); err == nil {
-					readyCh <- u
-				}
-				continue // don't echo the raw line, it may carry a one-time auth token
-			}
-			fmt.Fprintln(os.Stdout, line)
-		}
-	}()
-
-	select {
-	case u, ok := <-readyCh:
-		if !ok || u == nil {
-			return cmd, nil, fmt.Errorf("omnidb-server exited before printing a ready URL")
-		}
-		return cmd, u, nil
-	case <-time.After(60 * time.Second):
-		killChild(cmd)
-		return nil, nil, fmt.Errorf("timed out waiting for omnidb-server to become ready")
-	}
-}
-
-func streamPassthrough(r io.Reader, w io.Writer) {
-	scanner := bufio.NewScanner(r)
-	for scanner.Scan() {
-		fmt.Fprintln(w, scanner.Text())
-	}
+// noUpstreamHandler replaces the old Django reverse-proxy fallback in
+// standalone mode (see run()) — every registered route's fallback
+// argument should only ever reach this for a confirmed-dead/unreachable
+// Django-only code path (see go-backend-migration memory's full route-by-
+// route audit), so a clean envelope here is strictly more honest than the
+// connection-refused error a real reverse proxy would have produced.
+func noUpstreamHandler() http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		writeEnvelope(w, "This feature is not available.", true, -1)
+	})
 }
 
 // handleShutdown lets wails-app/backend.go's stopBackend trigger this
 // process's own graceful-shutdown path (see run()'s select on shutdownCh)
-// over loopback HTTP. Needed because os/exec's Process.Kill() always sends
-// SIGKILL, which can't be caught — sending it directly to this process (as
-// stopBackend used to) meant the signal.Notify handler that calls
-// killChild() to clean up the Django child never got a chance to run,
-// leaving that child orphaned (reparented to launchd/init) on every app
-// quit. No extra auth/origin check needed beyond responding at all: this
-// listener is already bound to 127.0.0.1-only (see listenAddr), the same
-// trust boundary every other route in this file relies on.
+// over loopback HTTP instead of relying on OS signal delivery. No extra
+// auth/origin check needed beyond responding at all: this listener is
+// already bound to 127.0.0.1-only (see listenAddr), the same trust
+// boundary every other route in this file relies on.
 func handleShutdown(shutdownCh chan<- struct{}) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
@@ -559,11 +501,5 @@ func handleShutdown(shutdownCh chan<- struct{}) http.HandlerFunc {
 		case shutdownCh <- struct{}{}:
 		default:
 		}
-	}
-}
-
-func killChild(cmd *exec.Cmd) {
-	if cmd != nil && cmd.Process != nil {
-		_ = cmd.Process.Kill()
 	}
 }

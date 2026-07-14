@@ -8,15 +8,9 @@
       "port": 8765
     },
     {
-      "name": "omnidb-web",
-      "runtimeExecutable": "bash",
-      "runtimeArgs": ["-c", "cd OmniDB && ../venv/bin/python3 manage.py runserver 8001"],
-      "port": 8001
-    },
-    {
       "name": "omnidb-go-server",
       "runtimeExecutable": "bash",
-      "runtimeArgs": ["-c", "cd go-server && OMNIDB_PROXY_UPSTREAM=http://127.0.0.1:8001 OMNIDB_PROXY_LISTEN_PORT=8002 go run ."],
+      "runtimeArgs": ["-c", "cd go-server && OMNIDB_PROXY_LISTEN_PORT=8002 go run . -d ../.dev-home"],
       "port": 8002
     }
   ]
