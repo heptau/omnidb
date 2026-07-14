@@ -21,3 +21,4 @@ omnidb_app/package-lock.json
 /build_work
 .claude/settings.local.json
 /go-server/omnidb-go-server
+/wails-app/omnidb-shell

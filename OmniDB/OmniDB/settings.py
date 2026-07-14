@@ -58,6 +58,12 @@ MIDDLEWARE = [
 	'django.middleware.common.CommonMiddleware',
 	'django.middleware.csrf.CsrfViewMiddleware',
 	'django.contrib.auth.middleware.AuthenticationMiddleware',
+	# Fáze 7 (Go-backend-migration): overrides request.user for requests
+	# forwarded by the Go proxy, which now owns login/session natively —
+	# see OmniDB_app/middleware.py. Must come after AuthenticationMiddleware
+	# so it overrides that middleware's own (now-unused) session-cookie-based
+	# request.user resolution, not the other way around.
+	'OmniDB_app.middleware.TrustedUserMiddleware',
 	'django.contrib.messages.middleware.MessageMiddleware',
 	'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]

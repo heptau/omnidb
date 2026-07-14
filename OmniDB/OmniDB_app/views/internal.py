@@ -6,9 +6,10 @@ from django.db.models import Q
 from django.contrib.auth.models import User
 from django.views.decorators.csrf import csrf_exempt
 
-from OmniDB_app.models.main import Connection
-from OmniDB_app.views.memory_objects import get_client_object
+from OmniDB_app.models.main import Connection, UserDetails
+from OmniDB_app.views.memory_objects import get_client_object, clear_client_object
 from OmniDB_app.views.polling import queue_response
+from OmniDB_app.include.Session import Session
 
 # Loopback-only bridge used by the Go backend (see /go-server) to resolve
 # session identity without reimplementing Django's session store/ORM. As
@@ -87,6 +88,18 @@ def appdb_path(request):
 
 	return JsonResponse({'path': settings.DATABASES['default']['NAME']})
 
+# Reveals settings.TEMP_DIR (OmniDB_app/static/temp under Django's own
+# install) and settings.PATH (the URL prefix Django serves its own static
+# files under — '' by default, see custom_settings.py) so a migrated Go
+# route can write an export file where Django's existing static-file
+# serving already picks it up, without Go needing to run its own static
+# file server or guess Django's directory layout.
+def temp_dir(request):
+	if not _is_loopback(request):
+		return HttpResponseForbidden()
+
+	return JsonResponse({'temp_dir': settings.TEMP_DIR, 'path': settings.PATH})
+
 # Lets a migrated Go route (see go-server/longpolling.go) deliver a result
 # through Django's own long-polling queue instead of maintaining a parallel
 # delivery mechanism. This matters for more than just code reuse: Django's
@@ -114,3 +127,57 @@ def queue_response_internal(request):
 	client_object = get_client_object(request.session.session_key)
 	queue_response(client_object, payload)
 	return JsonResponse({'queued': True})
+
+# Lets Go's native /workspace/ and / (check_session) page renders (see
+# go-server/workspace_page.go) keep Django's own session machinery alive
+# without proxying either request to Django at all — /long_polling/,
+# /client_keep_alive/, and part of /create_request/ (see polling.py) are
+# NOT yet ported (Fáze 8b's remaining item) and all key their in-memory
+# client_object by request.session.session_key, which only exists once a
+# real Django session has been saved at least once. Before Fáze 8, a
+# browser always hit Django's own check_session (bootstrap) then
+# workspace.index() (refresh) in sequence, which did this as a side
+# effect; this endpoint collapses both of those Django-session side
+# effects (get-or-create UserDetails, get-or-create the omnidb_session
+# Session object, RefreshDatabaseList, wipe v_tabs_databases,
+# clear_client_object) into one call Go can make on every /workspace/
+# render, same as workspace.index() used to run on every request. The
+# caller must relay this response's Set-Cookie (the omnidb_sessionid
+# cookie, only present the first time a given browser session hits this)
+# back to the real browser response — see ensureDjangoSession in
+# go-server/workspace_page.go.
+@csrf_exempt
+def prepare_workspace_session(request):
+	if not _is_loopback(request):
+		return HttpResponseForbidden()
+	if not request.user.is_authenticated:
+		return JsonResponse({'ok': False}, status=401)
+
+	try:
+		user_details = UserDetails.objects.get(user=request.user)
+	except Exception:
+		user_details = UserDetails(user=request.user)
+		user_details.save()
+
+	if not request.session.get('omnidb_session'):
+		request.session.save()
+		v_session = Session(
+			request.user.id,
+			request.user.username,
+			'light',
+			user_details.font_size,
+			request.user.is_superuser,
+			request.session.session_key,
+			user_details.csv_encoding,
+			user_details.csv_delimiter
+		)
+	else:
+		v_session = request.session.get('omnidb_session')
+		v_session.RefreshDatabaseList()
+
+	v_session.v_tabs_databases = dict([])
+	request.session['omnidb_session'] = v_session
+
+	clear_client_object(p_client_id=request.session.session_key)
+
+	return JsonResponse({'ok': True})

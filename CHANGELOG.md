@@ -7,6 +7,55 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.5.0] - 2026-07-14
+
+### Added
+- New Go backend (`go-server/`) that progressively takes over the Django/CherryPy backend as a
+  strangler-fig migration, with zero change to the frontend or its JSON API contract:
+  - Native tree introspection, DDL, properties, and query execution for SQLite, PostgreSQL,
+    MySQL, MariaDB, and Oracle, including the full PostgreSQL "long-tail" of previously Django-only
+    routes (checks, exclude/rule constraints, event triggers, inheritance/partitions, extended
+    statistics, materialized views, functions/procedures/aggregates, sequences/types/domains,
+    replication slots/publications/subscriptions, foreign data wrappers) and its ~123-template DDL
+    wizard.
+  - Edit-data grid, explicit transaction support (`COMMIT`/`ROLLBACK`) for the native query path,
+    a resumable multi-statement SQL console, a native SSH terminal, and SSH-tunneled connection
+    testing.
+  - Native login/session handling (Django-compatible PBKDF2 password verification) and native
+    `/workspace/` page rendering, replacing Django as the browser-facing auth and page-render front
+    door via a trusted-header interop mechanism, while still-unmigrated Django routes keep working
+    unchanged.
+  - Native static asset serving — fonts, images, CSS, and JS are now embedded directly into the Go
+    binary instead of served by CherryPy.
+  - Native user management, connection/group/snippet CRUD, and monitoring dashboard (16 built-in
+    PostgreSQL monitoring units plus 1 MySQL unit reimplemented natively).
+  - CSV data export extended with XLSX, TSV, Markdown, JSON, and XML output formats.
+
+### Changed
+- `wails-app/backend.go` now launches the new Go proxy instead of spawning the Django server
+  directly.
+
+### Fixed
+- PostgreSQL properties' "Referenced Columns" for foreign keys resolved the wrong table's
+  attribute numbers whenever the two tables' column orderings differed.
+- Several MySQL/MariaDB tree-introspection queries used `SELECT DISTINCT ... ORDER BY` on a column
+  outside the selected list, which MySQL 8/MariaDB reject outright.
+- `delete_connection` left orphaned `Tab`/`QueryHistory`/`ConsoleHistory`/`MonUnitsConnections`/
+  `GroupConnection` rows behind instead of cascading the delete.
+- Saving an existing SQL snippet doubled every single quote in its text on each edit.
+- The PostgreSQL properties panel's "Cache Offset" column, based on a system column removed in
+  PostgreSQL 18, is no longer shown (it already silently failed against current PostgreSQL either
+  way).
+
+### Security
+- The query editor's autocomplete and the edit-data grid no longer interpolate cell/filter values
+  directly into SQL text — both now use real bind parameters, closing a SQL injection gap present
+  in the original implementation.
+- Oracle's `kill_backend` now validates its `sid,serial#` argument against a strict pattern before
+  use, since `ALTER SYSTEM KILL SESSION` has no bind-parameter form.
+- Desktop auto sign-in is no longer reachable at all unless the server is actually running in app
+  mode, closing an unauthenticated login backdoor that existed for server/web deployments.
+
 ## [3.3.0] - 2026-07-03
 
 ### Fixed

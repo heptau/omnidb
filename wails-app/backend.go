@@ -4,11 +4,14 @@ import (
 	"bufio"
 	"fmt"
 	"io"
+	"net/http"
+	"net/url"
 	"os"
 	"os/exec"
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -90,6 +93,11 @@ func (a *App) streamServerOutput(pipe io.Reader, watchForReadyURL bool) {
 		line := scanner.Text()
 
 		if watchForReadyURL && strings.HasPrefix(line, "http") {
+			if u, err := url.Parse(line); err == nil {
+				a.backendMu.Lock()
+				a.backendURL = u.Scheme + "://" + u.Host
+				a.backendMu.Unlock()
+			}
 			wailsruntime.EventsEmit(a.ctx, "backend:log", "Opening OmniDB...")
 			wailsruntime.EventsEmit(a.ctx, "backend:ready", line)
 			continue
@@ -99,10 +107,45 @@ func (a *App) streamServerOutput(pipe io.Reader, watchForReadyURL bool) {
 	}
 }
 
-// stopBackend terminates the omnidb-server process. Best-effort, matching
-// the NW.js shell's try/catch around process.kill(django.pid).
+// stopBackend asks omnidb-go-server to shut down gracefully over loopback
+// HTTP (see go-server/main.go's handleShutdown) and waits for it to exit,
+// falling back to Process.Kill() only if that request fails or the process
+// doesn't exit within a few seconds.
+//
+// Previously this only ever called Process.Kill() directly, which sends
+// SIGKILL — a signal that cannot be caught, so omnidb-go-server's own
+// signal.Notify-based graceful shutdown (which is what actually kills its
+// Django child, see go-server/main.go's killChild) never got a chance to
+// run. That left the Python omnidb-server process orphaned (reparented to
+// launchd) on every app quit, a real leak this fixes rather than just
+// papering over: killChild still eventually runs, just inside
+// omnidb-go-server's own process instead of being unreachable.
 func (a *App) stopBackend() {
-	if a.server != nil && a.server.Process != nil {
-		_ = a.server.Process.Kill()
+	if a.server == nil || a.server.Process == nil {
+		return
 	}
+
+	a.backendMu.Lock()
+	backendURL := a.backendURL
+	a.backendMu.Unlock()
+
+	if backendURL != "" {
+		client := http.Client{Timeout: 2 * time.Second}
+		if _, err := client.Post(backendURL+"/internal/shutdown/", "text/plain", nil); err == nil {
+			done := make(chan struct{})
+			go func() {
+				_, _ = a.server.Process.Wait()
+				close(done)
+			}()
+			select {
+			case <-done:
+				return
+			case <-time.After(5 * time.Second):
+				// Fall through to the force-kill below — omnidb-go-server
+				// accepted the request but didn't exit in time.
+			}
+		}
+	}
+
+	_ = a.server.Process.Kill()
 }

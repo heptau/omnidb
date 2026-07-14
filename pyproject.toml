@@ -1,6 +1,6 @@
 [project]
 name = "omnidb"
-version = "3.4.0"
+version = "3.5.0"
 description = "Revived open-source database management tool (PostgreSQL-focused)"
 readme = "README.md"
 requires-python = ">=3.10"

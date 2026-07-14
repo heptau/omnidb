@@ -26,6 +26,7 @@ import (
 	"os/exec"
 	"os/signal"
 	"path/filepath"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -50,6 +51,20 @@ func run() error {
 	var childCmd *exec.Cmd
 	var upstream *url.URL
 	readyPath := "" // path+query captured from the child's ready line, "" if none seen yet
+
+	// Fáze 7: Go now owns the desktop auto-login token natively (see
+	// native_login.go's handleSignInAutomatic) instead of deferring to
+	// whatever value omnidb-server.py independently generates for its own
+	// (now unreachable) copy of this check. Generated once, up front, so
+	// the ready-line rewrite below can substitute it into the URL actually
+	// shown to/navigated by the frontend.
+	if isAppMode(os.Args[1:]) {
+		token, err := generateAppToken()
+		if err != nil {
+			return fmt.Errorf("generate app token: %w", err)
+		}
+		appToken = token
+	}
 
 	if dev := os.Getenv(devUpstreamEnv); dev != "" {
 		u, err := url.Parse(dev)
@@ -85,11 +100,41 @@ func run() error {
 	// validates Host itself, so there's no downside to leaving it alone.
 	proxy := httputil.NewSingleHostReverseProxy(upstream)
 
+	// Fáze 7: Django no longer owns identity, but the routes it still
+	// serves (users.py, monitor_dashboard.py, workspace.py's own page
+	// render, static assets, ...) still need request.user/request.session
+	// to work — see OmniDB_app/middleware.py's TrustedUserMiddleware. Every
+	// request this proxy forwards gets an X-Omnidb-Trusted-User-Id header
+	// derived from the caller's own native session (see resolveIdentity),
+	// added here so every existing fallback/catch-all call site picks this
+	// up automatically without needing individual changes — this proxy
+	// value is reused as literally every native handler's own `fallback`
+	// argument. Any client-supplied header of the same name is always
+	// stripped first: Django's middleware trusts this header unconditionally
+	// (subject to its own loopback check), so a spoofed value reaching
+	// Django would be a full auth bypass if not for this.
+	baseDirector := proxy.Director
+	proxy.Director = func(req *http.Request) {
+		baseDirector(req)
+		req.Header.Del(trustedUserHeader)
+		if who, err := resolveIdentity(upstream, req.Header.Get("Cookie")); err == nil && who.Authenticated {
+			req.Header.Set(trustedUserHeader, strconv.Itoa(who.UserID))
+		}
+	}
+
 	// Routes migrated to native Go handlers (migration-plan phase 2+) are
 	// registered here; everything else keeps forwarding to Django
 	// unchanged. mux.Handle requires an exact registered pattern to not
 	// fall through, so unmatched paths hit the "/" catch-all below.
+	// shutdownCh lets wails-app/backend.go's stopBackend ask this process to
+	// shut down gracefully over loopback HTTP instead of relying on OS
+	// signal delivery — see handleShutdown's comment for why that matters.
+	// Buffered so a request that arrives after this process already started
+	// shutting down some other way (e.g. sigCh) doesn't block the handler.
+	shutdownCh := make(chan struct{}, 1)
+
 	mux := http.NewServeMux()
+	mux.Handle("/internal/shutdown/", handleShutdown(shutdownCh))
 	mux.Handle("/get_properties_sqlite/", handleGetPropertiesSQLite(upstream, proxy))
 	mux.Handle("/get_tables_sqlite/", handleGetTablesSQLite(upstream, proxy))
 	mux.Handle("/get_columns_sqlite/", handleGetColumnsSQLite(upstream, proxy))
@@ -109,16 +154,17 @@ func run() error {
 	mux.Handle("/template_select_sqlite/", handleTemplateSelectSQLite(upstream, proxy))
 	mux.Handle("/template_insert_sqlite/", handleTemplateInsertSQLite(upstream, proxy))
 	mux.Handle("/template_update_sqlite/", handleTemplateUpdateSQLite(upstream, proxy))
+	mux.Handle("/get_sqlite_version/", handleGetVersionSQLite(upstream, proxy))
 	// PostgreSQL: tree/introspection routes + query execution (migration-plan
 	// phase 3; query execution itself is handled by handleCreateRequest below
 	// via nativeQueryTechnology). get_properties_postgresql is served
 	// natively too, but only for the object kinds in
 	// pgSupportedPropertyTypes — everything else (sequences, functions,
 	// checks, roles, ...) falls through its own handler to Django.
-	// get_tree_info_postgresql stays fully proxied to Django for now — its
-	// ~90 DDL-wizard templates are a large, separate porting effort of its
-	// own, deliberately deferred to a
-	// follow-up slice.
+	// get_tree_info_postgresql (123 static DDL-wizard templates, see
+	// postgresql_treeinfo.go/postgresql_treeinfo_templates.go) — the last
+	// item of Fáze 8a's PostgreSQL long-tail, now natively handled.
+	mux.Handle("/get_tree_info_postgresql/", handleGetTreeInfoPostgreSQL(upstream, proxy))
 	mux.Handle("/get_schemas_postgresql/", handleGetSchemasPostgreSQL(upstream, proxy))
 	mux.Handle("/get_tables_postgresql/", handleGetTablesPostgreSQL(upstream, proxy))
 	mux.Handle("/get_columns_postgresql/", handleGetColumnsPostgreSQL(upstream, proxy))
@@ -138,6 +184,63 @@ func run() error {
 	mux.Handle("/template_select_postgresql/", handleTemplateSelectPostgreSQL(upstream, proxy))
 	mux.Handle("/template_insert_postgresql/", handleTemplateInsertPostgreSQL(upstream, proxy))
 	mux.Handle("/template_update_postgresql/", handleTemplateUpdatePostgreSQL(upstream, proxy))
+	// PostgreSQL long-tail (Fáze 8a) — server-level objects, sequences/types,
+	// kill_backend/change_role_password/get_object_description. See
+	// go-backend-migration memory for the full catalog this was ported from.
+	mux.Handle("/get_database_objects_postgresql/", handleGetDatabaseObjectsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_databases_postgresql/", handleGetDatabasesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_tablespaces_postgresql/", handleGetTablespacesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_roles_postgresql/", handleGetRolesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_extensions_postgresql/", handleGetExtensionsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_sequences_postgresql/", handleGetSequencesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_types_postgresql/", handleGetTypesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_domains_postgresql/", handleGetDomainsPostgreSQL(upstream, proxy))
+	mux.Handle("/kill_backend_postgresql/", handleKillBackendPostgreSQL(upstream, proxy))
+	mux.Handle("/change_role_password_postgresql/", handleChangeRolePasswordPostgreSQL(upstream, proxy))
+	mux.Handle("/get_object_description_postgresql/", handleGetObjectDescriptionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_postgresql_version/", handleGetVersionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_checks_postgresql/", handleGetChecksPostgreSQL(upstream, proxy))
+	mux.Handle("/get_excludes_postgresql/", handleGetExcludesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_rules_postgresql/", handleGetRulesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_rule_definition_postgresql/", handleGetRuleDefinitionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_eventtriggers_postgresql/", handleGetEventTriggersPostgreSQL(upstream, proxy))
+	mux.Handle("/get_eventtriggerfunctions_postgresql/", handleGetEventTriggerFunctionsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_eventtriggerfunction_definition_postgresql/", handleGetEventTriggerFunctionDefinitionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_inheriteds_postgresql/", handleGetInheritedsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_inheriteds_parents_postgresql/", handleGetInheritedsParentsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_inheriteds_children_postgresql/", handleGetInheritedsChildrenPostgreSQL(upstream, proxy))
+	mux.Handle("/get_partitions_postgresql/", handleGetPartitionsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_partitions_parents_postgresql/", handleGetPartitionsParentsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_partitions_children_postgresql/", handleGetPartitionsChildrenPostgreSQL(upstream, proxy))
+	mux.Handle("/get_statistics_postgresql/", handleGetStatisticsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_statistics_columns_postgresql/", handleGetStatisticsColumnsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_mviews_postgresql/", handleGetMaterializedViewsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_mviews_columns_postgresql/", handleGetMaterializedViewColumnsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_mview_definition_postgresql/", handleGetMaterializedViewDefinitionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_functions_postgresql/", handleGetFunctionsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_function_fields_postgresql/", handleGetFunctionFieldsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_function_definition_postgresql/", handleGetFunctionDefinitionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_function_debug_postgresql/", handleGetFunctionDebugPostgreSQL(upstream, proxy))
+	mux.Handle("/get_procedures_postgresql/", handleGetProceduresPostgreSQL(upstream, proxy))
+	mux.Handle("/get_procedure_fields_postgresql/", handleGetProcedureFieldsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_procedure_definition_postgresql/", handleGetProcedureDefinitionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_procedure_debug_postgresql/", handleGetProcedureDebugPostgreSQL(upstream, proxy))
+	mux.Handle("/get_triggerfunctions_postgresql/", handleGetTriggerFunctionsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_triggerfunction_definition_postgresql/", handleGetTriggerFunctionDefinitionPostgreSQL(upstream, proxy))
+	mux.Handle("/get_aggregates_postgresql/", handleGetAggregatesPostgreSQL(upstream, proxy))
+	mux.Handle("/template_select_function_postgresql/", handleTemplateSelectFunctionPostgreSQL(upstream, proxy))
+	mux.Handle("/template_call_procedure_postgresql/", handleTemplateCallProcedurePostgreSQL(upstream, proxy))
+	mux.Handle("/get_physicalreplicationslots_postgresql/", handleGetPhysicalReplicationSlotsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_logicalreplicationslots_postgresql/", handleGetLogicalReplicationSlotsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_publications_postgresql/", handleGetPublicationsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_publication_tables_postgresql/", handleGetPublicationTablesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_subscriptions_postgresql/", handleGetSubscriptionsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_subscription_tables_postgresql/", handleGetSubscriptionTablesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_foreign_data_wrappers_postgresql/", handleGetForeignDataWrappersPostgreSQL(upstream, proxy))
+	mux.Handle("/get_foreign_servers_postgresql/", handleGetForeignServersPostgreSQL(upstream, proxy))
+	mux.Handle("/get_user_mappings_postgresql/", handleGetUserMappingsPostgreSQL(upstream, proxy))
+	mux.Handle("/get_foreign_tables_postgresql/", handleGetForeignTablesPostgreSQL(upstream, proxy))
+	mux.Handle("/get_foreign_columns_postgresql/", handleGetForeignColumnsPostgreSQL(upstream, proxy))
 	// MySQL + MariaDB: one shared Go implementation registered under both
 	// URL suffixes, since Django itself exposes each engine as its own
 	// route prefix (views.tree_mysql vs views.tree_mariadb) even though the
@@ -171,6 +274,7 @@ func run() error {
 		mux.Handle("/template_select_"+suffix+"/", handleTemplateSelectMySQL(upstream, proxy))
 		mux.Handle("/template_insert_"+suffix+"/", handleTemplateInsertMySQL(upstream, proxy))
 		mux.Handle("/template_update_"+suffix+"/", handleTemplateUpdateMySQL(upstream, proxy))
+		mux.Handle("/kill_backend_"+suffix+"/", handleKillBackendMySQL(upstream, proxy))
 	}
 	// Oracle: tree/introspection routes + query execution (migration-plan
 	// phase 5). get_properties_oracle is served natively for the same kinds
@@ -206,13 +310,16 @@ func run() error {
 	mux.Handle("/template_select_oracle/", handleTemplateSelectOracle(upstream, proxy))
 	mux.Handle("/template_insert_oracle/", handleTemplateInsertOracle(upstream, proxy))
 	mux.Handle("/template_update_oracle/", handleTemplateUpdateOracle(upstream, proxy))
-	// DB-agnostic app-level views (migration-plan phase 6) — CRUD against
-	// Django's own SQLite app database (see go-server/appdb.go), not any
-	// user's saved target connection. Only the parts of connections.py that
-	// don't touch the in-memory Session object or need SSH tunneling are
-	// served here; save_connection/test_connection/delete_connection and all
-	// of users.py/monitor_dashboard.py stay proxied to Django (see the
-	// go-backend-migration memory note for why).
+	mux.Handle("/kill_backend_oracle/", handleKillBackendOracle(upstream, proxy))
+	// DB-agnostic app-level views (migration-plan phase 6, now complete) —
+	// CRUD against Django's own SQLite app database (see go-server/appdb.go),
+	// not any user's saved target connection. save_connection/
+	// test_connection/delete_connection use golang.org/x/crypto/ssh directly
+	// (see ssh_tunnel.go/terminal.go) instead of Session.AddDatabase/
+	// RemoveDatabase — see the go-backend-migration memory for why that's
+	// safe. users.py (Django password hashing) and monitor_dashboard.py
+	// (RestrictedPython sandboxed eval) still stay proxied to Django —
+	// separate reasons, not SSH-related.
 	mux.Handle("/get_connections/", handleGetConnections(upstream))
 	mux.Handle("/save_connection/", handleSaveConnection(upstream))
 	mux.Handle("/test_connection/", handleTestConnection(upstream))
@@ -229,12 +336,17 @@ func run() error {
 	mux.Handle("/delete_node_snippet/", handleDeleteNodeSnippet(upstream))
 	mux.Handle("/save_snippet_text/", handleSaveSnippetText(upstream))
 	mux.Handle("/rename_node_snippet/", handleRenameNodeSnippet(upstream))
-	// workspace.py's DB-agnostic, session-independent slice (migration-plan
-	// phase 6.5) — shortcuts, welcome flag, query/console command history.
-	// Everything else in workspace.py (get_database_list, edit_data,
-	// autocomplete, graphs, save_config_user, ...) still depends on the live
-	// Session object and stays proxied — see the go-backend-migration memory
-	// for why Fáze 7 (native session/auth) can't start until that's gone.
+	// workspace.py's DB-agnostic slice (migration-plan phase 6.5, now
+	// complete) — shortcuts, welcome flag, query/console command history,
+	// database list, draw_graph, autocomplete, change_active_database,
+	// save_config_user (including its password-change branch — Go now has
+	// its own Django-compatible PBKDF2 hashing, see hashDjangoPassword,
+	// built for Fáze 7's native login). None of these depend on Django's
+	// live Session object anymore — see the go-backend-migration memory for
+	// how each one was confirmed safe to re-derive fresh instead. Remaining
+	// Django-only pieces: PostgreSQL debugger (confirmed dead code) and
+	// monitor_dashboard.py (RestrictedPython sandboxed eval, needs a
+	// redesign, not a mechanical port).
 	mux.Handle("/shortcuts/", handleShortcutsPage(upstream))
 	mux.Handle("/close_welcome/", handleCloseWelcome(upstream))
 	mux.Handle("/save_shortcuts/", handleSaveShortcuts(upstream))
@@ -244,7 +356,32 @@ func run() error {
 	mux.Handle("/clear_console_list/", handleClearConsoleList(upstream))
 	mux.Handle("/get_database_list/", handleGetDatabaseList(upstream))
 	mux.Handle("/change_active_database/", handleChangeActiveDatabase(upstream))
-	mux.Handle("/save_config_user/", handleSaveConfigUser(upstream, proxy))
+	mux.Handle("/save_config_user/", handleSaveConfigUser(upstream))
+	// users.py — superuser-only user management, unblocked by Fáze 7's
+	// native Django-compatible PBKDF2 hashing (previously deferred since a
+	// Go-written hash in a different format would have broken Django-owned
+	// auth; Django no longer owns auth at all now).
+	mux.Handle("/get_users/", handleGetUsers(upstream))
+	mux.Handle("/new_user/", handleNewUser(upstream))
+	mux.Handle("/remove_user/", handleRemoveUser(upstream))
+	mux.Handle("/save_users/", handleSaveUsers(upstream))
+	// monitor_dashboard.py — CRUD ported in full; the 17 built-in monitoring
+	// units now run as native Go code (see monitoring_units.go) instead of
+	// RestrictedPython's sandboxed exec(), which has no Go equivalent. Custom
+	// user-authored monitor scripts can still be saved/edited/deleted (plain
+	// data) but no longer execute — handleRefreshMonitorUnits/
+	// handleTestMonitorScript return a graceful "not supported" result for
+	// those instead. Deliberate scope decision, confirmed with the user.
+	mux.Handle("/get_monitor_unit_list/", handleGetMonitorUnitList(upstream))
+	mux.Handle("/get_monitor_unit_details/", handleGetMonitorUnitDetails(upstream))
+	mux.Handle("/get_monitor_units/", handleGetMonitorUnits(upstream))
+	mux.Handle("/get_monitor_unit_template/", handleGetMonitorUnitTemplate(upstream))
+	mux.Handle("/save_monitor_unit/", handleSaveMonitorUnit(upstream))
+	mux.Handle("/delete_monitor_unit/", handleDeleteMonitorUnit(upstream))
+	mux.Handle("/remove_saved_monitor_unit/", handleRemoveSavedMonitorUnit(upstream))
+	mux.Handle("/update_saved_monitor_unit_interval/", handleUpdateSavedMonitorUnitInterval(upstream))
+	mux.Handle("/refresh_monitor_units/", handleRefreshMonitorUnits(upstream, proxy))
+	mux.Handle("/test_monitor_script/", handleTestMonitorScript(upstream))
 	// Cross-engine generic routes — registered once for every technology in
 	// Django too (see resolveNativeRequest), not per-engine like the tree_*
 	// routes. Falls back to Django for "terminal" connections or anything
@@ -258,7 +395,23 @@ func run() error {
 	mux.Handle("/renew_password/", handleRenewPassword(upstream, proxy))
 	mux.Handle("/create_request/", handleCreateRequest(upstream, proxy))
 	mux.Handle("/clear_client/", handleClearClient(proxy))
-	mux.Handle("/", proxy)
+	// Fáze 7: native login/session, replacing views.login entirely for the
+	// browser-facing auth front door (Django's own copies of these views
+	// still exist and still work if hit directly, but nothing routes to them
+	// anymore — see go-backend-migration memory for why that's fine to leave
+	// as unreachable code for now rather than deleting it).
+	mux.Handle("/omnidb_login/", handleLoginPage(upstream))
+	mux.Handle("/sign_in/", handleSignIn(upstream))
+	mux.Handle("/logout/", handleLogout())
+
+	// Fáze 8b: native /workspace/ page render + root "/" (check_session) +
+	// check_session_message — see workspace_page.go. Django's own copies of
+	// these views still exist and still work if hit directly (same
+	// leave-as-unreachable-code precedent as the Fáze 7 login views above).
+	mux.Handle("/workspace/", handleWorkspacePage(upstream))
+	mux.Handle("/check_session_message/", handleCheckSessionMessage())
+	mux.Handle("/static/", handleStaticAssets())
+	mux.Handle("/", handleRoot(upstream, proxy))
 
 	httpServer := &http.Server{Handler: mux}
 
@@ -268,7 +421,7 @@ func run() error {
 	}()
 
 	if readyPath != "" {
-		fmt.Printf("http://127.0.0.1:%d%s\n", ownPort, readyPath)
+		fmt.Printf("http://127.0.0.1:%d%s\n", ownPort, rewriteReadyPathToken(readyPath, appToken))
 	} else {
 		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on 127.0.0.1:%d, proxying to %s\n", ownPort, upstream)
 	}
@@ -278,6 +431,7 @@ func run() error {
 
 	select {
 	case <-sigCh:
+	case <-shutdownCh:
 	case err := <-serveErrCh:
 		if err != nil && err != http.ErrServerClosed {
 			fmt.Fprintf(os.Stderr, "omnidb-go-server: proxy server stopped: %v\n", err)
@@ -296,6 +450,29 @@ func listenAddr() string {
 		return "127.0.0.1:" + p
 	}
 	return "127.0.0.1:0"
+}
+
+// rewriteReadyPathToken substitutes Go's own generated appToken into the
+// child's ready-line query string (see native_login.go's package comment
+// for why omnidb-server.py's own independently-generated token no longer
+// needs to match what Go itself validates). No-op if there's no token
+// query param at all (dev mode) or newToken is empty (not running in app
+// mode).
+func rewriteReadyPathToken(readyPath, newToken string) string {
+	if readyPath == "" || newToken == "" {
+		return readyPath
+	}
+	u, err := url.Parse(readyPath)
+	if err != nil {
+		return readyPath
+	}
+	q := u.Query()
+	if q.Get("token") == "" {
+		return readyPath
+	}
+	q.Set("token", newToken)
+	u.RawQuery = q.Encode()
+	return u.String()
 }
 
 // spawnServer starts the packaged omnidb-server child process, forwarding
@@ -362,6 +539,26 @@ func streamPassthrough(r io.Reader, w io.Writer) {
 	scanner := bufio.NewScanner(r)
 	for scanner.Scan() {
 		fmt.Fprintln(w, scanner.Text())
+	}
+}
+
+// handleShutdown lets wails-app/backend.go's stopBackend trigger this
+// process's own graceful-shutdown path (see run()'s select on shutdownCh)
+// over loopback HTTP. Needed because os/exec's Process.Kill() always sends
+// SIGKILL, which can't be caught — sending it directly to this process (as
+// stopBackend used to) meant the signal.Notify handler that calls
+// killChild() to clean up the Django child never got a chance to run,
+// leaving that child orphaned (reparented to launchd/init) on every app
+// quit. No extra auth/origin check needed beyond responding at all: this
+// listener is already bound to 127.0.0.1-only (see listenAddr), the same
+// trust boundary every other route in this file relies on.
+func handleShutdown(shutdownCh chan<- struct{}) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(http.StatusOK)
+		select {
+		case shutdownCh <- struct{}{}:
+		default:
+		}
 	}
 }
 

@@ -290,14 +290,21 @@ type saveConfigUserRequest struct {
 	PCSVDelimiter string `json:"p_csv_delimiter"`
 }
 
-// handleSaveConfigUser mirrors workspace.py's save_config_user, split at
-// the same boundary as the rest of users.py: a password change
-// (p_pwd != "") needs Django's PBKDF2 hashing and session-auth-hash
-// rotation, so that case falls back to Django entirely rather than being
-// half-handled here. The common case (theme/font-size/CSV prefs only)
-// is handled natively. See saveConfigUser's comment for why a missing
-// UserDetails row is surfaced as an error instead of ignored.
-func handleSaveConfigUser(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
+// handleSaveConfigUser mirrors workspace.py's save_config_user, now
+// including its password-change branch (p_pwd != "") — deferred until
+// Fáze 7 gave Go its own Django-compatible PBKDF2 hashing
+// (hashDjangoPassword), since a Go-written hash in a different format
+// would have broken Django-owned auth at the time. Deliberately doesn't
+// call anything like Django's update_session_auth_hash: that mechanism
+// exists purely to stop Django's own session-cookie-based auth from
+// invalidating on password change, but TrustedUserMiddleware (see
+// OmniDB_app/middleware.py) already unconditionally overwrites request.user
+// from the trusted header on every request that has one, independent of
+// whatever Django's own session auth hash check would have decided — so
+// there's nothing here for an equivalent call to protect against. See
+// saveConfigUser's comment for why a missing UserDetails row is surfaced
+// as an error instead of ignored.
+func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
 		if err != nil || raw == "" {
@@ -307,10 +314,6 @@ func handleSaveConfigUser(upstream *url.URL, fallback http.Handler) http.Handler
 		var req saveConfigUserRequest
 		if err := json.Unmarshal([]byte(raw), &req); err != nil {
 			writeBadRequest(w)
-			return
-		}
-		if req.PPwd != "" {
-			fallback.ServeHTTP(w, r)
 			return
 		}
 
@@ -324,6 +327,16 @@ func handleSaveConfigUser(upstream *url.URL, fallback http.Handler) http.Handler
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}
+		if req.PPwd != "" {
+			if err := setUserPassword(db, int64(who.UserID), req.PPwd); err != nil {
+				writeEnvelope(w, err.Error(), true, -1)
+				return
+			}
+		}
+		// Mirrors Python mutating v_session.v_csv_encoding/v_csv_delimiter
+		// live (not just the UserDetails row) — see native_session.go's
+		// updateNativeSessionCSVPrefs comment.
+		updateNativeSessionCSVPrefs(nativeSessionCookieValue(r), req.PCSVEncoding, req.PCSVDelimiter)
 		writeEnvelope(w, "", false, -1)
 	}
 }

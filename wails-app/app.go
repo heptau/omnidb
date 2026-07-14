@@ -3,12 +3,15 @@ package main
 import (
 	"context"
 	"os/exec"
+	"sync"
 )
 
 // App struct
 type App struct {
-	ctx    context.Context
-	server *exec.Cmd
+	ctx        context.Context
+	server     *exec.Cmd
+	backendURL string // "scheme://host:port" of omnidb-go-server, set once ready — see backend.go
+	backendMu  sync.Mutex
 }
 
 // NewApp creates a new App application struct

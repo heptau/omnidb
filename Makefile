@@ -116,6 +116,7 @@ _sync_version:
 	$(SED_CMD) "s/OMNIDB_SHORT_VERSION = '.*'/OMNIDB_SHORT_VERSION = '$(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
 	$(SED_CMD) "s/ARG OMNIDB_VERSION=.*/ARG OMNIDB_VERSION=$(VERSION)/g" Dockerfile
 	$(SED_CMD) "s/^version = \".*\"/version = \"$(VERSION)\"/g" pyproject.toml
+	$(SED_CMD) "s/omnidbShortVersion = \".*\"/omnidbShortVersion = \"$(VERSION)\"/g" go-server/version.go
 
 # 1. Common preparation
 _prepare_dirs: _sync_version

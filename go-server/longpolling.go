@@ -8,6 +8,8 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -254,15 +256,32 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			return
 		}
 
-		if q.VCmdType != nil && *q.VCmdType != "" {
-			// CSV/XLSX export stays on Django for now — needs file-export
-			// infrastructure (a Go XLSX writer, static/temp serving) not
-			// built yet, deliberately out of scope for this slice.
-			fallback.ServeHTTP(w, r)
+		cookie := r.Header.Get("Cookie")
+
+		if q.VCmdType != nil && strings.HasPrefix(*q.VCmdType, "export_") {
+			format := strings.TrimPrefix(*q.VCmdType, "export_")
+			if !exportFormatSupported(format) {
+				fallback.ServeHTTP(w, r)
+				return
+			}
+			info, err := resolveConnection(upstream, cookie, q.VDBIndex.String())
+			if err != nil || !info.Found || !nativeQueryTechnology(info.Technology) {
+				fallback.ServeHTTP(w, r)
+				return
+			}
+			applyRememberedPassword(r, q.VDBIndex.String(), info)
+
+			who, err := resolveIdentity(upstream, cookie)
+			if err != nil || !who.Authenticated {
+				fallback.ServeHTTP(w, r)
+				return
+			}
+
+			go runQueryExport(upstream, cookie, q, format, body.VContextCode, info, who)
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte("{}"))
 			return
 		}
-
-		cookie := r.Header.Get("Cookie")
 
 		// Mode 3/4 (COMMIT/ROLLBACK) act on whatever cursor/transaction a
 		// prior mode-0 request already opened for this tab — no new
@@ -586,6 +605,14 @@ func queueQueryError(upstream *url.URL, cookie string, contextCode int, err erro
 // every other feature — so the browser's existing long-polling loop, still
 // talking to Django exactly as before, picks this up with no changes on
 // either the frontend or the proxy's handling of /long_polling/ itself.
+//
+// This is a direct Go-as-HTTP-client call to Django, not something this
+// process's own reverse proxy forwards — so main.go's Director (the only
+// place X-Omnidb-Trusted-User-Id gets added to a proxied request) never
+// runs for it. queue_response_internal checks request.user.is_authenticated
+// same as connection_info does (see resolveConnection's comment for the
+// full explanation of why this broke specifically for a Go-native-only
+// login since Fáze 7) — same fix needed here.
 func queueResponseOnDjango(upstream *url.URL, cookie string, payload map[string]any) {
 	body, err := json.Marshal(payload)
 	if err != nil {
@@ -599,6 +626,9 @@ func queueResponseOnDjango(upstream *url.URL, cookie string, payload map[string]
 	req.Header.Set("Content-Type", "application/json")
 	if cookie != "" {
 		req.Header.Set("Cookie", cookie)
+	}
+	if who, err := resolveIdentity(upstream, cookie); err == nil && who.Authenticated {
+		req.Header.Set(trustedUserHeader, strconv.Itoa(who.UserID))
 	}
 
 	resp, err := http.DefaultClient.Do(req)

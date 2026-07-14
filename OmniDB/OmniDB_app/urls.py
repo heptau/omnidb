@@ -15,6 +15,8 @@ base_urlpatterns = [
 	url(r'^internal/connection/$', views.internal.connection_info, name='internal_connection_info'),
 	url(r'^internal/queue_response/$', views.internal.queue_response_internal, name='internal_queue_response'),
 	url(r'^internal/appdb_path/$', views.internal.appdb_path, name='internal_appdb_path'),
+	url(r'^internal/temp_dir/$', views.internal.temp_dir, name='internal_temp_dir'),
+	url(r'^internal/prepare_workspace_session/$', views.internal.prepare_workspace_session, name='internal_prepare_workspace_session'),
 
 	url(r'^long_polling/$', views.polling.long_polling, name='long_polling'),
 	url(r'^create_request/$', views.polling.create_request, name='create_request'),

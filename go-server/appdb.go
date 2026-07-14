@@ -50,6 +50,52 @@ func resolveAppDBPath(upstream *url.URL) (string, error) {
 	return appDBPathVal, nil
 }
 
+// tempDirInfo mirrors OmniDB_app/views/internal.py's temp_dir response —
+// where a Go-side export route should write its output file, and the URL
+// prefix Django serves its own static files under (so the response's
+// v_filename lines up with what Django's existing static-file serving,
+// still reached via the "/" reverse-proxy catch-all, already handles).
+type tempDirInfo struct {
+	TempDir string
+	Path    string
+}
+
+var (
+	tempDirMu  sync.Mutex
+	tempDirVal *tempDirInfo
+)
+
+func resolveTempDir(upstream *url.URL) (*tempDirInfo, error) {
+	tempDirMu.Lock()
+	defer tempDirMu.Unlock()
+	if tempDirVal != nil {
+		return tempDirVal, nil
+	}
+
+	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s://%s/internal/temp_dir/", upstream.Scheme, upstream.Host), nil)
+	if err != nil {
+		return nil, err
+	}
+	resp, err := http.DefaultClient.Do(req)
+	if err != nil {
+		return nil, fmt.Errorf("call temp_dir: %w", err)
+	}
+	defer resp.Body.Close()
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("temp_dir: unexpected status %d", resp.StatusCode)
+	}
+
+	var body struct {
+		TempDir string `json:"temp_dir"`
+		Path    string `json:"path"`
+	}
+	if err := json.NewDecoder(resp.Body).Decode(&body); err != nil {
+		return nil, fmt.Errorf("decode temp_dir response: %w", err)
+	}
+	tempDirVal = &tempDirInfo{TempDir: body.TempDir, Path: body.Path}
+	return tempDirVal, nil
+}
+
 // openAppDB opens OmniDB's own SQLite app database (connections, groups,
 // snippets, users, ...) — distinct from openSQLiteTarget, which opens a
 // *user's saved connection* pointing at some unrelated SQLite file. Reuses

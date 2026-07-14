@@ -1,50 +1,57 @@
 package main
 
 import (
-	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 )
 
-// WhoAmI mirrors the JSON shape returned by Django's internal/whoami view
-// (OmniDB_app/views/internal.py).
+// WhoAmI mirrors the shape Django's internal/whoami view used to return
+// (OmniDB_app/views/internal.py) — kept unchanged even though resolveIdentity
+// no longer calls that endpoint (Fáze 7: Go now owns login/session
+// natively), since every existing native route already consumes this exact
+// struct shape.
 type WhoAmI struct {
-	Authenticated bool   `json:"authenticated"`
-	UserID        int    `json:"user_id"`
-	Username      string `json:"username"`
-	SuperUser     bool   `json:"super_user"`
-	CSVEncoding   string `json:"csv_encoding"`
-	CSVDelimiter  string `json:"csv_delimiter"`
+	Authenticated bool
+	UserID        int
+	Username      string
+	SuperUser     bool
+	CSVEncoding   string
+	CSVDelimiter  string
 }
 
-// resolveIdentity asks the still-running Django process who owns the given
-// session cookie. This lets a route that has already moved to a native Go
-// handler (starting phase 2 of the migration plan) find out who's asking
-// without reimplementing Django's session store — Django keeps owning
-// login/session until the very last migration phase.
+// resolveIdentity resolves who owns a given "Cookie" header value against
+// Go's own native session store (see native_session.go) — no HTTP round
+// trip to Django anymore. upstream is kept as a parameter purely so none of
+// this function's ~16 existing call sites need to change; it's unused now.
+//
+// Before Fáze 7 this asked the still-running Django process (Django owned
+// login/session until then); Django's own copy of session/auth machinery
+// still exists and still runs for the handful of routes not yet natively
+// ported, but it's no longer the source of truth for identity — see
+// main.go's trusted-header injection for how those remaining routes learn
+// who's asking without Go reimplementing Django's ORM/ModelBackend calls a
+// second time.
 func resolveIdentity(upstream *url.URL, cookieHeader string) (*WhoAmI, error) {
-	req, err := http.NewRequest(http.MethodGet, fmt.Sprintf("%s://%s/internal/whoami/", upstream.Scheme, upstream.Host), nil)
-	if err != nil {
-		return nil, err
-	}
+	_ = upstream
+	req := &http.Request{Header: http.Header{}}
 	if cookieHeader != "" {
 		req.Header.Set("Cookie", cookieHeader)
 	}
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, fmt.Errorf("call whoami: %w", err)
+	c, err := req.Cookie(nativeSessionCookieName)
+	if err != nil || c.Value == "" {
+		return &WhoAmI{Authenticated: false}, nil
 	}
-	defer resp.Body.Close()
-
-	if resp.StatusCode != http.StatusOK {
-		return nil, fmt.Errorf("whoami: unexpected status %d", resp.StatusCode)
+	sess, ok := lookupNativeSession(c.Value)
+	if !ok {
+		return &WhoAmI{Authenticated: false}, nil
 	}
-
-	var who WhoAmI
-	if err := json.NewDecoder(resp.Body).Decode(&who); err != nil {
-		return nil, fmt.Errorf("decode whoami response: %w", err)
-	}
-	return &who, nil
+	return &WhoAmI{
+		Authenticated: true,
+		UserID:        sess.UserID,
+		Username:      sess.Username,
+		SuperUser:     sess.SuperUser,
+		CSVEncoding:   sess.CSVEncoding,
+		CSVDelimiter:  sess.CSVDelimiter,
+	}, nil
 }

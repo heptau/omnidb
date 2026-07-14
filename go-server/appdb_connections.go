@@ -323,6 +323,28 @@ func deleteConnectionRow(db *sql.DB, userID, connID int64) error {
 	if owner != userID {
 		return errConnectionNotOwned
 	}
-	_, err = db.Exec(`delete from OmniDB_app_connection where id = ?`, connID)
+	return cascadeDeleteConnection(db, connID)
+}
+
+// cascadeDeleteConnection deletes every row that Django's models.py FKs to
+// Connection with on_delete=CASCADE (Tab, QueryHistory, ConsoleHistory,
+// MonUnitsConnections, GroupConnection), then the connection row itself —
+// none of this is enforced by the SQLite schema (no ON DELETE CASCADE, same
+// gap documented for deleteGroup/deleteSnippetFolderRecursive), and this
+// specific set was missing entirely until found while scoping remove_user's
+// own cascade (users.py), which needs it to be correct one level down.
+func cascadeDeleteConnection(db *sql.DB, connID int64) error {
+	for _, stmt := range []string{
+		`delete from OmniDB_app_tab where connection_id = ?`,
+		`delete from OmniDB_app_queryhistory where connection_id = ?`,
+		`delete from OmniDB_app_consolehistory where connection_id = ?`,
+		`delete from OmniDB_app_monunitsconnections where connection_id = ?`,
+		`delete from OmniDB_app_groupconnection where connection_id = ?`,
+	} {
+		if _, err := db.Exec(stmt, connID); err != nil {
+			return err
+		}
+	}
+	_, err := db.Exec(`delete from OmniDB_app_connection where id = ?`, connID)
 	return err
 }

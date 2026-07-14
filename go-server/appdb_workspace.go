@@ -43,6 +43,95 @@ func saveConfigUser(db *sql.DB, userID int64, theme string, fontSize int, csvEnc
 	return nil
 }
 
+// userDetailsRow mirrors the UserDetails columns workspace.py's index()
+// reads to build its render context — a superset of userCSVPrefs's two
+// fields (native_login.go), which only needed csv_encoding/csv_delimiter at
+// login time.
+type userDetailsRow struct {
+	Theme         string
+	FontSize      int
+	CSVEncoding   string
+	CSVDelimiter  string
+	WelcomeClosed bool
+}
+
+// fetchUserDetails mirrors workspace.py's "UserDetails.objects.get(user=...)
+// except: create with defaults" fallback, same defaults as userCSVPrefs.
+func fetchUserDetails(db *sql.DB, userID int64) (userDetailsRow, error) {
+	var row userDetailsRow
+	err := db.QueryRow(
+		`select theme, font_size, csv_encoding, csv_delimiter, welcome_closed from OmniDB_app_userdetails where user_id = ?`,
+		userID,
+	).Scan(&row.Theme, &row.FontSize, &row.CSVEncoding, &row.CSVDelimiter, &row.WelcomeClosed)
+	if err == sql.ErrNoRows {
+		if _, insertErr := db.Exec(
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed) values (?, 'light', 12, 'utf-8', ';', 0)`,
+			userID,
+		); insertErr != nil {
+			return userDetailsRow{}, insertErr
+		}
+		return userDetailsRow{Theme: "light", FontSize: 12, CSVEncoding: "utf-8", CSVDelimiter: ";", WelcomeClosed: false}, nil
+	}
+	if err != nil {
+		return userDetailsRow{}, err
+	}
+	return row, nil
+}
+
+// workspaceShortcut mirrors workspace.py index()'s per-shortcut sub-dict —
+// ctrl/shift/alt/meta are rendered as 0/1 ints (not JSON booleans), matching
+// Python's "1 if shortcut.ctrl_pressed else 0" exactly, since the frontend
+// (shortcuts.js) compares these against numeric event flags.
+type workspaceShortcut struct {
+	CtrlPressed  int    `json:"ctrl_pressed"`
+	ShiftPressed int    `json:"shift_pressed"`
+	AltPressed   int    `json:"alt_pressed"`
+	MetaPressed  int    `json:"meta_pressed"`
+	ShortcutKey  string `json:"shortcut_key"`
+	OS           string `json:"os"`
+	ShortcutCode string `json:"shortcut_code"`
+}
+
+func b2i(b bool) int {
+	if b {
+		return 1
+	}
+	return 0
+}
+
+// fetchWorkspaceShortcuts mirrors workspace.py index()'s Shortcut.objects.
+// filter(user=request.user) loop, keyed by shortcut code same as Python's
+// shortcut_object dict.
+func fetchWorkspaceShortcuts(db *sql.DB, userID int64) (map[string]workspaceShortcut, error) {
+	rows, err := db.Query(
+		`select code, os, ctrl_pressed, shift_pressed, alt_pressed, meta_pressed, key from OmniDB_app_shortcut where user_id = ?`,
+		userID,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	out := map[string]workspaceShortcut{}
+	for rows.Next() {
+		var code, os, key string
+		var ctrl, shift, alt, meta bool
+		if err := rows.Scan(&code, &os, &ctrl, &shift, &alt, &meta, &key); err != nil {
+			return nil, err
+		}
+		out[code] = workspaceShortcut{
+			CtrlPressed:  b2i(ctrl),
+			ShiftPressed: b2i(shift),
+			AltPressed:   b2i(alt),
+			MetaPressed:  b2i(meta),
+			ShortcutKey:  key,
+			OS:           os,
+			ShortcutCode: code,
+		}
+	}
+	return out, rows.Err()
+}
+
 type shortcutInput struct {
 	Code         string
 	CtrlPressed  bool
