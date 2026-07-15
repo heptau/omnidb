@@ -53,7 +53,6 @@ func (a *App) buildMenu() *menu.Menu {
 	viewMenu := menu.NewMenu()
 	viewMenu.AddText("Connections", keys.Combo("c", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("startConnectionManagement()"))
 	viewMenu.AddText("Snippets", keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("toggleSnippetPanel()"))
-	viewMenu.AddText("Plugins", nil, a.execJS("showPlugins()"))
 	viewMenu.AddSeparator()
 	viewMenu.AddText("Switch Menu", keys.Combo("m", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("v_connTabControl.toggleTabMenu(); refreshHeights();"))
 	viewMenu.AddSeparator()

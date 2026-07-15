@@ -71,7 +71,7 @@ function startTutorial(p_tutorial_name) {
 			},
 			{
 				p_message:
-					"This contains general settings and options, such as [ versioning, connections_list_manager, user_setting, plugins...]",
+					"This contains general settings and options, such as [ versioning, connections_list_manager, user_setting...]",
 				p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
 				p_title: "Utilities menu",
 			},
@@ -92,7 +92,6 @@ function startTutorial(p_tutorial_name) {
 				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connection management.</li>
 				<li><i class="fas fa-user omnidb__theme__text--primary mr-2"></i>User management.</li>
 				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>UI settings (shortcuts, theme, fonts...).</li>
-				<li><i class="fas fa-cube omnidb__theme__text--primary mr-2"></i>Plugins management.</li>
 				<li><i class="fas fa-sign-out-alt omnidb__theme__text--primary mr-2"></i>About.</li>
 				</ul>
 				`,

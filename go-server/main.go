@@ -416,19 +416,10 @@ func run() error {
 	mux.Handle("/workspace/", handleWorkspacePage(upstream))
 	mux.Handle("/check_session_message/", handleCheckSessionMessage())
 
-	// Plugin routes — native no-op stubs, not ports (the plugin system was
-	// decided against project-wide, see plugins_stub.go's comment).
 	// indent_sql uses a generic, dialect-agnostic reindenter — see
 	// handleIndentSQL's comment for the planned PostgreSQL-specific
 	// pg_procrustes tier on top of this.
 	mux.Handle("/indent_sql/", handleIndentSQL(upstream))
-
-	mux.Handle("/get_plugins/", handleGetPlugins(upstream))
-	mux.Handle("/list_plugins/", handleListPlugins(upstream))
-	mux.Handle("/reload_plugins/", handleReloadPlugins(upstream))
-	mux.Handle("/delete_plugin/", handleDeletePlugin(upstream))
-	mux.Handle("/exec_plugin_function/", handlePluginsNotSupported())
-	mux.Handle("/upload/", handlePluginsNotSupported())
 
 	mux.Handle("/static/", handleStaticAssets())
 	if tempDir, err := resolveTempDir(upstream); err != nil {

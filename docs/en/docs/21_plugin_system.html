@@ -46,8 +46,9 @@ into different parts of the interface, to add their own features without
 redeploying the whole application. That mechanism depended on dynamically
 importing arbitrary Python modules into the running server process — something
 with no equivalent in a compiled Go binary — and was deliberately not carried
-over. The related API endpoints still exist for compatibility but now always
-report zero installed plugins and reject install/execute requests.</p>
+over. Since it could never do anything useful again, the "Plugins" dialog and
+its menu entry, and the API endpoints behind it, were removed from the
+application entirely rather than kept around as a permanently-empty stub.</p>
 <p>If you relied on a specific plugin, there is currently no supported way to
 port it forward. Anything a plugin used to do by calling into the database
 directly can usually still be done today through the regular SQL editor,
