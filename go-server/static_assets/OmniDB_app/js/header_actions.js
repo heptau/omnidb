@@ -293,7 +293,10 @@ function showConfigUser() {
 	document.getElementById("sel_csv_encoding").value = v_csv_encoding;
 	document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
 
-	var configModal = new bootstrap.Modal(document.getElementById("modal_config"), { backdrop: "static", keyboard: false });
+	// keyboard: true (unlike backdrop: "static", kept as-is) lets Esc close
+	// this dialog like Cancel would — clicking outside still won't, so an
+	// accidental stray click can't lose whatever you were about to change.
+	var configModal = new bootstrap.Modal(document.getElementById("modal_config"), { backdrop: "static", keyboard: true });
 	configModal.show();
 }
 
