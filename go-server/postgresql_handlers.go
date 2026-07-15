@@ -75,22 +75,49 @@ type pgPropertiesRequest struct {
 }
 
 // pgSupportedPropertyTypes are the object kinds with real properties/DDL
-// support. Every other p_type (sequence, function, check, exclude, rule,
-// role, tablespace, schema, extension, ...) still falls through to
-// noUpstreamHandler's "This feature is not available." — Django is gone
-// (see AGENTS.md), so unlike when this comment was first written, that's a
-// dead end rather than a working proxy; porting the rest is a separate,
-// larger effort (see go-backend-migration memory).
+// support — every node type the tree can produce (see
+// getPropertiesPostgresqlConfirm in tree_postgresql.js), now that the last
+// batch (role/tablespace/.../user_mapping) was added. Before that, every
+// p_type not in this set fell through to noUpstreamHandler's "This feature
+// is not available." — a comment here used to say that fallback was
+// Django, but Django is gone (see AGENTS.md), so it was actually a dead
+// end, not a working proxy.
 var pgSupportedPropertyTypes = map[string]bool{
-	"table":       true,
-	"table_field": true,
-	"index":       true,
-	"view":        true,
-	"trigger":     true,
-	"pk":          true,
-	"foreign_key": true,
-	"unique":      true,
-	"database":    true,
+	"table":                       true,
+	"table_field":                 true,
+	"index":                       true,
+	"view":                        true,
+	"trigger":                     true,
+	"pk":                          true,
+	"foreign_key":                 true,
+	"unique":                      true,
+	"database":                    true,
+	"check":                       true,
+	"exclude":                     true,
+	"rule":                        true,
+	"role":                        true,
+	"tablespace":                  true,
+	"extension":                   true,
+	"schema":                      true,
+	"sequence":                    true,
+	"function":                    true,
+	"procedure":                   true,
+	"triggerfunction":             true,
+	"direct_triggerfunction":      true,
+	"eventtriggerfunction":        true,
+	"direct_eventtriggerfunction": true,
+	"aggregate":                   true,
+	"domain":                      true,
+	"type":                        true,
+	"mview":                       true,
+	"fdw":                         true,
+	"foreign_server":              true,
+	"foreign_table":               true,
+	"eventtrigger":                true,
+	"publication":                 true,
+	"subscription":                true,
+	"statistic":                   true,
+	"user_mapping":                true,
 }
 
 // resolvePostgreSQLRequest is resolveSQLiteRequest's PostgreSQL counterpart —
@@ -765,6 +792,69 @@ func handleGetPropertiesPostgreSQL(upstream *url.URL, fallback http.Handler) htt
 		case "database":
 			properties, propErr = postgresqlPropertiesDatabase(db, object)
 			ddl, ddlErr = postgresqlDDLDatabase(db, object)
+		case "check":
+			properties, propErr = postgresqlPropertiesCheck(db, schema, table, object)
+			ddl, ddlErr = postgresqlDDLConstraint(db, schema, table, object)
+		case "exclude":
+			properties, propErr = postgresqlPropertiesExclude(db, schema, table, object)
+			ddl, ddlErr = postgresqlDDLConstraint(db, schema, table, object)
+		case "rule":
+			properties, propErr = postgresqlPropertiesRule(db, schema, table, object)
+			ddl, ddlErr = postgresqlRuleDefinition(db, schema, table, object)
+		case "role":
+			properties, propErr = postgresqlPropertiesRole(db, object)
+			ddl, ddlErr = postgresqlDDLRole(db, object)
+		case "tablespace":
+			properties, propErr = postgresqlPropertiesTablespace(db, object)
+			ddl, ddlErr = postgresqlDDLTablespace(db, object)
+		case "extension":
+			properties, propErr = postgresqlPropertiesExtension(db, object)
+			ddl, ddlErr = postgresqlDDLExtension(db, object)
+		case "schema":
+			properties, propErr = postgresqlPropertiesSchema(db, object)
+			ddl, ddlErr = postgresqlDDLSchema(db, object)
+		case "sequence":
+			properties, propErr = postgresqlPropertiesSequence(db, schema, object)
+			ddl, ddlErr = postgresqlDDLSequence(db, schema, object)
+		case "function", "procedure", "triggerfunction", "direct_triggerfunction", "eventtriggerfunction", "direct_eventtriggerfunction":
+			properties, propErr = postgresqlPropertiesRoutine(db, object)
+			ddl, ddlErr = postgresqlRoutineDefinition(db, object)
+		case "aggregate":
+			properties, propErr = postgresqlPropertiesRoutine(db, object)
+			ddl, ddlErr = postgresqlDDLAggregate(db, object)
+		case "domain":
+			properties, propErr = postgresqlPropertiesDomain(db, schema, object)
+			ddl, ddlErr = postgresqlDDLDomain(db, schema, object)
+		case "type":
+			properties, propErr = postgresqlPropertiesType(db, schema, object)
+			ddl, ddlErr = postgresqlDDLType(db, schema, object)
+		case "mview":
+			properties, propErr = postgresqlPropertiesMaterializedView(db, schema, object)
+			ddl, ddlErr = postgresqlMaterializedViewDefinition(db, schema, object)
+		case "fdw":
+			properties, propErr = postgresqlPropertiesFDW(db, object)
+			ddl, ddlErr = postgresqlDDLFDW(db, object)
+		case "foreign_server":
+			properties, propErr = postgresqlPropertiesForeignServer(db, object)
+			ddl, ddlErr = postgresqlDDLForeignServer(db, object)
+		case "foreign_table":
+			properties, propErr = postgresqlPropertiesForeignTable(db, schema, object)
+			ddl, ddlErr = postgresqlDDLClass(db, schema, object)
+		case "eventtrigger":
+			properties, propErr = postgresqlPropertiesEventTrigger(db, object)
+			ddl, ddlErr = postgresqlDDLEventTrigger(db, object)
+		case "publication":
+			properties, propErr = postgresqlPropertiesPublication(db, object)
+			ddl, ddlErr = postgresqlDDLPublication(db, object)
+		case "subscription":
+			properties, propErr = postgresqlPropertiesSubscription(db, object)
+			ddl, ddlErr = postgresqlDDLSubscription(db, object)
+		case "statistic":
+			properties, propErr = postgresqlPropertiesStatistic(db, schema, object)
+			ddl, ddlErr = postgresqlDDLStatistic(db, schema, object)
+		case "user_mapping":
+			properties, propErr = postgresqlPropertiesUserMapping(db, schema, object)
+			ddl, ddlErr = postgresqlDDLUserMapping(db, schema, object)
 		}
 		if propErr != nil {
 			writeDatabaseError(w, propErr.Error())

@@ -433,6 +433,152 @@ func postgresqlPropertiesFK(db *sql.DB, schema, table, fk string) ([][2]string, 
 	return pgPropertiesFromRow(db, query, schema, table, fk)
 }
 
+// postgresqlPropertiesCheck mirrors PostgreSQL.py's GetPropertiesCheck.
+// Unlike PK/unique/foreign_key, a check constraint has no backing index
+// (conindid is 0), so there's no "Index" column here — and its actual
+// clause is worth showing directly rather than just the constraint name.
+func postgresqlPropertiesCheck(db *sql.DB, schema, table, check string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select current_database() as "Database",
+			   quote_ident(n.nspname) as "Schema",
+			   quote_ident(t.relname) as "Table",
+			   quote_ident(c.conname) as "Constraint Name",
+			   c.oid as "OID",
+			   pg_get_constraintdef(c.oid, true) as "Check Clause",
+			   c.condeferrable as "Deferrable",
+			   c.condeferred as "Deferred by Default",
+			   c.convalidated as "Validated",
+			   c.conislocal as "Is Local",
+			   c.coninhcount as "Number of Ancestors",
+			   c.connoinherit as "Non-Inheritable"
+		from pg_constraint c
+		join pg_class t on t.oid = c.conrelid
+		join pg_namespace n on t.relnamespace = n.oid
+		where c.contype = 'c'
+		  and quote_ident(n.nspname) = $1
+		  and quote_ident(t.relname) = $2
+		  and quote_ident(c.conname) = $3
+	`, schema, table, check)
+}
+
+// postgresqlPropertiesExclude mirrors PostgreSQL.py's GetPropertiesExclude —
+// like unique/PK, an exclusion constraint has a backing index, but its
+// interesting content (the per-column operators) only comes through
+// pg_get_constraintdef, not individual catalog columns.
+func postgresqlPropertiesExclude(db *sql.DB, schema, table, exclude string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select current_database() as "Database",
+			   quote_ident(n.nspname) as "Schema",
+			   quote_ident(t.relname) as "Table",
+			   quote_ident(c.conname) as "Constraint Name",
+			   c.oid as "OID",
+			   pg_get_constraintdef(c.oid, true) as "Definition",
+			   quote_ident(i.relname) as "Index",
+			   c.condeferrable as "Deferrable",
+			   c.condeferred as "Deferred by Default",
+			   c.convalidated as "Validated"
+		from pg_constraint c
+		join pg_class t on t.oid = c.conrelid
+		join pg_namespace n on t.relnamespace = n.oid
+		join pg_class i on i.oid = c.conindid
+		where c.contype = 'x'
+		  and quote_ident(n.nspname) = $1
+		  and quote_ident(t.relname) = $2
+		  and quote_ident(c.conname) = $3
+	`, schema, table, exclude)
+}
+
+// postgresqlPropertiesRule mirrors PostgreSQL.py's GetPropertiesRule — rules
+// live in pg_rewrite, not pg_constraint, so this doesn't share the
+// constraint-table helpers above.
+func postgresqlPropertiesRule(db *sql.DB, schema, table, rule string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select current_database() as "Database",
+			   quote_ident(n.nspname) as "Schema",
+			   quote_ident(t.relname) as "Table",
+			   quote_ident(r.rulename) as "Rule Name",
+			   r.oid as "OID",
+			   (case r.ev_type when '1' then 'SELECT' when '2' then 'UPDATE' when '3' then 'INSERT' when '4' then 'DELETE' end) as "Event",
+			   r.is_instead as "Is Instead",
+			   r.ev_enabled <> 'D' as "Enabled"
+		from pg_rewrite r
+		join pg_class t on t.oid = r.ev_class
+		join pg_namespace n on t.relnamespace = n.oid
+		where quote_ident(n.nspname) = $1
+		  and quote_ident(t.relname) = $2
+		  and quote_ident(r.rulename) = $3
+	`, schema, table, rule)
+}
+
+// postgresqlPropertiesRole has no Django-era equivalent to mirror (see
+// postgresqlPropertiesDatabase's comment — same story for every function
+// added after it in this file: the tree's node type was never wired to
+// real properties/DDL during the migration).
+func postgresqlPropertiesRole(db *sql.DB, name string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select r.rolname as "Role Name",
+			   r.oid as "OID",
+			   r.rolsuper as "Superuser",
+			   r.rolinherit as "Inherit Rights",
+			   r.rolcreaterole as "Create Role",
+			   r.rolcreatedb as "Create DB",
+			   r.rolcanlogin as "Can Login",
+			   r.rolreplication as "Replication",
+			   r.rolbypassrls as "Bypass RLS",
+			   r.rolconnlimit as "Connection Limit",
+			   r.rolvaliduntil as "Valid Until",
+			   coalesce((
+				   select string_agg(quote_ident(m.rolname), ', ')
+				   from pg_auth_members am
+				   join pg_roles m on m.oid = am.roleid
+				   where am.member = r.oid
+			   ), '') as "Member Of"
+		from pg_roles r
+		where r.rolname = $1
+	`, name)
+}
+
+// postgresqlPropertiesTablespace has no Django-era equivalent to mirror.
+func postgresqlPropertiesTablespace(db *sql.DB, name string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select t.spcname as "Tablespace",
+			   t.oid as "OID",
+			   pg_catalog.pg_get_userbyid(t.spcowner) as "Owner",
+			   pg_catalog.pg_tablespace_location(t.oid) as "Location",
+			   t.spcacl as "ACL",
+			   t.spcoptions as "Options"
+		from pg_tablespace t
+		where t.spcname = $1
+	`, name)
+}
+
+// postgresqlPropertiesExtension has no Django-era equivalent to mirror.
+func postgresqlPropertiesExtension(db *sql.DB, name string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select e.extname as "Extension",
+			   e.oid as "OID",
+			   e.extversion as "Version",
+			   n.nspname as "Schema",
+			   pg_catalog.pg_get_userbyid(e.extowner) as "Owner",
+			   e.extrelocatable as "Relocatable"
+		from pg_extension e
+		join pg_namespace n on n.oid = e.extnamespace
+		where e.extname = $1
+	`, name)
+}
+
+// postgresqlPropertiesSchema has no Django-era equivalent to mirror.
+func postgresqlPropertiesSchema(db *sql.DB, name string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select n.nspname as "Schema",
+			   n.oid as "OID",
+			   pg_catalog.pg_get_userbyid(n.nspowner) as "Owner",
+			   n.nspacl as "ACL"
+		from pg_namespace n
+		where n.nspname = $1
+	`, name)
+}
+
 // postgresqlPropertiesDatabase has no Django-era equivalent to mirror — the
 // tree's "database" node type was never wired up to real properties/DDL
 // during the migration (see pgSupportedPropertyTypes), so this is new,
