@@ -1300,20 +1300,30 @@ function getTreePostgresql(p_div) {
 					text: "Change Password",
 					icon: "fas cm-all fa-key",
 					action: function (node) {
-						var v_html =
-							'<div class="form-row">' +
-							'    <div class="col-md-12 mb-3">' +
-							'        <label for="change_pwd_role">Password</label>' +
-							'        <input type="password" id="change_pwd_role" class="form-control" placeholder="password" />' +
-							"    </div>" +
-							'    <div class="col-md-12 mb-3">' +
-							'        <label for="change_pwd_role_confirm">Password confirmation</label>' +
-							'        <input type="password" id="change_pwd_role_confirm" class="form-control" placeholder="password confirmation" />' +
-							"    </div>" +
-							"</div>";
+						// Built as real DOM nodes, not an HTML string —
+						// showConfirm's content div only renders plain text
+						// (see notification_control.js).
+						function buildPasswordField(p_label_text, p_input_id, p_placeholder) {
+							var v_col = document.createElement("div");
+							v_col.className = "col-md-12 mb-3";
+
+							var v_label = document.createElement("label");
+							v_label.setAttribute("for", p_input_id);
+							v_label.textContent = p_label_text;
+
+							var v_input = document.createElement("input");
+							v_input.type = "password";
+							v_input.id = p_input_id;
+							v_input.className = "form-control";
+							v_input.placeholder = p_placeholder;
+
+							v_col.appendChild(v_label);
+							v_col.appendChild(v_input);
+							return v_col;
+						}
 
 						showConfirm(
-							v_html,
+							"",
 							function (p_node) {
 								var v_password = document.getElementById("change_pwd_role").value;
 								var v_password_confirm = document.getElementById("change_pwd_role_confirm").value;
@@ -1351,6 +1361,14 @@ function getTreePostgresql(p_div) {
 									false,
 								);
 							}.bind(null, node),
+							null,
+							function () {
+								var v_row = document.createElement("div");
+								v_row.className = "form-row";
+								v_row.appendChild(buildPasswordField("Password", "change_pwd_role", "password"));
+								v_row.appendChild(buildPasswordField("Password confirmation", "change_pwd_role_confirm", "password confirmation"));
+								document.getElementById("modal_message_content").appendChild(v_row);
+							},
 						);
 					},
 				},
@@ -4313,7 +4331,7 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
 		(p_complete_check || (!p_complete_check && p_node.tag.type != "database"))
 	) {
 		showConfirm3(
-			"This node belongs to another database, change active database to <b>" + p_node.tag.database + "</b>?",
+			"",
 			function () {
 				var v_call_back_continue = p_callback_continue;
 				var v_call_back_stop = p_callback_stop;
@@ -4373,6 +4391,18 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
 				if (p_callback_stop) p_callback_stop();
 			},
 		);
+
+		// Built as DOM nodes, not an HTML string — showConfirm3's content div
+		// only renders plain text (see notification_control.js). Safe to
+		// append right after the call above: showConfirm3 sets the (empty)
+		// content synchronously before this line runs, and nothing else
+		// touches modal_message_content before the modal is actually shown.
+		var v_content_div = document.getElementById("modal_message_content");
+		v_content_div.appendChild(document.createTextNode("This node belongs to another database, change active database to "));
+		var v_bold = document.createElement("b");
+		v_bold.textContent = p_node.tag.database;
+		v_content_div.appendChild(v_bold);
+		v_content_div.appendChild(document.createTextNode("?"));
 	} else p_callback_continue();
 }
 

@@ -466,27 +466,33 @@ function drawGraph(p_all, p_schema) {
 /// </summary>
 function renameTab(p_tab) {
 	showConfirm(
-		'<input id="tab_name" class="form-control" style="width: 100%;">',
+		"",
 		function () {
 			renameTabConfirm(p_tab, document.getElementById("tab_name").value);
 		},
 		null,
 		function () {
-			var v_input = document.getElementById("tab_name");
+			// Built as a real DOM node, not an HTML string — showConfirm's
+			// content div only renders plain text (see notification_control.js).
+			var v_input = document.createElement("input");
+			v_input.id = "tab_name";
+			v_input.className = "form-control";
+			v_input.style.width = "100%";
+			document.getElementById("modal_message_content").appendChild(v_input);
+
 			v_input.value = p_tab.tag.tab_title_span.textContent;
+			v_input.onkeydown = function () {
+				if (event.keyCode == 13) {
+					document.getElementById("modal_message_ok").click();
+				} else if (event.keyCode == 27) {
+					document.getElementById("modal_message_cancel").click();
+				}
+			};
 			v_input.focus();
 			v_input.selectionStart = 0;
 			v_input.selectionEnd = 10000;
 		},
 	);
-	var v_input = document.getElementById("tab_name");
-	v_input.onkeydown = function () {
-		if (event.keyCode == 13) {
-			document.getElementById("modal_message_ok").click();
-		} else if (event.keyCode == 27) {
-			document.getElementById("modal_message_cancel").click();
-		}
-	};
 }
 
 /// <summary>

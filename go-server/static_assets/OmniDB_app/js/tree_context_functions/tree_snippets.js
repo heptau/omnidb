@@ -334,7 +334,7 @@ function newNodeSnippet(p_node, p_mode) {
 	if (p_mode == "node") v_placeholder = "Node Name";
 
 	showConfirm(
-		'<input id="element_name" class="form-control" placeholder="' + v_placeholder + '" style="width: 100%;">',
+		"",
 		function () {
 			execAjax(
 				"/new_node_snippet/",
@@ -354,23 +354,29 @@ function newNodeSnippet(p_node, p_mode) {
 		},
 		null,
 		function () {
-			var v_input = document.getElementById("element_name");
+			// Built as a real DOM node, not an HTML string — showConfirm's
+			// content div only renders plain text (see notification_control.js).
+			var v_input = document.createElement("input");
+			v_input.id = "element_name";
+			v_input.className = "form-control";
+			v_input.placeholder = v_placeholder;
+			v_input.style.width = "100%";
+			document.getElementById("modal_message_content").appendChild(v_input);
+
+			v_input.onkeydown = function () {
+				if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
+				else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+			};
 			v_input.focus();
 			v_input.selectionStart = 0;
 			v_input.selectionEnd = 10000;
 		},
 	);
-
-	var v_input = document.getElementById("element_name");
-	v_input.onkeydown = function () {
-		if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-		else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
-	};
 }
 
 function renameNodeSnippet(p_node) {
 	showConfirm(
-		'<input id="element_name" class="form-control" value="' + p_node.text + '" style="width: 100%;">',
+		"",
 		function () {
 			execAjax(
 				"/rename_node_snippet/",
@@ -390,18 +396,23 @@ function renameNodeSnippet(p_node) {
 		},
 		null,
 		function () {
-			var v_input = document.getElementById("element_name");
+			// See newNodeSnippet's comment above.
+			var v_input = document.createElement("input");
+			v_input.id = "element_name";
+			v_input.className = "form-control";
+			v_input.value = p_node.text;
+			v_input.style.width = "100%";
+			document.getElementById("modal_message_content").appendChild(v_input);
+
+			v_input.onkeydown = function () {
+				if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
+				else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+			};
 			v_input.focus();
 			v_input.selectionStart = 0;
 			v_input.selectionEnd = 10000;
 		},
 	);
-
-	var v_input = document.getElementById("element_name");
-	v_input.onkeydown = function () {
-		if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-		else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
-	};
 }
 
 function deleteNodeSnippet(p_node) {
@@ -482,7 +493,7 @@ function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_callback) 
 			icon: "fas cm-all fa-save",
 			action: function () {
 				showConfirm(
-					'<input id="element_name" class="form-control" placeholder="Snippet Name" style="width: 100%;">',
+					"",
 					function () {
 						saveSnippetTextConfirm(
 							{
@@ -496,17 +507,25 @@ function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_callback) 
 					},
 					null,
 					function () {
-						var v_input = document.getElementById("element_name");
+						// Built as a real DOM node, not an HTML string —
+						// showConfirm's content div only renders plain text
+						// (see notification_control.js).
+						var v_input = document.createElement("input");
+						v_input.id = "element_name";
+						v_input.className = "form-control";
+						v_input.placeholder = "Snippet Name";
+						v_input.style.width = "100%";
+						document.getElementById("modal_message_content").appendChild(v_input);
+
+						v_input.onkeydown = function () {
+							if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
+							else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+						};
 						v_input.focus();
 						v_input.selectionStart = 0;
 						v_input.selectionEnd = 10000;
 					},
 				);
-				var v_input = document.getElementById("element_name");
-				v_input.onkeydown = function () {
-					if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-					else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
-				};
 			},
 		});
 	}
@@ -520,17 +539,32 @@ function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_callback) 
 					text: "<b>OVERWRITE</b> " + v_file.name,
 					icon: "fas cm-all fa-align-left",
 					action: function () {
-						showConfirm("<b>WARNING</b>, are you sure you want to overwrite file '" + v_file.name + "'?", function () {
-							saveSnippetTextConfirm(
-								{
-									v_id: v_file.id,
-									v_name: null,
-									v_parent: null,
-								},
-								p_editor.getValue(),
-								p_callback,
-							);
-						});
+						showConfirm(
+							"",
+							function () {
+								saveSnippetTextConfirm(
+									{
+										v_id: v_file.id,
+										v_name: null,
+										v_parent: null,
+									},
+									p_editor.getValue(),
+									p_callback,
+								);
+							},
+							null,
+							function () {
+								// v_file.name is user-supplied — built as DOM
+								// nodes (createTextNode) rather than interpolated
+								// into an HTML string, so it can never be
+								// rendered as markup regardless of its content.
+								var v_content_div = document.getElementById("modal_message_content");
+								var v_bold = document.createElement("b");
+								v_bold.textContent = "WARNING";
+								v_content_div.appendChild(v_bold);
+								v_content_div.appendChild(document.createTextNode(", are you sure you want to overwrite file '" + v_file.name + "'?"));
+							},
+						);
 					},
 				});
 			else

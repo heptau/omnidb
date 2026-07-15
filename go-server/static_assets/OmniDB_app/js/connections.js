@@ -496,14 +496,19 @@ function deleteGroupConfirm(p_group_id) {
 }
 
 function newGroup() {
-	showConfirm(
-		'<input id="group_name_input"/ class="form-control" placeholder="Group Name" style="width: 100%;">',
-		function () {
-			newGroupConfirm(document.getElementById("group_name_input").value);
-		},
-	);
+	showConfirm("", function () {
+		newGroupConfirm(document.getElementById("group_name_input").value);
+	});
 
-	var v_input = document.getElementById("group_name_input");
+	// showConfirm's content div only renders plain text (see
+	// notification_control.js), so the input has to be built as a real DOM
+	// node here instead of passed in as an HTML string.
+	var v_input = document.createElement("input");
+	v_input.id = "group_name_input";
+	v_input.className = "form-control";
+	v_input.placeholder = "Group Name";
+	v_input.style.width = "100%";
+	document.getElementById("modal_message_content").appendChild(v_input);
 
 	v_input.onkeydown = function () {
 		if (event.keyCode == 13) {
@@ -519,15 +524,20 @@ function newGroup() {
 
 function renameGroup() {
 	var v_select = document.getElementById("group_selector");
-	showConfirm(
-		'<input id="group_name_input"/ class="form-control" placeholder="Group Name" value="' +
-			v_select.options[v_select.selectedIndex].text +
-			'" style="width: 100%;">',
-		function () {
-			renameGroupConfirm(document.getElementById("group_selector").value, document.getElementById("group_name_input").value);
-		},
-	);
-	var v_input = document.getElementById("group_name_input");
+	showConfirm("", function () {
+		renameGroupConfirm(document.getElementById("group_selector").value, document.getElementById("group_name_input").value);
+	});
+
+	// See newGroup's comment above — built as a real DOM node, not an HTML
+	// string, so showConfirm's plain-text content div actually renders it.
+	var v_input = document.createElement("input");
+	v_input.id = "group_name_input";
+	v_input.className = "form-control";
+	v_input.placeholder = "Group Name";
+	v_input.style.width = "100%";
+	v_input.value = v_select.options[v_select.selectedIndex].text;
+	document.getElementById("modal_message_content").appendChild(v_input);
+
 	v_input.onkeydown = function () {
 		if (event.keyCode == 13) {
 			document.getElementById("modal_message_ok").click();
@@ -609,23 +619,34 @@ function testConnection(p_password = null) {
 		},
 		function (p_return) {
 			showConfirm(
-				p_return.v_data +
-					'<input id="txt_test_password_prompt" class="form-control" type="password" placeholder="Password" style="margin-bottom:20px; margin-top: 20px; text-align: center;"/>',
+				"",
 				function () {
 					testConnection(document.getElementById("txt_test_password_prompt").value);
 				},
 				null,
 				function () {
-					var v_input = document.getElementById("txt_test_password_prompt");
+					// Built as real DOM nodes, not an HTML string — showConfirm's
+					// content div only renders plain text (see notification_control.js).
+					var v_content_div = document.getElementById("modal_message_content");
+					v_content_div.appendChild(document.createTextNode(p_return.v_data));
+
+					var v_input = document.createElement("input");
+					v_input.id = "txt_test_password_prompt";
+					v_input.className = "form-control";
+					v_input.type = "password";
+					v_input.placeholder = "Password";
+					v_input.style.marginBottom = "20px";
+					v_input.style.marginTop = "20px";
+					v_input.style.textAlign = "center";
+					v_content_div.appendChild(v_input);
+
+					v_input.onkeydown = function () {
+						if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
+						else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+					};
 					v_input.focus();
 				},
 			);
-
-			var v_input = document.getElementById("txt_test_password_prompt");
-			v_input.onkeydown = function () {
-				if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-				else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
-			};
 		},
 		"box",
 		true,
