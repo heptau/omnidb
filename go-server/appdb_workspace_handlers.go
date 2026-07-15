@@ -175,7 +175,7 @@ func handleGetCommandList(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		rows, count, err := fetchQueryHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PCommandContains, reqBody.PCommandFrom, reqBody.PCommandTo, reqBody.PCurrentPage)
+		rows, count, err := fetchQueryHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PCommandContains, jsDatetimeToSQLite(reqBody.PCommandFrom), jsDatetimeToSQLite(reqBody.PCommandTo), reqBody.PCurrentPage)
 		if err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
@@ -216,7 +216,7 @@ func handleClearCommandList(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		if err := clearQueryHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PCommandContains, reqBody.PCommandFrom, reqBody.PCommandTo); err != nil {
+		if err := clearQueryHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PCommandContains, jsDatetimeToSQLite(reqBody.PCommandFrom), jsDatetimeToSQLite(reqBody.PCommandTo)); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}
@@ -250,7 +250,7 @@ func handleGetConsoleHistory(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		rows, count, err := fetchConsoleHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PCommandContains, reqBody.PCommandFrom, reqBody.PCommandTo, reqBody.PCurrentPage)
+		rows, count, err := fetchConsoleHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PCommandContains, jsDatetimeToSQLite(reqBody.PCommandFrom), jsDatetimeToSQLite(reqBody.PCommandTo), reqBody.PCurrentPage)
 		if err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
@@ -294,7 +294,7 @@ func handleClearConsoleList(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		if err := clearConsoleHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PConsoleContains, reqBody.PConsoleFrom, reqBody.PConsoleTo); err != nil {
+		if err := clearConsoleHistory(db, int64(who.UserID), reqBody.PDatabaseIndex, reqBody.PConsoleContains, jsDatetimeToSQLite(reqBody.PConsoleFrom), jsDatetimeToSQLite(reqBody.PConsoleTo)); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

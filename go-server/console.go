@@ -423,6 +423,32 @@ func logConsoleHistory(upstream *url.URL, userID int, connID int64, snippet stri
 	}
 }
 
+// logQueryHistory mirrors thread_query's mode-0 QueryHistory.save() — a
+// direct insert into Django's own app db (OmniDB_app_queryhistory), the
+// same table appdb_workspace.go's fetchQueryHistory/clearQueryHistory
+// already read/clear. This route existed on the read/delete side since the
+// PostgreSQL long-tail migration but was never given a write side at all —
+// every query run from the Query tab (unlike the Console tab, which
+// logConsoleHistory already covers) silently never appeared in "Command
+// History". Best-effort, same as logConsoleHistory: a logging failure
+// shouldn't fail the query itself, just gets logged server-side.
+func logQueryHistory(upstream *url.URL, userID int, connID int64, snippet, status string, start, end time.Time) {
+	db, err := openAppDB(upstream)
+	if err != nil {
+		log.Printf("logQueryHistory: openAppDB: %v", err)
+		return
+	}
+	defer db.Close()
+
+	const layout = "2006-01-02 15:04:05.000000"
+	if _, err := db.Exec(
+		`insert into OmniDB_app_queryhistory (user_id, connection_id, start_time, end_time, duration, status, snippet) values (?, ?, ?, ?, ?, ?, ?)`,
+		userID, connID, start.UTC().Format(layout), end.UTC().Format(layout), formatDuration(end.Sub(start)), status, snippet,
+	); err != nil {
+		log.Printf("logQueryHistory: insert: %v", err)
+	}
+}
+
 // runConsole mirrors thread_console, simplified to always behave like a
 // v_mode==0 request (see this file's package comment): Postgres's
 // server-cursor-backed mid-statement pause/resume (v_mode 1/2/3, gated on

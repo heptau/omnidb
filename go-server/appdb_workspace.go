@@ -188,6 +188,37 @@ func sqliteDatetimeToJS(s string) string {
 	return s
 }
 
+// jsDatetimeToSQLite is sqliteDatetimeToJS's missing inverse — every
+// p_command_from/p_command_to/p_console_from/p_console_to bound the
+// frontend sends is a moment().toISOString() value (command_history.js),
+// "T"-separated with a "Z" suffix. Comparing that directly against
+// start_time's space-separated stored text (as every fetch/clear function
+// in this file used to do, string op, no parsing) silently excluded every
+// row on the filtered date: ' ' (0x20) sorts before 'T' (0x54), so
+// "2026-07-15 18:05:12..." compares as LESS THAN
+// "2026-07-15T12:05:...Z" for any time of day at all, not just before
+// noon — a saved query/console history entry existed in the table but
+// never appeared in the default "Last 6 Hours" view or any other daterange
+// filter. Empty bounds (no filter set) pass through unchanged.
+func jsDatetimeToSQLite(s string) string {
+	if s == "" {
+		return s
+	}
+	for _, layout := range []string{time.RFC3339Nano, time.RFC3339, "2006-01-02T15:04:05.000Z"} {
+		if t, err := time.Parse(layout, s); err == nil {
+			// Fixed 6-digit fractional seconds, zero-padded — matching
+			// logConsoleHistory/logQueryHistory's own insert format exactly.
+			// A trailing-zero-trimming layout (Go's ".999999") would produce
+			// a shorter string for round numbers, which compares incorrectly
+			// against a stored value with real sub-second precision (a
+			// shorter string that's a prefix of a longer one always sorts
+			// before it, regardless of the digits actually being close).
+			return t.UTC().Format("2006-01-02 15:04:05.000000")
+		}
+	}
+	return s
+}
+
 type queryHistoryRow struct {
 	StartTime string
 	EndTime   string

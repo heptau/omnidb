@@ -83,6 +83,13 @@ func (q consoleRequestData) databaseIndexInt() int64 {
 	return n
 }
 
+// databaseIndexInt is queryRequestData's counterpart, same reasoning —
+// needed by logQueryHistory's connection_id.
+func (q queryRequestData) databaseIndexInt() int64 {
+	n, _ := q.VDBIndex.Int64()
+	return n
+}
+
 // formatDuration mirrors polling.py's GetDuration for the common case
 // (under a second) — cosmetic display text only, not parsed by the
 // frontend, so exact float-formatting parity with Python's str() isn't
@@ -320,8 +327,14 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			return
 		}
 
+		who, err := resolveIdentity(upstream, cookie)
+		if err != nil || !who.Authenticated {
+			fallback.ServeHTTP(w, r)
+			return
+		}
+
 		applyRememberedPassword(r, q.VDBIndex.String(), info)
-		go runNativeQuery(upstream, cookie, clientID, q, body.VContextCode, info)
+		go runNativeQuery(upstream, cookie, clientID, q, body.VContextCode, info, who.UserID)
 
 		// Matches create_request's own contract: the real result always
 		// arrives later via /long_polling/, this response body is ignored
@@ -361,7 +374,7 @@ func openNativeQueryTarget(info *ConnectionInfo) (*sql.DB, error) {
 // caller before spawning this goroutine — mode 1 doesn't strictly need it
 // (the cursor is already open), but resolving it up front keeps this
 // function's error handling uniform between modes.
-func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestData, contextCode int, info *ConnectionInfo) {
+func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestData, contextCode int, info *ConnectionInfo, userID int) {
 	const blockSize = 50
 	start := time.Now()
 
@@ -370,12 +383,23 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 		sqlText = sqlText[:len(sqlText)-1]
 	}
 
+	// History only records the actual run (mode 0) — mode 1's later
+	// "fetch more" calls read further rows off the same already-open
+	// cursor, not a new query, and would otherwise duplicate this entry on
+	// every block.
+	logHistory := func(status string) {
+		if q.VMode == 0 {
+			logQueryHistory(upstream, userID, q.databaseIndexInt(), sqlText, status, start, time.Now())
+		}
+	}
+
 	var cursor *queryCursor
 	var err error
 	if q.VMode == 0 {
 		db, openErr := openNativeQueryTarget(info)
 		if openErr != nil {
 			queueQueryError(upstream, cookie, contextCode, openErr)
+			logHistory("error")
 			return
 		}
 		cursor, err = startCursor(clientID, q.VTabID, db, sqlText, q.VAutocommit)
@@ -389,6 +413,7 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 	}
 	if err != nil {
 		queueQueryError(upstream, cookie, contextCode, err)
+		logHistory("error")
 		return
 	}
 
@@ -404,8 +429,10 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 	if err != nil {
 		closeCursor(clientID, q.VTabID)
 		queueQueryError(upstream, cookie, contextCode, err)
+		logHistory("error")
 		return
 	}
+	logHistory("success")
 	// Only auto-close on exhaustion when there's no explicit transaction to
 	// preserve (autocommit on, or continuing an already-committed/rolled-
 	// back cursor). With autocommit off, the whole point of the open
