@@ -622,13 +622,6 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 			result["v_title"] = def.Title
 			result["v_interval"] = def.Interval
 
-			chart, chartErr := def.Chart(db)
-			if chartErr != nil {
-				result["v_error"] = true
-				result["v_message"] = chartErr.Error()
-				results = append(results, result)
-				continue
-			}
 			data, dataErr := def.Data(db, item.ObjectData)
 			if dataErr != nil {
 				result["v_error"] = true
@@ -636,8 +629,23 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 				results = append(results, result)
 				continue
 			}
-			chart["data"] = data
-			result["v_object"] = chart
+			if item.ObjectData == nil {
+				// First call for this unit: the frontend has no Chart.js instance yet
+				// and needs the full constructor config, not just the data — every
+				// later call only ever wants the flat {labels, datasets} shape (see
+				// monitoring.js's refreshMonitorDashboard, "Update existing chart").
+				chart, chartErr := def.Chart(db)
+				if chartErr != nil {
+					result["v_error"] = true
+					result["v_message"] = chartErr.Error()
+					results = append(results, result)
+					continue
+				}
+				chart["data"] = data
+				result["v_object"] = chart
+			} else {
+				result["v_object"] = data
+			}
 			results = append(results, result)
 		}
 
