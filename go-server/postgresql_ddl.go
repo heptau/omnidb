@@ -1,6 +1,9 @@
 package main
 
-import "database/sql"
+import (
+	"database/sql"
+	"fmt"
+)
 
 // postgresqlDDLClass mirrors PostgreSQL.py's GetDDLClass (PostgreSQL 12+
 // branch) — used for table/index/view/sequence/mview/foreign_table DDL.
@@ -819,4 +822,44 @@ func postgresqlDDLConstraint(db *sql.DB, schema, table, object string) (string, 
 		return "", err
 	}
 	return ddl.String, nil
+}
+
+// postgresqlDDLDatabase synthesizes a CREATE DATABASE statement. Unlike
+// every other DDL helper in this file, Postgres has no pg_get_*def()-style
+// function for a database's own definition, so this builds the statement
+// from pg_database directly — the same OWNER/ENCODING/LC_COLLATE/LC_CTYPE/
+// TABLESPACE/CONNECTION LIMIT clauses pgAdmin and DBeaver generate.
+func postgresqlDDLDatabase(db *sql.DB, name string) (string, error) {
+	var owner, encoding, collate, ctype, tablespace string
+	var connLimit int64
+	err := db.QueryRow(`
+		select pg_catalog.pg_get_userbyid(d.datdba) as owner,
+			   pg_catalog.pg_encoding_to_char(d.encoding) as encoding,
+			   d.datcollate,
+			   d.datctype,
+			   coalesce(t.spcname, 'pg_default') as tablespace,
+			   d.datconnlimit
+		from pg_catalog.pg_database d
+		left join pg_catalog.pg_tablespace t on t.oid = d.dattablespace
+		where d.datname = $1
+	`, name).Scan(&owner, &encoding, &collate, &ctype, &tablespace, &connLimit)
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf(
+		"CREATE DATABASE %s\n"+
+			"    WITH\n"+
+			"    OWNER = %s\n"+
+			"    ENCODING = '%s'\n"+
+			"    LC_COLLATE = '%s'\n"+
+			"    LC_CTYPE = '%s'\n"+
+			"    TABLESPACE = %s\n"+
+			"    CONNECTION LIMIT = %d;",
+		quotePostgresIdentifierDoubleQuoted(name),
+		quotePostgresIdentifierDoubleQuoted(owner),
+		encoding, collate, ctype,
+		quotePostgresIdentifierDoubleQuoted(tablespace),
+		connLimit,
+	), nil
 }

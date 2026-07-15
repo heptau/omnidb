@@ -74,11 +74,13 @@ type pgPropertiesRequest struct {
 	PData pgPropertiesRequestData `json:"p_data"`
 }
 
-// pgSupportedPropertyTypes are the object kinds this migration slice can
-// serve properties/DDL for natively — same set as the read-only
-// introspection routes above. Every other p_type (sequence, function,
-// check, exclude, rule, role, tablespace, ...) stays on Django; that's a
-// deliberately separate, larger porting effort (see AGENTS.md / memory).
+// pgSupportedPropertyTypes are the object kinds with real properties/DDL
+// support. Every other p_type (sequence, function, check, exclude, rule,
+// role, tablespace, schema, extension, ...) still falls through to
+// noUpstreamHandler's "This feature is not available." — Django is gone
+// (see AGENTS.md), so unlike when this comment was first written, that's a
+// dead end rather than a working proxy; porting the rest is a separate,
+// larger effort (see go-backend-migration memory).
 var pgSupportedPropertyTypes = map[string]bool{
 	"table":       true,
 	"table_field": true,
@@ -88,6 +90,7 @@ var pgSupportedPropertyTypes = map[string]bool{
 	"pk":          true,
 	"foreign_key": true,
 	"unique":      true,
+	"database":    true,
 }
 
 // resolvePostgreSQLRequest is resolveSQLiteRequest's PostgreSQL counterpart —
@@ -759,6 +762,9 @@ func handleGetPropertiesPostgreSQL(upstream *url.URL, fallback http.Handler) htt
 		case "unique":
 			properties, propErr = postgresqlPropertiesUnique(db, schema, table, object)
 			ddl, ddlErr = postgresqlDDLConstraint(db, schema, table, object)
+		case "database":
+			properties, propErr = postgresqlPropertiesDatabase(db, object)
+			ddl, ddlErr = postgresqlDDLDatabase(db, object)
 		}
 		if propErr != nil {
 			writeDatabaseError(w, propErr.Error())

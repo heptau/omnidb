@@ -432,3 +432,26 @@ func postgresqlPropertiesFK(db *sql.DB, schema, table, fk string) ([][2]string, 
 	)
 	return pgPropertiesFromRow(db, query, schema, table, fk)
 }
+
+// postgresqlPropertiesDatabase has no Django-era equivalent to mirror — the
+// tree's "database" node type was never wired up to real properties/DDL
+// during the migration (see pgSupportedPropertyTypes), so this is new,
+// modeled on the same columns pgAdmin/DBeaver show for a database.
+func postgresqlPropertiesDatabase(db *sql.DB, name string) ([][2]string, error) {
+	return pgPropertiesFromRow(db, `
+		select d.datname as "Database",
+			   d.oid as "OID",
+			   pg_catalog.pg_get_userbyid(d.datdba) as "Owner",
+			   pg_catalog.pg_encoding_to_char(d.encoding) as "Encoding",
+			   d.datcollate as "Collation",
+			   d.datctype as "Character Type",
+			   coalesce(t.spcname, 'pg_default') as "Tablespace",
+			   d.datconnlimit as "Connection Limit",
+			   d.datistemplate as "Is Template",
+			   d.datallowconn as "Allow Connections",
+			   pg_catalog.pg_size_pretty(pg_catalog.pg_database_size(d.datname)) as "Size"
+		from pg_catalog.pg_database d
+		left join pg_catalog.pg_tablespace t on t.oid = d.dattablespace
+		where d.datname = $1
+	`, name)
+}
