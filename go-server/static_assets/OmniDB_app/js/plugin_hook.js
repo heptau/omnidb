@@ -417,6 +417,18 @@ $("#modal_plugins").on("shown.bs.modal", function (e) {
 });
 
 function showPlugins() {
+	if ($("#modal_plugins").hasClass("show")) {
+		// Already open — "shown.bs.modal" only fires on a real show
+		// transition, so calling .modal("show") again here is a no-op that
+		// would never re-trigger showPluginsRender(). Without this early
+		// return, the destroy below still runs (leaving the grid area
+		// blank) and startLoading()'s spinner is left on forever, since
+		// nothing left to call would ever reach endLoading(). Just refresh
+		// the grid directly instead.
+		showPluginsRender();
+		return;
+	}
+
 	startLoading();
 
 	var v_div_result = document.getElementById("plugin_grid");

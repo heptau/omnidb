@@ -273,6 +273,17 @@ function changeInterfaceFontSize(p_option) {
 /// Opens user config window.
 /// </summary>
 function showConfigUser() {
+	if ($("#modal_config").hasClass("show")) {
+		// Already open — creating and showing ANOTHER bootstrap.Modal
+		// instance for the same element doesn't no-op the way calling
+		// .modal("show") twice through jQuery does: this element's
+		// "shown" state lives on the instance that opened it, and a
+		// brand-new instance has no idea a different instance already
+		// has it visible, so it happily reruns the whole show transition
+		// and stacks a second backdrop on top of the first.
+		return;
+	}
+
 	document.getElementById("sel_interface_font_size").value = v_font_size;
 	// document.getElementById('sel_editor_theme').value = v_theme;
 
