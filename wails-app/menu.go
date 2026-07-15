@@ -44,12 +44,18 @@ func (a *App) buildMenu() *menu.Menu {
 		wailsruntime.Quit(a.ctx)
 	})
 
+	// Every accelerator below is Cmd/Ctrl+Shift+<letter>, not plain
+	// Cmd/Ctrl+<letter>: the frontend's own shortcuts.js already uses plain
+	// Ctrl+<letter> (mac) / Alt+<letter> (Windows/Linux) for its own bindings
+	// (Run Query, Indent, ...), and plain Cmd+<letter> already means
+	// something fixed system-wide (Cmd+C copy, Cmd+S save, Cmd+M minimize) —
+	// overriding those natively would be surprising. Shift avoids both.
 	viewMenu := menu.NewMenu()
-	viewMenu.AddText("Connections", nil, a.execJS("startConnectionManagement()"))
-	viewMenu.AddText("Snippets", nil, a.execJS("toggleSnippetPanel()"))
+	viewMenu.AddText("Connections", keys.Combo("c", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("startConnectionManagement()"))
+	viewMenu.AddText("Snippets", keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("toggleSnippetPanel()"))
 	viewMenu.AddText("Plugins", nil, a.execJS("showPlugins()"))
 	viewMenu.AddSeparator()
-	viewMenu.AddText("Switch Menu", nil, a.execJS("v_connTabControl.toggleTabMenu(); refreshHeights();"))
+	viewMenu.AddText("Switch Menu", keys.Combo("m", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("v_connTabControl.toggleTabMenu(); refreshHeights();"))
 	viewMenu.AddSeparator()
 	viewMenu.AddText("Toggle Database Tree", keys.CmdOrCtrl("b"), a.execJS("toggleTreeContainer()"))
 	viewMenu.AddText("Toggle Properties/DDL Panel", keys.Combo("b", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS(
