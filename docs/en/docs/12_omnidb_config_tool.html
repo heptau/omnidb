@@ -39,79 +39,40 @@
 	</nav>
 	<main>
 		<h1>12. OmniDB Config Tool</h1>
-<p>Every installation of OmniDB also comes with a small CLI utility called <em>OmniDB
-Config</em>. It will have a different file name, depending on the way you installed
-OmniDB:</p>
-<ul>
-<li>If you are using a tarball or zip package, it is called <strong>omnidb-config</strong>, for
-both server and app versions;</li>
-<li>If you used an installer (like the .deb file) of server version, it is called
-<strong>omnidb-config-server</strong>;</li>
-<li>If you used an installer of app version, it is called <strong>omnidb-config-app</strong>.</li>
-</ul>
-<p>Despite having different names, the utility does exactly the same. If you used
-an installer, it will be put in your <code>$PATH</code>.</p>
-<pre><code class="language-bash">user@machine:~$  omnidb-config-app --help
-Usage: omnidb-config-app [options]
-
-Options:
-  --version             show program\'s version number and exit
-  -h, --help            show this help message and exit
-  -d HOMEDIR, --homedir=HOMEDIR
-                        home directory containing local databases config and
-                        log files
-  -c username password, --createsuperuser=username password
-                        create super user: -c username password
-  -a, --vacuum          databases maintenance
-  -r, --resetdatabase   reset user and session databases
-  -t, --deletetemp      delete temporary files
-</code></pre>
-<h4>Set home directory</h4>
-<p>Option <code>-d</code> allows you to set the path to the OmniDB folder that contains the
-config and database files where you want to execute other options, like creating
-a new super user (<code>-c</code>).</p>
-<h4>Create super user</h4>
-<p>Option <code>-c</code> allows you to create a new super user, without needing to open
-OmniDB interface.</p>
-<pre><code class="language-bash">user@machine:~$ omnidb-config-app -c william password
-Creating superuser...
-Superuser created.
-</code></pre>
+<p><strong>Note:</strong> the standalone <code>omnidb-config</code>/<code>omnidb-config-app</code>/
+<code>omnidb-config-server</code> CLI utility described on this page belonged to the
+previous Python/Django-based build and is not part of the current release. The
+single <code>omnidb-go-server</code> binary only accepts <code>-A</code>/<code>--app</code> (desktop app
+mode) and <code>-d</code>/<code>--homedir</code> (choose the home directory), documented in the
+<a href="02_installation.html">Installation</a> chapter. The maintenance tasks the
+old tool offered can still be done manually, described below.</p>
+<h4>Home directory</h4>
+<p>OmniDB stores everything — the <code>omnidb.db</code> database (users, connections, and
+other app data) and a <code>temp</code> folder for exported files — in a single home
+directory. By default this is <code>~/.omnidb/omnidb-app</code> (desktop mode) or
+<code>~/.omnidb/omnidb-server</code> (server mode); pass <code>-d /some/path</code> to use a
+different one.</p>
+<h4>Create a user</h4>
+<p>There is currently no CLI option to create a user without opening OmniDB.
+On first run against an empty home directory, OmniDB creates a default
+<code>admin</code>/<code>admin</code> superuser automatically — sign in with it and create
+further users from the <em>Users</em> screen, or change the default password.</p>
 <h4>Vacuum</h4>
-<p>OmniDB has two databases:</p>
-<ul>
-<li><code>omnidb.db</code>: Stores all users and connections, and other OmniDB related stuff;</li>
-<li><em>Sessions database</em>: Stores Django user sessions.</li>
-</ul>
-<p>Both databases are SQLite, so it can be useful to vacuum them sometimes to
-reduce file size. This can be done with the <code>-a</code> option.</p>
-<pre><code class="language-bash">user@machine:~$ omnidb-config-app -a
-Vacuuming OmniDB database...
-Done.
-Vacuuming Sessions database...
-Done.
+<p>OmniDB has a single SQLite database, <code>omnidb.db</code>, storing all users,
+connections, and other OmniDB-related data. Since it's a plain SQLite file, you
+can vacuum it with any SQLite client while OmniDB isn't running, e.g.:</p>
+<pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
 </code></pre>
 <h4>Reset database</h4>
 <p>If you wish to wipe out all OmniDB information and get a clean database as it
-was just installed, you can use the <code>-r</code> option. Use it with caution!</p>
-<pre><code class="language-bash">user@machine:~$ omnidb-config-app -r
-*** ATENTION *** ALL USERS DATA WILL BE LOST
-Would you like to continue? (y/n) y
-Cleaning users...
-Done.
-Cleaning sessions...
-Vacuuming OmniDB database...
-Done.
-Vacuuming Sessions database...
-Done.
-</code></pre>
+was just installed, quit OmniDB and delete (or move aside) the home directory's
+<code>omnidb.db</code> file. A new, empty one — with a fresh default <code>admin</code>/<code>admin</code>
+user — is created automatically the next time OmniDB starts. Use this with
+caution: it cannot be undone.</p>
 <h4>Delete temporary files</h4>
-<p>If you desire to remove temporary files that OmniDB creates along its execution,
-like exported queries in CSV/XLSX format, you can use the <code>-t</code> option.</p>
-<pre><code class="language-bash">user@machine:~$ omnidb-config-app -t
-Cleaning temp folder...
-Done.
-</code></pre>
+<p>Exported query results (CSV/XLSX/etc.) are written to the <code>temp</code> folder
+inside the home directory. It's safe to delete its contents manually at any
+time while OmniDB isn't running; OmniDB re-creates it as needed.</p>
 	</main>
 	<script src="../../assets/script.js"></script>
 </body>

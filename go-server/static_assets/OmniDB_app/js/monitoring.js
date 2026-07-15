@@ -394,6 +394,7 @@ function editMonitorUnit(p_unit_id) {
 				v_tab_tag.input_unit_name.value = p_return.v_data.title;
 				v_tab_tag.input_interval.value = p_return.v_data.interval;
 				v_tab_tag.select_type.value = p_return.v_data.type;
+				toggleMonitorUnitChartType(v_tab_tag.tab_id);
 				v_tab_tag.editor.setValue(p_return.v_data.script_chart);
 				v_tab_tag.editor.clearSelection();
 				v_tab_tag.editor.gotoLine(0, 0, true);
@@ -465,6 +466,7 @@ function selectUnitTemplate(p_value) {
 				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result_label.innerHTML = "";
 				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.select_type.value = p_return.v_data.type;
 				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.input_interval.value = p_return.v_data.interval;
+				toggleMonitorUnitChartType(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id);
 
 				var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
 				v_editor.setValue(p_return.v_data.script_chart);
@@ -508,6 +510,8 @@ $("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
 				v_tab_tag.object = null;
 			}
 
+			var v_return_unit = p_return.v_data;
+
 			try {
 				if (p_return.v_data.v_error) {
 					v_div_result.textContent = "";
@@ -520,8 +524,6 @@ $("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
 					canvas.style.height = "250px";
 					canvas.style.width = v_div_result.offsetWidth;
 					v_div_result.appendChild(canvas);
-
-					var v_return_unit = p_return.v_data;
 
 					var ctx = canvas.getContext("2d");
 					var v_show_legend = false;

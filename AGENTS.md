@@ -135,7 +135,7 @@ context if something about window/login behavior looks odd):**
 
 ## Gotchas learned the hard way
 
-- **`.gitignore`'s `build`/`build_deps`/`build_work` entries must stay anchored**
+- **`.gitignore`'s `build`/`build_work` entries must stay anchored**
   (`/build`, not `build`) — an unanchored pattern also matches `wails-app/build/`,
   which is real Wails project source (Info.plist templates, app icon), not
   build output.

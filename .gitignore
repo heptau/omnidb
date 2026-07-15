@@ -3,7 +3,6 @@
 *.DS_Store
 *.idea
 /build
-/build_deps
 /build_work
 /.dev-home
 .claude/settings.local.json

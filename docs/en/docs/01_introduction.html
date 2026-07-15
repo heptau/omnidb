@@ -58,9 +58,10 @@
 			sensation is that there is no difference when he/she manipulates different DBMS,
 			it just feels like different connections.</p>
 		<p>Despite this, OmniDB is built with simplicity in mind, designed to be a fast and
-			lightweight browser-based application. OmniDB is also powered by the WebSocket
-			technology, allowing the user to execute multiple queries and procedures in
-			multiple databases in multiple hosts in background.</p>
+			lightweight browser-based application. Long-running work — queries, procedures,
+			and monitoring — is executed in the background and streamed back to the browser
+			as it completes, so the user can keep working across multiple databases and
+			multiple hosts at the same time without blocking on any single one.</p>
 		<p>OmniDB is also secure. All OmniDB user data are stored encrypted, and no
 			database password is stored at all. When the user first connects to a database,
 			OmniDB asks for the password. This password is encrypted and stored in memory
@@ -94,8 +95,10 @@
 			will be converted (just tables and all their structures, along with their data)
 			and the target connection.</p>
 		<p>In <strong>2025-2026</strong>, the project was revived with major releases (3.1.x), focusing on modernizing
-			the codebase, improving security, upgrading to Django 6, and adding full support for modern operating systems like macOS Silicon,
-			along with a complete documentation overhaul.</p>
+			the codebase, improving security, and adding full support for modern operating systems like macOS Silicon,
+			along with a complete documentation overhaul. This revival culminated in a full rewrite of the
+			backend from Python/Django to Go (3.6.x), removing the Python runtime entirely and shipping a single
+			native binary for every platform.</p>
 	</main>
 	<script src="../../assets/script.js"></script>
 </body>

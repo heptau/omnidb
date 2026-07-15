@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.7.0] - 2026-07-15
+
+### Added
+- Custom monitoring units now actually run: a unit's "script" is a single SQL query
+  (`SELECT`/`WITH` only) instead of the old Python `script_chart`/`script_data` pair, which had
+  no equivalent since the Go migration and always returned "not supported". Supports the same
+  three shapes the 17 built-in units already use — `grid` (raw columns/rows), `chart`
+  (one row per category, Bar/Pie/Doughnut/Line picked from a dropdown), and `timeseries`
+  (one row, each numeric column becomes an appended line series). The `graph` unit type is
+  dropped for custom units — it never had a working implementation or a built-in example to
+  model one on.
+- `-H`/`--host` CLI flag for `go-server`, restoring the documented "OmniDB Server"
+  network-accessible deployment mode, which was actually impossible until now (the listener was
+  hardcoded to `127.0.0.1` with no way to change it). Ignored in desktop app mode (`-A`), which
+  always stays loopback-only. The loopback-only `/internal/shutdown/` endpoint is now only
+  registered when the effective listen host is actually loopback.
+
+### Fixed
+- Several dialogs showed literal escaped HTML (`&lt;input ...&gt;`) instead of a real input
+  field or formatted text: "New Group"/"Rename Group" and the SSH password prompt in
+  Connections, renaming a tab, creating/renaming a snippet and the snippet overwrite warning,
+  changing a PostgreSQL role's password, and the "change active database" confirmation. All
+  were broken by an earlier XSS-hardening pass that switched the shared modal helpers from
+  `innerHTML` to `textContent`; each caller now builds its own DOM nodes instead of the shared
+  helper re-interpreting HTML strings.
+- The monitoring-unit "Test" modal threw silently for `grid`/`chart`/`timeseries` results (a
+  variable was read before being assigned), leaving the modal blank — never previously
+  reachable since custom units always errored out first.
+
+### Changed
+- Documentation (`docs/en/docs/`, `docs/llms.txt`, `docs/llms-full.txt`) updated to match the Go
+  backend: removed stale WebSocket, Django/CherryPy/Tornado, PyInstaller, Oracle Instant Client,
+  and plugin-system content, rewrote the OmniDB Server deployment page around `-A`/`-H`/`-p`/`-d`,
+  and replaced the monitoring dashboard's Python-script tutorial with the new SQL-query one.
+- Existing custom monitoring units saved before this release still hold Python source in their
+  query field; they'll now fail with a SQL syntax error instead of "not supported" and need to be
+  rewritten as SQL queries.
+
+### Removed
+- `support_matrix.xlsx` and the empty, already-gitignored `build_deps/` directory.
+
 ## [3.6.0] - 2026-07-14
 
 ### Removed

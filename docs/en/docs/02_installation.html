@@ -116,101 +116,35 @@ brew upgrade heptau/tap/omnidb</code></pre>
 		<p>Like OmniDB app, OmniDB server doesn't require any additional piece of software
 			and the same options for operating system and architecture are provided.</p>
 		<p>Use the specific installer for your Operational System and it will be available
-			through command line with <code>omnidb-server</code>:</p>
+			through command line with <code>omnidb-server</code> (the same binary as the app, run
+			without <code>-A</code>):</p>
 		<pre><code class="language-bash">user@machine:~$ omnidb-server
-Starting OmniDB websocket...
-Checking port availability...
-Starting websocket server at port 25482.
-Starting OmniDB server...
-Checking port availability...
-Starting server OmniDB 3.1.0 at 0.0.0.0:8000.
-Starting migration of user database from version 0.0.0 to version 3.1.0
-OmniDB successfully migrated user database from version 0.0.0 to version 3.1.0
-Press Ctrl+C to exit
+omnidb-go-server: listening on 127.0.0.1:52149 — open http://127.0.0.1:52149/omnidb_login/ in your browser
 </code></pre>
-		<p>Note how OmniDB starts a <em>websocket server</em> in port 25482 and a <em>web server</em> in
-			port 8000. You can also specify both ports and listening address:</p>
-		<pre><code class="language-bash">user@machine:~$ omnidb-server -p 8080 -w 25000 -H 127.0.0.1
-Starting OmniDB websocket...
-Checking port availability...
-Starting websocket server at port 25000.
-Starting OmniDB server...
-Checking port availability...
-Starting server OmniDB 3.1.0 at 0.0.0.0:8080.
-Starting migration of user database from version 0.0.0 to version 3.1.0
-OmniDB successfully migrated user database from version 0.0.0 to version 3.1.0
-Press Ctrl+C to exit
+		<p>By default OmniDB listens on <code>127.0.0.1</code> only and picks a free port
+			automatically. You can specify both explicitly:</p>
+		<pre><code class="language-bash">user@machine:~$ omnidb-server -p 8080 -H 0.0.0.0
+omnidb-go-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_login/ in your browser
 </code></pre>
+		<p>See <a href="19_deploying_omnidb-server.html">Chapter 19</a> for the full set of options
+			and recommended deployment setups (in particular, why exposing <code>-H 0.0.0.0</code>
+			directly to the internet without a reverse proxy in front is discouraged — there's
+			no built-in TLS support).</p>
 
 		<h3>OmniDB with Oracle</h3>
-		<p>OmniDB app and server does not require any piece of additional software, as
-			explained above. But if you are going to connect to an <em>Oracle</em> database, then
-			you need to download and install <em>Oracle Instant Client</em> (or extract it to a
-			specific folder, depending on the operating system you use):</p>
-		<ul>
-			<li><strong>macOS</strong>: Download Oracle Instant Client
-				(<a href="http://www.oracle.com/technetwork/topics/intel-macsoft-096467.html">64-bit</a>)
-				and extract in <code>~/lib</code>;</li>
-			<li><strong>Linux</strong>: Download Oracle Instant Client
-				(<a href="http://www.oracle.com/technetwork/topics/linuxsoft-082809.html">32-bit</a>)
-				(<a href="http://www.oracle.com/technetwork/topics/linuxx86-64soft-092277.html">64-bit</a>)
-				and install it on your system, then set <code>LD_LIBRARY_PATH</code>;</li>
-			<li><strong>Windows</strong>: Download Oracle Instant Client
-				(<a href="http://www.oracle.com/technetwork/topics/winsoft-085727.html">32-bit</a>)
-				(<a href="http://www.oracle.com/technetwork/topics/winx64soft-089540.html">64-bit</a>) and
-				extract it into OmniDB's folder.</li>
-		</ul>
-		<p><strong>Note for Windows users using OmniDB app</strong>: For OmniDB 2.8 and above, you will
-			need to extract Oracle Instant Client libraries inside of folder
-			<code>OMNIDBAPPINSTALLFOLDER\resources\app\omnidb-server</code>.
-		</p>
+		<p>Neither OmniDB app nor server require any additional software to connect to
+			Oracle — unlike previous releases, no separate Oracle Instant Client installation
+			is needed. Oracle connectivity is implemented natively (a pure Go driver), so it
+			works the same way out of the box as every other supported database.</p>
 		<h3>OmniDB User Database</h3>
-		<p>Since version 2.4.0, upon initialization both server and app will create a file
+		<p>Upon first run, both server and app create a file
 			<code>~/.omnidb/omnidb-app/omnidb.db</code> (for OmniDB app) or
 			<code>~/.omnidb/omnidb-server/omnidb.db</code> (for OmniDB server) in the user home
-			directory, if it does not exist. That can be confirmed by the message <em>OmniDB
-				successfully migrated user database from version 0.0.0 to version 2.4.0</em> you saw
-			above. This file is also called <strong>user database</strong> and contains user data. If it
-			already exists, then OmniDB will check whether the version of the server matches
-			the version of the user database:
-		</p>
-		<pre><code class="language-bash">user@machine:~$ omnidb-server
-Starting OmniDB websocket...
-Checking port availability...
-Starting websocket server at port 25482.
-Starting OmniDB server...
-Checking port availability...
-Starting server OmniDB 3.1.0 at 0.0.0.0:8000.
-User database version 3.1.0 is already matching server version.
-Press Ctrl+C to exit
-</code></pre>
-		<p>Future releases of OmniDB will contain the <strong>user database migration</strong> SQL
-			commands required to upgrade the user database, if necessary. This way user
-			data is not lost by upgrading OmniDB. Imagine the following scenario: you use
-			OmniDB 2.4.0 now and you decide to upgrade it to newest release 2.5.0, for
-			example. After the upgrade, when you start OmniDB server, it will apply the
-			changes version 2.5.0 requires. So you will see something like that:</p>
-		<pre><code class="language-bash">user@machine:~$ omnidb-server
-Starting OmniDB websocket...
-Checking port availability...
-Starting websocket server at port 25482.
-Starting OmniDB server...
-Checking port availability...
-Starting server OmniDB 3.2.0 at 0.0.0.0:8000.
-Starting migration of user database from version 3.1.0 to version 3.2.0
-OmniDB successfully migrated user database from version 3.1.0 to version 3.2.0
-Press Ctrl+C to exit
-</code></pre>
-		<h3>OmniDB configuration file</h3>
-		<p>Starting on version 2.1.0, OmniDB server comes with a configuration file
-			<code>omnidb.conf</code> that enables the user to specify parameters such as port and
-			listening address. Also, 2.1.0 enables us to start the server with SSL, this
-			requires a certificate and is configured in the same configuration file. For
-			more details about how to deploy the OmniDB server, please read Chapter 19.
-		</p>
-		<p>Starting on version 2.4.0, this file is located in
-			<code>~/.omnidb/omnidb-server/omnidb.conf</code> in the user home directory.
-		</p>
+			directory, if it does not exist yet — along with a default <code>admin</code>/<code>admin</code>
+			superuser account, ready to sign in with immediately. This file is also called the
+			<strong>user database</strong> and contains all users, connections, and other application
+			data. If it already exists (e.g. after an upgrade), OmniDB uses it as-is — it is
+			never overwritten or reset automatically.</p>
 		<h3>OmniDB in the browser</h3>
 		<p>Now that the web server is running, you may access OmniDB browser-based app on
 			your favorite browser. Type in address bar: <code>localhost:8000</code> and hit <code>Enter</code>. If

@@ -9,15 +9,16 @@ import (
 )
 
 // This file mirrors OmniDB_app/views/monitor_dashboard.py's routes. Custom
-// user-authored monitor unit CRUD (save/edit/delete) is ported in full since
-// it's plain data storage — but nothing here can EXECUTE a custom script's
-// stored script_chart/script_data text anymore (see monitoring_units.go's
-// package comment): handleRefreshMonitorUnits returns a graceful per-unit
-// error for any attached custom unit, and handleTestMonitorScript (which
-// only ever tests ad hoc, not-yet-saved script text) always returns that
-// same error. Built-in units run natively via monitoring_units.go — no
-// exec() of any kind anywhere in this file.
-const customMonitorScriptUnsupportedMessage = "Custom monitoring scripts are not supported in this build."
+// user-authored monitor unit CRUD (save/edit/delete) is ported in full, and
+// custom units now actually run too — as a single SQL query (see
+// custom_monitor_query.go) rather than the original two Python scripts
+// (RestrictedPython's sandboxed exec(), which has no Go equivalent). Built-in
+// units still run natively via monitoring_units.go, unrelated to this.
+//
+// customMonitorScriptUnsupportedMessage is now only used as a generic label
+// for the built-in-unit "template" placeholder below — built-in units have
+// no stored SQL to copy from, being native Go functions.
+const customMonitorScriptUnsupportedMessage = "This built-in unit runs as native Go code and has no SQL source to copy — write your own SQL query below."
 
 type getMonitorUnitListRequest struct {
 	baseRequest
@@ -259,11 +260,9 @@ type getMonitorUnitTemplateRequest struct {
 }
 
 // handleGetMonitorUnitTemplate mirrors get_monitor_unit_template — used by
-// the (now largely vestigial, since scripts don't execute) custom-unit
-// editor's "start from this template" dropdown. A built-in unit has no
-// stored Python source anymore (it's a native Go function), so it returns a
-// placeholder explaining that instead of script text that would just sit
-// there unexecuted.
+// the custom-unit editor's "start from this template" dropdown. A built-in
+// unit has no stored SQL query to copy (it's a native Go function), so it
+// returns a placeholder explaining that instead of query text to prefill.
 func handleGetMonitorUnitTemplate(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
@@ -311,11 +310,10 @@ func handleGetMonitorUnitTemplate(upstream *url.URL) http.HandlerFunc {
 			writeEnvelope(w, "", false, -1)
 			return
 		}
-		placeholder := "# Built-in monitoring units run as native Go code in this build;\n# custom monitoring scripts are not executable. " + customMonitorScriptUnsupportedMessage
 		writeEnvelope(w, map[string]any{
 			"interval":     def.Interval,
-			"script_chart": placeholder,
-			"script_data":  placeholder,
+			"script_chart": "",
+			"script_data":  "-- " + customMonitorScriptUnsupportedMessage,
 			"type":         def.Type,
 		}, false, -1)
 	}
@@ -591,13 +589,24 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 
 			if item.PluginName == "" {
 				unit, lookupErr := fetchOwnCustomMonitorUnit(appDB, item.ID, userID)
-				if lookupErr == nil {
-					result["v_type"] = unit.Type
-					result["v_title"] = unit.Title
-					result["v_interval"] = unit.Interval
+				if lookupErr != nil {
+					result["v_error"] = true
+					result["v_message"] = "Unknown monitoring unit."
+					results = append(results, result)
+					continue
 				}
-				result["v_error"] = true
-				result["v_message"] = customMonitorScriptUnsupportedMessage
+				result["v_type"] = unit.Type
+				result["v_title"] = unit.Title
+				result["v_interval"] = unit.Interval
+
+				object, queryErr := runCustomMonitorQuery(db, unit.Type, unit.ScriptChart, unit.ScriptData, item.ObjectData)
+				if queryErr != nil {
+					result["v_error"] = true
+					result["v_message"] = queryErr.Error()
+					results = append(results, result)
+					continue
+				}
+				result["v_object"] = object
 				results = append(results, result)
 				continue
 			}
@@ -638,25 +647,48 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 
 type testMonitorScriptRequest struct {
 	baseRequest
+	PScriptChart string `json:"p_script_chart"`
+	PScriptData  string `json:"p_script_data"`
+	PType        string `json:"p_type"`
 }
 
-// handleTestMonitorScript mirrors test_monitor_script — this endpoint only
-// ever tests ad hoc, not-yet-saved script text typed into the editor, which
-// has nothing to fall back to (no built-in-unit native function exists for
-// arbitrary user text) — always the same graceful "not supported" result,
-// same shape Python's own exception branch returns.
-func handleTestMonitorScript(upstream *url.URL) http.HandlerFunc {
+// handleTestMonitorScript mirrors test_monitor_script — tests ad hoc,
+// not-yet-saved unit text typed into the editor (p_script_data is now a SQL
+// query, p_script_chart a Chart.js chart-type string for "chart" units, see
+// custom_monitor_query.go). previous is always nil here since a test run
+// never has prior state to carry forward.
+func handleTestMonitorScript(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		cookie := r.Header.Get("Cookie")
-		who, err := resolveIdentity(upstream, cookie)
-		if err != nil || !who.Authenticated {
-			writeUnauthenticated(w)
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var req testMonitorScriptRequest
+		if err := json.Unmarshal([]byte(raw), &req); err != nil {
+			writeBadRequest(w)
+			return
+		}
+
+		db, _, ok := resolveNativeRequest(w, r, upstream, fallback, req.databaseIndex())
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		object, err := runCustomMonitorQuery(db, req.PType, req.PScriptChart, req.PScriptData, nil)
+		if err != nil {
+			writeEnvelope(w, map[string]any{
+				"v_object":  nil,
+				"v_error":   true,
+				"v_message": err.Error(),
+			}, false, -1)
 			return
 		}
 		writeEnvelope(w, map[string]any{
-			"v_object":  nil,
-			"v_error":   true,
-			"v_message": customMonitorScriptUnsupportedMessage,
+			"v_object":  object,
+			"v_error":   false,
+			"v_message": "",
 		}, false, -1)
 	}
 }

@@ -179,6 +179,15 @@ var v_createNewMonitorUnitTabFunction = function () {
 
 	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
 
+	// Custom monitoring units run a single SQL query now (see
+	// go-server/custom_monitor_query.go) instead of the original two Python
+	// scripts (script_chart/script_data, executed server-side in a
+	// RestrictedPython sandbox — no Go equivalent). "chart"-type units need
+	// one small piece of declarative config a SQL query can't express — the
+	// Chart.js chart type — picked from select_chart_type instead of a
+	// second code editor. "graph" (Cytoscape) units are no longer offered:
+	// no built-in unit ever used that type, so there's no reference shape
+	// to design a SQL convention against.
 	var v_html =
 		'<button class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1" onclick="testMonitorScript()">Test</button>' +
 		'<button class="btn omnidb__theme__btn--secondary btn-sm my-1" onclick="saveMonitorScript()">Save</button>' +
@@ -193,11 +202,12 @@ var v_createNewMonitorUnitTabFunction = function () {
 		'    <label for="conn_form_type">Type</label>' +
 		'    <select id="select_type_' +
 		v_tab.id +
-		'" class="form-control">' +
+		'" onchange="toggleMonitorUnitChartType(' +
+		v_tab.id +
+		')" class="form-control">' +
 		'      <option value="timeseries">Timeseries</option>' +
 		'      <option value="chart">Chart (No Append)</option>' +
 		'      <option value="grid">Grid</option>' +
-		'      <option value="graph">Graph</option>' +
 		"    </select>" +
 		"  </div>" +
 		'  <div class="col-md-3 mb-3">' +
@@ -215,14 +225,27 @@ var v_createNewMonitorUnitTabFunction = function () {
 		"    </select>" +
 		"  </div>" +
 		"</div>" +
-		'<div class="row">' +
-		'  <div class="col-md-6">' +
-		'    <div id="txt_data_' +
+		'<div class="row" id="chart_type_row_' +
 		v_tab.id +
-		'" style=" width: 100%; height: 250px;"></div>' +
+		'" style="display:none;">' +
+		'  <div class="col-md-3 mb-3">' +
+		'    <label for="conn_form_type">Chart Type</label>' +
+		'    <select id="select_chart_type_' +
+		v_tab.id +
+		'" class="form-control">' +
+		'      <option value="bar">Bar</option>' +
+		'      <option value="pie">Pie</option>' +
+		'      <option value="doughnut">Doughnut</option>' +
+		'      <option value="line">Line</option>' +
+		"    </select>" +
 		"  </div>" +
-		'  <div class="col-md-6">' +
-		'    <div id="txt_script_' +
+		"</div>" +
+		'<div class="row">' +
+		'  <div class="col-md-12 mb-1">' +
+		'    <label for="conn_form_title">SQL Query</label>' +
+		"  </div>" +
+		'  <div class="col-md-12">' +
+		'    <div id="txt_data_' +
 		v_tab.id +
 		'" style=" width: 100%; height: 250px;"></div>' +
 		"  </div>" +
@@ -233,25 +256,28 @@ var v_createNewMonitorUnitTabFunction = function () {
 
 	var langTools = ace.require("ace/ext/language_tools");
 
-	var v_txt_script = document.getElementById("txt_script_" + v_tab.id);
-	var v_editor = ace.edit("txt_script_" + v_tab.id);
-	v_editor.$blockScrolling = Infinity;
-	v_editor.setTheme("ace/theme/" + v_editor_theme);
-	v_editor.session.setMode("ace/mode/python");
-	v_editor.setFontSize(Number(v_font_size));
-	v_editor.commands.bindKey("ctrl-space", null);
-	v_editor.commands.bindKey("Cmd-,", null);
-	v_editor.commands.bindKey("Ctrl-,", null);
-	v_editor.commands.bindKey("Cmd-Delete", null);
-	v_editor.commands.bindKey("Ctrl-Delete", null);
-	v_editor.commands.bindKey("Ctrl-Up", null);
-	v_editor.commands.bindKey("Ctrl-Down", null);
+	var v_select_chart_type = document.getElementById("select_chart_type_" + v_tab.id);
+	// Adapter so save/load/test code can keep calling .editor.getValue()/
+	// .setValue()/.clearSelection()/.gotoLine()/.resize() unchanged, whether
+	// "editor" is really an Ace instance (script_chart, historically) or —
+	// now — this plain chart-type <select>.
+	var v_editor = {
+		getValue: function () {
+			return v_select_chart_type.value;
+		},
+		setValue: function (v) {
+			v_select_chart_type.value = v || "bar";
+		},
+		clearSelection: function () {},
+		gotoLine: function () {},
+		resize: function () {},
+	};
 
 	var v_txt_data = document.getElementById("txt_data_" + v_tab.id);
 	var v_editor_data = ace.edit("txt_data_" + v_tab.id);
 	v_editor_data.$blockScrolling = Infinity;
 	v_editor_data.setTheme("ace/theme/" + v_editor_theme);
-	v_editor_data.session.setMode("ace/mode/python");
+	v_editor_data.session.setMode("ace/mode/sql");
 	v_editor_data.setFontSize(Number(v_font_size));
 	v_editor_data.commands.bindKey("ctrl-space", null);
 	v_editor_data.commands.bindKey("Cmd-,", null);
@@ -261,17 +287,11 @@ var v_createNewMonitorUnitTabFunction = function () {
 	v_editor_data.commands.bindKey("Ctrl-Up", null);
 	v_editor_data.commands.bindKey("Ctrl-Down", null);
 
-	v_txt_script.onclick = function () {
-		v_editor.focus();
-	};
-
 	var v_resizeFunction = function () {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.editorDataDiv) {
 			var v_new_height = window.innerHeight - $(v_tab_tag.editorDataDiv).offset().top - v_font_size + "px";
-			v_tab_tag.editorDiv.style.height = v_new_height;
 			v_tab_tag.editorDataDiv.style.height = v_new_height;
-			v_tab_tag.editor.resize();
 			v_tab_tag.editor_data.resize();
 		}
 	};
@@ -281,10 +301,9 @@ var v_createNewMonitorUnitTabFunction = function () {
 		mode: "monitor_unit",
 		editor: v_editor,
 		editor_data: v_editor_data,
-		editorDiv: v_txt_script,
 		editorDataDiv: v_txt_data,
-		editorDivId: "txt_script_" + v_tab.id,
 		select_type: document.getElementById("select_type_" + v_tab.id),
+		select_chart_type: v_select_chart_type,
 		select_template: document.getElementById("select_template_" + v_tab.id),
 		input_unit_name: document.getElementById("txt_unit_name_" + v_tab.id),
 		input_interval: document.getElementById("txt_interval_" + v_tab.id),
@@ -301,6 +320,8 @@ var v_createNewMonitorUnitTabFunction = function () {
 			} catch (err) {}
 		},
 	};
+
+	toggleMonitorUnitChartType(v_tab.id);
 
 	v_tab.tag = v_tag;
 
@@ -321,3 +342,13 @@ var v_createNewMonitorUnitTabFunction = function () {
 		v_resizeFunction();
 	}, 10);
 };
+
+// Shows the Chart Type dropdown only for "chart"-type units (the only type
+// that needs it — "timeseries" is always a line chart, "grid" doesn't chart
+// at all).
+function toggleMonitorUnitChartType(p_tab_id) {
+	var v_row = document.getElementById("chart_type_row_" + p_tab_id);
+	var v_type_select = document.getElementById("select_type_" + p_tab_id);
+	if (!v_row || !v_type_select) return;
+	v_row.style.display = v_type_select.value == "chart" ? "" : "none";
+}

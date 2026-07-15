@@ -83,11 +83,13 @@ func run() error {
 		standalone = true
 	}
 
-	listener, err := net.Listen("tcp", listenAddr())
+	addr := listenAddr(os.Args[1:])
+	listener, err := net.Listen("tcp", addr)
 	if err != nil {
 		return fmt.Errorf("listen: %w", err)
 	}
 	ownPort := listener.Addr().(*net.TCPAddr).Port
+	listenHost, _, _ := net.SplitHostPort(addr)
 
 	// proxy is passed as literally every native handler's own `fallback`
 	// argument (a leftover name from when this really was a reverse proxy
@@ -131,7 +133,13 @@ func run() error {
 	shutdownCh := make(chan struct{}, 1)
 
 	mux := http.NewServeMux()
-	mux.Handle("/internal/shutdown/", handleShutdown(shutdownCh))
+	// Only registered when actually loopback-only — handleShutdown has no
+	// auth check of its own, relying entirely on that (see its comment and
+	// listenAddr's). A -H-exposed server instance can still be stopped the
+	// normal way (SIGTERM/Ctrl+C, see the sigCh select below).
+	if isLoopbackHost(listenHost) {
+		mux.Handle("/internal/shutdown/", handleShutdown(shutdownCh))
+	}
 	mux.Handle("/get_properties_sqlite/", handleGetPropertiesSQLite(upstream, proxy))
 	mux.Handle("/get_tables_sqlite/", handleGetTablesSQLite(upstream, proxy))
 	mux.Handle("/get_columns_sqlite/", handleGetColumnsSQLite(upstream, proxy))
@@ -365,12 +373,13 @@ func run() error {
 	mux.Handle("/remove_user/", handleRemoveUser(upstream))
 	mux.Handle("/save_users/", handleSaveUsers(upstream))
 	// monitor_dashboard.py — CRUD ported in full; the 17 built-in monitoring
-	// units now run as native Go code (see monitoring_units.go) instead of
+	// units run as native Go code (see monitoring_units.go) instead of
 	// RestrictedPython's sandboxed exec(), which has no Go equivalent. Custom
-	// user-authored monitor scripts can still be saved/edited/deleted (plain
-	// data) but no longer execute — handleRefreshMonitorUnits/
-	// handleTestMonitorScript return a graceful "not supported" result for
-	// those instead. Deliberate scope decision, confirmed with the user.
+	// user-authored units run a single SQL query (custom_monitor_query.go)
+	// instead of arbitrary script_chart/script_data code — no new security
+	// boundary crossed (same connection access the SQL editor already has),
+	// just no more "write two Python scripts". Deliberate scope decision,
+	// confirmed with the user.
 	mux.Handle("/get_monitor_unit_list/", handleGetMonitorUnitList(upstream))
 	mux.Handle("/get_monitor_unit_details/", handleGetMonitorUnitDetails(upstream))
 	mux.Handle("/get_monitor_units/", handleGetMonitorUnits(upstream))
@@ -380,7 +389,7 @@ func run() error {
 	mux.Handle("/remove_saved_monitor_unit/", handleRemoveSavedMonitorUnit(upstream))
 	mux.Handle("/update_saved_monitor_unit_interval/", handleUpdateSavedMonitorUnitInterval(upstream))
 	mux.Handle("/refresh_monitor_units/", handleRefreshMonitorUnits(upstream, proxy))
-	mux.Handle("/test_monitor_script/", handleTestMonitorScript(upstream))
+	mux.Handle("/test_monitor_script/", handleTestMonitorScript(upstream, proxy))
 	// Cross-engine generic routes — registered once for every technology in
 	// Django too (see resolveNativeRequest), not per-engine like the tree_*
 	// routes. Falls back to Django for "terminal" connections or anything
@@ -446,7 +455,7 @@ func run() error {
 	case standalone && appToken != "":
 		fmt.Printf("http://127.0.0.1:%d/omnidb_login/?user=admin&pwd=admin&token=%s\n", ownPort, appToken)
 	case standalone:
-		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on 127.0.0.1:%d — open http://127.0.0.1:%d/omnidb_login/ in your browser\n", ownPort, ownPort)
+		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on %s:%d — open http://%s:%d/omnidb_login/ in your browser\n", listenHost, ownPort, listenHost, ownPort)
 	default:
 		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on 127.0.0.1:%d, proxying to %s\n", ownPort, upstream)
 	}
@@ -467,13 +476,6 @@ func run() error {
 	defer cancel()
 	_ = httpServer.Shutdown(ctx)
 	return nil
-}
-
-func listenAddr() string {
-	if p := os.Getenv(listenPortEnv); p != "" {
-		return "127.0.0.1:" + p
-	}
-	return "127.0.0.1:0"
 }
 
 // noUpstreamHandler replaces the old Django reverse-proxy fallback in

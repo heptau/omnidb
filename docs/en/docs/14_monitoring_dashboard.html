@@ -62,7 +62,7 @@ set of values;</li>
 Monitoring Unit.</li>
 </ul>
 <h4>Types of Monitoring Units</h4>
-<p>Currently there are 3 types of Monitoring Units:</p>
+<p>There are 3 types of Monitoring Units:</p>
 <ul>
 <li><strong>Grid</strong>: The most simple kind, just executes a query from time to time and
 shows the results in a data grid.</li>
@@ -75,9 +75,9 @@ charts can be used too.</li>
 </ul>
 <p><img alt="" src="../../assets/img/image_095.webp"/></p>
 <ul>
-<li><strong>Chart-Append</strong>: Perhaps this is the most useful kind of Monitoring Unit.
+<li><strong>Timeseries</strong>: Perhaps this is the most useful kind of Monitoring Unit.
 It is a chart that appends a new set of values every time it refreshes. Line or
-bar charts fit best for this type. The last 50 set of values are kept by the
+bar charts fit best for this type. The last 100 sets of values are kept by the
 component client-side to be viewed by the user.</li>
 </ul>
 <p><img alt="" src="../../assets/img/image_096.webp"/></p>
@@ -87,255 +87,63 @@ refreshed at once. You can also remove undesired Monitoring Units by clicking in
 the <em>Remove</em> button. Let us go ahead and remove all units from the dashboard,
 making it empty:</p>
 <p><img alt="" src="../../assets/img/image_097.webp"/></p>
-<p>All Monitoring Units that come with OmniDB are open source and available in this
-<a href="https://github.com/OmniDB/monitors">repository</a> (feel free to contribute). But
-be aware that some Monitoring Units require the <code>plpythonu</code> script to be
-installed in the database. Please refer to the instructions specific to your
-operating system on how to install <code>plpythonu</code> if you desire to use and create
-Monitoring Units that use <code>plpythonu</code>.</p>
+<p>The 17 units that come built into OmniDB (PostgreSQL and MySQL server metrics —
+transaction rate, backends, WAL production, database/table size, and so on) run
+as native code and need nothing extra installed in the database.</p>
 <p><img alt="" src="../../assets/img/image_098.webp"/></p>
 <p>Now that our dashboard is empty, let us add some units. Click on the <em>Manage
 Units</em> button.</p>
 <p><img alt="" src="../../assets/img/image_099.webp"/></p>
-<p>Click on the green action to add the Monitoring Units called <em>CPU Usage</em> and
-<em>Memory Usage</em>. Bear in mind that both units require <code>plpythonu</code> extension in
-the database. <em>CPU Usage</em> also requires that the tool <code>mpstat</code> should be
-installed in the server. Also both units are of type <em>Chart-Append</em>. Wait for
-some seconds and you will have a dashboard like this:</p>
+<p>Click on the green action to add any of the built-in units — e.g. <em>Backends</em> and
+<em>Database Size</em>. Wait for some seconds and you will have a dashboard like this:</p>
 <p><img alt="" src="../../assets/img/image_100.webp"/></p>
 <p>In a similar way, you can add and remove any unit you want to customize the
 dashboard the way you want.</p>
-<h4>Writing custom Monitoring Units: Grid</h4>
-<p>OmniDB provides you the power to write your own units and customize existing
-ones. Everything is done through Python scripts that run inside a sandbox.
-Beware that units powered by <code>plpythonu</code> can have access to the file system
-the database user also has access to, and any Monitoring Unit have the same
-permission as the database user you configured in the Connection.</p>
+<h4>Writing custom Monitoring Units</h4>
+<p>OmniDB lets you write your own units, or customize existing ones, by writing a
+single SQL query — the same connection and permissions your SQL editor already
+has, just running on a timer instead of on demand. There's no separate scripting
+language or sandbox to learn.</p>
+<p><strong>Note:</strong> since the query re-runs unattended on a refresh interval, only
+<code>SELECT</code> (or <code>WITH ... SELECT</code>) queries are accepted — a destructive statement
+pasted in by mistake is rejected outright rather than silently firing on a
+timer.</p>
 <p>To create a new Monitoring Unit, click on the <em>Manage Units</em> button in the
 dashboard, then click on the <em>New Unit</em> button. It will open a new kind of inner
-tab like this:</p>
-<p><img alt="" src="../../assets/img/image_101.webp"/></p>
-<p>The easiest way to write a custom unit is to use an existing one as template. Go
-ahead and select the <em>(Grid) Activity</em> template:</p>
-<p><img alt="" src="../../assets/img/image_102.webp"/></p>
-<p>Note how OmniDB fills the <em>Data Script</em> source code. This script is responsible
-for generating data for the unit every time it refreshes. As a grid unit is
-nothing else but a grid of data, we can rely on only this script for now.</p>
-<p>Now let us take a look at the source code of this template:</p>
-<pre><code class="language-python">from datetime import datetime
-
-data = connection.Query('''
-    SELECT *
-    FROM pg_stat_activity
-''')
-
-result = {
-    &quot;columns&quot;: data.Columns,
-    &quot;data&quot;: data.Rows
-}
-</code></pre>
-<p>It is simple enough. It executes an SQL query into the current connection using
-the reserved <code>connection</code> variable. Also, the grid unit type expects its results
-in a JSON variable that must be called <code>result</code> and must have the attributes
-<code>"columns"</code> (an array of column names) and <code>"data"</code> (an array of rows, each row
-being an array of values). The <code>connection.Query()</code> function already does the
-job pretty well, so let us just change the SQL query this way:</p>
-<pre><code class="language-python">from datetime import datetime
-
-data = connection.Query('''
-    SELECT random() as &quot;Random Number&quot;
-''')
-
-result = {
-    &quot;columns&quot;: data.Columns,
-    &quot;data&quot;: data.Rows
-}
-</code></pre>
-<p>Copy and paste the above Python code into the <em>Data Script</em> text field and then
-click on the <em>Test</em> (lighting) button:</p>
-<p><img alt="" src="../../assets/img/image_103.webp"/></p>
-<p>Note how the grid was rendered in the preview drawing area. You can click the
-<em>Test</em> button as many times as you want. Now we will give the unit a name, set
-a refresh interval and then hit the <em>Save</em> button:</p>
-<p><img alt="" src="../../assets/img/image_104.webp"/></p>
-<p>Click the <em>OK</em> button and then close the edit tab. Our new Monitoring Unit will
-be in the list of available units. As we created this unit, we can either add it
-to the dashboard, edit it or remove it. Let us add it to the dashboard (green
-action):</p>
-<p><img alt="" src="../../assets/img/image_105.webp"/></p>
-<h4>Writing custom Monitoring Units: Chart</h4>
-<p>Click in the <em>Manage Units</em> button and then in the <em>New Unit</em> button. This time
-we will create a Chart Monitoring Unit. So choose <em>(Chart) Database Size</em> as a
-template.</p>
-<p><img alt="" src="../../assets/img/image_106.webp"/></p>
-<p>The source code of this kind of unit is more complex. There are two scripts:</p>
+tab with a Name, a Type dropdown, a Refresh Interval, and a single SQL Query
+editor (plus a Chart Type dropdown, shown only for <em>Chart</em> units).</p>
+<p>The query's shape depends on the unit's Type:</p>
 <ul>
-<li><strong>Data Script</strong>: Executed every time the unit is refreshed;</li>
-<li><strong>Chart Script</strong>: Executed only at the beginning to build the chart.</li>
+<li>
+<p><strong>Grid</strong>: no particular shape — whatever columns and rows the query returns
+become the grid directly. For example:</p>
+<pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
+</li>
+<li>
+<p><strong>Chart</strong>: one row per category — the first column is the label, the
+remaining column(s) are one series each (the column name becomes the series
+name). Pick the Chart Type (bar, pie, doughnut, or line) from the dropdown next
+to the Type selector. For example, a pie chart of database sizes:</p>
+<pre><code class="language-sql">SELECT datname,
+       round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
+FROM pg_catalog.pg_database
+WHERE datname NOT IN ('template0', 'template1')</code></pre>
+</li>
+<li>
+<p><strong>Timeseries</strong>: exactly one row — each numeric column becomes one
+continuously-appended line series, refreshed on the configured interval. For
+example, tracking database size over time:</p>
+<pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
+FROM pg_catalog.pg_database
+WHERE NOT datistemplate</code></pre>
+</li>
 </ul>
-<p>The chart units are based in the component <a href="http://www.chartjs.org/">Chart.js</a>
-and each chart type contains a specific JSON structure. The best approach to
-build new chart units is to start from a template and also check the
-<a href="http://www.chartjs.org/docs/latest/">Chart.js docs</a> to see every property that
-can be added to make the output even better for each situation.</p>
-<p>Let us take a look at the <strong>Data Script</strong>:</p>
-<pre><code class="language-python">from datetime import datetime
-from random import randint
-
-databases = connection.Query('''
-    SELECT d.datname AS datname,
-           round(pg_catalog.pg_database_size(d.datname)/1048576.0,2) AS size
-    FROM pg_catalog.pg_database d
-    WHERE d.datname not in ('template0','template1')
-''')
-
-data = []
-color = []
-label = []
-
-for db in databases.Rows:
-    data.append(db[&quot;size&quot;])
-    color.append(&quot;rgb(&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;)&quot;)
-    label.append(db[&quot;datname&quot;])
-
-result = {
-    &quot;labels&quot;: label,
-    &quot;datasets&quot;: [
-        {
-            &quot;data&quot;: data,
-            &quot;backgroundColor&quot;: color,
-            &quot;label&quot;: &quot;Dataset 1&quot;
-        }
-    ]
-}
-</code></pre>
-<p>Here we can see that the reserved variable <code>connection</code> is still being used to
-retrieve data from the database. Bear in mind that this variable is always
-pointing to the current Connection.</p>
-<p>This template is for a Pie chart, which contains only one dataset and three arrays
-for the data:</p>
-<ul>
-<li><code>data</code>: One value per slice;</li>
-<li><code>color</code>: One color per slice;</li>
-<li><code>label</code>: One label per slice.</li>
-</ul>
-<p>This way, <code>data[0]</code>, <code>color[0]</code> and <code>label[0]</code> refer to the first slice, while
-<code>data[1]</code>, <code>color[1]</code> and <code>label[1]</code> refer to the second slice, and so on.</p>
-<p>This script must return a variable called <code>result</code> and also needs to be a JSON
-like in the above script.</p>
-<p>So right now you are probably guessing that you just need to change the SQL
-query to make the chart behave different. Well, in terms of data and datasets,
-you guessed right. So let's change the SQL query of this chart to compare sizes
-of tables of schema <code>public</code>. Also change the references from <code>datname</code> to
-<code>tablename</code>, as we have changed the column name.</p>
-<pre><code class="language-python">from datetime import datetime
-from random import randint
-
-databases = connection.Query('''
-    SELECT c.relname as tablename,
-           round(pg_catalog.pg_total_relation_size(c.oid)/1048576.0,2) AS size
-    FROM pg_catalog.pg_class c
-    INNER JOIN pg_catalog.pg_namespace n
-    ON n.oid = c.relnamespace
-    WHERE n.nspname = 'public'
-      AND c.relkind = 'r'
-''')
-
-data = []
-color = []
-label = []
-
-for db in databases.Rows:
-    data.append(db[&quot;size&quot;])
-    color.append(&quot;rgb(&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;,&quot; + str(randint(125, 225)) + &quot;)&quot;)
-    label.append(db[&quot;tablename&quot;])
-
-result = {
-    &quot;labels&quot;: label,
-    &quot;datasets&quot;: [
-        {
-            &quot;data&quot;: data,
-            &quot;backgroundColor&quot;: color,
-            &quot;label&quot;: &quot;Dataset 1&quot;
-        }
-    ]
-}
-</code></pre>
-<p>Copy and paste the above script into the <em>Data Script</em> field and then hit the
-<em>Test</em> button:</p>
-<p><img alt="" src="../../assets/img/image_107.webp"/></p>
-<p>Apparently the chart is almost done. We need to fix the title, it still says
-<em>Database Size</em>, when this chart is about table size. Any information about the
-format of the chart itself is defined in the <em>Chart Script</em> text field. Let us
-understand the current source code:</p>
-<pre><code class="language-python">total_size = connection.ExecuteScalar('''
-    SELECT round(sum(pg_catalog.pg_database_size(datname)/1048576.0),2)
-    FROM pg_catalog.pg_database
-    WHERE NOT datistemplate
-''')
-
-result = {
-    &quot;type&quot;: &quot;pie&quot;,
-    &quot;data&quot;: None,
-    &quot;options&quot;: {
-        &quot;responsive&quot;: True,
-        &quot;title&quot;:{
-            &quot;display&quot;:True,
-            &quot;text&quot;:&quot;Database Size (Total: &quot; + str(total_size) + &quot;)&quot;
-        }
-    }
-}
-</code></pre>
-<p>Easy enough. We can make use of the reserved variable <code>connection</code> to retrieve
-data in the <em>Chart Script</em> too. This is mainly used to put information in the
-chart title. The variable <code>result</code> must be defined here. Note how its JSON
-value defines a pie chart and the title. So we just need to change the query and
-adjust the title, this way:</p>
-<pre><code class="language-python">total_size = connection.ExecuteScalar('''
-    SELECT round(sum(pg_catalog.pg_total_relation_size(c.oid)/1048576.0),2) AS size
-    FROM pg_catalog.pg_class c
-    INNER JOIN pg_catalog.pg_namespace n
-    ON n.oid = c.relnamespace
-    WHERE n.nspname = 'public'
-      AND c.relkind = 'r'
-''')
-
-result = {
-    &quot;type&quot;: &quot;pie&quot;,
-    &quot;data&quot;: None,
-    &quot;options&quot;: {
-        &quot;responsive&quot;: True,
-        &quot;title&quot;:{
-            &quot;display&quot;:True,
-            &quot;text&quot;:&quot;Table Size (Total: &quot; + str(total_size) + &quot;)&quot;
-        }
-    }
-}
-</code></pre>
-<p>Copy and paste the above Python code into the <em>Chart Script</em>. Then click in the
-<em>Test</em> button:</p>
-<p><img alt="" src="../../assets/img/image_108.webp"/></p>
-<p>Now that the chart finally works the way we want, we can give it a title, adjust
-the refresh interval and then click in the <em>Save</em> button. After that we can add
-it to the dashboard.</p>
-<p><img alt="" src="../../assets/img/image_109.webp"/></p>
-<p><img alt="" src="../../assets/img/image_110.webp"/></p>
-<h4>Writing custom Monitoring Units: Chart-Append</h4>
-<p>Now for the last, but most interesting kind of Monitoring Unit: <em>Chart-Append</em>.
-It is interesting because there is a wide range of applications for these units,
-since they keep recent historic data that allows us to see a comparison of
-values.</p>
-<p>Go ahead and add a new chart using <em>(Chart (Append)) Size: Top 5 Tables</em> as
-template:</p>
-<p><img alt="" src="../../assets/img/image_111.webp"/></p>
-<p>Now take a look at the source code of both <em>Data Script</em> and <em>Chart Script</em>. It
-is not too different from the Chart units. The dataset creation is a bit more
-complex as it involves other JSON settings, but that's all.</p>
-<p>As an exercise, based on this chart, create another one called <em>Size: Top 20
-Tables</em>. It should look like this:</p>
-<p><img alt="" src="../../assets/img/image_112.webp"/></p>
-<p>Now save it and add it to your dashboard:</p>
-<p><img alt="" src="../../assets/img/image_113.webp"/></p>
+<p>Write (or paste) the query into the SQL Query editor, then click the <em>Test</em>
+(lightning) button to see it rendered in the preview drawing area — you can test
+as many times as you like. Once you're happy with it, give the unit a name, set
+a refresh interval, and hit <em>Save</em>. Close the edit tab and the new unit appears
+in the unit list, ready to add to the dashboard (green action) just like a
+built-in one.</p>
 	</main>
 	<script src="../../assets/script.js"></script>
 </body>

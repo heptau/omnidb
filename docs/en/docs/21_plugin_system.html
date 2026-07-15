@@ -39,20 +39,19 @@
 	</nav>
 	<main>
 		<h1>21. Plugin System</h1>
-<p>OmniDB 2.9 introduces the plugin system, a feature that allows users to develop and
-share their own features that can be plugged into OmniDB without having to deploy
-the whole application again.</p>
-<p><img alt="" src="../../assets/img/image_194.webp"/></p>
-<p>The plugin system is based on hooks that are located in different parts of the
-interface. Each plugin can subscribe to any hook and have a collection of API
-functions to perform different tasks, such as creating inner/outer tabs, creating
-tree nodes and calling python functions in the plugin's python code.</p>
-<p>Here is an example of a plugin that adds the Test action into the inner tab +
-context menu:</p>
-<p><img alt="" src="../../assets/img/image_195.webp"/></p>
-<p>For more details about the Plugin system, instructions on how to install and also
-to develop plugins, please refer to the github page:</p>
-<p><a href="https://github.com/OmniDB/plugins">Plugin System</a></p>
+<p><strong>The plugin system has been removed</strong> as part of the 3.6.x rewrite of the
+backend from Python/Django to Go, and is no longer available.</p>
+<p>OmniDB 2.9 introduced a plugin system that let users write Python code, hooked
+into different parts of the interface, to add their own features without
+redeploying the whole application. That mechanism depended on dynamically
+importing arbitrary Python modules into the running server process — something
+with no equivalent in a compiled Go binary — and was deliberately not carried
+over. The related API endpoints still exist for compatibility but now always
+report zero installed plugins and reject install/execute requests.</p>
+<p>If you relied on a specific plugin, there is currently no supported way to
+port it forward. Anything a plugin used to do by calling into the database
+directly can usually still be done today through the regular SQL editor,
+snippets, or a custom monitoring unit.</p>
 	</main>
 	<script src="../../assets/script.js"></script>
 </body>
