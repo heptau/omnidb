@@ -15,6 +15,31 @@ import (
 // schema-qualify what they touch, so there's no session state (search_path,
 // temp objects, etc.) that needs to carry across requests.
 func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
+	db, err := sql.Open("pgx", postgresqlDSN(info))
+	if err != nil {
+		return nil, err
+	}
+	if err := db.Ping(); err != nil {
+		db.Close()
+		return nil, err
+	}
+	return db, nil
+}
+
+// postgresqlDSN builds the connection string opened above. A saved
+// connection made via the "Connection string" field (server/port/database/
+// user all left blank, see connections.js's toggleConnectionsPublic-adjacent
+// disable logic) has nothing but info.ConnString to go on — using the empty
+// discrete fields instead silently connects over the local Unix socket to
+// whatever database the OS user defaults to, not the intended target.
+// info.Server is only non-empty here either because the user filled it in
+// directly, or because an SSH tunnel rewrote it to the local forwarded
+// address (see test_connection.go's runTestConnection) — both cases must
+// keep taking priority over ConnString's original, unforwarded host.
+func postgresqlDSN(info *ConnectionInfo) string {
+	if info.Server == "" && info.ConnString != "" {
+		return info.ConnString
+	}
 	port := info.Port
 	if port == "" {
 		port = "5432"
@@ -26,15 +51,7 @@ func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 		Path:     "/" + info.Database,
 		RawQuery: "sslmode=prefer",
 	}
-	db, err := sql.Open("pgx", dsn.String())
-	if err != nil {
-		return nil, err
-	}
-	if err := db.Ping(); err != nil {
-		db.Close()
-		return nil, err
-	}
-	return db, nil
+	return dsn.String()
 }
 
 // postgresqlVersion mirrors PostgreSQL.py's GetVersion.

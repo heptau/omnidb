@@ -148,6 +148,7 @@ func runTestConnection(req *testConnectionRequest, password, sshPassword, sshKey
 		Database:   req.Database,
 		Username:   req.User,
 		Password:   password,
+		ConnString: req.ConnString,
 	}
 
 	if req.Tunnel.Enabled {

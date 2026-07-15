@@ -20,6 +20,7 @@ type ConnectionInfo struct {
 	Password   string `json:"password"`
 	Alias      string `json:"alias"`
 	Public     bool   `json:"public"`
+	ConnString string `json:"connstring"`
 }
 
 // resolveConnection resolves the raw saved-connection row behind a
@@ -75,5 +76,6 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 		Password:   c.Password,
 		Alias:      c.Alias,
 		Public:     c.Public,
+		ConnString: c.ConnString,
 	}, nil
 }
