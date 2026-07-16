@@ -76,6 +76,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   string literals in `onclick` attributes without escaping, allowing HTML injection through
   database-stored monitor unit names. Fixed with a `jsString` helper that escapes `\`, `"`,
   `\n`, and `\r`.
+- Running a statement with no result rows (DDL like `CREATE OR REPLACE FUNCTION`, or a DML
+  statement with no matching rows) against a native connection left the query tab spinning
+  forever with the Cancel button stuck visible, even though the statement had already completed
+  successfully server-side. `fetchBlockLocked` in `querycursor.go` returned a nil `[][]string`
+  for a zero-row result, which encodes to JSON `null`; the frontend's chunk accumulator
+  (`long_polling.js`) does `tempData.concat(v_data.v_data)`, and `[].concat(null)` produces
+  `[null]` instead of `[]`, so the grid renderer tried to read `.length` off that `null` "row"
+  and threw — an exception silently swallowed by an empty `catch` in the long-polling loop,
+  before the code that hides the spinner/Cancel button ever ran. Fixed by initializing the
+  block as `make([][]string, 0, blockSize)` so an empty result always encodes as `[]`, matching
+  the convention already used by `runNativeQueryAllData` and `handleCommitOrRollback`.
 
 ## [3.8.0] - 2026-07-16
 

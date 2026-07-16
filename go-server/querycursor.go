@@ -225,7 +225,7 @@ func (c *queryCursor) fetchBlock(blockSize int) (rowsOut [][]string, lastBlock b
 // closeCursor (LoadAndDelete + rows.Close) between the map lookup and the
 // first rows.Next().
 func (c *queryCursor) fetchBlockLocked(blockSize int) (rowsOut [][]string, lastBlock bool, err error) {
-	var out [][]string
+	out := make([][]string, 0, blockSize)
 	if c.pending != nil {
 		out = append(out, c.pending)
 		c.pending = nil
