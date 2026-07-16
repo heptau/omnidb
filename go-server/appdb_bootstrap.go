@@ -127,5 +127,27 @@ func migrateAppDB(db *sql.DB) error {
 	} else if err != nil {
 		return fmt.Errorf("check OmniDB_app_tab.last_used: %w", err)
 	}
+
+	// Add indent format columns to OmniDB_app_userdetails if missing.
+	for _, c := range []struct {
+		name string
+		typ  string
+		dflt string
+	}{
+		{"indent_unit", "varchar(20)", "'    '"},
+		{"comma_style", "varchar(10)", "'leading'"},
+		{"keyword_case", "varchar(10)", "'preserve'"},
+	} {
+		var found string
+		err := db.QueryRow(`select name from pragma_table_info('OmniDB_app_userdetails') where name = ?`, c.name).Scan(&found)
+		if err == sql.ErrNoRows {
+			if _, err := db.Exec(fmt.Sprintf(`alter table OmniDB_app_userdetails add column "%s" %s NOT NULL DEFAULT %s`, c.name, c.typ, c.dflt)); err != nil {
+				return fmt.Errorf("add %s to OmniDB_app_userdetails: %w", c.name, err)
+			}
+		} else if err != nil {
+			return fmt.Errorf("check OmniDB_app_userdetails.%s: %w", c.name, err)
+		}
+	}
+
 	return nil
 }

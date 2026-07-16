@@ -33,7 +33,7 @@ endif
 
 # --- Phony Targets ---
 .PHONY: help all clean _sync_version \
-        build-mac-arm64 build-linux build-win \
+        build-mac-arm64 build-mac-intel build-linux build-win \
         release release-local \
         _prepare_dirs _ensure_wails _build_mac _build_linux _build_win
 
@@ -52,6 +52,7 @@ help:
 	@echo "server in go-server/). Each one installs the Wails CLI automatically"
 	@echo "if missing — the only prerequisite is Go itself:"
 	@echo "  make build-mac-arm64  - Build for Apple Silicon (M1/M2/M3...)"
+	@echo "  make build-mac-intel  - Build for Intel Mac (x86_64)"
 	@echo "  make build-linux      - Build for Linux (x64) — must run ON Linux, Wails'"
 	@echo "                          own Linux webview (GTK/CGO) cannot cross-compile"
 	@echo "  make build-win        - Build for Windows (x64) — fully cross-compiles from"
@@ -74,6 +75,11 @@ build-mac-arm64:
 	$(MAKE) _build_mac \
 		MAC_ARCH=osx-arm64 \
 		WAILS_GOARCH=arm64
+
+build-mac-intel:
+	$(MAKE) _build_mac \
+		MAC_ARCH=osx-x64 \
+		WAILS_GOARCH=amd64
 
 build-linux:
 	$(MAKE) _build_linux \

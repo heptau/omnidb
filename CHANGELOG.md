@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Configurable SQL formatting settings in a new "Formatting" tab under Settings: indent unit
+  (2/4/8 spaces or tab), comma style (leading/trailing), and keyword case (preserve/uppercase/lowercase).
+  Previously all three were hardcoded (4 spaces, leading comma, preserve case). The conservative
+  heuristic only changes recognized SQL keywords, not identifiers or values; unknown edge cases
+  still degrade to leaving the input unchanged.
+- Intel Mac (x86_64) build target (`build-mac-intel`) and Homebrew Cask support — the macOS release
+  now ships separate archives for Apple Silicon and Intel, and the Homebrew cask auto-detects the
+  correct architecture on install. CI builds Intel on `macos-13` runners.
+
+### Fixed
+- `handleChangeActiveDatabase` silently swallowed a malformed/missing request body and still replied
+  with a success envelope, instead of the `writeBadRequest` every sibling handler in the same file
+  uses — a malformed call would leave the tab's active-database override unset while the frontend
+  believed the switch had succeeded, the same class of silent-no-op bug fixed elsewhere in 3.8.0.
+- `randomLowerAlnum` used `int(b)%36` to map a random byte to the 36-character token alphabet;
+  `256 = 36×7 + 4` gave indices 0–3 (a–d) a probability of 8/256 and the rest 7/256, a mild
+  modulo bias. Fixed with rejection sampling — bytes ≥ 252 are discarded and re-rolled, making
+  every alphabet character equally probable.
+- Expired native sessions persisted in the `nativeSessions` map forever unless the same session
+  key happened to be looked up or destroyed again, causing a slow memory leak on long-running
+  server deployments. Fixed with a background goroutine (`startSessionReaper`) that removes
+  expired entries once per hour, started lazily on the first login.
+
 ## [3.8.0] - 2026-07-16
 
 ### Added

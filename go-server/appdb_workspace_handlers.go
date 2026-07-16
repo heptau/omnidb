@@ -9,7 +9,10 @@ import (
 )
 
 type indentSQLRequest struct {
-	PSQL string `json:"p_sql"`
+	PSQL        string `json:"p_sql"`
+	IndentUnit  string `json:"p_indent_unit"`
+	CommaStyle  string `json:"p_comma_style"`
+	KeywordCase string `json:"p_keyword_case"`
 }
 
 // handleIndentSQL mirrors workspace.py's indent_sql — Python called
@@ -50,7 +53,23 @@ func handleIndentSQL(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 
-		writeEnvelope(w, reindentSQLSafe(req.PSQL), false, -1)
+		opts := IndentOptions{
+			IndentUnit:  req.IndentUnit,
+			CommaStyle:  req.CommaStyle,
+			KeywordCase: req.KeywordCase,
+		}
+		if opts.IndentUnit == "" {
+			opts.IndentUnit = DefaultIndentOptions.IndentUnit
+		} else if opts.IndentUnit == `\t` {
+			opts.IndentUnit = "\t"
+		}
+		if opts.CommaStyle == "" {
+			opts.CommaStyle = DefaultIndentOptions.CommaStyle
+		}
+		if opts.KeywordCase == "" {
+			opts.KeywordCase = DefaultIndentOptions.KeywordCase
+		}
+		writeEnvelope(w, reindentSQLSafe(req.PSQL, opts), false, -1)
 	}
 }
 
@@ -325,11 +344,17 @@ func handleChangeActiveDatabase(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 		raw, err := readFormData(r)
-		if err == nil && raw != "" {
-			var req changeActiveDatabaseRequest
-			if json.Unmarshal([]byte(raw), &req) == nil && req.PDatabase != "" {
-				rememberActiveDatabase(nativeSessionCookieValue(r), req.PTabID, req.PDatabase)
-			}
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var req changeActiveDatabaseRequest
+		if err := json.Unmarshal([]byte(raw), &req); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		if req.PDatabase != "" {
+			rememberActiveDatabase(nativeSessionCookieValue(r), req.PTabID, req.PDatabase)
 		}
 		writeEnvelope(w, map[string]any{}, false, -1)
 	}
@@ -341,6 +366,9 @@ type saveConfigUserRequest struct {
 	PPwd          string `json:"p_pwd"`
 	PCSVEncoding  string `json:"p_csv_encoding"`
 	PCSVDelimiter string `json:"p_csv_delimiter"`
+	PIndentUnit   string `json:"p_indent_unit"`
+	PCommaStyle   string `json:"p_comma_style"`
+	PKeywordCase  string `json:"p_keyword_case"`
 }
 
 // handleSaveConfigUser mirrors workspace.py's save_config_user, now
@@ -377,7 +405,18 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		defer db.Close()
 
 		fontSize, _ := strconv.Atoi(req.PFontSize)
-		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter); err != nil {
+		if req.PIndentUnit == "" {
+			req.PIndentUnit = "    "
+		} else if req.PIndentUnit == `\t` {
+			req.PIndentUnit = "\t"
+		}
+		if req.PCommaStyle == "" {
+			req.PCommaStyle = "leading"
+		}
+		if req.PKeywordCase == "" {
+			req.PKeywordCase = "preserve"
+		}
+		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, req.PIndentUnit, req.PCommaStyle, req.PKeywordCase); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

@@ -55,9 +55,34 @@ type nativeSession struct {
 }
 
 var (
-	nativeSessionsMu sync.Mutex
-	nativeSessions   = map[string]*nativeSession{}
+	nativeSessionsMu  sync.Mutex
+	nativeSessions    = map[string]*nativeSession{}
+	sessionReaperOnce sync.Once
 )
+
+// startSessionReaper launches a background goroutine that removes expired
+// native session entries once per hour. Sessions that expire between
+// requests (user logged in and never returned) would otherwise stay in the
+// map forever — harmless on a desktop app with one user and a short-lived
+// process, but a slow memory leak on a long-running server with many users.
+// Started lazily from createNativeSession on the first-ever login.
+func startSessionReaper() {
+	sessionReaperOnce.Do(func() {
+		go func() {
+			for {
+				time.Sleep(1 * time.Hour)
+				now := time.Now()
+				nativeSessionsMu.Lock()
+				for k, s := range nativeSessions {
+					if now.After(s.ExpiresAt) {
+						delete(nativeSessions, k)
+					}
+				}
+				nativeSessionsMu.Unlock()
+			}
+		}()
+	})
+}
 
 // randomToken returns a URL-safe random token with enough entropy for both
 // session keys and CSRF tokens (32 bytes = 256 bits).
@@ -73,6 +98,7 @@ func randomToken() (string, error) {
 // only the fields anything actually still reads (see nativeSession's
 // comment). Returns the opaque session key to set as the cookie value.
 func createNativeSession(userID int, username string, superuser bool, csvEncoding, csvDelimiter string) (string, error) {
+	startSessionReaper()
 	key, err := randomToken()
 	if err != nil {
 		return "", err

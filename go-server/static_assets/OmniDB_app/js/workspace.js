@@ -996,7 +996,12 @@ function indentSQL(p_mode = false) {
 		} else {
 			execAjax(
 				"/indent_sql/",
-				JSON.stringify({ p_sql: v_sql_value }),
+				JSON.stringify({
+					p_sql: v_sql_value,
+					p_indent_unit: v_indent_unit || '    ',
+					p_comma_style: v_comma_style || 'leading',
+					p_keyword_case: v_keyword_case || 'preserve',
+				}),
 				function (p_return) {
 					v_editor.setValue(p_return.v_data);
 					v_editor.clearSelection();

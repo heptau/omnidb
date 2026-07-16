@@ -170,5 +170,8 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_userdetails" (
 	"csv_encoding" varchar(50) NOT NULL,
 	"csv_delimiter" varchar(10) NOT NULL,
 	"welcome_closed" bool NOT NULL,
+	"indent_unit" varchar(20) NOT NULL DEFAULT '    ',
+	"comma_style" varchar(10) NOT NULL DEFAULT 'leading',
+	"keyword_case" varchar(10) NOT NULL DEFAULT 'preserve',
 	"user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED
 );

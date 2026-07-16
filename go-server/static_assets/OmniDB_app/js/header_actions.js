@@ -293,6 +293,29 @@ function showConfigUser() {
 	document.getElementById("sel_csv_encoding").value = v_csv_encoding;
 	document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
 
+	// Set formatting radio buttons from globals
+	var indentRadios = document.getElementsByName("indent_unit");
+	for (var i = 0; i < indentRadios.length; i++) {
+		if (indentRadios[i].value === v_indent_unit) {
+			indentRadios[i].checked = true;
+			break;
+		}
+	}
+	var commaRadios = document.getElementsByName("comma_style");
+	for (var i = 0; i < commaRadios.length; i++) {
+		if (commaRadios[i].value === v_comma_style) {
+			commaRadios[i].checked = true;
+			break;
+		}
+	}
+	var caseRadios = document.getElementsByName("keyword_case");
+	for (var i = 0; i < caseRadios.length; i++) {
+		if (caseRadios[i].value === v_keyword_case) {
+			caseRadios[i].checked = true;
+			break;
+		}
+	}
+
 	// keyboard: true (unlike backdrop: "static", kept as-is) lets Esc close
 	// this dialog like Cancel would — clicking outside still won't, so an
 	// accidental stray click can't lose whatever you were about to change.
@@ -347,6 +370,9 @@ function saveConfigUser() {
 			p_pwd: v_pwd.value,
 			p_csv_encoding: v_csv_encoding,
 			p_csv_delimiter: v_csv_delimiter,
+			p_indent_unit: v_indent_unit,
+			p_comma_style: v_comma_style,
+			p_keyword_case: v_keyword_case,
 		});
 
 		execAjax("/save_config_user/", input, function (p_return) {

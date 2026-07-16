@@ -24,8 +24,10 @@ sha_for() {
 }
 
 SHA_ARM64=$(sha_for "osx-arm64")
+SHA_X64=$(sha_for "osx-x64")
 
 [[ -n "${SHA_ARM64}" ]] || { echo "Error: missing checksum for arm64 in ${CHECKSUM_FILE}"; exit 1; }
+[[ -n "${SHA_X64}" ]] || { echo "Error: missing checksum for x64 in ${CHECKSUM_FILE}"; exit 1; }
 
 cat > "$CASK_PATH" <<EOF
 cask "omnidb" do
@@ -34,6 +36,11 @@ cask "omnidb" do
   on_arm do
     sha256 "${SHA_ARM64}"
     url "${GITHUB}/releases/download/v#{version}/OmniDB-#{version}-macOS-osx-arm64.zip"
+  end
+
+  on_intel do
+    sha256 "${SHA_X64}"
+    url "${GITHUB}/releases/download/v#{version}/OmniDB-#{version}-macOS-osx-x64.zip"
   end
 
   name "OmniDB"

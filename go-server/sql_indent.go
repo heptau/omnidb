@@ -37,6 +37,19 @@ type sqlTok struct {
 	text string
 }
 
+// IndentOptions controls the behavior of the SQL reindenter.
+type IndentOptions struct {
+	IndentUnit  string // e.g. "    " (4 spaces), "  " (2 spaces), "\t" (tab)
+	CommaStyle  string // "leading" (comma at start of line) or "trailing" (comma at end)
+	KeywordCase string // "preserve", "upper", or "lower"
+}
+
+var DefaultIndentOptions = IndentOptions{
+	IndentUnit:  "    ",
+	CommaStyle:  "leading",
+	KeywordCase: "preserve",
+}
+
 func isSQLIdentStart(b byte) bool {
 	return b == '_' || (b >= 'a' && b <= 'z') || (b >= 'A' && b <= 'Z')
 }
@@ -48,7 +61,7 @@ func isSQLIdentPart(b byte) bool {
 func isSQLDigit(b byte) bool { return b >= '0' && b <= '9' }
 
 // scanSQLQuoted returns the index just past the closing quote, handling
-// both SQL-standard doubled-quote escaping (” inside '...', "" inside
+// both SQL-standard doubled-quote escaping (' inside '...', " inside
 // "...") and backslash escaping (MySQL's default) — whichever a given
 // dialect actually uses, treating both as "doesn't end the string" is the
 // safe choice: misreading where a string ends risks reformatting its
@@ -251,7 +264,16 @@ var sqlSpaceBeforeParenKeywords = map[string]bool{
 	"between": true,
 }
 
-const sqlIndentUnit = "    "
+func applyKeywordCase(text string, mode string) string {
+	switch mode {
+	case "upper":
+		return strings.ToUpper(text)
+	case "lower":
+		return strings.ToLower(text)
+	default:
+		return text
+	}
+}
 
 // reindentStatement walks a merged token stream and reconstructs spacing
 // and line breaks:
@@ -265,7 +287,7 @@ const sqlIndentUnit = "    "
 //   - everything else is joined with a single space, with a few spacing
 //     refinements (no space before ",", ";", ")"; no space after "(";
 //     conditional space before "(" — see sqlSpaceBeforeParenKeywords).
-func reindentStatement(toks []sqlTok) string {
+func reindentStatement(toks []sqlTok, opts IndentOptions) string {
 	var b strings.Builder
 	depth := 0
 	first := true
@@ -273,7 +295,7 @@ func reindentStatement(toks []sqlTok) string {
 
 	nl := func(d int) {
 		b.WriteByte('\n')
-		b.WriteString(strings.Repeat(sqlIndentUnit, d))
+		b.WriteString(strings.Repeat(opts.IndentUnit, d))
 	}
 
 	needSpace := func(next sqlTok) bool {
@@ -302,6 +324,17 @@ func reindentStatement(toks []sqlTok) string {
 		return true
 	}
 
+	isKeyword := func(lw string) bool {
+		return sqlMajorClauseKeywords[lw] || sqlJoinKeywords[lw] || lw == "and" || lw == "or" || lw == "on"
+	}
+
+	wordCase := func(text string, force bool) string {
+		if force || isKeyword(strings.ToLower(text)) {
+			return applyKeywordCase(text, opts.KeywordCase)
+		}
+		return text
+	}
+
 	for i := range toks {
 		t := toks[i]
 		lw := ""
@@ -315,17 +348,28 @@ func reindentStatement(toks []sqlTok) string {
 
 		switch {
 		case t.kind == sqlComma && depth == 0:
-			nl(1)
-			b.WriteString(", ")
+			if opts.CommaStyle == "trailing" {
+				// Remove trailing space from previous output, append comma, newline
+				prev := b.String()
+				if len(prev) > 0 && prev[len(prev)-1] == ' ' {
+					b.Reset()
+					b.WriteString(prev[:len(prev)-1])
+				}
+				b.WriteString(",")
+				nl(1)
+			} else {
+				nl(1)
+				b.WriteString(", ")
+			}
 			suppressNext = true
 		case isMajor:
 			if !first {
 				nl(depth)
 			}
-			b.WriteString(t.text)
+			b.WriteString(wordCase(t.text, true))
 		case isCondJoin, isOn:
 			nl(depth + 1)
-			b.WriteString(t.text)
+			b.WriteString(wordCase(t.text, true))
 		case t.kind == sqlLineComment:
 			if needSpace(t) {
 				b.WriteByte(' ')
@@ -337,7 +381,11 @@ func reindentStatement(toks []sqlTok) string {
 			if needSpace(t) {
 				b.WriteByte(' ')
 			}
-			b.WriteString(t.text)
+			if t.kind == sqlWord {
+				b.WriteString(wordCase(t.text, false))
+			} else {
+				b.WriteString(t.text)
+			}
 		}
 
 		if t.kind == sqlOpenParen {
@@ -359,12 +407,12 @@ func reindentStatement(toks []sqlTok) string {
 }
 
 // reindentSQL is the exported entry point — see the package comment.
-func reindentSQL(sql string) string {
+func reindentSQL(sql string, opts IndentOptions) string {
 	toks := mergeKeywordPhrases(tokenizeSQL(sql))
 	if len(toks) == 0 {
 		return sql
 	}
-	return reindentStatement(toks)
+	return reindentStatement(toks, opts)
 }
 
 // reindentSQLSafe never fails or panics outward — a text-formatting nicety
@@ -372,11 +420,11 @@ func reindentSQL(sql string) string {
 // break the request (this is a hand-written heuristic pass over arbitrary
 // user-typed SQL, not a validated grammar — an unanticipated edge case
 // should be survivable).
-func reindentSQLSafe(sql string) (out string) {
+func reindentSQLSafe(sql string, opts IndentOptions) (out string) {
 	defer func() {
 		if recover() != nil {
 			out = sql
 		}
 	}()
-	return reindentSQL(sql)
+	return reindentSQL(sql, opts)
 }

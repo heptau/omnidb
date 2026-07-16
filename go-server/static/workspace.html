@@ -509,6 +509,10 @@
 									aria-controls="config_options" aria-selected="false">Options</a>
 							</li>
 							<li class="nav-item">
+								<a class="nav-link" id="config_formatting-tab" data-bs-toggle="tab" href="#config_formatting" role="tab"
+									aria-controls="config_formatting" aria-selected="false">Formatting</a>
+							</li>
+							<li class="nav-item">
 								<a class="nav-link" id="config_password-tab" data-bs-toggle="tab" href="#config_password" role="tab"
 									aria-controls="config_password" aria-selected="false">Password</a>
 							</li>
@@ -728,6 +732,83 @@
 										<input type="text" class="form-control" id="txt_csv_delimiter" placeholder="Delimiter">
 									</div>
 								</div>
+								<div style="text-align:right;">
+									<button class='btn btn-success' onclick='saveConfigUser()'>Save</button>
+								</div>
+
+							</div>
+
+							<div class="tab-pane fade" id="config_formatting" role="tabpanel" aria-labelledby="config_formatting-tab">
+
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<label>Indent Unit</label>
+										<div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_2" value="  "
+													onchange="v_indent_unit = this.value">
+												<label class="form-check-label" for="indent_unit_2">2 spaces</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_4" value="    "
+													onchange="v_indent_unit = this.value">
+												<label class="form-check-label" for="indent_unit_4">4 spaces</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_8" value="        "
+													onchange="v_indent_unit = this.value">
+												<label class="form-check-label" for="indent_unit_8">8 spaces</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_tab" value="\t"
+													onchange="v_indent_unit = this.value">
+												<label class="form-check-label" for="indent_unit_tab">Tab</label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<label>Comma Style</label>
+										<div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_leading" value="leading"
+													onchange="v_comma_style = this.value">
+												<label class="form-check-label" for="comma_style_leading">Leading (, at line start)</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_trailing" value="trailing"
+													onchange="v_comma_style = this.value">
+												<label class="form-check-label" for="comma_style_trailing">Trailing (, at line end)</label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<label>Keyword Case</label>
+										<div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_preserve" value="preserve"
+													onchange="v_keyword_case = this.value">
+												<label class="form-check-label" for="keyword_case_preserve">Preserve</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_upper" value="upper"
+													onchange="v_keyword_case = this.value">
+												<label class="form-check-label" for="keyword_case_upper">UPPERCASE</label>
+											</div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_lower" value="lower"
+													onchange="v_keyword_case = this.value">
+												<label class="form-check-label" for="keyword_case_lower">lowercase</label>
+											</div>
+										</div>
+									</div>
+								</div>
+
 								<div style="text-align:right;">
 									<button class='btn btn-success' onclick='saveConfigUser()'>Save</button>
 								</div>
@@ -1027,6 +1108,9 @@
 		var v_user_name = '{{ user_name }}';
 		var v_csv_encoding = '{{ csv_encoding }}';
 		var v_csv_delimiter = '{{ csv_delimiter }}';
+		var v_indent_unit = '{{ indent_unit }}';
+		var v_comma_style = '{{ comma_style }}';
+		var v_keyword_case = '{{ keyword_case }}';
 		var v_session_key = v_user_key;
 		var v_user_login = v_user_name;
 		var v_version = '{{ omnidb_version }}';

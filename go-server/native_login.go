@@ -40,14 +40,30 @@ func isAppMode(args []string) bool {
 // randomLowerAlnum mirrors the "”.join(random.choice(string.ascii_lowercase +
 // string.digits) for i in range(n))" pattern used both by omnidb-server.py's
 // APP_TOKEN and by workspace.py index()'s tab_token.
+//
+// Uses rejection sampling to avoid modulo bias: the alphabet is 36 chars,
+// and 256/36 = 7 remainder 4, so bytes 0-251 map uniformly to alphabet
+// indices while bytes 252-255 are rejected and re-rolled. This gives every
+// character an equal 1/36 probability regardless of the crypto/rand output
+// distribution, matching the original Python's random.choice behavior in
+// entropy quality if not in performance (which doesn't matter for a one-off
+// token generation at startup).
 func randomLowerAlnum(n int) (string, error) {
-	buf := make([]byte, n)
-	if _, err := rand.Read(buf); err != nil {
-		return "", err
-	}
+	const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
+	const alphabetLen = 36
+	const maxValid = 252
 	out := make([]byte, n)
-	for i, b := range buf {
-		out[i] = appTokenAlphabet[int(b)%len(appTokenAlphabet)]
+	for i := range out {
+		for {
+			buf := make([]byte, 1)
+			if _, err := rand.Read(buf); err != nil {
+				return "", err
+			}
+			if buf[0] < maxValid {
+				out[i] = alphabet[int(buf[0])%alphabetLen]
+				break
+			}
+		}
 	}
 	return string(out), nil
 }
@@ -128,7 +144,7 @@ func userCSVPrefs(db *sql.DB, userID int64) (encoding, delimiter string, err err
 	err = db.QueryRow(`select csv_encoding, csv_delimiter from OmniDB_app_userdetails where user_id = ?`, userID).Scan(&encoding, &delimiter)
 	if err == sql.ErrNoRows {
 		if _, insertErr := db.Exec(
-			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed) values (?, 'light', 12, 'utf-8', ';', 0)`,
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, comma_style, keyword_case) values (?, 'light', 12, 'utf-8', ';', 0, '    ', 'leading', 'preserve')`,
 			userID,
 		); insertErr != nil {
 			return "", "", insertErr
