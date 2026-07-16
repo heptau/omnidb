@@ -6,7 +6,19 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 )
+
+// jsString escapes s so it is safe to embed as a JavaScript string literal
+// inside double quotes in an HTML onclick attribute.
+func jsString(s string) string {
+	return strings.NewReplacer(
+		"\\", "\\\\",
+		"\"", "\\\"",
+		"\n", "\\n",
+		"\r", "\\r",
+	).Replace(s)
+}
 
 // This file mirrors OmniDB_app/views/monitor_dashboard.py's routes. Custom
 // user-authored monitor unit CRUD (save/edit/delete) is ported in full, and
@@ -66,7 +78,7 @@ func handleGetMonitorUnitList(upstream *url.URL) http.HandlerFunc {
 		ids := make([]int64, 0)
 
 		for _, unit := range builtinUnitsForDBMS(info.Technology) {
-			actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' onclick='includeMonitorUnit(%d,"%s")'></i>`, unit.ID, unit.PluginName)
+			actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' onclick='includeMonitorUnit(%d,"%s")'></i>`, unit.ID, jsString(unit.PluginName))
 			if req.PMode == 0 {
 				rows = append(rows, []any{actions, unit.Title, unit.Type, unit.Interval})
 			} else {

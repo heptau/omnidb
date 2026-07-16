@@ -211,8 +211,8 @@ func handleTestConnection(upstream *url.URL) http.HandlerFunc {
 			writeDatabaseError(w, err.Error())
 			return
 		}
+		defer appDB.Close()
 		password, sshPassword, sshKey, err := resolveTestConnectionSecrets(appDB, &req)
-		appDB.Close()
 		if err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return

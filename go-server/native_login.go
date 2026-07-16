@@ -52,15 +52,22 @@ func randomLowerAlnum(n int) (string, error) {
 	const alphabet = "abcdefghijklmnopqrstuvwxyz0123456789"
 	const alphabetLen = 36
 	const maxValid = 252
+	// Batch-read extra bytes to cover rejection sampling overhead.
+	buf := make([]byte, n+n/2+10)
 	out := make([]byte, n)
+	pos := 0
 	for i := range out {
 		for {
-			buf := make([]byte, 1)
-			if _, err := rand.Read(buf); err != nil {
-				return "", err
+			if pos >= len(buf) {
+				if _, err := rand.Read(buf); err != nil {
+					return "", err
+				}
+				pos = 0
 			}
-			if buf[0] < maxValid {
-				out[i] = alphabet[int(buf[0])%alphabetLen]
+			b := buf[pos]
+			pos++
+			if b < maxValid {
+				out[i] = alphabet[int(b)%alphabetLen]
 				break
 			}
 		}
@@ -144,7 +151,7 @@ func userCSVPrefs(db *sql.DB, userID int64) (encoding, delimiter string, err err
 	err = db.QueryRow(`select csv_encoding, csv_delimiter from OmniDB_app_userdetails where user_id = ?`, userID).Scan(&encoding, &delimiter)
 	if err == sql.ErrNoRows {
 		if _, insertErr := db.Exec(
-			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, comma_style, keyword_case) values (?, 'light', 12, 'utf-8', ';', 0, '    ', 'leading', 'preserve')`,
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case) values (?, 'light', 12, 'utf-8', ';', 0, '    ', 'space', 4, 'leading', 'preserve')`,
 			userID,
 		); insertErr != nil {
 			return "", "", insertErr

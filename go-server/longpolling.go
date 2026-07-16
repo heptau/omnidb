@@ -405,6 +405,8 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 
 	var cursor *queryCursor
 	var err error
+	var rows [][]string
+	var cursorExhausted bool
 	if q.VMode == 0 {
 		db, openErr := openNativeQueryTarget(info)
 		if openErr != nil {
@@ -413,6 +415,12 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 			return
 		}
 		cursor, err = startCursor(clientID, q.VTabID, db, sqlText, q.VAutocommit)
+		if err != nil {
+			queueQueryError(upstream, cookie, contextCode, err)
+			logHistory("error")
+			return
+		}
+		rows, cursorExhausted, err = cursor.fetchBlock(blockSize)
 	} else {
 		var ok bool
 		cursor, ok = continueCursor(clientID, q.VTabID)
@@ -420,22 +428,9 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 			queueQueryError(upstream, cookie, contextCode, fmt.Errorf("no open query for this tab, please re-run it"))
 			return
 		}
+		rows, cursorExhausted, err = cursor.fetchBlockLocked(blockSize)
+		cursor.mu.Unlock()
 	}
-	if err != nil {
-		queueQueryError(upstream, cookie, contextCode, err)
-		logHistory("error")
-		return
-	}
-
-	// cursorExhausted tracks whether the underlying result set has no more
-	// rows — that's an internal detail for deciding whether to keep this
-	// tab's cursor open for a future "fetch more" (mode 1) call. It is NOT
-	// the same thing as the wire-level v_last_block field: Django's own
-	// thread_query always sends v_last_block=true for a single-block (mode
-	// 0/1) response, full or not — the frontend infers "there might be
-	// more" separately, from len(v_data) >= the block size, to decide
-	// whether to show its own "fetch more"/"fetch all" buttons.
-	rows, cursorExhausted, err := cursor.fetchBlock(blockSize)
 	if err != nil {
 		closeCursor(clientID, q.VTabID)
 		queueQueryError(upstream, cookie, contextCode, err)
@@ -449,8 +444,8 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 	if q.VMode == 0 && logQuery {
 		appdb, openErr := openAppDB(upstream)
 		if openErr == nil {
+			defer appdb.Close()
 			newID, saveErr := saveTab(appdb, int64(userID), q.VTabDBID, q.databaseIndexInt(), q.VTabTitle, q.VSQLSave)
-			appdb.Close()
 			if saveErr == nil {
 				insertedID = newID
 			} else {
@@ -544,8 +539,11 @@ func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData,
 		var tx *sql.Tx
 		tx, err = db.Begin()
 		if err == nil {
-			defer tx.Commit()
+			defer tx.Rollback()
 			rows, err = tx.Query(sqlText)
+			if err == nil {
+				err = tx.Commit()
+			}
 		}
 	}
 	if err != nil {

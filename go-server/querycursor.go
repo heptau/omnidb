@@ -139,13 +139,27 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 	return c, nil
 }
 
-// continueCursor looks up an already-open cursor for mode 1 (fetch more).
+// continueCursor looks up an already-open cursor for mode 1 (fetch more) and
+// returns it with the mutex held. The caller must call c.mu.Unlock() after
+// using the cursor. This prevents a concurrent closeCursor (LoadAndDelete +
+// rows.Close) from closing the underlying sql.Rows between the map lookup
+// and the first rows.Next().
 func continueCursor(clientID, tabID string) (*queryCursor, bool) {
-	v, ok := queryCursors.Load(cursorKey(clientID, tabID))
+	key := cursorKey(clientID, tabID)
+	v, ok := queryCursors.Load(key)
 	if !ok {
 		return nil, false
 	}
-	return v.(*queryCursor), true
+	c := v.(*queryCursor)
+	c.mu.Lock()
+	// Re-check: closeCursor may have deleted between Load and Lock.
+	v, ok = queryCursors.Load(key)
+	if !ok {
+		c.mu.Unlock()
+		return nil, false
+	}
+	c = v.(*queryCursor)
+	return c, true
 }
 
 // commitCursor mirrors mode 3 (COMMIT) — found=false means there's no
@@ -203,7 +217,14 @@ func rollbackCursor(clientID, tabID string) (found bool, err error) {
 func (c *queryCursor) fetchBlock(blockSize int) (rowsOut [][]string, lastBlock bool, err error) {
 	c.mu.Lock()
 	defer c.mu.Unlock()
+	return c.fetchBlockLocked(blockSize)
+}
 
+// fetchBlockLocked is fetchBlock's inner body, callable while c.mu is already
+// held. Used by continueCursorFetchBlock to avoid a TOCTOU race with
+// closeCursor (LoadAndDelete + rows.Close) between the map lookup and the
+// first rows.Next().
+func (c *queryCursor) fetchBlockLocked(blockSize int) (rowsOut [][]string, lastBlock bool, err error) {
 	var out [][]string
 	if c.pending != nil {
 		out = append(out, c.pending)

@@ -85,15 +85,22 @@ func resolveTempDir(upstream *url.URL) (*tempDirInfo, error) {
 // *user's saved connection* pointing at some unrelated SQLite file. Reuses
 // the same "sqlite" database/sql driver registered by sqlite.go's blank
 // import — no need to import modernc.org/sqlite again here.
+//
+// Each call returns a fresh pool with a single connection limit to avoid
+// SQLite lock contention on busy servers. The caller must close the returned
+// *sql.DB when done.
 func openAppDB(upstream *url.URL) (*sql.DB, error) {
 	path, err := resolveAppDBPath(upstream)
 	if err != nil {
 		return nil, err
 	}
+
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
 		return nil, err
 	}
+	db.SetMaxOpenConns(1)
+	db.SetMaxIdleConns(1)
 	if err := db.Ping(); err != nil {
 		db.Close()
 		return nil, err

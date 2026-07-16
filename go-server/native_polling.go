@@ -74,9 +74,37 @@ func (c *pollingClient) waitForData(ctx context.Context, startup bool) []map[str
 }
 
 var (
-	pollingClientsMu sync.Mutex
-	pollingClients   = map[string]*pollingClient{}
+	pollingClientsMu  sync.Mutex
+	pollingClients    = map[string]*pollingClient{}
+	pollingReaperOnce sync.Once
 )
+
+// startPollingReaper launches a background goroutine that removes polling
+// clients whose lastUpdate is older than 1 hour. Analogous to
+// startSessionReaper in native_session.go — prevents unbounded map growth
+// on long-running server deployments when /clear_client/ doesn't fire
+// (browser crash, closed tab without unload handler, keepalive-only client
+// that never started polling).
+func startPollingReaper() {
+	pollingReaperOnce.Do(func() {
+		go func() {
+			for {
+				time.Sleep(1 * time.Hour)
+				threshold := time.Now().Add(-1 * time.Hour)
+				pollingClientsMu.Lock()
+				for k, c := range pollingClients {
+					c.mu.Lock()
+					stale := c.lastUpdate.Before(threshold)
+					c.mu.Unlock()
+					if stale {
+						delete(pollingClients, k)
+					}
+				}
+				pollingClientsMu.Unlock()
+			}
+		}()
+	})
+}
 
 // getPollingClient mirrors get_client_object — returns the existing entry
 // or creates one lazily, same as Python's try/except KeyError fallback.
@@ -149,6 +177,7 @@ type longPollingRequest struct {
 // this same queue).
 func handleLongPolling() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		startPollingReaper()
 		clientID := nativeSessionCookieValue(r)
 		if clientID == "" {
 			writeEnvelope(w, "", true, 1)
@@ -184,10 +213,14 @@ func handleLongPolling() http.HandlerFunc {
 func handleClientKeepAlive() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if clientID := nativeSessionCookieValue(r); clientID != "" {
-			c := getPollingClient(clientID)
-			c.mu.Lock()
-			c.lastUpdate = time.Now()
-			c.mu.Unlock()
+			pollingClientsMu.Lock()
+			c, ok := pollingClients[clientID]
+			pollingClientsMu.Unlock()
+			if ok {
+				c.mu.Lock()
+				c.lastUpdate = time.Now()
+				c.mu.Unlock()
+			}
 		}
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte("{}"))

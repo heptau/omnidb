@@ -141,6 +141,11 @@ func handleRefreshMonitoring(upstream *url.URL, fallback http.Handler) http.Hand
 		}
 		defer db.Close()
 
+		if !isReadOnlyQuery(reqBody.PQuery) {
+			writeDatabaseError(w, "only SELECT queries are allowed")
+			return
+		}
+
 		cols, rows, err := runGenericQuery(db, reqBody.PQuery)
 		if err != nil {
 			writeDatabaseError(w, err.Error())

@@ -43,8 +43,13 @@ func forwardConn(local net.Conn, client *ssh.Client, remoteAddr string) {
 	}
 	defer remote.Close()
 
-	done := make(chan struct{}, 2)
-	go func() { io.Copy(remote, local); done <- struct{}{} }()
-	go func() { io.Copy(local, remote); done <- struct{}{} }()
+	done := make(chan struct{}, 1)
+	go func() {
+		io.Copy(remote, local)
+		remote.Close()
+		done <- struct{}{}
+	}()
+	io.Copy(local, remote)
+	local.Close()
 	<-done
 }

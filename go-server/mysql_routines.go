@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 )
 
 type mysqlView struct {
@@ -241,5 +242,5 @@ func mysqlShowCreate(db *sql.DB, kind, schema, object string, colIndex int) (str
 // reaching this function already came from our own introspection routes,
 // which never contain backticks, but escape defensively anyway.
 func quoteMySQLIdent(name string) string {
-	return "`" + name + "`"
+	return "`" + strings.ReplaceAll(name, "`", "``") + "`"
 }

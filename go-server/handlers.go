@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"net/url"
 )
@@ -20,7 +21,9 @@ type envelope struct {
 
 func writeEnvelope(w http.ResponseWriter, data any, isError bool, errorID int) {
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(envelope{VData: data, VError: isError, VErrorID: errorID})
+	if err := json.NewEncoder(w).Encode(envelope{VData: data, VError: isError, VErrorID: errorID}); err != nil {
+		log.Printf("writeEnvelope: %v", err)
+	}
 }
 
 // writeUnauthenticated mirrors memory_objects.py's user_authenticated decorator.
@@ -103,10 +106,11 @@ type getPropertiesRequest struct {
 func readFormData(r *http.Request) (string, error) {
 	bodyBytes, err := io.ReadAll(r.Body)
 	r.Body.Close()
-	r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 	if err != nil {
+		r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 		return "", err
 	}
+	r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
 
 	values, err := url.ParseQuery(string(bodyBytes))
 	if err != nil {

@@ -31,6 +31,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   key happened to be looked up or destroyed again, causing a slow memory leak on long-running
   server deployments. Fixed with a background goroutine (`startSessionReaper`) that removes
   expired entries once per hour, started lazily on the first login.
+- Race condition in `querycursor.go`: `continueCursor` loaded the cursor from the sync.Map and
+  returned it without synchronization; a concurrent `closeCursor` could `LoadAndDelete` and close
+  `sql.Rows` between the lookup and `fetchBlock`'s mutex acquisition, causing undefined driver
+  behavior. Fixed by having `continueCursor` return the cursor with its mutex already held; mode 1
+  callers use `fetchBlockLocked` directly and unlock after.
+- `forwardConn` in `ssh_tunnel.go` spawned two `io.Copy` goroutines but only waited for one;
+  the second goroutine could leak indefinitely if `defer remote.Close()` was slow. Fixed by
+  moving one `io.Copy` inline and closing the connection in the remaining goroutine.
+- `runNativeQueryAllData` in `longpolling.go` used `defer tx.Commit()` — the deferred commit
+  ran even when `tx.Query()` failed, silently committing an empty/failed transaction. Fixed by
+  switching to `defer tx.Rollback()` with an explicit `tx.Commit()` only on success.
+- `pollingClients` map entries in `native_polling.go` were never cleaned up when a browser tab
+  crashed or `/clear_client/` didn't fire, causing a slow memory leak on server deployments.
+  Fixed with `startPollingReaper`, a background goroutine that removes entries with no update
+  in over an hour, started lazily from the first long-poll request.
+- `handleRefreshMonitoring` in `generic_handlers.go` ran arbitrary user SQL with no read-only
+  guard, unlike the custom monitoring query path; an INSERT/UPDATE/DELETE sent as a monitoring
+  refresh would execute silently. Fixed by adding the same `isReadOnlyQuery` check used in
+  `custom_monitor_query.go`.
+- `writeEnvelope` silently dropped JSON encoding errors, making response truncation invisible
+  in logs. Fixed by logging the error when encoding fails.
+- `openAppDB` opened a fresh `*sql.DB` pool per request without capping connections, letting
+  concurrent requests pile up SQLite lock contention on busy servers. Fixed by capping each
+  pool to `SetMaxOpenConns(1)` / `SetMaxIdleConns(1)`; callers still open and close their own
+  handle per request.
+- `quoteMySQLIdent` in `mysql_routines.go` wrapped identifiers in backticks without escaping
+  embedded backticks, allowing SQL injection through database object names containing backticks.
+  Fixed with `strings.ReplaceAll(name, "`", "``")`.
+- `handleTestConnection` called `openAppDB` then `appDB.Close()` before checking the error from
+  `resolveTestConnectionSecrets`, so a panic there would leak the connection. Fixed by closing
+  it with `defer` instead.
+- `handleClientKeepAlive` created a new `pollingClient` entry on every heartbeat, even when
+  no session had ever started polling. Fixed by only updating `lastUpdate` when the client
+  already exists in the map.
+- `randomLowerAlnum` read one CSPRNG byte per iteration (50+ syscalls for a token). Fixed by
+  batch-reading into a larger buffer and iterating in-memory.
+- `readFormData` replaced the request body with partial data even when `io.ReadAll` failed,
+  so downstream code would process a truncated request body. Fixed by only restoring the body
+  on success.
+- `reindentSQLSafe` caught `runtime.Error` panics (nil pointer dereference, index out of
+  bounds), silently hiding real programming bugs. Fixed by re-panicking on `runtime.Error`.
+- `handleGetMonitorUnitList` interpolated user-supplied plugin names directly into JavaScript
+  string literals in `onclick` attributes without escaping, allowing HTML injection through
+  database-stored monitor unit names. Fixed with a `jsString` helper that escapes `\`, `"`,
+  `\n`, and `\r`.
 
 ## [3.8.0] - 2026-07-16
 

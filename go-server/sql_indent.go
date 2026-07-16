@@ -1,6 +1,9 @@
 package main
 
-import "strings"
+import (
+	"runtime"
+	"strings"
+)
 
 // This file implements a lightweight, dialect-agnostic SQL reindenter for
 // indent_sql (see appdb_workspace_handlers.go's handleIndentSQL) — a
@@ -422,7 +425,10 @@ func reindentSQL(sql string, opts IndentOptions) string {
 // should be survivable).
 func reindentSQLSafe(sql string, opts IndentOptions) (out string) {
 	defer func() {
-		if recover() != nil {
+		if r := recover(); r != nil {
+			if _, ok := r.(runtime.Error); ok {
+				panic(r)
+			}
 			out = sql
 		}
 	}()
