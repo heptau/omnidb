@@ -117,6 +117,8 @@ var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	v_editor.session.setMode("ace/mode/sql");
 
 	v_editor.setFontSize(Number(v_font_size));
+	v_editor.session.setTabSize(v_indent_size || 4);
+	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
 
 	v_editor.commands.bindKey("ctrl-space", null);
 

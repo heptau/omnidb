@@ -135,6 +135,8 @@ func migrateAppDB(db *sql.DB) error {
 		dflt string
 	}{
 		{"indent_unit", "varchar(20)", "'    '"},
+		{"indent_char", "varchar(5)", "'space'"},
+		{"indent_size", "integer", "4"},
 		{"comma_style", "varchar(10)", "'leading'"},
 		{"keyword_case", "varchar(10)", "'preserve'"},
 	} {

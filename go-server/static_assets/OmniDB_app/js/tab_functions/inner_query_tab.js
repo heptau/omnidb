@@ -282,6 +282,8 @@ var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_editor.setTheme("ace/theme/" + v_editor_theme);
 	v_editor.session.setMode("ace/mode/sql");
 	v_editor.setFontSize(Number(v_font_size));
+	v_editor.session.setTabSize(v_indent_size || 4);
+	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
 
 	// Setting custom keyboard shortcuts callbacks.
 	$("#txt_query_" + v_tab.id)

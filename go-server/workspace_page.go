@@ -22,7 +22,7 @@ var workspaceVarNames = []string{
 	"url_folder", "static_cache_bust", "omnidb_short_version", "omnidb_version",
 	"csrf_cookie_name", "editor_theme", "theme", "font_size", "user_id",
 	"user_key", "user_name", "csv_encoding", "csv_delimiter", "indent_unit",
-	"comma_style", "keyword_case", "welcome_closed",
+	"indent_char", "indent_size", "comma_style", "keyword_case", "welcome_closed",
 	"menu_item", "tab_token", "show_terminal_option", "super_user", "desktop_mode",
 }
 
@@ -150,6 +150,8 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 		"csv_encoding":         ud.CSVEncoding,
 		"csv_delimiter":        ud.CSVDelimiter,
 		"indent_unit":          ud.IndentUnit,
+		"indent_char":          ud.IndentChar,
+		"indent_size":          strconv.Itoa(ud.IndentSize),
 		"comma_style":          ud.CommaStyle,
 		"keyword_case":         ud.KeywordCase,
 		"welcome_closed":       boolStr(ud.WelcomeClosed),

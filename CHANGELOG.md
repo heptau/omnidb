@@ -8,11 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Configurable SQL formatting settings in a new "Formatting" tab under Settings: indent unit
-  (2/4/8 spaces or tab), comma style (leading/trailing), and keyword case (preserve/uppercase/lowercase).
-  Previously all three were hardcoded (4 spaces, leading comma, preserve case). The conservative
-  heuristic only changes recognized SQL keywords, not identifiers or values; unknown edge cases
-  still degrade to leaving the input unchanged.
+- Configurable SQL formatting settings in a new "Formatting" tab under Settings: indent character
+  (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and keyword case
+  (preserve/uppercase/lowercase). Previously all three were hardcoded (4 spaces, leading comma,
+  preserve case) with the indent unit limited to 2/4/8 spaces or tab. The conservative heuristic
+  only changes recognized SQL keywords, not identifiers or values; unknown edge cases still
+  degrade to leaving the input unchanged.
 - Intel Mac (x86_64) build target (`build-mac-intel`) and Homebrew Cask support — the macOS release
   now ships separate archives for Apple Silicon and Intel, and the Homebrew cask auto-detects the
   correct architecture on install. CI builds Intel on `macos-13` runners.

@@ -742,27 +742,39 @@
 
 								<div class="row mb-3">
 									<div class="col-md-12">
-										<label>Indent Unit</label>
+										<label>Indent Character</label>
 										<div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_2" value="  "
-													onchange="v_indent_unit = this.value">
-												<label class="form-check-label" for="indent_unit_2">2 spaces</label>
+												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_space" value="space"
+													onchange="updateIndentUnit()">
+												<label class="form-check-label" for="indent_char_space">Spaces</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_4" value="    "
-													onchange="v_indent_unit = this.value">
-												<label class="form-check-label" for="indent_unit_4">4 spaces</label>
+												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_tab" value="tab"
+													onchange="updateIndentUnit()">
+												<label class="form-check-label" for="indent_char_tab">Tab</label>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<label>Indent Size</label>
+										<div>
+											<div class="form-check form-check-inline">
+												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_2" value="2"
+													onchange="updateIndentUnit()">
+												<label class="form-check-label" for="indent_size_2">2</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_8" value="        "
-													onchange="v_indent_unit = this.value">
-												<label class="form-check-label" for="indent_unit_8">8 spaces</label>
+												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_3" value="3"
+													onchange="updateIndentUnit()">
+												<label class="form-check-label" for="indent_size_3">3</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_unit" id="indent_unit_tab" value="\t"
-													onchange="v_indent_unit = this.value">
-												<label class="form-check-label" for="indent_unit_tab">Tab</label>
+												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_4" value="4"
+													onchange="updateIndentUnit()">
+												<label class="form-check-label" for="indent_size_4">4</label>
 											</div>
 										</div>
 									</div>
@@ -1109,6 +1121,8 @@
 		var v_csv_encoding = '{{ csv_encoding }}';
 		var v_csv_delimiter = '{{ csv_delimiter }}';
 		var v_indent_unit = '{{ indent_unit }}';
+		var v_indent_char = '{{ indent_char }}';
+		var v_indent_size = parseInt('{{ indent_size }}');
 		var v_comma_style = '{{ comma_style }}';
 		var v_keyword_case = '{{ keyword_case }}';
 		var v_session_key = v_user_key;

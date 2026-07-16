@@ -272,6 +272,27 @@ function changeInterfaceFontSize(p_option) {
 /// <summary>
 /// Opens user config window.
 /// </summary>
+function updateIndentUnit() {
+	var charEl = document.querySelector('input[name="indent_char"]:checked');
+	var sizeEl = document.querySelector('input[name="indent_size"]:checked');
+	if (charEl) v_indent_char = charEl.value;
+	if (sizeEl) v_indent_size = parseInt(sizeEl.value);
+	if (v_indent_char === 'tab') {
+		v_indent_unit = '\t';
+	} else {
+		v_indent_unit = '';
+		for (var i = 0; i < v_indent_size; i++) v_indent_unit += ' ';
+	}
+}
+
+function applyEditorTabSize() {
+	$(".ace_editor").each(function () {
+		let editor = ace.edit(this);
+		editor.session.setTabSize(v_indent_size || 4);
+		editor.session.setUseSoftTabs(v_indent_char !== 'tab');
+	});
+}
+
 function showConfigUser() {
 	if ($("#modal_config").hasClass("show")) {
 		// Already open — creating and showing ANOTHER bootstrap.Modal
@@ -294,10 +315,17 @@ function showConfigUser() {
 	document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
 
 	// Set formatting radio buttons from globals
-	var indentRadios = document.getElementsByName("indent_unit");
-	for (var i = 0; i < indentRadios.length; i++) {
-		if (indentRadios[i].value === v_indent_unit) {
-			indentRadios[i].checked = true;
+	var charRadios = document.getElementsByName("indent_char");
+	for (var i = 0; i < charRadios.length; i++) {
+		if (charRadios[i].value === v_indent_char) {
+			charRadios[i].checked = true;
+			break;
+		}
+	}
+	var sizeRadios = document.getElementsByName("indent_size");
+	for (var i = 0; i < sizeRadios.length; i++) {
+		if (sizeRadios[i].value === String(v_indent_size)) {
+			sizeRadios[i].checked = true;
 			break;
 		}
 	}
@@ -370,7 +398,8 @@ function saveConfigUser() {
 			p_pwd: v_pwd.value,
 			p_csv_encoding: v_csv_encoding,
 			p_csv_delimiter: v_csv_delimiter,
-			p_indent_unit: v_indent_unit,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 			p_comma_style: v_comma_style,
 			p_keyword_case: v_keyword_case,
 		});
@@ -378,6 +407,7 @@ function saveConfigUser() {
 		execAjax("/save_config_user/", input, function (p_return) {
 			$("#modal_config").modal("hide");
 			showAlert("Configuration saved.");
+			applyEditorTabSize();
 		});
 	}
 }
@@ -465,6 +495,8 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	v_editor.$blockScrolling = Infinity;
 
 	v_editor.setFontSize(Number(v_font_size));
+	v_editor.session.setTabSize(v_indent_size || 4);
+	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
 
 	v_editor.setOptions({ enableBasicAutocompletion: true });
 

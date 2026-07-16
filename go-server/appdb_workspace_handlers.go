@@ -5,14 +5,28 @@ import (
 	"net/http"
 	"net/url"
 	"strconv"
+	"strings"
 	"time"
 )
 
 type indentSQLRequest struct {
 	PSQL        string `json:"p_sql"`
-	IndentUnit  string `json:"p_indent_unit"`
+	IndentChar  string `json:"p_indent_char"`
+	IndentSize  int    `json:"p_indent_size"`
 	CommaStyle  string `json:"p_comma_style"`
 	KeywordCase string `json:"p_keyword_case"`
+}
+
+// indentUnitFromCharSize builds the actual indent string ("  ", "   ",
+// "    ", or "\t") from the two-axis setting (character type + size).
+func indentUnitFromCharSize(char string, size int) string {
+	if char == "tab" {
+		return "\t"
+	}
+	if size < 1 {
+		size = 4
+	}
+	return strings.Repeat(" ", size)
 }
 
 // handleIndentSQL mirrors workspace.py's indent_sql — Python called
@@ -54,15 +68,10 @@ func handleIndentSQL(upstream *url.URL) http.HandlerFunc {
 		}
 
 		opts := IndentOptions{
-			IndentUnit:  req.IndentUnit,
 			CommaStyle:  req.CommaStyle,
 			KeywordCase: req.KeywordCase,
 		}
-		if opts.IndentUnit == "" {
-			opts.IndentUnit = DefaultIndentOptions.IndentUnit
-		} else if opts.IndentUnit == `\t` {
-			opts.IndentUnit = "\t"
-		}
+		opts.IndentUnit = indentUnitFromCharSize(req.IndentChar, req.IndentSize)
 		if opts.CommaStyle == "" {
 			opts.CommaStyle = DefaultIndentOptions.CommaStyle
 		}
@@ -366,7 +375,8 @@ type saveConfigUserRequest struct {
 	PPwd          string `json:"p_pwd"`
 	PCSVEncoding  string `json:"p_csv_encoding"`
 	PCSVDelimiter string `json:"p_csv_delimiter"`
-	PIndentUnit   string `json:"p_indent_unit"`
+	PIndentChar   string `json:"p_indent_char"`
+	PIndentSize   int    `json:"p_indent_size"`
 	PCommaStyle   string `json:"p_comma_style"`
 	PKeywordCase  string `json:"p_keyword_case"`
 }
@@ -405,18 +415,20 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		defer db.Close()
 
 		fontSize, _ := strconv.Atoi(req.PFontSize)
-		if req.PIndentUnit == "" {
-			req.PIndentUnit = "    "
-		} else if req.PIndentUnit == `\t` {
-			req.PIndentUnit = "\t"
+		if req.PIndentChar == "" {
+			req.PIndentChar = "space"
 		}
+		if req.PIndentSize <= 0 {
+			req.PIndentSize = 4
+		}
+		indentUnit := indentUnitFromCharSize(req.PIndentChar, req.PIndentSize)
 		if req.PCommaStyle == "" {
 			req.PCommaStyle = "leading"
 		}
 		if req.PKeywordCase == "" {
 			req.PKeywordCase = "preserve"
 		}
-		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, req.PIndentUnit, req.PCommaStyle, req.PKeywordCase); err != nil {
+		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

@@ -998,7 +998,8 @@ function indentSQL(p_mode = false) {
 				"/indent_sql/",
 				JSON.stringify({
 					p_sql: v_sql_value,
-					p_indent_unit: v_indent_unit || '    ',
+					p_indent_char: v_indent_char || 'space',
+					p_indent_size: v_indent_size || 4,
 					p_comma_style: v_comma_style || 'leading',
 					p_keyword_case: v_keyword_case || 'preserve',
 				}),
