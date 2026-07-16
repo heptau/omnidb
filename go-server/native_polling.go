@@ -62,6 +62,8 @@ func (c *pollingClient) waitForData(ctx context.Context, startup bool) []map[str
 		case <-ch:
 		case <-ctx.Done():
 			return nil
+		case <-shutdownCtx.Done():
+			return nil
 		}
 		c.mu.Lock()
 	}

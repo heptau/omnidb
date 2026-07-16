@@ -439,14 +439,14 @@ function setShortcutEvent(p_event) {
 	var v_shortcut_element = v_shortcut_object.shortcuts[v_shortcut_object.button.id];
 
 	if (v_shortcut_element) {
-		v_shortcut_element.ctrl_pressed = 0;
-		v_shortcut_element.shift_pressed = 0;
-		v_shortcut_element.alt_pressed = 0;
-		v_shortcut_element.meta_pressed = 0;
-		if (p_event.ctrlKey) v_shortcut_element.ctrl_pressed = 1;
-		if (p_event.shiftKey) v_shortcut_element.shift_pressed = 1;
-		if (p_event.altKey) v_shortcut_element.alt_pressed = 1;
-		if (p_event.metaKey) v_shortcut_element.meta_pressed = 1;
+		v_shortcut_element.ctrl_pressed = false;
+		v_shortcut_element.shift_pressed = false;
+		v_shortcut_element.alt_pressed = false;
+		v_shortcut_element.meta_pressed = false;
+		if (p_event.ctrlKey) v_shortcut_element.ctrl_pressed = true;
+		if (p_event.shiftKey) v_shortcut_element.shift_pressed = true;
+		if (p_event.altKey) v_shortcut_element.alt_pressed = true;
+		if (p_event.metaKey) v_shortcut_element.meta_pressed = true;
 		if (p_event.code.toUpperCase() != "SPACE") v_shortcut_element.shortcut_key = p_event.key.toUpperCase();
 		else v_shortcut_element.shortcut_key = "SPACE";
 		buildButtonText(v_shortcut_element, v_shortcut_object.button);
@@ -465,16 +465,16 @@ function finishSetShortcut() {
 }
 
 function checkShortcutPressed(p_event, p_shortcut_element) {
-	if ((p_event.ctrlKey && p_shortcut_element.ctrl_pressed == 0) || (!p_event.ctrlKey && p_shortcut_element.ctrl_pressed == 1))
+	if ((p_event.ctrlKey && !p_shortcut_element.ctrl_pressed) || (!p_event.ctrlKey && p_shortcut_element.ctrl_pressed))
 		return false;
 	if (
-		(p_event.shiftKey && p_shortcut_element.shift_pressed == 0) ||
-		(!p_event.shiftKey && p_shortcut_element.shift_pressed == 1)
+		(p_event.shiftKey && !p_shortcut_element.shift_pressed) ||
+		(!p_event.shiftKey && p_shortcut_element.shift_pressed)
 	)
 		return false;
-	if ((p_event.altKey && p_shortcut_element.alt_pressed == 0) || (!p_event.altKey && p_shortcut_element.alt_pressed == 1))
+	if ((p_event.altKey && !p_shortcut_element.alt_pressed) || (!p_event.altKey && p_shortcut_element.alt_pressed))
 		return false;
-	if ((p_event.metaKey && p_shortcut_element.meta_pressed == 0) || (!p_event.metaKey && p_shortcut_element.meta_pressed == 1))
+	if ((p_event.metaKey && !p_shortcut_element.meta_pressed) || (!p_event.metaKey && p_shortcut_element.meta_pressed))
 		return false;
 	if (
 		p_event.key.toUpperCase() == p_shortcut_element.shortcut_key ||

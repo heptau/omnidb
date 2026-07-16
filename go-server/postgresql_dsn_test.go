@@ -15,6 +15,23 @@ func TestPostgresqlDSNPrefersConnStringWhenServerBlank(t *testing.T) {
 	}
 }
 
+func TestPostgresqlDSNSubstitutesDatabaseIntoConnString(t *testing.T) {
+	info := &ConnectionInfo{
+		ConnString: "postgres://postgres:test@127.0.0.1:55432/postgres?sslmode=disable",
+		Database:   "seconddb",
+	}
+	got := postgresqlDSN(info)
+	if !strings.HasSuffix(strings.Split(got, "?")[0], "/seconddb") {
+		t.Fatalf("expected path /seconddb, got %q", got)
+	}
+	if !strings.Contains(got, "sslmode=disable") {
+		t.Fatalf("expected other connstring params preserved, got %q", got)
+	}
+	if !strings.Contains(got, "127.0.0.1:55432") || !strings.Contains(got, "postgres:test@") {
+		t.Fatalf("expected host/credentials preserved, got %q", got)
+	}
+}
+
 func TestPostgresqlDSNIgnoresConnStringWhenServerSet(t *testing.T) {
 	info := &ConnectionInfo{
 		Server:     "10.0.0.5",

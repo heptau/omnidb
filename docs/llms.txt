@@ -302,3 +302,16 @@ URL: https://www.omnidb.net/en/docs/23_debugger_plugin_installation.html
 - Plugin configuration
 
 ---
+
+## 24. Editor Keyboard Shortcuts
+
+URL: https://www.omnidb.net/en/docs/24_editor_keyboard_shortcuts.html
+
+**Description:** Reference table of keyboard shortcuts for the Ace-based SQL/Console editor and DDL/Properties viewer (line operations, selection, multicursor, navigation, find/replace, folding). Separate from the app-level shortcuts covered in chapter 11.
+
+**Key Topics:**
+- Ace editor shortcuts
+- Multicursor editing
+- Find/replace and folding
+
+---

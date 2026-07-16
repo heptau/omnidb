@@ -1,17 +1,12 @@
 package main
 
 import (
-	_ "embed"
 	"encoding/json"
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 	"time"
 )
-
-//go:embed static/shortcuts.html
-var shortcutsHTMLTemplate string
 
 type indentSQLRequest struct {
 	PSQL string `json:"p_sql"`
@@ -66,23 +61,6 @@ func handleIndentSQL(upstream *url.URL) http.HandlerFunc {
 // restarts of whichever process actually renders the page.
 var staticCacheBust = strconv.FormatInt(time.Now().Unix(), 10)
 
-// handleShortcutsPage mirrors workspace.py's shortcuts() — a static help
-// page with no session/DB dependency at all, safe to serve without any
-// auth check the same way Python's @user_authenticated still requires a
-// logged-in browser session cookie to have reached this far via the SPA,
-// but the content itself doesn't vary by user.
-func handleShortcutsPage(upstream *url.URL) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		who, err := resolveIdentity(upstream, r.Header.Get("Cookie"))
-		if err != nil || !who.Authenticated {
-			http.Redirect(w, r, "/omnidb_login/", http.StatusFound)
-			return
-		}
-		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(strings.ReplaceAll(shortcutsHTMLTemplate, "{{static_cache_bust}}", staticCacheBust)))
-	}
-}
-
 func handleCloseWelcome(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		db, who, ok := resolveAppDBRequest(w, r, upstream)
@@ -101,14 +79,34 @@ func handleCloseWelcome(upstream *url.URL) http.HandlerFunc {
 
 type saveShortcutsRequest struct {
 	PShortcuts []struct {
-		ShortcutCode string `json:"shortcut_code"`
-		CtrlPressed  int    `json:"ctrl_pressed"`
-		ShiftPressed int    `json:"shift_pressed"`
-		AltPressed   int    `json:"alt_pressed"`
-		MetaPressed  int    `json:"meta_pressed"`
-		ShortcutKey  string `json:"shortcut_key"`
+		ShortcutCode string   `json:"shortcut_code"`
+		CtrlPressed  flexBool `json:"ctrl_pressed"`
+		ShiftPressed flexBool `json:"shift_pressed"`
+		AltPressed   flexBool `json:"alt_pressed"`
+		MetaPressed  flexBool `json:"meta_pressed"`
+		ShortcutKey  string   `json:"shortcut_key"`
 	} `json:"p_shortcuts"`
 	PCurrentOS string `json:"p_current_os"`
+}
+
+// flexBool accepts JSON true/false or 0/1 (number), since the server renders
+// shortcuts as 0/1 but frontend defaults and user edits use booleans.
+type flexBool bool
+
+func (f *flexBool) UnmarshalJSON(b []byte) error {
+	switch string(b) {
+	case "true", "1":
+		*f = true
+	case "false", "0":
+		*f = false
+	default:
+		var v bool
+		if err := json.Unmarshal(b, &v); err != nil {
+			return err
+		}
+		*f = flexBool(v)
+	}
+	return nil
 }
 
 func handleSaveShortcuts(upstream *url.URL) http.HandlerFunc {
@@ -133,10 +131,10 @@ func handleSaveShortcuts(upstream *url.URL) http.HandlerFunc {
 		for _, s := range reqBody.PShortcuts {
 			shortcuts = append(shortcuts, shortcutInput{
 				Code:         s.ShortcutCode,
-				CtrlPressed:  s.CtrlPressed == 1,
-				ShiftPressed: s.ShiftPressed == 1,
-				AltPressed:   s.AltPressed == 1,
-				MetaPressed:  s.MetaPressed == 1,
+				CtrlPressed:  bool(s.CtrlPressed),
+				ShiftPressed: bool(s.ShiftPressed),
+				AltPressed:   bool(s.AltPressed),
+				MetaPressed:  bool(s.MetaPressed),
 				Key:          s.ShortcutKey,
 			})
 		}
@@ -302,21 +300,23 @@ func handleClearConsoleList(upstream *url.URL) http.HandlerFunc {
 	}
 }
 
-// handleChangeActiveDatabase mirrors workspace.py's change_active_database.
-// In Python this writes v_session.v_tabs_databases[p_tab_id] = p_database —
-// a per-connection-tab cache of "which connection's database name is this
-// tab currently showing", consulted by get_database_tab_object(). Read
-// through that call chain before porting: the value written here
-// (v_conn_object.v_database, from the frontend's own already-fetched
-// connection list) is never anything other than what
-// /internal/connection/'s Database field already returns fresh for that
-// connection id — and every Go-native route (Query/Console/EditData/
-// Terminal, all shipped earlier this session) re-resolves the connection
-// fresh every request instead of consulting any such cache. So there is
-// nothing on the Go side for this route to actually update — a genuine
-// no-op is the correct, safe port, not a corner cut. Confirmed via
-// workspace.js's changeDatabase()/changeActiveDatabaseThreadSafe(): the
-// frontend never inspects this response beyond firing the next queued call.
+type changeActiveDatabaseRequest struct {
+	baseRequest
+	PDatabase string `json:"p_database"`
+}
+
+// handleChangeActiveDatabase mirrors workspace.py's change_active_database:
+// v_session.v_tabs_databases[p_tab_id] = p_database, a per-tab override of
+// "which database this tab's connection is currently targeting", consulted
+// by every native route via applyActiveDatabaseOverride. This used to be a
+// no-op, on the theory that every Go-native route re-resolves the
+// connection fresh per request anyway — true, but they all resolve it from
+// the saved connection's static Database field, which is exactly what
+// tree_postgresql.js's checkCurrentDatabase flow needs to override when a
+// user switches to a sibling database within the same tab (p_database_index
+// stays the same connection; only p_database changes). Without actually
+// storing it here, the tab's UI showed the switch but every query/listing
+// kept hitting the original database.
 func handleChangeActiveDatabase(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		who, err := resolveIdentity(upstream, r.Header.Get("Cookie"))
@@ -324,12 +324,19 @@ func handleChangeActiveDatabase(upstream *url.URL) http.HandlerFunc {
 			writeUnauthenticated(w)
 			return
 		}
+		raw, err := readFormData(r)
+		if err == nil && raw != "" {
+			var req changeActiveDatabaseRequest
+			if json.Unmarshal([]byte(raw), &req) == nil && req.PDatabase != "" {
+				rememberActiveDatabase(nativeSessionCookieValue(r), req.PTabID, req.PDatabase)
+			}
+		}
 		writeEnvelope(w, map[string]any{}, false, -1)
 	}
 }
 
 type saveConfigUserRequest struct {
-	PFontSize     int    `json:"p_font_size"`
+	PFontSize     string `json:"p_font_size"`
 	PTheme        string `json:"p_theme"`
 	PPwd          string `json:"p_pwd"`
 	PCSVEncoding  string `json:"p_csv_encoding"`
@@ -369,7 +376,8 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, req.PFontSize, req.PCSVEncoding, req.PCSVDelimiter); err != nil {
+		fontSize, _ := strconv.Atoi(req.PFontSize)
+		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

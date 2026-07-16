@@ -547,6 +547,7 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 		"v_data": map[string]any{
 			"v_filename":     tempDir.Path + "/static/temp/" + fileName,
 			"v_downloadname": "omnidb_exported." + ext,
+			"v_filepath":     outPath,
 			"v_duration":     formatDuration(time.Since(start)),
 			"v_inserted_id":  nil,
 			"v_con_status":   1,

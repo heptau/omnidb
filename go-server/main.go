@@ -40,6 +40,12 @@ const devUpstreamEnv = "OMNIDB_PROXY_UPSTREAM"
 // free one. Useful for dev/testing; production lets the OS choose.
 const listenPortEnv = "OMNIDB_PROXY_LISTEN_PORT"
 
+// shutdownCtx is cancelled when the process begins shutting down (see
+// handleShutdown). Long-running handlers (long-polling, etc.) select on it
+// so they unblock immediately instead of keeping httpServer.Shutdown waiting
+// up to its full timeout for their request contexts to be cancelled.
+var shutdownCtx, shutdownCancel = context.WithCancel(context.Background())
+
 func main() {
 	if err := run(); err != nil {
 		log.Fatalf("omnidb-go-server: %v", err)
@@ -139,6 +145,7 @@ func run() error {
 	// normal way (SIGTERM/Ctrl+C, see the sigCh select below).
 	if isLoopbackHost(listenHost) {
 		mux.Handle("/internal/shutdown/", handleShutdown(shutdownCh))
+		mux.Handle("/export_save_dialog/", http.HandlerFunc(handleExportSaveDialog))
 	}
 	mux.Handle("/get_properties_sqlite/", handleGetPropertiesSQLite(upstream, proxy))
 	mux.Handle("/get_tables_sqlite/", handleGetTablesSQLite(upstream, proxy))
@@ -354,7 +361,6 @@ func run() error {
 	// Django-only pieces: PostgreSQL debugger (confirmed dead code) and
 	// monitor_dashboard.py (RestrictedPython sandboxed eval, needs a
 	// redesign, not a mechanical port).
-	mux.Handle("/shortcuts/", handleShortcutsPage(upstream))
 	mux.Handle("/close_welcome/", handleCloseWelcome(upstream))
 	mux.Handle("/save_shortcuts/", handleSaveShortcuts(upstream))
 	mux.Handle("/get_command_list/", handleGetCommandList(upstream))
@@ -489,6 +495,7 @@ func noUpstreamHandler() http.Handler {
 // boundary every other route in this file relies on.
 func handleShutdown(shutdownCh chan<- struct{}) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		shutdownCancel()
 		w.WriteHeader(http.StatusOK)
 		select {
 		case shutdownCh <- struct{}{}:

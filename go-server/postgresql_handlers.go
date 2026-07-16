@@ -123,7 +123,7 @@ var pgSupportedPropertyTypes = map[string]bool{
 // resolvePostgreSQLRequest is resolveSQLiteRequest's PostgreSQL counterpart —
 // same auth + connection-ownership resolution, opening a native pgx
 // connection instead of a SQLite file.
-func resolvePostgreSQLRequest(w http.ResponseWriter, r *http.Request, upstream *url.URL, fallback http.Handler, databaseIndex string) (*sql.DB, *ConnectionInfo, bool) {
+func resolvePostgreSQLRequest(w http.ResponseWriter, r *http.Request, upstream *url.URL, fallback http.Handler, databaseIndex, tabID string) (*sql.DB, *ConnectionInfo, bool) {
 	cookie := r.Header.Get("Cookie")
 	who, err := resolveIdentity(upstream, cookie)
 	if err != nil || !who.Authenticated {
@@ -137,6 +137,7 @@ func resolvePostgreSQLRequest(w http.ResponseWriter, r *http.Request, upstream *
 		return nil, nil, false
 	}
 	applyRememberedPassword(r, databaseIndex, info)
+	applyActiveDatabaseOverride(r, tabID, info)
 
 	db, err := openPostgreSQLTarget(info)
 	if err != nil {
@@ -146,8 +147,11 @@ func resolvePostgreSQLRequest(w http.ResponseWriter, r *http.Request, upstream *
 	return db, info, true
 }
 
-func decodePostgreSQLRequest(w http.ResponseWriter, r *http.Request, upstream *url.URL, fallback http.Handler, dst interface{ databaseIndex() string }) (*sql.DB, bool) {
-	db, _, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, dst.databaseIndex())
+func decodePostgreSQLRequest(w http.ResponseWriter, r *http.Request, upstream *url.URL, fallback http.Handler, dst interface {
+	databaseIndex() string
+	tabID() string
+}) (*sql.DB, bool) {
+	db, _, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, dst.databaseIndex(), dst.tabID())
 	return db, ok
 }
 
@@ -750,7 +754,7 @@ func handleGetPropertiesPostgreSQL(upstream *url.URL, fallback http.Handler) htt
 			return
 		}
 
-		db, _, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest.databaseIndex())
+		db, _, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest.databaseIndex(), reqBody.baseRequest.tabID())
 		if !ok {
 			return
 		}

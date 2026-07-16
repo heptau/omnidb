@@ -96,7 +96,8 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_tab" (
 	"title" varchar(200) NOT NULL,
 	"snippet" text NOT NULL,
 	"connection_id" bigint NOT NULL REFERENCES "OmniDB_app_connection" ("id") DEFERRABLE INITIALLY DEFERRED,
-	"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED
+	"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+	"last_used" text NOT NULL DEFAULT ''
 );
 CREATE INDEX IF NOT EXISTS "OmniDB_app_tab_connection_id_c664a283" ON "OmniDB_app_tab" ("connection_id");
 CREATE INDEX IF NOT EXISTS "OmniDB_app_tab_user_id_c1492bdc" ON "OmniDB_app_tab" ("user_id");

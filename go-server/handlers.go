@@ -43,9 +43,9 @@ func writeDatabaseError(w http.ResponseWriter, message string) {
 }
 
 // baseRequest is the request envelope every tree_sqlite.py view starts by
-// unpacking — p_tab_id is intentionally left unused here (unlike Django, a
-// migrated Go handler doesn't track any per-tab in-memory state), it's only
-// present so unmarshalling the shared shape doesn't choke on the field.
+// unpacking. PTabID is consulted by applyActiveDatabaseOverride (see
+// active_database.go) for routes that support switching a tab's active
+// database without opening a new connection (currently PostgreSQL).
 type baseRequest struct {
 	PDatabaseIndex json.Number `json:"p_database_index"`
 	PTabID         string      `json:"p_tab_id"`
@@ -321,6 +321,8 @@ func decodeTableRequest(w http.ResponseWriter, r *http.Request, upstream *url.UR
 }
 
 func (b baseRequest) databaseIndex() string { return b.PDatabaseIndex.String() }
+
+func (b baseRequest) tabID() string { return b.PTabID }
 
 func handleGetPKSQLite(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {

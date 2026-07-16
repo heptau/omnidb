@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"net/url"
 	"strings"
 )
 
@@ -15,22 +16,62 @@ func consoleHelpForTechnology(technology string) string {
 }
 
 // printDatabaseInfo mirrors each engine's PrintDatabaseInfo() — SQLite shows
-// just the file's basename, everything else shows "user@database".
+// just the file's basename, everything else shows "user@database" (or
+// whichever part is non-empty, falling back to "" if neither is set).
+// Falls back to extracting user/database from the ConnString URL when the
+// discrete fields are empty (connections configured solely via URL).
 func printDatabaseInfo(c appConnection) string {
 	if c.Technology == "sqlite" {
 		parts := strings.Split(c.Database, "/")
 		return parts[len(parts)-1]
 	}
-	return c.Username + "@" + c.Database
+	user, db := c.Username, c.Database
+	if user == "" && db == "" && c.ConnString != "" {
+		if u, err := url.Parse(c.ConnString); err == nil {
+			if u.User != nil {
+				user = u.User.Username()
+			}
+			if p := strings.TrimPrefix(u.Path, "/"); p != "" {
+				db = p
+			}
+		}
+	}
+	switch {
+	case user != "" && db != "":
+		return user + "@" + db
+	case user != "":
+		return user
+	case db != "":
+		return db
+	}
+	return ""
 }
 
 // printDatabaseDetails mirrors each engine's PrintDatabaseDetails() —
-// SQLite is always "Local File", everything else is "server:port".
+// SQLite is always "Local File", everything else is "server:port" (or
+// whichever part is non-empty, falling back to "" if neither is set).
+// Falls back to extracting host/port from the ConnString URL when the
+// discrete fields are empty (connections configured solely via URL).
 func printDatabaseDetails(c appConnection) string {
 	if c.Technology == "sqlite" {
 		return "Local File"
 	}
-	return c.Server + ":" + c.Port
+	host, port := c.Server, c.Port
+	if host == "" && port == "" && c.ConnString != "" {
+		if u, err := url.Parse(c.ConnString); err == nil {
+			host = u.Hostname()
+			port = u.Port()
+		}
+	}
+	switch {
+	case host != "" && port != "":
+		return host + ":" + port
+	case host != "":
+		return host
+	case port != "":
+		return port
+	}
+	return ""
 }
 
 type databaseListEntry struct {
@@ -111,7 +152,10 @@ func fetchExistingTabs(db *sql.DB, userID int64) ([]existingTab, error) {
 		join OmniDB_app_connection c on c.id = t.connection_id
 		where t.user_id = ?
 		  and (c.public = 1 or c.user_id = ?)
-		order by t.connection_id
+		order by
+			(select max(last_used) from OmniDB_app_tab
+			 where user_id = t.user_id and connection_id = t.connection_id) asc,
+			t.last_used asc
 	`, userID, userID)
 	if err != nil {
 		return nil, err

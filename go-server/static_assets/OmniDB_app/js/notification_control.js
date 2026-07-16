@@ -111,7 +111,7 @@ function showError(p_message) {
 	}, 500);
 }
 
-function showAlert(p_info, p_funcYes = null, p_large = null) {
+function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
 	var v_create_content_function = function () {
 		var v_content_div = document.getElementById("modal_message_content");
 		var v_button_yes = document.getElementById("modal_message_yes");
@@ -119,7 +119,16 @@ function showAlert(p_info, p_funcYes = null, p_large = null) {
 		var v_button_no = document.getElementById("modal_message_no");
 		var v_button_cancel = document.getElementById("modal_message_cancel");
 
-		v_content_div.textContent = p_info;
+		// p_is_html is only for callers passing pre-built markup they wrote
+		// themselves (static strings, or dynamic values already HTML-escaped
+		// before being embedded - see uiCopyTextToClipboard). Every other
+		// caller passes plain text, often straight from a server response, so
+		// textContent stays the default to avoid rendering it as markup.
+		if (p_is_html) {
+			v_content_div.innerHTML = p_info;
+		} else {
+			v_content_div.textContent = p_info;
+		}
 
 		v_button_ok.onclick = function () {
 			if (p_funcYes != null) p_funcYes();

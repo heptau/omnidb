@@ -86,25 +86,14 @@ func fetchUserDetails(db *sql.DB, userID int64) (userDetailsRow, error) {
 	return row, nil
 }
 
-// workspaceShortcut mirrors workspace.py index()'s per-shortcut sub-dict —
-// ctrl/shift/alt/meta are rendered as 0/1 ints (not JSON booleans), matching
-// Python's "1 if shortcut.ctrl_pressed else 0" exactly, since the frontend
-// (shortcuts.js) compares these against numeric event flags.
 type workspaceShortcut struct {
-	CtrlPressed  int    `json:"ctrl_pressed"`
-	ShiftPressed int    `json:"shift_pressed"`
-	AltPressed   int    `json:"alt_pressed"`
-	MetaPressed  int    `json:"meta_pressed"`
+	CtrlPressed  bool   `json:"ctrl_pressed"`
+	ShiftPressed bool   `json:"shift_pressed"`
+	AltPressed   bool   `json:"alt_pressed"`
+	MetaPressed  bool   `json:"meta_pressed"`
 	ShortcutKey  string `json:"shortcut_key"`
 	OS           string `json:"os"`
 	ShortcutCode string `json:"shortcut_code"`
-}
-
-func b2i(b bool) int {
-	if b {
-		return 1
-	}
-	return 0
 }
 
 // fetchWorkspaceShortcuts mirrors workspace.py index()'s Shortcut.objects.
@@ -128,10 +117,10 @@ func fetchWorkspaceShortcuts(db *sql.DB, userID int64) (map[string]workspaceShor
 			return nil, err
 		}
 		out[code] = workspaceShortcut{
-			CtrlPressed:  b2i(ctrl),
-			ShiftPressed: b2i(shift),
-			AltPressed:   b2i(alt),
-			MetaPressed:  b2i(meta),
+			CtrlPressed:  ctrl,
+			ShiftPressed: shift,
+			AltPressed:   alt,
+			MetaPressed:  meta,
 			ShortcutKey:  key,
 			OS:           os,
 			ShortcutCode: code,
@@ -356,6 +345,31 @@ func clearConsoleHistory(db *sql.DB, userID, connID int64, contains, from, to st
 	}
 	_, err := db.Exec(`delete from OmniDB_app_consolehistory `+where, args...)
 	return err
+}
+
+// saveTab creates or updates a tab record in OmniDB_app_tab, mirroring
+// polling.py's thread_query tab persistence logic. Returns the tab's row id
+// (newly created or the passed-in tabDBID after a successful update).
+func saveTab(db *sql.DB, userID int64, tabDBID *int64, connID int64, title, snippet string) (int64, error) {
+	now := time.Now().UTC().Format(time.RFC3339)
+	if tabDBID != nil && *tabDBID != 0 {
+		_, err := db.Exec(
+			`update OmniDB_app_tab set snippet = ?, title = ?, last_used = ? where id = ? and user_id = ?`,
+			snippet, title, now, *tabDBID, userID,
+		)
+		if err != nil {
+			return 0, err
+		}
+		return *tabDBID, nil
+	}
+	res, err := db.Exec(
+		`insert into OmniDB_app_tab (title, snippet, connection_id, user_id, last_used) values (?, ?, ?, ?, ?)`,
+		title, snippet, connID, userID, now,
+	)
+	if err != nil {
+		return 0, err
+	}
+	return res.LastInsertId()
 }
 
 // pageCount mirrors "ceil(v_count/settings.CH_CMDS_PER_PAGE)", floored at 1.

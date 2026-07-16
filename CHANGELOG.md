@@ -7,6 +7,103 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.8.0] - 2026-07-16
+
+### Added
+- Native application menu bar for the Wails desktop shell (OmniDB/Edit/View/Window/Help), wired
+  through `WindowExecJS` so menu items reach the loaded page regardless of which origin served it
+  (`workspace.html` is served entirely by `go-server` via a full top-level navigation, never through
+  Wails' own asset server, so the more obvious `window.runtime` event-bridge approach silently never
+  worked). Covers About, Settings, Connections, Snippets, Switch Menu, toggling the database tree and
+  Properties/DDL panel, Getting Started, Keyboard Shortcuts, and external links; Quit and the external
+  links are native. Deliberately a fully custom top-level menu instead of `menu.AppMenu()`'s macOS role,
+  to keep a proper app-level About/Settings entry instead of a generic native About panel.
+- `Cmd`/`Ctrl+Shift+C`/`S`/`M` keyboard shortcuts for Connections/Snippets/Switch Menu, matching the
+  existing Shift-qualified pattern used for Toggle Properties/DDL Panel.
+- Properties/DDL support for PostgreSQL database nodes and all other previously-unported object types
+  in the tree (role, tablespace, extension, schema, sequence, function/procedure/aggregate/trigger
+  function, domain, composite/enum type, materialized view, fdw/foreign server/foreign table/user
+  mapping, event trigger, publication, subscription, statistics object) — expanding any of these
+  always dead-ended in "This feature is not available." since the Go migration; now reuses existing
+  DDL infrastructure where PostgreSQL has it and hand-synthesizes the rest the same way pgAdmin/DBeaver
+  do, live-verified against a real PostgreSQL 16 server.
+- Native OS "Save As" dialog for exporting query results in the desktop app: `go-server` relays the
+  request over a loopback HTTP hop to a tiny server the Wails process now runs
+  (`wails-app/savedialog.go`), since `workspace.html`'s origin never gets a direct Wails runtime
+  binding. Browser/server (`-H`) mode is unaffected and keeps the previous "the file is ready, click
+  to download" link.
+- Query tabs opened through the native Go query path are now actually persisted (`OmniDB_app_tab`,
+  including a new `last_used` column with an automatic schema migration for existing installs) and
+  restored in most-recently-used order on reconnect — the frontend already sent the fields needed for
+  this on every run, but the Go query handler silently dropped all of them since the migration, so no
+  native query ever created or updated a tab record.
+- Switching to a sibling database within a PostgreSQL connection tab (the tree's "this node is a
+  different database" prompt) now actually changes which database subsequent queries/listings in that
+  tab hit, not just the tab's title — previously a no-op left over from an incorrect assumption during
+  the Go migration that no route needed it.
+- The desktop app now feels less like a bare web page: the native/system right-click context menu and
+  text selection (drag-highlight, iOS-style press-and-hold callout) are suppressed everywhere except
+  editable fields, the Ace-based SQL/console/DDL editors, Handsontable grids, and query status/error
+  text.
+- New public documentation chapter, "24. Editor Keyboard Shortcuts", listing the Ace editor's own
+  shortcut set (line operations, selection, multicursor, navigation, find/replace, folding) — this
+  content used to live only on an in-app `/shortcuts/` help page (see Removed).
+
+### Fixed
+- Custom and built-in monitoring units' live charts threw `v_object.labels[0] is undefined` starting
+  on their second refresh — `handleRefreshMonitorUnits` kept returning the full Chart.js constructor
+  shape instead of the flat labels/datasets shape the frontend expects after the first refresh.
+- PostgreSQL connections created via the "Connection string" field (server/port/database left blank)
+  had that string silently discarded everywhere it mattered, so every such connection actually hit
+  whatever database libpq's empty-host default resolves to (a local Unix socket) instead of the
+  configured target.
+- Running a query from the Query tab never wrote anything to Command History (the insert side was
+  never ported during the PostgreSQL long-tail migration), and once history rows did start being
+  saved, a string-vs-string date comparison bug meant every row silently failed the default "Last 6
+  Hours" filter (and every other date range) regardless of its actual time-of-day, affecting both
+  Query and Console history.
+- The Settings dialog could hang or stack a second modal backdrop if reopened while already open, and
+  Esc didn't close it at all (`keyboard: false` was left over from an unrelated change). Both fixed;
+  the equivalent Plugins-dialog bug is moot now that the Plugins dialog is gone entirely (see Removed).
+- Three separate bugs in the PostgreSQL "switch to a sibling database" tree flow each left the clicked
+  node's spinner stuck forever: dismissing the confirmation dialog via Escape/the X button/a backdrop
+  click (rather than Yes/No) never resolved the pending callback; `selectedDatabaseNode` being unset
+  threw instead of being guarded; and the tab title update used raw DOM calls (`.innerHTML`/
+  `.appendChild`) against what is actually a jQuery collection, which silently no-ops/throws. A related
+  root-cause fix keeps the tab's notion of "currently selected database" in sync with
+  `current_database()` as queried live by the backend, instead of only ever the saved connection's
+  static field, which could never match for connection-string-only connections or a renamed database.
+- Two dialogs still showed literal escaped HTML (`&lt;br/&gt;`, `&lt;b&gt;...&lt;/b&gt;`) instead of
+  rendered markup — the "please close any tabs of type X before changing connection" message and the
+  copy-to-clipboard confirmation — both missed by 3.7.0's fix for the same class of bug (the shared
+  `showAlert` helper itself needed a new opt-in `p_is_html` parameter, defaulting to plain-text-safe).
+- The Settings dialog was missing its `<h5>` title entirely (only the close button showed), the
+  Connections/Edit Connection modals now resize smoothly instead of jumping at Bootstrap's fixed
+  breakpoints, and dark theme now styles the modal title text color, which had no rule at all.
+- Graceful shutdown could block for up to `httpServer.Shutdown`'s full timeout waiting on any
+  in-flight long-polling request; those requests now also select on a shutdown-scoped context and
+  return immediately once shutdown begins.
+- `/static/temp/` (generated export files) is now served through an explicit handler that verifies the
+  resolved path can't escape the temp directory and forces `Content-Disposition: attachment` so a
+  CSV/XML/etc. export downloads instead of rendering inline in the browser, instead of a bare
+  `http.FileServer`.
+- `/save_config_user/` silently failed to persist font size: the frontend sends it as a JSON string,
+  which failed to unmarshal into the handler's previous `int` field.
+
+### Changed
+- Documentation nav (`docs/en/docs/*.html`, `docs/llms.txt`, `docs/llms-full.txt`, `docs/sitemap.xml`)
+  updated for the new "Editor Keyboard Shortcuts" chapter, with a cross-reference added from the
+  "Writing SQL Queries" chapter.
+
+### Removed
+- The entire plugin system: the Plugins dialog and toolbar link, the native menu's "Plugins" item, all
+  six backend routes and the `plugins_stub.go` fallback, and the documented "Plugin API" — it always
+  showed an empty grid and any upload attempt always failed, with no Go equivalent to Django's dynamic
+  plugin loading and no path forward, so removing it outright was more honest than leaving a dead
+  dialog in place.
+- The in-app `/shortcuts/` static help page — its Ace-editor shortcut reference now lives in the public
+  docs instead (see Added).
+
 ## [3.7.0] - 2026-07-15
 
 ### Added

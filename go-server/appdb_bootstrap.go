@@ -56,6 +56,10 @@ func bootstrapAppDB(db *sql.DB) error {
 	var exists string
 	err := db.QueryRow(`select name from sqlite_master where type = 'table' and name = 'auth_user'`).Scan(&exists)
 	if err == nil {
+		// Existing database — apply any missing schema migrations.
+		if err := migrateAppDB(db); err != nil {
+			return fmt.Errorf("migrate app db: %w", err)
+		}
 		appDBBootstrapDone = true
 		return nil
 	}
@@ -106,5 +110,22 @@ func bootstrapAppDB(db *sql.DB) error {
 
 	fmt.Fprintln(os.Stderr, "omnidb-go-server: initialized a new app database (default login: admin/admin)")
 	appDBBootstrapDone = true
+	return nil
+}
+
+// migrateAppDB applies incremental schema changes to an existing app database.
+// Checks for missing columns and adds them via ALTER TABLE — the only safe
+// operation for SQLite schema evolution on a live database.
+func migrateAppDB(db *sql.DB) error {
+	// Add last_used column to OmniDB_app_tab if missing (v3.6.0+).
+	var hasLastUsed string
+	err := db.QueryRow(`select name from pragma_table_info('OmniDB_app_tab') where name = 'last_used'`).Scan(&hasLastUsed)
+	if err == sql.ErrNoRows {
+		if _, err := db.Exec(`alter table OmniDB_app_tab add column "last_used" text NOT NULL DEFAULT ''`); err != nil {
+			return fmt.Errorf("add last_used to OmniDB_app_tab: %w", err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_tab.last_used: %w", err)
+	}
 	return nil
 }

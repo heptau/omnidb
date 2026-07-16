@@ -38,6 +38,20 @@ func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 // keep taking priority over ConnString's original, unforwarded host.
 func postgresqlDSN(info *ConnectionInfo) string {
 	if info.Server == "" && info.ConnString != "" {
+		// info.Database is blank unless applyActiveDatabaseOverride (see
+		// active_database.go) put a sibling database name there for this
+		// tab — the connstring's own embedded database name is otherwise
+		// authoritative. Substituting it in-place (rather than rebuilding
+		// the DSN from discrete fields) preserves everything else about
+		// the original string: extra query params, a Unix-socket host,
+		// options no Server/Port/Database round-trip could reconstruct.
+		if info.Database == "" {
+			return info.ConnString
+		}
+		if u, err := url.Parse(info.ConnString); err == nil {
+			u.Path = "/" + info.Database
+			return u.String()
+		}
 		return info.ConnString
 	}
 	port := info.Port

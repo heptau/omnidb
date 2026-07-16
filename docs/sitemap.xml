@@ -169,4 +169,11 @@
     <priority>0.60</priority>
   </url>
 
+  <url>
+    <loc>https://www.omnidb.net/en/docs/24_editor_keyboard_shortcuts.html</loc>
+    <lastmod>2026-07-16</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.60</priority>
+  </url>
+
 </urlset>

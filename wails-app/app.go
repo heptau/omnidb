@@ -8,10 +8,11 @@ import (
 
 // App struct
 type App struct {
-	ctx        context.Context
-	server     *exec.Cmd
-	backendURL string // "scheme://host:port" of omnidb-go-server, set once ready — see backend.go
-	backendMu  sync.Mutex
+	ctx            context.Context
+	server         *exec.Cmd
+	backendURL     string // "scheme://host:port" of omnidb-go-server, set once ready — see backend.go
+	backendMu      sync.Mutex
+	saveDialogAddr string // "127.0.0.1:port" of this process's own save-dialog listener — see savedialog.go
 }
 
 // NewApp creates a new App application struct
@@ -20,9 +21,15 @@ func NewApp() *App {
 }
 
 // startup is called when the app starts. The context is saved
-// so we can call the runtime methods
+// so we can call the runtime methods. The save-dialog listener has to be
+// up before startBackend (triggered later by FrontendReady) spawns
+// omnidb-go-server, since that's when saveDialogAddr gets handed to it as
+// an env var — see savedialog.go and backend.go.
 func (a *App) startup(ctx context.Context) {
 	a.ctx = ctx
+	if err := a.startSaveDialogServer(); err != nil {
+		println("Failed to start save-dialog listener:", err.Error())
+	}
 }
 
 // FrontendReady is called by main.js once it has registered its

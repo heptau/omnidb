@@ -95,6 +95,13 @@ func stripWorkspaceConditionals(html string, desktopMode, superUser bool) string
 // pythonBoolStr mirrors Python's str(True)/str(False) — workspace.html's own
 // inline script compares against these exact capitalized strings
 // ("gv_desktopMode = ('{{ desktop_mode }}' === 'True')").
+func boolStr(b bool) string {
+	if b {
+		return "1"
+	}
+	return "0"
+}
+
 func pythonBoolStr(b bool) string {
 	if b {
 		return "True"
@@ -141,11 +148,11 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 		"user_name":            who.Username,
 		"csv_encoding":         ud.CSVEncoding,
 		"csv_delimiter":        ud.CSVDelimiter,
-		"welcome_closed":       strconv.Itoa(b2i(ud.WelcomeClosed)),
+		"welcome_closed":       boolStr(ud.WelcomeClosed),
 		"menu_item":            "workspace",
 		"tab_token":            tabToken,
 		"show_terminal_option": "false",
-		"super_user":           strconv.Itoa(b2i(who.SuperUser)),
+		"super_user":           boolStr(who.SuperUser),
 		"desktop_mode":         pythonBoolStr(desktopMode),
 	}
 

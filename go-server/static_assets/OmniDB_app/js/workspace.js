@@ -279,6 +279,9 @@ function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
 			) {
 				showAlert(
 					"Before changing connection please close any tab that belongs to the following types: <br/><br/><b>Edit Data<br/><br/>Alter Table<br/><br/>Function Debugging<br/><br/>Monitoring Dashboard<br/><br/>Advanced Object Search",
+					null,
+					null,
+					true,
 				);
 				//v_connTabControl.selectedTab.tag.dd_object.set("selectedIndex",v_connTabControl.selectedTab.tag.dd_selected_index);
 				if (p_cancel_function != null) {
@@ -1579,10 +1582,10 @@ function uiCopyTextToClipboard(p_value) {
 		navigator.clipboard
 			.writeText(p_value)
 			.then(function () {
-				showAlert(v_safe_html);
+				showAlert(v_safe_html, null, null, true);
 			})
 			.catch(function () {
-				showAlert(v_safe_html);
+				showAlert(v_safe_html, null, null, true);
 			});
 		return;
 	}
@@ -1599,7 +1602,7 @@ function uiCopyTextToClipboard(p_value) {
 	v_text_area.setSelectionRange(0, 9999999);
 	document.execCommand("copy");
 	document.body.removeChild(v_text_area);
-	showAlert(v_safe_html);
+	showAlert(v_safe_html, null, null, true);
 }
 
 function toggleConnectionAutocomplete(p_toggler_id) {

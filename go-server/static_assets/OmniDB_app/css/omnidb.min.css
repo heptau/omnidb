@@ -4440,6 +4440,10 @@ ul.aimara_sub-menu.aimara_menu_bottom {
 		border-color: #484a55;
 	}
 
+	.modal-header .modal-title {
+		color: #f5f5f7;
+	}
+
 	.modal-content {
 		background-color: #2f3136;
 	}

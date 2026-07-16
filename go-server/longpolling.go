@@ -65,6 +65,10 @@ type queryRequestData struct {
 	VMode       int         `json:"v_mode"`
 	VAllData    bool        `json:"v_all_data"`
 	VAutocommit bool        `json:"v_autocommit"`
+	VTabDBID    *int64      `json:"v_tab_db_id"`
+	VLogQuery   *bool       `json:"v_log_query"`
+	VSQLSave    string      `json:"v_sql_save"`
+	VTabTitle   string      `json:"v_tab_title"`
 }
 
 type consoleRequestData struct {
@@ -198,6 +202,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				return
 			}
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
+			applyActiveDatabaseOverride(r, q.VTabID, info)
 
 			go runConsole(upstream, cookie, clientID, q, body.VContextCode, info, who.UserID)
 			w.Header().Set("Content-Type", "application/json")
@@ -218,6 +223,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				return
 			}
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
+			applyActiveDatabaseOverride(r, q.VTabID, info)
 
 			go runEditDataFetch(upstream, cookie, q, body.VContextCode, info)
 			w.Header().Set("Content-Type", "application/json")
@@ -238,6 +244,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				return
 			}
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
+			applyActiveDatabaseOverride(r, q.VTabID, info)
 
 			go runEditDataSave(upstream, cookie, q, body.VContextCode, info)
 			w.Header().Set("Content-Type", "application/json")
@@ -270,6 +277,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				return
 			}
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
+			applyActiveDatabaseOverride(r, q.VTabID, info)
 
 			who, err := resolveIdentity(upstream, cookie)
 			if err != nil || !who.Authenticated {
@@ -314,6 +322,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				return
 			}
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
+			applyActiveDatabaseOverride(r, q.VTabID, info)
 
 			go runNativeQueryAllData(upstream, cookie, q, body.VContextCode, info)
 			w.Header().Set("Content-Type", "application/json")
@@ -334,6 +343,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 		}
 
 		applyRememberedPassword(r, q.VDBIndex.String(), info)
+		applyActiveDatabaseOverride(r, q.VTabID, info)
 		go runNativeQuery(upstream, cookie, clientID, q, body.VContextCode, info, who.UserID)
 
 		// Matches create_request's own contract: the real result always
@@ -433,6 +443,24 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 		return
 	}
 	logHistory("success")
+
+	var insertedID any // nil unless a tab row is created/updated below
+	logQuery := q.VLogQuery != nil && *q.VLogQuery
+	if q.VMode == 0 && logQuery {
+		appdb, openErr := openAppDB(upstream)
+		if openErr == nil {
+			newID, saveErr := saveTab(appdb, int64(userID), q.VTabDBID, q.databaseIndexInt(), q.VTabTitle, q.VSQLSave)
+			appdb.Close()
+			if saveErr == nil {
+				insertedID = newID
+			} else {
+				log.Printf("saveTab: %v", saveErr)
+			}
+		} else {
+			log.Printf("saveTab: open appdb: %v", openErr)
+		}
+	}
+
 	// Only auto-close on exhaustion when there's no explicit transaction to
 	// preserve (autocommit on, or continuing an already-committed/rolled-
 	// back cursor). With autocommit off, the whole point of the open
@@ -457,7 +485,7 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 			"v_duration":       formatDuration(time.Since(start)),
 			"v_notices":        "",
 			"v_notices_length": 0,
-			"v_inserted_id":    nil,
+			"v_inserted_id":    insertedID,
 			"v_status":         nil,
 			"v_con_status":     1,
 			"v_chunks":         true,

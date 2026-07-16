@@ -5,6 +5,8 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"path/filepath"
+	"strings"
 )
 
 // staticAssetsFS embeds OmniDB_app/static/OmniDB_app verbatim (see
@@ -57,5 +59,21 @@ func handleStaticAssets() http.Handler {
 // file has a unique, timestamp-based name (see export.go), so there's
 // nothing to ever go stale.
 func handleTempFiles(dir string) http.Handler {
-	return http.StripPrefix("/static/temp/", http.FileServer(http.Dir(dir)))
+	prefix := "/static/temp/"
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if !strings.HasPrefix(r.URL.Path, prefix) {
+			http.NotFound(w, r)
+			return
+		}
+		fileName := strings.TrimPrefix(r.URL.Path, prefix)
+		fileName = strings.TrimLeft(fileName, "/")
+		filePath := filepath.Join(dir, fileName)
+		if !strings.HasPrefix(filePath, dir) {
+			http.NotFound(w, r)
+			return
+		}
+		w.Header().Set("Content-Disposition", "attachment")
+		w.Header().Set("Content-Type", "application/octet-stream")
+		http.ServeFile(w, r, filePath)
+	})
 }

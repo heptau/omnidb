@@ -59,6 +59,15 @@ func (a *App) startBackend() {
 	args := append([]string{"-A"}, os.Args[1:]...)
 	cmd := exec.Command(goServerPath, args...)
 
+	// Tells go-server/export_save_dialog.go where to relay a native
+	// save-dialog request — see savedialog.go's comment on why that hop
+	// exists. saveDialogAddr is already set by the time this runs: startup
+	// (an OnStartup hook, always first) starts that listener synchronously,
+	// well before FrontendReady (triggered later, by JS) calls this.
+	if a.saveDialogAddr != "" {
+		cmd.Env = append(os.Environ(), "OMNIDB_SAVE_DIALOG_URL=http://"+a.saveDialogAddr+"/save-file")
+	}
+
 	stdout, err := cmd.StdoutPipe()
 	if err != nil {
 		wailsruntime.EventsEmit(a.ctx, "backend:log", fmt.Sprintf("Failed to attach OmniDB server stdout: %v", err))

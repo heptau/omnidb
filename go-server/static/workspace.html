@@ -29,6 +29,7 @@
 	<!-- <link rel="stylesheet" type="text/css" href="{{url_folder}}/static/OmniDB_app/new/lib/omnis_legere/css/omnis-legere.css?v{{static_cache_bust}}"/> -->
 	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/css/omnidb.min.css?v{{static_cache_bust}}">
 	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/css/ag-grid-custom.css?v{{static_cache_bust}}">
+	<link rel="stylesheet" href="{{url_folder}}/static/OmniDB_app/css/user_select_guard.css?v{{static_cache_bust}}">
 	<link id="ss_theme" rel="stylesheet" type="text/css">
 	<title>OmniDB</title>
 	<style>
@@ -37,6 +38,11 @@
 			appearance: auto !important;
 			-webkit-appearance: auto !important;
 			background-image: none !important;
+		}
+		/* Smooth continuous modal sizing instead of Bootstrap's jumpy breakpoints */
+		#modal_connections .modal-dialog,
+		#modal_edit_connection .modal-dialog {
+			max-width: min(calc(100vw - 3.5rem), 1140px);
 		}
 	</style>
 </head>
@@ -485,6 +491,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
+					<h5 class="modal-title">Settings</h5>
 					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -932,6 +939,7 @@
 
 	<script src="{{url_folder}}/static/OmniDB_app/lib/jquery/jquery.min.js?v{{static_cache_bust}}"></script>
 	<script src="{{url_folder}}/static/OmniDB_app/js/ajax_control.js?v{{static_cache_bust}}"></script>
+	<script src="{{url_folder}}/static/OmniDB_app/js/context_menu_guard.js?v{{static_cache_bust}}"></script>
 
 	<script type="text/javascript">
 		startLoading();

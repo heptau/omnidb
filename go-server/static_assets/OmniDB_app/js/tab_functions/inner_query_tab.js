@@ -368,16 +368,56 @@ var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	}
 
 	// Creating the exportData action for the tab.
+	//
+	// Runs the export query on the backend (so it covers the full result
+	// set, not just whatever page is currently rendered in the grid, and
+	// picks up the user's CSV delimiter/encoding settings). In the desktop
+	// app, asks /export_save_dialog/ to relay a native "Save As" for the
+	// resulting temp file to wails-app — that's a plain same-origin HTTP
+	// hop rather than a direct Wails binding call (window.go/window.runtime),
+	// because this page is loaded via a full top-level navigation to
+	// go-server's own origin and never gets those injected (see
+	// go-server/export_save_dialog.go's comment for the full story).
+	// /export_save_dialog/ only exists at all when go-server is listening
+	// on loopback (see main.go), which a network-accessible "-H" deployment
+	// isn't — gv_desktopMode is false there (and in any other
+	// browser/server access), so this falls back to the original browser
+	// download-link behavior instead of hitting a 404.
 	var v_export_data = function () {
 		var v_exp_callback = function (p_data) {
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.selectDataTabFunc();
-			var v_text =
-				'<div style="font-size: 14px;">The file is ready. <a class="link_text" href="' +
-				p_data.v_data.v_filename +
-				'" download="' +
-				p_data.v_data.v_downloadname +
-				'">Save</a></div>';
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.innerHTML = v_text;
+			if (!gv_desktopMode) {
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.selectDataTabFunc();
+				var v_text =
+					'<div style="font-size: 14px;">The file is ready. <a class="link_text" href="' +
+					p_data.v_data.v_filename +
+					'" download="' +
+					p_data.v_data.v_downloadname +
+					'">Save</a></div>';
+				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.innerHTML = v_text;
+				return;
+			}
+
+			fetch("/export_save_dialog/", {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({
+					v_filepath: p_data.v_data.v_filepath,
+					v_downloadname: p_data.v_data.v_downloadname,
+				}),
+			})
+				.then(function (p_response) {
+					return p_response.json();
+				})
+				.then(function (p_result) {
+					if (p_result.error) {
+						showAlert("Error saving file: " + p_result.error);
+					} else if (p_result.path) {
+						showAlert("File exported to: " + p_result.path);
+					}
+				})
+				.catch(function (p_error) {
+					showAlert("Error saving file: " + p_error);
+				});
 		};
 
 		var v_exp_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();

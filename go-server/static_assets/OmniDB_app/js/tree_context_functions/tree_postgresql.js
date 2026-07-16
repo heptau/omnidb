@@ -4330,9 +4330,16 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
 		p_node.tag.database != v_connTabControl.selectedTab.tag.selectedDatabase &&
 		(p_complete_check || (!p_complete_check && p_node.tag.type != "database"))
 	) {
+		// Tracks whether Yes/No actually ran, so the fallback below (dialog
+		// dismissed via the X button, Escape or a backdrop click - none of
+		// which invoke either callback) still resolves the node instead of
+		// leaving it expanded with its spinner stuck forever.
+		var v_choice_made = false;
+
 		showConfirm3(
 			"",
 			function () {
+				v_choice_made = true;
 				var v_call_back_continue = p_callback_continue;
 				var v_call_back_stop = p_callback_stop;
 
@@ -4355,7 +4362,15 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
 									v_det.querySelector("b").textContent = p_node.tag.database;
 								})();
 
-								v_connTabControl.selectedTab.tag.selectedDatabaseNode.clearNodeBold();
+								// selectedDatabaseNode can still be unset here (e.g. the
+								// initial database list never found a match to bold - see
+								// getTreeDetailsPostgresql's selectedDatabase sync for the
+								// root-cause fix); guard instead of throwing, which used to
+								// abort this whole callback before p_callback_continue ran,
+								// leaving the node's spinner stuck forever.
+								if (v_connTabControl.selectedTab.tag.selectedDatabaseNode) {
+									v_connTabControl.selectedTab.tag.selectedDatabaseNode.clearNodeBold();
+								}
 								//searching new selected database node
 								var v_list_database_nodes = p_node.tree.childNodes[0].childNodes[0].childNodes;
 								for (var i = 0; i < v_list_database_nodes.length; i++) {
@@ -4365,22 +4380,28 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
 										v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_list_database_nodes[i];
 
 										(function () {
+											// tabTitle is a jQuery collection (see outer_connection_tab.js's
+											// v_tab_title_span = $(...).find(...)), not a raw DOM node -
+											// .innerHTML/.appendChild silently no-op/throw on it. Used to
+											// throw here on every successful database switch, aborting this
+											// callback before it reached p_callback_continue() below and
+											// leaving the tree node's spinner stuck forever.
 											var v_tag = v_connTabControl.selectedTab.tag;
 											var v_img = document.createElement("img");
 											v_img.src = v_url_folder + "/static/OmniDB_app/images/" + v_tag.selectedDBMS + "_medium.png";
-											v_tag.tabTitle.innerHTML = "";
-											v_tag.tabTitle.appendChild(v_img);
+											v_tag.tabTitle.empty();
+											v_tag.tabTitle.append(v_img);
 											var v_text = v_tag.selectedTitle
 												? " " + v_tag.selectedTitle + " - " + v_tag.selectedDatabase
 												: " " + v_tag.selectedDatabase;
-											v_tag.tabTitle.appendChild(document.createTextNode(v_text));
+											v_tag.tabTitle.append(document.createTextNode(v_text));
 										})();
 									}
 								}
 								if (p_callback_continue) p_callback_continue();
 							},
 							function (p_return) {
-								nodeOpenError(p_return, node);
+								nodeOpenError(p_return, p_node);
 							},
 							"box",
 						);
@@ -4388,9 +4409,14 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
 				);
 			},
 			function () {
+				v_choice_made = true;
 				if (p_callback_stop) p_callback_stop();
 			},
 		);
+
+		$("#modal_message").one("hidden.bs.modal", function () {
+			if (!v_choice_made && p_callback_stop) p_callback_stop();
+		});
 
 		// Built as DOM nodes, not an HTML string — showConfirm3's content div
 		// only renders plain text (see notification_control.js). Safe to
@@ -4898,6 +4924,19 @@ function getTreeDetailsPostgresql(node) {
 			p_tab_id: v_connTabControl.selectedTab.id,
 		}),
 		function (p_return) {
+			// Authoritative source for "which database is this tab actually
+			// connected to" — current_database(), queried live by the backend
+			// for this exact tab/connection. selectedDatabase otherwise starts
+			// out as whatever the saved connection's Database field says
+			// (workspace.js's changeDatabase()), which can drift from the live
+			// name (left blank for connection-string-only connections, a typo,
+			// a renamed database, ...). Left out of sync, the database node
+			// that's actually active never matches on expand, checkCurrentDatabase
+			// wrongly treats it as a different database, and switching to
+			// "itself" never converges since nothing ever changes the value it's
+			// being compared against.
+			v_connTabControl.selectedTab.tag.selectedDatabase = p_return.v_data.v_database_return.v_database;
+
 			node.tree.contextMenu.cm_server.elements = [];
 			node.tree.contextMenu.cm_server.elements.push({
 				text: "Refresh",
