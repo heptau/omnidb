@@ -59,6 +59,23 @@
 	background-color: #2b3b4d !important;
 }
 
+/* Pinned column styling */
+.ag-theme-omnidb .ag-pinned-left-header {
+	border-right: 2px solid #ccc;
+}
+
+.ag-theme-omnidb .ag-pinned-left-cols-container {
+	border-right: 2px solid #dee2e6;
+}
+
+.ag-theme-alpine-dark.ag-theme-omnidb .ag-pinned-left-header {
+	border-right: 2px solid #4a4a4a;
+}
+
+.ag-theme-alpine-dark.ag-theme-omnidb .ag-pinned-left-cols-container {
+	border-right: 2px solid #3c424a;
+}
+
 /* Custom Context Menu */
 .custom-context-menu {
 	position: fixed;

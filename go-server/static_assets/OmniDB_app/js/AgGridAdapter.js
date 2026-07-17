@@ -34,12 +34,13 @@ class AgGridAdapter {
 		this.gridOptions = {
 			columnDefs: this._createColumnDefs(columns),
 			rowData: this._createRowData(data),
-			defaultColDef: {
-				sortable: true,
-				resizable: true,
-				filter: false,
-				editable: false,
-			},
+		defaultColDef: {
+			sortable: true,
+			resizable: true,
+			filter: false,
+			editable: false,
+			minWidth: 120,
+		},
 			rowSelection: "single",
 			animateRows: false,
 			rowHeight: 28,
@@ -47,14 +48,15 @@ class AgGridAdapter {
 
 			onGridReady: function (params) {
 				self.gridApi = params.api;
+				self.columnApi = params.columnApi;
 				setTimeout(() => {
-					self.gridApi.sizeColumnsToFit();
+					self._smartSizeColumns();
 				}, 100);
 			},
 
 			onFirstDataRendered: function () {
 				setTimeout(() => {
-					self.gridApi.sizeColumnsToFit();
+					self._smartSizeColumns();
 				}, 100);
 			},
 
@@ -87,6 +89,20 @@ class AgGridAdapter {
 		this._agGrid = new agGrid.Grid(this._gridDiv, this.gridOptions);
 	}
 
+	_smartSizeColumns() {
+		if (!this.gridApi) return;
+		const gridWidth = this._gridDiv.clientWidth;
+		const columnDefs = this.gridApi.getColumnDefs();
+		if (!columnDefs || columnDefs.length === 0) return;
+
+		const minColWidth = 120;
+		const totalMinWidth = columnDefs.length * minColWidth;
+
+		if (totalMinWidth <= gridWidth) {
+			this.gridApi.sizeColumnsToFit();
+		}
+	}
+
 	_calculateHeight(rowCount) {
 		return "100%";
 	}
@@ -105,6 +121,10 @@ class AgGridAdapter {
 					return self._numericCompare(valueA, valueB, isInverted);
 				},
 			};
+
+			if (col.pinned) {
+				colDef.pinned = col.pinned;
+			}
 
 			if (col.renderer === "html") {
 				colDef.cellRenderer = function (params) {
@@ -196,7 +216,7 @@ class AgGridAdapter {
 		if (this.gridApi) {
 			this.gridApi.setRowData(this._createRowData(data));
 			setTimeout(() => {
-				this.gridApi.sizeColumnsToFit();
+				this._smartSizeColumns();
 			}, 150);
 		}
 	}
@@ -276,7 +296,7 @@ class AgGridAdapter {
 
 	resize() {
 		if (this.gridApi) {
-			this.gridApi.sizeColumnsToFit();
+			this._smartSizeColumns();
 		}
 	}
 

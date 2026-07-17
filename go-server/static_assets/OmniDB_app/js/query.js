@@ -463,6 +463,10 @@ function querySQLReturnRender(p_message, p_context) {
 
 							col.title = v_data.v_col_names[i];
 
+							if (i === 0) {
+								col.pinned = 'left';
+							}
+
 							var colType = v_data.v_col_types && v_data.v_col_types[i] ? v_data.v_col_types[i] : null;
 							if (colType) {
 								col.tooltip = v_data.v_col_names[i] + " [" + colType + "]";

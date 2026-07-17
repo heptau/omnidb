@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- First column in query result tables is now pinned (frozen) so it stays visible when scrolling
+  horizontally through wide result sets.
+- Result tables with many columns now scroll horizontally instead of squeezing all columns into
+  the available space; each column has a 120px minimum width. Tables with few columns still
+  expand to fill the full width.
 - Column headers in query result tables now show a native tooltip on hover with the full column
   name and database type (e.g. `created_at [TIMESTAMP]`), making truncated headers explorable
   without widening columns. The tooltip text is served from `rows.ColumnTypes().DatabaseTypeName()`
