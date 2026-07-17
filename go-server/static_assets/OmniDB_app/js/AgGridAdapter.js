@@ -39,7 +39,6 @@ class AgGridAdapter {
 			resizable: true,
 			filter: false,
 			editable: false,
-			minWidth: 120,
 		},
 			rowSelection: "single",
 			animateRows: false,
