@@ -28,6 +28,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Intel Mac (x86_64) build target (`build-mac-intel`) and Homebrew Cask support — the macOS release
   now ships separate archives for Apple Silicon and Intel, and the Homebrew cask auto-detects the
   correct architecture on install. CI builds Intel on `macos-13` runners.
+- SQL editor code folding beyond plain brackets: `$$...$$` / `$tag$...$tag$` dollar-quoted blocks,
+  `IF...END IF`, `CASE...END CASE` (with nesting support), and an indentation-based fallback for
+  blocks without explicit delimiters (e.g. a `SELECT` with many indented output columns).
 
 ### Fixed
 - `handleChangeActiveDatabase` silently swallowed a malformed/missing request body and still replied
