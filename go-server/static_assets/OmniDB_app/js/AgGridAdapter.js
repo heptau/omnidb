@@ -126,6 +126,10 @@ class AgGridAdapter {
 				colDef.pinned = col.pinned;
 			}
 
+			if (col.align) {
+				colDef.cellStyle = { textAlign: col.align };
+			}
+
 			if (col.renderer === "html") {
 				colDef.cellRenderer = function (params) {
 					if (params.value) {

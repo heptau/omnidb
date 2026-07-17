@@ -470,6 +470,15 @@ function querySQLReturnRender(p_message, p_context) {
 							var colType = v_data.v_col_types && v_data.v_col_types[i] ? v_data.v_col_types[i] : null;
 							if (colType) {
 								col.tooltip = v_data.v_col_names[i] + " [" + colType + "]";
+
+								var typeUpper = String(colType).toUpperCase();
+								if (/^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/.test(typeUpper)) {
+									col.align = "right";
+								} else if (/^(BOOL|BOOLEAN|BIT)$/.test(typeUpper)) {
+									col.align = "center";
+								} else if (/^(CHAR|BPCHAR|VARCHAR|NVARCHAR|VARCHAR2|NVARCHAR2|CHARACTER|NCHAR)$/.test(typeUpper)) {
+									col.align = "center";
+								}
 							} else {
 								col.tooltip = v_data.v_col_names[i];
 							}
