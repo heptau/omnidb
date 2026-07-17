@@ -50,6 +50,15 @@
 	background-color: #e3f2fd !important;
 }
 
+/* Subtle vertical column dividers */
+.ag-theme-alpine.ag-theme-omnidb .ag-header-cell {
+	border-right: 1px solid rgba(0, 0, 0, 0.09);
+}
+
+.ag-theme-alpine.ag-theme-omnidb .ag-cell {
+	border-right: 1px solid rgba(0, 0, 0, 0.06);
+}
+
 /* Dark mode specific overrides (rely more on ag-grid dark defaults, just tweak selection color) */
 .ag-theme-alpine-dark.ag-theme-omnidb .ag-cell-focus {
 	border: 2px solid #4da3ff !important;
@@ -57,6 +66,15 @@
 
 .ag-theme-alpine-dark.ag-theme-omnidb .ag-row-selected {
 	background-color: #2b3b4d !important;
+}
+
+/* Subtle vertical column dividers */
+.ag-theme-alpine-dark.ag-theme-omnidb .ag-header-cell {
+	border-right: 1px solid rgba(255, 255, 255, 0.10);
+}
+
+.ag-theme-alpine-dark.ag-theme-omnidb .ag-cell {
+	border-right: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 /* Pinned column styling */

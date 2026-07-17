@@ -167,6 +167,8 @@ context if something about window/login behavior looks odd):**
 
 ## Instructions for AI assistants
 
+- Follow the contribution guidelines in `CONTRIBUTING.md` (commit conventions, etc.).
+
 - The desktop shell is Wails (`wails-app/`) — there is no NW.js code left in
   the repo to consider.
 - The backend is Go (`go-server/`) — there is no Python source left in the

@@ -53,7 +53,7 @@ your pull request to the `master` branch.
 
 ## Use Conventional Commits
 
-Please write commit messages using the
+All commit messages must be written in English using the
 [Conventional Commits](https://www.conventionalcommits.org/) format. This keeps
 the project history easier to read and helps maintainers understand the intent
 of each change.
@@ -63,6 +63,12 @@ Examples:
 - `feat: add DuckDB connection support`
 - `fix: handle empty query results`
 - `docs: update installation instructions`
+
+
+## Go Code Formatting
+
+All Go code must be formatted with `gofmt` (using the `gofmt -s` simplification
+flag is recommended). Unformatted code will be rejected by CI.
 
 
 ## Any contributions you make will be under the MIT Software License
