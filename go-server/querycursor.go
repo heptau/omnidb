@@ -27,6 +27,7 @@ type queryCursor struct {
 	tx         *sql.Tx
 	rows       *sql.Rows
 	cols       []string
+	colTypes   []string // DatabaseTypeName for each column
 	pending    []string // one already-fetched row held back to detect "more data" without losing it
 	autocommit bool
 }
@@ -134,7 +135,14 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 		return nil, err
 	}
 
-	c := &queryCursor{db: db, tx: tx, rows: rows, cols: cols, autocommit: autocommit}
+	colTypes := make([]string, len(cols))
+	if rawTypes, err := rows.ColumnTypes(); err == nil {
+		for i, t := range rawTypes {
+			colTypes[i] = t.DatabaseTypeName()
+		}
+	}
+
+	c := &queryCursor{db: db, tx: tx, rows: rows, cols: cols, colTypes: colTypes, autocommit: autocommit}
 	queryCursors.Store(cursorKey(clientID, tabID), c)
 	return c, nil
 }

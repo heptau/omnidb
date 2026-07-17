@@ -475,6 +475,7 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 		"v_error":        false,
 		"v_data": map[string]any{
 			"v_col_names":      cursor.cols,
+			"v_col_types":      cursor.colTypes,
 			"v_data":           rows,
 			"v_last_block":     true,
 			"v_duration":       formatDuration(time.Since(start)),
@@ -558,6 +559,13 @@ func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData,
 		return
 	}
 
+	colTypes := make([]string, len(cols))
+	if rawTypes, err := rows.ColumnTypes(); err == nil {
+		for i, t := range rawTypes {
+			colTypes[i] = t.DatabaseTypeName()
+		}
+	}
+
 	for {
 		block := make([][]string, 0, allDataBlockSize)
 		for len(block) < allDataBlockSize {
@@ -579,6 +587,7 @@ func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData,
 			"v_error":        false,
 			"v_data": map[string]any{
 				"v_col_names":      cols,
+				"v_col_types":      colTypes,
 				"v_data":           block,
 				"v_last_block":     lastBlock,
 				"v_duration":       formatDuration(time.Since(start)),

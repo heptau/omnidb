@@ -100,6 +100,7 @@ class AgGridAdapter {
 				width: col.width || 120,
 				resizable: true,
 				sortable: true,
+				headerTooltip: col.tooltip || col.title || "Column " + (index + 1),
 				comparator: function (valueA, valueB, nodeA, nodeB, isInverted) {
 					return self._numericCompare(valueA, valueB, isInverted);
 				},

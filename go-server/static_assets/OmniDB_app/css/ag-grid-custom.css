@@ -8,6 +8,20 @@
 
 .ag-theme-omnidb .ag-header-cell {
 	font-weight: 600;
+	padding-left: 4px;
+	padding-right: 4px;
+}
+
+.ag-theme-omnidb .ag-header-cell-label {
+	padding: 0;
+	overflow: hidden;
+	min-width: 0;
+}
+
+.ag-theme-omnidb .ag-header-cell-text {
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 
 .ag-theme-omnidb .ag-cell {

@@ -8,6 +8,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Column headers in query result tables now show a native tooltip on hover with the full column
+  name and database type (e.g. `created_at [TIMESTAMP]`), making truncated headers explorable
+  without widening columns. The tooltip text is served from `rows.ColumnTypes().DatabaseTypeName()`
+  for native Go connections.
+- Reduced padding in AG Grid header cells (`4px` left/right) so columns use available width more
+  efficiently; truncated header text now shows `…` ellipsis via `text-overflow: ellipsis`.
 - Configurable SQL formatting settings in a new "Formatting" tab under Settings: indent character
   (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and keyword case
   (preserve/uppercase/lowercase). Previously all three were hardcoded (4 spaces, leading comma,
