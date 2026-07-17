@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"strings"
 	"sync"
+	"time"
 )
 
 // queryCursor holds one query tab's live result set between HTTP requests —
@@ -296,9 +297,11 @@ func formatSQLValue(v any) string {
 		return fmt.Sprintf("%g", x)
 	case bool:
 		if x {
-			return "1"
+			return "true"
 		}
-		return "0"
+		return "false"
+	case time.Time:
+		return x.Format("2006-01-02 15:04:05.999999-07:00")
 	default:
 		return fmt.Sprintf("%v", x)
 	}

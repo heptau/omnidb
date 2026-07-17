@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"strings"
+	"time"
 )
 
 // consoleValueToString mirrors Python's str(value) as used by
@@ -20,9 +21,11 @@ func consoleValueToString(v any) string {
 		return x
 	case bool:
 		if x {
-			return "True"
+			return "true"
 		}
-		return "False"
+		return "false"
+	case time.Time:
+		return x.Format("2006-01-02 15:04:05.999999-07:00")
 	case int64:
 		return fmt.Sprintf("%d", x)
 	case float64:

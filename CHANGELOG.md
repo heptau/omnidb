@@ -246,6 +246,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   which failed to unmarshal into the handler's previous `int` field.
 
 ### Changed
+- Boolean values in query result grids now display as `true`/`false` instead of `1`/`0`, and in
+  the console transcript as `true`/`false` instead of `True`/`False`, matching PostgreSQL's own
+  text output convention.
+- `TIMESTAMPTZ` values in query result grids and the console transcript no longer include the
+  timezone abbreviation (`CET`/`CEST`/etc.) — they now render with the numeric UTC offset only
+  (e.g. `2026-07-17 14:30:00.123456+02:00`), matching PostgreSQL's own text output.
 - Documentation nav (`docs/en/docs/*.html`, `docs/llms.txt`, `docs/llms-full.txt`, `docs/sitemap.xml`)
   updated for the new "Editor Keyboard Shortcuts" chapter, with a cross-reference added from the
   "Writing SQL Queries" chapter.
