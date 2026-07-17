@@ -14,6 +14,13 @@ import (
 
 // postgresqlPropertiesSequence mirrors the shape pg_sequences already
 // exposes directly — no joins needed, unlike the pre-PG10 catalog-only way.
+//
+// Filters on quote_ident(s.schemaname)/quote_ident(s.sequencename), not the
+// raw columns — postgresqlSequences (postgresql_serverlevel.go), which
+// populates the tree this route's p_schema/p_sequence come from, lists
+// sequences via `quote_ident(c.relname)`, so the frontend always echoes
+// back the quoted form here, same as every table/view/column route. A raw
+// comparison only matched by accident for names that don't need quoting.
 func postgresqlPropertiesSequence(db *sql.DB, schema, sequence string) ([][2]string, error) {
 	return pgPropertiesFromRow(db, `
 		select s.schemaname as "Schema",
@@ -28,7 +35,7 @@ func postgresqlPropertiesSequence(db *sql.DB, schema, sequence string) ([][2]str
 			   s.cache_size as "Cache Size",
 			   s.last_value as "Last Value"
 		from pg_sequences s
-		where s.schemaname = $1 and s.sequencename = $2
+		where quote_ident(s.schemaname) = $1 and quote_ident(s.sequencename) = $2
 	`, schema, sequence)
 }
 

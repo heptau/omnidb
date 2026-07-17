@@ -93,11 +93,16 @@ func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) 
 	return out, rows.Err()
 }
 
-// fetchConnectionByID returns a single connection row (any owner — the
-// terminal/tunnel route trusts p_ssh_id the same way native DB routes trust
-// p_database_index, resolved via Django's own ownership-checked internal
-// endpoints elsewhere; this one is only ever reached after resolveIdentity
-// already confirmed an authenticated session).
+// fetchConnectionByID returns a single connection row for ANY owner — it
+// does no ownership check itself. Every caller MUST check
+// `c.OwnerID != callingUserID && !c.Public` before trusting the returned
+// secrets (password/ssh_password/ssh_key), the same way
+// connection_info.go's resolveConnection and terminal.go's
+// handleTerminalRequest already do. test_connection.go's
+// resolveTestConnectionSecrets was found NOT doing this (a real IDOR: any
+// authenticated user could read another user's stored connection/tunnel
+// password) and was fixed to check it too — don't add a new caller of this
+// function without the same check.
 func fetchConnectionByID(db *sql.DB, connID int64) (*appConnection, error) {
 	var c appConnection
 	err := db.QueryRow(`

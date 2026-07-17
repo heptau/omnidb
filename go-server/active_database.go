@@ -36,6 +36,27 @@ func activeDatabaseKey(sessionKey, tabID string) string {
 	return sessionKey + "|" + outerTabID(tabID)
 }
 
+// reapActiveDatabaseMap removes every entry whose session key is no longer
+// in liveSessionKeys — called from startSessionReaper's hourly sweep
+// (native_session.go). Unlike nativeSessions/pollingClients (each fixed
+// with their own reaper in 3.8.0), this map had no cleanup at all: an
+// override recorded for a session lived forever, even after that session
+// expired and got reaped, since nothing here ever re-checked. Piggybacks
+// on nativeSessions' own expiry instead of tracking a separate timestamp —
+// once a session is gone there's no way to ever recall this override again
+// anyway (recalledActiveDatabase's key always starts with the same
+// sessionKey), so there's nothing to preserve.
+func reapActiveDatabaseMap(liveSessionKeys map[string]struct{}) {
+	activeDatabaseMu.Lock()
+	defer activeDatabaseMu.Unlock()
+	for k := range activeDatabaseMap {
+		sessionKey, _, _ := strings.Cut(k, "|")
+		if _, ok := liveSessionKeys[sessionKey]; !ok {
+			delete(activeDatabaseMap, k)
+		}
+	}
+}
+
 // rememberActiveDatabase is called from handleChangeActiveDatabase.
 func rememberActiveDatabase(sessionKey, tabID, database string) {
 	if sessionKey == "" || tabID == "" || database == "" {

@@ -145,6 +145,15 @@ type postgresqlRoutineField struct {
 // by string-matching a quote_ident-wrapped `"returns ...` prefix; this
 // tags it with an explicit IsReturns column instead of replicating that
 // string-matching fragility.
+//
+// The "returns" pseudo-row's routineID match used to compare against a
+// raw, un-quote_ident'd `n.nspname || '.' || p.proname || ...` string,
+// while every producer of a routineID (postgresqlRoutinesByKind,
+// postgresqlTriggerFunctions, postgresqlAggregates, postgresqlRoutineSource)
+// builds it with quote_ident() around both parts. For a schema/function
+// needing quoting this match found zero rows, silently dropping the
+// "returns" row from the Fields list. Fixed to quote_ident() both sides,
+// consistent with every producer.
 func postgresqlRoutineFields(db *sql.DB, schema, routineID string, includeReturns bool) ([]postgresqlRoutineField, error) {
 	argsQuery := `
 		select (case trim(substring((trim(x.name) || ' ') from 1 for position(' ' in (trim(x.name) || ' '))))
@@ -172,7 +181,7 @@ func postgresqlRoutineFields(db *sql.DB, schema, routineID string, includeReturn
 				from pg_proc p, pg_namespace n
 				where p.pronamespace = n.oid
 					and n.nspname = $2
-					and n.nspname || '.' || p.proname || '(' || oidvectortypes(p.proargtypes) || ')' = $1
+					and quote_ident(n.nspname) || '.' || quote_ident(p.proname) || '(' || oidvectortypes(p.proargtypes) || ')' = $1
 				union all
 				select type, name, is_returns, 1 from (`+argsQuery+`) a
 			) y
@@ -229,6 +238,14 @@ func postgresqlRoutineSource(db *sql.DB, routineID string) (string, error) {
 // TemplateSelectFunction — builds a "SELECT <schema>.<function>(...)" (or
 // "SELECT * FROM ..." for a set-returning function) editor snippet with one
 // "? -- <name> <IN|OUT|INOUT>" placeholder per non-return argument.
+//
+// The functionID match below used to compare against a raw
+// (non-quote_ident'd) identity string, same bug as
+// postgresqlRoutineFields' "returns" row above — for a quoted schema/
+// function name it found no row, so the sql.ErrNoRows branch silently left
+// returnsSet false, generating a plain "SELECT schema.func(...)" instead of
+// "SELECT * FROM schema.func(...)" for a set-returning function. Fixed to
+// quote_ident() both sides of the match.
 func postgresqlTemplateSelectFunction(db *sql.DB, schema, function, functionID string) (string, error) {
 	var returnsSet bool
 	err := db.QueryRow(`
@@ -236,7 +253,7 @@ func postgresqlTemplateSelectFunction(db *sql.DB, schema, function, functionID s
 		from pg_proc p, pg_namespace n
 		where p.pronamespace = n.oid
 			and n.nspname = $1
-			and n.nspname || '.' || p.proname || '(' || oidvectortypes(p.proargtypes) || ')' = $2
+			and quote_ident(n.nspname) || '.' || quote_ident(p.proname) || '(' || oidvectortypes(p.proargtypes) || ')' = $2
 	`, schema, functionID).Scan(&returnsSet)
 	if err != nil && err != sql.ErrNoRows {
 		return "", err

@@ -90,10 +90,18 @@ func scanNamedOIDs(rows *sql.Rows) ([]postgresqlNamedOID, error) {
 // postgresqlSequences mirrors PostgreSQL.py's QuerySequences, scoped to one
 // schema (matches how tree_postgresql.py's get_sequences always calls it).
 func postgresqlSequences(db *sql.DB, schema string) ([]postgresqlNamedOID, error) {
+	// Joins pg_namespace for the raw nspname rather than filtering on
+	// `relnamespace::regnamespace::text` — same double-quoting bug (and
+	// fix) as postgresqlPrimaryKeys/postgresqlUniques in
+	// postgresql_constraints.go: that cast already self-quotes a schema
+	// needing quoting, so wrapping it in quote_ident() again never matched
+	// the plain schema string callers pass. Silently returned zero
+	// sequences for any schema needing identifier quoting.
 	rows, err := db.Query(`
-		select quote_ident(relname) as name, oid
-		from pg_class
-		where relkind = 'S' and quote_ident(relnamespace::regnamespace::text) = $1
+		select quote_ident(c.relname) as name, c.oid
+		from pg_class c
+		inner join pg_namespace n on n.oid = c.relnamespace
+		where c.relkind = 'S' and quote_ident(n.nspname) = $1
 		order by 1
 	`, schema)
 	if err != nil {
@@ -162,10 +170,43 @@ func postgresqlKillBackend(db *sql.DB, pid int64) error {
 // unlike Python's original, which spliced p_role in completely unescaped,
 // this quotes it as a proper Postgres identifier (doubling any embedded
 // double-quote) rather than reproducing that injection gap.
+//
+// role arrives already quote_ident()-quoted, same as every identifier this
+// app hands to the frontend: postgresqlRoles (above) lists role names via
+// `quote_ident(rolname)`, and tree_postgresql.js's "Change Password" action
+// echoes that same node.text back as p_role. This used to be re-quoted via
+// quotePostgresIdentifierDoubleQuoted() a SECOND time — for a role name
+// that actually needed quoting (mixed case, reserved word), that produced
+// an ALTER ROLE statement targeting a role that doesn't exist (verified
+// live against a real role "WeirdRole": `ALTER ROLE """WeirdRole"""`
+// errors "role does not exist"). It also fed the still-quoted string
+// straight into the md5 verifier hash, which needs the actual role name,
+// not its quoted display form — even if the ALTER ROLE syntax had
+// happened to succeed, the stored verifier would never have matched the
+// typed password at login. unquotePostgresIdentifier reverses quote_ident
+// back to the raw name for the hash, and quotePostgresIdentifierDoubleQuoted
+// re-quotes that raw name (not the original, possibly-already-quoted
+// input) for the DDL text — the re-quoting step also means a caller
+// hitting this route directly over HTTP with an arbitrary, non-tree-
+// sourced string still gets it safely quoted as a single identifier
+// rather than spliced in raw.
 func postgresqlChangeRolePassword(db *sql.DB, role, password string) error {
-	hash := postgresMD5PasswordHash(password, role)
-	_, err := db.Exec(`ALTER ROLE ` + quotePostgresIdentifierDoubleQuoted(role) + ` WITH PASSWORD '` + hash + `'`)
+	rawRole := unquotePostgresIdentifier(role)
+	hash := postgresMD5PasswordHash(password, rawRole)
+	_, err := db.Exec(`ALTER ROLE ` + quotePostgresIdentifierDoubleQuoted(rawRole) + ` WITH PASSWORD '` + hash + `'`)
 	return err
+}
+
+// unquotePostgresIdentifier reverses quote_ident()'s quoting: if s is
+// wrapped in a double-quote pair, strips them and un-doubles any embedded
+// "" back to a single " (quote_ident's own escaping rule); otherwise
+// returns s unchanged, matching quote_ident's behavior for a name that
+// never needed quoting in the first place.
+func unquotePostgresIdentifier(s string) string {
+	if len(s) >= 2 && s[0] == '"' && s[len(s)-1] == '"' {
+		return strings.ReplaceAll(s[1:len(s)-1], `""`, `"`)
+	}
+	return s
 }
 
 // quotePostgresIdentifierDoubleQuoted double-quotes a Postgres identifier,
@@ -224,17 +265,30 @@ var postgresqlObjectDescriptionSpecs = map[string]postgresqlObjectDescriptionSpe
 	"mview":                       {commentKind: "MATERIALIZED VIEW", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
 	"procedure":                   {commentKind: "PROCEDURE", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
 	"publication":                 {commentKind: "PUBLICATION", args: oidArg, query: `select quote_ident(pubname) as id, coalesce(obj_description($1, 'pg_publication'), '') as description from pg_publication where oid = $1`},
-	"role":                        {commentKind: "ROLE", args: oidArg, query: `select $1::regrole as id, coalesce(shobj_description($1, 'pg_roles'), '') as description`},
-	"rule":                        {commentKind: "RULE", onTable: true, args: oidArg, query: `select quote_ident(r.rulename) as id, format('%s.%s', r.schemaname, r.tablename)::regclass as table_id, coalesce(obj_description($1, 'pg_rewrite'), '') as description from pg_rules r inner join pg_rewrite rw on r.rulename = rw.rulename where rw.oid = $1`},
-	"schema":                      {commentKind: "SCHEMA", args: oidArg, query: `select $1::regnamespace as id, coalesce(obj_description($1, 'pg_namespace'), '') as description`},
-	"sequence":                    {commentKind: "SEQUENCE", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
-	"statistic":                   {commentKind: "STATISTICS", args: oidArg, query: `select format('%s.%s', quote_ident(stxnamespace::regnamespace::text), quote_ident(stxname)) as id, coalesce(obj_description($1, 'pg_statistic_ext'), '') as description from pg_statistic_ext where oid = $1`},
-	"subscription":                {commentKind: "SUBSCRIPTION", args: oidArg, query: `select quote_ident(subname) as id, coalesce(obj_description($1, 'pg_subscription'), '') as description from pg_subscription where oid = $1`},
-	"table":                       {commentKind: "TABLE", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
-	"tablespace":                  {commentKind: "TABLESPACE", args: oidArg, query: `select quote_ident(spcname) as id, coalesce(shobj_description($1, 'pg_tablespace'), '') as description from pg_tablespace where oid = $1`},
-	"trigger":                     {commentKind: "TRIGGER", onTable: true, args: oidArg, query: `select tgname as id, tgrelid::regclass as table_id, coalesce(obj_description($1, 'pg_trigger'), '') as description from pg_trigger where oid = $1`},
-	"type":                        {commentKind: "TYPE", args: oidArg, query: `select $1::regtype as id, coalesce(obj_description($1, 'pg_type'), '') as description`},
-	"view":                        {commentKind: "VIEW", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
+	// shobj_description's catalog arg must be the catalog that actually
+	// backs the object's comment storage, not just any view that lists
+	// it — "pg_roles" is a view over pg_authid, and role comments are
+	// stored keyed to pg_authid's OID (compare "database"/"tablespace"
+	// above, both real catalog tables). Using "pg_roles" here always
+	// returned an empty description regardless of whether `COMMENT ON
+	// ROLE` had actually been used. Fixed to "pg_authid".
+	"role": {commentKind: "ROLE", args: oidArg, query: `select $1::regrole as id, coalesce(shobj_description($1, 'pg_authid'), '') as description`},
+	// Reads rulename/table straight off pg_rewrite (matched only by its own
+	// oid, already unique) instead of joining to the pg_rules view on
+	// rulename alone — rule names are only unique per-table, so two
+	// different tables with an identically-named rule used to make the
+	// old rulename-only join pick an arbitrary matching row and could
+	// misattribute the comment to the wrong table.
+	"rule":         {commentKind: "RULE", onTable: true, args: oidArg, query: `select quote_ident(rw.rulename) as id, rw.ev_class::regclass as table_id, coalesce(obj_description($1, 'pg_rewrite'), '') as description from pg_rewrite rw where rw.oid = $1`},
+	"schema":       {commentKind: "SCHEMA", args: oidArg, query: `select $1::regnamespace as id, coalesce(obj_description($1, 'pg_namespace'), '') as description`},
+	"sequence":     {commentKind: "SEQUENCE", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
+	"statistic":    {commentKind: "STATISTICS", args: oidArg, query: `select format('%s.%s', quote_ident(stxnamespace::regnamespace::text), quote_ident(stxname)) as id, coalesce(obj_description($1, 'pg_statistic_ext'), '') as description from pg_statistic_ext where oid = $1`},
+	"subscription": {commentKind: "SUBSCRIPTION", args: oidArg, query: `select quote_ident(subname) as id, coalesce(obj_description($1, 'pg_subscription'), '') as description from pg_subscription where oid = $1`},
+	"table":        {commentKind: "TABLE", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
+	"tablespace":   {commentKind: "TABLESPACE", args: oidArg, query: `select quote_ident(spcname) as id, coalesce(shobj_description($1, 'pg_tablespace'), '') as description from pg_tablespace where oid = $1`},
+	"trigger":      {commentKind: "TRIGGER", onTable: true, args: oidArg, query: `select tgname as id, tgrelid::regclass as table_id, coalesce(obj_description($1, 'pg_trigger'), '') as description from pg_trigger where oid = $1`},
+	"type":         {commentKind: "TYPE", args: oidArg, query: `select $1::regtype as id, coalesce(obj_description($1, 'pg_type'), '') as description`},
+	"view":         {commentKind: "VIEW", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
 }
 
 // postgresqlObjectDescription mirrors PostgreSQL.py's GetObjectDescription

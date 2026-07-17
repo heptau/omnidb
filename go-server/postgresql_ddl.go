@@ -568,6 +568,14 @@ func postgresqlDDLClass(db *sql.DB, schema, object string) (string, error) {
 
 // postgresqlDDLTableField mirrors PostgreSQL.py's GetDDLTableField
 // (PostgreSQL 13+ branch).
+//
+// The column filter is `quote_ident(a.attname) = $1`, not raw
+// `a.attname = $1` — see postgresqlPropertiesTableField's comment
+// (postgresql_properties.go) for why: p_column arrives already
+// quote_ident()-quoted, same as p_schema/p_table, so comparing it to the
+// raw catalog value only worked by accident for names that don't need
+// quoting. A column needing quoting (mixed case, reserved word) used to
+// make the DDL tab fail to find the column at all.
 func postgresqlDDLTableField(db *sql.DB, schema, table, column string) (string, error) {
 	var ddl sql.NullString
 	err := db.QueryRow(`
@@ -622,7 +630,7 @@ func postgresqlDDLTableField(db *sql.DB, schema, table, column string) (string, 
 						  AND has_table_privilege(c.oid, 'select')
 						  AND has_schema_privilege(s.oid, 'usage')
 						  AND c.oid = $2::regclass
-						  AND a.attname = $1
+						  AND quote_ident(a.attname) = $1
 					),
 					comments AS (
 						SELECT format(

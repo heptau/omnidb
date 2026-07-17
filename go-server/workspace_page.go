@@ -3,6 +3,7 @@ package main
 import (
 	_ "embed"
 	"encoding/json"
+	htmlescape "html"
 	"log"
 	"net/http"
 	"net/url"
@@ -17,7 +18,12 @@ var workspaceHTMLTemplate string
 // workspaceVarNames are every "{{ name }}" substitution workspace.html uses
 // (see the grep inventory in go-backend-migration memory) — "shortcuts" is
 // deliberately excluded, it needs the "|safe" filter's raw-JSON substitution
-// handled separately (see renderWorkspacePage).
+// handled separately (see renderWorkspacePage). "user_name" is also handled
+// separately in renderWorkspacePage rather than through the generic loop —
+// unlike every other entry here it appears in workspace.html in two
+// different contexts (a raw HTML text node and a JS string literal) that
+// need different escaping, so one shared value can't be substituted for
+// both via this map.
 var workspaceVarNames = []string{
 	"url_folder", "static_cache_bust", "omnidb_short_version", "omnidb_version",
 	"csrf_cookie_name", "editor_theme", "theme", "font_size", "user_id",
@@ -110,6 +116,30 @@ func pythonBoolStr(b bool) string {
 	return "False"
 }
 
+// escapeJSSingleQuoted escapes a string for safe embedding inside a
+// single-quoted JS string literal in workspace.html's inline <script>
+// block. Found and fixed a real stored-XSS gap: renderWorkspacePage used to
+// substitute user-controlled values (username, CSV delimiter, theme,
+// indent/comma/keyword-case settings — none of them validated against a
+// charset or enum anywhere before being saved) into this template with no
+// escaping at all, unlike the Django template it replaced (auto-escaping by
+// default). A username or setting containing a single quote breaks out of
+// the JS string literal; one containing "</script" closes the surrounding
+// tag regardless of any JS-level escaping, since the HTML parser looks for
+// that literal byte sequence while scanning script content. Deliberately a
+// different escaper from jsString (monitoring_handlers.go): that one is
+// built for a double-quoted onclick="..." HTML attribute and escapes the
+// double quote, not the single quote this context actually needs escaped.
+func escapeJSSingleQuoted(s string) string {
+	return strings.NewReplacer(
+		"\\", "\\\\",
+		"'", "\\'",
+		"\n", "\\n",
+		"\r", "\\r",
+		"</", "<\\/",
+	).Replace(s)
+}
+
 // renderWorkspacePage mirrors workspace.py index()'s context-building +
 // template.render(), minus the Django-session bookkeeping (handled
 // separately by ensureDjangoSession, since it's a side effect on Django's
@@ -142,18 +172,17 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 		"omnidb_version":       omnidbVersion,
 		"csrf_cookie_name":     csrfCookieName,
 		"editor_theme":         editorTheme,
-		"theme":                ud.Theme,
+		"theme":                escapeJSSingleQuoted(ud.Theme),
 		"font_size":            strconv.Itoa(ud.FontSize),
 		"user_id":              strconv.Itoa(who.UserID),
 		"user_key":             "",
-		"user_name":            who.Username,
-		"csv_encoding":         ud.CSVEncoding,
-		"csv_delimiter":        ud.CSVDelimiter,
-		"indent_unit":          ud.IndentUnit,
-		"indent_char":          ud.IndentChar,
+		"csv_encoding":         escapeJSSingleQuoted(ud.CSVEncoding),
+		"csv_delimiter":        escapeJSSingleQuoted(ud.CSVDelimiter),
+		"indent_unit":          escapeJSSingleQuoted(ud.IndentUnit),
+		"indent_char":          escapeJSSingleQuoted(ud.IndentChar),
 		"indent_size":          strconv.Itoa(ud.IndentSize),
-		"comma_style":          ud.CommaStyle,
-		"keyword_case":         ud.KeywordCase,
+		"comma_style":          escapeJSSingleQuoted(ud.CommaStyle),
+		"keyword_case":         escapeJSSingleQuoted(ud.KeywordCase),
 		"welcome_closed":       boolStr(ud.WelcomeClosed),
 		"menu_item":            "workspace",
 		"tab_token":            tabToken,
@@ -165,6 +194,15 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 	for name, val := range values {
 		html = workspaceVarPatterns[name].ReplaceAllLiteralString(html, val)
 	}
+
+	// user_name: see escapeJSSingleQuoted's comment and workspaceVarNames'
+	// comment above for why this can't go through the generic loop —
+	// replace each context's exact surrounding text once, with the
+	// escaping that context needs.
+	html = strings.Replace(html, "<span>{{ user_name }}</span>",
+		"<span>"+htmlescape.EscapeString(who.Username)+"</span>", 1)
+	html = strings.Replace(html, "var v_user_name = '{{ user_name }}';",
+		"var v_user_name = '"+escapeJSSingleQuoted(who.Username)+"';", 1)
 
 	return html, nil
 }

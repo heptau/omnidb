@@ -42,7 +42,19 @@ type tunnelRequestData struct {
 // stored value is reused, and temp_password (a one-shot password typed into
 // a "this connection needs a password" prompt, not saved) wins over
 // everything if present.
-func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest) (password, sshPassword, sshKey string, err error) {
+//
+// who is required to enforce the same owner-or-public check every other
+// fetchConnectionByID caller applies explicitly (connection_info.go's
+// resolveConnection, terminal.go's handleTerminalRequest) — this route was
+// found calling fetchConnectionByID with no such check at all, letting any
+// authenticated user reuse another user's stored connection/tunnel secret
+// by passing that connection's id with a blank password and an
+// attacker-controlled server/port (the secret would then be dialed to a
+// host the attacker controls). Fixed rather than left as a "trusted since
+// resolveIdentity already ran" case like fetchConnectionByID's own comment
+// claims — that reasoning holds for the *existence* of a session, not for
+// which connections that session is allowed to read secrets from.
+func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest, who *WhoAmI) (password, sshPassword, sshKey string, err error) {
 	password = req.Password
 	sshPassword = req.Tunnel.Password
 	sshKey = req.Tunnel.Key
@@ -51,6 +63,9 @@ func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest) (passw
 		conn, ferr := fetchConnectionByID(db, req.ID)
 		if ferr != nil {
 			return "", "", "", ferr
+		}
+		if conn.OwnerID != int64(who.UserID) && !conn.Public {
+			return "", "", "", fmt.Errorf("connection not found")
 		}
 		if req.Password == "" {
 			password = conn.Password
@@ -212,7 +227,7 @@ func handleTestConnection(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 		defer appDB.Close()
-		password, sshPassword, sshKey, err := resolveTestConnectionSecrets(appDB, &req)
+		password, sshPassword, sshKey, err := resolveTestConnectionSecrets(appDB, &req, who)
 		if err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return

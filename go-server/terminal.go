@@ -38,6 +38,29 @@ type terminalSession struct {
 
 var terminalSessions sync.Map // map[string]*terminalSession, keyed by cursorKey(clientID, tabID)
 
+// terminalConsoleOpenLocks serializes each tab's "is there a live session? if
+// not, open one" check-then-store sequence (handleTerminalRequest below,
+// openOrReuseConsoleSession in console.go) against itself — without this,
+// two near-simultaneous requests for the same brand-new tab (terminal.js
+// sends one request per keystroke without waiting for a response, so this
+// isn't just theoretical) can both see "no live session," both dial/open
+// one, and both Store into terminalSessions/consoleSessions; the loser's SSH
+// client/PTY (or DB connection + reader goroutine) then leaks forever, since
+// closeTerminalSession/closeConsoleSession can only ever reach whichever one
+// won the final Store. Shared between both session kinds, key-prefixed to
+// keep them from cross-serializing on a coincidentally-equal tab id.
+// Deliberately never cleaned up: entries are keyed by clientID|tabID, one per
+// terminal/console tab a real user ever opened — unlike nativeSessions/
+// pollingClients (one entry per poll cycle) this grows slowly enough in
+// practice not to need a reaper, and removing an entry here while a request
+// still holds its lock would be its own race to get right.
+var terminalConsoleOpenLocks sync.Map // map[string]*sync.Mutex
+
+func lockForTabKey(kind, key string) *sync.Mutex {
+	v, _ := terminalConsoleOpenLocks.LoadOrStore(kind+"|"+key, &sync.Mutex{})
+	return v.(*sync.Mutex)
+}
+
 func (t *terminalSession) alive() bool {
 	// Mirrors Python's `if not tab_object['terminal_transport'].is_active()`
 	// check — a lightweight round trip is the closest Go equivalent to
@@ -323,6 +346,9 @@ type terminalRequestData struct {
 // fields ARE the target, not a proxy for a DB connection).
 func handleTerminalRequest(upstream *url.URL, cookie, clientID string, q terminalRequestData, contextCode int, who *WhoAmI) {
 	key := cursorKey(clientID, q.VTabID)
+	mu := lockForTabKey("terminal", key)
+	mu.Lock()
+	defer mu.Unlock()
 	if v, ok := terminalSessions.Load(key); ok {
 		t := v.(*terminalSession)
 		if t.alive() {

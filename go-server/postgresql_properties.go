@@ -108,6 +108,19 @@ func postgresqlPropertiesTable(db *sql.DB, schema, table string) ([][2]string, e
 // column (pg_attribute.attcacheoff) — removed in PostgreSQL 18, which makes
 // the original Python query fail the same way against a current server.
 // Not worth reproducing a bug that breaks on this decade's Postgres.
+//
+// The column filter is `quote_ident(a.attname) = $2`, not a raw
+// `a.attname = $2` — every identifier this app hands to the frontend
+// (schema/table/column names alike, see postgresql.go's tree queries) is
+// already run through quote_ident() before being shown, and the frontend
+// echoes that same string back as p_column on a later request. Comparing
+// it against the raw, unquoted catalog value only worked by accident for
+// names that don't need quoting (where quote_ident is the identity
+// function); for a column needing quoting (mixed case, reserved word) it
+// never matched. Live-verified against a real column named "WeirdColumn"
+// on Postgres 18. postgresqlDDLTableField (postgresql_ddl.go) had the
+// exact same bug in the same spot and is fixed the same way — it was not,
+// in fact, a correct sibling to copy this comparison style from.
 func postgresqlPropertiesTableField(db *sql.DB, schema, table, column string) ([][2]string, error) {
 	return pgPropertiesFromRow(db, `
 		SELECT current_database() AS "Database",
@@ -143,7 +156,7 @@ func postgresqlPropertiesTableField(db *sql.DB, schema, table, column string) ([
 		INNER JOIN pg_roles AS r ON c.relowner = r.oid
 		INNER JOIN pg_attribute AS a ON c.oid = a.attrelid
 		WHERE c.oid = $1::regclass
-			AND a.attname = quote_ident($2)
+			AND quote_ident(a.attname) = $2
 	`, schema+"."+table, column)
 }
 

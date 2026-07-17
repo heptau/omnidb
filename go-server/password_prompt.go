@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -35,6 +36,27 @@ var (
 
 func passwordMemoryKey(sessionKey, connID string) string {
 	return sessionKey + "|" + connID
+}
+
+// reapPasswordMemoryMap removes every entry whose session key is no longer
+// in liveSessionKeys — called from startSessionReaper's hourly sweep
+// (native_session.go). Unlike nativeSessions/pollingClients, this map had
+// no cleanup at all — worse than a generic memory leak, since a stale
+// entry here holds a plaintext database password indefinitely, well past
+// pwdTimeoutTotal (recalledPassword already refuses to hand it back once
+// stale, but the value itself just sat in memory forever). Piggybacks on
+// nativeSessions' own expiry rather than tracking a second timeout: once a
+// session is gone, recalledPassword can never be reached with that
+// sessionKey again anyway.
+func reapPasswordMemoryMap(liveSessionKeys map[string]struct{}) {
+	passwordMemoryMu.Lock()
+	defer passwordMemoryMu.Unlock()
+	for k := range passwordMemoryMap {
+		sessionKey, _, _ := strings.Cut(k, "|")
+		if _, ok := liveSessionKeys[sessionKey]; !ok {
+			delete(passwordMemoryMap, k)
+		}
+	}
 }
 
 // rememberPassword mirrors what a successful renew_password does to

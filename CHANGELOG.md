@@ -87,6 +87,69 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   before the code that hides the spinner/Cancel button ever ran. Fixed by initializing the
   block as `make([][]string, 0, blockSize)` so an empty result always encodes as `[]`, matching
   the convention already used by `runNativeQueryAllData` and `handleCommitOrRollback`.
+- `resolveTestConnectionSecrets` (test_connection.go) fetched a saved connection's stored
+  password/SSH-tunnel credentials by id with no ownership or public check at all — any
+  authenticated user could point `/test_connection/` at a connection id belonging to another
+  user, override the target server/port with one they control, and leave the password blank to
+  reuse the victim's stored secret, which would then be dialed straight to the attacker's host.
+  Fixed by applying the same owner-or-public check `connection_info.go`/`terminal.go` already use
+  for every other route that reads a saved connection's secrets.
+- `renderWorkspacePage` substituted the username and several user-configurable settings (CSV
+  delimiter, theme, indent character/size, comma style, keyword case — none validated against a
+  charset or enum before being saved) into `workspace.html` with no escaping at all, both as raw
+  HTML and inside single-quoted JS string literals, unlike the Django template this replaced
+  (auto-escaped by default). A superuser could plant a malicious username to XSS any user who
+  later loaded their workspace (session/credential theft); any user could self-XSS via a crafted
+  setting. Fixed with HTML escaping for the HTML context and a dedicated JS-string escaper (also
+  guarding against a `</script` breakout) for the JS context.
+- `handleTempFiles`'s sibling-directory check used `strings.HasPrefix(filePath, dir)` with no
+  trailing-separator check — the classic bug where a sibling directory whose name happens to
+  start with the same prefix (e.g. `temp` vs. a future `temp-secret`) would incorrectly pass the
+  check. Fixed to use `filepath.Rel` + explicit `..`-prefix rejection, the pattern already used
+  correctly next door in `export_save_dialog.go`.
+- Several PostgreSQL queries silently returned no rows for any schema/table/column/sequence
+  needing identifier quoting (mixed case, reserved words): `postgresqlPrimaryKeys`/
+  `postgresqlUniques`/`postgresqlSequences` filtered their schema via
+  `quote_ident(relnamespace::regnamespace::text)`, which double-quotes a schema that already
+  needed quoting; `postgresqlPropertiesTableField`/`postgresqlDDLTableField` compared a raw
+  catalog column name against an already quote_ident()-quoted parameter; `postgresqlRoutineFields`'s
+  "returns" pseudo-row and `postgresqlTemplateSelectFunction`'s function-id match were missing a
+  `quote_ident()` every other producer of that id string applies. Fixed across all of them and
+  live-verified against real quoted schema/table/column/sequence/function names.
+- `GetObjectDescription`'s "role" spec queried `shobj_description` against `pg_roles` (a view)
+  instead of `pg_authid` (the real catalog backing role comments), so `COMMENT ON ROLE` always
+  showed as empty. Its "rule" spec matched only by rule name, which is only unique per table, so
+  two tables with an identically-named rule could misattribute the comment to the wrong table.
+  Both fixed — the latter by reading straight off `pg_rewrite`'s own oid instead of joining by name.
+- `postgresqlExcludes`' attribute list wasn't guaranteed to come back in the same order as its
+  paired operator list for a multi-column `EXCLUDE` constraint, which could scramble which
+  operator applies to which column. Fixed with explicit `unnest(...) with ordinality` ordering on
+  both sides.
+- `postgresqlChangeRolePassword` re-quoted an already quote_ident()-quoted role name a second
+  time, so changing the password of any role needing quoting (mixed case, reserved word) failed
+  outright with "role does not exist" (verified live). It also hashed the md5 password verifier
+  against that same still-quoted string rather than the real role name, meaning even a successful
+  change would have set a verifier the real login flow could never match. Fixed by unquoting back
+  to the raw role name before hashing, then re-quoting only for the DDL text; live-verified
+  end-to-end (password changed, then logged in with it).
+- `mysqlFunctionFields`/`mysqlProcedureFields` ordered their parameter list by `seq desc`,
+  reversing the declared parameter order and putting a function's return type last instead of
+  first (a copy-paste inversion — Oracle's equivalents already used ascending order). Fixed.
+- `oracleFunctionDefinition`/`oracleProcedureDefinition` ignored `p_schema` when asking
+  `dbms_metadata.get_ddl` for a function/procedure's DDL, so viewing one owned by any schema other
+  than the connected user's own silently failed or returned the wrong object — the same class of
+  bug already fixed elsewhere in this file's Properties/DDL/FK queries. Fixed by threading the
+  schema through as `get_ddl`'s third argument.
+- `sqlitePrimaryKeys` emitted one row per primary-key *column* instead of one per constraint, so
+  any table with a composite primary key showed duplicate "Primary Key" tree nodes. Fixed.
+- `handleTerminalRequest`/`openOrReuseConsoleSession` had no guard against two near-simultaneous
+  requests for the same brand-new tab both seeing "no live session" and both opening one — the
+  loser's SSH client/PTY (or DB connection) then leaked forever, since only whichever session won
+  the final map store could ever be closed later. Fixed with a per-tab lock shared by both.
+- `activeDatabaseMap` (active_database.go) and `passwordMemoryMap` (password_prompt.go) had no
+  cleanup at all, unlike `nativeSessions`/`pollingClients` (each already fixed with their own
+  reaper) — the latter held a remembered plaintext password in memory indefinitely, well past its
+  own timeout window. Fixed by sweeping both alongside the existing hourly session reaper.
 
 ## [3.8.0] - 2026-07-16
 

@@ -126,6 +126,14 @@ type mysqlRoutineField struct {
 // mysqlFunctionFields mirrors QueryFunctionFields — the return type comes
 // first (type "O", matching the Python query's UNION), then IN/OUT/INOUT
 // parameters in declared order.
+//
+// `order by seq` (ascending), not `desc` — seq is 0 for the return-type
+// row and ordinal_position+1 (ascending as declared) for each parameter;
+// `desc` reversed this to emit the last-declared parameter first and the
+// return type dead last, the opposite of what this comment always
+// claimed. mysqlProcedureFields below had the identical copy-paste
+// inversion; Oracle's equivalents (oracle_routines.go) use plain ascending
+// `order by seq` and were the tell this was a mistake, not intentional.
 func mysqlFunctionFields(db *sql.DB, schema, function string) ([]mysqlRoutineField, error) {
 	rows, err := db.Query(`
 		select 'O' as ptype, concat('returns ', t.data_type) as name, 0 as seq
@@ -141,7 +149,7 @@ func mysqlFunctionFields(db *sql.DB, schema, function string) ([]mysqlRoutineFie
 		where t.ordinal_position > 0
 		  and t.specific_schema = ?
 		  and t.specific_name = ?
-		order by seq desc
+		order by seq
 	`, schema, function, schema, function)
 	if err != nil {
 		return nil, err
@@ -159,7 +167,7 @@ func mysqlProcedureFields(db *sql.DB, schema, procedure string) ([]mysqlRoutineF
 		from information_schema.parameters t
 		where t.specific_schema = ?
 		  and t.specific_name = ?
-		order by seq desc
+		order by seq
 	`, schema, procedure)
 	if err != nil {
 		return nil, err

@@ -78,7 +78,21 @@ func startSessionReaper() {
 						delete(nativeSessions, k)
 					}
 				}
+				live := make(map[string]struct{}, len(nativeSessions))
+				for k := range nativeSessions {
+					live[k] = struct{}{}
+				}
 				nativeSessionsMu.Unlock()
+
+				// activeDatabaseMap (active_database.go) and
+				// passwordMemoryMap (password_prompt.go) key everything off
+				// this same session key with no expiry of their own — sweep
+				// them here rather than giving each its own reaper
+				// goroutine, since "session key still live" is exactly the
+				// condition that already determines whether an entry can
+				// ever be read again.
+				reapActiveDatabaseMap(live)
+				reapPasswordMemoryMap(live)
 			}
 		}()
 	})

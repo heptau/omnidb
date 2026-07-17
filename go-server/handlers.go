@@ -107,7 +107,13 @@ func readFormData(r *http.Request) (string, error) {
 	bodyBytes, err := io.ReadAll(r.Body)
 	r.Body.Close()
 	if err != nil {
-		r.Body = io.NopCloser(bytes.NewReader(bodyBytes))
+		// Restoring r.Body here too used to defeat the point of this
+		// check — a CHANGELOG entry claims this was already fixed, but
+		// the code still did it: on a genuine read error (client
+		// disconnect mid-body, network error), bodyBytes is a partial,
+		// truncated read, and restoring it let a caller (e.g. dev-mode's
+		// OMNIDB_PROXY_UPSTREAM fallback path) go on to forward that
+		// truncated body to an upstream as if it were the real request.
 		return "", err
 	}
 	r.Body = io.NopCloser(bytes.NewReader(bodyBytes))

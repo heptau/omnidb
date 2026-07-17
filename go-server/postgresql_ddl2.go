@@ -116,13 +116,19 @@ func postgresqlDDLSchema(db *sql.DB, name string) (string, error) {
 // postgresqlDDLSequence synthesizes a CREATE SEQUENCE statement from
 // pg_sequences — Postgres has no pg_get_sequencedef().
 func postgresqlDDLSequence(db *sql.DB, schema, sequence string) (string, error) {
+	// Same fix as postgresqlPropertiesSequence (postgresql_properties2.go):
+	// filter on quote_ident(catalog value), since p_schema/p_sequence
+	// arrive already quote_ident()-quoted. The output below then uses
+	// schema/sequence RAW (no quotePostgresIdentifierDoubleQuoted) for the
+	// same reason postgresqlViewDefinition does — they're already valid,
+	// quoted-if-needed identifier text, not raw catalog names.
 	var dataType string
 	var start, min, max, increment, cache int64
 	var cycle bool
 	err := db.QueryRow(`
 		select data_type, start_value, min_value, max_value, increment_by, cache_size, cycle
 		from pg_sequences
-		where schemaname = $1 and sequencename = $2
+		where quote_ident(schemaname) = $1 and quote_ident(sequencename) = $2
 	`, schema, sequence).Scan(&dataType, &start, &min, &max, &increment, &cache, &cycle)
 	if err != nil {
 		return "", err
@@ -140,7 +146,7 @@ func postgresqlDDLSequence(db *sql.DB, schema, sequence string) (string, error) 
 			"    MAXVALUE %d\n"+
 			"    CACHE %d\n"+
 			"    %s;",
-		quotePostgresIdentifierDoubleQuoted(schema), quotePostgresIdentifierDoubleQuoted(sequence),
+		schema, sequence,
 		dataType, start, increment, min, max, cache, cycleClause,
 	), nil
 }
@@ -523,8 +529,18 @@ func postgresqlDDLUserMapping(db *sql.DB, foreignServer, roleName string) (strin
 	if err != nil {
 		return "", err
 	}
+	// roleName is quoted like foreignServer below UNLESS it's the literal
+	// keyword "PUBLIC" — that's real SQL syntax (every role, not a role
+	// actually named "PUBLIC"), and quoting it would change its meaning
+	// to look for a role literally named PUBLIC instead. Previously
+	// neither case was quoted, producing invalid DDL text for any real
+	// role name needing quoting (mixed case, reserved word).
+	roleForDDL := roleName
+	if roleName != "PUBLIC" {
+		roleForDDL = quotePostgresIdentifierDoubleQuoted(roleName)
+	}
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("CREATE USER MAPPING FOR %s\n    SERVER %s", roleName, quotePostgresIdentifierDoubleQuoted(foreignServer)))
+	b.WriteString(fmt.Sprintf("CREATE USER MAPPING FOR %s\n    SERVER %s", roleForDDL, quotePostgresIdentifierDoubleQuoted(foreignServer)))
 	if opts := formatFDWOptions(options); opts != "" {
 		b.WriteString("\n    OPTIONS (" + opts + ")")
 	}

@@ -44,6 +44,9 @@ var consoleSessions sync.Map // map[string]*consoleSession, keyed by cursorKey(c
 // fresh one (replacing whatever was there).
 func openOrReuseConsoleSession(clientID, tabID string, info *ConnectionInfo) (*consoleSession, error) {
 	key := cursorKey(clientID, tabID)
+	mu := lockForTabKey("console", key)
+	mu.Lock()
+	defer mu.Unlock()
 	if v, ok := consoleSessions.Load(key); ok {
 		sess := v.(*consoleSession)
 		if sess.conn.PingContext(context.Background()) == nil {

@@ -626,7 +626,7 @@ func handleGetFunctionDefinitionOracle(upstream *url.URL, fallback http.Handler)
 		}
 		defer db.Close()
 
-		definition, err := oracleFunctionDefinition(db, reqBody.PFunction)
+		definition, err := oracleFunctionDefinition(db, reqBody.PSchema, reqBody.PFunction)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -715,7 +715,7 @@ func handleGetProcedureDefinitionOracle(upstream *url.URL, fallback http.Handler
 		}
 		defer db.Close()
 
-		definition, err := oracleProcedureDefinition(db, reqBody.PProcedure)
+		definition, err := oracleProcedureDefinition(db, reqBody.PSchema, reqBody.PProcedure)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

@@ -58,17 +58,26 @@ type postgresqlExcludeConstraint struct {
 // subqueries directly against the constraint row's own conkey/conexclop
 // array columns — simpler, no CREATE FUNCTION round trip needed, same
 // output.
+//
+// Both array-derived columns use `unnest(...) with ordinality` + an
+// explicit `order by` in their string_agg, not a plain unnest — conkey[i]
+// and conexclop[i] are position-paired (attribute i goes with operator i),
+// and neither a bare `attnum = any(conkey)` correlated subquery nor an
+// unordered join back to pg_operator is guaranteed by Postgres to preserve
+// that array order. Without it, `EXCLUDE (b WITH &&, a WITH =)` could
+// render as attributes "a,b" against operations "&&,=", scrambling which
+// operator applies to which column.
 func postgresqlExcludes(db *sql.DB, schema, table string) ([]postgresqlExcludeConstraint, error) {
 	rows, err := db.Query(`
 		select quote_ident(c.conname) as constraint_name,
 		       coalesce((
-		           select string_agg(a.attname, ',')
-		           from pg_attribute a
-		           where a.attnum = any(c.conkey) and a.attrelid = c.conrelid
+		           select string_agg(a.attname, ',' order by k.ord)
+		           from unnest(c.conkey) with ordinality as k(attnum, ord)
+		           inner join pg_attribute a on a.attnum = k.attnum and a.attrelid = c.conrelid
 		       ), '') as attributes,
 		       coalesce((
-		           select string_agg(o.oprname, ',')
-		           from unnest(c.conexclop) as op(oid)
+		           select string_agg(o.oprname, ',' order by op.ord)
+		           from unnest(c.conexclop) with ordinality as op(oid, ord)
 		           inner join pg_operator o on o.oid = op.oid
 		       ), '') as operations,
 		       c.oid

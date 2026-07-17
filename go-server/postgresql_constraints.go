@@ -5,6 +5,15 @@ import "database/sql"
 // postgresqlPrimaryKeys mirrors PostgreSQL.py's QueryTablesPrimaryKeys for a
 // single table.
 func postgresqlPrimaryKeys(db *sql.DB, schema, table string) ([][2]any, error) {
+	// Joins pg_namespace for the raw nspname, like postgresqlIndexes/
+	// postgresqlChecks below, rather than filtering on
+	// `t.relnamespace::regnamespace::text` — that cast already
+	// self-quotes a schema name that needs quoting (e.g. returns the
+	// literal text `"MySchema"`), so wrapping it in quote_ident() again
+	// double-quoted it and never matched the plain schema string the Go
+	// caller passes. Found live: Primary Keys/Unique Constraints tabs
+	// silently returned nothing for any schema needing identifier
+	// quoting, while Indexes/Checks on the same table worked fine.
 	rows, err := db.Query(`
 		SELECT quote_ident(c.conname) AS constraint_name,
 			   c.oid
@@ -14,7 +23,8 @@ func postgresqlPrimaryKeys(db *sql.DB, schema, table string) ([][2]any, error) {
 			WHERE contype = 'p'
 		) c
 		INNER JOIN pg_class t ON c.conrelid = t.oid
-		WHERE quote_ident(t.relnamespace::regnamespace::text) = $1
+		INNER JOIN pg_namespace n ON n.oid = t.relnamespace
+		WHERE quote_ident(n.nspname) = $1
 		  AND quote_ident(t.relname) = $2
 		ORDER BY quote_ident(c.conname)
 	`, schema, table)
@@ -219,6 +229,7 @@ func postgresqlForeignKeyColumns(db *sql.DB, schema, table, fkey string) ([]post
 // postgresqlUniques mirrors PostgreSQL.py's QueryTablesUniques for a single
 // table.
 func postgresqlUniques(db *sql.DB, schema, table string) ([][2]any, error) {
+	// See postgresqlPrimaryKeys' comment above — same double-quoting fix.
 	rows, err := db.Query(`
 		SELECT quote_ident(c.conname) AS constraint_name,
 			   c.oid
@@ -228,7 +239,8 @@ func postgresqlUniques(db *sql.DB, schema, table string) ([][2]any, error) {
 			WHERE contype = 'u'
 		) c
 		INNER JOIN pg_class t ON c.conrelid = t.oid
-		WHERE quote_ident(t.relnamespace::regnamespace::text) = $1
+		INNER JOIN pg_namespace n ON n.oid = t.relnamespace
+		WHERE quote_ident(n.nspname) = $1
 		  AND quote_ident(t.relname) = $2
 		ORDER BY quote_ident(c.conname)
 	`, schema, table)
@@ -425,6 +437,17 @@ func postgresqlViewDefinition(db *sql.DB, schema, view string) (string, error) {
 		}
 		return "", err
 	}
+	// NOT double-quoted via quotePostgresIdentifierDoubleQuoted: schema/view
+	// here are p_schema/p_view straight off the request, and — like every
+	// object name this app hands to the frontend (see the WHERE clause
+	// above, which itself compares quote_ident(catalog) to these same
+	// params) — the frontend always echoes back the already-quote_ident()-
+	// quoted display string (confirmed against tree_postgresql.js's
+	// `p_view: node.text`, where node.text is itself sourced from a
+	// `quote_ident(...) AS ...` column). Quoting it again here would
+	// double-quote any name that actually needed it. (An earlier version of
+	// this fix got this backwards — verified against the real request
+	// shape before landing this version.)
 	return "CREATE OR REPLACE VIEW " + schema + "." + view + " AS\n" + definition.String + "\n", nil
 }
 

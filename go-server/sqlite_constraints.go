@@ -45,9 +45,15 @@ func sqlitePrimaryKeys(db *sql.DB, table string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
-	names := make([]string, len(cols))
-	for i := range cols {
-		names[i] = "pk_" + table
+	// One row per PK CONSTRAINT (there's only ever one per table in
+	// SQLite), not one per PK column — a composite primary key used to
+	// emit len(cols) identical "pk_<table>" rows, showing N duplicate
+	// "Primary Key" tree nodes for a 2+ column PK instead of one. Compare
+	// mysqlPrimaryKeys' `select distinct`, which collapses the same
+	// one-row-per-column-in-catalog shape for the same reason.
+	names := make([]string, 0, 1)
+	if len(cols) > 0 {
+		names = append(names, "pk_"+table)
 	}
 	return names, nil
 }

@@ -100,19 +100,28 @@ func scanOracleRoutineFields(rows *sql.Rows) ([]oracleRoutineField, error) {
 }
 
 // oracleFunctionDefinition mirrors GetFunctionDefinition.
-func oracleFunctionDefinition(db *sql.DB, function string) (string, error) {
+// schema is required, not optional — get_ddl's 2-arg form defaults the
+// owner to the connected user's own schema, the exact "ignored p_schema"
+// bug already fixed elsewhere in this file's GetDDL/GetProperties (see
+// oracle_properties.go's oracleDDL/oraclePropertiesGeneric) and in the
+// FK queries (all_constraints vs user_constraints). These two were found
+// still missing it: viewing the DDL of a function/procedure owned by any
+// schema other than the connected user's own silently 404'd or, worse,
+// returned a same-named object from the wrong schema.
+func oracleFunctionDefinition(db *sql.DB, schema, function string) (string, error) {
 	var ddl string
-	err := db.QueryRow(`select dbms_lob.substr(dbms_metadata.get_ddl('FUNCTION', :1), 4000, 1) from dual`, function).Scan(&ddl)
+	err := db.QueryRow(`select dbms_lob.substr(dbms_metadata.get_ddl('FUNCTION', :1, :2), 4000, 1) from dual`, function, schema).Scan(&ddl)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf("-- DROP FUNCTION %s;\n%s", function, ddl), nil
 }
 
-// oracleProcedureDefinition mirrors GetProcedureDefinition.
-func oracleProcedureDefinition(db *sql.DB, procedure string) (string, error) {
+// oracleProcedureDefinition mirrors GetProcedureDefinition. See
+// oracleFunctionDefinition's comment above for why schema is required.
+func oracleProcedureDefinition(db *sql.DB, schema, procedure string) (string, error) {
 	var ddl string
-	err := db.QueryRow(`select dbms_lob.substr(dbms_metadata.get_ddl('PROCEDURE', :1), 4000, 1) from dual`, procedure).Scan(&ddl)
+	err := db.QueryRow(`select dbms_lob.substr(dbms_metadata.get_ddl('PROCEDURE', :1, :2), 4000, 1) from dual`, procedure, schema).Scan(&ddl)
 	if err != nil {
 		return "", err
 	}

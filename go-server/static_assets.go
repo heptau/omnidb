@@ -68,7 +68,14 @@ func handleTempFiles(dir string) http.Handler {
 		fileName := strings.TrimPrefix(r.URL.Path, prefix)
 		fileName = strings.TrimLeft(fileName, "/")
 		filePath := filepath.Join(dir, fileName)
-		if !strings.HasPrefix(filePath, dir) {
+		// filepath.Rel + explicit ".."-prefix rejection, not
+		// strings.HasPrefix(filePath, dir) — a bare prefix check without a
+		// trailing separator is the classic sibling-directory escape (e.g.
+		// dir "temp" also matches a resolved path under a sibling
+		// "temp-secret" or "temp2" directory). Same pattern already used
+		// correctly next door in export_save_dialog.go.
+		rel, err := filepath.Rel(dir, filePath)
+		if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
 			http.NotFound(w, r)
 			return
 		}
