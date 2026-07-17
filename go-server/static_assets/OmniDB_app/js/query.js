@@ -476,7 +476,7 @@ function querySQLReturnRender(p_message, p_context) {
 									col.align = "right";
 								} else if (/^(BOOL|BOOLEAN|BIT)$/.test(typeUpper)) {
 									col.align = "center";
-								} else if (/^(CHAR|BPCHAR|VARCHAR|NVARCHAR|VARCHAR2|NVARCHAR2|CHARACTER|NCHAR)$/.test(typeUpper)) {
+								} else if (/^(CHAR|BPCHAR)$/.test(typeUpper)) {
 									col.align = "center";
 								}
 							} else {
