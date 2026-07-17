@@ -385,7 +385,7 @@ func openNativeQueryTarget(info *ConnectionInfo) (*sql.DB, error) {
 // (the cursor is already open), but resolving it up front keeps this
 // function's error handling uniform between modes.
 func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestData, contextCode int, info *ConnectionInfo, userID int) {
-	const blockSize = 50
+	const blockSize = 100
 	start := time.Now()
 
 	sqlText := q.VSQLCmd
