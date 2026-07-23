@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [3.9.0] - 2026-07-23
+
 ### Added
 - First column in query result tables is now pinned (frozen) so it stays visible when scrolling
   horizontally through wide result sets.
@@ -33,6 +35,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   blocks without explicit delimiters (e.g. a `SELECT` with many indented output columns).
 
 ### Fixed
+- A query execution error (e.g. a SQL syntax error) showed a modal dialog instead of being routed
+  to the query tab's "Messages" panel, and left the "Cancel" button stuck visible with the editor
+  read-only, since that code path (`queueQueryError` → `MessageException`) never went through the
+  normal query-completion handling that resets tab state. Fixed by routing context-bound query
+  errors to a new `queryError` handler that resets the tab (re-enables the editor, hides
+  Cancel/commit/rollback), writes the error into the Messages panel, and switches to it — the modal
+  is now only shown for errors with no associated query tab.
+- Right-clicking a cell in the query results grid and choosing "View Content" or "Copy" did
+  nothing, a regression from the Handsontable → AG Grid migration. "View Content" built the
+  Bootstrap 5 modal but never called `.modal("show")`; "Copy" called `document.execCommand("copy")`
+  against a nonexistent DOM selection, since the AG Grid adapter's `selectCell` only sets grid
+  focus/row-selection state, not a browser `Selection`/`Range`. Fixed by showing the modal
+  explicitly and by building the copied text from the selected cell range and writing it via the
+  existing `uiCopyTextToClipboard` helper.
 - `handleChangeActiveDatabase` silently swallowed a malformed/missing request body and still replied
   with a success envelope, instead of the `writeBadRequest` every sibling handler in the same file
   uses — a malformed call would leave the tab's active-database override unset while the frontend

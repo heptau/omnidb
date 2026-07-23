@@ -528,6 +528,7 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 		backdrop: "static",
 		keyboard: false,
 	});
+	$("#div_edit_content").modal("show");
 }
 
 function saveEditContent() {

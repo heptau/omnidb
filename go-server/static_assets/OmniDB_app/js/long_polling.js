@@ -119,7 +119,13 @@ function polling_response(p_message) {
 			break;
 		}
 		case parseInt(v_queryResponseCodes.MessageException): {
-			showError(p_message.v_data);
+			if (p_context) {
+				SetAcked(p_context);
+				queryError(p_message, p_context);
+				removeContext(p_context_code);
+			} else {
+				showError(p_message.v_data);
+			}
 			break;
 		}
 		case parseInt(v_queryResponseCodes.PasswordRequired): {

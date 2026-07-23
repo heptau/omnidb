@@ -516,13 +516,21 @@ function querySQLReturnRender(p_message, p_context) {
 											false,
 										);
 									} else if (key === "copy") {
-										this.selectCell(
-											options[0].start.row,
-											options[0].start.col,
-											options[0].end.row,
-											options[0].end.col,
-										);
-										document.execCommand("copy");
+										var v_start_row = Math.min(options[0].start.row, options[0].end.row);
+										var v_end_row = Math.max(options[0].start.row, options[0].end.row);
+										var v_start_col = Math.min(options[0].start.col, options[0].end.col);
+										var v_end_col = Math.max(options[0].start.col, options[0].end.col);
+										var v_ht = this;
+										var v_lines = [];
+										for (var v_row = v_start_row; v_row <= v_end_row; v_row++) {
+											var v_cells = [];
+											for (var v_col = v_start_col; v_col <= v_end_col; v_col++) {
+												var v_cell_value = v_ht.getDataAtCell(v_row, v_col);
+												v_cells.push(v_cell_value == null ? "" : String(v_cell_value));
+											}
+											v_lines.push(v_cells.join("\t"));
+										}
+										uiCopyTextToClipboard(v_lines.join("\n"));
 									}
 								},
 								items: {
@@ -587,4 +595,35 @@ function querySQLReturnRender(p_message, p_context) {
 	p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
 	p_context.tab_tag.tab_check_span.style.display = "none";
 	p_context.tab_tag.bt_cancel.style.display = "none";
+}
+
+function queryError(p_message, p_context) {
+	var v_tab_tag = p_context.tab_tag;
+
+	v_tab_tag.state = v_queryState.Idle;
+	v_tab_tag.context = null;
+	v_tab_tag.data = null;
+
+	if (v_tab_tag.editor) {
+		v_tab_tag.editor.setReadOnly(false);
+	}
+
+	v_tab_tag.bt_commit.style.display = "none";
+	v_tab_tag.bt_rollback.style.display = "none";
+
+	setTabStatus(v_tab_tag, 1);
+
+	v_tab_tag.div_notices.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data) + "</div>";
+	if (v_tab_tag.div_count_notices) {
+		v_tab_tag.div_count_notices.innerHTML = 1;
+		v_tab_tag.div_count_notices.style.display = "inline-block";
+	}
+	v_tab_tag.selectMessageTabFunc();
+
+	v_tab_tag.query_info.innerHTML =
+		"<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + "<br><b>Error</b>";
+
+	v_tab_tag.tab_loading_span.style.visibility = "hidden";
+	v_tab_tag.tab_check_span.style.display = "none";
+	v_tab_tag.bt_cancel.style.display = "none";
 }
