@@ -273,12 +273,11 @@ function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
 			if (
 				v_tab.tag.mode == "edit" ||
 				v_tab.tag.mode == "alter" ||
-				v_tab.tag.mode == "debug" ||
 				v_tab.tag.mode == "monitor_dashboard" ||
 				v_tab.tag.mode == "data_mining"
 			) {
 				showAlert(
-					"Before changing connection please close any tab that belongs to the following types: <br/><br/><b>Edit Data<br/><br/>Alter Table<br/><br/>Function Debugging<br/><br/>Monitoring Dashboard<br/><br/>Advanced Object Search",
+					"Before changing connection please close any tab that belongs to the following types: <br/><br/><b>Edit Data<br/><br/>Alter Table<br/><br/>Monitoring Dashboard<br/><br/>Advanced Object Search",
 					null,
 					null,
 					true,
@@ -875,7 +874,6 @@ function refreshHeights(p_all) {
 
 			if (
 				v_tab_tag.mode == "console" ||
-				v_tab_tag.mode == "debug" ||
 				v_tab_tag.mode == "edit" ||
 				v_tab_tag.mode == "graph" ||
 				v_tab_tag.mode == "monitor_dashboard" ||
@@ -960,7 +958,6 @@ function refreshTreeHeight() {
 function checkTabStatus(v_tab) {
 	if (v_tab.tag.tabControl.selectedTab.tag.mode == "query") checkQueryStatus(v_tab.tag.tabControl.selectedTab);
 	else if (v_tab.tag.tabControl.selectedTab.tag.mode == "edit") checkEditDataStatus(v_tab.tag.tabControl.selectedTab);
-	else if (v_tab.tag.tabControl.selectedTab.tag.mode == "debug") checkDebugStatus(v_tab.tag.tabControl.selectedTab);
 	else if (v_tab.tag.tabControl.selectedTab.tag.mode == "console") checkConsoleStatus(v_tab.tag.tabControl.selectedTab);
 }
 

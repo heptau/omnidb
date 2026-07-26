@@ -280,6 +280,62 @@ class AgGridAdapter {
 		}
 	}
 
+	// Handsontable's deselectCell() clears the grid's own cell/row selection
+	// (callers like autocomplete.js do selectCell() immediately followed by
+	// deselectCell() just to focus/scroll a row into view without leaving
+	// AG Grid's native selection highlight visible, since the app renders
+	// its own selection highlighting separately). Missing this entirely
+	// (rather than a no-op) made every caller throw a TypeError instead of
+	// silently doing nothing.
+	deselectCell() {
+		if (this.gridApi) {
+			this.gridApi.deselectAll();
+			this.gridApi.clearFocusedCell();
+		}
+	}
+
+	// Handsontable's getSettings().columns / updateSettings({columns}) pair,
+	// used by callers that read a column's current width, tweak it, and
+	// write it back (e.g. autocomplete.js sizing its result column to fit
+	// the longest match). AG Grid keeps column width on the column state
+	// rather than columnDefs, so read from getColumnState() and apply
+	// through columnApi.setColumnWidth() rather than mutating columnDefs.
+	getSettings() {
+		if (!this.gridApi) return { columns: [] };
+		const defs = this.gridOptions.columnDefs || [];
+		const state = this.columnApi ? this.columnApi.getColumnState() : [];
+		return {
+			columns: defs.map((def, i) => {
+				const field = def.field || "col_" + i;
+				const colState = state.find((s) => s.colId === field);
+				return { field: field, width: colState ? colState.width : def.width };
+			}),
+		};
+	}
+
+	updateSettings(settings) {
+		if (!this.columnApi || !settings || !settings.columns) return;
+		settings.columns.forEach((col, i) => {
+			if (typeof col.width !== "number") return;
+			const field = col.field || "col_" + i;
+			this.columnApi.setColumnWidth(field, col.width);
+		});
+	}
+
+	// Handsontable's getCell(row, col) returns the rendered <td>-equivalent
+	// DOM node (or null if that row isn't currently rendered) so the caller
+	// can toggle a CSS class on it directly. AG Grid's virtualized rows use
+	// [row-index]/[col-id] attributes on its own .ag-row/.ag-cell elements,
+	// one level shallower than a real <table> but with the same cell-then-
+	// row parentNode relationship callers here rely on.
+	getCell(row, col) {
+		if (!this.gridApi) return null;
+		const field = "col_" + col;
+		const rowEl = this._gridDiv.querySelector('[row-index="' + row + '"]');
+		if (!rowEl) return null;
+		return rowEl.querySelector('[col-id="' + field + '"]');
+	}
+
 	destroy() {
 		if (this._agGrid) {
 			this._agGrid.destroy();

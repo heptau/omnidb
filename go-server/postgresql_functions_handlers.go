@@ -240,33 +240,6 @@ func handleGetFunctionDefinitionPostgreSQL(upstream *url.URL, fallback http.Hand
 	}
 }
 
-func handleGetFunctionDebugPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		raw, err := readFormData(r)
-		if err != nil || raw == "" {
-			writeBadRequest(w)
-			return
-		}
-		var reqBody pgFunctionRequest
-		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
-			writeBadRequest(w)
-			return
-		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
-		if !ok {
-			return
-		}
-		defer db.Close()
-
-		src, err := postgresqlRoutineSource(db, reqBody.PFunction)
-		if err != nil {
-			writeDatabaseError(w, err.Error())
-			return
-		}
-		writeEnvelope(w, src, false, -1)
-	}
-}
-
 type pgProcedureRequest struct {
 	baseRequest
 	PProcedure string `json:"p_procedure"`
@@ -296,33 +269,6 @@ func handleGetProcedureDefinitionPostgreSQL(upstream *url.URL, fallback http.Han
 			return
 		}
 		writeEnvelope(w, def, false, -1)
-	}
-}
-
-func handleGetProcedureDebugPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		raw, err := readFormData(r)
-		if err != nil || raw == "" {
-			writeBadRequest(w)
-			return
-		}
-		var reqBody pgProcedureRequest
-		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
-			writeBadRequest(w)
-			return
-		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
-		if !ok {
-			return
-		}
-		defer db.Close()
-
-		src, err := postgresqlRoutineSource(db, reqBody.PProcedure)
-		if err != nil {
-			writeDatabaseError(w, err.Error())
-			return
-		}
-		writeEnvelope(w, src, false, -1)
 	}
 }
 

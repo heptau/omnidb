@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Page Not Found - OmniDB</title>
+	<meta name="robots" content="noindex, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="manifest.json">
+	<link rel="apple-touch-icon" href="assets/omnidb_logo.png">
+
+	<link rel="stylesheet" href="assets/topbar.css">
+	<script src="assets/theme-switcher.js"></script>
+	<style>
+		body {
+			font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+			margin: 0;
+			background-color: var(--brand-bg);
+			color: var(--brand-text);
+		}
+		main {
+			max-width: 640px;
+			margin: 0 auto;
+			padding: 100px 20px 120px;
+			text-align: center;
+		}
+		.code {
+			font-size: 1rem;
+			font-weight: 700;
+			letter-spacing: 0.08em;
+			color: var(--brand-light-blue);
+			text-transform: uppercase;
+			margin-bottom: 12px;
+		}
+		h1 {
+			font-size: 2.4rem;
+			font-weight: 800;
+			color: var(--brand-navy);
+			margin: 0 0 20px;
+		}
+		p {
+			font-size: 1.1rem;
+			color: var(--brand-text-muted);
+			line-height: 1.7;
+		}
+		.links {
+			display: flex;
+			justify-content: center;
+			gap: 16px;
+			flex-wrap: wrap;
+			margin-top: 36px;
+		}
+		.links a {
+			display: inline-block;
+			padding: 12px 24px;
+			border-radius: 10px;
+			border: 2px solid var(--brand-navy);
+			color: var(--brand-navy);
+			font-weight: 700;
+			text-decoration: none;
+		}
+		.links a:hover {
+			background-color: var(--brand-navy);
+			color: #ffffff;
+		}
+	</style>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<a class="site-topbar-brand" href="en/">
+				<img src="en/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="en/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="en/docs/introduction.html">Docs</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Change theme" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Light</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dark</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<main>
+		<div class="code">404</div>
+		<h1>This page doesn't exist</h1>
+		<p>The link you followed may be broken, or the page may have moved. Try the
+			homepage, the documentation index, or the GitHub repository instead.</p>
+		<div class="links">
+			<a href="en/">Homepage</a>
+			<a href="en/docs/introduction.html">Documentation</a>
+			<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+		</div>
+	</main>
+	<script src="assets/dropdown.js"></script>
+</body>
+</html>

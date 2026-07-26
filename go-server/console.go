@@ -164,18 +164,21 @@ func consoleStatusLine(count int, returnsRows bool) string {
 	return fmt.Sprintf("%d %s %s", count, noun, verb)
 }
 
-// consoleHelpTable mirrors v_help — deliberately the same 3 rows for every
-// engine (\?, \x, \timing), NOT Postgres's much larger pgspecial-backed set
-// (\dt, \d, \du, \l, \df, ...). Porting pgspecial's catalog-query-driven
-// meta-commands is a real, separately-scoped chunk of work (see
-// go-backend-migration memory) — deliberately deferred rather than
-// advertising commands this port doesn't actually implement.
+// consoleHelpTable mirrors v_help, extended with the catalog-browsing
+// commands console_meta.go implements. \h (per-SQL-command syntax help,
+// unlike these a large static text blob rather than a catalog query) is
+// deliberately still not listed — see console_meta.go's package comment.
 func consoleHelpTable() (cols []string, rows [][]string) {
 	cols = []string{"Command", "Syntax", "Description"}
 	rows = [][]string{
 		{`\?`, `\?`, "Show Commands."},
 		{`\x`, `\x`, "Toggle expanded output."},
 		{`\timing`, `\timing`, "Toggle timing of commands."},
+		{`\dt`, `\dt`, "List tables."},
+		{`\d`, `\d [NAME]`, "List or describe tables, views and sequences."},
+		{`\du`, `\du`, "List roles/users."},
+		{`\l`, `\l`, "List databases."},
+		{`\df`, `\df`, "List functions."},
 	}
 	return cols, rows
 }
@@ -206,6 +209,19 @@ func (s *consoleSession) runStatement(ctx context.Context, stmt string) (string,
 			return "Timing is on.", nil
 		}
 		return "Timing is off.", nil
+	case `\dt`:
+		return s.consoleMetaTables(ctx)
+	case `\d`:
+		if arg := consoleArg(stmt); arg != "" {
+			return s.consoleMetaDescribe(ctx, arg)
+		}
+		return s.consoleMetaRelations(ctx)
+	case `\du`:
+		return s.consoleMetaRoles(ctx)
+	case `\l`:
+		return s.consoleMetaDatabases(ctx)
+	case `\df`:
+		return s.consoleMetaFunctions(ctx)
 	}
 
 	var timeStart time.Time

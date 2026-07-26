@@ -16,16 +16,16 @@ import (
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
 
-// goServerPathEnvOverride lets developers point at a local omnidb-go-server
+// serverPathEnvOverride lets developers point at a local omnidb-server
 // build without needing the full Makefile packaging pipeline.
-const goServerPathEnvOverride = "OMNIDB_GO_SERVER_PATH"
+const serverPathEnvOverride = "OMNIDB_SERVER_PATH"
 
-// resolveGoServerPath locates the omnidb-go-server binary (see go-server/)
+// resolveServerPath locates the omnidb-server binary (see go-server/)
 // — the entire backend now, no Django/Python process involved anywhere
 // (Fáze 8c). Ships as a plain sibling of this shell binary on every
 // platform (no Resources-folder indirection needed).
-func resolveGoServerPath() (string, error) {
-	if p := os.Getenv(goServerPathEnvOverride); p != "" {
+func resolveServerPath() (string, error) {
+	if p := os.Getenv(serverPathEnvOverride); p != "" {
 		return p, nil
 	}
 
@@ -34,19 +34,19 @@ func resolveGoServerPath() (string, error) {
 		return "", fmt.Errorf("resolve executable path: %w", err)
 	}
 
-	name := "omnidb-go-server"
+	name := "omnidb-server"
 	if runtime.GOOS == "windows" {
 		name += ".exe"
 	}
 	return filepath.Join(filepath.Dir(exePath), name), nil
 }
 
-// startBackend spawns the omnidb-go-server process and streams its output
+// startBackend spawns the omnidb-server process and streams its output
 // back to the frontend as "backend:log" events, emitting "backend:ready"
 // with the login URL once it reports it is listening (a stdout line
 // starting with "http").
 func (a *App) startBackend() {
-	goServerPath, err := resolveGoServerPath()
+	serverPath, err := resolveServerPath()
 	if err != nil {
 		wailsruntime.EventsEmit(a.ctx, "backend:log", fmt.Sprintf("Failed to locate OmniDB server: %v", err))
 		return
@@ -57,15 +57,19 @@ func (a *App) startBackend() {
 	// top of the required -A. Without this, a caller-supplied -d is
 	// silently dropped and the server falls back to the real ~/.omnidb.
 	args := append([]string{"-A"}, os.Args[1:]...)
-	cmd := exec.Command(goServerPath, args...)
+	cmd := exec.Command(serverPath, args...)
 
-	// Tells go-server/export_save_dialog.go where to relay a native
-	// save-dialog request — see savedialog.go's comment on why that hop
-	// exists. saveDialogAddr is already set by the time this runs: startup
-	// (an OnStartup hook, always first) starts that listener synchronously,
-	// well before FrontendReady (triggered later, by JS) calls this.
+	// Tells go-server/export_save_dialog.go and go-server/open_external_url.go
+	// where to relay a native save-dialog / open-URL request — see
+	// savedialog.go's comment on why that hop exists. saveDialogAddr is
+	// already set by the time this runs: startup (an OnStartup hook, always
+	// first) starts that listener synchronously, well before FrontendReady
+	// (triggered later, by JS) calls this.
 	if a.saveDialogAddr != "" {
-		cmd.Env = append(os.Environ(), "OMNIDB_SAVE_DIALOG_URL=http://"+a.saveDialogAddr+"/save-file")
+		cmd.Env = append(os.Environ(),
+			"OMNIDB_SAVE_DIALOG_URL=http://"+a.saveDialogAddr+"/save-file",
+			"OMNIDB_OPEN_URL=http://"+a.saveDialogAddr+"/open-url",
+		)
 	}
 
 	stdout, err := cmd.StdoutPipe()
@@ -114,7 +118,7 @@ func (a *App) streamServerOutput(pipe io.Reader, watchForReadyURL bool) {
 	}
 }
 
-// stopBackend asks omnidb-go-server to shut down gracefully over loopback
+// stopBackend asks omnidb-server to shut down gracefully over loopback
 // HTTP (see go-server/main.go's handleShutdown) and waits for it to exit,
 // falling back to Process.Kill() only if that request fails or the process
 // doesn't exit within a few seconds — gives the HTTP server a chance to
@@ -141,7 +145,7 @@ func (a *App) stopBackend() {
 			case <-done:
 				return
 			case <-time.After(5 * time.Second):
-				// Fall through to the force-kill below — omnidb-go-server
+				// Fall through to the force-kill below — omnidb-server
 				// accepted the request but didn't exit in time.
 			}
 		}

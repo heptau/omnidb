@@ -191,16 +191,6 @@ function polling_response(p_message) {
 			}
 			break;
 		}
-		case parseInt(v_queryResponseCodes.DebugResponse): {
-			if (p_context) {
-				SetAcked(p_context);
-				debugResponse(p_message, p_context);
-				if (p_message.v_data.v_remove_context) {
-					removeContext(p_context_code);
-				}
-			}
-			break;
-		}
 		case parseInt(v_queryResponseCodes.RemoveContext): {
 			if (p_context) {
 				removeContext(p_context_code);

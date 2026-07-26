@@ -1,4 +1,4 @@
-// Command omnidb-go-server is the OmniDB backend — originally phase 0 of
+// Command omnidb-server is the OmniDB backend — originally phase 0 of
 // the Django-to-Go migration (see
 // /Users/zv/.claude/plans/recursive-petting-sphinx.md for the full plan),
 // now (Fáze 8c) the ONLY backend: every route is either natively
@@ -48,7 +48,7 @@ var shutdownCtx, shutdownCancel = context.WithCancel(context.Background())
 
 func main() {
 	if err := run(); err != nil {
-		log.Fatalf("omnidb-go-server: %v", err)
+		log.Fatalf("omnidb-server: %v", err)
 	}
 }
 
@@ -76,7 +76,7 @@ func run() error {
 			return fmt.Errorf("parse %s=%q: %w", devUpstreamEnv, dev, err)
 		}
 		upstream = u
-		fmt.Fprintf(os.Stderr, "omnidb-go-server: dev mode, proxying to existing upstream %s\n", upstream)
+		fmt.Fprintf(os.Stderr, "omnidb-server: dev mode, proxying to existing upstream %s\n", upstream)
 	} else {
 		// upstream is kept as a real (if inert) *url.URL purely so none of
 		// this file's ~250 mux.Handle(..., upstream, ...) call sites need
@@ -146,6 +146,7 @@ func run() error {
 	if isLoopbackHost(listenHost) {
 		mux.Handle("/internal/shutdown/", handleShutdown(shutdownCh))
 		mux.Handle("/export_save_dialog/", http.HandlerFunc(handleExportSaveDialog))
+		mux.Handle("/open_external_url/", http.HandlerFunc(handleOpenExternalURL))
 	}
 	mux.Handle("/get_properties_sqlite/", handleGetPropertiesSQLite(upstream, proxy))
 	mux.Handle("/get_tables_sqlite/", handleGetTablesSQLite(upstream, proxy))
@@ -232,11 +233,9 @@ func run() error {
 	mux.Handle("/get_functions_postgresql/", handleGetFunctionsPostgreSQL(upstream, proxy))
 	mux.Handle("/get_function_fields_postgresql/", handleGetFunctionFieldsPostgreSQL(upstream, proxy))
 	mux.Handle("/get_function_definition_postgresql/", handleGetFunctionDefinitionPostgreSQL(upstream, proxy))
-	mux.Handle("/get_function_debug_postgresql/", handleGetFunctionDebugPostgreSQL(upstream, proxy))
 	mux.Handle("/get_procedures_postgresql/", handleGetProceduresPostgreSQL(upstream, proxy))
 	mux.Handle("/get_procedure_fields_postgresql/", handleGetProcedureFieldsPostgreSQL(upstream, proxy))
 	mux.Handle("/get_procedure_definition_postgresql/", handleGetProcedureDefinitionPostgreSQL(upstream, proxy))
-	mux.Handle("/get_procedure_debug_postgresql/", handleGetProcedureDebugPostgreSQL(upstream, proxy))
 	mux.Handle("/get_triggerfunctions_postgresql/", handleGetTriggerFunctionsPostgreSQL(upstream, proxy))
 	mux.Handle("/get_triggerfunction_definition_postgresql/", handleGetTriggerFunctionDefinitionPostgreSQL(upstream, proxy))
 	mux.Handle("/get_aggregates_postgresql/", handleGetAggregatesPostgreSQL(upstream, proxy))
@@ -358,9 +357,11 @@ func run() error {
 	// built for Fáze 7's native login). None of these depend on Django's
 	// live Session object anymore — see the go-backend-migration memory for
 	// how each one was confirmed safe to re-derive fresh instead. Remaining
-	// Django-only pieces: PostgreSQL debugger (confirmed dead code) and
-	// monitor_dashboard.py (RestrictedPython sandboxed eval, needs a
-	// redesign, not a mechanical port).
+	// Django-only piece: monitor_dashboard.py (RestrictedPython sandboxed
+	// eval, needs a redesign, not a mechanical port). The interactive
+	// PL/pgSQL step debugger was never ported and has since been removed
+	// outright (frontend, routes, and menu entries) — see Legacy Features
+	// & History in docs/ for why.
 	mux.Handle("/close_welcome/", handleCloseWelcome(upstream))
 	mux.Handle("/save_shortcuts/", handleSaveShortcuts(upstream))
 	mux.Handle("/get_command_list/", handleGetCommandList(upstream))
@@ -452,9 +453,9 @@ func run() error {
 	case standalone && appToken != "":
 		fmt.Printf("http://127.0.0.1:%d/omnidb_login/?user=admin&pwd=admin&token=%s\n", ownPort, appToken)
 	case standalone:
-		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on %s:%d — open http://%s:%d/omnidb_login/ in your browser\n", listenHost, ownPort, listenHost, ownPort)
+		fmt.Fprintf(os.Stderr, "omnidb-server: listening on %s:%d — open http://%s:%d/omnidb_login/ in your browser\n", listenHost, ownPort, listenHost, ownPort)
 	default:
-		fmt.Fprintf(os.Stderr, "omnidb-go-server: listening on 127.0.0.1:%d, proxying to %s\n", ownPort, upstream)
+		fmt.Fprintf(os.Stderr, "omnidb-server: listening on 127.0.0.1:%d, proxying to %s\n", ownPort, upstream)
 	}
 
 	sigCh := make(chan os.Signal, 1)
@@ -465,7 +466,7 @@ func run() error {
 	case <-shutdownCh:
 	case err := <-serveErrCh:
 		if err != nil && err != http.ErrServerClosed {
-			fmt.Fprintf(os.Stderr, "omnidb-go-server: server stopped: %v\n", err)
+			fmt.Fprintf(os.Stderr, "omnidb-server: server stopped: %v\n", err)
 		}
 	}
 

@@ -111,16 +111,18 @@ func formatDuration(d time.Duration) string {
 
 // handleCreateRequest serves /create_request/ — this proxy's dispatch point
 // for every real, still-used request type (Query/Console/QueryEditData/
-// SaveEditData/Terminal/CancelThread/CloseTab). The remaining IntEnum
-// values in Python's own requestType (Debug, Script, Execute,
-// AdvancedObjectSearch) are confirmed dead in the shipped frontend — see
-// go-backend-migration memory for how each was confirmed (the PostgreSQL
-// debugger's function is defined but never called; Script/Execute are never
-// sent by any JS; AdvancedObjectSearch's own JS calls
+// SaveEditData/Terminal/CancelThread/CloseTab). The remaining IntEnum values
+// in Python's own requestType (Debug, Script, Execute,
+// AdvancedObjectSearch) are confirmed dead in the shipped frontend: Script/
+// Execute are never sent by any JS; AdvancedObjectSearch's own JS calls
 // queryAdvancedObjectSearch/checkAdvancedObjectSearchStatus, neither of
-// which exist anywhere in the static tree) — so falling through to Django's
-// own create_request for a genuinely unrecognized v_code is a defensive
-// no-op, not a real feature gap.
+// which exist anywhere in the static tree. Debug *was* reachable (a "Debug
+// Function"/"Debug Procedure" tree menu entry called it) but had no handler
+// here — it silently fell through to this no-op fallback — and has since
+// been removed outright, menu entries included, rather than left as a
+// dead-end. So falling through to Django's own create_request for a
+// genuinely unrecognized v_code is a defensive no-op, not a real feature
+// gap.
 //
 // Delivery of the result goes through this process's own native long-poll
 // queue now (see native_polling.go's queueNativeResponse), not Django's —

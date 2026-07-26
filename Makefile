@@ -134,7 +134,7 @@ _build_mac: _prepare_dirs _ensure_wails
 	plutil -replace CFBundleVersion -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
 
 	@echo "Building Go server..."
-	cd go-server && GOOS=darwin GOARCH=$(WAILS_GOARCH) go build -o "../$(APP_CONTENT)/MacOS/omnidb-go-server" .
+	cd go-server && GOOS=darwin GOARCH=$(WAILS_GOARCH) go build -o "../$(APP_CONTENT)/MacOS/omnidb-server" .
 
 	@echo "Signing..."
 	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
@@ -160,7 +160,7 @@ _build_linux: _prepare_dirs _ensure_wails
 	mv "wails-app/build/bin/$(APP_NAME)" "$(BUILD_DIR)/$(APP_NAME)-linux/$(APP_NAME)"
 
 	@echo "Building Go server..."
-	cd go-server && GOOS=linux GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-linux/omnidb-go-server" .
+	cd go-server && GOOS=linux GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-linux/omnidb-server" .
 
 	@echo "Packaging Linux Dist..."
 	mkdir -p $(BUILD_DIR)/dist
@@ -181,7 +181,7 @@ _build_win: _prepare_dirs _ensure_wails
 	mv "wails-app/build/bin/$(APP_NAME).exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
 
 	@echo "Building Go server..."
-	cd go-server && GOOS=windows GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-win/omnidb-go-server.exe" .
+	cd go-server && GOOS=windows GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-win/omnidb-server.exe" .
 
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist

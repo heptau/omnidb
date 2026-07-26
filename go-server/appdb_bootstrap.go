@@ -108,7 +108,7 @@ func bootstrapAppDB(db *sql.DB) error {
 		return fmt.Errorf("commit app db bootstrap: %w", err)
 	}
 
-	fmt.Fprintln(os.Stderr, "omnidb-go-server: initialized a new app database (default login: admin/admin)")
+	fmt.Fprintln(os.Stderr, "omnidb-server: initialized a new app database (default login: admin/admin)")
 	appDBBootstrapDone = true
 	return nil
 }

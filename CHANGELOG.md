@@ -7,6 +7,54 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Console Tab: `\dt`, `\d`/`\d NAME`, `\du`, `\l`, and `\df` — psql-style catalog-browsing
+  backslash commands (list tables, describe a table/view, list roles, list databases, list
+  functions), implemented across PostgreSQL, MySQL/MariaDB, Oracle and SQLite. Where an engine
+  has no equivalent concept (e.g. SQLite has no roles or multiple databases), the command says
+  so directly instead of erroring or returning a misleading result.
+
+### Changed
+- The server binary is now named `omnidb-server` (was `omnidb-go-server`) — the `-go-` was a
+  leftover from the Python-to-Go migration with no meaning to an end user. Applies to the
+  release archive's binary name, the Go module name, and the `OMNIDB_SERVER_PATH` dev override
+  (was `OMNIDB_GO_SERVER_PATH`).
+
+### Fixed
+- SQL editor autocomplete only ever showed the static keyword list, never tables/columns/schemas/
+  etc., and kept the wrong item highlighted while typing. Root cause: three Handsontable-API
+  calls (`deselectCell`, `getSettings`/`updateSettings`, `getCell`) the autocomplete popup still
+  makes were never ported to `AgGridAdapter.js` during the Handsontable → AG Grid migration,
+  so each one threw immediately — the first (`deselectCell`, inside `renew_autocomplete`) before
+  the code that even requests catalog completions from the backend ever ran, the second
+  (`getSettings`, inside the response handler) before the code that merges those results into
+  the popup ever ran. Added all three to `AgGridAdapter.js`.
+- Tree "Doc: ..." menu items (e.g. right-click a database → "Doc: Databases") and the About
+  dialog's "OmniDB"/"GitHub" links opened an embedded panel that stayed permanently blank, with
+  no visible error. Root cause: they rendered the target page inside an `<iframe>`, and every
+  site they point at (postgresql.org confirmed via response headers, also applies to github.com)
+  sends `X-Frame-Options`/CSP `frame-ancestors` headers that refuse to be framed at all — there is
+  no way to embed such a page, so the iframe approach could never have worked. Changed
+  `website_tab.js` to open these links externally instead (first fix used `window.open()`
+  directly, which turned out to be a silent no-op inside the desktop app's own webview — see the
+  next entry).
+- The `window.open()` fix above did nothing when run inside the packaged desktop app (no popup,
+  no new window, no console error) — Wails' webview doesn't support it. Added a native relay: the
+  desktop app now runs a tiny loopback listener (`wails-app/openurl.go`, sharing the save-dialog
+  server) that calls `wailsruntime.BrowserOpenURL`, and go-server's new `/open_external_url/`
+  (`open_external_url.go`) forwards requests to it. The frontend (`website_tab.js`) picks between
+  that relay and a plain `window.open()` based on `gv_desktopMode`, mirroring the existing
+  `/export_save_dialog/` pattern used for native "Save As" dialogs.
+
+### Removed
+- The interactive PL/pgSQL step debugger: the "Debug Function"/"Debug Procedure" tree menu
+  entries, their frontend (`debug.js`, `inner_debugger_tab.js`), and the two Go handlers behind
+  them. It was never ported to Go during the 3.6.x rewrite — clicking it always returned "This
+  feature is not available." — and reviving it would mean building it again from scratch, not
+  just wiring it up, since it depended on a `shared_preload_libraries` PostgreSQL C extension
+  that can't be loaded on any managed/cloud Postgres anyway. See Legacy Features & History in
+  the public docs.
+
 ## [3.9.0] - 2026-07-23
 
 ### Added

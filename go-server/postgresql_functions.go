@@ -7,13 +7,7 @@ import (
 )
 
 // This file mirrors tree_postgresql.py's function/procedure/aggregate
-// surface — part of Fáze 8a's PostgreSQL long-tail port. "Debug" here
-// (GetFunctionDebug/GetProcedureDebug) is NOT the real PostgreSQL debugger
-// feature (that's polling.py's thread_debug, an entirely separate,
-// stateful, session-scoped subsystem driven by an externally-installed
-// 'omnidb' extension with no source in this repo — deliberately out of
-// scope, unrelated to this file) — it's just a plain "select prosrc" raw
-// source-body fetch, confirmed by reading PostgreSQL.py directly.
+// surface — part of Fáze 8a's PostgreSQL long-tail port.
 
 type postgresqlRoutine struct {
 	ID     string
@@ -149,8 +143,8 @@ type postgresqlRoutineField struct {
 // The "returns" pseudo-row's routineID match used to compare against a
 // raw, un-quote_ident'd `n.nspname || '.' || p.proname || ...` string,
 // while every producer of a routineID (postgresqlRoutinesByKind,
-// postgresqlTriggerFunctions, postgresqlAggregates, postgresqlRoutineSource)
-// builds it with quote_ident() around both parts. For a schema/function
+// postgresqlTriggerFunctions, postgresqlAggregates) builds it with
+// quote_ident() around both parts. For a schema/function
 // needing quoting this match found zero rows, silently dropping the
 // "returns" row from the Fields list. Fixed to quote_ident() both sides,
 // consistent with every producer.
@@ -216,22 +210,6 @@ func postgresqlRoutineDefinition(db *sql.DB, routineID string) (string, error) {
 		return "", err
 	}
 	return def, nil
-}
-
-// postgresqlRoutineSource mirrors GetFunctionDebug/GetProcedureDebug — the
-// raw prosrc body text (not the full CREATE OR REPLACE FUNCTION DDL).
-func postgresqlRoutineSource(db *sql.DB, routineID string) (string, error) {
-	var src string
-	err := db.QueryRow(`
-		select p.prosrc
-		from pg_proc p
-		join pg_namespace n on p.pronamespace = n.oid
-		where quote_ident(n.nspname) || '.' || quote_ident(p.proname) || '(' || oidvectortypes(p.proargtypes) || ')' = $1
-	`, routineID).Scan(&src)
-	if err != nil {
-		return "", err
-	}
-	return src, nil
 }
 
 // postgresqlTemplateSelectFunction mirrors PostgreSQL.py's

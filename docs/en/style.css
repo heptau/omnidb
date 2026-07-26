@@ -1,134 +1,78 @@
-/* OmniDB Revival - Main Stylesheet */
+/* OmniDB Home — hero/marketing components for the homepage's <main class="hero">.
+   Loaded alongside assets/topbar.css (brand tokens + shell chrome) and
+   assets/style.css (shell layout: sidebar, main column, base typography) —
+   this file only adds marketing-page components, scoped under .hero so it
+   never collides with assets/style.css's page-wide h1/h2 rules. Brand color
+   tokens below (--white/--light-blue/--dark-blue/...) alias the shared
+   --brand-* tokens from topbar.css, which already flip for
+   data-theme="light"/"dark" and prefers-color-scheme — see that file's
+   header comment. */
 
 :root {
-	/* Light Theme Variables */
-	--white: #ffffff;
-	--light-blue: #8199bf;
-	--dark-blue: #192e4d;
-	--text-main: #2d3748;
-	--text-muted: #4a5568;
-	--bg-light: #f4f7f9;
-	--border-color: #e2e8f0;
-	--card-bg: #ffffff;
-
-	/* Logo defaults (Light Mode) */
-	--logo-wrapper-bg: transparent;
-	--logo-wrapper-padding: 20px 0;
-	--logo-wrapper-radius: 0;
-	--logo-wrapper-shadow: none;
+	--white: var(--brand-bg);
+	--light-blue: var(--brand-light-blue);
+	--dark-blue: var(--brand-navy);
+	--text-main: var(--brand-text);
+	--text-muted: var(--brand-text-muted);
+	--bg-light: var(--brand-bg-alt);
+	--border-color: var(--brand-border);
+	--card-bg: var(--brand-card-bg);
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		/* Dark Theme Variables */
-		--white: #1a202c;
-		--light-blue: #a0aec0;
-		--dark-blue: #63b3ed;
-		--text-main: #f7fafc;
-		--text-muted: #cbd5e0;
-		--bg-light: #2d3748;
-		--border-color: #4a5568;
-		--card-bg: #2d3748;
-
-		/* Logo specifics for Dark Mode */
-		--logo-wrapper-bg: #ffffff;
-		/* Pure white oval */
-		--logo-wrapper-padding: 20px 50px;
-		--logo-wrapper-radius: 100px;
-		--logo-wrapper-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-	}
-}
-
-/* Global Styles */
-body {
-	font-family: 'Inter', sans-serif;
-	margin: 0;
-	padding: 0;
-	background-color: var(--white);
-	color: var(--text-main);
-	line-height: 1.7;
-	transition: background-color 0.3s ease, color 0.3s ease;
-}
-
-header {
-	padding: 60px 20px 40px;
-	text-align: center;
-}
-
-/* Logo Wrapper - Changes appearance based on mode */
-.logo-wrapper {
-	display: inline-block;
-	background-color: var(--logo-wrapper-bg);
-	padding: var(--logo-wrapper-padding);
-	border-radius: var(--logo-wrapper-radius);
-	box-shadow: var(--logo-wrapper-shadow);
-	transition: all 0.3s ease;
-}
-
-.logo-wrapper:hover {
-	transform: translateY(-3px);
-}
-
-.logo {
-	max-width: 100%;
-	height: auto;
-	width: 400px;
-	display: block;
-	/* No filters or dimming as per request */
-	filter: none !important;
-}
-
-/* Hero & Main Content */
 .hero {
-	max-width: 900px;
+	max-width: 880px;
 	margin: 0 auto;
-	padding: 20px;
-	text-align: center;
+	padding: 8px 0 24px;
 }
 
-h1 {
+.eyebrow-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	padding: 7px 18px;
+	border-radius: 999px;
+	border: 1px solid var(--border-color);
+	background: var(--bg-light);
+	color: var(--dark-blue);
+	font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+	font-size: 0.82rem;
+	font-weight: 700;
+	margin-bottom: 26px;
+}
+
+.hero h1 {
 	color: var(--dark-blue);
 	font-size: 3rem;
 	font-weight: 800;
-	margin-bottom: 24px;
+	line-height: 1.1;
+	margin: 0 0 22px;
 	letter-spacing: -0.03em;
+	border-bottom: none;
+	padding-bottom: 0;
 }
 
-h2 {
+.hero h2 {
 	color: var(--dark-blue);
-	font-size: 2rem;
-	margin: 60px 0 30px;
+	font-size: 1.6rem;
+	margin: 56px 0 22px;
 }
 
-.lead {
-	font-size: 1.3rem;
+.hero .lead {
+	font-size: 1.22rem;
 	color: var(--text-muted);
-	max-width: 750px;
-	margin: 0 auto 40px;
+	max-width: 680px;
+	margin: 0 0 14px;
 }
 
-/* Revival Announcement Box */
-.revival-box {
-	background-color: var(--bg-light);
-	border-left: 6px solid var(--light-blue);
-	padding: 30px;
-	margin: 50px 0;
-	text-align: left;
-	border-radius: 0 12px 12px 0;
+.hero .lead-secondary {
+	font-size: 1rem;
+	color: var(--text-muted);
+	max-width: 680px;
+	margin: 0 0 40px;
+	opacity: 0.85;
 }
 
-.revival-box h3 {
-	margin-top: 0;
-	color: var(--dark-blue);
-}
-
-.pg-link {
-	color: var(--dark-blue);
-	font-weight: 600;
-	text-decoration: none;
-	border-bottom: 2px solid var(--light-blue);
-}
-
+.pg-link,
 .docs-link a {
 	color: var(--dark-blue);
 	font-weight: 600;
@@ -136,66 +80,342 @@ h2 {
 	border-bottom: 2px solid var(--light-blue);
 }
 
+.pg-link:hover,
 .docs-link a:hover {
 	opacity: 0.8;
+}
+
+/* Install callout */
+.get-started {
+	margin: 8px 0 52px;
+}
+
+.install-grid {
+	display: grid;
+	grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+	gap: 20px;
+	margin: 26px 0 20px;
+}
+
+.install-card {
+	padding: 26px;
+	background-color: var(--card-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 16px;
+}
+
+.install-icon {
+	font-size: 1.7rem;
+	line-height: 1;
+	display: block;
+	margin-bottom: 10px;
+}
+
+.install-card h3 {
+	color: var(--dark-blue);
+	margin: 0 0 10px;
+	font-size: 1.05rem;
+}
+
+.install-tag {
+	margin-left: 8px;
+	font-size: 0.65rem;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	color: var(--text-muted);
+	background: var(--bg-light);
+	padding: 3px 8px;
+	border-radius: 999px;
+	vertical-align: middle;
+}
+
+.install-card p {
+	margin: 0 0 16px;
+	color: var(--text-muted);
+	font-size: 0.92rem;
+}
+
+.install-command-row {
+	display: flex;
+	align-items: stretch;
+	gap: 8px;
+}
+
+/* assets/style.css's generic `pre{}` rule (dark code-block background,
+   meant for actual docs chapter code samples) also matches this <pre> —
+   neutralize it so only .install-command's own light pill shows. */
+.install-command-row pre {
+	background: transparent;
+	border: none;
+	padding: 0;
+	margin: 0;
+	display: block;
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.install-command {
+	display: block;
+	background: var(--bg-light);
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	padding: 0.85rem 1.1rem;
+	margin: 0;
+	font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+	font-size: 0.88rem;
+	line-height: 1.5;
+	color: var(--text-main);
+	white-space: pre;
+	overflow-x: auto;
+}
+
+.copy-btn {
+	flex: 0 0 auto;
+	width: 42px;
+	border: 1px solid var(--border-color);
+	border-radius: 10px;
+	background: var(--bg-light);
+	color: var(--dark-blue);
+	cursor: pointer;
+	font-size: 1.05rem;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.copy-btn:hover {
+	background: var(--border-color);
+}
+
+.copy-btn.copied::after {
+	content: '✓';
+}
+
+.copy-btn.copied .copy-btn-icon {
+	display: none;
+}
+
+.btn-small {
+	padding: 9px 18px;
+	font-size: 0.88rem;
+	display: inline-block;
+}
+
+.docs-link {
+	margin: 0 0 6px;
+}
+
+.small-note {
+	opacity: 0.65;
+}
+
+/* Screenshot compare slider */
+.screenshot-showcase {
+	margin: 8px 0 52px;
+}
+
+.lead-small {
+	color: var(--text-muted);
+	margin: -6px 0 22px;
+}
+
+.compare-slider {
+	position: relative;
+	width: 100%;
+	aspect-ratio: 2548 / 1534;
+	max-width: 100%;
+	border-radius: 16px;
+	overflow: hidden;
+	border: 1px solid var(--border-color);
+	box-shadow: 0 20px 50px rgba(0, 0, 0, 0.12);
+	cursor: ew-resize;
+	user-select: none;
+	touch-action: none;
+	background: var(--bg-light);
+}
+
+.compare-img {
+	position: absolute;
+	inset: 0;
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	display: block;
+	pointer-events: none;
+}
+
+.compare-overlay {
+	clip-path: inset(0 50% 0 0);
+	transition: clip-path 0.05s linear;
+}
+
+.compare-slider.is-animating .compare-overlay {
+	transition: clip-path 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.compare-slider.is-animating .compare-handle {
+	transition: left 1.4s cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.compare-handle {
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: 50%;
+	width: 0;
+	pointer-events: none;
+}
+
+.compare-handle::before {
+	content: '';
+	position: absolute;
+	top: 0;
+	bottom: 0;
+	left: -1px;
+	width: 2px;
+	background: #ffffff;
+	box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.2);
+}
+
+.compare-handle-grip {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	width: 42px;
+	height: 42px;
+	border-radius: 50%;
+	background: #ffffff;
+	color: var(--dark-blue);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 1.15rem;
+	box-shadow: 0 4px 14px rgba(0, 0, 0, 0.28);
+}
+
+.compare-label {
+	position: absolute;
+	bottom: 14px;
+	padding: 5px 12px;
+	border-radius: 999px;
+	font-size: 0.78rem;
+	font-weight: 700;
+	letter-spacing: 0.02em;
+	text-transform: uppercase;
+	background: rgba(0, 0, 0, 0.55);
+	color: #ffffff;
+	pointer-events: none;
+}
+
+.compare-label-left {
+	left: 14px;
+}
+
+.compare-label-right {
+	right: 14px;
 }
 
 /* Features Grid */
 .features-grid {
 	display: grid;
-	grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-	gap: 25px;
-	margin: 40px 0;
-	text-align: left;
+	grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+	gap: 20px;
+	margin: 26px 0 8px;
 }
 
 .feature-card {
-	padding: 30px;
+	padding: 24px;
+	aspect-ratio: 1 / 1;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
 	background-color: var(--card-bg);
 	border: 1px solid var(--border-color);
 	border-radius: 16px;
-	transition: all 0.3s ease;
+	transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+	opacity: 0;
+	transform: translateY(16px);
+	animation: feature-card-in 0.5s ease forwards;
+}
+
+.feature-card:nth-child(1) { animation-delay: 0.05s; }
+.feature-card:nth-child(2) { animation-delay: 0.12s; }
+.feature-card:nth-child(3) { animation-delay: 0.19s; }
+.feature-card:nth-child(4) { animation-delay: 0.26s; }
+.feature-card:nth-child(5) { animation-delay: 0.33s; }
+.feature-card:nth-child(6) { animation-delay: 0.4s; }
+
+@keyframes feature-card-in {
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
 }
 
 .feature-card:hover {
-	transform: translateY(-5px);
+	transform: translateY(-4px);
 	border-color: var(--light-blue);
-	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.05);
+	box-shadow: 0 15px 30px rgba(0, 0, 0, 0.06);
+}
+
+.feature-icon {
+	font-size: 1.8rem;
+	line-height: 1;
+	margin-bottom: 12px;
+	display: block;
 }
 
 .feature-card h3 {
 	color: var(--dark-blue);
-	margin-top: 0;
-	font-size: 1.4rem;
+	margin: 0 0 10px;
+	font-size: 1.1rem;
+}
+
+.feature-card p {
+	margin: 0;
+	color: var(--text-muted);
+	font-size: 0.92rem;
+	line-height: 1.5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.feature-card {
+		opacity: 1;
+		transform: none;
+		animation: none;
+	}
+
+	.compare-slider.is-animating .compare-overlay,
+	.compare-slider.is-animating .compare-handle {
+		transition: none;
+	}
 }
 
 /* Buttons */
 .button-group {
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	gap: 20px;
-	margin: 50px 0;
+	gap: 16px;
 	flex-wrap: wrap;
+	margin: 48px 0 8px;
 }
 
 .btn {
 	text-decoration: none;
-	padding: 16px 36px;
+	padding: 14px 30px;
 	border-radius: 10px;
 	font-weight: 700;
-	font-size: 1.1rem;
-	transition: all 0.3s ease;
+	font-size: 1.02rem;
+	transition: all 0.2s ease;
 }
 
 .btn-primary {
 	background-color: var(--dark-blue);
 	color: #ffffff !important;
-	box-shadow: 0 5px 15px rgba(25, 46, 77, 0.3);
+	box-shadow: 0 6px 16px rgba(25, 46, 77, 0.28);
 }
 
 .btn-primary:hover {
-	opacity: 0.9;
+	opacity: 0.92;
 	transform: translateY(-2px);
 }
 
@@ -209,13 +429,40 @@ h2 {
 	color: #ffffff !important;
 }
 
-/* Footer */
+/* Footer (unique element on the homepage only, safe as a bare selector).
+   margin-left matches main's sidebar offset (assets/style.css) so the
+   centered .footer-inner centers within the visible area, not the full
+   viewport width hidden partly behind the fixed sidebar. */
 footer {
 	background-color: #0f172a;
 	color: #f8fafc;
-	padding: 80px 20px;
+	padding: 56px 20px;
+	margin-top: 40px;
+	margin-left: 300px;
+	border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.footer-inner {
+	max-width: 640px;
+	margin: 0 auto;
 	text-align: center;
-	margin-top: 100px;
+}
+
+.footer-author {
+	font-size: 1rem;
+	margin: 0 0 10px;
+}
+
+.footer-copyright {
+	margin: 0;
+	font-size: 0.9rem;
+	opacity: 0.8;
+}
+
+.footer-note {
+	font-size: 0.85rem;
+	margin: 22px 0 0;
+	opacity: 0.55;
 }
 
 footer a {
@@ -224,7 +471,11 @@ footer a {
 	font-weight: 600;
 }
 
-footer .author-info strong {
+footer a:hover {
+	text-decoration: underline;
+}
+
+.footer-author strong {
 	color: var(--light-blue);
 	font-weight: 800;
 }
@@ -234,93 +485,22 @@ footer p a {
 	text-underline-offset: 4px;
 }
 
-/* Utilities */
-.visually-hidden {
-	position: absolute;
-	width: 1px;
-	height: 1px;
-	padding: 0;
-	margin: -1px;
-	overflow: hidden;
-	clip: rect(0, 0, 0, 0);
-	border: 0;
+@media (max-width: 768px) {
+	footer {
+		margin-left: 0;
+	}
 }
 
-/* Responsive adjustments */
-@media (max-width: 600px) {
-	h1 {
-		font-size: 2.2rem;
+@media (max-width: 640px) {
+	.hero h1 {
+		font-size: 2.1rem;
 	}
 
 	.button-group {
 		flex-direction: column;
 	}
 
-	.logo {
-		width: 280px;
-	}
-
-	/* Keeping the oval padding balanced on mobile */
-	@media (prefers-color-scheme: dark) {
-		.logo-wrapper {
-			padding: 15px 30px;
-		}
-	}
-}
-
-.get-started {
-	text-align: center;
-	margin: 3rem auto 5rem;
-	max-width: 720px;
-	padding: 0 1.5rem;
-}
-
-.install-block {
-	margin: 2rem auto;
-	max-width: 620px;
-}
-
-.install-label {
-	font-size: 1.1rem;
-	font-weight: 600;
-	color: var(--dark-blue);
-	margin: 1.8rem 0 0.8rem;
-	text-align: left;
-}
-
-.install-command {
-	background: var(--bg-light);
-	border: 1px solid var(--border-color);
-	border-radius: 10px;
-	padding: 1.1rem 1.4rem;
-	margin: 0;
-	font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
-	font-size: 0.95rem;
-	line-height: 1.65;
-	color: var(--text-main);
-	white-space: pre;
-	overflow-x: auto;
-	text-align: left;
-	box-shadow: 0 2px 6px rgba(0,0,0,0.04);
-}
-
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-	.install-command {
-		background: rgba(45, 55, 72, 0.65);
-		border-color: #4a5568;
-		color: #e2e8f0;
-	}
-}
-
-@media (max-width: 600px) {
-	.install-command {
-		font-size: 0.9rem;
-		padding: 1rem 1.2rem;
-		line-height: 1.7;
-	}
-
-	.install-label {
-		font-size: 1rem;
+	.button-group .btn {
+		text-align: center;
 	}
 }

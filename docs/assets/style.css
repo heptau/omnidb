@@ -1,53 +1,31 @@
-/* --- CSS VARIABLES (Light Mode Default) --- */
+/* OmniDB Docs — layout & typography. Color/typography tokens live in
+   topbar.css (--brand-*), shared with the landing page's style.css so both
+   halves of the site read as one brand. This file only aliases them into
+   docs-specific names and owns the sidebar/content layout. */
+
 :root {
-	--primary-color: #0366d6;
-	--text-color: #24292e;
-	--text-secondary: #586069;
-	--bg-color: #ffffff;
-	--sidebar-bg: #f8f9fa;
-	--border-color: #e1e4e8;
+	--primary-color: var(--brand-navy);
+	--text-color: var(--brand-text);
+	--text-secondary: var(--brand-text-muted);
+	--bg-color: var(--brand-bg);
+	--sidebar-bg: var(--brand-bg-alt);
+	--border-color: var(--brand-border);
 
-	--nav-hover-bg: rgba(0, 0, 0, 0.05);
-	--nav-active-bg: #f1f8ff;
-	--nav-active-text: #0366d6;
+	--nav-hover-bg: var(--dropdown-hover-bg);
+	--nav-active-bg: var(--dropdown-active-bg);
+	--nav-active-text: var(--brand-navy);
 
-	--code-block-bg: #1f2428;
-	--code-block-text: #e1e4e8;
-	--inline-code-bg: rgba(27, 31, 35, 0.05);
+	--code-block-bg: #101a2e;
+	--code-block-text: #dbe4f0;
+	--inline-code-bg: rgba(25, 46, 77, 0.08);
 
-	--table-header-bg: #fafbfc;
-	--table-stripe-bg: #f6f8fa;
+	--table-header-bg: var(--brand-bg-alt);
+	--table-stripe-bg: var(--brand-bg-alt);
 
-	--blockquote-text: #6a737d;
-	--blockquote-border: #dfe2e5;
+	--blockquote-text: var(--brand-text-muted);
+	--blockquote-border: var(--brand-border);
 
-	--font-stack: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-}
-
-/* --- DARK MODE VARIABLES --- */
-@media (prefers-color-scheme: dark) {
-	:root {
-		--primary-color: #58a6ff;
-		--text-color: #c9d1d9;
-		--text-secondary: #8b949e;
-		--bg-color: #0d1117;
-		--sidebar-bg: #161b22;
-		--border-color: #30363d;
-
-		--nav-hover-bg: rgba(177, 186, 196, 0.12);
-		--nav-active-bg: rgba(56, 139, 253, 0.15);
-		--nav-active-text: #58a6ff;
-
-		--code-block-bg: #161b22;
-		--code-block-text: #c9d1d9;
-		--inline-code-bg: rgba(240, 246, 252, 0.15);
-
-		--table-header-bg: #161b22;
-		--table-stripe-bg: #161b22;
-
-		--blockquote-text: #8b949e;
-		--blockquote-border: #30363d;
-	}
+	--font-stack: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
 
 /* --- GLOBAL RESET & BASE --- */
@@ -61,61 +39,87 @@ body {
 	line-height: 1.6;
 	color: var(--text-color);
 	background-color: var(--bg-color);
-	display: flex;
-	min-height: 100vh;
 	transition: background-color 0.3s, color 0.3s;
 }
 
-/* --- NAVIGATION (SIDEBAR) --- */
-nav {
+/* --- SHELL (topbar sits above, sidebar + content share the rest) --- */
+.docs-shell {
+	display: flex;
+	min-height: calc(100vh - 60px);
+}
+
+/* --- NAVIGATION (SIDEBAR) ---
+   Scoped to ".docs-shell nav" (not a bare "nav" selector) because the
+   shared topbar also uses a semantic <nav class="site-topbar-links"> for
+   its Docs/GitHub links — a bare "nav" rule here would hijack that element
+   too and fight it for the same fixed-position box. */
+.docs-shell nav {
 	width: 300px;
 	background: var(--sidebar-bg);
 	padding: 20px;
-	height: 100vh;
+	height: calc(100vh - 60px);
 	overflow-y: auto;
 	position: fixed;
 	left: 0;
-	top: 0;
+	top: 60px;
 	border-right: 1px solid var(--border-color);
 	z-index: 100;
 }
 
-nav h2 {
-	color: var(--text-color);
-	font-size: 1.2em;
-	padding-bottom: 10px;
-	margin-bottom: 20px;
-	border-bottom: 1px solid var(--border-color);
-}
-
-nav a {
+.docs-shell nav a {
 	display: block;
-	padding: 8px 12px;
+	padding: 8px 12px 8px 9px;
 	color: var(--text-secondary);
 	text-decoration: none;
 	font-size: 0.95em;
 	border-radius: 6px;
-	transition: all 0.2s ease;
+	border-left: 3px solid transparent;
+	transition: all 0.15s ease;
 	margin-bottom: 2px;
 }
 
-nav a:hover {
+.docs-shell nav a:hover {
 	color: var(--text-color);
 	background-color: var(--nav-hover-bg);
 	text-decoration: none;
 }
 
-nav a.active {
+.docs-shell nav a.active {
 	font-weight: 600;
 	color: var(--nav-active-text);
 	background-color: var(--nav-active-bg);
+	border-left-color: var(--primary-color);
 }
 
-nav div>a {
-	font-weight: bold;
+/* "Home" sits above the chapter groups, visually distinct from them —
+   this is what makes the homepage feel like part of the same nav rather
+   than a separate site the topbar just happens to also link to. */
+.docs-shell nav .nav-home {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	font-weight: 700;
 	color: var(--text-color);
-	margin-bottom: 15px;
-	display: inline-block;
+	margin-bottom: 18px;
+}
+
+.docs-shell nav .nav-group {
+	margin-bottom: 4px;
+}
+
+.docs-shell nav .nav-group-label {
+	display: block;
+	font-size: 0.7rem;
+	font-weight: 700;
+	letter-spacing: 0.07em;
+	text-transform: uppercase;
+	color: var(--text-secondary);
+	opacity: 0.7;
+	margin: 20px 9px 6px;
+}
+
+.docs-shell nav .nav-group:first-of-type .nav-group-label {
+	margin-top: 6px;
 }
 
 /* --- MAIN CONTENT --- */
@@ -235,22 +239,7 @@ ol {
 	margin-bottom: 16px;
 }
 
-/* --- MOBILE MENU COMPONENTS --- */
-.menu-toggle {
-	display: none;
-	position: fixed;
-	top: 15px;
-	right: 15px;
-	z-index: 1100;
-	background: var(--bg-color);
-	border: 1px solid var(--border-color);
-	color: var(--text-color);
-	padding: 10px;
-	border-radius: 6px;
-	cursor: pointer;
-	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
+/* --- MOBILE MENU OVERLAY (toggle button itself lives in the topbar) --- */
 .menu-overlay {
 	display: none;
 	position: fixed;
@@ -266,30 +255,16 @@ ol {
 
 /* --- MOBILE RESPONSIVENESS --- */
 @media (max-width: 768px) {
-	body {
-		display: block;
-	}
-
-	.menu-toggle {
-		display: block;
-	}
-
-	nav {
-		position: fixed;
-		top: 0;
-		left: 0;
-		height: 100vh;
+	.docs-shell nav {
 		width: 280px;
 		max-height: none;
 		transform: translateX(-100%);
 		transition: transform 0.3s ease-in-out;
 		z-index: 1000;
-		border-right: 1px solid var(--border-color);
 		box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
-		border-bottom: none;
 	}
 
-	nav.open {
+	.docs-shell nav.open {
 		transform: translateX(0);
 	}
 
@@ -300,7 +275,7 @@ ol {
 
 	main {
 		margin-left: 0;
-		padding: 60px 20px 20px 20px;
+		padding: 24px 20px;
 		width: 100%;
 	}
 

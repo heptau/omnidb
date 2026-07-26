@@ -3,72 +3,22 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>8. Visualizing Query Plans - OmniDB Documentation</title>
-	<link rel="stylesheet" href="../../assets/style.css">
-	<link rel="alternate" type="text/plain" title="llms.txt" href="../../llms.txt">
-	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../../llms-full.txt">
+	<title>Page Moved - OmniDB Documentation</title>
+	<link rel="canonical" href="https://www.omnidb.net/en/docs/visualizing_query_plans.html">
+	<meta name="robots" content="index, follow">
+	<meta http-equiv="refresh" content="0; url=visualizing_query_plans.html">
+	<meta name="theme-color" content="#192e4d">
+	<style>
+		body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; text-align: center; padding-top: 100px; color: #192e4d; background-color: #f4f7f9; }
+		.loader { border: 4px solid #f3f3f3; border-top: 4px solid #192e4d; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+		@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+		a { color: #8199bf; font-weight: 600; text-decoration: none; }
+		a:hover { color: #192e4d; }
+	</style>
 </head>
 <body>
-	<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"> ☰ </button>
-	<div class="menu-overlay" id="menuOverlay"></div>
-	<nav>
-		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
-		<a href="01_introduction.html">&nbsp;1. Introduction</a>
-		<a href="02_installation.html">&nbsp;2. Installation</a>
-		<a href="03_creating_users_and_connections.html">&nbsp;3. Creating Users and Connections</a>
-		<a href="04_managing_databases.html">&nbsp;4. Managing Databases</a>
-		<a href="05_creating_changing_and_removing_tables.html">&nbsp;5. Creating, Changing and Removing Tables</a>
-		<a href="06_managing_table_data.html">&nbsp;6. Managing Table Data</a>
-		<a href="07_writing_sql_queries.html">&nbsp;7. Writing SQL Queries</a>
-		<a href="08_visualizing_query_plans.html" class="active">&nbsp;8. Visualizing Query Plans</a>
-		<a href="09_visualizing_data.html">&nbsp;9. Visualizing Data</a>
-		<a href="10_managing_other_elements.html">10. Managing other Elements</a>
-		<a href="11_additional_features.html">11. Additional Features</a>
-		<a href="12_omnidb_config_tool.html">12. OmniDB Config Tool</a>
-		<a href="13_writing_and_debugging_plpgsql_functions.html">13. Writing and Debugging PL/pgSQL Functions</a>
-		<a href="14_monitoring_dashboard.html">14. Monitoring Dashboard</a>
-		<a href="15_logical_replication.html">15. Logical Replication</a>
-		<a href="16_pglogical.html">16. pglogical</a>
-		<a href="17_postgres-bdr.html">17. Postgres-BDR</a>
-		<a href="18_postgres-xl.html">18. Postgres-XL</a>
-		<a href="19_deploying_omnidb-server.html">19. Deploying omnidb-server</a>
-		<a href="20_console_tab.html">20. Console Tab</a>
-		<a href="21_plugin_system.html">21. Plugin System</a>
-		<a href="22_advanced_object_search.html">22. Advanced Object Search</a>
-		<a href="23_debugger_plugin_installation.html">23. Debugger Plugin Installation</a>
-		<a href="24_editor_keyboard_shortcuts.html">24. Editor Keyboard Shortcuts</a>
-	</nav>
-	<main>
-		<h1>8. Visualizing Query Plans</h1>
-<p>OmniDB 2.2.0 introduced a very useful feature: graphical query plan
-visualization. This may come in handy when writing or optimizing queries, since
-it allows you to easily identify performance bottlenecks in your SQL query.</p>
-<p>For this feature, <em>SQL Query</em> inner tab shows 2 buttons: <em>Explain</em> and <em>Explain
-Analyze</em>.</p>
-<h4>Textual visualization</h4>
-<p>When you click the <em>Explain</em> button, OmniDB will execute an <code>EXPLAIN</code> command in
-your query. Initial visualization is <em>textual</em> and will show exactly the output
-of the <code>EXPLAIN</code> command, but with colored bars representing the estimated cost.
-The higher the cost, the darker and wider the bar.</p>
-<p><img alt="" src="../../assets/img/image_054.webp"/></p>
-<p>When you click the <em>Explain Analyze</em> button, OmniDB will execute an <code>EXPLAIN
-ANALYZE</code> command in your query. Beware that this command will really execute the
-query. Also, the textual visualization will show much more information, and the
-costs are not estimated as in those provided by the <code>EXPLAIN</code> command; they are
-real costs.</p>
-<p><img alt="" src="../../assets/img/image_055.webp"/></p>
-<h4>Tree visualization</h4>
-<p>Both <em>Explain</em> and <em>Explain Analyze</em> modes also can graphically represent the
-textual output into a <em>tree</em> diagram. Each circle represent a node executed by
-the query plan, and the larger the circle, the higher the cost.</p>
-<p><img alt="" src="../../assets/img/image_056.webp"/></p>
-<p>When queries become more and more complex, also its query plan can be very
-complex. With such queries (like the <em>check bloat</em> query we executed below) the
-tree visualization can be very interesting:</p>
-<p><img alt="" src="../../assets/img/image_057.webp"/></p>
-<p>The query plan visualization component allows you to easily switch between
-textual and 2 tree visualizations, which can be zoomed in and out.</p>
-	</main>
-	<script src="../../assets/script.js"></script>
+	<div class="loader"></div>
+	<p>This documentation page has moved.</p>
+	<p>If you are not redirected automatically, go to <a href="visualizing_query_plans.html">Visualizing Query Plans</a>.</p>
 </body>
 </html>

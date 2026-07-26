@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Creating Users and Connections - OmniDB Documentation</title>
+	<meta name="description" content="Sign in as the default admin user, create additional OmniDB users, and set up PostgreSQL, MySQL, MariaDB, Oracle and SQLite connections, including SSH tunnels.">
+	<link rel="canonical" href="https://www.omnidb.net/en/docs/creating_users_and_connections.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../../manifest.json">
+	<link rel="apple-touch-icon" href="../../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/en/docs/creating_users_and_connections.html">
+	<meta property="og:title" content="Creating Users and Connections - OmniDB Documentation">
+	<meta property="og:description" content="Sign in as the default admin user, create additional OmniDB users, and set up PostgreSQL, MySQL, MariaDB, Oracle and SQLite connections, including SSH tunnels.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../../assets/topbar.css">
+	<link rel="stylesheet" href="../../assets/style.css">
+	<script src="../../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/en/" },
+			{ "@type": "ListItem", "position": 2, "name": "Docs", "item": "https://www.omnidb.net/en/docs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Creating Users and Connections", "item": "https://www.omnidb.net/en/docs/creating_users_and_connections.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
+			<a class="site-topbar-brand" href="../">
+				<img src="../logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Docs</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Change language" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs" disabled><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span><span class="dropdown-option-soon">Soon</span></button>
+						<button class="dropdown-option" data-lang-value="de" disabled><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span><span class="dropdown-option-soon">Soon</span></button>
+						<button class="dropdown-option" data-lang-value="es" disabled><span class="dropdown-option-icon">🇪🇸</span><span>Español</span><span class="dropdown-option-soon">Soon</span></button>
+						<button class="dropdown-option" data-lang-value="fr" disabled><span class="dropdown-option-icon">🇫🇷</span><span>Français</span><span class="dropdown-option-soon">Soon</span></button>
+						<button class="dropdown-option" data-lang-value="it" disabled><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span><span class="dropdown-option-soon">Soon</span></button>
+						<button class="dropdown-option" data-lang-value="pt" disabled><span class="dropdown-option-icon">🇵🇹</span><span>Português</span><span class="dropdown-option-soon">Soon</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Change theme" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Light</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dark</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="../" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Getting Started</span>
+			<a href="introduction.html">Introduction</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html" class="active">Creating Users and Connections</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Working with Data</span>
+			<a href="managing_databases.html">Managing Databases</a>
+			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
+			<a href="managing_table_data.html">Managing Table Data</a>
+			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
+			<a href="visualizing_data.html">Visualizing Data</a>
+			<a href="managing_other_elements.html">Managing other Elements</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Advanced</span>
+			<a href="additional_features.html">Additional Features</a>
+			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
+			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
+			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="logical_replication.html">Logical Replication</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server &amp; Tooling</span>
+			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="console_tab.html">Console Tab</a>
+			<a href="advanced_object_search.html">Advanced Object Search</a>
+			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Legacy Features &amp; History</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Creating Users and Connections</h1>
+<h4>Logging in as user <em>admin</em></h4>
+<p>OmniDB comes only with the user <em>admin</em>. If you are using the server version,
+the first thing to do is sign in as <em>admin</em>, the default password is <em>admin</em>.
+You don't need to login in the app version.</p>
+<p><img alt="" src="../../assets/img/image_003.webp"/></p>
+<p>The next window is the initial window.</p>
+<p><img alt="" src="../../assets/img/image_004.webp"/></p>
+<h4>Creating another user</h4>
+<p>Click on the <em>Users</em> icon on the upper right corner. It will open a popup
+that allows the current OmniDB super user to create a new OmniDB user.</p>
+<p><img alt="" src="../../assets/img/image_005.webp"/></p>
+<p>Click the <em>Add new user</em> button (the person-with-plus icon) inside the popup.
+It inserts a new, blank user row, shown as <em>(pending info)</em> until you fill it in.</p>
+<p><img alt="" src="../../assets/img/image_006.webp"/></p>
+<p>Fill in the <em>username</em> and <em>password</em>. Check if you want this new user to be a
+<em>super user</em>. This user management window is only seen by super users. When you
+are done, click on the <em>Save</em> button inside the popup.</p>
+<p><img alt="" src="../../assets/img/image_007.webp"/></p>
+<p>You can create as many users as you want, edit existing users and also delete
+users by clicking on the red cross at the actions column. Now you can logout by
+clicking in the <em>Sign Out</em> button in the top right corner.</p>
+<h4>Signing in as the new user</h4>
+<p>Let us sign in as the user we just created.</p>
+<p><img alt="" src="../../assets/img/image_008.webp"/></p>
+<p>And we can see the window again. Note that now there is no <em>Users</em> icon, because
+the <em>test</em> user is not a super user. Go ahead and click on <strong>Connections</strong> on
+the upper left corner. You will see a popup like this:</p>
+<p><img alt="" src="../../assets/img/image_009.webp"/></p>
+<h4>Creating connections</h4>
+<p>OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle and SQLite.</p>
+<p>We will now create one connection to a PostgreSQL database, one connection to an
+Oracle database and one connection to a MariaDB database. To create the
+connections you have to click on the button <em>New Connection</em> and then choose the
+connection and fill the other fields. After filling all the fields for both
+connections, click on the <em>Save</em> button.</p>
+<p><img alt="" src="../../assets/img/image_010.webp"/></p>
+<p>For each connection there is an <em>Actions</em> column where you can delete, test and
+select them. Go ahead and test the PostgreSQL connection.</p>
+<p><img alt="" src="../../assets/img/image_011.webp"/></p>
+<p>Notice a pop-up appears with the message <em>fe_sendauth: no password supplied</em>.
+This is happening because OmniDB does not store the database user password on
+disk. Not having any password at hand, OmniDB will try to connect without one,
+thus trying to take advantage of automatic authentication methods that might be
+in place: <code>trust</code> method, <code>.pgpass</code> file, and so on. As the database server
+replies with an error not allowing the user to connect, then OmniDB understands
+a password is required and asks it to the user. When the user types a password
+in this popup, the password is encrypted and stored in memory.</p>
+<p>After you type the password and hit <em>Enter</em>, if the connection to the database
+is successful you will see a confirmation pop-up.</p>
+<p><img alt="" src="../../assets/img/image_012.webp"/></p>
+<p>But, if you have trouble of any kind connecting to your PostgreSQL database,
+the same popup will remain showing the error OmniDB got.</p>
+<p><img alt="" src="../../assets/img/image_013.webp"/></p>
+<p>For Oracle, the behavior is similar. When OmniDB first tries to connect to an
+Oracle database without a password, you will see a message like this:</p>
+<p><img alt="" src="../../assets/img/image_115.webp"/></p>
+<p>If you have any trouble connection to your Oracle database, the same popup will
+remain showing the error OmniDB got:</p>
+<p><img alt="" src="../../assets/img/image_116.webp"/></p>
+<p>MariaDB and MySQL databases also works in the same way. First time, no password
+was given:</p>
+<p><img alt="" src="../../assets/img/image_184.webp"/></p>
+<p>But if you have any problems, such as database server down:</p>
+<p><img alt="" src="../../assets/img/image_185.webp"/></p>
+<p>Finally, in the connections grid, if you click on the <em>Select Connection</em>
+action, OmniDB will open it in a new <strong>Connection Outer Tab</strong> as we can see in
+the next chapter.</p>
+<h4>Using SSH tunnels</h4>
+<p>OmniDB allows the user to connect to any remote database
+through SSH tunnels. The user needs to fill SSH tunnel information in each
+connection in the <em>Connections Grid</em>.</p>
+<p><img alt="" src="../../assets/img/image_186.webp"/></p>
+<ul>
+<li><em>SSH Server</em>: The server you are connecting to via SSH;</li>
+<li><em>SSH Port</em>: The port of the SSH server (default is 22, but it can be any port
+number);</li>
+<li><em>SSH User</em>: The operating system user name you use to connect to the SSH
+server;</li>
+<li><em>Password / Passphrase</em>: The password of the operating system user (or the
+passphrase for the key below). If you fill the field <em>SSH Key Text File</em>, a
+password is optional;</li>
+<li><em>SSH Key Text File</em>: The contents of the local private SSH key you can use to connect to
+the SSH server. If you fill this field, then you can also fill the field
+<em>Password / Passphrase</em>, but in this case it will be the passphrase for the
+SSH private key.</li>
+</ul>
+<p>Please note that all information is stored encrypted in your local OmniDB <em>User
+Database</em>.</p>
+<p>While using SSH tunnels, you also need to fill all database fields accordingly.
+But instead of being relative to the OmniDB server, they will be relative to the
+SSH Server. This can be done in 2 scenarios as explained below.</p>
+<p>If the database is inside the same server as you are connecting to via SSH, then
+you will have a situation like this:</p>
+<p><img alt="" src="../assets/ssh_tunnels_1.png"/></p>
+<p>In this scenario, the database <em>Server</em> will be <code>127.0.0.1</code>, as the database is
+in the same machine as the <em>SSH Server</em>.</p>
+<p>But the database can be outside the SSH server, like this:</p>
+<p><img alt="" src="../assets/ssh_tunnels_2.png"/></p>
+<p>Here the database <em>Server</em> needs to be <code>192.168.0.10</code>, as it is the relative
+address for the SSH server to connect to the database server.</p>
+		</main>
+	</div>
+	<script src="../../assets/dropdown.js"></script>
+	<script src="../../assets/lang-switcher.js"></script>
+	<script src="../../assets/script.js"></script>
+</body>
+</html>

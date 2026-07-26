@@ -3,111 +3,22 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>11. Additional Features - OmniDB Documentation</title>
-	<link rel="stylesheet" href="../../assets/style.css">
-	<link rel="alternate" type="text/plain" title="llms.txt" href="../../llms.txt">
-	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../../llms-full.txt">
+	<title>Page Moved - OmniDB Documentation</title>
+	<link rel="canonical" href="https://www.omnidb.net/en/docs/additional_features.html">
+	<meta name="robots" content="index, follow">
+	<meta http-equiv="refresh" content="0; url=additional_features.html">
+	<meta name="theme-color" content="#192e4d">
+	<style>
+		body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; text-align: center; padding-top: 100px; color: #192e4d; background-color: #f4f7f9; }
+		.loader { border: 4px solid #f3f3f3; border-top: 4px solid #192e4d; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+		@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+		a { color: #8199bf; font-weight: 600; text-decoration: none; }
+		a:hover { color: #192e4d; }
+	</style>
 </head>
 <body>
-	<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"> ☰ </button>
-	<div class="menu-overlay" id="menuOverlay"></div>
-	<nav>
-		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
-		<a href="01_introduction.html">&nbsp;1. Introduction</a>
-		<a href="02_installation.html">&nbsp;2. Installation</a>
-		<a href="03_creating_users_and_connections.html">&nbsp;3. Creating Users and Connections</a>
-		<a href="04_managing_databases.html">&nbsp;4. Managing Databases</a>
-		<a href="05_creating_changing_and_removing_tables.html">&nbsp;5. Creating, Changing and Removing Tables</a>
-		<a href="06_managing_table_data.html">&nbsp;6. Managing Table Data</a>
-		<a href="07_writing_sql_queries.html">&nbsp;7. Writing SQL Queries</a>
-		<a href="08_visualizing_query_plans.html">&nbsp;8. Visualizing Query Plans</a>
-		<a href="09_visualizing_data.html">&nbsp;9. Visualizing Data</a>
-		<a href="10_managing_other_elements.html">10. Managing other Elements</a>
-		<a href="11_additional_features.html" class="active">11. Additional Features</a>
-		<a href="12_omnidb_config_tool.html">12. OmniDB Config Tool</a>
-		<a href="13_writing_and_debugging_plpgsql_functions.html">13. Writing and Debugging PL/pgSQL Functions</a>
-		<a href="14_monitoring_dashboard.html">14. Monitoring Dashboard</a>
-		<a href="15_logical_replication.html">15. Logical Replication</a>
-		<a href="16_pglogical.html">16. pglogical</a>
-		<a href="17_postgres-bdr.html">17. Postgres-BDR</a>
-		<a href="18_postgres-xl.html">18. Postgres-XL</a>
-		<a href="19_deploying_omnidb-server.html">19. Deploying omnidb-server</a>
-		<a href="20_console_tab.html">20. Console Tab</a>
-		<a href="21_plugin_system.html">21. Plugin System</a>
-		<a href="22_advanced_object_search.html">22. Advanced Object Search</a>
-		<a href="23_debugger_plugin_installation.html">23. Debugger Plugin Installation</a>
-		<a href="24_editor_keyboard_shortcuts.html">24. Editor Keyboard Shortcuts</a>
-	</nav>
-	<main>
-		<h1>11. Additional Features</h1>
-		<h4>User Settings</h4>
-		<p>Also in the upper right corner, by clicking in the gear-like icon, OmniDB will
-			open the <em>User Settings</em> pop-up. It is composed by three tabs:</p>
-		<ul>
-			<li><strong>Shortcuts</strong>: Allows the user to change its shortcuts in OmniDB.</li>
-		</ul>
-		<p><img alt="" src="../../assets/img/image_068.webp"/></p>
-		<ul>
-			<li><strong>User Options</strong>: Allows the user to change the font size of the SQL Editor and configure
-				CSV related options. The OmniDB theme (Light/Dark) is now automatically determined by your operating
-				system's color scheme preference.</li>
-		</ul>
-		<p><img alt="" src="../../assets/img/image_069.webp"/></p>
-		<ul>
-			<li><strong>Password</strong>: Allows the user to change its password.</li>
-		</ul>
-		<h4>Contextual Help</h4>
-		<p>Most of tree nodes (generally grouping ones like <em>Schemas</em> or <em>Tables</em>) offer
-			contextual help. This feature can be accessed by right-clicking the tree node.
-			When you click in the <em>Doc: ...</em> option, OmniDB will open an inner tab showing
-			a web browser pointing to the specific page in the online <strong>PostgreSQL
-				Documentation</strong>. Also, it will redirect to the specific page considering the
-			PostgreSQL version you are connected to.</p>
-		<p><img alt="" src="../../assets/img/image_071.webp"/></p>
-		<h4>Snippets</h4>
-		<p><em>Workspace Window</em> has a fixed outer tab with an useful feature called
-			<em>Snippets</em>. With this feature you can store queries, command instructions and
-			any other kinds of text you want. You can also structure the snippets in a
-			directory tree the way you want. All directories and snippets you create are
-			stored inside of <code>omnidb.db</code> user database and persist when you upgrade OmniDB.
-		</p>
-		<p><img alt="" src="../../assets/img/image_127.webp"/></p>
-		<h4>Backend Management</h4>
-		<p>By right-clicking in the tree root node, then moving mouse pointer to
-			<em>Monitoring</em> and then clicking on <em>Backends</em>, the user can see all activities
-			going on in the database. Some information are hidden for normal users, only
-			database superusers are allowed to see.
-		</p>
-		<p><img alt="" src="../../assets/img/image_174.webp"/></p>
-		<p>By clicking in the <em>X</em> in the <em>Actions</em> column, you can terminate the
-			backend. A confirmation popup will appear.</p>
-		<p><img alt="" src="../../assets/img/image_175.webp"/></p>
-		<h4>Properties and DDL</h4>
-		<p>By clicking on most of objects in the tree view (tables, sequences, views,
-			roles, databases, etc), the user will be able to see a very comprehensive list
-			of properties of the object.</p>
-		<p><img alt="" src="../../assets/img/image_176.webp"/></p>
-		<p>In the other panel called <em>DDL</em>, the user will be able to see the SQL DDL source
-			code that can be used to re-create the object. The user can copy this text and
-			paste it wherever he/she wants.</p>
-		<p><img alt="" src="../../assets/img/image_177.webp"/></p>
-		<h4>Export Data</h4>
-		<p>The <em>Query Tab</em> provides a way to save data from query results into a CSV or
-			XLSX file. Once you click the <em>Export Data</em> button, a cancellable backend starts
-			to save data into the file. Once it is done, OmniDB provides a link called
-			<em>Save</em>, so the user can download the file.
-		</p>
-		<p><img alt="" src="../../assets/img/image_178.webp"/></p>
-		<p>All files are stored in a temporary folder inside OmniDB folder. OmniDB
-			regularly cleans this folder, keeping only files newer than 24 hours.</p>
-		<h4>Query History</h4>
-		<p>From the <em>Query Tab</em> you can click on the <em>Command History</em> button to see a
-			full, browsable and searchable query tab.</p>
-		<p><img alt="" src="../../assets/img/image_203.webp"/></p>
-		<h4>SSH Console</h4>
-		<p>OmniDB also provides a full-featured SSH Console.</p>
-		<p><img alt="" src="../../assets/img/image_204.webp"/></p>
-	</main>
-	<script src="../../assets/script.js"></script>
+	<div class="loader"></div>
+	<p>This documentation page has moved.</p>
+	<p>If you are not redirected automatically, go to <a href="additional_features.html">Additional Features</a>.</p>
 </body>
 </html>

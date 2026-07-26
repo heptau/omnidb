@@ -8,7 +8,7 @@
       "port": 8765
     },
     {
-      "name": "omnidb-go-server",
+      "name": "omnidb-server",
       "runtimeExecutable": "bash",
       "runtimeArgs": ["-c", "cd go-server && OMNIDB_PROXY_LISTEN_PORT=8002 go run . -d ../.dev-home"],
       "port": 8002

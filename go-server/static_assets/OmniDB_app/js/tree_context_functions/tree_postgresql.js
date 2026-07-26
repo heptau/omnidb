@@ -2753,14 +2753,6 @@ function getTreePostgresql(p_div) {
 					},
 				},
 				{
-					text: "Debug Function",
-					icon: "fas cm-all fa-bug",
-					action: function (node) {
-						v_connTabControl.tag.createDebuggerTab(node.text);
-						setupDebug(node, "f");
-					},
-				},
-				{
 					text: "Edit Comment",
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
@@ -2843,14 +2835,6 @@ function getTreePostgresql(p_div) {
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						tabSQLTemplate("Alter Procedure", node.tree.tag.alter_procedure.replace("#procedure_name#", node.tag.id));
-					},
-				},
-				{
-					text: "Debug Procedure",
-					icon: "fas cm-all fa-bug",
-					action: function (node) {
-						v_connTabControl.tag.createDebuggerTab(node.text);
-						setupDebug(node, "p");
 					},
 				},
 				{
@@ -7930,31 +7914,6 @@ function getFunctionFieldsPostgresql(node) {
 /// Retrieving function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDebugFunctionDefinitionPostgresql(node) {
-	execAjax(
-		"/get_function_debug_postgresql/",
-		JSON.stringify({
-			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			p_tab_id: v_connTabControl.selectedTab.id,
-			p_function: node.tag.id,
-		}),
-		function (p_return) {
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
-		},
-		function (p_return) {
-			nodeOpenError(p_return, node);
-		},
-		"box",
-		true,
-	);
-}
-
-/// <summary>
-/// Retrieving function definition.
-/// </summary>
-/// <param name="node">Node object.</param>
 function getFunctionDefinitionPostgresql(node) {
 	execAjax(
 		"/get_function_definition_postgresql/",
@@ -8124,31 +8083,6 @@ function getProcedureFieldsPostgresql(node) {
 		},
 		"box",
 		false,
-	);
-}
-
-/// <summary>
-/// Retrieving procedure definition.
-/// </summary>
-/// <param name="node">Node object.</param>
-function getDebugProcedureDefinitionPostgresql(node) {
-	execAjax(
-		"/get_procedure_debug_postgresql/",
-		JSON.stringify({
-			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			p_tab_id: v_connTabControl.selectedTab.id,
-			p_procedure: node.tag.id,
-		}),
-		function (p_return) {
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
-		},
-		function (p_return) {
-			nodeOpenError(p_return, node);
-		},
-		"box",
-		true,
 	);
 }
 

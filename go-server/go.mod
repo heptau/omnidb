@@ -1,4 +1,4 @@
-module omnidb-go-server
+module omnidb-server
 
 go 1.25.0
 

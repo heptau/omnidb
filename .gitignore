@@ -6,5 +6,5 @@
 /build_work
 /.dev-home
 .claude/settings.local.json
-/go-server/omnidb-go-server
+/go-server/omnidb-server
 /wails-app/omnidb-shell

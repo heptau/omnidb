@@ -110,7 +110,6 @@ var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_na
 							if (
 								v_tab.tag.mode == "query" ||
 								v_tab.tag.mode == "edit" ||
-								v_tab.tag.mode == "debug" ||
 								v_tab.tag.mode == "console"
 							) {
 								var v_message_data = { tab_id: v_tab.tag.tab_id, tab_db_id: null };

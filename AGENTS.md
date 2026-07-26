@@ -57,7 +57,7 @@ No Python anywhere in the tree — no `OmniDB/`, `requirements.txt`, `pyproject.
 
 ## Desktop app mode ("-A" flag)
 
-`omnidb-go-server -A` is how the shell starts the backend. In this mode:
+`omnidb-server -A` is how the shell starts the backend. In this mode:
 
 - App-mode's random `APP_TOKEN`-equivalent is generated at startup (see
   `go-server/native_login.go`'s `generateAppToken`).
