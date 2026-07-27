@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Écrire des requêtes SQL - Documentation OmniDB</title>
+	<meta name="description" content="Tout ce que propose l'onglet Requête SQL d'OmniDB : l'éditeur, l'exécution et l'annulation, l'autocommit, l'historique des requêtes, l'export vers CSV, TSV, XLSX, JSON, XML ou Markdown, et l'autocomplétion SQL.">
+	<link rel="canonical" href="https://www.omnidb.net/fr/writing_sql_queries.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/writing_sql_queries.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/writing_sql_queries.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/writing_sql_queries.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/fr/writing_sql_queries.html">
+	<meta property="og:title" content="Écrire des requêtes SQL - Documentation OmniDB">
+	<meta property="og:description" content="Tout ce que propose l'onglet Requête SQL d'OmniDB : l'éditeur, l'exécution et l'annulation, l'autocommit, l'historique des requêtes, l'export vers CSV, TSV, XLSX, JSON, XML ou Markdown, et l'autocomplétion SQL.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/fr/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://www.omnidb.net/fr/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Écrire des requêtes SQL", "item": "https://www.omnidb.net/fr/writing_sql_queries.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Basculer la navigation">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Changer de langue" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Changer de thème" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Clair</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Sombre</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Accueil</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Premiers pas</span>
+			<a href="introduction.html">Introduction</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html" class="active">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avancé</span>
+			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="logical_replication.html">Réplication logique</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Serveur et outils</span>
+			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="console_tab.html">Onglet console</a>
+			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Référence</span>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Écrire des requêtes SQL</h1>
+<p>Le type d'onglet interne le plus courant est l'<em>onglet Requête</em> (Query Tab),
+qui contient les éléments suivants :</p>
+<p><img alt="" src="../assets/img/image_049.webp" /></p>
+<ul>
+<li><strong>1) En-tête de l'onglet</strong> (Tab Header) : vous y voyez le nom de l'onglet
+et une icône permettant de le fermer. Si une requête est en cours d'exécution
+dans l'onglet, un indicateur s'affiche. Si l'exécution se termine pendant que
+vous travaillez sur un autre onglet, un indicateur vert s'affiche. Un double
+clic sur le nom de l'onglet permet de le renommer.</li>
+<li><strong>2) Ajouter un onglet</strong> (Add Tab) : vous pouvez rapidement ajouter un autre
+onglet interne en cliquant sur l'icône plus.</li>
+<li><strong>3) Éditeur SQL</strong> (SQL Editor) : éditeur SQL complet avec coloration
+syntaxique SQL, fonction Rechercher et remplacer (<code>Ctrl-F</code> et <code>Ctrl-H</code>) et un
+composant d'autocomplétion, décrit plus loin. Consultez
+<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a> pour la
+liste complète des raccourcis de l'éditeur (sélection, multi-curseurs,
+navigation, pliage de code, etc.).</li>
+<li><strong>4) Exécuter</strong> (Execute) : le texte contenu dans l'éditeur SQL est exécuté
+sur la base de données actuellement active lorsque vous cliquez sur ce bouton
+(ou utilisez le raccourci, <code>Alt-Q</code> par défaut). Si du texte est sélectionné
+dans l'éditeur SQL, seul ce texte sélectionné est exécuté. Une fois la
+commande en cours d'exécution, un bouton rouge <em>Annuler</em> (Cancel) apparaît,
+permettant d'annuler l'exécution (ou via le raccourci, <code>Alt-C</code> par défaut).</li>
+<li><strong>5) Indenter le SQL</strong> (Indent SQL) : ce bouton met en forme tout code SQL
+écrit dans l'éditeur SQL (raccourci <code>Alt-S</code> par défaut, <code>Ctrl-S</code> sous macOS).</li>
+<li><strong>6) Historique des requêtes</strong> (Query History) : toutes les commandes
+exécutées sur la base de données actuelle sont enregistrées dans l'historique
+des requêtes, accessible en cliquant sur ce bouton. Vous pouvez également
+filtrer par date et par texte pour retrouver la commande SQL recherchée.</li>
+<li><strong>7) Explain (PostgreSQL uniquement)</strong> : exécute votre requête SQL sur
+PostgreSQL en faisant précéder celle-ci de <code>EXPLAIN</code>. Les résultats s'affichent
+sous forme textuelle et graphique dans l'onglet Explain (voir
+<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a> pour plus de
+détails).</li>
+<li><strong>8) Explain Analyze (PostgreSQL uniquement)</strong> : identique au bouton
+Explain, mais exécute la requête SQL avec <code>EXPLAIN ANALYZE</code>, ce qui exécute
+réellement la requête.</li>
+<li><strong>9) Autocommit (PostgreSQL uniquement)</strong> : lorsqu'il est activé, chaque
+requête exécutée est validée (commit) dans la base de données. Lorsqu'il est
+désactivé, OmniDB démarre une transaction et, après l'exécution d'une requête,
+l'interface affiche des boutons permettant à l'utilisateur d'effectuer un
+<em>Commit</em> ou un <em>Rollback</em>. L'utilisateur peut aussi garder la transaction
+ouverte et exécuter d'autres commandes.</li>
+<li><strong>10) État du backend (PostgreSQL uniquement)</strong> : lorsque vous ouvrez un
+nouvel onglet Requête, l'état est « Not Connected » (Non connecté), car OmniDB
+n'a pas encore démarré de backend PostgreSQL. Lorsque vous exécutez la
+première requête, OmniDB démarre un nouveau backend et le relie à l'onglet
+Requête (chaque onglet Requête dispose de son propre backend). L'état du
+backend (<em>idle</em>, <em>active</em>, <em>idle in transaction</em>, etc.) s'affiche dans ce
+champ. Lorsque vous fermez l'onglet Requête, OmniDB termine le backend.</li>
+<li><strong>11) Format d'export</strong> : peut être CSV, TSV, XLSX, JSON, XML ou Markdown.</li>
+<li><strong>12) Exporter vers un fichier</strong> : en cliquant sur ce bouton, OmniDB exécute
+la requête actuelle et exporte les résultats vers un fichier. Dans
+l'application de bureau, une boîte de dialogue native « Enregistrer sous »
+s'ouvre, vous permettant de choisir directement où l'enregistrer. Lors d'une
+exécution en tant que <a href="deploying_omnidb-server.html">OmniDB Server</a>
+accessible par navigateur, le fichier est d'abord écrit dans le dossier
+temporaire du serveur, puis l'interface affiche un lien permettant de le
+télécharger via le navigateur.</li>
+<li><strong>13) Résultats des données</strong> : si la requête est un <code>SELECT</code>, une grille
+affiche les résultats. S'il s'agit d'une commande DML ou DDL, le message
+renvoyé par le SGBD s'affiche.</li>
+<li><strong>14) Messages (PostgreSQL uniquement)</strong> : tous les messages (comme ceux
+générés par la commande <code>RAISE NOTICE</code>) s'affichent ici.</li>
+<li><strong>15) Vue Explain (PostgreSQL uniquement)</strong> : affiche un composant complet
+permettant de visualiser le plan d'exécution PostgreSQL sous forme textuelle
+ou graphique.</li>
+</ul>
+<p>Une fois exécutés, les onglets sont également enregistrés dans la base de
+données utilisateur d'OmniDB (titre et contenu) : ainsi, à la prochaine
+ouverture d'OmniDB, vous les retrouverez tous ouverts. De plus, chaque commande
+exécutée dans un onglet Requête est enregistrée dans votre historique des
+requêtes ainsi que dans le fichier <code>omnidb.log</code>.</p>
+<h4>Autocomplétion SQL</h4>
+<p>L'éditeur SQL propose une fonctionnalité très utile lors de la création de
+nouvelles requêtes : la complétion automatique du code SQL. Elle permet de
+compléter automatiquement les colonnes d'une table référencée par un alias.
+Pour ouvrir l'interface d'autocomplétion, il suffit de taper l'alias, le
+caractère <code>.</code>, puis d'appuyer sur <code>Ctrl-Space</code> :</p>
+<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p>Si l'utilisateur démarre l'autocomplétion avec le curseur éloigné de tout
+alias de table, le composant affiche plusieurs catégories de données. En
+saisissant du texte dans le champ de filtre, les éléments de toutes les
+catégories sont filtrés :</p>
+<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p>Le composant d'autocomplétion est également capable d'identifier certaines
+informations contextuelles. Par exemple, si vous saisissez le nom d'un schéma,
+puis le caractère <code>.</code>, puis appuyez sur <code>Ctrl-Space</code>, vous pourrez filtrer
+uniquement parmi les objets contenus dans ce schéma :</p>
+<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p>Veuillez noter que pour les SGBD autres que PostgreSQL, le composant
+d'autocomplétion ne fonctionne que pour les colonnes de tables.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

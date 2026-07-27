@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Introduction - Documentation OmniDB</title>
+	<meta name="description" content="OmniDB est un outil open source de gestion de bases de données pour PostgreSQL, Oracle, MySQL et bien d'autres, unifiant l'accès à différents SGBD dans un espace de travail sécurisé accessible depuis un navigateur.">
+	<link rel="canonical" href="https://www.omnidb.net/fr/introduction.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/introduction.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/introduction.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/introduction.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/fr/introduction.html">
+	<meta property="og:title" content="Introduction - Documentation OmniDB">
+	<meta property="og:description" content="OmniDB est un outil open source de gestion de bases de données pour PostgreSQL, Oracle, MySQL et bien d'autres, unifiant l'accès à différents SGBD dans un espace de travail sécurisé accessible depuis un navigateur.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/fr/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://www.omnidb.net/fr/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Introduction", "item": "https://www.omnidb.net/fr/introduction.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Basculer la navigation">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Changer de langue" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Changer de thème" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Clair</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Sombre</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Accueil</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Premiers pas</span>
+			<a href="introduction.html" class="active">Introduction</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avancé</span>
+			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="logical_replication.html">Réplication logique</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Serveur et outils</span>
+			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="console_tab.html">Onglet console</a>
+			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Référence</span>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+		</div>
+		</nav>
+		<main>
+			<h1>Introduction</h1>
+			<p><strong>OmniDB</strong> est une application open source accessible depuis un navigateur, conçue pour accéder à
+				de nombreux systèmes de gestion de bases de données et les administrer, par exemple PostgreSQL, Oracle et MySQL.
+				OmniDB peut fonctionner soit comme une application de bureau, soit via un navigateur, combinant la flexibilité
+				nécessaire pour les différents modes d'accès avec une conception qui place la sécurité au premier plan. OmniDB est
+				développée activement, testée automatiquement sur diverses bases de données et divers navigateurs,
+				et fournie avec une documentation complète.</p>
+			<p>Dès les premières phases de son développement, OmniDB a été conçue comme une application accessible depuis un navigateur.
+				Elle fonctionne donc dans n'importe quel navigateur, sur n'importe quel système d'exploitation. Elle peut être
+				utilisée depuis plusieurs ordinateurs et par plusieurs utilisateurs, chacun disposant de
+				son propre groupe de connexions. Elle peut également être hébergée sur n'importe quel système d'exploitation,
+				sans qu'il soit nécessaire d'installer la moindre dépendance. Nous verrons plus en détail
+				l'installation dans les chapitres suivants.</p>
+			<p>L'objectif principal d'OmniDB est d'offrir un espace de travail unifié regroupant toutes
+				les fonctionnalités nécessaires pour manipuler différents SGBD. Aucun outil spécifique à un SGBD n'est
+				requis : dans OmniDB, le changement de contexte entre différents SGBD se fait par un
+				simple changement de connexion, sans quitter la page en cours. L'utilisateur final a
+				l'impression qu'il n'y a aucune différence lorsqu'il manipule différents SGBD :
+				cela ressemble simplement à des connexions différentes.</p>
+			<p>Malgré cela, OmniDB est conçue avec un souci de simplicité, pensée pour être une application
+				rapide et légère accessible depuis un navigateur. Les traitements de longue durée — requêtes, procédures
+				et supervision — s'exécutent en arrière-plan et sont retransmis au navigateur au fur et à
+				mesure de leur achèvement, ce qui permet à l'utilisateur de continuer à travailler sur plusieurs bases de données et
+				plusieurs serveurs en même temps, sans être bloqué par l'un d'entre eux.</p>
+			<p>OmniDB est également sécurisée. Toutes les données utilisateur d'OmniDB sont stockées chiffrées, et aucun
+				mot de passe de base de données n'est jamais stocké. Lorsque l'utilisateur se connecte pour la première fois à une base de données,
+				OmniDB demande le mot de passe. Ce mot de passe est chiffré et conservé en mémoire
+				pendant une durée déterminée. Une fois ce délai écoulé, OmniDB redemande le mot de passe.
+				Cela garantit une sécurité maximale pour la base de données à laquelle OmniDB se connecte.</p>
+			<h4>Historique</h4>
+			<p>Les créateurs d'<strong>OmniDB</strong>, Rafael Thofehrn Castro et William Ivanski, travaillaient dans une
+				entreprise où ils devaient gérer quotidiennement plusieurs bases de données différentes
+				appartenant à des clients. Ces bases de données provenaient de technologies de SGBD différentes, et ils devaient donc
+				constamment basculer entre outils de gestion de bases de données (généralement un par
+				SGBD). N'étant pas satisfaits des outils de gestion unifiée de bases de données existants
+				(capables de gérer différents SGBD), ils ont eu l'idée principale d'OmniDB.</p>
+			<p>La première version d'<strong>OmniDB</strong> a été présentée comme projet de fin d'études de licence en
+				informatique à l'Université fédérale du Paraná, au Brésil. L'objectif
+				était de tracer une ligne commune entre les SGBD populaires et d'étudier en profondeur
+				leurs <em>métadonnées</em>. Le résultat fut un outil écrit en ASP.NET/C#, capable de
+				se connecter et d'identifier les principales structures (tables, clés, index et
+				contraintes) de manière générique, pour plusieurs SGBD :</p>
+			<ul>
+				<li>Firebird</li>
+				<li>MariaDB / MySQL</li>
+				<li>Oracle</li>
+				<li>PostgreSQL</li>
+				<li>SQLite</li>
+				<li>Microsoft SQL Server</li>
+			</ul>
+			<p>La première version d'OmniDB permettait également la conversion entre tous les SGBD pris en charge
+				par l'outil. Cette fonctionnalité a été conçue pour être conviviale, ne nécessitant que
+				quelques étapes : l'utilisateur doit sélectionner une connexion source, les structures qui
+				seront converties (uniquement les tables et toutes leurs structures, avec leurs données)
+				et la connexion cible.</p>
+			<p>En <strong>2025-2026</strong>, le projet a été relancé avec des versions majeures (3.1.x), axées sur la modernisation
+				de la base de code, l'amélioration de la sécurité et l'ajout d'une prise en charge complète des systèmes d'exploitation modernes comme macOS Silicon,
+				accompagnées d'une refonte complète de la documentation. Cette relance a culminé avec une réécriture complète du
+				backend, passant de Python/Django à Go (3.6.x), supprimant entièrement l'environnement d'exécution Python et livrant un binaire
+				natif unique pour chaque plateforme. Consultez <a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+				pour la chronologie complète des versions et le détail des changements survenus au fil du temps.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

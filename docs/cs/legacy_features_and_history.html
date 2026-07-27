@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Zastaralé funkce a historie - Dokumentace OmniDB</title>
+	<meta name="description" content="Historie verzí OmniDB a osud jejího starého systému pluginů — pglogical, podpora Postgres-BDR, Postgres-XL a krokovací debugger PL/pgSQL — po přepisu 3.6.x z Pythonu/Django do Go.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/legacy_features_and_history.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/legacy_features_and_history.html">
+	<meta property="og:title" content="Zastaralé funkce a historie - Dokumentace OmniDB">
+	<meta property="og:description" content="Historie verzí OmniDB a osud jejího starého systému pluginů — pglogical, podpora Postgres-BDR, Postgres-XL a krokovací debugger PL/pgSQL — po přepisu 3.6.x z Pythonu/Django do Go.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Zastaralé funkce a historie", "item": "https://www.omnidb.net/cs/legacy_features_and_history.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších objektů</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Záložka Konzole</a>
+			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html" class="active">Zastaralé funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+			<h1>Zastaralé funkce a historie</h1>
+			<p>OmniDB si prošla několika velmi odlišnými životy — univerzitním projektem,
+				webovou aplikací v Pythonu/Django s ekosystémem pluginů a nyní jednosouborovou
+				aplikací v Go. Tato stránka je místem pro vše, co dříve existovalo, ale dnes
+				už ne: co to bylo, proč se to nevrátí a kde to najít, pokud to stále
+				potřebujete. Příběh samotného projektu najdete v kapitole
+				<a href="introduction.html">Úvod</a>.</p>
+
+			<h2>Časová osa verzí</h2>
+			<table>
+				<thead>
+					<tr>
+						<th>Éra</th>
+						<th>O co šlo</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>Původní verze (ASP.NET/C#)</td>
+						<td>Bakalářská závěrečná práce na Federální univerzitě v Paraná — první
+							nástroj, který propojil společnou linii mezi metadaty PostgreSQL, MySQL/MariaDB,
+							Oracle, SQLite, Firebird a SQL Server.</td>
+					</tr>
+					<tr>
+						<td>OmniDB (Python/Django)</td>
+						<td>Dlouhodobě nejznámější verze: webová aplikace v Django s pracovním
+							prostředím v prohlížeči a od verze 2.9 také s pluginovým systémem v
+							Pythonu pro komunitní rozšíření. Vývoj v původním repozitáři
+							<a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">OmniDB/OmniDB</a>
+							se zastavil kolem roku 2020.</td>
+					</tr>
+					<tr>
+						<td>Obnovení v letech 2025–2026 (3.1.x)</td>
+						<td>Projekt byl znovu oživen: modernizovaná kódová základna, vylepšené
+							zabezpečení, nativní podpora macOS Apple Silicon a kompletní přepracování
+							dokumentace — stále na backendu v Pythonu/Django.</td>
+					</tr>
+					<tr>
+						<td>Přepis do Go (3.6.x)</td>
+						<td>Celý backend byl přepsán z Pythonu/Django do Go a je distribuován jako
+							jediný nativní binární soubor. Python runtime a vše, co dávalo smysl
+							jen uvnitř něj — včetně systému pluginů — bylo odstraněno.</td>
+					</tr>
+					<tr>
+						<td>Přechod na Wails (hotovo)</td>
+						<td>Desktopová schránka aplikace se přesunula z NW.js na <a href="https://wails.io" target="_blank" rel="noopener">Wails</a>
+							(Go) — menší binární soubor, žádný vestavěný Chromium a aplikace nyní
+							využívá vlastní nativní webview operačního systému.</td>
+					</tr>
+				</tbody>
+			</table>
+
+			<h2 id="plugin-system">Systém pluginů (odstraněno)</h2>
+			<p><strong>Systém pluginů byl odstraněn</strong> v rámci přepisu backendu 3.6.x
+				z Pythonu/Django do Go a již není k dispozici.</p>
+			<p>OmniDB 2.9 zavedla systém pluginů, který uživatelům umožňoval psát kód v
+				Pythonu, napojený na různé části rozhraní, a přidávat tak vlastní funkce bez
+				nutnosti znovu nasazovat celou aplikaci. Tento mechanismus závisel na
+				dynamickém importu libovolných modulů Pythonu do běžícího procesu serveru —
+				něco, co nemá v kompilovaném binárním souboru Go žádnou obdobu — a záměrně
+				nebyl převeden. Protože už nemohl dělat nic užitečného, byl dialog „Pluginy“
+				a jeho položka v menu, spolu s API endpointy za ním, z aplikace zcela
+				odstraněn, místo aby zůstal jako trvale prázdný pahýl.</p>
+			<p>Pokud jste se spoléhali na konkrétní plugin, aktuálně neexistuje žádný
+				podporovaný způsob, jak jej převést do nové verze. Cokoliv, co plugin dříve
+				dělal přímým voláním do databáze, lze obvykle stále provést běžným SQL
+				editorem, pomocí úryvků (snippets) nebo vlastní monitorovací jednotkou.</p>
+
+			<h2 id="plpgsql-debugger">Krokovací debugger PL/pgSQL (odstraněno)</h2>
+			<p>OmniDB 2.3.0 přidala interaktivní krokovací debugger pro funkce a procedury
+				PL/pgSQL — breakpointy, živé sledování proměnných a statistiky provádění
+				po jednotlivých řádcích. Závisel na vlastní C rozšíření pro PostgreSQL
+				(<code>omnidb_plugin</code>), které se napojovalo na interní pluginové API
+				PL/pgSQL a bylo načítáno přes <code>shared_preload_libraries</code> (vyžadující
+				restart serveru), a dále na vyhrazeném schématu <code>omnidb</code> a
+				bezheslovém lokálním přístupu pro druhé, výhradně debuggerové připojení k
+				databázi.</p>
+			<p><strong>Debugger byl odstraněn</strong>, spolu s položkami menu ve stromu
+				„Debug Function“/„Debug Procedure“. Nebyl převeden během přepisu do Go 3.6.x
+				a samotné rozšíření <code>omnidb_plugin</code> nebylo od roku 2020 upravováno.
+				Kromě průběžných nákladů na udržování C rozšíření pracujícího s vnitřnostmi
+				PostgreSQL funkčního napříč každou novou hlavní verzí PostgreSQL navíc zásadně
+				nemůže fungovat vůbec proti žádnému spravovanému/cloudovému PostgreSQL (RDS,
+				Cloud SQL, Supabase, Neon a podobné) — žádný z nich neumožňuje vlastní
+				položku v <code>shared_preload_libraries</code> — takže velká a rostoucí
+				část dnešních uživatelů by jej stejně nikdy nemohla použít, ať by byl
+				udržovaný sebelépe.</p>
+			<p>Psaní a spouštění samotných funkcí PL/pgSQL tím není nijak dotčeno — viz
+				<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>. Pokud
+				potřebujete procházet provádění PL/pgSQL krokově na vlastním self-hostovaném
+				serveru PostgreSQL, původní zdrojový kód <code>omnidb_plugin</code> je stále
+				dostupný v
+				<a href="https://github.com/OmniDB/OmniDB/tree/master/omnidb_plugin" target="_blank" rel="noopener">historii původního repozitáře</a>,
+				nebo můžete mimo OmniDB přímo použít
+				<a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
+				(aktivně udržovaný ekvivalent používaný nástrojem pgAdmin).</p>
+
+			<h2 id="pglogical">pglogical (odstraněno)</h2>
+			<p><a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>
+				bylo rozšíření PostgreSQL poskytující efektivní systém logické replikace.
+				Starý plugin <code>omnidb-pglogical</code> přidával uzly do stromového
+				pohledu a akce založené na SQL šablonách (vytvoření uzlu, správa replikačních
+				sad, vytváření odběrů atd.) pro práci s ním — vše postavené na výše
+				odstraněném systému pluginů, takže se už nenačte.</p>
+
+			<h2 id="postgres-bdr">Postgres-BDR (odstraněno)</h2>
+			<p><a href="https://www.2ndquadrant.c../resources/bdr/" target="_blank" rel="noopener">Postgres-BDR</a>
+				(“Bi-Directional Replication“) bylo multi-masterové rozšíření pro PostgreSQL
+				od společnosti 2ndQuadrant. Starý plugin <code>omnidb-bdr</code> mu poskytoval
+				stejný typ integrace do stromového pohledu jako pglogical. Stejný příběh: byl
+				to plugin a systém pluginů, na kterém závisel, je pryč.</p>
+
+			<h2 id="postgres-xl">Postgres-XL (odstraněno)</h2>
+			<p><a href="https://www.2ndquadrant.c../resources/postgres-xl/" target="_blank" rel="noopener">Postgres-XL</a>
+				byl masivně paralelní, horizontálně škálovatelný fork PostgreSQL (GTM +
+				koordinátor + datové uzly). Starý plugin <code>omnidb-xl</code> pro něj
+				přidával uzly ve stromovém pohledu s podporou clusteru. Také plugin, také
+				pryč.</p>
+
+			<h2>Proč se nic z toho nevrátí</h2>
+			<p>Všechny tři byly tenké, na pluginech založené integrace pro okrajové, převážně
+				neudržované forky/rozšíření PostgreSQL — ani pglogical, ani BDR, ani
+				Postgres-XL nezaznamenaly v posledních letech žádná smysluplná nová vydání.
+				Znovu vybudovat samotný systém pluginů v Go by znamenalo navrhnout zcela nový
+				mechanismus rozšíření (kompilované pluginy, skriptovací runtime nebo hook API)
+				pro malé a zmenšující se publikum, což nebylo prioritou vůči zbytku přepisu do
+				Go. Nic na přepisu nebrání připojení ke clusteru pglogical/BDR/XL jako k
+				běžné databázi PostgreSQL a ruční správě replikačních objektů přes běžný SQL
+				editor nebo záložku Konzole — pouze nezískáte vyhrazené uzly ve stromovém
+				pohledu a zkratky se SQL šablonami, které pluginy dříve přidávaly.</p>
+
+			<h2>Kde najít stará vydání</h2>
+			<p>Vydání klasické OmniDB (do roku ~2020) s plnou podporou pluginů jsou stále
+				dostupná, neudržovaná, v původním repozitáři:</p>
+			<ul>
+				<li><a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">github.com/OmniDB/OmniDB</a> — samotná původní aplikace a archiv jejích vydání.</li>
+				<li><a href="https://github.com/OmniDB/plugins" target="_blank" rel="noopener">github.com/OmniDB/plugins</a> — samotné zdrojové kódy pluginů pglogical/BDR/XL.</li>
+			</ul>
+			<p>Žádný z repozitářů už není aktualizován. Pokud dnes potřebujete správu
+				pglogical, BDR nebo Postgres-XL, je vaší nejlepší volbou staré vydání odtud —
+				spuštěné proti databázi odpovídající jeho době — neexistuje žádná migrační
+				cesta z tohoto uspořádání do současné OmniDB založené na Go.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

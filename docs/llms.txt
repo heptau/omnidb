@@ -8,7 +8,7 @@ OmniDB is an open source browser-based app designed to access and manage many di
 
 ## Introduction
 
-URL: https://www.omnidb.net/en/docs/introduction.html
+URL: https://www.omnidb.net/en/introduction.html
 
 **Description:** Introduction to OmniDB - a browser-based database management tool supporting PostgreSQL, Oracle, MySQL, and more. Features a unified workspace, background execution of queries and procedures across multiple databases, and encrypted data storage.
 
@@ -22,7 +22,7 @@ URL: https://www.omnidb.net/en/docs/introduction.html
 
 ## Installation
 
-URL: https://www.omnidb.net/en/docs/installation.html
+URL: https://www.omnidb.net/en/installation.html
 
 **Description:** Installation instructions for OmniDB on various platforms.
 
@@ -35,7 +35,7 @@ URL: https://www.omnidb.net/en/docs/installation.html
 
 ## Creating Users and Connections
 
-URL: https://www.omnidb.net/en/docs/creating_users_and_connections.html
+URL: https://www.omnidb.net/en/creating_users_and_connections.html
 
 **Description:** How to create users and manage database connections in OmniDB.
 
@@ -48,7 +48,7 @@ URL: https://www.omnidb.net/en/docs/creating_users_and_connections.html
 
 ## Managing Databases
 
-URL: https://www.omnidb.net/en/docs/managing_databases.html
+URL: https://www.omnidb.net/en/managing_databases.html
 
 **Description:** Managing database objects and properties.
 
@@ -61,7 +61,7 @@ URL: https://www.omnidb.net/en/docs/managing_databases.html
 
 ## Creating, Changing and Removing Tables
 
-URL: https://www.omnidb.net/en/docs/creating_changing_and_removing_tables.html
+URL: https://www.omnidb.net/en/creating_changing_and_removing_tables.html
 
 **Description:** Table creation, modification and deletion operations.
 
@@ -76,7 +76,7 @@ URL: https://www.omnidb.net/en/docs/creating_changing_and_removing_tables.html
 
 ## Managing Table Data
 
-URL: https://www.omnidb.net/en/docs/managing_table_data.html
+URL: https://www.omnidb.net/en/managing_table_data.html
 
 **Description:** Data manipulation within tables.
 
@@ -90,7 +90,7 @@ URL: https://www.omnidb.net/en/docs/managing_table_data.html
 
 ## Writing SQL Queries
 
-URL: https://www.omnidb.net/en/docs/writing_sql_queries.html
+URL: https://www.omnidb.net/en/writing_sql_queries.html
 
 **Description:** SQL query writing and execution.
 
@@ -103,7 +103,7 @@ URL: https://www.omnidb.net/en/docs/writing_sql_queries.html
 
 ## Visualizing Query Plans
 
-URL: https://www.omnidb.net/en/docs/visualizing_query_plans.html
+URL: https://www.omnidb.net/en/visualizing_query_plans.html
 
 **Description:** Query plan visualization and analysis.
 
@@ -116,7 +116,7 @@ URL: https://www.omnidb.net/en/docs/visualizing_query_plans.html
 
 ## Visualizing Data
 
-URL: https://www.omnidb.net/en/docs/visualizing_data.html
+URL: https://www.omnidb.net/en/visualizing_data.html
 
 **Description:** Data visualization features in OmniDB.
 
@@ -129,7 +129,7 @@ URL: https://www.omnidb.net/en/docs/visualizing_data.html
 
 ## Managing Other Elements
 
-URL: https://www.omnidb.net/en/docs/managing_other_elements.html
+URL: https://www.omnidb.net/en/managing_other_elements.html
 
 **Description:** Managing indexes, views, sequences, and other database elements.
 
@@ -143,7 +143,7 @@ URL: https://www.omnidb.net/en/docs/managing_other_elements.html
 
 ## Additional Features
 
-URL: https://www.omnidb.net/en/docs/additional_features.html
+URL: https://www.omnidb.net/en/additional_features.html
 
 **Description:** Additional features and tools in OmniDB.
 
@@ -156,7 +156,7 @@ URL: https://www.omnidb.net/en/docs/additional_features.html
 
 ## OmniDB Config Tool
 
-URL: https://www.omnidb.net/en/docs/omnidb_config_tool.html
+URL: https://www.omnidb.net/en/omnidb_config_tool.html
 
 **Description:** The old Python-era `omnidb-config` GUI tool no longer exists; this chapter documents the manual equivalents (SQLite app-database location, default admin user, resetting/vacuuming the database).
 
@@ -169,7 +169,7 @@ URL: https://www.omnidb.net/en/docs/omnidb_config_tool.html
 
 ## Writing PL/pgSQL Functions
 
-URL: https://www.omnidb.net/en/docs/writing_plpgsql_functions.html
+URL: https://www.omnidb.net/en/writing_plpgsql_functions.html
 
 **Description:** Writing and running PL/pgSQL functions and procedures in OmniDB.
 
@@ -182,7 +182,7 @@ URL: https://www.omnidb.net/en/docs/writing_plpgsql_functions.html
 
 ## Monitoring Dashboard
 
-URL: https://www.omnidb.net/en/docs/monitoring_dashboard.html
+URL: https://www.omnidb.net/en/monitoring_dashboard.html
 
 **Description:** Database monitoring dashboard — 17 built-in native units plus custom units driven by a single SQL query (grid/chart/timeseries), no scripting sandbox required.
 
@@ -195,7 +195,7 @@ URL: https://www.omnidb.net/en/docs/monitoring_dashboard.html
 
 ## Logical Replication
 
-URL: https://www.omnidb.net/en/docs/logical_replication.html
+URL: https://www.omnidb.net/en/logical_replication.html
 
 **Description:** PostgreSQL native logical replication management (publications/subscriptions), unrelated to the removed pglogical/BDR/XL plugins.
 
@@ -208,7 +208,7 @@ URL: https://www.omnidb.net/en/docs/logical_replication.html
 
 ## Deploying omnidb-server
 
-URL: https://www.omnidb.net/en/docs/deploying_omnidb-server.html
+URL: https://www.omnidb.net/en/deploying_omnidb-server.html
 
 **Description:** Deploying and configuring OmniDB server — a single Go binary with no separate websocket process and no built-in TLS.
 
@@ -221,7 +221,7 @@ URL: https://www.omnidb.net/en/docs/deploying_omnidb-server.html
 
 ## Console Tab
 
-URL: https://www.omnidb.net/en/docs/console_tab.html
+URL: https://www.omnidb.net/en/console_tab.html
 
 **Description:** Using the console tab for command execution.
 
@@ -233,7 +233,7 @@ URL: https://www.omnidb.net/en/docs/console_tab.html
 
 ## Advanced Object Search
 
-URL: https://www.omnidb.net/en/docs/advanced_object_search.html
+URL: https://www.omnidb.net/en/advanced_object_search.html
 
 **Description:** Advanced search capabilities for database objects. Currently disabled in the interface (menu entry commented out); this chapter describes how it used to work.
 
@@ -246,7 +246,7 @@ URL: https://www.omnidb.net/en/docs/advanced_object_search.html
 
 ## Editor Keyboard Shortcuts
 
-URL: https://www.omnidb.net/en/docs/editor_keyboard_shortcuts.html
+URL: https://www.omnidb.net/en/editor_keyboard_shortcuts.html
 
 **Description:** Reference table of keyboard shortcuts for the Ace-based SQL/Console editor and DDL/Properties viewer (line operations, selection, multicursor, navigation, find/replace, folding). Separate from the app-level shortcuts covered in Additional Features.
 
@@ -259,7 +259,7 @@ URL: https://www.omnidb.net/en/docs/editor_keyboard_shortcuts.html
 
 ## Legacy Features & History
 
-URL: https://www.omnidb.net/en/docs/legacy_features_and_history.html
+URL: https://www.omnidb.net/en/legacy_features_and_history.html
 
 **Description:** OmniDB's version timeline, and what happened to its removed Python-based plugin system — including the pglogical, Postgres-BDR and Postgres-XL plugins — and the removed PL/pgSQL step debugger, after the 3.6.x rewrite from Python/Django to Go. Links to the original unmaintained repository for anyone who still needs an old release with plugin support.
 

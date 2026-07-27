@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Administración de bases de datos - Documentación de OmniDB</title>
+	<meta name="description" content="Recorra la ventana de espacio de trabajo de OmniDB: pestañas de conexión, el árbol de estructuras, pestañas internas para consultas y consolas, y cómo explorar y administrar objetos de base de datos.">
+	<link rel="canonical" href="https://www.omnidb.net/es/managing_databases.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/managing_databases.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_databases.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/managing_databases.html">
+	<meta property="og:title" content="Administración de bases de datos - Documentación de OmniDB">
+	<meta property="og:description" content="Recorra la ventana de espacio de trabajo de OmniDB: pestañas de conexión, el árbol de estructuras, pestañas internas para consultas y consolas, y cómo explorar y administrar objetos de base de datos.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Administración de bases de datos", "item": "https://www.omnidb.net/es/managing_databases.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html" class="active">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Administración de bases de datos</h1>
+<p>Tras crear una conexión, puede seleccionarla haciendo clic en la acción <em>Select
+Connection</em> (Seleccionar conexión) de la cuadrícula de conexiones. Verá que la conexión
+se representará mediante una especie de pestaña externa llamada <em>pestaña de conexión</em>
+(Connection Tab). Y toda esta área se denomina <em>ventana de espacio de trabajo</em> (Workspace Window).</p>
+<p><img alt="" src="../assets/img/image_014.webp" /></p>
+<h4>Secciones de la ventana <em>Workspace</em></h4>
+<p>Esta interfaz tiene varios elementos:</p>
+<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<ul>
+<li><strong>1) Connections</strong> (Conexiones): abre una ventana emergente con la cuadrícula de <em>Connections</em></li>
+<li><strong>2) Outer Tabs</strong> (Pestañas externas): OmniDB permite trabajar con varias bases de datos al mismo
+tiempo. Cada base de datos será accesible a través de una <em>pestaña externa</em>. Las pestañas externas
+también pueden alojar funciones diversas independientes de la conexión, como la función
+<em>Snippets</em></li>
+<li><strong>3) Options</strong> (Opciones): muestra el usuario actualmente conectado y, si es superusuario,
+también muestra un enlace a la <em>administración de usuarios</em>. Además muestra enlaces a la
+<em>configuración de usuario</em>, los <em>complementos instalados</em>, el <em>historial de consultas</em>,
+<em>información</em> y <em>cerrar sesión</em>.</li>
+</ul>
+<h4>Pestaña externa de conexión</h4>
+<p>La pestaña externa llamada <em>PostgreSQL - testdb</em> tiene ese nombre por el alias
+(<em>PostgreSQL</em>) que asignamos en la conexión a la base de datos <code>testdb</code>. Esta pestaña es una
+<em>pestaña externa de conexión</em> (Connection Outer Tab). Observe la pequeña pestaña con una cruz junto a la
+pestaña externa <em>PostgreSQL - testdb</em>. Esta permite crear una nueva pestaña externa que
+automáticamente será una <em>pestaña externa de conexión</em>. Sin embargo, la <em>pestaña externa Snippet</em>
+es fija y siempre será la primera.</p>
+<p>Una nueva <em>pestaña externa de conexión</em> siempre apuntará automáticamente a la primera
+conexión de su lista de conexiones de base de datos. O bien, si hizo clic en la acción
+<em>Select Connection</em>, apuntará a la conexión seleccionada. Observe
+los elementos dentro de esta pestaña:</p>
+<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<ul>
+<li><strong>1) Connection Selector</strong> (Selector de conexión): muestra todas las conexiones y permite al
+usuario seleccionar la actual</li>
+<li><strong>2) Tree of Structures</strong> (Árbol de estructuras): muestra un árbol jerárquico en el que puede
+navegar por los elementos de la base de datos</li>
+<li><strong>3) Properties and DDL Panels</strong> (Paneles de propiedades y DDL): muestran las propiedades y el DDL
+del nodo actualmente seleccionado en la vista de árbol</li>
+<li><strong>4) Inner Tabs</strong> (Pestañas internas): permiten al usuario ejecutar acciones en la base de datos actual.
+Existen varios tipos de pestañas internas para la base de datos actual. Al hacer clic en
+la última pequeña pestaña con una cruz, puede añadir una nueva pestaña. Una nueva pestaña puede ser una
+<em>pestaña de consulta</em> (Query Tab), una <em>pestaña de consola</em> (Console Tab), el <em>panel de monitorización</em>
+(Monitoring Dashboard) o <em>Backends</em></li>
+</ul>
+<p><img alt="" src="../assets/img/image_187.webp" /></p>
+<ul>
+<li><strong>5) Inner Tab Content</strong> (Contenido de la pestaña interna): puede variar según el tipo de pestaña
+interna. La imagen muestra una <em>pestaña de consulta</em>, y en este caso el contenido será un
+<em>editor SQL</em>, con resaltado de sintaxis, autocompletado y función de buscar y reemplazar</li>
+<li><strong>6) Inner Tab Actions</strong> (Acciones de la pestaña interna): pueden variar según el tipo de pestaña
+interna. Para una <em>pestaña de consulta</em>, son <em>Run</em> (Ejecutar), <em>Indent SQL</em> (Sangrar SQL),
+<em>Command History</em> (Historial de comandos), <em>Explain</em>, <em>Explain Analyze</em>, <em>Autocommit</em> y
+<em>Export Data</em> (Exportar datos)</li>
+<li><strong>7) Inner Tab Results</strong> (Resultados de la pestaña interna): una <em>pestaña de consulta</em>, tras hacer
+clic en el <em>botón Execute</em> o pulsar el atajo de ejecución (<code>Alt-Q</code>), mostrará una cuadrícula
+con los resultados de la consulta en la subpestaña <em>Data</em>. Si la consulta invoca una función que
+genera mensajes, estos se mostrarán en la subpestaña <em>Messages</em>. Si en lugar de <em>Run</em> hizo
+clic en <em>Explain</em> o <em>Explain Analyze</em>, el plan de ejecución de la consulta se
+mostrará en la subpestaña <em>Explain</em>.</li>
+</ul>
+<h4>Trabajar con bases de datos</h4>
+<p>Observe el selector de conexiones. OmniDB siempre apunta a la primera conexión
+disponible, pero puede cambiarla haciendo clic en el selector.</p>
+<p><img alt="" src="../assets/img/image_017.webp" /></p>
+<p>Seleccione la conexión <em>PostgreSQL</em>. Ahora vaya al árbol situado justo debajo del selector
+y haga clic para expandir el nodo raíz <em>PostgreSQL</em>.</p>
+<p><img alt="" src="../assets/img/image_018.webp" /></p>
+<p>Tenga en cuenta que, cada 30 minutos que pase sin realizar acciones en la
+base de datos, aparecerá una ventana emergente de <em>Authentication</em> (Autenticación), lo que significa que la contraseña que
+OmniDB cifró y almacenó en memoria ha caducado. Como se explicó antes,
+esto es importante para la seguridad de su base de datos. Tras introducir la
+contraseña correcta, verá que el nodo PostgreSQL ahora muestra la versión de PostgreSQL y
+también se ha expandido, mostrando la conexión de base de datos actual y también los elementos de
+ámbito de instancia: <em>Databases</em> (Bases de datos), <em>Tablespaces</em>, <em>Roles</em> y <em>Replication Slots</em>
+(Slots de replicación).</p>
+<p>Puede conectarse a una única base de datos PostgreSQL y, utilizando la misma conexión,
+conectarse a otras bases de datos de la misma instancia de PostgreSQL. La
+base de datos actualmente activa se indicará debajo del selector de conexión.</p>
+<p><img alt="" src="../assets/img/image_188.webp" /></p>
+<p>Para conectarse a una base de datos diferente, expanda el nodo correspondiente a esa
+base de datos. Aparecerá una ventana emergente preguntando si realmente desea cambiar la base de datos
+activa.</p>
+<p><img alt="" src="../assets/img/image_189.webp" /></p>
+<p>Haga clic en <em>Yes</em> (Sí) y OmniDB cambiará la base de datos activa por la que ha
+elegido. Esto se reflejará en el indicador <em>Active database</em> (Base de datos activa), y también en
+el nombre de la pestaña externa.</p>
+<p><img alt="" src="../assets/img/image_190.webp" /></p>
+<p>Ahora expanda el nodo <em>Schemas</em> (Esquemas). Verá todos los esquemas de la base de datos
+actual (en el caso de PostgreSQL, los esquemas <code>TOAST</code> y temporales no se muestran).</p>
+<p><img alt="" src="../assets/img/image_019.webp" /></p>
+<p>Ahora haga clic para expandir el esquema <code>public</code>. Verá los distintos tipos de
+elementos que contiene este esquema.</p>
+<p><img alt="" src="../assets/img/image_020.webp" /></p>
+<p>Ahora haga clic para expandir el nodo <em>Tables</em> (Tablas) y verá todas las tablas contenidas en
+el esquema <code>public</code>. Expanda cualquier tabla y verá sus columnas, clave primaria,
+claves foráneas, restricciones, índices, reglas, disparadores y particiones.</p>
+<p><img alt="" src="../assets/img/image_021.webp" /></p>
+<p>Para ver los registros dentro de una tabla, haga clic con el botón derecho sobre ella y elija *Data Actions</p>
+<blockquote>
+<p>Query Data*.</p>
+</blockquote>
+<p><img alt="" src="../assets/img/image_022.webp" /></p>
+<p>Observe que OmniDB abre un nuevo editor SQL con una consulta sencilla para listar los
+registros de la tabla. Los registros se muestran en una cuadrícula justo debajo del editor. Esta
+cuadrícula puede controlarse con el teclado como si estuviera utilizando una hoja de cálculo. También
+puede copiar datos de celdas individuales o de un bloque de celdas (que se pueden seleccionar
+con el teclado o el ratón) y pegarlos en cualquier hoja de cálculo.</p>
+<p><img alt="" src="../assets/img/image_023.webp" /></p>
+<p>Puede editar la consulta en el editor SQL, escribiendo consultas simples o más
+complejas. Para ejecutarla, haga clic en el botón de acción o pulse el atajo <code>Alt-Q</code>.
+Si los resultados superan los 100 registros, aparecerán los botones adicionales <em>Fetch More</em>
+(Obtener más) y <em>Fetch All</em> (Obtener todo). Más detalles en los próximos capítulos.</p>
+<h4>Trabajar con varias pestañas dentro de la misma conexión</h4>
+<p>Dentro de una misma conexión, puede crear varias pestañas internas de consulta haciendo clic
+en la última pequeña pestaña con una cruz y eligiendo después <em>Query Tab</em> (Pestaña de consulta).</p>
+<p><img alt="" src="../assets/img/image_024.webp" /></p>
+<p>En OmniDB puede ejecutar varias sentencias SQL y procedimientos en paralelo.
+Mientras se están ejecutando, se mostrará un icono en la pestaña que indica su estado
+actual. Si un proceso finaliza y no se encuentra en la pestaña actual, esa pestaña
+mostrará un icono verde que indica que la rutina que se ejecutaba en ella ya
+ha finalizado.</p>
+<p><img alt="" src="../assets/img/image_025.webp" /></p>
+<p>Al hacer clic en el <em>botón Cancel</em> (Cancelar), puede cancelar un proceso en ejecución dentro de la
+base de datos.</p>
+<p><img alt="" src="../assets/img/image_026.webp" /></p>
+<p>También puede arrastrar y soltar una pestaña para cambiar su orden. Esto funciona tanto con pestañas
+internas como externas.</p>
+<p><img alt="" src="../assets/img/image_027.webp" /></p>
+<p>Además, puede usar atajos de teclado para administrar las pestañas internas (consulta SQL).
+Estos son los valores predeterminados en Windows/Linux (macOS sustituye Alt por Ctrl); todos
+ellos se pueden reasignar en la pestaña Atajos del diálogo de Configuración:</p>
+<ul>
+<li><strong>Alt-I</strong>: inserta una nueva pestaña interna</li>
+<li><strong>Alt-Shift-Q</strong>: elimina la pestaña interna actual</li>
+<li><strong>Alt-O</strong>: cambia el foco a la pestaña interna de la izquierda</li>
+<li><strong>Alt-P</strong>: cambia el foco a la pestaña interna de la derecha</li>
+</ul>
+<p>Actualmente no existen atajos de teclado para las pestañas externas (de conexión); para
+ellas, use el reordenamiento por arrastrar y soltar, o el ratón.</p>
+<p>Todas las pestañas de consulta SQL se guardan automáticamente
+cada vez que se ejecutan. Incluso si cierra la ventana de OmniDB o la pestaña del navegador, ya
+están almacenadas en la <em>base de datos de usuario</em> de OmniDB. Se restaurarán
+automáticamente al volver a abrir OmniDB (si usa la aplicación), al abrirla en otra
+ventana del navegador (si usa el servidor), o incluso si hizo clic en la ventana de
+<em>Connections</em> (Conexiones) o cerró sesión. Eliminar una pestaña externa o interna desde la
+interfaz la borra de forma permanente, por lo que no se restaurará.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

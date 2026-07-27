@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Gérer les bases de données - Documentation OmniDB</title>
+	<meta name="description" content="Découvrez la fenêtre de travail d'OmniDB : onglets de connexion, arborescence des structures, onglets internes pour les requêtes et consoles, et comment parcourir et gérer les objets de la base de données.">
+	<link rel="canonical" href="https://www.omnidb.net/fr/managing_databases.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/managing_databases.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_databases.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/fr/managing_databases.html">
+	<meta property="og:title" content="Gérer les bases de données - Documentation OmniDB">
+	<meta property="og:description" content="Découvrez la fenêtre de travail d'OmniDB : onglets de connexion, arborescence des structures, onglets internes pour les requêtes et consoles, et comment parcourir et gérer les objets de la base de données.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/fr/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://www.omnidb.net/fr/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Gérer les bases de données", "item": "https://www.omnidb.net/fr/managing_databases.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Basculer la navigation">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Changer de langue" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Changer de thème" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Clair</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Sombre</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Accueil</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Premiers pas</span>
+			<a href="introduction.html">Introduction</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html" class="active">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avancé</span>
+			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="logical_replication.html">Réplication logique</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Serveur et outils</span>
+			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="console_tab.html">Onglet console</a>
+			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Référence</span>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Gérer les bases de données</h1>
+<p>Après avoir créé une connexion, vous pouvez la sélectionner en cliquant sur l'action <em>Select Connection</em>
+(Sélectionner la connexion) dans la grille des connexions. La connexion sera alors représentée par une sorte
+d'onglet externe appelé <em>onglet de connexion</em> (Connection Tab). Et l'ensemble de cette zone est appelé la
+<em>fenêtre de travail</em> (Workspace Window).</p>
+<p><img alt="" src="../assets/img/image_014.webp" /></p>
+<h4>Sections de la fenêtre <em>Workspace</em></h4>
+<p>Cette interface comporte plusieurs éléments :</p>
+<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<ul>
+<li><strong>1) Connections</strong> (Connexions) : ouvre une fenêtre contextuelle avec la grille des <em>Connections</em></li>
+<li><strong>2) Outer Tabs</strong> (Onglets externes) : OmniDB vous permet de travailler avec plusieurs bases de
+données simultanément. Chaque base de données est accessible via un <em>onglet externe</em>. Les onglets externes
+peuvent aussi héberger des fonctionnalités diverses, indépendantes de toute connexion, comme la fonctionnalité
+<em>Snippets</em></li>
+<li><strong>3) Options</strong> : affiche l'utilisateur actuellement connecté et, s'il s'agit d'un superutilisateur,
+affiche également un lien vers la <em>gestion des utilisateurs</em>. Affiche aussi des liens vers les
+<em>paramètres utilisateur</em>, les <em>plugins installés</em>, l'<em>historique des requêtes</em>, les
+<em>informations</em> et la <em>déconnexion</em>.</li>
+</ul>
+<h4>Onglet externe de connexion</h4>
+<p>L'onglet externe nommé <em>PostgreSQL - testdb</em> porte ce nom en raison de l'alias (<em>PostgreSQL</em>)
+que nous avons donné à la connexion vers la base de données <code>testdb</code>. Cet onglet est un <em>onglet
+externe de connexion</em> (Connection Outer Tab). Remarquez le petit onglet avec une croix à côté de l'onglet
+externe <em>PostgreSQL - testdb</em>. Il permet de créer un nouvel onglet externe qui sera automatiquement un
+<em>onglet externe de connexion</em>. En revanche, l'<em>onglet externe Snippets</em> est fixe et sera toujours
+le premier.</p>
+<p>Un nouvel <em>onglet externe de connexion</em> pointera toujours automatiquement vers la première connexion
+de votre liste de connexions à des bases de données. Ou, si vous avez cliqué sur l'action <em>Select
+Connection</em>, il pointera vers la connexion sélectionnée. Observez les éléments à l'intérieur de cet onglet :</p>
+<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<ul>
+<li><strong>1) Connection Selector</strong> (Sélecteur de connexion) : affiche toutes les connexions et permet à
+l'utilisateur de sélectionner celle en cours</li>
+<li><strong>2) Tree of Structures</strong> (Arborescence des structures) : affiche une arborescence hiérarchique
+permettant de naviguer parmi les éléments de la base de données</li>
+<li><strong>3) Properties and DDL Panels</strong> (Panneaux Propriétés et DDL) : affichent les propriétés et le DDL
+du nœud actuellement sélectionné dans l'arborescence</li>
+<li><strong>4) Inner Tabs</strong> (Onglets internes) : permettent à l'utilisateur d'exécuter des actions sur la
+base de données courante. Il existe plusieurs types d'onglets internes pour la base de données courante. En
+cliquant sur le dernier petit onglet portant une croix, vous pouvez en ajouter un nouveau. Un nouvel onglet peut
+être un <em>onglet Requête</em>, un <em>onglet Console</em>, un <em>tableau de bord de supervision</em> ou un
+onglet <em>Backends</em> (Processus serveur)</li>
+</ul>
+<p><img alt="" src="../assets/img/image_187.webp" /></p>
+<ul>
+<li><strong>5) Inner Tab Content</strong> (Contenu de l'onglet interne) : varie selon le type d'onglet interne.
+La figure montre un <em>onglet Requête</em> et, dans ce cas, le contenu est un <em>éditeur SQL</em>, avec
+coloration syntaxique, autocomplétion et fonction rechercher &amp; remplacer</li>
+<li><strong>6) Inner Tab Actions</strong> (Actions de l'onglet interne) : varient selon le type d'onglet interne.
+Pour un <em>onglet Requête</em>, il s'agit de <em>Run</em> (Exécuter), <em>Indent SQL</em> (Indenter le SQL),
+<em>Command History</em> (Historique des commandes), <em>Explain</em>, <em>Explain Analyze</em>,
+<em>Autocommit</em> et <em>Export Data</em> (Exporter les données)</li>
+<li><strong>7) Inner Tab Results</strong> (Résultats de l'onglet interne) : dans un <em>onglet Requête</em>, après
+avoir cliqué sur le bouton <em>Execute</em> (Exécuter) ou saisi le raccourci d'exécution (<code>Alt-Q</code>), une
+grille affiche les résultats de la requête dans le sous-onglet <em>Data</em> (Données). Si la requête appelle une
+fonction qui génère des messages, ceux-ci s'affichent dans le sous-onglet <em>Messages</em>. Si, au lieu de
+<em>Run</em>, vous avez cliqué sur <em>Explain</em> ou <em>Explain Analyze</em>, le plan d'exécution de la
+requête s'affiche dans le sous-onglet <em>Explain</em>.</li>
+</ul>
+<h4>Travailler avec des bases de données</h4>
+<p>Regardez votre sélecteur de connexions. OmniDB pointe toujours vers la première connexion disponible, mais
+vous pouvez la changer en cliquant sur le sélecteur.</p>
+<p><img alt="" src="../assets/img/image_017.webp" /></p>
+<p>Sélectionnez la connexion <em>PostgreSQL</em>. Allez maintenant dans l'arborescence juste en dessous du
+sélecteur et cliquez pour développer le nœud racine <em>PostgreSQL</em>.</p>
+<p><img alt="" src="../assets/img/image_018.webp" /></p>
+<p>Gardez à l'esprit que, toutes les 30 minutes passées sans effectuer d'action sur la base de données, une
+fenêtre contextuelle d'<em>authentification</em> apparaîtra, signifiant que le mot de passe chiffré par OmniDB et
+conservé en mémoire a maintenant expiré. Comme expliqué précédemment, ceci est important pour la sécurité de
+votre base de données. Après avoir saisi le mot de passe correct, vous verrez que le nœud PostgreSQL affiche
+désormais la version de PostgreSQL et a également été développé, montrant la connexion active à la base de
+données ainsi que les éléments propres à l'instance : <em>Databases</em> (Bases de données), <em>Tablespaces</em>,
+<em>Roles</em> (Rôles) et <em>Replication Slots</em> (Slots de réplication).</p>
+<p>Vous pouvez vous connecter à une seule base de données PostgreSQL et, en utilisant la même connexion, vous
+connecter à d'autres bases de données sur la même instance PostgreSQL. La base de données actuellement active
+est indiquée en dessous du sélecteur de connexion.</p>
+<p><img alt="" src="../assets/img/image_188.webp" /></p>
+<p>Pour vous connecter à une autre base de données, développez le nœud correspondant à cette base de données. Une
+fenêtre contextuelle apparaîtra vous demandant si vous souhaitez vraiment changer la base de données active.</p>
+<p><img alt="" src="../assets/img/image_189.webp" /></p>
+<p>Cliquez sur <em>Yes</em> (Oui) et OmniDB changera la base de données active pour celle que vous avez choisie.
+Cela se reflétera dans l'indicateur <em>Active database</em> (Base de données active), ainsi que dans le nom de
+l'onglet externe.</p>
+<p><img alt="" src="../assets/img/image_190.webp" /></p>
+<p>Développez maintenant le nœud <em>Schemas</em> (Schémas). Vous verrez tous les schémas de la base de données
+courante (dans le cas de PostgreSQL, les schémas <code>TOAST</code> et temporaires ne sont pas affichés).</p>
+<p><img alt="" src="../assets/img/image_019.webp" /></p>
+<p>Cliquez maintenant pour développer le schéma <code>public</code>. Vous verrez différents types d'éléments
+contenus dans ce schéma.</p>
+<p><img alt="" src="../assets/img/image_020.webp" /></p>
+<p>Cliquez maintenant pour développer le nœud <em>Tables</em>, et vous verrez toutes les tables contenues dans le
+schéma <code>public</code>. Développez n'importe quelle table et vous verrez ses colonnes, sa clé primaire, ses
+clés étrangères, ses contraintes, ses index, ses règles, ses déclencheurs et ses partitions.</p>
+<p><img alt="" src="../assets/img/image_021.webp" /></p>
+<p>Pour visualiser les enregistrements d'une table, faites un clic droit dessus et choisissez <em>Data Actions
+&gt; Query Data</em> (Actions sur les données &gt; Interroger les données).</p>
+<p><img alt="" src="../assets/img/image_022.webp" /></p>
+<p>Remarquez qu'OmniDB ouvre un nouvel éditeur SQL avec une requête simple pour lister les enregistrements de la
+table. Les enregistrements s'affichent dans une grille juste en dessous de l'éditeur. Cette grille peut être
+contrôlée au clavier, comme dans un tableur. Vous pouvez également copier des données d'une seule cellule ou d'un
+bloc de cellules (sélectionnable au clavier ou à la souris) et les coller dans n'importe quel tableur.</p>
+<p><img alt="" src="../assets/img/image_023.webp" /></p>
+<p>Vous pouvez modifier la requête dans l'éditeur SQL, en écrivant des requêtes simples ou plus complexes. Pour
+l'exécuter, cliquez sur le bouton d'action ou appuyez sur la combinaison de touches <code>Alt-Q</code>. Si les
+résultats dépassent 100 enregistrements, des boutons supplémentaires <em>Fetch More</em> (Récupérer plus) et
+<em>Fetch All</em> (Tout récupérer) apparaîtront. Plus de détails dans les chapitres suivants.</p>
+<h4>Travailler avec plusieurs onglets au sein d'une même connexion</h4>
+<p>À l'intérieur d'une même connexion, vous pouvez créer plusieurs onglets Requête internes en cliquant sur le
+dernier petit onglet portant une croix, puis en choisissant <em>Query Tab</em> (Onglet Requête).</p>
+<p><img alt="" src="../assets/img/image_024.webp" /></p>
+<p>Dans OmniDB, vous pouvez exécuter plusieurs instructions et procédures SQL en parallèle. Pendant l'exécution,
+une icône s'affiche dans l'onglet pour indiquer son état actuel. Si un traitement se termine alors qu'il ne se
+trouve pas dans l'onglet courant, cet onglet affichera une icône verte indiquant que la routine qui y était
+exécutée est désormais terminée.</p>
+<p><img alt="" src="../assets/img/image_025.webp" /></p>
+<p>En cliquant sur le bouton <em>Cancel</em> (Annuler), vous pouvez annuler un traitement en cours d'exécution
+dans la base de données.</p>
+<p><img alt="" src="../assets/img/image_026.webp" /></p>
+<p>Vous pouvez également glisser-déposer un onglet pour modifier son ordre. Cela fonctionne aussi bien pour les
+onglets internes que pour les onglets externes.</p>
+<p><img alt="" src="../assets/img/image_027.webp" /></p>
+<p>De plus, vous pouvez utiliser des raccourcis clavier pour gérer les onglets internes (Requête SQL). Voici les
+raccourcis par défaut sous Windows/Linux (macOS remplace Ctrl par Alt) ; ils peuvent tous être réassignés dans
+l'onglet Shortcuts (Raccourcis) de la fenêtre Paramètres :</p>
+<ul>
+<li><strong>Alt-I</strong> : insérer un nouvel onglet interne</li>
+<li><strong>Alt-Shift-Q</strong> : supprime l'onglet interne courant</li>
+<li><strong>Alt-O</strong> : déplace le focus vers l'onglet interne à gauche</li>
+<li><strong>Alt-P</strong> : déplace le focus vers l'onglet interne à droite</li>
+</ul>
+<p>Il n'existe actuellement aucun raccourci clavier pour les onglets externes (de connexion) — utilisez le
+glisser-déposer pour les réordonner, ou la souris, pour ceux-ci.</p>
+<p>Tous les onglets Requête SQL sont automatiquement enregistrés chaque fois que vous les exécutez. Même si vous
+fermez la fenêtre d'OmniDB ou l'onglet du navigateur, ils sont déjà stockés dans la <em>base de données
+utilisateur</em> d'OmniDB. Ils seront automatiquement restaurés lorsque vous rouvrirez OmniDB (si vous utilisez
+l'application), lorsque vous l'ouvrirez dans une autre fenêtre de navigateur (si vous utilisez la version
+serveur), ou même si vous avez cliqué sur la fenêtre <em>Connections</em> ou si vous vous êtes déconnecté.
+Supprimer un onglet externe ou interne via l'interface le supprime définitivement, il ne sera donc pas restauré.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

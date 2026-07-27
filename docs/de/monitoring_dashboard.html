@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Überwachungs-Dashboard - OmniDB-Dokumentation</title>
+	<meta name="description" content="Erstellen Sie in OmniDB ein Live-Dashboard zur Datenbanküberwachung aus Grid-, Diagramm- und Zeitreihen-Einheiten, einschließlich eigener SQL-basierter Einheiten.">
+	<link rel="canonical" href="https://www.omnidb.net/de/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/monitoring_dashboard.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/de/monitoring_dashboard.html">
+	<meta property="og:title" content="Überwachungs-Dashboard - OmniDB-Dokumentation">
+	<meta property="og:description" content="Erstellen Sie in OmniDB ein Live-Dashboard zur Datenbanküberwachung aus Grid-, Diagramm- und Zeitreihen-Einheiten, einschließlich eigener SQL-basierter Einheiten.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/de/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentation", "item": "https://www.omnidb.net/de/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Überwachungs-Dashboard", "item": "https://www.omnidb.net/de/monitoring_dashboard.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Navigation umschalten">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Sprache ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Design ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Hell</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dunkel</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Startseite</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Erste Schritte</span>
+			<a href="introduction.html">Einführung</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Arbeiten mit Daten</span>
+			<a href="managing_databases.html">Datenbanken verwalten</a>
+			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
+			<a href="managing_table_data.html">Tabellendaten verwalten</a>
+			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
+			<a href="visualizing_data.html">Daten visualisieren</a>
+			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Erweitert</span>
+			<a href="additional_features.html">Zusätzliche Funktionen</a>
+			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
+			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
+			<a href="monitoring_dashboard.html" class="active">Überwachungs-Dashboard</a>
+			<a href="logical_replication.html">Logische Replikation</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server &amp; Tools</span>
+			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="console_tab.html">Konsolen-Tab</a>
+			<a href="advanced_object_search.html">Erweiterte Objektsuche</a>
+			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referenz</span>
+			<a href="legacy_features_and_history.html">Legacy-Funktionen &amp; Historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Überwachungs-Dashboard</h1>
+<p>OmniDB verfügt über eine großartige Funktion namens <em>Monitoring Dashboard</em>
+(Überwachungs-Dashboard). Ein Bild sagt bekanntlich mehr als tausend Worte,
+werfen Sie also einen Blick darauf:</p>
+<p><img alt="" src="../assets/img/image_091.webp" /></p>
+<p>Wie Sie sehen, handelt es sich um eine neue Art von innerem Tab, der einige
+Diagramme und Raster anzeigt. Dieser innere Tab <em>Monitoring</em> öffnet sich
+automatisch, sobald Sie den Wurzelknoten des Baums (den Knoten <em>PostgreSQL</em>)
+erweitern. Sie können ihn jederzeit geöffnet lassen oder schließen. Um ihn
+erneut zu öffnen, klicken Sie mit der rechten Maustaste auf den Wurzelknoten
+und dann auf <em>Dashboard</em>.</p>
+<p><img alt="" src="../assets/img/image_092.webp" /></p>
+<p>Das Dashboard besteht aus praktischen Informationskacheln namens <em>Monitoring
+Units</em> (Überwachungseinheiten). Hier ein Beispiel für eine Monitoring Unit und
+ihre Oberflächenelemente:</p>
+<p><img alt="" src="../assets/img/image_093.webp" /></p>
+<ul>
+<li><strong>1</strong>: Titel der Monitoring Unit;</li>
+<li><strong>2</strong>: Aktualisiert die Monitoring Unit. Je nach Typ aktualisiert ein Klick
+auf diese Schaltfläche entweder die gesamte Zeichenfläche, oder das Diagramm
+holt sich einfach einen neuen Satz von Werten;</li>
+<li><strong>3</strong>: Pausiert die Monitoring Unit;</li>
+<li><strong>4</strong>: Intervall in Sekunden für die automatische Aktualisierung;</li>
+<li><strong>5</strong>: Entfernt die Monitoring Unit aus dem Überwachungs-Dashboard;</li>
+<li><strong>6</strong>: Zeichenfläche, die je nach Typ der Monitoring Unit unterschiedlich
+ausfällt.</li>
+</ul>
+<h4>Arten von Monitoring Units</h4>
+<p>Es gibt 3 Arten von Monitoring Units:</p>
+<ul>
+<li><strong>Grid</strong> (Raster): Die einfachste Art, führt lediglich von Zeit zu Zeit eine
+Abfrage aus und zeigt die Ergebnisse in einem Datenraster an.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_094.webp" /></p>
+<ul>
+<li><strong>Chart</strong> (Diagramm): Bei jeder Aktualisierung wird ein komplett neues
+Diagramm gezeichnet. Der alte Satz von Werten geht verloren. Das ist besonders
+nützlich für Kreisdiagramme, es können aber auch andere Diagrammtypen verwendet
+werden.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_095.webp" /></p>
+<ul>
+<li><strong>Timeseries</strong> (Zeitreihe): Dies ist vielleicht die nützlichste Art von
+Monitoring Unit. Es handelt sich um ein Diagramm, das bei jeder Aktualisierung
+einen neuen Satz von Werten anhängt. Linien- oder Balkendiagramme eignen sich
+für diesen Typ am besten. Die letzten 100 Wertesätze werden clientseitig von
+der Komponente vorgehalten, damit der Benutzer sie einsehen kann.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_096.webp" /></p>
+<h4>Einheiten im Dashboard ein- und ausblenden</h4>
+<p>Klicken Sie auf die Schaltfläche <em>Refresh All</em> (Alle aktualisieren), werden
+alle Monitoring Units auf einmal aktualisiert. Sie können unerwünschte
+Monitoring Units auch entfernen, indem Sie auf die Schaltfläche <em>Remove</em>
+(Entfernen) klicken. Entfernen wir nun alle Einheiten aus dem Dashboard, sodass
+es leer wird:</p>
+<p><img alt="" src="../assets/img/image_097.webp" /></p>
+<p>Die 17 in OmniDB integrierten Einheiten (PostgreSQL- und MySQL-Servermetriken —
+Transaktionsrate, Backends, WAL-Produktion, Datenbank-/Tabellengröße und so
+weiter) laufen als nativer Code und benötigen keine zusätzliche Installation in
+der Datenbank.</p>
+<p><img alt="" src="../assets/img/image_098.webp" /></p>
+<p>Jetzt, da unser Dashboard leer ist, fügen wir einige Einheiten hinzu. Klicken
+Sie auf die Schaltfläche <em>Manage Units</em> (Einheiten verwalten).</p>
+<p><img alt="" src="../assets/img/image_099.webp" /></p>
+<p>Klicken Sie auf die grüne Aktion, um eine der eingebauten Einheiten hinzuzufügen
+— z. B. <em>Backends</em> und <em>Database Size</em> (Datenbankgröße). Warten Sie einige
+Sekunden, und Sie erhalten ein Dashboard wie dieses:</p>
+<p><img alt="" src="../assets/img/image_100.webp" /></p>
+<p>Auf dieselbe Weise können Sie beliebige Einheiten hinzufügen und entfernen, um
+das Dashboard ganz nach Ihren Wünschen anzupassen.</p>
+<h4>Eigene Monitoring Units schreiben</h4>
+<p>Mit OmniDB können Sie eigene Einheiten schreiben oder bestehende anpassen,
+indem Sie eine einzige SQL-Abfrage verfassen — dieselbe Verbindung und
+dieselben Berechtigungen, die Ihr SQL-Editor bereits hat, nur dass sie
+zeitgesteuert statt auf Abruf läuft. Es gibt keine separate Skriptsprache und
+keine Sandbox zu erlernen.</p>
+<p><strong>Hinweis:</strong> Da die Abfrage unbeaufsichtigt in einem Aktualisierungsintervall
+erneut ausgeführt wird, werden nur <code>SELECT</code>- (oder <code>WITH ... SELECT</code>-)
+Abfragen akzeptiert — eine versehentlich eingefügte destruktive Anweisung wird
+von vornherein abgelehnt, statt still und heimlich zeitgesteuert ausgeführt zu
+werden.</p>
+<p>Um eine neue Monitoring Unit zu erstellen, klicken Sie im Dashboard auf die
+Schaltfläche <em>Manage Units</em> und anschließend auf die Schaltfläche <em>New Unit</em>
+(Neue Einheit). Es öffnet sich eine neue Art von innerem Tab mit einem Namen,
+einem Typ-Dropdown, einem Aktualisierungsintervall und einem einzelnen
+SQL-Abfrage-Editor (sowie einem Diagrammtyp-Dropdown, das nur bei Einheiten
+vom Typ <em>Chart</em> angezeigt wird).</p>
+<p>Die Form der Abfrage hängt vom Typ der Einheit ab:</p>
+<ul>
+<li>
+<p><strong>Grid</strong>: keine bestimmte Form — welche Spalten und Zeilen die Abfrage
+zurückgibt, werden direkt zum Raster. Zum Beispiel:</p>
+<pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
+</li>
+<li>
+<p><strong>Chart</strong>: eine Zeile pro Kategorie — die erste Spalte ist die
+Beschriftung, die übrigen Spalte(n) sind je eine Serie (der Spaltenname wird
+zum Serien-Namen). Wählen Sie den Diagrammtyp (Balken, Kreis, Donut oder Linie)
+über das Dropdown neben dem Typ-Auswahlfeld. Zum Beispiel ein Kreisdiagramm der
+Datenbankgrößen:</p>
+<pre><code class="language-sql">SELECT datname,
+       round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
+FROM pg_catalog.pg_database
+WHERE datname NOT IN ('template0', 'template1')</code></pre>
+</li>
+<li>
+<p><strong>Timeseries</strong>: genau eine Zeile — jede numerische Spalte wird zu einer
+fortlaufend angehängten Linienserie, die im konfigurierten Intervall
+aktualisiert wird. Zum Beispiel die Datenbankgröße über die Zeit verfolgen:</p>
+<pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
+FROM pg_catalog.pg_database
+WHERE NOT datistemplate</code></pre>
+</li>
+</ul>
+<p>Schreiben (oder fügen Sie) die Abfrage in den SQL-Abfrage-Editor ein und klicken
+Sie dann auf die Schaltfläche <em>Test</em>, um sie in der Vorschau-Zeichenfläche
+darzustellen — Sie können sie beliebig oft testen. Sobald Sie zufrieden sind,
+geben Sie der Einheit einen Namen, legen Sie ein Aktualisierungsintervall fest
+und klicken Sie auf <em>Save</em> (Speichern). Schließen Sie den Bearbeitungs-Tab, und
+die neue Einheit erscheint in der Einheitenliste, bereit, dem Dashboard
+hinzugefügt zu werden (grüne Aktion), genau wie eine eingebaute Einheit.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

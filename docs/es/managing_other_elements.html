@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Administración de otros elementos - Documentación de OmniDB</title>
+	<meta name="description" content="Administre objetos de PostgreSQL más allá de las tablas, como las secuencias, usando las plantillas SQL editables de OmniDB para crearlos, modificarlos y eliminarlos.">
+	<link rel="canonical" href="https://www.omnidb.net/es/managing_other_elements.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_other_elements.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/managing_other_elements.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_other_elements.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_other_elements.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/managing_other_elements.html">
+	<meta property="og:title" content="Administración de otros elementos - Documentación de OmniDB">
+	<meta property="og:description" content="Administre objetos de PostgreSQL más allá de las tablas, como las secuencias, usando las plantillas SQL editables de OmniDB para crearlos, modificarlos y eliminarlos.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Administración de otros elementos", "item": "https://www.omnidb.net/es/managing_other_elements.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html" class="active">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Administración de otros elementos</h1>
+<p>Todas las estructuras de PostgreSQL pueden administrarse mediante el uso de
+<em>plantillas SQL</em>. Esto da al usuario más control que usar formularios gráficos para
+manipular las estructuras.</p>
+<p>Por ejemplo, consideremos las secuencias dentro del esquema <code>public</code> de la
+base de datos <code>ds2</code>. Para crear una nueva secuencia, haga clic derecho en el nodo
+<em>Sequences</em> y elija <em>Create Sequence</em>.</p>
+<p><img alt="" src="../assets/img/image_062.webp" /></p>
+<p><img alt="" src="../assets/img/image_063.webp" /></p>
+<p>Tras cambiar el nombre de la secuencia, puede descomentar otras opciones del comando
+y configurarlas según sus necesidades. Cuando todo el comando se vea
+bien, simplemente ejecútelo y se creará la nueva secuencia:</p>
+<p><img alt="" src="../assets/img/image_064.webp" /></p>
+<p>Con clic derecho en una secuencia existente, puede modificarla o eliminarla. Funcionará
+de la misma forma que la creación, usando una plantilla SQL que el usuario modifica.</p>
+<p><img alt="" src="../assets/img/image_065.webp" /></p>
+<p><img alt="" src="../assets/img/image_066.webp" /></p>
+<p><img alt="" src="../assets/img/image_067.webp" /></p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

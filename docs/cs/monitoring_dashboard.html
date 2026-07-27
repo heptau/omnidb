@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Monitorovací panel - Dokumentace OmniDB</title>
+	<meta name="description" content="Sestavte si v OmniDB živý monitorovací panel databáze z jednotek typu tabulka, graf a časová řada, včetně psaní vlastních jednotek založených na SQL.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/monitoring_dashboard.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/monitoring_dashboard.html">
+	<meta property="og:title" content="Monitorovací panel - Dokumentace OmniDB">
+	<meta property="og:description" content="Sestavte si v OmniDB živý monitorovací panel databáze z jednotek typu tabulka, graf a časová řada, včetně psaní vlastních jednotek založených na SQL.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Monitorovací panel", "item": "https://www.omnidb.net/cs/monitoring_dashboard.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit vzhled" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Nástroj OmniDB Config</a>
+			<a href="writing_plpgsql_functions.html">Psaní PL/pgSQL funkcí</a>
+			<a href="monitoring_dashboard.html" class="active">Monitorovací panel</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Konzole</a>
+			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Monitorovací panel</h1>
+<p>OmniDB má skvělou funkci nazvanou <em>Monitorovací panel</em>. Jeden obrázek
+vydá za tisíc slov, takže se podívejte sami:</p>
+<p><img alt="" src="../assets/img/image_091.webp" /></p>
+<p>Jak vidíte, jde o nový druh vnitřní záložky zobrazující grafy a tabulky.
+Tato vnitřní záložka <em>Monitoring</em> se automaticky otevře po rozbalení kořenového
+uzlu stromu (uzel <em>PostgreSQL</em>). Můžete ji nechat otevřenou nebo ji kdykoli
+zavřít. Znovu ji otevřete kliknutím pravým tlačítkem na kořenový uzel a volbou
+<em>Dashboard</em>.</p>
+<p><img alt="" src="../assets/img/image_092.webp" /></p>
+<p>Panel se skládá z praktických informačních obdélníků nazvaných <em>Monitorovací
+jednotky</em>. Zde je příklad monitorovací jednotky a jejích prvků rozhraní:</p>
+<p><img alt="" src="../assets/img/image_093.webp" /></p>
+<ul>
+<li><strong>1</strong>: Název monitorovací jednotky;</li>
+<li><strong>2</strong>: Obnovení monitorovací jednotky. V závislosti na typu kliknutí na toto
+tlačítko obnoví celou vykreslovací plochu, nebo jen nechá graf načíst novou
+sadu hodnot;</li>
+<li><strong>3</strong>: Pozastavení monitorovací jednotky;</li>
+<li><strong>4</strong>: Interval automatického obnovování v sekundách;</li>
+<li><strong>5</strong>: Odstranění monitorovací jednotky z monitorovacího panelu;</li>
+<li><strong>6</strong>: Vykreslovací plocha, která se liší podle typu monitorovací
+jednotky.</li>
+</ul>
+<h4>Typy monitorovacích jednotek</h4>
+<p>Existují 3 typy monitorovacích jednotek:</p>
+<ul>
+<li><strong>Tabulka (Grid)</strong>: nejjednodušší druh — čas od času spustí dotaz a
+zobrazí výsledky v datové tabulce.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_094.webp" /></p>
+<ul>
+<li><strong>Graf (Chart)</strong>: při každém obnovení vykreslí nový kompletní graf. Stará
+sada hodnot se ztrácí. Nejvíce se hodí pro koláčové grafy, ale dají se použít
+i jiné typy grafů.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_095.webp" /></p>
+<ul>
+<li><strong>Časová řada (Timeseries)</strong>: to je asi nejužitečnější typ monitorovací
+jednotky. Jde o graf, který při každém obnovení připojí novou sadu hodnot.
+Pro tento typ se nejlépe hodí spojnicové nebo sloupcové grafy. Posledních
+100 sad hodnot uchovává komponenta na straně klienta, aby si je uživatel
+mohl prohlédnout.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_096.webp" /></p>
+<h4>Zobrazování a skrývání jednotek na panelu</h4>
+<p>Kliknutím na tlačítko <em>Refresh All</em> se obnoví všechny monitorovací jednotky
+najednou. Nechtěné monitorovací jednotky můžete odstranit také kliknutím na
+tlačítko <em>Remove</em>. Pojďme nyní odstranit všechny jednotky z panelu, aby
+zůstal prázdný:</p>
+<p><img alt="" src="../assets/img/image_097.webp" /></p>
+<p>17 jednotek, které jsou v OmniDB vestavěné (metriky serveru PostgreSQL a MySQL —
+míra transakcí, backendy, produkce WAL, velikost databáze/tabulky a podobně) běží
+jako nativní kód a nevyžadují nic navíc instalovat v databázi.</p>
+<p><img alt="" src="../assets/img/image_098.webp" /></p>
+<p>Nyní, když je náš panel prázdný, přidejme nějaké jednotky. Klikněte na
+tlačítko <em>Manage Units</em>.</p>
+<p><img alt="" src="../assets/img/image_099.webp" /></p>
+<p>Kliknutím na zelenou akci přidáte kteroukoli z vestavěných jednotek — např.
+<em>Backends</em> a <em>Database Size</em>. Po pár sekundách budete mít panel vypadající
+takto:</p>
+<p><img alt="" src="../assets/img/image_100.webp" /></p>
+<p>Podobným způsobem můžete přidávat a odebírat libovolné jednotky a přizpůsobit
+si panel přesně podle svých potřeb.</p>
+<h4>Psaní vlastních monitorovacích jednotek</h4>
+<p>OmniDB umožňuje napsat si vlastní jednotky, nebo upravit ty stávající, pomocí
+jediného SQL dotazu — se stejným připojením a oprávněními, jaké už má váš SQL
+editor, jen běžícím podle časovače místo na vyžádání. Není potřeba se učit
+žádný zvláštní skriptovací jazyk ani sandbox.</p>
+<p><strong>Poznámka:</strong> jelikož se dotaz bez dohledu opakovaně spouští podle
+intervalu obnovování, jsou povoleny pouze dotazy <code>SELECT</code> (nebo
+<code>WITH ... SELECT</code>) — destruktivní příkaz vložený omylem je rovnou odmítnut,
+místo aby tiše vypálil podle časovače.</p>
+<p>Novou monitorovací jednotku vytvoříte kliknutím na tlačítko <em>Manage Units</em>
+na panelu a následně na tlačítko <em>New Unit</em>. Otevře se nový druh vnitřní
+záložky s polem Name, rozbalovacím seznamem Type, polem Refresh Interval a
+jediným editorem SQL Query (plus rozbalovacím seznamem Chart Type, který se
+zobrazuje jen pro jednotky typu <em>Chart</em>).</p>
+<p>Podoba dotazu závisí na typu jednotky:</p>
+<ul>
+<li>
+<p><strong>Grid</strong>: bez zvláštního tvaru — ať už dotaz vrátí jakékoli sloupce a
+řádky, staly se přímo obsahem tabulky. Například:</p>
+<pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
+</li>
+<li>
+<p><strong>Chart</strong>: jeden řádek na kategorii — první sloupec je popisek, zbývající
+sloupec(-ce) je vždy jedna řada (název sloupce se stává názvem řady). Typ grafu
+(sloupcový, koláčový, prstencový nebo spojnicový) vyberte z rozbalovacího
+seznamu vedle výběru Type. Například koláčový graf velikostí databází:</p>
+<pre><code class="language-sql">SELECT datname,
+       round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
+FROM pg_catalog.pg_database
+WHERE datname NOT IN ('template0', 'template1')</code></pre>
+</li>
+<li>
+<p><strong>Timeseries</strong>: přesně jeden řádek — každý číselný sloupec se stává
+jednou průběžně doplňovanou spojnicovou řadou, obnovovanou podle nastaveného
+intervalu. Například sledování velikosti databáze v čase:</p>
+<pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
+FROM pg_catalog.pg_database
+WHERE NOT datistemplate</code></pre>
+</li>
+</ul>
+<p>Dotaz napište (nebo vložte) do editoru SQL Query a poté klikněte na tlačítko
+<em>Test</em>, abyste jej viděli vykreslený v náhledové vykreslovací ploše — testovat
+můžete tolikrát, kolikrát chcete. Jakmile budete spokojeni, pojmenujte jednotku,
+nastavte interval obnovování a klikněte na <em>Save</em>. Zavřete editační záložku a
+nová jednotka se objeví v seznamu jednotek, připravená přidat na panel (zelená
+akce) stejně jako kterákoli vestavěná.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

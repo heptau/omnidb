@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>OmniDB | Rinascita di uno strumento open source per la gestione di database</title>
+	<meta name="description" content="OmniDB è un potente ambiente collaborativo open source per la gestione di database. Riscritto da Python a Go e ricostruito su Wails, disponibile per macOS, Linux e Windows.">
+	<meta name="keywords" content="OmniDB, gestione database, strumento PostgreSQL, editor SQL, client database open source, PgArachne, amministrazione database">
+
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<link rel="stylesheet" href="../assets/home.css">
+	<script src="../assets/theme-switcher.js"></script>
+
+	<!-- Canonical & crawling -->
+	<link rel="canonical" href="https://www.omnidb.net/it/">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<!-- Open Graph -->
+	<meta property="og:type" content="website">
+	<meta property="og:url" content="https://www.omnidb.net/it/">
+	<meta property="og:title" content="OmniDB | Rinascita di uno strumento open source per la gestione di database">
+	<meta property="og:description" content="OmniDB è oggetto di una rinascita attiva — gestione di database leggera, veloce e open source. App desktop orientata a PostgreSQL per macOS, Linux e Windows, riscritta in Go e costruita su Wails.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
+	<meta property="og:image:width" content="1200">
+	<meta property="og:image:height" content="630">
+	<meta property="og:site_name" content="OmniDB">
+	<meta property="og:locale" content="it_IT">
+
+	<!-- Twitter Card -->
+	<meta name="twitter:card" content="summary_large_image">
+	<meta name="twitter:title" content="OmniDB | Rinascita di uno strumento open source per la gestione di database">
+	<meta name="twitter:description" content="Gestione di database leggera, veloce e open source. App desktop orientata a PostgreSQL, riscritta in Go e costruita su Wails.">
+	<meta name="twitter:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
+
+	<!-- LLM / AI discovery -->
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<!-- JSON-LD structured data -->
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "SoftwareApplication",
+		"name": "OmniDB",
+		"applicationCategory": "DeveloperApplication",
+		"operatingSystem": "macOS, Linux, Windows",
+		"description": "Strumento di gestione database open source rinnovato. Applicazione desktop leggera incentrata su PostgreSQL con supporto per MySQL, Oracle, MariaDB e SQLite. Il backend è stato riscritto da Python a Go e la shell desktop gira su Wails con la webview nativa del sistema operativo.",
+		"url": "https://www.omnidb.net",
+		"downloadUrl": "https://github.com/heptau/omnidb/releases",
+		"softwareVersion": "3.9.0",
+		"license": "https://opensource.org/licenses/MIT",
+		"screenshot": "https://www.omnidb.net/assets/dashboard.png",
+		"featureList": [
+			"PostgreSQL management",
+			"MySQL / MariaDB support",
+			"Oracle support",
+			"SQLite support",
+			"SQL editor with autocomplete",
+			"Query plan visualization",
+			"Monitoring dashboard",
+			"SSH tunneling"
+		],
+		"author": {
+			"@type": "Person",
+			"name": "Zbyněk Vanžura",
+			"url": "https://www.pgarachne.com"
+		},
+		"maintainer": {
+			"@type": "Organization",
+			"name": "heptau",
+			"url": "https://github.com/heptau"
+		},
+		"codeRepository": "https://github.com/heptau/omnidb",
+		"offers": {
+			"@type": "Offer",
+			"price": "0",
+			"priceCurrency": "USD"
+		}
+	}
+	</script>
+</head>
+<body>
+
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Attiva/disattiva navigazione">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html">Documentazione</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambia lingua" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambia tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatico</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Chiaro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Scuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+			<a href="./index.html" class="nav-home active">Home</a>
+			<div class="nav-group">
+				<span class="nav-group-label">Per iniziare</span>
+				<a href="introduction.html">Introduzione</a>
+				<a href="installation.html">Installazione</a>
+				<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			</div>
+			<div class="nav-group">
+				<span class="nav-group-label">Lavorare con i dati</span>
+				<a href="managing_databases.html">Gestione dei database</a>
+				<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
+				<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
+				<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+				<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+				<a href="visualizing_data.html">Visualizzazione dei dati</a>
+				<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			</div>
+			<div class="nav-group">
+				<span class="nav-group-label">Avanzate</span>
+				<a href="additional_features.html">Funzionalità aggiuntive</a>
+				<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+				<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+				<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+				<a href="logical_replication.html">Replica logica</a>
+			</div>
+			<div class="nav-group">
+				<span class="nav-group-label">Server e strumenti</span>
+				<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+				<a href="console_tab.html">Scheda Console</a>
+				<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
+				<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			</div>
+			<div class="nav-group">
+				<span class="nav-group-label">Riferimento</span>
+				<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			</div>
+		</nav>
+	<main>
+	<div class="hero">
+		<span class="eyebrow-badge">⬡ Open source · Incentrato su PostgreSQL</span>
+		<h1>Rinascita del progetto OmniDB</h1>
+		<p class="lead">
+			Lo strumento di gestione database leggero, potente e open source è tornato per potenziare i moderni
+			flussi di lavoro di sviluppo.
+		</p>
+		<p class="lead-secondary">
+			Rinato attivamente grazie ai creatori di <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
+			— un ponte tra una solida amministrazione dei database e le moderne architetture thin-client.
+		</p>
+
+		<section id="screenshot-showcase" class="screenshot-showcase">
+			<p class="lead-small">Trascina la maniglia — stesso spazio di lavoro, chiaro o scuro.</p>
+			<div class="compare-slider" id="themeCompare" role="slider" tabindex="0" aria-label="Confronta tema chiaro e scuro"
+				aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
+				<img src="../assets/screenshot.png" alt="Spazio di lavoro OmniDB nel tema chiaro" class="compare-img compare-base" draggable="false">
+				<img src="../assets/screenshot-dark.png" alt="Spazio di lavoro OmniDB nel tema scuro" class="compare-img compare-overlay" draggable="false">
+				<div class="compare-handle">
+					<span class="compare-handle-grip">⇔</span>
+				</div>
+				<span class="compare-label compare-label-left">Scuro</span>
+				<span class="compare-label compare-label-right">Chiaro</span>
+			</div>
+		</section>
+
+		<section class="get-started">
+			<h2>Installa OmniDB</h2>
+			<div class="install-grid">
+				<div class="install-card">
+					<span class="install-icon" aria-hidden="true">🍺</span>
+					<h3>Homebrew <span class="install-tag">macOS</span></h3>
+					<p>Consigliato per macOS — il cask rileva automaticamente Apple Silicon o Intel.</p>
+					<div class="install-command-row">
+						<pre><code class="install-command" id="brewCmd">brew install --cask heptau/tap/omnidb</code></pre>
+						<button class="copy-btn" type="button" data-copy-target="brewCmd" aria-label="Copia comando">
+							<span class="copy-btn-icon">⧉</span>
+						</button>
+					</div>
+				</div>
+				<div class="install-card">
+					<span class="install-icon" aria-hidden="true">⬇️</span>
+					<h3>GitHub Releases <span class="install-tag">macOS · Linux · Windows</span></h3>
+					<p>Scarica l'archivio autonomo per la tua piattaforma — nessun installer, nessun runtime separato.</p>
+					<a class="btn btn-outline btn-small" href="https://github.com/heptau/omnidb/releases/latest" target="_blank" rel="noopener">Ultima versione →</a>
+				</div>
+			</div>
+			<p class="docs-link">
+				Istruzioni complete per l'installazione: <a href="installation.html">→ Guida dettagliata all'installazione</a>
+			</p>
+			<p class="small-note">
+				<small>macOS è verificato end-to-end; le build per Linux e Windows provengono dalla stessa pipeline CI ma
+					non sono ancora state verificate su hardware reale. Le versioni precedenti (fino al 2020 circa) del
+					repository originale non sono più mantenute.</small>
+			</p>
+		</section>
+
+		<section id="why-omnidb">
+			<h2>Perché OmniDB?</h2>
+			<div class="features-grid">
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">⚡</span>
+					<h3>Riscritto per la velocità</h3>
+					<p>Python → Go. Le query vengono eseguite e l'interfaccia risponde senza un interprete di mezzo.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📦</span>
+					<h3>Binario superleggero</h3>
+					<p>Il vecchio shell Electron/NW.js è sparito. Ora Wails guida l'app tramite la webview
+						nativa del sistema operativo.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🖥️</span>
+					<h3>Ogni piattaforma, un'unica release</h3>
+					<p>macOS (Apple Silicon e Intel), Linux e Windows vengono compilati e distribuiti dalla stessa release.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🗄️</span>
+					<h3>Cinque motori, un unico spazio di lavoro</h3>
+					<p>PostgreSQL, MySQL, MariaDB, Oracle e SQLite in un unico spazio di lavoro a schede.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🔒</span>
+					<h3>Sicurezza rinforzata attivamente</h3>
+					<p>Correzioni reali — SQL injection, XSS, IDOR — arrivano di continuo. Consulta il
+						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelog</a>.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📤</span>
+					<h3>Esporta ovunque</h3>
+					<p>Direttamente in CSV, XLSX, TSV, Markdown, JSON o XML.</p>
+				</article>
+			</div>
+		</section>
+
+		<div class="button-group">
+			<a href="https://github.com/heptau/omnidb/releases" class="btn btn-primary" target="_blank">Scarica</a>
+			<a href="https://github.com/heptau/omnidb" class="btn btn-outline" target="_blank" rel="noopener">GitHub</a>
+		</div>
+	</div>
+	</main>
+	</div>
+
+	<footer>
+		<div class="footer-inner">
+			<p class="footer-author">Mantenuto e rinato grazie a <strong>Zbyněk Vanžura</strong> (creatore di
+				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a>)</p>
+			<p class="footer-copyright">
+				© 2026 Progetto OmniDB. Rilasciato sotto licenza <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
+			</p>
+			<p class="footer-note">
+				Originariamente creato dal team OmniDB. Questa rinascita è dedicata a mantenere l'ambiente leggero e
+				moderno per i flussi di lavoro odierni sui database.
+			</p>
+		</div>
+	</footer>
+
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+	<script>
+		(function () {
+			var copyBtn = document.querySelector('.copy-btn');
+			if (!copyBtn) return;
+			copyBtn.addEventListener('click', function () {
+				var target = document.getElementById(copyBtn.getAttribute('data-copy-target'));
+				if (!target) return;
+				navigator.clipboard.writeText(target.textContent.trim()).then(function () {
+					copyBtn.classList.add('copied');
+					setTimeout(function () { copyBtn.classList.remove('copied'); }, 1500);
+				});
+			});
+		})();
+
+		(function () {
+			var slider = document.getElementById('themeCompare');
+			if (!slider) return;
+
+			var overlay = slider.querySelector('.compare-overlay');
+			var handle = slider.querySelector('.compare-handle');
+			var dragging = false;
+
+			function setPosition(pct) {
+				pct = Math.max(0, Math.min(100, pct));
+				overlay.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+				handle.style.left = pct + '%';
+				slider.setAttribute('aria-valuenow', Math.round(pct));
+			}
+
+			function pctFromEvent(evt) {
+				var rect = slider.getBoundingClientRect();
+				var x = (evt.touches ? evt.touches[0].clientX : evt.clientX) - rect.left;
+				return (x / rect.width) * 100;
+			}
+
+			slider.addEventListener('pointerdown', function (evt) {
+				dragging = true;
+				slider.classList.remove('is-animating');
+				slider.setPointerCapture && slider.setPointerCapture(evt.pointerId);
+				setPosition(pctFromEvent(evt));
+			});
+			slider.addEventListener('pointermove', function (evt) {
+				if (dragging) setPosition(pctFromEvent(evt));
+			});
+			slider.addEventListener('pointerup', function () { dragging = false; });
+			slider.addEventListener('pointercancel', function () { dragging = false; });
+			slider.addEventListener('keydown', function (evt) {
+				var current = parseFloat(slider.getAttribute('aria-valuenow')) || 50;
+				if (evt.key === 'ArrowLeft') { setPosition(current - 5); evt.preventDefault(); }
+				if (evt.key === 'ArrowRight') { setPosition(current + 5); evt.preventDefault(); }
+			});
+
+			var demoed = false;
+			function runDemo() {
+				if (demoed) return;
+				demoed = true;
+				slider.classList.add('is-animating');
+				setPosition(15);
+				setTimeout(function () { setPosition(85); }, 1500);
+				setTimeout(function () { setPosition(50); }, 3000);
+				setTimeout(function () { slider.classList.remove('is-animating'); }, 4400);
+			}
+
+			if ('IntersectionObserver' in window) {
+				var observer = new IntersectionObserver(function (entries) {
+					entries.forEach(function (entry) {
+						if (entry.isIntersecting) {
+							runDemo();
+							observer.disconnect();
+						}
+					});
+				}, { threshold: 0.4 });
+				observer.observe(slider);
+			} else {
+				runDemo();
+			}
+		})();
+	</script>
+</body>
+</html>

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Logická replikace - Dokumentace OmniDB</title>
+	<meta name="description" content="Nastavte si v OmniDB nativní logickou replikaci PostgreSQL 10+: vytvořte publikace a odběry mezi dvěma uzly a ověřte, že se data správně replikují.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/logical_replication.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/logical_replication.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/logical_replication.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/logical_replication.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/logical_replication.html">
+	<meta property="og:title" content="Logická replikace - Dokumentace OmniDB">
+	<meta property="og:description" content="Nastavte si v OmniDB nativní logickou replikaci PostgreSQL 10+: vytvořte publikace a odběry mezi dvěma uzly a ověřte, že se data správně replikují.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Logická replikace", "item": "https://www.omnidb.net/cs/logical_replication.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit vzhled" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Nástroj OmniDB Config</a>
+			<a href="writing_plpgsql_functions.html">Psaní PL/pgSQL funkcí</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="logical_replication.html" class="active">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Konzole</a>
+			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Logická replikace</h1>
+<p>PostgreSQL 10 zavádí nativní logickou replikaci, která používá model
+publikace/odběru, takže si na straně upstream (neboli publisher) můžeme
+vytvářet publikace a na straně downstream (neboli subscriber) odběry. Více
+podrobností najdete v
+<a href="https://www.postgresql.org/do../static/sql-createpublication.html">dokumentaci</a>
+<a href="https://www.postgresql.org/do../static/sql-createsubscription.html">PostgreSQL</a>.</p>
+<p>V této kapitole si nativní logickou replikaci PostgreSQL 10 předvedeme na
+clusteru se 2 uzly. Na každé instanci PostgreSQL je potřeba nastavit
+<code>wal_level = logical</code> a zároveň upravit soubor <code>pg_hba.conf</code> tak, aby mezi
+oběma uzly udělil přístup pro <code>replication</code>.</p>
+<h4>Vytvoření testovacího prostředí</h4>
+<p>Sestavte si dvě instance PostgreSQL 10+ libovolným způsobem, který vám
+vyhovuje (Docker, virtuální stroj, nebo třeba i dvě databáze na jednom
+počítači) a na obou nastavte výše uvedené parametry.</p>
+<h4>Připojení k oběma uzlům</h4>
+<p>K připojení k oběma uzlům PostgreSQL použijeme OmniDB. Nejprve vyplňte
+informace o připojení v tabulce připojení:</p>
+<p><img alt="" src="../assets/img/image_117.webp" /></p>
+<p>Poté vyberte obě připojení. Všimněte si, že OmniDB rozpozná připojení k
+PostgreSQL 10 a zpřístupní ve stromovém zobrazení aktuálního připojení nový
+uzel nazvaný <em>Logical Replication</em>. Uvnitř najdeme uzly <em>Publications</em> a
+<em>Subscriptions</em>.</p>
+<p><img alt="" src="../assets/img/image_118.webp" /></p>
+<h4>Vytvoření testovací tabulky na obou uzlech</h4>
+<p>Na obou uzlech vytvořte tabulku takto:</p>
+<pre><code class="language-sql">CREATE TABLE customers (
+ login text PRIMARY KEY,
+ full_name text NOT NULL,
+ registration_date timestamptz NOT NULL DEFAULT now()
+)
+</code></pre>
+<p><img alt="" src="../assets/img/image_119.webp" /></p>
+<h4>Vytvoření publikace na prvním počítači</h4>
+<p>Uvnitř uzlu připojení rozbalte uzel <em>Logical Replication</em>, poté klikněte
+pravým tlačítkem na uzel <em>Publications</em> a zvolte akci <em>Create Publication</em>.
+OmniDB otevře záložku se SQL šablonou obsahující příkaz <code>CREATE PUBLICATION</code>
+připravený k úpravám a spuštění:</p>
+<p><img alt="" src="../assets/img/image_120.webp" /></p>
+<p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
+uzel <em>Publications</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
+uzel se stejným názvem, jaký jste dali publikaci. Rozbalením tohoto uzlu
+uvidíte podrobnosti a tabulky patřící k publikaci:</p>
+<p><img alt="" src="../assets/img/image_121.webp" /></p>
+<h4>Vytvoření odběru na druhém počítači</h4>
+<p>Uvnitř uzlu připojení rozbalte uzel <em>Logical Replication</em>, poté klikněte
+pravým tlačítkem na uzel <em>Subscriptions</em> a zvolte akci <em>Create Subscription</em>.
+OmniDB otevře záložku se SQL šablonou obsahující příkaz <code>CREATE SUBSCRIPTION</code>
+připravený k úpravám a spuštění:</p>
+<p><img alt="" src="../assets/img/image_122.webp" /></p>
+<p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
+uzel <em>Subscriptions</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
+uzel se stejným názvem, jaký jste dali odběru. Rozbalením tohoto uzlu uvidíte
+podrobnosti, odkazované publikace a tabulky patřící k odběru:</p>
+<p><img alt="" src="../assets/img/image_123.webp" /></p>
+<p>Příkaz <code>CREATE SUBSCRIPTION</code> navíc na prvním počítači vytvořil <em>slot logické
+replikace</em> nazvaný <code>testsub</code> (stejný název jako odběr):</p>
+<p><img alt="" src="../assets/img/image_124.webp" /></p>
+<h4>Test logické replikace</h4>
+<p>Abychom ověřili, že replikace funguje, vytvořme na uzlu 1 nějaká data.
+Klikněte pravým tlačítkem na tabulku <code>public.customers</code>, najeďte na <em>Data
+Actions</em> a klikněte na akci <em>Edit Data</em>. V této tabulce můžete do tabulky
+přidávat, upravovat a odstraňovat data. Přidejte 2 ukázkové řádky, takto:</p>
+<p><img alt="" src="../assets/img/image_125.webp" /></p>
+<p>Poté na druhém uzlu ověřte, zda se tabulka <code>public.customers</code> automaticky
+naplnila. Klikněte pravým tlačítkem na tabulku <code>public.customers</code>, najeďte
+na <em>Data Actions</em> a klikněte na akci <em>Query Data</em>:</p>
+<p><img alt="" src="../assets/img/image_126.webp" /></p>
+<p>Jak vidíme, oba řádky vytvořené na prvním počítači byly replikovány na
+druhý počítač. To nám říká, že logická replikace funguje.</p>
+<p>Nyní můžete provádět další akce, jako je přidávání/odebírání tabulek z
+publikace nebo vytvoření nové publikace, která publikuje všechny tabulky.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Onglet console - Documentation OmniDB</title>
+	<meta name="description" content="Utilisez l'onglet console d'OmniDB comme une console de travail façon psql : quelques commandes à contre-oblique, historique des commandes, coloration syntaxique et autocomplétion.">
+	<link rel="canonical" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/console_tab.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/fr/console_tab.html">
+	<meta property="og:title" content="Onglet console - Documentation OmniDB">
+	<meta property="og:description" content="Utilisez l'onglet console d'OmniDB comme une console de travail façon psql : quelques commandes à contre-oblique, historique des commandes, coloration syntaxique et autocomplétion.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/fr/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://www.omnidb.net/fr/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Onglet console", "item": "https://www.omnidb.net/fr/console_tab.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Basculer la navigation">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Changer de langue" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Changer de thème" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Clair</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Sombre</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Accueil</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Premiers pas</span>
+			<a href="introduction.html">Introduction</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avancé</span>
+			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="logical_replication.html">Réplication logique</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Serveur et outils</span>
+			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="console_tab.html" class="active">Onglet console</a>
+			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Référence</span>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Onglet console</h1>
+<p>L'onglet console offre un moyen simple et pratique d'interagir avec vos bases de données. Les utilisateurs
+habitués à l'utilitaire en ligne de commande <code>psql</code> reconnaîtront la forme générale — un journal
+défilant plus un éditeur de saisie — et un sous-ensemble utile de ses commandes à contre-oblique fonctionne
+également ici :</p>
+<ul>
+<li><code>\?</code> : affiche la liste des commandes ;</li>
+<li><code>\dt</code> : liste les tables ;</li>
+<li><code>\d</code> : liste les tables, vues et séquences ; <code>\d NOM</code> décrit l'une d'entre elles
+(ses colonnes, types, nullabilité et valeurs par défaut) — <code>NOM</code> peut être qualifié par un schéma
+(<code>\d public.customers</code>) ;</li>
+<li><code>\du</code> : liste les rôles/utilisateurs ;</li>
+<li><code>\l</code> : liste les bases de données ;</li>
+<li><code>\df</code> : liste les fonctions ;</li>
+<li><code>\x</code> : bascule l'affichage étendu/vertical ;</li>
+<li><code>\timing</code> : bascule l'affichage du temps d'exécution.</li>
+</ul>
+<p>Ces commandes s'appuient sur ce que chaque moteur connecté possède réellement : la « base de données » de
+MySQL/MariaDB fait aussi office de schéma, l'« utilisateur » d'Oracle fait aussi office de schéma (et Oracle
+n'a pas de notion distincte de multi-bases), et SQLite ne possède aucune notion de schémas, rôles ou bases
+de données — lorsqu'un moteur n'a réellement rien à afficher, la commande le signale directement plutôt que
+de renvoyer un résultat vide ou trompeur. <code>\h</code> (aide de syntaxe par commande SQL, comme une page de
+manuel PostgreSQL) n'est pas implémentée.</p>
+<p>L'éditeur situé en bas de la zone de l'onglet est aussi complet que celui de l'<em>onglet Requête</em>
+(coloration syntaxique et autocomplétion avec <em>Ctrl-Space</em>). Pour exécuter une commande, il suffit de la
+saisir dans cet éditeur. S'il s'agit d'une commande à contre-oblique (commençant par <code>\</code>), appuyez
+simplement sur <code>Entrée</code> pour l'exécuter. S'il s'agit d'une commande SQL classique, elle peut
+s'étendre sur plusieurs lignes, et vous devrez alors appuyer sur <em>Alt-Q</em> pour l'exécuter.</p>
+<p>Toutes les commandes et leur résultat sont consignés dans la zone d'affichage, qui est textuelle et en
+lecture seule, afin que vous puissiez copier son contenu et le coller ailleurs. Vous pouvez effacer la zone
+d'affichage en cliquant sur le bouton <em>Clear Console</em> (Effacer la console).</p>
+<p>Toutes les commandes sont également consignées dans l'historique des requêtes de la connexion, ainsi que
+dans un historique local propre à la console, accessible en cliquant sur le bouton <em>Command History</em>
+(Historique des commandes).</p>
+<p>En cliquant sur la coche verte, vous pouvez récupérer la commande et la placer dans l'éditeur afin de la
+modifier puis de l'exécuter. Une autre façon pratique de naviguer dans l'historique consiste à utiliser les
+raccourcis <em>Ctrl-Up</em> et <em>Ctrl-Down</em>, qui collent rapidement dans l'éditeur respectivement la
+commande précédente et la commande suivante.</p>
+<p>Ces commandes à contre-oblique sont bien utiles au quotidien avec les bases de données. L'onglet console
+affiche également, de façon lisible, toute erreur ainsi que les résultats de toute commande SQL que vous
+saisissez. Essayez-le !</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

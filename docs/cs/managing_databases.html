@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Správa databází - Dokumentace OmniDB</title>
+	<meta name="description" content="Prohlídka pracovního okna OmniDB: karty připojení, strom struktury, vnitřní karty pro dotazy a konzole, a jak procházet a spravovat databázové objekty.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/managing_databases.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_databases.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/managing_databases.html">
+	<meta property="og:title" content="Správa databází - Dokumentace OmniDB">
+	<meta property="og:description" content="Prohlídka pracovního okna OmniDB: karty připojení, strom struktury, vnitřní karty pro dotazy a konzole, a jak procházet a spravovat databázové objekty.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Správa databází", "item": "https://www.omnidb.net/cs/managing_databases.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html" class="active">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Správa databází</h1>
+<p>Po vytvoření připojení ho můžete vybrat kliknutím na akci <em>Select
+Connection</em> (Vybrat připojení) v mřížce připojení. Uvidíte, že připojení
+bude reprezentováno druhem vnější karty nazývané <em>karta připojení</em> (Connection Tab). A celá
+tato oblast se nazývá <em>pracovní okno</em> (Workspace Window).</p>
+<p><img alt="" src="../assets/img/image_014.webp" /></p>
+<h4>Sekce okna <em>Workspace</em></h4>
+<p>Toto rozhraní má několik prvků:</p>
+<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<ul>
+<li><strong>1) Connections</strong> (Připojení): Otevře vyskakovací okno s mřížkou <em>Connections</em></li>
+<li><strong>2) Outer Tabs</strong> (Vnější karty): OmniDB umožňuje pracovat s několika databázemi
+současně. Každá databáze bude dostupná prostřednictvím <em>vnější karty</em>. Vnější karty
+mohou také obsahovat různé funkce nezávislé na připojení, jako je funkce
+<em>Snippets</em></li>
+<li><strong>3) Options</strong> (Možnosti): Zobrazuje aktuálně přihlášeného uživatele, a pokud je
+uživatel superuživatel, také zobrazuje odkaz na <em>správu uživatelů</em>. Také zobrazuje odkazy na
+<em>nastavení uživatele</em>, <em>nainstalované pluginy</em>, <em>historii dotazů</em>, <em>informace</em> a
+<em>odhlášení</em>.</li>
+</ul>
+<h4>Vnější karta připojení</h4>
+<p>Vnější karta s názvem <em>PostgreSQL - testdb</em> se tak jmenuje kvůli aliasu
+(<em>PostgreSQL</em>), který jsme zadali v připojení k databázi <code>testdb</code>. Tato karta je
+<em>vnější kartou připojení</em> (Connection Outer Tab). Všimněte si malé karty s křížkem vedle
+vnější karty <em>PostgreSQL - testdb</em>. Ta umožňuje vytvořit novou vnější kartu, která
+bude automaticky <em>vnější kartou připojení</em>. Vnější karta <em>Snippet</em> je však
+pevně daná a bude vždy první.</p>
+<p>Nová <em>vnější karta připojení</em> bude vždy automaticky odkazovat na první
+připojení v seznamu vašich databázových připojení. Nebo, pokud jste klikli na akci
+<em>Select Connection</em>, bude odkazovat na vybrané připojení. Podívejme se
+na prvky uvnitř této karty:</p>
+<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<ul>
+<li><strong>1) Connection Selector</strong> (Výběr připojení): Zobrazuje všechna připojení a umožňuje
+uživateli vybrat aktuální</li>
+<li><strong>2) Tree of Structures</strong> (Strom struktur): Zobrazuje hierarchický strom, ve kterém lze
+procházet databázové prvky</li>
+<li><strong>3) Properties and DDL Panels</strong> (Panely Vlastnosti a DDL): Zobrazují vlastnosti a DDL
+aktuálně vybraného uzlu ve stromovém zobrazení</li>
+<li><strong>4) Inner Tabs</strong> (Vnitřní karty): Umožňují uživateli provádět akce v aktuální databázi.
+Existuje několik druhů vnitřních karet pro aktuální databázi. Kliknutím na
+poslední malou kartu s křížkem lze přidat novou kartu. Nová karta může být
+<em>karta dotazu</em> (Query Tab), <em>karta konzole</em> (Console Tab), <em>monitorovací panel</em> (Monitoring
+Dashboard) nebo <em>Backends</em></li>
+</ul>
+<p><img alt="" src="../assets/img/image_187.webp" /></p>
+<ul>
+<li><strong>5) Inner Tab Content</strong> (Obsah vnitřní karty): Může se lišit podle druhu vnitřní karty.
+Obrázek zobrazuje <em>kartu dotazu</em> a v tomto případě bude obsahem <em>SQL editor</em>
+se zvýrazněním syntaxe, automatickým doplňováním a funkcí najít a nahradit</li>
+<li><strong>6) Inner Tab Actions</strong> (Akce vnitřní karty): Mohou se lišit podle druhu vnitřní karty.
+U <em>karty dotazu</em> jsou to <em>Run</em> (Spustit), <em>Indent SQL</em> (Odsadit SQL), <em>Command History</em>
+(Historie příkazů), <em>Explain</em>, <em>Explain Analyze</em>, <em>Autocommit</em> a <em>Export Data</em> (Exportovat data)</li>
+<li><strong>7) Inner Tab Results</strong> (Výsledky vnitřní karty): U <em>karty dotazu</em> se po kliknutí na
+<em>tlačítko Execute</em> nebo po stisknutí klávesové zkratky pro spuštění (<code>Alt-Q</code>) zobrazí
+mřížka s výsledky dotazu na podkartě <em>Data</em>. Pokud dotaz volá funkci, která vyvolává
+zprávy, zobrazí se na podkartě <em>Messages</em>. Pokud jste místo <em>Run</em> klikli
+na <em>Explain</em> nebo <em>Explain Analyze</em>, plán dotazu se zobrazí na podkartě
+<em>Explain</em>.</li>
+</ul>
+<h4>Práce s databázemi</h4>
+<p>Podívejte se na výběr připojení. OmniDB vždy ukazuje na první
+dostupné připojení, ale můžete ho změnit kliknutím na výběr.</p>
+<p><img alt="" src="../assets/img/image_017.webp" /></p>
+<p>Vyberte připojení <em>PostgreSQL</em>. Nyní přejděte ke stromu hned pod výběrem
+a kliknutím rozbalte kořenový uzel <em>PostgreSQL</em>.</p>
+<p><img alt="" src="../assets/img/image_018.webp" /></p>
+<p>Mějte na paměti, že každých 30 minut, kdy neprovedete žádnou akci na
+databázi, se zobrazí vyskakovací okno <em>Authentication</em> (Ověření), což znamená, že heslo,
+které OmniDB zašifrovala a uložila do paměti, nyní vypršelo. Jak bylo vysvětleno dříve,
+je to důležité pro bezpečnost vaší databáze. Po zadání správného
+hesla uvidíte, že uzel PostgreSQL nyní zobrazuje verzi PostgreSQL a
+byl také rozbalen, přičemž zobrazuje aktuální připojení k databázi a také prvky
+platné pro celou instanci: <em>Databases</em> (Databáze), <em>Tablespaces</em> (Tabulkové prostory),
+<em>Roles</em> (Role) a <em>Replication Slots</em> (Replikační sloty).</p>
+<p>Můžete se připojit k jedné databázi PostgreSQL a pomocí stejného připojení
+se připojit k dalším databázím ve stejné instanci PostgreSQL. Aktuálně
+aktivní databáze bude zobrazena pod výběrem připojení.</p>
+<p><img alt="" src="../assets/img/image_188.webp" /></p>
+<p>Pro připojení k jiné databázi rozbalte uzel odpovídající dané
+databázi. Zobrazí se vyskakovací okno s dotazem, zda opravdu chcete změnit aktivní
+databázi.</p>
+<p><img alt="" src="../assets/img/image_189.webp" /></p>
+<p>Klikněte na <em>Yes</em> (Ano) a OmniDB změní aktivní databázi na databázi, kterou
+jste zvolili. Projeví se to na indikátoru <em>Active database</em> (Aktivní databáze) a také
+na názvu vnější karty.</p>
+<p><img alt="" src="../assets/img/image_190.webp" /></p>
+<p>Nyní rozbalte uzel <em>Schemas</em> (Schémata). Uvidíte všechna schémata v aktuální
+databázi (v případě PostgreSQL nejsou zobrazena schémata <code>TOAST</code> a dočasná schémata).</p>
+<p><img alt="" src="../assets/img/image_019.webp" /></p>
+<p>Nyní klikněte na rozbalení schématu <code>public</code>. Uvidíte různé druhy
+prvků obsažených v tomto schématu.</p>
+<p><img alt="" src="../assets/img/image_020.webp" /></p>
+<p>Nyní klikněte na rozbalení uzlu <em>Tables</em> (Tabulky) a uvidíte všechny tabulky obsažené
+ve schématu <code>public</code>. Rozbalte libovolnou tabulku a uvidíte její sloupce, primární klíč,
+cizí klíče, omezení, indexy, pravidla, triggery a partice.</p>
+<p><img alt="" src="../assets/img/image_021.webp" /></p>
+<p>Chcete-li zobrazit záznamy uvnitř tabulky, klikněte na ni pravým tlačítkem a zvolte *Data Actions</p>
+<blockquote>
+<p>Query Data*.</p>
+</blockquote>
+<p><img alt="" src="../assets/img/image_022.webp" /></p>
+<p>Všimněte si, že OmniDB otevře nový SQL editor s jednoduchým dotazem pro výpis
+záznamů tabulky. Záznamy se zobrazují v mřížce přímo pod editorem. Tuto mřížku
+lze ovládat klávesnicí, jako kdybyste používali tabulkový procesor. Data
+z jednotlivých buněk nebo bloku buněk (které lze vybrat klávesnicí nebo myší)
+lze také kopírovat a vložit do libovolného tabulkového procesoru.</p>
+<p><img alt="" src="../assets/img/image_023.webp" /></p>
+<p>Dotaz v SQL editoru můžete upravovat a psát jednoduché i složitější
+dotazy. Pro spuštění klikněte na tlačítko akce nebo stiskněte klávesovou zkratku <code>Alt-Q</code>.
+Pokud výsledky přesáhnou 100 záznamů, zobrazí se další tlačítka <em>Fetch More</em>
+(Načíst další) a <em>Fetch All</em> (Načíst vše). Více podrobností v dalších kapitolách.</p>
+<h4>Práce s více kartami v rámci stejného připojení</h4>
+<p>V rámci jednoho připojení můžete vytvořit několik vnitřních karet dotazu kliknutím
+na poslední malou kartu s křížkem a následným výběrem <em>Query Tab</em> (Karta dotazu).</p>
+<p><img alt="" src="../assets/img/image_024.webp" /></p>
+<p>V OmniDB můžete provádět několik SQL příkazů a procedur paralelně.
+Během jejich vykonávání se na kartě zobrazí ikona indikující jejich aktuální
+stav. Pokud je nějaký proces dokončen a nejste zrovna na jeho kartě, tato karta
+zobrazí zelenou ikonu indikující, že rutina, která se na ní vykonávala, je nyní
+dokončena.</p>
+<p><img alt="" src="../assets/img/image_025.webp" /></p>
+<p>Kliknutím na <em>tlačítko Cancel</em> (Zrušit) můžete zrušit proces běžící uvnitř
+databáze.</p>
+<p><img alt="" src="../assets/img/image_026.webp" /></p>
+<p>Kartu také můžete přetáhnout myší (drag and drop) a změnit tak její pořadí. To funguje
+u vnitřních i vnějších karet.</p>
+<p><img alt="" src="../assets/img/image_027.webp" /></p>
+<p>Kromě toho můžete pro správu vnitřních karet (SQL dotaz) použít klávesové zkratky.
+Toto jsou výchozí zkratky na Windows/Linuxu (macOS nahrazuje Alt klávesou Ctrl); všechny
+lze přenastavit na kartě Zkratky v dialogu Nastavení:</p>
+<ul>
+<li><strong>Alt-I</strong>: Vloží novou vnitřní kartu</li>
+<li><strong>Alt-Shift-Q</strong>: Odstraní aktuální vnitřní kartu</li>
+<li><strong>Alt-O</strong>: Přepne fokus na vnitřní kartu vlevo</li>
+<li><strong>Alt-P</strong>: Přepne fokus na vnitřní kartu vpravo</li>
+</ul>
+<p>Pro vnější karty (Připojení) v současné době neexistují žádné klávesové zkratky —
+pro ně použijte přetažení myší (drag-and-drop) nebo myš.</p>
+<p>Všechny karty SQL dotazu se automaticky ukládají
+při každém spuštění. I když zavřete okno OmniDB nebo kartu prohlížeče, jsou
+již uloženy v <em>uživatelské databázi</em> OmniDB. Automaticky se obnoví
+při dalším spuštění OmniDB (pokud používáte aplikaci), při otevření v jiném
+okně prohlížeče (pokud používáte server), nebo i pokud jste klikli na okno
+<em>Connections</em> (Připojení) nebo se odhlásili. Odstranění vnější nebo vnitřní karty
+přes rozhraní ji trvale smaže, takže se již neobnoví.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

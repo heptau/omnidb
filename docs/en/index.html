@@ -13,11 +13,14 @@
 
 	<link rel="stylesheet" href="../assets/topbar.css">
 	<link rel="stylesheet" href="../assets/style.css">
-	<link rel="stylesheet" href="style.css">
+	<link rel="stylesheet" href="../assets/home.css">
 	<script src="../assets/theme-switcher.js"></script>
 
 	<!-- Canonical & crawling -->
 	<link rel="canonical" href="https://www.omnidb.net/en/">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
 	<link rel="manifest" href="../manifest.json">
@@ -92,12 +95,12 @@
 	<header class="site-topbar">
 		<div class="site-topbar-inner">
 			<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">☰</button>
-			<a class="site-topbar-brand" href="./">
-				<img src="logo.svg" alt="OmniDB" class="brand-logo">
-				<img src="net.png" alt=".NET" class="brand-net">
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
 			</a>
 			<nav class="site-topbar-links">
-				<a href="docs/introduction.html">Docs</a>
+				<a href="introduction.html">Docs</a>
 				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
 			</nav>
 			<div class="site-topbar-spacer"></div>
@@ -107,13 +110,14 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
-						<button class="dropdown-option" data-lang-value="cs" disabled><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span><span class="dropdown-option-soon">Soon</span></button>
-						<button class="dropdown-option" data-lang-value="de" disabled><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span><span class="dropdown-option-soon">Soon</span></button>
-						<button class="dropdown-option" data-lang-value="es" disabled><span class="dropdown-option-icon">🇪🇸</span><span>Español</span><span class="dropdown-option-soon">Soon</span></button>
-						<button class="dropdown-option" data-lang-value="fr" disabled><span class="dropdown-option-icon">🇫🇷</span><span>Français</span><span class="dropdown-option-soon">Soon</span></button>
-						<button class="dropdown-option" data-lang-value="it" disabled><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span><span class="dropdown-option-soon">Soon</span></button>
-						<button class="dropdown-option" data-lang-value="pt" disabled><span class="dropdown-option-icon">🇵🇹</span><span>Português</span><span class="dropdown-option-soon">Soon</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
 					</div>
 				</div>
 				<div class="dropdown" data-dropdown="theme">
@@ -133,41 +137,41 @@
 	<div class="docs-shell">
 		<div class="menu-overlay" id="menuOverlay"></div>
 		<nav>
-			<a href="./" class="nav-home active">Home</a>
+			<a href="./index.html" class="nav-home active">Home</a>
 			<div class="nav-group">
 				<span class="nav-group-label">Getting Started</span>
-				<a href="docs/introduction.html">Introduction</a>
-				<a href="docs/installation.html">Installation</a>
-				<a href="docs/creating_users_and_connections.html">Creating Users and Connections</a>
+				<a href="introduction.html">Introduction</a>
+				<a href="installation.html">Installation</a>
+				<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Working with Data</span>
-				<a href="docs/managing_databases.html">Managing Databases</a>
-				<a href="docs/creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
-				<a href="docs/managing_table_data.html">Managing Table Data</a>
-				<a href="docs/writing_sql_queries.html">Writing SQL Queries</a>
-				<a href="docs/visualizing_query_plans.html">Visualizing Query Plans</a>
-				<a href="docs/visualizing_data.html">Visualizing Data</a>
-				<a href="docs/managing_other_elements.html">Managing other Elements</a>
+				<a href="managing_databases.html">Managing Databases</a>
+				<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
+				<a href="managing_table_data.html">Managing Table Data</a>
+				<a href="writing_sql_queries.html">Writing SQL Queries</a>
+				<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
+				<a href="visualizing_data.html">Visualizing Data</a>
+				<a href="managing_other_elements.html">Managing other Elements</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Advanced</span>
-				<a href="docs/additional_features.html">Additional Features</a>
-				<a href="docs/omnidb_config_tool.html">OmniDB Config Tool</a>
-				<a href="docs/writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
-				<a href="docs/monitoring_dashboard.html">Monitoring Dashboard</a>
-				<a href="docs/logical_replication.html">Logical Replication</a>
+				<a href="additional_features.html">Additional Features</a>
+				<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
+				<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
+				<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+				<a href="logical_replication.html">Logical Replication</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Server &amp; Tooling</span>
-				<a href="docs/deploying_omnidb-server.html">Deploying omnidb-server</a>
-				<a href="docs/console_tab.html">Console Tab</a>
-				<a href="docs/advanced_object_search.html">Advanced Object Search</a>
-				<a href="docs/editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
+				<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+				<a href="console_tab.html">Console Tab</a>
+				<a href="advanced_object_search.html">Advanced Object Search</a>
+				<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Reference</span>
-				<a href="docs/legacy_features_and_history.html">Legacy Features &amp; History</a>
+				<a href="legacy_features_and_history.html">Legacy Features &amp; History</a>
 			</div>
 		</nav>
 	<main>
@@ -187,8 +191,8 @@
 			<p class="lead-small">Drag the handle — same workspace, light or dark.</p>
 			<div class="compare-slider" id="themeCompare" role="slider" tabindex="0" aria-label="Compare light and dark theme"
 				aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
-				<img src="screenshot.png" alt="OmniDB workspace in light theme" class="compare-img compare-base" draggable="false">
-				<img src="screenshot-dark.png" alt="OmniDB workspace in dark theme" class="compare-img compare-overlay" draggable="false">
+				<img src="../assets/screenshot.png" alt="OmniDB workspace in light theme" class="compare-img compare-base" draggable="false">
+				<img src="../assets/screenshot-dark.png" alt="OmniDB workspace in dark theme" class="compare-img compare-overlay" draggable="false">
 				<div class="compare-handle">
 					<span class="compare-handle-grip">⇔</span>
 				</div>
@@ -219,7 +223,7 @@
 				</div>
 			</div>
 			<p class="docs-link">
-				Full installation instructions: <a href="docs/installation.html">→ Detailed Installation Guide</a>
+				Full installation instructions: <a href="installation.html">→ Detailed Installation Guide</a>
 			</p>
 			<p class="small-note">
 				<small>macOS is verified end-to-end; Linux and Windows builds come off the same CI pipeline but haven't

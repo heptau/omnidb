@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Úvod - Dokumentace OmniDB</title>
+	<meta name="description" content="OmniDB je open-source nástroj pro správu databází pro PostgreSQL, Oracle, MySQL a další, který sjednocuje přístup k různým DBMS v jednom zabezpečeném prostředí dostupném z prohlížeče.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/introduction.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/introduction.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/introduction.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/introduction.html">
+	<meta property="og:title" content="Úvod - Dokumentace OmniDB">
+	<meta property="og:description" content="OmniDB je open-source nástroj pro správu databází pro PostgreSQL, Oracle, MySQL a další, který sjednocuje přístup k různým DBMS v jednom zabezpečeném prostředí dostupném z prohlížeče.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Úvod", "item": "https://www.omnidb.net/cs/introduction.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html" class="active">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+			<h1>Úvod</h1>
+			<p><strong>OmniDB</strong> je open source aplikace dostupná z prohlížeče, navržená pro přístup
+				k mnoha různým systémům pro správu databází (DBMS) a jejich správu, např. PostgreSQL, Oracle a MySQL.
+				OmniDB může běžet buď jako desktopová aplikace, nebo přes prohlížeč, čímž kombinuje flexibilitu
+				potřebnou pro různé způsoby přístupu s návrhem, který na první místo staví bezpečnost. OmniDB je
+				aktivně vyvíjena, automaticky testována na řadě databází a prohlížečů
+				a je dodávána s kompletní dokumentací.</p>
+			<p>Od raných fází vývoje byla OmniDB navržena jako aplikace dostupná z prohlížeče.
+				Díky tomu běží v jakémkoli prohlížeči, na jakémkoli operačním systému. Může k ní
+				přistupovat několik počítačů a více uživatelů, každý z nich s vlastní
+				skupinou připojení. Lze ji také provozovat na libovolném operačním systému,
+				aniž by bylo nutné instalovat jakékoli závislosti. Podrobnosti o instalaci
+				si ukážeme v následujících kapitolách.</p>
+			<p>Hlavním cílem OmniDB je nabídnout jednotný pracovní prostor se všemi
+				funkcemi potřebnými pro práci s různými DBMS. Nástroje specifické pro konkrétní DBMS
+				nejsou potřeba: v OmniDB se přepínání kontextu mezi různými DBMS provádí
+				prostým přepnutím připojení, aniž byste opustili stejnou stránku. Koncový uživatel
+				má pocit, že při práci s různými DBMS není žádný rozdíl,
+				jednoduše to působí jako různá připojení.</p>
+			<p>Přesto je OmniDB navržena s důrazem na jednoduchost, jako rychlá a
+				odlehčená aplikace dostupná z prohlížeče. Dlouho běžící operace — dotazy, procedury
+				a monitorování — se vykonávají na pozadí a jejich výsledky se do prohlížeče streamují
+				postupně, jak jsou dokončovány, takže uživatel může nadále pracovat s více databázemi a
+				více servery současně, aniž by ho jakákoli z nich blokovala.</p>
+			<p>OmniDB je také bezpečná. Veškerá uživatelská data OmniDB jsou uchovávána zašifrovaná a
+				žádné heslo k databázi se vůbec neukládá. Když se uživatel poprvé připojí k databázi,
+				OmniDB si vyžádá heslo. Toto heslo je zašifrováno a uloženo v paměti
+				po určitou dobu. Po jejím vypršení si OmniDB vyžádá heslo
+				znovu. To zajišťuje maximální bezpečnost databáze, k níž se OmniDB připojuje.</p>
+			<h4>Historie</h4>
+			<p>Tvůrci <strong>OmniDB</strong>, Rafael Thofehrn Castro a William Ivanski, pracovali ve
+				firmě, kde denně potřebovali pracovat s několika různými databázemi
+				zákazníků. Tyto databáze pocházely z různých technologií DBMS, a tak museli
+				neustále přepínat mezi nástroji pro správu databází (typicky jeden pro
+				každý DBMS). Protože nebyli spokojeni s existujícími nástroji pro jednotnou správu
+				databází (schopnými spravovat různé DBMS), přišli s hlavní myšlenkou OmniDB.</p>
+			<p>První verze <strong>OmniDB</strong> byla představena jako bakalářská závěrečná práce v oboru
+				informatiky na Federální univerzitě v Paraná v Brazílii. Cílem
+				bylo najít společnou linii mezi populárními DBMS a důkladně prostudovat
+				jejich <em>metadata</em>. Výsledkem byl nástroj napsaný v ASP.NET/C#, schopný
+				obecným způsobem se připojit a identifikovat hlavní struktury (tabulky, klíče, indexy
+				a omezení) u několika DBMS:</p>
+			<ul>
+				<li>Firebird</li>
+				<li>MariaDB / MySQL</li>
+				<li>Oracle</li>
+				<li>PostgreSQL</li>
+				<li>SQLite</li>
+				<li>Microsoft SQL Server</li>
+			</ul>
+			<p>První verze OmniDB také umožňovala převod mezi všemi DBMS podporovanými
+				nástrojem. Tato funkce byla navržena tak, aby byla uživatelsky přívětivá a vyžadovala
+				jen pár kroků: uživatel musí vybrat zdrojové připojení, struktury, které
+				se mají převést (pouze tabulky a všechny jejich struktury, včetně jejich dat)
+				a cílové připojení.</p>
+			<p>V letech <strong>2025–2026</strong> byl projekt oživen velkými verzemi (3.1.x), zaměřenými na modernizaci
+				kódové základny, zvýšení bezpečnosti a přidání plné podpory moderních operačních systémů, jako je macOS Silicon,
+				spolu s celkovým přepracováním dokumentace. Toto oživení vyvrcholilo úplným přepsáním
+				backendu z Python/Django na Go (3.6.x), díky čemuž byl runtime Pythonu zcela odstraněn a pro každou platformu
+				se nyní dodává jediná nativní binárka. Úplný přehled verzí a co se v průběhu času změnilo najdete v části
+				<a href="legacy_features_and_history.html">Starší funkce a historie</a>.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

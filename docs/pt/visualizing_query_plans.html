@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Visualizar Planos de Consulta - Documentação OmniDB</title>
+	<meta name="description" content="Visualize a saída de EXPLAIN e EXPLAIN ANALYZE do PostgreSQL no OmniDB como barras de texto coloridas ou diagramas em árvore com zoom, para detetar problemas de desempenho nas consultas.">
+	<link rel="canonical" href="https://www.omnidb.net/pt/visualizing_query_plans.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_query_plans.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/visualizing_query_plans.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/visualizing_query_plans.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/visualizing_query_plans.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/pt/visualizing_query_plans.html">
+	<meta property="og:title" content="Visualizar Planos de Consulta - Documentação OmniDB">
+	<meta property="og:description" content="Visualize a saída de EXPLAIN e EXPLAIN ANALYZE do PostgreSQL no OmniDB como barras de texto coloridas ou diagramas em árvore com zoom, para detetar problemas de desempenho nas consultas.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/pt/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentação", "item": "https://www.omnidb.net/pt/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Visualizar Planos de Consulta", "item": "https://www.omnidb.net/pt/visualizing_query_plans.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegação">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentação</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Mudar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Mudar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Escuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Início</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeiros Passos</span>
+			<a href="introduction.html">Introdução</a>
+			<a href="installation.html">Instalação</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabalhar com Dados</span>
+			<a href="managing_databases.html">Gerir Bases de Dados</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
+			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="visualizing_query_plans.html" class="active">Visualizar Planos de Consulta</a>
+			<a href="visualizing_data.html">Visualizar Dados</a>
+			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avançado</span>
+			<a href="additional_features.html">Funcionalidades Adicionais</a>
+			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="logical_replication.html">Replicação Lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="console_tab.html">Separador de Consola</a>
+			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referência</span>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Visualizar Planos de Consulta</h1>
+<p>O OmniDB tem uma funcionalidade muito útil: visualização gráfica de planos de
+consulta. Isto pode ser muito prático ao escrever ou otimizar consultas, uma vez que
+permite identificar facilmente problemas de desempenho na sua consulta SQL.</p>
+<p>Para esta funcionalidade, o separador interior <em>SQL Query</em> mostra 2 botões: <em>Explain</em> e <em>Explain
+Analyze</em>.</p>
+<h4>Visualização textual</h4>
+<p>Quando clica no botão <em>Explain</em>, o OmniDB executa um comando <code>EXPLAIN</code> na
+sua consulta. A visualização inicial é <em>textual</em> e mostrará exatamente o resultado
+do comando <code>EXPLAIN</code>, mas com barras coloridas representando o custo estimado.
+Quanto maior o custo, mais escura e larga é a barra.</p>
+<p><img alt="" src="../assets/img/image_054.webp" /></p>
+<p>Quando clica no botão <em>Explain Analyze</em>, o OmniDB executa um comando <code>EXPLAIN
+ANALYZE</code> na sua consulta. Tenha em atenção que este comando executa realmente a
+consulta. Além disso, a visualização textual mostrará muito mais informação, e os
+custos não são estimados como os fornecidos pelo comando <code>EXPLAIN</code>; são
+custos reais.</p>
+<p><img alt="" src="../assets/img/image_055.webp" /></p>
+<h4>Visualização em árvore</h4>
+<p>Tanto o modo <em>Explain</em> como o <em>Explain Analyze</em> também podem representar graficamente a
+saída textual num diagrama em <em>árvore</em>. Cada círculo representa um nó executado pelo
+plano de consulta, e quanto maior o círculo, maior o custo.</p>
+<p><img alt="" src="../assets/img/image_056.webp" /></p>
+<p>À medida que as consultas se tornam cada vez mais complexas, também o seu plano de consulta pode ser muito
+complexo. Com consultas desse tipo (como a consulta de <em>verificação de bloat</em> que executámos abaixo), a
+visualização em árvore pode ser muito interessante:</p>
+<p><img alt="" src="../assets/img/image_057.webp" /></p>
+<p>O componente de visualização de planos de consulta permite alternar facilmente entre a
+visualização textual e as 2 visualizações em árvore, que podem ser ampliadas ou reduzidas com zoom.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

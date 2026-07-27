@@ -3,7 +3,7 @@
 ---
 
 # Introduction
-URL: https://www.omnidb.net/en/docs/introduction.html
+URL: https://www.omnidb.net/en/introduction.html
 
 **Full Content:**
 
@@ -37,7 +37,7 @@ In 2025-2026, the project was revived with major releases (3.1.x), focusing on m
 ---
 
 # Installation
-URL: https://www.omnidb.net/en/docs/installation.html
+URL: https://www.omnidb.net/en/installation.html
 
 **Full Content:**
 
@@ -111,7 +111,7 @@ Now you know that OmniDB is running correctly. In the next chapters, we will see
 ---
 
 # Creating Users and Connections
-URL: https://www.omnidb.net/en/docs/creating_users_and_connections.html
+URL: https://www.omnidb.net/en/creating_users_and_connections.html
 
 **Full Content:**
 
@@ -186,7 +186,7 @@ Here the database Server needs to be `192.168.0.10`, as it is the relative addre
 ---
 
 # Managing Databases
-URL: https://www.omnidb.net/en/docs/managing_databases.html
+URL: https://www.omnidb.net/en/managing_databases.html
 
 **Full Content:**
 
@@ -264,7 +264,7 @@ All SQL Query tabs are automatically saved whenever you execute them. Even if yo
 ---
 
 # Creating, Changing and Removing Tables
-URL: https://www.omnidb.net/en/docs/creating_changing_and_removing_tables.html
+URL: https://www.omnidb.net/en/creating_changing_and_removing_tables.html
 
 **Full Content:**
 
@@ -315,7 +315,7 @@ To drop a table, right click the table node and select Table Actions > Drop Tabl
 ---
 
 # Managing Table Data
-URL: https://www.omnidb.net/en/docs/managing_table_data.html
+URL: https://www.omnidb.net/en/managing_table_data.html
 
 **Full Content:**
 
@@ -340,7 +340,7 @@ To complete this chapter, let's add some records to the Address table:
 ---
 
 # Writing SQL Queries
-URL: https://www.omnidb.net/en/docs/writing_sql_queries.html
+URL: https://www.omnidb.net/en/writing_sql_queries.html
 
 **Full Content:**
 
@@ -377,7 +377,7 @@ Please note that for RDBMS other than PostgreSQL, the autocomplete component onl
 ---
 
 # Visualizing Query Plans
-URL: https://www.omnidb.net/en/docs/visualizing_query_plans.html
+URL: https://www.omnidb.net/en/visualizing_query_plans.html
 
 **Full Content:**
 
@@ -402,7 +402,7 @@ The query plan visualization component allows you to easily switch between textu
 ---
 
 # Visualizing Data
-URL: https://www.omnidb.net/en/docs/visualizing_data.html
+URL: https://www.omnidb.net/en/visualizing_data.html
 
 **Full Content:**
 
@@ -421,7 +421,7 @@ This graph displays tables with all its columns and respective data types. To ac
 ---
 
 # Managing other Elements
-URL: https://www.omnidb.net/en/docs/managing_other_elements.html
+URL: https://www.omnidb.net/en/managing_other_elements.html
 
 **Full Content:**
 
@@ -436,7 +436,7 @@ With right click on an existing sequence, you can alter or drop it. It will work
 ---
 
 # Additional Features
-URL: https://www.omnidb.net/en/docs/additional_features.html
+URL: https://www.omnidb.net/en/additional_features.html
 
 **Full Content:**
 
@@ -489,7 +489,7 @@ OmniDB also provides a full-featured SSH Console.
 ---
 
 # OmniDB Config Tool
-URL: https://www.omnidb.net/en/docs/omnidb_config_tool.html
+URL: https://www.omnidb.net/en/omnidb_config_tool.html
 
 **Full Content:**
 
@@ -520,7 +520,7 @@ Exported query results (CSV/XLSX/etc.) are written to the `temp` folder inside t
 ---
 
 # Writing PL/pgSQL Functions
-URL: https://www.omnidb.net/en/docs/writing_plpgsql_functions.html
+URL: https://www.omnidb.net/en/writing_plpgsql_functions.html
 
 **Full Content:**
 
@@ -578,7 +578,7 @@ By right-clicking the function node, you can see there are actions to edit, sele
 ---
 
 # Monitoring Dashboard
-URL: https://www.omnidb.net/en/docs/monitoring_dashboard.html
+URL: https://www.omnidb.net/en/monitoring_dashboard.html
 
 **Full Content:**
 
@@ -653,7 +653,7 @@ Write (or paste) the query into the SQL Query editor, then click the Test button
 ---
 
 # Logical Replication
-URL: https://www.omnidb.net/en/docs/logical_replication.html
+URL: https://www.omnidb.net/en/logical_replication.html
 
 **Full Content:**
 
@@ -710,7 +710,7 @@ Now you can perform other actions, such as adding/removing tables to the publica
 ---
 
 # Deploying omnidb-server
-URL: https://www.omnidb.net/en/docs/deploying_omnidb-server.html
+URL: https://www.omnidb.net/en/deploying_omnidb-server.html
 
 **Full Content:**
 
@@ -780,7 +780,7 @@ Since everything (including background query/console updates) is served over pla
 ---
 
 # Console Tab
-URL: https://www.omnidb.net/en/docs/console_tab.html
+URL: https://www.omnidb.net/en/console_tab.html
 
 **Full Content:**
 
@@ -810,7 +810,7 @@ These backslash commands are useful when dealing with databases every day. The c
 ---
 
 # Advanced Object Search
-URL: https://www.omnidb.net/en/docs/advanced_object_search.html
+URL: https://www.omnidb.net/en/advanced_object_search.html
 
 **Full Content:**
 
@@ -831,7 +831,7 @@ For more details about the search in each category, right click the desired node
 ---
 
 # Editor Keyboard Shortcuts
-URL: https://www.omnidb.net/en/docs/editor_keyboard_shortcuts.html
+URL: https://www.omnidb.net/en/editor_keyboard_shortcuts.html
 
 **Full Content:**
 
@@ -950,7 +950,7 @@ OmniDB's SQL editor, Console editor and DDL/Properties viewer are all built on t
 ---
 
 # Legacy Features & History
-URL: https://www.omnidb.net/en/docs/legacy_features_and_history.html
+URL: https://www.omnidb.net/en/legacy_features_and_history.html
 
 **Full Content:**
 

@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nasazení omnidb-server - Dokumentace OmniDB</title>
+	<meta name="description" content="Bezpečně nasaďte omnidb-server: parametry příkazové řádky, adresy pro naslouchání a nastavení reverzní proxy s TLS terminací, například Nginx, před server.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/deploying_omnidb-server.html">
+	<meta property="og:title" content="Nasazení omnidb-server - Dokumentace OmniDB">
+	<meta property="og:description" content="Bezpečně nasaďte omnidb-server: parametry příkazové řádky, adresy pro naslouchání a nastavení reverzní proxy s TLS terminací, například Nginx, před server.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Nasazení omnidb-server", "item": "https://www.omnidb.net/cs/deploying_omnidb-server.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit vzhled" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Nástroj OmniDB Config</a>
+			<a href="writing_plpgsql_functions.html">Psaní PL/pgSQL funkcí</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html" class="active">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Konzole</a>
+			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Nasazení omnidb-server</h1>
+<p><strong>Poznámka:</strong> od přepsání ve verzi 3.6.x je <code>omnidb-server</code> jediný
+nativní binární soubor (žádná oddělená dvojice webserver/websocket-server, žádný
+Django/CherryPy/Tornado), který si sám obsluhuje veškeré požadavky přes jeden
+port, přičemž pro aktualizace dotazů/konzole/monitoringu na pozadí používá
+long-polling namísto websocketů. Neexistuje už ani konfigurační soubor, ani
+vestavěná podpora TLS — vše se nastavuje pomocí přepínačů příkazové řádky a
+případnou terminaci TLS musí zajistit reverzní proxy před serverem.</p>
+<h4>Přepínače příkazové řádky</h4>
+<pre><code class="language-bash">Usage: omnidb-server [options]
+
+Options:
+  -A, --app              run in desktop app mode (always binds loopback-only,
+                          regardless of -H)
+  -H HOST, --host=HOST   listening address (default: 127.0.0.1)
+  -p PORT, --port=PORT   listening port (default: an OS-chosen free port)
+  -d HOMEDIR, --homedir=HOMEDIR
+                         home directory containing the omnidb.db database and
+                         the temp folder used for exported files
+</code></pre>
+<ul>
+<li>
+<p><code>-H</code> určuje adresu, na které se má naslouchat. Výchozí hodnota je
+<code>127.0.0.1</code> (pouze loopback) — zadejte <code>0.0.0.0</code>, pokud chcete přijímat
+připojení z jiných počítačů, nebo konkrétní adresu rozhraní.</p>
+</li>
+<li>
+<p><code>-p</code> určuje port, na kterém se má naslouchat, použitý v URL prohlížeče
+při přímém přístupu k OmniDB. Pokud jej vynecháte, operační systém vybere
+volný port a při spuštění jej vypíše na stderr.</p>
+</li>
+<li>
+<p><code>-d</code> umožňuje zvolit složku, do které se ukládá <code>omnidb.db</code> (databáze
+aplikace) a složka <code>temp</code> používaná pro exportované soubory. Díky této volbě
+je možné spustit více instancí <code>omnidb-server</code>, každou směřující do jiného
+adresáře — hodí se to při nasazení v Dockeru, kde do dané složky připojíte
+svazek (volume).</p>
+</li>
+</ul>
+<p><strong>Bezpečnostní poznámka:</strong> server spuštěný s <code>-H</code> nastaveným na
+cokoli jiného než loopback by nikdy neměl být zároveň spuštěn s <code>-A</code>/<code>--app</code>
+— odkaz pro automatické přihlášení do desktopové aplikace, který tento režim
+generuje, má být dostupný pouze lokálně, takže <code>-A</code> vždy vynutí navázání
+pouze na loopback bez ohledu na <code>-H</code>, které v takovém případě zcela
+ignoruje, aby se předešlo riziku této kombinace.</p>
+<p>Podívejme se, jak nasadit <code>omnidb-server</code> v různých scénářích:</p>
+<h4>Přímé nasazení OmniDB</h4>
+<p>Spuštění <code>omnidb-server</code> s <code>-H 0.0.0.0</code> (nebo konkrétním veřejným
+rozhraním) jej zpřístupní přímo z jiných počítačů — protože ale neexistuje
+vestavěná podpora TLS, znamená to obyčejné, nešifrované HTTP. To se
+<strong>nedoporučuje</strong> pro nic jiného než důvěryhodnou lokální síť: relační
+cookies a výsledky dotazů by jinak putovaly nešifrovaně. Pro cokoli
+dostupné ze širšího internetu použijte místo přímého vystavení
+<code>omnidb-server</code> reverzní proxy s terminací TLS (viz níže).</p>
+<h4>Nasazení OmniDB za reverzní proxy</h4>
+<p>Doporučovaný postup: spusťte <code>omnidb-server</code> naslouchající pouze na
+<code>127.0.0.1</code> (výchozí hodnota, takže <code>-H</code> lze vynechat) a nechte terminaci
+TLS a předávání obyčejného HTTP lokálně obstarat reverzní proxy, například
+<a href="https://nginx.org" target="_blank" rel="noopener">Nginx</a> nebo
+<a href="https://caddyserver.com" target="_blank" rel="noopener">Caddy</a>.</p>
+<pre><code class="language-bash">./omnidb-server -p 9000
+</code></pre>
+<p>Příklad konfigurace Nginx:</p>
+<pre><code class="language-bash">server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    include snippets/ssl-domain.conf;
+    include snippets/ssl-params.conf;
+    server_name domain.org;
+    client_max_body_size 75M;
+
+    location / {
+        proxy_pass http://127.0.0.1:9000;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Ssl https;
+        proxy_set_header   X-Forwarded-Proto https;
+        proxy_set_header   X-Forwarded-Port 443;
+        proxy_set_header   Host $host;
+        proxy_http_version 1.1;
+    }
+}
+</code></pre>
+<p>Protože je vše (včetně aktualizací dotazů/konzole na pozadí) obsluhováno
+přes obyčejný HTTP long-polling namísto websocketů, stačí jediný blok
+<code>location /</code> pokrývající celou aplikaci — už neexistuje samostatná cesta
+pro upgrade na websocket ani vzor <code>/wss</code>, který by bylo potřeba směrovat
+zvlášť.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>
