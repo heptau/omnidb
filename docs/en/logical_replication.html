@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Logical Replication - OmniDB Documentation</title>
+	<title>Logical Replication – OmniDB Documentation</title>
 	<meta name="description" content="Set up PostgreSQL 10+ native logical replication in OmniDB: create publications and subscriptions across two nodes and confirm data replicates correctly.">
 	<link rel="canonical" href="https://www.omnidb.net/en/logical_replication.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/logical_replication.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -124,30 +124,30 @@
 		<main>
 		<h1>Logical Replication</h1>
 <p>PostgreSQL 10 introduces native logical replication, which uses a
-publish/subscribe model and so we can create publications on the upstream (or
-publisher) and subscriptions on downstream (or subscriber). For more details
+publish/subscribe model and so we can create publications on the upstream (or
+publisher) and subscriptions on downstream (or subscriber). For more details
 about it, please refer to the
 <a href="https://www.postgresql.org/docs/10/static/sql-createpublication.html">PostgreSQL</a>
 <a href="https://www.postgresql.org/docs/10/static/sql-createsubscription.html">documentation</a>.</p>
-<p>In this chapter, we will use a 2-node cluster to demonstrate PostgreSQL 10
+<p>In this chapter, we will use a 2-node cluster to demonstrate PostgreSQL 10
 native logical replication. Note that on each PostgreSQL instance, you need to
 configure <code>wal_level = logical</code> and also make sure to adjust file <code>pg_hba.conf</code>
-to grant access to <code>replication</code> between the 2 nodes.</p>
-<h4>Creating a test environment</h4>
-<p>Set up two PostgreSQL 10+ instances however you prefer (Docker, a virtual
-machine, or even two databases on the same machine) and configure the settings
+to grant access to <code>replication</code> between the 2 nodes.</p>
+<h4>Creating a test environment</h4>
+<p>Set up two PostgreSQL 10+ instances however you prefer (Docker, a virtual
+machine, or even two databases on the same machine) and configure the settings
 above on each.</p>
 <h4>Connecting to both nodes</h4>
-<p>Let's use OmniDB to connect to both PostgreSQL nodes. First of all, fill out
-connection info in the connection grid:</p>
+<p>Let’s use OmniDB to connect to both PostgreSQL nodes. First of all, fill out
+connection info in the connection grid:</p>
 <p><img alt="" src="../assets/img/image_117.webp"/></p>
 <p>Then select both connections. Note how OmniDB understands it is connected to
-PostgreSQL 10 and enables a new node in the current connection tree view: it is
-called <em>Logical Replication</em>. Inside of it, we can see <em>Publications</em> and
+PostgreSQL 10 and enables a new node in the current connection tree view: it is
+called <em>Logical Replication</em>. Inside of it, we can see <em>Publications</em> and
 <em>Subscriptions</em>.</p>
 <p><img alt="" src="../assets/img/image_118.webp"/></p>
-<h4>Creating a test table on both nodes</h4>
-<p>On both nodes, create a table like this:</p>
+<h4>Creating a test table on both nodes</h4>
+<p>On both nodes, create a table like this:</p>
 <pre><code class="language-sql">CREATE TABLE customers (
  login text PRIMARY KEY,
  full_name text NOT NULL,
@@ -155,46 +155,46 @@ called <em>Logical Replication</em>. Inside of it, we can see <em>Publications</
 )
 </code></pre>
 <p><img alt="" src="../assets/img/image_119.webp"/></p>
-<h4>Create a publication on the first machine</h4>
-<p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
-click in the <em>Publications</em> node, and choose the action <em>Create Publication</em>.
-OmniDB will open a SQL template tab with the <code>CREATE PUBLICATION</code> command ready
-for you to make some adjustments and run:</p>
+<h4>Create a publication on the first machine</h4>
+<p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
+click in the <em>Publications</em> node, and choose the action <em>Create Publication</em>.
+OmniDB will open a SQL template tab with the <code>CREATE PUBLICATION</code> command ready
+for you to make some adjustments and run:</p>
 <p><img alt="" src="../assets/img/image_120.webp"/></p>
-<p>After adjusting and executing the command, you can right click the <em>Publications</em>
+<p>After adjusting and executing the command, you can right click the <em>Publications</em>
 node again and click on the <em>Refresh</em> action. You will see that will be created
-a new node with the same name you gave to the publication. Expanding this node,
-you will see the details and the tables for the publication:</p>
+a new node with the same name you gave to the publication. Expanding this node,
+you will see the details and the tables for the publication:</p>
 <p><img alt="" src="../assets/img/image_121.webp"/></p>
-<h4>Create a subscription on the second machine</h4>
-<p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
-click in the <em>Subscriptions</em> node, and choose the action <em>Create Subscription</em>.
-OmniDB will open a SQL template tab with the <code>CREATE SUBSCRIPTION</code> command ready
-for you to make some adjustments and run:</p>
+<h4>Create a subscription on the second machine</h4>
+<p>Inside the connection node, expand the <em>Logical Replication</em> node, then right
+click in the <em>Subscriptions</em> node, and choose the action <em>Create Subscription</em>.
+OmniDB will open a SQL template tab with the <code>CREATE SUBSCRIPTION</code> command ready
+for you to make some adjustments and run:</p>
 <p><img alt="" src="../assets/img/image_122.webp"/></p>
-<p>After adjusting and executing the command, you can right click the <em>Subscriptions</em>
+<p>After adjusting and executing the command, you can right click the <em>Subscriptions</em>
 node again and click on the <em>Refresh</em> action. You will see that will be created
-a new node with the same name you gave to the subscription. Expanding this node,
-you will see the details, the referenced publications and the tables for the
+a new node with the same name you gave to the subscription. Expanding this node,
+you will see the details, the referenced publications and the tables for the
 subscription:</p>
 <p><img alt="" src="../assets/img/image_123.webp"/></p>
 <p>Also, the <code>CREATE SUBSCRIPTION</code> command created a <em>logical replication slot</em>
-called <code>testsub</code> (the same name as the subscription) in the first machine:</p>
+called <code>testsub</code> (the same name as the subscription) in the first machine:</p>
 <p><img alt="" src="../assets/img/image_124.webp"/></p>
-<h4>Testing the logical replication</h4>
-<p>To test the replication is working, let's create some data on the node 1. Right
-click on the table <code>public.customers</code>, then point to <em>Data Actions</em>, then click
-on the action <em>Edit Data</em>. In this grid, you are able to add, edit and remove
-data from the table. Add 2 sample rows, like this:</p>
+<h4>Testing the logical replication</h4>
+<p>To test the replication is working, let’s create some data on the node 1. Right
+click on the table <code>public.customers</code>, then point to <em>Data Actions</em>, then click
+on the action <em>Edit Data</em>. In this grid, you are able to add, edit and remove
+data from the table. Add 2 sample rows, like this:</p>
 <p><img alt="" src="../assets/img/image_125.webp"/></p>
-<p>Then, on the other node, check if the table <code>public.customers</code> was automatically
-populated. Right click on the table <code>public.customers</code>, then point to <em>Data
-Actions</em>, then click on the action <em>Query Data</em>:</p>
+<p>Then, on the other node, check if the table <code>public.customers</code> was automatically
+populated. Right click on the table <code>public.customers</code>, then point to <em>Data
+Actions</em>, then click on the action <em>Query Data</em>:</p>
 <p><img alt="" src="../assets/img/image_126.webp"/></p>
-<p>As we can see, both rows created in the first machine were replicated into the
-second machine. This tell us that the logical replication is working.</p>
+<p>As we can see, both rows created in the first machine were replicated into the
+second machine. This tell us that the logical replication is working.</p>
 <p>Now you can perform other actions, such as adding/removing tables to the
-publication and creating a new publication that publishes all tables.</p>
+publication and creating a new publication that publishes all tables.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

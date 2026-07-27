@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Creating, Changing and Removing Tables - OmniDB Documentation</title>
+	<title>Creating, Changing and Removing Tables – OmniDB Documentation</title>
 	<meta name="description" content="Create, alter and drop database tables in OmniDB using editable SQL templates, plus schema relationship graphs.">
 	<link rel="canonical" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html" class="active">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,29 +123,29 @@
 		</nav>
 		<main>
 		<h1>Creating, Changing and Removing Tables</h1>
-<p>Table structures — creating, altering and dropping — are managed with editable
-<em>SQL templates</em> rather than a graphical form. This gives you more direct
-control than a point-and-click designer, at the cost of writing a little SQL
-yourself: OmniDB fills in a working starting template and you edit it before
+<p>Table structures — creating, altering and dropping — are managed with editable
+<em>SQL templates</em> rather than a graphical form. This gives you more direct
+control than a point-and-click designer, at the cost of writing a little SQL
+yourself: OmniDB fills in a working starting template and you edit it before
 running it.</p>
 <h4>Creating tables</h4>
-<p>We will create example tables (<em>customers</em> and <em>addresses</em>) in the <code>testdb</code>
+<p>We will create example tables (<em>customers</em> and <em>addresses</em>) in the <code>testdb</code>
 database we connected to earlier. Right click on the <strong>Tables</strong> node and select
-the <strong>Create Table</strong> action. This opens a new Query tab pre-filled with a
-<code>CREATE TABLE</code> template for the current schema.</p>
-<p>Edit the template into the table you actually want — for <em>customers</em>, a primary
+the <strong>Create Table</strong> action. This opens a new Query tab pre-filled with a
+<code>CREATE TABLE</code> template for the current schema.</p>
+<p>Edit the template into the table you actually want — for <em>customers</em>, a primary
 key that <em>addresses</em> will later reference:</p>
 <pre><code class="language-sql">CREATE TABLE public.customers (
 	cust_id serial PRIMARY KEY,
 	cust_name varchar(100) NOT NULL
 );
 </code></pre>
-<p>Run the statement (the same way you run any query). Right-click the <em>Tables</em>
-tree node and click <em>Refresh</em> — the new table now appears under it. Keeping
-<em>customers</em> selected in the tree, you can inspect its generated <em>Properties</em>
-and <em>DDL</em> in the panel beside the tree, the same panel used for every other
+<p>Run the statement (the same way you run any query). Right-click the <em>Tables</em>
+tree node and click <em>Refresh</em> — the new table now appears under it. Keeping
+<em>customers</em> selected in the tree, you can inspect its generated <em>Properties</em>
+and <em>DDL</em> in the panel beside the tree, the same panel used for every other
 object type.</p>
-<p>Now create <em>addresses</em>, with a foreign key back to <em>customers</em>:</p>
+<p>Now create <em>addresses</em>, with a foreign key back to <em>customers</em>:</p>
 <pre><code class="language-sql">CREATE TABLE public.addresses (
 	add_id serial PRIMARY KEY,
 	add_street varchar(200) NOT NULL,
@@ -153,25 +153,25 @@ object type.</p>
 	cust_id integer NOT NULL REFERENCES public.customers (cust_id)
 );
 </code></pre>
-<p>At this point there are two related tables in schema <code>public</code>. You can see the
-schema structure with the graph feature: right click the schema <code>public</code> node
-and select <em>Render Graph &gt; Simple Graph</em> for just the tables and their
+<p>At this point there are two related tables in schema <code>public</code>. You can see the
+schema structure with the graph feature: right click the schema <code>public</code> node
+and select <em>Render Graph &gt; Simple Graph</em> for just the tables and their
 relationships, or <em>Render Graph &gt; Complete Graph</em> to also include columns and
-constraints. Both render as an interactive, pannable/zoomable diagram.</p>
+constraints. Both render as an interactive, pannable/zoomable diagram.</p>
 <h4>Altering tables</h4>
-<p>To change an existing table — say, adding a column to <em>customers</em> — right
-click the table node and select <em>Table Actions &gt; Alter Table</em>. This opens a
-Query tab with an <code>ALTER TABLE</code> template you edit and run, the same pattern as
+<p>To change an existing table — say, adding a column to <em>customers</em> — right
+click the table node and select <em>Table Actions &gt; Alter Table</em>. This opens a
+Query tab with an <code>ALTER TABLE</code> template you edit and run, the same pattern as
 table creation:</p>
 <pre><code class="language-sql">ALTER TABLE public.customers ADD COLUMN cust_age integer;
 </code></pre>
-<p>Any error the database returns — for example trying to add a column name that
-already exists — shows up the same way any failed query does: in the query
-tab's Messages panel, with the exact command and error text from the database.</p>
+<p>Any error the database returns — for example trying to add a column name that
+already exists — shows up the same way any failed query does: in the query
+tab’s Messages panel, with the exact command and error text from the database.</p>
 <h4>Removing tables</h4>
-<p>To drop a table, right click the table node and select <em>Table Actions &gt; Drop
-Table</em>. This, too, opens an editable template (<code>DROP TABLE ...</code>) rather than
-dropping immediately — review it and run it when you're ready.</p>
+<p>To drop a table, right click the table node and select <em>Table Actions &gt; Drop
+Table</em>. This, too, opens an editable template (<code>DROP TABLE ...</code>) rather than
+dropping immediately — review it and run it when you’re ready.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

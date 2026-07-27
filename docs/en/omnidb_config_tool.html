@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>OmniDB Config Tool - OmniDB Documentation</title>
+	<title>OmniDB Config Tool – OmniDB Documentation</title>
 	<meta name="description" content="Manual equivalents for the retired omnidb-config CLI: locating the home directory, vacuuming the SQLite database, resetting it, and clearing temp files.">
 	<link rel="canonical" href="https://www.omnidb.net/en/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,40 +123,40 @@
 		</nav>
 		<main>
 		<h1>OmniDB Config Tool</h1>
-<p><strong>Note:</strong> the standalone <code>omnidb-config</code>/<code>omnidb-config-app</code>/
+<p><strong>Note:</strong> the standalone <code>omnidb-config</code>/<code>omnidb-config-app</code>/
 <code>omnidb-config-server</code> CLI utility described on this page belonged to the
-previous Python/Django-based build and is not part of the current release. The
+previous Python/Django-based build and is not part of the current release. The
 single <code>omnidb-server</code> binary only accepts <code>-A</code>/<code>--app</code> (desktop app
-mode) and <code>-d</code>/<code>--homedir</code> (choose the home directory), documented in the
-<a href="installation.html">Installation</a> chapter. The maintenance tasks the
+mode) and <code>-d</code>/<code>--homedir</code> (choose the home directory), documented in the
+<a href="installation.html">Installation</a> chapter. The maintenance tasks the
 old tool offered can still be done manually, described below.</p>
 <h4>Home directory</h4>
 <p>OmniDB stores everything — the <code>omnidb.db</code> database (users, connections, and
-other app data) and a <code>temp</code> folder for exported files — in a single home
-directory. By default this is <code>~/.omnidb/omnidb-app</code> (desktop mode) or
+other app data) and a <code>temp</code> folder for exported files — in a single home
+directory. By default this is <code>~/.omnidb/omnidb-app</code> (desktop mode) or
 <code>~/.omnidb/omnidb-server</code> (server mode); pass <code>-d /some/path</code> to use a
 different one.</p>
-<h4>Create a user</h4>
-<p>There is currently no CLI option to create a user without opening OmniDB.
-On first run against an empty home directory, OmniDB creates a default
-<code>admin</code>/<code>admin</code> superuser automatically — sign in with it and create
-further users from the <em>Users</em> screen, or change the default password.</p>
+<h4>Create a user</h4>
+<p>There is currently no CLI option to create a user without opening OmniDB.
+On first run against an empty home directory, OmniDB creates a default
+<code>admin</code>/<code>admin</code> superuser automatically — sign in with it and create
+further users from the <em>Users</em> screen, or change the default password.</p>
 <h4>Vacuum</h4>
-<p>OmniDB has a single SQLite database, <code>omnidb.db</code>, storing all users,
-connections, and other OmniDB-related data. Since it's a plain SQLite file, you
-can vacuum it with any SQLite client while OmniDB isn't running, e.g.:</p>
+<p>OmniDB has a single SQLite database, <code>omnidb.db</code>, storing all users,
+connections, and other OmniDB-related data. Since it’s a plain SQLite file, you
+can vacuum it with any SQLite client while OmniDB isn’t running, e.g.:</p>
 <pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
 </code></pre>
 <h4>Reset database</h4>
-<p>If you wish to wipe out all OmniDB information and get a clean database as it
-was just installed, quit OmniDB and delete (or move aside) the home directory's
-<code>omnidb.db</code> file. A new, empty one — with a fresh default <code>admin</code>/<code>admin</code>
-user — is created automatically the next time OmniDB starts. Use this with
+<p>If you wish to wipe out all OmniDB information and get a clean database as it
+was just installed, quit OmniDB and delete (or move aside) the home directory’s
+<code>omnidb.db</code> file. A new, empty one — with a fresh default <code>admin</code>/<code>admin</code>
+user — is created automatically the next time OmniDB starts. Use this with
 caution: it cannot be undone.</p>
 <h4>Delete temporary files</h4>
 <p>Exported query results (CSV/XLSX/etc.) are written to the <code>temp</code> folder
-inside the home directory. It's safe to delete its contents manually at any
-time while OmniDB isn't running; OmniDB re-creates it as needed.</p>
+inside the home directory. It’s safe to delete its contents manually at any
+time while OmniDB isn’t running; OmniDB re-creates it as needed.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

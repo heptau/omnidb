@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Logická replikace - Dokumentace OmniDB</title>
+	<title>Logická replikace – Dokumentace OmniDB</title>
 	<meta name="description" content="Nastavte si v OmniDB nativní logickou replikaci PostgreSQL 10+: vytvořte publikace a odběry mezi dvěma uzly a ověřte, že se data správně replikují.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/logical_replication.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/logical_replication.html">
@@ -88,13 +88,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -109,7 +109,7 @@
 			<a href="logical_replication.html" class="active">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Konzole</a>
 			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
@@ -117,31 +117,31 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Logická replikace</h1>
 <p>PostgreSQL 10 zavádí nativní logickou replikaci, která používá model
 publikace/odběru, takže si na straně upstream (neboli publisher) můžeme
-vytvářet publikace a na straně downstream (neboli subscriber) odběry. Více
+vytvářet publikace a na straně downstream (neboli subscriber) odběry. Více
 podrobností najdete v
 <a href="https://www.postgresql.org/do../static/sql-createpublication.html">dokumentaci</a>
 <a href="https://www.postgresql.org/do../static/sql-createsubscription.html">PostgreSQL</a>.</p>
-<p>V této kapitole si nativní logickou replikaci PostgreSQL 10 předvedeme na
-clusteru se 2 uzly. Na každé instanci PostgreSQL je potřeba nastavit
-<code>wal_level = logical</code> a zároveň upravit soubor <code>pg_hba.conf</code> tak, aby mezi
+<p>V této kapitole si nativní logickou replikaci PostgreSQL 10 předvedeme na
+clusteru se 2 uzly. Na každé instanci PostgreSQL je potřeba nastavit
+<code>wal_level = logical</code> a zároveň upravit soubor <code>pg_hba.conf</code> tak, aby mezi
 oběma uzly udělil přístup pro <code>replication</code>.</p>
 <h4>Vytvoření testovacího prostředí</h4>
 <p>Sestavte si dvě instance PostgreSQL 10+ libovolným způsobem, který vám
-vyhovuje (Docker, virtuální stroj, nebo třeba i dvě databáze na jednom
-počítači) a na obou nastavte výše uvedené parametry.</p>
-<h4>Připojení k oběma uzlům</h4>
-<p>K připojení k oběma uzlům PostgreSQL použijeme OmniDB. Nejprve vyplňte
-informace o připojení v tabulce připojení:</p>
+vyhovuje (Docker, virtuální stroj, nebo třeba i dvě databáze na jednom
+počítači) a na obou nastavte výše uvedené parametry.</p>
+<h4>Připojení k oběma uzlům</h4>
+<p>K připojení k oběma uzlům PostgreSQL použijeme OmniDB. Nejprve vyplňte
+informace o připojení v tabulce připojení:</p>
 <p><img alt="" src="../assets/img/image_117.webp" /></p>
 <p>Poté vyberte obě připojení. Všimněte si, že OmniDB rozpozná připojení k
-PostgreSQL 10 a zpřístupní ve stromovém zobrazení aktuálního připojení nový
+PostgreSQL 10 a zpřístupní ve stromovém zobrazení aktuálního připojení nový
 uzel nazvaný <em>Logical Replication</em>. Uvnitř najdeme uzly <em>Publications</em> a
 <em>Subscriptions</em>.</p>
 <p><img alt="" src="../assets/img/image_118.webp" /></p>
@@ -156,25 +156,25 @@ uzel nazvaný <em>Logical Replication</em>. Uvnitř najdeme uzly <em>Publication
 <p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Vytvoření publikace na prvním počítači</h4>
 <p>Uvnitř uzlu připojení rozbalte uzel <em>Logical Replication</em>, poté klikněte
-pravým tlačítkem na uzel <em>Publications</em> a zvolte akci <em>Create Publication</em>.
+pravým tlačítkem na uzel <em>Publications</em> a zvolte akci <em>Create Publication</em>.
 OmniDB otevře záložku se SQL šablonou obsahující příkaz <code>CREATE PUBLICATION</code>
-připravený k úpravám a spuštění:</p>
+připravený k úpravám a spuštění:</p>
 <p><img alt="" src="../assets/img/image_120.webp" /></p>
-<p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
-uzel <em>Publications</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
+<p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
+uzel <em>Publications</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
 uzel se stejným názvem, jaký jste dali publikaci. Rozbalením tohoto uzlu
-uvidíte podrobnosti a tabulky patřící k publikaci:</p>
+uvidíte podrobnosti a tabulky patřící k publikaci:</p>
 <p><img alt="" src="../assets/img/image_121.webp" /></p>
 <h4>Vytvoření odběru na druhém počítači</h4>
 <p>Uvnitř uzlu připojení rozbalte uzel <em>Logical Replication</em>, poté klikněte
-pravým tlačítkem na uzel <em>Subscriptions</em> a zvolte akci <em>Create Subscription</em>.
+pravým tlačítkem na uzel <em>Subscriptions</em> a zvolte akci <em>Create Subscription</em>.
 OmniDB otevře záložku se SQL šablonou obsahující příkaz <code>CREATE SUBSCRIPTION</code>
-připravený k úpravám a spuštění:</p>
+připravený k úpravám a spuštění:</p>
 <p><img alt="" src="../assets/img/image_122.webp" /></p>
-<p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
-uzel <em>Subscriptions</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
+<p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
+uzel <em>Subscriptions</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
 uzel se stejným názvem, jaký jste dali odběru. Rozbalením tohoto uzlu uvidíte
-podrobnosti, odkazované publikace a tabulky patřící k odběru:</p>
+podrobnosti, odkazované publikace a tabulky patřící k odběru:</p>
 <p><img alt="" src="../assets/img/image_123.webp" /></p>
 <p>Příkaz <code>CREATE SUBSCRIPTION</code> navíc na prvním počítači vytvořil <em>slot logické
 replikace</em> nazvaný <code>testsub</code> (stejný název jako odběr):</p>
@@ -182,12 +182,12 @@ replikace</em> nazvaný <code>testsub</code> (stejný název jako odběr):</p>
 <h4>Test logické replikace</h4>
 <p>Abychom ověřili, že replikace funguje, vytvořme na uzlu 1 nějaká data.
 Klikněte pravým tlačítkem na tabulku <code>public.customers</code>, najeďte na <em>Data
-Actions</em> a klikněte na akci <em>Edit Data</em>. V této tabulce můžete do tabulky
-přidávat, upravovat a odstraňovat data. Přidejte 2 ukázkové řádky, takto:</p>
+Actions</em> a klikněte na akci <em>Edit Data</em>. V této tabulce můžete do tabulky
+přidávat, upravovat a odstraňovat data. Přidejte 2 ukázkové řádky, takto:</p>
 <p><img alt="" src="../assets/img/image_125.webp" /></p>
 <p>Poté na druhém uzlu ověřte, zda se tabulka <code>public.customers</code> automaticky
 naplnila. Klikněte pravým tlačítkem na tabulku <code>public.customers</code>, najeďte
-na <em>Data Actions</em> a klikněte na akci <em>Query Data</em>:</p>
+na <em>Data Actions</em> a klikněte na akci <em>Query Data</em>:</p>
 <p><img alt="" src="../assets/img/image_126.webp" /></p>
 <p>Jak vidíme, oba řádky vytvořené na prvním počítači byly replikovány na
 druhý počítač. To nám říká, že logická replikace funguje.</p>

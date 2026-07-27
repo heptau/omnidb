@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Visualizing Query Plans - OmniDB Documentation</title>
+	<title>Visualizing Query Plans – OmniDB Documentation</title>
 	<meta name="description" content="Visualize PostgreSQL EXPLAIN and EXPLAIN ANALYZE output in OmniDB as colored textual bars or zoomable tree diagrams to spot query performance bottlenecks.">
 	<link rel="canonical" href="https://www.omnidb.net/en/visualizing_query_plans.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_query_plans.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,34 +123,34 @@
 		</nav>
 		<main>
 		<h1>Visualizing Query Plans</h1>
-<p>OmniDB has a very useful feature: graphical query plan
-visualization. This may come in handy when writing or optimizing queries, since
-it allows you to easily identify performance bottlenecks in your SQL query.</p>
-<p>For this feature, <em>SQL Query</em> inner tab shows 2 buttons: <em>Explain</em> and <em>Explain
+<p>OmniDB has a very useful feature: graphical query plan
+visualization. This may come in handy when writing or optimizing queries, since
+it allows you to easily identify performance bottlenecks in your SQL query.</p>
+<p>For this feature, <em>SQL Query</em> inner tab shows 2 buttons: <em>Explain</em> and <em>Explain
 Analyze</em>.</p>
 <h4>Textual visualization</h4>
 <p>When you click the <em>Explain</em> button, OmniDB will execute an <code>EXPLAIN</code> command in
-your query. Initial visualization is <em>textual</em> and will show exactly the output
-of the <code>EXPLAIN</code> command, but with colored bars representing the estimated cost.
-The higher the cost, the darker and wider the bar.</p>
+your query. Initial visualization is <em>textual</em> and will show exactly the output
+of the <code>EXPLAIN</code> command, but with colored bars representing the estimated cost.
+The higher the cost, the darker and wider the bar.</p>
 <p><img alt="" src="../assets/img/image_054.webp"/></p>
 <p>When you click the <em>Explain Analyze</em> button, OmniDB will execute an <code>EXPLAIN
-ANALYZE</code> command in your query. Beware that this command will really execute the
-query. Also, the textual visualization will show much more information, and the
-costs are not estimated as in those provided by the <code>EXPLAIN</code> command; they are
+ANALYZE</code> command in your query. Beware that this command will really execute the
+query. Also, the textual visualization will show much more information, and the
+costs are not estimated as in those provided by the <code>EXPLAIN</code> command; they are
 real costs.</p>
 <p><img alt="" src="../assets/img/image_055.webp"/></p>
 <h4>Tree visualization</h4>
 <p>Both <em>Explain</em> and <em>Explain Analyze</em> modes also can graphically represent the
-textual output into a <em>tree</em> diagram. Each circle represent a node executed by
-the query plan, and the larger the circle, the higher the cost.</p>
+textual output into a <em>tree</em> diagram. Each circle represent a node executed by
+the query plan, and the larger the circle, the higher the cost.</p>
 <p><img alt="" src="../assets/img/image_056.webp"/></p>
 <p>When queries become more and more complex, also its query plan can be very
-complex. With such queries (like the <em>check bloat</em> query we executed below) the
+complex. With such queries (like the <em>check bloat</em> query we executed below) the
 tree visualization can be very interesting:</p>
 <p><img alt="" src="../assets/img/image_057.webp"/></p>
-<p>The query plan visualization component allows you to easily switch between
-textual and 2 tree visualizations, which can be zoomed in and out.</p>
+<p>The query plan visualization component allows you to easily switch between
+textual and 2 tree visualizations, which can be zoomed in and out.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Vytváření uživatelů a připojení - Dokumentace OmniDB</title>
+	<title>Vytváření uživatelů a připojení – Dokumentace OmniDB</title>
 	<meta name="description" content="Přihlaste se jako výchozí uživatel admin, vytvořte další uživatele OmniDB a nastavte připojení k PostgreSQL, MySQL, MariaDB, Oracle a SQLite, včetně SSH tunelů.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html" class="active">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html" class="active">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,96 +118,96 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Vytváření uživatelů a připojení</h1>
+		<h1>Vytváření uživatelů a připojení</h1>
 <h4>Přihlášení jako uživatel <em>admin</em></h4>
 <p>OmniDB obsahuje pouze uživatele <em>admin</em>. Pokud používáte serverovou verzi,
 první věc, kterou musíte udělat, je přihlásit se jako <em>admin</em>, výchozí heslo je <em>admin</em>.
-V aplikační verzi se přihlašovat nemusíte.</p>
+V aplikační verzi se přihlašovat nemusíte.</p>
 <p><img alt="" src="../assets/img/image_003.webp" /></p>
 <p>Následující okno je počáteční okno.</p>
 <p><img alt="" src="../assets/img/image_004.webp" /></p>
 <h4>Vytvoření dalšího uživatele</h4>
-<p>Klikněte na ikonu <em>Users</em> (Uživatelé) v pravém horním rohu. Otevře se vyskakovací okno,
+<p>Klikněte na ikonu <em>Users</em> (Uživatelé) v pravém horním rohu. Otevře se vyskakovací okno,
 které umožňuje aktuálnímu superuživateli OmniDB vytvořit nového uživatele OmniDB.</p>
 <p><img alt="" src="../assets/img/image_005.webp" /></p>
 <p>Klikněte uvnitř vyskakovacího okna na tlačítko <em>Add new user</em> (Přidat nového uživatele)
-(ikona postavičky s plus). Vloží se nový, prázdný řádek uživatele, zobrazený jako
+(ikona postavičky s plus). Vloží se nový, prázdný řádek uživatele, zobrazený jako
 <em>(pending info)</em> (čeká na vyplnění), dokud ho nevyplníte.</p>
 <p><img alt="" src="../assets/img/image_006.webp" /></p>
 <p>Vyplňte <em>uživatelské jméno</em> a <em>heslo</em>. Zaškrtněte, zda má být tento nový uživatel
 <em>superuživatelem</em>. Toto okno pro správu uživatelů vidí pouze superuživatelé. Až budete
 hotovi, klikněte uvnitř vyskakovacího okna na tlačítko <em>Save</em> (Uložit).</p>
 <p><img alt="" src="../assets/img/image_007.webp" /></p>
-<p>Můžete vytvořit tolik uživatelů, kolik chcete, upravovat existující uživatele a také mazat
+<p>Můžete vytvořit tolik uživatelů, kolik chcete, upravovat existující uživatele a také mazat
 uživatele kliknutím na červený křížek ve sloupci akcí. Nyní se můžete odhlásit
-kliknutím na tlačítko <em>Sign Out</em> (Odhlásit se) v pravém horním rohu.</p>
+kliknutím na tlačítko <em>Sign Out</em> (Odhlásit se) v pravém horním rohu.</p>
 <h4>Přihlášení jako nový uživatel</h4>
 <p>Přihlaste se jako uživatel, kterého jsme právě vytvořili.</p>
 <p><img alt="" src="../assets/img/image_008.webp" /></p>
-<p>A znovu vidíme okno. Všimněte si, že nyní chybí ikona <em>Users</em>, protože
+<p>A znovu vidíme okno. Všimněte si, že nyní chybí ikona <em>Users</em>, protože
 uživatel <em>test</em> není superuživatel. Nyní klikněte na <strong>Connections</strong> (Připojení) v
 levém horním rohu. Zobrazí se vám vyskakovací okno jako toto:</p>
 <p><img alt="" src="../assets/img/image_009.webp" /></p>
 <h4>Vytváření připojení</h4>
-<p>OmniDB podporuje PostgreSQL, MySQL, MariaDB, Oracle a SQLite.</p>
-<p>Nyní vytvoříme jedno připojení k databázi PostgreSQL, jedno připojení k
-databázi Oracle a jedno připojení k databázi MariaDB. Pro vytvoření
-připojení musíte kliknout na tlačítko <em>New Connection</em> (Nové připojení) a poté zvolit
-typ připojení a vyplnit ostatní pole. Po vyplnění všech polí pro obě
+<p>OmniDB podporuje PostgreSQL, MySQL, MariaDB, Oracle a SQLite.</p>
+<p>Nyní vytvoříme jedno připojení k databázi PostgreSQL, jedno připojení k
+databázi Oracle a jedno připojení k databázi MariaDB. Pro vytvoření
+připojení musíte kliknout na tlačítko <em>New Connection</em> (Nové připojení) a poté zvolit
+typ připojení a vyplnit ostatní pole. Po vyplnění všech polí pro obě
 připojení klikněte na tlačítko <em>Save</em> (Uložit).</p>
 <p><img alt="" src="../assets/img/image_010.webp" /></p>
-<p>U každého připojení je sloupec <em>Actions</em> (Akce), kde je můžete mazat, testovat a
-vybírat. Zkuste nyní otestovat připojení k PostgreSQL.</p>
+<p>U každého připojení je sloupec <em>Actions</em> (Akce), kde je můžete mazat, testovat a
+vybírat. Zkuste nyní otestovat připojení k PostgreSQL.</p>
 <p><img alt="" src="../assets/img/image_011.webp" /></p>
 <p>Všimněte si, že se objeví vyskakovací okno se zprávou <em>fe_sendauth: no password
 supplied</em>. Děje se to proto, že OmniDB neukládá heslo uživatele databáze na
-disk. Bez hesla po ruce se OmniDB pokusí připojit bez něj a tím se pokusí
+disk. Bez hesla po ruce se OmniDB pokusí připojit bez něj a tím se pokusí
 využít automatické metody ověřování, které mohou být nastavené: metodu
-<code>trust</code>, soubor <code>.pgpass</code> a podobně. Jelikož databázový server odpoví chybou,
+<code>trust</code>, soubor <code>.pgpass</code> a podobně. Jelikož databázový server odpoví chybou,
 která uživateli neumožní se připojit, OmniDB pochopí, že je vyžadováno
-heslo, a vyžádá si ho od uživatele. Když uživatel zadá heslo do tohoto
-vyskakovacího okna, heslo se zašifruje a uloží do paměti.</p>
-<p>Poté, co zadáte heslo a stisknete <em>Enter</em>, pokud je připojení k databázi
+heslo, a vyžádá si ho od uživatele. Když uživatel zadá heslo do tohoto
+vyskakovacího okna, heslo se zašifruje a uloží do paměti.</p>
+<p>Poté, co zadáte heslo a stisknete <em>Enter</em>, pokud je připojení k databázi
 úspěšné, uvidíte potvrzovací vyskakovací okno.</p>
 <p><img alt="" src="../assets/img/image_012.webp" /></p>
-<p>Pokud však máte jakékoli potíže s připojením k databázi PostgreSQL,
+<p>Pokud však máte jakékoli potíže s připojením k databázi PostgreSQL,
 ve stejném vyskakovacím okně se zobrazí chyba, kterou OmniDB obdržela.</p>
 <p><img alt="" src="../assets/img/image_013.webp" /></p>
-<p>U Oracle je chování podobné. Když se OmniDB poprvé pokusí připojit k
+<p>U Oracle je chování podobné. Když se OmniDB poprvé pokusí připojit k
 databázi Oracle bez hesla, uvidíte zprávu jako tuto:</p>
 <p><img alt="" src="../assets/img/image_115.webp" /></p>
-<p>Pokud máte jakékoli potíže s připojením k databázi Oracle, ve stejném
+<p>Pokud máte jakékoli potíže s připojením k databázi Oracle, ve stejném
 vyskakovacím okně se zobrazí chyba, kterou OmniDB obdržela:</p>
 <p><img alt="" src="../assets/img/image_116.webp" /></p>
-<p>Databáze MariaDB a MySQL fungují stejným způsobem. Napoprvé nebylo zadáno
+<p>Databáze MariaDB a MySQL fungují stejným způsobem. Napoprvé nebylo zadáno
 žádné heslo:</p>
 <p><img alt="" src="../assets/img/image_184.webp" /></p>
 <p>Ale pokud nastanou nějaké problémy, například nedostupný databázový server:</p>
 <p><img alt="" src="../assets/img/image_185.webp" /></p>
-<p>Nakonec, pokud v mřížce připojení kliknete na akci <em>Select Connection</em>
-(Vybrat připojení), OmniDB ho otevře v nové <strong>vnější kartě připojení</strong> (Connection
-Outer Tab), jak uvidíme v příští kapitole.</p>
+<p>Nakonec, pokud v mřížce připojení kliknete na akci <em>Select Connection</em>
+(Vybrat připojení), OmniDB ho otevře v nové <strong>vnější kartě připojení</strong> (Connection
+Outer Tab), jak uvidíme v příští kapitole.</p>
 <h4>Použití SSH tunelů</h4>
-<p>OmniDB umožňuje uživateli připojit se k libovolné vzdálené databázi
-prostřednictvím SSH tunelů. Uživatel musí vyplnit informace o SSH tunelu u
+<p>OmniDB umožňuje uživateli připojit se k libovolné vzdálené databázi
+prostřednictvím SSH tunelů. Uživatel musí vyplnit informace o SSH tunelu u
 každého připojení v <em>mřížce připojení</em> (Connections Grid).</p>
 <p><img alt="" src="../assets/img/image_186.webp" /></p>
 <ul>
 <li><em>SSH Server</em>: Server, ke kterému se připojujete přes SSH;</li>
 <li><em>SSH Port</em>: Port SSH serveru (výchozí je 22, ale může to být jakékoli
 číslo portu);</li>
-<li><em>SSH User</em>: Uživatelské jméno v operačním systému, které používáte pro
-připojení k SSH serveru;</li>
-<li><em>Password / Passphrase</em>: Heslo uživatele operačního systému (nebo
+<li><em>SSH User</em>: Uživatelské jméno v operačním systému, které používáte pro
+připojení k SSH serveru;</li>
+<li><em>Password/Passphrase</em>: Heslo uživatele operačního systému (nebo
 přístupová fráze ke klíči níže). Pokud vyplníte pole <em>SSH Key Text File</em>, heslo
 je volitelné;</li>
 <li><em>SSH Key Text File</em>: Obsah lokálního privátního SSH klíče, který lze použít pro
-připojení k SSH serveru. Pokud vyplníte toto pole, můžete zároveň vyplnit pole
-<em>Password / Passphrase</em>, ale v tomto případě půjde o přístupovou frázi k
+připojení k SSH serveru. Pokud vyplníte toto pole, můžete zároveň vyplnit pole
+<em>Password/Passphrase</em>, ale v tomto případě půjde o přístupovou frázi k
 privátnímu SSH klíči.</li>
 </ul>
 <p>Uvědomte si prosím, že všechny tyto informace jsou uloženy zašifrovaně ve vaší lokální
@@ -218,12 +218,12 @@ SSH serveru. To lze provést ve 2 scénářích, jak je vysvětleno níže.</p>
 <p>Pokud se databáze nachází na stejném serveru, ke kterému se připojujete přes SSH,
 bude situace vypadat takto:</p>
 <p><img alt="" src="../assets/ssh_tunnels_1.pn../p>
-<p>V tomto scénáři bude <em>Server</em> databáze <code>127.0.0.1</code>, protože databáze je
+<p>V tomto scénáři bude <em>Server</em> databáze <code>127.0.0.1</code>, protože databáze je
 na stejném stroji jako <em>SSH Server</em>.</p>
-<p>Databáze se ale může nacházet i mimo SSH server, takto:</p>
+<p>Databáze se ale může nacházet i mimo SSH server, takto:</p>
 <p><img alt="" src="../assets/ssh_tunnels_2.pn../p>
-<p>Zde musí být <em>Server</em> databáze <code>192.168.0.10</code>, protože se jedná o relativní
-adresu, na kterou se SSH server připojuje k databázovému serveru.</p>
+<p>Zde musí být <em>Server</em> databáze <code>192.168.0.10</code>, protože se jedná o relativní
+adresu, na kterou se SSH server připojuje k databázovému serveru.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

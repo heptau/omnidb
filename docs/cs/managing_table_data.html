@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Správa dat v tabulkách - Dokumentace OmniDB</title>
+	<title>Správa dat v tabulkách – Dokumentace OmniDB</title>
 	<meta name="description" content="Upravujte záznamy tabulek přímo v mřížce OmniDB podobné tabulkovému procesoru: vkládejte, aktualizujte a mažte řádky, upravujte dlouhá textová pole a sledujte chyby z neúspěšných operací.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html" class="active">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html" class="active">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,32 +118,32 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Správa dat v tabulkách</h1>
-<p>Nástroj nám umožňuje upravovat záznamy obsažené v tabulkách prostřednictvím velmi jednoduchého a
-intuitivního rozhraní. Vzhledem k tomu, že jen málo DBMS automaticky poskytuje jedinečný
-identifikátor pro záznamy tabulek, rozhodli jsme se umožnit úpravu a odstraňování dat pouze
-u tabulek, které mají primární klíč. Tabulky, které ho nemají, mohou pouze přijímat nové záznamy.</p>
-<p>Pro přístup k rozhraní pro úpravu záznamů klikněte pravým tlačítkem na uzel tabulky a vyberte
-akci <em>Data Actions &gt; Edit Data</em> (Akce s daty &gt; Upravit data):</p>
+		<h1>Správa dat v tabulkách</h1>
+<p>Nástroj nám umožňuje upravovat záznamy obsažené v tabulkách prostřednictvím velmi jednoduchého a
+intuitivního rozhraní. Vzhledem k tomu, že jen málo DBMS automaticky poskytuje jedinečný
+identifikátor pro záznamy tabulek, rozhodli jsme se umožnit úpravu a odstraňování dat pouze
+u tabulek, které mají primární klíč. Tabulky, které ho nemají, mohou pouze přijímat nové záznamy.</p>
+<p>Pro přístup k rozhraní pro úpravu záznamů klikněte pravým tlačítkem na uzel tabulky a vyberte
+akci <em>Data Actions &gt; Edit Data</em> (Akce s daty &gt; Upravit data):</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>Rozhraní obsahuje SQL editor, kde můžete záznamy filtrovat a řadit. Aby
+<p>Rozhraní obsahuje SQL editor, kde můžete záznamy filtrovat a řadit. Aby
 rozhraní nevyžádalo příliš mnoho záznamů, je zde pole, které omezuje počet
 zobrazovaných záznamů. Mřížka záznamů obsahuje názvy sloupců
-a datové typy. Sloupce patřící do primárního klíče mají vedle svého názvu
+a datové typy. Sloupce patřící do primárního klíče mají vedle svého názvu
 ikonu klíče.</p>
-<p>Řádek mřížky se symbolem <code>+</code> slouží k přidání nových záznamů. Vložme
+<p>Řádek mřížky se symbolem <code>+</code> slouží k přidání nových záznamů. Vložme
 nyní několik záznamů do tabulky <code>customers</code>:</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
-<p>Po uložení se záznamy vloží a lze je upravovat (pouze proto, že tato
-tabulka má primární klíč). Změňme <em>cust_name</em> u některých existujících
-záznamů a zároveň odstraňme jeden z řádků:</p>
+<p>Po uložení se záznamy vloží a lze je upravovat (pouze proto, že tato
+tabulka má primární klíč). Změňme <em>cust_name</em> u některých existujících
+záznamů a zároveň odstraňme jeden z řádků:</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
-<p>Tabulky mohou obsahovat pole s hodnotami reprezentovanými velmi dlouhými řetězci. Pro
+<p>Tabulky mohou obsahovat pole s hodnotami reprezentovanými velmi dlouhými řetězci. Pro
 usnadnění úpravy těchto polí má OmniDB rozhraní, ke kterému lze přistupovat
 kliknutím pravým tlačítkem na konkrétní buňku:</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
@@ -152,7 +152,7 @@ kliknutím pravým tlačítkem na konkrétní buňku:</p>
 záznamy. Pro ukázku vložme dva záznamy se shodným <code>cust_id</code>
 (primární klíč):</p>
 <p><img alt="" src="../assets/img/image_047.webp" /></p>
-<p>Zobrazí se, které příkazy se pokusily provést, a příslušné chyby.</p>
+<p>Zobrazí se, které příkazy se pokusily provést, a příslušné chyby.</p>
 <p>Na závěr této kapitoly přidejme několik záznamů do tabulky <em>Address</em>:</p>
 <p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>

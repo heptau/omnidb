@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Escrever Consultas SQL - Documentação OmniDB</title>
+	<title>Escrever Consultas SQL – Documentação OmniDB</title>
 	<meta name="description" content="Tudo o que o separador de Consulta SQL do OmniDB oferece: o editor, executar e cancelar, autocommit, histórico de consultas, exportação para CSV, TSV, XLSX, JSON, XML ou Markdown, e autocompletar SQL.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/writing_sql_queries.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html" class="active">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
@@ -110,96 +110,96 @@
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Escrever Consultas SQL</h1>
-<p>O tipo mais comum de separador interior é o <em>Separador de Consulta</em>, que contém os seguintes
+<p>O tipo mais comum de separador interior é o <em>Separador de Consulta</em>, que contém os seguintes
 elementos:</p>
 <p><img alt="" src="../assets/img/image_049.webp" /></p>
 <ul>
-<li><strong>1) Cabeçalho do Separador</strong>: Pode ver o nome do separador e um ícone para o fechar. Se
-houver uma consulta em execução no separador, verá um indicador. Se o separador
-terminar a execução e estiver a trabalhar noutro separador, verá um indicador
-verde. Ao clicar duas vezes no nome do separador, poderá mudar o nome do
+<li><strong>1) Cabeçalho do Separador</strong>: Pode ver o nome do separador e um ícone para o fechar. Se
+houver uma consulta em execução no separador, verá um indicador. Se o separador
+terminar a execução e estiver a trabalhar noutro separador, verá um indicador
+verde. Ao clicar duas vezes no nome do separador, poderá mudar o nome do
 separador.</li>
 <li><strong>2) Adicionar Separador</strong>: Pode adicionar rapidamente outro separador interior clicando no ícone
 de mais.</li>
 <li><strong>3) Editor SQL</strong>: Editor SQL completo com realce de sintaxe SQL,
-localizar e substituir (<code>Ctrl-F</code> e <code>Ctrl-H</code>) e um componente de autocompletar, explicado
-a seguir. Consulte <a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a> para a lista completa de atalhos
+localizar e substituir (<code>Ctrl-F</code> e <code>Ctrl-H</code>) e um componente de autocompletar, explicado
+a seguir. Consulte <a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a> para a lista completa de atalhos
 do editor (seleção, multicursor, navegação, dobragem de código, etc.).</li>
-<li><strong>4) Execute (Executar)</strong>: O texto contido no Editor SQL será executado na
-base de dados atualmente ativa quando clicar neste botão (ou premir o atalho,
+<li><strong>4) Execute (Executar)</strong>: O texto contido no Editor SQL será executado na
+base de dados atualmente ativa quando clicar neste botão (ou premir o atalho,
 <code>Alt-Q</code> por predefinição). Se houver algum texto selecionado no Editor SQL, será
-executado apenas o texto selecionado. Depois de o comando estar em execução, aparecerá um
-botão vermelho <em>Cancel</em> (Cancelar), permitindo-lhe cancelar a execução (ou usar o
+executado apenas o texto selecionado. Depois de o comando estar em execução, aparecerá um
+botão vermelho <em>Cancel</em> (Cancelar), permitindo-lhe cancelar a execução (ou usar o
 atalho, <code>Alt-C</code> por predefinição).</li>
 <li><strong>5) Indent SQL (Indentar SQL)</strong>: Este botão formata de forma legível qualquer código SQL escrito no
 editor SQL (atalho <code>Alt-S</code> por predefinição, <code>Ctrl-S</code> no macOS).</li>
 <li><strong>6) Command History (Histórico de Comandos)</strong>: Todos os comandos executados na base de dados
 atual são armazenados no Histórico de Comandos, ao qual pode aceder clicando neste botão.
-Também poderá filtrar por data e texto para encontrar o comando SQL que precisa.</li>
-<li><strong>7) Explain (apenas PostgreSQL)</strong>: Chama a sua consulta SQL contra o PostgreSQL
+Também poderá filtrar por data e texto para encontrar o comando SQL que precisa.</li>
+<li><strong>7) Explain (apenas PostgreSQL)</strong>: Chama a sua consulta SQL contra o PostgreSQL
 colocando <code>EXPLAIN</code> à frente dela. Os resultados serão mostrados em forma textual e
 gráfica no separador Explain (consulte <a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a> para mais detalhes).</li>
-<li><strong>8) Explain Analyze (apenas PostgreSQL)</strong>: O mesmo que o botão Explain, mas
-chama a consulta SQL com <code>EXPLAIN ANALYZE</code>, que efetivamente executa a consulta.</li>
+<li><strong>8) Explain Analyze (apenas PostgreSQL)</strong>: O mesmo que o botão Explain, mas
+chama a consulta SQL com <code>EXPLAIN ANALYZE</code>, que efetivamente executa a consulta.</li>
 <li><strong>9) Autocommit (apenas PostgreSQL)</strong>: Quando ativado, todas as consultas executadas
-serão submetidas (commit) na base de dados. Quando desativado, o OmniDB inicia uma transação e, após a
-execução de uma consulta, a interface mostrará botões que permitem ao utilizador
-efetuar <em>Commit</em> ou <em>Rollback</em>. O utilizador também pode manter a transação aberta e executar
+serão submetidas (commit) na base de dados. Quando desativado, o OmniDB inicia uma transação e, após a
+execução de uma consulta, a interface mostrará botões que permitem ao utilizador
+efetuar <em>Commit</em> ou <em>Rollback</em>. O utilizador também pode manter a transação aberta e executar
 outros comandos.</li>
 <li><strong>10) Backend Status (Estado do Backend) (apenas PostgreSQL)</strong>: Quando abre um novo Separador de Consulta, o
-estado é "Not Connected" (Não Ligado), porque o OmniDB ainda não iniciou um backend PostgreSQL.
-Quando executa a primeira consulta, o OmniDB inicia um novo backend e mantém-no associado
-ao Separador de Consulta (cada Separador de Consulta terá o seu próprio backend). O estado
+estado é «Not Connected» (Não Ligado), porque o OmniDB ainda não iniciou um backend PostgreSQL.
+Quando executa a primeira consulta, o OmniDB inicia um novo backend e mantém-no associado
+ao Separador de Consulta (cada Separador de Consulta terá o seu próprio backend). O estado
 do backend (<em>idle</em>, <em>active</em>, <em>idle in transaction</em>, etc.) será mostrado
-neste campo. Quando fecha o Separador de Consulta, o OmniDB termina o backend.</li>
+neste campo. Quando fecha o Separador de Consulta, o OmniDB termina o backend.</li>
 <li><strong>11) Export File Type (Tipo de Ficheiro de Exportação)</strong>: Pode ser CSV, TSV, XLSX, JSON, XML ou Markdown.</li>
-<li><strong>12) Export To File (Exportar para Ficheiro)</strong>: Ao clicar neste botão, o OmniDB executa a
-consulta atual e exporta os resultados para um ficheiro. Na aplicação de ambiente de trabalho, abre-se um
-diálogo nativo "Guardar Como" para que possa escolher onde guardá-lo diretamente. Ao executar
+<li><strong>12) Export To File (Exportar para Ficheiro)</strong>: Ao clicar neste botão, o OmniDB executa a
+consulta atual e exporta os resultados para um ficheiro. Na aplicação de ambiente de trabalho, abre-se um
+diálogo nativo «Guardar Como» para que possa escolher onde guardá-lo diretamente. Ao executar
 como <a href="deploying_omnidb-server.html">OmniDB Server</a> baseado no browser,
-o ficheiro é primeiro escrito na pasta temporária do servidor, e a
+o ficheiro é primeiro escrito na pasta temporária do servidor, e a
 interface mostra então uma ligação para que possa transferi-lo através do browser.</li>
-<li><strong>13) Data Results (Resultados de Dados)</strong>: Se a consulta for um <code>SELECT</code>, mostrará uma grelha
-com os resultados. Se a consulta for DML ou DDL, mostrará a mensagem
+<li><strong>13) Data Results (Resultados de Dados)</strong>: Se a consulta for um <code>SELECT</code>, mostrará uma grelha
+com os resultados. Se a consulta for DML ou DDL, mostrará a mensagem
 devolvida pelo SGBD.</li>
 <li><strong>14) Messages (Mensagens) (apenas PostgreSQL)</strong>: Quaisquer mensagens (como as geradas pelo
 comando <code>RAISE NOTICE</code>) serão mostradas aqui.</li>
 <li><strong>15) Explain View (apenas PostgreSQL)</strong>: Mostra um componente completo para
-ver o plano de execução do PostgreSQL em forma textual ou gráfica.</li>
+ver o plano de execução do PostgreSQL em forma textual ou gráfica.</li>
 </ul>
 <p>Depois de executados, os separadores também são guardados na base de dados de utilizador do OmniDB (título e
-conteúdo), pelo que da próxima vez que abrir o OmniDB, verá todos abertos novamente. Além disso,
-todos os comandos que executar num Separador de Consulta são guardados no seu Histórico de Comandos e também
+conteúdo), pelo que da próxima vez que abrir o OmniDB, verá todos abertos novamente. Além disso,
+todos os comandos que executar num Separador de Consulta são guardados no seu Histórico de Comandos e também
 no ficheiro <code>omnidb.log</code>.</p>
 <h4>Autocompletar SQL</h4>
-<p>O editor SQL tem uma funcionalidade que ajuda muito ao criar novas consultas: conclusão
+<p>O editor SQL tem uma funcionalidade que ajuda muito ao criar novas consultas: conclusão
 automática de código SQL. Com esta funcionalidade é possível autocompletar colunas
-contidas numa tabela referenciada por um alias. Para abrir a interface de autocompletar
-basta escrever o alias, o carácter <code>.</code> e depois premir <code>Ctrl-Space</code>:</p>
+contidas numa tabela referenciada por um alias. Para abrir a interface de autocompletar
+basta escrever o alias, o carácter <code>.</code> e depois premir <code>Ctrl-Space</code>:</p>
 <p><img alt="" src="../assets/img/image_050.webp" /></p>
-<p>Se o utilizador não iniciar o autocompletar com o cursor próximo de um alias
-de tabela, o componente mostrará várias categorias de dados. Ao escrever na caixa de
+<p>Se o utilizador não iniciar o autocompletar com o cursor próximo de um alias
+de tabela, o componente mostrará várias categorias de dados. Ao escrever na caixa de
 filtro, os elementos em todas as categorias serão filtrados:</p>
 <p><img alt="" src="../assets/img/image_051.webp" /></p>
-<p>O componente de autocompletar também é capaz de identificar alguma informação contextual.
-Por exemplo, se escrever o nome de um esquema, depois escrever o carácter <code>.</code>, e depois
+<p>O componente de autocompletar também é capaz de identificar alguma informação contextual.
+Por exemplo, se escrever o nome de um esquema, depois escrever o carácter <code>.</code>, e depois
 premir <code>Ctrl-Space</code>, poderá filtrar entre objetos contidos apenas nesse
 esquema:</p>
 <p><img alt="" src="../assets/img/image_052.webp" /></p>
-<p>Tenha em atenção que, para SGBD diferentes do PostgreSQL, o componente de autocompletar
+<p>Tenha em atenção que, para SGBD diferentes do PostgreSQL, o componente de autocompletar
 só funciona para colunas de tabelas.</p>
 		</main>
 	</div>

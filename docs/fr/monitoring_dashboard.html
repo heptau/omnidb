@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Tableau de bord de supervision - Documentation OmniDB</title>
+	<title>Tableau de bord de supervision — Documentation OmniDB</title>
 	<meta name="description" content="Créez un tableau de bord de supervision de base de données en direct dans OmniDB à partir d'unités de type grille, graphique et série temporelle, et apprenez à écrire vos propres unités SQL personnalisées.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
@@ -89,144 +89,144 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
-			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Travailler avec les données</span>
-			<a href="managing_databases.html">Gérer les bases de données</a>
-			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
-			<a href="managing_table_data.html">Gérer les données des tables</a>
-			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
-			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
-			<a href="visualizing_data.html">Visualiser les données</a>
-			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avancé</span>
 			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
-			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
-			<a href="monitoring_dashboard.html" class="active">Tableau de bord de supervision</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html" class="active">Tableau de bord de supervision</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Serveur et outils</span>
+			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
-			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Référence</span>
-			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Tableau de bord de supervision</h1>
-<p>OmniDB dispose d'une fonctionnalité très pratique appelée <em>tableau de bord de supervision</em> (Monitoring
-Dashboard). Comme une image vaut mille mots, jetez-y un œil :</p>
+		<h1>Tableau de bord de supervision</h1>
+<p>OmniDB dispose d’une fonctionnalité très pratique appelée <em>tableau de bord de supervision</em> (Monitoring
+Dashboard). Comme une image vaut mille mots, jetez-y un œil :</p>
 <p><img alt="" src="../assets/img/image_091.webp" /></p>
-<p>Comme vous pouvez le voir, il s'agit d'un nouveau type d'onglet interne affichant des graphiques et des
-grilles. Cet onglet interne <em>Monitoring</em> (Supervision) s'ouvre automatiquement dès que vous développez le
-nœud racine de l'arborescence (le nœud <em>PostgreSQL</em>). Vous pouvez le laisser ouvert ou le fermer à tout
-moment. Pour le rouvrir, faites un clic droit sur le nœud racine et cliquez sur <em>Dashboard</em> (Tableau de
+<p>Comme vous pouvez le voir, il s’agit d’un nouveau type d’onglet interne affichant des graphiques et des
+grilles. Cet onglet interne <em>Monitoring</em> (Supervision) s’ouvre automatiquement dès que vous développez le
+nœud racine de l’arborescence (le nœud <em>PostgreSQL</em>). Vous pouvez le laisser ouvert ou le fermer à tout
+moment. Pour le rouvrir, faites un clic droit sur le nœud racine et cliquez sur <em>Dashboard</em> (Tableau de
 bord).</p>
 <p><img alt="" src="../assets/img/image_092.webp" /></p>
-<p>Le tableau de bord est composé de rectangles d'informations pratiques appelés <em>unités de supervision</em>
-(Monitoring Units). Voici un exemple d'unité de supervision et les éléments de son interface :</p>
+<p>Le tableau de bord est composé de rectangles d’informations pratiques appelés <em>unités de supervision</em>
+(Monitoring Units). Voici un exemple d’unité de supervision et les éléments de son interface :</p>
 <p><img alt="" src="../assets/img/image_093.webp" /></p>
 <ul>
-<li><strong>1</strong> : titre de l'unité de supervision ;</li>
-<li><strong>2</strong> : actualise l'unité de supervision. Selon le type, cliquer sur ce bouton actualisera soit
-l'ensemble de la zone de dessin, soit fera simplement acquérir au graphique un nouveau jeu de valeurs ;</li>
-<li><strong>3</strong> : met en pause l'unité de supervision ;</li>
-<li><strong>4</strong> : intervalle en secondes pour l'actualisation automatique ;</li>
-<li><strong>5</strong> : retire l'unité de supervision du tableau de bord ;</li>
-<li><strong>6</strong> : zone de dessin, qui diffère selon le type de l'unité de supervision.</li>
+<li><strong>1</strong> : titre de l’unité de supervision ;</li>
+<li><strong>2</strong> : actualise l’unité de supervision. Selon le type, cliquer sur ce bouton actualisera soit
+l’ensemble de la zone de dessin, soit fera simplement acquérir au graphique un nouveau jeu de valeurs ;</li>
+<li><strong>3</strong> : met en pause l’unité de supervision ;</li>
+<li><strong>4</strong> : intervalle en secondes pour l’actualisation automatique ;</li>
+<li><strong>5</strong> : retire l’unité de supervision du tableau de bord ;</li>
+<li><strong>6</strong> : zone de dessin, qui diffère selon le type de l’unité de supervision.</li>
 </ul>
-<h4>Types d'unités de supervision</h4>
-<p>Il existe 3 types d'unités de supervision :</p>
+<h4>Types d’unités de supervision</h4>
+<p>Il existe 3 types d’unités de supervision :</p>
 <ul>
-<li><strong>Grid</strong> (Grille) : le type le plus simple, il exécute simplement une requête à intervalles
-réguliers et affiche les résultats dans une grille de données.</li>
+<li><strong>Grid</strong> (Grille) : le type le plus simple, il exécute simplement une requête à intervalles
+réguliers et affiche les résultats dans une grille de données.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_094.webp" /></p>
 <ul>
-<li><strong>Chart</strong> (Graphique) : à chaque actualisation, il redessine un graphique complet. L'ancien jeu
-de valeurs est perdu. C'est particulièrement utile pour les graphiques circulaires, mais d'autres types de
+<li><strong>Chart</strong> (Graphique) : à chaque actualisation, il redessine un graphique complet. L’ancien jeu
+de valeurs est perdu. C’est particulièrement utile pour les graphiques circulaires, mais d’autres types de
 graphiques peuvent aussi être utilisés.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_095.webp" /></p>
 <ul>
-<li><strong>Timeseries</strong> (Série temporelle) : c'est sans doute le type d'unité de supervision le plus
-utile. Il s'agit d'un graphique qui ajoute un nouveau jeu de valeurs à chaque actualisation. Les graphiques en
-lignes ou en barres conviennent le mieux à ce type. Les 100 derniers jeux de valeurs sont conservés côté client
-par le composant afin d'être consultés par l'utilisateur.</li>
+<li><strong>Timeseries</strong> (Série temporelle) : c’est sans doute le type d’unité de supervision le plus
+utile. Il s’agit d’un graphique qui ajoute un nouveau jeu de valeurs à chaque actualisation. Les graphiques en
+lignes ou en barres conviennent le mieux à ce type. Les 100 derniers jeux de valeurs sont conservés côté client
+par le composant afin d’être consultés par l’utilisateur.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_096.webp" /></p>
-<h4>Afficher et masquer les unités du tableau de bord</h4>
-<p>Si vous cliquez sur le bouton <em>Refresh All</em> (Tout actualiser), toutes les unités de supervision seront
-actualisées en une seule fois. Vous pouvez également retirer les unités de supervision indésirables en cliquant
-sur le bouton <em>Remove</em> (Retirer). Retirons dès à présent toutes les unités du tableau de bord, pour le
-vider entièrement :</p>
+<h4>Afficher et masquer les unités du tableau de bord</h4>
+<p>Si vous cliquez sur le bouton <em>Refresh All</em> (Tout actualiser), toutes les unités de supervision seront
+actualisées en une seule fois. Vous pouvez également retirer les unités de supervision indésirables en cliquant
+sur le bouton <em>Remove</em> (Retirer). Retirons dès à présent toutes les unités du tableau de bord, pour le
+vider entièrement :</p>
 <p><img alt="" src="../assets/img/image_097.webp" /></p>
-<p>Les 17 unités livrées en standard avec OmniDB (métriques de serveur PostgreSQL et MySQL — taux de
-transactions, processus serveur, production de WAL, taille des bases de données/tables, etc.) s'exécutent en
-code natif et ne nécessitent rien de supplémentaire à installer dans la base de données.</p>
+<p>Les 17 unités livrées en standard avec OmniDB (métriques de serveur PostgreSQL et MySQL — taux de
+transactions, processus serveur, production de WAL, taille des bases de données/tables, etc.) s’exécutent en
+code natif et ne nécessitent rien de supplémentaire à installer dans la base de données.</p>
 <p><img alt="" src="../assets/img/image_098.webp" /></p>
-<p>Maintenant que notre tableau de bord est vide, ajoutons quelques unités. Cliquez sur le bouton <em>Manage
-Units</em> (Gérer les unités).</p>
+<p>Maintenant que notre tableau de bord est vide, ajoutons quelques unités. Cliquez sur le bouton <em>Manage
+Units</em> (Gérer les unités).</p>
 <p><img alt="" src="../assets/img/image_099.webp" /></p>
-<p>Cliquez sur l'action verte pour ajouter l'une des unités intégrées — par exemple <em>Backends</em> (Processus
-serveur) et <em>Database Size</em> (Taille de la base de données). Attendez quelques secondes et vous obtiendrez
-un tableau de bord comme celui-ci :</p>
+<p>Cliquez sur l’action verte pour ajouter l’une des unités intégrées — par exemple <em>Backends</em> (Processus
+serveur) et <em>Database Size</em> (Taille de la base de données). Attendez quelques secondes et vous obtiendrez
+un tableau de bord comme celui-ci :</p>
 <p><img alt="" src="../assets/img/image_100.webp" /></p>
-<p>De la même manière, vous pouvez ajouter et retirer n'importe quelle unité pour personnaliser le tableau de
-bord comme vous le souhaitez.</p>
-<h4>Écrire des unités de supervision personnalisées</h4>
-<p>OmniDB vous permet d'écrire vos propres unités, ou de personnaliser celles existantes, en écrivant une simple
-requête SQL — la même connexion et les mêmes permissions que celles déjà utilisées par votre éditeur SQL, mais
-s'exécutant sur une base périodique plutôt qu'à la demande. Il n'y a pas de langage de script ni de bac à sable
-séparé à apprendre.</p>
-<p><strong>Remarque :</strong> comme la requête se réexécute sans surveillance à un intervalle d'actualisation
-donné, seules les requêtes <code>SELECT</code> (ou <code>WITH ... SELECT</code>) sont acceptées — une instruction
-destructrice collée par erreur est rejetée d'emblée plutôt que de s'exécuter silencieusement à intervalles
+<p>De la même manière, vous pouvez ajouter et retirer n’importe quelle unité pour personnaliser le tableau de
+bord comme vous le souhaitez.</p>
+<h4>Écrire des unités de supervision personnalisées</h4>
+<p>OmniDB vous permet d’écrire vos propres unités, ou de personnaliser celles existantes, en écrivant une simple
+requête SQL — la même connexion et les mêmes permissions que celles déjà utilisées par votre éditeur SQL, mais
+s’exécutant sur une base périodique plutôt qu’à la demande. Il n’y a pas de langage de script ni de bac à sable
+séparé à apprendre.</p>
+<p><strong>Remarque :</strong> comme la requête se réexécute sans surveillance à un intervalle d’actualisation
+donné, seules les requêtes <code>SELECT</code> (ou <code>WITH ... SELECT</code>) sont acceptées — une instruction
+destructrice collée par erreur est rejetée d’emblée plutôt que de s’exécuter silencieusement à intervalles
 réguliers.</p>
-<p>Pour créer une nouvelle unité de supervision, cliquez sur le bouton <em>Manage Units</em> dans le tableau de
-bord, puis cliquez sur le bouton <em>New Unit</em> (Nouvelle unité). Un nouveau type d'onglet interne s'ouvre,
-avec un nom, une liste déroulante Type, un intervalle d'actualisation, et un unique éditeur de requête SQL (plus
-une liste déroulante Chart Type, affichée uniquement pour les unités de type <em>Chart</em>).</p>
-<p>La forme de la requête dépend du Type de l'unité :</p>
+<p>Pour créer une nouvelle unité de supervision, cliquez sur le bouton <em>Manage Units</em> dans le tableau de
+bord, puis cliquez sur le bouton <em>New Unit</em> (Nouvelle unité). Un nouveau type d’onglet interne s’ouvre,
+avec un nom, une liste déroulante Type, un intervalle d’actualisation, et un unique éditeur de requête SQL (plus
+une liste déroulante Chart Type, affichée uniquement pour les unités de type <em>Chart</em>).</p>
+<p>La forme de la requête dépend du Type de l’unité :</p>
 <ul>
 <li>
-<p><strong>Grid</strong> : aucune forme particulière — quelles que soient les colonnes et lignes renvoyées par
-la requête, elles deviennent directement la grille. Par exemple :</p>
+<p><strong>Grid</strong> : aucune forme particulière — quelles que soient les colonnes et lignes renvoyées par
+la requête, elles deviennent directement la grille. Par exemple :</p>
 <pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
 </li>
 <li>
-<p><strong>Chart</strong> : une ligne par catégorie — la première colonne est l'étiquette, la ou les colonnes
-restantes forment chacune une série (le nom de la colonne devient le nom de la série). Choisissez le Chart Type
-(barres, camembert, anneau ou ligne) dans la liste déroulante à côté du sélecteur de Type. Par exemple, un
-graphique circulaire de la taille des bases de données :</p>
+<p><strong>Chart</strong> : une ligne par catégorie — la première colonne est l’étiquette, la ou les colonnes
+restantes forment chacune une série (le nom de la colonne devient le nom de la série). Choisissez le Chart Type
+(barres, camembert, anneau ou ligne) dans la liste déroulante à côté du sélecteur de Type. Par exemple, un
+graphique circulaire de la taille des bases de données :</p>
 <pre><code class="language-sql">SELECT datname,
        round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
 FROM pg_catalog.pg_database
 WHERE datname NOT IN ('template0', 'template1')</code></pre>
 </li>
 <li>
-<p><strong>Timeseries</strong> : exactement une ligne — chaque colonne numérique devient une série en ligne
-alimentée en continu, actualisée selon l'intervalle configuré. Par exemple, pour suivre la taille de la base de
-données au fil du temps :</p>
+<p><strong>Timeseries</strong> : exactement une ligne — chaque colonne numérique devient une série en ligne
+alimentée en continu, actualisée selon l’intervalle configuré. Par exemple, pour suivre la taille de la base de
+données au fil du temps :</p>
 <pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
 FROM pg_catalog.pg_database
 WHERE NOT datistemplate</code></pre>
 </li>
 </ul>
-<p>Écrivez (ou collez) la requête dans l'éditeur de requête SQL, puis cliquez sur le bouton <em>Test</em> pour la
-voir s'afficher dans la zone d'aperçu — vous pouvez la tester autant de fois que vous le souhaitez. Une fois
-satisfait du résultat, donnez un nom à l'unité, définissez un intervalle d'actualisation, puis appuyez sur
-<em>Save</em> (Enregistrer). Fermez l'onglet d'édition et la nouvelle unité apparaît dans la liste des unités,
-prête à être ajoutée au tableau de bord (action verte) comme une unité intégrée.</p>
+<p>Écrivez (ou collez) la requête dans l’éditeur de requête SQL, puis cliquez sur le bouton <em>Test</em> pour la
+voir s’afficher dans la zone d’aperçu — vous pouvez la tester autant de fois que vous le souhaitez. Une fois
+satisfait du résultat, donnez un nom à l’unité, définissez un intervalle d’actualisation, puis appuyez sur
+<em>Save</em> (Enregistrer). Fermez l’onglet d’édition et la nouvelle unité apparaît dans la liste des unités,
+prête à être ajoutée au tableau de bord (action verte) comme une unité intégrée.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

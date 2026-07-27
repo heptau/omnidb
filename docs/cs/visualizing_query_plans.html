@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Vizualizace plánů dotazů - Dokumentace OmniDB</title>
+	<title>Vizualizace plánů dotazů – Dokumentace OmniDB</title>
 	<meta name="description" content="Vizualizujte výstup PostgreSQL EXPLAIN a EXPLAIN ANALYZE v OmniDB jako barevné textové pruhy nebo přibližitelné stromové diagramy a odhalte úzká hrdla výkonu dotazů.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/visualizing_query_plans.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_query_plans.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html" class="active">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,7 +118,7 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
@@ -130,26 +130,26 @@ identifikovat úzká hrdla výkonu ve vašem SQL dotazu.</p>
 <em>Explain Analyze</em>.</p>
 <h4>Textová vizualizace</h4>
 <p>Když kliknete na tlačítko <em>Explain</em>, OmniDB spustí ve vašem dotazu příkaz
-<code>EXPLAIN</code>. Počáteční vizualizace je <em>textová</em> a zobrazí přesně výstup příkazu
-<code>EXPLAIN</code>, ale s barevnými pruhy představujícími odhadovanou cenu (cost). Čím
-vyšší cena, tím tmavší a širší pruh.</p>
+<code>EXPLAIN</code>. Počáteční vizualizace je <em>textová</em> a zobrazí přesně výstup příkazu
+<code>EXPLAIN</code>, ale s barevnými pruhy představujícími odhadovanou cenu (cost). Čím
+vyšší cena, tím tmavší a širší pruh.</p>
 <p><img alt="" src="../assets/img/image_054.webp" /></p>
 <p>Když kliknete na tlačítko <em>Explain Analyze</em>, OmniDB spustí ve vašem dotazu
 příkaz <code>EXPLAIN ANALYZE</code>. Pozor, tento příkaz dotaz skutečně provede. Textová
-vizualizace navíc zobrazí mnohem více informací a ceny už nejsou odhadované
-jako u příkazu <code>EXPLAIN</code>, ale skutečné.</p>
+vizualizace navíc zobrazí mnohem více informací a ceny už nejsou odhadované
+jako u příkazu <code>EXPLAIN</code>, ale skutečné.</p>
 <p><img alt="" src="../assets/img/image_055.webp" /></p>
 <h4>Stromová vizualizace</h4>
 <p>Oba režimy, <em>Explain</em> i <em>Explain Analyze</em>, dokážou textový výstup zobrazit
 také graficky jako <em>stromový</em> diagram. Každý kruh představuje uzel provedený
-plánem dotazu a čím větší kruh, tím vyšší cena.</p>
+plánem dotazu a čím větší kruh, tím vyšší cena.</p>
 <p><img alt="" src="../assets/img/image_056.webp" /></p>
-<p>Čím složitější jsou dotazy, tím složitější může být i jejich plán dotazu. U
+<p>Čím složitější jsou dotazy, tím složitější může být i jejich plán dotazu. U
 takových dotazů (jako je dotaz <em>check bloat</em>, který jsme spustili níže) může
 být stromová vizualizace velmi zajímavá:</p>
 <p><img alt="" src="../assets/img/image_057.webp" /></p>
 <p>Komponenta pro vizualizaci plánu dotazu umožňuje snadno přepínat mezi textovou
-a dvěma stromovými vizualizacemi, které lze přibližovat a oddalovat.</p>
+a dvěma stromovými vizualizacemi, které lze přibližovat a oddalovat.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

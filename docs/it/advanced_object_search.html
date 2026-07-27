@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Ricerca avanzata degli oggetti - Documentazione OmniDB</title>
+	<title>Ricerca avanzata degli oggetti – Documentazione OmniDB</title>
 	<meta name="description" content="Come la Ricerca avanzata degli oggetti di OmniDB permetteva agli utenti di cercare per pattern tra oggetti del database e dati delle tabelle, incluso il suo punto di accesso attualmente disabilitato.">
 	<link rel="canonical" href="https://www.omnidb.net/it/advanced_object_search.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/advanced_object_search.html">
@@ -86,67 +86,67 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="advanced_object_search.html" class="active">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Ricerca avanzata degli oggetti</h1>
 <p><strong>Nota:</strong> questa funzionalità non è disponibile nella versione attuale. La voce
-del menu ad albero è disattivata (commentata), e le funzioni del frontend e il gestore
-del backend Go da cui dipendeva non esistono più — non è stata portata avanti durante la
-riscrittura in Go, e ripristinarla significherebbe ricostruirla da zero piuttosto che
-riattivare un semplice interruttore. Il resto di questo capitolo viene mantenuto come
-descrizione del suo funzionamento originario, a scopo storico.</p>
-<p>La Ricerca avanzata degli oggetti permetteva agli utenti di applicare pattern matching per cercare
-oggetti del database e dati delle tabelle — usando l'operatore SQL predefinito <code>LIKE</code>, oppure espressioni
+del menu ad albero è disattivata (commentata), e le funzioni del frontend e il gestore
+del backend Go da cui dipendeva non esistono più — non è stata portata avanti durante la
+riscrittura in Go, e ripristinarla significherebbe ricostruirla da zero piuttosto che
+riattivare un semplice interruttore. Il resto di questo capitolo viene mantenuto come
+descrizione del suo funzionamento originario, a scopo storico.</p>
+<p>La Ricerca avanzata degli oggetti permetteva agli utenti di applicare pattern matching per cercare
+oggetti del database e dati delle tabelle — usando l’operatore SQL predefinito <code>LIKE</code>, oppure espressioni
 regolari complesse.</p>
-<p>Si poteva accedere alla funzionalità di Ricerca avanzata degli oggetti facendo clic con il tasto destro su uno specifico
-nodo di database nell'albero:</p>
+<p>Si poteva accedere alla funzionalità di Ricerca avanzata degli oggetti facendo clic con il tasto destro su uno specifico
+nodo di database nell’albero:</p>
 <p><img alt="" src="../assets/img/image_196.webp" /></p>
-<p>L'interfaccia permetteva di filtrare le categorie di oggetti, gli schemi in cui
-eseguire le ricerche e anche di limitare lo spazio di ricerca quando era selezionata la categoria
-Data, in modo da cercare un pattern in un sottoinsieme di tabelle:</p>
+<p>L’interfaccia permetteva di filtrare le categorie di oggetti, gli schemi in cui
+eseguire le ricerche e anche di limitare lo spazio di ricerca quando era selezionata la categoria
+Data, in modo da cercare un pattern in un sottoinsieme di tabelle:</p>
 <p><img alt="" src="../assets/img/image_197.webp" /></p>
-<p>Dopo aver compilato i campi ed eseguito la ricerca, OmniDB effettuava la ricerca usando diversi
-thread che velocizzavano il processo eseguendolo in parallelo (era personalizzabile.
-Per maggiori informazioni, vedi <a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>).</p>
-<p>Al termine della ricerca, OmniDB mostrava il risultato in un albero:</p>
+<p>Dopo aver compilato i campi ed eseguito la ricerca, OmniDB effettuava la ricerca usando diversi
+thread che velocizzavano il processo eseguendolo in parallelo (era personalizzabile.
+Per maggiori informazioni, vedi <a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>).</p>
+<p>Al termine della ricerca, OmniDB mostrava il risultato in un albero:</p>
 <p><img alt="" src="../assets/img/image_198.webp" /></p>
-<p>Per maggiori dettagli sulla ricerca in ciascuna categoria, si faceva clic con il tasto destro sul nodo desiderato
-e si selezionava 'See More'. OmniDB apriva una scheda query con il comando SQL usato per
-eseguire quella specifica ricerca. Bastava eseguire il comando per ottenere i risultati:</p>
+<p>Per maggiori dettagli sulla ricerca in ciascuna categoria, si faceva clic con il tasto destro sul nodo desiderato
+e si selezionava 'See More'. OmniDB apriva una scheda query con il comando SQL usato per
+eseguire quella specifica ricerca. Bastava eseguire il comando per ottenere i risultati:</p>
 <p><img alt="" src="../assets/img/image_199.webp"/>
 <img alt="" src="../assets/img/image_200.webp" /></p>
 		</main>

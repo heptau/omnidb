@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Psaní PL/pgSQL funkcí - Dokumentace OmniDB</title>
+	<title>Psaní PL/pgSQL funkcí – Dokumentace OmniDB</title>
 	<meta name="description" content="Psaní a spouštění PL/pgSQL funkcí a procedur v OmniDB: SQL šablony, spouštění a jejich procházení ve stromu databáze.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/writing_plpgsql_functions.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_plpgsql_functions.html">
@@ -88,13 +88,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -109,7 +109,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Konzole</a>
 			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
@@ -117,17 +117,17 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Psaní PL/pgSQL funkcí</h1>
 <h4>Úvod</h4>
 <p>PostgreSQL je víc než jen RDBMS engine. Je to vyvíjející se platforma. Nabízí
-velmi výkonný a flexibilní programovací jazyk zvaný <code>PL/pgSQL</code>. Pomocí tohoto
-jazyka si můžete psát vlastní <em>uživatelsky definované funkce</em> a dosáhnout tak
-úrovně abstrakce a procedurálních výpočtů, které by se v čistém SQL dosahovaly
-obtížně (a někdy by se bez přepínání kontextu do aplikace nedaly dosáhnout vůbec).</p>
+velmi výkonný a flexibilní programovací jazyk zvaný <code>PL/pgSQL</code>. Pomocí tohoto
+jazyka si můžete psát vlastní <em>uživatelsky definované funkce</em> a dosáhnout tak
+úrovně abstrakce a procedurálních výpočtů, které by se v čistém SQL dosahovaly
+obtížně (a někdy by se bez přepínání kontextu do aplikace nedaly dosáhnout vůbec).</p>
 <p><img alt="" src="../assets/img/image_072.webp" /></p>
 <h4>Psaní funkcí</h4>
 <p>Ve schématu <code>public</code> klikněte pravým tlačítkem na uzel <code>Functions</code> a
@@ -137,8 +137,8 @@ obsahuje SQL šablonu pomáhající vytvořit vaši první PL/pgSQL funkci.</p>
 <p><img alt="" src="../assets/img/image_074.webp" /></p>
 <p>Ohledně psaní uživatelsky definovaných funkcí se můžete podívat do
 dokumentace PostgreSQL. Stačí kliknout pravým tlačítkem na uzel <em>Functions</em>
-a zvolit <em>Doc: Functions</em> — příslušná stránka dokumentace PostgreSQL se
-otevře ve vašem webovém prohlížeči (v desktopové aplikaci v systémovém
+a zvolit <em>Doc: Functions</em> — příslušná stránka dokumentace PostgreSQL se
+otevře ve vašem webovém prohlížeči (v desktopové aplikaci v systémovém
 výchozím prohlížeči, při běhu jako prohlížečový <a href="deploying_omnidb-server.html">OmniDB
 Server</a> jako nová karta).</p>
 <p>Nyní tuto SQL šablonu celou nahraďte následujícím zdrojovým kódem:</p>
@@ -166,23 +166,23 @@ END;
 $function$
 </code></pre>
 <p>Tím se ve schématu <code>public</code> vytvoří funkce nazvaná <code>fnc_count_vowels</code>.
-Tato funkce přijímá textový argument <code>p_input</code> a spočítá, kolik samohlásek
+Tato funkce přijímá textový argument <code>p_input</code> a spočítá, kolik samohlásek
 tento <em>řetězec</em> obsahuje. Poté tento počet vrátí.</p>
 <p>Funkci vytvoříte spuštěním příkazu ve vnitřní záložce SQL Query. Pokud se to
 podaří, funkce se objeví pod stromovým uzlem <em>Functions</em> (můžete jej obnovit
-kliknutím pravým tlačítkem a volbou <em>Refresh</em>). Rozbalením uzlu funkce navíc
-uvidíte její návratový typ a argument.</p>
+kliknutím pravým tlačítkem a volbou <em>Refresh</em>). Rozbalením uzlu funkce navíc
+uvidíte její návratový typ a argument.</p>
 <p><img alt="" src="../assets/img/image_075.webp" /></p>
 <p>Nyní tuto novou funkci poprvé spusťme. Otevřete jednoduchou vnitřní záložku
-SQL Query a spusťte následující SQL dotaz:</p>
+SQL Query a spusťte následující SQL dotaz:</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
 <p><img alt="" src="../assets/img/image_076.webp" /></p>
 <p>Všimněte si, že dotaz vrací jedinou hodnotu obsahující počet samohlásek
-v textu.</p>
-<p>Kliknutím pravým tlačítkem na uzel funkce uvidíte, že jsou k dispozici akce
-pro její úpravu, výběr a odstranění. Jak jste asi tušili, každá akce otevře
-vnitřní záložky SQL Query s praktickými SQL šablonami.</p>
+v textu.</p>
+<p>Kliknutím pravým tlačítkem na uzel funkce uvidíte, že jsou k dispozici akce
+pro její úpravu, výběr a odstranění. Jak jste asi tušili, každá akce otevře
+vnitřní záložky SQL Query s praktickými SQL šablonami.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

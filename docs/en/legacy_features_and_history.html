@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Legacy Features &amp; History - OmniDB Documentation</title>
+	<title>Legacy Features &amp; History – OmniDB Documentation</title>
 	<meta name="description" content="OmniDB's version history, and what happened to its old plugin system — pglogical, Postgres-BDR, Postgres-XL support, and the PL/pgSQL step debugger — after the 3.6.x rewrite from Python/Django to Go.">
 	<link rel="canonical" href="https://www.omnidb.net/en/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/legacy_features_and_history.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,11 +123,11 @@
 		</nav>
 		<main>
 			<h1>Legacy Features &amp; History</h1>
-			<p>OmniDB has gone through several very different lives — a university project,
-				a Python/Django web app with a plugin ecosystem, and now a single-binary Go
-				application. This page is the place for anything that used to exist but
-				doesn't anymore: what it was, why it isn't coming back, and where to find it
-				if you still need it. For the story of the project itself, see
+			<p>OmniDB has gone through several very different lives — a university project,
+				a Python/Django web app with a plugin ecosystem, and now a single-binary Go
+				application. This page is the place for anything that used to exist but
+				doesn’t anymore: what it was, why it isn’t coming back, and where to find it
+				if you still need it. For the story of the project itself, see
 				<a href="introduction.html">Introduction</a>.</p>
 
 			<h2>Version timeline</h2>
@@ -140,128 +140,128 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>Original (ASP.NET/C#)</td>
-						<td>Undergrad final project at the Federal University of Paraná — the first
-							tool to trace a common line between PostgreSQL, MySQL/MariaDB, Oracle,
+						<td>Original (ASP. NET/C#)</td>
+						<td>Undergrad final project at the Federal University of Paraná — the first
+							tool to trace a common line between PostgreSQL, MySQL/MariaDB, Oracle,
 							SQLite, Firebird and SQL Server metadata.</td>
 					</tr>
 					<tr>
 						<td>OmniDB (Python/Django)</td>
-						<td>The long-lived version most people know: a Django web app with a
-							browser-based workspace and, from 2.9 onward, a Python plugin system for
-							community extensions. Development on the original
+						<td>The long-lived version most people know: a Django web app with a
+							browser-based workspace and, from 2.9 onward, a Python plugin system for
+							community extensions. Development on the original
 							<a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">OmniDB/OmniDB</a>
 							repository stopped around 2020.</td>
 					</tr>
 					<tr>
-						<td>2025-2026 revival (3.1.x)</td>
-						<td>The project was picked back up: modernized codebase, improved security,
-							native macOS Apple Silicon support, and a full documentation overhaul —
-							still on the Python/Django backend at this point.</td>
+						<td>2025–2026 revival (3.1.x)</td>
+						<td>The project was picked back up: modernized codebase, improved security,
+							native macOS Apple Silicon support, and a full documentation overhaul —
+							still on the Python/Django backend at this point.</td>
 					</tr>
 					<tr>
 						<td>Go rewrite (3.6.x)</td>
-						<td>The entire backend was rewritten from Python/Django to Go and shipped
-							as a single native binary. The Python runtime, and everything that only
-							made sense inside it — including the plugin system — was removed.</td>
+						<td>The entire backend was rewritten from Python/Django to Go and shipped
+							as a single native binary. The Python runtime, and everything that only
+							made sense inside it — including the plugin system — was removed.</td>
 					</tr>
 					<tr>
 						<td>Wails migration (done)</td>
-						<td>The desktop shell moved from NW.js to <a href="https://wails.io" target="_blank" rel="noopener">Wails</a>
-							(Go) — a smaller binary, no bundled Chromium, and the app now drives the
-							OS's own native webview instead.</td>
+						<td>The desktop shell moved from NW.js to <a href="https://wails.io" target="_blank" rel="noopener">Wails</a>
+							(Go) — a smaller binary, no bundled Chromium, and the app now drives the
+							OS’s own native webview instead.</td>
 					</tr>
 				</tbody>
 			</table>
 
-			<h2 id="plugin-system">The plugin system (removed)</h2>
-			<p><strong>The plugin system has been removed</strong> as part of the 3.6.x rewrite of the
+			<h2 id="plugin-system">The plugin system (removed)</h2>
+			<p><strong>The plugin system has been removed</strong> as part of the 3.6.x rewrite of the
 				backend from Python/Django to Go, and is no longer available.</p>
-			<p>OmniDB 2.9 introduced a plugin system that let users write Python code, hooked
-				into different parts of the interface, to add their own features without
-				redeploying the whole application. That mechanism depended on dynamically
-				importing arbitrary Python modules into the running server process — something
-				with no equivalent in a compiled Go binary — and was deliberately not carried
-				over. Since it could never do anything useful again, the "Plugins" dialog and
-				its menu entry, and the API endpoints behind it, were removed from the
-				application entirely rather than kept around as a permanently-empty stub.</p>
-			<p>If you relied on a specific plugin, there is currently no supported way to
-				port it forward. Anything a plugin used to do by calling into the database
-				directly can usually still be done today through the regular SQL editor,
-				snippets, or a custom monitoring unit.</p>
+			<p>OmniDB 2.9 introduced a plugin system that let users write Python code, hooked
+				into different parts of the interface, to add their own features without
+				redeploying the whole application. That mechanism depended on dynamically
+				importing arbitrary Python modules into the running server process — something
+				with no equivalent in a compiled Go binary — and was deliberately not carried
+				over. Since it could never do anything useful again, the “Plugins” dialog and
+				its menu entry, and the API endpoints behind it, were removed from the
+				application entirely rather than kept around as a permanently-empty stub.</p>
+			<p>If you relied on a specific plugin, there is currently no supported way to
+				port it forward. Anything a plugin used to do by calling into the database
+				directly can usually still be done today through the regular SQL editor,
+				snippets, or a custom monitoring unit.</p>
 
 			<h2 id="plpgsql-debugger">PL/pgSQL step debugger (removed)</h2>
-			<p>OmniDB 2.3.0 added an interactive step debugger for PL/pgSQL functions and
+			<p>OmniDB 2.3.0 added an interactive step debugger for PL/pgSQL functions and
 				procedures — breakpoints, live variable inspection, and per-line execution
-				statistics. It depended on a custom PostgreSQL C extension
-				(<code>omnidb_plugin</code>) hooking into PL/pgSQL's internal plugin API,
-				loaded via <code>shared_preload_libraries</code> (a server restart), plus a
-				dedicated <code>omnidb</code> schema and passwordless local access for a
+				statistics. It depended on a custom PostgreSQL C extension
+				(<code>omnidb_plugin</code>) hooking into PL/pgSQL’s internal plugin API,
+				loaded via <code>shared_preload_libraries</code> (a server restart), plus a
+				dedicated <code>omnidb</code> schema and passwordless local access for a
 				second, debugger-only database connection.</p>
-			<p><strong>The debugger has been removed</strong>, along with its "Debug
-				Function"/"Debug Procedure" tree menu entries. It was never ported during
-				the 3.6.x Go rewrite, and the <code>omnidb_plugin</code> extension itself
-				hasn't been touched since 2020. Beyond the ongoing cost of keeping a
+			<p><strong>The debugger has been removed</strong>, along with its “Debug
+				Function”/“Debug Procedure” tree menu entries. It was never ported during
+				the 3.6.x Go rewrite, and the <code>omnidb_plugin</code> extension itself
+				hasn’t been touched since 2020. Beyond the ongoing cost of keeping a
 				PostgreSQL-internals C extension working across every new major PostgreSQL
-				version, it fundamentally can't work at all against any managed/cloud
-				PostgreSQL (RDS, Cloud SQL, Supabase, Neon, and similar) — none of them allow
-				a custom <code>shared_preload_libraries</code> entry — so a large and growing
-				share of today's users could never have used it regardless of how well it
+				version, it fundamentally can’t work at all against any managed/cloud
+				PostgreSQL (RDS, Cloud SQL, Supabase, Neon, and similar) — none of them allow
+				a custom <code>shared_preload_libraries</code> entry — so a large and growing
+				share of today’s users could never have used it regardless of how well it
 				was maintained.</p>
 			<p>Writing and running PL/pgSQL functions themselves is unaffected — see
 				<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>. If
 				you need to step through PL/pgSQL execution against your own self-hosted
-				PostgreSQL server, the original <code>omnidb_plugin</code> source is still
-				available in the
-				<a href="https://github.com/OmniDB/OmniDB/tree/master/omnidb_plugin" target="_blank" rel="noopener">original repository's history</a>,
+				PostgreSQL server, the original <code>omnidb_plugin</code> source is still
+				available in the
+				<a href="https://github.com/OmniDB/OmniDB/tree/master/omnidb_plugin" target="_blank" rel="noopener">original repository’s history</a>,
 				or you can use <a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
-				(the actively-maintained equivalent used by pgAdmin) directly, outside of
+				(the actively-maintained equivalent used by pgAdmin) directly, outside of
 				OmniDB.</p>
 
 			<h2 id="pglogical">pglogical (removed)</h2>
 			<p><a href="https://www.2ndquadrant.com/en/resources/pglogical/" target="_blank" rel="noopener">pglogical</a>
-				was a PostgreSQL extension providing an efficient logical-replication system.
-				The old <code>omnidb-pglogical</code> plugin added tree-view nodes and SQL-template
+				was a PostgreSQL extension providing an efficient logical-replication system.
+				The old <code>omnidb-pglogical</code> plugin added tree-view nodes and SQL-template
 				actions (create node, manage replication sets, create subscriptions, and so
-				on) for working with it — all built on the removed plugin system above, so it
+				on) for working with it — all built on the removed plugin system above, so it
 				no longer loads.</p>
 
 			<h2 id="postgres-bdr">Postgres-BDR (removed)</h2>
 			<p><a href="https://www.2ndquadrant.com/en/resources/bdr/" target="_blank" rel="noopener">Postgres-BDR</a>
-				("Bi-Directional Replication") was 2ndQuadrant's multi-master extension for
-				PostgreSQL. The old <code>omnidb-bdr</code> plugin gave it the same kind of
-				tree-view integration as pglogical. Same story: it was a plugin, and the
+				(“Bi-Directional Replication”) was 2ndQuadrant’s multi-master extension for
+				PostgreSQL. The old <code>omnidb-bdr</code> plugin gave it the same kind of
+				tree-view integration as pglogical. Same story: it was a plugin, and the
 				plugin system it depended on is gone.</p>
 
 			<h2 id="postgres-xl">Postgres-XL (removed)</h2>
 			<p><a href="https://www.2ndquadrant.com/en/resources/postgres-xl/" target="_blank" rel="noopener">Postgres-XL</a>
-				was a massively-parallel, horizontally-scalable fork of PostgreSQL (GTM +
-				coordinator + data nodes). The old <code>omnidb-xl</code> plugin added
-				cluster-aware tree-view nodes for it. Also a plugin, also gone.</p>
+				was a massively-parallel, horizontally-scalable fork of PostgreSQL (GTM +
+				coordinator + data nodes). The old <code>omnidb-xl</code> plugin added
+				cluster-aware tree-view nodes for it. Also a plugin, also gone.</p>
 
-			<h2>Why none of these are coming back</h2>
-			<p>All three were thin, plugin-based integrations for niche, largely
-				unmaintained-upstream PostgreSQL forks/extensions — none of pglogical, BDR or
-				Postgres-XL saw meaningful new releases in recent years. Rebuilding the plugin
-				system itself in Go would mean designing an entirely new extension mechanism
-				(compiled plugins, a scripting runtime, or a hook API) for a small and shrinking
-				audience, which hasn't been a priority against the rest of the Go rewrite.
-				Nothing about the rewrite prevents connecting to a pglogical/BDR/XL cluster as a
-				plain PostgreSQL database and managing replication objects by hand through the
-				regular SQL editor or Console tab — you simply don't get the dedicated tree-view
-				nodes and SQL-template shortcuts the plugins used to add.</p>
+			<h2>Why none of these are coming back</h2>
+			<p>All three were thin, plugin-based integrations for niche, largely
+				unmaintained-upstream PostgreSQL forks/extensions — none of pglogical, BDR or
+				Postgres-XL saw meaningful new releases in recent years. Rebuilding the plugin
+				system itself in Go would mean designing an entirely new extension mechanism
+				(compiled plugins, a scripting runtime, or a hook API) for a small and shrinking
+				audience, which hasn’t been a priority against the rest of the Go rewrite.
+				Nothing about the rewrite prevents connecting to a pglogical/BDR/XL cluster as a
+				plain PostgreSQL database and managing replication objects by hand through the
+				regular SQL editor or Console tab — you simply don’t get the dedicated tree-view
+				nodes and SQL-template shortcuts the plugins used to add.</p>
 
-			<h2>Where to find the old releases</h2>
-			<p>Releases of classic OmniDB (up to ~2020) with full plugin support are still
-				available, unmaintained, from the original repository:</p>
+			<h2>Where to find the old releases</h2>
+			<p>Releases of classic OmniDB (up to ~2020) with full plugin support are still
+				available, unmaintained, from the original repository:</p>
 			<ul>
-				<li><a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">github.com/OmniDB/OmniDB</a> — the original application and its release archive.</li>
-				<li><a href="https://github.com/OmniDB/plugins" target="_blank" rel="noopener">github.com/OmniDB/plugins</a> — the pglogical/BDR/XL plugin sources themselves.</li>
+				<li><a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">github.com/OmniDB/OmniDB</a> — the original application and its release archive.</li>
+				<li><a href="https://github.com/OmniDB/plugins" target="_blank" rel="noopener">github.com/OmniDB/plugins</a> — the pglogical/BDR/XL plugin sources themselves.</li>
 			</ul>
 			<p>Neither repository receives updates. If you need pglogical, BDR or Postgres-XL
-				management today, an old release from there — run against a database matching
-				its era — is your best option; there's no migration path from that setup into
-				the current Go-based OmniDB.</p>
+				management today, an old release from there — run against a database matching
+				its era — is your best option; there’s no migration path from that setup into
+				the current Go-based OmniDB.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

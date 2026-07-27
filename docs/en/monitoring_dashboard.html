@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Monitoring Dashboard - OmniDB Documentation</title>
+	<title>Monitoring Dashboard – OmniDB Documentation</title>
 	<meta name="description" content="Build a live database monitoring dashboard in OmniDB from grid, chart and timeseries units, including how to write your own custom SQL-based units.">
 	<link rel="canonical" href="https://www.omnidb.net/en/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,91 +123,91 @@
 		</nav>
 		<main>
 		<h1>Monitoring Dashboard</h1>
-<p>OmniDB has a cool feature called <em>Monitoring Dashboard</em>. We
-know a picture is worth a thousand words, so please take a look:</p>
+<p>OmniDB has a cool feature called <em>Monitoring Dashboard</em>. We
+know a picture is worth a thousand words, so please take a look:</p>
 <p><img alt="" src="../assets/img/image_091.webp"/></p>
-<p>As you can see, this is a new kind of inner tab showing some charts and grids.
-This <em>Monitoring</em> inner tab is automatically opened once you expand the tree
-root node (the <em>PostgreSQL</em> node). You can keep it open or close it at any time.
-To open it again, right-click the root node and click on <em>Dashboard</em>.</p>
+<p>As you can see, this is a new kind of inner tab showing some charts and grids.
+This <em>Monitoring</em> inner tab is automatically opened once you expand the tree
+root node (the <em>PostgreSQL</em> node). You can keep it open or close it at any time.
+To open it again, right-click the root node and click on <em>Dashboard</em>.</p>
 <p><img alt="" src="../assets/img/image_092.webp"/></p>
-<p>The dashboard is composed of handy information rectangles called <em>Monitoring
-Units</em>. Here is an example of Monitoring Unit and its interface elements:</p>
+<p>The dashboard is composed of handy information rectangles called <em>Monitoring
+Units</em>. Here is an example of Monitoring Unit and its interface elements:</p>
 <p><img alt="" src="../assets/img/image_093.webp"/></p>
 <ul>
-<li><strong>1</strong>: Title of the Monitoring Unit;</li>
-<li><strong>2</strong>: Refresh the Monitoring Unit. Depending on the type, clicking on this
-button will refresh the entire drawing area or just make the chart acquire a new
-set of values;</li>
-<li><strong>3</strong>: Pause the Monitoring Unit;</li>
-<li><strong>4</strong>: Interval in seconds for automatic refreshing;</li>
-<li><strong>5</strong>: Remove the Monitoring Unit of the Monitoring Dashboard;</li>
-<li><strong>6</strong>: Drawing area, that will be different depending on the type of the
+<li><strong>1</strong>: Title of the Monitoring Unit;</li>
+<li><strong>2</strong>: Refresh the Monitoring Unit. Depending on the type, clicking on this
+button will refresh the entire drawing area or just make the chart acquire a new
+set of values;</li>
+<li><strong>3</strong>: Pause the Monitoring Unit;</li>
+<li><strong>4</strong>: Interval in seconds for automatic refreshing;</li>
+<li><strong>5</strong>: Remove the Monitoring Unit of the Monitoring Dashboard;</li>
+<li><strong>6</strong>: Drawing area, that will be different depending on the type of the
 Monitoring Unit.</li>
 </ul>
-<h4>Types of Monitoring Units</h4>
-<p>There are 3 types of Monitoring Units:</p>
+<h4>Types of Monitoring Units</h4>
+<p>There are 3 types of Monitoring Units:</p>
 <ul>
-<li><strong>Grid</strong>: The most simple kind, just executes a query from time to time and
-shows the results in a data grid.</li>
+<li><strong>Grid</strong>: The most simple kind, just executes a query from time to time and
+shows the results in a data grid.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_094.webp"/></p>
 <ul>
-<li><strong>Chart</strong>: Every time it refreshes, it renders a new complete chart. The old
-set of values is lost. This is most useful for pie charts, but other kind of
+<li><strong>Chart</strong>: Every time it refreshes, it renders a new complete chart. The old
+set of values is lost. This is most useful for pie charts, but other kind of
 charts can be used too.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_095.webp"/></p>
 <ul>
-<li><strong>Timeseries</strong>: Perhaps this is the most useful kind of Monitoring Unit.
-It is a chart that appends a new set of values every time it refreshes. Line or
-bar charts fit best for this type. The last 100 sets of values are kept by the
-component client-side to be viewed by the user.</li>
+<li><strong>Timeseries</strong>: Perhaps this is the most useful kind of Monitoring Unit.
+It is a chart that appends a new set of values every time it refreshes. Line or
+bar charts fit best for this type. The last 100 sets of values are kept by the
+component client-side to be viewed by the user.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_096.webp"/></p>
-<h4>Showing and hiding units in the dashboard</h4>
-<p>If you click in the button <em>Refresh All</em>, then all Monitoring Units will be
-refreshed at once. You can also remove undesired Monitoring Units by clicking in
-the <em>Remove</em> button. Let us go ahead and remove all units from the dashboard,
+<h4>Showing and hiding units in the dashboard</h4>
+<p>If you click in the button <em>Refresh All</em>, then all Monitoring Units will be
+refreshed at once. You can also remove undesired Monitoring Units by clicking in
+the <em>Remove</em> button. Let us go ahead and remove all units from the dashboard,
 making it empty:</p>
 <p><img alt="" src="../assets/img/image_097.webp"/></p>
-<p>The 17 units that come built into OmniDB (PostgreSQL and MySQL server metrics —
+<p>The 17 units that come built into OmniDB (PostgreSQL and MySQL server metrics —
 transaction rate, backends, WAL production, database/table size, and so on) run
-as native code and need nothing extra installed in the database.</p>
+as native code and need nothing extra installed in the database.</p>
 <p><img alt="" src="../assets/img/image_098.webp"/></p>
 <p>Now that our dashboard is empty, let us add some units. Click on the <em>Manage
 Units</em> button.</p>
 <p><img alt="" src="../assets/img/image_099.webp"/></p>
-<p>Click on the green action to add any of the built-in units — e.g. <em>Backends</em> and
-<em>Database Size</em>. Wait for some seconds and you will have a dashboard like this:</p>
+<p>Click on the green action to add any of the built-in units — e.g. <em>Backends</em> and
+<em>Database Size</em>. Wait for some seconds and you will have a dashboard like this:</p>
 <p><img alt="" src="../assets/img/image_100.webp"/></p>
-<p>In a similar way, you can add and remove any unit you want to customize the
-dashboard the way you want.</p>
+<p>In a similar way, you can add and remove any unit you want to customize the
+dashboard the way you want.</p>
 <h4>Writing custom Monitoring Units</h4>
-<p>OmniDB lets you write your own units, or customize existing ones, by writing a
-single SQL query — the same connection and permissions your SQL editor already
-has, just running on a timer instead of on demand. There's no separate scripting
+<p>OmniDB lets you write your own units, or customize existing ones, by writing a
+single SQL query — the same connection and permissions your SQL editor already
+has, just running on a timer instead of on demand. There’s no separate scripting
 language or sandbox to learn.</p>
-<p><strong>Note:</strong> since the query re-runs unattended on a refresh interval, only
-<code>SELECT</code> (or <code>WITH ... SELECT</code>) queries are accepted — a destructive statement
-pasted in by mistake is rejected outright rather than silently firing on a
+<p><strong>Note:</strong> since the query re-runs unattended on a refresh interval, only
+<code>SELECT</code> (or <code>WITH ... SELECT</code>) queries are accepted — a destructive statement
+pasted in by mistake is rejected outright rather than silently firing on a
 timer.</p>
-<p>To create a new Monitoring Unit, click on the <em>Manage Units</em> button in the
-dashboard, then click on the <em>New Unit</em> button. It will open a new kind of inner
-tab with a Name, a Type dropdown, a Refresh Interval, and a single SQL Query
-editor (plus a Chart Type dropdown, shown only for <em>Chart</em> units).</p>
-<p>The query's shape depends on the unit's Type:</p>
+<p>To create a new Monitoring Unit, click on the <em>Manage Units</em> button in the
+dashboard, then click on the <em>New Unit</em> button. It will open a new kind of inner
+tab with a Name, a Type dropdown, a Refresh Interval, and a single SQL Query
+editor (plus a Chart Type dropdown, shown only for <em>Chart</em> units).</p>
+<p>The query’s shape depends on the unit’s Type:</p>
 <ul>
 <li>
-<p><strong>Grid</strong>: no particular shape — whatever columns and rows the query returns
-become the grid directly. For example:</p>
+<p><strong>Grid</strong>: no particular shape — whatever columns and rows the query returns
+become the grid directly. For example:</p>
 <pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
 </li>
 <li>
-<p><strong>Chart</strong>: one row per category — the first column is the label, the
-remaining column(s) are one series each (the column name becomes the series
-name). Pick the Chart Type (bar, pie, doughnut, or line) from the dropdown next
-to the Type selector. For example, a pie chart of database sizes:</p>
+<p><strong>Chart</strong>: one row per category — the first column is the label, the
+remaining column(s) are one series each (the column name becomes the series
+name). Pick the Chart Type (bar, pie, doughnut, or line) from the dropdown next
+to the Type selector. For example, a pie chart of database sizes:</p>
 <pre><code class="language-sql">SELECT datname,
        round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
 FROM pg_catalog.pg_database
@@ -215,19 +215,19 @@ WHERE datname NOT IN ('template0', 'template1')</code></pre>
 </li>
 <li>
 <p><strong>Timeseries</strong>: exactly one row — each numeric column becomes one
-continuously-appended line series, refreshed on the configured interval. For
+continuously-appended line series, refreshed on the configured interval. For
 example, tracking database size over time:</p>
 <pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
 FROM pg_catalog.pg_database
 WHERE NOT datistemplate</code></pre>
 </li>
 </ul>
-<p>Write (or paste) the query into the SQL Query editor, then click the <em>Test</em>
-button to see it rendered in the preview drawing area — you can test
-as many times as you like. Once you're happy with it, give the unit a name, set
-a refresh interval, and hit <em>Save</em>. Close the edit tab and the new unit appears
-in the unit list, ready to add to the dashboard (green action) just like a
-built-in one.</p>
+<p>Write (or paste) the query into the SQL Query editor, then click the <em>Test</em>
+button to see it rendered in the preview drawing area — you can test
+as many times as you like. Once you’re happy with it, give the unit a name, set
+a refresh interval, and hit <em>Save</em>. Close the edit tab and the new unit appears
+in the unit list, ready to add to the dashboard (green action) just like a
+built-in one.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

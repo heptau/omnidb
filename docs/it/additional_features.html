@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Funzionalità aggiuntive - Documentazione OmniDB</title>
+	<title>Funzionalità aggiuntive – Documentazione OmniDB</title>
 	<meta name="description" content="Gli strumenti extra di OmniDB: impostazioni utente, documentazione PostgreSQL contestuale, snippet, gestione dei backend, pannelli proprietà/DDL, esportazione dati e console SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/it/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
@@ -86,108 +86,108 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html" class="active">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Funzionalità aggiuntive</h1>
 		<h4>Impostazioni utente</h4>
-		<p>Sempre nell'angolo in alto a destra, cliccando sull'icona a forma di ingranaggio, OmniDB
-			aprirà il popup <em>Impostazioni utente</em>. È composto da quattro schede:</p>
+		<p>Sempre nell’angolo in alto a destra, cliccando sull’icona a forma di ingranaggio, OmniDB
+			aprirà il popup <em>Impostazioni utente</em>. È composto da quattro schede:</p>
 		<ul>
-			<li><strong>Scorciatoie</strong>: Permette all'utente di modificare le proprie scorciatoie in OmniDB.</li>
-			<li><strong>Opzioni</strong>: Permette all'utente di modificare la dimensione del carattere dell'interfaccia e configurare
-				le opzioni relative al CSV (codifica, delimitatore). Il tema di OmniDB (Chiaro/Scuro) viene determinato automaticamente
-				in base alla preferenza dello schema di colori del sistema operativo.</li>
-			<li><strong>Formattazione</strong>: Configura il modo in cui il formattatore SQL (l'azione <em>Indent SQL</em>) riscrive
-				la query — carattere di indentazione (spazi o tab), dimensione dell'indentazione (2/3/4), stile delle virgole (iniziale/finale), e
+			<li><strong>Scorciatoie</strong>: Permette all’utente di modificare le proprie scorciatoie in OmniDB.</li>
+			<li><strong>Opzioni</strong>: Permette all’utente di modificare la dimensione del carattere dell’interfaccia e configurare
+				le opzioni relative al CSV (codifica, delimitatore). Il tema di OmniDB (Chiaro/Scuro) viene determinato automaticamente
+				in base alla preferenza dello schema di colori del sistema operativo.</li>
+			<li><strong>Formattazione</strong>: Configura il modo in cui il formattatore SQL (l’azione <em>Indent SQL</em>) riscrive
+				la query — carattere di indentazione (spazi o tab), dimensione dell’indentazione (2/3/4), stile delle virgole (iniziale/finale), e
 				maiuscole/minuscole delle parole chiave (mantieni/MAIUSCOLO/minuscolo).</li>
-			<li><strong>Password</strong>: Permette all'utente di cambiare la propria password.</li>
+			<li><strong>Password</strong>: Permette all’utente di cambiare la propria password.</li>
 		</ul>
 		<h4>Guida contestuale</h4>
-		<p>La maggior parte dei nodi dell'albero (generalmente quelli di raggruppamento come <em>Schemas</em> o <em>Tables</em>) offre
-			una guida contestuale. Questa funzionalità è accessibile facendo clic con il tasto destro sul nodo dell'albero.
-			Quando si fa clic sull'opzione <em>Doc: ...</em>, OmniDB apre la pagina specifica della
-			<strong>documentazione online di PostgreSQL</strong> nel browser web (il
-			browser predefinito del sistema nell'app desktop, oppure una nuova scheda quando si esegue come
-			<a href="deploying_omnidb-server.html">OmniDB Server</a> basato su browser). Sceglie
-			inoltre la versione di documentazione corretta per il server PostgreSQL a cui si è
+		<p>La maggior parte dei nodi dell’albero (generalmente quelli di raggruppamento come <em>Schemas</em> o <em>Tables</em>) offre
+			una guida contestuale. Questa funzionalità è accessibile facendo clic con il tasto destro sul nodo dell’albero.
+			Quando si fa clic sull’opzione <em>Doc: …</em>, OmniDB apre la pagina specifica della
+			<strong>documentazione online di PostgreSQL</strong> nel browser web (il
+			browser predefinito del sistema nell’app desktop, oppure una nuova scheda quando si esegue come
+			<a href="deploying_omnidb-server.html">OmniDB Server</a> basato su browser). Sceglie
+			inoltre la versione di documentazione corretta per il server PostgreSQL a cui si è
 			connessi.</p>
 		<p><img alt="" src="../assets/img/image_071.webp" /></p>
 		<h4>Snippet</h4>
-		<p>La <em>finestra di lavoro</em> dispone di una scheda esterna fissa con una funzionalità utile chiamata
-			<em>Snippet</em>. Con questa funzionalità è possibile memorizzare query, istruzioni da riga di comando e
-			qualsiasi altro tipo di testo desiderato. È inoltre possibile organizzare gli snippet in una
-			struttura ad albero di directory a proprio piacimento. Tutte le directory e gli snippet creati vengono
-			memorizzati all'interno del database utente <code>omnidb.db</code> e persistono quando si aggiorna OmniDB.
+		<p>La <em>finestra di lavoro</em> dispone di una scheda esterna fissa con una funzionalità utile chiamata
+			<em>Snippet</em>. Con questa funzionalità è possibile memorizzare query, istruzioni da riga di comando e
+			qualsiasi altro tipo di testo desiderato. È inoltre possibile organizzare gli snippet in una
+			struttura ad albero di directory a proprio piacimento. Tutte le directory e gli snippet creati vengono
+			memorizzati all’interno del database utente <code>omnidb.db</code> e persistono quando si aggiorna OmniDB.
 		</p>
 		<p><img alt="" src="../assets/img/image_127.webp" /></p>
 		<h4>Gestione dei backend</h4>
-		<p>Facendo clic con il tasto destro sul nodo radice dell'albero, spostando poi il puntatore del mouse su
-			<em>Monitoring</em> e infine facendo clic su <em>Backends</em>, l'utente può vedere tutte le attività
-			in corso nel database. Alcune informazioni sono nascoste agli utenti normali; solo i
+		<p>Facendo clic con il tasto destro sul nodo radice dell’albero, spostando poi il puntatore del mouse su
+			<em>Monitoring</em> e infine facendo clic su <em>Backends</em>, l’utente può vedere tutte le attività
+			in corso nel database. Alcune informazioni sono nascoste agli utenti normali; solo i
 			superuser del database possono visualizzarle.
 		</p>
 		<p><img alt="" src="../assets/img/image_174.webp" /></p>
 		<p>Facendo clic sulla <em>X</em> nella colonna <em>Actions</em>, è possibile terminare il
-			backend. Apparirà un popup di conferma.</p>
+			backend. Apparirà un popup di conferma.</p>
 		<p><img alt="" src="../assets/img/image_175.webp" /></p>
-		<h4>Proprietà e DDL</h4>
+		<h4>Proprietà e DDL</h4>
 		<p>Facendo clic sulla maggior parte degli oggetti nella vista ad albero (tabelle, sequenze, viste,
-			ruoli, database, ecc.), l'utente potrà visualizzare un elenco molto completo
-			delle proprietà dell'oggetto.</p>
+			ruoli, database, ecc.), l’utente potrà visualizzare un elenco molto completo
+			delle proprietà dell’oggetto.</p>
 		<p><img alt="" src="../assets/img/image_176.webp" /></p>
-		<p>Nell'altro pannello, chiamato <em>DDL</em>, l'utente potrà visualizzare il codice sorgente SQL DDL
-			che può essere usato per ricreare l'oggetto. L'utente può copiare questo testo e
+		<p>Nell’altro pannello, chiamato <em>DDL</em>, l’utente potrà visualizzare il codice sorgente SQL DDL
+			che può essere usato per ricreare l’oggetto. L’utente può copiare questo testo e
 			incollarlo dove desidera.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
 		<h4>Esportazione dati</h4>
-		<p>La <em>Query Tab</em> offre un modo per salvare i dati dei risultati di una query in un file CSV o
-			XLSX. Dopo aver cliccato sul pulsante <em>Export Data</em>, si avvia un processo in background annullabile
-			che salva i dati nel file. Una volta completato, OmniDB fornisce un link chiamato
-			<em>Save</em>, in modo che l'utente possa scaricare il file.
+		<p>La <em>Query Tab</em> offre un modo per salvare i dati dei risultati di una query in un file CSV o
+			XLSX. Dopo aver cliccato sul pulsante <em>Export Data</em>, si avvia un processo in background annullabile
+			che salva i dati nel file. Una volta completato, OmniDB fornisce un link chiamato
+			<em>Save</em>, in modo che l’utente possa scaricare il file.
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
-		<p>Tutti i file vengono memorizzati in una cartella temporanea all'interno della cartella di OmniDB. OmniDB
-			pulisce regolarmente questa cartella, mantenendo solo i file più recenti di 24 ore.</p>
+		<p>Tutti i file vengono memorizzati in una cartella temporanea all’interno della cartella di OmniDB. OmniDB
+			pulisce regolarmente questa cartella, mantenendo solo i file più recenti di 24 ore.</p>
 		<h4>Cronologia delle query</h4>
-		<p>Dalla <em>Query Tab</em> è possibile fare clic sul pulsante <em>Command History</em> per visualizzare una
-			scheda query completa, sfogliabile e ricercabile.</p>
+		<p>Dalla <em>Query Tab</em> è possibile fare clic sul pulsante <em>Command History</em> per visualizzare una
+			scheda query completa, sfogliabile e ricercabile.</p>
 		<p><img alt="" src="../assets/img/image_203.webp" /></p>
 		<h4>Console SSH</h4>
-		<p>OmniDB offre anche una console SSH completa di tutte le funzionalità.</p>
+		<p>OmniDB offre anche una console SSH completa di tutte le funzionalità.</p>
 		<p><img alt="" src="../assets/img/image_204.webp" /></p>
 		</main>
 	</div>

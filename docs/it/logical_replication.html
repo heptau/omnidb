@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Replica logica - Documentazione OmniDB</title>
+	<title>Replica logica – Documentazione OmniDB</title>
 	<meta name="description" content="Configura la replica logica nativa di PostgreSQL 10+ in OmniDB: crea pubblicazioni e sottoscrizioni tra due nodi e verifica che i dati vengano replicati correttamente.">
 	<link rel="canonical" href="https://www.omnidb.net/it/logical_replication.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/logical_replication.html">
@@ -86,68 +86,68 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html" class="active">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Replica logica</h1>
 <p>PostgreSQL 10 introduce la replica logica nativa, che utilizza un modello
-publish/subscribe: possiamo quindi creare pubblicazioni sul nodo a monte (o
-publisher) e sottoscrizioni sul nodo a valle (o subscriber). Per maggiori
+publish/subscribe: possiamo quindi creare pubblicazioni sul nodo a monte (o
+publisher) e sottoscrizioni sul nodo a valle (o subscriber). Per maggiori
 dettagli, consulta la
 <a href="https://www.postgresql.org/do../static/sql-createpublication.html">documentazione</a>
-<a href="https://www.postgresql.org/do../static/sql-createsubscription.html">di PostgreSQL</a>.</p>
-<p>In questo capitolo utilizzeremo un cluster a 2 nodi per dimostrare la replica
-logica nativa di PostgreSQL 10. Nota che su ciascuna istanza PostgreSQL è
-necessario configurare <code>wal_level = logical</code> e assicurarsi di modificare il
-file <code>pg_hba.conf</code> per concedere l'accesso in <code>replication</code> tra i 2 nodi.</p>
-<h4>Creazione di un ambiente di test</h4>
+<a href="https://www.postgresql.org/do../static/sql-createsubscription.html">di PostgreSQL</a>.</p>
+<p>In questo capitolo utilizzeremo un cluster a 2 nodi per dimostrare la replica
+logica nativa di PostgreSQL 10. Nota che su ciascuna istanza PostgreSQL è
+necessario configurare <code>wal_level = logical</code> e assicurarsi di modificare il
+file <code>pg_hba.conf</code> per concedere l’accesso in <code>replication</code> tra i 2 nodi.</p>
+<h4>Creazione di un ambiente di test</h4>
 <p>Configura due istanze PostgreSQL 10+ nel modo che preferisci (Docker, una
-macchina virtuale o anche due database sulla stessa macchina) e imposta su
+macchina virtuale o anche due database sulla stessa macchina) e imposta su
 ciascuna le configurazioni indicate sopra.</p>
-<h4>Connessione a entrambi i nodi</h4>
-<p>Usiamo OmniDB per connetterci a entrambi i nodi PostgreSQL. Per prima cosa,
-inserisci le informazioni di connessione nella griglia delle connessioni:</p>
+<h4>Connessione a entrambi i nodi</h4>
+<p>Usiamo OmniDB per connetterci a entrambi i nodi PostgreSQL. Per prima cosa,
+inserisci le informazioni di connessione nella griglia delle connessioni:</p>
 <p><img alt="" src="../assets/img/image_117.webp" /></p>
-<p>Seleziona quindi entrambe le connessioni. Nota come OmniDB riconosce di essere
-connesso a PostgreSQL 10 e abilita un nuovo nodo nell'albero della connessione
+<p>Seleziona quindi entrambe le connessioni. Nota come OmniDB riconosce di essere
+connesso a PostgreSQL 10 e abilita un nuovo nodo nell’albero della connessione
 corrente: si chiama <em>Replica logica</em>. Al suo interno troviamo <em>Pubblicazioni</em>
 e <em>Sottoscrizioni</em>.</p>
 <p><img alt="" src="../assets/img/image_118.webp" /></p>
-<h4>Creazione di una tabella di test su entrambi i nodi</h4>
-<p>Su entrambi i nodi, crea una tabella come questa:</p>
+<h4>Creazione di una tabella di test su entrambi i nodi</h4>
+<p>Su entrambi i nodi, crea una tabella come questa:</p>
 <pre><code class="language-sql">CREATE TABLE customers (
  login text PRIMARY KEY,
  full_name text NOT NULL,
@@ -155,50 +155,50 @@ e <em>Sottoscrizioni</em>.</p>
 )
 </code></pre>
 <p><img alt="" src="../assets/img/image_119.webp" /></p>
-<h4>Creazione di una pubblicazione sulla prima macchina</h4>
-<p>All'interno del nodo di connessione, espandi il nodo <em>Replica logica</em>, quindi
-fai clic destro sul nodo <em>Pubblicazioni</em> e scegli l'azione <em>Crea Pubblicazione</em>.
-OmniDB aprirà una scheda con un modello SQL contenente il comando
+<h4>Creazione di una pubblicazione sulla prima macchina</h4>
+<p>All’interno del nodo di connessione, espandi il nodo <em>Replica logica</em>, quindi
+fai clic destro sul nodo <em>Pubblicazioni</em> e scegli l’azione <em>Crea Pubblicazione</em>.
+OmniDB aprirà una scheda con un modello SQL contenente il comando
 <code>CREATE PUBLICATION</code>, pronto perché tu possa apportare le modifiche necessarie
 ed eseguirlo:</p>
 <p><img alt="" src="../assets/img/image_120.webp" /></p>
-<p>Dopo aver modificato ed eseguito il comando, puoi fare di nuovo clic destro sul
-nodo <em>Pubblicazioni</em> e selezionare l'azione <em>Aggiorna</em>. Vedrai che verrà creato
-un nuovo nodo con lo stesso nome assegnato alla pubblicazione. Espandendo
-questo nodo, potrai vedere i dettagli e le tabelle della pubblicazione:</p>
+<p>Dopo aver modificato ed eseguito il comando, puoi fare di nuovo clic destro sul
+nodo <em>Pubblicazioni</em> e selezionare l’azione <em>Aggiorna</em>. Vedrai che verrà creato
+un nuovo nodo con lo stesso nome assegnato alla pubblicazione. Espandendo
+questo nodo, potrai vedere i dettagli e le tabelle della pubblicazione:</p>
 <p><img alt="" src="../assets/img/image_121.webp" /></p>
-<h4>Creazione di una sottoscrizione sulla seconda macchina</h4>
-<p>All'interno del nodo di connessione, espandi il nodo <em>Replica logica</em>, quindi
-fai clic destro sul nodo <em>Sottoscrizioni</em> e scegli l'azione <em>Crea Sottoscrizione</em>.
-OmniDB aprirà una scheda con un modello SQL contenente il comando
+<h4>Creazione di una sottoscrizione sulla seconda macchina</h4>
+<p>All’interno del nodo di connessione, espandi il nodo <em>Replica logica</em>, quindi
+fai clic destro sul nodo <em>Sottoscrizioni</em> e scegli l’azione <em>Crea Sottoscrizione</em>.
+OmniDB aprirà una scheda con un modello SQL contenente il comando
 <code>CREATE SUBSCRIPTION</code>, pronto perché tu possa apportare le modifiche necessarie
 ed eseguirlo:</p>
 <p><img alt="" src="../assets/img/image_122.webp" /></p>
-<p>Dopo aver modificato ed eseguito il comando, puoi fare di nuovo clic destro sul
-nodo <em>Sottoscrizioni</em> e selezionare l'azione <em>Aggiorna</em>. Vedrai che verrà
-creato un nuovo nodo con lo stesso nome assegnato alla sottoscrizione.
-Espandendo questo nodo, potrai vedere i dettagli, le pubblicazioni referenziate
-e le tabelle della sottoscrizione:</p>
+<p>Dopo aver modificato ed eseguito il comando, puoi fare di nuovo clic destro sul
+nodo <em>Sottoscrizioni</em> e selezionare l’azione <em>Aggiorna</em>. Vedrai che verrà
+creato un nuovo nodo con lo stesso nome assegnato alla sottoscrizione.
+Espandendo questo nodo, potrai vedere i dettagli, le pubblicazioni referenziate
+e le tabelle della sottoscrizione:</p>
 <p><img alt="" src="../assets/img/image_123.webp" /></p>
-<p>Inoltre, il comando <code>CREATE SUBSCRIPTION</code> ha creato uno <em>slot di replica
-logica</em> chiamato <code>testsub</code> (con lo stesso nome della sottoscrizione) sulla
+<p>Inoltre, il comando <code>CREATE SUBSCRIPTION</code> ha creato uno <em>slot di replica
+logica</em> chiamato <code>testsub</code> (con lo stesso nome della sottoscrizione) sulla
 prima macchina:</p>
 <p><img alt="" src="../assets/img/image_124.webp" /></p>
 <h4>Verifica della replica logica</h4>
-<p>Per verificare che la replica funzioni, creiamo alcuni dati sul nodo 1. Fai
+<p>Per verificare che la replica funzioni, creiamo alcuni dati sul nodo 1. Fai
 clic destro sulla tabella <code>public.customers</code>, quindi vai su <em>Azioni sui Dati</em>
-e fai clic sull'azione <em>Modifica Dati</em>. In questa griglia puoi aggiungere,
-modificare ed eliminare dati dalla tabella. Aggiungi 2 righe di esempio, così:</p>
+e fai clic sull’azione <em>Modifica Dati</em>. In questa griglia puoi aggiungere,
+modificare ed eliminare dati dalla tabella. Aggiungi 2 righe di esempio, così:</p>
 <p><img alt="" src="../assets/img/image_125.webp" /></p>
-<p>Quindi, sull'altro nodo, verifica che la tabella <code>public.customers</code> sia stata
+<p>Quindi, sull’altro nodo, verifica che la tabella <code>public.customers</code> sia stata
 popolata automaticamente. Fai clic destro sulla tabella <code>public.customers</code>,
-quindi vai su <em>Azioni sui Dati</em> e fai clic sull'azione <em>Interroga Dati</em>:</p>
+quindi vai su <em>Azioni sui Dati</em> e fai clic sull’azione <em>Interroga Dati</em>:</p>
 <p><img alt="" src="../assets/img/image_126.webp" /></p>
 <p>Come possiamo vedere, entrambe le righe create sulla prima macchina sono state
 replicate sulla seconda macchina. Questo ci conferma che la replica logica
 funziona correttamente.</p>
 <p>Ora puoi eseguire altre azioni, come aggiungere/rimuovere tabelle dalla
-pubblicazione o creare una nuova pubblicazione che pubblichi tutte le tabelle.</p>
+pubblicazione o creare una nuova pubblicazione che pubblichi tutte le tabelle.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

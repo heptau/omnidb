@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Écrire des fonctions PL/pgSQL - Documentation OmniDB</title>
+	<title>Écrire des fonctions PL/pgSQL — Documentation OmniDB</title>
 	<meta name="description" content="Écrivez et exécutez des fonctions et procédures PL/pgSQL dans OmniDB : modèles SQL, exécution, et navigation dans l'arborescence de la base de données.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/writing_plpgsql_functions.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_plpgsql_functions.html">
@@ -89,59 +89,59 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
-			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Travailler avec les données</span>
-			<a href="managing_databases.html">Gérer les bases de données</a>
-			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
-			<a href="managing_table_data.html">Gérer les données des tables</a>
-			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
-			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
-			<a href="visualizing_data.html">Visualiser les données</a>
-			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avancé</span>
 			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
-			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
-			<a href="writing_plpgsql_functions.html" class="active">Écrire des fonctions PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html" class="active">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Serveur et outils</span>
+			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
-			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Référence</span>
-			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Écrire des fonctions PL/pgSQL</h1>
+		<h1>Écrire des fonctions PL/pgSQL</h1>
 <h4>Introduction</h4>
-<p>PostgreSQL est bien plus qu'un moteur de SGBDR. C'est une plateforme de développement. Il fournit un langage
-de programmation très puissant et flexible appelé <code>PL/pgSQL</code>. Grâce à ce langage, vous pouvez écrire
-vos propres <em>fonctions définies par l'utilisateur</em> pour atteindre des niveaux d'abstraction et des
-calculs procéduraux qu'il serait difficile d'obtenir avec du SQL pur (et parfois impossible sans changer de
-contexte avec l'application).</p>
+<p>PostgreSQL est bien plus qu’un moteur de SGBDR. C’est une plateforme de développement. Il fournit un langage
+de programmation très puissant et flexible appelé <code>PL/pgSQL</code>. Grâce à ce langage, vous pouvez écrire
+vos propres <em>fonctions définies par l’utilisateur</em> pour atteindre des niveaux d’abstraction et des
+calculs procéduraux qu’il serait difficile d’obtenir avec du SQL pur (et parfois impossible sans changer de
+contexte avec l’application).</p>
 <p><img alt="" src="../assets/img/image_072.webp" /></p>
-<h4>Écrire des fonctions</h4>
-<p>Dans le schéma <code>public</code>, faites un clic droit sur le nœud <code>Functions</code> (Fonctions) et
-cliquez sur <em>Create Function</em> (Créer une fonction). Un onglet interne <em>SQL Query</em> (Requête SQL)
-s'ouvre, contenant déjà un modèle SQL pour vous aider à créer votre première fonction PL/pgSQL.</p>
+<h4>Écrire des fonctions</h4>
+<p>Dans le schéma <code>public</code>, faites un clic droit sur le nœud <code>Functions</code> (Fonctions) et
+cliquez sur <em>Create Function</em> (Créer une fonction). Un onglet interne <em>SQL Query</em> (Requête SQL)
+s’ouvre, contenant déjà un modèle SQL pour vous aider à créer votre première fonction PL/pgSQL.</p>
 <p><img alt="" src="../assets/img/image_073.webp" /></p>
 <p><img alt="" src="../assets/img/image_074.webp" /></p>
-<p>Vous pouvez vous référer à la documentation PostgreSQL pour savoir comment écrire des fonctions définies par
-l'utilisateur. Il suffit de faire un clic droit sur le nœud <em>Functions</em> et de cliquer sur <em>Doc :
-Functions</em> — la page correspondante de la documentation PostgreSQL s'ouvre dans votre navigateur web (le
-navigateur par défaut du système dans l'application de bureau, ou un nouvel onglet lorsqu'elle fonctionne en
-tant qu'<a href="deploying_omnidb-server.html">OmniDB Server</a> accessible depuis un navigateur).</p>
-<p>Pour l'instant, remplaçons entièrement ce modèle SQL par le code source ci-dessous :</p>
+<p>Vous pouvez vous référer à la documentation PostgreSQL pour savoir comment écrire des fonctions définies par
+l’utilisateur. Il suffit de faire un clic droit sur le nœud <em>Functions</em> et de cliquer sur <em>Doc :
+Functions</em> — la page correspondante de la documentation PostgreSQL s’ouvre dans votre navigateur web (le
+navigateur par défaut du système dans l’application de bureau, ou un nouvel onglet lorsqu’elle fonctionne en
+tant qu’<a href="deploying_omnidb-server.html">OmniDB Server</a> accessible depuis un navigateur).</p>
+<p>Pour l’instant, remplaçons entièrement ce modèle SQL par le code source ci-dessous :</p>
 <pre><code class="language-sql">CREATE OR REPLACE FUNCTION public.fnc_count_vowels (p_input text)
 RETURNS integer LANGUAGE plpgsql AS
 $function$
@@ -165,23 +165,23 @@ BEGIN
 END;
 $function$
 </code></pre>
-<p>Cela va créer une fonction appelée <code>fnc_count_vowels</code> dans le schéma <code>public</code>. Cette
-fonction prend un argument texte appelé <code>p_input</code> et compte le nombre de voyelles présentes dans cette
-<em>chaîne de caractères</em>. Elle retourne ensuite ce nombre.</p>
-<p>Pour créer la fonction, exécutez la commande dans l'onglet interne SQL Query. En cas de succès, la fonction
-apparaîtra sous le nœud d'arborescence <em>Functions</em> (vous pouvez l'actualiser par un clic droit puis en
-cliquant sur <em>Refresh</em>). En développant également le nœud de la fonction, vous pouvez voir son type de
-retour et son argument.</p>
+<p>Cela va créer une fonction appelée <code>fnc_count_vowels</code> dans le schéma <code>public</code>. Cette
+fonction prend un argument texte appelé <code>p_input</code> et compte le nombre de voyelles présentes dans cette
+<em>chaîne de caractères</em>. Elle retourne ensuite ce nombre.</p>
+<p>Pour créer la fonction, exécutez la commande dans l’onglet interne SQL Query. En cas de succès, la fonction
+apparaîtra sous le nœud d’arborescence <em>Functions</em> (vous pouvez l’actualiser par un clic droit puis en
+cliquant sur <em>Refresh</em>). En développant également le nœud de la fonction, vous pouvez voir son type de
+retour et son argument.</p>
 <p><img alt="" src="../assets/img/image_075.webp" /></p>
-<p>Exécutons maintenant cette nouvelle fonction pour la première fois. Ouvrez un simple onglet interne SQL Query
-et exécutez la requête SQL suivante :</p>
+<p>Exécutons maintenant cette nouvelle fonction pour la première fois. Ouvrez un simple onglet interne SQL Query
+et exécutez la requête SQL suivante :</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
 <p><img alt="" src="../assets/img/image_076.webp" /></p>
-<p>Remarquez comment la requête retourne une seule valeur, contenant le nombre de voyelles dans le texte.</p>
-<p>En faisant un clic droit sur le nœud de la fonction, vous verrez qu'il existe des actions pour la modifier,
-la sélectionner et la supprimer. Comme vous l'aurez probablement deviné, chaque action ouvrira des onglets
-internes SQL Query avec des modèles SQL pratiques déjà remplis.</p>
+<p>Remarquez comment la requête retourne une seule valeur, contenant le nombre de voyelles dans le texte.</p>
+<p>En faisant un clic droit sur le nœud de la fonction, vous verrez qu’il existe des actions pour la modifier,
+la sélectionner et la supprimer. Comme vous l’aurez probablement deviné, chaque action ouvrira des onglets
+internes SQL Query avec des modèles SQL pratiques déjà remplis.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

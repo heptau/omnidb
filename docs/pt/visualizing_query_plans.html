@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Visualizar Planos de Consulta - Documentação OmniDB</title>
+	<title>Visualizar Planos de Consulta – Documentação OmniDB</title>
 	<meta name="description" content="Visualize a saída de EXPLAIN e EXPLAIN ANALYZE do PostgreSQL no OmniDB como barras de texto coloridas ou diagramas em árvore com zoom, para detetar problemas de desempenho nas consultas.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/visualizing_query_plans.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_query_plans.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html" class="active">Visualizar Planos de Consulta</a>
@@ -110,47 +110,47 @@
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Visualizar Planos de Consulta</h1>
-<p>O OmniDB tem uma funcionalidade muito útil: visualização gráfica de planos de
+<p>O OmniDB tem uma funcionalidade muito útil: visualização gráfica de planos de
 consulta. Isto pode ser muito prático ao escrever ou otimizar consultas, uma vez que
 permite identificar facilmente problemas de desempenho na sua consulta SQL.</p>
-<p>Para esta funcionalidade, o separador interior <em>SQL Query</em> mostra 2 botões: <em>Explain</em> e <em>Explain
+<p>Para esta funcionalidade, o separador interior <em>SQL Query</em> mostra 2 botões: <em>Explain</em> e <em>Explain
 Analyze</em>.</p>
 <h4>Visualização textual</h4>
-<p>Quando clica no botão <em>Explain</em>, o OmniDB executa um comando <code>EXPLAIN</code> na
-sua consulta. A visualização inicial é <em>textual</em> e mostrará exatamente o resultado
-do comando <code>EXPLAIN</code>, mas com barras coloridas representando o custo estimado.
-Quanto maior o custo, mais escura e larga é a barra.</p>
+<p>Quando clica no botão <em>Explain</em>, o OmniDB executa um comando <code>EXPLAIN</code> na
+sua consulta. A visualização inicial é <em>textual</em> e mostrará exatamente o resultado
+do comando <code>EXPLAIN</code>, mas com barras coloridas representando o custo estimado.
+Quanto maior o custo, mais escura e larga é a barra.</p>
 <p><img alt="" src="../assets/img/image_054.webp" /></p>
-<p>Quando clica no botão <em>Explain Analyze</em>, o OmniDB executa um comando <code>EXPLAIN
+<p>Quando clica no botão <em>Explain Analyze</em>, o OmniDB executa um comando <code>EXPLAIN
 ANALYZE</code> na sua consulta. Tenha em atenção que este comando executa realmente a
-consulta. Além disso, a visualização textual mostrará muito mais informação, e os
+consulta. Além disso, a visualização textual mostrará muito mais informação, e os
 custos não são estimados como os fornecidos pelo comando <code>EXPLAIN</code>; são
 custos reais.</p>
 <p><img alt="" src="../assets/img/image_055.webp" /></p>
 <h4>Visualização em árvore</h4>
-<p>Tanto o modo <em>Explain</em> como o <em>Explain Analyze</em> também podem representar graficamente a
+<p>Tanto o modo <em>Explain</em> como o <em>Explain Analyze</em> também podem representar graficamente a
 saída textual num diagrama em <em>árvore</em>. Cada círculo representa um nó executado pelo
-plano de consulta, e quanto maior o círculo, maior o custo.</p>
+plano de consulta, e quanto maior o círculo, maior o custo.</p>
 <p><img alt="" src="../assets/img/image_056.webp" /></p>
-<p>À medida que as consultas se tornam cada vez mais complexas, também o seu plano de consulta pode ser muito
-complexo. Com consultas desse tipo (como a consulta de <em>verificação de bloat</em> que executámos abaixo), a
+<p>À medida que as consultas se tornam cada vez mais complexas, também o seu plano de consulta pode ser muito
+complexo. Com consultas desse tipo (como a consulta de <em>verificação de bloat</em> que executámos abaixo), a
 visualização em árvore pode ser muito interessante:</p>
 <p><img alt="" src="../assets/img/image_057.webp" /></p>
-<p>O componente de visualização de planos de consulta permite alternar facilmente entre a
-visualização textual e as 2 visualizações em árvore, que podem ser ampliadas ou reduzidas com zoom.</p>
+<p>O componente de visualização de planos de consulta permite alternar facilmente entre a
+visualização textual e as 2 visualizações em árvore, que podem ser ampliadas ou reduzidas com zoom.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

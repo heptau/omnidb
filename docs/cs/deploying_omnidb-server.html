@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Nasazení omnidb-server - Dokumentace OmniDB</title>
+	<title>Nasazení omnidb-server – Dokumentace OmniDB</title>
 	<meta name="description" content="Bezpečně nasaďte omnidb-server: parametry příkazové řádky, adresy pro naslouchání a nastavení reverzní proxy s TLS terminací, například Nginx, před server.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
@@ -88,13 +88,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -109,7 +109,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html" class="active">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Konzole</a>
 			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
@@ -117,7 +117,7 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
@@ -145,18 +145,18 @@ Options:
 <li>
 <p><code>-H</code> určuje adresu, na které se má naslouchat. Výchozí hodnota je
 <code>127.0.0.1</code> (pouze loopback) — zadejte <code>0.0.0.0</code>, pokud chcete přijímat
-připojení z jiných počítačů, nebo konkrétní adresu rozhraní.</p>
+připojení z jiných počítačů, nebo konkrétní adresu rozhraní.</p>
 </li>
 <li>
-<p><code>-p</code> určuje port, na kterém se má naslouchat, použitý v URL prohlížeče
-při přímém přístupu k OmniDB. Pokud jej vynecháte, operační systém vybere
-volný port a při spuštění jej vypíše na stderr.</p>
+<p><code>-p</code> určuje port, na kterém se má naslouchat, použitý v URL prohlížeče
+při přímém přístupu k OmniDB. Pokud jej vynecháte, operační systém vybere
+volný port a při spuštění jej vypíše na stderr.</p>
 </li>
 <li>
 <p><code>-d</code> umožňuje zvolit složku, do které se ukládá <code>omnidb.db</code> (databáze
-aplikace) a složka <code>temp</code> používaná pro exportované soubory. Díky této volbě
+aplikace) a složka <code>temp</code> používaná pro exportované soubory. Díky této volbě
 je možné spustit více instancí <code>omnidb-server</code>, každou směřující do jiného
-adresáře — hodí se to při nasazení v Dockeru, kde do dané složky připojíte
+adresáře — hodí se to při nasazení v Dockeru, kde do dané složky připojíte
 svazek (volume).</p>
 </li>
 </ul>
@@ -164,21 +164,21 @@ svazek (volume).</p>
 cokoli jiného než loopback by nikdy neměl být zároveň spuštěn s <code>-A</code>/<code>--app</code>
 — odkaz pro automatické přihlášení do desktopové aplikace, který tento režim
 generuje, má být dostupný pouze lokálně, takže <code>-A</code> vždy vynutí navázání
-pouze na loopback bez ohledu na <code>-H</code>, které v takovém případě zcela
+pouze na loopback bez ohledu na <code>-H</code>, které v takovém případě zcela
 ignoruje, aby se předešlo riziku této kombinace.</p>
-<p>Podívejme se, jak nasadit <code>omnidb-server</code> v různých scénářích:</p>
+<p>Podívejme se, jak nasadit <code>omnidb-server</code> v různých scénářích:</p>
 <h4>Přímé nasazení OmniDB</h4>
 <p>Spuštění <code>omnidb-server</code> s <code>-H 0.0.0.0</code> (nebo konkrétním veřejným
-rozhraním) jej zpřístupní přímo z jiných počítačů — protože ale neexistuje
+rozhraním) jej zpřístupní přímo z jiných počítačů — protože ale neexistuje
 vestavěná podpora TLS, znamená to obyčejné, nešifrované HTTP. To se
 <strong>nedoporučuje</strong> pro nic jiného než důvěryhodnou lokální síť: relační
-cookies a výsledky dotazů by jinak putovaly nešifrovaně. Pro cokoli
+cookies a výsledky dotazů by jinak putovaly nešifrovaně. Pro cokoli
 dostupné ze širšího internetu použijte místo přímého vystavení
-<code>omnidb-server</code> reverzní proxy s terminací TLS (viz níže).</p>
+<code>omnidb-server</code> reverzní proxy s terminací TLS (viz níže).</p>
 <h4>Nasazení OmniDB za reverzní proxy</h4>
 <p>Doporučovaný postup: spusťte <code>omnidb-server</code> naslouchající pouze na
-<code>127.0.0.1</code> (výchozí hodnota, takže <code>-H</code> lze vynechat) a nechte terminaci
-TLS a předávání obyčejného HTTP lokálně obstarat reverzní proxy, například
+<code>127.0.0.1</code> (výchozí hodnota, takže <code>-H</code> lze vynechat) a nechte terminaci
+TLS a předávání obyčejného HTTP lokálně obstarat reverzní proxy, například
 <a href="https://nginx.org" target="_blank" rel="noopener">Nginx</a> nebo
 <a href="https://caddyserver.com" target="_blank" rel="noopener">Caddy</a>.</p>
 <pre><code class="language-bash">./omnidb-server -p 9000

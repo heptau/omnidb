@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Managing Table Data - OmniDB Documentation</title>
+	<title>Managing Table Data – OmniDB Documentation</title>
 	<meta name="description" content="Edit table records directly in OmniDB's spreadsheet-like grid: insert, update and delete rows, edit long text fields, and see errors from failed operations.">
 	<link rel="canonical" href="https://www.omnidb.net/en/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html" class="active">Managing Table Data</a>
@@ -123,37 +123,37 @@
 		</nav>
 		<main>
 		<h1>Managing Table Data</h1>
-<p>The tool allows us to edit records contained in tables through a very simple and
-intuitive interface. Given that only a few DBMS automatically provide a unique
-identifier for table records, we opted to allow data editing and removal only
-for tables that have a primary key. Tables that do not have it can only receive
+<p>The tool allows us to edit records contained in tables through a very simple and
+intuitive interface. Given that only a few DBMS automatically provide a unique
+identifier for table records, we opted to allow data editing and removal only
+for tables that have a primary key. Tables that do not have it can only receive
 new records.</p>
-<p>To access the record editing interface, right click the table node and select
-the action <em>Data Actions &gt; Edit Data</em>:</p>
+<p>To access the record editing interface, right click the table node and select
+the action <em>Data Actions &gt; Edit Data</em>:</p>
 <p><img alt="" src="../assets/img/image_041.webp"/></p>
 <p><img alt="" src="../assets/img/image_042.webp"/></p>
-<p>The interface has a SQL editor where you can filter and order records. To
-prevent that the interface requests too many records, there is a field that
-limits the number of records to be displayed. The records grid has column names
-and data types. Columns that belong to the primary key have a key icon next to
+<p>The interface has a SQL editor where you can filter and order records. To
+prevent that the interface requests too many records, there is a field that
+limits the number of records to be displayed. The records grid has column names
+and data types. Columns that belong to the primary key have a key icon next to
 their names.</p>
-<p>The row of the grid that have the symbol <code>+</code> is the row to add new records. Let
-us insert some records in the table <code>customers</code>:</p>
+<p>The row of the grid that have the symbol <code>+</code> is the row to add new records. Let
+us insert some records in the table <code>customers</code>:</p>
 <p><img alt="" src="../assets/img/image_043.webp"/></p>
-<p>After saving, the records will be inserted and can be edited (only because this
-table has a primary key). Let’s change the <em>cust_name</em> of some of the existing
-records and, at the same time, let's remove one of the rows:</p>
+<p>After saving, the records will be inserted and can be edited (only because this
+table has a primary key). Let’s change the <em>cust_name</em> of some of the existing
+records and, at the same time, let’s remove one of the rows:</p>
 <p><img alt="" src="../assets/img/image_044.webp"/></p>
-<p>Tables can have fields with values represented by very long strings. To help
-edit these fields, OmniDB has an interface that can be accessed by right
-clicking the specific cell:</p>
+<p>Tables can have fields with values represented by very long strings. To help
+edit these fields, OmniDB has an interface that can be accessed by right
+clicking the specific cell:</p>
 <p><img alt="" src="../assets/img/image_045.webp"/></p>
 <p><img alt="" src="../assets/img/image_046.webp"/></p>
-<p>The interface detects errors that may occur during operations related to
-records. To demonstrate, let us insert two records with existing <code>cust_id</code>
+<p>The interface detects errors that may occur during operations related to
+records. To demonstrate, let us insert two records with existing <code>cust_id</code>
 (primary key):</p>
 <p><img alt="" src="../assets/img/image_047.webp"/></p>
-<p>It shows which commands tried to be executed and the respective errors.</p>
+<p>It shows which commands tried to be executed and the respective errors.</p>
 <p>To complete this chapter, let’s add some records to the <em>Address</em> table:</p>
 <p><img alt="" src="../assets/img/image_048.webp"/></p>
 		</main>

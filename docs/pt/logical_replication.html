@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Replicação Lógica - Documentação OmniDB</title>
+	<title>Replicação Lógica – Documentação OmniDB</title>
 	<meta name="description" content="Configure a replicação lógica nativa do PostgreSQL 10+ no OmniDB: crie publicações e subscrições entre dois nós e confirme que os dados são replicados corretamente.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/logical_replication.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/logical_replication.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
@@ -110,39 +110,39 @@
 			<a href="logical_replication.html" class="active">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Replicação Lógica</h1>
-<p>O PostgreSQL 10 introduz a replicação lógica nativa, que usa um
-modelo de publicação/subscrição, permitindo-nos criar publicações no nó a montante (ou
-publicador) e subscrições no nó a jusante (ou subscritor). Para mais detalhes
+<p>O PostgreSQL 10 introduz a replicação lógica nativa, que usa um
+modelo de publicação/subscrição, permitindo-nos criar publicações no nó a montante (ou
+publicador) e subscrições no nó a jusante (ou subscritor). Para mais detalhes
 sobre este tema, consulte a
 <a href="https://www.postgresql.org/do../static/sql-createpublication.html">documentação</a>
 do <a href="https://www.postgresql.org/do../static/sql-createsubscription.html">PostgreSQL</a>.</p>
-<p>Neste capítulo, vamos usar um cluster de 2 nós para demonstrar a replicação lógica
+<p>Neste capítulo, vamos usar um cluster de 2 nós para demonstrar a replicação lógica
 nativa do PostgreSQL 10. Note que, em cada instância do PostgreSQL, precisa de
-configurar <code>wal_level = logical</code> e também certificar-se de que ajusta o ficheiro <code>pg_hba.conf</code>
+configurar <code>wal_level = logical</code> e também certificar-se de que ajusta o ficheiro <code>pg_hba.conf</code>
 para conceder acesso de <code>replication</code> entre os 2 nós.</p>
 <h4>Criar um ambiente de teste</h4>
 <p>Configure duas instâncias PostgreSQL 10+ da forma que preferir (Docker, uma máquina
-virtual, ou até mesmo duas bases de dados na mesma máquina) e configure as definições
+virtual, ou até mesmo duas bases de dados na mesma máquina) e configure as definições
 acima em cada uma.</p>
-<h4>Ligar a ambos os nós</h4>
-<p>Vamos usar o OmniDB para nos ligarmos a ambos os nós PostgreSQL. Antes de mais, preencha
-a informação de ligação na grelha de ligações:</p>
+<h4>Ligar a ambos os nós</h4>
+<p>Vamos usar o OmniDB para nos ligarmos a ambos os nós PostgreSQL. Antes de mais, preencha
+a informação de ligação na grelha de ligações:</p>
 <p><img alt="" src="../assets/img/image_117.webp" /></p>
-<p>Depois selecione ambas as ligações. Repare como o OmniDB percebe que está ligado ao
-PostgreSQL 10 e ativa um novo nó na vista em árvore da ligação atual: chama-se
+<p>Depois selecione ambas as ligações. Repare como o OmniDB percebe que está ligado ao
+PostgreSQL 10 e ativa um novo nó na vista em árvore da ligação atual: chama-se
 <em>Logical Replication</em> (Replicação Lógica). Dentro dele, podemos ver <em>Publications</em> (Publicações) e
 <em>Subscriptions</em> (Subscrições).</p>
 <p><img alt="" src="../assets/img/image_118.webp" /></p>
@@ -156,45 +156,45 @@ PostgreSQL 10 e ativa um novo nó na vista em árvore da ligação atual: chama-
 </code></pre>
 <p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Criar uma publicação na primeira máquina</h4>
-<p>Dentro do nó de ligação, expanda o nó <em>Logical Replication</em>, depois clique com o botão
-direito no nó <em>Publications</em>, e escolha a ação <em>Create Publication</em> (Criar Publicação).
-O OmniDB abrirá um separador de modelo SQL com o comando <code>CREATE PUBLICATION</code> pronto
-para fazer alguns ajustes e executar:</p>
+<p>Dentro do nó de ligação, expanda o nó <em>Logical Replication</em>, depois clique com o botão
+direito no nó <em>Publications</em>, e escolha a ação <em>Create Publication</em> (Criar Publicação).
+O OmniDB abrirá um separador de modelo SQL com o comando <code>CREATE PUBLICATION</code> pronto
+para fazer alguns ajustes e executar:</p>
 <p><img alt="" src="../assets/img/image_120.webp" /></p>
-<p>Depois de ajustar e executar o comando, pode clicar novamente com o botão direito no nó
-<em>Publications</em> e clicar na ação <em>Refresh</em> (Atualizar). Verá que será criado
-um novo nó com o mesmo nome que deu à publicação. Ao expandir este nó,
-verá os detalhes e as tabelas da publicação:</p>
+<p>Depois de ajustar e executar o comando, pode clicar novamente com o botão direito no nó
+<em>Publications</em> e clicar na ação <em>Refresh</em> (Atualizar). Verá que será criado
+um novo nó com o mesmo nome que deu à publicação. Ao expandir este nó,
+verá os detalhes e as tabelas da publicação:</p>
 <p><img alt="" src="../assets/img/image_121.webp" /></p>
 <h4>Criar uma subscrição na segunda máquina</h4>
-<p>Dentro do nó de ligação, expanda o nó <em>Logical Replication</em>, depois clique com o botão
-direito no nó <em>Subscriptions</em>, e escolha a ação <em>Create Subscription</em> (Criar Subscrição).
-O OmniDB abrirá um separador de modelo SQL com o comando <code>CREATE SUBSCRIPTION</code> pronto
-para fazer alguns ajustes e executar:</p>
+<p>Dentro do nó de ligação, expanda o nó <em>Logical Replication</em>, depois clique com o botão
+direito no nó <em>Subscriptions</em>, e escolha a ação <em>Create Subscription</em> (Criar Subscrição).
+O OmniDB abrirá um separador de modelo SQL com o comando <code>CREATE SUBSCRIPTION</code> pronto
+para fazer alguns ajustes e executar:</p>
 <p><img alt="" src="../assets/img/image_122.webp" /></p>
-<p>Depois de ajustar e executar o comando, pode clicar novamente com o botão direito no nó
-<em>Subscriptions</em> e clicar na ação <em>Refresh</em>. Verá que será criado
-um novo nó com o mesmo nome que deu à subscrição. Ao expandir este nó,
-verá os detalhes, as publicações referenciadas e as tabelas da
+<p>Depois de ajustar e executar o comando, pode clicar novamente com o botão direito no nó
+<em>Subscriptions</em> e clicar na ação <em>Refresh</em>. Verá que será criado
+um novo nó com o mesmo nome que deu à subscrição. Ao expandir este nó,
+verá os detalhes, as publicações referenciadas e as tabelas da
 subscrição:</p>
 <p><img alt="" src="../assets/img/image_123.webp" /></p>
-<p>Além disso, o comando <code>CREATE SUBSCRIPTION</code> criou um <em>slot de replicação lógica</em>
-chamado <code>testsub</code> (o mesmo nome da subscrição) na primeira máquina:</p>
+<p>Além disso, o comando <code>CREATE SUBSCRIPTION</code> criou um <em>slot de replicação lógica</em>
+chamado <code>testsub</code> (o mesmo nome da subscrição) na primeira máquina:</p>
 <p><img alt="" src="../assets/img/image_124.webp" /></p>
-<h4>Testar a replicação lógica</h4>
-<p>Para testar se a replicação está a funcionar, vamos criar alguns dados no nó 1. Clique
-com o botão direito na tabela <code>public.customers</code>, depois aponte para <em>Data Actions</em>, depois clique
-na ação <em>Edit Data</em>. Nesta grelha, pode adicionar, editar e remover
+<h4>Testar a replicação lógica</h4>
+<p>Para testar se a replicação está a funcionar, vamos criar alguns dados no nó 1. Clique
+com o botão direito na tabela <code>public.customers</code>, depois aponte para <em>Data Actions</em>, depois clique
+na ação <em>Edit Data</em>. Nesta grelha, pode adicionar, editar e remover
 dados da tabela. Adicione 2 linhas de exemplo, como estas:</p>
 <p><img alt="" src="../assets/img/image_125.webp" /></p>
-<p>Depois, no outro nó, verifique se a tabela <code>public.customers</code> foi automaticamente
-preenchida. Clique com o botão direito na tabela <code>public.customers</code>, depois aponte para <em>Data
+<p>Depois, no outro nó, verifique se a tabela <code>public.customers</code> foi automaticamente
+preenchida. Clique com o botão direito na tabela <code>public.customers</code>, depois aponte para <em>Data
 Actions</em>, depois clique na ação <em>Query Data</em>:</p>
 <p><img alt="" src="../assets/img/image_126.webp" /></p>
 <p>Como podemos ver, ambas as linhas criadas na primeira máquina foram replicadas para a
-segunda máquina. Isto diz-nos que a replicação lógica está a funcionar.</p>
+segunda máquina. Isto diz-nos que a replicação lógica está a funcionar.</p>
 <p>Agora pode realizar outras ações, como adicionar/remover tabelas da
-publicação e criar uma nova publicação que publica todas as tabelas.</p>
+publicação e criar uma nova publicação que publica todas as tabelas.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

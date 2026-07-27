@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Despliegue de omnidb-server - Documentación de OmniDB</title>
+	<title>Despliegue de omnidb-server — Documentación de OmniDB</title>
 	<meta name="description" content="Despliegue omnidb-server de forma segura: opciones de línea de comandos, direcciones de escucha, y cómo colocar delante un proxy inverso con terminación TLS, como Nginx.">
 	<link rel="canonical" href="https://www.omnidb.net/es/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html" class="active">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,16 +119,16 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Despliegue de omnidb-server</h1>
 <p><strong>Nota:</strong> desde la reescritura 3.6.x, <code>omnidb-server</code> es un único binario nativo
 (sin el par independiente de servidor web/servidor de websockets, sin Django/CherryPy/Tornado) que responde
-a cada solicitud por sí mismo a través de un único puerto, usando long-polling en lugar de websockets para
+a cada solicitud por sí mismo a través de un único puerto, usando long-polling en lugar de websockets para
 las actualizaciones de consultas/consola/monitorización en segundo plano. Tampoco existe ya archivo de configuración ni
-soporte TLS integrado — todo se configura mediante opciones de línea de comandos, y cualquier
+soporte TLS integrado — todo se configura mediante opciones de línea de comandos, y cualquier
 terminación TLS debe ser gestionada por un proxy inverso situado delante.</p>
 <h4>Opciones de comando</h4>
 <pre><code class="language-bash">Usage: omnidb-server [options]
@@ -146,17 +146,17 @@ Options:
 <li>
 <p><code>-H</code> especifica la dirección en la que escuchar. Por defecto es <code>127.0.0.1</code>
 (solo loopback) — pase <code>0.0.0.0</code> para aceptar conexiones desde otras máquinas,
-o una dirección de interfaz específica.</p>
+o una dirección de interfaz específica.</p>
 </li>
 <li>
 <p><code>-p</code> especifica el puerto en el que escuchar, usado en la URL del navegador al
-acceder directamente a OmniDB. Si se omite, el sistema operativo elige un puerto libre y lo imprime
+acceder directamente a OmniDB. Si se omite, el sistema operativo elige un puerto libre y lo imprime
 en stderr al iniciar.</p>
 </li>
 <li>
 <p><code>-d</code> permite elegir la carpeta que almacena <code>omnidb.db</code> (la base de datos de la
-aplicación) y la carpeta <code>temp</code> usada para los archivos exportados. Con esta opción es
-posible ejecutar varias instancias de <code>omnidb-server</code>, cada una apuntando a un
+aplicación) y la carpeta <code>temp</code> usada para los archivos exportados. Con esta opción es
+posible ejecutar varias instancias de <code>omnidb-server</code>, cada una apuntando a un
 directorio diferente — útil en despliegues con Docker donde se monta un volumen
 allí.</p>
 </li>
@@ -164,23 +164,23 @@ allí.</p>
 <p><strong>Nota de seguridad:</strong> un servidor iniciado con <code>-H</code> configurado en cualquier valor distinto de
 loopback nunca debería iniciarse también con <code>-A</code>/<code>--app</code> — el enlace de
 inicio de sesión automático de escritorio que genera ese modo solo está pensado para ser accesible localmente, por lo que
-<code>-A</code> siempre fuerza el enlace a loopback independientemente de <code>-H</code>, ignorándolo por completo
-en lugar de arriesgarse a esa combinación.</p>
+<code>-A</code> siempre fuerza el enlace a loopback independientemente de <code>-H</code>, ignorándolo por completo
+en lugar de arriesgarse a esa combinación.</p>
 <p>Veamos cómo desplegar <code>omnidb-server</code> en distintos escenarios:</p>
 <h4>Despliegue directo de OmniDB</h4>
-<p>Ejecutar <code>omnidb-server</code> con <code>-H 0.0.0.0</code> (o una interfaz pública específica) lo hace
+<p>Ejecutar <code>omnidb-server</code> con <code>-H 0.0.0.0</code> (o una interfaz pública específica) lo hace
 directamente accesible desde otras máquinas — pero, dado que no hay soporte TLS integrado, esto
 significa HTTP sin cifrar. Esto <strong>no se recomienda</strong> para
-nada más allá de una red local de confianza: de lo contrario, las cookies de sesión y los resultados de las consultas viajarían
+nada más allá de una red local de confianza: de lo contrario, las cookies de sesión y los resultados de las consultas viajarían
 en claro. Para cualquier caso accesible desde internet en general, coloque delante
 un proxy inverso con terminación TLS (ver más abajo) en lugar de exponer
 <code>omnidb-server</code> directamente.</p>
 <h4>Despliegue de OmniDB detrás de un proxy inverso</h4>
 <p>El enfoque recomendado: ejecute <code>omnidb-server</code> escuchando solo en <code>127.0.0.1</code>
-(el valor predeterminado, por lo que <code>-H</code> puede omitirse) y deje que un proxy inverso como
+(el valor predeterminado, por lo que <code>-H</code> puede omitirse) y deje que un proxy inverso como
 <a href="https://nginx.org" target="_blank" rel="noopener">Nginx</a> o
 <a href="https://caddyserver.com" target="_blank" rel="noopener">Caddy</a> se encargue de
-la terminación TLS y reenvíe HTTP sin cifrar localmente.</p>
+la terminación TLS y reenvíe HTTP sin cifrar localmente.</p>
 <pre><code class="language-bash">./omnidb-server -p 9000
 </code></pre>
 <p>Ejemplo de configuración de Nginx:</p>

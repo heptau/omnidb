@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Administración de datos de tablas - Documentación de OmniDB</title>
+	<title>Administración de datos de tablas — Documentación de OmniDB</title>
 	<meta name="description" content="Edite registros de tablas directamente en la cuadrícula de OmniDB, similar a una hoja de cálculo: inserte, actualice y elimine filas, edite campos de texto largo y vea los errores de las operaciones fallidas.">
 	<link rel="canonical" href="https://www.omnidb.net/es/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html" class="active">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,34 +119,34 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Administración de datos de tablas</h1>
 <p>La herramienta permite editar los registros contenidos en las tablas mediante una interfaz muy sencilla e
 intuitiva. Dado que solo unos pocos SGBD proporcionan automáticamente un identificador
-único para los registros de las tablas, se optó por permitir la edición y eliminación de datos únicamente
+único para los registros de las tablas, se optó por permitir la edición y eliminación de datos únicamente
 para las tablas que tengan una clave primaria. Las tablas que no la tienen solo pueden recibir
 nuevos registros.</p>
-<p>Para acceder a la interfaz de edición de registros, haga clic derecho en el nodo de la tabla y seleccione
+<p>Para acceder a la interfaz de edición de registros, haga clic derecho en el nodo de la tabla y seleccione
 la acción <em>Data Actions &gt; Edit Data</em>:</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>La interfaz tiene un editor SQL donde puede filtrar y ordenar registros. Para
+<p>La interfaz tiene un editor SQL donde puede filtrar y ordenar registros. Para
 evitar que la interfaz solicite demasiados registros, hay un campo que
-limita la cantidad de registros a mostrar. La cuadrícula de registros tiene nombres de columna
-y tipos de datos. Las columnas que pertenecen a la clave primaria tienen un icono de llave junto a
+limita la cantidad de registros a mostrar. La cuadrícula de registros tiene nombres de columna
+y tipos de datos. Las columnas que pertenecen a la clave primaria tienen un icono de llave junto a
 su nombre.</p>
 <p>La fila de la cuadrícula que tiene el símbolo <code>+</code> es la fila para añadir nuevos registros. Vamos
-a insertar algunos registros en la tabla <code>customers</code>:</p>
+a insertar algunos registros en la tabla <code>customers</code>:</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
-<p>Tras guardar, los registros se insertarán y podrán editarse (solo porque esta
+<p>Tras guardar, los registros se insertarán y podrán editarse (solo porque esta
 tabla tiene una clave primaria). Cambiemos el <em>cust_name</em> de algunos de los registros
 existentes y, al mismo tiempo, eliminemos una de las filas:</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
 <p>Las tablas pueden tener campos con valores representados por cadenas muy largas. Para ayudar a
-editar estos campos, OmniDB tiene una interfaz a la que se puede acceder haciendo clic
+editar estos campos, OmniDB tiene una interfaz a la que se puede acceder haciendo clic
 derecho en la celda correspondiente:</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
 <p><img alt="" src="../assets/img/image_046.webp" /></p>
@@ -154,8 +154,8 @@ derecho en la celda correspondiente:</p>
 los registros. Para demostrarlo, insertemos dos registros con un <code>cust_id</code> existente
 (clave primaria):</p>
 <p><img alt="" src="../assets/img/image_047.webp" /></p>
-<p>Muestra qué comandos se intentaron ejecutar y los respectivos errores.</p>
-<p>Para completar este capítulo, añadamos algunos registros a la tabla <em>Address</em>:</p>
+<p>Muestra qué comandos se intentaron ejecutar y los respectivos errores.</p>
+<p>Para completar este capítulo, añadamos algunos registros a la tabla <em>Address</em>:</p>
 <p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>
 	</div>

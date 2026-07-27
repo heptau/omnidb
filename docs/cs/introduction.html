@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Úvod - Dokumentace OmniDB</title>
+	<title>Úvod – Dokumentace OmniDB</title>
 	<meta name="description" content="OmniDB je open-source nástroj pro správu databází pro PostgreSQL, Oracle, MySQL a další, který sjednocuje přístup k různým DBMS v jednom zabezpečeném prostředí dostupném z prohlížeče.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/introduction.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html" class="active">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,71 +118,71 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
 			<h1>Úvod</h1>
-			<p><strong>OmniDB</strong> je open source aplikace dostupná z prohlížeče, navržená pro přístup
-				k mnoha různým systémům pro správu databází (DBMS) a jejich správu, např. PostgreSQL, Oracle a MySQL.
+			<p><strong>OmniDB</strong> je open source aplikace dostupná z prohlížeče, navržená pro přístup
+				k mnoha různým systémům pro správu databází (DBMS) a jejich správu, např. PostgreSQL, Oracle a MySQL.
 				OmniDB může běžet buď jako desktopová aplikace, nebo přes prohlížeč, čímž kombinuje flexibilitu
-				potřebnou pro různé způsoby přístupu s návrhem, který na první místo staví bezpečnost. OmniDB je
-				aktivně vyvíjena, automaticky testována na řadě databází a prohlížečů
-				a je dodávána s kompletní dokumentací.</p>
-			<p>Od raných fází vývoje byla OmniDB navržena jako aplikace dostupná z prohlížeče.
-				Díky tomu běží v jakémkoli prohlížeči, na jakémkoli operačním systému. Může k ní
-				přistupovat několik počítačů a více uživatelů, každý z nich s vlastní
+				potřebnou pro různé způsoby přístupu s návrhem, který na první místo staví bezpečnost. OmniDB je
+				aktivně vyvíjena, automaticky testována na řadě databází a prohlížečů
+				a je dodávána s kompletní dokumentací.</p>
+			<p>Od raných fází vývoje byla OmniDB navržena jako aplikace dostupná z prohlížeče.
+				Díky tomu běží v jakémkoli prohlížeči, na jakémkoli operačním systému. Může k ní
+				přistupovat několik počítačů a více uživatelů, každý z nich s vlastní
 				skupinou připojení. Lze ji také provozovat na libovolném operačním systému,
-				aniž by bylo nutné instalovat jakékoli závislosti. Podrobnosti o instalaci
-				si ukážeme v následujících kapitolách.</p>
+				aniž by bylo nutné instalovat jakékoli závislosti. Podrobnosti o instalaci
+				si ukážeme v následujících kapitolách.</p>
 			<p>Hlavním cílem OmniDB je nabídnout jednotný pracovní prostor se všemi
-				funkcemi potřebnými pro práci s různými DBMS. Nástroje specifické pro konkrétní DBMS
-				nejsou potřeba: v OmniDB se přepínání kontextu mezi různými DBMS provádí
+				funkcemi potřebnými pro práci s různými DBMS. Nástroje specifické pro konkrétní DBMS
+				nejsou potřeba: v OmniDB se přepínání kontextu mezi různými DBMS provádí
 				prostým přepnutím připojení, aniž byste opustili stejnou stránku. Koncový uživatel
-				má pocit, že při práci s různými DBMS není žádný rozdíl,
+				má pocit, že při práci s různými DBMS není žádný rozdíl,
 				jednoduše to působí jako různá připojení.</p>
-			<p>Přesto je OmniDB navržena s důrazem na jednoduchost, jako rychlá a
-				odlehčená aplikace dostupná z prohlížeče. Dlouho běžící operace — dotazy, procedury
-				a monitorování — se vykonávají na pozadí a jejich výsledky se do prohlížeče streamují
-				postupně, jak jsou dokončovány, takže uživatel může nadále pracovat s více databázemi a
-				více servery současně, aniž by ho jakákoli z nich blokovala.</p>
+			<p>Přesto je OmniDB navržena s důrazem na jednoduchost, jako rychlá a
+				odlehčená aplikace dostupná z prohlížeče. Dlouho běžící operace — dotazy, procedury
+				a monitorování — se vykonávají na pozadí a jejich výsledky se do prohlížeče streamují
+				postupně, jak jsou dokončovány, takže uživatel může nadále pracovat s více databázemi a
+				více servery současně, aniž by ho jakákoli z nich blokovala.</p>
 			<p>OmniDB je také bezpečná. Veškerá uživatelská data OmniDB jsou uchovávána zašifrovaná a
-				žádné heslo k databázi se vůbec neukládá. Když se uživatel poprvé připojí k databázi,
-				OmniDB si vyžádá heslo. Toto heslo je zašifrováno a uloženo v paměti
+				žádné heslo k databázi se vůbec neukládá. Když se uživatel poprvé připojí k databázi,
+				OmniDB si vyžádá heslo. Toto heslo je zašifrováno a uloženo v paměti
 				po určitou dobu. Po jejím vypršení si OmniDB vyžádá heslo
-				znovu. To zajišťuje maximální bezpečnost databáze, k níž se OmniDB připojuje.</p>
+				znovu. To zajišťuje maximální bezpečnost databáze, k níž se OmniDB připojuje.</p>
 			<h4>Historie</h4>
-			<p>Tvůrci <strong>OmniDB</strong>, Rafael Thofehrn Castro a William Ivanski, pracovali ve
-				firmě, kde denně potřebovali pracovat s několika různými databázemi
-				zákazníků. Tyto databáze pocházely z různých technologií DBMS, a tak museli
+			<p>Tvůrci <strong>OmniDB</strong>, Rafael Thofehrn Castro a William Ivanski, pracovali ve
+				firmě, kde denně potřebovali pracovat s několika různými databázemi
+				zákazníků. Tyto databáze pocházely z různých technologií DBMS, a tak museli
 				neustále přepínat mezi nástroji pro správu databází (typicky jeden pro
-				každý DBMS). Protože nebyli spokojeni s existujícími nástroji pro jednotnou správu
-				databází (schopnými spravovat různé DBMS), přišli s hlavní myšlenkou OmniDB.</p>
-			<p>První verze <strong>OmniDB</strong> byla představena jako bakalářská závěrečná práce v oboru
-				informatiky na Federální univerzitě v Paraná v Brazílii. Cílem
-				bylo najít společnou linii mezi populárními DBMS a důkladně prostudovat
-				jejich <em>metadata</em>. Výsledkem byl nástroj napsaný v ASP.NET/C#, schopný
-				obecným způsobem se připojit a identifikovat hlavní struktury (tabulky, klíče, indexy
-				a omezení) u několika DBMS:</p>
+				každý DBMS). Protože nebyli spokojeni s existujícími nástroji pro jednotnou správu
+				databází (schopnými spravovat různé DBMS), přišli s hlavní myšlenkou OmniDB.</p>
+			<p>První verze <strong>OmniDB</strong> byla představena jako bakalářská závěrečná práce v oboru
+				informatiky na Federální univerzitě v Paraná v Brazílii. Cílem
+				bylo najít společnou linii mezi populárními DBMS a důkladně prostudovat
+				jejich <em>metadata</em>. Výsledkem byl nástroj napsaný v ASP. NET/C#, schopný
+				obecným způsobem se připojit a identifikovat hlavní struktury (tabulky, klíče, indexy
+				a omezení) u několika DBMS:</p>
 			<ul>
 				<li>Firebird</li>
-				<li>MariaDB / MySQL</li>
+				<li>MariaDB/MySQL</li>
 				<li>Oracle</li>
 				<li>PostgreSQL</li>
 				<li>SQLite</li>
 				<li>Microsoft SQL Server</li>
 			</ul>
 			<p>První verze OmniDB také umožňovala převod mezi všemi DBMS podporovanými
-				nástrojem. Tato funkce byla navržena tak, aby byla uživatelsky přívětivá a vyžadovala
+				nástrojem. Tato funkce byla navržena tak, aby byla uživatelsky přívětivá a vyžadovala
 				jen pár kroků: uživatel musí vybrat zdrojové připojení, struktury, které
-				se mají převést (pouze tabulky a všechny jejich struktury, včetně jejich dat)
-				a cílové připojení.</p>
-			<p>V letech <strong>2025–2026</strong> byl projekt oživen velkými verzemi (3.1.x), zaměřenými na modernizaci
-				kódové základny, zvýšení bezpečnosti a přidání plné podpory moderních operačních systémů, jako je macOS Silicon,
-				spolu s celkovým přepracováním dokumentace. Toto oživení vyvrcholilo úplným přepsáním
-				backendu z Python/Django na Go (3.6.x), díky čemuž byl runtime Pythonu zcela odstraněn a pro každou platformu
-				se nyní dodává jediná nativní binárka. Úplný přehled verzí a co se v průběhu času změnilo najdete v části
-				<a href="legacy_features_and_history.html">Starší funkce a historie</a>.</p>
+				se mají převést (pouze tabulky a všechny jejich struktury, včetně jejich dat)
+				a cílové připojení.</p>
+			<p>V letech <strong>2025–2026</strong> byl projekt oživen velkými verzemi (3.1.x), zaměřenými na modernizaci
+				kódové základny, zvýšení bezpečnosti a přidání plné podpory moderních operačních systémů, jako je macOS Silicon,
+				spolu s celkovým přepracováním dokumentace. Toto oživení vyvrcholilo úplným přepsáním
+				backendu z Python/Django na Go (3.6.x), díky čemuž byl runtime Pythonu zcela odstraněn a pro každou platformu
+				se nyní dodává jediná nativní binárka. Úplný přehled verzí a co se v průběhu času změnilo najdete v části
+				<a href="legacy_features_and_history.html">Starší funkce a historie</a>.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

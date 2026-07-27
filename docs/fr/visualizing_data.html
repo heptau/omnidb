@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Visualiser les données - Documentation OmniDB</title>
+	<title>Visualiser les données — Documentation OmniDB</title>
 	<meta name="description" content="Générez des graphes entité-relation simples ou complets des tables, colonnes et relations de clés étrangères de votre schéma, directement depuis l'arborescence d'OmniDB.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/visualizing_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_data.html">
@@ -89,55 +89,55 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
-			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Travailler avec les données</span>
-			<a href="managing_databases.html">Gérer les bases de données</a>
-			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
-			<a href="managing_table_data.html">Gérer les données des tables</a>
-			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
-			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
-			<a href="visualizing_data.html" class="active">Visualiser les données</a>
-			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html" class="active">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avancé</span>
 			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
-			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Serveur et outils</span>
+			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
-			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Référence</span>
-			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Visualiser les données</h1>
-<p>Cette fonctionnalité affiche un graphe avec des nœuds représentant les tables et des arêtes représentant les
-relations entre tables via les clés étrangères. À l'aide de la souris, l'utilisateur peut zoomer, dézoomer, et
-glisser-déposer les nœuds pour modifier leur position.</p>
-<p>Il existe deux types de graphes : <em>Simple Graph</em> (Graphe simple) et <em>Complete Graph</em> (Graphe
+		<h1>Visualiser les données</h1>
+<p>Cette fonctionnalité affiche un graphe avec des nœuds représentant les tables et des arêtes représentant les
+relations entre tables via les clés étrangères. À l’aide de la souris, l’utilisateur peut zoomer, dézoomer, et
+glisser-déposer les nœuds pour modifier leur position.</p>
+<p>Il existe deux types de graphes : <em>Simple Graph</em> (Graphe simple) et <em>Complete Graph</em> (Graphe
 complet).</p>
 <h4>Graphe simple</h4>
-<p>Celui-ci affiche des nœuds de table simples et leurs relations. Pour y accéder, faites simplement un clic
-droit sur le nœud de schéma souhaité dans l'arborescence, puis sélectionnez l'action <em>Render Graph &gt;
-Simple Graph</em> (Générer un graphe &gt; Graphe simple) :</p>
+<p>Celui-ci affiche des nœuds de table simples et leurs relations. Pour y accéder, faites simplement un clic
+droit sur le nœud de schéma souhaité dans l’arborescence, puis sélectionnez l’action <em>Render Graph &gt ;
+Simple Graph</em> (Générer un graphe &gt ; Graphe simple) :</p>
 <p><img alt="" src="../assets/img/image_058.webp" /></p>
 <p><img alt="" src="../assets/img/image_059.webp" /></p>
 <h4>Graphe complet</h4>
-<p>Ce graphe affiche les tables avec toutes leurs colonnes et les types de données correspondants. Pour y
-accéder, faites simplement un clic droit sur le schéma souhaité dans l'arborescence, puis sélectionnez l'action
-<em>Render Graph &gt; Complete Graph</em> (Générer un graphe &gt; Graphe complet) :</p>
+<p>Ce graphe affiche les tables avec toutes leurs colonnes et les types de données correspondants. Pour y
+accéder, faites simplement un clic droit sur le schéma souhaité dans l’arborescence, puis sélectionnez l’action
+<em>Render Graph &gt ; Complete Graph</em> (Générer un graphe &gt ; Graphe complet) :</p>
 <p><img alt="" src="../assets/img/image_060.webp" /></p>
 <p><img alt="" src="../assets/img/image_061.webp" /></p>
 		</main>

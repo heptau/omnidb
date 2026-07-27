@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Installation - OmniDB Documentation</title>
+	<title>Installation – OmniDB Documentation</title>
 	<meta name="description" content="Install OmniDB as a desktop app or server package on macOS, Linux or Windows, connect to Oracle with no extra client software, and find the user database file.">
 	<link rel="canonical" href="https://www.omnidb.net/en/installation.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/installation.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,22 +123,22 @@
 		</nav>
 		<main>
 		<h1>Installation</h1>
-		<p>OmniDB provides 2 kinds of packages to fit every user needs:</p>
+		<p>OmniDB provides 2 kinds of packages to fit every user needs:</p>
 		<ul>
-			<li><strong>OmniDB Application</strong>: Runs a web server on a random port behind, and
-				provides a simplified web browser window to use OmniDB interface without any
-				additional setup. Just feels like a desktop application.</li>
-			<li><strong>OmniDB Server</strong>: Runs a web server on a random port, or a port specified by
-				the user. User needs to connect to it through a web browser. Provides user
-				management, ideal to be hosted on a server on users' networks.</li>
+			<li><strong>OmniDB Application</strong>: Runs a web server on a random port behind, and
+				provides a simplified web browser window to use OmniDB interface without any
+				additional setup. Just feels like a desktop application.</li>
+			<li><strong>OmniDB Server</strong>: Runs a web server on a random port, or a port specified by
+				the user. User needs to connect to it through a web browser. Provides user
+				management, ideal to be hosted on a server on users’ networks.</li>
 		</ul>
-		<p>Both application and server can be installed on the same machine.</p>
+		<p>Both application and server can be installed on the same machine.</p>
 
 		<h3>OmniDB Application</h3>
 
-		<p><strong>Important:</strong> The original repository <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> contains only old versions (up to ~2020) and is no longer maintained — see <a href="legacy_features_and_history.html">Legacy Features &amp; History</a> for what changed since.</p>
+		<p><strong>Important:</strong> The original repository <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> contains only old versions (up to ~2020) and is no longer maintained — see <a href="legacy_features_and_history.html">Legacy Features &amp; History</a> for what changed since.</p>
 
-		<p>For current versions use the revived project's <a href="https://github.com/heptau/omnidb/releases">releases page</a>. Since the Go rewrite, every release is a single self-contained archive per platform — no installer, no separate runtime to install first:</p>
+		<p>For current versions use the revived project’s <a href="https://github.com/heptau/omnidb/releases">releases page</a>. Since the Go rewrite, every release is a single self-contained archive per platform — no installer, no separate runtime to install first:</p>
 
 		<ul>
 			<li>macOS (Apple Silicon or Intel): <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
@@ -146,71 +146,71 @@
 			<li>Windows x64: <code>OmniDB-&lt;version&gt;-win-x64.zip</code></li>
 		</ul>
 
-		<p>Unzip (or untar) the archive for your platform and run the <code>OmniDB</code> app/binary inside — that's the whole install. <strong>Linux and Windows builds are produced by CI for every release but haven't yet been verified on real hardware</strong>, unlike the macOS build; if you hit a platform-specific issue on one of those, please open an issue.</p>
+		<p>Unzip (or untar) the archive for your platform and run the <code>OmniDB</code> app/binary inside — that’s the whole install. <strong>Linux and Windows builds are produced by CI for every release but haven’t yet been verified on real hardware</strong>, unlike the macOS build; if you hit a platform-specific issue on one of those, please open an issue.</p>
 
 		<h4>Installation via Homebrew (macOS only – recommended)</h4>
 
-		<p>For macOS users who prefer using a package manager, OmniDB is available through a custom Homebrew tap:</p>
+		<p>For macOS users who prefer using a package manager, OmniDB is available through a custom Homebrew tap:</p>
 
 		<pre><code class="language-bash"># Install the latest version:
 brew install --cask heptau/tap/omnidb</code></pre>
 		<pre><code class="language-bash"># To upgrade later:
 brew upgrade heptau/tap/omnidb</code></pre>
 
-		<p>Homebrew will automatically download the correct ZIP for your architecture (Apple Silicon or Intel), unzip it and place <code>OmniDB.app</code> into your Applications folder.</p>
+		<p>Homebrew will automatically download the correct ZIP for your architecture (Apple Silicon or Intel), unzip it and place <code>OmniDB.app</code> into your Applications folder.</p>
 
-		<p>The cask definition is maintained here: <a href="https://github.com/heptau/homebrew-tap/blob/main/Casks/omnidb.rb">heptau/homebrew-tap – omnidb.rb</a></p>
+		<p>The cask definition is maintained here: <a href="https://github.com/heptau/homebrew-tap/blob/main/Casks/omnidb.rb">heptau/homebrew-tap – omnidb.rb</a></p>
 
 		<h4>Direct download (all platforms)</h4>
 
-		<p>Open the <a href="https://github.com/heptau/omnidb/releases/latest">latest release</a> and download the archive matching your OS/architecture from the list above, from its Assets section. Release asset filenames include the version number, so there's no fixed "always latest" URL to link to directly — always go through the releases page itself.</p>
+		<p>Open the <a href="https://github.com/heptau/omnidb/releases/latest">latest release</a> and download the archive matching your OS/architecture from the list above, from its Assets section. Release asset filenames include the version number, so there’s no fixed “always latest” URL to link to directly — always go through the releases page itself.</p>
 
-		<p>Unzip the archive for your platform and launch the app the normal way: on
+		<p>Unzip the archive for your platform and launch the app the normal way: on
 			macOS, drag <code>OmniDB.app</code> into <em>Applications</em> and open it from
 			Launchpad/Spotlight or <code>open -a OmniDB</code>; on Linux, run the
 			<code>OmniDB</code> binary directly; on Windows, run <code>OmniDB.exe</code>.
 		</p>
 
 		<h3>OmniDB Server</h3>
-		<p>The same release archive also contains <code>omnidb-server</code> — a
-			separate, headless binary alongside the desktop app (the desktop app actually
-			launches this same binary internally, as a child process, forcing app mode).
-			Run it directly for the browser-accessible server mode, with no desktop shell
+		<p>The same release archive also contains <code>omnidb-server</code> — a
+			separate, headless binary alongside the desktop app (the desktop app actually
+			launches this same binary internally, as a child process, forcing app mode).
+			Run it directly for the browser-accessible server mode, with no desktop shell
 			involved:</p>
 		<pre><code class="language-bash">user@machine:~$ ./omnidb-server
 omnidb-server: listening on 127.0.0.1:52149 — open http://127.0.0.1:52149/omnidb_login/ in your browser
 </code></pre>
-		<p>By default OmniDB listens on <code>127.0.0.1</code> only and picks a free port
+		<p>By default OmniDB listens on <code>127.0.0.1</code> only and picks a free port
 			automatically. You can specify both explicitly:</p>
 		<pre><code class="language-bash">user@machine:~$ ./omnidb-server -p 8080 -H 0.0.0.0
 omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_login/ in your browser
 </code></pre>
-		<p>See <a href="deploying_omnidb-server.html">Deploying omnidb-server</a> for the full set of options
-			and recommended deployment setups (in particular, why exposing <code>-H 0.0.0.0</code>
-			directly to the internet without a reverse proxy in front is discouraged — there's
-			no built-in TLS support).</p>
+		<p>See <a href="deploying_omnidb-server.html">Deploying omnidb-server</a> for the full set of options
+			and recommended deployment setups (in particular, why exposing <code>-H 0.0.0.0</code>
+			directly to the internet without a reverse proxy in front is discouraged — there’s
+			no built-in TLS support).</p>
 
-		<h3>OmniDB with Oracle</h3>
+		<h3>OmniDB with Oracle</h3>
 		<p>Neither OmniDB app nor server require any additional software to connect to
 			Oracle — unlike previous releases, no separate Oracle Instant Client installation
-			is needed. Oracle connectivity is implemented natively (a pure Go driver), so it
-			works the same way out of the box as every other supported database.</p>
+			is needed. Oracle connectivity is implemented natively (a pure Go driver), so it
+			works the same way out of the box as every other supported database.</p>
 		<h3>OmniDB User Database</h3>
-		<p>Upon first run, both server and app create a file
-			<code>~/.omnidb/omnidb-app/omnidb.db</code> (for OmniDB app) or
-			<code>~/.omnidb/omnidb-server/omnidb.db</code> (for OmniDB server) in the user home
-			directory, if it does not exist yet — along with a default <code>admin</code>/<code>admin</code>
-			superuser account, ready to sign in with immediately. This file is also called the
+		<p>Upon first run, both server and app create a file
+			<code>~/.omnidb/omnidb-app/omnidb.db</code> (for OmniDB app) or
+			<code>~/.omnidb/omnidb-server/omnidb.db</code> (for OmniDB server) in the user home
+			directory, if it does not exist yet — along with a default <code>admin</code>/<code>admin</code>
+			superuser account, ready to sign in with immediately. This file is also called the
 			<strong>user database</strong> and contains all users, connections, and other application
-			data. If it already exists (e.g. after an upgrade), OmniDB uses it as-is — it is
+			data. If it already exists (e.g. after an upgrade), OmniDB uses it as-is — it is
 			never overwritten or reset automatically.</p>
-		<h3>OmniDB in the browser</h3>
-		<p>Now that the web server is running, you may access OmniDB browser-based app on
-			your favorite browser. Type in address bar: <code>localhost:8000</code> and hit <code>Enter</code>. If
-			everything went fine, you shall see a page like this:</p>
+		<h3>OmniDB in the browser</h3>
+		<p>Now that the web server is running, you may access OmniDB browser-based app on
+			your favorite browser. Type in address bar: <code>localhost:8000</code> and hit <code>Enter</code>. If
+			everything went fine, you shall see a page like this:</p>
 		<p><img alt="" src="../assets/img/image_002.webp"/></p>
-		<p>Now you know that OmniDB is running correctly. In the next chapters, we will see
-			how to login for the first time, how to create an user and to utilize OmniDB.</p>
+		<p>Now you know that OmniDB is running correctly. In the next chapters, we will see
+			how to login for the first time, how to create an user and to utilize OmniDB.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

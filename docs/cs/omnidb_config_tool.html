@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Konfigurační nástroj OmniDB - Dokumentace OmniDB</title>
+	<title>Konfigurační nástroj OmniDB – Dokumentace OmniDB</title>
 	<meta name="description" content="Ruční obdoby zrušeného CLI nástroje omnidb-config: nalezení domovského adresáře, vyčištění (vacuum) SQLite databáze, její reset a mazání dočasných souborů.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,44 +118,44 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Konfigurační nástroj OmniDB</h1>
 <p><strong>Poznámka:</strong> samostatný nástroj příkazové řádky <code>omnidb-config</code>/
 <code>omnidb-config-app</code>/<code>omnidb-config-server</code> popsaný na této stránce patřil k
-předchozí sestavě založené na Pythonu/Django a není součástí aktuálního
+předchozí sestavě založené na Pythonu/Django a není součástí aktuálního
 vydání. Jediný binární soubor <code>omnidb-server</code> přijímá pouze přepínače
 <code>-A</code>/<code>--app</code> (režim desktopové aplikace) a <code>-d</code>/<code>--homedir</code> (výběr
-domovského adresáře), popsané v kapitole <a href="installation.html">Instalace</a>.
-Údržbové úkony, které starý nástroj nabízel, lze i nadále provést ručně, jak
+domovského adresáře), popsané v kapitole <a href="installation.html">Instalace</a>.
+Údržbové úkony, které starý nástroj nabízel, lze i nadále provést ručně, jak
 je popsáno níže.</p>
 <h4>Domovský adresář</h4>
 <p>OmniDB ukládá úplně vše — databázi <code>omnidb.db</code> (uživatelé, připojení a
-další data aplikace) a složku <code>temp</code> pro exportované soubory — do jediného
+další data aplikace) a složku <code>temp</code> pro exportované soubory — do jediného
 domovského adresáře. Ve výchozím nastavení je jím <code>~/.omnidb/omnidb-app</code>
 (desktopový režim) nebo <code>~/.omnidb/omnidb-server</code> (serverový režim); pomocí
 přepínače <code>-d /nejaka/cesta</code> můžete zvolit jiný.</p>
 <h4>Vytvoření uživatele</h4>
-<p>V současnosti neexistuje možnost příkazové řádky pro vytvoření uživatele bez
+<p>V současnosti neexistuje možnost příkazové řádky pro vytvoření uživatele bez
 otevření OmniDB. Při prvním spuštění proti prázdnému domovskému adresáři
 OmniDB automaticky vytvoří výchozího superuživatele <code>admin</code>/<code>admin</code> —
-přihlaste se s ním a další uživatele vytvořte na obrazovce <em>Users</em>
+přihlaste se s ním a další uživatele vytvořte na obrazovce <em>Users</em>
 (Uživatelé), případně změňte výchozí heslo.</p>
 <h4>Vacuum (vyčištění)</h4>
 <p>OmniDB má jedinou databázi SQLite, <code>omnidb.db</code>, ve které ukládá všechny
-uživatele, připojení a další data související s OmniDB. Protože jde o obyčejný
+uživatele, připojení a další data související s OmniDB. Protože jde o obyčejný
 soubor SQLite, můžete jej vyčistit (vacuum) libovolným klientem SQLite, když
 OmniDB neběží, například takto:</p>
 <pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
 </code></pre>
 <h4>Reset databáze</h4>
-<p>Pokud chcete vymazat všechny informace OmniDB a získat čistou databázi, jako
-byla hned po instalaci, ukončete OmniDB a smažte (nebo přesuňte jinam) soubor
-<code>omnidb.db</code> z domovského adresáře. Nový, prázdný soubor — s čerstvým výchozím
+<p>Pokud chcete vymazat všechny informace OmniDB a získat čistou databázi, jako
+byla hned po instalaci, ukončete OmniDB a smažte (nebo přesuňte jinam) soubor
+<code>omnidb.db</code> z domovského adresáře. Nový, prázdný soubor — s čerstvým výchozím
 uživatelem <code>admin</code>/<code>admin</code> — se automaticky vytvoří při příštím spuštění
-OmniDB. Postupujte s rozvahou: tento krok nelze vrátit zpět.</p>
+OmniDB. Postupujte s rozvahou: tento krok nelze vrátit zpět.</p>
 <h4>Mazání dočasných souborů</h4>
 <p>Exportované výsledky dotazů (CSV/XLSX apod.) se zapisují do složky <code>temp</code>
 uvnitř domovského adresáře. Její obsah je bezpečné kdykoli ručně smazat, pokud

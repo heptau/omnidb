@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Visualizzazione dei piani di query - Documentazione OmniDB</title>
+	<title>Visualizzazione dei piani di query – Documentazione OmniDB</title>
 	<meta name="description" content="Visualizza l'output di PostgreSQL EXPLAIN ed EXPLAIN ANALYZE in OmniDB come barre testuali colorate o diagrammi ad albero ingrandibili per individuare i colli di bottiglia delle prestazioni delle query.">
 	<link rel="canonical" href="https://www.omnidb.net/it/visualizing_query_plans.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_query_plans.html">
@@ -86,76 +86,76 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html" class="active">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html" class="active">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Visualizzazione dei piani di query</h1>
+		<h1>Visualizzazione dei piani di query</h1>
 <p>OmniDB ha una funzionalità molto utile: la visualizzazione grafica del piano
-di query. Questo può tornare comodo quando si scrivono o si ottimizzano le
-query, poiché permette di identificare facilmente i colli di bottiglia delle
+di query. Questo può tornare comodo quando si scrivono o si ottimizzano le
+query, poiché permette di identificare facilmente i colli di bottiglia delle
 prestazioni nella tua query SQL.</p>
-<p>Per questa funzionalità, la scheda interna <em>Query SQL</em> mostra 2 pulsanti:
+<p>Per questa funzionalità, la scheda interna <em>Query SQL</em> mostra 2 pulsanti:
 <em>Spiega</em> e <em>Spiega ed Esegui</em>.</p>
 <h4>Visualizzazione testuale</h4>
 <p>Quando fai clic sul pulsante <em>Spiega</em>, OmniDB eseguirà un comando <code>EXPLAIN</code>
-sulla tua query. La visualizzazione iniziale è <em>testuale</em> e mostrerà
-esattamente l'output del comando <code>EXPLAIN</code>, ma con barre colorate che
-rappresentano il costo stimato. Più alto è il costo, più scura e larga sarà
+sulla tua query. La visualizzazione iniziale è <em>testuale</em> e mostrerà
+esattamente l’output del comando <code>EXPLAIN</code>, ma con barre colorate che
+rappresentano il costo stimato. Più alto è il costo, più scura e larga sarà
 la barra.</p>
 <p><img alt="" src="../assets/img/image_054.webp" /></p>
 <p>Quando fai clic sul pulsante <em>Spiega ed Esegui</em>, OmniDB eseguirà un comando
 <code>EXPLAIN ANALYZE</code> sulla tua query. Attenzione: questo comando eseguirà
 effettivamente la query. Inoltre, la visualizzazione testuale mostrerà molte
-più informazioni, e i costi non saranno stimati come quelli forniti dal
+più informazioni, e i costi non saranno stimati come quelli forniti dal
 comando <code>EXPLAIN</code>, ma reali.</p>
 <p><img alt="" src="../assets/img/image_055.webp" /></p>
 <h4>Visualizzazione ad albero</h4>
 <p>Sia la modalità <em>Spiega</em> che <em>Spiega ed Esegui</em> possono anche rappresentare
-graficamente l'output testuale in un diagramma ad <em>albero</em>. Ogni cerchio
-rappresenta un nodo eseguito dal piano di query, e più grande è il cerchio,
+graficamente l’output testuale in un diagramma ad <em>albero</em>. Ogni cerchio
+rappresenta un nodo eseguito dal piano di query, e più grande è il cerchio,
 più alto è il costo.</p>
 <p><img alt="" src="../assets/img/image_056.webp" /></p>
-<p>Quando le query diventano sempre più complesse, anche il loro piano di query
-può diventare molto complesso. Con query di questo tipo (come la query di
+<p>Quando le query diventano sempre più complesse, anche il loro piano di query
+può diventare molto complesso. Con query di questo tipo (come la query di
 <em>controllo del bloat</em> che abbiamo eseguito qui sotto) la visualizzazione ad
 albero può risultare molto interessante:</p>
 <p><img alt="" src="../assets/img/image_057.webp" /></p>
-<p>Il componente di visualizzazione del piano di query ti permette di passare
-facilmente tra la visualizzazione testuale e le 2 visualizzazioni ad albero,
-che possono essere ingrandite e rimpicciolite.</p>
+<p>Il componente di visualizzazione del piano di query ti permette di passare
+facilmente tra la visualizzazione testuale e le 2 visualizzazioni ad albero,
+che possono essere ingrandite e rimpicciolite.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

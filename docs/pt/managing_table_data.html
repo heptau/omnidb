@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Gerir Dados de Tabelas - Documentação OmniDB</title>
+	<title>Gerir Dados de Tabelas – Documentação OmniDB</title>
 	<meta name="description" content="Edite registos de tabelas diretamente na grelha do OmniDB semelhante a uma folha de cálculo: insira, atualize e elimine linhas, edite campos de texto longos, e veja erros de operações falhadas.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html" class="active">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
@@ -110,50 +110,50 @@
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Gerir Dados de Tabelas</h1>
-<p>A ferramenta permite-nos editar registos contidos em tabelas através de uma interface muito simples e
+<p>A ferramenta permite-nos editar registos contidos em tabelas através de uma interface muito simples e
 intuitiva. Dado que apenas alguns SGBD fornecem automaticamente um identificador único
-para os registos de tabelas, optámos por permitir a edição e remoção de dados apenas
-em tabelas que tenham uma chave primária. As tabelas que não a têm só podem receber
+para os registos de tabelas, optámos por permitir a edição e remoção de dados apenas
+em tabelas que tenham uma chave primária. As tabelas que não a têm só podem receber
 novos registos.</p>
-<p>Para aceder à interface de edição de registos, clique com o botão direito no nó da tabela e selecione
-a ação <em>Data Actions &gt; Edit Data</em> (Ações de Dados &gt; Editar Dados):</p>
+<p>Para aceder à interface de edição de registos, clique com o botão direito no nó da tabela e selecione
+a ação <em>Data Actions &gt; Edit Data</em> (Ações de Dados &gt; Editar Dados):</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>A interface tem um editor SQL onde pode filtrar e ordenar registos. Para
-evitar que a interface solicite demasiados registos, existe um campo que
-limita o número de registos a apresentar. A grelha de registos tem nomes de colunas e
+<p>A interface tem um editor SQL onde pode filtrar e ordenar registos. Para
+evitar que a interface solicite demasiados registos, existe um campo que
+limita o número de registos a apresentar. A grelha de registos tem nomes de colunas e
 tipos de dados. As colunas que pertencem à chave primária têm um ícone de chave junto ao
 seu nome.</p>
-<p>A linha da grelha que tem o símbolo <code>+</code> é a linha para adicionar novos registos.
+<p>A linha da grelha que tem o símbolo <code>+</code> é a linha para adicionar novos registos.
 Vamos inserir alguns registos na tabela <code>customers</code>:</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
-<p>Depois de guardar, os registos serão inseridos e podem ser editados (apenas porque esta
+<p>Depois de guardar, os registos serão inseridos e podem ser editados (apenas porque esta
 tabela tem uma chave primária). Vamos alterar o <em>cust_name</em> de alguns dos registos
 existentes e, ao mesmo tempo, vamos remover uma das linhas:</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
 <p>As tabelas podem ter campos com valores representados por cadeias de texto muito longas. Para ajudar a
-editar estes campos, o OmniDB tem uma interface que pode ser acedida clicando com o botão direito
+editar estes campos, o OmniDB tem uma interface que pode ser acedida clicando com o botão direito
 na célula específica:</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
 <p><img alt="" src="../assets/img/image_046.webp" /></p>
-<p>A interface deteta erros que possam ocorrer durante operações relacionadas com
-registos. Para demonstrar, vamos inserir dois registos com o mesmo <code>cust_id</code>
+<p>A interface deteta erros que possam ocorrer durante operações relacionadas com
+registos. Para demonstrar, vamos inserir dois registos com o mesmo <code>cust_id</code>
 existente (chave primária):</p>
 <p><img alt="" src="../assets/img/image_047.webp" /></p>
-<p>Mostra quais os comandos que se tentou executar e os respetivos erros.</p>
+<p>Mostra quais os comandos que se tentou executar e os respetivos erros.</p>
 <p>Para concluir este capítulo, vamos adicionar alguns registos à tabela <em>Address</em>:</p>
 <p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>

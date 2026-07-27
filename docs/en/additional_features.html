@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Additional Features - OmniDB Documentation</title>
+	<title>Additional Features – OmniDB Documentation</title>
 	<meta name="description" content="OmniDB's extra tools: user settings, contextual PostgreSQL documentation, snippets, backend management, properties/DDL panels, data export and SSH console.">
 	<link rel="canonical" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -124,70 +124,70 @@
 		<main>
 		<h1>Additional Features</h1>
 		<h4>User Settings</h4>
-		<p>Also in the upper right corner, by clicking in the gear-like icon, OmniDB will
-			open the <em>User Settings</em> pop-up. It is composed of four tabs:</p>
+		<p>Also in the upper right corner, by clicking in the gear-like icon, OmniDB will
+			open the <em>User Settings</em> pop-up. It is composed of four tabs:</p>
 		<ul>
-			<li><strong>Shortcuts</strong>: Allows the user to change its shortcuts in OmniDB.</li>
-			<li><strong>Options</strong>: Allows the user to change the font size of the interface and configure
-				CSV related options (encoding, delimiter). The OmniDB theme (Light/Dark) is automatically determined by
-				your operating system's color scheme preference.</li>
-			<li><strong>Formatting</strong>: Configures how the SQL formatter (the <em>Indent SQL</em> action) rewrites
+			<li><strong>Shortcuts</strong>: Allows the user to change its shortcuts in OmniDB.</li>
+			<li><strong>Options</strong>: Allows the user to change the font size of the interface and configure
+				CSV related options (encoding, delimiter). The OmniDB theme (Light/Dark) is automatically determined by
+				your operating system’s color scheme preference.</li>
+			<li><strong>Formatting</strong>: Configures how the SQL formatter (the <em>Indent SQL</em> action) rewrites
 				your query — indent character (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and
 				keyword case (preserve/UPPERCASE/lowercase).</li>
-			<li><strong>Password</strong>: Allows the user to change its password.</li>
+			<li><strong>Password</strong>: Allows the user to change its password.</li>
 		</ul>
 		<h4>Contextual Help</h4>
-		<p>Most of tree nodes (generally grouping ones like <em>Schemas</em> or <em>Tables</em>) offer
-			contextual help. This feature can be accessed by right-clicking the tree node.
-			When you click the <em>Doc: ...</em> option, OmniDB opens the specific page of the
-			online <strong>PostgreSQL Documentation</strong> in your web browser (the
-			system's default browser in the desktop app, or a new tab when running as a
+		<p>Most of tree nodes (generally grouping ones like <em>Schemas</em> or <em>Tables</em>) offer
+			contextual help. This feature can be accessed by right-clicking the tree node.
+			When you click the <em>Doc: …</em> option, OmniDB opens the specific page of the
+			online <strong>PostgreSQL Documentation</strong> in your web browser (the
+			system’s default browser in the desktop app, or a new tab when running as a
 			browser-based <a href="deploying_omnidb-server.html">OmniDB Server</a>). It
-			also picks the right documentation version for the PostgreSQL server you are
+			also picks the right documentation version for the PostgreSQL server you are
 			connected to.</p>
 		<p><img alt="" src="../assets/img/image_071.webp"/></p>
 		<h4>Snippets</h4>
-		<p><em>Workspace Window</em> has a fixed outer tab with an useful feature called
-			<em>Snippets</em>. With this feature you can store queries, command instructions and
-			any other kinds of text you want. You can also structure the snippets in a
-			directory tree the way you want. All directories and snippets you create are
+		<p><em>Workspace Window</em> has a fixed outer tab with an useful feature called
+			<em>Snippets</em>. With this feature you can store queries, command instructions and
+			any other kinds of text you want. You can also structure the snippets in a
+			directory tree the way you want. All directories and snippets you create are
 			stored inside of <code>omnidb.db</code> user database and persist when you upgrade OmniDB.
 		</p>
 		<p><img alt="" src="../assets/img/image_127.webp"/></p>
 		<h4>Backend Management</h4>
-		<p>By right-clicking in the tree root node, then moving mouse pointer to
-			<em>Monitoring</em> and then clicking on <em>Backends</em>, the user can see all activities
-			going on in the database. Some information are hidden for normal users, only
+		<p>By right-clicking in the tree root node, then moving mouse pointer to
+			<em>Monitoring</em> and then clicking on <em>Backends</em>, the user can see all activities
+			going on in the database. Some information are hidden for normal users, only
 			database superusers are allowed to see.
 		</p>
 		<p><img alt="" src="../assets/img/image_174.webp"/></p>
-		<p>By clicking in the <em>X</em> in the <em>Actions</em> column, you can terminate the
-			backend. A confirmation popup will appear.</p>
+		<p>By clicking in the <em>X</em> in the <em>Actions</em> column, you can terminate the
+			backend. A confirmation popup will appear.</p>
 		<p><img alt="" src="../assets/img/image_175.webp"/></p>
 		<h4>Properties and DDL</h4>
-		<p>By clicking on most of objects in the tree view (tables, sequences, views,
-			roles, databases, etc), the user will be able to see a very comprehensive list
-			of properties of the object.</p>
+		<p>By clicking on most of objects in the tree view (tables, sequences, views,
+			roles, databases, etc), the user will be able to see a very comprehensive list
+			of properties of the object.</p>
 		<p><img alt="" src="../assets/img/image_176.webp"/></p>
-		<p>In the other panel called <em>DDL</em>, the user will be able to see the SQL DDL source
-			code that can be used to re-create the object. The user can copy this text and
+		<p>In the other panel called <em>DDL</em>, the user will be able to see the SQL DDL source
+			code that can be used to re-create the object. The user can copy this text and
 			paste it wherever he/she wants.</p>
 		<p><img alt="" src="../assets/img/image_177.webp"/></p>
 		<h4>Export Data</h4>
-		<p>The <em>Query Tab</em> provides a way to save data from query results into a CSV or
-			XLSX file. Once you click the <em>Export Data</em> button, a cancellable backend starts
-			to save data into the file. Once it is done, OmniDB provides a link called
-			<em>Save</em>, so the user can download the file.
+		<p>The <em>Query Tab</em> provides a way to save data from query results into a CSV or
+			XLSX file. Once you click the <em>Export Data</em> button, a cancellable backend starts
+			to save data into the file. Once it is done, OmniDB provides a link called
+			<em>Save</em>, so the user can download the file.
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp"/></p>
-		<p>All files are stored in a temporary folder inside OmniDB folder. OmniDB
+		<p>All files are stored in a temporary folder inside OmniDB folder. OmniDB
 			regularly cleans this folder, keeping only files newer than 24 hours.</p>
 		<h4>Query History</h4>
 		<p>From the <em>Query Tab</em> you can click on the <em>Command History</em> button to see a
 			full, browsable and searchable query tab.</p>
 		<p><img alt="" src="../assets/img/image_203.webp"/></p>
 		<h4>SSH Console</h4>
-		<p>OmniDB also provides a full-featured SSH Console.</p>
+		<p>OmniDB also provides a full-featured SSH Console.</p>
 		<p><img alt="" src="../assets/img/image_204.webp"/></p>
 		</main>
 	</div>

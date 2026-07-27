@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Panel de monitorización - Documentación de OmniDB</title>
+	<title>Panel de monitorización — Documentación de OmniDB</title>
 	<meta name="description" content="Cree un panel de monitorización de bases de datos en tiempo real en OmniDB a partir de unidades de tipo tabla, gráfico y serie temporal, incluyendo cómo escribir sus propias unidades personalizadas basadas en SQL.">
 	<link rel="canonical" href="https://www.omnidb.net/es/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,7 +119,7 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
@@ -129,18 +129,18 @@ una imagen vale más que mil palabras, eche un vistazo:</p>
 <p><img alt="" src="../assets/img/image_091.webp" /></p>
 <p>Como puede ver, se trata de un nuevo tipo de pestaña interna que muestra gráficos y
 tablas. Esta pestaña interna <em>Monitoring</em> se abre automáticamente al expandir el
-nodo raíz del árbol (el nodo <em>PostgreSQL</em>). Puede dejarla abierta o cerrarla en
-cualquier momento. Para volver a abrirla, haga clic con el botón derecho en el nodo
-raíz y seleccione <em>Dashboard</em>.</p>
+nodo raíz del árbol (el nodo <em>PostgreSQL</em>). Puede dejarla abierta o cerrarla en
+cualquier momento. Para volver a abrirla, haga clic con el botón derecho en el nodo
+raíz y seleccione <em>Dashboard</em>.</p>
 <p><img alt="" src="../assets/img/image_092.webp" /></p>
 <p>El panel está formado por prácticos rectángulos de información llamados <em>Unidades
-de monitorización</em>. A continuación se muestra un ejemplo de unidad de
-monitorización y sus elementos de interfaz:</p>
+de monitorización</em>. A continuación se muestra un ejemplo de unidad de
+monitorización y sus elementos de interfaz:</p>
 <p><img alt="" src="../assets/img/image_093.webp" /></p>
 <ul>
 <li><strong>1</strong>: título de la unidad de monitorización;</li>
 <li><strong>2</strong>: actualiza la unidad de monitorización. Según el tipo, al hacer clic en
-este botón se actualizará toda el área de dibujo o simplemente se hará que el
+este botón se actualizará toda el área de dibujo o simplemente se hará que el
 gráfico obtenga un nuevo conjunto de valores;</li>
 <li><strong>3</strong>: pausa la unidad de monitorización;</li>
 <li><strong>4</strong>: intervalo en segundos para la actualización automática;</li>
@@ -151,7 +151,7 @@ gráfico obtenga un nuevo conjunto de valores;</li>
 <p>Existen 3 tipos de unidades de monitorización:</p>
 <ul>
 <li><strong>Tabla (Grid)</strong>: el tipo más simple; simplemente ejecuta una consulta de vez
-en cuando y muestra los resultados en una tabla de datos.</li>
+en cuando y muestra los resultados en una tabla de datos.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_094.webp" /></p>
 <ul>
@@ -163,57 +163,57 @@ gráficos circulares, aunque también pueden usarse otros tipos de gráfico.</li
 <ul>
 <li><strong>Serie temporal (Timeseries)</strong>: probablemente el tipo de unidad de
 monitorización más útil. Es un gráfico que añade un nuevo conjunto de valores
-cada vez que se actualiza. Los gráficos de líneas o de barras son los que mejor
-se adaptan a este tipo. El componente conserva en el cliente los últimos 100
+cada vez que se actualiza. Los gráficos de líneas o de barras son los que mejor
+se adaptan a este tipo. El componente conserva en el cliente los últimos 100
 conjuntos de valores para que el usuario pueda consultarlos.</li>
 </ul>
 <p><img alt="" src="../assets/img/image_096.webp" /></p>
-<h4>Mostrar y ocultar unidades en el panel</h4>
+<h4>Mostrar y ocultar unidades en el panel</h4>
 <p>Si hace clic en el botón <em>Refresh All</em>, se actualizarán de una sola vez todas las
 unidades de monitorización. También puede eliminar las unidades que no desee
-haciendo clic en el botón <em>Remove</em>. A continuación vamos a eliminar todas las
+haciendo clic en el botón <em>Remove</em>. A continuación vamos a eliminar todas las
 unidades del panel para dejarlo vacío:</p>
 <p><img alt="" src="../assets/img/image_097.webp" /></p>
 <p>Las 17 unidades incluidas de serie en OmniDB (métricas de servidor de PostgreSQL y
 MySQL: tasa de transacciones, backends, producción de WAL, tamaño de bases de
-datos/tablas, etc.) se ejecutan como código nativo y no requieren instalar nada
+datos/tablas, etc.) se ejecutan como código nativo y no requieren instalar nada
 adicional en la base de datos.</p>
 <p><img alt="" src="../assets/img/image_098.webp" /></p>
-<p>Ahora que el panel está vacío, vamos a añadir algunas unidades. Haga clic en el
+<p>Ahora que el panel está vacío, vamos a añadir algunas unidades. Haga clic en el
 botón <em>Manage Units</em>.</p>
 <p><img alt="" src="../assets/img/image_099.webp" /></p>
 <p>Haga clic en la acción verde para añadir cualquiera de las unidades integradas,
-por ejemplo <em>Backends</em> y <em>Database Size</em>. Espere unos segundos y obtendrá un
+por ejemplo <em>Backends</em> y <em>Database Size</em>. Espere unos segundos y obtendrá un
 panel como este:</p>
 <p><img alt="" src="../assets/img/image_100.webp" /></p>
-<p>De la misma manera, puede añadir y eliminar cualquier unidad para personalizar el
+<p>De la misma manera, puede añadir y eliminar cualquier unidad para personalizar el
 panel como desee.</p>
 <h4>Escritura de unidades de monitorización personalizadas</h4>
-<p>OmniDB le permite escribir sus propias unidades, o personalizar las existentes,
-mediante una única consulta SQL: la misma conexión y los mismos permisos que ya
+<p>OmniDB le permite escribir sus propias unidades, o personalizar las existentes,
+mediante una única consulta SQL: la misma conexión y los mismos permisos que ya
 tiene su editor SQL, solo que ejecutándose según un temporizador en lugar de bajo
 demanda. No es necesario aprender ningún lenguaje de scripting ni entorno
 aislado (sandbox) independiente.</p>
-<p><strong>Nota:</strong> dado que la consulta se vuelve a ejecutar sin supervisión en cada
+<p><strong>Nota:</strong> dado que la consulta se vuelve a ejecutar sin supervisión en cada
 intervalo de actualización, solo se admiten consultas <code>SELECT</code> (o
 <code>WITH ... SELECT</code>): una sentencia destructiva pegada por error se rechaza
 directamente en lugar de ejecutarse en silencio según el temporizador.</p>
 <p>Para crear una nueva unidad de monitorización, haga clic en el botón <em>Manage
-Units</em> del panel y, a continuación, en el botón <em>New Unit</em>. Se abrirá un nuevo
+Units</em> del panel y, a continuación, en el botón <em>New Unit</em>. Se abrirá un nuevo
 tipo de pestaña interna con un campo Name, una lista desplegable Type, un campo
-Refresh Interval y un único editor de SQL Query (además de una lista desplegable
+Refresh Interval y un único editor de SQL Query (además de una lista desplegable
 Chart Type, que solo se muestra para unidades de tipo <em>Chart</em>).</p>
 <p>La forma de la consulta depende del tipo de unidad:</p>
 <ul>
 <li>
-<p><strong>Grid</strong>: sin forma particular; las columnas y filas que devuelva la consulta
-pasan a formar la tabla directamente. Por ejemplo:</p>
+<p><strong>Grid</strong>: sin forma particular; las columnas y filas que devuelva la consulta
+pasan a formar la tabla directamente. Por ejemplo:</p>
 <pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
 </li>
 <li>
-<p><strong>Chart</strong>: una fila por categoría; la primera columna es la etiqueta y las
-columnas restantes son cada una una serie (el nombre de la columna pasa a ser el
-nombre de la serie). Elija el Chart Type (barras, circular, anillo o líneas) en
+<p><strong>Chart</strong>: una fila por categoría; la primera columna es la etiqueta y las
+columnas restantes son cada una una serie (el nombre de la columna pasa a ser el
+nombre de la serie). Elija el Chart Type (barras, circular, anillo o líneas) en
 la lista desplegable situada junto al selector Type. Por ejemplo, un gráfico
 circular con el tamaño de las bases de datos:</p>
 <pre><code class="language-sql">SELECT datname,
@@ -231,11 +231,11 @@ FROM pg_catalog.pg_database
 WHERE NOT datistemplate</code></pre>
 </li>
 </ul>
-<p>Escriba (o pegue) la consulta en el editor de SQL Query y, a continuación, haga
+<p>Escriba (o pegue) la consulta en el editor de SQL Query y, a continuación, haga
 clic en el botón <em>Test</em> para verla representada en el área de vista previa; puede
 probarla tantas veces como desee. Una vez que esté conforme con ella, asigne un
-nombre a la unidad, establezca un intervalo de actualización y pulse <em>Save</em>.
-Cierre la pestaña de edición y la nueva unidad aparecerá en la lista de unidades,
+nombre a la unidad, establezca un intervalo de actualización y pulse <em>Save</em>.
+Cierre la pestaña de edición y la nueva unidad aparecerá en la lista de unidades,
 lista para añadirse al panel (acción verde) igual que una unidad integrada.</p>
 		</main>
 	</div>

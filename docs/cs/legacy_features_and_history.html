@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Zastaralé funkce a historie - Dokumentace OmniDB</title>
+	<title>Zastaralé funkce a historie – Dokumentace OmniDB</title>
 	<meta name="description" content="Historie verzí OmniDB a osud jejího starého systému pluginů — pglogical, podpora Postgres-BDR, Postgres-XL a krokovací debugger PL/pgSQL — po přepisu 3.6.x z Pythonu/Django do Go.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/legacy_features_and_history.html">
@@ -88,13 +88,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -104,12 +104,12 @@
 			<span class="nav-group-label">Pokročilé</span>
 			<a href="additional_features.html">Další funkce</a>
 			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Záložka Konzole</a>
 			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
@@ -117,16 +117,16 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html" class="active">Zastaralé funkce a historie</a>
+			<a href="legacy_features_and_history.html" class="active">Zastaralé funkce a historie</a>
 		</div>
 		</nav>
 		<main>
-			<h1>Zastaralé funkce a historie</h1>
+			<h1>Zastaralé funkce a historie</h1>
 			<p>OmniDB si prošla několika velmi odlišnými životy — univerzitním projektem,
-				webovou aplikací v Pythonu/Django s ekosystémem pluginů a nyní jednosouborovou
-				aplikací v Go. Tato stránka je místem pro vše, co dříve existovalo, ale dnes
-				už ne: co to bylo, proč se to nevrátí a kde to najít, pokud to stále
-				potřebujete. Příběh samotného projektu najdete v kapitole
+				webovou aplikací v Pythonu/Django s ekosystémem pluginů a nyní jednosouborovou
+				aplikací v Go. Tato stránka je místem pro vše, co dříve existovalo, ale dnes
+				už ne: co to bylo, proč se to nevrátí a kde to najít, pokud to stále
+				potřebujete. Příběh samotného projektu najdete v kapitole
 				<a href="introduction.html">Úvod</a>.</p>
 
 			<h2>Časová osa verzí</h2>
@@ -134,55 +134,55 @@
 				<thead>
 					<tr>
 						<th>Éra</th>
-						<th>O co šlo</th>
+						<th>O co šlo</th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr>
-						<td>Původní verze (ASP.NET/C#)</td>
-						<td>Bakalářská závěrečná práce na Federální univerzitě v Paraná — první
+						<td>Původní verze (ASP. NET/C#)</td>
+						<td>Bakalářská závěrečná práce na Federální univerzitě v Paraná — první
 							nástroj, který propojil společnou linii mezi metadaty PostgreSQL, MySQL/MariaDB,
-							Oracle, SQLite, Firebird a SQL Server.</td>
+							Oracle, SQLite, Firebird a SQL Server.</td>
 					</tr>
 					<tr>
 						<td>OmniDB (Python/Django)</td>
-						<td>Dlouhodobě nejznámější verze: webová aplikace v Django s pracovním
-							prostředím v prohlížeči a od verze 2.9 také s pluginovým systémem v
-							Pythonu pro komunitní rozšíření. Vývoj v původním repozitáři
+						<td>Dlouhodobě nejznámější verze: webová aplikace v Django s pracovním
+							prostředím v prohlížeči a od verze 2.9 také s pluginovým systémem v
+							Pythonu pro komunitní rozšíření. Vývoj v původním repozitáři
 							<a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">OmniDB/OmniDB</a>
 							se zastavil kolem roku 2020.</td>
 					</tr>
 					<tr>
-						<td>Obnovení v letech 2025–2026 (3.1.x)</td>
+						<td>Obnovení v letech 2025–2026 (3.1.x)</td>
 						<td>Projekt byl znovu oživen: modernizovaná kódová základna, vylepšené
-							zabezpečení, nativní podpora macOS Apple Silicon a kompletní přepracování
-							dokumentace — stále na backendu v Pythonu/Django.</td>
+							zabezpečení, nativní podpora macOS Apple Silicon a kompletní přepracování
+							dokumentace — stále na backendu v Pythonu/Django.</td>
 					</tr>
 					<tr>
 						<td>Přepis do Go (3.6.x)</td>
-						<td>Celý backend byl přepsán z Pythonu/Django do Go a je distribuován jako
-							jediný nativní binární soubor. Python runtime a vše, co dávalo smysl
+						<td>Celý backend byl přepsán z Pythonu/Django do Go a je distribuován jako
+							jediný nativní binární soubor. Python runtime a vše, co dávalo smysl
 							jen uvnitř něj — včetně systému pluginů — bylo odstraněno.</td>
 					</tr>
 					<tr>
 						<td>Přechod na Wails (hotovo)</td>
-						<td>Desktopová schránka aplikace se přesunula z NW.js na <a href="https://wails.io" target="_blank" rel="noopener">Wails</a>
-							(Go) — menší binární soubor, žádný vestavěný Chromium a aplikace nyní
+						<td>Desktopová schránka aplikace se přesunula z NW.js na <a href="https://wails.io" target="_blank" rel="noopener">Wails</a>
+							(Go) — menší binární soubor, žádný vestavěný Chromium a aplikace nyní
 							využívá vlastní nativní webview operačního systému.</td>
 					</tr>
 				</tbody>
 			</table>
 
 			<h2 id="plugin-system">Systém pluginů (odstraněno)</h2>
-			<p><strong>Systém pluginů byl odstraněn</strong> v rámci přepisu backendu 3.6.x
-				z Pythonu/Django do Go a již není k dispozici.</p>
+			<p><strong>Systém pluginů byl odstraněn</strong> v rámci přepisu backendu 3.6.x
+				z Pythonu/Django do Go a již není k dispozici.</p>
 			<p>OmniDB 2.9 zavedla systém pluginů, který uživatelům umožňoval psát kód v
-				Pythonu, napojený na různé části rozhraní, a přidávat tak vlastní funkce bez
+				Pythonu, napojený na různé části rozhraní, a přidávat tak vlastní funkce bez
 				nutnosti znovu nasazovat celou aplikaci. Tento mechanismus závisel na
 				dynamickém importu libovolných modulů Pythonu do běžícího procesu serveru —
-				něco, co nemá v kompilovaném binárním souboru Go žádnou obdobu — a záměrně
+				něco, co nemá v kompilovaném binárním souboru Go žádnou obdobu — a záměrně
 				nebyl převeden. Protože už nemohl dělat nic užitečného, byl dialog „Pluginy“
-				a jeho položka v menu, spolu s API endpointy za ním, z aplikace zcela
+				a jeho položka v menu, spolu s API endpointy za ním, z aplikace zcela
 				odstraněn, místo aby zůstal jako trvale prázdný pahýl.</p>
 			<p>Pokud jste se spoléhali na konkrétní plugin, aktuálně neexistuje žádný
 				podporovaný způsob, jak jej převést do nové verze. Cokoliv, co plugin dříve
@@ -190,26 +190,26 @@
 				editorem, pomocí úryvků (snippets) nebo vlastní monitorovací jednotkou.</p>
 
 			<h2 id="plpgsql-debugger">Krokovací debugger PL/pgSQL (odstraněno)</h2>
-			<p>OmniDB 2.3.0 přidala interaktivní krokovací debugger pro funkce a procedury
-				PL/pgSQL — breakpointy, živé sledování proměnných a statistiky provádění
+			<p>OmniDB 2.3.0 přidala interaktivní krokovací debugger pro funkce a procedury
+				PL/pgSQL — breakpointy, živé sledování proměnných a statistiky provádění
 				po jednotlivých řádcích. Závisel na vlastní C rozšíření pro PostgreSQL
 				(<code>omnidb_plugin</code>), které se napojovalo na interní pluginové API
-				PL/pgSQL a bylo načítáno přes <code>shared_preload_libraries</code> (vyžadující
-				restart serveru), a dále na vyhrazeném schématu <code>omnidb</code> a
+				PL/pgSQL a bylo načítáno přes <code>shared_preload_libraries</code> (vyžadující
+				restart serveru), a dále na vyhrazeném schématu <code>omnidb</code> a
 				bezheslovém lokálním přístupu pro druhé, výhradně debuggerové připojení k
 				databázi.</p>
-			<p><strong>Debugger byl odstraněn</strong>, spolu s položkami menu ve stromu
+			<p><strong>Debugger byl odstraněn</strong>, spolu s položkami menu ve stromu
 				„Debug Function“/„Debug Procedure“. Nebyl převeden během přepisu do Go 3.6.x
-				a samotné rozšíření <code>omnidb_plugin</code> nebylo od roku 2020 upravováno.
-				Kromě průběžných nákladů na udržování C rozšíření pracujícího s vnitřnostmi
+				a samotné rozšíření <code>omnidb_plugin</code> nebylo od roku 2020 upravováno.
+				Kromě průběžných nákladů na udržování C rozšíření pracujícího s vnitřnostmi
 				PostgreSQL funkčního napříč každou novou hlavní verzí PostgreSQL navíc zásadně
 				nemůže fungovat vůbec proti žádnému spravovanému/cloudovému PostgreSQL (RDS,
-				Cloud SQL, Supabase, Neon a podobné) — žádný z nich neumožňuje vlastní
-				položku v <code>shared_preload_libraries</code> — takže velká a rostoucí
+				Cloud SQL, Supabase, Neon a podobné) — žádný z nich neumožňuje vlastní
+				položku v <code>shared_preload_libraries</code> — takže velká a rostoucí
 				část dnešních uživatelů by jej stejně nikdy nemohla použít, ať by byl
 				udržovaný sebelépe.</p>
-			<p>Psaní a spouštění samotných funkcí PL/pgSQL tím není nijak dotčeno — viz
-				<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>. Pokud
+			<p>Psaní a spouštění samotných funkcí PL/pgSQL tím není nijak dotčeno — viz
+				<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>. Pokud
 				potřebujete procházet provádění PL/pgSQL krokově na vlastním self-hostovaném
 				serveru PostgreSQL, původní zdrojový kód <code>omnidb_plugin</code> je stále
 				dostupný v
@@ -222,8 +222,8 @@
 			<p><a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>
 				bylo rozšíření PostgreSQL poskytující efektivní systém logické replikace.
 				Starý plugin <code>omnidb-pglogical</code> přidával uzly do stromového
-				pohledu a akce založené na SQL šablonách (vytvoření uzlu, správa replikačních
-				sad, vytváření odběrů atd.) pro práci s ním — vše postavené na výše
+				pohledu a akce založené na SQL šablonách (vytvoření uzlu, správa replikačních
+				sad, vytváření odběrů atd.) pro práci s ním — vše postavené na výše
 				odstraněném systému pluginů, takže se už nenačte.</p>
 
 			<h2 id="postgres-bdr">Postgres-BDR (odstraněno)</h2>
@@ -231,38 +231,38 @@
 				(“Bi-Directional Replication“) bylo multi-masterové rozšíření pro PostgreSQL
 				od společnosti 2ndQuadrant. Starý plugin <code>omnidb-bdr</code> mu poskytoval
 				stejný typ integrace do stromového pohledu jako pglogical. Stejný příběh: byl
-				to plugin a systém pluginů, na kterém závisel, je pryč.</p>
+				to plugin a systém pluginů, na kterém závisel, je pryč.</p>
 
 			<h2 id="postgres-xl">Postgres-XL (odstraněno)</h2>
 			<p><a href="https://www.2ndquadrant.c../resources/postgres-xl/" target="_blank" rel="noopener">Postgres-XL</a>
 				byl masivně paralelní, horizontálně škálovatelný fork PostgreSQL (GTM +
 				koordinátor + datové uzly). Starý plugin <code>omnidb-xl</code> pro něj
-				přidával uzly ve stromovém pohledu s podporou clusteru. Také plugin, také
+				přidával uzly ve stromovém pohledu s podporou clusteru. Také plugin, také
 				pryč.</p>
 
-			<h2>Proč se nic z toho nevrátí</h2>
+			<h2>Proč se nic z toho nevrátí</h2>
 			<p>Všechny tři byly tenké, na pluginech založené integrace pro okrajové, převážně
 				neudržované forky/rozšíření PostgreSQL — ani pglogical, ani BDR, ani
-				Postgres-XL nezaznamenaly v posledních letech žádná smysluplná nová vydání.
-				Znovu vybudovat samotný systém pluginů v Go by znamenalo navrhnout zcela nový
+				Postgres-XL nezaznamenaly v posledních letech žádná smysluplná nová vydání.
+				Znovu vybudovat samotný systém pluginů v Go by znamenalo navrhnout zcela nový
 				mechanismus rozšíření (kompilované pluginy, skriptovací runtime nebo hook API)
-				pro malé a zmenšující se publikum, což nebylo prioritou vůči zbytku přepisu do
+				pro malé a zmenšující se publikum, což nebylo prioritou vůči zbytku přepisu do
 				Go. Nic na přepisu nebrání připojení ke clusteru pglogical/BDR/XL jako k
-				běžné databázi PostgreSQL a ruční správě replikačních objektů přes běžný SQL
+				běžné databázi PostgreSQL a ruční správě replikačních objektů přes běžný SQL
 				editor nebo záložku Konzole — pouze nezískáte vyhrazené uzly ve stromovém
-				pohledu a zkratky se SQL šablonami, které pluginy dříve přidávaly.</p>
+				pohledu a zkratky se SQL šablonami, které pluginy dříve přidávaly.</p>
 
 			<h2>Kde najít stará vydání</h2>
-			<p>Vydání klasické OmniDB (do roku ~2020) s plnou podporou pluginů jsou stále
-				dostupná, neudržovaná, v původním repozitáři:</p>
+			<p>Vydání klasické OmniDB (do roku ~2020) s plnou podporou pluginů jsou stále
+				dostupná, neudržovaná, v původním repozitáři:</p>
 			<ul>
-				<li><a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">github.com/OmniDB/OmniDB</a> — samotná původní aplikace a archiv jejích vydání.</li>
+				<li><a href="https://github.com/OmniDB/OmniDB" target="_blank" rel="noopener">github.com/OmniDB/OmniDB</a> — samotná původní aplikace a archiv jejích vydání.</li>
 				<li><a href="https://github.com/OmniDB/plugins" target="_blank" rel="noopener">github.com/OmniDB/plugins</a> — samotné zdrojové kódy pluginů pglogical/BDR/XL.</li>
 			</ul>
-			<p>Žádný z repozitářů už není aktualizován. Pokud dnes potřebujete správu
+			<p>Žádný z repozitářů už není aktualizován. Pokud dnes potřebujete správu
 				pglogical, BDR nebo Postgres-XL, je vaší nejlepší volbou staré vydání odtud —
 				spuštěné proti databázi odpovídající jeho době — neexistuje žádná migrační
-				cesta z tohoto uspořádání do současné OmniDB založené na Go.</p>
+				cesta z tohoto uspořádání do současné OmniDB založené na Go.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

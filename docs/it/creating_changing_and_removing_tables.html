@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Creazione, modifica ed eliminazione delle tabelle - Documentazione OmniDB</title>
+	<title>Creazione, modifica ed eliminazione delle tabelle – Documentazione OmniDB</title>
 	<meta name="description" content="Crea, modifica ed elimina tabelle del database in OmniDB usando modelli SQL modificabili, oltre a grafici delle relazioni dello schema.">
 	<link rel="canonical" href="https://www.omnidb.net/it/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
@@ -86,66 +86,66 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html" class="active">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Creazione, modifica ed eliminazione delle tabelle</h1>
 <p>Le strutture delle tabelle — creazione, modifica ed eliminazione — vengono gestite tramite
-<em>modelli SQL</em> modificabili anziché con un modulo grafico. Questo offre un controllo più
-diretto rispetto a un designer punta-e-clicca, al costo di dover scrivere un po' di SQL: OmniDB
-compila un modello di partenza funzionante e l'utente lo modifica prima di
+<em>modelli SQL</em> modificabili anziché con un modulo grafico. Questo offre un controllo più
+diretto rispetto a un designer punta-e-clicca, al costo di dover scrivere un po’ di SQL: OmniDB
+compila un modello di partenza funzionante e l’utente lo modifica prima di
 eseguirlo.</p>
 <h4>Creazione delle tabelle</h4>
-<p>Creeremo tabelle di esempio (<em>customers</em> e <em>addresses</em>) nel database <code>testdb</code>
-a cui ci siamo connessi in precedenza. Fai clic con il tasto destro sul nodo <strong>Tables</strong> e seleziona
-l'azione <strong>Create Table</strong>. Si aprirà una nuova scheda Query precompilata con un
-modello <code>CREATE TABLE</code> per lo schema corrente.</p>
-<p>Modifica il modello per ottenere la tabella desiderata — per <em>customers</em>, una chiave
-primaria a cui <em>addresses</em> farà riferimento in seguito:</p>
+<p>Creeremo tabelle di esempio (<em>customers</em> e <em>addresses</em>) nel database <code>testdb</code>
+a cui ci siamo connessi in precedenza. Fai clic con il tasto destro sul nodo <strong>Tables</strong> e seleziona
+l’azione <strong>Create Table</strong>. Si aprirà una nuova scheda Query precompilata con un
+modello <code>CREATE TABLE</code> per lo schema corrente.</p>
+<p>Modifica il modello per ottenere la tabella desiderata — per <em>customers</em>, una chiave
+primaria a cui <em>addresses</em> farà riferimento in seguito:</p>
 <pre><code class="language-sql">CREATE TABLE public.customers (
 	cust_id serial PRIMARY KEY,
 	cust_name varchar(100) NOT NULL
 );
 </code></pre>
-<p>Esegui l'istruzione (allo stesso modo in cui esegui qualsiasi query). Fai clic con il tasto destro sul nodo
-dell'albero <em>Tables</em> e clicca su <em>Refresh</em> — la nuova tabella ora appare al suo interno. Mantenendo
-<em>customers</em> selezionata nell'albero, puoi ispezionare le sue <em>Properties</em> e il suo
-<em>DDL</em> generati nel pannello accanto all'albero, lo stesso pannello usato per ogni altro
-tipo di oggetto.</p>
-<p>Ora crea <em>addresses</em>, con una chiave esterna che punta a <em>customers</em>:</p>
+<p>Esegui l’istruzione (allo stesso modo in cui esegui qualsiasi query). Fai clic con il tasto destro sul nodo
+dell’albero <em>Tables</em> e clicca su <em>Refresh</em> — la nuova tabella ora appare al suo interno. Mantenendo
+<em>customers</em> selezionata nell’albero, puoi ispezionare le sue <em>Properties</em> e il suo
+<em>DDL</em> generati nel pannello accanto all’albero, lo stesso pannello usato per ogni altro
+tipo di oggetto.</p>
+<p>Ora crea <em>addresses</em>, con una chiave esterna che punta a <em>customers</em>:</p>
 <pre><code class="language-sql">CREATE TABLE public.addresses (
 	add_id serial PRIMARY KEY,
 	add_street varchar(200) NOT NULL,
@@ -153,24 +153,24 @@ tipo di oggetto.</p>
 	cust_id integer NOT NULL REFERENCES public.customers (cust_id)
 );
 </code></pre>
-<p>A questo punto ci sono due tabelle correlate nello schema <code>public</code>. Puoi vedere la
-struttura dello schema con la funzionalità dei grafici: fai clic con il tasto destro sul nodo dello
-schema <code>public</code> e seleziona <em>Render Graph &gt; Simple Graph</em> per vedere solo le tabelle e le loro
-relazioni, oppure <em>Render Graph &gt; Complete Graph</em> per includere anche colonne e
-vincoli. Entrambi vengono visualizzati come un diagramma interattivo, spostabile e ingrandibile.</p>
+<p>A questo punto ci sono due tabelle correlate nello schema <code>public</code>. Puoi vedere la
+struttura dello schema con la funzionalità dei grafici: fai clic con il tasto destro sul nodo dello
+schema <code>public</code> e seleziona <em>Render Graph &gt; Simple Graph</em> per vedere solo le tabelle e le loro
+relazioni, oppure <em>Render Graph &gt; Complete Graph</em> per includere anche colonne e
+vincoli. Entrambi vengono visualizzati come un diagramma interattivo, spostabile e ingrandibile.</p>
 <h4>Modifica delle tabelle</h4>
-<p>Per modificare una tabella esistente — ad esempio, aggiungendo una colonna a <em>customers</em> — fai
-clic con il tasto destro sul nodo della tabella e seleziona <em>Table Actions &gt; Alter Table</em>. Si aprirà
-una scheda Query con un modello <code>ALTER TABLE</code> da modificare ed eseguire, seguendo lo stesso schema
-usato per la creazione delle tabelle:</p>
+<p>Per modificare una tabella esistente — ad esempio, aggiungendo una colonna a <em>customers</em> — fai
+clic con il tasto destro sul nodo della tabella e seleziona <em>Table Actions &gt; Alter Table</em>. Si aprirà
+una scheda Query con un modello <code>ALTER TABLE</code> da modificare ed eseguire, seguendo lo stesso schema
+usato per la creazione delle tabelle:</p>
 <pre><code class="language-sql">ALTER TABLE public.customers ADD COLUMN cust_age integer;
 </code></pre>
-<p>Qualsiasi errore restituito dal database — ad esempio nel tentativo di aggiungere il nome di una colonna che
-esiste già — viene mostrato allo stesso modo di qualsiasi query non riuscita: nel pannello
-Messages della scheda query, con il comando esatto e il testo dell'errore restituito dal database.</p>
+<p>Qualsiasi errore restituito dal database — ad esempio nel tentativo di aggiungere il nome di una colonna che
+esiste già — viene mostrato allo stesso modo di qualsiasi query non riuscita: nel pannello
+Messages della scheda query, con il comando esatto e il testo dell’errore restituito dal database.</p>
 <h4>Eliminazione delle tabelle</h4>
-<p>Per eliminare una tabella, fai clic con il tasto destro sul nodo della tabella e seleziona <em>Table Actions &gt;
-Drop Table</em>. Anche in questo caso si apre un modello modificabile (<code>DROP TABLE ...</code>) invece di
+<p>Per eliminare una tabella, fai clic con il tasto destro sul nodo della tabella e seleziona <em>Table Actions &gt;
+Drop Table</em>. Anche in questo caso si apre un modello modificabile (<code>DROP TABLE ...</code>) invece di
 eliminarla immediatamente — rivedilo ed eseguilo quando sei pronto.</p>
 		</main>
 	</div>

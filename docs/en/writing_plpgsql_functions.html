@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Writing PL/pgSQL Functions - OmniDB Documentation</title>
+	<title>Writing PL/pgSQL Functions – OmniDB Documentation</title>
 	<meta name="description" content="Write and run PL/pgSQL functions and procedures in OmniDB: SQL templates, execution, and browsing them in the database tree.">
 	<link rel="canonical" href="https://www.omnidb.net/en/writing_plpgsql_functions.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_plpgsql_functions.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -124,26 +124,26 @@
 		<main>
 		<h1>Writing PL/pgSQL Functions</h1>
 <h4>Introduction</h4>
-<p>PostgreSQL is more than a RDBMS engine. It is a developing platform. It provides
-a very powerful and flexible programming language called <code>PL/pgSQL</code>. Using this
+<p>PostgreSQL is more than a RDBMS engine. It is a developing platform. It provides
+a very powerful and flexible programming language called <code>PL/pgSQL</code>. Using this
 language you can write your own <em>user-defined functions</em> to achieve abstraction
-levels and procedural calculations that would be difficult to achieve with plain
-SQL (and sometimes impossible to achieve without context-switching with the
+levels and procedural calculations that would be difficult to achieve with plain
+SQL (and sometimes impossible to achieve without context-switching with the
 application).</p>
 <p><img alt="" src="../assets/img/image_072.webp"/></p>
 <h4>Writing functions</h4>
-<p>In the <code>public</code> schema, right-click the <code>Functions</code> node and click on <em>Create
-Function</em>. It will open a <em>SQL Query</em> inner tab, already containing a SQL
+<p>In the <code>public</code> schema, right-click the <code>Functions</code> node and click on <em>Create
+Function</em>. It will open a <em>SQL Query</em> inner tab, already containing a SQL
 Template to help you create your first PL/pgSQL function.</p>
 <p><img alt="" src="../assets/img/image_073.webp"/></p>
 <p><img alt="" src="../assets/img/image_074.webp"/></p>
 <p>You can refer to PostgreSQL documentation on how to write user-defined
 functions. Just right-click the <em>Functions</em> node and click on <em>Doc:
-Functions</em> — the relevant PostgreSQL documentation page opens in your web
-browser (the system's default browser in the desktop app, or a new tab when
-running as a browser-based <a href="deploying_omnidb-server.html">OmniDB
+Functions</em> — the relevant PostgreSQL documentation page opens in your web
+browser (the system’s default browser in the desktop app, or a new tab when
+running as a browser-based <a href="deploying_omnidb-server.html">OmniDB
 Server</a>).</p>
-<p>For now, let us replace this SQL template entirely for the source code below:</p>
+<p>For now, let us replace this SQL template entirely for the source code below:</p>
 <pre><code class="language-sql">CREATE OR REPLACE FUNCTION public.fnc_count_vowels (p_input text)
 RETURNS integer LANGUAGE plpgsql AS
 $function$
@@ -167,24 +167,24 @@ BEGIN
 END;
 $function$
 </code></pre>
-<p>This will create a function called <code>fnc_count_vowels</code> inside the schema
-<code>public</code>. This function takes a text argument called <code>p_input</code> and counts how
-many vowels there are in this <em>string</em>. Then returns this count.</p>
-<p>To create the function, execute the command in the SQL Query inner tab. If
-successful, the function will appear under the <em>Functions</em> tree node (you can
-refresh it by right-clicking and then clicking in <em>Refresh</em>). By expanding the
+<p>This will create a function called <code>fnc_count_vowels</code> inside the schema
+<code>public</code>. This function takes a text argument called <code>p_input</code> and counts how
+many vowels there are in this <em>string</em>. Then returns this count.</p>
+<p>To create the function, execute the command in the SQL Query inner tab. If
+successful, the function will appear under the <em>Functions</em> tree node (you can
+refresh it by right-clicking and then clicking in <em>Refresh</em>). By expanding the
 function node as well, you can see its return type and its argument.</p>
 <p><img alt="" src="../assets/img/image_075.webp"/></p>
-<p>Now let us execute this new function for the first time. Open a simple SQL Query
-inner tab and execute the following SQL query:</p>
+<p>Now let us execute this new function for the first time. Open a simple SQL Query
+inner tab and execute the following SQL query:</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
 <p><img alt="" src="../assets/img/image_076.webp"/></p>
-<p>Note how the query returns a single value, containing the number of vowels in
-the text.</p>
-<p>By right-clicking the function node, you can see there are actions to edit,
+<p>Note how the query returns a single value, containing the number of vowels in
+the text.</p>
+<p>By right-clicking the function node, you can see there are actions to edit,
 select and drop it. As you probably guessed, each action will open SQL Query
-inner tabs with handy SQL templates in them.</p>
+inner tabs with handy SQL templates in them.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

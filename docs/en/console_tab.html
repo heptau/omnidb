@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Console Tab - OmniDB Documentation</title>
+	<title>Console Tab – OmniDB Documentation</title>
 	<meta name="description" content="Use OmniDB's Console Tab for a psql-like scratch console: a handful of backslash commands, command history, syntax highlighting and autocomplete.">
 	<link rel="canonical" href="https://www.omnidb.net/en/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,12 +123,12 @@
 		</nav>
 		<main>
 		<h1>Console Tab</h1>
-<p>The Console Tab provides an easy and comfortable way to interact with your
-databases. Users familiar with the <code>psql</code> command line utility will
-recognize the general shape — a scrollback log plus an input editor — and a
-useful subset of its backslash commands work here too:</p>
+<p>The Console Tab provides an easy and comfortable way to interact with your
+databases. Users familiar with the <code>psql</code> command line utility will
+recognize the general shape — a scrollback log plus an input editor — and a
+useful subset of its backslash commands work here too:</p>
 <ul>
-<li><code>\?</code>: show the command list;</li>
+<li><code>\?</code>: show the command list;</li>
 <li><code>\dt</code>: list tables;</li>
 <li><code>\d</code>: list tables, views and sequences; <code>\d NAME</code> describes one of
 them (its columns, types, nullability and defaults) — <code>NAME</code> can be
@@ -139,32 +139,32 @@ schema-qualified (<code>\d public.customers</code>);</li>
 <li><code>\x</code>: toggle expanded/vertical output;</li>
 <li><code>\timing</code>: toggle showing execution time.</li>
 </ul>
-<p>These map to whatever each connected engine actually has: MySQL/MariaDB's
-"database" doubles as its schema, Oracle's "user" doubles as its schema (and
+<p>These map to whatever each connected engine actually has: MySQL/MariaDB’s
+“database” doubles as its schema, Oracle’s “user” doubles as its schema (and
 it has no separate multi-database concept), and SQLite has none of
-schemas/roles/databases at all — where an engine genuinely has nothing to
-show, the command says so directly instead of returning an empty or
-misleading result. <code>\h</code> (per-SQL-command syntax help, like a PostgreSQL
+schemas/roles/databases at all — where an engine genuinely has nothing to
+show, the command says so directly instead of returning an empty or
+misleading result. <code>\h</code> (per-SQL-command syntax help, like a PostgreSQL
 manual page) is not implemented.</p>
-<p>The editor on the bottom of the tab area is full-featured just like the <em>Query
+<p>The editor on the bottom of the tab area is full-featured just like the <em>Query
 Tab</em> editor (it provides syntax highlight and autocomplete with <em>Ctrl-Space</em>).
-To execute a command, just type it in this editor. If the command is a backslash
-(starts with <code>\</code>), just type <code>Enter</code> and it will be executed. If it is a regular
+To execute a command, just type it in this editor. If the command is a backslash
+(starts with <code>\</code>), just type <code>Enter</code> and it will be executed. If it is a regular
 SQL command, then it can be multi-lined, and you will need to type <em>Alt-Q</em> to
 execute it.</p>
-<p>All commands and its output will be logged into the display area, which is
+<p>All commands and its output will be logged into the display area, which is
 textual and read-only, so you can copy and paste its contents somewhere else.
-You can clear the display area by clicking on the <em>Clear Console</em> button.</p>
-<p>All commands also are logged in the connection query history, and also in a
-local console history, which you can by clicking in the <em>Command History</em>
+You can clear the display area by clicking on the <em>Clear Console</em> button.</p>
+<p>All commands also are logged in the connection query history, and also in a
+local console history, which you can by clicking in the <em>Command History</em>
 button.</p>
-<p>By clicking in the green check, you can borrow the command and put it into the
+<p>By clicking in the green check, you can borrow the command and put it into the
 editor, so you can amend it and execute it. Another comfortable way to navigate
-through the history is using the shortcuts <em>Ctrl-Up</em> and <em>Ctrl-Down</em>, to quickly
-paste in the editor the previous and next commands, respectively.</p>
-<p>These backslash commands are useful when dealing with databases every day. The
-console tab will also show any errors and the results of any SQL command you
-type in a pretty way. Try it out!</p>
+through the history is using the shortcuts <em>Ctrl-Up</em> and <em>Ctrl-Down</em>, to quickly
+paste in the editor the previous and next commands, respectively.</p>
+<p>These backslash commands are useful when dealing with databases every day. The
+console tab will also show any errors and the results of any SQL command you
+type in a pretty way. Try it out!</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

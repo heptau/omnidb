@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Vytváření, úprava a odstraňování tabulek - Dokumentace OmniDB</title>
+	<title>Vytváření, úprava a odstraňování tabulek – Dokumentace OmniDB</title>
 	<meta name="description" content="Vytvářejte, upravujte a odstraňujte databázové tabulky v OmniDB pomocí upravitelných SQL šablon, včetně grafů vztahů schématu.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html" class="active">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html" class="active">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,19 +118,19 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Vytváření, úprava a odstraňování tabulek</h1>
-<p>Struktury tabulek — jejich vytváření, úprava a odstraňování — se spravují pomocí
+		<h1>Vytváření, úprava a odstraňování tabulek</h1>
+<p>Struktury tabulek — jejich vytváření, úprava a odstraňování — se spravují pomocí
 upravitelných <em>SQL šablon</em> spíše než grafického formuláře. To vám dává přímočařejší
-kontrolu než návrhář typu ukaž a klikni, za cenu toho, že si trochu SQL musíte
-napsat sami: OmniDB vyplní funkční výchozí šablonu a vy ji před spuštěním
+kontrolu než návrhář typu ukaž a klikni, za cenu toho, že si trochu SQL musíte
+napsat sami: OmniDB vyplní funkční výchozí šablonu a vy ji před spuštěním
 upravíte.</p>
 <h4>Vytváření tabulek</h4>
-<p>Vytvoříme ukázkové tabulky (<em>customers</em> a <em>addresses</em>) v databázi <code>testdb</code>,
-ke které jsme se připojili dříve. Klikněte pravým tlačítkem na uzel <strong>Tables</strong> a vyberte
+<p>Vytvoříme ukázkové tabulky (<em>customers</em> a <em>addresses</em>) v databázi <code>testdb</code>,
+ke které jsme se připojili dříve. Klikněte pravým tlačítkem na uzel <strong>Tables</strong> a vyberte
 akci <strong>Create Table</strong> (Vytvořit tabulku). Otevře se nová karta dotazu předvyplněná
 šablonou <code>CREATE TABLE</code> pro aktuální schéma.</p>
 <p>Upravte šablonu na tabulku, kterou skutečně chcete — pro <em>customers</em> primární
@@ -141,11 +141,11 @@ klíč, na který bude později odkazovat tabulka <em>addresses</em>:</p>
 );
 </code></pre>
 <p>Spusťte příkaz (stejným způsobem jako jakýkoli jiný dotaz). Klikněte pravým tlačítkem
-na stromový uzel <em>Tables</em> a klikněte na <em>Refresh</em> (Obnovit) — nová tabulka se nyní
+na stromový uzel <em>Tables</em> a klikněte na <em>Refresh</em> (Obnovit) — nová tabulka se nyní
 objeví pod ním. Se stále vybranou tabulkou <em>customers</em> ve stromu si můžete
-prohlédnout její vygenerované <em>Properties</em> (Vlastnosti) a <em>DDL</em> v panelu vedle
+prohlédnout její vygenerované <em>Properties</em> (Vlastnosti) a <em>DDL</em> v panelu vedle
 stromu, tedy ve stejném panelu, který se používá pro každý jiný typ objektu.</p>
-<p>Nyní vytvořte tabulku <em>addresses</em>, s cizím klíčem odkazujícím zpět na <em>customers</em>:</p>
+<p>Nyní vytvořte tabulku <em>addresses</em>, s cizím klíčem odkazujícím zpět na <em>customers</em>:</p>
 <pre><code class="language-sql">CREATE TABLE public.addresses (
 	add_id serial PRIMARY KEY,
 	add_street varchar(200) NOT NULL,
@@ -153,28 +153,28 @@ stromu, tedy ve stejném panelu, který se používá pro každý jiný typ obje
 	cust_id integer NOT NULL REFERENCES public.customers (cust_id)
 );
 </code></pre>
-<p>V tomto okamžiku existují ve schématu <code>public</code> dvě propojené tabulky. Strukturu
+<p>V tomto okamžiku existují ve schématu <code>public</code> dvě propojené tabulky. Strukturu
 schématu si můžete prohlédnout pomocí funkce grafu: klikněte pravým tlačítkem na uzel
-schématu <code>public</code> a vyberte <em>Render Graph &gt; Simple Graph</em> (Vykreslit graf &gt;
-Jednoduchý graf) pouze pro tabulky a jejich vztahy, nebo <em>Render Graph &gt; Complete
-Graph</em> (Vykreslit graf &gt; Úplný graf), aby zahrnoval i sloupce a omezení. Oba
-se vykreslí jako interaktivní diagram, který lze posouvat a přibližovat/oddalovat.</p>
+schématu <code>public</code> a vyberte <em>Render Graph &gt; Simple Graph</em> (Vykreslit graf &gt;
+Jednoduchý graf) pouze pro tabulky a jejich vztahy, nebo <em>Render Graph &gt; Complete
+Graph</em> (Vykreslit graf &gt; Úplný graf), aby zahrnoval i sloupce a omezení. Oba
+se vykreslí jako interaktivní diagram, který lze posouvat a přibližovat/oddalovat.</p>
 <h4>Úprava tabulek</h4>
 <p>Chcete-li změnit existující tabulku — řekněme přidat sloupec do tabulky
-<em>customers</em> — klikněte pravým tlačítkem na uzel tabulky a vyberte <em>Table Actions
+<em>customers</em> — klikněte pravým tlačítkem na uzel tabulky a vyberte <em>Table Actions
 &gt; Alter Table</em> (Akce tabulky &gt; Upravit tabulku). Otevře se karta dotazu se
-šablonou <code>ALTER TABLE</code>, kterou upravíte a spustíte, stejným způsobem jako při
+šablonou <code>ALTER TABLE</code>, kterou upravíte a spustíte, stejným způsobem jako při
 vytváření tabulky:</p>
 <pre><code class="language-sql">ALTER TABLE public.customers ADD COLUMN cust_age integer;
 </code></pre>
-<p>Jakoukoli chybu, kterou databáze vrátí — například pokus o přidání názvu sloupce,
-který již existuje — zobrazí stejným způsobem jako u jakéhokoli neúspěšného dotazu:
-v panelu Messages karty dotazu, s přesným příkazem a chybovým textem z databáze.</p>
+<p>Jakoukoli chybu, kterou databáze vrátí — například pokus o přidání názvu sloupce,
+který již existuje — zobrazí stejným způsobem jako u jakéhokoli neúspěšného dotazu:
+v panelu Messages karty dotazu, s přesným příkazem a chybovým textem z databáze.</p>
 <h4>Odstraňování tabulek</h4>
-<p>Chcete-li tabulku odstranit, klikněte pravým tlačítkem na uzel tabulky a vyberte
-<em>Table Actions &gt; Drop Table</em> (Akce tabulky &gt; Zahodit tabulku). I to otevře
+<p>Chcete-li tabulku odstranit, klikněte pravým tlačítkem na uzel tabulky a vyberte
+<em>Table Actions &gt; Drop Table</em> (Akce tabulky &gt; Zahodit tabulku). I to otevře
 upravitelnou šablonu (<code>DROP TABLE ...</code>) místo okamžitého odstranění — zkontrolujte
-ji a spusťte, až budete připraveni.</p>
+ji a spusťte, až budete připraveni.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

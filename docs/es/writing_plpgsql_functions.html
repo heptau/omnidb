@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Escritura de funciones PL/pgSQL - Documentación de OmniDB</title>
+	<title>Escritura de funciones PL/pgSQL — Documentación de OmniDB</title>
 	<meta name="description" content="Escriba y ejecute funciones y procedimientos PL/pgSQL en OmniDB: plantillas SQL, ejecución y navegación por ellos en el árbol de la base de datos.">
 	<link rel="canonical" href="https://www.omnidb.net/es/writing_plpgsql_functions.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_plpgsql_functions.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,29 +119,29 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Escritura de funciones PL/pgSQL</h1>
 		<h4>Introducción</h4>
 		<p>PostgreSQL es mucho más que un motor de SGBDR. Es una plataforma de desarrollo. Ofrece
-		un lenguaje de programación muy potente y flexible llamado <code>PL/pgSQL</code>. Con este
+		un lenguaje de programación muy potente y flexible llamado <code>PL/pgSQL</code>. Con este
 		lenguaje puede escribir sus propias <em>funciones definidas por el usuario</em> para lograr niveles
-		de abstracción y cálculos procedimentales que serían difíciles de conseguir con SQL
-		puro (y a veces imposibles de lograr sin cambiar de contexto con la
+		de abstracción y cálculos procedimentales que serían difíciles de conseguir con SQL
+		puro (y a veces imposibles de lograr sin cambiar de contexto con la
 		aplicación).</p>
 		<p><img alt="" src="../assets/img/image_072.webp" /></p>
 		<h4>Escritura de funciones</h4>
-		<p>En el esquema <code>public</code>, haga clic derecho en el nodo <code>Functions</code> y haga clic en <em>Create
+		<p>En el esquema <code>public</code>, haga clic derecho en el nodo <code>Functions</code> y haga clic en <em>Create
 		Function</em>. Se abrirá una pestaña interna <em>SQL Query</em>, ya con una plantilla
-		SQL para ayudarle a crear su primera función PL/pgSQL.</p>
+		SQL para ayudarle a crear su primera función PL/pgSQL.</p>
 		<p><img alt="" src="../assets/img/image_073.webp" /></p>
 		<p><img alt="" src="../assets/img/image_074.webp" /></p>
 		<p>Puede consultar la documentación de PostgreSQL sobre cómo escribir funciones definidas por
-		el usuario. Simplemente haga clic derecho en el nodo <em>Functions</em> y haga clic en <em>Doc:
+		el usuario. Simplemente haga clic derecho en el nodo <em>Functions</em> y haga clic en <em>Doc:
 		Functions</em> — se abrirá la página correspondiente de la documentación de PostgreSQL en su navegador
-		web (el navegador predeterminado del sistema en la aplicación de escritorio, o una nueva pestaña cuando
+		web (el navegador predeterminado del sistema en la aplicación de escritorio, o una nueva pestaña cuando
 		se ejecuta como <a href="deploying_omnidb-server.html">OmniDB Server</a> basado en navegador).</p>
 		<p>Por ahora, sustituyamos por completo esta plantilla SQL por el código fuente siguiente:</p>
 		<pre><code class="language-sql">CREATE OR REPLACE FUNCTION public.fnc_count_vowels (p_input text)
@@ -168,22 +168,22 @@ END;
 $function$
 </code></pre>
 		<p>Esto creará una función llamada <code>fnc_count_vowels</code> dentro del esquema
-		<code>public</code>. Esta función recibe un argumento de tipo texto llamado <code>p_input</code> y cuenta cuántas
+		<code>public</code>. Esta función recibe un argumento de tipo texto llamado <code>p_input</code> y cuenta cuántas
 		vocales hay en esta <em>cadena</em>. Luego devuelve ese conteo.</p>
 		<p>Para crear la función, ejecute el comando en la pestaña interna SQL Query. Si
 		tiene éxito, la función aparecerá bajo el nodo del árbol <em>Functions</em> (puede
-		actualizarlo haciendo clic derecho y luego clic en <em>Refresh</em>). Al expandir también el
-		nodo de la función, puede ver su tipo de retorno y su argumento.</p>
+		actualizarlo haciendo clic derecho y luego clic en <em>Refresh</em>). Al expandir también el
+		nodo de la función, puede ver su tipo de retorno y su argumento.</p>
 		<p><img alt="" src="../assets/img/image_075.webp" /></p>
 		<p>Ahora ejecutemos esta nueva función por primera vez. Abra una pestaña interna SQL Query
-		sencilla y ejecute la siguiente consulta SQL:</p>
+		sencilla y ejecute la siguiente consulta SQL:</p>
 		<pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
 		<p><img alt="" src="../assets/img/image_076.webp" /></p>
 		<p>Observe cómo la consulta devuelve un único valor, que contiene el número de vocales en
 		el texto.</p>
 		<p>Al hacer clic derecho en el nodo de la función, puede ver que hay acciones para editarla,
-		consultarla y eliminarla. Como probablemente habrá adivinado, cada acción abrirá pestañas internas SQL Query
+		consultarla y eliminarla. Como probablemente habrá adivinado, cada acción abrirá pestañas internas SQL Query
 		con plantillas SQL útiles ya incluidas.</p>
 		</main>
 	</div>

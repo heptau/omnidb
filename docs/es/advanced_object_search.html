@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Búsqueda avanzada de objetos - Documentación de OmniDB</title>
+	<title>Búsqueda avanzada de objetos — Documentación de OmniDB</title>
 	<meta name="description" content="Cómo la búsqueda avanzada de objetos de OmniDB permitía a los usuarios buscar mediante patrones en objetos de base de datos y datos de tablas, incluido su punto de entrada actualmente deshabilitado.">
 	<link rel="canonical" href="https://www.omnidb.net/es/advanced_object_search.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/advanced_object_search.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html" class="active">Búsqueda avanzada de objetos</a>
@@ -119,35 +119,35 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Búsqueda avanzada de objetos</h1>
 <p><strong>Nota:</strong> esta función no está disponible en la versión actual. Su entrada
-en el menú de árbol está comentada, y las funciones del frontend y el manejador del
+en el menú de árbol está comentada, y las funciones del frontend y el manejador del
 backend en Go de los que dependía ya no existen — no se trasladó durante la
-reescritura a Go, y recuperarla supondría volver a construirla desde cero, no
+reescritura a Go, y recuperarla supondría volver a construirla desde cero, no
 simplemente activar un interruptor. El resto de este capítulo se conserva como
 descripción de su funcionamiento anterior, con fines históricos.</p>
-<p>La búsqueda avanzada de objetos permitía a los usuarios aplicar coincidencia de
-patrones para buscar en objetos de base de datos y datos de tablas, ya fuera con el
-operador SQL <code>LIKE</code> por defecto o con expresiones regulares complejas.</p>
-<p>Se accedía a la función de búsqueda avanzada de objetos haciendo clic con el botón
+<p>La búsqueda avanzada de objetos permitía a los usuarios aplicar coincidencia de
+patrones para buscar en objetos de base de datos y datos de tablas, ya fuera con el
+operador SQL <code>LIKE</code> por defecto o con expresiones regulares complejas.</p>
+<p>Se accedía a la función de búsqueda avanzada de objetos haciendo clic con el botón
 derecho en un nodo de base de datos concreto del árbol:</p>
 <p><img alt="" src="../assets/img/image_196.webp" /></p>
 <p>La interfaz permitía filtrar categorías de objetos, los esquemas en los que se
-ejecutaría la búsqueda, y también limitar el espacio de búsqueda cuando se
+ejecutaría la búsqueda, y también limitar el espacio de búsqueda cuando se
 seleccionaba la categoría Datos, de modo que se pudiera buscar un patrón en un
 subconjunto de tablas:</p>
 <p><img alt="" src="../assets/img/image_197.webp" /></p>
-<p>Tras rellenar los campos y ejecutar la búsqueda, OmniDB la realizaba utilizando
+<p>Tras rellenar los campos y ejecutar la búsqueda, OmniDB la realizaba utilizando
 varios hilos que aceleraban el proceso al ejecutarse en paralelo (esto es
 configurable; para más información, consulte <a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>).</p>
 <p>Al finalizar la búsqueda, OmniDB mostraba el resultado en un árbol:</p>
 <p><img alt="" src="../assets/img/image_198.webp" /></p>
 <p>Para ver más detalles sobre la búsqueda en cada categoría, se hacía clic con el
-botón derecho en el nodo deseado y se seleccionaba «Ver más» (See More). OmniDB
+botón derecho en el nodo deseado y se seleccionaba «Ver más» (See More). OmniDB
 abría entonces una pestaña de consulta con el comando SQL utilizado para realizar
 esa búsqueda concreta. Bastaba con ejecutar el comando para obtener los resultados:</p>
 <p><img alt="" src="../assets/img/image_199.webp"/>

@@ -17,6 +17,17 @@ ifeq ($(strip $(WAILS)),)
 	WAILS := $(GOBIN)/wails
 endif
 
+# --- Docs typography (TypoLima) ---
+# Language codes for which translated docs exist under docs/<code>/ — keep in
+# sync with lang-switcher.js's language list if a new translation is added.
+DOCS_LANGS = cs de en es fr it pt
+
+PYUSERBASE := $(shell python3 -m site --user-base 2>/dev/null)
+TYPOLIMA := $(shell command -v typolima 2>/dev/null)
+ifeq ($(strip $(TYPOLIMA)),)
+	TYPOLIMA := $(PYUSERBASE)/bin/typolima
+endif
+
 # --- Commands Detection ---
 # Detect OS for sed (Mac requires empty string '' after -i, Linux does not)
 UNAME_S := $(shell uname -s)
@@ -35,7 +46,8 @@ endif
 .PHONY: help all clean _sync_version \
         build-mac-arm64 build-mac-intel build-linux build-win \
         release release-local \
-        _prepare_dirs _ensure_wails _build_mac _build_linux _build_win
+        _prepare_dirs _ensure_wails _build_mac _build_linux _build_win \
+        docs-typo docs-typo-dry _ensure_typolima
 
 # --- Default Target: Help ---
 help:
@@ -61,6 +73,10 @@ help:
 	@echo "Release targets:"
 	@echo "  make release-local    - Build current platform, verify artifacts"
 	@echo "  make release          - Tag and push → GitHub Actions builds all platforms"
+	@echo ""
+	@echo "Docs targets:"
+	@echo "  make docs-typo-dry    - Preview TypoLima typography fixes for docs/<lang> ($(DOCS_LANGS))"
+	@echo "  make docs-typo        - Apply TypoLima typography fixes in-place, same languages"
 	@echo "==========================================================="
 
 all: help
@@ -187,3 +203,30 @@ _build_win: _prepare_dirs _ensure_wails
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
+
+# --- DOCS TYPOGRAPHY (TypoLima, https://typolima.80.cz) ---
+# Install the TypoLima CLI (pip --user) if it isn't already available, so
+# these targets don't require it pre-installed on PATH.
+_ensure_typolima:
+	@if [ ! -x "$(TYPOLIMA)" ]; then \
+		echo "Installing TypoLima CLI..."; \
+		pip install --user git+https://github.com/heptau/typolima.git; \
+	fi
+
+# Preview typography fixes (smart quotes, non-breaking spaces, dashes, ...)
+# for every translated docs/<lang>/ directory without touching any file.
+docs-typo-dry: _ensure_typolima
+	@for lang in $(DOCS_LANGS); do \
+		echo "=== docs/$$lang ($$lang) ==="; \
+		$(TYPOLIMA) docs/$$lang --lang $$lang --recursive --dry-run --diff --preserve-format; \
+	done
+
+# Apply typography fixes in-place for every translated docs/<lang>/
+# directory. Changes land as regular working-tree edits — review with
+# `git diff docs/` before committing.
+docs-typo: _ensure_typolima
+	@for lang in $(DOCS_LANGS); do \
+		echo "-> docs/$$lang ($$lang)"; \
+		$(TYPOLIMA) docs/$$lang --lang $$lang --recursive --in-place --preserve-format; \
+	done
+	@echo "Done. Review changes with: git diff docs/"

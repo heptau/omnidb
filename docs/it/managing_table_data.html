@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Gestione dei dati delle tabelle - Documentazione OmniDB</title>
+	<title>Gestione dei dati delle tabelle – Documentazione OmniDB</title>
 	<meta name="description" content="Modifica i record delle tabelle direttamente nella griglia di OmniDB simile a un foglio di calcolo: inserisci, aggiorna ed elimina righe, modifica campi di testo lunghi e visualizza gli errori delle operazioni non riuscite.">
 	<link rel="canonical" href="https://www.omnidb.net/it/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
@@ -86,77 +86,77 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html" class="active">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Gestione dei dati delle tabelle</h1>
-<p>Lo strumento ci permette di modificare i record contenuti nelle tabelle
-tramite un'interfaccia molto semplice e intuitiva. Dato che solo pochi DBMS
-forniscono automaticamente un identificatore univoco per i record delle
-tabelle, abbiamo deciso di consentire la modifica e la rimozione dei dati solo
-per le tabelle dotate di chiave primaria. Le tabelle che non ne hanno una
+<p>Lo strumento ci permette di modificare i record contenuti nelle tabelle
+tramite un’interfaccia molto semplice e intuitiva. Dato che solo pochi DBMS
+forniscono automaticamente un identificatore univoco per i record delle
+tabelle, abbiamo deciso di consentire la modifica e la rimozione dei dati solo
+per le tabelle dotate di chiave primaria. Le tabelle che non ne hanno una
 possono solo ricevere nuovi record.</p>
-<p>Per accedere all'interfaccia di modifica dei record, fai clic destro sul nodo
-della tabella e seleziona l'azione <em>Azioni sui Dati &gt; Modifica Dati</em>:</p>
+<p>Per accedere all’interfaccia di modifica dei record, fai clic destro sul nodo
+della tabella e seleziona l’azione <em>Azioni sui Dati &gt; Modifica Dati</em>:</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>L'interfaccia dispone di un editor SQL in cui puoi filtrare e ordinare i
-record. Per evitare che l'interfaccia richieda troppi record, è presente un
-campo che limita il numero di record da visualizzare. La griglia dei record
-mostra i nomi delle colonne e i tipi di dato. Le colonne che appartengono alla
-chiave primaria hanno un'icona a forma di chiave accanto al nome.</p>
-<p>La riga della griglia contrassegnata dal simbolo <code>+</code> è la riga per aggiungere
+<p>L’interfaccia dispone di un editor SQL in cui puoi filtrare e ordinare i
+record. Per evitare che l’interfaccia richieda troppi record, è presente un
+campo che limita il numero di record da visualizzare. La griglia dei record
+mostra i nomi delle colonne e i tipi di dato. Le colonne che appartengono alla
+chiave primaria hanno un’icona a forma di chiave accanto al nome.</p>
+<p>La riga della griglia contrassegnata dal simbolo <code>+</code> è la riga per aggiungere
 nuovi record. Inseriamo alcuni record nella tabella <code>customers</code>:</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
-<p>Dopo il salvataggio, i record verranno inseriti e potranno essere modificati
+<p>Dopo il salvataggio, i record verranno inseriti e potranno essere modificati
 (solo perché questa tabella ha una chiave primaria). Modifichiamo il campo
-<em>cust_name</em> di alcuni record esistenti e, allo stesso tempo, rimuoviamo una
+<em>cust_name</em> di alcuni record esistenti e, allo stesso tempo, rimuoviamo una
 delle righe:</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
-<p>Le tabelle possono avere campi con valori rappresentati da stringhe molto
-lunghe. Per facilitare la modifica di questi campi, OmniDB dispone di
-un'interfaccia accessibile facendo clic destro sulla cella specifica:</p>
+<p>Le tabelle possono avere campi con valori rappresentati da stringhe molto
+lunghe. Per facilitare la modifica di questi campi, OmniDB dispone di
+un’interfaccia accessibile facendo clic destro sulla cella specifica:</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
 <p><img alt="" src="../assets/img/image_046.webp" /></p>
-<p>L'interfaccia rileva gli errori che possono verificarsi durante le operazioni
-sui record. Per dimostrarlo, proviamo a inserire due record con lo stesso
+<p>L’interfaccia rileva gli errori che possono verificarsi durante le operazioni
+sui record. Per dimostrarlo, proviamo a inserire due record con lo stesso
 <code>cust_id</code> (chiave primaria) già esistente:</p>
 <p><img alt="" src="../assets/img/image_047.webp" /></p>
-<p>Vengono mostrati i comandi che si è tentato di eseguire e i rispettivi errori.</p>
-<p>Per completare questo capitolo, aggiungiamo alcuni record alla tabella
+<p>Vengono mostrati i comandi che si è tentato di eseguire e i rispettivi errori.</p>
+<p>Per completare questo capitolo, aggiungiamo alcuni record alla tabella
 <em>Address</em>:</p>
 <p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>

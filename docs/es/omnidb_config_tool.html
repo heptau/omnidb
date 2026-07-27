@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Herramienta de configuración de OmniDB - Documentación de OmniDB</title>
+	<title>Herramienta de configuración de OmniDB — Documentación de OmniDB</title>
 	<meta name="description" content="Equivalentes manuales para la retirada CLI omnidb-config: localizar el directorio home, compactar la base de datos SQLite, restablecerla y limpiar archivos temporales.">
 	<link rel="canonical" href="https://www.omnidb.net/es/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,45 +119,45 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Herramienta de configuración de OmniDB</h1>
 <p><strong>Nota:</strong> la utilidad de línea de comandos independiente <code>omnidb-config</code>/<code>omnidb-config-app</code>/
-<code>omnidb-config-server</code> descrita en esta página pertenecía a la
-compilación anterior basada en Python/Django y no forma parte de la versión actual. El
+<code>omnidb-config-server</code> descrita en esta página pertenecía a la
+compilación anterior basada en Python/Django y no forma parte de la versión actual. El
 único binario <code>omnidb-server</code> solo acepta <code>-A</code>/<code>--app</code> (modo aplicación
 de escritorio) y <code>-d</code>/<code>--homedir</code> (elegir el directorio home), documentados en el
 capítulo <a href="installation.html">Instalación</a>. Las tareas de mantenimiento que
-ofrecía la antigua herramienta todavía pueden realizarse manualmente, como se describe a continuación.</p>
+ofrecía la antigua herramienta todavía pueden realizarse manualmente, como se describe a continuación.</p>
 <h4>Directorio home</h4>
 <p>OmniDB almacena todo — la base de datos <code>omnidb.db</code> (usuarios, conexiones y
-otros datos de la aplicación) y una carpeta <code>temp</code> para los archivos exportados — en un único
+otros datos de la aplicación) y una carpeta <code>temp</code> para los archivos exportados — en un único
 directorio home. Por defecto es <code>~/.omnidb/omnidb-app</code> (modo escritorio) o
 <code>~/.omnidb/omnidb-server</code> (modo servidor); pase <code>-d /alguna/ruta</code> para usar
 uno diferente.</p>
 <h4>Crear un usuario</h4>
 <p>Actualmente no hay ninguna opción de CLI para crear un usuario sin abrir OmniDB.
 En la primera ejecución sobre un directorio home vacío, OmniDB crea automáticamente un
-superusuario <code>admin</code>/<code>admin</code> predeterminado — inicie sesión con él y cree
-más usuarios desde la pantalla <em>Users</em>, o cambie la contraseña predeterminada.</p>
+superusuario <code>admin</code>/<code>admin</code> predeterminado — inicie sesión con él y cree
+más usuarios desde la pantalla <em>Users</em>, o cambie la contraseña predeterminada.</p>
 <h4>Vacuum</h4>
 <p>OmniDB tiene una única base de datos SQLite, <code>omnidb.db</code>, que almacena todos los usuarios,
-conexiones y demás datos relacionados con OmniDB. Al ser un simple archivo SQLite, puede
+conexiones y demás datos relacionados con OmniDB. Al ser un simple archivo SQLite, puede
 compactarla (vacuum) con cualquier cliente SQLite mientras OmniDB no esté en ejecución, por ejemplo:</p>
 <pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
 </code></pre>
 <h4>Restablecer la base de datos</h4>
-<p>Si desea eliminar toda la información de OmniDB y obtener una base de datos limpia, como recién
-instalada, cierre OmniDB y elimine (o mueva a otro lugar) el archivo <code>omnidb.db</code> del directorio
-home. Se crea automáticamente uno nuevo y vacío — con un nuevo usuario predeterminado
+<p>Si desea eliminar toda la información de OmniDB y obtener una base de datos limpia, como recién
+instalada, cierre OmniDB y elimine (o mueva a otro lugar) el archivo <code>omnidb.db</code> del directorio
+home. Se crea automáticamente uno nuevo y vacío — con un nuevo usuario predeterminado
 <code>admin</code>/<code>admin</code> — la próxima vez que se inicie OmniDB. Use esto con
 precaución: no se puede deshacer.</p>
 <h4>Eliminar archivos temporales</h4>
 <p>Los resultados de consultas exportados (CSV/XLSX/etc.) se escriben en la carpeta <code>temp</code>
 dentro del directorio home. Es seguro eliminar su contenido manualmente en cualquier
-momento mientras OmniDB no esté en ejecución; OmniDB la vuelve a crear según sea necesario.</p>
+momento mientras OmniDB no esté en ejecución; OmniDB la vuelve a crear según sea necesario.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

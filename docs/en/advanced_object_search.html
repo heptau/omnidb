@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Advanced Object Search - OmniDB Documentation</title>
+	<title>Advanced Object Search – OmniDB Documentation</title>
 	<meta name="description" content="How OmniDB's Advanced Object Search used to let users pattern-match across database objects and table data, including its currently disabled entry point.">
 	<link rel="canonical" href="https://www.omnidb.net/en/advanced_object_search.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/advanced_object_search.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,30 +123,30 @@
 		</nav>
 		<main>
 		<h1>Advanced Object Search</h1>
-<p><strong>Note:</strong> this feature is not available in the current release. Its tree
-menu entry is commented out, and the frontend functions and Go backend handler
-it depended on no longer exist — it was not carried over during the Go rewrite,
-and reviving it would mean building it again rather than flipping a switch. The
-rest of this chapter is kept as a description of how it used to work, for
+<p><strong>Note:</strong> this feature is not available in the current release. Its tree
+menu entry is commented out, and the frontend functions and Go backend handler
+it depended on no longer exist — it was not carried over during the Go rewrite,
+and reviving it would mean building it again rather than flipping a switch. The
+rest of this chapter is kept as a description of how it used to work, for
 historical reference.</p>
 <p>Advanced Object Search let users apply pattern matching to search database
-objects and table data — the default SQL <code>LIKE</code> operator, or complex regular
+objects and table data — the default SQL <code>LIKE</code> operator, or complex regular
 expressions.</p>
-<p>You can access the Advanced Object Search feature by right clicking in a specific
-database node in the tree:</p>
+<p>You can access the Advanced Object Search feature by right clicking in a specific
+database node in the tree:</p>
 <p><img alt="" src="../assets/img/image_196.webp"/></p>
-<p>The interface allows you to filter categories of objects, schemas where
-searchs will be executed and also to limit the search space when the Data
-category is selected, so you search for a pattern in a subset of tables:</p>
+<p>The interface allows you to filter categories of objects, schemas where
+searchs will be executed and also to limit the search space when the Data
+category is selected, so you search for a pattern in a subset of tables:</p>
 <p><img alt="" src="../assets/img/image_197.webp"/></p>
-<p>After filling the fields and running OmniDB will perform the search using several
-threads that will speed up the process by running in parallel (It is customizable.
-For more info, see <a href="deploying_omnidb-server.html">Deploying omnidb-server</a>).</p>
-<p>When the search is finished OmniDB will display the result in a tree:</p>
+<p>After filling the fields and running OmniDB will perform the search using several
+threads that will speed up the process by running in parallel (It is customizable.
+For more info, see <a href="deploying_omnidb-server.html">Deploying omnidb-server</a>).</p>
+<p>When the search is finished OmniDB will display the result in a tree:</p>
 <p><img alt="" src="../assets/img/image_198.webp"/></p>
-<p>For more details about the search in each category, right click the desired node
-and select 'See More'. OmniDB will open a query tab with the SQL command used to
-perform that specific search. Just run the command to get the results:</p>
+<p>For more details about the search in each category, right click the desired node
+and select 'See More'. OmniDB will open a query tab with the SQL command used to
+perform that specific search. Just run the command to get the results:</p>
 <p><img alt="" src="../assets/img/image_199.webp"/>
 <img alt="" src="../assets/img/image_200.webp"/></p>
 		</main>

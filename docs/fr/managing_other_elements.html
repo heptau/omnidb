@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Gérer les autres éléments - Documentation OmniDB</title>
+	<title>Gérer les autres éléments — Documentation OmniDB</title>
 	<meta name="description" content="Gérez les objets PostgreSQL autres que les tables, comme les séquences, à l'aide des modèles SQL modifiables d'OmniDB pour les créer, les modifier et les supprimer.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/managing_other_elements.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_other_elements.html">
@@ -89,53 +89,53 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
-			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Travailler avec les données</span>
-			<a href="managing_databases.html">Gérer les bases de données</a>
-			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
-			<a href="managing_table_data.html">Gérer les données des tables</a>
-			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
-			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
-			<a href="visualizing_data.html">Visualiser les données</a>
-			<a href="managing_other_elements.html" class="active">Gérer les autres éléments</a>
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html" class="active">Gérer les autres éléments</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avancé</span>
 			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
-			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Serveur et outils</span>
+			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
-			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Référence</span>
-			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Gérer les autres éléments</h1>
-<p>Toutes les structures PostgreSQL peuvent être gérées à l'aide de <em>modèles SQL</em>. Cela offre à
-l'utilisateur davantage de puissance que l'utilisation de formulaires graphiques pour manipuler les structures.</p>
-<p>Prenons par exemple les séquences du schéma <code>public</code> de la base de données <code>ds2</code>. Pour
-créer une nouvelle séquence, faites un clic droit sur le nœud <em>Sequences</em> (Séquences), et choisissez
-<em>Create Sequence</em> (Créer une séquence).</p>
+		<h1>Gérer les autres éléments</h1>
+<p>Toutes les structures PostgreSQL peuvent être gérées à l’aide de <em>modèles SQL</em>. Cela offre à
+l’utilisateur davantage de puissance que l’utilisation de formulaires graphiques pour manipuler les structures.</p>
+<p>Prenons par exemple les séquences du schéma <code>public</code> de la base de données <code>ds2</code>. Pour
+créer une nouvelle séquence, faites un clic droit sur le nœud <em>Sequences</em> (Séquences), et choisissez
+<em>Create Sequence</em> (Créer une séquence).</p>
 <p><img alt="" src="../assets/img/image_062.webp" /></p>
 <p><img alt="" src="../assets/img/image_063.webp" /></p>
-<p>Après avoir changé le nom de la séquence, vous pouvez décommenter d'autres options de la commande et les
-définir selon vos besoins. Lorsque la commande complète vous convient, il suffit de l'exécuter et la nouvelle
-séquence sera créée :</p>
+<p>Après avoir changé le nom de la séquence, vous pouvez décommenter d’autres options de la commande et les
+définir selon vos besoins. Lorsque la commande complète vous convient, il suffit de l’exécuter et la nouvelle
+séquence sera créée :</p>
 <p><img alt="" src="../assets/img/image_064.webp" /></p>
-<p>Par un clic droit sur une séquence existante, vous pouvez la modifier ou la supprimer. Cela fonctionne de la
-même manière que la création, en utilisant un modèle SQL que l'utilisateur peut modifier.</p>
+<p>Par un clic droit sur une séquence existante, vous pouvez la modifier ou la supprimer. Cela fonctionne de la
+même manière que la création, en utilisant un modèle SQL que l’utilisateur peut modifier.</p>
 <p><img alt="" src="../assets/img/image_065.webp" /></p>
 <p><img alt="" src="../assets/img/image_066.webp" /></p>
 <p><img alt="" src="../assets/img/image_067.webp" /></p>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Instalace - Dokumentace OmniDB</title>
+	<title>Instalace – Dokumentace OmniDB</title>
 	<meta name="description" content="Nainstalujte OmniDB jako desktopovou aplikaci nebo serverový balíček na macOS, Linuxu nebo Windows, připojte se k Oracle bez dalšího klientského softwaru a najděte soubor uživatelské databáze.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/installation.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/installation.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html" class="active">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,7 +118,7 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
@@ -129,16 +129,16 @@
 				poskytuje zjednodušené okno webového prohlížeče pro použití rozhraní OmniDB bez jakéhokoli
 				dalšího nastavování. Působí prostě jako desktopová aplikace.</li>
 			<li><strong>Server OmniDB</strong>: Spouští webový server na náhodném portu, nebo na portu zadaném
-				uživatelem. Uživatel se k němu musí připojit přes webový prohlížeč. Poskytuje správu
-				uživatelů a je ideální pro provoz na serveru v síti uživatelů.</li>
+				uživatelem. Uživatel se k němu musí připojit přes webový prohlížeč. Poskytuje správu
+				uživatelů a je ideální pro provoz na serveru v síti uživatelů.</li>
 		</ul>
-		<p>Aplikaci i server lze nainstalovat na stejný počítač.</p>
+		<p>Aplikaci i server lze nainstalovat na stejný počítač.</p>
 
 		<h3>Aplikace OmniDB</h3>
 
-		<p><strong>Důležité:</strong> Původní repozitář <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> obsahuje pouze staré verze (přibližně do roku 2020) a už se dále neudržuje — co se od té doby změnilo, najdete v části <a href="legacy_features_and_history.html">Starší funkce a historie</a>.</p>
+		<p><strong>Důležité:</strong> Původní repozitář <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> obsahuje pouze staré verze (přibližně do roku 2020) a už se dále neudržuje — co se od té doby změnilo, najdete v části <a href="legacy_features_and_history.html">Starší funkce a historie</a>.</p>
 
-		<p>Pro aktuální verze použijte <a href="https://github.com/heptau/omnidb/releases">stránku s vydáními</a> oživeného projektu. Od přepsání do Go je každé vydání jediným samostatným archivem pro danou platformu — bez instalátoru, bez nutnosti nejprve instalovat samostatný runtime:</p>
+		<p>Pro aktuální verze použijte <a href="https://github.com/heptau/omnidb/releases">stránku s vydáními</a> oživeného projektu. Od přepsání do Go je každé vydání jediným samostatným archivem pro danou platformu — bez instalátoru, bez nutnosti nejprve instalovat samostatný runtime:</p>
 
 		<ul>
 			<li>macOS (Apple Silicon nebo Intel): <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
@@ -146,72 +146,72 @@
 			<li>Windows x64: <code>OmniDB-&lt;version&gt;-win-x64.zip</code></li>
 		</ul>
 
-		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci/binárku <code>OmniDB</code> uvnitř — to je celá instalace. <strong>Sestavení pro Linux a Windows vznikají v CI při každém vydání, ale zatím nebyla ověřena na reálném hardwaru</strong>, na rozdíl od sestavení pro macOS; pokud narazíte na problém specifický pro jednu z těchto platforem, založte prosím issue.</p>
+		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci/binárku <code>OmniDB</code> uvnitř — to je celá instalace. <strong>Sestavení pro Linux a Windows vznikají v CI při každém vydání, ale zatím nebyla ověřena na reálném hardwaru</strong>, na rozdíl od sestavení pro macOS; pokud narazíte na problém specifický pro jednu z těchto platforem, založte prosím issue.</p>
 
 		<h4>Instalace přes Homebrew (pouze macOS – doporučeno)</h4>
 
-		<p>Pro uživatele macOS, kteří dávají přednost správci balíčků, je OmniDB k dispozici přes vlastní Homebrew tap:</p>
+		<p>Pro uživatele macOS, kteří dávají přednost správci balíčků, je OmniDB k dispozici přes vlastní Homebrew tap:</p>
 
 		<pre><code class="language-bash"># Instalace nejnovější verze:
 brew install --cask heptau/tap/omnidb</code></pre>
 		<pre><code class="language-bash"># Pozdější aktualizace:
 brew upgrade heptau/tap/omnidb</code></pre>
 
-		<p>Homebrew automaticky stáhne správný ZIP pro vaši architekturu (Apple Silicon nebo Intel), rozbalí ho a umístí <code>OmniDB.app</code> do vaší složky Aplikace.</p>
+		<p>Homebrew automaticky stáhne správný ZIP pro vaši architekturu (Apple Silicon nebo Intel), rozbalí ho a umístí <code>OmniDB.app</code> do vaší složky Aplikace.</p>
 
 		<p>Definice casku je udržována zde: <a href="https://github.com/heptau/homebrew-tap/blob/main/Casks/omnidb.rb">heptau/homebrew-tap – omnidb.rb</a></p>
 
 		<h4>Přímé stažení (všechny platformy)</h4>
 
-		<p>Otevřete <a href="https://github.com/heptau/omnidb/releases/latest">nejnovější vydání</a> a v jeho sekci Assets stáhněte archiv odpovídající vašemu OS/architektuře z výše uvedeného seznamu. Názvy souborů u vydání obsahují číslo verze, takže neexistuje pevná URL adresa „vždy nejnovější“, na kterou by šlo odkázat přímo — vždy použijte samotnou stránku s vydáními.</p>
+		<p>Otevřete <a href="https://github.com/heptau/omnidb/releases/latest">nejnovější vydání</a> a v jeho sekci Assets stáhněte archiv odpovídající vašemu OS/architektuře z výše uvedeného seznamu. Názvy souborů u vydání obsahují číslo verze, takže neexistuje pevná URL adresa „vždy nejnovější“, na kterou by šlo odkázat přímo — vždy použijte samotnou stránku s vydáními.</p>
 
-		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci obvyklým způsobem: na
-			macOS přetáhněte <code>OmniDB.app</code> do složky <em>Aplikace</em> a otevřete ji z
+		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci obvyklým způsobem: na
+			macOS přetáhněte <code>OmniDB.app</code> do složky <em>Aplikace</em> a otevřete ji z
 			Launchpadu/Spotlightu nebo příkazem <code>open -a OmniDB</code>; na Linuxu spusťte
 			binárku <code>OmniDB</code> přímo; na Windows spusťte <code>OmniDB.exe</code>.
 		</p>
 
 		<h3>Server OmniDB</h3>
-		<p>Stejný archiv s vydáním obsahuje také <code>omnidb-server</code> — samostatnou
+		<p>Stejný archiv s vydáním obsahuje také <code>omnidb-server</code> — samostatnou
 			binárku bez grafického rozhraní vedle desktopové aplikace (desktopová aplikace ve
-			skutečnosti tuto stejnou binárku interně spouští jako podřízený proces a vynucuje
-			režim aplikace). Spusťte ji přímo pro serverový režim dostupný z prohlížeče,
+			skutečnosti tuto stejnou binárku interně spouští jako podřízený proces a vynucuje
+			režim aplikace). Spusťte ji přímo pro serverový režim dostupný z prohlížeče,
 			bez jakéhokoli desktopového obalu:</p>
 		<pre><code class="language-bash">user@machine:~$ ./omnidb-server
 omnidb-server: listening on 127.0.0.1:52149 — open http://127.0.0.1:52149/omnidb_login/ in your browser
 </code></pre>
-		<p>OmniDB standardně naslouchá pouze na <code>127.0.0.1</code> a automaticky si vybere
+		<p>OmniDB standardně naslouchá pouze na <code>127.0.0.1</code> a automaticky si vybere
 			volný port. Obojí můžete zadat explicitně:</p>
 		<pre><code class="language-bash">user@machine:~$ ./omnidb-server -p 8080 -H 0.0.0.0
 omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_login/ in your browser
 </code></pre>
-		<p>Kompletní přehled možností a doporučená nasazení najdete v části
+		<p>Kompletní přehled možností a doporučená nasazení najdete v části
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a> (mimo jiné proč se
 			nedoporučuje vystavovat <code>-H 0.0.0.0</code> přímo internetu bez reverzní proxy
 			před ním — chybí zabudovaná podpora TLS).</p>
 
-		<h3>OmniDB s Oracle</h3>
-		<p>Ani aplikace, ani server OmniDB nevyžadují k připojení k Oracle žádný další
+		<h3>OmniDB s Oracle</h3>
+		<p>Ani aplikace, ani server OmniDB nevyžadují k připojení k Oracle žádný další
 			software — na rozdíl od předchozích vydání není potřeba samostatná instalace
-			Oracle Instant Client. Konektivita k Oracle je implementována nativně (čistě
-			v Go), takže funguje po vybalení stejným způsobem jako u každé jiné podporované
+			Oracle Instant Client. Konektivita k Oracle je implementována nativně (čistě
+			v Go), takže funguje po vybalení stejným způsobem jako u každé jiné podporované
 			databáze.</p>
 		<h3>Uživatelská databáze OmniDB</h3>
-		<p>Při prvním spuštění server i aplikace vytvoří soubor
+		<p>Při prvním spuštění server i aplikace vytvoří soubor
 			<code>~/.omnidb/omnidb-app/omnidb.db</code> (pro aplikaci OmniDB) nebo
-			<code>~/.omnidb/omnidb-server/omnidb.db</code> (pro server OmniDB) v domovském adresáři
-			uživatele, pokud ještě neexistuje — spolu s výchozím superuživatelským účtem
+			<code>~/.omnidb/omnidb-server/omnidb.db</code> (pro server OmniDB) v domovském adresáři
+			uživatele, pokud ještě neexistuje — spolu s výchozím superuživatelským účtem
 			<code>admin</code>/<code>admin</code>, se kterým se lze ihned přihlásit. Tento soubor se také
-			nazývá <strong>uživatelská databáze</strong> a obsahuje všechny uživatele, připojení a další
+			nazývá <strong>uživatelská databáze</strong> a obsahuje všechny uživatele, připojení a další
 			data aplikace. Pokud už existuje (např. po aktualizaci), OmniDB ho použije tak, jak je —
 			nikdy ho automaticky nepřepíše ani neresetuje.</p>
-		<h3>OmniDB v prohlížeči</h3>
-		<p>Nyní, když webový server běží, můžete k aplikaci OmniDB dostupné z prohlížeče
+		<h3>OmniDB v prohlížeči</h3>
+		<p>Nyní, když webový server běží, můžete k aplikaci OmniDB dostupné z prohlížeče
 			přistoupit ve svém oblíbeném prohlížeči. Do adresního řádku zadejte: <code>localhost:8000</code>
-			a stiskněte <code>Enter</code>. Pokud vše proběhlo v pořádku, uvidíte stránku podobnou této:</p>
+			a stiskněte <code>Enter</code>. Pokud vše proběhlo v pořádku, uvidíte stránku podobnou této:</p>
 		<p><img alt="" src="../assets/img/image_002.webp" /></p>
-		<p>Nyní víte, že OmniDB běží správně. V dalších kapitolách se podíváme na to,
-			jak se poprvé přihlásit, jak vytvořit uživatele a jak OmniDB používat.</p>
+		<p>Nyní víte, že OmniDB běží správně. V dalších kapitolách se podíváme na to,
+			jak se poprvé přihlásit, jak vytvořit uživatele a jak OmniDB používat.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

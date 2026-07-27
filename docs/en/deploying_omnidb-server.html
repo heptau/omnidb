@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Deploying omnidb-server - OmniDB Documentation</title>
+	<title>Deploying omnidb-server – OmniDB Documentation</title>
 	<meta name="description" content="Deploy omnidb-server safely: command-line options, binding addresses, and putting a TLS-terminating reverse proxy such as Nginx in front of it.">
 	<link rel="canonical" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
@@ -92,7 +92,7 @@
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Working with Data</span>
+			<span class="nav-group-label">Working with Data</span>
 			<a href="managing_databases.html">Managing Databases</a>
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
@@ -123,12 +123,12 @@
 		</nav>
 		<main>
 		<h1>Deploying omnidb-server</h1>
-<p><strong>Note:</strong> since the 3.6.x rewrite, <code>omnidb-server</code> is a single native binary
+<p><strong>Note:</strong> since the 3.6.x rewrite, <code>omnidb-server</code> is a single native binary
 (no separate webserver/websocket-server pair, no Django/CherryPy/Tornado) that answers
 every request itself over one port, using long-polling rather than websockets for
 background query/console/monitoring updates. There is also no configuration file or
-built-in TLS support anymore — everything is set via command-line flags, and any
-TLS termination must be handled by a reverse proxy in front of it.</p>
+built-in TLS support anymore — everything is set via command-line flags, and any
+TLS termination must be handled by a reverse proxy in front of it.</p>
 <h4>Command options</h4>
 <pre><code class="language-bash">Usage: omnidb-server [options]
 
@@ -143,40 +143,40 @@ Options:
 </code></pre>
 <ul>
 <li>
-<p><code>-H</code> specifies the address to listen on. Defaults to <code>127.0.0.1</code>
+<p><code>-H</code> specifies the address to listen on. Defaults to <code>127.0.0.1</code>
 (loopback-only) — pass <code>0.0.0.0</code> to accept connections from other machines,
-or a specific interface address.</p>
+or a specific interface address.</p>
 </li>
 <li>
-<p><code>-p</code> specifies the port to listen on, used in the browser's URL when
-accessing OmniDB directly. If omitted, the OS picks a free port and prints it
+<p><code>-p</code> specifies the port to listen on, used in the browser’s URL when
+accessing OmniDB directly. If omitted, the OS picks a free port and prints it
 to stderr on startup.</p>
 </li>
 <li>
-<p><code>-d</code> lets you choose the folder that stores <code>omnidb.db</code> (the application
-database) and the <code>temp</code> folder used for exported files. With this option it's
-possible to run several instances of <code>omnidb-server</code>, each pointing at a
-different directory — handy for Docker deployments where you mount a volume
+<p><code>-d</code> lets you choose the folder that stores <code>omnidb.db</code> (the application
+database) and the <code>temp</code> folder used for exported files. With this option it’s
+possible to run several instances of <code>omnidb-server</code>, each pointing at a
+different directory — handy for Docker deployments where you mount a volume
 there.</p>
 </li>
 </ul>
-<p><strong>Security note:</strong> a server started with <code>-H</code> set to anything other than
-loopback should never also be started with <code>-A</code>/<code>--app</code> — the desktop
+<p><strong>Security note:</strong> a server started with <code>-H</code> set to anything other than
+loopback should never also be started with <code>-A</code>/<code>--app</code> — the desktop
 auto-login link that mode generates is only meant to be reachable locally, so
 <code>-A</code> always forces loopback binding regardless of <code>-H</code>, ignoring it entirely
 rather than risk that combination.</p>
-<p>Let's take a look on how to deploy <code>omnidb-server</code> in different scenarios:</p>
+<p>Let’s take a look on how to deploy <code>omnidb-server</code> in different scenarios:</p>
 <h4>Deploying OmniDB directly</h4>
-<p>Running <code>omnidb-server</code> with <code>-H 0.0.0.0</code> (or a specific public interface) makes
-it directly reachable from other machines — but since there is no built-in TLS
+<p>Running <code>omnidb-server</code> with <code>-H 0.0.0.0</code> (or a specific public interface) makes
+it directly reachable from other machines — but since there is no built-in TLS
 support, this means plain, unencrypted HTTP. This is <strong>not recommended</strong> for
-anything beyond a trusted local network: session cookies and query results would
-otherwise travel in the clear. For anything reachable from the wider internet, put
-a TLS-terminating reverse proxy (see below) in front instead of exposing
+anything beyond a trusted local network: session cookies and query results would
+otherwise travel in the clear. For anything reachable from the wider internet, put
+a TLS-terminating reverse proxy (see below) in front instead of exposing
 <code>omnidb-server</code> directly.</p>
-<h4>Deploying OmniDB behind a reverse proxy</h4>
-<p>The recommended approach: run <code>omnidb-server</code> listening only on <code>127.0.0.1</code>
-(the default, so <code>-H</code> can be omitted) and let a reverse proxy such as
+<h4>Deploying OmniDB behind a reverse proxy</h4>
+<p>The recommended approach: run <code>omnidb-server</code> listening only on <code>127.0.0.1</code>
+(the default, so <code>-H</code> can be omitted) and let a reverse proxy such as
 <a href="https://nginx.org" target="_blank" rel="noopener">Nginx</a> or
 <a href="https://caddyserver.com" target="_blank" rel="noopener">Caddy</a> handle
 TLS termination and forward plain HTTP to it locally.</p>
@@ -204,8 +204,8 @@ TLS termination and forward plain HTTP to it locally.</p>
 }
 </code></pre>
 <p>Since everything (including background query/console updates) is served over
-plain HTTP long-polling rather than websockets, a single <code>location /</code> block
-covering the whole app is all that's needed — there's no separate websocket
+plain HTTP long-polling rather than websockets, a single <code>location /</code> block
+covering the whole app is all that’s needed — there’s no separate websocket
 upgrade path or <code>/wss</code> pattern to route specially anymore.</p>
 		</main>
 	</div>

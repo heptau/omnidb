@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Psaní SQL dotazů - Dokumentace OmniDB</title>
+	<title>Psaní SQL dotazů – Dokumentace OmniDB</title>
 	<meta name="description" content="Vše, co nabízí karta SQL dotazů v OmniDB: editor, spuštění a zrušení dotazu, automatické potvrzování (autocommit), historie dotazů, export do CSV, TSV, XLSX, JSON, XML nebo Markdown a automatické doplňování SQL.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/writing_sql_queries.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html" class="active">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,7 +118,7 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
@@ -127,84 +127,84 @@
 následující prvky:</p>
 <p><img alt="" src="../assets/img/image_049.webp" /></p>
 <ul>
-<li><strong>1) Hlavička karty</strong>: Vidíte zde název karty a ikonu pro její zavření. Pokud
+<li><strong>1) Hlavička karty</strong>: Vidíte zde název karty a ikonu pro její zavření. Pokud
 na kartě právě probíhá dotaz, zobrazí se indikátor. Pokud dotaz na kartě
-doběhne a vy zrovna pracujete na jiné kartě, zobrazí se zelený indikátor.
+doběhne a vy zrovna pracujete na jiné kartě, zobrazí se zelený indikátor.
 Dvojitým kliknutím na název karty ji můžete přejmenovat.</li>
 <li><strong>2) Přidat kartu</strong>: Rychle můžete přidat další vnitřní kartu kliknutím na
 ikonu plus.</li>
 <li><strong>3) SQL editor</strong>: Plnohodnotný SQL editor se zvýrazňováním syntaxe SQL,
-funkcí Najít a nahradit (<code>Ctrl-F</code> a <code>Ctrl-H</code>) a komponentou automatického
+funkcí Najít a nahradit (<code>Ctrl-F</code> a <code>Ctrl-H</code>) a komponentou automatického
 doplňování, popsanou níže. Úplný seznam klávesových zkratek editoru (výběr,
-více kurzorů, navigace, skládání kódu atd.) najdete v kapitole
+více kurzorů, navigace, skládání kódu atd.) najdete v kapitole
 <a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>.</li>
-<li><strong>4) Spustit (Execute)</strong>: Text obsažený v SQL editoru se po kliknutí na
+<li><strong>4) Spustit (Execute)</strong>: Text obsažený v SQL editoru se po kliknutí na
 toto tlačítko (nebo použití zkratky, ve výchozím nastavení <code>Alt-Q</code>) spustí
-proti aktuálně aktivní databázi. Pokud je v SQL editoru vybraný text, spustí se
+proti aktuálně aktivní databázi. Pokud je v SQL editoru vybraný text, spustí se
 pouze tento vybraný text. Jakmile příkaz běží, zobrazí se červené tlačítko
 <em>Zrušit</em> (Cancel), které umožňuje spuštění zrušit (nebo pomocí zkratky, ve
 výchozím nastavení <code>Alt-C</code>).</li>
 <li><strong>5) Formátovat SQL (Indent SQL)</strong>: Toto tlačítko zformátuje jakýkoli SQL kód
-napsaný v SQL editoru (ve výchozím nastavení zkratka <code>Alt-S</code>, na macOS
+napsaný v SQL editoru (ve výchozím nastavení zkratka <code>Alt-S</code>, na macOS
 <code>Ctrl-S</code>).</li>
 <li><strong>6) Historie dotazů (Query History)</strong>: Všechny příkazy spuštěné proti
 aktuální databázi se ukládají do historie dotazů, ke které se dostanete
-kliknutím na toto tlačítko. Můžete také filtrovat podle data a textu, abyste
+kliknutím na toto tlačítko. Můžete také filtrovat podle data a textu, abyste
 našli potřebný SQL příkaz.</li>
 <li><strong>7) Explain (pouze PostgreSQL)</strong>: Zavolá váš SQL dotaz proti PostgreSQL s
-příkazem <code>EXPLAIN</code> na začátku. Výsledky se zobrazí v textové i grafické podobě
-na kartě Explain (podrobnosti naleznete v kapitole
+příkazem <code>EXPLAIN</code> na začátku. Výsledky se zobrazí v textové i grafické podobě
+na kartě Explain (podrobnosti naleznete v kapitole
 <a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>).</li>
 <li><strong>8) Explain Analyze (pouze PostgreSQL)</strong>: Stejné jako tlačítko Explain, ale
-dotaz se volá s příkazem <code>EXPLAIN ANALYZE</code>, který dotaz skutečně provede.</li>
+dotaz se volá s příkazem <code>EXPLAIN ANALYZE</code>, který dotaz skutečně provede.</li>
 <li><strong>9) Autocommit (pouze PostgreSQL)</strong>: Když je zapnuto, každý spuštěný dotaz
 se ihned potvrdí (commit) do databáze. Když je vypnuto, OmniDB zahájí
-transakci a po spuštění dotazu se v rozhraní zobrazí tlačítka umožňující
+transakci a po spuštění dotazu se v rozhraní zobrazí tlačítka umožňující
 uživateli provést <em>Commit</em> nebo <em>Rollback</em>. Uživatel může transakci také
-ponechat otevřenou a spouštět další příkazy.</li>
+ponechat otevřenou a spouštět další příkazy.</li>
 <li><strong>10) Stav backendu (pouze PostgreSQL)</strong>: Když otevřete novou kartu
 dotazu, stav je „Not Connected“ (Nepřipojeno), protože OmniDB ještě
 nespustilo backend PostgreSQL. Když spustíte první dotaz, OmniDB spustí nový
-backend a propojí jej s kartou dotazu (každá karta dotazu bude mít vlastní
+backend a propojí jej s kartou dotazu (každá karta dotazu bude mít vlastní
 backend). Stav backendu (<em>idle</em>, <em>active</em>, <em>idle in transaction</em> atd.) se
-zobrazí v tomto poli. Když kartu dotazu zavřete, OmniDB backend ukončí.</li>
+zobrazí v tomto poli. Když kartu dotazu zavřete, OmniDB backend ukončí.</li>
 <li><strong>11) Formát exportního souboru</strong>: Může být CSV, TSV, XLSX, JSON, XML nebo
 Markdown.</li>
 <li><strong>12) Export do souboru</strong>: Kliknutím na toto tlačítko OmniDB spustí aktuální
-dotaz a exportuje výsledky do souboru. V desktopové aplikaci se otevře nativní
+dotaz a exportuje výsledky do souboru. V desktopové aplikaci se otevře nativní
 dialog „Uložit jako", ve kterém rovnou zvolíte, kam soubor uložit. Při běhu jako
 prohlížečový <a href="deploying_omnidb-server.html">OmniDB Server</a> se soubor
-nejprve uloží do dočasné složky na serveru a rozhraní pak zobrazí odkaz, pomocí
+nejprve uloží do dočasné složky na serveru a rozhraní pak zobrazí odkaz, pomocí
 kterého jej lze stáhnout přes prohlížeč.</li>
 <li><strong>13) Výsledky dat</strong>: Pokud je dotaz typu <code>SELECT</code>, zobrazí se mřížka s
-výsledky. Pokud jde o příkaz DML nebo DDL, zobrazí se zpráva vrácená
+výsledky. Pokud jde o příkaz DML nebo DDL, zobrazí se zpráva vrácená
 databázovým systémem.</li>
 <li><strong>14) Zprávy (pouze PostgreSQL)</strong>: Zde se zobrazí veškeré zprávy (například
 ty vydané příkazem <code>RAISE NOTICE</code>).</li>
 <li><strong>15) Zobrazení Explain (pouze PostgreSQL)</strong>: Zobrazuje plnohodnotnou
-komponentu pro prohlížení prováděcího plánu PostgreSQL v textové nebo
+komponentu pro prohlížení prováděcího plánu PostgreSQL v textové nebo
 grafické podobě.</li>
 </ul>
 <p>Po spuštění se karty ukládají také do uživatelské databáze OmniDB (název i
 obsah), takže při příštím otevření OmniDB je uvidíte všechny znovu otevřené.
 Každý příkaz, který spustíte na kartě dotazu, se navíc ukládá do historie
-dotazů a také do souboru <code>omnidb.log</code>.</p>
+dotazů a také do souboru <code>omnidb.log</code>.</p>
 <h4>Automatické doplňování SQL</h4>
 <p>SQL editor má funkci, která velmi pomáhá při psaní nových dotazů: doplňování
-SQL kódu. Díky ní je možné doplňovat sloupce obsažené v tabulce, na kterou
+SQL kódu. Díky ní je možné doplňovat sloupce obsažené v tabulce, na kterou
 odkazuje alias. Rozhraní automatického doplňování otevřete tak, že napíšete
-alias, znak <code>.</code> a poté stisknete <code>Ctrl-Space</code>:</p>
+alias, znak <code>.</code> a poté stisknete <code>Ctrl-Space</code>:</p>
 <p><img alt="" src="../assets/img/image_050.webp" /></p>
-<p>Pokud uživatel spustí automatické doplňování s kurzorem, který není blízko
+<p>Pokud uživatel spustí automatické doplňování s kurzorem, který není blízko
 aliasu tabulky, komponenta zobrazí více kategorií dat. Psaním do filtračního
 textového pole se prvky ve všech kategoriích filtrují:</p>
 <p><img alt="" src="../assets/img/image_051.webp" /></p>
-<p>Komponenta automatického doplňování dokáže rozpoznat i některé kontextové
-informace. Pokud například napíšete název schématu, poté znak <code>.</code> a stisknete
-<code>Ctrl-Space</code>, budete moci filtrovat pouze mezi objekty obsaženými v daném
+<p>Komponenta automatického doplňování dokáže rozpoznat i některé kontextové
+informace. Pokud například napíšete název schématu, poté znak <code>.</code> a stisknete
+<code>Ctrl-Space</code>, budete moci filtrovat pouze mezi objekty obsaženými v daném
 schématu:</p>
 <p><img alt="" src="../assets/img/image_052.webp" /></p>
-<p>Upozorňujeme, že u jiných databázových systémů než PostgreSQL funguje
+<p>Upozorňujeme, že u jiných databázových systémů než PostgreSQL funguje
 automatické doplňování pouze pro sloupce tabulek.</p>
 		</main>
 	</div>

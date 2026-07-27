@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Implementar o omnidb-server - Documentação OmniDB</title>
+	<title>Implementar o omnidb-server – Documentação OmniDB</title>
 	<meta name="description" content="Implemente o omnidb-server com segurança: opções de linha de comandos, endereços de vinculação, e como colocar um proxy inverso com terminação TLS, como o Nginx, à sua frente.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
@@ -110,24 +110,24 @@
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html" class="active">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html" class="active">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Implementar o omnidb-server</h1>
-<p><strong>Nota:</strong> desde a reescrita 3.6.x, o <code>omnidb-server</code> é um único binário nativo
-(sem o par separado de servidor web/servidor websocket, sem Django/CherryPy/Tornado) que responde
-a todos os pedidos por si próprio através de uma única porta, usando long-polling em vez de websockets para
+		<h1>Implementar o omnidb-server</h1>
+<p><strong>Nota:</strong> desde a reescrita 3.6.x, o <code>omnidb-server</code> é um único binário nativo
+(sem o par separado de servidor web/servidor websocket, sem Django/CherryPy/Tornado) que responde
+a todos os pedidos por si próprio através de uma única porta, usando long-polling em vez de websockets para
 as atualizações em segundo plano de consultas/consola/monitorização. Também já não existe ficheiro de configuração nem
-suporte de TLS incorporado — tudo é definido através de flags de linha de comandos, e qualquer
+suporte de TLS incorporado — tudo é definido através de flags de linha de comandos, e qualquer
 terminação de TLS tem de ser gerida por um proxy inverso à sua frente.</p>
 <h4>Opções de linha de comandos</h4>
 <pre><code class="language-bash">Usage: omnidb-server [options]
@@ -143,43 +143,43 @@ Options:
 </code></pre>
 <ul>
 <li>
-<p><code>-H</code> especifica o endereço em que escutar. A predefinição é <code>127.0.0.1</code>
+<p><code>-H</code> especifica o endereço em que escutar. A predefinição é <code>127.0.0.1</code>
 (apenas loopback) — passe <code>0.0.0.0</code> para aceitar ligações de outras máquinas,
-ou o endereço de uma interface específica.</p>
+ou o endereço de uma interface específica.</p>
 </li>
 <li>
-<p><code>-p</code> especifica a porta em que escutar, usada no URL do browser ao
-aceder diretamente ao OmniDB. Se omitida, o sistema operativo escolhe uma porta livre e imprime-a
-para o stderr ao iniciar.</p>
+<p><code>-p</code> especifica a porta em que escutar, usada no URL do browser ao
+aceder diretamente ao OmniDB. Se omitida, o sistema operativo escolhe uma porta livre e imprime-a
+para o stderr ao iniciar.</p>
 </li>
 <li>
-<p><code>-d</code> permite escolher a pasta que armazena o <code>omnidb.db</code> (a base de dados da
-aplicação) e a pasta <code>temp</code> usada para ficheiros exportados. Com esta opção é
-possível executar várias instâncias do <code>omnidb-server</code>, cada uma a apontar para uma
+<p><code>-d</code> permite escolher a pasta que armazena o <code>omnidb.db</code> (a base de dados da
+aplicação) e a pasta <code>temp</code> usada para ficheiros exportados. Com esta opção é
+possível executar várias instâncias do <code>omnidb-server</code>, cada uma a apontar para uma
 pasta diferente — útil para implementações Docker onde se monta um volume
 nesse local.</p>
 </li>
 </ul>
 <p><strong>Nota de segurança:</strong> um servidor iniciado com <code>-H</code> definido como qualquer valor diferente de
-loopback nunca deve também ser iniciado com <code>-A</code>/<code>--app</code> — a ligação de
-início de sessão automático de ambiente de trabalho que esse modo gera destina-se apenas a ser acedida localmente, pelo que
-<code>-A</code> força sempre a vinculação a loopback independentemente de <code>-H</code>, ignorando-o por completo
+loopback nunca deve também ser iniciado com <code>-A</code>/<code>--app</code> — a ligação de
+início de sessão automático de ambiente de trabalho que esse modo gera destina-se apenas a ser acedida localmente, pelo que
+<code>-A</code> força sempre a vinculação a loopback independentemente de <code>-H</code>, ignorando-o por completo
 em vez de arriscar essa combinação.</p>
 <p>Vejamos como implementar o <code>omnidb-server</code> em diferentes cenários:</p>
-<h4>Implementar o OmniDB diretamente</h4>
+<h4>Implementar o OmniDB diretamente</h4>
 <p>Executar o <code>omnidb-server</code> com <code>-H 0.0.0.0</code> (ou uma interface pública específica) torna-o
-diretamente acessível a partir de outras máquinas — mas, como não existe suporte de TLS
+diretamente acessível a partir de outras máquinas — mas, como não existe suporte de TLS
 incorporado, isto significa HTTP simples, não encriptado. Isto <strong>não é recomendado</strong> para
-seja o que for além de uma rede local de confiança: os cookies de sessão e os resultados de consultas de outro modo
-viajariam sem qualquer proteção. Para qualquer coisa acessível a partir da internet em geral, coloque
+seja o que for além de uma rede local de confiança: os cookies de sessão e os resultados de consultas de outro modo
+viajariam sem qualquer proteção. Para qualquer coisa acessível a partir da internet em geral, coloque
 um proxy inverso com terminação TLS (ver abaixo) à frente, em vez de expor
 o <code>omnidb-server</code> diretamente.</p>
-<h4>Implementar o OmniDB atrás de um proxy inverso</h4>
-<p>A abordagem recomendada: execute o <code>omnidb-server</code> a escutar apenas em <code>127.0.0.1</code>
-(a predefinição, pelo que <code>-H</code> pode ser omitido) e deixe um proxy inverso como o
+<h4>Implementar o OmniDB atrás de um proxy inverso</h4>
+<p>A abordagem recomendada: execute o <code>omnidb-server</code> a escutar apenas em <code>127.0.0.1</code>
+(a predefinição, pelo que <code>-H</code> pode ser omitido) e deixe um proxy inverso como o
 <a href="https://nginx.org" target="_blank" rel="noopener">Nginx</a> ou o
 <a href="https://caddyserver.com" target="_blank" rel="noopener">Caddy</a> tratar da
-terminação de TLS e encaminhar HTTP simples para ele localmente.</p>
+terminação de TLS e encaminhar HTTP simples para ele localmente.</p>
 <pre><code class="language-bash">./omnidb-server -p 9000
 </code></pre>
 <p>Exemplo de configuração do Nginx:</p>
@@ -205,8 +205,8 @@ terminação de TLS e encaminhar HTTP simples para ele localmente.</p>
 </code></pre>
 <p>Como tudo (incluindo as atualizações em segundo plano de consultas/consola) é servido através de
 long-polling HTTP simples em vez de websockets, basta um único bloco <code>location /</code>
-a cobrir toda a aplicação — já não existe um caminho separado de atualização
-para websocket nem um padrão <code>/wss</code> a encaminhar de forma especial.</p>
+a cobrir toda a aplicação — já não existe um caminho separado de atualização
+para websocket nem um padrão <code>/wss</code> a encaminhar de forma especial.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Créer, modifier et supprimer des tables - Documentation OmniDB</title>
+	<title>Créer, modifier et supprimer des tables — Documentation OmniDB</title>
 	<meta name="description" content="Créez, modifiez et supprimez des tables de base de données dans OmniDB à l'aide de modèles SQL modifiables, ainsi que des graphes de relations de schéma.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
@@ -89,62 +89,62 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
-			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Travailler avec les données</span>
-			<a href="managing_databases.html">Gérer les bases de données</a>
-			<a href="creating_changing_and_removing_tables.html" class="active">Créer, modifier et supprimer des tables</a>
-			<a href="managing_table_data.html">Gérer les données des tables</a>
-			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
-			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
-			<a href="visualizing_data.html">Visualiser les données</a>
-			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html" class="active">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avancé</span>
 			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
-			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Serveur et outils</span>
+			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
-			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Référence</span>
-			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Créer, modifier et supprimer des tables</h1>
-<p>Les structures de table — création, modification et suppression — sont gérées via des <em>modèles SQL</em>
-modifiables plutôt que par un formulaire graphique. Cela vous offre un contrôle plus direct qu'un concepteur
-visuel de type « pointer-cliquer », au prix de devoir écrire un peu de SQL vous-même : OmniDB pré-remplit un
-modèle de départ fonctionnel que vous modifiez avant de l'exécuter.</p>
-<h4>Créer des tables</h4>
-<p>Nous allons créer des tables d'exemple (<em>customers</em> et <em>addresses</em>) dans la base de données
-<code>testdb</code> à laquelle nous nous sommes connectés plus tôt. Faites un clic droit sur le nœud
-<strong>Tables</strong> et sélectionnez l'action <strong>Create Table</strong> (Créer une table). Un nouvel
-onglet Requête s'ouvre, pré-rempli avec un modèle <code>CREATE TABLE</code> pour le schéma courant.</p>
-<p>Modifiez le modèle pour obtenir la table souhaitée — pour <em>customers</em>, une clé primaire que
-<em>addresses</em> référencera plus tard :</p>
+		<h1>Créer, modifier et supprimer des tables</h1>
+<p>Les structures de table — création, modification et suppression — sont gérées via des <em>modèles SQL</em>
+modifiables plutôt que par un formulaire graphique. Cela vous offre un contrôle plus direct qu’un concepteur
+visuel de type « pointer-cliquer», au prix de devoir écrire un peu de SQL vous-même : OmniDB pré-remplit un
+modèle de départ fonctionnel que vous modifiez avant de l’exécuter.</p>
+<h4>Créer des tables</h4>
+<p>Nous allons créer des tables d’exemple (<em>customers</em> et <em>addresses</em>) dans la base de données
+<code>testdb</code> à laquelle nous nous sommes connectés plus tôt. Faites un clic droit sur le nœud
+<strong>Tables</strong> et sélectionnez l’action <strong>Create Table</strong> (Créer une table). Un nouvel
+onglet Requête s’ouvre, pré-rempli avec un modèle <code>CREATE TABLE</code> pour le schéma courant.</p>
+<p>Modifiez le modèle pour obtenir la table souhaitée — pour <em>customers</em>, une clé primaire que
+<em>addresses</em> référencera plus tard :</p>
 <pre><code class="language-sql">CREATE TABLE public.customers (
 	cust_id serial PRIMARY KEY,
 	cust_name varchar(100) NOT NULL
 );
 </code></pre>
-<p>Exécutez l'instruction (de la même manière que pour n'importe quelle requête). Faites un clic droit sur le
-nœud d'arborescence <em>Tables</em> et cliquez sur <em>Refresh</em> (Actualiser) — la nouvelle table apparaît
-désormais en dessous. En laissant <em>customers</em> sélectionnée dans l'arborescence, vous pouvez inspecter ses
-<em>Properties</em> (Propriétés) et son <em>DDL</em> générés dans le panneau situé à côté de l'arborescence, le
-même panneau utilisé pour tous les autres types d'objets.</p>
-<p>Créez maintenant <em>addresses</em>, avec une clé étrangère pointant vers <em>customers</em> :</p>
+<p>Exécutez l’instruction (de la même manière que pour n’importe quelle requête). Faites un clic droit sur le
+nœud d’arborescence <em>Tables</em> et cliquez sur <em>Refresh</em> (Actualiser) — la nouvelle table apparaît
+désormais en dessous. En laissant <em>customers</em> sélectionnée dans l’arborescence, vous pouvez inspecter ses
+<em>Properties</em> (Propriétés) et son <em>DDL</em> générés dans le panneau situé à côté de l’arborescence, le
+même panneau utilisé pour tous les autres types d’objets.</p>
+<p>Créez maintenant <em>addresses</em>, avec une clé étrangère pointant vers <em>customers</em> :</p>
 <pre><code class="language-sql">CREATE TABLE public.addresses (
 	add_id serial PRIMARY KEY,
 	add_street varchar(200) NOT NULL,
@@ -152,27 +152,27 @@ même panneau utilisé pour tous les autres types d'objets.</p>
 	cust_id integer NOT NULL REFERENCES public.customers (cust_id)
 );
 </code></pre>
-<p>À ce stade, il existe deux tables liées dans le schéma <code>public</code>. Vous pouvez visualiser la structure
-du schéma grâce à la fonctionnalité de graphe : faites un clic droit sur le nœud du schéma <code>public</code>
-et sélectionnez <em>Render Graph &gt; Simple Graph</em> (Générer un graphe &gt; Graphe simple) pour n'afficher
-que les tables et leurs relations, ou <em>Render Graph &gt; Complete Graph</em> (Graphe complet) pour inclure
-également les colonnes et les contraintes. Les deux s'affichent sous forme de diagramme interactif,
-déplaçable et modifiable en zoom.</p>
-<h4>Modifier des tables</h4>
-<p>Pour modifier une table existante — par exemple, ajouter une colonne à <em>customers</em> — faites un clic
-droit sur le nœud de la table et sélectionnez <em>Table Actions &gt; Alter Table</em> (Actions sur la table &gt;
-Modifier la table). Cela ouvre un onglet Requête avec un modèle <code>ALTER TABLE</code> que vous modifiez puis
-exécutez, selon le même principe que pour la création de table :</p>
+<p>À ce stade, il existe deux tables liées dans le schéma <code>public</code>. Vous pouvez visualiser la structure
+du schéma grâce à la fonctionnalité de graphe : faites un clic droit sur le nœud du schéma <code>public</code>
+et sélectionnez <em>Render Graph &gt ; Simple Graph</em> (Générer un graphe &gt ; Graphe simple) pour n’afficher
+que les tables et leurs relations, ou <em>Render Graph &gt ; Complete Graph</em> (Graphe complet) pour inclure
+également les colonnes et les contraintes. Les deux s’affichent sous forme de diagramme interactif,
+déplaçable et modifiable en zoom.</p>
+<h4>Modifier des tables</h4>
+<p>Pour modifier une table existante — par exemple, ajouter une colonne à <em>customers</em> — faites un clic
+droit sur le nœud de la table et sélectionnez <em>Table Actions &gt ; Alter Table</em> (Actions sur la table &gt ;
+Modifier la table). Cela ouvre un onglet Requête avec un modèle <code>ALTER TABLE</code> que vous modifiez puis
+exécutez, selon le même principe que pour la création de table :</p>
 <pre><code class="language-sql">ALTER TABLE public.customers ADD COLUMN cust_age integer;
 </code></pre>
-<p>Toute erreur renvoyée par la base de données — par exemple en essayant d'ajouter une colonne dont le nom
-existe déjà — s'affiche de la même manière que pour n'importe quelle requête échouée : dans le panneau
-Messages de l'onglet de requête, avec la commande exacte et le texte de l'erreur renvoyée par la base de
+<p>Toute erreur renvoyée par la base de données — par exemple en essayant d’ajouter une colonne dont le nom
+existe déjà — s’affiche de la même manière que pour n’importe quelle requête échouée : dans le panneau
+Messages de l’onglet de requête, avec la commande exacte et le texte de l’erreur renvoyée par la base de
 données.</p>
-<h4>Supprimer des tables</h4>
-<p>Pour supprimer une table, faites un clic droit sur le nœud de la table et sélectionnez <em>Table Actions &gt;
-Drop Table</em> (Actions sur la table &gt; Supprimer la table). Cela ouvre également un modèle modifiable
-(<code>DROP TABLE ...</code>) plutôt que de supprimer immédiatement — vérifiez-le et exécutez-le lorsque vous
+<h4>Supprimer des tables</h4>
+<p>Pour supprimer une table, faites un clic droit sur le nœud de la table et sélectionnez <em>Table Actions &gt ;
+Drop Table</em> (Actions sur la table &gt ; Supprimer la table). Cela ouvre également un modèle modifiable
+(<code>DROP TABLE ...</code>) plutôt que de supprimer immédiatement — vérifiez-le et exécutez-le lorsque vous
 êtes prêt.</p>
 		</main>
 	</div>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Criar, Alterar e Remover Tabelas - Documentação OmniDB</title>
+	<title>Criar, Alterar e Remover Tabelas – Documentação OmniDB</title>
 	<meta name="description" content="Crie, altere e elimine tabelas de base de dados no OmniDB usando modelos SQL editáveis, além de gráficos de relações do esquema.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html" class="active">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html" class="active">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
@@ -110,40 +110,40 @@
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Criar, Alterar e Remover Tabelas</h1>
-<p>As estruturas de tabelas — criar, alterar e eliminar — são geridas com
+		<h1>Criar, Alterar e Remover Tabelas</h1>
+<p>As estruturas de tabelas — criar, alterar e eliminar — são geridas com
 <em>modelos SQL</em> editáveis em vez de um formulário gráfico. Isto dá-lhe um controlo mais direto
-do que um designer de apontar e clicar, ao custo de escrever um pouco de SQL
-por conta própria: o OmniDB preenche um modelo inicial funcional e você edita-o antes de
-o executar.</p>
+do que um designer de apontar e clicar, ao custo de escrever um pouco de SQL
+por conta própria: o OmniDB preenche um modelo inicial funcional e você edita-o antes de
+o executar.</p>
 <h4>Criar tabelas</h4>
 <p>Vamos criar tabelas de exemplo (<em>customers</em> e <em>addresses</em>) na base de dados <code>testdb</code>
-à qual nos ligámos anteriormente. Clique com o botão direito no nó <strong>Tables</strong> e selecione
-a ação <strong>Create Table</strong> (Criar Tabela). Isto abre um novo separador de Consulta pré-preenchido com um
-modelo <code>CREATE TABLE</code> para o esquema atual.</p>
-<p>Edite o modelo para obter a tabela que realmente pretende — para <em>customers</em>, uma chave
+à qual nos ligámos anteriormente. Clique com o botão direito no nó <strong>Tables</strong> e selecione
+a ação <strong>Create Table</strong> (Criar Tabela). Isto abre um novo separador de Consulta pré-preenchido com um
+modelo <code>CREATE TABLE</code> para o esquema atual.</p>
+<p>Edite o modelo para obter a tabela que realmente pretende — para <em>customers</em>, uma chave
 primária que <em>addresses</em> irá referenciar mais tarde:</p>
 <pre><code class="language-sql">CREATE TABLE public.customers (
 	cust_id serial PRIMARY KEY,
 	cust_name varchar(100) NOT NULL
 );
 </code></pre>
-<p>Execute a instrução (da mesma forma que executa qualquer consulta). Clique com o botão direito no nó
-da árvore <em>Tables</em> e clique em <em>Refresh</em> (Atualizar) — a nova tabela aparece agora por baixo dele. Mantendo
+<p>Execute a instrução (da mesma forma que executa qualquer consulta). Clique com o botão direito no nó
+da árvore <em>Tables</em> e clique em <em>Refresh</em> (Atualizar) — a nova tabela aparece agora por baixo dele. Mantendo
 <em>customers</em> selecionada na árvore, pode inspecionar as suas <em>Properties</em> (Propriedades)
-e <em>DDL</em> geradas no painel ao lado da árvore, o mesmo painel usado para qualquer outro
+e <em>DDL</em> geradas no painel ao lado da árvore, o mesmo painel usado para qualquer outro
 tipo de objeto.</p>
 <p>Agora crie <em>addresses</em>, com uma chave estrangeira que aponta de volta para <em>customers</em>:</p>
 <pre><code class="language-sql">CREATE TABLE public.addresses (
@@ -154,24 +154,24 @@ tipo de objeto.</p>
 );
 </code></pre>
 <p>Neste ponto existem duas tabelas relacionadas no esquema <code>public</code>. Pode ver a
-estrutura do esquema com a funcionalidade de gráfico: clique com o botão direito no nó do esquema <code>public</code>
-e selecione <em>Render Graph &gt; Simple Graph</em> (Gerar Gráfico &gt; Gráfico Simples) apenas para as tabelas e as suas
+estrutura do esquema com a funcionalidade de gráfico: clique com o botão direito no nó do esquema <code>public</code>
+e selecione <em>Render Graph &gt; Simple Graph</em> (Gerar Gráfico &gt; Gráfico Simples) apenas para as tabelas e as suas
 relações, ou <em>Render Graph &gt; Complete Graph</em> (Gerar Gráfico &gt; Gráfico Completo) para incluir também colunas e
-restrições. Ambos são gerados como um diagrama interativo, com deslocamento e zoom.</p>
+restrições. Ambos são gerados como um diagrama interativo, com deslocamento e zoom.</p>
 <h4>Alterar tabelas</h4>
 <p>Para alterar uma tabela existente — por exemplo, adicionar uma coluna a <em>customers</em> — clique
-com o botão direito no nó da tabela e selecione <em>Table Actions &gt; Alter Table</em> (Ações de Tabela &gt; Alterar Tabela). Isto abre um
-separador de Consulta com um modelo <code>ALTER TABLE</code> que edita e executa, seguindo o mesmo padrão da
+com o botão direito no nó da tabela e selecione <em>Table Actions &gt; Alter Table</em> (Ações de Tabela &gt; Alterar Tabela). Isto abre um
+separador de Consulta com um modelo <code>ALTER TABLE</code> que edita e executa, seguindo o mesmo padrão da
 criação de tabelas:</p>
 <pre><code class="language-sql">ALTER TABLE public.customers ADD COLUMN cust_age integer;
 </code></pre>
 <p>Qualquer erro devolvido pela base de dados — por exemplo, ao tentar adicionar um nome de coluna que
 já existe — aparece da mesma forma que qualquer consulta falhada: no
-painel Messages do separador de consulta, com o comando exato e o texto do erro devolvido pela base de dados.</p>
+painel Messages do separador de consulta, com o comando exato e o texto do erro devolvido pela base de dados.</p>
 <h4>Remover tabelas</h4>
-<p>Para eliminar uma tabela, clique com o botão direito no nó da tabela e selecione <em>Table Actions &gt; Drop
+<p>Para eliminar uma tabela, clique com o botão direito no nó da tabela e selecione <em>Table Actions &gt; Drop
 Table</em> (Ações de Tabela &gt; Eliminar Tabela). Isto também abre um modelo editável (<code>DROP TABLE ...</code>) em vez
-de eliminar imediatamente — reveja-o e execute-o quando estiver pronto.</p>
+de eliminar imediatamente — reveja-o e execute-o quando estiver pronto.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

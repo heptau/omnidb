@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Introduzione - Documentazione OmniDB</title>
+	<title>Introduzione – Documentazione OmniDB</title>
 	<meta name="description" content="OmniDB è uno strumento open source per la gestione di database per PostgreSQL, Oracle, MySQL e altri, che unifica l'accesso a diversi DBMS in un unico spazio di lavoro sicuro e basato su browser.">
 	<link rel="canonical" href="https://www.omnidb.net/it/introduction.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
@@ -86,104 +86,104 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html" class="active">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
 			<h1>Introduzione</h1>
-			<p><strong>OmniDB</strong> è un'applicazione open source basata su browser progettata per accedere e gestire
-				molti sistemi di Database Management diversi, come PostgreSQL, Oracle e MySQL.
+			<p><strong>OmniDB</strong> è un’applicazione open source basata su browser progettata per accedere e gestire
+				molti sistemi di Database Management diversi, come PostgreSQL, Oracle e MySQL.
 				OmniDB può funzionare sia come applicazione desktop che tramite browser, combinando la flessibilità necessaria
-				per vari percorsi di accesso con un design che mette la sicurezza al primo posto. OmniDB è
-				sviluppato attivamente, testato automaticamente su una varietà di database e browser
-				e include documentazione completa.</p>
-			<p>Fin dalle prime fasi di sviluppo, OmniDB è stato progettato come applicazione basata su browser.
-				Di conseguenza, funziona in qualsiasi browser, su qualsiasi sistema operativo. Può essere
-				utilizzato da più computer e più utenti, ciascuno con il proprio
-				gruppo di connessioni. Può inoltre essere ospitato su qualsiasi sistema operativo,
-				senza la necessità di installare dipendenze. Vedremo ulteriori dettagli
-				sull'installazione nei prossimi capitoli.</p>
-			<p>L'obiettivo principale di OmniDB è offrire uno spazio di lavoro unificato con tutte le
-				funzionalità necessarie per manipolare diversi DBMS. Non sono richiesti strumenti specifici
-				per ogni DBMS: in OmniDB, il cambio di contesto tra diversi DBMS avviene con un
-				semplice cambio di connessione, senza abbandonare la stessa pagina. La sensazione
-				per l'utente finale è che non ci sia differenza quando manipola diversi DBMS,
-				sembra semplicemente di usare connessioni diverse.</p>
-			<p>Nonostante ciò, OmniDB è costruito con la semplicità in mente, progettato per essere un'applicazione
-				veloce e leggera basata su browser. I lavori di lunga durata — query, procedure
-				e monitoraggio — vengono eseguiti in background e trasmessi al browser
-				al completamento, così l'utente può continuare a lavorare su più database e
-				più host contemporaneamente senza blocchi su nessuno di essi.</p>
-			<p>OmniDB è anche sicuro. Tutti i dati degli utenti di OmniDB sono memorizzati crittografati e nessuna
-				password di database viene memorizzata. Quando l'utente si connette per la prima volta a un database,
-				OmniDB richiede la password. Questa password viene crittografata e conservata in memoria
-				per un periodo di tempo specifico. Quando questo tempo scade, OmniDB richiede nuovamente la password.
-				Ciò garantisce la massima sicurezza per il database a cui OmniDB si connette.</p>
+				per vari percorsi di accesso con un design che mette la sicurezza al primo posto. OmniDB è
+				sviluppato attivamente, testato automaticamente su una varietà di database e browser
+				e include documentazione completa.</p>
+			<p>Fin dalle prime fasi di sviluppo, OmniDB è stato progettato come applicazione basata su browser.
+				Di conseguenza, funziona in qualsiasi browser, su qualsiasi sistema operativo. Può essere
+				utilizzato da più computer e più utenti, ciascuno con il proprio
+				gruppo di connessioni. Può inoltre essere ospitato su qualsiasi sistema operativo,
+				senza la necessità di installare dipendenze. Vedremo ulteriori dettagli
+				sull’installazione nei prossimi capitoli.</p>
+			<p>L’obiettivo principale di OmniDB è offrire uno spazio di lavoro unificato con tutte le
+				funzionalità necessarie per manipolare diversi DBMS. Non sono richiesti strumenti specifici
+				per ogni DBMS: in OmniDB, il cambio di contesto tra diversi DBMS avviene con un
+				semplice cambio di connessione, senza abbandonare la stessa pagina. La sensazione
+				per l’utente finale è che non ci sia differenza quando manipola diversi DBMS,
+				sembra semplicemente di usare connessioni diverse.</p>
+			<p>Nonostante ciò, OmniDB è costruito con la semplicità in mente, progettato per essere un’applicazione
+				veloce e leggera basata su browser. I lavori di lunga durata — query, procedure
+				e monitoraggio — vengono eseguiti in background e trasmessi al browser
+				al completamento, così l’utente può continuare a lavorare su più database e
+				più host contemporaneamente senza blocchi su nessuno di essi.</p>
+			<p>OmniDB è anche sicuro. Tutti i dati degli utenti di OmniDB sono memorizzati crittografati e nessuna
+				password di database viene memorizzata. Quando l’utente si connette per la prima volta a un database,
+				OmniDB richiede la password. Questa password viene crittografata e conservata in memoria
+				per un periodo di tempo specifico. Quando questo tempo scade, OmniDB richiede nuovamente la password.
+				Ciò garantisce la massima sicurezza per il database a cui OmniDB si connette.</p>
 			<h4>Storia</h4>
-			<p>I creatori di <strong>OmniDB</strong>, Rafael Thofehrn Castro e William Ivanski, lavoravano in
-				un'azienda dove avevano quotidianamente a che fare con diversi database di
+			<p>I creatori di <strong>OmniDB</strong>, Rafael Thofehrn Castro e William Ivanski, lavoravano in
+				un’azienda dove avevano quotidianamente a che fare con diversi database di
 				clienti. Questi database utilizzavano diverse tecnologie DBMS,
-				e quindi dovevano continuamente passare da uno strumento di gestione database all'altro
-				(in genere uno per ogni DBMS). Non essendo soddisfatti degli
-				strumenti di gestione database unificati esistenti (che potessero gestire diversi DBMS), arrivarono
-				all'idea principale di OmniDB.</p>
-			<p>La prima versione di <strong>OmniDB</strong> fu presentata come progetto finale di laurea triennale nel
-				Corso di Scienze Informatiche dell'Università Federale del Paraná, in Brasile.
-				L'obiettivo era tracciare una linea comune tra i DBMS più diffusi e studiare a fondo
-				i loro <em>metadata</em>. Il risultato fu uno strumento scritto in ASP.NET/C# in grado di
-				connettersi e identificare le strutture principali (tabelle, chiavi, indici e
-				vincoli), in modo generico, da diversi DBMS:</p>
+				e quindi dovevano continuamente passare da uno strumento di gestione database all’altro
+				(in genere uno per ogni DBMS). Non essendo soddisfatti degli
+				strumenti di gestione database unificati esistenti (che potessero gestire diversi DBMS), arrivarono
+				all’idea principale di OmniDB.</p>
+			<p>La prima versione di <strong>OmniDB</strong> fu presentata come progetto finale di laurea triennale nel
+				Corso di Scienze Informatiche dell’Università Federale del Paraná, in Brasile.
+				L’obiettivo era tracciare una linea comune tra i DBMS più diffusi e studiare a fondo
+				i loro <em>metadata</em>. Il risultato fu uno strumento scritto in ASP. NET/C# in grado di
+				connettersi e identificare le strutture principali (tabelle, chiavi, indici e
+				vincoli), in modo generico, da diversi DBMS:</p>
 			<ul>
 				<li>Firebird</li>
-				<li>MariaDB / MySQL</li>
+				<li>MariaDB/MySQL</li>
 				<li>Oracle</li>
 				<li>PostgreSQL</li>
 				<li>SQLite</li>
 				<li>Microsoft SQL Server</li>
 			</ul>
-			<p>La prima versione di OmniDB consentiva anche la conversione tra tutti i DBMS supportati
-				dallo strumento. Questa funzionalità è stata sviluppata per essere intuitiva, richiedendo solo
-				pochi passaggi: l'utente deve selezionare una connessione sorgente, le strutture che
-				verranno convertite (solo le tabelle con tutte le loro strutture, insieme ai loro dati)
-				e la connessione di destinazione.</p>
-			<p>Nel <strong>2025-2026</strong>, il progetto è stato ripreso con versioni importanti (3.1.x), concentrandosi sulla modernizzazione
-				del codebase, sul miglioramento della sicurezza e sull'aggiunta del pieno supporto per sistemi operativi moderni come macOS Silicon,
-				insieme a una revisione completa della documentazione. Questa ripresa è culminata in una riscrittura completa del
-				backend da Python/Django a Go (3.6.x), eliminando completamente il runtime Python e distribuendo un singolo
-				binario nativo per ogni piattaforma. Vedi <a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
-				per la cronologia completa delle versioni e cosa è cambiato lungo il percorso.</p>
+			<p>La prima versione di OmniDB consentiva anche la conversione tra tutti i DBMS supportati
+				dallo strumento. Questa funzionalità è stata sviluppata per essere intuitiva, richiedendo solo
+				pochi passaggi: l’utente deve selezionare una connessione sorgente, le strutture che
+				verranno convertite (solo le tabelle con tutte le loro strutture, insieme ai loro dati)
+				e la connessione di destinazione.</p>
+			<p>Nel <strong>2025–2026</strong>, il progetto è stato ripreso con versioni importanti (3.1.x), concentrandosi sulla modernizzazione
+				del codebase, sul miglioramento della sicurezza e sull’aggiunta del pieno supporto per sistemi operativi moderni come macOS Silicon,
+				insieme a una revisione completa della documentazione. Questa ripresa è culminata in una riscrittura completa del
+				backend da Python/Django a Go (3.6.x), eliminando completamente il runtime Python e distribuendo un singolo
+				binario nativo per ogni piattaforma. Vedi <a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+				per la cronologia completa delle versioni e cosa è cambiato lungo il percorso.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

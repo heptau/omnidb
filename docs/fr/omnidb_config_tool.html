@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Outil de configuration OmniDB - Documentation OmniDB</title>
+	<title>Outil de configuration OmniDB — Documentation OmniDB</title>
 	<meta name="description" content="Équivalents manuels de l'ancien outil en ligne de commande omnidb-config : localiser le répertoire personnel, purger la base SQLite, la réinitialiser et nettoyer les fichiers temporaires.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
@@ -89,74 +89,74 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
-			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Travailler avec les données</span>
-			<a href="managing_databases.html">Gérer les bases de données</a>
-			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
-			<a href="managing_table_data.html">Gérer les données des tables</a>
-			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
-			<a href="visualizing_query_plans.html">Visualiser les plans d'exécution</a>
-			<a href="visualizing_data.html">Visualiser les données</a>
-			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avancé</span>
 			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
-			<a href="omnidb_config_tool.html" class="active">Outil de configuration OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="omnidb_config_tool.html" class="active">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Serveur et outils</span>
+			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
-			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Référence</span>
-			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Outil de configuration OmniDB</h1>
-<p><strong>Remarque :</strong> l'utilitaire en ligne de commande autonome <code>omnidb-config</code>/
+		<h1>Outil de configuration OmniDB</h1>
+<p><strong>Remarque :</strong> l’utilitaire en ligne de commande autonome <code>omnidb-config</code>/
 <code>omnidb-config-app</code>/<code>omnidb-config-server</code> décrit sur cette page appartenait à
-l'ancienne version basée sur Python/Django et ne fait pas partie de la version actuelle. Le binaire unique
-<code>omnidb-server</code> n'accepte que <code>-A</code>/<code>--app</code> (mode application de bureau) et
-<code>-d</code>/<code>--homedir</code> (choisir le répertoire personnel), documentés dans le chapitre
-<a href="installation.html">Installation</a>. Les tâches de maintenance que proposait l'ancien outil peuvent
+l’ancienne version basée sur Python/Django et ne fait pas partie de la version actuelle. Le binaire unique
+<code>omnidb-server</code> n’accepte que <code>-A</code>/<code>--app</code> (mode application de bureau) et
+<code>-d</code>/<code>--homedir</code> (choisir le répertoire personnel), documentés dans le chapitre
+<a href="installation.html">Installation</a>. Les tâches de maintenance que proposait l’ancien outil peuvent
 toujours être effectuées manuellement, comme décrit ci-dessous.</p>
 <h4>Répertoire personnel</h4>
-<p>OmniDB stocke tout — la base de données <code>omnidb.db</code> (utilisateurs, connexions et autres données
-de l'application) et un dossier <code>temp</code> pour les fichiers exportés — dans un unique répertoire
-personnel. Par défaut, il s'agit de <code>~/.omnidb/omnidb-app</code> (mode bureau) ou
-<code>~/.omnidb/omnidb-server</code> (mode serveur) ; indiquez <code>-../chemin</code> pour en utiliser un
+<p>OmniDB stocke tout — la base de données <code>omnidb.db</code> (utilisateurs, connexions et autres données
+de l’application) et un dossier <code>temp</code> pour les fichiers exportés — dans un unique répertoire
+personnel. Par défaut, il s’agit de <code>~/.omnidb/omnidb-app</code> (mode bureau) ou
+<code>~/.omnidb/omnidb-server</code> (mode serveur) ; indiquez <code>-../chemin</code> pour en utiliser un
 autre.</p>
-<h4>Créer un utilisateur</h4>
-<p>Il n'existe actuellement aucune option en ligne de commande pour créer un utilisateur sans ouvrir OmniDB.
-Lors de la première exécution sur un répertoire personnel vide, OmniDB crée automatiquement un superutilisateur
-par défaut <code>admin</code>/<code>admin</code> — connectez-vous avec celui-ci et créez d'autres utilisateurs
-depuis l'écran <em>Users</em> (Utilisateurs), ou changez le mot de passe par défaut.</p>
+<h4>Créer un utilisateur</h4>
+<p>Il n’existe actuellement aucune option en ligne de commande pour créer un utilisateur sans ouvrir OmniDB.
+Lors de la première exécution sur un répertoire personnel vide, OmniDB crée automatiquement un superutilisateur
+par défaut <code>admin</code>/<code>admin</code> — connectez-vous avec celui-ci et créez d’autres utilisateurs
+depuis l’écran <em>Users</em> (Utilisateurs), ou changez le mot de passe par défaut.</p>
 <h4>Purge (Vacuum)</h4>
-<p>OmniDB possède une seule base de données SQLite, <code>omnidb.db</code>, qui stocke tous les utilisateurs,
-connexions et autres données liées à OmniDB. Comme il s'agit d'un simple fichier SQLite, vous pouvez le purger
-avec n'importe quel client SQLite pendant qu'OmniDB n'est pas en cours d'exécution, par exemple :</p>
+<p>OmniDB possède une seule base de données SQLite, <code>omnidb.db</code>, qui stocke tous les utilisateurs,
+connexions et autres données liées à OmniDB. Comme il s’agit d’un simple fichier SQLite, vous pouvez le purger
+avec n’importe quel client SQLite pendant qu’OmniDB n’est pas en cours d’exécution, par exemple :</p>
 <pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
 </code></pre>
-<h4>Réinitialiser la base de données</h4>
-<p>Si vous souhaitez effacer toutes les informations d'OmniDB et obtenir une base de données propre, comme si
-elle venait d'être installée, quittez OmniDB et supprimez (ou déplacez ailleurs) le fichier <code>omnidb.db</code>
-du répertoire personnel. Un nouveau fichier vide — avec un nouvel utilisateur par défaut
-<code>admin</code>/<code>admin</code> — est créé automatiquement au prochain démarrage d'OmniDB. Utilisez cette
-opération avec prudence : elle est irréversible.</p>
-<h4>Supprimer les fichiers temporaires</h4>
-<p>Les résultats de requêtes exportés (CSV/XLSX/etc.) sont écrits dans le dossier <code>temp</code> du
-répertoire personnel. Il est possible de supprimer son contenu manuellement à tout moment pendant qu'OmniDB
-n'est pas en cours d'exécution ; OmniDB le recrée si nécessaire.</p>
+<h4>Réinitialiser la base de données</h4>
+<p>Si vous souhaitez effacer toutes les informations d’OmniDB et obtenir une base de données propre, comme si
+elle venait d’être installée, quittez OmniDB et supprimez (ou déplacez ailleurs) le fichier <code>omnidb.db</code>
+du répertoire personnel. Un nouveau fichier vide — avec un nouvel utilisateur par défaut
+<code>admin</code>/<code>admin</code> — est créé automatiquement au prochain démarrage d’OmniDB. Utilisez cette
+opération avec prudence : elle est irréversible.</p>
+<h4>Supprimer les fichiers temporaires</h4>
+<p>Les résultats de requêtes exportés (CSV/XLSX/etc.) sont écrits dans le dossier <code>temp</code> du
+répertoire personnel. Il est possible de supprimer son contenu manuellement à tout moment pendant qu’OmniDB
+n’est pas en cours d’exécution ; OmniDB le recrée si nécessaire.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

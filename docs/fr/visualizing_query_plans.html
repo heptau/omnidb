@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Visualiser les plans d'exécution - Documentation OmniDB</title>
+	<title>Visualiser les plans d’exécution — Documentation OmniDB</title>
 	<meta name="description" content="Visualisez les résultats EXPLAIN et EXPLAIN ANALYZE de PostgreSQL dans OmniDB sous forme de barres textuelles colorées ou de diagrammes en arbre modifiables en zoom, pour repérer les goulots d'étranglement de performance.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/visualizing_query_plans.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_query_plans.html">
@@ -89,67 +89,67 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
-			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Travailler avec les données</span>
-			<a href="managing_databases.html">Gérer les bases de données</a>
-			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
-			<a href="managing_table_data.html">Gérer les données des tables</a>
-			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
-			<a href="visualizing_query_plans.html" class="active">Visualiser les plans d'exécution</a>
-			<a href="visualizing_data.html">Visualiser les données</a>
-			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html" class="active">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avancé</span>
 			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
-			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Serveur et outils</span>
+			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d'objets</a>
-			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l'éditeur</a>
+			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Référence</span>
-			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Visualiser les plans d'exécution</h1>
-<p>OmniDB propose une fonctionnalité très utile : la visualisation graphique des plans d'exécution. Cela peut
-s'avérer précieux lors de l'écriture ou de l'optimisation de requêtes, car cela permet d'identifier facilement
-les goulots d'étranglement de performance dans votre requête SQL.</p>
-<p>Pour cette fonctionnalité, l'onglet interne <em>SQL Query</em> (Requête SQL) affiche 2 boutons : <em>Explain</em>
+		<h1>Visualiser les plans d’exécution</h1>
+<p>OmniDB propose une fonctionnalité très utile : la visualisation graphique des plans d’exécution. Cela peut
+s’avérer précieux lors de l’écriture ou de l’optimisation de requêtes, car cela permet d’identifier facilement
+les goulots d’étranglement de performance dans votre requête SQL.</p>
+<p>Pour cette fonctionnalité, l’onglet interne <em>SQL Query</em> (Requête SQL) affiche 2 boutons : <em>Explain</em>
 et <em>Explain Analyze</em>.</p>
 <h4>Visualisation textuelle</h4>
-<p>Lorsque vous cliquez sur le bouton <em>Explain</em>, OmniDB exécute une commande <code>EXPLAIN</code> sur votre
-requête. La visualisation initiale est <em>textuelle</em> et affiche exactement la sortie de la commande
-<code>EXPLAIN</code>, mais avec des barres colorées représentant le coût estimé. Plus le coût est élevé, plus la
-barre est sombre et large.</p>
+<p>Lorsque vous cliquez sur le bouton <em>Explain</em>, OmniDB exécute une commande <code>EXPLAIN</code> sur votre
+requête. La visualisation initiale est <em>textuelle</em> et affiche exactement la sortie de la commande
+<code>EXPLAIN</code>, mais avec des barres colorées représentant le coût estimé. Plus le coût est élevé, plus la
+barre est sombre et large.</p>
 <p><img alt="" src="../assets/img/image_054.webp" /></p>
-<p>Lorsque vous cliquez sur le bouton <em>Explain Analyze</em>, OmniDB exécute une commande <code>EXPLAIN
-ANALYZE</code> sur votre requête. Attention, cette commande exécute réellement la requête. De plus, la
-visualisation textuelle affiche beaucoup plus d'informations, et les coûts ne sont plus des estimations comme
-avec la commande <code>EXPLAIN</code> ; ce sont des coûts réels.</p>
+<p>Lorsque vous cliquez sur le bouton <em>Explain Analyze</em>, OmniDB exécute une commande <code>EXPLAIN
+ANALYZE</code> sur votre requête. Attention, cette commande exécute réellement la requête. De plus, la
+visualisation textuelle affiche beaucoup plus d’informations, et les coûts ne sont plus des estimations comme
+avec la commande <code>EXPLAIN</code> ; ce sont des coûts réels.</p>
 <p><img alt="" src="../assets/img/image_055.webp" /></p>
 <h4>Visualisation en arbre</h4>
-<p>Les modes <em>Explain</em> et <em>Explain Analyze</em> peuvent également représenter graphiquement la sortie
-textuelle sous forme de diagramme en <em>arbre</em>. Chaque cercle représente un nœud exécuté par le plan de la
-requête, et plus le cercle est grand, plus le coût est élevé.</p>
+<p>Les modes <em>Explain</em> et <em>Explain Analyze</em> peuvent également représenter graphiquement la sortie
+textuelle sous forme de diagramme en <em>arbre</em>. Chaque cercle représente un nœud exécuté par le plan de la
+requête, et plus le cercle est grand, plus le coût est élevé.</p>
 <p><img alt="" src="../assets/img/image_056.webp" /></p>
-<p>Lorsque les requêtes deviennent de plus en plus complexes, leur plan d'exécution peut aussi devenir très
-complexe. Avec de telles requêtes (comme la requête de <em>vérification du bloat</em> que nous avons exécutée
-ci-dessous), la visualisation en arbre peut être très intéressante :</p>
+<p>Lorsque les requêtes deviennent de plus en plus complexes, leur plan d’exécution peut aussi devenir très
+complexe. Avec de telles requêtes (comme la requête de <em>vérification du bloat</em> que nous avons exécutée
+ci-dessous), la visualisation en arbre peut être très intéressante :</p>
 <p><img alt="" src="../assets/img/image_057.webp" /></p>
-<p>Le composant de visualisation des plans d'exécution vous permet de basculer facilement entre la visualisation
-textuelle et 2 visualisations en arbre, qui peuvent être zoomées en avant et en arrière.</p>
+<p>Le composant de visualisation des plans d’exécution vous permet de basculer facilement entre la visualisation
+textuelle et 2 visualisations en arbre, qui peuvent être zoomées en avant et en arrière.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

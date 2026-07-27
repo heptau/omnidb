@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Další funkce - Dokumentace OmniDB</title>
+	<title>Další funkce – Dokumentace OmniDB</title>
 	<meta name="description" content="Doplňkové nástroje OmniDB: uživatelská nastavení, kontextová dokumentace PostgreSQL, úryvky, správa backendů, panely vlastností/DDL, export dat a SSH konzole.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
@@ -89,13 +89,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -110,7 +110,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
@@ -118,67 +118,67 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Další funkce</h1>
 		<h4>Uživatelská nastavení</h4>
-		<p>Také v pravém horním rohu, kliknutím na ikonu ozubeného kola, OmniDB otevře
+		<p>Také v pravém horním rohu, kliknutím na ikonu ozubeného kola, OmniDB otevře
 			vyskakovací okno <em>User Settings</em> (Uživatelská nastavení). Skládá se ze
 			čtyř karet:</p>
 		<ul>
-			<li><strong>Shortcuts</strong> (Zkratky): Umožňuje uživateli měnit klávesové zkratky v OmniDB.</li>
+			<li><strong>Shortcuts</strong> (Zkratky): Umožňuje uživateli měnit klávesové zkratky v OmniDB.</li>
 			<li><strong>Options</strong> (Možnosti): Umožňuje uživateli měnit velikost písma rozhraní a
 				konfigurovat volby týkající se CSV (kódování, oddělovač). Motiv OmniDB
 				(světlý/tmavý) se automaticky určuje podle preference barevného schématu
 				vašeho operačního systému.</li>
 			<li><strong>Formatting</strong> (Formátování): Nastavuje, jak SQL formátovač (akce <em>Indent SQL</em>,
 				Formátovat SQL) přepisuje váš dotaz — znak odsazení (mezery nebo tabulátor),
-				velikost odsazení (2/3/4), styl čárek (na začátku/na konci řádku) a velikost
+				velikost odsazení (2/3/4), styl čárek (na začátku/na konci řádku) a velikost
 				písmen klíčových slov (zachovat/VELKÁ PÍSMENA/malá písmena).</li>
 			<li><strong>Password</strong> (Heslo): Umožňuje uživateli změnit si heslo.</li>
 		</ul>
 		<h4>Kontextová nápověda</h4>
 		<p>Většina uzlů stromu (obvykle seskupujících, jako jsou <em>Schemas</em> nebo
-			<em>Tables</em>) nabízí kontextovou nápovědu. K této funkci se dostanete kliknutím
-			pravým tlačítkem na uzel stromu. Když kliknete na volbu <em>Doc: ...</em>, OmniDB
+			<em>Tables</em>) nabízí kontextovou nápovědu. K této funkci se dostanete kliknutím
+			pravým tlačítkem na uzel stromu. Když kliknete na volbu <em>Doc: …</em>, OmniDB
 			otevře konkrétní stránku online <strong>dokumentace PostgreSQL</strong> ve vašem
-			webovém prohlížeči (v desktopové aplikaci v systémovém výchozím prohlížeči,
+			webovém prohlížeči (v desktopové aplikaci v systémovém výchozím prohlížeči,
 			při běhu jako prohlížečový <a href="deploying_omnidb-server.html">OmniDB
 			Server</a> jako nová karta). Zároveň zohlední verzi PostgreSQL, ke které
-			jste připojeni, a přesměruje na odpovídající stránku.</p>
+			jste připojeni, a přesměruje na odpovídající stránku.</p>
 		<p><img alt="" src="../assets/img/image_071.webp" /></p>
 		<h4>Úryvky (Snippets)</h4>
 		<p><em>Workspace Window</em> (okno pracovního prostoru) má pevnou vnější kartu s
 			užitečnou funkcí nazvanou <em>Snippets</em> (Úryvky). Pomocí této funkce můžete
-			ukládat dotazy, příkazové instrukce a jakýkoli jiný text, který potřebujete.
+			ukládat dotazy, příkazové instrukce a jakýkoli jiný text, který potřebujete.
 			Úryvky si také můžete uspořádat do adresářového stromu podle svých představ.
-			Všechny adresáře a úryvky, které vytvoříte, se ukládají do uživatelské
-			databáze <code>omnidb.db</code> a zůstanou zachovány i po aktualizaci OmniDB.
+			Všechny adresáře a úryvky, které vytvoříte, se ukládají do uživatelské
+			databáze <code>omnidb.db</code> a zůstanou zachovány i po aktualizaci OmniDB.
 		</p>
 		<p><img alt="" src="../assets/img/image_127.webp" /></p>
 		<h4>Správa backendů</h4>
 		<p>Kliknutím pravým tlačítkem na kořenový uzel stromu, přesunutím kurzoru na
-			<em>Monitoring</em> a kliknutím na <em>Backends</em> může uživatel vidět veškerou
-			aktivitu probíhající v databázi. Některé informace jsou pro běžné uživatele
+			<em>Monitoring</em> a kliknutím na <em>Backends</em> může uživatel vidět veškerou
+			aktivitu probíhající v databázi. Některé informace jsou pro běžné uživatele
 			skryté, vidět je mohou pouze superuživatelé databáze.
 		</p>
 		<p><img alt="" src="../assets/img/image_174.webp" /></p>
 		<p>Kliknutím na <em>X</em> ve sloupci <em>Actions</em> (Akce) můžete backend ukončit.
 			Zobrazí se potvrzovací vyskakovací okno.</p>
 		<p><img alt="" src="../assets/img/image_175.webp" /></p>
-		<h4>Vlastnosti a DDL</h4>
+		<h4>Vlastnosti a DDL</h4>
 		<p>Kliknutím na většinu objektů ve stromovém zobrazení (tabulky, sekvence,
 			pohledy, role, databáze atd.) si uživatel může zobrazit velmi podrobný
 			seznam vlastností daného objektu.</p>
 		<p><img alt="" src="../assets/img/image_176.webp" /></p>
-		<p>Na dalším panelu s názvem <em>DDL</em> si uživatel může prohlédnout zdrojový SQL
-			kód DDL, který lze použít k opětovnému vytvoření objektu. Uživatel může
-			tento text zkopírovat a vložit, kam potřebuje.</p>
+		<p>Na dalším panelu s názvem <em>DDL</em> si uživatel může prohlédnout zdrojový SQL
+			kód DDL, který lze použít k opětovnému vytvoření objektu. Uživatel může
+			tento text zkopírovat a vložit, kam potřebuje.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
 		<h4>Export dat</h4>
-		<p>Karta <em>Query Tab</em> (Dotaz) nabízí možnost uložit data z výsledků dotazu do
+		<p>Karta <em>Query Tab</em> (Dotaz) nabízí možnost uložit data z výsledků dotazu do
 			souboru CSV nebo XLSX. Jakmile kliknete na tlačítko <em>Export Data</em>, spustí
 			se zrušitelný backend, který začne ukládat data do souboru. Jakmile je
 			hotovo, OmniDB nabídne odkaz <em>Save</em> (Uložit), pomocí kterého si uživatel
@@ -186,10 +186,10 @@
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Všechny soubory se ukládají do dočasné složky uvnitř složky OmniDB. OmniDB
-			tuto složku pravidelně čistí a ponechává pouze soubory novější než 24 hodin.</p>
+			tuto složku pravidelně čistí a ponechává pouze soubory novější než 24 hodin.</p>
 		<h4>Historie dotazů</h4>
 		<p>Na kartě <em>Query Tab</em> (Dotaz) můžete kliknout na tlačítko <em>Command History</em>
-			(Historie příkazů) a zobrazit si úplnou, procházitelnou a prohledávatelnou
+			(Historie příkazů) a zobrazit si úplnou, procházitelnou a prohledávatelnou
 			historii dotazů.</p>
 		<p><img alt="" src="../assets/img/image_203.webp" /></p>
 		<h4>SSH konzole</h4>

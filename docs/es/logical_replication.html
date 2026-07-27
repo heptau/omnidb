@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Replicación lógica - Documentación de OmniDB</title>
+	<title>Replicación lógica — Documentación de OmniDB</title>
 	<meta name="description" content="Configure la replicación lógica nativa de PostgreSQL 10+ en OmniDB: cree publicaciones y suscripciones entre dos nodos y confirme que los datos se replican correctamente.">
 	<link rel="canonical" href="https://www.omnidb.net/es/logical_replication.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/logical_replication.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html" class="active">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,31 +119,31 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Replicación lógica</h1>
 <p>PostgreSQL 10 introduce la replicación lógica nativa, que usa un
 modelo de publicación/suscripción, por lo que podemos crear publicaciones en el origen (o
-publicador) y suscripciones en el destino (o suscriptor). Para más detalles
+publicador) y suscripciones en el destino (o suscriptor). Para más detalles
 al respecto, consulte la documentación de
 <a href="https://www.postgresql.org/do../static/sql-createpublication.html">PostgreSQL</a>
 <a href="https://www.postgresql.org/do../static/sql-createsubscription.html">documentación</a>.</p>
 <p>En este capítulo, usaremos un clúster de 2 nodos para demostrar la replicación lógica
 nativa de PostgreSQL 10. Tenga en cuenta que en cada instancia de PostgreSQL necesita
-configurar <code>wal_level = logical</code> y también asegurarse de ajustar el archivo <code>pg_hba.conf</code>
+configurar <code>wal_level = logical</code> y también asegurarse de ajustar el archivo <code>pg_hba.conf</code>
 para conceder acceso a <code>replication</code> entre los 2 nodos.</p>
 <h4>Creación de un entorno de prueba</h4>
 <p>Configure dos instancias de PostgreSQL 10+ como prefiera (Docker, una máquina
-virtual, o incluso dos bases de datos en la misma máquina) y configure los ajustes
+virtual, o incluso dos bases de datos en la misma máquina) y configure los ajustes
 anteriores en cada una.</p>
-<h4>Conexión a ambos nodos</h4>
-<p>Usemos OmniDB para conectarnos a ambos nodos de PostgreSQL. Primero, complete
+<h4>Conexión a ambos nodos</h4>
+<p>Usemos OmniDB para conectarnos a ambos nodos de PostgreSQL. Primero, complete
 la información de conexión en la cuadrícula de conexiones:</p>
 <p><img alt="" src="../assets/img/image_117.webp" /></p>
 <p>Luego seleccione ambas conexiones. Observe cómo OmniDB entiende que está conectado a
-PostgreSQL 10 y habilita un nuevo nodo en la vista de árbol de la conexión actual: se
+PostgreSQL 10 y habilita un nuevo nodo en la vista de árbol de la conexión actual: se
 llama <em>Logical Replication</em> (Replicación lógica). Dentro de él, podemos ver <em>Publications</em>
 (Publicaciones) y <em>Subscriptions</em> (Suscripciones).</p>
 <p><img alt="" src="../assets/img/image_118.webp" /></p>
@@ -158,44 +158,44 @@ llama <em>Logical Replication</em> (Replicación lógica). Dentro de él, podemo
 <p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Creación de una publicación en la primera máquina</h4>
 <p>Dentro del nodo de conexión, expanda el nodo <em>Logical Replication</em>, luego haga clic
-derecho en el nodo <em>Publications</em>, y elija la acción <em>Create Publication</em>.
+derecho en el nodo <em>Publications</em>, y elija la acción <em>Create Publication</em>.
 OmniDB abrirá una pestaña con una plantilla SQL con el comando <code>CREATE PUBLICATION</code> listo
-para que haga algunos ajustes y lo ejecute:</p>
+para que haga algunos ajustes y lo ejecute:</p>
 <p><img alt="" src="../assets/img/image_120.webp" /></p>
-<p>Tras ajustar y ejecutar el comando, puede hacer clic derecho de nuevo en el nodo <em>Publications</em>
-y hacer clic en la acción <em>Refresh</em>. Verá que se crea
-un nuevo nodo con el mismo nombre que dio a la publicación. Al expandir este nodo,
-verá los detalles y las tablas de la publicación:</p>
+<p>Tras ajustar y ejecutar el comando, puede hacer clic derecho de nuevo en el nodo <em>Publications</em>
+y hacer clic en la acción <em>Refresh</em>. Verá que se crea
+un nuevo nodo con el mismo nombre que dio a la publicación. Al expandir este nodo,
+verá los detalles y las tablas de la publicación:</p>
 <p><img alt="" src="../assets/img/image_121.webp" /></p>
 <h4>Creación de una suscripción en la segunda máquina</h4>
 <p>Dentro del nodo de conexión, expanda el nodo <em>Logical Replication</em>, luego haga clic
-derecho en el nodo <em>Subscriptions</em>, y elija la acción <em>Create Subscription</em>.
+derecho en el nodo <em>Subscriptions</em>, y elija la acción <em>Create Subscription</em>.
 OmniDB abrirá una pestaña con una plantilla SQL con el comando <code>CREATE SUBSCRIPTION</code> listo
-para que haga algunos ajustes y lo ejecute:</p>
+para que haga algunos ajustes y lo ejecute:</p>
 <p><img alt="" src="../assets/img/image_122.webp" /></p>
-<p>Tras ajustar y ejecutar el comando, puede hacer clic derecho de nuevo en el nodo <em>Subscriptions</em>
-y hacer clic en la acción <em>Refresh</em>. Verá que se crea
-un nuevo nodo con el mismo nombre que dio a la suscripción. Al expandir este nodo,
-verá los detalles, las publicaciones referenciadas y las tablas de la
+<p>Tras ajustar y ejecutar el comando, puede hacer clic derecho de nuevo en el nodo <em>Subscriptions</em>
+y hacer clic en la acción <em>Refresh</em>. Verá que se crea
+un nuevo nodo con el mismo nombre que dio a la suscripción. Al expandir este nodo,
+verá los detalles, las publicaciones referenciadas y las tablas de la
 suscripción:</p>
 <p><img alt="" src="../assets/img/image_123.webp" /></p>
 <p>Además, el comando <code>CREATE SUBSCRIPTION</code> creó un <em>slot de replicación lógica</em>
 llamado <code>testsub</code> (el mismo nombre que la suscripción) en la primera máquina:</p>
 <p><img alt="" src="../assets/img/image_124.webp" /></p>
 <h4>Prueba de la replicación lógica</h4>
-<p>Para comprobar que la replicación funciona, vamos a crear algunos datos en el nodo 1. Haga
-clic derecho en la tabla <code>public.customers</code>, luego apunte a <em>Data Actions</em>, y haga clic
-en la acción <em>Edit Data</em>. En esta cuadrícula, puede añadir, editar y eliminar
+<p>Para comprobar que la replicación funciona, vamos a crear algunos datos en el nodo 1. Haga
+clic derecho en la tabla <code>public.customers</code>, luego apunte a <em>Data Actions</em>, y haga clic
+en la acción <em>Edit Data</em>. En esta cuadrícula, puede añadir, editar y eliminar
 datos de la tabla. Añada 2 filas de ejemplo, así:</p>
 <p><img alt="" src="../assets/img/image_125.webp" /></p>
 <p>Luego, en el otro nodo, compruebe si la tabla <code>public.customers</code> se pobló
 automáticamente. Haga clic derecho en la tabla <code>public.customers</code>, luego apunte a <em>Data
-Actions</em>, y haga clic en la acción <em>Query Data</em>:</p>
+Actions</em>, y haga clic en la acción <em>Query Data</em>:</p>
 <p><img alt="" src="../assets/img/image_126.webp" /></p>
 <p>Como podemos ver, ambas filas creadas en la primera máquina se replicaron en la
 segunda máquina. Esto nos indica que la replicación lógica funciona.</p>
 <p>Ahora puede realizar otras acciones, como añadir/eliminar tablas de la
-publicación y crear una nueva publicación que publique todas las tablas.</p>
+publicación y crear una nueva publicación que publique todas las tablas.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

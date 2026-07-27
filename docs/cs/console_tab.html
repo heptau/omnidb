@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Konzole - Dokumentace OmniDB</title>
+	<title>Konzole – Dokumentace OmniDB</title>
 	<meta name="description" content="Používejte konzoli OmniDB jako pomocnou konzoli podobnou psql: sada příkazů se zpětným lomítkem, historie příkazů, zvýrazňování syntaxe a automatické doplňování.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
@@ -88,13 +88,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -109,7 +109,7 @@
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html" class="active">Konzole</a>
 			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
@@ -117,20 +117,20 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Konzole</h1>
-<p>Konzole poskytuje snadný a pohodlný způsob práce s vašimi databázemi.
+<p>Konzole poskytuje snadný a pohodlný způsob práce s vašimi databázemi.
 Uživatelé znalí příkazové utility <code>psql</code> rozpoznají obecný tvar — protokol
-s posouváním zpět a vstupní editor — a funguje tu i užitečná podmnožina jejích
+s posouváním zpět a vstupní editor — a funguje tu i užitečná podmnožina jejích
 příkazů se zpětným lomítkem:</p>
 <ul>
 <li><code>\?</code>: zobrazí seznam příkazů;</li>
 <li><code>\dt</code>: vypíše tabulky;</li>
-<li><code>\d</code>: vypíše tabulky, pohledy a sekvence; <code>\d NÁZEV</code> popíše jeden z
-těchto objektů (jeho sloupce, typy, nullability a výchozí hodnoty) — <code>NÁZEV</code>
+<li><code>\d</code>: vypíše tabulky, pohledy a sekvence; <code>\d NÁZEV</code> popíše jeden z
+těchto objektů (jeho sloupce, typy, nullability a výchozí hodnoty) — <code>NÁZEV</code>
 může být kvalifikovaný schématem (<code>\d public.customers</code>);</li>
 <li><code>\du</code>: vypíše role/uživatele;</li>
 <li><code>\l</code>: vypíše databáze;</li>
@@ -139,32 +139,32 @@ může být kvalifikovaný schématem (<code>\d public.customers</code>);</li>
 <li><code>\timing</code>: přepne zobrazování doby spuštění.</li>
 </ul>
 <p>Tyto příkazy se mapují na to, co skutečně nabízí každý připojený engine:
-"databáze" v MySQL/MariaDB zároveň slouží jako jeho schéma, "uživatel" v
-Oracle zároveň slouží jako jeho schéma (a Oracle nemá samostatný koncept
-více databází) a SQLite nemá vůbec žádné schémata/role/databáze — pokud
+„databáze“ v MySQL/MariaDB zároveň slouží jako jeho schéma, „uživatel“ v
+Oracle zároveň slouží jako jeho schéma (a Oracle nemá samostatný koncept
+více databází) a SQLite nemá vůbec žádné schémata/role/databáze — pokud
 engine skutečně nemá co zobrazit, příkaz to řekne přímo, místo aby vrátil
 prázdný nebo zavádějící výsledek. Příkaz <code>\h</code> (nápověda syntaxe pro
 jednotlivé SQL příkazy, podobně jako manuálová stránka PostgreSQL) není
 implementován.</p>
 <p>Editor ve spodní části záložky je plnohodnotný stejně jako editor
-záložky <em>Query Tab</em> (nabízí zvýrazňování syntaxe a automatické doplňování
+záložky <em>Query Tab</em> (nabízí zvýrazňování syntaxe a automatické doplňování
 pomocí <em>Ctrl-Space</em>). Příkaz spustíte prostým napsáním do tohoto editoru.
-Pokud jde o příkaz se zpětným lomítkem (začínající na <code>\</code>), stačí stisknout
-<code>Enter</code> a příkaz se spustí. Pokud jde o běžný SQL příkaz, může být víceřádkový
-a ke spuštění je potřeba stisknout <em>Alt-Q</em>.</p>
-<p>Všechny příkazy a jejich výstup se zaznamenávají do zobrazovací oblasti,
-která je textová a jen pro čtení, takže její obsah můžete zkopírovat a
+Pokud jde o příkaz se zpětným lomítkem (začínající na <code>\</code>), stačí stisknout
+<code>Enter</code> a příkaz se spustí. Pokud jde o běžný SQL příkaz, může být víceřádkový
+a ke spuštění je potřeba stisknout <em>Alt-Q</em>.</p>
+<p>Všechny příkazy a jejich výstup se zaznamenávají do zobrazovací oblasti,
+která je textová a jen pro čtení, takže její obsah můžete zkopírovat a
 vložit jinam. Zobrazovací oblast můžete vymazat kliknutím na tlačítko
 <em>Clear Console</em>.</p>
 <p>Všechny příkazy se také zaznamenávají do historie dotazů připojení, a
 také do lokální historie konzole, kterou zobrazíte kliknutím na tlačítko
 <em>Command History</em>.</p>
-<p>Kliknutím na zelenou fajfku si příkaz můžete vypůjčit a vložit do editoru,
-abyste jej mohli upravit a spustit. Dalším pohodlným způsobem procházení
+<p>Kliknutím na zelenou fajfku si příkaz můžete vypůjčit a vložit do editoru,
+abyste jej mohli upravit a spustit. Dalším pohodlným způsobem procházení
 historie jsou klávesové zkratky <em>Ctrl-Up</em> a <em>Ctrl-Down</em>, které do editoru
 rychle vloží předchozí, respektive následující příkaz.</p>
-<p>Tyto příkazy se zpětným lomítkem se hodí při každodenní práci s databázemi.
-Konzole navíc přehledně zobrazí jakékoli chyby a výsledky libovolného SQL
+<p>Tyto příkazy se zpětným lomítkem se hodí při každodenní práci s databázemi.
+Konzole navíc přehledně zobrazí jakékoli chyby a výsledky libovolného SQL
 příkazu, který zadáte. Vyzkoušejte si to!</p>
 		</main>
 	</div>

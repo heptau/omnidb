@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Separador de Consola - Documentação OmniDB</title>
+	<title>Separador de Consola – Documentação OmniDB</title>
 	<meta name="description" content="Use o Separador de Consola do OmniDB como uma consola de rascunho semelhante ao psql: alguns comandos de barra invertida, histórico de comandos, realce de sintaxe e autocompletar.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
@@ -110,60 +110,60 @@
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html" class="active">Separador de Consola</a>
 			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Separador de Consola</h1>
-<p>O Separador de Consola disponibiliza uma forma fácil e confortável de interagir com as suas
-bases de dados. Os utilizadores familiarizados com o utilitário de linha de comandos <code>psql</code>
-reconhecerão a estrutura geral — um registo de scrollback mais um editor de entrada — e um
+<p>O Separador de Consola disponibiliza uma forma fácil e confortável de interagir com as suas
+bases de dados. Os utilizadores familiarizados com o utilitário de linha de comandos <code>psql</code>
+reconhecerão a estrutura geral — um registo de scrollback mais um editor de entrada — e um
 subconjunto útil dos seus comandos de barra invertida também funciona aqui:</p>
 <ul>
-<li><code>\?</code>: mostra a lista de comandos;</li>
+<li><code>\?</code>: mostra a lista de comandos;</li>
 <li><code>\dt</code>: lista as tabelas;</li>
-<li><code>\d</code>: lista tabelas, vistas e sequências; <code>\d NOME</code> descreve um destes
-elementos (as suas colunas, tipos, possibilidade de nulo e valores predefinidos) — <code>NOME</code> pode ser
+<li><code>\d</code>: lista tabelas, vistas e sequências; <code>\d NOME</code> descreve um destes
+elementos (as suas colunas, tipos, possibilidade de nulo e valores predefinidos) — <code>NOME</code> pode ser
 qualificado por esquema (<code>\d public.customers</code>);</li>
 <li><code>\du</code>: lista roles/utilizadores;</li>
 <li><code>\l</code>: lista as bases de dados;</li>
 <li><code>\df</code>: lista as funções;</li>
-<li><code>\x</code>: alterna a saída expandida/vertical;</li>
-<li><code>\timing</code>: alterna a apresentação do tempo de execução.</li>
+<li><code>\x</code>: alterna a saída expandida/vertical;</li>
+<li><code>\timing</code>: alterna a apresentação do tempo de execução.</li>
 </ul>
-<p>Estes comandos mapeiam-se para o que cada motor ligado realmente tem: a "base de dados" do
-MySQL/MariaDB serve também como o seu esquema, o "utilizador" do Oracle serve também como o seu esquema (e
-não tem um conceito separado de múltiplas bases de dados), e o SQLite não tem nada de
+<p>Estes comandos mapeiam-se para o que cada motor ligado realmente tem: a «base de dados» do
+MySQL/MariaDB serve também como o seu esquema, o «utilizador» do Oracle serve também como o seu esquema (e
+não tem um conceito separado de múltiplas bases de dados), e o SQLite não tem nada de
 esquemas/roles/bases de dados — quando um motor genuinamente não tem nada para
-mostrar, o comando diz isso diretamente, em vez de devolver um resultado vazio ou
+mostrar, o comando diz isso diretamente, em vez de devolver um resultado vazio ou
 enganador. O <code>\h</code> (ajuda de sintaxe por comando SQL, como uma página de manual do PostgreSQL)
 não está implementado.</p>
-<p>O editor na parte inferior da área do separador é completo, tal como o editor do <em>Separador
-de Consulta</em> (disponibiliza realce de sintaxe e autocompletar com <em>Ctrl-Space</em>).
-Para executar um comando, basta escrevê-lo neste editor. Se o comando for uma barra invertida
-(começa com <code>\</code>), basta premir <code>Enter</code> e será executado. Se for um comando
-SQL normal, pode ocupar várias linhas, e terá de premir <em>Alt-Q</em> para o
+<p>O editor na parte inferior da área do separador é completo, tal como o editor do <em>Separador
+de Consulta</em> (disponibiliza realce de sintaxe e autocompletar com <em>Ctrl-Space</em>).
+Para executar um comando, basta escrevê-lo neste editor. Se o comando for uma barra invertida
+(começa com <code>\</code>), basta premir <code>Enter</code> e será executado. Se for um comando
+SQL normal, pode ocupar várias linhas, e terá de premir <em>Alt-Q</em> para o
 executar.</p>
-<p>Todos os comandos e a respetiva saída serão registados na área de visualização, que é
-textual e só de leitura, para que possa copiar e colar o seu conteúdo noutro local.
-Pode limpar a área de visualização clicando no botão <em>Clear Console</em> (Limpar Consola).</p>
-<p>Todos os comandos também são registados no histórico de consultas da ligação, e também num
+<p>Todos os comandos e a respetiva saída serão registados na área de visualização, que é
+textual e só de leitura, para que possa copiar e colar o seu conteúdo noutro local.
+Pode limpar a área de visualização clicando no botão <em>Clear Console</em> (Limpar Consola).</p>
+<p>Todos os comandos também são registados no histórico de consultas da ligação, e também num
 histórico de consola local, ao qual pode aceder clicando no botão <em>Command History</em>
 (Histórico de Comandos).</p>
-<p>Ao clicar no visto verde, pode reutilizar o comando e colocá-lo no
-editor, para o poder corrigir e executar. Outra forma cómoda de navegar
+<p>Ao clicar no visto verde, pode reutilizar o comando e colocá-lo no
+editor, para o poder corrigir e executar. Outra forma cómoda de navegar
 pelo histórico é usar os atalhos <em>Ctrl-Up</em> e <em>Ctrl-Down</em>, para colar rapidamente no editor
-o comando anterior e o seguinte, respetivamente.</p>
+o comando anterior e o seguinte, respetivamente.</p>
 <p>Estes comandos de barra invertida são úteis quando se lida com bases de dados diariamente. O
-separador de consola também mostrará quaisquer erros e os resultados de qualquer comando SQL que
+separador de consola também mostrará quaisquer erros e os resultados de qualquer comando SQL que
 escrever, de forma clara. Experimente!</p>
 		</main>
 	</div>

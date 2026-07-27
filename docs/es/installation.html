@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Instalación - Documentación de OmniDB</title>
+	<title>Instalación — Documentación de OmniDB</title>
 	<meta name="description" content="Instale OmniDB como aplicación de escritorio o paquete de servidor en macOS, Linux o Windows, conéctese a Oracle sin software cliente adicional y localice el archivo de la base de datos de usuario.">
 	<link rel="canonical" href="https://www.omnidb.net/es/installation.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/installation.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html" class="active">Instalación</a>
-			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,81 +119,81 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Instalación</h1>
-		<p>OmniDB ofrece 2 tipos de paquetes para adaptarse a las necesidades de cada usuario:</p>
+		<p>OmniDB ofrece 2 tipos de paquetes para adaptarse a las necesidades de cada usuario:</p>
 		<ul>
 			<li><strong>OmniDB Application</strong>: ejecuta un servidor web en un puerto aleatorio por debajo, y
 				proporciona una ventana de navegador simplificada para usar la interfaz de OmniDB sin ninguna
 				configuración adicional. Se siente igual que una aplicación de escritorio.</li>
-			<li><strong>OmniDB Server</strong>: ejecuta un servidor web en un puerto aleatorio, o en un puerto especificado por
-				el usuario. El usuario debe conectarse a él a través de un navegador web. Ofrece gestión de usuarios,
+			<li><strong>OmniDB Server</strong>: ejecuta un servidor web en un puerto aleatorio, o en un puerto especificado por
+				el usuario. El usuario debe conectarse a él a través de un navegador web. Ofrece gestión de usuarios,
 				ideal para alojarse en un servidor dentro de la red de los usuarios.</li>
 		</ul>
 		<p>Tanto la aplicación como el servidor pueden instalarse en la misma máquina.</p>
 
 		<h3>OmniDB Application</h3>
 
-		<p><strong>Importante:</strong> el repositorio original <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> contiene solo versiones antiguas (hasta ~2020) y ya no se mantiene — consulte <a href="legacy_features_and_history.html">Funciones heredadas e historial</a> para saber qué cambió desde entonces.</p>
+		<p><strong>Importante:</strong> el repositorio original <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> contiene solo versiones antiguas (hasta ~2020) y ya no se mantiene — consulte <a href="legacy_features_and_history.html">Funciones heredadas e historial</a> para saber qué cambió desde entonces.</p>
 
 		<p>Para las versiones actuales, use la <a href="https://github.com/heptau/omnidb/releases">página de versiones</a> del proyecto revivido. Desde la reescritura en Go, cada versión es un único archivo autocontenido por plataforma — sin instalador, sin runtime independiente que instalar previamente:</p>
 
 		<ul>
-			<li>macOS (Apple Silicon o Intel): <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
+			<li>macOS (Apple Silicon o Intel): <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
 			<li>Linux x64: <code>OmniDB-&lt;version&gt;-linux-x64.tar.gz</code></li>
 			<li>Windows x64: <code>OmniDB-&lt;version&gt;-win-x64.zip</code></li>
 		</ul>
 
-		<p>Descomprima (o extraiga) el archivo correspondiente a su plataforma y ejecute la aplicación/binario <code>OmniDB</code> dentro — eso es toda la instalación. <strong>Las compilaciones de Linux y Windows las genera el CI en cada versión, pero aún no se han verificado en hardware real</strong>, a diferencia de la compilación de macOS; si encuentra un problema específico de alguna de esas plataformas, por favor abra un issue.</p>
+		<p>Descomprima (o extraiga) el archivo correspondiente a su plataforma y ejecute la aplicación/binario <code>OmniDB</code> dentro — eso es toda la instalación. <strong>Las compilaciones de Linux y Windows las genera el CI en cada versión, pero aún no se han verificado en hardware real</strong>, a diferencia de la compilación de macOS; si encuentra un problema específico de alguna de esas plataformas, por favor abra un issue.</p>
 
 		<h4>Instalación mediante Homebrew (solo macOS – recomendado)</h4>
 
-		<p>Para los usuarios de macOS que prefieran usar un gestor de paquetes, OmniDB está disponible a través de un tap personalizado de Homebrew:</p>
+		<p>Para los usuarios de macOS que prefieran usar un gestor de paquetes, OmniDB está disponible a través de un tap personalizado de Homebrew:</p>
 
 		<pre><code class="language-bash"># Install the latest version:
 brew install --cask heptau/tap/omnidb</code></pre>
 		<pre><code class="language-bash"># To upgrade later:
 brew upgrade heptau/tap/omnidb</code></pre>
 
-		<p>Homebrew descargará automáticamente el ZIP correcto para su arquitectura (Apple Silicon o Intel), lo descomprimirá y colocará <code>OmniDB.app</code> en su carpeta de Aplicaciones.</p>
+		<p>Homebrew descargará automáticamente el ZIP correcto para su arquitectura (Apple Silicon o Intel), lo descomprimirá y colocará <code>OmniDB.app</code> en su carpeta de Aplicaciones.</p>
 
 		<p>La definición del cask se mantiene aquí: <a href="https://github.com/heptau/homebrew-tap/blob/main/Casks/omnidb.rb">heptau/homebrew-tap – omnidb.rb</a></p>
 
 		<h4>Descarga directa (todas las plataformas)</h4>
 
-		<p>Abra la <a href="https://github.com/heptau/omnidb/releases/latest">última versión</a> y descargue el archivo correspondiente a su sistema operativo/arquitectura de la lista anterior, desde su sección de Assets. Los nombres de los archivos de las versiones incluyen el número de versión, por lo que no existe una URL fija de "siempre la última" a la que enlazar directamente — vaya siempre a través de la propia página de versiones.</p>
+		<p>Abra la <a href="https://github.com/heptau/omnidb/releases/latest">última versión</a> y descargue el archivo correspondiente a su sistema operativo/arquitectura de la lista anterior, desde su sección de Assets. Los nombres de los archivos de las versiones incluyen el número de versión, por lo que no existe una URL fija de «siempre la última» a la que enlazar directamente — vaya siempre a través de la propia página de versiones.</p>
 
-		<p>Descomprima el archivo correspondiente a su plataforma y lance la aplicación de la forma habitual: en
-			macOS, arrastre <code>OmniDB.app</code> a <em>Applications</em> y ábrala desde
-			Launchpad/Spotlight o con <code>open -a OmniDB</code>; en Linux, ejecute
+		<p>Descomprima el archivo correspondiente a su plataforma y lance la aplicación de la forma habitual: en
+			macOS, arrastre <code>OmniDB.app</code> a <em>Applications</em> y ábrala desde
+			Launchpad/Spotlight o con <code>open -a OmniDB</code>; en Linux, ejecute
 			el binario <code>OmniDB</code> directamente; en Windows, ejecute <code>OmniDB.exe</code>.
 		</p>
 
 		<h3>OmniDB Server</h3>
 		<p>El mismo archivo de la versión también contiene <code>omnidb-server</code> — un
-			binario independiente, sin interfaz gráfica, junto a la aplicación de escritorio (la aplicación de escritorio en realidad
+			binario independiente, sin interfaz gráfica, junto a la aplicación de escritorio (la aplicación de escritorio en realidad
 			lanza este mismo binario internamente, como proceso hijo, forzando el modo aplicación).
 			Ejecútelo directamente para el modo servidor accesible por navegador, sin ningún shell
 			de escritorio de por medio:</p>
 		<pre><code class="language-bash">user@machine:~$ ./omnidb-server
 omnidb-server: listening on 127.0.0.1:52149 — open http://127.0.0.1:52149/omnidb_login/ in your browser
 </code></pre>
-		<p>Por defecto, OmniDB escucha únicamente en <code>127.0.0.1</code> y elige un puerto libre
+		<p>Por defecto, OmniDB escucha únicamente en <code>127.0.0.1</code> y elige un puerto libre
 			automáticamente. Puede especificar ambos explícitamente:</p>
 		<pre><code class="language-bash">user@machine:~$ ./omnidb-server -p 8080 -H 0.0.0.0
 omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_login/ in your browser
 </code></pre>
 		<p>Consulte <a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a> para el conjunto completo de opciones
-			y las configuraciones de despliegue recomendadas (en particular, por qué se desaconseja exponer <code>-H 0.0.0.0</code>
-			directamente a internet sin un proxy inverso delante — no hay
+			y las configuraciones de despliegue recomendadas (en particular, por qué se desaconseja exponer <code>-H 0.0.0.0</code>
+			directamente a internet sin un proxy inverso delante — no hay
 			soporte TLS integrado).</p>
 
 		<h3>OmniDB con Oracle</h3>
 		<p>Ni la aplicación ni el servidor de OmniDB requieren software adicional para conectarse a
-			Oracle — a diferencia de versiones anteriores, no se necesita instalar un Oracle Instant Client
+			Oracle — a diferencia de versiones anteriores, no se necesita instalar un Oracle Instant Client
 			independiente. La conectividad con Oracle está implementada de forma nativa (un driver puro en Go), por lo que
 			funciona de fábrica igual que cualquier otra base de datos compatible.</p>
 		<h3>Base de datos de usuario de OmniDB</h3>
@@ -202,16 +202,16 @@ omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_log
 			<code>~/.omnidb/omnidb-server/omnidb.db</code> (para OmniDB server) en el directorio
 			home del usuario, si aún no existe — junto con una cuenta de superusuario <code>admin</code>/<code>admin</code>
 			predeterminada, lista para iniciar sesión de inmediato. Este archivo también se llama la
-			<strong>base de datos de usuario</strong> y contiene todos los usuarios, conexiones y demás
+			<strong>base de datos de usuario</strong> y contiene todos los usuarios, conexiones y demás
 			datos de la aplicación. Si ya existe (por ejemplo, tras una actualización), OmniDB lo usa tal cual — nunca
 			se sobrescribe ni se restablece automáticamente.</p>
 		<h3>OmniDB en el navegador</h3>
-		<p>Ahora que el servidor web está en ejecución, puede acceder a la aplicación de OmniDB basada en navegador desde
-			su navegador favorito. Escriba en la barra de direcciones: <code>localhost:8000</code> y pulse <code>Enter</code>. Si
+		<p>Ahora que el servidor web está en ejecución, puede acceder a la aplicación de OmniDB basada en navegador desde
+			su navegador favorito. Escriba en la barra de direcciones: <code>localhost:8000</code> y pulse <code>Enter</code>. Si
 			todo fue bien, verá una página como esta:</p>
 		<p><img alt="" src="../assets/img/image_002.webp" /></p>
 		<p>Ahora sabe que OmniDB se está ejecutando correctamente. En los próximos capítulos veremos
-			cómo iniciar sesión por primera vez, cómo crear un usuario y cómo utilizar OmniDB.</p>
+			cómo iniciar sesión por primera vez, cómo crear un usuario y cómo utilizar OmniDB.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

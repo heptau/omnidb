@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>OmniDB | Rinascita di uno strumento open source per la gestione di database</title>
+	<title>OmniDB | Rinascita di uno strumento open source per la gestione di database</title>
 	<meta name="description" content="OmniDB è un potente ambiente collaborativo open source per la gestione di database. Riscritto da Python a Go e ricostruito su Wails, disponibile per macOS, Linux e Windows.">
 	<meta name="keywords" content="OmniDB, gestione database, strumento PostgreSQL, editor SQL, client database open source, PgArachne, amministrazione database">
 
@@ -139,56 +139,56 @@
 		<nav>
 			<a href="./index.html" class="nav-home active">Home</a>
 			<div class="nav-group">
-				<span class="nav-group-label">Per iniziare</span>
+				<span class="nav-group-label">Per iniziare</span>
 				<a href="introduction.html">Introduzione</a>
 				<a href="installation.html">Installazione</a>
-				<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+				<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 			</div>
 			<div class="nav-group">
-				<span class="nav-group-label">Lavorare con i dati</span>
+				<span class="nav-group-label">Lavorare con i dati</span>
 				<a href="managing_databases.html">Gestione dei database</a>
 				<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 				<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-				<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-				<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+				<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+				<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 				<a href="visualizing_data.html">Visualizzazione dei dati</a>
-				<a href="managing_other_elements.html">Gestione di altri elementi</a>
+				<a href="managing_other_elements.html">Gestione di altri elementi</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Avanzate</span>
 				<a href="additional_features.html">Funzionalità aggiuntive</a>
-				<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-				<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-				<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+				<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+				<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+				<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 				<a href="logical_replication.html">Replica logica</a>
 			</div>
 			<div class="nav-group">
-				<span class="nav-group-label">Server e strumenti</span>
-				<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+				<span class="nav-group-label">Server e strumenti</span>
+				<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 				<a href="console_tab.html">Scheda Console</a>
 				<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-				<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+				<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Riferimento</span>
-				<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+				<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 			</div>
 		</nav>
 	<main>
 	<div class="hero">
-		<span class="eyebrow-badge">⬡ Open source · Incentrato su PostgreSQL</span>
+		<span class="eyebrow-badge">⬡ Open source · Incentrato su PostgreSQL</span>
 		<h1>Rinascita del progetto OmniDB</h1>
 		<p class="lead">
-			Lo strumento di gestione database leggero, potente e open source è tornato per potenziare i moderni
-			flussi di lavoro di sviluppo.
+			Lo strumento di gestione database leggero, potente e open source è tornato per potenziare i moderni
+			flussi di lavoro di sviluppo.
 		</p>
 		<p class="lead-secondary">
 			Rinato attivamente grazie ai creatori di <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
-			— un ponte tra una solida amministrazione dei database e le moderne architetture thin-client.
+			— un ponte tra una solida amministrazione dei database e le moderne architetture thin-client.
 		</p>
 
 		<section id="screenshot-showcase" class="screenshot-showcase">
-			<p class="lead-small">Trascina la maniglia — stesso spazio di lavoro, chiaro o scuro.</p>
+			<p class="lead-small">Trascina la maniglia — stesso spazio di lavoro, chiaro o scuro.</p>
 			<div class="compare-slider" id="themeCompare" role="slider" tabindex="0" aria-label="Confronta tema chiaro e scuro"
 				aria-valuemin="0" aria-valuemax="100" aria-valuenow="50">
 				<img src="../assets/screenshot.png" alt="Spazio di lavoro OmniDB nel tema chiaro" class="compare-img compare-base" draggable="false">
@@ -207,7 +207,7 @@
 				<div class="install-card">
 					<span class="install-icon" aria-hidden="true">🍺</span>
 					<h3>Homebrew <span class="install-tag">macOS</span></h3>
-					<p>Consigliato per macOS — il cask rileva automaticamente Apple Silicon o Intel.</p>
+					<p>Consigliato per macOS — il cask rileva automaticamente Apple Silicon o Intel.</p>
 					<div class="install-command-row">
 						<pre><code class="install-command" id="brewCmd">brew install --cask heptau/tap/omnidb</code></pre>
 						<button class="copy-btn" type="button" data-copy-target="brewCmd" aria-label="Copia comando">
@@ -218,16 +218,16 @@
 				<div class="install-card">
 					<span class="install-icon" aria-hidden="true">⬇️</span>
 					<h3>GitHub Releases <span class="install-tag">macOS · Linux · Windows</span></h3>
-					<p>Scarica l'archivio autonomo per la tua piattaforma — nessun installer, nessun runtime separato.</p>
+					<p>Scarica l’archivio autonomo per la tua piattaforma — nessun installer, nessun runtime separato.</p>
 					<a class="btn btn-outline btn-small" href="https://github.com/heptau/omnidb/releases/latest" target="_blank" rel="noopener">Ultima versione →</a>
 				</div>
 			</div>
 			<p class="docs-link">
-				Istruzioni complete per l'installazione: <a href="installation.html">→ Guida dettagliata all'installazione</a>
+				Istruzioni complete per l’installazione: <a href="installation.html">→ Guida dettagliata all’installazione</a>
 			</p>
 			<p class="small-note">
-				<small>macOS è verificato end-to-end; le build per Linux e Windows provengono dalla stessa pipeline CI ma
-					non sono ancora state verificate su hardware reale. Le versioni precedenti (fino al 2020 circa) del
+				<small>macOS è verificato end-to-end; le build per Linux e Windows provengono dalla stessa pipeline CI ma
+					non sono ancora state verificate su hardware reale. Le versioni precedenti (fino al 2020 circa) del
 					repository originale non sono più mantenute.</small>
 			</p>
 		</section>
@@ -237,35 +237,35 @@
 			<div class="features-grid">
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">⚡</span>
-					<h3>Riscritto per la velocità</h3>
-					<p>Python → Go. Le query vengono eseguite e l'interfaccia risponde senza un interprete di mezzo.</p>
+					<h3>Riscritto per la velocità</h3>
+					<p>Python → Go. Le query vengono eseguite e l’interfaccia risponde senza un interprete di mezzo.</p>
 				</article>
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">📦</span>
 					<h3>Binario superleggero</h3>
-					<p>Il vecchio shell Electron/NW.js è sparito. Ora Wails guida l'app tramite la webview
+					<p>Il vecchio shell Electron/NW.js è sparito. Ora Wails guida l’app tramite la webview
 						nativa del sistema operativo.</p>
 				</article>
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">🖥️</span>
-					<h3>Ogni piattaforma, un'unica release</h3>
-					<p>macOS (Apple Silicon e Intel), Linux e Windows vengono compilati e distribuiti dalla stessa release.</p>
+					<h3>Ogni piattaforma, un’unica release</h3>
+					<p>macOS (Apple Silicon e Intel), Linux e Windows vengono compilati e distribuiti dalla stessa release.</p>
 				</article>
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">🗄️</span>
-					<h3>Cinque motori, un unico spazio di lavoro</h3>
-					<p>PostgreSQL, MySQL, MariaDB, Oracle e SQLite in un unico spazio di lavoro a schede.</p>
+					<h3>Cinque motori, un unico spazio di lavoro</h3>
+					<p>PostgreSQL, MySQL, MariaDB, Oracle e SQLite in un unico spazio di lavoro a schede.</p>
 				</article>
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">🔒</span>
 					<h3>Sicurezza rinforzata attivamente</h3>
-					<p>Correzioni reali — SQL injection, XSS, IDOR — arrivano di continuo. Consulta il
+					<p>Correzioni reali — SQL injection, XSS, IDOR — arrivano di continuo. Consulta il
 						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelog</a>.</p>
 				</article>
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">📤</span>
 					<h3>Esporta ovunque</h3>
-					<p>Direttamente in CSV, XLSX, TSV, Markdown, JSON o XML.</p>
+					<p>Direttamente in CSV, XLSX, TSV, Markdown, JSON o XML.</p>
 				</article>
 			</div>
 		</section>
@@ -280,14 +280,14 @@
 
 	<footer>
 		<div class="footer-inner">
-			<p class="footer-author">Mantenuto e rinato grazie a <strong>Zbyněk Vanžura</strong> (creatore di
+			<p class="footer-author">Mantenuto e rinato grazie a <strong>Zbyněk Vanžura</strong> (creatore di
 				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a>)</p>
 			<p class="footer-copyright">
 				© 2026 Progetto OmniDB. Rilasciato sotto licenza <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
 			</p>
 			<p class="footer-note">
-				Originariamente creato dal team OmniDB. Questa rinascita è dedicata a mantenere l'ambiente leggero e
-				moderno per i flussi di lavoro odierni sui database.
+				Originariamente creato dal team OmniDB. Questa rinascita è dedicata a mantenere l’ambiente leggero e
+				moderno per i flussi di lavoro odierni sui database.
 			</p>
 		</div>
 	</footer>

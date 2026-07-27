@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Creación de usuarios y conexiones - Documentación de OmniDB</title>
+	<title>Creación de usuarios y conexiones — Documentación de OmniDB</title>
 	<meta name="description" content="Inicie sesión como el usuario administrador predeterminado, cree usuarios adicionales de OmniDB y configure conexiones a PostgreSQL, MySQL, MariaDB, Oracle y SQLite, incluyendo túneles SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/es/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
@@ -90,12 +90,12 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
-			<a href="creating_users_and_connections.html" class="active">Creación de usuarios y conexiones</a>
+			<a href="creating_users_and_connections.html" class="active">Creación de usuarios y conexiones</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
 			<a href="managing_databases.html">Administración de bases de datos</a>
-			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
@@ -111,7 +111,7 @@
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor y herramientas</span>
+			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
@@ -119,11 +119,11 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referencia</span>
-			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
 		</div>
 		</nav>
 		<main>
-		<h1>Creación de usuarios y conexiones</h1>
+		<h1>Creación de usuarios y conexiones</h1>
 		<h4>Inicio de sesión como el usuario <em>admin</em></h4>
 		<p>OmniDB viene únicamente con el usuario <em>admin</em>. Si está usando la versión de servidor,
 		lo primero que debe hacer es iniciar sesión como <em>admin</em>; la contraseña predeterminada es <em>admin</em>.
@@ -138,26 +138,26 @@
 		<p>Haga clic en el botón <em>Add new user</em> (Añadir nuevo usuario) (el icono de persona con un signo más) dentro de la ventana emergente.
 		Se inserta una nueva fila de usuario en blanco, mostrada como <em>(pending info)</em> hasta que la complete.</p>
 		<p><img alt="" src="../assets/img/image_006.webp" /></p>
-		<p>Complete el <em>username</em> (nombre de usuario) y la <em>password</em> (contraseña). Marque si desea que este nuevo usuario sea
+		<p>Complete el <em>username</em> (nombre de usuario) y la <em>password</em> (contraseña). Marque si desea que este nuevo usuario sea
 		<em>super user</em> (superusuario). Esta ventana de administración de usuarios solo la ven los superusuarios. Cuando
 		termine, haga clic en el botón <em>Save</em> (Guardar) dentro de la ventana emergente.</p>
 		<p><img alt="" src="../assets/img/image_007.webp" /></p>
-		<p>Puede crear tantos usuarios como desee, editar usuarios existentes y también eliminar
+		<p>Puede crear tantos usuarios como desee, editar usuarios existentes y también eliminar
 		usuarios haciendo clic en la cruz roja de la columna de acciones. Ahora puede cerrar sesión
 		haciendo clic en el botón <em>Sign Out</em> (Cerrar sesión) en la esquina superior derecha.</p>
 		<h4>Inicio de sesión como el nuevo usuario</h4>
 		<p>Iniciemos sesión con el usuario que acabamos de crear.</p>
 		<p><img alt="" src="../assets/img/image_008.webp" /></p>
-		<p>Y podemos ver la ventana de nuevo. Observe que ahora no hay icono <em>Users</em>, porque
+		<p>Y podemos ver la ventana de nuevo. Observe que ahora no hay icono <em>Users</em>, porque
 		el usuario <em>test</em> no es superusuario. Adelante, haga clic en <strong>Connections</strong> (Conexiones) en
 		la esquina superior izquierda. Verá una ventana emergente como esta:</p>
 		<p><img alt="" src="../assets/img/image_009.webp" /></p>
 		<h4>Creación de conexiones</h4>
-		<p>OmniDB admite PostgreSQL, MySQL, MariaDB, Oracle y SQLite.</p>
-		<p>Crearemos ahora una conexión a una base de datos PostgreSQL, una conexión a una
-		base de datos Oracle y una conexión a una base de datos MariaDB. Para crear las
-		conexiones, debe hacer clic en el botón <em>New Connection</em> (Nueva conexión) y luego elegir el
-		tipo de conexión y completar los demás campos. Tras completar todos los campos de ambas
+		<p>OmniDB admite PostgreSQL, MySQL, MariaDB, Oracle y SQLite.</p>
+		<p>Crearemos ahora una conexión a una base de datos PostgreSQL, una conexión a una
+		base de datos Oracle y una conexión a una base de datos MariaDB. Para crear las
+		conexiones, debe hacer clic en el botón <em>New Connection</em> (Nueva conexión) y luego elegir el
+		tipo de conexión y completar los demás campos. Tras completar todos los campos de ambas
 		conexiones, haga clic en el botón <em>Save</em> (Guardar).</p>
 		<p><img alt="" src="../assets/img/image_010.webp" /></p>
 		<p>Para cada conexión hay una columna <em>Actions</em> (Acciones) donde puede eliminarlas, probarlas y
@@ -169,21 +169,21 @@
 		tratando así de aprovechar los métodos de autenticación automática que puedan estar
 		disponibles: el método <code>trust</code>, un archivo <code>.pgpass</code>, etc. Como el servidor de base de datos
 		responde con un error que no permite conectarse al usuario, OmniDB entiende
-		que se requiere una contraseña y la solicita al usuario. Cuando el usuario escribe una contraseña
-		en esta ventana emergente, la contraseña se cifra y se almacena en memoria.</p>
-		<p>Después de escribir la contraseña y pulsar <em>Enter</em>, si la conexión con la base de datos
+		que se requiere una contraseña y la solicita al usuario. Cuando el usuario escribe una contraseña
+		en esta ventana emergente, la contraseña se cifra y se almacena en memoria.</p>
+		<p>Después de escribir la contraseña y pulsar <em>Enter</em>, si la conexión con la base de datos
 		tiene éxito, verá una ventana emergente de confirmación.</p>
 		<p><img alt="" src="../assets/img/image_012.webp" /></p>
-		<p>Pero, si tiene algún problema al conectarse a su base de datos PostgreSQL,
+		<p>Pero, si tiene algún problema al conectarse a su base de datos PostgreSQL,
 		la misma ventana emergente seguirá mostrando el error que obtuvo OmniDB.</p>
 		<p><img alt="" src="../assets/img/image_013.webp" /></p>
-		<p>Para Oracle, el comportamiento es similar. Cuando OmniDB intenta conectarse por primera vez a una
+		<p>Para Oracle, el comportamiento es similar. Cuando OmniDB intenta conectarse por primera vez a una
 		base de datos Oracle sin contraseña, verá un mensaje como este:</p>
 		<p><img alt="" src="../assets/img/image_115.webp" /></p>
-		<p>Si tiene algún problema al conectarse a su base de datos Oracle, la misma ventana emergente
+		<p>Si tiene algún problema al conectarse a su base de datos Oracle, la misma ventana emergente
 		seguirá mostrando el error que obtuvo OmniDB:</p>
 		<p><img alt="" src="../assets/img/image_116.webp" /></p>
-		<p>Las bases de datos MariaDB y MySQL también funcionan de la misma manera. La primera vez, sin contraseña
+		<p>Las bases de datos MariaDB y MySQL también funcionan de la misma manera. La primera vez, sin contraseña
 		proporcionada:</p>
 		<p><img alt="" src="../assets/img/image_184.webp" /></p>
 		<p>Pero si tiene algún problema, como que el servidor de base de datos esté caído:</p>
@@ -192,8 +192,8 @@
 		(Seleccionar conexión), OmniDB la abrirá en una nueva <strong>Connection Outer Tab</strong> (pestaña externa de conexión), como veremos en
 		el próximo capítulo.</p>
 		<h4>Uso de túneles SSH</h4>
-		<p>OmniDB permite al usuario conectarse a cualquier base de datos remota
-		a través de túneles SSH. El usuario debe completar la información del túnel SSH en cada
+		<p>OmniDB permite al usuario conectarse a cualquier base de datos remota
+		a través de túneles SSH. El usuario debe completar la información del túnel SSH en cada
 		conexión de la <em>Connections Grid</em> (cuadrícula de conexiones).</p>
 		<p><img alt="" src="../assets/img/image_186.webp" /></p>
 		<ul>
@@ -202,19 +202,19 @@
 		de puerto);</li>
 		<li><em>SSH User</em> (Usuario SSH): el nombre de usuario del sistema operativo que usa para conectarse al servidor
 		SSH;</li>
-		<li><em>Password / Passphrase</em> (Contraseña / Frase de contraseña): la contraseña del usuario del sistema operativo (o la
+		<li><em>Password/Passphrase</em> (Contraseña/Frase de contraseña): la contraseña del usuario del sistema operativo (o la
 		frase de contraseña de la clave indicada más abajo). Si completa el campo <em>SSH Key Text File</em>, la
 		contraseña es opcional;</li>
 		<li><em>SSH Key Text File</em> (Archivo de texto de clave SSH): el contenido de la clave SSH privada local que puede usar para conectarse a
 		el servidor SSH. Si completa este campo, también puede completar el campo
-		<em>Password / Passphrase</em>, pero en este caso será la frase de contraseña de la
+		<em>Password/Passphrase</em>, pero en este caso será la frase de contraseña de la
 		clave privada SSH.</li>
 		</ul>
 		<p>Tenga en cuenta que toda la información se almacena cifrada en su <em>User
 		Database</em> (base de datos de usuario) local de OmniDB.</p>
 		<p>Al usar túneles SSH, también debe completar todos los campos de la base de datos de forma
 		acorde. Pero en lugar de ser relativos al servidor de OmniDB, serán relativos al
-		servidor SSH. Esto puede hacerse en 2 escenarios, como se explica a continuación.</p>
+		servidor SSH. Esto puede hacerse en 2 escenarios, como se explica a continuación.</p>
 		<p>Si la base de datos está dentro del mismo servidor al que se conecta mediante SSH, tendrá
 		una situación como esta:</p>
 		<p><img alt="" src="../assets/ssh_tunnels_1.pn../p>

@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Pokročilé vyhledávání objektů - Dokumentace OmniDB</title>
+	<title>Pokročilé vyhledávání objektů – Dokumentace OmniDB</title>
 	<meta name="description" content="Jak pokročilé vyhledávání objektů (Advanced Object Search) v OmniDB dříve umožňovalo uživatelům vyhledávat pomocí vzorů napříč databázovými objekty a daty v tabulkách, včetně jeho aktuálně deaktivovaného vstupního bodu.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/advanced_object_search.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/advanced_object_search.html">
@@ -88,13 +88,13 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
-			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Práce s daty</span>
+			<span class="nav-group-label">Práce s daty</span>
 			<a href="managing_databases.html">Správa databází</a>
-			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
-			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
@@ -104,12 +104,12 @@
 			<span class="nav-group-label">Pokročilé</span>
 			<a href="additional_features.html">Další funkce</a>
 			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server a nástroje</span>
+			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Záložka Konzole</a>
 			<a href="advanced_object_search.html" class="active">Pokročilé vyhledávání objektů</a>
@@ -117,36 +117,36 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html">Zastaralé funkce a historie</a>
+			<a href="legacy_features_and_history.html">Zastaralé funkce a historie</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Pokročilé vyhledávání objektů</h1>
-<p><strong>Poznámka:</strong> tato funkce není v aktuální verzi dostupná. Její položka
-ve stromovém menu je zakomentovaná a frontendové funkce ani Go handler na backendu,
-na kterých závisela, už neexistují — nebyla převedena během přepisu do Go a její
+<p><strong>Poznámka:</strong> tato funkce není v aktuální verzi dostupná. Její položka
+ve stromovém menu je zakomentovaná a frontendové funkce ani Go handler na backendu,
+na kterých závisela, už neexistují — nebyla převedena během přepisu do Go a její
 obnovení by znamenalo znovu ji postavit od základu, nikoli jen přepnout přepínač. Zbytek
 této kapitoly je zachován jako popis toho, jak dříve fungovala, pro historickou
 potřebu.</p>
 <p>Pokročilé vyhledávání objektů umožňovalo uživatelům používat porovnávání podle vzoru
-při hledání databázových objektů a dat v tabulkách — buď pomocí standardního SQL
+při hledání databázových objektů a dat v tabulkách — buď pomocí standardního SQL
 operátoru <code>LIKE</code>, nebo pomocí komplexních regulárních výrazů.</p>
-<p>K funkci pokročilého vyhledávání objektů se dostanete kliknutím pravým tlačítkem na
+<p>K funkci pokročilého vyhledávání objektů se dostanete kliknutím pravým tlačítkem na
 konkrétní databázový uzel ve stromu:</p>
 <p><img alt="" src="../assets/img/image_196.webp" /></p>
 <p>Rozhraní umožňuje filtrovat kategorie objektů, schémata, ve kterých se bude
-vyhledávání provádět, a také omezit prostor hledání, je-li vybrána kategorie Data,
-takže lze vyhledávat vzor v podmnožině tabulek:</p>
+vyhledávání provádět, a také omezit prostor hledání, je-li vybrána kategorie Data,
+takže lze vyhledávat vzor v podmnožině tabulek:</p>
 <p><img alt="" src="../assets/img/image_197.webp" /></p>
-<p>Po vyplnění polí a spuštění OmniDB provede vyhledávání pomocí několika vláken,
+<p>Po vyplnění polí a spuštění OmniDB provede vyhledávání pomocí několika vláken,
 která zrychlí proces paralelním během (lze konfigurovat. Více informací najdete v
 kapitole <a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>).</p>
 <p>Po dokončení vyhledávání OmniDB zobrazí výsledek ve stromové struktuře:</p>
 <p><img alt="" src="../assets/img/image_198.webp" /></p>
-<p>Pro podrobnosti o vyhledávání v jednotlivých kategoriích klikněte pravým tlačítkem
-na požadovaný uzel a zvolte „Zobrazit více“ (See More). OmniDB otevře záložku
-dotazu s příkazem SQL použitým k provedení daného vyhledávání. Stačí příkaz spustit
-a získat výsledky:</p>
+<p>Pro podrobnosti o vyhledávání v jednotlivých kategoriích klikněte pravým tlačítkem
+na požadovaný uzel a zvolte „Zobrazit více“ (See More). OmniDB otevře záložku
+dotazu s příkazem SQL použitým k provedení daného vyhledávání. Stačí příkaz spustit
+a získat výsledky:</p>
 <p><img alt="" src="../assets/img/image_199.webp"/>
 <img alt="" src="../assets/img/image_200.webp" /></p>
 		</main>

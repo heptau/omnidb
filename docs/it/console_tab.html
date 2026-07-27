@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Scheda Console - Documentazione OmniDB</title>
+	<title>Scheda Console – Documentazione OmniDB</title>
 	<meta name="description" content="Usa la Scheda Console di OmniDB come console di lavoro in stile psql: una manciata di comandi con backslash, cronologia dei comandi, evidenziazione della sintassi e completamento automatico.">
 	<link rel="canonical" href="https://www.omnidb.net/it/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
@@ -86,85 +86,85 @@
 		<nav>
 					<a href="./index.html" class="nav-home">Home</a>
 		<div class="nav-group">
-			<span class="nav-group-label">Per iniziare</span>
+			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
-			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Lavorare con i dati</span>
+			<span class="nav-group-label">Lavorare con i dati</span>
 			<a href="managing_databases.html">Gestione dei database</a>
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
-			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
-			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
-			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Avanzate</span>
 			<a href="additional_features.html">Funzionalità aggiuntive</a>
-			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
-			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
-			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Server e strumenti</span>
-			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
 			<a href="console_tab.html" class="active">Scheda Console</a>
 			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
-			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell'editor</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Riferimento</span>
-			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Scheda Console</h1>
-<p>La Scheda Console offre un modo semplice e comodo per interagire con i propri
-database. Gli utenti che hanno familiarità con l'utility a riga di comando <code>psql</code>
-ne riconosceranno l'impostazione generale — un log a scorrimento più un editor di
-input — e un sottoinsieme utile dei suoi comandi con backslash funziona anche qui:</p>
+<p>La Scheda Console offre un modo semplice e comodo per interagire con i propri
+database. Gli utenti che hanno familiarità con l’utility a riga di comando <code>psql</code>
+ne riconosceranno l’impostazione generale — un log a scorrimento più un editor di
+input — e un sottoinsieme utile dei suoi comandi con backslash funziona anche qui:</p>
 <ul>
-<li><code>\?</code>: mostra l'elenco dei comandi;</li>
+<li><code>\?</code>: mostra l’elenco dei comandi;</li>
 <li><code>\dt</code>: elenca le tabelle;</li>
-<li><code>\d</code>: elenca tabelle, viste e sequenze; <code>\d NOME</code> descrive uno di
-questi elementi (colonne, tipi, nullabilità e valori predefiniti) — <code>NOME</code> può
-essere qualificato con lo schema (<code>\d public.customers</code>);</li>
+<li><code>\d</code>: elenca tabelle, viste e sequenze; <code>\d NOME</code> descrive uno di
+questi elementi (colonne, tipi, nullabilità e valori predefiniti) — <code>NOME</code> può
+essere qualificato con lo schema (<code>\d public.customers</code>);</li>
 <li><code>\du</code>: elenca ruoli/utenti;</li>
-<li><code>\l</code>: elenca i database;</li>
+<li><code>\l</code>: elenca i database;</li>
 <li><code>\df</code>: elenca le funzioni;</li>
-<li><code>\x</code>: attiva/disattiva l'output esteso/verticale;</li>
-<li><code>\timing</code>: attiva/disattiva la visualizzazione del tempo di esecuzione.</li>
+<li><code>\x</code>: attiva/disattiva l’output esteso/verticale;</li>
+<li><code>\timing</code>: attiva/disattiva la visualizzazione del tempo di esecuzione.</li>
 </ul>
-<p>Questi comandi si adattano a ciò che ogni motore connesso effettivamente offre: in
-MySQL/MariaDB il "database" funge anche da schema, in Oracle lo "user" funge anche
-da schema (e non esiste un concetto separato di multi-database), mentre SQLite non
-ha alcun concetto di schemi/ruoli/database — laddove un motore non ha davvero nulla
-da mostrare, il comando lo segnala direttamente invece di restituire un risultato
-vuoto o fuorviante. <code>\h</code> (guida alla sintassi per singolo comando SQL, come una
-pagina di manuale di PostgreSQL) non è implementato.</p>
-<p>L'editor nella parte inferiore dell'area della scheda è completo di tutte le funzionalità,
-proprio come l'editor della <em>Query Tab</em> (offre evidenziazione della sintassi e completamento
-automatico con <em>Ctrl-Space</em>). Per eseguire un comando, basta digitarlo in questo editor. Se il
-comando è un backslash (inizia con <code>\</code>), basta premere <code>Invio</code> e verrà eseguito. Se invece è un
-comando SQL normale, può essere multilinea, e sarà necessario digitare <em>Alt-Q</em> per
+<p>Questi comandi si adattano a ciò che ogni motore connesso effettivamente offre: in
+MySQL/MariaDB il «database» funge anche da schema, in Oracle lo «user» funge anche
+da schema (e non esiste un concetto separato di multi-database), mentre SQLite non
+ha alcun concetto di schemi/ruoli/database — laddove un motore non ha davvero nulla
+da mostrare, il comando lo segnala direttamente invece di restituire un risultato
+vuoto o fuorviante. <code>\h</code> (guida alla sintassi per singolo comando SQL, come una
+pagina di manuale di PostgreSQL) non è implementato.</p>
+<p>L’editor nella parte inferiore dell’area della scheda è completo di tutte le funzionalità,
+proprio come l’editor della <em>Query Tab</em> (offre evidenziazione della sintassi e completamento
+automatico con <em>Ctrl-Space</em>). Per eseguire un comando, basta digitarlo in questo editor. Se il
+comando è un backslash (inizia con <code>\</code>), basta premere <code>Invio</code> e verrà eseguito. Se invece è un
+comando SQL normale, può essere multilinea, e sarà necessario digitare <em>Alt-Q</em> per
 eseguirlo.</p>
-<p>Tutti i comandi e il relativo output vengono registrati nell'area di visualizzazione, che è
-testuale e di sola lettura, in modo da poterne copiare e incollare il contenuto altrove.
-È possibile cancellare l'area di visualizzazione facendo clic sul pulsante <em>Clear Console</em>.</p>
-<p>Tutti i comandi vengono registrati anche nella cronologia delle query della connessione, e anche in una
-cronologia locale della console, a cui si può accedere facendo clic sul pulsante <em>Command
+<p>Tutti i comandi e il relativo output vengono registrati nell’area di visualizzazione, che è
+testuale e di sola lettura, in modo da poterne copiare e incollare il contenuto altrove.
+È possibile cancellare l’area di visualizzazione facendo clic sul pulsante <em>Clear Console</em>.</p>
+<p>Tutti i comandi vengono registrati anche nella cronologia delle query della connessione, e anche in una
+cronologia locale della console, a cui si può accedere facendo clic sul pulsante <em>Command
 History</em>.</p>
-<p>Facendo clic sul segno di spunta verde, è possibile richiamare il comando e inserirlo nell'
-editor, in modo da poterlo modificare ed eseguire. Un altro modo comodo per navigare
-nella cronologia è usare le scorciatoie <em>Ctrl-Up</em> e <em>Ctrl-Down</em>, per incollare rapidamente
-nell'editor rispettivamente il comando precedente e quello successivo.</p>
-<p>Questi comandi con backslash sono utili quando si lavora ogni giorno con i database. La
-scheda console mostrerà inoltre eventuali errori e i risultati di qualsiasi comando SQL
-digitato, in modo chiaro e ben formattato. Provala!</p>
+<p>Facendo clic sul segno di spunta verde, è possibile richiamare il comando e inserirlo nell’
+editor, in modo da poterlo modificare ed eseguire. Un altro modo comodo per navigare
+nella cronologia è usare le scorciatoie <em>Ctrl-Up</em> e <em>Ctrl-Down</em>, per incollare rapidamente
+nell’editor rispettivamente il comando precedente e quello successivo.</p>
+<p>Questi comandi con backslash sono utili quando si lavora ogni giorno con i database. La
+scheda console mostrerà inoltre eventuali errori e i risultati di qualsiasi comando SQL
+digitato, in modo chiaro e ben formattato. Provala!</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

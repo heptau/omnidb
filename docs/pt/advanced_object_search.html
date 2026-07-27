@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Pesquisa Avançada de Objetos - Documentação OmniDB</title>
+	<title>Pesquisa Avançada de Objetos – Documentação OmniDB</title>
 	<meta name="description" content="Como a Pesquisa Avançada de Objetos do OmniDB permitia procurar por padrões em objetos de base de dados e dados de tabelas, incluindo o seu ponto de entrada atualmente desativado.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/advanced_object_search.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/advanced_object_search.html">
@@ -89,12 +89,12 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
-			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
 			<a href="managing_databases.html">Gerir Bases de Dados</a>
-			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
@@ -110,43 +110,43 @@
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
-			<span class="nav-group-label">Servidor e Ferramentas</span>
-			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="advanced_object_search.html" class="active">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Referência</span>
-			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
 		</div>
 		</nav>
 		<main>
 		<h1>Pesquisa Avançada de Objetos</h1>
-<p><strong>Nota:</strong> esta funcionalidade não está disponível na versão atual. A sua entrada
-no menu de árvore está comentada, e as funções de frontend e o gestor de backend em Go
-de que dependia já não existem — não foi transportada durante a reescrita em Go,
-e reativá-la significaria construí-la de novo em vez de apenas ligar um interruptor. O
+<p><strong>Nota:</strong> esta funcionalidade não está disponível na versão atual. A sua entrada
+no menu de árvore está comentada, e as funções de frontend e o gestor de backend em Go
+de que dependia já não existem — não foi transportada durante a reescrita em Go,
+e reativá-la significaria construí-la de novo em vez de apenas ligar um interruptor. O
 resto deste capítulo mantém-se como descrição de como funcionava anteriormente, para
 referência histórica.</p>
-<p>A Pesquisa Avançada de Objetos permitia aos utilizadores aplicar correspondência de padrões para pesquisar
-objetos de base de dados e dados de tabelas — o operador SQL <code>LIKE</code> predefinido, ou expressões
+<p>A Pesquisa Avançada de Objetos permitia aos utilizadores aplicar correspondência de padrões para pesquisar
+objetos de base de dados e dados de tabelas — o operador SQL <code>LIKE</code> predefinido, ou expressões
 regulares complexas.</p>
-<p>Podia aceder-se à funcionalidade de Pesquisa Avançada de Objetos clicando com o botão direito num
+<p>Podia aceder-se à funcionalidade de Pesquisa Avançada de Objetos clicando com o botão direito num
 nó de base de dados específico na árvore:</p>
 <p><img alt="" src="../assets/img/image_196.webp" /></p>
-<p>A interface permitia filtrar categorias de objetos, esquemas onde
-as pesquisas seriam executadas, e também limitar o espaço de pesquisa quando a categoria
+<p>A interface permitia filtrar categorias de objetos, esquemas onde
+as pesquisas seriam executadas, e também limitar o espaço de pesquisa quando a categoria
 Data estava selecionada, para que se pudesse pesquisar um padrão num subconjunto de tabelas:</p>
 <p><img alt="" src="../assets/img/image_197.webp" /></p>
-<p>Depois de preencher os campos e executar, o OmniDB efetuava a pesquisa usando várias
-threads que aceleravam o processo ao executar em paralelo (era personalizável;
-para mais informação, consulte <a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>).</p>
-<p>Quando a pesquisa terminava, o OmniDB apresentava o resultado numa árvore:</p>
+<p>Depois de preencher os campos e executar, o OmniDB efetuava a pesquisa usando várias
+threads que aceleravam o processo ao executar em paralelo (era personalizável;
+para mais informação, consulte <a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>).</p>
+<p>Quando a pesquisa terminava, o OmniDB apresentava o resultado numa árvore:</p>
 <p><img alt="" src="../assets/img/image_198.webp" /></p>
-<p>Para mais detalhes sobre a pesquisa em cada categoria, clicava-se com o botão direito no nó
-pretendido e selecionava-se 'See More' (Ver Mais). O OmniDB abria um separador de consulta com o comando SQL usado para
-efetuar essa pesquisa específica. Bastava executar o comando para obter os resultados:</p>
+<p>Para mais detalhes sobre a pesquisa em cada categoria, clicava-se com o botão direito no nó
+pretendido e selecionava-se 'See More' (Ver Mais). O OmniDB abria um separador de consulta com o comando SQL usado para
+efetuar essa pesquisa específica. Bastava executar o comando para obter os resultados:</p>
 <p><img alt="" src="../assets/img/image_199.webp"/>
 <img alt="" src="../assets/img/image_200.webp" /></p>
 		</main>
