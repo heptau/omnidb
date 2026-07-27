@@ -61,7 +61,7 @@ cask "omnidb" do
 
   # Bundle ID is "net.omnidb" (wails-app/build/darwin/Info.plist,
   # AGENTS.md) — these paths used to say "com.omnidb.*", which never
-  # matched anything real, so `brew uninstall --zap` silently left the
+  # matched anything real, so \`brew uninstall --zap\` silently left the
   # actual prefs/saved-state files behind.
   zap trash: [
     "~/Library/Application Support/OmniDB",

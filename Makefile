@@ -3,6 +3,7 @@ BUILD_DIR = build
 WORK_DIR = build_work
 APP_NAME = OmniDB
 VERSION := $(shell cat VERSION | tr -d '\r\n')
+DOCKER_IMAGE = omnidb-linux-builder
 
 # --- Platform Defaults (can be overridden by targets) ---
 MAC_ARCH = osx-arm64
@@ -44,8 +45,8 @@ endif
 
 # --- Phony Targets ---
 .PHONY: help all clean _sync_version \
-        build-mac-arm64 build-mac-intel build-linux build-win \
-        release release-local \
+        build-mac-arm64 build-mac-intel build-linux build-linux-docker build-win \
+        prepare-release release \
         _prepare_dirs _ensure_wails _build_mac _build_linux _build_win \
         docs-typo docs-typo-dry _ensure_typolima
 
@@ -67,12 +68,15 @@ help:
 	@echo "  make build-mac-intel  - Build for Intel Mac (x86_64)"
 	@echo "  make build-linux      - Build for Linux (x64) — must run ON Linux, Wails'"
 	@echo "                          own Linux webview (GTK/CGO) cannot cross-compile"
+	@echo "  make build-linux-docker - Build for Linux (x64) from macOS/Windows, via Docker"
 	@echo "  make build-win        - Build for Windows (x64) — fully cross-compiles from"
 	@echo "                          macOS/Linux (Wails' pure-Go WebView2 loader)"
 	@echo ""
 	@echo "Release targets:"
-	@echo "  make release-local    - Build current platform, verify artifacts"
-	@echo "  make release          - Tag and push → GitHub Actions builds all platforms"
+	@echo "  make release VERSION=X.Y.Z - Bump VERSION+CHANGELOG, build every platform"
+	@echo "                          locally (Linux via Docker), commit, tag, push,"
+	@echo "                          publish the GitHub release and update the Homebrew tap"
+	@echo "  make prepare-release VERSION=X.Y.Z - Just the VERSION/CHANGELOG bump + commit"
 	@echo ""
 	@echo "Docs targets:"
 	@echo "  make docs-typo-dry    - Preview TypoLima typography fixes for docs/<lang> ($(DOCS_LANGS))"
@@ -101,15 +105,44 @@ build-linux:
 	$(MAKE) _build_linux \
 		WAILS_GOARCH=amd64
 
+# Build the Linux binary from macOS/Windows via Docker, since Wails' GTK/
+# webkit2gtk webview can't cross-compile. frontend/node_modules and the Go
+# module/build cache are each given their own named Docker volume, mounted
+# OVER the bind-mounted repo path — mounting a plain bind-mount subdirectory
+# would mean the container's `rm -rf`/npm install operate on the HOST's
+# actual node_modules (breaking it for the next native macOS/Windows build,
+# since esbuild ships platform-specific binaries). The named volumes also
+# cache across releases, so repeat runs don't redownload every Go module.
+build-linux-docker:
+	docker build -q --platform linux/amd64 -t $(DOCKER_IMAGE) -f scripts/docker/linux-build.Dockerfile .
+	docker volume create omnidb-linux-frontend-node-modules >/dev/null
+	docker volume create omnidb-linux-gomod-cache >/dev/null
+	@# Fresh named volumes are root-owned; chown once (as root, idempotent) so
+	@# the non-root --user build below can write into them.
+	docker run --rm --platform linux/amd64 \
+		-v omnidb-linux-frontend-node-modules:/vol-node-modules \
+		-v omnidb-linux-gomod-cache:/vol-gomod-cache \
+		$(DOCKER_IMAGE) \
+		chown -R "$$(id -u):$$(id -g)" /vol-node-modules /vol-gomod-cache
+	docker run --rm --platform linux/amd64 \
+		-v "$(CURDIR)":/src \
+		-v omnidb-linux-frontend-node-modules:/src/wails-app/frontend/node_modules \
+		-v omnidb-linux-gomod-cache:/tmp/go \
+		-e HOME=/tmp \
+		-e GOPATH=/tmp/go \
+		--user "$$(id -u):$$(id -g)" \
+		$(DOCKER_IMAGE) \
+		sh -c "rm -rf wails-app/build/bin wails-app/frontend/package.json.md5 && make build-linux"
+
 build-win:
 	$(MAKE) _build_win \
 		WAILS_GOARCH=amd64
 
-release-local:
-	scripts/release.sh --local
+prepare-release:
+	@VERSION=$(VERSION) scripts/prepare_release.sh
 
-release:
-	scripts/release.sh --github
+release: clean prepare-release
+	@VERSION=$(VERSION) scripts/release.sh
 
 # --- Internal Build Steps ---
 
@@ -120,11 +153,13 @@ _sync_version:
 	$(SED_CMD) "s|<small>v[0-9.]*</small>|<small>v$(VERSION)</small>|g" wails-app/frontend/index.html
 
 # 1. Common preparation
+# NOTE: deliberately does NOT wipe $(BUILD_DIR) — `make release` builds every
+# platform back-to-back in one run, and each earlier platform's dist/ archive
+# must survive later platforms' builds. Per-platform targets below already
+# rm -rf their own $(APP_NAME).app / $(APP_NAME)-linux / $(APP_NAME)-win
+# output dir before rebuilding it.
 _prepare_dirs: _sync_version
-	@echo "Cleaning previous builds..."
-	rm -rf $(BUILD_DIR) $(WORK_DIR)
-	@echo "Creating build directory..."
-	mkdir -p $(BUILD_DIR)
+	@mkdir -p $(BUILD_DIR)/dist
 
 # Install the Wails CLI (into `go env GOPATH`/bin) if it isn't already
 # available, so builds don't require it pre-installed on PATH.
@@ -163,12 +198,16 @@ _build_mac: _prepare_dirs _ensure_wails
 
 # --- LINUX BUILD LOGIC (Wails) ---
 # Wails refuses to cross-compile for Linux from another OS, so this target
-# must run ON Linux. Needs libgtk-3-dev and libwebkit2gtk-4.1-dev (or 4.0 on
-# older distros) installed — Wails' Linux webview is a real CGO/GTK binding,
-# unlike the pure-Go one it uses for Windows.
+# must run ON Linux. Needs libgtk-3-dev and libwebkit2gtk-4.1-dev installed —
+# Wails' Linux webview is a real CGO/GTK binding, unlike the pure-Go one it
+# uses for Windows. The webkit2_41 build tag is required on distros that only
+# ship webkit2gtk-4.1 (Debian bookworm+, Ubuntu 24.04+) — without it Wails'
+# pkg-config lookup hardcodes the older webkit2gtk-4.0 and fails (verified
+# against github.com/wailsapp/wails/v2@v2.12.0's
+# pkg/assetserver/webview/*_linux.go `#cgo !webkit2_41 pkg-config: ...` tags).
 _build_linux: _prepare_dirs _ensure_wails
 	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
-	cd wails-app && $(WAILS) build -clean -platform linux/$(WAILS_GOARCH)
+	cd wails-app && $(WAILS) build -clean -platform linux/$(WAILS_GOARCH) -tags webkit2_41
 
 	@echo "Setting up directory structure..."
 	rm -rf "$(BUILD_DIR)/$(APP_NAME)-linux"

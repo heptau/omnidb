@@ -78,6 +78,70 @@ under the same [MIT License](http://choosealicense.com/licenses/mit/) that
 covers the project. Feel free to contact the maintainers if that's a concern.
 
 
+## Versioning
+
+We use a single `VERSION` file in the root of the repository as the single
+source of truth for the app version. `make _sync_version` (run automatically
+as part of the release process below) propagates it into
+`go-server/version.go` and `wails-app/frontend/index.html`.
+
+## Releasing
+
+Releases are cut with a single command, run from an up-to-date `master`:
+
+```bash
+make release VERSION=X.Y.Z
+```
+
+Before running it, make sure `CHANGELOG.md` has real content under
+`## [Unreleased]` — the command refuses to run if that section is empty, or
+if `X.Y.Z` already has an entry in the changelog (both would otherwise produce
+an empty or duplicate GitHub Release).
+
+What it does, in order:
+
+1. `prepare-release` (`scripts/prepare_release.sh`): writes `X.Y.Z` into
+   `VERSION`, renames `## [Unreleased]` in `CHANGELOG.md` to
+   `## [X.Y.Z] - <today>`, adds a fresh empty `## [Unreleased]` above it for
+   the next cycle, extracts that version's notes into
+   `build/release-notes.md`, syncs the version into the Go/HTML files, and
+   commits + pushes all of it as a single `chore(release): vX.Y.Z` commit.
+2. Builds every platform **locally** (`scripts/release.sh`) — no GitHub
+   Actions involved in producing binaries:
+   - `make build-mac-arm64` / `make build-mac-intel` — native Wails builds
+     for Apple Silicon and Intel.
+   - `make build-win` — cross-compiles for Windows (Wails' pure-Go WebView2
+     loader supports this from macOS).
+   - `make build-linux-docker` — builds the Linux binary inside a Docker
+     container (`scripts/docker/linux-build.Dockerfile`). This is the one
+     platform that genuinely cannot be cross-compiled: Wails' Linux webview
+     is a real GTK3/webkit2gtk CGO binding, so it has to be built on Linux —
+     Docker gets you that without needing a second machine or a CI runner.
+3. Computes `checksums.txt` for all four archives and regenerates the
+   Homebrew Cask (`scripts/gen_cask.sh`).
+4. Creates and pushes the git tag `vX.Y.Z`.
+5. Creates the GitHub Release via `gh release create`, using
+   `build/release-notes.md` as the release body, and uploads all four
+   platform archives plus `checksums.txt`.
+6. Updates the Cask file in `heptau/homebrew-tap` via `gh api`.
+
+### Prerequisites
+
+- Docker running locally (used only for the Linux build step).
+- [`gh`](https://cli.github.com/) installed and authenticated
+  (`gh auth login`) with an account that has push access to both this repo
+  and `heptau/homebrew-tap`.
+- A clean working tree on `master`, up to date with `origin/master`.
+
+### Caveat
+
+The Intel macOS build cross-compiles from Apple Silicon. If that ever stops
+working reliably, build it on an actual Intel Mac instead and skip that step
+in `scripts/release.sh`.
+
+To run just the version bump without building/publishing anything, use
+`make prepare-release VERSION=X.Y.Z`.
+
 ## Report bugs using Github's [issues](https://github.com/heptau/omnidb/issues)
 
 We use GitHub issues to track public bugs. Report a bug by
