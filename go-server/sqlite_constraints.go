@@ -13,40 +13,51 @@ func quoteIdent(name string) string {
 	return strings.ReplaceAll(name, "'", "''")
 }
 
-// sqliteTableExists confirms table is a real table name via a parameterized
-// sqlite_master lookup before it's interpolated into a PRAGMA statement —
-// callers can only ever reach the PRAGMA with a name that's already a
-// legitimate schema object, regardless of what a caller passes in. PK/FK/
-// unique/index concepts only apply to tables, not views.
-func sqliteTableExists(db *sql.DB, table string) (bool, error) {
-	return sqliteSchemaObjectExists(db, `SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?`, table)
+// sqliteVerifiedTableName confirms table is a real table name via a
+// parameterized sqlite_master lookup and returns the name sqlite_master
+// itself reports — not just a bool — so every caller interpolates that
+// freshly-read, trusted value into its PRAGMA statement instead of the
+// original (request-controlled) parameter. A bool guard followed by
+// re-using the original parameter still leaves that parameter, unchanged,
+// flowing straight into the PRAGMA string build; static analysis (CodeQL's
+// go/sql-injection, in particular) has no way to know a same-named check
+// happened earlier in the function and keeps flagging it, even though the
+// PRAGMA can only ever run against a real object at that point. Returning
+// the row's own value instead — the same technique used for the docs.html
+// lang-switcher fix (returning supported[idx], not the raw candidate) —
+// makes that safety property visible to the analysis, not just true at
+// runtime. PK/FK/unique/index concepts only apply to tables, not views.
+func sqliteVerifiedTableName(db *sql.DB, table string) (string, error) {
+	return sqliteSchemaObjectName(db, `SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?`, table)
 }
 
-// sqliteTableOrViewExists is sqliteTableExists's counterpart for PRAGMA
-// table_info, which works identically on tables and views.
-func sqliteTableOrViewExists(db *sql.DB, table string) (bool, error) {
-	return sqliteSchemaObjectExists(db, `SELECT 1 FROM sqlite_master WHERE type IN ('table', 'view') AND name = ?`, table)
+// sqliteVerifiedTableOrViewName is sqliteVerifiedTableName's counterpart for
+// PRAGMA table_info, which works identically on tables and views.
+func sqliteVerifiedTableOrViewName(db *sql.DB, table string) (string, error) {
+	return sqliteSchemaObjectName(db, `SELECT name FROM sqlite_master WHERE type IN ('table', 'view') AND name = ?`, table)
 }
 
-func sqliteSchemaObjectExists(db *sql.DB, query, name string) (bool, error) {
-	var ignore int
-	err := db.QueryRow(query, name).Scan(&ignore)
+// sqliteSchemaObjectName returns "" (no error) if name doesn't match any row.
+func sqliteSchemaObjectName(db *sql.DB, query, name string) (string, error) {
+	var verified string
+	err := db.QueryRow(query, name).Scan(&verified)
 	if err == sql.ErrNoRows {
-		return false, nil
+		return "", nil
 	}
 	if err != nil {
-		return false, err
+		return "", err
 	}
-	return true, nil
+	return verified, nil
 }
 
 // sqlitePrimaryKeyColumnNames returns the column names PRAGMA table_info
 // marks as part of the primary key, in the order SQLite reports them.
 func sqlitePrimaryKeyColumnNames(db *sql.DB, table string) ([]string, error) {
-	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+	verified, err := sqliteVerifiedTableName(db, table)
+	if err != nil || verified == "" {
 		return nil, err
 	}
-	rows, err := db.Query(fmt.Sprintf("PRAGMA table_info('%s')", quoteIdent(table)))
+	rows, err := db.Query(fmt.Sprintf("PRAGMA table_info('%s')", quoteIdent(verified)))
 	if err != nil {
 		return nil, err
 	}
@@ -98,10 +109,11 @@ type sqliteForeignKey struct {
 // sqliteForeignKeys mirrors SQLite.py's QueryTablesForeignKeys for a single
 // table (tree_sqlite.py always calls it scoped to one table).
 func sqliteForeignKeys(db *sql.DB, table string) ([]sqliteForeignKey, error) {
-	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+	verified, err := sqliteVerifiedTableName(db, table)
+	if err != nil || verified == "" {
 		return nil, err
 	}
-	rows, err := db.Query(fmt.Sprintf("PRAGMA foreign_key_list('%s')", quoteIdent(table)))
+	rows, err := db.Query(fmt.Sprintf("PRAGMA foreign_key_list('%s')", quoteIdent(verified)))
 	if err != nil {
 		return nil, err
 	}
@@ -115,7 +127,7 @@ func sqliteForeignKeys(db *sql.DB, table string) ([]sqliteForeignKey, error) {
 			return nil, err
 		}
 		fks = append(fks, sqliteForeignKey{
-			ConstraintName: fmt.Sprintf("%s_fk_%d", table, id),
+			ConstraintName: fmt.Sprintf("%s_fk_%d", verified, id),
 			RTableName:     rTable,
 			DeleteRule:     onDelete,
 			UpdateRule:     onUpdate,
@@ -134,10 +146,11 @@ type sqliteForeignKeyColumn struct {
 
 // sqliteForeignKeyColumns mirrors SQLite.py's QueryTablesForeignKeysColumns.
 func sqliteForeignKeyColumns(db *sql.DB, table, fkey string) ([]sqliteForeignKeyColumn, error) {
-	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+	verified, err := sqliteVerifiedTableName(db, table)
+	if err != nil || verified == "" {
 		return nil, err
 	}
-	rows, err := db.Query(fmt.Sprintf("PRAGMA foreign_key_list('%s')", quoteIdent(table)))
+	rows, err := db.Query(fmt.Sprintf("PRAGMA foreign_key_list('%s')", quoteIdent(verified)))
 	if err != nil {
 		return nil, err
 	}
@@ -150,7 +163,7 @@ func sqliteForeignKeyColumns(db *sql.DB, table, fkey string) ([]sqliteForeignKey
 		if err := rows.Scan(&id, &seq, &rTable, &from, &to, &onUpdate, &onDelete, &match); err != nil {
 			return nil, err
 		}
-		if fmt.Sprintf("%s_fk_%d", table, id) == fkey {
+		if fmt.Sprintf("%s_fk_%d", verified, id) == fkey {
 			cols = append(cols, sqliteForeignKeyColumn{
 				RTableName:  rTable,
 				DeleteRule:  onDelete,
@@ -167,10 +180,11 @@ func sqliteForeignKeyColumns(db *sql.DB, table, fkey string) ([]sqliteForeignKey
 // PRAGMA index_list's origin='u' marks an index created by a UNIQUE
 // constraint (as opposed to 'c' for a plain CREATE INDEX, or 'pk').
 func sqliteUniques(db *sql.DB, table string) ([]string, error) {
-	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+	verified, err := sqliteVerifiedTableName(db, table)
+	if err != nil || verified == "" {
 		return nil, err
 	}
-	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(table)))
+	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(verified)))
 	if err != nil {
 		return nil, err
 	}
@@ -205,10 +219,11 @@ type sqliteIndex struct {
 // origin='c' marks a plain CREATE INDEX (as opposed to 'u'/'pk', which are
 // synthesized by constraints and shown under Uniques/Primary Key instead).
 func sqliteIndexes(db *sql.DB, table string) ([]sqliteIndex, error) {
-	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+	verified, err := sqliteVerifiedTableName(db, table)
+	if err != nil || verified == "" {
 		return nil, err
 	}
-	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(table)))
+	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(verified)))
 	if err != nil {
 		return nil, err
 	}
@@ -242,16 +257,21 @@ func sqliteIndexColumns(db *sql.DB, table, index string) ([]string, error) {
 // sqliteIndexColumns — same PRAGMA index_list -> PRAGMA index_info chain,
 // filtered by a different origin ('u' for uniques, 'c' for plain indexes).
 func sqliteIndexInfoColumns(db *sql.DB, table, indexName, origin string) ([]string, error) {
-	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+	verified, err := sqliteVerifiedTableName(db, table)
+	if err != nil || verified == "" {
 		return nil, err
 	}
-	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(table)))
+	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(verified)))
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	var matched bool
+	// verifiedIndex is set to the PRAGMA's own row value, not indexName
+	// itself, for the same reason sqliteVerifiedTableName returns a value
+	// rather than a bool — index_info's PRAGMA sink must consume a name
+	// this function already read from SQLite, not the original parameter.
+	var verifiedIndex string
 	for rows.Next() {
 		var seq int
 		var name, rowOrigin string
@@ -260,18 +280,18 @@ func sqliteIndexInfoColumns(db *sql.DB, table, indexName, origin string) ([]stri
 			return nil, err
 		}
 		if rowOrigin == origin && name == indexName {
-			matched = true
+			verifiedIndex = name
 			break
 		}
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
-	if !matched {
+	if verifiedIndex == "" {
 		return nil, nil
 	}
 
-	colRows, err := db.Query(fmt.Sprintf("PRAGMA index_info('%s')", quoteIdent(indexName)))
+	colRows, err := db.Query(fmt.Sprintf("PRAGMA index_info('%s')", quoteIdent(verifiedIndex)))
 	if err != nil {
 		return nil, err
 	}

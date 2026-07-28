@@ -119,10 +119,11 @@ type sqliteColumn struct {
 // PRAGMA statements don't accept bound parameters, so the table name is
 // quoted the same (naive) way SQLite.py itself does.
 func sqliteColumns(db *sql.DB, table string) ([]sqliteColumn, error) {
-	if ok, err := sqliteTableOrViewExists(db, table); err != nil || !ok {
+	verified, err := sqliteVerifiedTableOrViewName(db, table)
+	if err != nil || verified == "" {
 		return nil, err
 	}
-	rows, err := db.Query(fmt.Sprintf("PRAGMA table_info('%s')", quoteIdent(table)))
+	rows, err := db.Query(fmt.Sprintf("PRAGMA table_info('%s')", quoteIdent(verified)))
 	if err != nil {
 		return nil, err
 	}
