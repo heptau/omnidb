@@ -124,6 +124,49 @@ function getQueryEditorValue() {
 	else return v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
 }
 
+/// <summary>
+/// Best-effort check for the classic "forgot the WHERE clause" mistake (or
+/// an always-destructive DROP/TRUNCATE), so querySQL can warn before running
+/// it instead of after. Comment-stripping mirrors the Go backend's
+/// isReadOnlyQuery (custom_monitor_query.go) — deliberately simple, since
+/// this is a safety net against an honest mistake, not a security boundary:
+/// a missed edge case just means no warning, never a blocked query.
+/// </summary>
+function destructiveSQLWarning(p_sql) {
+	var v_stripped = p_sql;
+	for (;;) {
+		v_stripped = v_stripped.replace(/^[\s\r\n]+/, "");
+		if (v_stripped.indexOf("--") === 0) {
+			var v_newline = v_stripped.indexOf("\n");
+			if (v_newline < 0) {
+				v_stripped = "";
+				break;
+			}
+			v_stripped = v_stripped.substring(v_newline + 1);
+			continue;
+		}
+		if (v_stripped.indexOf("/*") === 0) {
+			var v_end = v_stripped.indexOf("*/");
+			if (v_end < 0) {
+				v_stripped = "";
+				break;
+			}
+			v_stripped = v_stripped.substring(v_end + 2);
+			continue;
+		}
+		break;
+	}
+
+	var v_upper = v_stripped.toUpperCase();
+	if (/^(DROP|TRUNCATE)\b/.test(v_upper)) {
+		return "This statement is destructive and cannot be undone. Run it anyway?";
+	}
+	if (/^(DELETE|UPDATE)\b/.test(v_upper) && !/\bWHERE\b/.test(v_upper)) {
+		return "This statement has no WHERE clause and will affect ALL rows. Run it anyway?";
+	}
+	return null;
+}
+
 function querySQL(
 	p_mode,
 	p_all_data = false,
@@ -135,6 +178,21 @@ function querySQL(
 	p_clear_data = false,
 	p_tab_title = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_title_span.innerHTML,
 ) {
+	// Only the actual "Run" action (mode 0) gets the confirmation — modes
+	// 1-4 (fetch more/fetch all/commit/rollback) re-invoke querySQL for a
+	// statement the user already committed to running, not a fresh decision.
+	var v_run = function () {
+		executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
+	};
+	var v_warning = p_mode == 0 ? destructiveSQLWarning(p_query) : null;
+	if (v_warning) {
+		showConfirm(v_warning, v_run);
+	} else {
+		v_run();
+	}
+}
+
+function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
 	var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
 
 	if (v_state != v_queryState.Idle) {
