@@ -4,9 +4,13 @@
 
 | Version | Supported          |
 |---------|--------------------|
-| 3.2.x   | :white_check_mark: |
-| 3.1.x   | :x:                |
-| < 3.1   | :x:                |
+| 4.0.x   | :white_check_mark: |
+| < 4.0   | :x:                |
+
+Versions before 4.0 were built on the legacy Python/Django backend, which has
+been fully replaced by the Go backend (`go-server/`) and Wails desktop shell
+(`wails-app/`). Those releases no longer receive security fixes — please
+upgrade.
 
 ## Reporting a Vulnerability
 
@@ -42,10 +46,10 @@ We follow [coordinated disclosure](https://en.wikipedia.org/wiki/Coordinated_vul
 The following are **in scope**:
 
 - OmniDB web interface (XSS, CSRF, authentication bypass)
-- Backend API endpoints (injection, IDOR, privilege escalation)
+- Go backend API endpoints (`go-server/`) — injection, IDOR, privilege escalation
+- Wails desktop shell (`wails-app/`) — including its bundled frontend dependencies
 - Session handling and credential storage
 - SSH tunnel implementation
-- Plugin system
 
 The following are **out of scope**:
 
