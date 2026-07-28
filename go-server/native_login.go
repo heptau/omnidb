@@ -184,7 +184,7 @@ func authenticateAppUser(db *sql.DB, username, password string) (*appUser, bool)
 // finishLogin mirrors login.py's shared post-authenticate() tail (login.py's
 // own django.contrib.auth.login() plus the Session()-object bootstrap
 // check_session does) — creates the native session and sets its cookie.
-func finishLogin(w http.ResponseWriter, db *sql.DB, user *appUser) error {
+func finishLogin(w http.ResponseWriter, r *http.Request, db *sql.DB, user *appUser) error {
 	csvEncoding, csvDelimiter, err := userCSVPrefs(db, user.ID)
 	if err != nil {
 		return err
@@ -193,7 +193,7 @@ func finishLogin(w http.ResponseWriter, db *sql.DB, user *appUser) error {
 	if err != nil {
 		return err
 	}
-	setNativeSessionCookie(w, sessionKey, nativeSessionTTL)
+	setNativeSessionCookie(w, r, sessionKey, nativeSessionTTL)
 	return nil
 }
 
@@ -256,7 +256,7 @@ func handleSignInAutomatic(w http.ResponseWriter, r *http.Request, upstream *url
 		return
 	}
 
-	if err := finishLogin(w, db, user); err != nil {
+	if err := finishLogin(w, r, db, user); err != nil {
 		w.Write([]byte("INVALID APP TOKEN"))
 		return
 	}
@@ -313,7 +313,7 @@ func handleSignIn(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 
-		if err := finishLogin(w, db, user); err != nil {
+		if err := finishLogin(w, r, db, user); err != nil {
 			writeEnvelope(w, -1, false, -1)
 			return
 		}
@@ -329,7 +329,7 @@ func handleSignIn(upstream *url.URL) http.HandlerFunc {
 func handleLogout() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		destroyNativeSession(nativeSessionCookieValue(r))
-		clearNativeSessionCookie(w)
+		clearNativeSessionCookie(w, r)
 		http.Redirect(w, r, "/omnidb_login", http.StatusFound)
 	}
 }

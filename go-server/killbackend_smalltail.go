@@ -2,9 +2,11 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/url"
 	"regexp"
+	"strconv"
 )
 
 // This file finishes off Fáze 8a's small remaining long-tail: kill_backend
@@ -53,10 +55,37 @@ func handleKillBackendMySQL(upstream *url.URL, fallback http.Handler) http.Handl
 // identifier (see tree_oracle.js's oracleTerminateBackend:
 // `v_pid = p_row[1] + "," + p_row[2]`) — both parts are always numeric.
 // `ALTER SYSTEM KILL SESSION` has no bind-parameter form (it's DDL-shaped,
-// not a regular statement), so this whitelist is the injection defense in
-// place of a bind parameter, tighter than Python's original raw
-// `.format()` interpolation.
-var oracleSessionIDPattern = regexp.MustCompile(`^[0-9]+,[0-9]+$`)
+// not a regular statement), so this pattern plus verifiedOracleSessionID's
+// int round-trip below is the injection defense in place of a bind
+// parameter, tighter than Python's original raw `.format()` interpolation.
+var oracleSessionIDPattern = regexp.MustCompile(`^([0-9]+),([0-9]+)$`)
+
+// verifiedOracleSessionID parses raw's two capture groups as actual
+// integers and rebuilds the "sid,serial#" string from those parsed numbers
+// rather than reusing raw itself — a regex match followed by string-
+// concatenating the still-tainted original still leaves that original,
+// unchanged, flowing into the `alter system kill session` text; static
+// analysis (CodeQL's go/sql-injection in particular) has no way to know the
+// preceding MatchString call constrains its shape and keeps flagging it,
+// same class of gap as sqliteVerifiedTableName's doc comment describes.
+// Round-tripping through strconv.ParseInt + fmt.Sprintf makes the
+// "this can only ever be two integers" property visible to the analysis,
+// not just true at runtime.
+func verifiedOracleSessionID(raw string) (string, bool) {
+	m := oracleSessionIDPattern.FindStringSubmatch(raw)
+	if m == nil {
+		return "", false
+	}
+	sid, err := strconv.ParseInt(m[1], 10, 64)
+	if err != nil {
+		return "", false
+	}
+	serial, err := strconv.ParseInt(m[2], 10, 64)
+	if err != nil {
+		return "", false
+	}
+	return fmt.Sprintf("%d,%d", sid, serial), true
+}
 
 type killBackendOracleRequest struct {
 	baseRequest
@@ -77,7 +106,8 @@ func handleKillBackendOracle(upstream *url.URL, fallback http.Handler) http.Hand
 			writeBadRequest(w)
 			return
 		}
-		if !oracleSessionIDPattern.MatchString(reqBody.PPid) {
+		verifiedSessionID, ok := verifiedOracleSessionID(reqBody.PPid)
+		if !ok {
 			writeBadRequest(w)
 			return
 		}
@@ -87,7 +117,7 @@ func handleKillBackendOracle(upstream *url.URL, fallback http.Handler) http.Hand
 		}
 		defer db.Close()
 
-		if _, err := db.Exec(`alter system kill session '` + reqBody.PPid + `' immediate`); err != nil {
+		if _, err := db.Exec(`alter system kill session '` + verifiedSessionID + `' immediate`); err != nil {
 			writeEnvelope(w, map[string]any{"password_timeout": true, "message": err.Error()}, true, -1)
 			return
 		}

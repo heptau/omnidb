@@ -159,11 +159,23 @@ func handleRefreshMonitoring(upstream *url.URL, fallback http.Handler) http.Hand
 	}
 }
 
-func completionTableRef(info *ConnectionInfo, schema, table string) string {
-	if technologyHasSchema(info.Technology) {
-		return schema + "." + table
+// completionTableRef verifies schema/table against the connection's own
+// catalog before building the FROM-clause fragment columnMetadataForExpression
+// splices straight into its probe query — see verifiedSchemaTable's doc
+// comment (schema_table_ref.go) for why a bool guard isn't enough here.
+// Unlike handleGetCompletions' own tableRef (parsed out of the user's own SQL
+// text — the same trust boundary as the query console itself), reqBody.
+// PSchema/PTable here are separate JSON fields a tampered client could set to
+// anything, so they need this check.
+func completionTableRef(db *sql.DB, info *ConnectionInfo, schema, table string) (string, error) {
+	verifiedSchema, verifiedTable, err := verifiedSchemaTable(info.Technology, db, schema, table)
+	if err != nil {
+		return "", err
 	}
-	return table
+	if verifiedTable == "" {
+		return "", fmt.Errorf("table %s does not exist anymore. Please refresh the tree view", table)
+	}
+	return quotedSchemaTableRef(info.Technology, verifiedSchema, verifiedTable), nil
 }
 
 // completionList builds the {value, score, meta} triples both completion
@@ -205,7 +217,12 @@ func handleGetCompletionsTable(upstream *url.URL, fallback http.Handler) http.Ha
 		}
 		defer db.Close()
 
-		cols, err := columnMetadataForExpression(db, completionTableRef(info, reqBody.PSchema, reqBody.PTable))
+		tableRef, err := completionTableRef(db, info, reqBody.PSchema, reqBody.PTable)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		cols, err := columnMetadataForExpression(db, tableRef)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

@@ -192,30 +192,44 @@ func nativeSessionCookieValue(r *http.Request) string {
 	return c.Value
 }
 
+// isRequestSecure reports whether r reached this process over a channel a
+// browser would itself consider secure — either TLS terminated directly by
+// this process (r.TLS != nil; today's Server never does this, see main.go,
+// but the check costs nothing and keeps this correct if that ever changes),
+// or TLS terminated by a reverse proxy in front of it, which is expected to
+// set X-Forwarded-Proto the same way every common one (nginx, Caddy, an
+// ALB, ...) does by default. Desktop/app mode and a bare `-H`-exposed
+// server both talk plain HTTP with no proxy at all, so Secure would
+// otherwise never be set anywhere this app runs — checking the request
+// itself, rather than a static build-time flag, is what lets this be
+// correct in both cases without any new configuration.
+func isRequestSecure(r *http.Request) bool {
+	return r.TLS != nil || strings.EqualFold(r.Header.Get("X-Forwarded-Proto"), "https")
+}
+
 // setNativeSessionCookie mirrors Django's own session cookie attributes
-// closely enough (HttpOnly, SameSite=Lax, Secure left off — matches
-// custom_settings.py's SESSION_COOKIE_SECURE defaulting False in dev; a
-// production build should flip this the same way custom_settings.py's own
-// commented-out guidance suggests, see main.go's isDesktopMode-style notes
-// if that becomes relevant).
-func setNativeSessionCookie(w http.ResponseWriter, value string, maxAge time.Duration) {
+// (HttpOnly, SameSite=Lax) plus Secure, set from the request that's actually
+// being served rather than left off unconditionally (see isRequestSecure).
+func setNativeSessionCookie(w http.ResponseWriter, r *http.Request, value string, maxAge time.Duration) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     nativeSessionCookieName,
 		Value:    value,
 		Path:     "/",
 		MaxAge:   int(maxAge.Seconds()),
 		HttpOnly: true,
+		Secure:   isRequestSecure(r),
 		SameSite: http.SameSiteLaxMode,
 	})
 }
 
-func clearNativeSessionCookie(w http.ResponseWriter) {
+func clearNativeSessionCookie(w http.ResponseWriter, r *http.Request) {
 	http.SetCookie(w, &http.Cookie{
 		Name:     nativeSessionCookieName,
 		Value:    "",
 		Path:     "/",
 		MaxAge:   -1,
 		HttpOnly: true,
+		Secure:   isRequestSecure(r),
 		SameSite: http.SameSiteLaxMode,
 	})
 }
@@ -225,7 +239,8 @@ func clearNativeSessionCookie(w http.ResponseWriter) {
 // doesn't already have one. Deliberately NOT HttpOnly (the frontend's own
 // JS reads this cookie's value directly to build the X-CSRFToken header —
 // same double-submit contract the existing frontend already implements
-// unchanged, see ajax_control.js).
+// unchanged, see ajax_control.js). Secure is set from the request the same
+// way setNativeSessionCookie's is — see isRequestSecure.
 func ensureCSRFCookie(w http.ResponseWriter, r *http.Request) string {
 	if c, err := r.Cookie(csrfCookieName); err == nil && c.Value != "" {
 		return c.Value
@@ -240,6 +255,7 @@ func ensureCSRFCookie(w http.ResponseWriter, r *http.Request) string {
 		Path:     "/",
 		MaxAge:   int(nativeSessionTTL.Seconds()),
 		HttpOnly: false,
+		Secure:   isRequestSecure(r),
 		SameSite: http.SameSiteLaxMode,
 	})
 	return token

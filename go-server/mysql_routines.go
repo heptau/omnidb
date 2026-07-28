@@ -77,7 +77,14 @@ func mysqlViewColumns(db *sql.DB, schema, view string) ([]mysqlViewColumn, error
 // mysqlViewDefinition mirrors GetViewDefinition — MySQL/MariaDB reconstruct
 // DDL natively via SHOW CREATE, same trick GetDDL uses for everything else.
 func mysqlViewDefinition(db *sql.DB, schema, view string) (string, error) {
-	return mysqlShowCreate(db, "view", schema, view, 1)
+	vSchema, vView, err := mysqlVerifiedSchemaTable(db, schema, view)
+	if err != nil {
+		return "", err
+	}
+	if vView == "" {
+		return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, view)
+	}
+	return mysqlShowCreate(db, "view", vSchema, vView, 1)
 }
 
 type mysqlRoutine struct {
@@ -191,20 +198,51 @@ func scanRoutineFields(rows *sql.Rows) ([]mysqlRoutineField, error) {
 
 // mysqlFunctionDefinition mirrors GetFunctionDefinition.
 func mysqlFunctionDefinition(db *sql.DB, schema, function string) (string, error) {
-	body, err := mysqlShowCreate(db, "function", schema, function, 2)
+	vSchema, vFunction, err := mysqlVerifiedSchemaRoutine(db, schema, function, "FUNCTION")
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("--DROP FUNCTION %s;\n%s", function, body), nil
+	if vFunction == "" {
+		return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, function)
+	}
+	body, err := mysqlShowCreate(db, "function", vSchema, vFunction, 2)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("--DROP FUNCTION %s;\n%s", vFunction, body), nil
 }
 
 // mysqlProcedureDefinition mirrors GetProcedureDefinition.
 func mysqlProcedureDefinition(db *sql.DB, schema, procedure string) (string, error) {
-	body, err := mysqlShowCreate(db, "procedure", schema, procedure, 2)
+	vSchema, vProcedure, err := mysqlVerifiedSchemaRoutine(db, schema, procedure, "PROCEDURE")
 	if err != nil {
 		return "", err
 	}
-	return fmt.Sprintf("--DROP PROCEDURE %s;\n%s", procedure, body), nil
+	if vProcedure == "" {
+		return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, procedure)
+	}
+	body, err := mysqlShowCreate(db, "procedure", vSchema, vProcedure, 2)
+	if err != nil {
+		return "", err
+	}
+	return fmt.Sprintf("--DROP PROCEDURE %s;\n%s", vProcedure, body), nil
+}
+
+// mysqlVerifiedSchemaRoutine is mysqlVerifiedSchemaTable's counterpart for
+// functions/procedures — confirms schema/routine refer to a real routine of
+// the given type via a parameterized information_schema.routines lookup and
+// returns the catalog's own copy of both strings, for the same reason
+// verifiedSchemaTable's doc comment (schema_table_ref.go) gives.
+func mysqlVerifiedSchemaRoutine(db *sql.DB, schema, routine, routineType string) (string, string, error) {
+	var s, r string
+	err := db.QueryRow(`
+		select routine_schema, routine_name from information_schema.routines
+		where routine_type = ? and routine_schema = ? and routine_name = ?
+	`, routineType, schema, routine).Scan(&s, &r)
+	if err == sql.ErrNoRows {
+		return "", "", nil
+	}
+	return s, r, err
 }
 
 // mysqlShowCreate runs "SHOW CREATE <kind> <schema>.<object>" and returns

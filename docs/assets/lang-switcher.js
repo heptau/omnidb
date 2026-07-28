@@ -62,8 +62,15 @@ var OMNIDB_LANGUAGES = [
 					window.omnidbCloseDropdowns && window.omnidbCloseDropdowns();
 					return;
 				}
-				try { localStorage.setItem(STORAGE_KEY, code); } catch (e) { /* ignore */ }
-				var target = targetUrlFor(code);
+				// Same principle as the auto-detect branch above: look code up
+				// in SUPPORTED and use THAT literal entry, not the DOM attribute
+				// value itself, so only a hardcoded language code can ever reach
+				// the window.location.href assignment below.
+				var clickedIdx = SUPPORTED.indexOf(code);
+				if (clickedIdx === -1) return;
+				var verifiedCode = SUPPORTED[clickedIdx];
+				try { localStorage.setItem(STORAGE_KEY, verifiedCode); } catch (e) { /* ignore */ }
+				var target = targetUrlFor(verifiedCode);
 				if (target) window.location.href = target;
 			});
 		});

@@ -94,11 +94,20 @@ func scanRowWithNullSentinel(rows *sql.Rows, numCols int) ([]string, error) {
 	return out, nil
 }
 
-func editDataTableRef(technology, schema, table string) string {
-	if technologyHasSchema(technology) {
-		return schema + "." + table
+// editDataTableRef verifies schema/table against the connection's own
+// catalog before building the FROM/INTO fragment recordsQuery/
+// buildInsertCommand/buildUpdateCommand/buildDeleteCommand splice straight
+// into their SQL text — see verifiedSchemaTable's doc comment (schema_table_
+// ref.go) for why a bool guard isn't enough here.
+func editDataTableRef(db *sql.DB, technology, schema, table string) (string, error) {
+	verifiedSchema, verifiedTable, err := verifiedSchemaTable(technology, db, schema, table)
+	if err != nil {
+		return "", err
 	}
-	return table
+	if verifiedTable == "" {
+		return "", fmt.Errorf("table %s does not exist anymore. Please refresh the tree view", table)
+	}
+	return quotedSchemaTableRef(technology, verifiedSchema, verifiedTable), nil
 }
 
 func editDataColumnList(columns []editDataColumnRef) string {
@@ -115,7 +124,10 @@ func normalizeColumnName(name string) string {
 
 // fetchEditDataRows mirrors thread_query_edit_data.
 func fetchEditDataRows(db *sql.DB, technology, schema, table, filter string, count int, pkList, columns []editDataColumnRef) (rows [][]string, rowPKs [][]map[string]any, queryInfo string, err error) {
-	tableRef := editDataTableRef(technology, schema, table)
+	tableRef, err := editDataTableRef(db, technology, schema, table)
+	if err != nil {
+		return nil, nil, "", err
+	}
 	columnList := editDataColumnList(columns)
 	q := recordsQuery(technology, columnList, tableRef, filter, count)
 
@@ -242,8 +254,11 @@ func buildUpdateCommand(technology, tableRef string, columns []editDataColumnRef
 // row's delete/insert/update independently (matching Python's
 // per-row try/except, one row's failure doesn't abort the rest) and
 // collects a result per row.
-func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][]*string, rowsInfo []editDataRowInfo, columns []editDataColumnRef) []editDataRowResult {
-	tableRef := editDataTableRef(technology, schema, table)
+func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][]*string, rowsInfo []editDataRowInfo, columns []editDataColumnRef) ([]editDataRowResult, error) {
+	tableRef, err := editDataTableRef(db, technology, schema, table)
+	if err != nil {
+		return nil, err
+	}
 	results := make([]editDataRowResult, 0, len(rowsInfo))
 
 	for i, info := range rowsInfo {
@@ -269,7 +284,7 @@ func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][
 		}
 		results = append(results, result)
 	}
-	return results
+	return results, nil
 }
 
 // runEditDataFetch delivers thread_query_edit_data's result via Django's
@@ -335,7 +350,16 @@ func runEditDataSave(upstream *url.URL, cookie string, q editDataSaveRequestData
 		schema = q.VSchema
 	}
 
-	results := saveEditDataRows(db, info.Technology, schema, q.VTable, q.VDataRows, q.VRowsInfo, q.VColumns)
+	results, err := saveEditDataRows(db, info.Technology, schema, q.VTable, q.VDataRows, q.VRowsInfo, q.VColumns)
+	if err != nil {
+		queueNativeResponse(cookie, map[string]any{
+			"v_code":         responseSaveEditDataResult,
+			"v_context_code": contextCode,
+			"v_error":        true,
+			"v_data":         err.Error(),
+		})
+		return
+	}
 
 	queueNativeResponse(cookie, map[string]any{
 		"v_code":         responseSaveEditDataResult,
