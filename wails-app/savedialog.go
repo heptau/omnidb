@@ -78,12 +78,13 @@ func (a *App) handleSaveDialogRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := validateSaveDialogSrcPath(req.SrcPath); err != nil {
+	verifiedSrcPath, err := validateSaveDialogSrcPath(req.SrcPath)
+	if err != nil {
 		writeSaveDialogError(w, err.Error())
 		return
 	}
 
-	if err := copySaveDialogFile(req.SrcPath, dst); err != nil {
+	if err := copySaveDialogFile(verifiedSrcPath, dst); err != nil {
 		writeSaveDialogError(w, err.Error())
 		return
 	}
@@ -99,17 +100,25 @@ func (a *App) handleSaveDialogRequest(w http.ResponseWriter, r *http.Request) {
 // re-deriving the expected directory (rather than trusting a caller-
 // supplied one) means a malicious request still can't walk srcPath outside
 // the one directory this relay is meant to ever read from.
-func validateSaveDialogSrcPath(srcPath string) error {
+//
+// Returns the cleaned path rather than just an ok/error bool — os.Open must
+// consume this returned value, not the original request field, so the only
+// path that can ever reach it is one that has actually passed the
+// containment check right here (same principle as go-server's
+// sqliteVerifiedTableName: a static analyzer can't assume a same-named
+// check elsewhere in the call chain already covered the value it sees
+// flowing into the sink).
+func validateSaveDialogSrcPath(srcPath string) (string, error) {
 	tempDir, err := exportTempDir()
 	if err != nil {
-		return err
+		return "", err
 	}
 	cleanPath := filepath.Clean(srcPath)
 	rel, err := filepath.Rel(tempDir, cleanPath)
 	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
-		return fmt.Errorf("invalid export path")
+		return "", fmt.Errorf("invalid export path")
 	}
-	return nil
+	return cleanPath, nil
 }
 
 // exportTempDir mirrors go-server/homedir.go's resolveHomeDir + appdb.go's

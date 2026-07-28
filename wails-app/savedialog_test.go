@@ -13,7 +13,7 @@ func TestValidateSaveDialogSrcPathAcceptsWithinTempDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("exportTempDir: %v", err)
 	}
-	if err := validateSaveDialogSrcPath(filepath.Join(tempDir, "export_20260728.csv")); err != nil {
+	if _, err := validateSaveDialogSrcPath(filepath.Join(tempDir, "export_20260728.csv")); err != nil {
 		t.Errorf("expected a path inside %s to be accepted, got: %v", tempDir, err)
 	}
 }
@@ -34,7 +34,7 @@ func TestValidateSaveDialogSrcPathRejectsTraversalAndOutsidePaths(t *testing.T) 
 		filepath.Dir(tempDir), // the temp dir's own parent
 	}
 	for _, srcPath := range cases {
-		if err := validateSaveDialogSrcPath(srcPath); err == nil {
+		if _, err := validateSaveDialogSrcPath(srcPath); err == nil {
 			t.Errorf("expected %q to be rejected as outside %s, but it was accepted", srcPath, tempDir)
 		}
 	}
