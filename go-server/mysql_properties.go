@@ -131,11 +131,18 @@ func mysqlPropertiesRoutine(db *sql.DB, schema, routine, routineType string) ([]
 
 // mysqlDDL mirrors MySQL.py's/MariaDB.py's GetDDL — every supported kind
 // resolves to a plain SHOW CREATE, same as mysqlShowCreate already does for
-// views/functions/procedures.
+// views/functions/procedures. Unlike those call sites (which only ever pass
+// a hardcoded literal), kind here comes straight from the request body —
+// SHOW CREATE has no bind-parameter form for its keyword, so this whitelist
+// is the injection defense in place of one, same pattern as
+// oracleSessionIDPattern in killbackend_smalltail.go.
 func mysqlDDL(db *sql.DB, schema, object, kind string) (string, error) {
-	colIndex := 1
-	if kind == "function" || kind == "procedure" {
-		colIndex = 2
+	switch kind {
+	case "table", "view":
+		return mysqlShowCreate(db, kind, schema, object, 1)
+	case "function", "procedure":
+		return mysqlShowCreate(db, kind, schema, object, 2)
+	default:
+		return "", fmt.Errorf("unsupported DDL kind: %q", kind)
 	}
-	return mysqlShowCreate(db, kind, schema, object, colIndex)
 }
