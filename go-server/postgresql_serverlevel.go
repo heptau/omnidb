@@ -1,9 +1,15 @@
 package main
 
 import (
+	"crypto/hmac"
 	"crypto/md5"
+	"crypto/pbkdf2"
+	"crypto/rand"
+	"crypto/sha256"
 	"database/sql"
+	"encoding/base64"
 	"encoding/hex"
+	"fmt"
 	"strings"
 )
 
@@ -192,9 +198,28 @@ func postgresqlKillBackend(db *sql.DB, pid int64) error {
 // rather than spliced in raw.
 func postgresqlChangeRolePassword(db *sql.DB, role, password string) error {
 	rawRole := unquotePostgresIdentifier(role)
-	hash := postgresMD5PasswordHash(password, rawRole)
-	_, err := db.Exec(`ALTER ROLE ` + quotePostgresIdentifierDoubleQuoted(rawRole) + ` WITH PASSWORD '` + hash + `'`)
+	hash, err := postgresPasswordVerifier(db, password, rawRole)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(`ALTER ROLE ` + quotePostgresIdentifierDoubleQuoted(rawRole) + ` WITH PASSWORD '` + hash + `'`)
 	return err
+}
+
+// postgresPasswordVerifier pre-hashes password into whichever verifier
+// format the target server would itself apply to a plaintext password,
+// keyed off its own password_encryption setting — so the plaintext still
+// never has to be sent as literal SQL text, no matter how the server is
+// configured. Postgres 10+ defaults to "scram-sha-256"; anything else
+// (older servers report the pre-10 boolean "on"/"off", or the setting can't
+// be read at all) falls back to the historical md5 format this app has
+// always produced.
+func postgresPasswordVerifier(db *sql.DB, password, role string) (string, error) {
+	var encryption string
+	if err := db.QueryRow(`SELECT current_setting('password_encryption')`).Scan(&encryption); err == nil && encryption == "scram-sha-256" {
+		return postgresSCRAMSHA256PasswordHash(password)
+	}
+	return postgresMD5PasswordHash(password, role), nil
 }
 
 // unquotePostgresIdentifier reverses quote_ident()'s quoting: if s is
@@ -226,6 +251,51 @@ func quotePostgresIdentifierDoubleQuoted(name string) string {
 func postgresMD5PasswordHash(password, role string) string {
 	sum := md5.Sum([]byte(password + role))
 	return "md5" + hex.EncodeToString(sum[:])
+}
+
+// scramSHA256SaltLen and scramSHA256Iterations match Postgres's own
+// scram_build_secret defaults (src/common/scram-common.c:
+// SCRAM_DEFAULT_SALT_LEN, SCRAM_SHA_256_DEFAULT_ITERATIONS).
+const (
+	scramSHA256SaltLen    = 16
+	scramSHA256Iterations = 4096
+)
+
+// postgresSCRAMSHA256PasswordHash mirrors Postgres's own SCRAM-SHA-256
+// verifier format (RFC 5802's SaltedPassword/ClientKey/StoredKey/ServerKey,
+// as built by scram_build_secret): a random salt, PBKDF2-HMAC-SHA256 derives
+// SaltedPassword, and StoredKey/ServerKey are HMAC/SHA256 of that. Like the
+// md5 counterpart, Postgres recognizes a value already in this exact
+// "SCRAM-SHA-256$iterations:salt$storedKey:serverKey" shape passed to
+// ALTER ROLE ... PASSWORD and stores it verbatim rather than re-hashing it.
+// Verified byte-for-byte against a real PostgreSQL 16 server's
+// pg_authid.rolpassword for a known password/salt.
+func postgresSCRAMSHA256PasswordHash(password string) (string, error) {
+	salt := make([]byte, scramSHA256SaltLen)
+	if _, err := rand.Read(salt); err != nil {
+		return "", err
+	}
+
+	saltedPassword, err := pbkdf2.Key(sha256.New, password, salt, scramSHA256Iterations, sha256.Size)
+	if err != nil {
+		return "", err
+	}
+	clientKey := hmacSHA256(saltedPassword, []byte("Client Key"))
+	storedKey := sha256.Sum256(clientKey)
+	serverKey := hmacSHA256(saltedPassword, []byte("Server Key"))
+
+	return fmt.Sprintf("SCRAM-SHA-256$%d:%s$%s:%s",
+		scramSHA256Iterations,
+		base64.StdEncoding.EncodeToString(salt),
+		base64.StdEncoding.EncodeToString(storedKey[:]),
+		base64.StdEncoding.EncodeToString(serverKey),
+	), nil
+}
+
+func hmacSHA256(key, data []byte) []byte {
+	mac := hmac.New(sha256.New, key)
+	mac.Write(data)
+	return mac.Sum(nil)
 }
 
 // postgresqlObjectDescriptionSpec is one row of GetObjectDescription's
