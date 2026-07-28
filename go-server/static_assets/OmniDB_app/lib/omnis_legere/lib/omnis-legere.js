@@ -27,6 +27,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+///// Escaping plan data before it is ever assigned to innerHTML — plan node
+// data comes straight from the database's own EXPLAIN output (relation
+// names, aliases, filters, etc.), which is not trusted content and must
+// never be interpreted as markup.
+function legereEscapeHtml(p_text) {
+	var v_div = document.createElement("div");
+	v_div.appendChild(document.createTextNode(String(p_text)));
+	return v_div.innerHTML;
+}
+
 function createLegere(p_context = {parent: window, self: 'omnisLegere'}, p_options) {
 
 	var v_legereControl = {
@@ -332,7 +342,7 @@ function createLegere(p_context = {parent: window, self: 'omnisLegere'}, p_optio
 
 				v_title +=
 				'<div class="' + this.defaultClass + '__title card-title p-2 mb-0"><h5 class="mb-0">' +
-					'<strong>' + v_plan_item.data['Node Type'] + '</strong>' +
+					'<strong>' + legereEscapeHtml(v_plan_item.data['Node Type']) + '</strong>' +
 					'<span>(' + v_child_count + ')</span>' +
 				'</h5></div>';
 
@@ -358,7 +368,7 @@ function createLegere(p_context = {parent: window, self: 'omnisLegere'}, p_optio
 				'<div class="alert alert-info mt-2">';
 				Object.keys(v_plan_item.data).forEach(function (p_data_key) {
 					v_data_html +=
-					'<div>' + p_data_key + ': <span class="text-danger">' + v_plan_item.data[p_data_key] + '</span></div>';
+					'<div>' + legereEscapeHtml(p_data_key) + ': <span class="text-danger">' + legereEscapeHtml(v_plan_item.data[p_data_key]) + '</span></div>';
 				});
 				v_data_html +=
 				'</div>';

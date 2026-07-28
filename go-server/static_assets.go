@@ -61,6 +61,19 @@ func handleStaticAssets() http.Handler {
 func handleTempFiles(dir string) http.Handler {
 	prefix := "/static/temp/"
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		// Exported files are named from a low-entropy unix timestamp (see
+		// export.go) and this directory is otherwise unauthenticated, so
+		// without this check anyone who can reach this listener at all —
+		// trivial in server mode (-H), or any other local user/process in
+		// desktop mode — could download another user's just-exported query
+		// results by guessing/polling the name. Requiring a valid session
+		// closes that off; every other sensitive route in this file already
+		// gates on either loopback-only or an authenticated identity.
+		who, err := resolveIdentity(nil, r.Header.Get("Cookie"))
+		if err != nil || !who.Authenticated {
+			writeUnauthenticated(w)
+			return
+		}
 		if !strings.HasPrefix(r.URL.Path, prefix) {
 			http.NotFound(w, r)
 			return

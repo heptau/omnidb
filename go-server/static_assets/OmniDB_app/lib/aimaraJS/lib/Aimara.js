@@ -27,6 +27,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+///// Escaping node text before it is ever assigned to innerHTML — node text
+// comes from database-sourced identifiers (table/column/role/snippet names,
+// etc.) which are not trusted content and must never be interpreted as markup.
+function aimaraEscapeHtml(p_text) {
+	var v_div = document.createElement("div");
+	v_div.appendChild(document.createTextNode(String(p_text)));
+	return v_div.innerHTML;
+}
+
 ///// Creating the tree component
 // p_div: ID of the div where the tree will be rendered;
 // p_backColor: Background color of the region where the tree is being rendered;
@@ -244,14 +253,14 @@ function createTree(p_div, p_backColor, p_contextMenu) {
 		setNodeBold: function (p_node) {
 			p_node.isBold = true;
 			if (p_node.elementA != null) {
-				p_node.elementA.innerHTML = "<b>" + p_node.text.replace(/"/g, "") + "</b>";
+				p_node.elementA.innerHTML = "<b>" + aimaraEscapeHtml(p_node.text) + "</b>";
 			}
 		},
 		//Set note text as not bold
 		clearNodeBold: function (p_node) {
 			p_node.isBold = false;
 			if (p_node.elementA != null) {
-				p_node.elementA.innerHTML = p_node.text.replace(/"/g, "");
+				p_node.elementA.innerHTML = aimaraEscapeHtml(p_node.text);
 			}
 		},
 		///// Drawing the node. This function is used when drawing the Tree and should not be called directly;
@@ -345,9 +354,9 @@ function createTree(p_div, p_backColor, p_contextMenu) {
 			}
 
 			if (p_node.isBold) {
-				v_span_inner.innerHTML = "<b>" + p_node.text.replace(/"/g, "") + "</b>";
+				v_span_inner.innerHTML = "<b>" + aimaraEscapeHtml(p_node.text) + "</b>";
 			} else {
-				v_span_inner.innerHTML = p_node.text.replace(/"/g, "");
+				v_span_inner.innerHTML = aimaraEscapeHtml(p_node.text);
 			}
 			p_node.elementA = v_span_inner;
 			v_span_outer.appendChild(v_span_inner);
@@ -380,7 +389,7 @@ function createTree(p_div, p_backColor, p_contextMenu) {
 		// p_node: Reference to the node that will have its text updated;
 		// p_text: New text;
 		setText: function (p_node, p_text) {
-			p_node.elementLi.getElementsByTagName("span")[0].lastChild.innerHTML = p_text;
+			p_node.elementLi.getElementsByTagName("span")[0].lastChild.innerHTML = aimaraEscapeHtml(p_text);
 			p_node.text = p_text;
 		},
 		///// Expanding all tree nodes
