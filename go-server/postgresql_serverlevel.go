@@ -198,12 +198,42 @@ func postgresqlKillBackend(db *sql.DB, pid int64) error {
 // rather than spliced in raw.
 func postgresqlChangeRolePassword(db *sql.DB, role, password string) error {
 	rawRole := unquotePostgresIdentifier(role)
-	hash, err := postgresPasswordVerifier(db, password, rawRole)
+	verifiedRole, err := postgresVerifiedRoleName(db, rawRole)
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec(`ALTER ROLE ` + quotePostgresIdentifierDoubleQuoted(rawRole) + ` WITH PASSWORD '` + hash + `'`)
+	if verifiedRole == "" {
+		return fmt.Errorf("role does not exist")
+	}
+	hash, err := postgresPasswordVerifier(db, password, verifiedRole)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(`ALTER ROLE ` + quotePostgresIdentifierDoubleQuoted(verifiedRole) + ` WITH PASSWORD '` + hash + `'`)
 	return err
+}
+
+// postgresVerifiedRoleName confirms rawRole is a real role via a
+// parameterized pg_roles lookup and returns the name Postgres itself
+// reports — not just a bool — so the ALTER ROLE text below is built from
+// that freshly-read, trusted value instead of the original (request-
+// controlled) parameter. Same technique as go-server's
+// sqliteVerifiedTableName and wails-app's validateSaveDialogSrcPath:
+// ALTER ROLE has no bind-parameter form for its target identifier, so this
+// lookup is the injection defense in place of one, and returning the
+// looked-up value (rather than a bool guard followed by re-using the
+// original parameter) makes that safety property visible to static
+// analysis instead of only true at runtime.
+func postgresVerifiedRoleName(db *sql.DB, rawRole string) (string, error) {
+	var verified string
+	err := db.QueryRow(`select rolname from pg_roles where rolname = $1`, rawRole).Scan(&verified)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	if err != nil {
+		return "", err
+	}
+	return verified, nil
 }
 
 // postgresPasswordVerifier pre-hashes password into whichever verifier
