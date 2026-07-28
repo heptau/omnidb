@@ -4,6 +4,7 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"net/http"
+	"strings"
 	"sync"
 	"time"
 )
@@ -259,4 +260,55 @@ func checkCSRF(r *http.Request) bool {
 	}
 	header := r.Header.Get("X-CSRFToken")
 	return header != "" && header == cookie.Value
+}
+
+// csrfExemptPrefixes are the only POST routes the frontend's own execAjax
+// wrapper (ajax_control.js) never sends X-CSRFToken for — each calls a raw
+// fetch()/http.Error-based handler instead of going through the shared
+// {v_data, v_error, v_error_id} envelope contract, and each already carries
+// its own equivalent protection: /internal/shutdown/, /export_save_dialog/
+// and /open_external_url/ are only ever registered on a loopback listener
+// (see main.go's isLoopbackHost gate) and independently check
+// resolveIdentity(); /sign_in/ already calls checkCSRF itself (and, unlike
+// these three, is in fact sent with the header by execAjax, so leaving it
+// out of this list would be harmless — it's excluded anyway for clarity
+// since requireCSRF would otherwise run before handleSignIn's own app-token
+// short-circuit).
+var csrfExemptPrefixes = []string{
+	"/internal/shutdown/",
+	"/export_save_dialog/",
+	"/open_external_url/",
+	"/sign_in/",
+}
+
+// requireCSRF wraps the entire mux so every native POST route gets the
+// same double-submit check handleSignIn already applied to itself — the
+// machinery existed (checkCSRF/ensureCSRFCookie) but was previously wired
+// into exactly one handler, leaving every other state-changing route
+// (save/delete connection, users, snippets, monitor units, role passwords,
+// kill-backend, edit-data, ...) relying solely on the SameSite=Lax cookie
+// attribute. GET/HEAD/OPTIONS are left unchecked — csrfSafeMethod in
+// ajax_control.js already treats them as safe and never attaches the
+// header for them, and no route in this app performs a state change on a
+// safe method. Applied once here rather than at each of the ~250
+// mux.Handle call sites, since every one of them already goes through this
+// same net/http.Server.
+func requireCSRF(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost {
+			next.ServeHTTP(w, r)
+			return
+		}
+		for _, prefix := range csrfExemptPrefixes {
+			if strings.HasPrefix(r.URL.Path, prefix) {
+				next.ServeHTTP(w, r)
+				return
+			}
+		}
+		if !checkCSRF(r) {
+			writeBadRequest(w)
+			return
+		}
+		next.ServeHTTP(w, r)
+	})
 }

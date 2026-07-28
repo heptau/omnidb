@@ -436,7 +436,7 @@ func run() error {
 	}
 	mux.Handle("/", handleRoot(upstream, proxy))
 
-	httpServer := &http.Server{Handler: mux}
+	httpServer := &http.Server{Handler: requireCSRF(mux)}
 
 	serveErrCh := make(chan error, 1)
 	go func() {

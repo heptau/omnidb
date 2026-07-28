@@ -166,7 +166,7 @@ _prepare_dirs: _sync_version
 _ensure_wails:
 	@if [ ! -x "$(WAILS)" ]; then \
 		echo "Installing Wails CLI..."; \
-		go install github.com/wailsapp/wails/v2/cmd/wails@latest; \
+		go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0; \
 	fi
 
 # --- MAC OS BUILD LOGIC (Wails) ---
@@ -249,7 +249,7 @@ _build_win: _prepare_dirs _ensure_wails
 _ensure_typolima:
 	@if [ ! -x "$(TYPOLIMA)" ]; then \
 		echo "Installing TypoLima CLI..."; \
-		pip install --user git+https://github.com/heptau/typolima.git; \
+		pip install --user git+https://github.com/heptau/typolima.git@v1.3.0; \
 	fi
 
 # Preview typography fixes (smart quotes, non-breaking spaces, dashes, ...)
