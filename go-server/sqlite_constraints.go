@@ -13,9 +13,39 @@ func quoteIdent(name string) string {
 	return strings.ReplaceAll(name, "'", "''")
 }
 
+// sqliteTableExists confirms table is a real table name via a parameterized
+// sqlite_master lookup before it's interpolated into a PRAGMA statement —
+// callers can only ever reach the PRAGMA with a name that's already a
+// legitimate schema object, regardless of what a caller passes in. PK/FK/
+// unique/index concepts only apply to tables, not views.
+func sqliteTableExists(db *sql.DB, table string) (bool, error) {
+	return sqliteSchemaObjectExists(db, `SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = ?`, table)
+}
+
+// sqliteTableOrViewExists is sqliteTableExists's counterpart for PRAGMA
+// table_info, which works identically on tables and views.
+func sqliteTableOrViewExists(db *sql.DB, table string) (bool, error) {
+	return sqliteSchemaObjectExists(db, `SELECT 1 FROM sqlite_master WHERE type IN ('table', 'view') AND name = ?`, table)
+}
+
+func sqliteSchemaObjectExists(db *sql.DB, query, name string) (bool, error) {
+	var ignore int
+	err := db.QueryRow(query, name).Scan(&ignore)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
+}
+
 // sqlitePrimaryKeyColumnNames returns the column names PRAGMA table_info
 // marks as part of the primary key, in the order SQLite reports them.
 func sqlitePrimaryKeyColumnNames(db *sql.DB, table string) ([]string, error) {
+	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+		return nil, err
+	}
 	rows, err := db.Query(fmt.Sprintf("PRAGMA table_info('%s')", quoteIdent(table)))
 	if err != nil {
 		return nil, err
@@ -68,6 +98,9 @@ type sqliteForeignKey struct {
 // sqliteForeignKeys mirrors SQLite.py's QueryTablesForeignKeys for a single
 // table (tree_sqlite.py always calls it scoped to one table).
 func sqliteForeignKeys(db *sql.DB, table string) ([]sqliteForeignKey, error) {
+	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+		return nil, err
+	}
 	rows, err := db.Query(fmt.Sprintf("PRAGMA foreign_key_list('%s')", quoteIdent(table)))
 	if err != nil {
 		return nil, err
@@ -101,6 +134,9 @@ type sqliteForeignKeyColumn struct {
 
 // sqliteForeignKeyColumns mirrors SQLite.py's QueryTablesForeignKeysColumns.
 func sqliteForeignKeyColumns(db *sql.DB, table, fkey string) ([]sqliteForeignKeyColumn, error) {
+	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+		return nil, err
+	}
 	rows, err := db.Query(fmt.Sprintf("PRAGMA foreign_key_list('%s')", quoteIdent(table)))
 	if err != nil {
 		return nil, err
@@ -131,6 +167,9 @@ func sqliteForeignKeyColumns(db *sql.DB, table, fkey string) ([]sqliteForeignKey
 // PRAGMA index_list's origin='u' marks an index created by a UNIQUE
 // constraint (as opposed to 'c' for a plain CREATE INDEX, or 'pk').
 func sqliteUniques(db *sql.DB, table string) ([]string, error) {
+	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+		return nil, err
+	}
 	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(table)))
 	if err != nil {
 		return nil, err
@@ -166,6 +205,9 @@ type sqliteIndex struct {
 // origin='c' marks a plain CREATE INDEX (as opposed to 'u'/'pk', which are
 // synthesized by constraints and shown under Uniques/Primary Key instead).
 func sqliteIndexes(db *sql.DB, table string) ([]sqliteIndex, error) {
+	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+		return nil, err
+	}
 	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(table)))
 	if err != nil {
 		return nil, err
@@ -200,6 +242,9 @@ func sqliteIndexColumns(db *sql.DB, table, index string) ([]string, error) {
 // sqliteIndexColumns — same PRAGMA index_list -> PRAGMA index_info chain,
 // filtered by a different origin ('u' for uniques, 'c' for plain indexes).
 func sqliteIndexInfoColumns(db *sql.DB, table, indexName, origin string) ([]string, error) {
+	if ok, err := sqliteTableExists(db, table); err != nil || !ok {
+		return nil, err
+	}
 	rows, err := db.Query(fmt.Sprintf("PRAGMA index_list('%s')", quoteIdent(table)))
 	if err != nil {
 		return nil, err
