@@ -205,11 +205,11 @@ var v_default_shortcuts = {
 			shortcut_key: "SPACE",
 		},
 		macos: {
-			ctrl_pressed: true,
+			ctrl_pressed: false,
 			shift_pressed: false,
-			alt_pressed: false,
+			alt_pressed: true,
 			meta_pressed: false,
-			shortcut_key: "A",
+			shortcut_key: "SPACE",
 		},
 	},
 	shortcut_explain: {

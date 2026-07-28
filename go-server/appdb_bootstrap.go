@@ -139,6 +139,7 @@ func migrateAppDB(db *sql.DB) error {
 		{"indent_size", "integer", "4"},
 		{"comma_style", "varchar(10)", "'leading'"},
 		{"keyword_case", "varchar(10)", "'preserve'"},
+		{"autocomplete_disabled_types", "varchar(255)", "''"},
 	} {
 		var found string
 		err := db.QueryRow(`select name from pragma_table_info('OmniDB_app_userdetails') where name = ?`, c.name).Scan(&found)

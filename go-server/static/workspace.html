@@ -732,6 +732,60 @@
 										<input type="text" class="form-control" id="txt_csv_delimiter" placeholder="Delimiter">
 									</div>
 								</div>
+								<div class="row mb-3">
+									<div class="col-md-12">
+										<label>Autocomplete Suggestions</label>
+										<div>
+											<a href="#" onclick="setAllAutocompleteTypeCheckboxes(true); return false;">All</a>
+											&nbsp;/&nbsp;
+											<a href="#" onclick="setAllAutocompleteTypeCheckboxes(false); return false;">None</a>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_keyword" value="keyword">
+											<label class="form-check-label" for="autocomplete_type_keyword">Keywords</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_database" value="database">
+											<label class="form-check-label" for="autocomplete_type_database">Databases</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_role" value="role">
+											<label class="form-check-label" for="autocomplete_type_role">Roles</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_tablespace" value="tablespace">
+											<label class="form-check-label" for="autocomplete_type_tablespace">Tablespaces</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_schema" value="schema">
+											<label class="form-check-label" for="autocomplete_type_schema">Schemas</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_extension" value="extension">
+											<label class="form-check-label" for="autocomplete_type_extension">Extensions</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_table" value="table">
+											<label class="form-check-label" for="autocomplete_type_table">Tables</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_view" value="view">
+											<label class="form-check-label" for="autocomplete_type_view">Views</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_column" value="column">
+											<label class="form-check-label" for="autocomplete_type_column">Columns</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_function" value="function">
+											<label class="form-check-label" for="autocomplete_type_function">Functions</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_index" value="index">
+											<label class="form-check-label" for="autocomplete_type_index">Indexes</label>
+										</div>
+									</div>
+								</div>
 								<div style="text-align:right;">
 									<button class='btn btn-success' onclick='saveConfigUser()'>Save</button>
 								</div>
@@ -1122,6 +1176,7 @@
 		var v_indent_size = parseInt('{{ indent_size }}');
 		var v_comma_style = '{{ comma_style }}';
 		var v_keyword_case = '{{ keyword_case }}';
+		var v_autocomplete_disabled_types = '{{ autocomplete_disabled_types }}';
 		var v_session_key = v_user_key;
 		var v_user_login = v_user_name;
 		var v_version = '{{ omnidb_version }}';

@@ -344,6 +344,12 @@ function showConfigUser() {
 		}
 	}
 
+	var v_disabled_autocomplete_types = v_autocomplete_disabled_types.split(",");
+	var typeCheckboxes = document.getElementsByName("autocomplete_type");
+	for (var i = 0; i < typeCheckboxes.length; i++) {
+		typeCheckboxes[i].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i].value) === -1;
+	}
+
 	// keyboard: true (unlike backdrop: "static", kept as-is) lets Esc close
 	// this dialog like Cancel would — clicking outside still won't, so an
 	// accidental stray click can't lose whatever you were about to change.
@@ -378,6 +384,16 @@ function showWebsite(p_name, p_url) {
 }
 
 /// <summary>
+/// Checks or unchecks every autocomplete category checkbox in the Options tab.
+/// </summary>
+function setAllAutocompleteTypeCheckboxes(p_checked) {
+	var typeCheckboxes = document.getElementsByName("autocomplete_type");
+	for (var i = 0; i < typeCheckboxes.length; i++) {
+		typeCheckboxes[i].checked = p_checked;
+	}
+}
+
+/// <summary>
 /// Saves user config to OmniDB database.
 /// </summary>
 function saveConfigUser() {
@@ -389,6 +405,13 @@ function saveConfigUser() {
 
 	v_csv_encoding = document.getElementById("sel_csv_encoding").value;
 	v_csv_delimiter = document.getElementById("txt_csv_delimiter").value;
+
+	var v_disabled_types = [];
+	var typeCheckboxes = document.getElementsByName("autocomplete_type");
+	for (var i = 0; i < typeCheckboxes.length; i++) {
+		if (!typeCheckboxes[i].checked) v_disabled_types.push(typeCheckboxes[i].value);
+	}
+	v_autocomplete_disabled_types = v_disabled_types.join(",");
 
 	if ((v_confirm_pwd.value != "" || v_pwd.value != "") && v_pwd.value != v_confirm_pwd.value)
 		showAlert("New Password and Confirm New Password fields do not match.");
@@ -402,6 +425,7 @@ function saveConfigUser() {
 			p_indent_size: v_indent_size,
 			p_comma_style: v_comma_style,
 			p_keyword_case: v_keyword_case,
+			p_autocomplete_disabled_types: v_autocomplete_disabled_types,
 		});
 
 		execAjax("/save_config_user/", input, function (p_return) {

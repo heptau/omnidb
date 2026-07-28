@@ -175,5 +175,6 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_userdetails" (
 	"indent_size" integer NOT NULL DEFAULT 4,
 	"comma_style" varchar(10) NOT NULL DEFAULT 'leading',
 	"keyword_case" varchar(10) NOT NULL DEFAULT 'preserve',
+	"autocomplete_disabled_types" varchar(255) NOT NULL DEFAULT '',
 	"user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED
 );

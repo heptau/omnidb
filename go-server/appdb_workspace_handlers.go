@@ -370,15 +370,45 @@ func handleChangeActiveDatabase(upstream *url.URL) http.HandlerFunc {
 }
 
 type saveConfigUserRequest struct {
-	PFontSize     string `json:"p_font_size"`
-	PTheme        string `json:"p_theme"`
-	PPwd          string `json:"p_pwd"`
-	PCSVEncoding  string `json:"p_csv_encoding"`
-	PCSVDelimiter string `json:"p_csv_delimiter"`
-	PIndentChar   string `json:"p_indent_char"`
-	PIndentSize   int    `json:"p_indent_size"`
-	PCommaStyle   string `json:"p_comma_style"`
-	PKeywordCase  string `json:"p_keyword_case"`
+	PFontSize                  string `json:"p_font_size"`
+	PTheme                     string `json:"p_theme"`
+	PPwd                       string `json:"p_pwd"`
+	PCSVEncoding               string `json:"p_csv_encoding"`
+	PCSVDelimiter              string `json:"p_csv_delimiter"`
+	PIndentChar                string `json:"p_indent_char"`
+	PIndentSize                int    `json:"p_indent_size"`
+	PCommaStyle                string `json:"p_comma_style"`
+	PKeywordCase               string `json:"p_keyword_case"`
+	PAutocompleteDisabledTypes string `json:"p_autocomplete_disabled_types"`
+}
+
+// autocompleteGroupTypes are every group "type" the autocomplete popup can
+// show (see workspace.html's #div_autocomplete rows and autocomplete.js's
+// v_autocomplete_object.elements) - the only values PAutocompleteDisabledTypes
+// is allowed to contain, so a tampered/stale request can't smuggle arbitrary
+// text into a value that gets echoed back into workspace.html's inline
+// <script> block (see escapeJSSingleQuoted's comment on that same risk).
+var autocompleteGroupTypes = map[string]bool{
+	"keyword": true, "database": true, "role": true, "tablespace": true,
+	"schema": true, "extension": true, "table": true, "view": true,
+	"column": true, "function": true, "index": true,
+}
+
+// sanitizeAutocompleteDisabledTypes keeps only recognized, deduplicated group
+// types from a comma-separated list, dropping anything else silently (same
+// "ignore unknown input" posture as PIndentChar/PCommaStyle's blank fallback
+// below, rather than rejecting the whole save over one bad value).
+func sanitizeAutocompleteDisabledTypes(raw string) string {
+	seen := map[string]bool{}
+	var out []string
+	for _, t := range strings.Split(raw, ",") {
+		t = strings.TrimSpace(t)
+		if autocompleteGroupTypes[t] && !seen[t] {
+			seen[t] = true
+			out = append(out, t)
+		}
+	}
+	return strings.Join(out, ",")
 }
 
 // handleSaveConfigUser mirrors workspace.py's save_config_user, now
@@ -428,7 +458,8 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		if req.PKeywordCase == "" {
 			req.PKeywordCase = "preserve"
 		}
-		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase); err != nil {
+		autocompleteDisabledTypes := sanitizeAutocompleteDisabledTypes(req.PAutocompleteDisabledTypes)
+		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase, autocompleteDisabledTypes); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

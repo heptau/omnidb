@@ -44,6 +44,18 @@ class AgGridAdapter {
 			animateRows: false,
 			rowHeight: 28,
 			headerHeight: 28,
+			// Handsontable's selectCell()+deselectCell() (see the comment on deselectCell below)
+			// is meant to be a transient, purely visual nudge (scroll a row into view, briefly
+			// mark it selected) - it was never meant to move real keyboard focus anywhere. AG
+			// Grid's own cell-focus tracking disagrees: setFocusedCell() schedules an async
+			// "cellFocused" event whose handler calls the cell's DOM .focus() *after* the
+			// deselectCell() that was supposed to undo it, and after any .focus() callers make
+			// on their own input right afterwards - stealing focus back to the grid. Callers
+			// that want a real, persistent, copyable cell/range selection (e.g. the "copy" grid
+			// context menu action, which relies on document.execCommand("copy") over a genuine
+			// selection) still need this on, so it's opt-out per grid via options.suppressCellFocus
+			// rather than disabled globally.
+			suppressCellFocus: !!this.options.suppressCellFocus,
 
 			onGridReady: function (params) {
 				self.gridApi = params.api;
@@ -272,7 +284,13 @@ class AgGridAdapter {
 
 	selectCell(row, col, endRow, endCol) {
 		if (this.gridApi) {
-			this.gridApi.setFocusedCell(row, "col_" + col);
+			// setFocusedCell() is what schedules AG Grid's async "cellFocused" -> DOM .focus()
+			// chain (see the suppressCellFocus comment in _initGrid); skip it for grids that
+			// opted out, since gridOptions.suppressCellFocus alone only blocks *keyboard*-driven
+			// focus, not this explicit API call.
+			if (!this.options.suppressCellFocus) {
+				this.gridApi.setFocusedCell(row, "col_" + col);
+			}
 			const rowNode = this.gridApi.getDisplayedRowAtIndex(row);
 			if (rowNode) {
 				rowNode.setSelected(true, true);
