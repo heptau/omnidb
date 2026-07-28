@@ -2,10 +2,13 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"net"
 	"net/http"
 	"os"
+	"path/filepath"
+	"strings"
 
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -75,11 +78,72 @@ func (a *App) handleSaveDialogRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if err := validateSaveDialogSrcPath(req.SrcPath); err != nil {
+		writeSaveDialogError(w, err.Error())
+		return
+	}
+
 	if err := copySaveDialogFile(req.SrcPath, dst); err != nil {
 		writeSaveDialogError(w, err.Error())
 		return
 	}
 	writeSaveDialogJSON(w, saveDialogResponse{Path: dst})
+}
+
+// validateSaveDialogSrcPath confirms srcPath falls inside go-server's own
+// export temp directory before it's ever handed to os.Open — this loopback
+// server has no way to authenticate its caller as go-server specifically
+// (any local process that discovers the ephemeral port could POST here), so
+// it can't just trust that go-server already did this same check in
+// export_save_dialog.go before relaying the request. Independently
+// re-deriving the expected directory (rather than trusting a caller-
+// supplied one) means a malicious request still can't walk srcPath outside
+// the one directory this relay is meant to ever read from.
+func validateSaveDialogSrcPath(srcPath string) error {
+	tempDir, err := exportTempDir()
+	if err != nil {
+		return err
+	}
+	cleanPath := filepath.Clean(srcPath)
+	rel, err := filepath.Rel(tempDir, cleanPath)
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return fmt.Errorf("invalid export path")
+	}
+	return nil
+}
+
+// exportTempDir mirrors go-server/homedir.go's resolveHomeDir + appdb.go's
+// resolveTempDir for the one mode this process ever launches go-server in:
+// startBackend always appends "-A" (see backend.go), so the "app mode"
+// branch (~/.omnidb/omnidb-app, or an explicit -d/--homedir override) is the
+// only case that can ever apply here — go-server's own home-dir resolution
+// isn't reachable from this separate module, so this recomputes the same
+// path from the same os.Args instead of importing it.
+func exportTempDir() (string, error) {
+	dir := homeDirFlag(os.Args[1:])
+	if dir == "" {
+		base, err := os.UserHomeDir()
+		if err != nil {
+			return "", err
+		}
+		dir = filepath.Join(base, ".omnidb", "omnidb-app")
+	}
+	return filepath.Join(dir, "temp"), nil
+}
+
+// homeDirFlag mirrors go-server/homedir.go's own flag parsing for -d/--homedir.
+func homeDirFlag(args []string) string {
+	for i, a := range args {
+		if a == "-d" || a == "--homedir" {
+			if i+1 < len(args) {
+				return args[i+1]
+			}
+		}
+		if v, ok := strings.CutPrefix(a, "--homedir="); ok {
+			return v
+		}
+	}
+	return ""
 }
 
 func copySaveDialogFile(srcPath, dstPath string) error {
