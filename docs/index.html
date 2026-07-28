@@ -36,30 +36,39 @@
 			var STORAGE_KEY = 'omnidb_lang';
 			var supported = ['en', 'cs', 'de', 'es', 'fr', 'it', 'pt'];
 			var suffix = window.location.protocol === 'file:' ? '/index.html' : '/';
-			var target;
+
+			// Returns one of the literal entries of `supported`, never the
+			// (untrusted, DOM-storage-sourced) candidate itself — so nothing
+			// but a hardcoded language code can ever reach the
+			// window.location.href assignment below, no matter what's stored
+			// under STORAGE_KEY or reported by the browser.
+			function toSupportedLang(candidate) {
+				var idx = supported.indexOf(candidate);
+				return idx === -1 ? null : supported[idx];
+			}
+
+			var lang = null;
 
 			// Check saved preference first
 			try {
-				target = localStorage.getItem(STORAGE_KEY);
+				lang = toSupportedLang(localStorage.getItem(STORAGE_KEY));
 			} catch (e) { /* localStorage unavailable */ }
 
-			if (!target || supported.indexOf(target) === -1) {
+			if (!lang) {
 				// Auto-detect from browser settings
 				var userLangs = navigator.languages || [navigator.language || navigator.userLanguage];
-				target = 'en'; // Default fallback
 				for (var i = 0; i < userLangs.length; i++) {
 					if (!userLangs[i]) continue;
-					var code = userLangs[i].substring(0, 2).toLowerCase();
-					if (supported.indexOf(code) !== -1) {
-						target = code;
-						break;
-					}
+					lang = toSupportedLang(userLangs[i].substring(0, 2).toLowerCase());
+					if (lang) break;
 				}
+				lang = lang || 'en'; // Default fallback
+
 				// Save auto-detected preference
-				try { localStorage.setItem(STORAGE_KEY, target); } catch (e) { /* ignore */ }
+				try { localStorage.setItem(STORAGE_KEY, lang); } catch (e) { /* ignore */ }
 			}
 
-			window.location.href = target + suffix;
+			window.location.href = lang + suffix;
 		})();
 	</script>
 	<style>

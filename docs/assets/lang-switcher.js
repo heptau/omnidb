@@ -48,7 +48,11 @@ var OMNIDB_LANGUAGES = [
 				for (var i = 0; i < userLangs.length; i++) {
 					if (!userLangs[i]) continue;
 					var c = userLangs[i].substring(0, 2).toLowerCase();
-					if (SUPPORTED.indexOf(c) !== -1) { detected = c; break; }
+					var idx = SUPPORTED.indexOf(c);
+					// Use the literal SUPPORTED entry, not the browser-reported
+					// string itself, so only a hardcoded language code can ever
+					// reach the window.location.href assignment below.
+					if (idx !== -1) { detected = SUPPORTED[idx]; break; }
 				}
 				var target = targetUrlFor(detected);
 				if (target) window.location.href = target;
