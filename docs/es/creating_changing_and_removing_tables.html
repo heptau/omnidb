@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Creación, modificación y eliminación de tablas — Documentación de OmniDB</title>
+	<meta name="description" content="Cree, modifique y elimine tablas de bases de datos en OmniDB mediante plantillas SQL editables, además de grafos de relaciones del esquema.">
+	<link rel="canonical" href="https://www.omnidb.net/es/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/creating_changing_and_removing_tables.html">
+	<meta property="og:title" content="Creación, modificación y eliminación de tablas - Documentación de OmniDB">
+	<meta property="og:description" content="Cree, modifique y elimine tablas de bases de datos en OmniDB mediante plantillas SQL editables, además de grafos de relaciones del esquema.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Creación, modificación y eliminación de tablas", "item": "https://www.omnidb.net/es/creating_changing_and_removing_tables.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html" class="active">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Creación, modificación y eliminación de tablas</h1>
+<p>Las estructuras de tablas — su creación, modificación y eliminación — se gestionan con
+<em>plantillas SQL</em> editables en lugar de con un formulario gráfico. Esto le da un control más
+directo que un diseñador de apuntar y hacer clic, a costa de tener que escribir algo de SQL
+usted mismo: OmniDB rellena una plantilla inicial funcional y usted la edita antes de
+ejecutarla.</p>
+<h4>Creación de tablas</h4>
+<p>Crearemos tablas de ejemplo (<em>customers</em> y <em>addresses</em>) en la base de datos <code>testdb</code>
+a la que nos conectamos anteriormente. Haga clic derecho en el nodo <strong>Tables</strong> y seleccione
+la acción <strong>Create Table</strong>. Esto abre una nueva pestaña de consulta prerrellenada con una
+plantilla <code>CREATE TABLE</code> para el esquema actual.</p>
+<p>Edite la plantilla hasta obtener la tabla que realmente desea — para <em>customers</em>, una clave
+primaria que <em>addresses</em> referenciará más adelante:</p>
+<pre><code class="language-sql">CREATE TABLE public.customers (
+	cust_id serial PRIMARY KEY,
+	cust_name varchar(100) NOT NULL
+);
+</code></pre>
+<p>Ejecute la instrucción (de la misma forma en que ejecuta cualquier consulta). Haga clic derecho en el nodo del árbol
+<em>Tables</em> y haga clic en <em>Refresh</em> — la nueva tabla aparecerá ahora debajo de él. Manteniendo
+<em>customers</em> seleccionada en el árbol, puede inspeccionar sus <em>Properties</em> y su <em>DDL</em>
+generados en el panel junto al árbol, el mismo panel usado para cualquier otro
+tipo de objeto.</p>
+<p>Ahora cree <em>addresses</em>, con una clave foránea de vuelta hacia <em>customers</em>:</p>
+<pre><code class="language-sql">CREATE TABLE public.addresses (
+	add_id serial PRIMARY KEY,
+	add_street varchar(200) NOT NULL,
+	add_number integer,
+	cust_id integer NOT NULL REFERENCES public.customers (cust_id)
+);
+</code></pre>
+<p>En este punto hay dos tablas relacionadas en el esquema <code>public</code>. Puede ver la
+estructura del esquema con la función de grafo: haga clic derecho en el nodo del esquema <code>public</code>
+y seleccione <em>Render Graph &gt; Simple Graph</em> para ver solo las tablas y sus
+relaciones, o <em>Render Graph &gt; Complete Graph</em> para incluir también columnas y
+restricciones. Ambos se renderizan como un diagrama interactivo, desplazable y ampliable.</p>
+<h4>Modificación de tablas</h4>
+<p>Para modificar una tabla existente — por ejemplo, añadir una columna a <em>customers</em> — haga
+clic derecho en el nodo de la tabla y seleccione <em>Table Actions &gt; Alter Table</em>. Esto abre
+una pestaña de consulta con una plantilla <code>ALTER TABLE</code> que usted edita y ejecuta, siguiendo el
+mismo patrón que la creación de tablas:</p>
+<pre><code class="language-sql">ALTER TABLE public.customers ADD COLUMN cust_age integer;
+</code></pre>
+<p>Cualquier error que devuelva la base de datos — por ejemplo, al intentar añadir un nombre de columna que
+ya existe — se muestra de la misma forma que cualquier consulta fallida: en el panel de
+Messages de la pestaña de consulta, con el comando exacto y el texto del error proveniente de la base de datos.</p>
+<h4>Eliminación de tablas</h4>
+<p>Para eliminar una tabla, haga clic derecho en el nodo de la tabla y seleccione <em>Table Actions &gt; Drop
+Table</em>. Esto también abre una plantilla editable (<code>DROP TABLE ...</code>) en lugar de
+eliminarla de inmediato — revísela y ejecútela cuando esté listo.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -6,6 +6,12 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": ["-m", "http.server", "8765", "--directory", "docs/en"],
       "port": 8765
+    },
+    {
+      "name": "omnidb-server",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": ["-c", "cd go-server && OMNIDB_PROXY_LISTEN_PORT=8002 go run . -d ../.dev-home"],
+      "port": 8002
     }
   ]
 }

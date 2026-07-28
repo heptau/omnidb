@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Gestione dei database – Documentazione OmniDB</title>
+	<meta name="description" content="Un tour della finestra di lavoro di OmniDB: schede di connessione, albero della struttura, schede interne per query e console, e come sfogliare e gestire gli oggetti del database.">
+	<link rel="canonical" href="https://www.omnidb.net/it/managing_databases.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/managing_databases.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_databases.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/it/managing_databases.html">
+	<meta property="og:title" content="Gestione dei database - Documentazione OmniDB">
+	<meta property="og:description" content="Un tour della finestra di lavoro di OmniDB: schede di connessione, albero della struttura, schede interne per query e console, e come sfogliare e gestire gli oggetti del database.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/it/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentazione", "item": "https://www.omnidb.net/it/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Gestione dei database", "item": "https://www.omnidb.net/it/managing_databases.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Attiva/disattiva navigazione">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentazione</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambia lingua" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambia tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatico</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Chiaro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Scuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Per iniziare</span>
+			<a href="introduction.html">Introduzione</a>
+			<a href="installation.html">Installazione</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Lavorare con i dati</span>
+			<a href="managing_databases.html" class="active">Gestione dei database</a>
+			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
+			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="visualizing_data.html">Visualizzazione dei dati</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzate</span>
+			<a href="additional_features.html">Funzionalità aggiuntive</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="logical_replication.html">Replica logica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="console_tab.html">Scheda Console</a>
+			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Riferimento</span>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Gestione dei database</h1>
+<p>Dopo aver creato una connessione puoi selezionarla facendo clic sull’azione
+<em>Seleziona Connessione</em> nella griglia delle connessioni. Vedrai che la
+connessione sarà rappresentata da una specie di scheda esterna chiamata
+<em>Scheda di Connessione</em>. E l’intera area viene chiamata <em>Finestra di Lavoro</em>.</p>
+<p><img alt="" src="../assets/img/image_014.webp" /></p>
+<h4>Sezioni della finestra <em>Workspace</em></h4>
+<p>Questa interfaccia ha diversi elementi:</p>
+<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<ul>
+<li><strong>1) Connessioni</strong>: Apre un popup con la griglia delle <em>Connessioni</em></li>
+<li><strong>2) Schede Esterne</strong>: OmniDB ti permette di lavorare con più database
+contemporaneamente. Ogni database sarà accessibile tramite una <em>scheda esterna</em>.
+Le schede esterne possono anche ospitare funzionalità varie indipendenti dalla
+connessione, come la funzionalità <em>Snippets</em></li>
+<li><strong>3) Opzioni</strong>: Mostra l’utente attualmente connesso e, se l’utente è un
+superuser, mostra anche un link per la <em>gestione utenti</em>. Mostra anche i link
+per <em>impostazioni utente</em>, <em>plugin installati</em>, <em>cronologia query</em>,
+<em>informazioni</em> e <em>logout</em>.</li>
+</ul>
+<h4>Scheda Esterna di Connessione</h4>
+<p>La scheda esterna chiamata <em>PostgreSQL – testdb</em> ha questo nome a causa
+dell’alias (<em>PostgreSQL</em>) che abbiamo assegnato alla connessione verso il
+database <code>testdb</code>. Questa scheda è una <em>Scheda Esterna di Connessione</em>. Nota
+la piccola scheda con una croce accanto alla scheda esterna <em>PostgreSQL -
+testdb</em>. Questa permette di creare una nuova scheda esterna che sarà
+automaticamente una <em>Scheda Esterna di Connessione</em>. Tuttavia, la <em>Scheda
+Esterna Snippet</em> è fissa e sarà sempre la prima.</p>
+<p>Una nuova <em>Scheda Esterna di Connessione</em> punterà sempre automaticamente alla
+prima connessione nella tua lista di connessioni al database. Oppure, se hai
+fatto clic sull’azione <em>Seleziona Connessione</em>, punterà alla connessione
+selezionata. Osserva gli elementi all’interno di questa scheda:</p>
+<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<ul>
+<li><strong>1) Selettore di Connessione</strong>: Mostra tutte le connessioni e permette
+all’utente di selezionare quella corrente</li>
+<li><strong>2) Albero delle Strutture</strong>: Mostra un albero gerarchico in cui puoi
+navigare tra gli elementi del database</li>
+<li><strong>3) Pannelli Proprietà e DDL</strong>: Mostrano le Proprietà e il DDL relativi al
+nodo attualmente selezionato nell’albero</li>
+<li><strong>4) Schede Interne</strong>: Permettono all’utente di eseguire azioni nel database
+corrente. Esistono diversi tipi di schede interne per il database corrente.
+Facendo clic sull’ultima piccola scheda con una croce, puoi aggiungere una
+nuova scheda. Una nuova scheda può essere una <em>Scheda Query</em>, <em>Scheda
+Console</em>, <em>Dashboard di Monitoraggio</em> o <em>Backends</em></li>
+</ul>
+<p><img alt="" src="../assets/img/image_187.webp" /></p>
+<ul>
+<li><strong>5) Contenuto della Scheda Interna</strong>: Può variare a seconda del tipo di
+scheda interna. La figura mostra una <em>Scheda Query</em> e in questo caso il
+contenuto sarà un <em>Editor SQL</em>, con evidenziazione della sintassi,
+autocompletamento e trova &amp; sostituisci</li>
+<li><strong>6) Azioni della Scheda Interna</strong>: Possono variare a seconda del tipo di
+scheda interna. Per una <em>Scheda Query</em>, sono <em>Esegui</em>, <em>Indenta SQL</em>,
+<em>Cronologia Comandi</em>, <em>Spiega</em>, <em>Spiega ed Esegui</em>, <em>Autocommit</em> ed
+<em>Esporta Dati</em></li>
+<li><strong>7) Risultati della Scheda Interna</strong>: Una <em>Scheda Query</em>, dopo aver
+fatto clic sul <em>Pulsante Esegui</em> o digitato la scorciatoia di esecuzione
+(<code>Alt-Q</code>), mostrerà una griglia con i risultati della query nella
+sottoscheda <em>Dati</em>. Se la query chiama una funzione che genera messaggi,
+questi saranno mostrati nella sottoscheda <em>Messaggi</em>. Se invece di <em>Esegui</em>
+hai fatto clic su <em>Spiega</em> o <em>Spiega ed Esegui</em>, il piano di esecuzione
+della query sarà mostrato nella sottoscheda <em>Spiega</em>.</li>
+</ul>
+<h4>Lavorare con i database</h4>
+<p>Dai un’occhiata al selettore delle connessioni. OmniDB punta sempre alla prima
+connessione disponibile, ma puoi cambiarla facendo clic sul selettore.</p>
+<p><img alt="" src="../assets/img/image_017.webp" /></p>
+<p>Seleziona la connessione <em>PostgreSQL</em>. Ora vai all’albero appena sotto il
+selettore e fai clic per espandere il nodo radice <em>PostgreSQL</em>.</p>
+<p><img alt="" src="../assets/img/image_018.webp" /></p>
+<p>Tieni presente che ogni 30 minuti trascorsi senza eseguire azioni sul database
+farà comparire un popup di <em>Autenticazione</em>, poiché la password che OmniDB ha
+cifrato e mantenuto in memoria è ormai scaduta. Come spiegato in precedenza,
+questo è importante per la sicurezza del tuo database. Dopo aver digitato la
+password corretta, vedrai che il nodo PostgreSQL ora mostra la versione di
+PostgreSQL e che è stato espanso, mostrando la connessione al database corrente
+e anche gli elementi a livello di istanza: <em>Database</em>, <em>Tablespace</em>, <em>Ruoli</em>
+e <em>Slot di Replica</em>.</p>
+<p>Puoi connetterti a un singolo database PostgreSQL e, usando la stessa
+connessione, puoi collegarti ad altri database nella stessa istanza
+PostgreSQL. Il database attualmente attivo sarà indicato sotto il selettore
+di connessione.</p>
+<p><img alt="" src="../assets/img/image_188.webp" /></p>
+<p>Per connetterti a un database diverso, espandi il nodo corrispondente a quel
+database. Apparirà un popup che chiede se vuoi davvero cambiare il database
+attivo.</p>
+<p><img alt="" src="../assets/img/image_189.webp" /></p>
+<p>Fai clic su <em>Sì</em> e OmniDB cambierà il database attivo con quello scelto. Ciò
+sarà riflesso nell’indicatore <em>Database attivo</em> e anche nel nome della scheda
+esterna.</p>
+<p><img alt="" src="../assets/img/image_190.webp" /></p>
+<p>Vai avanti ed espandi il nodo <em>Schemi</em>. Vedrai tutti gli schemi presenti nel
+database corrente (nel caso di PostgreSQL, gli schemi <code>TOAST</code> e temporanei non
+sono mostrati).</p>
+<p><img alt="" src="../assets/img/image_019.webp" /></p>
+<p>Ora fai clic per espandere lo schema <code>public</code>. Vedrai diversi tipi di elementi
+contenuti in questo schema.</p>
+<p><img alt="" src="../assets/img/image_020.webp" /></p>
+<p>Ora fai clic per espandere il nodo <em>Tabelle</em>, e vedrai tutte le tabelle
+contenute nello schema <code>public</code>. Espandi una qualsiasi tabella e vedrai le sue
+colonne, chiave primaria, chiavi esterne, vincoli, indici, regole, trigger e
+partizioni.</p>
+<p><img alt="" src="../assets/img/image_021.webp" /></p>
+<p>Per visualizzare i record all’interno di una tabella, fai clic destro su di
+essa e scegli *Azioni sui Dati</p>
+<blockquote>
+<p>Interroga Dati*.</p>
+</blockquote>
+<p><img alt="" src="../assets/img/image_022.webp" /></p>
+<p>Nota che OmniDB apre un nuovo editor SQL con una semplice query per elencare i
+record della tabella. I record vengono visualizzati in una griglia subito
+sotto l’editor. Questa griglia può essere controllata da tastiera come se
+stessi usando un foglio di calcolo. Puoi anche copiare dati da singole celle
+o blocchi di celle (selezionabili con tastiera o mouse) e incollarli in
+qualsiasi foglio di calcolo.</p>
+<p><img alt="" src="../assets/img/image_023.webp" /></p>
+<p>Puoi modificare la query nell’editor SQL, scrivendo query semplici o più
+complesse. Per eseguirla, fai clic sul pulsante di azione o premi la
+combinazione di tasti <code>Alt-Q</code>. Se i risultati superano i 100 record,
+compariranno i pulsanti aggiuntivi <em>Carica Altri</em> e <em>Carica Tutti</em>. Maggiori
+dettagli nei capitoli successivi.</p>
+<h4>Lavorare con più schede all’interno della stessa connessione</h4>
+<p>All’interno di una singola connessione, puoi creare più schede query interne
+facendo clic sull’ultima piccola scheda con una croce, e poi scegliendo
+<em>Scheda Query</em>.</p>
+<p><img alt="" src="../assets/img/image_024.webp" /></p>
+<p>Su OmniDB puoi eseguire più istruzioni SQL e procedure in parallelo. Durante
+l’esecuzione, un’icona verrà mostrata nella scheda per indicarne lo stato
+attuale. Se un processo è terminato e non si trova nella scheda corrente,
+quella scheda mostrerà un’icona verde che indica che la routine eseguita lì è
+ora terminata.</p>
+<p><img alt="" src="../assets/img/image_025.webp" /></p>
+<p>Facendo clic sul <em>pulsante Annulla</em>, puoi annullare un processo in esecuzione
+all’interno del database.</p>
+<p><img alt="" src="../assets/img/image_026.webp" /></p>
+<p>Puoi anche trascinare e rilasciare una scheda per cambiarne l’ordine. Questo
+funziona sia per le schede interne che per quelle esterne.</p>
+<p><img alt="" src="../assets/img/image_027.webp" /></p>
+<p>Inoltre, puoi usare scorciatoie da tastiera per gestire le schede interne
+(Query SQL). Queste sono le impostazioni predefinite su Windows/Linux (su
+macOS Ctrl sostituisce Alt); tutte possono essere riassegnate nella scheda
+Scorciatoie della finestra di dialogo Impostazioni:</p>
+<ul>
+<li><strong>Alt-I</strong>: Inserisce una nuova scheda interna</li>
+<li><strong>Alt-Shift-Q</strong>: Rimuove la scheda interna corrente</li>
+<li><strong>Alt-O</strong>: Sposta il focus sulla scheda interna a sinistra</li>
+<li><strong>Alt-P</strong>: Sposta il focus sulla scheda interna a destra</li>
+</ul>
+<p>Attualmente non esistono scorciatoie da tastiera per le schede esterne
+(Connessione) — per queste usa il trascinamento con il mouse per riordinarle.</p>
+<p>Tutte le schede Query SQL vengono salvate automaticamente ogni volta che le
+esegui. Anche se chiudi la finestra di OmniDB o la scheda del browser, sono
+già memorizzate nel <em>Database Utente</em> di OmniDB. Verranno ripristinate
+automaticamente quando riapri OmniDB (se usi l’app), lo apri in un’altra
+finestra del browser (se usi il server), o anche se hai fatto clic sulla
+finestra <em>Connessioni</em> o hai effettuato il logout. Rimuovere una scheda
+esterna o interna dall’interfaccia la elimina permanentemente, quindi non
+verrà ripristinata.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -3,142 +3,22 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>3. Creating Users and Connections - OmniDB Documentation</title>
-	<link rel="stylesheet" href="../../assets/style.css">
-	<link rel="alternate" type="text/plain" title="llms.txt" href="../../llms.txt">
-	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../../llms-full.txt">
+	<title>Page Moved – OmniDB Documentation</title>
+	<link rel="canonical" href="https://www.omnidb.net/en/creating_users_and_connections.html">
+	<meta name="robots" content="index, follow">
+	<meta http-equiv="refresh" content="0; url=../creating_users_and_connections.html">
+	<meta name="theme-color" content="#192e4d">
+	<style>
+		body { font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", Roboto, sans-serif; text-align: center; padding-top: 100px; color: #192e4d; background-color: #f4f7f9; }
+		.loader { border: 4px solid #f3f3f3; border-top: 4px solid #192e4d; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 20px auto; }
+		@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+		a { color: #8199bf; font-weight: 600; text-decoration: none; }
+		a:hover { color: #192e4d; }
+	</style>
 </head>
 <body>
-	<button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation"> ☰ </button>
-	<div class="menu-overlay" id="menuOverlay"></div>
-	<nav>
-		<h2 style="margin-top:0; border-bottom: none; font-size: 1.5em;">OmniDB Docs</h2>
-		<a href="01_introduction.html">&nbsp;1. Introduction</a>
-		<a href="02_installation.html">&nbsp;2. Installation</a>
-		<a href="03_creating_users_and_connections.html" class="active">&nbsp;3. Creating Users and Connections</a>
-		<a href="04_managing_databases.html">&nbsp;4. Managing Databases</a>
-		<a href="05_creating_changing_and_removing_tables.html">&nbsp;5. Creating, Changing and Removing Tables</a>
-		<a href="06_managing_table_data.html">&nbsp;6. Managing Table Data</a>
-		<a href="07_writing_sql_queries.html">&nbsp;7. Writing SQL Queries</a>
-		<a href="08_visualizing_query_plans.html">&nbsp;8. Visualizing Query Plans</a>
-		<a href="09_visualizing_data.html">&nbsp;9. Visualizing Data</a>
-		<a href="10_managing_other_elements.html">10. Managing other Elements</a>
-		<a href="11_additional_features.html">11. Additional Features</a>
-		<a href="12_omnidb_config_tool.html">12. OmniDB Config Tool</a>
-		<a href="13_writing_and_debugging_plpgsql_functions.html">13. Writing and Debugging PL/pgSQL Functions</a>
-		<a href="14_monitoring_dashboard.html">14. Monitoring Dashboard</a>
-		<a href="15_logical_replication.html">15. Logical Replication</a>
-		<a href="16_pglogical.html">16. pglogical</a>
-		<a href="17_postgres-bdr.html">17. Postgres-BDR</a>
-		<a href="18_postgres-xl.html">18. Postgres-XL</a>
-		<a href="19_deploying_omnidb-server.html">19. Deploying omnidb-server</a>
-		<a href="20_console_tab.html">20. Console Tab</a>
-		<a href="21_plugin_system.html">21. Plugin System</a>
-		<a href="22_advanced_object_search.html">22. Advanced Object Search</a>
-		<a href="23_debugger_plugin_installation.html">23. Debugger Plugin Installation</a>
-	</nav>
-	<main>
-		<h1>3. Creating Users and Connections</h1>
-<h4>Logging in as user <em>admin</em></h4>
-<p>OmniDB comes only with the user <em>admin</em>. If you are using the server version,
-the first thing to do is sign in as <em>admin</em>, the default password is <em>admin</em>.
-You don't need to login in the app version.</p>
-<p><img alt="" src="../../assets/img/image_003.webp"/></p>
-<p>The next window is the initial window.</p>
-<p><img alt="" src="../../assets/img/image_004.webp"/></p>
-<h4>Creating another user</h4>
-<p>Click on the <em>Users</em> icon on the upper right corner. It will open a popup
-that allows the current OmniDB super user to create a new OmniDB user.</p>
-<p><img alt="" src="../../assets/img/image_005.webp"/></p>
-<p>After clicking on the <em>Users</em> icon the tool inserts a new user called <em>user2</em>
-(if that is the first user after <em>admin</em>).</p>
-<p><img alt="" src="../../assets/img/image_006.webp"/></p>
-<p>You will have to change the <em>username</em> and <em>password</em>. Check if you want this
-new user to be a <em>super user</em>. This user management window is only seem by super
-users. When you are done, click on the <em>Save Data</em> button inside the popup.</p>
-<p><img alt="" src="../../assets/img/image_007.webp"/></p>
-<p>You can create as many users as you want, edit existing users and also delete
-users by clicking on the red cross at the actions column. Now you can logout by
-clicking in the <em>Sign Out</em> button in the top right corner.</p>
-<h4>Signing in as the new user</h4>
-<p>Let us sign in as the user we just created.</p>
-<p><img alt="" src="../../assets/img/image_008.webp"/></p>
-<p>And we can see the window again. Note that now there is no <em>Users</em> icon, because
-the <em>test</em> user is not a super user. Go ahead and click on <strong>Connections</strong> on
-the upper left corner. You will see a popup like this:</p>
-<p><img alt="" src="../../assets/img/image_009.webp"/></p>
-<h4>Creating connections</h4>
-<p>At the moment, OmniDB supports PostgreSQL, Oracle, MySQL and MariaDB. More DBMS
-support is being added as you read this.</p>
-<p>We will now create one connection to a PostgreSQL database, one connection to an
-Oracle database and one connection to a MariaDB database. To create the
-connections you have to click on the button <em>New Connection</em> and then choose the
-connection and fill the other fields. After filling all the fields for both
-connections, click on the <em>Save Data</em> button.</p>
-<p><img alt="" src="../../assets/img/image_010.webp"/></p>
-<p>For each connection there is an <em>Actions</em> column where you can delete, test and
-select them. Go ahead and test the PostgreSQL connection.</p>
-<p><img alt="" src="../../assets/img/image_011.webp"/></p>
-<p>Notice a pop-up appears with the message <em>fe_sendauth: no password supplied</em>.
-This is happening because OmniDB does not store the database user password on
-disk. Not having any password at hand, OmniDB will try to connect without one,
-thus trying to take advantage of automatic authentication methods that might be
-in place: <code>trust</code> method, <code>.pgpass</code> file, and so on. As the database server
-replies with an error not allowing the user to connect, then OmniDB understands
-a password is required and asks it to the user. When the user types a password
-in this popup, the password is encrypted and stored in memory.</p>
-<p>After you type the password and hit <em>Enter</em>, if the connection to the database
-is successful you will see a confirmation pop-up.</p>
-<p><img alt="" src="../../assets/img/image_012.webp"/></p>
-<p>But, if you have trouble of any kind connecting to your PostgreSQL database,
-the same popup will remain showing the error OmniDB got.</p>
-<p><img alt="" src="../../assets/img/image_013.webp"/></p>
-<p>For Oracle, the behavior is similar. When OmniDB first tries to connect to an
-Oracle database without a password, you will see a message like this:</p>
-<p><img alt="" src="../../assets/img/image_115.webp"/></p>
-<p>If you have any trouble connection to your Oracle database, the same popup will
-remain showing the error OmniDB got:</p>
-<p><img alt="" src="../../assets/img/image_116.webp"/></p>
-<p>MariaDB and MySQL databases also works in the same way. First time, no password
-was given:</p>
-<p><img alt="" src="../../assets/img/image_184.webp"/></p>
-<p>But if you have any problems, such as database server down:</p>
-<p><img alt="" src="../../assets/img/image_185.webp"/></p>
-<p>Finally, in the connections grid, if you click on the <em>Select Connection</em>
-action, OmniDB will open it in a new <strong>Connection Outer Tab</strong> as we can see in
-the next chapter.</p>
-<h4>Using SSH tunnels</h4>
-<p>Starting from 2.8, OmniDB allows the user to connect to any remote database
-through SSH tunnels. The user needs to fill SSH tunnel information in each
-connection in the <em>Connections Grid</em>.</p>
-<p><img alt="" src="../../assets/img/image_186.webp"/></p>
-<ul>
-<li><em>SSH Server</em>: The server you are connecting to via SSH;</li>
-<li><em>SSH Port</em>: The port of the SSH server (default is 22, but it can be any port
-number);</li>
-<li><em>SSH User</em>: The operating system user name you use to connect to the SSH
-server;</li>
-<li><em>SSH Password</em>: The password of the operating system user. If you fill the
-field <em>SSH Key</em>, then this is optional;</li>
-<li><em>SSH Key</em>: The contents of the local private SSH key you can use to connect to
-the SSH server. If you fill this field, then you can also fill the field <em>SSH
-Password</em>, but in this case it will be the password for the SSH private key.</li>
-</ul>
-<p>Please note that all information is stored encrypted in your local OmniDB <em>User
-Database</em>.</p>
-<p>While using SSH tunnels, you also need to fill all database fields accordingly.
-But instead of being relative to the OmniDB server, they will be relative to the
-SSH Server. This can be done in 2 scenarios as explained below.</p>
-<p>If the database is inside the same server as you are connecting to via SSH, then
-you will have a situation like this:</p>
-<p><img alt="" src="../assets/ssh_tunnels_1.png"/></p>
-<p>In this scenario, the database <em>Server</em> will be <code>127.0.0.1</code>, as the database is
-in the same machine as the <em>SSH Server</em>.</p>
-<p>But the database can be outside the SSH server, like this:</p>
-<p><img alt="" src="../assets/ssh_tunnels_2.png"/></p>
-<p>Here the database <em>Server</em> needs to be <code>192.168.0.10</code>, as it is the relative
-address for the SSH server to connect to the database server.</p>
-	</main>
-	<script src="../../assets/script.js"></script>
+	<div class="loader"></div>
+	<p>This documentation page has moved.</p>
+	<p>If you are not redirected automatically, go to <a href="../creating_users_and_connections.html">Creating Users and Connections</a>.</p>
 </body>
 </html>

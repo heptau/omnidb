@@ -13,6 +13,12 @@
 
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/" />
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/" />
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/" />
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/" />
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/" />
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/" />
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/" />
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/" />
 
 	<meta property="og:title" content="OmniDB - Lightweight Database Management" />
 	<meta property="og:description" content="The open-source database tool revival. Lightweight, fast, and collaborative. Maintained by the PgArachne team." />
@@ -20,33 +26,40 @@
 	<meta property="og:url" content="https://www.omnidb.net/" />
 	<meta property="og:type" content="website" />
 
-	<meta http-equiv="refresh" content="2; url=en/" />
+	<meta http-equiv="refresh" content="2; url=en/index.html" />
 
 	<link rel="alternate" type="text/plain" title="llms.txt" href="llms.txt">
 	<link rel="alternate" type="text/plain" title="llms-full.txt" href="llms-full.txt">
 
 	<script>
 		(function () {
-			// Supported languages
-			var supported = ['en'];
+			var STORAGE_KEY = 'omnidb_lang';
+			var supported = ['en', 'cs', 'de', 'es', 'fr', 'it', 'pt'];
+			var suffix = window.location.protocol === 'file:' ? '/index.html' : '/';
+			var target;
 
-			// Get user's preferred languages
-			var userLangs = navigator.languages || [navigator.language || navigator.userLanguage];
-			var target = 'en/'; // Default fallback
+			// Check saved preference first
+			try {
+				target = localStorage.getItem(STORAGE_KEY);
+			} catch (e) { /* localStorage unavailable */ }
 
-			// Find the first matching language
-			for (var i = 0; i < userLangs.length; i++) {
-				if (!userLangs[i]) continue;
-				var code = userLangs[i].substring(0, 2).toLowerCase();
-
-				if (supported.indexOf(code) !== -1) {
-					target = code + '/';
-					break;
+			if (!target || supported.indexOf(target) === -1) {
+				// Auto-detect from browser settings
+				var userLangs = navigator.languages || [navigator.language || navigator.userLanguage];
+				target = 'en'; // Default fallback
+				for (var i = 0; i < userLangs.length; i++) {
+					if (!userLangs[i]) continue;
+					var code = userLangs[i].substring(0, 2).toLowerCase();
+					if (supported.indexOf(code) !== -1) {
+						target = code;
+						break;
+					}
 				}
+				// Save auto-detected preference
+				try { localStorage.setItem(STORAGE_KEY, target); } catch (e) { /* ignore */ }
 			}
 
-			// Redirect
-			window.location.href = target;
+			window.location.href = target + suffix;
 		})();
 	</script>
 	<style>
@@ -107,9 +120,23 @@
 	<div class="loader"></div>
 	<p>Redirecting to OmniDB Project...</p>
 	<p>If you are not redirected automatically, please choose a language:</p>
-	<ul>
+	<ul id="lang-fallback-links">
 		<li><a href="en/">English</a></li>
+		<li><a href="cs/">Čeština</a></li>
+		<li><a href="de/">Deutsch</a></li>
+		<li><a href="es/">Español</a></li>
+		<li><a href="fr/">Français</a></li>
+		<li><a href="it/">Italiano</a></li>
+		<li><a href="pt/">Português</a></li>
 	</ul>
+	<script>
+		// Fix fallback links for file:// protocol (needs explicit index.html)
+		if (window.location.protocol === 'file:') {
+			document.querySelectorAll('#lang-fallback-links a').forEach(function (a) {
+				a.href = a.getAttribute('href') + 'index.html';
+			});
+		}
+	</script>
 </body>
 
 </html>

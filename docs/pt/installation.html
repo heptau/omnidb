@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Instalação – Documentação OmniDB</title>
+	<meta name="description" content="Instale o OmniDB como aplicação de ambiente de trabalho ou pacote de servidor no macOS, Linux ou Windows, ligue-se ao Oracle sem software cliente adicional, e encontre o ficheiro da base de dados de utilizador.">
+	<link rel="canonical" href="https://www.omnidb.net/pt/installation.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/installation.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/installation.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/installation.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/installation.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/pt/installation.html">
+	<meta property="og:title" content="Instalação - Documentação OmniDB">
+	<meta property="og:description" content="Instale o OmniDB como aplicação de ambiente de trabalho ou pacote de servidor no macOS, Linux ou Windows, ligue-se ao Oracle sem software cliente adicional, e encontre o ficheiro da base de dados de utilizador.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/pt/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentação", "item": "https://www.omnidb.net/pt/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Instalação", "item": "https://www.omnidb.net/pt/installation.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegação">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentação</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Mudar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Mudar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Escuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Início</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeiros Passos</span>
+			<a href="introduction.html">Introdução</a>
+			<a href="installation.html" class="active">Instalação</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabalhar com Dados</span>
+			<a href="managing_databases.html">Gerir Bases de Dados</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
+			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
+			<a href="visualizing_data.html">Visualizar Dados</a>
+			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avançado</span>
+			<a href="additional_features.html">Funcionalidades Adicionais</a>
+			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="logical_replication.html">Replicação Lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="console_tab.html">Separador de Consola</a>
+			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referência</span>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Instalação</h1>
+		<p>O OmniDB disponibiliza 2 tipos de pacotes para se adaptar às necessidades de cada utilizador:</p>
+		<ul>
+			<li><strong>OmniDB Application</strong>: Executa um servidor web numa porta aleatória em segundo plano, e
+				disponibiliza uma janela de browser simplificada para usar a interface do OmniDB sem qualquer
+				configuração adicional. Parece exatamente uma aplicação de ambiente de trabalho.</li>
+			<li><strong>OmniDB Server</strong>: Executa um servidor web numa porta aleatória, ou numa porta especificada pelo
+				utilizador. O utilizador precisa de se ligar a ele através de um browser. Disponibiliza gestão
+				de utilizadores, ideal para ser alojado num servidor nas redes dos utilizadores.</li>
+		</ul>
+		<p>Tanto a aplicação como o servidor podem ser instalados na mesma máquina.</p>
+
+		<h3>OmniDB Application</h3>
+
+		<p><strong>Importante:</strong> O repositório original <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> contém apenas versões antigas (até cerca de 2020) e já não é mantido — consulte <a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a> para saber o que mudou desde então.</p>
+
+		<p>Para as versões atuais, use a <a href="https://github.com/heptau/omnidb/releases">página de releases</a> do projeto retomado. Desde a reescrita em Go, cada release é um único arquivo autocontido por plataforma — sem instalador, sem runtime separado a instalar primeiro:</p>
+
+		<ul>
+			<li>macOS (Apple Silicon ou Intel): <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
+			<li>Linux x64: <code>OmniDB-&lt;version&gt;-linux-x64.tar.gz</code></li>
+			<li>Windows x64: <code>OmniDB-&lt;version&gt;-win-x64.zip</code></li>
+		</ul>
+
+		<p>Descompacte o arquivo (zip ou tar) para a sua plataforma e execute a aplicação/binário <code>OmniDB</code> lá dentro — é toda a instalação. <strong>As builds para Linux e Windows são geradas pelo CI em cada release, mas ainda não foram verificadas em hardware real</strong>, ao contrário da build para macOS; se encontrar algum problema específico da plataforma numa delas, por favor abra uma issue.</p>
+
+		<h4>Instalação via Homebrew (apenas macOS – recomendado)</h4>
+
+		<p>Para utilizadores de macOS que preferem usar um gestor de pacotes, o OmniDB está disponível através de um tap Homebrew personalizado:</p>
+
+		<pre><code class="language-bash"># Instalar a versão mais recente:
+brew install --cask heptau/tap/omnidb</code></pre>
+		<pre><code class="language-bash"># Para atualizar mais tarde:
+brew upgrade heptau/tap/omnidb</code></pre>
+
+		<p>O Homebrew irá transferir automaticamente o ZIP correto para a sua arquitetura (Apple Silicon ou Intel), descompactá-lo e colocar <code>OmniDB.app</code> na sua pasta Applications.</p>
+
+		<p>A definição do cask é mantida aqui: <a href="https://github.com/heptau/homebrew-tap/blob/main/Casks/omnidb.rb">heptau/homebrew-tap – omnidb.rb</a></p>
+
+		<h4>Transferência direta (todas as plataformas)</h4>
+
+		<p>Abra a <a href="https://github.com/heptau/omnidb/releases/latest">última release</a> e transfira o arquivo correspondente ao seu sistema operativo/arquitetura da lista acima, a partir da respetiva secção Assets. Os nomes dos ficheiros de release incluem o número da versão, pelo que não existe um URL fixo «sempre a mais recente» a que se possa ligar diretamente — vá sempre através da própria página de releases.</p>
+
+		<p>Descompacte o arquivo para a sua plataforma e abra a aplicação da forma habitual: no
+			macOS, arraste <code>OmniDB.app</code> para <em>Applications</em> e abra-o a partir do
+			Launchpad/Spotlight ou com <code>open -a OmniDB</code>; no Linux, execute o
+			binário <code>OmniDB</code> diretamente; no Windows, execute <code>OmniDB.exe</code>.
+		</p>
+
+		<h3>OmniDB Server</h3>
+		<p>O mesmo arquivo de release também contém o <code>omnidb-server</code> — um
+			binário separado, sem interface gráfica, ao lado da aplicação de ambiente de trabalho (a aplicação de ambiente de trabalho
+			na verdade inicia este mesmo binário internamente, como processo filho, forçando o modo aplicação).
+			Execute-o diretamente para o modo servidor acessível pelo browser, sem qualquer camada
+			de ambiente de trabalho envolvida:</p>
+		<pre><code class="language-bash">user@machine:~$ ./omnidb-server
+omnidb-server: listening on 127.0.0.1:52149 — open http://127.0.0.1:52149/omnidb_login/ in your browser
+</code></pre>
+		<p>Por predefinição, o OmniDB escuta apenas em <code>127.0.0.1</code> e escolhe automaticamente uma porta
+			livre. Pode especificar ambos explicitamente:</p>
+		<pre><code class="language-bash">user@machine:~$ ./omnidb-server -p 8080 -H 0.0.0.0
+omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_login/ in your browser
+</code></pre>
+		<p>Consulte <a href="deploying_omnidb-server.html">Implementar o omnidb-server</a> para o conjunto completo de opções
+			e configurações de implementação recomendadas (em particular, por que razão expor <code>-H 0.0.0.0</code>
+			diretamente à internet sem um proxy inverso à frente é desaconselhado — não existe
+			suporte de TLS incorporado).</p>
+
+		<h3>OmniDB com Oracle</h3>
+		<p>Nem a aplicação nem o servidor OmniDB requerem qualquer software adicional para se ligar ao
+			Oracle — ao contrário de versões anteriores, não é necessária qualquer instalação separada do Oracle Instant Client.
+			A conectividade Oracle está implementada nativamente (um driver Go puro), pelo que
+			funciona da mesma forma imediatamente, tal como qualquer outra base de dados suportada.</p>
+		<h3>Base de Dados de Utilizador do OmniDB</h3>
+		<p>Na primeira execução, tanto o servidor como a aplicação criam um ficheiro
+			<code>~/.omnidb/omnidb-app/omnidb.db</code> (para a aplicação OmniDB) ou
+			<code>~/.omnidb/omnidb-server/omnidb.db</code> (para o servidor OmniDB) na pasta pessoal do
+			utilizador, caso ainda não exista — juntamente com uma conta de superutilizador <code>admin</code>/<code>admin</code>
+			predefinida, pronta para iniciar sessão de imediato. Este ficheiro também é chamado a
+			<strong>base de dados de utilizador</strong> e contém todos os utilizadores, ligações e outros dados da
+			aplicação. Se já existir (por exemplo, após uma atualização), o OmniDB usa-o tal como está — nunca
+			é substituído ou reposto automaticamente.</p>
+		<h3>O OmniDB no browser</h3>
+		<p>Agora que o servidor web está em execução, pode aceder à aplicação do OmniDB baseada no browser no
+			seu browser preferido. Escreva na barra de endereço: <code>localhost:8000</code> e prima <code>Enter</code>. Se
+			tudo correu bem, deverá ver uma página como esta:</p>
+		<p><img alt="" src="../assets/img/image_002.webp" /></p>
+		<p>Agora já sabe que o OmniDB está a funcionar corretamente. Nos próximos capítulos, veremos
+			como iniciar sessão pela primeira vez, como criar um utilizador e como utilizar o OmniDB.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Recherche avancée d’objets — Documentation OmniDB</title>
+	<meta name="description" content="Comment la recherche avancée d'objets d'OmniDB permettait autrefois de rechercher par motif dans les objets de la base de données et les données des tables, y compris son point d'entrée actuellement désactivé.">
+	<link rel="canonical" href="https://www.omnidb.net/fr/advanced_object_search.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/advanced_object_search.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/advanced_object_search.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/advanced_object_search.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/advanced_object_search.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/fr/advanced_object_search.html">
+	<meta property="og:title" content="Recherche avancée d'objets - Documentation OmniDB">
+	<meta property="og:description" content="Comment la recherche avancée d'objets d'OmniDB permettait autrefois de rechercher par motif dans les objets de la base de données et les données des tables, y compris son point d'entrée actuellement désactivé.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/fr/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentation", "item": "https://www.omnidb.net/fr/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Recherche avancée d'objets", "item": "https://www.omnidb.net/fr/advanced_object_search.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Basculer la navigation">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Changer de langue" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Changer de thème" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Clair</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Sombre</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Accueil</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Premiers pas</span>
+			<a href="introduction.html">Introduction</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Travailler avec les données</span>
+			<a href="managing_databases.html">Gérer les bases de données</a>
+			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
+			<a href="managing_table_data.html">Gérer les données des tables</a>
+			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
+			<a href="visualizing_data.html">Visualiser les données</a>
+			<a href="managing_other_elements.html">Gérer les autres éléments</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avancé</span>
+			<a href="additional_features.html">Fonctionnalités supplémentaires</a>
+			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="logical_replication.html">Réplication logique</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Serveur et outils</span>
+			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="console_tab.html">Onglet console</a>
+			<a href="advanced_object_search.html" class="active">Recherche avancée d’objets</a>
+			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Référence</span>
+			<a href="legacy_features_and_history.html">Anciennes fonctionnalités et historique</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Recherche avancée d’objets</h1>
+<p><strong>Remarque :</strong> cette fonctionnalité n’est pas disponible dans la version actuelle. Son entrée dans
+le menu de l’arborescence est mise en commentaire, et les fonctions du frontend ainsi que le gestionnaire
+Go du backend dont elle dépendait n’existent plus — elle n’a pas été portée lors de la réécriture en Go, et
+la relancer reviendrait à la reconstruire entièrement plutôt qu’à simplement rebasculer un interrupteur. Le
+reste de ce chapitre est conservé à titre de description de son fonctionnement passé, pour référence
+historique.</p>
+<p>La recherche avancée d’objets permettait de rechercher, par correspondance de motif, dans les objets de la
+base de données et les données des tables — l’opérateur SQL <code>LIKE</code> par défaut, ou des expressions
+régulières complexes.</p>
+<p>Cette fonctionnalité était accessible par un clic droit sur un nœud de base de données spécifique dans
+l’arborescence :</p>
+<p><img alt="" src="../assets/img/image_196.webp" /></p>
+<p>L’interface permettait de filtrer les catégories d’objets, les schémas dans lesquels les recherches seraient
+exécutées, et également de limiter l’espace de recherche lorsque la catégorie Data (Données) était
+sélectionnée, afin de rechercher un motif dans un sous-ensemble de tables :</p>
+<p><img alt="" src="../assets/img/image_197.webp" /></p>
+<p>Après avoir renseigné les champs et lancé la recherche, OmniDB l’exécutait à l’aide de plusieurs threads
+travaillant en parallèle pour accélérer le processus (ce paramètre est configurable ; pour plus d’informations,
+voir <a href="deploying_omnidb-server.html">Déployer omnidb-server</a>).</p>
+<p>Une fois la recherche terminée, OmniDB affichait le résultat sous forme d’arborescence :</p>
+<p><img alt="" src="../assets/img/image_198.webp" /></p>
+<p>Pour plus de détails sur la recherche dans chaque catégorie, un clic droit sur le nœud souhaité et la
+sélection de « See More» (Voir plus) ouvraient un onglet de requête contenant la commande SQL utilisée pour
+effectuer cette recherche spécifique. Il suffisait alors d’exécuter la commande pour obtenir les résultats :</p>
+<p><img alt="" src="../assets/img/image_199.webp"/>
+<img alt="" src="../assets/img/image_200.webp" /></p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

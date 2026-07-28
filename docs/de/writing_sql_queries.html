@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>SQL-Abfragen schreiben – OmniDB-Dokumentation</title>
+	<meta name="description" content="Der SQL-Editor in OmniDB: Abfragen ausführen, SQL formatieren, Abfrageverlauf, Explain, Autocommit und die SQL-Autovervollständigung.">
+	<link rel="canonical" href="https://www.omnidb.net/de/writing_sql_queries.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/writing_sql_queries.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/writing_sql_queries.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/writing_sql_queries.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/de/writing_sql_queries.html">
+	<meta property="og:title" content="SQL-Abfragen schreiben - OmniDB-Dokumentation">
+	<meta property="og:description" content="Der SQL-Editor in OmniDB: Abfragen ausführen, SQL formatieren, Abfrageverlauf, Explain, Autocommit und die SQL-Autovervollständigung.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/de/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentation", "item": "https://www.omnidb.net/de/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "SQL-Abfragen schreiben", "item": "https://www.omnidb.net/de/writing_sql_queries.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Navigation umschalten">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Sprache ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Design ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Hell</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dunkel</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Startseite</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Erste Schritte</span>
+			<a href="introduction.html">Einführung</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Arbeiten mit Daten</span>
+			<a href="managing_databases.html">Datenbanken verwalten</a>
+			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
+			<a href="managing_table_data.html">Tabellendaten verwalten</a>
+			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
+			<a href="visualizing_data.html">Daten visualisieren</a>
+			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Erweitert</span>
+			<a href="additional_features.html">Zusätzliche Funktionen</a>
+			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
+			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
+			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="logical_replication.html">Logische Replikation</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server &amp; Tools</span>
+			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="console_tab.html">Konsolen-Tab</a>
+			<a href="advanced_object_search.html">Erweiterte Objektsuche</a>
+			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referenz</span>
+			<a href="legacy_features_and_history.html">Legacy-Funktionen &amp; Historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>SQL-Abfragen schreiben</h1>
+<p>Die häufigste Art von innerem Tab ist der <em>Query Tab</em> (Abfrage-Tab), der die folgenden Elemente enthält:</p>
+<p><img alt="" src="../assets/img/image_049.webp" /></p>
+<ul>
+<li><strong>1) Tab-Header</strong>: Sie sehen den Namen des Tabs und ein Schließen-Symbol. Wenn im Tab eine Abfrage läuft, wird ein Indikator angezeigt. Ist die Abfrage beendet und Sie arbeiten in einem anderen Tab, erscheint ein grüner Indikator. Durch Doppelklick auf den Tab-Namen können Sie den Tab umbenennen.</li>
+<li><strong>2) Tab hinzufügen</strong>: Sie können schnell einen weiteren inneren Tab hinzufügen, indem Sie auf das Plus-Symbol klicken.</li>
+<li><strong>3) SQL-Editor</strong>: Voll ausgestatteter SQL-Editor mit SQL-Syntax-Hervorhebung, Suchen &amp; Ersetzen (<code>Strg-F</code> und <code>Strg-H</code>) und einer Autovervollständigungskomponente (siehe unten). Eine vollständige Liste der Editor-Tastenkürzel (Auswahl, Multicursor, Navigation, Falten usw.) finden Sie unter <a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>.</li>
+<li><strong>4) Ausführen</strong>: Der im SQL-Editor enthaltene Text wird gegen die aktuell aktive Datenbank ausgeführt, wenn Sie auf diese Schaltfläche klicken (oder die Tastenkombination <code>Alt-Q</code> drücken, standardmäßig). Wenn im SQL-Editor Text ausgewählt ist, wird nur der ausgewählte Text ausgeführt. Sobald der Befehl läuft, wird eine rote <em>Abbrechen</em>-Schaltfläche angezeigt, mit der Sie die Ausführung abbrechen können (oder mit der Tastenkombination <code>Alt-C</code>, standardmäßig).</li>
+<li><strong>5) SQL einrücken</strong>: Diese Schaltfläche formatiert jeden SQL-Code im SQL-Editor übersichtlich (Tastenkombination <code>Alt-S</code> standardmäßig, <code>Strg-S</code> auf macOS).</li>
+<li><strong>6) Abfrageverlauf</strong>: Alle gegen die aktuelle Datenbank ausgeführten Befehle werden im Abfrageverlauf gespeichert, der durch Klicken auf diese Schaltfläche aufgerufen werden kann. Sie können auch nach Datum und Text filtern, um einen benötigten SQL-Befehl zu finden.</li>
+<li><strong>7) Explain (nur PostgreSQL)</strong>: Führt Ihre SQL-Abfrage mit vorangestelltem <code>EXPLAIN</code> gegen PostgreSQL aus. Die Ergebnisse werden im Explain-Tab in textueller und grafischer Form angezeigt (siehe <a href="visualizing_query_plans.html">Abfragepläne visualisieren</a> für weitere Details).</li>
+<li><strong>8) Explain Analyze (nur PostgreSQL)</strong>: Wie die Explain-Schaltfläche, aber führt die SQL-Abfrage mit <code>EXPLAIN ANALYZE</code> aus, was die Abfrage tatsächlich ausführt.</li>
+<li><strong>9) Autocommit (nur PostgreSQL)</strong>: Wenn aktiviert, wird jede ausgeführte Abfrage in der Datenbank festgeschrieben. Wenn deaktiviert, startet OmniDB eine Transaktion und die Oberfläche zeigt nach der Ausführung einer Abfrage Schaltflächen zum <em>Commit</em> oder <em>Rollback</em> an. Der Benutzer kann die Transaktion auch offen lassen und weitere Befehle ausführen.</li>
+<li><strong>10) Backend-Status (nur PostgreSQL)</strong>: Wenn Sie einen neuen Query Tab öffnen, lautet der Status „Not Connected", da OmniDB noch kein PostgreSQL-Backend gestartet hat. Wenn Sie die erste Abfrage ausführen, startet OmniDB ein neues Backend und hält es mit dem Query Tab verbunden (jeder Query Tab erhält sein eigenes Backend). Der Status des Backends (<em>idle</em>, <em>active</em>, <em>idle in transaction</em> usw.) wird in diesem Feld angezeigt. Wenn Sie den Query Tab schließen, beendet OmniDB das Backend.</li>
+<li><strong>11) Export-Dateityp</strong>: Kann CSV, TSV, XLSX, JSON, XML oder Markdown sein.</li>
+<li><strong>12) In Datei exportieren</strong>: Durch Klicken auf diese Schaltfläche führt OmniDB die aktuelle Abfrage aus und exportiert die Ergebnisse in eine Datei. In der Desktop-App öffnet sich ein natives „Speichern unter"-Dialog, in dem Sie direkt wählen können, wo die Datei gespeichert werden soll. Beim Betrieb als browserbasierter <a href="deploying_omnidb-server.html">OmniDB Server</a> wird die Datei zuerst in den temporären Ordner des Servers geschrieben, und die Oberfläche zeigt dann einen Link an, über den Sie sie im Browser herunterladen können.</li>
+<li><strong>13) Daten-Ergebnisse</strong>: Wenn die Abfrage ein <code>SELECT</code> ist, wird ein Raster mit den Ergebnissen angezeigt. Wenn die Abfrage ein DML oder DDL ist, wird die vom RDBMS zurückgegebene Meldung angezeigt.</li>
+<li><strong>14) Meldungen (nur PostgreSQL)</strong>: Alle Meldungen (wie die des Befehls <code>RAISE NOTICE</code>) werden hier angezeigt.</li>
+<li><strong>15) Explain-Ansicht (nur PostgreSQL)</strong>: Zeigt eine voll ausgestattete Komponente zur Anzeige des PostgreSQL-Ausführungsplans in textueller oder grafischer Form.</li>
+</ul>
+<p>Nach der Ausführung werden die Tabs auch in der OmniDB-Benutzerdatenbank gespeichert (Titel und Inhalt), sodass Sie beim nächsten Öffnen von OmniDB alle geöffnet sehen. Außerdem wird jeder Befehl, den Sie in einem Query Tab ausführen, in Ihrem Abfrageverlauf und in der Datei <code>omnidb.log</code> gespeichert.</p>
+<h4>SQL-Autovervollständigung</h4>
+<p>Der SQL-Editor verfügt über eine Funktion, die beim Erstellen neuer Abfragen sehr hilfreich ist: die SQL-Code-Vervollständigung. Mit dieser Funktion ist es möglich, Spalten zu vervollständigen, die in einer Tabelle enthalten sind, auf die über einen Alias verwiesen wird. Um die Autovervollständigung zu öffnen, müssen Sie lediglich den Alias, das Zeichen <code>.</code> und dann <code>Strg-Leertaste</code> eingeben:</p>
+<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p>Wenn der Benutzer die Autovervollständigung nicht mit dem Cursor in der Nähe eines Tabellen-Alias startet, zeigt die Komponente mehrere Datenkategorien an. Durch Eingabe im Filter-Textfeld werden Elemente in allen Kategorien gefiltert:</p>
+<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p>Die Autovervollständigungskomponente kann auch einige kontextbezogene Informationen erkennen. Wenn Sie beispielsweise den Namen eines Schemas eingeben, dann das Zeichen <code>.</code> und <code>Strg-Leertaste</code> drücken, können Sie nach Objekten filtern, die nur in diesem Schema enthalten sind:</p>
+<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p>Bitte beachten Sie, dass die Autovervollständigung bei RDBMS außer PostgreSQL nur für Tabellenspalten funktioniert.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

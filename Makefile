@@ -1,19 +1,33 @@
 # --- Global Config ---
 BUILD_DIR = build
 WORK_DIR = build_work
-DEPS_DIR = build_deps
 APP_NAME = OmniDB
-SERVER_DIR = OmniDB
-BUNDLE_ID = net.omnidb
-APP_DISPLAY_NAME = OmniDB
-NWJS_VERSION = v0.112.0
 VERSION := $(shell cat VERSION | tr -d '\r\n')
+DOCKER_IMAGE = omnidb-linux-builder
 
 # --- Platform Defaults (can be overridden by targets) ---
-NWJS_ARCH = osx-arm64
-NWJS_EXT = .zip
-SERVER_SPEC = OmniDB-mac.spec
-PLATFORM_TYPE = macos
+MAC_ARCH = osx-arm64
+
+# --- Self-bootstrapping toolchain ---
+# `make build-*` should work with nothing pre-installed beyond Go and
+# platform build tools. It installs the Wails CLI itself rather than
+# requiring it on PATH ahead of time.
+GOBIN := $(shell go env GOPATH 2>/dev/null)/bin
+WAILS := $(shell command -v wails 2>/dev/null)
+ifeq ($(strip $(WAILS)),)
+	WAILS := $(GOBIN)/wails
+endif
+
+# --- Docs typography (TypoLima) ---
+# Language codes for which translated docs exist under docs/<code>/ — keep in
+# sync with lang-switcher.js's language list if a new translation is added.
+DOCS_LANGS = cs de en es fr it pt
+
+PYUSERBASE := $(shell python3 -m site --user-base 2>/dev/null)
+TYPOLIMA := $(shell command -v typolima 2>/dev/null)
+ifeq ($(strip $(TYPOLIMA)),)
+	TYPOLIMA := $(PYUSERBASE)/bin/typolima
+endif
 
 # --- Commands Detection ---
 # Detect OS for sed (Mac requires empty string '' after -i, Linux does not)
@@ -29,16 +43,12 @@ else
 	ZIP_CMD = zip -r
 endif
 
-# --- URLs ---
-NWJS_FILENAME = nwjs-${NWJS_VERSION}-${NWJS_ARCH}
-NWJS_ZIP = ${NWJS_FILENAME}${NWJS_EXT}
-NWJS_URL = https://dl.nwjs.io/${NWJS_VERSION}/${NWJS_ZIP}
-
 # --- Phony Targets ---
-.PHONY: help all clean clean-deps install-deps _sync_version \
-        build-mac-arm64 build-mac-intel build-linux build-win \
-        release release-local \
-        _prepare_dirs _download_nwjs _build_server _bundle_mac _bundle_linux _bundle_win
+.PHONY: help all clean _sync_version \
+        build-mac-arm64 build-mac-intel build-linux build-linux-docker build-win \
+        prepare-release release \
+        _prepare_dirs _ensure_wails _build_mac _build_linux _build_win \
+        docs-typo docs-typo-dry _ensure_typolima
 
 # --- Default Target: Help ---
 help:
@@ -49,158 +59,133 @@ help:
 	@echo ""
 	@echo "Available targets:"
 	@echo "  make help             - Show this help message"
-	@echo "  make install-deps     - Install Python dependencies"
 	@echo "  make clean            - Remove build directories"
-	@echo "  make clean-deps       - Remove downloaded dependencies (NW.js)"
 	@echo ""
-	@echo "Build targets:"
+	@echo "Build targets (Wails desktop shell, see wails-app/, backed by the Go"
+	@echo "server in go-server/). Each one installs the Wails CLI automatically"
+	@echo "if missing — the only prerequisite is Go itself:"
 	@echo "  make build-mac-arm64  - Build for Apple Silicon (M1/M2/M3...)"
-	@echo "  make build-mac-intel  - Build for Intel Mac (x64)"
-	@echo "  make build-linux      - Build for Linux (x64)"
-	@echo "  make build-win        - Build for Windows (x64)"
+	@echo "  make build-mac-intel  - Build for Intel Mac (x86_64)"
+	@echo "  make build-linux      - Build for Linux (x64) — must run ON Linux, Wails'"
+	@echo "                          own Linux webview (GTK/CGO) cannot cross-compile"
+	@echo "  make build-linux-docker - Build for Linux (x64) from macOS/Windows, via Docker"
+	@echo "  make build-win        - Build for Windows (x64) — fully cross-compiles from"
+	@echo "                          macOS/Linux (Wails' pure-Go WebView2 loader)"
 	@echo ""
 	@echo "Release targets:"
-	@echo "  make release-local    - Build current platform, verify artifacts"
-	@echo "  make release          - Tag and push → GitHub Actions builds all platforms"
+	@echo "  make release VERSION=X.Y.Z - Bump VERSION+CHANGELOG, build every platform"
+	@echo "                          locally (Linux via Docker), commit, tag, push,"
+	@echo "                          publish the GitHub release and update the Homebrew tap"
+	@echo "  make prepare-release VERSION=X.Y.Z - Just the VERSION/CHANGELOG bump + commit"
 	@echo ""
-	@echo "IMPORTANT NOTE ON CROSS-COMPILATION:"
-	@echo "  PyInstaller does NOT support cross-compilation."
-	@echo "  - To build a working Linux binary, run this on Linux (or Docker)."
-	@echo "  - To build a working Windows .exe, run this on Windows."
-	@echo "  - To build Mac Intel on Mac ARM, ensure you use universal2"
-	@echo "    or run the terminal via Rosetta."
+	@echo "Docs targets:"
+	@echo "  make docs-typo-dry    - Preview TypoLima typography fixes for docs/<lang> ($(DOCS_LANGS))"
+	@echo "  make docs-typo        - Apply TypoLima typography fixes in-place, same languages"
 	@echo "==========================================================="
 
 all: help
 
-install-deps:
-	@echo "Checking and installing dependencies..."
-	pip3 install -r requirements.txt pyinstaller --break-system-packages
-
 clean:
 	rm -rf $(BUILD_DIR) $(WORK_DIR)
-	rm -rf $(SERVER_DIR)/build $(SERVER_DIR)/dist
-
-clean-deps: clean
-	rm -rf $(DEPS_DIR)
+	rm -rf wails-app/build/bin
 
 # --- Platform Specific Targets ---
 
 build-mac-arm64:
 	$(MAKE) _build_mac \
-		NWJS_ARCH=osx-arm64 \
-		SERVER_SPEC=OmniDB-mac.spec
+		MAC_ARCH=osx-arm64 \
+		WAILS_GOARCH=arm64
 
 build-mac-intel:
 	$(MAKE) _build_mac \
-		NWJS_ARCH=osx-x64 \
-		SERVER_SPEC=OmniDB-mac.spec
+		MAC_ARCH=osx-x64 \
+		WAILS_GOARCH=amd64
 
 build-linux:
 	$(MAKE) _build_linux \
-		NWJS_ARCH=linux-x64 \
-		NWJS_EXT=.tar.gz \
-		SERVER_SPEC=OmniDB-lin.spec
+		WAILS_GOARCH=amd64
+
+# Build the Linux binary from macOS/Windows via Docker, since Wails' GTK/
+# webkit2gtk webview can't cross-compile. frontend/node_modules and the Go
+# module/build cache are each given their own named Docker volume, mounted
+# OVER the bind-mounted repo path — mounting a plain bind-mount subdirectory
+# would mean the container's `rm -rf`/npm install operate on the HOST's
+# actual node_modules (breaking it for the next native macOS/Windows build,
+# since esbuild ships platform-specific binaries). The named volumes also
+# cache across releases, so repeat runs don't redownload every Go module.
+build-linux-docker:
+	docker build -q --platform linux/amd64 -t $(DOCKER_IMAGE) -f scripts/docker/linux-build.Dockerfile .
+	docker volume create omnidb-linux-frontend-node-modules >/dev/null
+	docker volume create omnidb-linux-gomod-cache >/dev/null
+	@# Fresh named volumes are root-owned; chown once (as root, idempotent) so
+	@# the non-root --user build below can write into them.
+	docker run --rm --platform linux/amd64 \
+		-v omnidb-linux-frontend-node-modules:/vol-node-modules \
+		-v omnidb-linux-gomod-cache:/vol-gomod-cache \
+		$(DOCKER_IMAGE) \
+		chown -R "$$(id -u):$$(id -g)" /vol-node-modules /vol-gomod-cache
+	docker run --rm --platform linux/amd64 \
+		-v "$(CURDIR)":/src \
+		-v omnidb-linux-frontend-node-modules:/src/wails-app/frontend/node_modules \
+		-v omnidb-linux-gomod-cache:/tmp/go \
+		-e HOME=/tmp \
+		-e GOPATH=/tmp/go \
+		--user "$$(id -u):$$(id -g)" \
+		$(DOCKER_IMAGE) \
+		sh -c "rm -rf wails-app/build/bin wails-app/frontend/package.json.md5 && make build-linux"
 
 build-win:
 	$(MAKE) _build_win \
-		NWJS_ARCH=win-x64 \
-		NWJS_EXT=.zip \
-		SERVER_SPEC=OmniDB-win.spec
+		WAILS_GOARCH=amd64
 
-release-local:
-	scripts/release.sh --local
+prepare-release:
+	@VERSION=$(VERSION) scripts/prepare_release.sh
 
-release:
-	scripts/release.sh --github
+release: clean prepare-release
+	@VERSION=$(VERSION) scripts/release.sh
 
 # --- Internal Build Steps ---
 
 # 0. Sync version from VERSION file
 _sync_version:
 	@echo "Syncing version $(VERSION) to all files..."
-	$(SED_CMD) "s/OMNIDB_VERSION = 'OmniDB .*'/OMNIDB_VERSION = 'OmniDB $(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
-	$(SED_CMD) "s/OMNIDB_SHORT_VERSION = '.*'/OMNIDB_SHORT_VERSION = '$(VERSION)'/g" $(SERVER_DIR)/OmniDB/custom_settings.py
-	$(SED_CMD) "s/<small>v.*<\/small>/<small>v$(VERSION)<\/small>/g" deploy/app/index.html
-	$(SED_CMD) "s/ARG OMNIDB_VERSION=.*/ARG OMNIDB_VERSION=$(VERSION)/g" Dockerfile
-	$(SED_CMD) "s/^version = \".*\"/version = \"$(VERSION)\"/g" pyproject.toml
+	$(SED_CMD) "s/omnidbShortVersion = \".*\"/omnidbShortVersion = \"$(VERSION)\"/g" go-server/version.go
+	$(SED_CMD) "s|<small>v[0-9.]*</small>|<small>v$(VERSION)</small>|g" wails-app/frontend/index.html
 
 # 1. Common preparation
+# NOTE: deliberately does NOT wipe $(BUILD_DIR) — `make release` builds every
+# platform back-to-back in one run, and each earlier platform's dist/ archive
+# must survive later platforms' builds. Per-platform targets below already
+# rm -rf their own $(APP_NAME).app / $(APP_NAME)-linux / $(APP_NAME)-win
+# output dir before rebuilding it.
 _prepare_dirs: _sync_version
-	@echo "Cleaning previous builds..."
-	rm -rf $(BUILD_DIR) $(WORK_DIR)
-	rm -rf $(SERVER_DIR)/build $(SERVER_DIR)/dist
-	@echo "Creating build directory..."
-	mkdir -p $(BUILD_DIR) $(DEPS_DIR)
+	@mkdir -p $(BUILD_DIR)/dist
 
-# 2. Download NW.js (Universal logic)
-$(DEPS_DIR)/$(NWJS_ZIP):
-	@echo "Downloading NW.js $(NWJS_VERSION) for $(NWJS_ARCH)..."
-	curl -L -o "$@" "$(NWJS_URL)"
+# Install the Wails CLI (into `go env GOPATH`/bin) if it isn't already
+# available, so builds don't require it pre-installed on PATH.
+_ensure_wails:
+	@if [ ! -x "$(WAILS)" ]; then \
+		echo "Installing Wails CLI..."; \
+		go install github.com/wailsapp/wails/v2/cmd/wails@latest; \
+	fi
 
-# 3. Build Python server (PyInstaller)
-_build_server:
-	@echo "Initializing database..."
-	cd $(SERVER_DIR) && python3 manage.py migrate
-	@echo "Building Python server using $(SERVER_SPEC)..."
-	# WARNING: This builds the binary for the CURRENT RUNNING OS/ARCH
-	cd $(SERVER_DIR) && python3 -m PyInstaller $(SERVER_SPEC) \
-		--distpath ../$(BUILD_DIR) \
-		--workpath ../$(WORK_DIR) \
-		--clean --noconfirm
-
-	@echo "Cleaning up unnecessary artifacts from build..."
-	find $(BUILD_DIR)/omnidb-server -name "*.spec" -delete
-
-# --- MAC OS BUILD LOGIC ---
-_build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
-	@echo "Unzipping NW.js for Mac..."
-	unzip -q -o "$(DEPS_DIR)/$(NWJS_ZIP)" -d "$(DEPS_DIR)"
+# --- MAC OS BUILD LOGIC (Wails) ---
+_build_mac: _prepare_dirs _ensure_wails
+	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
+	cd wails-app && $(WAILS) build -clean -platform darwin/$(WAILS_GOARCH)
 
 	@echo "Setting up .app structure..."
 	rm -rf $(BUILD_DIR)/$(APP_NAME).app
-	mv "$(DEPS_DIR)/$(NWJS_FILENAME)/nwjs.app" "$(BUILD_DIR)/$(APP_NAME).app"
-	rm -rf "$(DEPS_DIR)/$(NWJS_FILENAME)"
+	mv "wails-app/build/bin/$(APP_NAME).app" "$(BUILD_DIR)/$(APP_NAME).app"
 
-	# Variables for Mac paths
 	$(eval APP_CONTENT := $(BUILD_DIR)/$(APP_NAME).app/Contents)
-	$(eval APP_RESOURCES := $(APP_CONTENT)/Resources)
-	$(eval APP_MACOS := $(APP_CONTENT)/MacOS)
-
-	@echo "Configuring metadata and icon..."
-	cp "deploy/macosx/mac-icon.icns" "$(APP_RESOURCES)/app.icns"
-	$(SED_CMD) 's/io.nwjs.nwjs/$(BUNDLE_ID)/g' "$(APP_CONTENT)/Info.plist"
-	$(SED_CMD) 's/nw.icns/app.icns/g' "$(APP_CONTENT)/Info.plist"
-	$(SED_CMD) 's/nwjs/$(APP_DISPLAY_NAME)/g' "$(APP_CONTENT)/Info.plist"
-	mv "$(APP_MACOS)/nwjs" "$(APP_MACOS)/$(APP_DISPLAY_NAME)"
 
 	@echo "Updating macOS metadata..."
 	plutil -replace CFBundleShortVersionString -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
 	plutil -replace CFBundleVersion -string "$(VERSION)" "$(APP_CONTENT)/Info.plist"
-	plutil -replace NSHumanReadableCopyright -string "$$(printf "Portions Copyright (c) 2015-2026, The OmniDB Team\nPortions Copyright (c) 2017-2026, 2ndQuadrant Limited\nPortions Copyright (c) 2025-2026, Zbyněk Vanžura")" "$(APP_CONTENT)/Info.plist"
 
-	@echo "Updating localized metadata..."
-	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -convert xml1 {} \;
-	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -replace NSHumanReadableCopyright -string "$$(printf "Portions Copyright (c) 2015-2026, The OmniDB Team\nPortions Copyright (c) 2017-2026, 2ndQuadrant Limited\nPortions Copyright (c) 2025-2026, Zbyněk Vanžura")" {} \;
-	find "$(BUILD_DIR)/$(APP_NAME).app" -name "InfoPlist.strings" -exec plutil -replace CFBundleGetInfoString -string "OmniDB $(VERSION), Portions Copyright (c) 2015-2026" {} \;
-
-	@echo "Copying web app..."
-	rm -rf $(APP_RESOURCES)/app.nw/*
-	mkdir -p $(APP_RESOURCES)/app.nw
-	cp -R deploy/app/* $(APP_RESOURCES)/app.nw/
-
-	# Build server
-	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-
-	@echo "Integrating server..."
-	mv $(BUILD_DIR)/omnidb-server $(APP_RESOURCES)/app.nw/
-
-	@echo "Fixing bundled server library rpaths..."
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -delete_rpath @loader_path/../.. {} \; 2>/dev/null
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path {} \; 2>/dev/null
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path/.. {} \; 2>/dev/null
-	-find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec install_name_tool -add_rpath @loader_path/../.. {} \; 2>/dev/null
-	find "$(APP_RESOURCES)/app.nw/omnidb-server/_internal" -type f \( -name "*.dylib" -o -name "*.so" \) -exec codesign --force --sign - {} \;
+	@echo "Building Go server..."
+	cd go-server && GOOS=darwin GOARCH=$(WAILS_GOARCH) go build -o "../$(APP_CONTENT)/MacOS/omnidb-server" .
 
 	@echo "Signing..."
 	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
@@ -208,58 +193,79 @@ _build_mac: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
 
 	@echo "Packaging Mac Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip $(APP_NAME).app
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(NWJS_ARCH).zip"
+	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(MAC_ARCH).zip $(APP_NAME).app
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(MAC_ARCH).zip"
 
-# --- LINUX BUILD LOGIC ---
-_build_linux: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
-	@echo "Extracting NW.js for Linux..."
-	tar -xzf "$(DEPS_DIR)/$(NWJS_ZIP)" -C "$(DEPS_DIR)"
+# --- LINUX BUILD LOGIC (Wails) ---
+# Wails refuses to cross-compile for Linux from another OS, so this target
+# must run ON Linux. Needs libgtk-3-dev and libwebkit2gtk-4.1-dev installed —
+# Wails' Linux webview is a real CGO/GTK binding, unlike the pure-Go one it
+# uses for Windows. The webkit2_41 build tag is required on distros that only
+# ship webkit2gtk-4.1 (Debian bookworm+, Ubuntu 24.04+) — without it Wails'
+# pkg-config lookup hardcodes the older webkit2gtk-4.0 and fails (verified
+# against github.com/wailsapp/wails/v2@v2.12.0's
+# pkg/assetserver/webview/*_linux.go `#cgo !webkit2_41 pkg-config: ...` tags).
+_build_linux: _prepare_dirs _ensure_wails
+	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
+	cd wails-app && $(WAILS) build -clean -platform linux/$(WAILS_GOARCH) -tags webkit2_41
 
-	@echo "Setting up Linux structure..."
-	mv "$(DEPS_DIR)/$(NWJS_FILENAME)" "$(BUILD_DIR)/$(APP_NAME)-linux"
+	@echo "Setting up directory structure..."
+	rm -rf "$(BUILD_DIR)/$(APP_NAME)-linux"
+	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-linux"
+	mv "wails-app/build/bin/$(APP_NAME)" "$(BUILD_DIR)/$(APP_NAME)-linux/$(APP_NAME)"
 
-	@echo "Copying web app..."
-	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw"
-	cp -R deploy/app/* "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw/"
-
-	# Build server
-	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-
-	@echo "Integrating server..."
-	mv $(BUILD_DIR)/omnidb-server "$(BUILD_DIR)/$(APP_NAME)-linux/package.nw/"
-
-	@echo "Renaming executable..."
-	mv "$(BUILD_DIR)/$(APP_NAME)-linux/nw" "$(BUILD_DIR)/$(APP_NAME)-linux/$(APP_NAME)"
+	@echo "Building Go server..."
+	cd go-server && GOOS=linux GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-linux/omnidb-server" .
 
 	@echo "Packaging Linux Dist..."
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && tar -czf dist/OmniDB-$(VERSION)-linux-x64.tar.gz $(APP_NAME)-linux
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-linux-x64.tar.gz"
 
-# --- WINDOWS BUILD LOGIC ---
-_build_win: _prepare_dirs $(DEPS_DIR)/$(NWJS_ZIP)
-	@echo "Unzipping NW.js for Windows..."
-	unzip -q -o "$(DEPS_DIR)/$(NWJS_ZIP)" -d "$(DEPS_DIR)"
+# --- WINDOWS BUILD LOGIC (Wails) ---
+# Fully cross-compiles from macOS/Linux (verified: produces a real PE32+
+# .exe using Wails' pure-Go WebView2 loader, no mingw/CGO needed) — but on
+# CI this runs natively on windows-latest anyway.
+_build_win: _prepare_dirs _ensure_wails
+	@echo "Building Wails desktop shell (windows/$(WAILS_GOARCH))..."
+	cd wails-app && $(WAILS) build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed
 
-	@echo "Setting up Windows structure..."
-	mv "$(DEPS_DIR)/$(NWJS_FILENAME)" "$(BUILD_DIR)/$(APP_NAME)-win"
+	@echo "Setting up directory structure..."
+	rm -rf "$(BUILD_DIR)/$(APP_NAME)-win"
+	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-win"
+	mv "wails-app/build/bin/$(APP_NAME).exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
 
-	@echo "Copying web app..."
-	mkdir -p "$(BUILD_DIR)/$(APP_NAME)-win/package.nw"
-	cp -R deploy/app/* "$(BUILD_DIR)/$(APP_NAME)-win/package.nw/"
-
-	# Build server
-	$(MAKE) _build_server SERVER_SPEC=$(SERVER_SPEC)
-
-	@echo "Integrating server..."
-	# WARNING: PyInstaller on Mac generates a Mac binary, not Windows .exe!
-	mv $(BUILD_DIR)/omnidb-server* "$(BUILD_DIR)/$(APP_NAME)-win/package.nw/"
-
-	@echo "Renaming executable..."
-	mv "$(BUILD_DIR)/$(APP_NAME)-win/nw.exe" "$(BUILD_DIR)/$(APP_NAME)-win/$(APP_NAME).exe"
+	@echo "Building Go server..."
+	cd go-server && GOOS=windows GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-win/omnidb-server.exe" .
 
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
+
+# --- DOCS TYPOGRAPHY (TypoLima, https://typolima.80.cz) ---
+# Install the TypoLima CLI (pip --user) if it isn't already available, so
+# these targets don't require it pre-installed on PATH.
+_ensure_typolima:
+	@if [ ! -x "$(TYPOLIMA)" ]; then \
+		echo "Installing TypoLima CLI..."; \
+		pip install --user git+https://github.com/heptau/typolima.git; \
+	fi
+
+# Preview typography fixes (smart quotes, non-breaking spaces, dashes, ...)
+# for every translated docs/<lang>/ directory without touching any file.
+docs-typo-dry: _ensure_typolima
+	@for lang in $(DOCS_LANGS); do \
+		echo "=== docs/$$lang ($$lang) ==="; \
+		$(TYPOLIMA) docs/$$lang --lang $$lang --recursive --dry-run --diff --preserve-format; \
+	done
+
+# Apply typography fixes in-place for every translated docs/<lang>/
+# directory. Changes land as regular working-tree edits — review with
+# `git diff docs/` before committing.
+docs-typo: _ensure_typolima
+	@for lang in $(DOCS_LANGS); do \
+		echo "-> docs/$$lang ($$lang)"; \
+		$(TYPOLIMA) docs/$$lang --lang $$lang --recursive --in-place --preserve-format; \
+	done
+	@echo "Done. Review changes with: git diff docs/"

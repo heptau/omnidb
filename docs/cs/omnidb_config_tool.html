@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Konfigurační nástroj OmniDB – Dokumentace OmniDB</title>
+	<meta name="description" content="Ruční obdoby zrušeného CLI nástroje omnidb-config: nalezení domovského adresáře, vyčištění (vacuum) SQLite databáze, její reset a mazání dočasných souborů.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/omnidb_config_tool.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/omnidb_config_tool.html">
+	<meta property="og:title" content="Konfigurační nástroj OmniDB - Dokumentace OmniDB">
+	<meta property="og:description" content="Ruční obdoby zrušeného CLI nástroje omnidb-config: nalezení domovského adresáře, vyčištění (vacuum) SQLite databáze, její reset a mazání dočasných souborů.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Konfigurační nástroj OmniDB", "item": "https://www.omnidb.net/cs/omnidb_config_tool.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html" class="active">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="advanced_object_search.html">Rozšířené vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Konfigurační nástroj OmniDB</h1>
+<p><strong>Poznámka:</strong> samostatný nástroj příkazové řádky <code>omnidb-config</code>/
+<code>omnidb-config-app</code>/<code>omnidb-config-server</code> popsaný na této stránce patřil k
+předchozí sestavě založené na Pythonu/Django a není součástí aktuálního
+vydání. Jediný binární soubor <code>omnidb-server</code> přijímá pouze přepínače
+<code>-A</code>/<code>--app</code> (režim desktopové aplikace) a <code>-d</code>/<code>--homedir</code> (výběr
+domovského adresáře), popsané v kapitole <a href="installation.html">Instalace</a>.
+Údržbové úkony, které starý nástroj nabízel, lze i nadále provést ručně, jak
+je popsáno níže.</p>
+<h4>Domovský adresář</h4>
+<p>OmniDB ukládá úplně vše — databázi <code>omnidb.db</code> (uživatelé, připojení a
+další data aplikace) a složku <code>temp</code> pro exportované soubory — do jediného
+domovského adresáře. Ve výchozím nastavení je jím <code>~/.omnidb/omnidb-app</code>
+(desktopový režim) nebo <code>~/.omnidb/omnidb-server</code> (serverový režim); pomocí
+přepínače <code>-d /nejaka/cesta</code> můžete zvolit jiný.</p>
+<h4>Vytvoření uživatele</h4>
+<p>V současnosti neexistuje možnost příkazové řádky pro vytvoření uživatele bez
+otevření OmniDB. Při prvním spuštění proti prázdnému domovskému adresáři
+OmniDB automaticky vytvoří výchozího superuživatele <code>admin</code>/<code>admin</code> —
+přihlaste se s ním a další uživatele vytvořte na obrazovce <em>Users</em>
+(Uživatelé), případně změňte výchozí heslo.</p>
+<h4>Vacuum (vyčištění)</h4>
+<p>OmniDB má jedinou databázi SQLite, <code>omnidb.db</code>, ve které ukládá všechny
+uživatele, připojení a další data související s OmniDB. Protože jde o obyčejný
+soubor SQLite, můžete jej vyčistit (vacuum) libovolným klientem SQLite, když
+OmniDB neběží, například takto:</p>
+<pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
+</code></pre>
+<h4>Reset databáze</h4>
+<p>Pokud chcete vymazat všechny informace OmniDB a získat čistou databázi, jako
+byla hned po instalaci, ukončete OmniDB a smažte (nebo přesuňte jinam) soubor
+<code>omnidb.db</code> z domovského adresáře. Nový, prázdný soubor — s čerstvým výchozím
+uživatelem <code>admin</code>/<code>admin</code> — se automaticky vytvoří při příštím spuštění
+OmniDB. Postupujte s rozvahou: tento krok nelze vrátit zpět.</p>
+<h4>Mazání dočasných souborů</h4>
+<p>Exportované výsledky dotazů (CSV/XLSX apod.) se zapisují do složky <code>temp</code>
+uvnitř domovského adresáře. Její obsah je bezpečné kdykoli ručně smazat, pokud
+OmniDB neběží; OmniDB ji podle potřeby znovu vytvoří.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

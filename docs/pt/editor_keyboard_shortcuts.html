@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Atalhos de Teclado do Editor – Documentação OmniDB</title>
+	<meta name="description" content="Referência completa dos atalhos de teclado do editor Ace disponíveis no editor SQL do OmniDB, no separador Consola e no visualizador de DDL: seleção, multicursor, dobragem de código e muito mais.">
+	<link rel="canonical" href="https://www.omnidb.net/pt/editor_keyboard_shortcuts.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/editor_keyboard_shortcuts.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/editor_keyboard_shortcuts.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/editor_keyboard_shortcuts.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/editor_keyboard_shortcuts.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/pt/editor_keyboard_shortcuts.html">
+	<meta property="og:title" content="Atalhos de Teclado do Editor - Documentação OmniDB">
+	<meta property="og:description" content="Referência completa dos atalhos de teclado do editor Ace disponíveis no editor SQL do OmniDB, no separador Consola e no visualizador de DDL: seleção, multicursor, dobragem de código e muito mais.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/pt/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentação", "item": "https://www.omnidb.net/pt/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Atalhos de Teclado do Editor", "item": "https://www.omnidb.net/pt/editor_keyboard_shortcuts.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegação">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentação</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Mudar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Mudar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Escuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Início</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeiros Passos</span>
+			<a href="introduction.html">Introdução</a>
+			<a href="installation.html">Instalação</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabalhar com Dados</span>
+			<a href="managing_databases.html">Gerir Bases de Dados</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
+			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
+			<a href="visualizing_data.html">Visualizar Dados</a>
+			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avançado</span>
+			<a href="additional_features.html">Funcionalidades Adicionais</a>
+			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="logical_replication.html">Replicação Lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="console_tab.html">Separador de Consola</a>
+			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
+			<a href="editor_keyboard_shortcuts.html" class="active">Atalhos de Teclado do Editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referência</span>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Atalhos de Teclado do Editor</h1>
+<p>O editor SQL, o editor de Consola e o visualizador de DDL/Propriedades do OmniDB
+assentam todos sobre o <a href="https://ace.c9.io/">editor de código Ace</a>, que vem
+com o seu próprio e rico conjunto de atalhos de teclado para editar, selecionar e
+navegar no texto. Este capítulo lista-os como referência. Estes atalhos são
+independentes dos atalhos próprios do OmniDB ao nível da aplicação (Executar Consulta,
+Cancelar Consulta, alternar entre separadores, etc.), que se encontram no separador
+Atalhos da caixa de diálogo Definições e podem ser reatribuídos a partir daí — consulte
+<a href="additional_features.html">Funcionalidades Adicionais</a> para saber como o
+abrir.</p>
+<h2>Operações de Linha</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Ação</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-D</td>
+			<td>Command-D</td>
+			<td>Remover linha</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Down</td>
+			<td>Command-Option-Down</td>
+			<td>Copiar linhas para baixo</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Up</td>
+			<td>Command-Option-Up</td>
+			<td>Copiar linhas para cima</td>
+		</tr>
+		<tr>
+			<td>Alt-Down</td>
+			<td>Option-Down</td>
+			<td>Mover linhas para baixo</td>
+		</tr>
+		<tr>
+			<td>Alt-Up</td>
+			<td>Option-Up</td>
+			<td>Mover linhas para cima</td>
+		</tr>
+		<tr>
+			<td>Alt-Delete</td>
+			<td>Ctrl-K</td>
+			<td>Remover até ao fim da linha</td>
+		</tr>
+		<tr>
+			<td>Alt-Backspace</td>
+			<td>Command-Backspace</td>
+			<td>Remover até ao início da linha</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Backspace</td>
+			<td>Option-Backspace, Ctrl-Option-Backspace</td>
+			<td>Remover palavra à esquerda</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Delete</td>
+			<td>Option-Delete</td>
+			<td>Remover palavra à direita</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Ctrl-O</td>
+			<td>Dividir linha</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Seleção</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Ação</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-A</td>
+			<td>Command-A</td>
+			<td>Selecionar tudo</td>
+		</tr>
+		<tr>
+			<td>Shift-Left</td>
+			<td>Shift-Left</td>
+			<td>Selecionar à esquerda</td>
+		</tr>
+		<tr>
+			<td>Shift-Right</td>
+			<td>Shift-Right</td>
+			<td>Selecionar à direita</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Left</td>
+			<td>Option-Shift-Left</td>
+			<td>Selecionar palavra à esquerda</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Right</td>
+			<td>Option-Shift-Right</td>
+			<td>Selecionar palavra à direita</td>
+		</tr>
+		<tr>
+			<td>Shift-Home</td>
+			<td>Shift-Home</td>
+			<td>Selecionar início da linha</td>
+		</tr>
+		<tr>
+			<td>Shift-End</td>
+			<td>Shift-End</td>
+			<td>Selecionar fim da linha</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Right</td>
+			<td>Command-Shift-Right</td>
+			<td>Selecionar até ao fim da linha</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Left</td>
+			<td>Command-Shift-Left</td>
+			<td>Selecionar até ao início da linha</td>
+		</tr>
+		<tr>
+			<td>Shift-Up</td>
+			<td>Shift-Up</td>
+			<td>Selecionar para cima</td>
+		</tr>
+		<tr>
+			<td>Shift-Down</td>
+			<td>Shift-Down</td>
+			<td>Selecionar para baixo</td>
+		</tr>
+		<tr>
+			<td>Shift-PageUp</td>
+			<td>Shift-PageUp</td>
+			<td>Selecionar página para cima</td>
+		</tr>
+		<tr>
+			<td>Shift-PageDown</td>
+			<td>Shift-PageDown</td>
+			<td>Selecionar página para baixo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Home</td>
+			<td>Command-Shift-Up</td>
+			<td>Selecionar até ao início</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-End</td>
+			<td>Command-Shift-Down</td>
+			<td>Selecionar até ao fim</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-D</td>
+			<td>Command-Shift-D</td>
+			<td>Duplicar seleção</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-P</td>
+			<td>---</td>
+			<td>Selecionar até ao parêntesis correspondente</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Multicursor</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Ação</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-Alt-Up</td>
+			<td>Ctrl-Option-Up</td>
+			<td>Adicionar multicursor acima</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Down</td>
+			<td>Ctrl-Option-Down</td>
+			<td>Adicionar multicursor abaixo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Right</td>
+			<td>Ctrl-Option-Right</td>
+			<td>Adicionar próxima ocorrência à multisseleção</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Left</td>
+			<td>Ctrl-Option-Left</td>
+			<td>Adicionar ocorrência anterior à multisseleção</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Up</td>
+			<td>Ctrl-Option-Shift-Up</td>
+			<td>Mover multicursor da linha atual para a linha acima</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Down</td>
+			<td>Ctrl-Option-Shift-Down</td>
+			<td>Mover multicursor da linha atual para a linha abaixo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Right</td>
+			<td>Ctrl-Option-Shift-Right</td>
+			<td>Remover ocorrência atual da multisseleção e mover para a seguinte</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Left</td>
+			<td>Ctrl-Option-Shift-Left</td>
+			<td>Remover ocorrência atual da multisseleção e mover para a anterior</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-L</td>
+			<td>Ctrl-Shift-L</td>
+			<td>Selecionar tudo a partir da multisseleção</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Ir para</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Ação</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Left</td>
+			<td>Left, Ctrl-B</td>
+			<td>Ir para a esquerda</td>
+		</tr>
+		<tr>
+			<td>Right</td>
+			<td>Right, Ctrl-F</td>
+			<td>Ir para a direita</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Left</td>
+			<td>Option-Left</td>
+			<td>Ir para a palavra à esquerda</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Right</td>
+			<td>Option-Right</td>
+			<td>Ir para a palavra à direita</td>
+		</tr>
+		<tr>
+			<td>Up</td>
+			<td>Up, Ctrl-P</td>
+			<td>Ir uma linha para cima</td>
+		</tr>
+		<tr>
+			<td>Down</td>
+			<td>Down, Ctrl-N</td>
+			<td>Ir uma linha para baixo</td>
+		</tr>
+		<tr>
+			<td>Alt-Left, Home</td>
+			<td>Command-Left, Home, Ctrl-A</td>
+			<td>Ir para o início da linha</td>
+		</tr>
+		<tr>
+			<td>Alt-Right, End</td>
+			<td>Command-Right, End, Ctrl-E</td>
+			<td>Ir para o fim da linha</td>
+		</tr>
+		<tr>
+			<td>PageUp</td>
+			<td>Option-PageUp</td>
+			<td>Ir uma página para cima</td>
+		</tr>
+		<tr>
+			<td>PageDown</td>
+			<td>Option-PageDown, Ctrl-V</td>
+			<td>Ir uma página para baixo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Home</td>
+			<td>Command-Home, Command-Up</td>
+			<td>Ir para o início</td>
+		</tr>
+		<tr>
+			<td>Ctrl-End</td>
+			<td>Command-End, Command-Down</td>
+			<td>Ir para o fim</td>
+		</tr>
+		<tr>
+			<td>Ctrl-L</td>
+			<td>Command-L</td>
+			<td>Ir para a linha</td>
+		</tr>
+		<tr>
+			<td>Ctrl-P</td>
+			<td>---</td>
+			<td>Ir para o parêntesis correspondente</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Option-PageDown</td>
+			<td>Deslocar página para baixo</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Option-PageUp</td>
+			<td>Deslocar página para cima</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Localizar/Substituir</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Ação</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-F</td>
+			<td>Command-F</td>
+			<td>Localizar</td>
+		</tr>
+		<tr>
+			<td>Ctrl-H</td>
+			<td>Command-Option-F</td>
+			<td>Substituir</td>
+		</tr>
+		<tr>
+			<td>Ctrl-K</td>
+			<td>Command-G</td>
+			<td>Localizar seguinte</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-K</td>
+			<td>Command-Shift-G</td>
+			<td>Localizar anterior</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Dobragem de Código</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Ação</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Alt-L, Ctrl-F1</td>
+			<td>Command-Option-L, Command-F1</td>
+			<td>Dobrar seleção</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-L, Ctrl-Shift-F1</td>
+			<td>Command-Option-Shift-L, Command-Shift-F1</td>
+			<td>Desdobrar</td>
+		</tr>
+		<tr>
+			<td>Alt-0</td>
+			<td>Command-Option-0</td>
+			<td>Dobrar tudo</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-0</td>
+			<td>Command-Option-Shift-0</td>
+			<td>Desdobrar tudo</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Outros</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Ação</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Tab</td>
+			<td>Tab</td>
+			<td>Indentar</td>
+		</tr>
+		<tr>
+			<td>Shift-Tab</td>
+			<td>Shift-Tab</td>
+			<td>Remover indentação</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Z</td>
+			<td>Command-Z</td>
+			<td>Desfazer</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Z, Ctrl-Y</td>
+			<td>Command-Shift-Z, Command-Y</td>
+			<td>Refazer</td>
+		</tr>
+		<tr>
+			<td>Ctrl-,</td>
+			<td>Command-,</td>
+			<td>Mostrar o menu de definições</td>
+		</tr>
+		<tr>
+			<td>Ctrl-/</td>
+			<td>Command-/</td>
+			<td>Alternar comentário</td>
+		</tr>
+		<tr>
+			<td>Ctrl-T</td>
+			<td>Ctrl-T</td>
+			<td>Transpor letras</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Enter</td>
+			<td>Command-Enter</td>
+			<td>Entrar em ecrã inteiro</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-U</td>
+			<td>Ctrl-Shift-U</td>
+			<td>Converter para minúsculas</td>
+		</tr>
+		<tr>
+			<td>Ctrl-U</td>
+			<td>Ctrl-U</td>
+			<td>Converter para maiúsculas</td>
+		</tr>
+		<tr>
+			<td>Insert</td>
+			<td>Insert</td>
+			<td>Sobrescrever</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-E</td>
+			<td>Command-Shift-E</td>
+			<td>Reproduzir macro</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-E</td>
+			<td>---</td>
+			<td>Gravar macro</td>
+		</tr>
+		<tr>
+			<td>Delete</td>
+			<td>---</td>
+			<td>Eliminar</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Ctrl-L</td>
+			<td>Centrar seleção</td>
+		</tr>
+	</tbody>
+</table>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

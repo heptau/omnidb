@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Scrittura di query SQL – Documentazione OmniDB</title>
+	<meta name="description" content="Tutto ciò che offre la scheda Query SQL di OmniDB: l'editor, esecuzione e annullamento, autocommit, cronologia delle query, esportazione in CSV, TSV, XLSX, JSON, XML o Markdown, e completamento automatico SQL.">
+	<link rel="canonical" href="https://www.omnidb.net/it/writing_sql_queries.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/writing_sql_queries.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/writing_sql_queries.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/writing_sql_queries.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/it/writing_sql_queries.html">
+	<meta property="og:title" content="Scrittura di query SQL - Documentazione OmniDB">
+	<meta property="og:description" content="Tutto ciò che offre la scheda Query SQL di OmniDB: l'editor, esecuzione e annullamento, autocommit, cronologia delle query, esportazione in CSV, TSV, XLSX, JSON, XML o Markdown, e completamento automatico SQL.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/it/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentazione", "item": "https://www.omnidb.net/it/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Scrittura di query SQL", "item": "https://www.omnidb.net/it/writing_sql_queries.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Attiva/disattiva navigazione">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentazione</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambia lingua" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambia tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatico</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Chiaro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Scuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Per iniziare</span>
+			<a href="introduction.html">Introduzione</a>
+			<a href="installation.html">Installazione</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Lavorare con i dati</span>
+			<a href="managing_databases.html">Gestione dei database</a>
+			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
+			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
+			<a href="writing_sql_queries.html" class="active">Scrittura di query SQL</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="visualizing_data.html">Visualizzazione dei dati</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzate</span>
+			<a href="additional_features.html">Funzionalità aggiuntive</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="logical_replication.html">Replica logica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="console_tab.html">Scheda Console</a>
+			<a href="advanced_object_search.html">Ricerca avanzata degli oggetti</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Riferimento</span>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Scrittura di query SQL</h1>
+<p>Il tipo più comune di scheda interna è la <em>Scheda Query</em>, che contiene i
+seguenti elementi:</p>
+<p><img alt="" src="../assets/img/image_049.webp" /></p>
+<ul>
+<li><strong>1) Intestazione della Scheda</strong>: Puoi vedere il nome della scheda e
+un’icona per chiuderla. Se c’è una query in esecuzione nella scheda, vedrai un
+indicatore. Se la scheda termina l’esecuzione e stai lavorando su una scheda
+diversa, ti verrà mostrato un indicatore verde. Facendo doppio clic sul nome
+della scheda, potrai rinominarla.</li>
+<li><strong>2) Aggiungi Scheda</strong>: Puoi aggiungere rapidamente un’altra scheda interna
+facendo clic sull’icona più.</li>
+<li><strong>3) Editor SQL</strong>: Editor SQL completo con evidenziazione della sintassi
+SQL, Trova e Sostituisci (<code>Ctrl-F</code> e <code>Ctrl-H</code>) e un componente di
+autocompletamento, spiegato più avanti. Vedi <a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a> per l’elenco completo delle
+scorciatoie dell’editor (selezione, cursori multipli, navigazione,
+raggruppamento del codice, ecc.).</li>
+<li><strong>4) Esegui</strong>: Il testo contenuto nell’Editor SQL verrà eseguito sul
+database attualmente attivo quando fai clic su questo pulsante (o premi la
+scorciatoia, <code>Alt-Q</code> per impostazione predefinita). Se nell’Editor SQL è
+presente del testo selezionato, verrà eseguito solo il testo selezionato. Una
+volta che il comando è in esecuzione, verrà mostrato un pulsante rosso
+<em>Annulla</em>, che ti permette di annullare l’esecuzione (oppure usando la
+scorciatoia, <code>Alt-C</code> per impostazione predefinita).</li>
+<li><strong>5) Indenta SQL</strong>: Questo pulsante formatta in modo ordinato qualsiasi
+codice SQL scritto nell’editor SQL (scorciatoia <code>Alt-S</code> per impostazione
+predefinita, <code>Ctrl-S</code> su macOS).</li>
+<li><strong>6) Cronologia Comandi</strong>: Tutti i comandi eseguiti sul database corrente
+vengono memorizzati nella Cronologia Comandi, accessibile facendo clic su
+questo pulsante. Potrai anche filtrare per data e testo per trovare un comando
+SQL di cui hai bisogno.</li>
+<li><strong>7) Spiega (solo PostgreSQL)</strong>: Richiama la tua query SQL su PostgreSQL
+anteponendo <code>EXPLAIN</code>. I risultati verranno mostrati in forma testuale e
+grafica nella scheda Spiega (per maggiori dettagli, vedi <a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>).</li>
+<li><strong>8) Spiega ed Esegui (solo PostgreSQL)</strong>: Come il pulsante Spiega, ma
+richiama la query SQL con <code>EXPLAIN ANALYZE</code>, che eseguirà effettivamente la
+query.</li>
+<li><strong>9) Autocommit (solo PostgreSQL)</strong>: Quando abilitato, ogni query eseguita
+verrà confermata (commit) sul database. Quando disabilitato, OmniDB avvia una
+transazione e, all’esecuzione di una query, l’interfaccia mostrerà pulsanti
+che permettono all’utente di eseguire <em>Commit</em> o <em>Rollback</em>. L’utente può
+anche mantenere la transazione aperta ed eseguire altri comandi.</li>
+<li><strong>10) Stato del Backend (solo PostgreSQL)</strong>: Quando apri una nuova Scheda
+Query, lo stato è «Non Connesso», poiché OmniDB non ha ancora avviato un
+backend PostgreSQL. Quando esegui la prima query, OmniDB avvia un nuovo
+backend e lo mantiene collegato alla Scheda Query (a ogni Scheda Query viene
+assegnato il proprio backend). Lo stato del backend (<em>idle</em>, <em>active</em>, <em>idle
+in transaction</em>, ecc.) verrà mostrato in questo campo. Quando chiudi la
+Scheda Query, OmniDB termina il backend.</li>
+<li><strong>11) Tipo di File di Esportazione</strong>: Può essere CSV, TSV, XLSX, JSON, XML
+o Markdown.</li>
+<li><strong>12) Esporta su File</strong>: Facendo clic su questo pulsante, OmniDB esegue la
+query corrente ed esporta i risultati in un file. Nell’app desktop, si apre
+una finestra di dialogo nativa «Salva con nome» che ti permette di scegliere
+dove salvarlo direttamente. Quando invece esegui OmniDB in modalità browser
+tramite <a href="deploying_omnidb-server.html">OmniDB Server</a>, il file viene
+prima scritto nella cartella temporanea del server, e l’interfaccia mostra poi
+un link per scaricarlo tramite il browser.</li>
+<li><strong>13) Risultati Dati</strong>: Se la query è una <code>SELECT</code>, verrà mostrata una
+griglia con i risultati. Se la query è una DML o DDL, verrà mostrato il
+messaggio restituito dal RDBMS.</li>
+<li><strong>14) Messaggi (solo PostgreSQL)</strong>: Qui verranno mostrati eventuali
+messaggi (come quelli generati dal comando <code>RAISE NOTICE</code>).</li>
+<li><strong>15) Vista Spiega (solo PostgreSQL)</strong>: Mostra un componente completo per
+visualizzare il piano di esecuzione di PostgreSQL in forma testuale o
+grafica.</li>
+</ul>
+<p>Una volta eseguite, le schede vengono salvate anche nel database utente di
+OmniDB (titolo e contenuti), quindi la prossima volta che apri OmniDB le
+vedrai tutte aperte. Inoltre, ogni comando eseguito in una Scheda Query viene
+salvato nella tua Cronologia Comandi e anche nel file <code>omnidb.log</code>.</p>
+<h4>Completamento automatico SQL</h4>
+<p>L’editor SQL ha una funzionalità che aiuta molto nella creazione di nuove
+query: il completamento automatico del codice SQL. Con questa funzionalità è
+possibile completare automaticamente le colonne contenute in una tabella
+referenziata tramite un alias. Per aprire l’interfaccia di completamento
+automatico basta digitare l’alias, il carattere <code>.</code> e poi premere
+<code>Ctrl-Space</code>:</p>
+<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p>Se l’utente non avvia il completamento automatico con il cursore vicino a un
+alias di tabella, il componente mostrerà più categorie di dati. Digitando nel
+campo di filtro, gli elementi di tutte le categorie verranno filtrati:</p>
+<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p>Il componente di completamento automatico è anche in grado di identificare
+alcune informazioni contestuali. Ad esempio, se digiti il nome di uno schema,
+poi digiti il carattere <code>.</code>, quindi premi <code>Ctrl-Space</code>, potrai filtrare tra
+gli oggetti contenuti solo in quello schema:</p>
+<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p>Nota che per i RDBMS diversi da PostgreSQL, il componente di completamento
+automatico funziona solo per le colonne delle tabelle.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

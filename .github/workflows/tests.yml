@@ -2,12 +2,13 @@ name: Tests
 
 on:
   push:
-    branches: [ main, dev ]
+    branches: [ master, dev ]
   pull_request:
-    branches: [ main, dev ]
+    branches: [ master, dev ]
 
 jobs:
-  test:
+  go-server:
+    name: go-server (build, vet, test)
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -15,66 +16,52 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-go@v5
         with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          cd OmniDB
-          pip install -r ../requirements.txt
-          python manage.py migrate --noinput
-
-      - name: Run tests
-        run: |
-          cd OmniDB
-          python manage.py test --verbosity=2
-
-      - name: Check Django
-        run: |
-          cd OmniDB
-          python manage.py check
-
-  lint:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: pip install pyflakes
-
-      - name: Run linter
-        run: |
-          pyflakes OmniDB/OmniDB_app/ --exclude=migrations,include,tests 2>/dev/null || true
-
-  build:
-    runs-on: ubuntu-latest
-    permissions:
-      contents: read
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
-      - name: Install dependencies
-        run: |
-          cd OmniDB
-          pip install -r ../requirements.txt pyinstaller
+          go-version: 'stable'
 
       - name: Build
+        run: go build ./...
+        working-directory: go-server
+
+      - name: Vet
+        run: go vet ./...
+        working-directory: go-server
+
+      - name: Test
+        run: go test ./...
+        working-directory: go-server
+
+      - name: gofmt check
         run: |
-          cd OmniDB
-          pyinstaller omnidb-server.spec || true
+          UNFORMATTED="$(gofmt -l .)"
+          if [[ -n "$UNFORMATTED" ]]; then
+            echo "The following files are not gofmt-formatted:"
+            echo "$UNFORMATTED"
+            exit 1
+          fi
+        working-directory: go-server
+
+  wails-app:
+    name: wails-app (build, vet)
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: 'stable'
+
+      - name: Install Wails GTK/webkit2gtk dependencies (Linux)
+        run: sudo apt-get update && sudo apt-get install -y libgtk-3-dev libwebkit2gtk-4.1-dev
+
+      - name: Build
+        run: go build ./...
+        working-directory: wails-app
+
+      - name: Vet
+        run: go vet ./...
+        working-directory: wails-app

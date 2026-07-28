@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Implementar o omnidb-server – Documentação OmniDB</title>
+	<meta name="description" content="Implemente o omnidb-server com segurança: opções de linha de comandos, endereços de vinculação, e como colocar um proxy inverso com terminação TLS, como o Nginx, à sua frente.">
+	<link rel="canonical" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/pt/deploying_omnidb-server.html">
+	<meta property="og:title" content="Implementar o omnidb-server - Documentação OmniDB">
+	<meta property="og:description" content="Implemente o omnidb-server com segurança: opções de linha de comandos, endereços de vinculação, e como colocar um proxy inverso com terminação TLS, como o Nginx, à sua frente.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/pt/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentação", "item": "https://www.omnidb.net/pt/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Implementar o omnidb-server", "item": "https://www.omnidb.net/pt/deploying_omnidb-server.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegação">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentação</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Mudar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Mudar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Escuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Início</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeiros Passos</span>
+			<a href="introduction.html">Introdução</a>
+			<a href="installation.html">Instalação</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabalhar com Dados</span>
+			<a href="managing_databases.html">Gerir Bases de Dados</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
+			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
+			<a href="visualizing_data.html">Visualizar Dados</a>
+			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avançado</span>
+			<a href="additional_features.html">Funcionalidades Adicionais</a>
+			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="logical_replication.html">Replicação Lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html" class="active">Implementar o omnidb-server</a>
+			<a href="console_tab.html">Separador de Consola</a>
+			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referência</span>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Implementar o omnidb-server</h1>
+<p><strong>Nota:</strong> desde a reescrita 3.6.x, o <code>omnidb-server</code> é um único binário nativo
+(sem o par separado de servidor web/servidor websocket, sem Django/CherryPy/Tornado) que responde
+a todos os pedidos por si próprio através de uma única porta, usando long-polling em vez de websockets para
+as atualizações em segundo plano de consultas/consola/monitorização. Também já não existe ficheiro de configuração nem
+suporte de TLS incorporado — tudo é definido através de flags de linha de comandos, e qualquer
+terminação de TLS tem de ser gerida por um proxy inverso à sua frente.</p>
+<h4>Opções de linha de comandos</h4>
+<pre><code class="language-bash">Usage: omnidb-server [options]
+
+Options:
+  -A, --app              run in desktop app mode (always binds loopback-only,
+                          regardless of -H)
+  -H HOST, --host=HOST   listening address (default: 127.0.0.1)
+  -p PORT, --port=PORT   listening port (default: an OS-chosen free port)
+  -d HOMEDIR, --homedir=HOMEDIR
+                         home directory containing the omnidb.db database and
+                         the temp folder used for exported files
+</code></pre>
+<ul>
+<li>
+<p><code>-H</code> especifica o endereço em que escutar. A predefinição é <code>127.0.0.1</code>
+(apenas loopback) — passe <code>0.0.0.0</code> para aceitar ligações de outras máquinas,
+ou o endereço de uma interface específica.</p>
+</li>
+<li>
+<p><code>-p</code> especifica a porta em que escutar, usada no URL do browser ao
+aceder diretamente ao OmniDB. Se omitida, o sistema operativo escolhe uma porta livre e imprime-a
+para o stderr ao iniciar.</p>
+</li>
+<li>
+<p><code>-d</code> permite escolher a pasta que armazena o <code>omnidb.db</code> (a base de dados da
+aplicação) e a pasta <code>temp</code> usada para ficheiros exportados. Com esta opção é
+possível executar várias instâncias do <code>omnidb-server</code>, cada uma a apontar para uma
+pasta diferente — útil para implementações Docker onde se monta um volume
+nesse local.</p>
+</li>
+</ul>
+<p><strong>Nota de segurança:</strong> um servidor iniciado com <code>-H</code> definido como qualquer valor diferente de
+loopback nunca deve também ser iniciado com <code>-A</code>/<code>--app</code> — a ligação de
+início de sessão automático de ambiente de trabalho que esse modo gera destina-se apenas a ser acedida localmente, pelo que
+<code>-A</code> força sempre a vinculação a loopback independentemente de <code>-H</code>, ignorando-o por completo
+em vez de arriscar essa combinação.</p>
+<p>Vejamos como implementar o <code>omnidb-server</code> em diferentes cenários:</p>
+<h4>Implementar o OmniDB diretamente</h4>
+<p>Executar o <code>omnidb-server</code> com <code>-H 0.0.0.0</code> (ou uma interface pública específica) torna-o
+diretamente acessível a partir de outras máquinas — mas, como não existe suporte de TLS
+incorporado, isto significa HTTP simples, não encriptado. Isto <strong>não é recomendado</strong> para
+seja o que for além de uma rede local de confiança: os cookies de sessão e os resultados de consultas de outro modo
+viajariam sem qualquer proteção. Para qualquer coisa acessível a partir da internet em geral, coloque
+um proxy inverso com terminação TLS (ver abaixo) à frente, em vez de expor
+o <code>omnidb-server</code> diretamente.</p>
+<h4>Implementar o OmniDB atrás de um proxy inverso</h4>
+<p>A abordagem recomendada: execute o <code>omnidb-server</code> a escutar apenas em <code>127.0.0.1</code>
+(a predefinição, pelo que <code>-H</code> pode ser omitido) e deixe um proxy inverso como o
+<a href="https://nginx.org" target="_blank" rel="noopener">Nginx</a> ou o
+<a href="https://caddyserver.com" target="_blank" rel="noopener">Caddy</a> tratar da
+terminação de TLS e encaminhar HTTP simples para ele localmente.</p>
+<pre><code class="language-bash">./omnidb-server -p 9000
+</code></pre>
+<p>Exemplo de configuração do Nginx:</p>
+<pre><code class="language-bash">server {
+    listen 443 ssl;
+    listen [::]:443 ssl;
+    include snippets/ssl-domain.conf;
+    include snippets/ssl-params.conf;
+    server_name domain.org;
+    client_max_body_size 75M;
+
+    location / {
+        proxy_pass http://127.0.0.1:9000;
+        proxy_set_header   X-Real-IP $remote_addr;
+        proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header   X-Forwarded-Ssl https;
+        proxy_set_header   X-Forwarded-Proto https;
+        proxy_set_header   X-Forwarded-Port 443;
+        proxy_set_header   Host $host;
+        proxy_http_version 1.1;
+    }
+}
+</code></pre>
+<p>Como tudo (incluindo as atualizações em segundo plano de consultas/consola) é servido através de
+long-polling HTTP simples em vez de websockets, basta um único bloco <code>location /</code>
+a cobrir toda a aplicação — já não existe um caminho separado de atualização
+para websocket nem um padrão <code>/wss</code> a encaminhar de forma especial.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

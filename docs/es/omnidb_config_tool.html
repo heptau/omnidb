@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Herramienta de configuración de OmniDB — Documentación de OmniDB</title>
+	<meta name="description" content="Equivalentes manuales para la retirada CLI omnidb-config: localizar el directorio home, compactar la base de datos SQLite, restablecerla y limpiar archivos temporales.">
+	<link rel="canonical" href="https://www.omnidb.net/es/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/omnidb_config_tool.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/omnidb_config_tool.html">
+	<meta property="og:title" content="Herramienta de configuración de OmniDB - Documentación de OmniDB">
+	<meta property="og:description" content="Equivalentes manuales para la retirada CLI omnidb-config: localizar el directorio home, compactar la base de datos SQLite, restablecerla y limpiar archivos temporales.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Herramienta de configuración de OmniDB", "item": "https://www.omnidb.net/es/omnidb_config_tool.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html" class="active">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Herramienta de configuración de OmniDB</h1>
+<p><strong>Nota:</strong> la utilidad de línea de comandos independiente <code>omnidb-config</code>/<code>omnidb-config-app</code>/
+<code>omnidb-config-server</code> descrita en esta página pertenecía a la
+compilación anterior basada en Python/Django y no forma parte de la versión actual. El
+único binario <code>omnidb-server</code> solo acepta <code>-A</code>/<code>--app</code> (modo aplicación
+de escritorio) y <code>-d</code>/<code>--homedir</code> (elegir el directorio home), documentados en el
+capítulo <a href="installation.html">Instalación</a>. Las tareas de mantenimiento que
+ofrecía la antigua herramienta todavía pueden realizarse manualmente, como se describe a continuación.</p>
+<h4>Directorio home</h4>
+<p>OmniDB almacena todo — la base de datos <code>omnidb.db</code> (usuarios, conexiones y
+otros datos de la aplicación) y una carpeta <code>temp</code> para los archivos exportados — en un único
+directorio home. Por defecto es <code>~/.omnidb/omnidb-app</code> (modo escritorio) o
+<code>~/.omnidb/omnidb-server</code> (modo servidor); pase <code>-d /alguna/ruta</code> para usar
+uno diferente.</p>
+<h4>Crear un usuario</h4>
+<p>Actualmente no hay ninguna opción de CLI para crear un usuario sin abrir OmniDB.
+En la primera ejecución sobre un directorio home vacío, OmniDB crea automáticamente un
+superusuario <code>admin</code>/<code>admin</code> predeterminado — inicie sesión con él y cree
+más usuarios desde la pantalla <em>Users</em>, o cambie la contraseña predeterminada.</p>
+<h4>Vacuum</h4>
+<p>OmniDB tiene una única base de datos SQLite, <code>omnidb.db</code>, que almacena todos los usuarios,
+conexiones y demás datos relacionados con OmniDB. Al ser un simple archivo SQLite, puede
+compactarla (vacuum) con cualquier cliente SQLite mientras OmniDB no esté en ejecución, por ejemplo:</p>
+<pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
+</code></pre>
+<h4>Restablecer la base de datos</h4>
+<p>Si desea eliminar toda la información de OmniDB y obtener una base de datos limpia, como recién
+instalada, cierre OmniDB y elimine (o mueva a otro lugar) el archivo <code>omnidb.db</code> del directorio
+home. Se crea automáticamente uno nuevo y vacío — con un nuevo usuario predeterminado
+<code>admin</code>/<code>admin</code> — la próxima vez que se inicie OmniDB. Use esto con
+precaución: no se puede deshacer.</p>
+<h4>Eliminar archivos temporales</h4>
+<p>Los resultados de consultas exportados (CSV/XLSX/etc.) se escriben en la carpeta <code>temp</code>
+dentro del directorio home. Es seguro eliminar su contenido manualmente en cualquier
+momento mientras OmniDB no esté en ejecución; OmniDB la vuelve a crear según sea necesario.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

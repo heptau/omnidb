@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Gerir Bases de Dados – Documentação OmniDB</title>
+	<meta name="description" content="Uma visita guiada pela janela de trabalho do OmniDB: separadores de ligação, a árvore de estruturas, separadores internos para consultas e consolas, e como navegar e gerir objetos de base de dados.">
+	<link rel="canonical" href="https://www.omnidb.net/pt/managing_databases.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/managing_databases.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_databases.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/pt/managing_databases.html">
+	<meta property="og:title" content="Gerir Bases de Dados - Documentação OmniDB">
+	<meta property="og:description" content="Uma visita guiada pela janela de trabalho do OmniDB: separadores de ligação, a árvore de estruturas, separadores internos para consultas e consolas, e como navegar e gerir objetos de base de dados.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/pt/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentação", "item": "https://www.omnidb.net/pt/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Gerir Bases de Dados", "item": "https://www.omnidb.net/pt/managing_databases.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegação">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentação</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Mudar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Mudar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Escuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Início</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeiros Passos</span>
+			<a href="introduction.html">Introdução</a>
+			<a href="installation.html">Instalação</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabalhar com Dados</span>
+			<a href="managing_databases.html" class="active">Gerir Bases de Dados</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
+			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
+			<a href="visualizing_data.html">Visualizar Dados</a>
+			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avançado</span>
+			<a href="additional_features.html">Funcionalidades Adicionais</a>
+			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="logical_replication.html">Replicação Lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="console_tab.html">Separador de Consola</a>
+			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referência</span>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Gerir Bases de Dados</h1>
+<p>Depois de criar uma ligação, pode selecioná-la clicando na ação <em>Select
+Connection</em> (Selecionar Ligação) na grelha de ligações. Vai reparar que a ligação
+será representada por um tipo de separador exterior chamado <em>Separador de Ligação</em>. E toda
+esta área é chamada de <em>Janela de Trabalho</em> (Workspace Window).</p>
+<p><img alt="" src="../assets/img/image_014.webp" /></p>
+<h4>Secções da janela <em>Workspace</em></h4>
+<p>Esta interface tem vários elementos:</p>
+<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<ul>
+<li><strong>1) Connections</strong> (Ligações): Abre uma janela pop-up com a grelha de <em>Connections</em></li>
+<li><strong>2) Outer Tabs</strong> (Separadores Exteriores): O OmniDB permite trabalhar com várias bases de dados
+ao mesmo tempo. Cada base de dados será acessível através de um <em>separador exterior</em>. Os separadores
+exteriores também podem alojar funcionalidades diversas independentes de ligação, como a funcionalidade
+<em>Snippets</em></li>
+<li><strong>3) Options</strong> (Opções): Mostra o utilizador atualmente com sessão iniciada, e se o utilizador
+for superutilizador, também mostra uma ligação para <em>gestão de utilizadores</em>. Também mostra ligações para
+<em>definições do utilizador</em>, <em>plugins instalados</em>, <em>histórico de consultas</em>, <em>informação</em> e <em>terminar sessão</em>.</li>
+</ul>
+<h4>Separador Exterior de Ligação</h4>
+<p>O separador exterior chamado <em>PostgreSQL – testdb</em> tem este nome devido ao alias
+(<em>PostgreSQL</em>) que colocámos na ligação à base de dados <code>testdb</code>. Este separador é um
+<em>Separador Exterior de Ligação</em> (Connection Outer Tab). Repare no pequeno separador com uma cruz ao lado do
+separador exterior <em>PostgreSQL – testdb</em>. Isto permite criar um novo separador exterior que
+será automaticamente um <em>Separador Exterior de Ligação</em>. No entanto, o <em>Separador Exterior de Snippet</em>
+é fixo e será sempre o primeiro.</p>
+<p>Um novo <em>Separador Exterior de Ligação</em> irá sempre apontar automaticamente para a primeira
+ligação na sua lista de ligações de base de dados. Ou, se clicou na ação
+<em>Select Connection</em>, irá apontar para a ligação selecionada. Observe
+os elementos dentro deste separador:</p>
+<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<ul>
+<li><strong>1) Connection Selector</strong> (Seletor de Ligação): Mostra todas as ligações e permite ao utilizador selecionar
+a atual</li>
+<li><strong>2) Tree of Structures</strong> (Árvore de Estruturas): Apresenta uma árvore hierárquica onde pode navegar
+pelos elementos da base de dados</li>
+<li><strong>3) Properties and DDL Panels</strong> (Painéis de Propriedades e DDL): Mostram as Propriedades e o DDL do
+nó atualmente selecionado na vista em árvore</li>
+<li><strong>4) Inner Tabs</strong> (Separadores Interiores): Permitem ao utilizador executar ações na base de dados atual.
+Existem vários tipos de separadores interiores para a base de dados atual. Ao clicar no
+último pequeno separador com uma cruz, pode adicionar um novo separador. Um novo separador pode ser um
+<em>Separador de Consulta</em> (Query Tab), <em>Separador de Consola</em> (Console Tab), <em>Painel de Monitorização</em> (Monitoring Dashboard) ou <em>Backends</em></li>
+</ul>
+<p><img alt="" src="../assets/img/image_187.webp" /></p>
+<ul>
+<li><strong>5) Inner Tab Content</strong> (Conteúdo do Separador Interior): Pode variar consoante o tipo de separador interior. A
+figura mostra um <em>Separador de Consulta</em> e, neste caso, o conteúdo será um <em>Editor SQL</em>,
+com realce de sintaxe, autocompletar e localizar e substituir</li>
+<li><strong>6) Inner Tab Actions</strong> (Ações do Separador Interior): Podem variar consoante o tipo de separador interior. Para um
+<em>Separador de Consulta</em>, são <em>Run</em> (Executar), <em>Indent SQL</em> (Indentar SQL), <em>Command History</em> (Histórico de Comandos), <em>Explain</em>,
+<em>Explain Analyze</em>, <em>Autocommit</em> e <em>Export Data</em> (Exportar Dados)</li>
+<li><strong>7) Inner Tab Results</strong> (Resultados do Separador Interior): Um <em>Separador de Consulta</em>, depois de clicar no
+<em>botão Execute</em> ou de premir o atalho de execução (<code>Alt-Q</code>), mostrará uma grelha com os
+resultados da consulta no subseparador <em>Data</em>. Se a consulta chamar uma função que gera
+mensagens, estas serão mostradas no subseparador <em>Messages</em>. Se em vez de <em>Run</em> tiver
+clicado em <em>Explain</em> ou <em>Explain Analyze</em>, o plano de explicação da consulta será mostrado
+no subseparador <em>Explain</em>.</li>
+</ul>
+<h4>Trabalhar com bases de dados</h4>
+<p>Olhe para o seu seletor de ligações. O OmniDB aponta sempre para a primeira
+ligação disponível, mas pode alterá-la clicando no seletor.</p>
+<p><img alt="" src="../assets/img/image_017.webp" /></p>
+<p>Selecione a ligação <em>PostgreSQL</em>. Agora vá até à árvore mesmo abaixo do seletor
+e clique para expandir o nó raiz <em>PostgreSQL</em>.</p>
+<p><img alt="" src="../assets/img/image_018.webp" /></p>
+<p>Tenha em atenção que, sempre que passarem 30 minutos sem realizar ações na
+base de dados, será acionada uma janela pop-up de <em>Authentication</em> (Autenticação), o que significa que a palavra-passe que
+o OmniDB encriptou e armazenou em memória expirou agora. Como foi explicado anteriormente,
+isto é importante para a segurança da sua base de dados. Depois de introduzir a
+palavra-passe correta, verá que o nó PostgreSQL mostra agora a versão do PostgreSQL e
+também foi expandido, mostrando a ligação de base de dados atual e também elementos
+ao nível da instância: <em>Databases</em> (Bases de Dados), <em>Tablespaces</em> (Tablespaces), <em>Roles</em> (Roles) e <em>Replication Slots</em> (Slots de Replicação).</p>
+<p>Pode ligar-se a uma única base de dados PostgreSQL e, usando a mesma ligação,
+ligar-se a outras bases de dados na mesma instância PostgreSQL. A
+base de dados atualmente ativa será indicada abaixo do seletor de ligação.</p>
+<p><img alt="" src="../assets/img/image_188.webp" /></p>
+<p>Para se ligar a uma base de dados diferente, expanda o nó correspondente a essa
+base de dados. Aparecerá uma janela pop-up a perguntar se deseja realmente mudar a
+base de dados ativa.</p>
+<p><img alt="" src="../assets/img/image_189.webp" /></p>
+<p>Clique em <em>Yes</em> (Sim) e o OmniDB mudará a base de dados ativa para a base de dados
+que escolheu. Isto será refletido no indicador <em>Active database</em> (Base de dados ativa), e também
+no nome do separador exterior.</p>
+<p><img alt="" src="../assets/img/image_190.webp" /></p>
+<p>Vá em frente e expanda o nó <em>Schemas</em> (Esquemas). Verá todos os esquemas na base de dados
+atual (no caso do PostgreSQL, os esquemas <code>TOAST</code> e temporários não são mostrados).</p>
+<p><img alt="" src="../assets/img/image_019.webp" /></p>
+<p>Agora clique para expandir o esquema <code>public</code>. Verá diferentes tipos de
+elementos contidos neste esquema.</p>
+<p><img alt="" src="../assets/img/image_020.webp" /></p>
+<p>Agora clique para expandir o nó <em>Tables</em> (Tabelas), e verá todas as tabelas contidas
+no esquema <code>public</code>. Expanda qualquer tabela e verá as suas colunas, chave primária,
+chaves estrangeiras, restrições, índices, regras, triggers e partições.</p>
+<p><img alt="" src="../assets/img/image_021.webp" /></p>
+<p>Para ver registos dentro de uma tabela, clique com o botão direito nela e escolha *Data Actions</p>
+<blockquote>
+<p>Query Data*.</p>
+</blockquote>
+<p><img alt="" src="../assets/img/image_022.webp" /></p>
+<p>Repare que o OmniDB abre um novo editor SQL com uma consulta simples para listar os
+registos da tabela. Os registos são apresentados numa grelha mesmo abaixo do editor. Esta grelha
+pode ser controlada com o teclado como se estivesse a usar um gestor de folhas de cálculo. Também
+pode copiar dados de células individuais ou de um bloco de células (que pode ser selecionado
+com o teclado ou o rato) e colar em qualquer gestor de folhas de cálculo.</p>
+<p><img alt="" src="../assets/img/image_023.webp" /></p>
+<p>Pode editar a consulta no editor SQL, escrevendo consultas simples ou mais complexas.
+Para executar, clique no botão de ação ou prima a combinação de teclas <code>Alt-Q</code>.
+Se os resultados excederem 100 registos, aparecerão botões adicionais <em>Fetch More</em> (Obter Mais) e
+<em>Fetch All</em> (Obter Tudo). Mais detalhes nos próximos capítulos.</p>
+<h4>Trabalhar com vários separadores dentro da mesma ligação</h4>
+<p>Dentro de uma única ligação, pode criar vários separadores de consulta interiores clicando
+no último pequeno separador com uma cruz, e depois escolhendo <em>Query Tab</em> (Separador de Consulta).</p>
+<p><img alt="" src="../assets/img/image_024.webp" /></p>
+<p>No OmniDB, pode executar várias instruções SQL e procedimentos em paralelo.
+Quando está em execução, será mostrado um ícone no separador para indicar o seu estado
+atual. Se algum processo terminar e não estiver no separador atual, esse separador
+mostrará um ícone verde a indicar que a rotina aí executada já está
+concluída.</p>
+<p><img alt="" src="../assets/img/image_025.webp" /></p>
+<p>Ao clicar no <em>botão Cancel</em> (Cancelar), pode cancelar um processo em execução dentro da
+base de dados.</p>
+<p><img alt="" src="../assets/img/image_026.webp" /></p>
+<p>Também pode arrastar e largar um separador para alterar a sua ordem. Isto funciona tanto com separadores
+interiores como exteriores.</p>
+<p><img alt="" src="../assets/img/image_027.webp" /></p>
+<p>Adicionalmente, pode usar atalhos de teclado para gerir separadores interiores (Consulta SQL).
+Estes são os predefinidos no Windows/Linux (o macOS substitui Ctrl por Alt); todos
+podem ser reatribuídos no separador Atalhos da caixa de diálogo Definições:</p>
+<ul>
+<li><strong>Alt-I</strong>: Insere um novo separador interior</li>
+<li><strong>Alt-Shift-Q</strong>: Remove o separador interior atual</li>
+<li><strong>Alt-O</strong>: Muda o foco para o separador interior à esquerda</li>
+<li><strong>Alt-P</strong>: Muda o foco para o separador interior à direita</li>
+</ul>
+<p>Atualmente não existem atalhos de teclado para os separadores exteriores (Ligação) — use
+arrastar e largar para reordenar, ou o rato, para esses casos.</p>
+<p>Todos os separadores de Consulta SQL são guardados automaticamente
+sempre que os executa. Mesmo que feche a janela do OmniDB ou o separador do navegador, já
+estão armazenados na <em>Base de Dados de Utilizador</em> do OmniDB. Serão automaticamente
+restaurados quando abrir o OmniDB novamente (se estiver a usar a aplicação), ao abri-lo noutra
+janela do navegador (se estiver a usar o servidor), ou mesmo se clicou na
+janela <em>Connections</em> (Ligações) ou terminou a sessão. Remover um separador exterior ou interior através da
+interface elimina-o permanentemente, pelo que não será restaurado.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

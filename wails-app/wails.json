@@ -1,0 +1,18 @@
+{
+  "$schema": "https://wails.io/schemas/config.v2.json",
+  "name": "OmniDB",
+  "outputfilename": "OmniDB",
+  "frontend:install": "npm install",
+  "frontend:build": "npm run build",
+  "frontend:dev:watcher": "npm run dev",
+  "frontend:dev:serverUrl": "auto",
+  "author": {
+    "name": "Zbyněk Vanžura",
+    "email": "heptau@gmail.com"
+  },
+  "info": {
+    "productName": "OmniDB",
+    "copyright": "Portions Copyright (c) 2015-2026, The OmniDB Team; Portions Copyright (c) 2017-2026, 2ndQuadrant Limited; Portions Copyright (c) 2025-2026, Zbyněk Vanžura",
+    "comments": "OmniDB desktop shell (Wails/Go)"
+  }
+}

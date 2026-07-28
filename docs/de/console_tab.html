@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Konsolen-Tab – OmniDB-Dokumentation</title>
+	<meta name="description" content="Nutzen Sie OmniDBs Konsolen-Tab als psql-ähnliche Arbeitskonsole: eine Handvoll Backslash-Befehle, Befehlsverlauf, Syntaxhervorhebung und automatische Vervollständigung.">
+	<link rel="canonical" href="https://www.omnidb.net/de/console_tab.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/console_tab.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/console_tab.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/console_tab.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/de/console_tab.html">
+	<meta property="og:title" content="Konsolen-Tab - OmniDB-Dokumentation">
+	<meta property="og:description" content="Nutzen Sie OmniDBs Konsolen-Tab als psql-ähnliche Arbeitskonsole: eine Handvoll Backslash-Befehle, Befehlsverlauf, Syntaxhervorhebung und automatische Vervollständigung.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/de/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentation", "item": "https://www.omnidb.net/de/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Konsolen-Tab", "item": "https://www.omnidb.net/de/console_tab.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Navigation umschalten">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Sprache ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Design ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Hell</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dunkel</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Startseite</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Erste Schritte</span>
+			<a href="introduction.html">Einführung</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Arbeiten mit Daten</span>
+			<a href="managing_databases.html">Datenbanken verwalten</a>
+			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
+			<a href="managing_table_data.html">Tabellendaten verwalten</a>
+			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
+			<a href="visualizing_data.html">Daten visualisieren</a>
+			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Erweitert</span>
+			<a href="additional_features.html">Zusätzliche Funktionen</a>
+			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
+			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
+			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="logical_replication.html">Logische Replikation</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server &amp; Tools</span>
+			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="console_tab.html" class="active">Konsolen-Tab</a>
+			<a href="advanced_object_search.html">Erweiterte Objektsuche</a>
+			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referenz</span>
+			<a href="legacy_features_and_history.html">Legacy-Funktionen &amp; Historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Konsolen-Tab</h1>
+<p>Der Konsolen-Tab bietet eine einfache und komfortable Möglichkeit, mit Ihren
+Datenbanken zu interagieren. Benutzer, die mit dem Kommandozeilenwerkzeug
+<code>psql</code> vertraut sind, werden die grundlegende Form wiedererkennen — ein
+Verlaufsprotokoll plus ein Eingabe-Editor —, und auch eine nützliche Teilmenge
+seiner Backslash-Befehle funktioniert hier:</p>
+<ul>
+<li><code>\?</code>: zeigt die Befehlsliste an;</li>
+<li><code>\dt</code>: listet Tabellen auf;</li>
+<li><code>\d</code>: listet Tabellen, Views und Sequenzen auf; <code>\d NAME</code> beschreibt eines
+dieser Objekte (Spalten, Typen, Nullable-Status und Standardwerte) — <code>NAME</code>
+kann schemaqualifiziert sein (<code>\d public.customers</code>);</li>
+<li><code>\du</code>: listet Rollen/Benutzer auf;</li>
+<li><code>\l</code>: listet Datenbanken auf;</li>
+<li><code>\df</code>: listet Funktionen auf;</li>
+<li><code>\x</code>: schaltet die erweiterte/vertikale Ausgabe um;</li>
+<li><code>\timing</code>: schaltet die Anzeige der Ausführungszeit um.</li>
+</ul>
+<p>Diese Befehle werden auf das abgebildet, was die jeweils verbundene Engine
+tatsächlich bietet: Bei MySQL/MariaDB dient die „Datenbank“ zugleich als Schema,
+bei Oracle dient der „Benutzer“ zugleich als Schema (und es gibt kein separates
+Konzept mehrerer Datenbanken), und SQLite kennt weder Schemata, Rollen noch
+Datenbanken — wo eine Engine tatsächlich nichts dergleichen bietet, sagt der
+Befehl das direkt, statt ein leeres oder irreführendes Ergebnis zurückzugeben.
+<code>\h</code> (Syntaxhilfe je SQL-Befehl, wie eine PostgreSQL-Manpage) ist nicht
+implementiert.</p>
+<p>Der Editor am unteren Rand des Tab-Bereichs ist genauso vollwertig wie der
+Editor im <em>Query Tab</em> (er bietet Syntaxhervorhebung und automatische
+Vervollständigung mit <em>Strg-Leertaste</em>). Um einen Befehl auszuführen, geben
+Sie ihn einfach in diesem Editor ein. Handelt es sich um einen Backslash-Befehl
+(beginnt mit <code>\</code>), genügt ein Druck auf <code>Enter</code>, um ihn auszuführen. Handelt es
+sich um einen regulären SQL-Befehl, kann dieser mehrzeilig sein, und Sie müssen
+<em>Alt-Q</em> drücken, um ihn auszuführen.</p>
+<p>Alle Befehle und ihre Ausgabe werden in den Anzeigebereich protokolliert, der
+textbasiert und schreibgeschützt ist, sodass Sie seinen Inhalt kopieren und
+anderswo einfügen können. Sie können den Anzeigebereich per Klick auf die
+Schaltfläche <em>Clear Console</em> (Konsole leeren) löschen.</p>
+<p>Alle Befehle werden außerdem im Abfrageverlauf der Verbindung sowie in einem
+lokalen Konsolenverlauf protokolliert, den Sie über die Schaltfläche
+<em>Command History</em> (Befehlsverlauf) aufrufen können.</p>
+<p>Durch Klicken auf das grüne Häkchen können Sie den Befehl übernehmen und in
+den Editor einfügen, um ihn zu bearbeiten und erneut auszuführen. Eine weitere
+komfortable Möglichkeit, im Verlauf zu navigieren, sind die Tastenkürzel
+<em>Strg-Hoch</em> und <em>Strg-Runter</em>, mit denen Sie schnell den vorherigen bzw.
+nächsten Befehl in den Editor einfügen.</p>
+<p>Diese Backslash-Befehle sind im täglichen Umgang mit Datenbanken sehr
+nützlich. Der Konsolen-Tab zeigt zudem alle Fehler sowie die Ergebnisse
+jedes eingegebenen SQL-Befehls übersichtlich an. Probieren Sie es aus!</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

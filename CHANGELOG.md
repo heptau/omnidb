@@ -7,6 +7,481 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.0.0] - 2026-07-27
+
+### Added
+- Console Tab: `\dt`, `\d`/`\d NAME`, `\du`, `\l`, and `\df` — psql-style catalog-browsing
+  backslash commands (list tables, describe a table/view, list roles, list databases, list
+  functions), implemented across PostgreSQL, MySQL/MariaDB, Oracle and SQLite. Where an engine
+  has no equivalent concept (e.g. SQLite has no roles or multiple databases), the command says
+  so directly instead of erroring or returning a misleading result.
+
+### Changed
+- The server binary is now named `omnidb-server` (was `omnidb-go-server`) — the `-go-` was a
+  leftover from the Python-to-Go migration with no meaning to an end user. Applies to the
+  release archive's binary name, the Go module name, and the `OMNIDB_SERVER_PATH` dev override
+  (was `OMNIDB_GO_SERVER_PATH`).
+
+### Fixed
+- SQL editor autocomplete only ever showed the static keyword list, never tables/columns/schemas/
+  etc., and kept the wrong item highlighted while typing. Root cause: three Handsontable-API
+  calls (`deselectCell`, `getSettings`/`updateSettings`, `getCell`) the autocomplete popup still
+  makes were never ported to `AgGridAdapter.js` during the Handsontable → AG Grid migration,
+  so each one threw immediately — the first (`deselectCell`, inside `renew_autocomplete`) before
+  the code that even requests catalog completions from the backend ever ran, the second
+  (`getSettings`, inside the response handler) before the code that merges those results into
+  the popup ever ran. Added all three to `AgGridAdapter.js`.
+- Tree "Doc: ..." menu items (e.g. right-click a database → "Doc: Databases") and the About
+  dialog's "OmniDB"/"GitHub" links opened an embedded panel that stayed permanently blank, with
+  no visible error. Root cause: they rendered the target page inside an `<iframe>`, and every
+  site they point at (postgresql.org confirmed via response headers, also applies to github.com)
+  sends `X-Frame-Options`/CSP `frame-ancestors` headers that refuse to be framed at all — there is
+  no way to embed such a page, so the iframe approach could never have worked. Changed
+  `website_tab.js` to open these links externally instead (first fix used `window.open()`
+  directly, which turned out to be a silent no-op inside the desktop app's own webview — see the
+  next entry).
+- The `window.open()` fix above did nothing when run inside the packaged desktop app (no popup,
+  no new window, no console error) — Wails' webview doesn't support it. Added a native relay: the
+  desktop app now runs a tiny loopback listener (`wails-app/openurl.go`, sharing the save-dialog
+  server) that calls `wailsruntime.BrowserOpenURL`, and go-server's new `/open_external_url/`
+  (`open_external_url.go`) forwards requests to it. The frontend (`website_tab.js`) picks between
+  that relay and a plain `window.open()` based on `gv_desktopMode`, mirroring the existing
+  `/export_save_dialog/` pattern used for native "Save As" dialogs.
+
+### Removed
+- The interactive PL/pgSQL step debugger: the "Debug Function"/"Debug Procedure" tree menu
+  entries, their frontend (`debug.js`, `inner_debugger_tab.js`), and the two Go handlers behind
+  them. It was never ported to Go during the 3.6.x rewrite — clicking it always returned "This
+  feature is not available." — and reviving it would mean building it again from scratch, not
+  just wiring it up, since it depended on a `shared_preload_libraries` PostgreSQL C extension
+  that can't be loaded on any managed/cloud Postgres anyway. See Legacy Features & History in
+  the public docs.
+
+## [3.9.0] - 2026-07-23
+
+### Added
+- First column in query result tables is now pinned (frozen) so it stays visible when scrolling
+  horizontally through wide result sets.
+- Result tables with many columns now scroll horizontally instead of squeezing all columns into
+  the available space; each column has a 120px minimum width. Tables with few columns still
+  expand to fill the full width.
+- Column headers in query result tables now show a native tooltip on hover with the full column
+  name and database type (e.g. `created_at [TIMESTAMP]`), making truncated headers explorable
+  without widening columns. The tooltip text is served from `rows.ColumnTypes().DatabaseTypeName()`
+  for native Go connections.
+- Reduced padding in AG Grid header cells (`4px` left/right) so columns use available width more
+  efficiently; truncated header text now shows `…` ellipsis via `text-overflow: ellipsis`.
+- Configurable SQL formatting settings in a new "Formatting" tab under Settings: indent character
+  (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and keyword case
+  (preserve/uppercase/lowercase). Previously all three were hardcoded (4 spaces, leading comma,
+  preserve case) with the indent unit limited to 2/4/8 spaces or tab. The conservative heuristic
+  only changes recognized SQL keywords, not identifiers or values; unknown edge cases still
+  degrade to leaving the input unchanged.
+- Intel Mac (x86_64) build target (`build-mac-intel`) and Homebrew Cask support — the macOS release
+  now ships separate archives for Apple Silicon and Intel, and the Homebrew cask auto-detects the
+  correct architecture on install. CI builds Intel on `macos-13` runners.
+- SQL editor code folding beyond plain brackets: `$$...$$` / `$tag$...$tag$` dollar-quoted blocks,
+  `IF...END IF`, `CASE...END CASE` (with nesting support), and an indentation-based fallback for
+  blocks without explicit delimiters (e.g. a `SELECT` with many indented output columns).
+
+### Fixed
+- A query execution error (e.g. a SQL syntax error) showed a modal dialog instead of being routed
+  to the query tab's "Messages" panel, and left the "Cancel" button stuck visible with the editor
+  read-only, since that code path (`queueQueryError` → `MessageException`) never went through the
+  normal query-completion handling that resets tab state. Fixed by routing context-bound query
+  errors to a new `queryError` handler that resets the tab (re-enables the editor, hides
+  Cancel/commit/rollback), writes the error into the Messages panel, and switches to it — the modal
+  is now only shown for errors with no associated query tab.
+- Right-clicking a cell in the query results grid and choosing "View Content" or "Copy" did
+  nothing, a regression from the Handsontable → AG Grid migration. "View Content" built the
+  Bootstrap 5 modal but never called `.modal("show")`; "Copy" called `document.execCommand("copy")`
+  against a nonexistent DOM selection, since the AG Grid adapter's `selectCell` only sets grid
+  focus/row-selection state, not a browser `Selection`/`Range`. Fixed by showing the modal
+  explicitly and by building the copied text from the selected cell range and writing it via the
+  existing `uiCopyTextToClipboard` helper.
+- `handleChangeActiveDatabase` silently swallowed a malformed/missing request body and still replied
+  with a success envelope, instead of the `writeBadRequest` every sibling handler in the same file
+  uses — a malformed call would leave the tab's active-database override unset while the frontend
+  believed the switch had succeeded, the same class of silent-no-op bug fixed elsewhere in 3.8.0.
+- `randomLowerAlnum` used `int(b)%36` to map a random byte to the 36-character token alphabet;
+  `256 = 36×7 + 4` gave indices 0–3 (a–d) a probability of 8/256 and the rest 7/256, a mild
+  modulo bias. Fixed with rejection sampling — bytes ≥ 252 are discarded and re-rolled, making
+  every alphabet character equally probable.
+- Expired native sessions persisted in the `nativeSessions` map forever unless the same session
+  key happened to be looked up or destroyed again, causing a slow memory leak on long-running
+  server deployments. Fixed with a background goroutine (`startSessionReaper`) that removes
+  expired entries once per hour, started lazily on the first login.
+- Race condition in `querycursor.go`: `continueCursor` loaded the cursor from the sync.Map and
+  returned it without synchronization; a concurrent `closeCursor` could `LoadAndDelete` and close
+  `sql.Rows` between the lookup and `fetchBlock`'s mutex acquisition, causing undefined driver
+  behavior. Fixed by having `continueCursor` return the cursor with its mutex already held; mode 1
+  callers use `fetchBlockLocked` directly and unlock after.
+- `forwardConn` in `ssh_tunnel.go` spawned two `io.Copy` goroutines but only waited for one;
+  the second goroutine could leak indefinitely if `defer remote.Close()` was slow. Fixed by
+  moving one `io.Copy` inline and closing the connection in the remaining goroutine.
+- `runNativeQueryAllData` in `longpolling.go` used `defer tx.Commit()` — the deferred commit
+  ran even when `tx.Query()` failed, silently committing an empty/failed transaction. Fixed by
+  switching to `defer tx.Rollback()` with an explicit `tx.Commit()` only on success.
+- `pollingClients` map entries in `native_polling.go` were never cleaned up when a browser tab
+  crashed or `/clear_client/` didn't fire, causing a slow memory leak on server deployments.
+  Fixed with `startPollingReaper`, a background goroutine that removes entries with no update
+  in over an hour, started lazily from the first long-poll request.
+- `handleRefreshMonitoring` in `generic_handlers.go` ran arbitrary user SQL with no read-only
+  guard, unlike the custom monitoring query path; an INSERT/UPDATE/DELETE sent as a monitoring
+  refresh would execute silently. Fixed by adding the same `isReadOnlyQuery` check used in
+  `custom_monitor_query.go`.
+- `writeEnvelope` silently dropped JSON encoding errors, making response truncation invisible
+  in logs. Fixed by logging the error when encoding fails.
+- `openAppDB` opened a fresh `*sql.DB` pool per request without capping connections, letting
+  concurrent requests pile up SQLite lock contention on busy servers. Fixed by capping each
+  pool to `SetMaxOpenConns(1)` / `SetMaxIdleConns(1)`; callers still open and close their own
+  handle per request.
+- `quoteMySQLIdent` in `mysql_routines.go` wrapped identifiers in backticks without escaping
+  embedded backticks, allowing SQL injection through database object names containing backticks.
+  Fixed with `strings.ReplaceAll(name, "`", "``")`.
+- `handleTestConnection` called `openAppDB` then `appDB.Close()` before checking the error from
+  `resolveTestConnectionSecrets`, so a panic there would leak the connection. Fixed by closing
+  it with `defer` instead.
+- `handleClientKeepAlive` created a new `pollingClient` entry on every heartbeat, even when
+  no session had ever started polling. Fixed by only updating `lastUpdate` when the client
+  already exists in the map.
+- `randomLowerAlnum` read one CSPRNG byte per iteration (50+ syscalls for a token). Fixed by
+  batch-reading into a larger buffer and iterating in-memory.
+- `readFormData` replaced the request body with partial data even when `io.ReadAll` failed,
+  so downstream code would process a truncated request body. Fixed by only restoring the body
+  on success.
+- `reindentSQLSafe` caught `runtime.Error` panics (nil pointer dereference, index out of
+  bounds), silently hiding real programming bugs. Fixed by re-panicking on `runtime.Error`.
+- `handleGetMonitorUnitList` interpolated user-supplied plugin names directly into JavaScript
+  string literals in `onclick` attributes without escaping, allowing HTML injection through
+  database-stored monitor unit names. Fixed with a `jsString` helper that escapes `\`, `"`,
+  `\n`, and `\r`.
+- Running a statement with no result rows (DDL like `CREATE OR REPLACE FUNCTION`, or a DML
+  statement with no matching rows) against a native connection left the query tab spinning
+  forever with the Cancel button stuck visible, even though the statement had already completed
+  successfully server-side. `fetchBlockLocked` in `querycursor.go` returned a nil `[][]string`
+  for a zero-row result, which encodes to JSON `null`; the frontend's chunk accumulator
+  (`long_polling.js`) does `tempData.concat(v_data.v_data)`, and `[].concat(null)` produces
+  `[null]` instead of `[]`, so the grid renderer tried to read `.length` off that `null` "row"
+  and threw — an exception silently swallowed by an empty `catch` in the long-polling loop,
+  before the code that hides the spinner/Cancel button ever ran. Fixed by initializing the
+  block as `make([][]string, 0, blockSize)` so an empty result always encodes as `[]`, matching
+  the convention already used by `runNativeQueryAllData` and `handleCommitOrRollback`.
+- `resolveTestConnectionSecrets` (test_connection.go) fetched a saved connection's stored
+  password/SSH-tunnel credentials by id with no ownership or public check at all — any
+  authenticated user could point `/test_connection/` at a connection id belonging to another
+  user, override the target server/port with one they control, and leave the password blank to
+  reuse the victim's stored secret, which would then be dialed straight to the attacker's host.
+  Fixed by applying the same owner-or-public check `connection_info.go`/`terminal.go` already use
+  for every other route that reads a saved connection's secrets.
+- `renderWorkspacePage` substituted the username and several user-configurable settings (CSV
+  delimiter, theme, indent character/size, comma style, keyword case — none validated against a
+  charset or enum before being saved) into `workspace.html` with no escaping at all, both as raw
+  HTML and inside single-quoted JS string literals, unlike the Django template this replaced
+  (auto-escaped by default). A superuser could plant a malicious username to XSS any user who
+  later loaded their workspace (session/credential theft); any user could self-XSS via a crafted
+  setting. Fixed with HTML escaping for the HTML context and a dedicated JS-string escaper (also
+  guarding against a `</script` breakout) for the JS context.
+- `handleTempFiles`'s sibling-directory check used `strings.HasPrefix(filePath, dir)` with no
+  trailing-separator check — the classic bug where a sibling directory whose name happens to
+  start with the same prefix (e.g. `temp` vs. a future `temp-secret`) would incorrectly pass the
+  check. Fixed to use `filepath.Rel` + explicit `..`-prefix rejection, the pattern already used
+  correctly next door in `export_save_dialog.go`.
+- Several PostgreSQL queries silently returned no rows for any schema/table/column/sequence
+  needing identifier quoting (mixed case, reserved words): `postgresqlPrimaryKeys`/
+  `postgresqlUniques`/`postgresqlSequences` filtered their schema via
+  `quote_ident(relnamespace::regnamespace::text)`, which double-quotes a schema that already
+  needed quoting; `postgresqlPropertiesTableField`/`postgresqlDDLTableField` compared a raw
+  catalog column name against an already quote_ident()-quoted parameter; `postgresqlRoutineFields`'s
+  "returns" pseudo-row and `postgresqlTemplateSelectFunction`'s function-id match were missing a
+  `quote_ident()` every other producer of that id string applies. Fixed across all of them and
+  live-verified against real quoted schema/table/column/sequence/function names.
+- `GetObjectDescription`'s "role" spec queried `shobj_description` against `pg_roles` (a view)
+  instead of `pg_authid` (the real catalog backing role comments), so `COMMENT ON ROLE` always
+  showed as empty. Its "rule" spec matched only by rule name, which is only unique per table, so
+  two tables with an identically-named rule could misattribute the comment to the wrong table.
+  Both fixed — the latter by reading straight off `pg_rewrite`'s own oid instead of joining by name.
+- `postgresqlExcludes`' attribute list wasn't guaranteed to come back in the same order as its
+  paired operator list for a multi-column `EXCLUDE` constraint, which could scramble which
+  operator applies to which column. Fixed with explicit `unnest(...) with ordinality` ordering on
+  both sides.
+- `postgresqlChangeRolePassword` re-quoted an already quote_ident()-quoted role name a second
+  time, so changing the password of any role needing quoting (mixed case, reserved word) failed
+  outright with "role does not exist" (verified live). It also hashed the md5 password verifier
+  against that same still-quoted string rather than the real role name, meaning even a successful
+  change would have set a verifier the real login flow could never match. Fixed by unquoting back
+  to the raw role name before hashing, then re-quoting only for the DDL text; live-verified
+  end-to-end (password changed, then logged in with it).
+- `mysqlFunctionFields`/`mysqlProcedureFields` ordered their parameter list by `seq desc`,
+  reversing the declared parameter order and putting a function's return type last instead of
+  first (a copy-paste inversion — Oracle's equivalents already used ascending order). Fixed.
+- `oracleFunctionDefinition`/`oracleProcedureDefinition` ignored `p_schema` when asking
+  `dbms_metadata.get_ddl` for a function/procedure's DDL, so viewing one owned by any schema other
+  than the connected user's own silently failed or returned the wrong object — the same class of
+  bug already fixed elsewhere in this file's Properties/DDL/FK queries. Fixed by threading the
+  schema through as `get_ddl`'s third argument.
+- `sqlitePrimaryKeys` emitted one row per primary-key *column* instead of one per constraint, so
+  any table with a composite primary key showed duplicate "Primary Key" tree nodes. Fixed.
+- `handleTerminalRequest`/`openOrReuseConsoleSession` had no guard against two near-simultaneous
+  requests for the same brand-new tab both seeing "no live session" and both opening one — the
+  loser's SSH client/PTY (or DB connection) then leaked forever, since only whichever session won
+  the final map store could ever be closed later. Fixed with a per-tab lock shared by both.
+- `activeDatabaseMap` (active_database.go) and `passwordMemoryMap` (password_prompt.go) had no
+  cleanup at all, unlike `nativeSessions`/`pollingClients` (each already fixed with their own
+  reaper) — the latter held a remembered plaintext password in memory indefinitely, well past its
+  own timeout window. Fixed by sweeping both alongside the existing hourly session reaper.
+
+## [3.8.0] - 2026-07-16
+
+### Added
+- Native application menu bar for the Wails desktop shell (OmniDB/Edit/View/Window/Help), wired
+  through `WindowExecJS` so menu items reach the loaded page regardless of which origin served it
+  (`workspace.html` is served entirely by `go-server` via a full top-level navigation, never through
+  Wails' own asset server, so the more obvious `window.runtime` event-bridge approach silently never
+  worked). Covers About, Settings, Connections, Snippets, Switch Menu, toggling the database tree and
+  Properties/DDL panel, Getting Started, Keyboard Shortcuts, and external links; Quit and the external
+  links are native. Deliberately a fully custom top-level menu instead of `menu.AppMenu()`'s macOS role,
+  to keep a proper app-level About/Settings entry instead of a generic native About panel.
+- `Cmd`/`Ctrl+Shift+C`/`S`/`M` keyboard shortcuts for Connections/Snippets/Switch Menu, matching the
+  existing Shift-qualified pattern used for Toggle Properties/DDL Panel.
+- Properties/DDL support for PostgreSQL database nodes and all other previously-unported object types
+  in the tree (role, tablespace, extension, schema, sequence, function/procedure/aggregate/trigger
+  function, domain, composite/enum type, materialized view, fdw/foreign server/foreign table/user
+  mapping, event trigger, publication, subscription, statistics object) — expanding any of these
+  always dead-ended in "This feature is not available." since the Go migration; now reuses existing
+  DDL infrastructure where PostgreSQL has it and hand-synthesizes the rest the same way pgAdmin/DBeaver
+  do, live-verified against a real PostgreSQL 16 server.
+- Native OS "Save As" dialog for exporting query results in the desktop app: `go-server` relays the
+  request over a loopback HTTP hop to a tiny server the Wails process now runs
+  (`wails-app/savedialog.go`), since `workspace.html`'s origin never gets a direct Wails runtime
+  binding. Browser/server (`-H`) mode is unaffected and keeps the previous "the file is ready, click
+  to download" link.
+- Query tabs opened through the native Go query path are now actually persisted (`OmniDB_app_tab`,
+  including a new `last_used` column with an automatic schema migration for existing installs) and
+  restored in most-recently-used order on reconnect — the frontend already sent the fields needed for
+  this on every run, but the Go query handler silently dropped all of them since the migration, so no
+  native query ever created or updated a tab record.
+- Switching to a sibling database within a PostgreSQL connection tab (the tree's "this node is a
+  different database" prompt) now actually changes which database subsequent queries/listings in that
+  tab hit, not just the tab's title — previously a no-op left over from an incorrect assumption during
+  the Go migration that no route needed it.
+- The desktop app now feels less like a bare web page: the native/system right-click context menu and
+  text selection (drag-highlight, iOS-style press-and-hold callout) are suppressed everywhere except
+  editable fields, the Ace-based SQL/console/DDL editors, Handsontable grids, and query status/error
+  text.
+- New public documentation chapter, "24. Editor Keyboard Shortcuts", listing the Ace editor's own
+  shortcut set (line operations, selection, multicursor, navigation, find/replace, folding) — this
+  content used to live only on an in-app `/shortcuts/` help page (see Removed).
+
+### Fixed
+- Custom and built-in monitoring units' live charts threw `v_object.labels[0] is undefined` starting
+  on their second refresh — `handleRefreshMonitorUnits` kept returning the full Chart.js constructor
+  shape instead of the flat labels/datasets shape the frontend expects after the first refresh.
+- PostgreSQL connections created via the "Connection string" field (server/port/database left blank)
+  had that string silently discarded everywhere it mattered, so every such connection actually hit
+  whatever database libpq's empty-host default resolves to (a local Unix socket) instead of the
+  configured target.
+- Running a query from the Query tab never wrote anything to Command History (the insert side was
+  never ported during the PostgreSQL long-tail migration), and once history rows did start being
+  saved, a string-vs-string date comparison bug meant every row silently failed the default "Last 6
+  Hours" filter (and every other date range) regardless of its actual time-of-day, affecting both
+  Query and Console history.
+- The Settings dialog could hang or stack a second modal backdrop if reopened while already open, and
+  Esc didn't close it at all (`keyboard: false` was left over from an unrelated change). Both fixed;
+  the equivalent Plugins-dialog bug is moot now that the Plugins dialog is gone entirely (see Removed).
+- Three separate bugs in the PostgreSQL "switch to a sibling database" tree flow each left the clicked
+  node's spinner stuck forever: dismissing the confirmation dialog via Escape/the X button/a backdrop
+  click (rather than Yes/No) never resolved the pending callback; `selectedDatabaseNode` being unset
+  threw instead of being guarded; and the tab title update used raw DOM calls (`.innerHTML`/
+  `.appendChild`) against what is actually a jQuery collection, which silently no-ops/throws. A related
+  root-cause fix keeps the tab's notion of "currently selected database" in sync with
+  `current_database()` as queried live by the backend, instead of only ever the saved connection's
+  static field, which could never match for connection-string-only connections or a renamed database.
+- Two dialogs still showed literal escaped HTML (`&lt;br/&gt;`, `&lt;b&gt;...&lt;/b&gt;`) instead of
+  rendered markup — the "please close any tabs of type X before changing connection" message and the
+  copy-to-clipboard confirmation — both missed by 3.7.0's fix for the same class of bug (the shared
+  `showAlert` helper itself needed a new opt-in `p_is_html` parameter, defaulting to plain-text-safe).
+- The Settings dialog was missing its `<h5>` title entirely (only the close button showed), the
+  Connections/Edit Connection modals now resize smoothly instead of jumping at Bootstrap's fixed
+  breakpoints, and dark theme now styles the modal title text color, which had no rule at all.
+- Graceful shutdown could block for up to `httpServer.Shutdown`'s full timeout waiting on any
+  in-flight long-polling request; those requests now also select on a shutdown-scoped context and
+  return immediately once shutdown begins.
+- `/static/temp/` (generated export files) is now served through an explicit handler that verifies the
+  resolved path can't escape the temp directory and forces `Content-Disposition: attachment` so a
+  CSV/XML/etc. export downloads instead of rendering inline in the browser, instead of a bare
+  `http.FileServer`.
+- `/save_config_user/` silently failed to persist font size: the frontend sends it as a JSON string,
+  which failed to unmarshal into the handler's previous `int` field.
+
+### Changed
+- Boolean values in query result grids now display as `true`/`false` instead of `1`/`0`, and in
+  the console transcript as `true`/`false` instead of `True`/`False`, matching PostgreSQL's own
+  text output convention.
+- `TIMESTAMPTZ` values in query result grids and the console transcript no longer include the
+  timezone abbreviation (`CET`/`CEST`/etc.) — they now render with the numeric UTC offset only
+  (e.g. `2026-07-17 14:30:00.123456+02:00`), matching PostgreSQL's own text output.
+- Documentation nav (`docs/en/docs/*.html`, `docs/llms.txt`, `docs/llms-full.txt`, `docs/sitemap.xml`)
+  updated for the new "Editor Keyboard Shortcuts" chapter, with a cross-reference added from the
+  "Writing SQL Queries" chapter.
+
+### Removed
+- The entire plugin system: the Plugins dialog and toolbar link, the native menu's "Plugins" item, all
+  six backend routes and the `plugins_stub.go` fallback, and the documented "Plugin API" — it always
+  showed an empty grid and any upload attempt always failed, with no Go equivalent to Django's dynamic
+  plugin loading and no path forward, so removing it outright was more honest than leaving a dead
+  dialog in place.
+- The in-app `/shortcuts/` static help page — its Ace-editor shortcut reference now lives in the public
+  docs instead (see Added).
+
+## [3.7.0] - 2026-07-15
+
+### Added
+- Custom monitoring units now actually run: a unit's "script" is a single SQL query
+  (`SELECT`/`WITH` only) instead of the old Python `script_chart`/`script_data` pair, which had
+  no equivalent since the Go migration and always returned "not supported". Supports the same
+  three shapes the 17 built-in units already use — `grid` (raw columns/rows), `chart`
+  (one row per category, Bar/Pie/Doughnut/Line picked from a dropdown), and `timeseries`
+  (one row, each numeric column becomes an appended line series). The `graph` unit type is
+  dropped for custom units — it never had a working implementation or a built-in example to
+  model one on.
+- `-H`/`--host` CLI flag for `go-server`, restoring the documented "OmniDB Server"
+  network-accessible deployment mode, which was actually impossible until now (the listener was
+  hardcoded to `127.0.0.1` with no way to change it). Ignored in desktop app mode (`-A`), which
+  always stays loopback-only. The loopback-only `/internal/shutdown/` endpoint is now only
+  registered when the effective listen host is actually loopback.
+
+### Fixed
+- Several dialogs showed literal escaped HTML (`&lt;input ...&gt;`) instead of a real input
+  field or formatted text: "New Group"/"Rename Group" and the SSH password prompt in
+  Connections, renaming a tab, creating/renaming a snippet and the snippet overwrite warning,
+  changing a PostgreSQL role's password, and the "change active database" confirmation. All
+  were broken by an earlier XSS-hardening pass that switched the shared modal helpers from
+  `innerHTML` to `textContent`; each caller now builds its own DOM nodes instead of the shared
+  helper re-interpreting HTML strings.
+- The monitoring-unit "Test" modal threw silently for `grid`/`chart`/`timeseries` results (a
+  variable was read before being assigned), leaving the modal blank — never previously
+  reachable since custom units always errored out first.
+
+### Changed
+- Documentation (`docs/en/docs/`, `docs/llms.txt`, `docs/llms-full.txt`) updated to match the Go
+  backend: removed stale WebSocket, Django/CherryPy/Tornado, PyInstaller, Oracle Instant Client,
+  and plugin-system content, rewrote the OmniDB Server deployment page around `-A`/`-H`/`-p`/`-d`,
+  and replaced the monitoring dashboard's Python-script tutorial with the new SQL-query one.
+- Existing custom monitoring units saved before this release still hold Python source in their
+  query field; they'll now fail with a SQL syntax error instead of "not supported" and need to be
+  rewritten as SQL queries.
+
+### Removed
+- `support_matrix.xlsx` and the empty, already-gitignored `build_deps/` directory.
+
+## [3.6.0] - 2026-07-14
+
+### Removed
+- Django, CherryPy, and PyInstaller entirely — from the build, the runtime, and the source tree.
+  The Go backend (`go-server/`) is now the sole server implementation; the Wails shell only ever
+  spawns `omnidb-go-server`, never a Python process. The old Django source tree, `requirements.txt`,
+  `pyproject.toml`, `Dockerfile`, and the Python virtualenv are all gone from the repository.
+
+### Fixed
+- The desktop app could get stuck on the loading screen indefinitely: a fast-starting Go backend
+  could emit its "ready" event before the frontend had finished registering its listener, and the
+  event was silently dropped. This never surfaced while Django (slow to start) was the backend.
+  The frontend now explicitly signals the backend once it's listening, instead of the backend
+  guessing when that's safe.
+- The loading screen's version label was hardcoded and had drifted out of sync with the app's
+  actual version; it's now kept in sync automatically on every build.
+- A brand-new install (no pre-existing `~/.omnidb`) had no way to create the app database's schema
+  or a default account, now that Django's `manage.py migrate` no longer exists to do it — the Go
+  backend now bootstraps the schema and a default `admin`/`admin` account itself on first run
+  against an empty database, and is a no-op against any existing one.
+
+### Changed
+- CI (`tests.yml`) now builds, vets, and tests the Go backend and Wails shell directly, instead of
+  testing the now-removed Django application.
+
+### Added
+- Native login/session handling in the Go backend (Django-compatible PBKDF2 password
+  verification), replacing Django as the browser-facing auth front door via a trusted-header
+  interop mechanism, while every still-unmigrated Django route keeps working unchanged.
+- Native `/workspace/` page render and root `/` (`check_session`/`check_session_message`).
+- Native static asset serving — fonts, images, CSS, and JS are now embedded directly into the Go
+  binary instead of served by CherryPy.
+- Full PostgreSQL "long-tail" natively in Go: ~45 previously Django-only routes (checks,
+  exclude/rule constraints, event triggers, inheritance/partitions, extended statistics,
+  materialized views, functions/procedures/aggregates, sequences/types/domains, replication
+  slots/publications/subscriptions, foreign data wrappers) and its ~123-template DDL wizard.
+- Native user management and monitoring dashboard (16 built-in PostgreSQL monitoring units plus
+  1 MySQL unit reimplemented natively).
+- `kill_backend` for MySQL/MariaDB/Oracle and `get_sqlite_version`, natively in Go.
+- Data export extended with XLSX, TSV, Markdown, JSON, and XML output formats alongside CSV.
+
+### Fixed
+- `delete_connection` left orphaned `Tab`/`QueryHistory`/`ConsoleHistory`/`MonUnitsConnections`/
+  `GroupConnection` rows behind instead of cascading the delete.
+
+### Security
+- Oracle's `kill_backend` now validates its `sid,serial#` argument against a strict pattern before
+  use, since `ALTER SYSTEM KILL SESSION` has no bind-parameter form.
+- Desktop auto sign-in is no longer reachable at all unless the server is actually running in app
+  mode, closing an unauthenticated login backdoor that existed for server/web deployments.
+
+## [3.4.0] - 2026-07-13
+
+### Added
+- New Go backend (`go-server/`) that progressively takes over the Django/CherryPy backend as a
+  strangler-fig migration, with zero change to the frontend or its JSON API contract:
+  - Native tree introspection, DDL, properties, and query execution for SQLite, PostgreSQL,
+    MySQL, MariaDB, and Oracle.
+  - Edit-data grid, explicit transaction support (`COMMIT`/`ROLLBACK`) for the native query path,
+    and a resumable multi-statement SQL console.
+  - A native SSH terminal and SSH-tunneled connection testing.
+  - DB-agnostic workspace routes (`get_database_list`, `draw_graph`, `get_autocomplete_results`,
+    `change_active_database`, `save_config_user`) and connections/groups/snippets CRUD
+    (`save_connection`/`test_connection`/`delete_connection` and friends).
+
+### Changed
+- `wails-app/backend.go` now launches the new Go proxy instead of spawning the Django server
+  directly.
+
+### Fixed
+- PostgreSQL properties' "Referenced Columns" for foreign keys resolved the wrong table's
+  attribute numbers whenever the two tables' column orderings differed.
+- The PostgreSQL properties panel's "Cache Offset" column, based on a system column removed in
+  PostgreSQL 18, is no longer shown (it already silently failed against current PostgreSQL either
+  way).
+- Several MySQL/MariaDB tree-introspection queries used `SELECT DISTINCT ... ORDER BY` on a column
+  outside the selected list, which MySQL 8/MariaDB reject outright.
+- MariaDB-only `algorithm` column no longer queried against MySQL 8's `information_schema.views`,
+  where it doesn't exist.
+- Oracle's foreign-key introspection used `user_constraints`/`user_cons_columns` (only the
+  connected user's own constraints) instead of `all_constraints`/`all_cons_columns`, unlike the
+  matching PK/unique queries in the same file.
+- Oracle's `GetProperties`/`GetDDL` ignored the schema argument passed in from the frontend,
+  silently returning empty properties/DDL for any object outside the connected user's own schema.
+- Deleting a snippet folder or a connection group left orphaned rows behind instead of cascading
+  the delete, since SQLite doesn't enforce Django ORM's `on_delete=CASCADE` at the schema level.
+- Saving an existing SQL snippet doubled every single quote in its text on each edit.
+- `get_groups` returned `null` instead of an empty list for a group with no connections.
+
+### Security
+- The query editor's autocomplete and the edit-data grid no longer interpolate cell/filter values
+  directly into SQL text — both now use real bind parameters, closing a SQL injection gap present
+  in the original implementation.
+
+## [3.3.0] - 2026-07-03
+
+### Fixed
+- Properties and DDL panels showing nothing for any tree item (table, column, role, etc.) across
+  all database types — `outer_connection_tab.js` initialized a new connection tab's
+  `treeTabsVisible` flag to `false` while the panel is actually visible by default, so every
+  `tree.clickNodeEvent` handler silently no-opped its properties/DDL fetch
+- Static JS/CSS fixes not taking effect after an app rebuild — `omnidb-server.py` serves static
+  assets with a 24h `Expires` header, and the cache-busting query string only changed on a manual
+  version bump, so a browser/webview could keep serving a stale cached copy of a file across app
+  restarts for up to a day. Static asset URLs now carry a `STATIC_CACHE_BUST` token generated fresh
+  on every server process start, forcing a refetch after every restart
+
 ## [3.2.2] - 2026-07-03
 
 ### Fixed

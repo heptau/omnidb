@@ -1,0 +1,336 @@
+/* ==========================================================================
+   OmniDB shared brand tokens + topbar (language/theme switcher)
+   Loaded on every page (landing + docs) BEFORE the page-specific stylesheet,
+   so both docs/assets/style.css and docs/en/style.css can share these
+   variable values. Manual theme choice (data-theme="light"|"dark" on <html>,
+   set by theme-switcher.js) always overrides the OS-level
+   prefers-color-scheme default because an attribute selector on :root has
+   higher specificity than a bare :root, regardless of media-query nesting.
+   ========================================================================== */
+
+:root {
+	--brand-navy: #192e4d;
+	--brand-light-blue: #8199bf;
+	--brand-bg: #ffffff;
+	--brand-bg-alt: #f4f7f9;
+	--brand-text: #2d3748;
+	--brand-text-muted: #4a5568;
+	--brand-border: #e2e8f0;
+	--brand-card-bg: #ffffff;
+
+	--topbar-bg: rgba(244, 247, 249, 0.9);
+	--topbar-border: var(--brand-border);
+	--topbar-text: var(--brand-navy);
+	--dropdown-bg: #ffffff;
+	--dropdown-shadow: 0 12px 28px rgba(25, 46, 77, 0.16);
+	--dropdown-hover-bg: rgba(25, 46, 77, 0.06);
+	--dropdown-active-bg: rgba(25, 46, 77, 0.1);
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--brand-navy: #8fb3e8;
+		--brand-light-blue: #9fb3d9;
+		--brand-bg: #10192b;
+		--brand-bg-alt: #17223a;
+		--brand-text: #e7ecf5;
+		--brand-text-muted: #a9b6cc;
+		--brand-border: #2b3a54;
+		--brand-card-bg: #17223a;
+
+		--topbar-bg: rgba(16, 25, 43, 0.9);
+		--topbar-border: var(--brand-border);
+		--topbar-text: #e7ecf5;
+		--dropdown-bg: #1b2740;
+		--dropdown-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+		--dropdown-hover-bg: rgba(159, 179, 217, 0.12);
+		--dropdown-active-bg: rgba(159, 179, 217, 0.2);
+	}
+}
+
+:root[data-theme="light"] {
+	--brand-navy: #192e4d;
+	--brand-light-blue: #8199bf;
+	--brand-bg: #ffffff;
+	--brand-bg-alt: #f4f7f9;
+	--brand-text: #2d3748;
+	--brand-text-muted: #4a5568;
+	--brand-border: #e2e8f0;
+	--brand-card-bg: #ffffff;
+
+	--topbar-bg: rgba(244, 247, 249, 0.9);
+	--topbar-text: var(--brand-navy);
+	--dropdown-bg: #ffffff;
+	--dropdown-shadow: 0 12px 28px rgba(25, 46, 77, 0.16);
+	--dropdown-hover-bg: rgba(25, 46, 77, 0.06);
+	--dropdown-active-bg: rgba(25, 46, 77, 0.1);
+}
+
+:root[data-theme="dark"] {
+	--brand-navy: #8fb3e8;
+	--brand-light-blue: #9fb3d9;
+	--brand-bg: #10192b;
+	--brand-bg-alt: #17223a;
+	--brand-text: #e7ecf5;
+	--brand-text-muted: #a9b6cc;
+	--brand-border: #2b3a54;
+	--brand-card-bg: #17223a;
+
+	--topbar-bg: rgba(16, 25, 43, 0.9);
+	--topbar-text: #e7ecf5;
+	--dropdown-bg: #1b2740;
+	--dropdown-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+	--dropdown-hover-bg: rgba(159, 179, 217, 0.12);
+	--dropdown-active-bg: rgba(159, 179, 217, 0.2);
+}
+
+html {
+	color-scheme: light dark;
+}
+
+/* --- TOPBAR --- */
+.site-topbar {
+	position: sticky;
+	top: 0;
+	left: 0;
+	right: 0;
+	height: 60px;
+	z-index: 1200;
+	background: var(--topbar-bg);
+	backdrop-filter: saturate(180%) blur(10px);
+	-webkit-backdrop-filter: saturate(180%) blur(10px);
+	border-bottom: 1px solid var(--topbar-border);
+}
+
+.site-topbar-inner {
+	height: 100%;
+	max-width: 1280px;
+	margin: 0 auto;
+	padding: 0 20px;
+	display: flex;
+	align-items: center;
+	gap: 16px;
+}
+
+.site-topbar-brand {
+	display: flex;
+	align-items: center;
+	gap: 1px;
+	color: var(--topbar-text) !important;
+	font-weight: 800;
+	font-size: 1.05rem;
+	text-decoration: none !important;
+	white-space: nowrap;
+}
+
+.site-topbar-brand img {
+	display: block;
+	margin: 0;
+	border: none;
+	border-radius: 0;
+	box-shadow: none;
+	opacity: 1;
+}
+
+/* logo.svg's viewBox is cropped tight around the OmniDB wordmark+icon (right
+   edge = 0 margin) and net.png has its left padding cropped off too, so the
+   two sit flush — .NET reads as a continuation of the logo, not a separate
+   badge next to it. Heights are tuned so the ".NET" glyph height matches the
+   "OMNIDB" wordmark's cap-height (net.png's own vertical padding is taller
+   relative to its content than the SVG's, hence the smaller height here). */
+.site-topbar-brand .brand-logo {
+	height: 40px;
+	width: auto;
+}
+
+.site-topbar-brand .brand-net {
+	height: 15.5px;
+	width: auto;
+}
+
+/* net.png is a fixed navy outline on a transparent background — legible on
+   the light topbar, but nearly invisible on the dark one. Invert it (navy
+   -> a light cream tone) whenever the dark theme is active, manually or
+   via the OS. logo.svg needs no such treatment: its purple/gray tones read
+   fine on both. */
+@media (prefers-color-scheme: dark) {
+	.site-topbar-brand .brand-net {
+		filter: invert(1);
+	}
+}
+
+:root[data-theme="light"] .site-topbar-brand .brand-net {
+	filter: none;
+}
+
+:root[data-theme="dark"] .site-topbar-brand .brand-net {
+	filter: invert(1);
+}
+
+.site-topbar-links {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	margin-left: 4px;
+}
+
+.site-topbar-links a {
+	color: var(--brand-text-muted) !important;
+	text-decoration: none !important;
+	font-weight: 600;
+	font-size: 0.92rem;
+	padding: 8px 12px;
+	border-radius: 8px;
+	transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.site-topbar-links a:hover {
+	color: var(--topbar-text) !important;
+	background-color: var(--dropdown-hover-bg);
+}
+
+.site-topbar-links a.active {
+	color: var(--topbar-text) !important;
+	background-color: var(--dropdown-active-bg);
+}
+
+.site-topbar-spacer {
+	flex: 1 1 auto;
+}
+
+.site-topbar-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+}
+
+/* --- DROPDOWNS (language / theme) --- */
+.dropdown {
+	position: relative;
+}
+
+.dropdown-trigger {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 38px;
+	height: 38px;
+	border-radius: 10px;
+	border: 1px solid transparent;
+	background: transparent;
+	color: var(--topbar-text);
+	cursor: pointer;
+	transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.dropdown-trigger:hover,
+.dropdown-trigger[aria-expanded="true"] {
+	background-color: var(--dropdown-hover-bg);
+	border-color: var(--topbar-border);
+}
+
+.dropdown-trigger svg {
+	width: 19px;
+	height: 19px;
+}
+
+.dropdown-menu {
+	position: absolute;
+	top: calc(100% + 8px);
+	right: 0;
+	min-width: 190px;
+	background: var(--dropdown-bg);
+	border: 1px solid var(--topbar-border);
+	border-radius: 12px;
+	box-shadow: var(--dropdown-shadow);
+	padding: 6px;
+	display: none;
+	flex-direction: column;
+	gap: 1px;
+	z-index: 1300;
+	max-height: 70vh;
+	overflow-y: auto;
+}
+
+.dropdown.open .dropdown-menu {
+	display: flex;
+}
+
+.dropdown-option {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	width: 100%;
+	border: none;
+	background: transparent;
+	color: var(--brand-text);
+	font-size: 0.9rem;
+	font-family: inherit;
+	text-align: left;
+	padding: 9px 10px;
+	border-radius: 8px;
+	cursor: pointer;
+	transition: background-color 0.15s ease;
+}
+
+.dropdown-option:hover:not(:disabled) {
+	background-color: var(--dropdown-hover-bg);
+}
+
+.dropdown-option.active {
+	background-color: var(--dropdown-active-bg);
+	font-weight: 600;
+	color: var(--brand-navy);
+}
+
+.dropdown-option:disabled {
+	cursor: default;
+	color: var(--brand-text-muted);
+	opacity: 0.6;
+}
+
+.dropdown-option-icon {
+	font-size: 1.05rem;
+	line-height: 1;
+	width: 1.2em;
+	text-align: center;
+}
+
+.dropdown-option-soon {
+	margin-left: auto;
+	font-size: 0.68rem;
+	font-weight: 700;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+	color: var(--brand-text-muted);
+	background: var(--dropdown-hover-bg);
+	padding: 2px 6px;
+	border-radius: 999px;
+}
+
+/* Mobile sidebar hamburger, now docked inside the topbar (docs pages only) */
+.menu-toggle {
+	display: none;
+	width: 38px;
+	height: 38px;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: 1px solid var(--topbar-border);
+	color: var(--topbar-text);
+	border-radius: 10px;
+	cursor: pointer;
+	font-size: 1.1rem;
+	padding: 0;
+}
+
+@media (max-width: 768px) {
+	.menu-toggle {
+		display: flex;
+	}
+
+	.site-topbar-links {
+		display: none;
+	}
+}
+

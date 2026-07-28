@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Datenbanken verwalten – OmniDB-Dokumentation</title>
+	<meta name="description" content="Ein Rundgang durch das OmniDB-Arbeitsbereichsfenster: Verbindungs-Tabs, der Strukturbaum, innere Tabs für Abfragen und Konsolen, und wie man Datenbankobjekte durchsucht und verwaltet.">
+	<link rel="canonical" href="https://www.omnidb.net/de/managing_databases.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/managing_databases.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_databases.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/de/managing_databases.html">
+	<meta property="og:title" content="Datenbanken verwalten - OmniDB-Dokumentation">
+	<meta property="og:description" content="Ein Rundgang durch das OmniDB-Arbeitsbereichsfenster: Verbindungs-Tabs, der Strukturbaum, innere Tabs für Abfragen und Konsolen, und wie man Datenbankobjekte durchsucht und verwaltet.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/de/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentation", "item": "https://www.omnidb.net/de/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Datenbanken verwalten", "item": "https://www.omnidb.net/de/managing_databases.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Navigation umschalten">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Sprache ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Design ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Hell</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dunkel</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Startseite</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Erste Schritte</span>
+			<a href="introduction.html">Einführung</a>
+			<a href="installation.html">Installation</a>
+			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Arbeiten mit Daten</span>
+			<a href="managing_databases.html" class="active">Datenbanken verwalten</a>
+			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
+			<a href="managing_table_data.html">Tabellendaten verwalten</a>
+			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
+			<a href="visualizing_data.html">Daten visualisieren</a>
+			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Erweitert</span>
+			<a href="additional_features.html">Zusätzliche Funktionen</a>
+			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
+			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
+			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="logical_replication.html">Logische Replikation</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server &amp; Tools</span>
+			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="console_tab.html">Konsolen-Tab</a>
+			<a href="advanced_object_search.html">Erweiterte Objektsuche</a>
+			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referenz</span>
+			<a href="legacy_features_and_history.html">Legacy-Funktionen &amp; Historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Datenbanken verwalten</h1>
+<p>Nachdem Sie eine Verbindung erstellt haben, können Sie sie auswählen, indem Sie
+in der Verbindungsübersicht auf die Aktion <em>Select Connection</em> (Verbindung auswählen)
+klicken. Sie werden sehen, dass die Verbindung durch eine Art äußeren Tab dargestellt
+wird, der <em>Connection Tab</em> (Verbindungs-Tab) genannt wird. Und dieser gesamte
+Bereich heißt <em>Workspace Window</em> (Arbeitsbereichsfenster).</p>
+<p><img alt="" src="../assets/img/image_014.webp" /></p>
+<h4>Bereiche des <em>Workspace</em>-Fensters</h4>
+<p>Diese Oberfläche besteht aus mehreren Elementen:</p>
+<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<ul>
+<li><strong>1) Connections</strong> (Verbindungen): Öffnet ein Popup mit der <em>Connections</em>-Übersicht</li>
+<li><strong>2) Outer Tabs</strong> (Äußere Tabs): Mit OmniDB können Sie mehrere Datenbanken gleichzeitig
+bearbeiten. Jede Datenbank ist über einen <em>äußeren Tab</em> zugänglich. Äußere Tabs können
+auch verbindungsunabhängige Funktionen beherbergen, wie etwa die Funktion <em>Snippets</em></li>
+<li><strong>3) Options</strong> (Optionen): Zeigt den aktuell angemeldeten Benutzer an, und falls der
+Benutzer ein Superuser ist, auch einen Link zur <em>Benutzerverwaltung</em>. Zeigt außerdem
+Links zu <em>Benutzereinstellungen</em>, <em>installierten Plugins</em>, <em>Abfrageverlauf</em>,
+<em>Informationen</em> und <em>Abmelden</em>.</li>
+</ul>
+<h4>Äußerer Verbindungs-Tab</h4>
+<p>Der äußere Tab mit dem Namen <em>PostgreSQL – testdb</em> trägt diesen Namen wegen des Alias
+(<em>PostgreSQL</em>), das wir in der Verbindung zur Datenbank <code>testdb</code> angegeben haben. Dieser
+Tab ist ein <em>Connection Outer Tab</em> (äußerer Verbindungs-Tab). Beachten Sie den kleinen Tab
+mit einem Kreuz neben dem äußeren Tab <em>PostgreSQL – testdb</em>. Damit können Sie einen neuen
+äußeren Tab erstellen, der automatisch ein <em>Connection Outer Tab</em> ist. Der <em>Snippet Outer
+Tab</em> hingegen ist fest und steht immer an erster Stelle.</p>
+<p>Ein neuer <em>Connection Outer Tab</em> zeigt automatisch immer auf die erste Verbindung in Ihrer
+Liste der Datenbankverbindungen. Oder, falls Sie auf die Aktion <em>Select Connection</em> geklickt
+haben, zeigt er auf die ausgewählte Verbindung. Betrachten Sie die Elemente innerhalb
+dieses Tabs:</p>
+<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<ul>
+<li><strong>1) Connection Selector</strong> (Verbindungsauswahl): Zeigt alle Verbindungen an und lässt
+den Benutzer die aktuelle auswählen</li>
+<li><strong>2) Tree of Structures</strong> (Strukturbaum): Zeigt einen hierarchischen Baum, in dem Sie
+durch die Datenbankelemente navigieren können</li>
+<li><strong>3) Properties and DDL Panels</strong> (Eigenschaften- und DDL-Panels): Zeigen Eigenschaften
+und DDL zum aktuell ausgewählten Knoten in der Baumansicht an</li>
+<li><strong>4) Inner Tabs</strong> (Innere Tabs): Ermöglichen dem Benutzer, Aktionen in der aktuellen
+Datenbank auszuführen. Es gibt mehrere Arten innerer Tabs für die aktuelle Datenbank. Durch
+Klicken auf den letzten kleinen Tab mit Kreuz können Sie einen neuen Tab hinzufügen. Ein
+neuer Tab kann ein <em>Query Tab</em> (Abfrage-Tab), <em>Console Tab</em> (Konsolen-Tab), <em>Monitoring
+Dashboard</em> (Überwachungs-Dashboard) oder <em>Backends</em> sein</li>
+</ul>
+<p><img alt="" src="../assets/img/image_187.webp" /></p>
+<ul>
+<li><strong>5) Inner Tab Content</strong> (Inhalt des inneren Tabs): Kann je nach Art des inneren Tabs
+variieren. Die Abbildung zeigt einen <em>Query Tab</em>, und in diesem Fall besteht der Inhalt
+aus einem <em>SQL-Editor</em> mit Syntaxhervorhebung, automatischer Vervollständigung sowie
+Suchen &amp; Ersetzen</li>
+<li><strong>6) Inner Tab Actions</strong> (Aktionen des inneren Tabs): Können je nach Art des inneren Tabs
+variieren. Für einen <em>Query Tab</em> sind dies <em>Run</em> (Ausführen), <em>Indent SQL</em> (SQL einrücken),
+<em>Command History</em> (Befehlsverlauf), <em>Explain</em>, <em>Explain Analyze</em>, <em>Autocommit</em> und
+<em>Export Data</em> (Daten exportieren)</li>
+<li><strong>7) Inner Tab Results</strong> (Ergebnisse des inneren Tabs): Bei einem <em>Query Tab</em> wird nach
+Klick auf die <em>Execute-Schaltfläche</em> oder Drücken des Tastenkürzels zum Ausführen (<code>Alt-Q</code>)
+eine Ergebnistabelle mit den Abfrageergebnissen im Unter-Tab <em>Data</em> angezeigt. Ruft die
+Abfrage eine Funktion auf, die Meldungen ausgibt, werden diese im Unter-Tab <em>Messages</em>
+angezeigt. Haben Sie stattdessen auf <em>Explain</em> oder <em>Explain Analyze</em> geklickt, wird der
+Ausführungsplan der Abfrage im Unter-Tab <em>Explain</em> angezeigt.</li>
+</ul>
+<h4>Arbeiten mit Datenbanken</h4>
+<p>Werfen Sie einen Blick auf Ihre Verbindungsauswahl. OmniDB zeigt immer auf die erste
+verfügbare Verbindung, Sie können dies jedoch durch Klicken auf die Auswahl ändern.</p>
+<p><img alt="" src="../assets/img/image_017.webp" /></p>
+<p>Wählen Sie die Verbindung <em>PostgreSQL</em> aus. Gehen Sie nun zum Baum direkt unter der
+Auswahl und klicken Sie, um den Wurzelknoten <em>PostgreSQL</em> zu erweitern.</p>
+<p><img alt="" src="../assets/img/image_018.webp" /></p>
+<p>Bedenken Sie, dass nach 30 Minuten ohne Aktionen an der Datenbank ein <em>Authentication</em>-Popup
+(Authentifizierung) erscheint, was bedeutet, dass das Passwort, das OmniDB verschlüsselt im
+Arbeitsspeicher abgelegt hat, nun abgelaufen ist. Wie bereits erläutert, ist dies wichtig für
+die Sicherheit Ihrer Datenbank. Nachdem Sie das korrekte Passwort eingegeben haben, sehen Sie,
+dass der PostgreSQL-Knoten nun die PostgreSQL-Version anzeigt und außerdem erweitert wurde,
+wobei die aktuelle Datenbankverbindung sowie instanzweite Elemente angezeigt werden:
+<em>Databases</em> (Datenbanken), <em>Tablespaces</em> (Tablespaces), <em>Roles</em> (Rollen) und
+<em>Replication Slots</em> (Replikationsslots).</p>
+<p>Sie können sich mit einer einzelnen PostgreSQL-Datenbank verbinden und über dieselbe
+Verbindung auch andere Datenbanken in derselben PostgreSQL-Instanz erreichen. Die aktuell
+aktive Datenbank wird unterhalb der Verbindungsauswahl angezeigt.</p>
+<p><img alt="" src="../assets/img/image_188.webp" /></p>
+<p>Um sich mit einer anderen Datenbank zu verbinden, erweitern Sie den entsprechenden Knoten
+dieser Datenbank. Es erscheint ein Popup mit der Frage, ob Sie die aktive Datenbank
+wirklich wechseln möchten.</p>
+<p><img alt="" src="../assets/img/image_189.webp" /></p>
+<p>Klicken Sie auf <em>Yes</em> (Ja), und OmniDB wechselt die aktive Datenbank zur ausgewählten
+Datenbank. Dies spiegelt sich in der Anzeige <em>Active database</em> (Aktive Datenbank) sowie im
+Namen des äußeren Tabs wider.</p>
+<p><img alt="" src="../assets/img/image_190.webp" /></p>
+<p>Erweitern Sie nun den Knoten <em>Schemas</em> (Schemata). Sie sehen alle Schemata in der aktuellen
+Datenbank (bei PostgreSQL werden <code>TOAST</code>- und temporäre Schemata nicht angezeigt).</p>
+<p><img alt="" src="../assets/img/image_019.webp" /></p>
+<p>Klicken Sie nun, um das Schema <code>public</code> zu erweitern. Sie sehen verschiedene Arten von
+Elementen, die in diesem Schema enthalten sind.</p>
+<p><img alt="" src="../assets/img/image_020.webp" /></p>
+<p>Klicken Sie nun, um den Knoten <em>Tables</em> (Tabellen) zu erweitern, und Sie sehen alle
+Tabellen im Schema <code>public</code>. Erweitern Sie eine beliebige Tabelle, und Sie sehen ihre
+Spalten, den Primärschlüssel, Fremdschlüssel, Constraints, Indizes, Regeln, Trigger und
+Partitionen.</p>
+<p><img alt="" src="../assets/img/image_021.webp" /></p>
+<p>Um Datensätze innerhalb einer Tabelle anzuzeigen, klicken Sie mit der rechten Maustaste
+darauf und wählen Sie *Data Actions</p>
+<blockquote>
+<p>Query Data*.</p>
+</blockquote>
+<p><img alt="" src="../assets/img/image_022.webp" /></p>
+<p>Beachten Sie, dass OmniDB einen neuen SQL-Editor mit einer einfachen Abfrage zum Auflisten
+der Tabellendatensätze öffnet. Die Datensätze werden in einer Ergebnistabelle direkt unter
+dem Editor angezeigt. Diese Tabelle lässt sich per Tastatur bedienen, als würden Sie eine
+Tabellenkalkulation verwenden. Sie können auch Daten aus einzelnen Zellen oder Zellblöcken
+(die per Tastatur oder Maus ausgewählt werden können) kopieren und in eine beliebige
+Tabellenkalkulation einfügen.</p>
+<p><img alt="" src="../assets/img/image_023.webp" /></p>
+<p>Sie können die Abfrage im SQL-Editor bearbeiten und einfache oder komplexere Abfragen
+schreiben. Klicken Sie zum Ausführen auf die Aktionsschaltfläche, oder drücken Sie die
+Tastenkombination <code>Alt-Q</code>. Übersteigen die Ergebnisse 100 Datensätze, erscheinen die
+zusätzlichen Schaltflächen <em>Fetch More</em> (Weitere abrufen) und <em>Fetch All</em> (Alle abrufen).
+Weitere Details dazu in den nächsten Kapiteln.</p>
+<h4>Arbeiten mit mehreren Tabs innerhalb derselben Verbindung</h4>
+<p>Innerhalb einer einzelnen Verbindung können Sie mehrere innere Abfrage-Tabs erstellen,
+indem Sie auf den letzten kleinen Tab mit Kreuz klicken und dann <em>Query Tab</em> auswählen.</p>
+<p><img alt="" src="../assets/img/image_024.webp" /></p>
+<p>In OmniDB können Sie mehrere SQL-Anweisungen und Prozeduren parallel ausführen. Während
+der Ausführung wird im Tab ein Symbol angezeigt, das den aktuellen Status kennzeichnet.
+Ist ein Vorgang abgeschlossen und Sie befinden sich nicht im entsprechenden Tab, zeigt
+dieser Tab ein grünes Symbol, das anzeigt, dass die dort ausgeführte Routine nun
+abgeschlossen ist.</p>
+<p><img alt="" src="../assets/img/image_025.webp" /></p>
+<p>Durch Klicken auf die <em>Cancel-Schaltfläche</em> (Abbrechen) können Sie einen in der
+Datenbank laufenden Prozess abbrechen.</p>
+<p><img alt="" src="../assets/img/image_026.webp" /></p>
+<p>Sie können einen Tab auch per Drag &amp; Drop verschieben, um seine Reihenfolge zu ändern.
+Dies funktioniert sowohl bei inneren als auch bei äußeren Tabs.</p>
+<p><img alt="" src="../assets/img/image_027.webp" /></p>
+<p>Zusätzlich können Sie Tastenkürzel zur Verwaltung innerer Tabs (SQL-Abfrage) verwenden.
+Dies sind die Standardkürzel unter Windows/Linux (macOS ersetzt Alt durch Strg); alle
+lassen sich im Tab „Tastenkürzel“ des Einstellungsdialogs neu belegen:</p>
+<ul>
+<li><strong>Alt-I</strong>: Fügt einen neuen inneren Tab ein</li>
+<li><strong>Alt-Umschalt-Q</strong>: Entfernt den aktuellen inneren Tab</li>
+<li><strong>Alt-O</strong>: Wechselt den Fokus zum inneren Tab links</li>
+<li><strong>Alt-P</strong>: Wechselt den Fokus zum inneren Tab rechts</li>
+</ul>
+<p>Für äußere (Verbindungs-)Tabs gibt es derzeit keine Tastenkürzel — verwenden Sie hierfür
+das Verschieben per Drag &amp; Drop oder die Maus.</p>
+<p>Alle SQL-Abfrage-Tabs werden automatisch gespeichert, sobald Sie sie ausführen. Selbst wenn
+Sie das OmniDB-Fenster oder den Browser-Tab schließen, sind sie bereits in der OmniDB-
+<em>Benutzerdatenbank</em> gespeichert. Sie werden automatisch wiederhergestellt, wenn Sie
+OmniDB erneut öffnen (bei Verwendung der App), es in einem anderen Browserfenster öffnen
+(bei Verwendung des Servers), oder selbst wenn Sie auf das <em>Connections</em>-Fenster geklickt
+oder sich abgemeldet haben. Das Entfernen eines äußeren oder inneren Tabs über die
+Benutzeroberfläche löscht ihn dauerhaft, sodass er nicht wiederhergestellt wird.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

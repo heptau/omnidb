@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Funciones adicionales — Documentación de OmniDB</title>
+	<meta name="description" content="Herramientas adicionales de OmniDB: configuración de usuario, documentación contextual de PostgreSQL, fragmentos de código, gestión de backends, paneles de propiedades y DDL, exportación de datos y consola SSH.">
+	<link rel="canonical" href="https://www.omnidb.net/es/additional_features.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/additional_features.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/additional_features.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/additional_features.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/additional_features.html">
+	<meta property="og:title" content="Funciones adicionales - Documentación de OmniDB">
+	<meta property="og:description" content="Herramientas adicionales de OmniDB: configuración de usuario, documentación contextual de PostgreSQL, fragmentos de código, gestión de backends, paneles de propiedades y DDL, exportación de datos y consola SSH.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Funciones adicionales", "item": "https://www.omnidb.net/es/additional_features.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html" class="active">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Funciones adicionales</h1>
+		<h4>Configuración de usuario</h4>
+		<p>También en la esquina superior derecha, al hacer clic en el icono con forma de engranaje, OmniDB
+			abrirá la ventana emergente <em>User Settings</em> (Configuración de usuario). Está compuesta por cuatro pestañas:</p>
+		<ul>
+			<li><strong>Shortcuts</strong> (Atajos): permite al usuario cambiar sus atajos de teclado en OmniDB.</li>
+			<li><strong>Options</strong> (Opciones): permite al usuario cambiar el tamaño de fuente de la interfaz y configurar
+				las opciones relacionadas con CSV (codificación, delimitador). El tema de OmniDB (claro/oscuro) se
+				determina automáticamente según la preferencia de esquema de color del sistema operativo.</li>
+			<li><strong>Formatting</strong> (Formato): configura cómo el formateador de SQL (la acción <em>Indent SQL</em>) reescribe
+				su consulta: carácter de sangría (espacios o tabulador), tamaño de sangría (2/3/4), estilo de comas (al principio/al final) y
+				capitalización de palabras clave (conservar/MAYÚSCULAS/minúsculas).</li>
+			<li><strong>Password</strong> (Contraseña): permite al usuario cambiar su contraseña.</li>
+		</ul>
+		<h4>Ayuda contextual</h4>
+		<p>La mayoría de los nodos del árbol (generalmente los de agrupación, como <em>Schemas</em> o <em>Tables</em>) ofrecen
+			ayuda contextual. Se accede a esta función haciendo clic derecho sobre el nodo del árbol.
+			Al hacer clic en la opción <em>Doc: …</em>, OmniDB abre la página específica de la
+			<strong>documentación de PostgreSQL</strong> en línea en su navegador web (el
+			navegador predeterminado del sistema en la aplicación de escritorio, o una nueva pestaña cuando se ejecuta como
+			<a href="deploying_omnidb-server.html">OmniDB Server</a> basado en navegador). También
+			elige la versión de documentación adecuada para el servidor PostgreSQL al que está conectado.</p>
+		<p><img alt="" src="../assets/img/image_071.webp" /></p>
+		<h4>Snippets</h4>
+		<p>La <em>Workspace Window</em> (ventana de espacio de trabajo) tiene una pestaña externa fija con una función muy útil llamada
+			<em>Snippets</em> (fragmentos de código). Con esta función puede almacenar consultas, instrucciones de comandos y
+			cualquier otro tipo de texto que desee. También puede organizar los fragmentos en un
+			árbol de directorios según sus preferencias. Todos los directorios y fragmentos que cree se
+			almacenan dentro de la base de datos de usuario <code>omnidb.db</code> y persisten cuando actualiza OmniDB.
+		</p>
+		<p><img alt="" src="../assets/img/image_127.webp" /></p>
+		<h4>Gestión de backends</h4>
+		<p>Al hacer clic derecho en el nodo raíz del árbol, mover el puntero del ratón hacia
+			<em>Monitoring</em> (Monitorización) y luego hacer clic en <em>Backends</em>, el usuario puede ver toda la actividad
+			que ocurre en la base de datos. Cierta información está oculta para los usuarios normales; solo
+			los superusuarios de la base de datos pueden verla.
+		</p>
+		<p><img alt="" src="../assets/img/image_174.webp" /></p>
+		<p>Al hacer clic en la <em>X</em> de la columna <em>Actions</em> (Acciones), puede finalizar el
+			backend. Aparecerá una ventana emergente de confirmación.</p>
+		<p><img alt="" src="../assets/img/image_175.webp" /></p>
+		<h4>Propiedades y DDL</h4>
+		<p>Al hacer clic en la mayoría de los objetos de la vista de árbol (tablas, secuencias, vistas,
+			roles, bases de datos, etc.), el usuario podrá ver una lista muy completa
+			de propiedades del objeto.</p>
+		<p><img alt="" src="../assets/img/image_176.webp" /></p>
+		<p>En el otro panel, llamado <em>DDL</em>, el usuario podrá ver el código fuente DDL en SQL
+			que se puede usar para recrear el objeto. El usuario puede copiar este texto y
+			pegarlo donde desee.</p>
+		<p><img alt="" src="../assets/img/image_177.webp" /></p>
+		<h4>Exportar datos</h4>
+		<p>La <em>Query Tab</em> (pestaña de consulta) ofrece una forma de guardar los datos de los resultados de una consulta en un archivo CSV o
+			XLSX. Al hacer clic en el botón <em>Export Data</em> (Exportar datos), se inicia un backend cancelable que
+			guarda los datos en el archivo. Una vez finalizado, OmniDB proporciona un enlace llamado
+			<em>Save</em> (Guardar), para que el usuario pueda descargar el archivo.
+		</p>
+		<p><img alt="" src="../assets/img/image_178.webp" /></p>
+		<p>Todos los archivos se almacenan en una carpeta temporal dentro de la carpeta de OmniDB. OmniDB
+			limpia esta carpeta regularmente, conservando solo los archivos de menos de 24 horas de antigüedad.</p>
+		<h4>Historial de consultas</h4>
+		<p>Desde la <em>Query Tab</em> puede hacer clic en el botón <em>Command History</em> (Historial de comandos) para ver un
+			historial de consultas completo, navegable y con función de búsqueda.</p>
+		<p><img alt="" src="../assets/img/image_203.webp" /></p>
+		<h4>Consola SSH</h4>
+		<p>OmniDB también ofrece una consola SSH completa.</p>
+		<p><img alt="" src="../assets/img/image_204.webp" /></p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -1,7 +1,7 @@
 {
   "name": "OmniDB",
   "short_name": "OmniDB",
-  "description": "Revived open-source database management tool. Lightweight, PostgreSQL-focused, NW.js-based.",
+  "description": "Revived open-source database management tool. Lightweight, PostgreSQL-focused.",
   "start_url": "./en/",
   "display": "standalone",
   "background_color": "#f4f7f9",

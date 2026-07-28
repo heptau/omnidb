@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Panel de monitorización — Documentación de OmniDB</title>
+	<meta name="description" content="Cree un panel de monitorización de bases de datos en tiempo real en OmniDB a partir de unidades de tipo tabla, gráfico y serie temporal, incluyendo cómo escribir sus propias unidades personalizadas basadas en SQL.">
+	<link rel="canonical" href="https://www.omnidb.net/es/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/monitoring_dashboard.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/monitoring_dashboard.html">
+	<meta property="og:title" content="Panel de monitorización - Documentación de OmniDB">
+	<meta property="og:description" content="Cree un panel de monitorización de bases de datos en tiempo real en OmniDB a partir de unidades de tipo tabla, gráfico y serie temporal, incluyendo cómo escribir sus propias unidades personalizadas basadas en SQL.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Panel de monitorización", "item": "https://www.omnidb.net/es/monitoring_dashboard.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html" class="active">Panel de monitorización</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Panel de monitorización</h1>
+<p>OmniDB cuenta con una función muy útil llamada <em>Panel de monitorización</em>. Como
+una imagen vale más que mil palabras, eche un vistazo:</p>
+<p><img alt="" src="../assets/img/image_091.webp" /></p>
+<p>Como puede ver, se trata de un nuevo tipo de pestaña interna que muestra gráficos y
+tablas. Esta pestaña interna <em>Monitoring</em> se abre automáticamente al expandir el
+nodo raíz del árbol (el nodo <em>PostgreSQL</em>). Puede dejarla abierta o cerrarla en
+cualquier momento. Para volver a abrirla, haga clic con el botón derecho en el nodo
+raíz y seleccione <em>Dashboard</em>.</p>
+<p><img alt="" src="../assets/img/image_092.webp" /></p>
+<p>El panel está formado por prácticos rectángulos de información llamados <em>Unidades
+de monitorización</em>. A continuación se muestra un ejemplo de unidad de
+monitorización y sus elementos de interfaz:</p>
+<p><img alt="" src="../assets/img/image_093.webp" /></p>
+<ul>
+<li><strong>1</strong>: título de la unidad de monitorización;</li>
+<li><strong>2</strong>: actualiza la unidad de monitorización. Según el tipo, al hacer clic en
+este botón se actualizará toda el área de dibujo o simplemente se hará que el
+gráfico obtenga un nuevo conjunto de valores;</li>
+<li><strong>3</strong>: pausa la unidad de monitorización;</li>
+<li><strong>4</strong>: intervalo en segundos para la actualización automática;</li>
+<li><strong>5</strong>: elimina la unidad de monitorización del panel de monitorización;</li>
+<li><strong>6</strong>: área de dibujo, que varía según el tipo de la unidad de monitorización.</li>
+</ul>
+<h4>Tipos de unidades de monitorización</h4>
+<p>Existen 3 tipos de unidades de monitorización:</p>
+<ul>
+<li><strong>Tabla (Grid)</strong>: el tipo más simple; simplemente ejecuta una consulta de vez
+en cuando y muestra los resultados en una tabla de datos.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_094.webp" /></p>
+<ul>
+<li><strong>Gráfico (Chart)</strong>: cada vez que se actualiza, dibuja un gráfico completo
+nuevo. El conjunto anterior de valores se pierde. Resulta especialmente útil para
+gráficos circulares, aunque también pueden usarse otros tipos de gráfico.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_095.webp" /></p>
+<ul>
+<li><strong>Serie temporal (Timeseries)</strong>: probablemente el tipo de unidad de
+monitorización más útil. Es un gráfico que añade un nuevo conjunto de valores
+cada vez que se actualiza. Los gráficos de líneas o de barras son los que mejor
+se adaptan a este tipo. El componente conserva en el cliente los últimos 100
+conjuntos de valores para que el usuario pueda consultarlos.</li>
+</ul>
+<p><img alt="" src="../assets/img/image_096.webp" /></p>
+<h4>Mostrar y ocultar unidades en el panel</h4>
+<p>Si hace clic en el botón <em>Refresh All</em>, se actualizarán de una sola vez todas las
+unidades de monitorización. También puede eliminar las unidades que no desee
+haciendo clic en el botón <em>Remove</em>. A continuación vamos a eliminar todas las
+unidades del panel para dejarlo vacío:</p>
+<p><img alt="" src="../assets/img/image_097.webp" /></p>
+<p>Las 17 unidades incluidas de serie en OmniDB (métricas de servidor de PostgreSQL y
+MySQL: tasa de transacciones, backends, producción de WAL, tamaño de bases de
+datos/tablas, etc.) se ejecutan como código nativo y no requieren instalar nada
+adicional en la base de datos.</p>
+<p><img alt="" src="../assets/img/image_098.webp" /></p>
+<p>Ahora que el panel está vacío, vamos a añadir algunas unidades. Haga clic en el
+botón <em>Manage Units</em>.</p>
+<p><img alt="" src="../assets/img/image_099.webp" /></p>
+<p>Haga clic en la acción verde para añadir cualquiera de las unidades integradas,
+por ejemplo <em>Backends</em> y <em>Database Size</em>. Espere unos segundos y obtendrá un
+panel como este:</p>
+<p><img alt="" src="../assets/img/image_100.webp" /></p>
+<p>De la misma manera, puede añadir y eliminar cualquier unidad para personalizar el
+panel como desee.</p>
+<h4>Escritura de unidades de monitorización personalizadas</h4>
+<p>OmniDB le permite escribir sus propias unidades, o personalizar las existentes,
+mediante una única consulta SQL: la misma conexión y los mismos permisos que ya
+tiene su editor SQL, solo que ejecutándose según un temporizador en lugar de bajo
+demanda. No es necesario aprender ningún lenguaje de scripting ni entorno
+aislado (sandbox) independiente.</p>
+<p><strong>Nota:</strong> dado que la consulta se vuelve a ejecutar sin supervisión en cada
+intervalo de actualización, solo se admiten consultas <code>SELECT</code> (o
+<code>WITH ... SELECT</code>): una sentencia destructiva pegada por error se rechaza
+directamente en lugar de ejecutarse en silencio según el temporizador.</p>
+<p>Para crear una nueva unidad de monitorización, haga clic en el botón <em>Manage
+Units</em> del panel y, a continuación, en el botón <em>New Unit</em>. Se abrirá un nuevo
+tipo de pestaña interna con un campo Name, una lista desplegable Type, un campo
+Refresh Interval y un único editor de SQL Query (además de una lista desplegable
+Chart Type, que solo se muestra para unidades de tipo <em>Chart</em>).</p>
+<p>La forma de la consulta depende del tipo de unidad:</p>
+<ul>
+<li>
+<p><strong>Grid</strong>: sin forma particular; las columnas y filas que devuelva la consulta
+pasan a formar la tabla directamente. Por ejemplo:</p>
+<pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
+</li>
+<li>
+<p><strong>Chart</strong>: una fila por categoría; la primera columna es la etiqueta y las
+columnas restantes son cada una una serie (el nombre de la columna pasa a ser el
+nombre de la serie). Elija el Chart Type (barras, circular, anillo o líneas) en
+la lista desplegable situada junto al selector Type. Por ejemplo, un gráfico
+circular con el tamaño de las bases de datos:</p>
+<pre><code class="language-sql">SELECT datname,
+       round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
+FROM pg_catalog.pg_database
+WHERE datname NOT IN ('template0', 'template1')</code></pre>
+</li>
+<li>
+<p><strong>Timeseries</strong>: exactamente una fila; cada columna numérica se convierte en
+una serie de líneas que se va ampliando continuamente, actualizada según el
+intervalo configurado. Por ejemplo, para seguir el tamaño de la base de datos a
+lo largo del tiempo:</p>
+<pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
+FROM pg_catalog.pg_database
+WHERE NOT datistemplate</code></pre>
+</li>
+</ul>
+<p>Escriba (o pegue) la consulta en el editor de SQL Query y, a continuación, haga
+clic en el botón <em>Test</em> para verla representada en el área de vista previa; puede
+probarla tantas veces como desee. Una vez que esté conforme con ella, asigne un
+nombre a la unidad, establezca un intervalo de actualización y pulse <em>Save</em>.
+Cierre la pestaña de edición y la nueva unidad aparecerá en la lista de unidades,
+lista para añadirse al panel (acción verde) igual que una unidad integrada.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

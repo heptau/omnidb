@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Klávesové zkratky editoru – Dokumentace OmniDB</title>
+	<meta name="description" content="Úplný přehled klávesových zkratek editoru Ace dostupných v SQL editoru OmniDB, záložce Konzole a prohlížeči DDL: výběr, více kurzorů, skládání kódu a další.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/editor_keyboard_shortcuts.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/editor_keyboard_shortcuts.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/editor_keyboard_shortcuts.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/editor_keyboard_shortcuts.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/editor_keyboard_shortcuts.html">
+	<meta property="og:title" content="Klávesové zkratky editoru - Dokumentace OmniDB">
+	<meta property="og:description" content="Úplný přehled klávesových zkratek editoru Ace dostupných v SQL editoru OmniDB, záložce Konzole a prohlížeči DDL: výběr, více kurzorů, skládání kódu a další.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Klávesové zkratky editoru", "item": "https://www.omnidb.net/cs/editor_keyboard_shortcuts.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Auto</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších objektů</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí v PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="console_tab.html">Záložka Konzole</a>
+			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
+			<a href="editor_keyboard_shortcuts.html" class="active">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Zastaralé funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Klávesové zkratky editoru</h1>
+<p>SQL editor, editor konzole a prohlížeč DDL/vlastností v OmniDB jsou postaveny na
+<a href="https://ace.c9.io/">editoru kódu Ace</a>, který přichází s vlastní bohatou
+sadou klávesových zkratek pro úpravu, výběr a navigaci v textu. Tato kapitola je
+uvádí jako referenci. Jsou oddělené od vlastních zkratek OmniDB na úrovni aplikace
+(Spustit dotaz, Zrušit dotaz, přepínání záložek atd.), které se nacházejí v záložce
+Zkratky dialogu Nastavení a lze je tam předefinovat — jak ji otevřít se dozvíte
+v kapitole <a href="additional_features.html">Další funkce</a>.</p>
+<h2>Operace s řádky</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Akce</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-D</td>
+			<td>Command-D</td>
+			<td>Odstranit řádek</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Down</td>
+			<td>Command-Option-Down</td>
+			<td>Kopírovat řádky dolů</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Up</td>
+			<td>Command-Option-Up</td>
+			<td>Kopírovat řádky nahoru</td>
+		</tr>
+		<tr>
+			<td>Alt-Down</td>
+			<td>Option-Down</td>
+			<td>Přesunout řádky dolů</td>
+		</tr>
+		<tr>
+			<td>Alt-Up</td>
+			<td>Option-Up</td>
+			<td>Přesunout řádky nahoru</td>
+		</tr>
+		<tr>
+			<td>Alt-Delete</td>
+			<td>Ctrl-K</td>
+			<td>Odstranit do konce řádku</td>
+		</tr>
+		<tr>
+			<td>Alt-Backspace</td>
+			<td>Command-Backspace</td>
+			<td>Odstranit do začátku řádku</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Backspace</td>
+			<td>Option-Backspace, Ctrl-Option-Backspace</td>
+			<td>Odstranit slovo vlevo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Delete</td>
+			<td>Option-Delete</td>
+			<td>Odstranit slovo vpravo</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Ctrl-O</td>
+			<td>Rozdělit řádek</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Výběr</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Akce</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-A</td>
+			<td>Command-A</td>
+			<td>Vybrat vše</td>
+		</tr>
+		<tr>
+			<td>Shift-Left</td>
+			<td>Shift-Left</td>
+			<td>Vybrat vlevo</td>
+		</tr>
+		<tr>
+			<td>Shift-Right</td>
+			<td>Shift-Right</td>
+			<td>Vybrat vpravo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Left</td>
+			<td>Option-Shift-Left</td>
+			<td>Vybrat slovo vlevo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Right</td>
+			<td>Option-Shift-Right</td>
+			<td>Vybrat slovo vpravo</td>
+		</tr>
+		<tr>
+			<td>Shift-Home</td>
+			<td>Shift-Home</td>
+			<td>Vybrat po začátek řádku</td>
+		</tr>
+		<tr>
+			<td>Shift-End</td>
+			<td>Shift-End</td>
+			<td>Vybrat po konec řádku</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Right</td>
+			<td>Command-Shift-Right</td>
+			<td>Vybrat do konce řádku</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-Left</td>
+			<td>Command-Shift-Left</td>
+			<td>Vybrat do začátku řádku</td>
+		</tr>
+		<tr>
+			<td>Shift-Up</td>
+			<td>Shift-Up</td>
+			<td>Vybrat nahoru</td>
+		</tr>
+		<tr>
+			<td>Shift-Down</td>
+			<td>Shift-Down</td>
+			<td>Vybrat dolů</td>
+		</tr>
+		<tr>
+			<td>Shift-PageUp</td>
+			<td>Shift-PageUp</td>
+			<td>Vybrat stránku nahoru</td>
+		</tr>
+		<tr>
+			<td>Shift-PageDown</td>
+			<td>Shift-PageDown</td>
+			<td>Vybrat stránku dolů</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Home</td>
+			<td>Command-Shift-Up</td>
+			<td>Vybrat po začátek</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-End</td>
+			<td>Command-Shift-Down</td>
+			<td>Vybrat po konec</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-D</td>
+			<td>Command-Shift-D</td>
+			<td>Duplikovat výběr</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-P</td>
+			<td>---</td>
+			<td>Vybrat po odpovídající závorku</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Více kurzorů</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Akce</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-Alt-Up</td>
+			<td>Ctrl-Option-Up</td>
+			<td>Přidat kurzor nad</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Down</td>
+			<td>Ctrl-Option-Down</td>
+			<td>Přidat kurzor pod</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Right</td>
+			<td>Ctrl-Option-Right</td>
+			<td>Přidat další výskyt do vícenásobného výběru</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Left</td>
+			<td>Ctrl-Option-Left</td>
+			<td>Přidat předchozí výskyt do vícenásobného výběru</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Up</td>
+			<td>Ctrl-Option-Shift-Up</td>
+			<td>Přesunout kurzor z aktuálního řádku na řádek nad ním</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Down</td>
+			<td>Ctrl-Option-Shift-Down</td>
+			<td>Přesunout kurzor z aktuálního řádku na řádek pod ním</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Right</td>
+			<td>Ctrl-Option-Shift-Right</td>
+			<td>Odebrat aktuální výskyt z vícenásobného výběru a přejít na další</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-Shift-Left</td>
+			<td>Ctrl-Option-Shift-Left</td>
+			<td>Odebrat aktuální výskyt z vícenásobného výběru a přejít na předchozí</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-L</td>
+			<td>Ctrl-Shift-L</td>
+			<td>Vybrat vše z vícenásobného výběru</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Přejít na</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Akce</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Left</td>
+			<td>Left, Ctrl-B</td>
+			<td>Přejít vlevo</td>
+		</tr>
+		<tr>
+			<td>Right</td>
+			<td>Right, Ctrl-F</td>
+			<td>Přejít vpravo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Left</td>
+			<td>Option-Left</td>
+			<td>Přejít o slovo vlevo</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Right</td>
+			<td>Option-Right</td>
+			<td>Přejít o slovo vpravo</td>
+		</tr>
+		<tr>
+			<td>Up</td>
+			<td>Up, Ctrl-P</td>
+			<td>Přejít o řádek nahoru</td>
+		</tr>
+		<tr>
+			<td>Down</td>
+			<td>Down, Ctrl-N</td>
+			<td>Přejít o řádek dolů</td>
+		</tr>
+		<tr>
+			<td>Alt-Left, Home</td>
+			<td>Command-Left, Home, Ctrl-A</td>
+			<td>Přejít na začátek řádku</td>
+		</tr>
+		<tr>
+			<td>Alt-Right, End</td>
+			<td>Command-Right, End, Ctrl-E</td>
+			<td>Přejít na konec řádku</td>
+		</tr>
+		<tr>
+			<td>PageUp</td>
+			<td>Option-PageUp</td>
+			<td>Přejít o stránku nahoru</td>
+		</tr>
+		<tr>
+			<td>PageDown</td>
+			<td>Option-PageDown, Ctrl-V</td>
+			<td>Přejít o stránku dolů</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Home</td>
+			<td>Command-Home, Command-Up</td>
+			<td>Přejít na začátek</td>
+		</tr>
+		<tr>
+			<td>Ctrl-End</td>
+			<td>Command-End, Command-Down</td>
+			<td>Přejít na konec</td>
+		</tr>
+		<tr>
+			<td>Ctrl-L</td>
+			<td>Command-L</td>
+			<td>Přejít na řádek</td>
+		</tr>
+		<tr>
+			<td>Ctrl-P</td>
+			<td>---</td>
+			<td>Přejít na odpovídající závorku</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Option-PageDown</td>
+			<td>Posunout stránku dolů</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Option-PageUp</td>
+			<td>Posunout stránku nahoru</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Hledat/Nahradit</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Akce</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Ctrl-F</td>
+			<td>Command-F</td>
+			<td>Hledat</td>
+		</tr>
+		<tr>
+			<td>Ctrl-H</td>
+			<td>Command-Option-F</td>
+			<td>Nahradit</td>
+		</tr>
+		<tr>
+			<td>Ctrl-K</td>
+			<td>Command-G</td>
+			<td>Hledat další</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-K</td>
+			<td>Command-Shift-G</td>
+			<td>Hledat předchozí</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Skládání kódu</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Akce</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Alt-L, Ctrl-F1</td>
+			<td>Command-Option-L, Command-F1</td>
+			<td>Sbalit výběr</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-L, Ctrl-Shift-F1</td>
+			<td>Command-Option-Shift-L, Command-Shift-F1</td>
+			<td>Rozbalit</td>
+		</tr>
+		<tr>
+			<td>Alt-0</td>
+			<td>Command-Option-0</td>
+			<td>Sbalit vše</td>
+		</tr>
+		<tr>
+			<td>Alt-Shift-0</td>
+			<td>Command-Option-Shift-0</td>
+			<td>Rozbalit vše</td>
+		</tr>
+	</tbody>
+</table>
+<h2>Ostatní</h2>
+<table>
+	<thead>
+		<tr>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+			<th>Akce</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Tab</td>
+			<td>Tab</td>
+			<td>Odsadit</td>
+		</tr>
+		<tr>
+			<td>Shift-Tab</td>
+			<td>Shift-Tab</td>
+			<td>Zrušit odsazení</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Z</td>
+			<td>Command-Z</td>
+			<td>Zpět</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-Z, Ctrl-Y</td>
+			<td>Command-Shift-Z, Command-Y</td>
+			<td>Znovu</td>
+		</tr>
+		<tr>
+			<td>Ctrl-,</td>
+			<td>Command-,</td>
+			<td>Zobrazit menu nastavení</td>
+		</tr>
+		<tr>
+			<td>Ctrl-/</td>
+			<td>Command-/</td>
+			<td>Přepnout komentář</td>
+		</tr>
+		<tr>
+			<td>Ctrl-T</td>
+			<td>Ctrl-T</td>
+			<td>Prohodit písmena</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Enter</td>
+			<td>Command-Enter</td>
+			<td>Přejít na celou obrazovku</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-U</td>
+			<td>Ctrl-Shift-U</td>
+			<td>Převést na malá písmena</td>
+		</tr>
+		<tr>
+			<td>Ctrl-U</td>
+			<td>Ctrl-U</td>
+			<td>Převést na velká písmena</td>
+		</tr>
+		<tr>
+			<td>Insert</td>
+			<td>Insert</td>
+			<td>Přepisování</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Shift-E</td>
+			<td>Command-Shift-E</td>
+			<td>Přehrát makro</td>
+		</tr>
+		<tr>
+			<td>Ctrl-Alt-E</td>
+			<td>---</td>
+			<td>Nahrávat makro</td>
+		</tr>
+		<tr>
+			<td>Delete</td>
+			<td>---</td>
+			<td>Odstranit</td>
+		</tr>
+		<tr>
+			<td>---</td>
+			<td>Ctrl-L</td>
+			<td>Vycentrovat výběr</td>
+		</tr>
+	</tbody>
+</table>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>
