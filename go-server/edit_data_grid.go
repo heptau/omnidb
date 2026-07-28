@@ -15,12 +15,15 @@ type editDataColumnRef struct {
 	VType   string `json:"v_type"`
 }
 
-// recordsQuery mirrors each engine's QueryTableRecords — column list, table
-// reference, and filter/order-by text are all trusted, already-typed-by-
-// the-authenticated-user SQL fragments (the same trust boundary as the SQL
-// console itself), so they're formatted directly into the query text, same
-// as Python. Nothing about *data values* goes through this function —
-// those are always bound parameters (see buildInsertCommand/
+// recordsQuery mirrors each engine's QueryTableRecords, formatting its
+// pieces directly into the query text, same as Python. columnList and
+// tableRef are caller-verified against the connection's own catalog before
+// reaching here (see verifyEditDataColumnRefs/editDataTableRef) — filter/
+// order-by text is the one piece that stays a trusted, already-typed-by-
+// the-authenticated-user SQL fragment (the same trust boundary as the SQL
+// console itself), since a filter box has to accept arbitrary WHERE-clause
+// expressions by design. Nothing about *data values* goes through this
+// function — those are always bound parameters (see buildInsertCommand/
 // buildUpdateCommand/buildDeleteCommand), unlike Python's original, which
 // built INSERT/UPDATE/DELETE by string-concatenating cell values into the
 // SQL text (safe-ish for its "quoted" types via naive ” escaping, but
@@ -122,13 +125,75 @@ func normalizeColumnName(name string) string {
 	return strings.ToLower(strings.ReplaceAll(name, `"`, ""))
 }
 
+// columnNameLookup builds a normalized-name -> catalog's-own-name map out of
+// a table's real column list (editDataColumns) — the lookup
+// verifyEditDataColumnRefs/verifyEditDataPKValues use to confirm a
+// request-supplied column name is real before it's ever spliced into SQL
+// text.
+func columnNameLookup(cols []editDataColumn) map[string]string {
+	m := make(map[string]string, len(cols))
+	for _, c := range cols {
+		m[normalizeColumnName(c.Name)] = c.Name
+	}
+	return m
+}
+
+// verifyEditDataColumnRefs confirms every requested column name is a real
+// column of the table (byNormalized, built by columnNameLookup) and returns
+// a copy using the catalog's own name for each — same "return the verified
+// value" principle as editDataTableRef/verifiedSchemaTable, needed because
+// editDataColumnList/buildInsertCommand/buildUpdateCommand all splice
+// column names directly into SQL text with no bind-parameter form available
+// for an identifier position.
+func verifyEditDataColumnRefs(byNormalized map[string]string, columns []editDataColumnRef) ([]editDataColumnRef, error) {
+	out := make([]editDataColumnRef, len(columns))
+	for i, c := range columns {
+		real, ok := byNormalized[normalizeColumnName(c.VColumn)]
+		if !ok {
+			return nil, fmt.Errorf("column %s does not exist anymore. Please refresh the tree view", c.VColumn)
+		}
+		out[i] = editDataColumnRef{VColumn: real, VType: c.VType}
+	}
+	return out, nil
+}
+
+// verifyEditDataPKValues is verifyEditDataColumnRefs' counterpart for
+// editDataPKValue, which additionally carries the row's own PK cell value —
+// data, not an identifier, so it's passed through unchanged and is always
+// bound as a query parameter, never spliced into SQL text.
+func verifyEditDataPKValues(byNormalized map[string]string, pk []editDataPKValue) ([]editDataPKValue, error) {
+	out := make([]editDataPKValue, len(pk))
+	for i, p := range pk {
+		real, ok := byNormalized[normalizeColumnName(p.VColumn)]
+		if !ok {
+			return nil, fmt.Errorf("column %s does not exist anymore. Please refresh the tree view", p.VColumn)
+		}
+		out[i] = editDataPKValue{VColumn: real, VType: p.VType, VValue: p.VValue}
+	}
+	return out, nil
+}
+
 // fetchEditDataRows mirrors thread_query_edit_data.
 func fetchEditDataRows(db *sql.DB, technology, schema, table, filter string, count int, pkList, columns []editDataColumnRef) (rows [][]string, rowPKs [][]map[string]any, queryInfo string, err error) {
 	tableRef, err := editDataTableRef(db, technology, schema, table)
 	if err != nil {
 		return nil, nil, "", err
 	}
-	columnList := editDataColumnList(columns)
+	catalogCols, err := editDataColumns(technology, db, schema, table)
+	if err != nil {
+		return nil, nil, "", err
+	}
+	byNormalized := columnNameLookup(catalogCols)
+	verifiedColumns, err := verifyEditDataColumnRefs(byNormalized, columns)
+	if err != nil {
+		return nil, nil, "", err
+	}
+	verifiedPKList, err := verifyEditDataColumnRefs(byNormalized, pkList)
+	if err != nil {
+		return nil, nil, "", err
+	}
+
+	columnList := editDataColumnList(verifiedColumns)
 	q := recordsQuery(technology, columnList, tableRef, filter, count)
 
 	r, err := db.Query(q)
@@ -152,8 +217,8 @@ func fetchEditDataRows(db *sql.DB, technology, schema, table, filter string, cou
 			return nil, nil, "", err
 		}
 
-		rowPK := make([]map[string]any, 0, len(pkList))
-		for _, pk := range pkList {
+		rowPK := make([]map[string]any, 0, len(verifiedPKList))
+		for _, pk := range verifiedPKList {
 			idx, ok := colIndex[normalizeColumnName(pk.VColumn)]
 			value := ""
 			if ok {
@@ -259,18 +324,33 @@ func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][
 	if err != nil {
 		return nil, err
 	}
+	catalogCols, err := editDataColumns(technology, db, schema, table)
+	if err != nil {
+		return nil, err
+	}
+	byNormalized := columnNameLookup(catalogCols)
+	verifiedColumns, err := verifyEditDataColumnRefs(byNormalized, columns)
+	if err != nil {
+		return nil, err
+	}
 	results := make([]editDataRowResult, 0, len(rowsInfo))
 
 	for i, info := range rowsInfo {
+		verifiedPK, err := verifyEditDataPKValues(byNormalized, info.PK)
+		if err != nil {
+			results = append(results, editDataRowResult{Mode: info.Mode, Index: info.Index, Error: true, Message: err.Error()})
+			continue
+		}
+
 		var sqlText string
 		var args []any
 		switch info.Mode {
 		case -1:
-			sqlText, args = buildDeleteCommand(technology, tableRef, info.PK)
+			sqlText, args = buildDeleteCommand(technology, tableRef, verifiedPK)
 		case 2:
-			sqlText, args = buildInsertCommand(technology, tableRef, columns, dataRows[i])
+			sqlText, args = buildInsertCommand(technology, tableRef, verifiedColumns, dataRows[i])
 		case 1:
-			sqlText, args = buildUpdateCommand(technology, tableRef, columns, dataRows[i], info.ChangedCols, info.PK)
+			sqlText, args = buildUpdateCommand(technology, tableRef, verifiedColumns, dataRows[i], info.ChangedCols, verifiedPK)
 		default:
 			continue
 		}

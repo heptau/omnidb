@@ -76,15 +76,10 @@ func mysqlViewColumns(db *sql.DB, schema, view string) ([]mysqlViewColumn, error
 
 // mysqlViewDefinition mirrors GetViewDefinition — MySQL/MariaDB reconstruct
 // DDL natively via SHOW CREATE, same trick GetDDL uses for everything else.
+// schema/view are verified against the catalog inside mysqlShowCreate
+// itself, right before the query that uses them — see its comment.
 func mysqlViewDefinition(db *sql.DB, schema, view string) (string, error) {
-	vSchema, vView, err := mysqlVerifiedSchemaTable(db, schema, view)
-	if err != nil {
-		return "", err
-	}
-	if vView == "" {
-		return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, view)
-	}
-	return mysqlShowCreate(db, "view", vSchema, vView, 1)
+	return mysqlShowCreate(db, "view", schema, view, 1)
 }
 
 type mysqlRoutine struct {
@@ -196,36 +191,24 @@ func scanRoutineFields(rows *sql.Rows) ([]mysqlRoutineField, error) {
 	return out, rows.Err()
 }
 
-// mysqlFunctionDefinition mirrors GetFunctionDefinition.
+// mysqlFunctionDefinition mirrors GetFunctionDefinition. function isn't
+// verified here (see mysqlShowCreate's comment for why) — the DROP FUNCTION
+// comment line uses the raw request value same as Python did, cosmetic only.
 func mysqlFunctionDefinition(db *sql.DB, schema, function string) (string, error) {
-	vSchema, vFunction, err := mysqlVerifiedSchemaRoutine(db, schema, function, "FUNCTION")
+	body, err := mysqlShowCreate(db, "function", schema, function, 2)
 	if err != nil {
 		return "", err
 	}
-	if vFunction == "" {
-		return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, function)
-	}
-	body, err := mysqlShowCreate(db, "function", vSchema, vFunction, 2)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("--DROP FUNCTION %s;\n%s", vFunction, body), nil
+	return fmt.Sprintf("--DROP FUNCTION %s;\n%s", function, body), nil
 }
 
 // mysqlProcedureDefinition mirrors GetProcedureDefinition.
 func mysqlProcedureDefinition(db *sql.DB, schema, procedure string) (string, error) {
-	vSchema, vProcedure, err := mysqlVerifiedSchemaRoutine(db, schema, procedure, "PROCEDURE")
+	body, err := mysqlShowCreate(db, "procedure", schema, procedure, 2)
 	if err != nil {
 		return "", err
 	}
-	if vProcedure == "" {
-		return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, procedure)
-	}
-	body, err := mysqlShowCreate(db, "procedure", vSchema, vProcedure, 2)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("--DROP PROCEDURE %s;\n%s", vProcedure, body), nil
+	return fmt.Sprintf("--DROP PROCEDURE %s;\n%s", procedure, body), nil
 }
 
 // mysqlVerifiedSchemaRoutine is mysqlVerifiedSchemaTable's counterpart for
@@ -251,8 +234,39 @@ func mysqlVerifiedSchemaRoutine(db *sql.DB, schema, routine, routineType string)
 // SHOW CREATE's result columns directly (column 1 for tables/views, column
 // 2 for functions/procedures, which also return a "Create Function" style
 // header column first).
+//
+// schema/object are verified against the catalog right here, immediately
+// before the query that uses them, rather than by a caller — SHOW CREATE
+// has no bind-parameter form for its target, so quoteMySQLIdent's escaping
+// is the only thing standing between a request-controlled schema/object and
+// this query text otherwise. Verifying (and using the catalog's own
+// returned copy) in the same function as the sink mirrors
+// sqliteVerifiedTableName/postgresVerifiedRoleName's proven pattern
+// (sqlite_constraints.go/postgresql_serverlevel.go) — doing the lookup one
+// function away, in each caller, left this exact sink still flagged.
 func mysqlShowCreate(db *sql.DB, kind, schema, object string, colIndex int) (string, error) {
-	rows, err := db.Query(fmt.Sprintf("show create %s %s.%s", kind, quoteMySQLIdent(schema), quoteMySQLIdent(object)))
+	var vSchema, vObject string
+	var err error
+	switch kind {
+	case "table", "view":
+		vSchema, vObject, err = mysqlVerifiedSchemaTable(db, schema, object)
+	case "function", "procedure":
+		routineType := "FUNCTION"
+		if kind == "procedure" {
+			routineType = "PROCEDURE"
+		}
+		vSchema, vObject, err = mysqlVerifiedSchemaRoutine(db, schema, object, routineType)
+	default:
+		return "", fmt.Errorf("unsupported SHOW CREATE kind: %q", kind)
+	}
+	if err != nil {
+		return "", err
+	}
+	if vObject == "" {
+		return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, object)
+	}
+
+	rows, err := db.Query(fmt.Sprintf("show create %s %s.%s", kind, quoteMySQLIdent(vSchema), quoteMySQLIdent(vObject)))
 	if err != nil {
 		return "", err
 	}

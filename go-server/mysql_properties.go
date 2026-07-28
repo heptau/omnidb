@@ -136,34 +136,16 @@ func mysqlPropertiesRoutine(db *sql.DB, schema, routine, routineType string) ([]
 // SHOW CREATE has no bind-parameter form for its keyword, so this whitelist
 // is the injection defense in place of one, same pattern as
 // oracleSessionIDPattern in killbackend_smalltail.go. schema/object are
-// request-body fields too, so they go through the same verified-catalog-
-// lookup pattern mysqlViewDefinition/mysqlFunctionDefinition/
-// mysqlProcedureDefinition already use (mysql_routines.go) before reaching
-// mysqlShowCreate.
+// request-body fields too, but mysqlShowCreate verifies those against the
+// catalog itself (see its comment) — no separate lookup needed here.
 func mysqlDDL(db *sql.DB, schema, object, kind string) (string, error) {
 	switch kind {
-	case "table", "view":
-		vSchema, vObject, err := mysqlVerifiedSchemaTable(db, schema, object)
-		if err != nil {
-			return "", err
+	case "table", "view", "function", "procedure":
+		colIndex := 1
+		if kind == "function" || kind == "procedure" {
+			colIndex = 2
 		}
-		if vObject == "" {
-			return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, object)
-		}
-		return mysqlShowCreate(db, kind, vSchema, vObject, 1)
-	case "function", "procedure":
-		routineType := "FUNCTION"
-		if kind == "procedure" {
-			routineType = "PROCEDURE"
-		}
-		vSchema, vObject, err := mysqlVerifiedSchemaRoutine(db, schema, object, routineType)
-		if err != nil {
-			return "", err
-		}
-		if vObject == "" {
-			return "", fmt.Errorf("object %s.%s does not exist anymore. Please refresh the tree view", schema, object)
-		}
-		return mysqlShowCreate(db, kind, vSchema, vObject, 2)
+		return mysqlShowCreate(db, kind, schema, object, colIndex)
 	default:
 		return "", fmt.Errorf("unsupported DDL kind: %q", kind)
 	}
