@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.1.0] - 2026-07-30
+
 ### Added
 - Properties panel's DDL tab now shows each object's comment and privileges below its `CREATE`
   statement, not just the bare statement. Previously only PostgreSQL tables/views/foreign tables
