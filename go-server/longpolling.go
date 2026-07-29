@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -530,9 +531,32 @@ func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData,
 	}
 	defer db.Close()
 
+	// Same multi-statement handling as startCursor (querycursor.go): split
+	// on semicolons and run everything but the last statement via Exec, so
+	// a script like "select 1; select 2;" doesn't get handed to Postgres as
+	// one prepared statement (which it rejects outright).
+	statements := splitSQLStatements(sqlText)
+	if len(statements) == 0 {
+		statements = []string{sqlText}
+	}
+	last := statements[len(statements)-1]
+
+	ctx := context.Background()
 	var rows *sql.Rows
 	if q.VAutocommit {
-		rows, err = db.Query(sqlText)
+		var conn *sql.Conn
+		conn, err = db.Conn(ctx)
+		if err == nil {
+			defer conn.Close()
+			for _, stmt := range statements[:len(statements)-1] {
+				if _, err = conn.ExecContext(ctx, stmt); err != nil {
+					break
+				}
+			}
+			if err == nil {
+				rows, err = conn.QueryContext(ctx, last)
+			}
+		}
 	} else {
 		// Mode 2/all-data is a one-shot, read-only-in-practice fetch with
 		// no COMMIT/ROLLBACK button of its own anywhere in the UI for it
@@ -543,9 +567,16 @@ func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData,
 		tx, err = db.Begin()
 		if err == nil {
 			defer tx.Rollback()
-			rows, err = tx.Query(sqlText)
+			for _, stmt := range statements[:len(statements)-1] {
+				if _, err = tx.ExecContext(ctx, stmt); err != nil {
+					break
+				}
+			}
 			if err == nil {
-				err = tx.Commit()
+				rows, err = tx.QueryContext(ctx, last)
+				if err == nil {
+					err = tx.Commit()
+				}
 			}
 		}
 	}

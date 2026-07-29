@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -26,6 +27,7 @@ type queryCursor struct {
 	mu         sync.Mutex
 	db         *sql.DB
 	tx         *sql.Tx
+	conn       *sql.Conn // pinned connection for the autocommit path, see startCursor
 	rows       *sql.Rows
 	cols       []string
 	colTypes   []string // DatabaseTypeName for each column
@@ -67,6 +69,9 @@ func closeCursorLocked(c *queryCursor) {
 	if c.tx != nil {
 		c.tx.Rollback()
 	}
+	if c.conn != nil {
+		c.conn.Close()
+	}
 	if c.db != nil {
 		c.db.Close()
 	}
@@ -106,22 +111,63 @@ func closeCursorsForClient(clientID string) {
 func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit bool) (*queryCursor, error) {
 	closeCursor(clientID, tabID)
 
+	// Postgres (via pgx's extended query protocol) rejects more than one
+	// command in a single prepared statement outright ("cannot insert
+	// multiple commands into a prepared statement", SQLSTATE 42601), and
+	// running a semicolon-separated script as one driver call is dodgy for
+	// every other engine too. So a multi-statement editor run (e.g.
+	// "select 1; select 2;") is split the same way the console tab already
+	// splits scripts (see splitSQLStatements), every statement but the last
+	// runs via Exec, and only the last one's result set becomes this
+	// cursor's grid — matching the single-grid-per-run UI the frontend
+	// actually has (see go-backend-migration memory).
+	statements := splitSQLStatements(sqlText)
+	if len(statements) == 0 {
+		statements = []string{sqlText}
+	}
+	last := statements[len(statements)-1]
+
+	ctx := context.Background()
 	var tx *sql.Tx
+	var conn *sql.Conn
 	var rows *sql.Rows
 	var err error
 	if autocommit {
-		rows, err = db.Query(sqlText)
+		// Pinned to one physical connection (rather than plain db.Exec/
+		// db.Query, which may each hop to a different pooled connection)
+		// so session state a later statement might depend on — temp
+		// tables, SET, search_path — survives from one statement to the
+		// next, same as running them one after another in a real client.
+		conn, err = db.Conn(ctx)
+		if err == nil {
+			for _, stmt := range statements[:len(statements)-1] {
+				if _, err = conn.ExecContext(ctx, stmt); err != nil {
+					break
+				}
+			}
+			if err == nil {
+				rows, err = conn.QueryContext(ctx, last)
+			}
+		}
 	} else {
 		tx, err = db.Begin()
-		if err != nil {
-			db.Close()
-			return nil, err
+		if err == nil {
+			for _, stmt := range statements[:len(statements)-1] {
+				if _, err = tx.ExecContext(ctx, stmt); err != nil {
+					break
+				}
+			}
+			if err == nil {
+				rows, err = tx.QueryContext(ctx, last)
+			}
 		}
-		rows, err = tx.Query(sqlText)
 	}
 	if err != nil {
 		if tx != nil {
 			tx.Rollback()
+		}
+		if conn != nil {
+			conn.Close()
 		}
 		db.Close()
 		return nil, err
@@ -131,6 +177,9 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 		rows.Close()
 		if tx != nil {
 			tx.Rollback()
+		}
+		if conn != nil {
+			conn.Close()
 		}
 		db.Close()
 		return nil, err
@@ -143,7 +192,7 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 		}
 	}
 
-	c := &queryCursor{db: db, tx: tx, rows: rows, cols: cols, colTypes: colTypes, autocommit: autocommit}
+	c := &queryCursor{db: db, tx: tx, conn: conn, rows: rows, cols: cols, colTypes: colTypes, autocommit: autocommit}
 	queryCursors.Store(cursorKey(clientID, tabID), c)
 	return c, nil
 }
