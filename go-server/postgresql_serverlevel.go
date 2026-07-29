@@ -61,14 +61,30 @@ func postgresqlTablespaces(db *sql.DB) ([]postgresqlNamedOID, error) {
 	return scanNamedOIDs(rows)
 }
 
+// postgresqlRole extends postgresqlNamedOID with rolcanlogin so the tree can
+// tell login roles ("users") apart from group roles.
+type postgresqlRole struct {
+	Name     string
+	OID      int64
+	CanLogin bool
+}
+
 // postgresqlRoles mirrors PostgreSQL.py's QueryRoles.
-func postgresqlRoles(db *sql.DB) ([]postgresqlNamedOID, error) {
-	rows, err := db.Query(`select quote_ident(rolname) as name, oid from pg_roles order by rolname`)
+func postgresqlRoles(db *sql.DB) ([]postgresqlRole, error) {
+	rows, err := db.Query(`select quote_ident(rolname) as name, oid, rolcanlogin from pg_roles order by rolname`)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
-	return scanNamedOIDs(rows)
+	out := make([]postgresqlRole, 0)
+	for rows.Next() {
+		var r postgresqlRole
+		if err := rows.Scan(&r.Name, &r.OID, &r.CanLogin); err != nil {
+			return nil, err
+		}
+		out = append(out, r)
+	}
+	return out, rows.Err()
 }
 
 // postgresqlExtensions mirrors PostgreSQL.py's QueryExtensions.

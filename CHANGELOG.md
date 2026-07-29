@@ -7,6 +7,97 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- PostgreSQL object tree now distinguishes login roles ("users") from group roles in the Roles
+  list with a different icon, based on `rolcanlogin` — previously every role showed the same
+  single-user icon regardless of whether it could actually log in.
+- Query tab now asks for confirmation before running `DROP`/`TRUNCATE` or a `DELETE`/`UPDATE`
+  with no `WHERE` clause — a best-effort, comment-stripped check (the same tradeoff as the
+  backend's read-only-query guard: a safety net against an honest mistake, not a security
+  boundary) routes the statement through the existing confirmation modal before it reaches the
+  backend.
+- SQL editor autocomplete: a per-user setting for which suggestion categories to show,
+  unambiguous keyword suffixes (`SELECT` → `SELECT `, `COALESCE` → `COALESCE(`, etc.), a `::`
+  popup that only offers data types, a single results column for schema/database/role/
+  tablespace/extension suggestions (their second column was always empty), and the `VARBIT`/
+  `ELSIF` keywords.
+
+### Changed
+- CI now builds the Wails frontend (`npm ci && npm run build`) before compiling `wails-app`,
+  matching what `wails build` already does via the Wails CLI — the plain `go build ./...` step
+  CI used had no way to satisfy `//go:embed all:frontend/dist` on a fresh checkout, since
+  `frontend/dist` is generated and gitignored.
+- `SECURITY.md` updated to reflect the Go backend (scope now points at `go-server/`/
+  `wails-app/`) instead of the pre-4.0 Python/Django/plugin-system era.
+
+### Fixed
+- Query tab: running multiple statements separated by semicolons (e.g. `select 1; select 2;`)
+  against PostgreSQL failed outright with `cannot insert multiple commands into a prepared
+  statement (SQLSTATE 42601)`, since the whole editor text was handed to the driver as one query
+  going through pgx's extended query protocol (implicit `Prepare`), which Postgres rejects for
+  more than one command. Fixed by splitting the text into individual statements (same splitter
+  the console tab already uses), running every statement but the last via `Exec` on a pinned
+  connection/transaction, and using the last statement's result set for the tab's grid.
+- SQL editor autocomplete: the macOS manual-trigger shortcut collided with the native "start of
+  line" binding (moved to Option+Space); suggestions only triggered after 3+ characters typed;
+  the wrong entry could get selected on Enter/click due to a row-index-vs-filtered-list mismatch
+  in the AG Grid popup; AG Grid's async cell-focus tracking stole keyboard focus from the editor
+  after any grid rebuild (schema/table/function lists, and right after typing `::`); and Tab lost
+  editor focus entirely because the handler never called `preventDefault()`.
+- `postgresqlChangeRolePassword` only ever generated the legacy md5 password-verifier format,
+  never the SCRAM-SHA-256 verifier Postgres has defaulted new passwords to since version 10 —
+  changing a role's password against a server whose `pg_hba.conf` requires `scram-sha-256`
+  silently set a password nobody could actually log in with. Fixed by reading the target
+  server's own `password_encryption` setting and generating whichever verifier format it
+  actually uses; live-verified end-to-end against a real PostgreSQL 16 server under both auth
+  methods, including that a wrong password is still correctly rejected.
+
+### Removed
+- Legacy NW.js deploy scripts (`deploy/linux/{deploy.sh,build_images.sh,pkgbuild/,tarbuild/}`,
+  `deploy/windows/{deploy.sh,win-icon.ico}`, `deploy/macosx/deploy.sh`) — hardcoded old NW.js
+  versions, predated the current Makefile build system, and weren't invoked by the Makefile or
+  any CI workflow.
+
+### Security
+- Closed a family of defense-in-depth SQL-injection gaps flagged by CodeQL where a
+  request-controlled identifier (table/column/role/schema name) was properly quoted/escaped but
+  the original, unvalidated string — not the validated one — still flowed into a query with no
+  bind-parameter form for that identifier (`PRAGMA`, `ALTER ROLE`, `SHOW CREATE`, etc.). None
+  were exploitable at runtime (escaping was already correct), but none were provably safe to
+  static analysis either. Fixed across every flagged site by verifying the identifier against
+  the connection's own catalog first and building the query from *that returned, trusted value*
+  instead of the original parameter: SQLite PRAGMA table/index names
+  (`sqliteTableExists`/`sqliteTableOrViewExists`), Postgres `ALTER ROLE` role names (looked up in
+  `pg_roles`), MySQL `SHOW CREATE`'s schema/object and DDL kind keyword, edit-data grid column
+  names and PK values, and Oracle's kill-session `sid`/`serial#` (now parsed into integers and
+  rebuilt rather than only regex-guarded). The Wails desktop shell's native save-dialog relay got
+  the same treatment for its `srcPath`, since the loopback listener can't authenticate that its
+  caller really is go-server.
+- Aimara.js's tree widget and omnis-legere.js's EXPLAIN visualizer built `innerHTML` from raw
+  object names / EXPLAIN JSON fields with no HTML escaping (Aimara only stripped quotes) — any
+  table/column/role/snippet name containing markup could execute JS for anyone browsing that
+  connection's tree, including other users on a shared/public connection. Both now escape before
+  rendering.
+- go-server's double-submit CSRF check previously only applied to `/sign_in/`; a single
+  `requireCSRF` middleware now covers every native state-changing POST route (save/delete
+  connection, users, snippets, monitor units, role passwords, kill-backend, edit-data, etc.)
+  instead of relying solely on the `SameSite=Lax` cookie attribute. The desktop shell's loopback
+  `/open-url` relay now validates the URL scheme (http/https only) itself rather than relying
+  solely on the caller and Wails' own sanitizer. Session and CSRF cookies now set `Secure` based
+  on the actual request (TLS or `X-Forwarded-Proto: https`) instead of leaving it off
+  unconditionally.
+- The docs site's language redirect (`docs/index.html`, `docs/assets/lang-switcher.js`) read a
+  language code from `localStorage`/a click target and, despite an existing whitelist check,
+  still passed the original tainted string to `window.location.href` — reworked so the value
+  that actually reaches `location.href` is always the literal whitelisted array entry, never the
+  original candidate.
+- Dependency updates: Vite 3.0.7 → 6.4.3 (13 Dependabot advisories in the Wails frontend dev
+  server: `@fs`/`?raw`/`?inline&import`/`.svg` path-traversal bypasses), `golang.org/x/crypto`
+  0.33.0 → 0.52.0 (CVE-2024-45337, SSH server source-address-validation bypass),
+  `golang.org/x/net` 0.54.0 → 0.56.0 (HTML parser CPU-exhaustion DoS).
+- Pinned `wails install` to v2.12.0 and `typolima` to v1.3.0 in the build tooling, instead of
+  installing whatever is latest on every build.
+
 ## [4.0.0] - 2026-07-27
 
 ### Added

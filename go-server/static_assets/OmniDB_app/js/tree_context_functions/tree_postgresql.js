@@ -5451,13 +5451,17 @@ function getRolesPostgresql(node) {
 			node.tag.num_tablespaces = p_return.v_data.length;
 
 			for (i = 0; i < p_return.v_data.length; i++) {
+				var v_role_icon = p_return.v_data[i].v_can_login
+					? "fas node-all fa-user node-user"
+					: "fas node-all fa-user-friends node-user-group";
 				v_node = node.createChildNode(
 					p_return.v_data[i].v_name,
 					false,
-					"fas node-all fa-user node-user",
+					v_role_icon,
 					{
 						type: "role",
 						oid: p_return.v_data[i].v_oid,
+						can_login: p_return.v_data[i].v_can_login,
 					},
 					"cm_role",
 					null,

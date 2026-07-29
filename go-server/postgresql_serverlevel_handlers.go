@@ -14,6 +14,14 @@ func namedOIDEnvelope(items []postgresqlNamedOID) []map[string]any {
 	return out
 }
 
+func roleEnvelope(items []postgresqlRole) []map[string]any {
+	out := make([]map[string]any, 0, len(items))
+	for _, i := range items {
+		out = append(out, map[string]any{"v_name": i.Name, "v_oid": i.OID, "v_can_login": i.CanLogin})
+	}
+	return out
+}
+
 // handleGetDatabaseObjectsPostgreSQL mirrors get_database_objects — a
 // pass-through stub in Python (`v_return['v_data'] = {}`, no query at all).
 func handleGetDatabaseObjectsPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -114,7 +122,7 @@ func handleGetRolesPostgreSQL(upstream *url.URL, fallback http.Handler) http.Han
 			writeDatabaseError(w, err.Error())
 			return
 		}
-		writeEnvelope(w, namedOIDEnvelope(items), false, -1)
+		writeEnvelope(w, roleEnvelope(items), false, -1)
 	}
 }
 
