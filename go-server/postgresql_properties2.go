@@ -84,7 +84,7 @@ func postgresqlPropertiesDomain(db *sql.DB, schema, domain string) ([][2]string,
 			   t.typdefault as "Default"
 		from pg_type t
 		join pg_namespace n on n.oid = t.typnamespace
-		where n.nspname = $1 and t.typname = $2
+		where quote_ident(n.nspname) = $1 and quote_ident(t.typname) = $2
 	`, schema, domain)
 }
 
@@ -107,7 +107,7 @@ func postgresqlPropertiesType(db *sql.DB, schema, typeName string) ([][2]string,
 			   pg_catalog.pg_get_userbyid(t.typowner) as "Owner"
 		from pg_type t
 		join pg_namespace n on n.oid = t.typnamespace
-		where n.nspname = $1 and t.typname = $2
+		where quote_ident(n.nspname) = $1 and quote_ident(t.typname) = $2
 	`, schema, typeName)
 }
 
@@ -175,7 +175,7 @@ func postgresqlPropertiesForeignTable(db *sql.DB, schema, table string) ([][2]st
 		join pg_class c on c.oid = f.ftrelid
 		join pg_namespace n on n.oid = c.relnamespace
 		join pg_foreign_server s on s.oid = f.ftserver
-		where n.nspname = $1 and c.relname = $2
+		where quote_ident(n.nspname) = $1 and quote_ident(c.relname) = $2
 	`, schema, table)
 }
 
@@ -192,7 +192,7 @@ func postgresqlPropertiesEventTrigger(db *sql.DB, name string) ([][2]string, err
 		from pg_event_trigger t
 		join pg_proc p on p.oid = t.evtfoid
 		join pg_namespace n on n.oid = p.pronamespace
-		where t.evtname = $1
+		where quote_ident(t.evtname) = $1
 	`, name)
 }
 
@@ -208,7 +208,7 @@ func postgresqlPropertiesPublication(db *sql.DB, name string) ([][2]string, erro
 			   p.pubdelete as "Delete",
 			   p.pubtruncate as "Truncate"
 		from pg_publication p
-		where p.pubname = $1
+		where quote_ident(p.pubname) = $1
 	`, name)
 }
 
@@ -228,7 +228,7 @@ func postgresqlPropertiesSubscription(db *sql.DB, name string) ([][2]string, err
 		from pg_subscription s
 		inner join pg_database d on d.oid = s.subdbid
 		where d.datname = current_database()
-		  and s.subname = $1
+		  and quote_ident(s.subname) = $1
 	`, name)
 }
 
@@ -245,7 +245,7 @@ func postgresqlPropertiesStatistic(db *sql.DB, schema, statistic string) ([][2]s
 		inner join pg_class c on se.stxrelid = c.oid
 		inner join pg_namespace n on c.relnamespace = n.oid
 		inner join pg_namespace n2 on se.stxnamespace = n2.oid
-		where n2.nspname = $1 and se.stxname = $2
+		where quote_ident(n2.nspname) = $1 and quote_ident(se.stxname) = $2
 	`, schema, statistic)
 }
 

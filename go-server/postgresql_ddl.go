@@ -93,7 +93,7 @@ func postgresqlDDLClass(db *sql.DB, schema, object string) (string, error) {
 				),
 				comments as (
 				   select 'COMMENT ON COLUMN ' || text($1) || '.' || quote_ident(name) ||
-						  ' IS ' || quote_nullable(comment) || ';' as cc
+						  E'\nIS ' || quote_nullable(comment) || ';' as cc
 					 from columns
 					where comment IS NOT NULL
 				),
@@ -222,13 +222,13 @@ func postgresqlDDLClass(db *sql.DB, schema, object string) (string, error) {
 					  (CASE WHEN obj_description($1::regclass, 'pg_class') IS NOT NULL
 							THEN (CASE relkind WHEN 'v'
 											   THEN format(
-														E'\n\nCOMMENT ON VIEW %s IS %s;',
+														E'\n\nCOMMENT ON VIEW %s\nIS %s;',
 														$1::regclass,
 														quote_literal(obj_description($1::regclass, 'pg_class'))
 													)
 											   WHEN 'm'
 											   THEN format(
-														E'\n\nCOMMENT ON MATERIALIZED VIEW %s IS %s;',
+														E'\n\nCOMMENT ON MATERIALIZED VIEW %s\nIS %s;',
 														$1::regclass,
 														quote_literal(obj_description($1::regclass, 'pg_class'))
 													)
@@ -292,19 +292,19 @@ func postgresqlDDLClass(db *sql.DB, schema, object string) (string, error) {
 					  (CASE WHEN obj_description($1::regclass, 'pg_class') IS NOT NULL
 							THEN (CASE relkind WHEN 'r'
 											   THEN format(
-														E'\n\nCOMMENT ON TABLE %s IS %s;',
+														E'\n\nCOMMENT ON TABLE %s\nIS %s;',
 														$1::regclass,
 														quote_literal(obj_description($1::regclass, 'pg_class'))
 													)
 											   WHEN 'p'
 											   THEN format(
-														E'\n\nCOMMENT ON TABLE %s IS %s;',
+														E'\n\nCOMMENT ON TABLE %s\nIS %s;',
 														$1::regclass,
 														quote_literal(obj_description($1::regclass, 'pg_class'))
 													)
 											   WHEN 'f'
 											   THEN format(
-														E'\n\nCOMMENT ON FOREIGN TABLE %s IS %s;',
+														E'\n\nCOMMENT ON FOREIGN TABLE %s\nIS %s;',
 														$1::regclass,
 														quote_literal(obj_description($1::regclass, 'pg_class'))
 													)
@@ -330,7 +330,7 @@ func postgresqlDDLClass(db *sql.DB, schema, object string) (string, error) {
 						   (CASE WHEN obj_description($1::regclass, 'pg_class') IS NOT NULL
 								 THEN (CASE relkind WHEN 'S'
 													THEN format(
-															 E'\n\nCOMMENT ON SEQUENCE %s IS %s;',
+															 E'\n\nCOMMENT ON SEQUENCE %s\nIS %s;',
 															 $1::regclass,
 															 quote_literal(obj_description($1::regclass, 'pg_class'))
 														 )
@@ -353,7 +353,7 @@ func postgresqlDDLClass(db *sql.DB, schema, object string) (string, error) {
 								ELSE pg_get_indexdef(i.oid) ||
 									 (CASE WHEN obj_description($1::regclass, 'pg_class') IS NOT NULL
 										   THEN format(
-													E'\n\nCOMMENT ON INDEX %s IS %s;',
+													E'\n\nCOMMENT ON INDEX %s\nIS %s;',
 													$1::regclass,
 													quote_literal(obj_description($1::regclass, 'pg_class'))
 												)
@@ -634,7 +634,7 @@ func postgresqlDDLTableField(db *sql.DB, schema, table, column string) (string, 
 					),
 					comments AS (
 						SELECT format(
-								   E'\n\nCOMMENT ON COLUMN %s.%s IS %s;',
+								   E'\n\nCOMMENT ON COLUMN %s.%s\nIS %s;',
 								   $2,
 								   quote_ident(name),
 								   quote_nullable(comment)
@@ -719,12 +719,12 @@ func postgresqlDDLTrigger(db *sql.DB, schema, table, trigger string) (string, er
 				   '  ON ' || $4::regclass::text || chr(10) ||
 				   '  FOR EACH ' || x.action_orientation || chr(10) ||
 				   (case when length(coalesce(x.action_condition, '')) > 0 then '  WHEN ( ' || x.action_condition || ') ' || chr(10) else '' end) ||
-				   '  ' || x.action_statement ||
+				   '  ' || x.action_statement || ';' ||
 				   (CASE WHEN obj_description(x.oid, 'pg_trigger') IS NOT NULL
 						 THEN format(
-								 E'\n\nCOMMENT ON TRIGGER %s ON %s IS %s;',
-								 quote_ident(x.trigger_name),
-								 quote_ident($4::regclass::text),
+								 E'\n\nCOMMENT ON TRIGGER %s ON %s\nIS %s;',
+								 x.trigger_name,
+								 $4::regclass::text,
 								 quote_literal(obj_description(x.oid, 'pg_trigger'))
 							 )
 						 ELSE ''
@@ -801,8 +801,8 @@ func postgresqlDDLConstraint(db *sql.DB, schema, table, object string) (string, 
 			),
 			comments AS (
 				SELECT format(
-						   E'\n\nCOMMENT ON CONSTRAINT %s ON %s is %s;',
-						   conname,
+						   E'COMMENT ON CONSTRAINT %s ON %s\nIS %s;',
+						   quote_ident(conname),
 						   conrelid::regclass,
 						   quote_literal(x.description)
 					   ) AS sql
@@ -849,7 +849,7 @@ func postgresqlDDLDatabase(db *sql.DB, name string) (string, error) {
 			   d.datconnlimit
 		from pg_catalog.pg_database d
 		left join pg_catalog.pg_tablespace t on t.oid = d.dattablespace
-		where d.datname = $1
+		where quote_ident(d.datname) = $1
 	`, name).Scan(&owner, &encoding, &collate, &ctype, &tablespace, &connLimit)
 	if err != nil {
 		return "", err
@@ -864,7 +864,7 @@ func postgresqlDDLDatabase(db *sql.DB, name string) (string, error) {
 			"    LC_CTYPE = '%s'\n"+
 			"    TABLESPACE = %s\n"+
 			"    CONNECTION LIMIT = %d;",
-		quotePostgresIdentifierDoubleQuoted(name),
+		name,
 		quotePostgresIdentifierDoubleQuoted(owner),
 		encoding, collate, ctype,
 		quotePostgresIdentifierDoubleQuoted(tablespace),

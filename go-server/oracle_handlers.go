@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/url"
 	"strings"
@@ -898,6 +899,26 @@ func handleGetPropertiesOracle(upstream *url.URL, fallback http.Handler) http.Ha
 			if err != nil {
 				writeDatabaseError(w, err.Error())
 				return
+			}
+
+			// GET_DDL covers only the CREATE statement; oracleDDLExtras
+			// appends the object's comments and grants. An error is logged and
+			// swallowed for the same reason as in
+			// handleGetPropertiesPostgreSQL: losing those two sections beats
+			// losing the DDL text over them.
+			extras, err := oracleDDLExtras(db, schema, object)
+			if err != nil {
+				log.Printf("get_properties_oracle: DDL extras for %s: %v", pType, err)
+			}
+			if extras != "" {
+				ddl = strings.TrimRight(ddl, " \t\r\n")
+				if !strings.HasSuffix(ddl, ";") {
+					// GET_DDL's output ends in a newline, not a terminator,
+					// and the DDL panel's text is meant to be copy-pasteable
+					// as a whole.
+					ddl += ";"
+				}
+				ddl += extras
 			}
 		}
 

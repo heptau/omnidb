@@ -151,9 +151,18 @@ func oracleDDL(db *sql.DB, schema, object string) (string, error) {
 		return "", err
 	}
 
+	// GET_DDL returns a CLOB, read whole here. It used to be wrapped in
+	// dbms_lob.substr(..., 4000, 1), which silently cut off the DDL of any
+	// object whose statement is longer than that — a wide or partitioned
+	// table, a long package or function body — mid-statement, with nothing in
+	// the panel to say so. If reading the CLOB fails (an older driver or
+	// server refusing the LOB fetch), the substr form is tried as a fallback
+	// so the panel still shows the first 4000 characters rather than an error.
 	var ddl string
-	err = db.QueryRow(`select dbms_lob.substr(dbms_metadata.get_ddl(:1, :2, :3), 4000, 1) from dual`, objectType, objectName, owner).Scan(&ddl)
-	if err != nil {
+	if err := db.QueryRow(`select dbms_metadata.get_ddl(:1, :2, :3) from dual`, objectType, objectName, owner).Scan(&ddl); err == nil {
+		return ddl, nil
+	}
+	if err := db.QueryRow(`select dbms_lob.substr(dbms_metadata.get_ddl(:1, :2, :3), 4000, 1) from dual`, objectType, objectName, owner).Scan(&ddl); err != nil {
 		return "", err
 	}
 	return ddl, nil

@@ -16,6 +16,13 @@ import (
 // since reproducing it as a literal PASSWORD clause would leak the hash
 // into a properties/DDL panel far more casually than the role management
 // screen already guards it.
+//
+// Like every other helper in this file that takes a name straight from
+// p_object, the catalog match is quote_ident(rolname) = $1 and the name goes
+// into the DDL text verbatim — see postgresqlDDLSequence's comment for the
+// full reasoning. Matching the raw rolname (and re-quoting it for output)
+// meant a role whose name needs quoting was never found at all, so its
+// properties/DDL panel failed outright instead of showing anything.
 func postgresqlDDLRole(db *sql.DB, name string) (string, error) {
 	var canLogin, super, createDB, createRole, inherit, replication, bypassRLS bool
 	var connLimit int64
@@ -24,7 +31,7 @@ func postgresqlDDLRole(db *sql.DB, name string) (string, error) {
 		select rolcanlogin, rolsuper, rolcreatedb, rolcreaterole, rolinherit,
 			   rolreplication, rolbypassrls, rolconnlimit, rolvaliduntil::text
 		from pg_roles
-		where rolname = $1
+		where quote_ident(rolname) = $1
 	`, name).Scan(&canLogin, &super, &createDB, &createRole, &inherit, &replication, &bypassRLS, &connLimit, &validUntil)
 	if err != nil {
 		return "", err
@@ -38,7 +45,7 @@ func postgresqlDDLRole(db *sql.DB, name string) (string, error) {
 	}
 
 	var b strings.Builder
-	b.WriteString("CREATE ROLE " + quotePostgresIdentifierDoubleQuoted(name) + " WITH\n")
+	b.WriteString("CREATE ROLE " + name + " WITH\n")
 	if canLogin {
 		b.WriteString("    LOGIN\n")
 	} else {
@@ -65,7 +72,7 @@ func postgresqlDDLTablespace(db *sql.DB, name string) (string, error) {
 	err := db.QueryRow(`
 		select pg_catalog.pg_get_userbyid(spcowner), pg_catalog.pg_tablespace_location(oid)
 		from pg_tablespace
-		where spcname = $1
+		where quote_ident(spcname) = $1
 	`, name).Scan(&owner, &location)
 	if err != nil {
 		return "", err
@@ -73,7 +80,7 @@ func postgresqlDDLTablespace(db *sql.DB, name string) (string, error) {
 	loc := location.String
 	return fmt.Sprintf(
 		"CREATE TABLESPACE %s\n    OWNER %s\n    LOCATION '%s';",
-		quotePostgresIdentifierDoubleQuoted(name),
+		name,
 		quotePostgresIdentifierDoubleQuoted(owner),
 		loc,
 	), nil
@@ -86,14 +93,14 @@ func postgresqlDDLExtension(db *sql.DB, name string) (string, error) {
 		select e.extversion, n.nspname
 		from pg_extension e
 		join pg_namespace n on n.oid = e.extnamespace
-		where e.extname = $1
+		where quote_ident(e.extname) = $1
 	`, name).Scan(&version, &schema)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf(
 		"CREATE EXTENSION IF NOT EXISTS %s\n    WITH SCHEMA %s\n    VERSION '%s';",
-		quotePostgresIdentifierDoubleQuoted(name),
+		name,
 		quotePostgresIdentifierDoubleQuoted(schema),
 		version,
 	), nil
@@ -102,13 +109,13 @@ func postgresqlDDLExtension(db *sql.DB, name string) (string, error) {
 // postgresqlDDLSchema synthesizes a CREATE SCHEMA statement.
 func postgresqlDDLSchema(db *sql.DB, name string) (string, error) {
 	var owner string
-	err := db.QueryRow(`select pg_catalog.pg_get_userbyid(nspowner) from pg_namespace where nspname = $1`, name).Scan(&owner)
+	err := db.QueryRow(`select pg_catalog.pg_get_userbyid(nspowner) from pg_namespace where quote_ident(nspname) = $1`, name).Scan(&owner)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf(
 		"CREATE SCHEMA %s\n    AUTHORIZATION %s;",
-		quotePostgresIdentifierDoubleQuoted(name),
+		name,
 		quotePostgresIdentifierDoubleQuoted(owner),
 	), nil
 }
@@ -207,7 +214,7 @@ func postgresqlDDLDomain(db *sql.DB, schema, domain string) (string, error) {
 		select pg_catalog.format_type(t.typbasetype, t.typtypmod), t.typnotnull, t.typdefault
 		from pg_type t
 		join pg_namespace n on n.oid = t.typnamespace
-		where n.nspname = $1 and t.typname = $2
+		where quote_ident(n.nspname) = $1 and quote_ident(t.typname) = $2
 	`, schema, domain).Scan(&baseType, &notNull, &defaultVal)
 	if err != nil {
 		return "", err
@@ -218,7 +225,7 @@ func postgresqlDDLDomain(db *sql.DB, schema, domain string) (string, error) {
 		from pg_constraint c
 		join pg_type t on t.oid = c.contypid
 		join pg_namespace n on n.oid = t.typnamespace
-		where n.nspname = $1 and t.typname = $2
+		where quote_ident(n.nspname) = $1 and quote_ident(t.typname) = $2
 	`, schema, domain)
 	if err != nil {
 		return "", err
@@ -230,7 +237,7 @@ func postgresqlDDLDomain(db *sql.DB, schema, domain string) (string, error) {
 	}
 
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("CREATE DOMAIN %s.%s AS %s", quotePostgresIdentifierDoubleQuoted(schema), quotePostgresIdentifierDoubleQuoted(domain), baseType))
+	b.WriteString(fmt.Sprintf("CREATE DOMAIN %s.%s AS %s", schema, domain, baseType))
 	if defaultVal.Valid {
 		b.WriteString("\n    DEFAULT " + defaultVal.String)
 	}
@@ -256,7 +263,7 @@ func postgresqlDDLType(db *sql.DB, schema, typeName string) (string, error) {
 	var typtype string
 	if err := db.QueryRow(`
 		select t.typtype from pg_type t join pg_namespace n on n.oid = t.typnamespace
-		where n.nspname = $1 and t.typname = $2
+		where quote_ident(n.nspname) = $1 and quote_ident(t.typname) = $2
 	`, schema, typeName).Scan(&typtype); err != nil {
 		return "", err
 	}
@@ -270,7 +277,7 @@ func postgresqlDDLType(db *sql.DB, schema, typeName string) (string, error) {
 			from pg_enum e
 			join pg_type t on t.oid = e.enumtypid
 			join pg_namespace n on n.oid = t.typnamespace
-			where n.nspname = $1 and t.typname = $2
+			where quote_ident(n.nspname) = $1 and quote_ident(t.typname) = $2
 			order by e.enumsortorder
 		`, schema, typeName)
 		if err != nil {
@@ -287,7 +294,7 @@ func postgresqlDDLType(db *sql.DB, schema, typeName string) (string, error) {
 		}
 		return fmt.Sprintf(
 			"CREATE TYPE %s.%s AS ENUM (\n    %s\n);",
-			quotePostgresIdentifierDoubleQuoted(schema), quotePostgresIdentifierDoubleQuoted(typeName),
+			schema, typeName,
 			strings.Join(quoted, ",\n    "),
 		), nil
 	case "r", "m":
@@ -306,13 +313,13 @@ func postgresqlDDLType(db *sql.DB, schema, typeName string) (string, error) {
 			left join pg_opclass op on op.oid = r.rngsubopc
 			left join pg_proc cf on cf.oid = r.rngcanonical
 			left join pg_proc df on df.oid = r.rngsubdiff
-			where n.nspname = $1 and t.typname = $2
+			where quote_ident(n.nspname) = $1 and quote_ident(t.typname) = $2
 		`, schema, typeName).Scan(&subtype, &collation, &subtypeOpclass, &canonical, &subtypeDiff)
 		if err != nil {
 			return "", err
 		}
 		var b strings.Builder
-		b.WriteString(fmt.Sprintf("CREATE TYPE %s.%s AS RANGE (\n    SUBTYPE = %s", quotePostgresIdentifierDoubleQuoted(schema), quotePostgresIdentifierDoubleQuoted(typeName), subtype))
+		b.WriteString(fmt.Sprintf("CREATE TYPE %s.%s AS RANGE (\n    SUBTYPE = %s", schema, typeName, subtype))
 		if subtypeOpclass.Valid {
 			b.WriteString(",\n    SUBTYPE_OPCLASS = " + subtypeOpclass.String)
 		}
@@ -402,13 +409,13 @@ func postgresqlDDLEventTrigger(db *sql.DB, name string) (string, error) {
 		from pg_event_trigger t
 		join pg_proc p on p.oid = t.evtfoid
 		join pg_namespace n on n.oid = p.pronamespace
-		where t.evtname = $1
+		where quote_ident(t.evtname) = $1
 	`, name).Scan(&event, &function, &tags)
 	if err != nil {
 		return "", err
 	}
 	var b strings.Builder
-	b.WriteString(fmt.Sprintf("CREATE EVENT TRIGGER %s\n    ON %s", quotePostgresIdentifierDoubleQuoted(name), event))
+	b.WriteString(fmt.Sprintf("CREATE EVENT TRIGGER %s\n    ON %s", name, event))
 	if len(tags) > 0 {
 		parts := strings.Split(string(tags), ",")
 		quoted := make([]string, len(parts))
@@ -429,14 +436,14 @@ func postgresqlDDLPublication(db *sql.DB, name string) (string, error) {
 	err := db.QueryRow(`
 		select puballtables, pubinsert, pubupdate, pubdelete, pubtruncate
 		from pg_publication
-		where pubname = $1
+		where quote_ident(pubname) = $1
 	`, name).Scan(&allTables, &insert, &update, &delete, &truncate)
 	if err != nil {
 		return "", err
 	}
 
 	var b strings.Builder
-	b.WriteString("CREATE PUBLICATION " + quotePostgresIdentifierDoubleQuoted(name))
+	b.WriteString("CREATE PUBLICATION " + name)
 	if allTables {
 		b.WriteString("\n    FOR ALL TABLES")
 	} else {
@@ -475,14 +482,14 @@ func postgresqlDDLSubscription(db *sql.DB, name string) (string, error) {
 		select s.subconninfo, s.subenabled, s.subslotname, array_to_string(s.subpublications, ',')
 		from pg_subscription s
 		inner join pg_database d on d.oid = s.subdbid
-		where d.datname = current_database() and s.subname = $1
+		where d.datname = current_database() and quote_ident(s.subname) = $1
 	`, name).Scan(&connInfo, &enabled, &slotName, &publications)
 	if err != nil {
 		return "", err
 	}
 	return fmt.Sprintf(
 		"CREATE SUBSCRIPTION %s\n    CONNECTION '%s'\n    PUBLICATION %s\n    WITH (slot_name = '%s', enabled = %t);",
-		quotePostgresIdentifierDoubleQuoted(name), connInfo, publications, slotName, enabled,
+		name, connInfo, publications, slotName, enabled,
 	), nil
 }
 
@@ -497,7 +504,7 @@ func postgresqlDDLStatistic(db *sql.DB, schema, statistic string) (string, error
 		select pg_catalog.pg_get_statisticsobjdef(se.oid)
 		from pg_statistic_ext se
 		join pg_namespace n on n.oid = se.stxnamespace
-		where n.nspname = $1 and se.stxname = $2
+		where quote_ident(n.nspname) = $1 and quote_ident(se.stxname) = $2
 	`, schema, statistic).Scan(&ddl)
 	if err != nil {
 		return "", err

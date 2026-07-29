@@ -3,8 +3,10 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // Request shapes for the PostgreSQL routes — same baseRequest as SQLite's,
@@ -867,6 +869,24 @@ func handleGetPropertiesPostgreSQL(upstream *url.URL, fallback http.Handler) htt
 		if ddlErr != nil {
 			writeDatabaseError(w, ddlErr.Error())
 			return
+		}
+
+		// Most DDL helpers above reproduce only the object's own CREATE
+		// statement; postgresqlDDLExtras appends the COMMENT ON and GRANT
+		// statements for the types that don't already include them.
+		//
+		// A failure here is deliberately logged and swallowed rather than
+		// turned into an error dialog: the comment and privileges are an
+		// addition to a DDL text that was just produced successfully, so a
+		// catalog the connected user can't read (or any other surprise in
+		// those queries) should cost the user that extra section, not the
+		// whole panel.
+		extras, err := postgresqlDDLExtras(db, reqBody.PData.PType, schema, table, object)
+		if err != nil {
+			log.Printf("get_properties_postgresql: DDL extras for %s: %v", reqBody.PData.PType, err)
+		}
+		if extras != "" {
+			ddl = strings.TrimRight(ddl, " \t\r\n") + extras
 		}
 
 		data := make([][2]string, 0, len(properties))

@@ -547,7 +547,7 @@ func postgresqlPropertiesRole(db *sql.DB, name string) ([][2]string, error) {
 				   where am.member = r.oid
 			   ), '') as "Member Of"
 		from pg_roles r
-		where r.rolname = $1
+		where quote_ident(r.rolname) = $1
 	`, name)
 }
 
@@ -561,7 +561,7 @@ func postgresqlPropertiesTablespace(db *sql.DB, name string) ([][2]string, error
 			   t.spcacl as "ACL",
 			   t.spcoptions as "Options"
 		from pg_tablespace t
-		where t.spcname = $1
+		where quote_ident(t.spcname) = $1
 	`, name)
 }
 
@@ -576,7 +576,7 @@ func postgresqlPropertiesExtension(db *sql.DB, name string) ([][2]string, error)
 			   e.extrelocatable as "Relocatable"
 		from pg_extension e
 		join pg_namespace n on n.oid = e.extnamespace
-		where e.extname = $1
+		where quote_ident(e.extname) = $1
 	`, name)
 }
 
@@ -588,7 +588,7 @@ func postgresqlPropertiesSchema(db *sql.DB, name string) ([][2]string, error) {
 			   pg_catalog.pg_get_userbyid(n.nspowner) as "Owner",
 			   n.nspacl as "ACL"
 		from pg_namespace n
-		where n.nspname = $1
+		where quote_ident(n.nspname) = $1
 	`, name)
 }
 
@@ -611,6 +611,6 @@ func postgresqlPropertiesDatabase(db *sql.DB, name string) ([][2]string, error) 
 			   pg_catalog.pg_size_pretty(pg_catalog.pg_database_size(d.datname)) as "Size"
 		from pg_catalog.pg_database d
 		left join pg_catalog.pg_tablespace t on t.oid = d.dattablespace
-		where d.datname = $1
+		where quote_ident(d.datname) = $1
 	`, name)
 }

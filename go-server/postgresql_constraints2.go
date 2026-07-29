@@ -145,9 +145,9 @@ func postgresqlRuleDefinition(db *sql.DB, schema, table, rule string) (string, e
 	err := db.QueryRow(`
 		select r.definition ||
 		       (case when obj_description(rw.oid, 'pg_rewrite') is not null
-		             then format(E'\n\nCOMMENT ON RULE %s ON %s IS %s;',
+		             then format(E'\n\nCOMMENT ON RULE %s ON %s\nIS %s;',
 		                  quote_ident(r.rulename),
-		                  quote_ident(rw.ev_class::regclass::text),
+		                  rw.ev_class::regclass::text,
 		                  quote_literal(obj_description(rw.oid, 'pg_rewrite')))
 		             else ''
 		        end)

@@ -3,8 +3,10 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"log"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // isMySQLFamily reports whether a connection's technology is one this
@@ -905,6 +907,25 @@ func handleGetPropertiesMySQL(upstream *url.URL, fallback http.Handler) http.Han
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
+		}
+
+		// SHOW CREATE covers the object's comments but not its privileges;
+		// mysqlDDLExtras appends those as GRANT statements. An error is logged
+		// and swallowed for the same reason as in
+		// handleGetPropertiesPostgreSQL: losing the privileges section beats
+		// losing the DDL text over it.
+		extras, err := mysqlDDLExtras(db, schema, object, reqBody.PData.PType)
+		if err != nil {
+			log.Printf("get_properties_mysql: DDL extras for %s: %v", reqBody.PData.PType, err)
+		}
+		if extras != "" {
+			ddl = strings.TrimRight(ddl, " \t\r\n")
+			if !strings.HasSuffix(ddl, ";") {
+				// SHOW CREATE's output is never statement-terminated, and the
+				// DDL panel's text is meant to be copy-pasteable as a whole.
+				ddl += ";"
+			}
+			ddl += extras
 		}
 
 		data := make([][2]string, 0, len(properties))

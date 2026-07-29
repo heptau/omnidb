@@ -8,6 +8,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Properties panel's DDL tab now shows each object's comment and privileges below its `CREATE`
+  statement, not just the bare statement. Previously only PostgreSQL tables/views/foreign tables
+  (and table columns, triggers, constraints, rules) included them, because their DDL came from
+  one big query that already did; everything else — schemas, sequences, functions/procedures/
+  aggregates, domains, types, materialized views, roles, databases, tablespaces, extensions and
+  the whole FDW/replication long tail — showed neither, even when both were set. Now all of them
+  emit `COMMENT ON …` (plus per-column comments for materialized views) and `GRANT …`
+  statements, with a role's memberships standing in for its privileges. MySQL/MariaDB gets
+  `GRANT` statements for tables, views and routines (`SHOW CREATE` already carries the comments),
+  and Oracle gets both `COMMENT ON TABLE`/`COMMENT ON COLUMN` and object/column grants, which
+  `DBMS_METADATA.GET_DDL` leaves out entirely. Every generated `COMMENT ON` breaks the line
+  before `IS`, so a long comment doesn't push the object it belongs to off the right edge of the
+  DDL panel (which doesn't soft-wrap).
 - PostgreSQL object tree now distinguishes login roles ("users") from group roles in the Roles
   list with a different icon, based on `rolcanlogin` — previously every role showed the same
   single-user icon regardless of whether it could actually log in.
@@ -31,6 +44,24 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `wails-app/`) instead of the pre-4.0 Python/Django/plugin-system era.
 
 ### Fixed
+- Properties/DDL panel failed outright ("object does not exist anymore. Please refresh the tree
+  view") for any PostgreSQL schema, role, tablespace, extension, database, type, domain, event
+  trigger, publication, subscription, extended-statistics object or foreign table whose name needs
+  quoting — mixed case, a space, a reserved word. Those catalog queries compared the raw name
+  against a `p_object` the tree had already run through `quote_ident()`, so the object was never
+  found; the same names are now matched (and emitted in the DDL text) the way the sequence and
+  table-column queries already were. A failure in the new comment/privileges lookups is also
+  swallowed rather than turned into an error dialog now, so an unreadable catalog costs that
+  section of the DDL text and not the whole panel.
+- PostgreSQL trigger and rule DDL emitted an invalid `COMMENT ON … ON "schema.table"` — the
+  qualified table name was passed through `quote_ident()` as a whole, quoting it into a single
+  identifier — and a trigger's `CREATE TRIGGER` had no `;` before that appended comment. A
+  constraint's comment likewise didn't quote the constraint name. All three are now emitted the
+  way `regclass`/`quote_ident` intend, so the text is valid SQL for names needing quoting too.
+- Oracle DDL was cut off after 4000 characters — `DBMS_METADATA.GET_DDL`'s CLOB was read through
+  `dbms_lob.substr(..., 4000, 1)`, so a wide or partitioned table, or a long function/package
+  body, showed a statement truncated mid-line with nothing saying so. The CLOB is now read whole,
+  falling back to the old truncated read if the driver refuses the LOB fetch.
 - Query tab: running multiple statements separated by semicolons (e.g. `select 1; select 2;`)
   against PostgreSQL failed outright with `cannot insert multiple commands into a prepared
   statement (SQLSTATE 42601)`, since the whole editor text was handed to the driver as one query

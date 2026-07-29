@@ -35,29 +35,32 @@ cask "omnidb" do
 
   on_arm do
     sha256 "${SHA_ARM64}"
+
     url "${GITHUB}/releases/download/v#{version}/OmniDB-#{version}-macOS-osx-arm64.zip"
   end
-
   on_intel do
     sha256 "${SHA_X64}"
+
     url "${GITHUB}/releases/download/v#{version}/OmniDB-#{version}-macOS-osx-x64.zip"
   end
 
   name "OmniDB"
   desc "Revived open-source database management tool (PostgreSQL-focused)"
-  homepage "${GITHUB}"
+  homepage "https://www.omnidb.net/"
 
   depends_on macos: :ventura
 
   app "OmniDB.app"
 
   postflight do
-    set_permissions "#{appdir}/OmniDB.app", '755'
+    set_permissions "#{appdir}/OmniDB.app", "755"
 
     system_command "/usr/bin/xattr",
-                   args:  ["-r", "-d", "com.apple.quarantine", "#{appdir}/OmniDB.app"],
-                   sudo:  false
+                   args: ["-r", "-d", "com.apple.quarantine", "#{appdir}/OmniDB.app"],
+                   sudo: false
   end
+
+  uninstall quit: "net.omnidb"
 
   # Bundle ID is "net.omnidb" (wails-app/build/darwin/Info.plist,
   # AGENTS.md) — these paths used to say "com.omnidb.*", which never
@@ -65,19 +68,16 @@ cask "omnidb" do
   # actual prefs/saved-state files behind.
   zap trash: [
     "~/Library/Application Support/OmniDB",
-    "~/Library/Preferences/net.omnidb.plist",
     "~/Library/Caches/OmniDB",
-    "~/Library/Saved Application State/net.omnidb.savedState",
     "~/Library/Logs/OmniDB",
+    "~/Library/Preferences/net.omnidb.plist",
+    "~/Library/Saved Application State/net.omnidb.savedState",
   ]
 
   caveats do
     <<~EOS
-      OmniDB starts a local web server on first launch and opens its
-      interface in the app window (usually at http://localhost:some-port).
-
-      If the window does not open automatically, check the console output
-      or try opening the reported address in your default browser.
+      OmniDB is a lightweight, native desktop client for managing
+      PostgreSQL databases.
     EOS
   end
 end

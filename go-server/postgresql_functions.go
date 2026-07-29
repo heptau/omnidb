@@ -204,10 +204,21 @@ func postgresqlRoutineFields(db *sql.DB, schema, routineID string, includeReturn
 // PostgreSQL.py's GetFunctionDefinition/GetProcedureDefinition — both are
 // the exact same pg_get_functiondef() call (Postgres has one underlying
 // catalog representation for both).
+//
+// pg_get_functiondef's output is not statement-terminated, which only became
+// visible once postgresqlDDLExtras started appending COMMENT ON/GRANT
+// statements below it — the whole DDL text is meant to be copy-pasteable, and
+// a routine body running straight into the next statement isn't. The
+// semicolon is added here rather than at the append site so a routine's DDL
+// is a valid statement on its own too.
 func postgresqlRoutineDefinition(db *sql.DB, routineID string) (string, error) {
 	var def string
 	if err := db.QueryRow(`select pg_get_functiondef($1::regprocedure)`, routineID).Scan(&def); err != nil {
 		return "", err
+	}
+	def = strings.TrimRight(def, " \t\r\n")
+	if !strings.HasSuffix(def, ";") {
+		def += ";"
 	}
 	return def, nil
 }
