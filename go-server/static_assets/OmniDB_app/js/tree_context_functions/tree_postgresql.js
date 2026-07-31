@@ -4385,7 +4385,7 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
 								if (p_callback_continue) p_callback_continue();
 							},
 							function (p_return) {
-								nodeOpenError(p_return, p_node);
+								nodeOpenErrorPostgresql(p_return, p_node);
 							},
 							"box",
 						);
@@ -4465,7 +4465,7 @@ function getObjectDescriptionPostgresql(p_node) {
 			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, p_node);
+			nodeOpenErrorPostgresql(p_return, p_node);
 		},
 		"box",
 		true,
@@ -5203,7 +5203,7 @@ function getTreeDetailsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5317,7 +5317,7 @@ function getDatabaseObjectsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5374,7 +5374,7 @@ function getDatabasesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5422,7 +5422,7 @@ function getTablespacesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5474,7 +5474,7 @@ function getRolesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5523,7 +5523,7 @@ function getExtensionsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5819,7 +5819,7 @@ function getSchemasPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5892,7 +5892,7 @@ function getTablesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -5943,7 +5943,7 @@ function getSequencesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6008,7 +6008,7 @@ function getViewsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6114,7 +6114,7 @@ function getViewsColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6151,7 +6151,7 @@ function getViewDefinitionPostgresql(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		true,
@@ -6216,7 +6216,7 @@ function getMaterializedViewsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6325,7 +6325,7 @@ function getMaterializedViewsColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6362,7 +6362,7 @@ function getMaterializedViewDefinitionPostgresql(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		true,
@@ -6638,7 +6638,7 @@ function getColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6698,7 +6698,7 @@ function getPKPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6745,7 +6745,7 @@ function getPKColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6810,7 +6810,7 @@ function getUniquesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6859,7 +6859,7 @@ function getUniquesColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6927,7 +6927,7 @@ function getIndexesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -6976,7 +6976,7 @@ function getIndexesColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7064,7 +7064,7 @@ function getFKsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7148,7 +7148,7 @@ function getFKsColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7214,7 +7214,7 @@ function getChecksPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7292,7 +7292,7 @@ function getExcludesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7346,7 +7346,7 @@ function getRulesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7384,7 +7384,7 @@ function getRuleDefinitionPostgresql(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		true,
@@ -7464,7 +7464,7 @@ function getTriggersPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7550,7 +7550,7 @@ function getEventTriggersPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7603,7 +7603,7 @@ function getInheritedsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7656,7 +7656,7 @@ function getPartitionsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7716,7 +7716,7 @@ function getStatisticsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7767,7 +7767,7 @@ function getStatisticsColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7830,7 +7830,7 @@ function getFunctionsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7907,7 +7907,7 @@ function getFunctionFieldsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -7943,7 +7943,7 @@ function getFunctionDefinitionPostgresql(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		true,
@@ -8006,7 +8006,7 @@ function getProceduresPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8083,7 +8083,7 @@ function getProcedureFieldsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8119,7 +8119,7 @@ function getProcedureDefinitionPostgresql(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		true,
@@ -8171,7 +8171,7 @@ function getTriggerFunctionsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8207,7 +8207,7 @@ function getTriggerFunctionDefinitionPostgresql(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		true,
@@ -8259,7 +8259,7 @@ function getEventTriggerFunctionsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8295,7 +8295,7 @@ function getEventTriggerFunctionDefinitionPostgresql(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		true,
@@ -8362,7 +8362,7 @@ function getAggregatesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8410,7 +8410,7 @@ function getPhysicalReplicationSlotsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8458,7 +8458,7 @@ function getLogicalReplicationSlotsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8577,7 +8577,7 @@ function getPublicationsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8626,7 +8626,7 @@ function getPublicationTablesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8737,7 +8737,7 @@ function getSubscriptionsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8786,7 +8786,7 @@ function getSubscriptionTablesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8848,7 +8848,7 @@ function getForeignDataWrappersPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -8959,7 +8959,7 @@ function getForeignServersPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9028,7 +9028,7 @@ function getUserMappingsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9092,7 +9092,7 @@ function getForeignTablesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9263,7 +9263,7 @@ function getForeignColumnsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9314,7 +9314,7 @@ function getTypesPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9365,7 +9365,7 @@ function getDomainsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9419,7 +9419,7 @@ function getPartitionedParentsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9493,7 +9493,7 @@ function getPartitionedChildrenPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9547,7 +9547,7 @@ function getInheritedsParentsPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9621,7 +9621,7 @@ function getInheritedsChildrenPostgresql(node) {
 			afterNodeOpenedCallbackPostgreSQL(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorPostgresql(p_return, node);
 		},
 		"box",
 		false,
@@ -9758,7 +9758,7 @@ function TemplateCallProcedurePostgresql(p_schema, p_procedure, p_procedureid) {
 	);
 }
 
-function nodeOpenError(p_return, p_node) {
+function nodeOpenErrorPostgresql(p_return, p_node) {
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(

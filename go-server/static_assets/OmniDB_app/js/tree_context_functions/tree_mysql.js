@@ -1339,7 +1339,7 @@ function getTreeDetailsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -1456,7 +1456,7 @@ function getDatabasesMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -1504,7 +1504,7 @@ function getRolesMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -1575,7 +1575,7 @@ function getTablesMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -1637,7 +1637,7 @@ function getViewsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -1734,7 +1734,7 @@ function getViewsColumnsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -1773,7 +1773,7 @@ function getViewDefinitionMysql(node) {
 			maximizeEditor();
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		true,
@@ -1946,7 +1946,7 @@ function getColumnsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2005,7 +2005,7 @@ function getPKMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2049,7 +2049,7 @@ function getPKColumnsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2112,7 +2112,7 @@ function getUniquesMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2158,7 +2158,7 @@ function getUniquesColumnsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2222,7 +2222,7 @@ function getIndexesMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2268,7 +2268,7 @@ function getIndexesColumnsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2345,7 +2345,7 @@ function getFKsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2417,7 +2417,7 @@ function getFKsColumnsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2475,7 +2475,7 @@ function getTriggersMysql(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		'box',
 		false);
@@ -2524,7 +2524,7 @@ function getPartitionsMysql(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		'box',
 		false);
@@ -2585,7 +2585,7 @@ function getFunctionsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2653,7 +2653,7 @@ function getFunctionFieldsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2683,7 +2683,7 @@ function getFunctionFieldsMysql(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		'box',
 		true);
@@ -2721,7 +2721,7 @@ function getFunctionDefinitionMysql(node) {
 			maximizeEditor();
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		true,
@@ -2783,7 +2783,7 @@ function getProceduresMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2851,7 +2851,7 @@ function getProcedureFieldsMysql(node) {
 			afterNodeOpenedCallbackMysql(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		false,
@@ -2881,7 +2881,7 @@ function getProcedureFieldsMysql(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		'box',
 		true);
@@ -2919,7 +2919,7 @@ function getProcedureDefinitionMysql(node) {
 			maximizeEditor();
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		"box",
 		true,
@@ -2966,7 +2966,7 @@ function getTriggerFunctionsMysql(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		'box',
 		false);
@@ -3015,7 +3015,7 @@ function getTriggerFunctionDefinitionMysql(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMysql(p_return, node);
 		},
 		'box',
 		true);
@@ -3103,7 +3103,7 @@ function TemplateUpdateMysql(p_schema, p_table) {
 	);
 }
 
-function nodeOpenError(p_return, p_node) {
+function nodeOpenErrorMysql(p_return, p_node) {
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(

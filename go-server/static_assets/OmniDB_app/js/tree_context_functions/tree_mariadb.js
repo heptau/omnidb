@@ -1407,7 +1407,7 @@ function getTreeDetailsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -1539,7 +1539,7 @@ function getDatabasesMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -1587,7 +1587,7 @@ function getRolesMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -1658,7 +1658,7 @@ function getTablesMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -1705,7 +1705,7 @@ function getSequencesMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -1767,7 +1767,7 @@ function getViewsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -1864,7 +1864,7 @@ function getViewsColumnsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -1903,7 +1903,7 @@ function getViewDefinitionMariadb(node) {
 			maximizeEditor();
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		true,
@@ -2076,7 +2076,7 @@ function getColumnsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2135,7 +2135,7 @@ function getPKMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2179,7 +2179,7 @@ function getPKColumnsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2242,7 +2242,7 @@ function getUniquesMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2288,7 +2288,7 @@ function getUniquesColumnsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2352,7 +2352,7 @@ function getIndexesMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2398,7 +2398,7 @@ function getIndexesColumnsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2475,7 +2475,7 @@ function getFKsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2547,7 +2547,7 @@ function getFKsColumnsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2605,7 +2605,7 @@ function getTriggersMariadb(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		'box',
 		false);
@@ -2654,7 +2654,7 @@ function getPartitionsMariadb(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		'box',
 		false);
@@ -2715,7 +2715,7 @@ function getFunctionsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2783,7 +2783,7 @@ function getFunctionFieldsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2813,7 +2813,7 @@ function getFunctionFieldsMariadb(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		'box',
 		true);
@@ -2851,7 +2851,7 @@ function getFunctionDefinitionMariadb(node) {
 			maximizeEditor();
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		true,
@@ -2913,7 +2913,7 @@ function getProceduresMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -2981,7 +2981,7 @@ function getProcedureFieldsMariadb(node) {
 			afterNodeOpenedCallbackMariaDB(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		false,
@@ -3011,7 +3011,7 @@ function getProcedureFieldsMariadb(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		'box',
 		true);
@@ -3049,7 +3049,7 @@ function getProcedureDefinitionMariadb(node) {
 			maximizeEditor();
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		"box",
 		true,
@@ -3096,7 +3096,7 @@ function getTriggerFunctionsMariadb(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		'box',
 		false);
@@ -3145,7 +3145,7 @@ function getTriggerFunctionDefinitionMariadb(node) {
 
 		},
 		function(p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorMariadb(p_return, node);
 		},
 		'box',
 		true);
@@ -3233,7 +3233,7 @@ function TemplateUpdateMariadb(p_schema, p_table) {
 	);
 }
 
-function nodeOpenError(p_return, p_node) {
+function nodeOpenErrorMariadb(p_return, p_node) {
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(

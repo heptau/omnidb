@@ -662,14 +662,14 @@ function getTreeDetailsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
 	);
 }
 
-function nodeOpenError(p_return, p_node) {
+function nodeOpenErrorSqlite(p_return, p_node) {
 	p_node.collapseNode();
 
 	showPasswordPrompt(
@@ -748,7 +748,7 @@ function getTablesSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -935,7 +935,7 @@ function getColumnsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -991,7 +991,7 @@ function getPKSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1038,7 +1038,7 @@ function getPKColumnsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1126,7 +1126,7 @@ function getFKsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1210,7 +1210,7 @@ function getFKsColumnsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1272,7 +1272,7 @@ function getUniquesSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1320,7 +1320,7 @@ function getUniquesColumnsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1383,7 +1383,7 @@ function getIndexesSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1431,7 +1431,7 @@ function getIndexesColumnsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1494,7 +1494,7 @@ function getViewsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1600,7 +1600,7 @@ function getViewsColumnsSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
@@ -1636,7 +1636,7 @@ function getViewDefinitionSqlite(node) {
 			v_div_result.innerHTML = "";
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		true,
@@ -1686,7 +1686,7 @@ function getTriggersSqlite(node) {
 			afterNodeOpenedCallbackSqlite(node);
 		},
 		function (p_return) {
-			nodeOpenError(p_return, node);
+			nodeOpenErrorSqlite(p_return, node);
 		},
 		"box",
 		false,
