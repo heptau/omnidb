@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createGraphTabFunction = function (p_name) {
+export var v_createGraphTabFunction = function (p_name) {
 	var v_name = "Graph";
 	if (p_name) v_name = p_name;
 

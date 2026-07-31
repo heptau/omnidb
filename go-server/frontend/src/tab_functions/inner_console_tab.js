@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createConsoleTabFunction = function () {
+export var v_createConsoleTabFunction = function () {
 	// Removing last tab of the inner tab list
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 

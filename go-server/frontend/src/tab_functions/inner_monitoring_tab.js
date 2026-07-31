@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createMonitoringTabFunction = function (p_name, p_query, p_actions) {
+export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions) {
 	var v_name = "Backends";
 	if (p_name) v_name = p_name;
 
@@ -160,7 +160,7 @@ var v_createMonitoringTabFunction = function (p_name, p_query, p_actions) {
 /// <summary>
 /// Refreshes monitoring tab.
 /// </summary>
-function refreshMonitoring(p_tab_tag) {
+export function refreshMonitoring(p_tab_tag) {
 	if (!p_tab_tag) var p_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	execAjax(

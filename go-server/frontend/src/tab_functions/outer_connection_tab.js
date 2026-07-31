@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
+export var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
 	// Creating the first outer tab without any connections created.
 	if (v_connTabControl.tag.connections.length == 0) {
 		v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
@@ -418,7 +418,7 @@ var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_na
 	endLoading();
 };
 
-function refreshOuterConnectionHeights() {
+export function refreshOuterConnectionHeights() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	if (v_tab_tag.divLeft) {
 		var v_div_left = v_tab_tag.divLeft;

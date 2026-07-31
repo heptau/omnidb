@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createEditDataTabFunction = function (p_table) {
+export var v_createEditDataTabFunction = function (p_table) {
 	var v_name = "Query";
 	if (p_table) v_name = p_table;
 

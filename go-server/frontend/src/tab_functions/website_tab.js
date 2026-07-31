@@ -42,7 +42,7 @@ SOFTWARE.
 // to relay the request to wails-app instead, which calls the native
 // BrowserOpenURL API (see go-server/open_external_url.go's comment for the
 // full story — same pattern as /export_save_dialog/).
-var v_openExternalUrl = function (p_url) {
+export var v_openExternalUrl = function (p_url) {
 	if (!gv_desktopMode) {
 		window.open(p_url, "_blank", "noopener");
 		return;
@@ -66,11 +66,11 @@ var v_openExternalUrl = function (p_url) {
 		});
 };
 
-var v_createWebsiteTabFunction = function (p_name, p_site) {
+export var v_createWebsiteTabFunction = function (p_name, p_site) {
 	v_openExternalUrl(p_site);
 };
 
-var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p_close_function) {
+export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p_close_function) {
 	// A bare URL (no inline p_html) is an external site — same iframe-
 	// blocking problem as v_createWebsiteTabFunction above (this is what
 	// the About dialog's "OmniDB"/"GitHub" links use). p_html-provided

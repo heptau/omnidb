@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createSnippetTextTabFunction = function (p_snippet = null) {
+export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	var v_name = "New Snippet";
 	var v_details = {
 		id: null,

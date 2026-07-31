@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = "Terminal", p_details = false) {
+export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = "Terminal", p_details = false) {
 	// v_connTabControl.removeLastTab();
 
 	let v_tooltip_name = "";

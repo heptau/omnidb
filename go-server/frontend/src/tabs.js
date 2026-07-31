@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function composedPath(el) {
+export function composedPath(el) {
 	var path = [];
 	while (el) {
 		path.push(el);
@@ -53,7 +53,7 @@ function composedPath(el) {
  * - 'card': Adds a bootstrap based card style to the tab system, with the tab-menu inside the card-header and the tab-content inside the card-body.
  * @return {type} Returns the `tabControl` object.
  */
-function createTabControl({ p_div, p_hierarchy, p_layout }) {
+export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 	// Get an element's exact position
 	function getPosition(el) {
 		var xPos = 0;
@@ -525,7 +525,7 @@ function createTabControl({ p_div, p_hierarchy, p_layout }) {
 }
 
 //Create a HTML element specified by parameter 'p_type'
-function createSimpleElement(p_type, p_id, p_class) {
+export function createSimpleElement(p_type, p_id, p_class) {
 	element = document.createElement(p_type);
 	if (p_id != undefined) element.id = p_id;
 	if (p_class != undefined) element.className = p_class;
@@ -533,7 +533,7 @@ function createSimpleElement(p_type, p_id, p_class) {
 }
 
 //Create img element
-function createImgElement(p_id, p_class, p_src) {
+export function createImgElement(p_id, p_class, p_src) {
 	element = document.createElement("img");
 	if (p_id != undefined) element.id = p_id;
 	if (p_class != undefined) element.className = p_class;

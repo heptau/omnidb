@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createMonitorDashboardTabFunction = function () {
+export var v_createMonitorDashboardTabFunction = function () {
 	// Removing last tab of the inner tab list
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
@@ -147,7 +147,7 @@ var v_createMonitorDashboardTabFunction = function () {
 	}, 10);
 };
 
-var v_createNewMonitorUnitTabFunction = function () {
+export var v_createNewMonitorUnitTabFunction = function () {
 	// Removing last tab of the inner tab list
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
@@ -346,7 +346,7 @@ var v_createNewMonitorUnitTabFunction = function () {
 // Shows the Chart Type dropdown only for "chart"-type units (the only type
 // that needs it — "timeseries" is always a line chart, "grid" doesn't chart
 // at all).
-function toggleMonitorUnitChartType(p_tab_id) {
+export function toggleMonitorUnitChartType(p_tab_id) {
 	var v_row = document.getElementById("chart_type_row_" + p_tab_id);
 	var v_type_select = document.getElementById("select_type_" + p_tab_id);
 	if (!v_row || !v_type_select) return;

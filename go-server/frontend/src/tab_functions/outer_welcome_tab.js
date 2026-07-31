@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
+export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
 	// Removing the last `add` tab
 	// v_connTabControl.removeLastTab();
 
