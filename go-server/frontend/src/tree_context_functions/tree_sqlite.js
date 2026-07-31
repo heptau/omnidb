@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Retrieving tree.
 /// </summary>
-function getTreeSqlite(p_div) {
+export function getTreeSqlite(p_div) {
 	var context_menu = {
 		cm_server: {
 			elements: [
@@ -527,7 +527,7 @@ function getTreeSqlite(p_div) {
 /// Refreshing tree node confirm.
 /// </summary>
 /// <param name="node">Node object.</param>
-function refreshTreeSqlite(node) {
+export function refreshTreeSqlite(node) {
 	if (node.tag != undefined) {
 		if (node.tag.type == "table_list") {
 			getTablesSqlite(node);
@@ -563,7 +563,7 @@ function refreshTreeSqlite(node) {
 	}
 }
 
-function afterNodeOpenedCallbackSqlite(node) {
+export function afterNodeOpenedCallbackSqlite(node) {
 	//Hooks
 	if (v_connTabControl.tag.hooks.sqliteTreeNodeOpen.length > 0) {
 		for (var i = 0; i < v_connTabControl.tag.hooks.sqliteTreeNodeOpen.length; i++) {
@@ -576,7 +576,7 @@ function afterNodeOpenedCallbackSqlite(node) {
 /// Retrieving tree details.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTreeDetailsSqlite(node) {
+export function getTreeDetailsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -669,7 +669,7 @@ function getTreeDetailsSqlite(node) {
 	);
 }
 
-function nodeOpenErrorSqlite(p_return, p_node) {
+export function nodeOpenErrorSqlite(p_return, p_node) {
 	p_node.collapseNode();
 
 	showPasswordPrompt(
@@ -686,7 +686,7 @@ function nodeOpenErrorSqlite(p_return, p_node) {
 /// Retrieving tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTablesSqlite(node) {
+export function getTablesSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -759,7 +759,7 @@ function getTablesSqlite(node) {
 /// Retrieving columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getColumnsSqlite(node) {
+export function getColumnsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -946,7 +946,7 @@ function getColumnsSqlite(node) {
 /// Retrieving PKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKSqlite(node) {
+export function getPKSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1002,7 +1002,7 @@ function getPKSqlite(node) {
 /// Retrieving PKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKColumnsSqlite(node) {
+export function getPKColumnsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1049,7 +1049,7 @@ function getPKColumnsSqlite(node) {
 /// Retrieving FKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsSqlite(node) {
+export function getFKsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1137,7 +1137,7 @@ function getFKsSqlite(node) {
 /// Retrieving FKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsColumnsSqlite(node) {
+export function getFKsColumnsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1221,7 +1221,7 @@ function getFKsColumnsSqlite(node) {
 /// Retrieving Uniques.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesSqlite(node) {
+export function getUniquesSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1283,7 +1283,7 @@ function getUniquesSqlite(node) {
 /// Retrieving Uniques Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesColumnsSqlite(node) {
+export function getUniquesColumnsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1331,7 +1331,7 @@ function getUniquesColumnsSqlite(node) {
 /// Retrieving Indexes.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesSqlite(node) {
+export function getIndexesSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1394,7 +1394,7 @@ function getIndexesSqlite(node) {
 /// Retrieving Indexes Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesColumnsSqlite(node) {
+export function getIndexesColumnsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1442,7 +1442,7 @@ function getIndexesColumnsSqlite(node) {
 /// Retrieving views.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsSqlite(node) {
+export function getViewsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1505,7 +1505,7 @@ function getViewsSqlite(node) {
 /// Retrieving View Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsColumnsSqlite(node) {
+export function getViewsColumnsSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1611,7 +1611,7 @@ function getViewsColumnsSqlite(node) {
 /// Retrieving view definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewDefinitionSqlite(node) {
+export function getViewDefinitionSqlite(node) {
 	execAjax(
 		"/get_view_definition_sqlite/",
 		JSON.stringify({
@@ -1647,7 +1647,7 @@ function getViewDefinitionSqlite(node) {
 /// Retrieving Triggers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggersSqlite(node) {
+export function getTriggersSqlite(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -1696,7 +1696,7 @@ function getTriggersSqlite(node) {
 /// <summary>
 /// Retrieving SELECT SQL template.
 /// </summary>
-function TemplateSelectSqlite(p_table, p_kind) {
+export function TemplateSelectSqlite(p_table, p_kind) {
 	execAjax(
 		"/template_select_sqlite/",
 		JSON.stringify({
@@ -1727,7 +1727,7 @@ function TemplateSelectSqlite(p_table, p_kind) {
 /// <summary>
 /// Retrieving INSERT SQL template.
 /// </summary>
-function TemplateInsertSqlite(p_table) {
+export function TemplateInsertSqlite(p_table) {
 	execAjax(
 		"/template_insert_sqlite/",
 		JSON.stringify({
@@ -1750,7 +1750,7 @@ function TemplateInsertSqlite(p_table) {
 /// <summary>
 /// Retrieving UPDATE SQL template.
 /// </summary>
-function TemplateUpdateSqlite(p_table) {
+export function TemplateUpdateSqlite(p_table) {
 	execAjax(
 		"/template_update_sqlite/",
 		JSON.stringify({
@@ -1774,7 +1774,7 @@ function TemplateUpdateSqlite(p_table) {
 /// Retrieving properties.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPropertiesSqlite(node) {
+export function getPropertiesSqlite(node) {
 	if (node.tag != undefined) {
 		if (node.tag.type == "table") {
 			getProperties("/get_properties_sqlite/", {
