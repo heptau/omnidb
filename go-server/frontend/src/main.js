@@ -6,6 +6,11 @@
  * ever had. Keep adding to the bottom as files migrate, and keep it in that
  * same order -- see README.md.
  */
+// First, so every module below can rely on the server-rendered configuration
+// already being on `window` -- it used to arrive from an inline script at the
+// very bottom of workspace.html.
+import './bootstrap-globals.js'
+
 import { exposeGlobals } from './legacy-globals.js'
 
 import * as treeSnippets from './tree_context_functions/tree_snippets.js'

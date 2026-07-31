@@ -1,4 +1,40 @@
 (function() {
+  const el = document.getElementById("omnidb_bootstrap");
+  if (!el) {
+    throw new Error("omnidb_bootstrap: the page config script tag is missing");
+  }
+  const cfg = JSON.parse(el.textContent);
+  Object.assign(window, {
+    v_editor_theme: cfg.editor_theme,
+    v_theme: cfg.theme,
+    v_font_size: cfg.font_size,
+    v_user_id: cfg.user_id,
+    v_user_key: cfg.user_key,
+    v_user_name: cfg.user_name,
+    v_csv_encoding: cfg.csv_encoding,
+    v_csv_delimiter: cfg.csv_delimiter,
+    v_indent_unit: cfg.indent_unit,
+    v_indent_char: cfg.indent_char,
+    v_indent_size: cfg.indent_size,
+    v_comma_style: cfg.comma_style,
+    v_keyword_case: cfg.keyword_case,
+    v_autocomplete_disabled_types: cfg.autocomplete_disabled_types,
+    v_version: cfg.omnidb_version,
+    v_short_version: cfg.omnidb_short_version,
+    v_url_folder: cfg.url_folder,
+    v_welcome_closed: cfg.welcome_closed,
+    gv_desktopMode: cfg.desktop_mode,
+    v_tab_token: cfg.tab_token,
+    v_show_terminal_option: cfg.show_terminal_option,
+    v_menu_item: cfg.menu_item,
+    v_super_user: cfg.super_user,
+    v_csrf_cookie_name: cfg.csrf_cookie_name,
+    v_shortcuts: cfg.shortcuts,
+    // Aliases the old inline block derived from the values above. Kept because
+    // plenty of code reads them by these names.
+    v_session_key: cfg.user_key,
+    v_user_login: cfg.user_name
+  });
   function exposeGlobals(...namespaces) {
     for (const ns of namespaces) {
       Object.assign(window, ns);
@@ -18960,8 +18996,8 @@
       console.warn(e);
     }
     var els = document.getElementsByClassName("ace_editor");
-    Array.prototype.forEach.call(els, function(el) {
-      ace.edit(el).setTheme("ace/theme/" + v_editor_theme);
+    Array.prototype.forEach.call(els, function(el2) {
+      ace.edit(el2).setTheme("ace/theme/" + v_editor_theme);
     });
     if (typeof Chart !== "undefined") {
       Chart.helpers.each(Chart.instances, function(instance) {
@@ -19012,8 +19048,8 @@
         }
       }
     }
-    Array.prototype.forEach.call(els, function(el) {
-      ace.edit(el).setFontSize(Number(p_option));
+    Array.prototype.forEach.call(els, function(el2) {
+      ace.edit(el2).setFontSize(Number(p_option));
     });
   }
   function changeInterfaceFontSize(p_option) {
@@ -20280,16 +20316,16 @@
     clearProperties: clearProperties$1,
     getProperties: getProperties$1
   }, Symbol.toStringTag, { value: "Module" }));
-  function composedPath(el) {
+  function composedPath(el2) {
     var path = [];
-    while (el) {
-      path.push(el);
-      if (el.tagName === "HTML") {
+    while (el2) {
+      path.push(el2);
+      if (el2.tagName === "HTML") {
         path.push(document);
         path.push(window);
         return path;
       }
-      el = el.parentElement;
+      el2 = el2.parentElement;
     }
   }
   function createTabControl$1({ p_div, p_hierarchy, p_layout }) {
@@ -20457,14 +20493,14 @@
         p_tab.text = p_name;
       },
       dragEndFunction: function(e, p_tab) {
-        let el = e.target;
-        el.getBoundingClientRect();
-        let el_index = $(el).index();
+        let el2 = e.target;
+        el2.getBoundingClientRect();
+        let el_index = $(el2).index();
         let drop_pos_x = e.x;
         let drop_pos_y = e.y;
         let old_index = el_index;
         let new_index;
-        let siblings = $(el).siblings();
+        let siblings = $(el2).siblings();
         let total = siblings.length;
         for (let i2 = 0; i2 < total; i2++) {
           let sibling = siblings[i2];
@@ -20479,11 +20515,11 @@
             if (drop_pos_x < sibling_pos_x_center) {
               new_index = i2;
               p_tab.tabList.splice(new_index, 0, removedEl);
-              sibling.before(el);
+              sibling.before(el2);
             } else {
               new_index = i2 + 1;
               p_tab.tabList.splice(new_index, 0, removedEl);
-              sibling.after(el);
+              sibling.after(el2);
             }
           }
         }
@@ -25460,14 +25496,14 @@
     var v_unique_rows_changed = [];
     var v_data_changed = [];
     var v_user_id_list = [];
-    $.each(v_usersObject.v_cellChanges, function(i2, el) {
-      if ($.inArray(el["rowIndex"], v_unique_rows_changed) === -1) {
-        v_unique_rows_changed.push(el["rowIndex"]);
+    $.each(v_usersObject.v_cellChanges, function(i2, el2) {
+      if ($.inArray(el2["rowIndex"], v_unique_rows_changed) === -1) {
+        v_unique_rows_changed.push(el2["rowIndex"]);
       }
     });
-    $.each(v_unique_rows_changed, function(i2, el) {
+    $.each(v_unique_rows_changed, function(i2, el2) {
       v_data_changed[i2] = v_usersObject.v_cellChanges[i2].p_data;
-      v_user_id_list[i2] = v_usersObject.v_user_ids[el];
+      v_user_id_list[i2] = v_usersObject.v_user_ids[el2];
     });
     var v_data = {
       edited: v_data_changed,
@@ -30143,9 +30179,9 @@
     };
     this.items = this.getItems(this.data);
     this.render = () => {
-      let el = this.renderList(this.items), elWrapper = document.createElement("DIV");
+      let el2 = this.renderList(this.items), elWrapper = document.createElement("DIV");
       elWrapper.classList = [this.template];
-      elWrapper.append(el);
+      elWrapper.append(el2);
       this.target.append(elWrapper);
     };
     this.renderLabel = (item) => {
@@ -30282,18 +30318,18 @@
       getPosition: function(p_el) {
         var xPos = 0;
         var yPos = 0;
-        var el = p_el;
-        while (el) {
-          if (el.tagName == "BODY") {
-            var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
-            var yScroll = el.scrollTop || document.documentElement.scrollTop;
-            xPos += el.offsetLeft - xScroll + el.clientLeft;
-            yPos += el.offsetTop - yScroll + el.clientTop;
+        var el2 = p_el;
+        while (el2) {
+          if (el2.tagName == "BODY") {
+            var xScroll = el2.scrollLeft || document.documentElement.scrollLeft;
+            var yScroll = el2.scrollTop || document.documentElement.scrollTop;
+            xPos += el2.offsetLeft - xScroll + el2.clientLeft;
+            yPos += el2.offsetTop - yScroll + el2.clientTop;
           } else {
-            xPos += el.offsetLeft - el.scrollLeft + el.clientLeft;
-            yPos += el.offsetTop - el.scrollTop + el.clientTop;
+            xPos += el2.offsetLeft - el2.scrollLeft + el2.clientLeft;
+            yPos += el2.offsetTop - el2.scrollTop + el2.clientTop;
           }
-          el = el.offsetParent;
+          el2 = el2.offsetParent;
         }
         return {
           x: xPos,

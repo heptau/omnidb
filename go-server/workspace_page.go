@@ -8,29 +8,60 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
-	"strconv"
 	"strings"
 )
 
 //go:embed static/workspace.html
 var workspaceHTMLTemplate string
 
-// workspaceVarNames are every "{{ name }}" substitution workspace.html uses
-// (see the grep inventory in go-backend-migration memory) — "shortcuts" is
-// deliberately excluded, it needs the "|safe" filter's raw-JSON substitution
-// handled separately (see renderWorkspacePage). "user_name" is also handled
-// separately in renderWorkspacePage rather than through the generic loop —
-// unlike every other entry here it appears in workspace.html in two
-// different contexts (a raw HTML text node and a JS string literal) that
-// need different escaping, so one shared value can't be substituted for
-// both via this map.
+// workspaceVarNames are the "{{ name }}" substitutions left in workspace.html
+// now that everything the page's JavaScript needs travels as one JSON
+// document instead (see workspaceBootstrap and renderWorkspacePage). These
+// four are the ones that appear in real HTML — asset URLs, the version badge
+// — rather than inside a <script> block. "user_name" is handled separately in
+// renderWorkspacePage rather than through the generic loop, because it also
+// appears in an HTML text node and needs HTML escaping there.
 var workspaceVarNames = []string{
 	"url_folder", "static_cache_bust", "omnidb_short_version", "omnidb_version",
-	"csrf_cookie_name", "editor_theme", "theme", "font_size", "user_id",
-	"user_key", "user_name", "csv_encoding", "csv_delimiter", "indent_unit",
-	"indent_char", "indent_size", "comma_style", "keyword_case", "welcome_closed",
-	"menu_item", "tab_token", "show_terminal_option", "super_user", "desktop_mode",
-	"autocomplete_disabled_types",
+	"user_name",
+}
+
+// workspaceBootstrap is the JSON document rendered into workspace.html's
+// <script type="application/json" id="omnidb_bootstrap"> block, which
+// frontend/src/bootstrap-globals.js reads and publishes onto window.
+//
+// This replaced ~25 individual substitutions into JavaScript string literals.
+// Every one of them needed hand-rolled escaping to survive a value containing
+// a quote or a newline, and "user_name" needed two different escapings of the
+// same value because it appeared in both a JS string and an HTML text node.
+// json.Marshal handles all of it, and escapes <, > and & to <-style
+// sequences by default, so the payload cannot break out of the script tag.
+type workspaceBootstrap struct {
+	URLFolder                 string                       `json:"url_folder"`
+	OmnidbVersion             string                       `json:"omnidb_version"`
+	OmnidbShortVersion        string                       `json:"omnidb_short_version"`
+	CSRFCookieName            string                       `json:"csrf_cookie_name"`
+	EditorTheme               string                       `json:"editor_theme"`
+	Theme                     string                       `json:"theme"`
+	FontSize                  int                          `json:"font_size"`
+	UserID                    int                          `json:"user_id"`
+	UserKey                   string                       `json:"user_key"`
+	UserName                  string                       `json:"user_name"`
+	CSVEncoding               string                       `json:"csv_encoding"`
+	CSVDelimiter              string                       `json:"csv_delimiter"`
+	IndentUnit                string                       `json:"indent_unit"`
+	IndentChar                string                       `json:"indent_char"`
+	IndentSize                int                          `json:"indent_size"`
+	CommaStyle                string                       `json:"comma_style"`
+	KeywordCase               string                       `json:"keyword_case"`
+	AutocompleteDisabledTypes string                       `json:"autocomplete_disabled_types"`
+	WelcomeClosed             bool                         `json:"welcome_closed"`
+	DesktopMode               bool                         `json:"desktop_mode"`
+	TabToken                  string                       `json:"tab_token"`
+	ShowTerminalOption        bool                         `json:"show_terminal_option"`
+	MenuItem                  string                       `json:"menu_item"`
+	SuperUser                 bool                         `json:"super_user"`
+	Shortcuts                 map[string]workspaceShortcut `json:"shortcuts"`
 }
 
 // workspaceVarPatterns matches both spaced ("{{ user_name }}") and unspaced
@@ -100,57 +131,11 @@ func stripWorkspaceConditionals(html string, desktopMode, superUser bool) string
 	return strings.Join(out, "\n")
 }
 
-// pythonBoolStr mirrors Python's str(True)/str(False) — workspace.html's own
-// inline script compares against these exact capitalized strings
-// ("gv_desktopMode = ('{{ desktop_mode }}' === 'True')").
-func boolStr(b bool) string {
-	if b {
-		return "1"
-	}
-	return "0"
-}
-
-func pythonBoolStr(b bool) string {
-	if b {
-		return "True"
-	}
-	return "False"
-}
-
-// escapeJSSingleQuoted escapes a string for safe embedding inside a
-// single-quoted JS string literal in workspace.html's inline <script>
-// block. Found and fixed a real stored-XSS gap: renderWorkspacePage used to
-// substitute user-controlled values (username, CSV delimiter, theme,
-// indent/comma/keyword-case settings — none of them validated against a
-// charset or enum anywhere before being saved) into this template with no
-// escaping at all, unlike the Django template it replaced (auto-escaping by
-// default). A username or setting containing a single quote breaks out of
-// the JS string literal; one containing "</script" closes the surrounding
-// tag regardless of any JS-level escaping, since the HTML parser looks for
-// that literal byte sequence while scanning script content. Deliberately a
-// different escaper from jsString (monitoring_handlers.go): that one is
-// built for a double-quoted onclick="..." HTML attribute and escapes the
-// double quote, not the single quote this context actually needs escaped.
-func escapeJSSingleQuoted(s string) string {
-	return strings.NewReplacer(
-		"\\", "\\\\",
-		"'", "\\'",
-		"\n", "\\n",
-		"\r", "\\r",
-		"</", "<\\/",
-	).Replace(s)
-}
-
 // renderWorkspacePage mirrors workspace.py index()'s context-building +
 // template.render(), minus the Django-session bookkeeping (handled
 // separately by ensureDjangoSession, since it's a side effect on Django's
 // own session store, not something the rendered HTML needs).
 func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]workspaceShortcut) (string, error) {
-	shortcutsJSON, err := json.Marshal(shortcuts)
-	if err != nil {
-		return "", err
-	}
-
 	tabToken, err := randomLowerAlnum(20)
 	if err != nil {
 		return "", err
@@ -163,48 +148,53 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 
 	desktopMode := appToken != ""
 
+	bootstrapJSON, err := json.Marshal(workspaceBootstrap{
+		URLFolder:                 "",
+		OmnidbVersion:             omnidbVersion,
+		OmnidbShortVersion:        omnidbShortVersion,
+		CSRFCookieName:            csrfCookieName,
+		EditorTheme:               editorTheme,
+		Theme:                     ud.Theme,
+		FontSize:                  ud.FontSize,
+		UserID:                    who.UserID,
+		UserKey:                   "",
+		UserName:                  who.Username,
+		CSVEncoding:               ud.CSVEncoding,
+		CSVDelimiter:              ud.CSVDelimiter,
+		IndentUnit:                ud.IndentUnit,
+		IndentChar:                ud.IndentChar,
+		IndentSize:                ud.IndentSize,
+		CommaStyle:                ud.CommaStyle,
+		KeywordCase:               ud.KeywordCase,
+		AutocompleteDisabledTypes: ud.AutocompleteDisabledTypes,
+		WelcomeClosed:             ud.WelcomeClosed,
+		DesktopMode:               desktopMode,
+		TabToken:                  tabToken,
+		ShowTerminalOption:        false,
+		MenuItem:                  "workspace",
+		SuperUser:                 who.SuperUser,
+		Shortcuts:                 shortcuts,
+	})
+	if err != nil {
+		return "", err
+	}
+
 	html := stripWorkspaceConditionals(workspaceHTMLTemplate, desktopMode, who.SuperUser)
-	html = strings.Replace(html, "{{ shortcuts| safe}}", string(shortcutsJSON), 1)
+	html = strings.Replace(html, "{{ bootstrap_json }}", string(bootstrapJSON), 1)
 
 	values := map[string]string{
-		"url_folder":                  "",
-		"static_cache_bust":           staticCacheBust,
-		"omnidb_short_version":        omnidbShortVersion,
-		"omnidb_version":              omnidbVersion,
-		"csrf_cookie_name":            csrfCookieName,
-		"editor_theme":                editorTheme,
-		"theme":                       escapeJSSingleQuoted(ud.Theme),
-		"font_size":                   strconv.Itoa(ud.FontSize),
-		"user_id":                     strconv.Itoa(who.UserID),
-		"user_key":                    "",
-		"csv_encoding":                escapeJSSingleQuoted(ud.CSVEncoding),
-		"csv_delimiter":               escapeJSSingleQuoted(ud.CSVDelimiter),
-		"indent_unit":                 escapeJSSingleQuoted(ud.IndentUnit),
-		"indent_char":                 escapeJSSingleQuoted(ud.IndentChar),
-		"indent_size":                 strconv.Itoa(ud.IndentSize),
-		"comma_style":                 escapeJSSingleQuoted(ud.CommaStyle),
-		"keyword_case":                escapeJSSingleQuoted(ud.KeywordCase),
-		"autocomplete_disabled_types": escapeJSSingleQuoted(ud.AutocompleteDisabledTypes),
-		"welcome_closed":              boolStr(ud.WelcomeClosed),
-		"menu_item":                   "workspace",
-		"tab_token":                   tabToken,
-		"show_terminal_option":        "false",
-		"super_user":                  boolStr(who.SuperUser),
-		"desktop_mode":                pythonBoolStr(desktopMode),
+		"url_folder":           "",
+		"static_cache_bust":    staticCacheBust,
+		"omnidb_short_version": omnidbShortVersion,
+		"omnidb_version":       omnidbVersion,
+		// The only remaining occurrence is an HTML text node, so this is the
+		// only escaping it needs now — the JS-string copy went into the JSON.
+		"user_name": htmlescape.EscapeString(who.Username),
 	}
 
 	for name, val := range values {
 		html = workspaceVarPatterns[name].ReplaceAllLiteralString(html, val)
 	}
-
-	// user_name: see escapeJSSingleQuoted's comment and workspaceVarNames'
-	// comment above for why this can't go through the generic loop —
-	// replace each context's exact surrounding text once, with the
-	// escaping that context needs.
-	html = strings.Replace(html, "<span>{{ user_name }}</span>",
-		"<span>"+htmlescape.EscapeString(who.Username)+"</span>", 1)
-	html = strings.Replace(html, "var v_user_name = '{{ user_name }}';",
-		"var v_user_name = '"+escapeJSSingleQuoted(who.Username)+"';", 1)
 
 	return html, nil
 }

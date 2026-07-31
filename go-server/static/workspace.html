@@ -1123,42 +1123,23 @@
 	     dependency graph, so files are migrated top-down and the bundle stays
 	     where the block it absorbs used to start. It is a plain blocking
 	     script, not type="module", so nothing about load ordering changes. -->
+	<!-- Everything this page needs from the server, as one JSON document. It
+	     used to be ~25 separate {{ }} substitutions into JavaScript string
+	     literals in the block below, each one a place where a value containing
+	     a quote or a newline would break the page. The browser never parses an
+	     application/json block as code, and json.Marshal escapes it correctly
+	     by construction. src/bootstrap-globals.js reads it. -->
+	<script type="application/json" id="omnidb_bootstrap">{{ bootstrap_json }}</script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/dist/omnidb.bundle.js?v{{static_cache_bust}}"></script>
 
-
-
 	<script type="text/javascript">
-		//Global variables
-		var v_editor_theme = '{{ editor_theme }}';
-		var v_theme = '{{ theme }}';
-		var v_font_size = {{ font_size }};
-		var v_user_id = {{ user_id }};
-		var v_user_key = '{{ user_key }}';
-		var v_user_name = '{{ user_name }}';
-		var v_csv_encoding = '{{ csv_encoding }}';
-		var v_csv_delimiter = '{{ csv_delimiter }}';
-		var v_indent_unit = '{{ indent_unit }}';
-		var v_indent_char = '{{ indent_char }}';
-		var v_indent_size = parseInt('{{ indent_size }}');
-		var v_comma_style = '{{ comma_style }}';
-		var v_keyword_case = '{{ keyword_case }}';
-		var v_autocomplete_disabled_types = '{{ autocomplete_disabled_types }}';
-		var v_session_key = v_user_key;
-		var v_user_login = v_user_name;
-		var v_version = '{{ omnidb_version }}';
-		var v_short_version = '{{ omnidb_short_version }}';
-		var v_url_folder = '{{ url_folder }}';
-		var v_welcome_closed = {{ welcome_closed }};
+		// What is left here after the configuration moved into the JSON block
+		// above are the globals that genuinely cannot live in the bundle:
+		// bundled code assigns to them at runtime, so they have to be real
+		// properties of the global object. Declaring them inside a module
+		// would make them module-local bindings instead, and the two copies
+		// would drift apart silently.
 		var v_connections_data;
-		var gv_desktopMode = ('{{ desktop_mode }}' === 'True');
-		var v_tab_token = '{{ tab_token }}';
-		var v_show_terminal_option = {{ show_terminal_option }};
-		var v_omnis = createOmnis();
-		var v_explain_control = { context: 'default' };
-
-		var v_menu_item = '{{ menu_item }}'
-		$('#menu_' + v_menu_item).addClass('header_a_selected');
-
 		var ht;
 		var network;
 		var v_connTabControl;
@@ -1169,15 +1150,16 @@
 		var v_database_list = null;
 		var v_completer_ready = true;
 		var v_tree_object;
+
+		var v_omnis = createOmnis();
+		var v_explain_control = { context: 'default' };
 		var v_shortcut_object = {
-			shortcuts: {{ shortcuts| safe}},
-		button: null,
+			shortcuts: v_shortcuts,
+			button: null,
 			actions: null
 		};
-		var v_super_user = {{ super_user }};
-		var v_csrf_cookie_name = '{{ csrf_cookie_name }}';
-	</script>
-	<script type="text/javascript">
+
+		$('#menu_' + v_menu_item).addClass('header_a_selected');
 	</script>
 </body>
 
