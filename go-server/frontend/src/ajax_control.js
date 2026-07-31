@@ -28,13 +28,13 @@ SOFTWARE.
 */
 
 //Number of active AJAX calls
-var v_calls_count = 0;
-var v_is_loading = false;
+export var v_calls_count = 0;
+export var v_is_loading = false;
 
 /**
  * Used to add a loading gif modal above page content.
  */
-function startLoading() {
+export function startLoading() {
 	v_calls_count++;
 	if (!v_is_loading) {
 		$("#div_loading").fadeIn(100);
@@ -45,7 +45,7 @@ function startLoading() {
 /**
  * Used to remove a loading gif modal above page content.
  */
-function endLoading() {
+export function endLoading() {
 	if (v_calls_count > 0) {
 		v_calls_count--;
 	}
@@ -62,7 +62,7 @@ function endLoading() {
  * @returns {string} cookie value, if exists.
  */
 
-function getCookie(name) {
+export function getCookie(name) {
 	var cookieValue = null;
 
 	if (document.cookie && document.cookie !== "") {
@@ -87,17 +87,17 @@ function getCookie(name) {
  * @param {string} method - the method to be checked.
  * @returns {boolean} if the http request is one of GET, HEAD, OPTIONS, TRACE or not.
  */
-function csrfSafeMethod(method) {
+export function csrfSafeMethod(method) {
 	return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
 }
 
-var v_ajax_call = null;
-var v_cancel_button = document.getElementById("bt_cancel_ajax");
+export var v_ajax_call = null;
+export var v_cancel_button = document.getElementById("bt_cancel_ajax");
 
 /**
  * Abort last ajax call.
  */
-function cancelAjax() {
+export function cancelAjax() {
 	if (v_ajax_call != null) {
 		v_ajax_call.abort();
 	}
@@ -117,7 +117,7 @@ function cancelAjax() {
  * @param {String} p_onAjaxErrorCallBack = false A callback to be called on AJAX error. Ex: connectivity issue.
  * @return {Function} Contextual callback returns based on status cases and returned data.
  */
-function execAjax(
+export function execAjax(
 	p_url,
 	p_data,
 	p_successFunc,
@@ -205,7 +205,7 @@ function execAjax(
 /**
  * Reporting that webserver is off.
  */
-function reportOffline() {
+export function reportOffline() {
 	showAlert("Webserver was shutdown, please restart it and reload the application.");
 	var v_status_img = document.getElementById("ajax_status");
 }
