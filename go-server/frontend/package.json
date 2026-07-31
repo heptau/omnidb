@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build --config vite.config.early.js && vite build",
+    "build": "vite build --config vite.config.early.js && vite build --config vite.config.login.js && vite build",
     "check": "node scripts/check-bridge.mjs"
   },
   "devDependencies": {

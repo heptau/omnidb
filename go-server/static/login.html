@@ -94,9 +94,10 @@
 
 <script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/jquery/jquery.min.js?v{{static_cache_bust}}"></script>
 <script src="{{url_folder}}/static/OmniDB_app/lib/bootstrap/bootstrap.min.js?v{{static_cache_bust}}"></script>
-<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/notification_control.js?v{{static_cache_bust}}"></script>
-<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/ajax_control.js?v{{static_cache_bust}}"></script>
-<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/context_menu_guard.js?v{{static_cache_bust}}"></script>
+<!-- Vite bundle for this page (go-server/frontend/, src/login.js): the same
+     notification_control + ajax_control + context_menu_guard this page has
+     always loaded, now built rather than served as three separate files. -->
+<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/dist/omnidb.login.js?v{{static_cache_bust}}"></script>
 <script type="text/javascript">
 	var v_url_folder = '{{url_folder}}';
 	var v_csrf_cookie_name = '{{csrf_cookie_name}}';
