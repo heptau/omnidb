@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
+export function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
 	v_connTabControl.tag.createQueryTab(p_tab_name);
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_template);
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
@@ -47,7 +47,7 @@ function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
 	// }
 }
 
-function tabAdvancedObjectSearch(node) {
+export function tabAdvancedObjectSearch(node) {
 	var v_name = "Advanced Object Search";
 
 	v_connTabControl.selectedTab.tag.tabControl.removeTabIndex(v_connTabControl.selectedTab.tag.tabControl.tabList.length - 1);
@@ -1115,7 +1115,7 @@ function tabAdvancedObjectSearch(node) {
 /// <summary>
 /// Retrieving tree.
 /// </summary>
-function getTreePostgresql(p_div) {
+export function getTreePostgresql(p_div) {
 	var context_menu = {
 		cm_server: {
 			elements: [
@@ -4307,7 +4307,7 @@ function getTreePostgresql(p_div) {
 	tree.drawTree();
 }
 
-function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_callback_stop) {
+export function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_callback_stop) {
 	if (
 		p_node.tag != null &&
 		p_node.tag.database != null &&
@@ -4420,7 +4420,7 @@ function checkCurrentDatabase(p_node, p_complete_check, p_callback_continue, p_c
  * Get comment based on node type and oid.
  * {object} p_node - the node which comment will be fetched
  */
-function getObjectDescriptionPostgresql(p_node) {
+export function getObjectDescriptionPostgresql(p_node) {
 	var v_oid = null;
 	var v_type = p_node.tag.type;
 	var v_position = null;
@@ -4476,7 +4476,7 @@ function getObjectDescriptionPostgresql(p_node) {
 /// Refreshing tree node.
 /// </summary>
 /// <param name="node">Node object.</param>
-function refreshTreePostgresql(p_node) {
+export function refreshTreePostgresql(p_node) {
 	checkCurrentDatabase(
 		p_node,
 		true,
@@ -4493,7 +4493,7 @@ function refreshTreePostgresql(p_node) {
 /// Refreshing tree node.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPropertiesPostgresql(p_node) {
+export function getPropertiesPostgresql(p_node) {
 	checkCurrentDatabase(p_node, false, function () {
 		getPropertiesPostgresqlConfirm(p_node);
 	});
@@ -4503,7 +4503,7 @@ function getPropertiesPostgresql(p_node) {
 /// Retrieving properties.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPropertiesPostgresqlConfirm(node) {
+export function getPropertiesPostgresqlConfirm(node) {
 	if (node.tag != undefined) {
 		if (node.tag.type == "role") {
 			getProperties("/get_properties_postgresql/", {
@@ -4766,7 +4766,7 @@ function getPropertiesPostgresqlConfirm(node) {
 /// Refreshing tree node confirm.
 /// </summary>
 /// <param name="node">Node object.</param>
-function refreshTreePostgresqlConfirm(node) {
+export function refreshTreePostgresqlConfirm(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "schema_list") {
 			getSchemasPostgresql(node);
@@ -4885,7 +4885,7 @@ function refreshTreePostgresqlConfirm(node) {
 		}
 }
 
-function afterNodeOpenedCallbackPostgreSQL(node) {
+export function afterNodeOpenedCallbackPostgreSQL(node) {
 	//Hooks
 	if (v_connTabControl.tag.hooks.postgresqlTreeNodeOpen.length > 0) {
 		for (var i = 0; i < v_connTabControl.tag.hooks.postgresqlTreeNodeOpen.length; i++)
@@ -4897,7 +4897,7 @@ function afterNodeOpenedCallbackPostgreSQL(node) {
 /// Retrieving tree details.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTreeDetailsPostgresql(node) {
+export function getTreeDetailsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5214,7 +5214,7 @@ function getTreeDetailsPostgresql(node) {
 /// Retrieving database objects.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDatabaseObjectsPostgresql(node) {
+export function getDatabaseObjectsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5328,7 +5328,7 @@ function getDatabaseObjectsPostgresql(node) {
 /// Retrieving databases.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDatabasesPostgresql(node) {
+export function getDatabasesPostgresql(node) {
 	//node.removeChildNodes();
 	//node.createChildNode('', false, 'node-spin', null,
 	//    null);
@@ -5385,7 +5385,7 @@ function getDatabasesPostgresql(node) {
 /// Retrieving tablespaces.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTablespacesPostgresql(node) {
+export function getTablespacesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5433,7 +5433,7 @@ function getTablespacesPostgresql(node) {
 /// Retrieving roles.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getRolesPostgresql(node) {
+export function getRolesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5485,7 +5485,7 @@ function getRolesPostgresql(node) {
 /// Retrieving roles.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getExtensionsPostgresql(node) {
+export function getExtensionsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5534,7 +5534,7 @@ function getExtensionsPostgresql(node) {
 /// Retrieving schemas.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getSchemasPostgresql(node) {
+export function getSchemasPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5830,7 +5830,7 @@ function getSchemasPostgresql(node) {
 /// Retrieving tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTablesPostgresql(node) {
+export function getTablesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5903,7 +5903,7 @@ function getTablesPostgresql(node) {
 /// Retrieving sequences.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getSequencesPostgresql(node) {
+export function getSequencesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -5954,7 +5954,7 @@ function getSequencesPostgresql(node) {
 /// Retrieving views.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsPostgresql(node) {
+export function getViewsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6019,7 +6019,7 @@ function getViewsPostgresql(node) {
 /// Retrieving View Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsColumnsPostgresql(node) {
+export function getViewsColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6125,7 +6125,7 @@ function getViewsColumnsPostgresql(node) {
 /// Retrieving view definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewDefinitionPostgresql(node) {
+export function getViewDefinitionPostgresql(node) {
 	execAjax(
 		"/get_view_definition_postgresql/",
 		JSON.stringify({
@@ -6162,7 +6162,7 @@ function getViewDefinitionPostgresql(node) {
 /// Retrieving materialized views.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getMaterializedViewsPostgresql(node) {
+export function getMaterializedViewsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6227,7 +6227,7 @@ function getMaterializedViewsPostgresql(node) {
 /// Retrieving Materialized View Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getMaterializedViewsColumnsPostgresql(node) {
+export function getMaterializedViewsColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6336,7 +6336,7 @@ function getMaterializedViewsColumnsPostgresql(node) {
 /// Retrieving materialized view definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getMaterializedViewDefinitionPostgresql(node) {
+export function getMaterializedViewDefinitionPostgresql(node) {
 	execAjax(
 		"/get_mview_definition_postgresql/",
 		JSON.stringify({
@@ -6373,7 +6373,7 @@ function getMaterializedViewDefinitionPostgresql(node) {
 /// Retrieving columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getColumnsPostgresql(node) {
+export function getColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6649,7 +6649,7 @@ function getColumnsPostgresql(node) {
 /// Retrieving PKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKPostgresql(node) {
+export function getPKPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6709,7 +6709,7 @@ function getPKPostgresql(node) {
 /// Retrieving PKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKColumnsPostgresql(node) {
+export function getPKColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6756,7 +6756,7 @@ function getPKColumnsPostgresql(node) {
 /// Retrieving Uniques.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesPostgresql(node) {
+export function getUniquesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6821,7 +6821,7 @@ function getUniquesPostgresql(node) {
 /// Retrieving Uniques Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesColumnsPostgresql(node) {
+export function getUniquesColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6870,7 +6870,7 @@ function getUniquesColumnsPostgresql(node) {
 /// Retrieving Indexes.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesPostgresql(node) {
+export function getIndexesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6938,7 +6938,7 @@ function getIndexesPostgresql(node) {
 /// Retrieving Indexes Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesColumnsPostgresql(node) {
+export function getIndexesColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -6987,7 +6987,7 @@ function getIndexesColumnsPostgresql(node) {
 /// Retrieving FKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsPostgresql(node) {
+export function getFKsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7075,7 +7075,7 @@ function getFKsPostgresql(node) {
 /// Retrieving FKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsColumnsPostgresql(node) {
+export function getFKsColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7159,7 +7159,7 @@ function getFKsColumnsPostgresql(node) {
 /// Retrieving Checks.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getChecksPostgresql(node) {
+export function getChecksPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7225,7 +7225,7 @@ function getChecksPostgresql(node) {
 /// Retrieving Excludes.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getExcludesPostgresql(node) {
+export function getExcludesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7303,7 +7303,7 @@ function getExcludesPostgresql(node) {
 /// Retrieving Rules.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getRulesPostgresql(node) {
+export function getRulesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7357,7 +7357,7 @@ function getRulesPostgresql(node) {
 /// Retrieving rule definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getRuleDefinitionPostgresql(node) {
+export function getRuleDefinitionPostgresql(node) {
 	execAjax(
 		"/get_rule_definition_postgresql/",
 		JSON.stringify({
@@ -7395,7 +7395,7 @@ function getRuleDefinitionPostgresql(node) {
 /// Retrieving Triggers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggersPostgresql(node) {
+export function getTriggersPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7475,7 +7475,7 @@ function getTriggersPostgresql(node) {
 /// Retrieving Event Triggers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getEventTriggersPostgresql(node) {
+export function getEventTriggersPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7561,7 +7561,7 @@ function getEventTriggersPostgresql(node) {
 /// Retrieving Partitions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getInheritedsPostgresql(node) {
+export function getInheritedsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7614,7 +7614,7 @@ function getInheritedsPostgresql(node) {
 /// Retrieving Partitions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPartitionsPostgresql(node) {
+export function getPartitionsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7667,7 +7667,7 @@ function getPartitionsPostgresql(node) {
 /// Retrieving Statistics.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getStatisticsPostgresql(node) {
+export function getStatisticsPostgresql(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -7727,7 +7727,7 @@ function getStatisticsPostgresql(node) {
 /// Retrieving Statistics Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getStatisticsColumnsPostgresql(node) {
+export function getStatisticsColumnsPostgresql(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -7778,7 +7778,7 @@ function getStatisticsColumnsPostgresql(node) {
 /// Retrieving functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionsPostgresql(node) {
+export function getFunctionsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7841,7 +7841,7 @@ function getFunctionsPostgresql(node) {
 /// Retrieving function fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionFieldsPostgresql(node) {
+export function getFunctionFieldsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -7918,7 +7918,7 @@ function getFunctionFieldsPostgresql(node) {
 /// Retrieving function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionDefinitionPostgresql(node) {
+export function getFunctionDefinitionPostgresql(node) {
 	execAjax(
 		"/get_function_definition_postgresql/",
 		JSON.stringify({
@@ -7954,7 +7954,7 @@ function getFunctionDefinitionPostgresql(node) {
 /// Retrieving procedures.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProceduresPostgresql(node) {
+export function getProceduresPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8017,7 +8017,7 @@ function getProceduresPostgresql(node) {
 /// Retrieving procedure fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureFieldsPostgresql(node) {
+export function getProcedureFieldsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8094,7 +8094,7 @@ function getProcedureFieldsPostgresql(node) {
 /// Retrieving procedure definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureDefinitionPostgresql(node) {
+export function getProcedureDefinitionPostgresql(node) {
 	execAjax(
 		"/get_procedure_definition_postgresql/",
 		JSON.stringify({
@@ -8130,7 +8130,7 @@ function getProcedureDefinitionPostgresql(node) {
 /// Retrieving trigger functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionsPostgresql(node) {
+export function getTriggerFunctionsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8182,7 +8182,7 @@ function getTriggerFunctionsPostgresql(node) {
 /// Retrieving trigger function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionDefinitionPostgresql(node) {
+export function getTriggerFunctionDefinitionPostgresql(node) {
 	execAjax(
 		"/get_triggerfunction_definition_postgresql/",
 		JSON.stringify({
@@ -8218,7 +8218,7 @@ function getTriggerFunctionDefinitionPostgresql(node) {
 /// Retrieving event trigger functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getEventTriggerFunctionsPostgresql(node) {
+export function getEventTriggerFunctionsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8270,7 +8270,7 @@ function getEventTriggerFunctionsPostgresql(node) {
 /// Retrieving event trigger function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getEventTriggerFunctionDefinitionPostgresql(node) {
+export function getEventTriggerFunctionDefinitionPostgresql(node) {
 	execAjax(
 		"/get_eventtriggerfunction_definition_postgresql/",
 		JSON.stringify({
@@ -8306,7 +8306,7 @@ function getEventTriggerFunctionDefinitionPostgresql(node) {
 /// Retrieving aggregates.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getAggregatesPostgresql(node) {
+export function getAggregatesPostgresql(node) {
 	node.removeChildNodes();
 
 	node.createChildNode("", false, "node-spin", null, null);
@@ -8373,7 +8373,7 @@ function getAggregatesPostgresql(node) {
 /// Retrieving Physical Replication Slots.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPhysicalReplicationSlotsPostgresql(node) {
+export function getPhysicalReplicationSlotsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8421,7 +8421,7 @@ function getPhysicalReplicationSlotsPostgresql(node) {
 /// Retrieving Logical Replication Slots.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getLogicalReplicationSlotsPostgresql(node) {
+export function getLogicalReplicationSlotsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8469,7 +8469,7 @@ function getLogicalReplicationSlotsPostgresql(node) {
 /// Retrieving Publications.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPublicationsPostgresql(node) {
+export function getPublicationsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8588,7 +8588,7 @@ function getPublicationsPostgresql(node) {
 /// Retrieving Publication Tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPublicationTablesPostgresql(node) {
+export function getPublicationTablesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8637,7 +8637,7 @@ function getPublicationTablesPostgresql(node) {
 /// Retrieving Subscriptions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getSubscriptionsPostgresql(node) {
+export function getSubscriptionsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8748,7 +8748,7 @@ function getSubscriptionsPostgresql(node) {
 /// Retrieving Subscription Tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getSubscriptionTablesPostgresql(node) {
+export function getSubscriptionTablesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8797,7 +8797,7 @@ function getSubscriptionTablesPostgresql(node) {
 /// Retrieving Foreign Data Wrappers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getForeignDataWrappersPostgresql(node) {
+export function getForeignDataWrappersPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8859,7 +8859,7 @@ function getForeignDataWrappersPostgresql(node) {
 /// Retrieving Foreign Servers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getForeignServersPostgresql(node) {
+export function getForeignServersPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -8970,7 +8970,7 @@ function getForeignServersPostgresql(node) {
 /// Retrieving User Mappings.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUserMappingsPostgresql(node) {
+export function getUserMappingsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9039,7 +9039,7 @@ function getUserMappingsPostgresql(node) {
 /// Retrieving foreign tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getForeignTablesPostgresql(node) {
+export function getForeignTablesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9103,7 +9103,7 @@ function getForeignTablesPostgresql(node) {
 /// Retrieving columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getForeignColumnsPostgresql(node) {
+export function getForeignColumnsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9274,7 +9274,7 @@ function getForeignColumnsPostgresql(node) {
 /// Retrieving types.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTypesPostgresql(node) {
+export function getTypesPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9325,7 +9325,7 @@ function getTypesPostgresql(node) {
 /// Retrieving domains.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDomainsPostgresql(node) {
+export function getDomainsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9376,7 +9376,7 @@ function getDomainsPostgresql(node) {
 /// Retrieving partitioned parent tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPartitionedParentsPostgresql(node) {
+export function getPartitionedParentsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9430,7 +9430,7 @@ function getPartitionedParentsPostgresql(node) {
 /// Retrieving partitioned children tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPartitionedChildrenPostgresql(node) {
+export function getPartitionedChildrenPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9504,7 +9504,7 @@ function getPartitionedChildrenPostgresql(node) {
 /// Retrieving inheritance parent tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getInheritedsParentsPostgresql(node) {
+export function getInheritedsParentsPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9558,7 +9558,7 @@ function getInheritedsParentsPostgresql(node) {
 /// Retrieving partitioned children tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getInheritedsChildrenPostgresql(node) {
+export function getInheritedsChildrenPostgresql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -9631,7 +9631,7 @@ function getInheritedsChildrenPostgresql(node) {
 /// <summary>
 /// Retrieving SELECT SQL template.
 /// </summary>
-function TemplateSelectPostgresql(p_schema, p_table, p_kind) {
+export function TemplateSelectPostgresql(p_schema, p_table, p_kind) {
 	execAjax(
 		"/template_select_postgresql/",
 		JSON.stringify({
@@ -9663,7 +9663,7 @@ function TemplateSelectPostgresql(p_schema, p_table, p_kind) {
 /// <summary>
 /// Retrieving INSERT SQL template.
 /// </summary>
-function TemplateInsertPostgresql(p_schema, p_table) {
+export function TemplateInsertPostgresql(p_schema, p_table) {
 	execAjax(
 		"/template_insert_postgresql/",
 		JSON.stringify({
@@ -9687,7 +9687,7 @@ function TemplateInsertPostgresql(p_schema, p_table) {
 /// <summary>
 /// Retrieving UPDATE SQL template.
 /// </summary>
-function TemplateUpdatePostgresql(p_schema, p_table) {
+export function TemplateUpdatePostgresql(p_schema, p_table) {
 	execAjax(
 		"/template_update_postgresql/",
 		JSON.stringify({
@@ -9711,7 +9711,7 @@ function TemplateUpdatePostgresql(p_schema, p_table) {
 /// <summary>
 /// Retrieving SELECT FUNCTION SQL template.
 /// </summary>
-function TemplateSelectFunctionPostgresql(p_schema, p_function, p_functionid) {
+export function TemplateSelectFunctionPostgresql(p_schema, p_function, p_functionid) {
 	execAjax(
 		"/template_select_function_postgresql/",
 		JSON.stringify({
@@ -9736,7 +9736,7 @@ function TemplateSelectFunctionPostgresql(p_schema, p_function, p_functionid) {
 /// <summary>
 /// Retrieving CALL PROCEDURE SQL template.
 /// </summary>
-function TemplateCallProcedurePostgresql(p_schema, p_procedure, p_procedureid) {
+export function TemplateCallProcedurePostgresql(p_schema, p_procedure, p_procedureid) {
 	execAjax(
 		"/template_call_procedure_postgresql/",
 		JSON.stringify({
@@ -9758,7 +9758,7 @@ function TemplateCallProcedurePostgresql(p_schema, p_procedure, p_procedureid) {
 	);
 }
 
-function nodeOpenErrorPostgresql(p_return, p_node) {
+export function nodeOpenErrorPostgresql(p_return, p_node) {
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(
@@ -9787,14 +9787,14 @@ function nodeOpenErrorPostgresql(p_return, p_node) {
 	}
 }
 
-function getMajorVersionPostgresql(p_version) {
+export function getMajorVersionPostgresql(p_version) {
 	var v_version = p_version.split(" (")[0];
 	var tmp = v_version.replace("PostgreSQL ", "").replace("beta", ".").replace("rc", ".").split(".");
 	tmp.pop();
 	return tmp.join(".");
 }
 
-function postgresqlTerminateBackendConfirm(p_pid) {
+export function postgresqlTerminateBackendConfirm(p_pid) {
 	execAjax(
 		"/kill_backend_postgresql/",
 		JSON.stringify({
@@ -9824,7 +9824,7 @@ function postgresqlTerminateBackendConfirm(p_pid) {
 	);
 }
 
-function postgresqlTerminateBackend(p_row) {
+export function postgresqlTerminateBackend(p_row) {
 	var v_pid = p_row[2];
 
 	showConfirm("Are you sure you want to terminate backend " + v_pid + "?", function () {
@@ -9832,7 +9832,7 @@ function postgresqlTerminateBackend(p_row) {
 	});
 }
 
-function getExplain(p_mode) {
+export function getExplain(p_mode) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	var v_query;
@@ -9874,7 +9874,7 @@ function getExplain(p_mode) {
 	}
 }
 
-function getExplainReturn(p_data) {
+export function getExplainReturn(p_data) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	v_tab_tag.selectExplainTabFunc();

@@ -9,5 +9,9 @@
 import { exposeGlobals } from './legacy-globals.js'
 
 import * as treeSnippets from './tree_context_functions/tree_snippets.js'
+import * as treePostgresql from './tree_context_functions/tree_postgresql.js'
 
-exposeGlobals(treeSnippets)
+exposeGlobals(
+  treeSnippets,
+  treePostgresql,
+)
