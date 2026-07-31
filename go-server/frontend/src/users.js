@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Creates new users.
 /// </summary>
-function newUserConfirm() {
+export function newUserConfirm() {
 	execAjax(
 		"/new_user/",
 		JSON.stringify({ p_data: window.newUsersObject.newUsers }),
@@ -49,7 +49,7 @@ function newUserConfirm() {
 /// <summary>
 /// Add a virtual new user with pending information.
 /// </summary>
-function newUser() {
+export function newUser() {
 	var v_index = 0;
 	if (window.newUsersObject.newUsers.length > 0) {
 		v_index = window.newUsersObject.newUsers.length;
@@ -66,7 +66,7 @@ function newUser() {
 /// Removes specific user.
 /// </summary>
 /// <param name="p_index">Connection index in the connection list.</param>
-function removeUserConfirm(p_id) {
+export function removeUserConfirm(p_id) {
 	var input = JSON.stringify({ p_id: p_id });
 
 	execAjax(
@@ -86,7 +86,7 @@ function removeUserConfirm(p_id) {
 /// Displays question to remove specific user and removes if accepted.
 /// </summary>
 /// <param name="p_id">User ID.</param>
-function removeUser(p_id) {
+export function removeUser(p_id) {
 	showConfirm("Are you sure you want to remove this user?", function () {
 		removeUserConfirm(p_id);
 	});
@@ -96,7 +96,7 @@ function removeUser(p_id) {
 /// Undo adding specific new user.
 /// </summary>
 /// <param name="p_index">Connection index in the connection list.</param>
-function removeNewUserConfirm(p_index) {
+export function removeNewUserConfirm(p_index) {
 	if (window.newUsersObject.newUsers.length == 1) window.newUsersObject.newUsers = [];
 	else if (p_index == 0) window.newUsersObject.newUsers.shift();
 	else if (p_index + 1 == window.newUsersObject.newUsers.length) window.newUsersObject.newUsers.pop();
@@ -108,7 +108,7 @@ function removeNewUserConfirm(p_index) {
 /// Undo add new user from virtual users
 /// </summary>
 /// <param name="p_id">User ID.</param>
-function removeNewUser(p_index) {
+export function removeNewUser(p_index) {
 	showConfirm("Are you sure you want to undo adding this user?", function () {
 		removeNewUserConfirm(p_index);
 	});
@@ -117,7 +117,7 @@ function removeNewUser(p_index) {
 /// <summary>
 /// Saves all changes in the user list, then calls to save new users.
 /// </summary>
-function saveUsers() {
+export function saveUsers() {
 	if (v_usersObject.v_cellChanges.length == 0 && window.newUsersObject.newUsers.length == 0) return;
 
 	var v_unique_rows_changed = [];
@@ -161,7 +161,7 @@ function saveUsers() {
 /// <summary>
 /// Hides users window.
 /// </summary>
-function hideUsers() {
+export function hideUsers() {
 	$("#div_users").removeClass("isActive");
 
 	// v_usersObject.ht.destroy();
@@ -173,7 +173,7 @@ $("#modal_users").on("shown.bs.modal", function (e) {
 	getUsers();
 });
 
-function changeUser(event, p_row_index, p_col_index) {
+export function changeUser(event, p_row_index, p_col_index) {
 	var v_user_id = v_usersObject.v_user_ids[p_row_index];
 	var v_user_is_superuser = document.getElementById("user_item_superuser_" + p_row_index).checked ? 1 : 0;
 	var p_data_template = [
@@ -201,7 +201,7 @@ function changeUser(event, p_row_index, p_col_index) {
 	}
 }
 
-function changeNewUser(event, p_row_index, p_col_index) {
+export function changeNewUser(event, p_row_index, p_col_index) {
 	var v_user_is_superuser = document.getElementById("new_user_item_superuser_" + p_row_index).checked ? 1 : 0;
 	var p_data_template = [
 		document.getElementById("new_user_item_username_" + p_row_index).value,
@@ -222,7 +222,7 @@ function changeNewUser(event, p_row_index, p_col_index) {
 	document.getElementById("div_save_users").style.visibility = "visible";
 }
 
-function getUsers(p_options = false) {
+export function getUsers(p_options = false) {
 	if (p_options.adding_user) {
 		var v_new_value = v_usersObject.list.length + window.newUsersObject.newUsers.length - 1;
 		$("#omnidb_user_select").append(new Option("(pending info)", v_new_value));
@@ -357,7 +357,7 @@ function getUsers(p_options = false) {
 /// <summary>
 /// Retrieving and displaying users.
 /// </summary>
-function listUsers(p_refresh, p_options = false) {
+export function listUsers(p_refresh, p_options = false) {
 	startLoading();
 
 	var v_save_button = document.getElementById("div_save_users");
@@ -383,7 +383,7 @@ function listUsers(p_refresh, p_options = false) {
 /// <summary>
 /// Rendering selected user.
 /// </summary>
-function renderSelectedUser(event) {
+export function renderSelectedUser(event) {
 	var v_index = event.target.value;
 	var v_user_div_content = document.getElementById("omnidb_user_content");
 	if (v_index == "") {

@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Console state
 /// </summary>
-var v_consoleState = {
+export var v_consoleState = {
 	Idle: 0,
 	Executing: 1,
 	Ready: 2,
@@ -39,7 +39,7 @@ var v_consoleState = {
 /// <summary>
 /// Wipes command history.
 /// </summary>
-function deleteConsoleHistoryList() {
+export function deleteConsoleHistoryList() {
 	showConfirm("Are you sure you want to clear console history corresponding to applied filters?", function () {
 		execAjax(
 			"/clear_console_list/",
@@ -58,7 +58,7 @@ function deleteConsoleHistoryList() {
 	});
 }
 
-function showConsoleHistory() {
+export function showConsoleHistory() {
 	// var input = JSON.stringify({
 	// 	"p_database_index": v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 	// 	"p_tab_id": v_connTabControl.selectedTab.id
@@ -268,7 +268,7 @@ function showConsoleHistory() {
 	refreshConsoleHistoryList();
 }
 
-function consoleHistoryNextPage() {
+export function consoleHistoryNextPage() {
 	if (
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage <
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages
@@ -278,21 +278,21 @@ function consoleHistoryNextPage() {
 	}
 }
 
-function consoleHistoryPreviousPage() {
+export function consoleHistoryPreviousPage() {
 	if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage > 1) {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage -= 1;
 		refreshConsoleHistoryList();
 	}
 }
 
-function consoleHistoryFirstPage() {
+export function consoleHistoryFirstPage() {
 	if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage != 1) {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
 		refreshConsoleHistoryList();
 	}
 }
 
-function consoleHistoryLastPage() {
+export function consoleHistoryLastPage() {
 	if (
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage !=
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages
@@ -303,7 +303,7 @@ function consoleHistoryLastPage() {
 	}
 }
 
-function consoleHistoryOpenCmd(p_index) {
+export function consoleHistoryOpenCmd(p_index) {
 	var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.getDataAtRow(p_index)[1];
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.setValue(v_command);
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.clearSelection();
@@ -314,7 +314,7 @@ function consoleHistoryOpenCmd(p_index) {
 /// <summary>
 /// Retrieves and displays console history.
 /// </summary>
-function refreshConsoleHistoryList() {
+export function refreshConsoleHistoryList() {
 	var v_conn_tag = v_connTabControl.selectedTab.tag;
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFromLastValue =
@@ -364,7 +364,7 @@ function refreshConsoleHistoryList() {
 	);
 }
 
-function closeConsoleHistory() {
+export function closeConsoleHistory() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.destroy();
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.div.style.display = "none";
@@ -380,7 +380,7 @@ function closeConsoleHistory() {
 	$(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal).modal("hide");
 }
 
-function consoleHistorySelectCommand() {
+export function consoleHistorySelectCommand() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	var v_grid = v_tab_tag.consoleHistory.grid;
 
@@ -393,7 +393,7 @@ function consoleHistorySelectCommand() {
 	v_tab_tag.editor_input.focus();
 }
 
-function appendToEditor(p_editor, p_text) {
+export function appendToEditor(p_editor, p_text) {
 	/*var v_last_row = p_editor.session.getLength() - 1;
 	var v_last_col = p_editor.session.getLine(v_last_row).length;
 	p_editor.session.insert({ row: v_last_row, column: v_last_col},p_text);
@@ -404,14 +404,14 @@ function appendToEditor(p_editor, p_text) {
 	p_editor.write(p_text);
 }
 
-function clearConsole() {
+export function clearConsole() {
 	var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	v_tag.editor_console.write("\x1b[H\x1b[2J");
 	v_tag.editor_console.write(v_connTabControl.selectedTab.tag.consoleHelp);
 	//v_tag.editor_console.clear();
 }
 
-function consoleSQL(p_check_command = true, p_mode = 0) {
+export function consoleSQL(p_check_command = true, p_mode = 0) {
 	var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	v_tag.tempData = "";
 	var v_content = v_tag.editor_input.getValue().trim();
@@ -486,7 +486,7 @@ function consoleSQL(p_check_command = true, p_mode = 0) {
 	}
 }
 
-function cancelConsole(p_tab_tag) {
+export function cancelConsole(p_tab_tag) {
 	var v_tab_tag;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -498,7 +498,7 @@ function cancelConsole(p_tab_tag) {
 	cancelConsoleTab(v_tab_tag);
 }
 
-function cancelConsoleTab(p_tab_tag) {
+export function cancelConsoleTab(p_tab_tag) {
 	var v_tab_tag;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -520,13 +520,13 @@ function cancelConsoleTab(p_tab_tag) {
 	SetAcked(v_tab_tag.context);
 }
 
-function checkConsoleStatus(p_tab) {
+export function checkConsoleStatus(p_tab) {
 	if (p_tab.tag.state == v_consoleState.Ready) {
 		consoleReturnRender(p_tab.tag.data, p_tab.tag.context);
 	}
 }
 
-function consoleReturn(p_data, p_context) {
+export function consoleReturn(p_data, p_context) {
 	//If query wasn't canceled already
 	if (p_context.tab_tag.state != v_consoleState.Idle) {
 		if (
@@ -545,7 +545,7 @@ function consoleReturn(p_data, p_context) {
 	}
 }
 
-function consoleReturnRender(p_message, p_context) {
+export function consoleReturnRender(p_message, p_context) {
 	p_context.tab_tag.state = v_consoleState.Idle;
 
 	var v_tag = p_context.tab_tag;

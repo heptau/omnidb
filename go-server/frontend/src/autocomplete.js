@@ -27,10 +27,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_autocomplete_object;
-var Range = ace.require("ace/range").Range;
+export var v_autocomplete_object;
+export var Range = ace.require("ace/range").Range;
 
-var v_keywords = [
+export var v_keywords = [
 	"ABORT",
 	"ABS",
 	"ABSOLUTE",
@@ -579,7 +579,7 @@ var v_keywords = [
 // Every keyword not listed here is left alone, same as before - guessing
 // wrong would be more annoying than not guessing at all, so this is
 // deliberately not exhaustive over the full ~500-keyword list.
-var v_keyword_suffixes = {
+export var v_keyword_suffixes = {
 	// Functions/operators - always "NAME(...)".
 	ABS: "(",
 	AVG: "(",
@@ -670,7 +670,7 @@ var v_keyword_suffixes = {
 // No entries here get a v_keyword_suffixes "(" - VARCHAR(50)/NUMERIC(10,2)
 // take an optional precision, but plenty of others (INTEGER, BOOLEAN, DATE)
 // never do, so guessing would be wrong as often as right.
-var v_data_type_keywords = [
+export var v_data_type_keywords = [
 	"BIGINT",
 	"BINARY",
 	"BIT",
@@ -704,7 +704,7 @@ var v_data_type_keywords = [
 // Group types whose backend "complement" value is always an empty string
 // (see postgresqlAutocompleteValues in go-server/postgresql_autocomplete.go) -
 // used to skip rendering a permanently-blank second column for them.
-var v_autocomplete_single_column_types = {
+export var v_autocomplete_single_column_types = {
 	database: true,
 	tablespace: true,
 	role: true,
@@ -882,7 +882,7 @@ $(function () {
 	}
 });
 
-function build_autocomplete_elements(p_data, p_value) {
+export function build_autocomplete_elements(p_data, p_value) {
 	var v_previous_element = null;
 	var v_next_element = null;
 	var v_first_element = null;
@@ -1014,7 +1014,7 @@ function build_autocomplete_elements(p_data, p_value) {
 	v_autocomplete_object.editor.focus();
 }
 
-function renew_autocomplete(p_new_value) {
+export function renew_autocomplete(p_new_value) {
 	var v_search_regex = null;
 
 	v_search_regex = new RegExp("^(" + p_new_value + ")", "i");
@@ -1131,13 +1131,13 @@ function renew_autocomplete(p_new_value) {
 // modal_config, saved as v_autocomplete_disabled_types - a comma-separated
 // list of disabled types, empty by default so every existing user keeps
 // seeing everything).
-function autocompleteTypeEnabled(p_type) {
+export function autocompleteTypeEnabled(p_type) {
 	return (typeof v_autocomplete_disabled_types !== "undefined" ? v_autocomplete_disabled_types : "")
 		.split(",")
 		.indexOf(p_type) === -1;
 }
 
-function autocomplete_get_results(p_sql, p_value, p_pos) {
+export function autocomplete_get_results(p_sql, p_value, p_pos) {
 	v_autocomplete_object.div.style.width = "500px";
 
 	var v_data = [
@@ -1233,7 +1233,7 @@ function autocomplete_get_results(p_sql, p_value, p_pos) {
 	);
 }
 
-function autocomplete_keyup(p_event) {
+export function autocomplete_keyup(p_event) {
 	if (
 		p_event.keyCode != 27 &&
 		p_event.keyCode != 40 &&
@@ -1264,7 +1264,7 @@ function autocomplete_keyup(p_event) {
 	}
 }
 
-function autocomplete_keydown(p_editor, p_event) {
+export function autocomplete_keydown(p_editor, p_event) {
 	if (event.ctrlKey == true || event.altKey == true || event.metaKey == true) {
 		v_autocomplete_object.alt_shift_meta_pressed = true;
 	} else {
@@ -1319,7 +1319,7 @@ function autocomplete_keydown(p_editor, p_event) {
 	}
 }
 
-function autocomplete_update_editor_cursor(p_editor, p_event) {
+export function autocomplete_update_editor_cursor(p_editor, p_event) {
 	// Handle UP or DOWN if autocomplete is not enbled, just move cursor position
 	if (!p_event.shiftKey && !p_event.altKey && !p_event.ctrlKey && !p_event.metaKey) {
 		if (p_event.keyCode === 40 || p_event.keyCode === 38) {
@@ -1358,7 +1358,7 @@ function autocomplete_update_editor_cursor(p_editor, p_event) {
 	}
 }
 
-function find_next_visible_element(p_element) {
+export function find_next_visible_element(p_element) {
 	//avoid infinite loop
 	var v_element = p_element;
 	var v_first = p_element;
@@ -1372,7 +1372,7 @@ function find_next_visible_element(p_element) {
 	return v_element.next;
 }
 
-function find_element_by_value(p_first_element, p_value) {
+export function find_element_by_value(p_first_element, p_value) {
 	if (p_first_element == null) return null;
 	var v_element = p_first_element;
 	var v_first = p_first_element;
@@ -1384,7 +1384,7 @@ function find_element_by_value(p_first_element, p_value) {
 	return null;
 }
 
-function find_previous_visible_element(p_element) {
+export function find_previous_visible_element(p_element) {
 	//avoid infinite loop
 	var v_element = p_element;
 	var v_first = p_element;
@@ -1398,7 +1398,7 @@ function find_previous_visible_element(p_element) {
 	return v_element.previous;
 }
 
-function autocomplete_select_element(p_element) {
+export function autocomplete_select_element(p_element) {
 	autocomplete_deselect_element();
 
 	var v_parent_block = p_element.group_reference.container.parentNode;
@@ -1439,7 +1439,7 @@ function autocomplete_select_element(p_element) {
 	v_autocomplete_object.selected = p_element;
 }
 
-function autocomplete_deselect_element() {
+export function autocomplete_deselect_element() {
 	//removing selection of old row
 	if (v_autocomplete_object.selected) {
 		var v_previous = v_autocomplete_object.selected;
@@ -1458,7 +1458,7 @@ function autocomplete_deselect_element() {
 	v_autocomplete_object.selected = null;
 }
 
-function update_selected_grid_row_position(p_cell) {
+export function update_selected_grid_row_position(p_cell) {
 	// AG Grid virtualizes rows: right after a fresh loadData(), the target row may not be
 	// rendered into the DOM yet, so getCell() (the caller) can return null here.
 	if (p_cell == null) return;
@@ -1467,7 +1467,7 @@ function update_selected_grid_row_position(p_cell) {
 	p_cell.parentNode.classList.add("omnidb__autocomplete__data-row--selected");
 }
 
-function close_autocomplete(p_additional_text) {
+export function close_autocomplete(p_additional_text) {
 	v_autocomplete_object.active = false;
 	v_autocomplete_object.ready = false;
 	v_autocomplete_object.type_cast_mode = false;
@@ -1495,7 +1495,7 @@ function close_autocomplete(p_additional_text) {
 // - used to switch the popup into "data types only" mode (see
 // autocomplete_start_type_cast) instead of the normal keyword/table/column
 // search.
-function autocomplete_type_cast_filter(p_last_word) {
+export function autocomplete_type_cast_filter(p_last_word) {
 	var v_idx = p_last_word.lastIndexOf("::");
 	if (v_idx === -1) return null;
 	return p_last_word.substring(v_idx + 2);
@@ -1507,7 +1507,7 @@ function autocomplete_type_cast_filter(p_last_word) {
 // only the part after "::" should be replaced when a type gets selected -
 // otherwise selecting VARCHAR from "amount::varc" would wipe out "amount::"
 // too - so narrow the range down to just that trailing portion.
-function autocomplete_narrow_range_to_type_filter(p_type_filter) {
+export function autocomplete_narrow_range_to_type_filter(p_type_filter) {
 	var v_range = v_autocomplete_object.range;
 	v_autocomplete_object.range = new Range(
 		v_range.end.row,
@@ -1523,7 +1523,7 @@ function autocomplete_narrow_range_to_type_filter(p_type_filter) {
 // caller to have gone through close_autocomplete() first, since both the
 // dot and colon re-triggers (see autocomplete_start) can fire while a
 // popup is already open.
-function autocomplete_position_and_open(editor, mode) {
+export function autocomplete_position_and_open(editor, mode) {
 	v_autocomplete_object.editor = editor;
 	v_autocomplete_object.active = true;
 	v_autocomplete_object.mode = mode;
@@ -1566,7 +1566,7 @@ function autocomplete_position_and_open(editor, mode) {
 // Postgres "::" type-cast operator - see autocomplete_type_cast_filter.
 // Purely client-side (no server round-trip): the list of built-in type
 // names doesn't depend on the connected database.
-function autocomplete_start_type_cast(editor, mode, p_type_filter) {
+export function autocomplete_start_type_cast(editor, mode, p_type_filter) {
 	autocomplete_position_and_open(editor, mode);
 	v_autocomplete_object.type_cast_mode = true;
 	v_autocomplete_object.search_base = p_type_filter;
@@ -1584,7 +1584,7 @@ function autocomplete_start_type_cast(editor, mode, p_type_filter) {
 	v_autocomplete_object.ready = true;
 }
 
-function autocomplete_start(editor, mode, event, force = null) {
+export function autocomplete_start(editor, mode, event, force = null) {
 	// Autocomplete doesn't start nor filters with the following keys:
 	// 32 = SPACE
 	// 27 = ESC
@@ -1653,7 +1653,7 @@ function autocomplete_start(editor, mode, event, force = null) {
 	}
 }
 
-function get_editor_last_word(p_editor) {
+export function get_editor_last_word(p_editor) {
 	var v_cursor = p_editor.selection.getCursor();
 	var v_character_position = p_editor.session.doc.positionToIndex(v_cursor);
 	var v_prefix_pos = p_editor.session.doc.positionToIndex(v_cursor) - 1;

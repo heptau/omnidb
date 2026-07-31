@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_default_shortcuts = {
+export var v_default_shortcuts = {
 	shortcut_run_query: {
 		windows: {
 			ctrl_pressed: false,
@@ -400,7 +400,7 @@ $(function () {
 	}
 });
 
-function buildButtonText(p_shortcut_object, p_button) {
+export function buildButtonText(p_shortcut_object, p_button) {
 	var v_text = "";
 	if (p_shortcut_object.ctrl_pressed) v_text += "Ctrl+";
 	if (p_shortcut_object.shift_pressed) v_text += "Shift+";
@@ -409,7 +409,7 @@ function buildButtonText(p_shortcut_object, p_button) {
 	p_button.innerHTML = v_text + p_shortcut_object.shortcut_key;
 }
 
-function startSetShortcut(p_button) {
+export function startSetShortcut(p_button) {
 	document.getElementById("div_shortcut_background_dark").style.display = "block";
 	p_button.style["z-index"] = 1002;
 	v_shortcut_object.button = p_button;
@@ -420,7 +420,7 @@ function startSetShortcut(p_button) {
 	document.body.addEventListener("keydown", setShortcutEvent);
 }
 
-function setShortcutEvent(p_event) {
+export function setShortcutEvent(p_event) {
 	p_event.preventDefault();
 	p_event.stopPropagation();
 
@@ -455,7 +455,7 @@ function setShortcutEvent(p_event) {
 	finishSetShortcut();
 }
 
-function finishSetShortcut() {
+export function finishSetShortcut() {
 	v_shortcut_object.button.style["z-index"] = 0;
 	v_shortcut_object.button = null;
 	document.getElementById("div_shortcut_background_dark").style.display = "none";
@@ -464,7 +464,7 @@ function finishSetShortcut() {
 	document.body.addEventListener("keydown", v_keyBoardShortcuts);
 }
 
-function checkShortcutPressed(p_event, p_shortcut_element) {
+export function checkShortcutPressed(p_event, p_shortcut_element) {
 	if ((p_event.ctrlKey && !p_shortcut_element.ctrl_pressed) || (!p_event.ctrlKey && p_shortcut_element.ctrl_pressed))
 		return false;
 	if (
@@ -485,7 +485,7 @@ function checkShortcutPressed(p_event, p_shortcut_element) {
 	return false;
 }
 
-var v_keyBoardShortcuts = function (p_event) {
+export var v_keyBoardShortcuts = function (p_event) {
 	//16 - Shift
 	//17 - Ctrl
 	//18 - Alt

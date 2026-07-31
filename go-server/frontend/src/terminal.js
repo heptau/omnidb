@@ -30,18 +30,18 @@ SOFTWARE.
 /// <summary>
 /// Terminal state
 /// </summary>
-var v_terminalState = {
+export var v_terminalState = {
 	Idle: 0,
 	Executing: 1,
 	Ready: 2,
 };
 
-function clearTerminal() {
+export function clearTerminal() {
 	var v_tag = v_connTabControl.selectedTab.tag;
 	v_tag.editor_console.clear();
 }
 
-function startTerminal(p_conn_id) {
+export function startTerminal(p_conn_id) {
 	var v_tag = v_connTabControl.selectedTab.tag;
 	var v_context = {
 		tab_tag: v_tag,
@@ -54,11 +54,11 @@ function startTerminal(p_conn_id) {
 	terminalRun(true, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
 }
 
-function terminalKey(p_key) {
+export function terminalKey(p_key) {
 	terminalRun(false, p_key);
 }
 
-function terminalContextMenu(e, p_tab) {
+export function terminalContextMenu(e, p_tab) {
 	var v_tab = p_tab ? p_tab : v_connTabControl.selectedTab;
 	var v_tag = v_tab.tag;
 	var v_option_list = [];
@@ -115,7 +115,7 @@ function terminalContextMenu(e, p_tab) {
 	);
 }
 
-function terminalRun(p_spawn = false, p_query = "") {
+export function terminalRun(p_spawn = false, p_query = "") {
 	var v_tag = v_connTabControl.selectedTab.tag;
 	v_tag.tempData = "";
 	var v_content = p_query;
@@ -142,11 +142,11 @@ function terminalRun(p_spawn = false, p_query = "") {
 	v_tag.state = v_consoleState.Executing;
 }
 
-function terminalReturn(p_data, p_context) {
+export function terminalReturn(p_data, p_context) {
 	terminalReturnRender(p_data, p_context);
 }
 
-function terminalReturnRender(p_message, p_context) {
+export function terminalReturnRender(p_message, p_context) {
 	var v_tag = p_context.tab_tag;
 
 	if (p_context.tab_tag.clear_terminal == true) {

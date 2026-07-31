@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Wipes command history.
 /// </summary>
-function deleteCommandList() {
+export function deleteCommandList() {
 	showConfirm("Are you sure you want to clear command history corresponding to applied filters?", function () {
 		execAjax(
 			"/clear_command_list/",
@@ -52,7 +52,7 @@ function deleteCommandList() {
 /// <summary>
 /// Retrieves and displays command history.
 /// </summary>
-function showCommandList() {
+export function showCommandList() {
 	var v_connTag = v_connTabControl.selectedTab.tag;
 	var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
@@ -272,7 +272,7 @@ function showCommandList() {
 	refreshCommandList();
 }
 
-function commandHistoryNextPage() {
+export function commandHistoryNextPage() {
 	if (
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage <
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages
@@ -282,21 +282,21 @@ function commandHistoryNextPage() {
 	}
 }
 
-function commandHistoryPreviousPage() {
+export function commandHistoryPreviousPage() {
 	if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage > 1) {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage -= 1;
 		refreshCommandList();
 	}
 }
 
-function commandHistoryFirstPage() {
+export function commandHistoryFirstPage() {
 	if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != 1) {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
 		refreshCommandList();
 	}
 }
 
-function commandHistoryLastPage() {
+export function commandHistoryLastPage() {
 	if (
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage !=
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages
@@ -307,7 +307,7 @@ function commandHistoryLastPage() {
 	}
 }
 
-function commandHistoryOpenCmd(p_index) {
+export function commandHistoryOpenCmd(p_index) {
 	var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[4];
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(v_command);
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
@@ -318,7 +318,7 @@ function commandHistoryOpenCmd(p_index) {
 /// <summary>
 /// Retrieves and displays command history.
 /// </summary>
-function refreshCommandList() {
+export function refreshCommandList() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue =
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedToLastValue =
@@ -361,7 +361,7 @@ function refreshCommandList() {
 	);
 }
 
-function closeCommandHistory() {
+export function closeCommandHistory() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.destroy();
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.div.style.display = "none";

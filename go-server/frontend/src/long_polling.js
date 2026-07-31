@@ -27,15 +27,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_client_id;
-var v_polling_ajax = null;
+export var v_client_id;
+export var v_polling_ajax = null;
 
-var v_context_object = {
+export var v_context_object = {
 	contextCode: 0,
 	contextList: [],
 };
 
-var v_polling_started = false;
+export var v_polling_started = false;
 
 /// <summary>
 /// Startup function.
@@ -46,7 +46,7 @@ $(function () {
 	}, 60000);
 });
 
-function call_polling(p_startup) {
+export function call_polling(p_startup) {
 	v_polling_ajax = execAjax(
 		"/long_polling/",
 		JSON.stringify({
@@ -93,7 +93,7 @@ async function clear_client() {
 	return v_ajax_call;
 }
 
-function polling_response(p_message) {
+export function polling_response(p_message) {
 	var v_message = p_message;
 
 	var p_context_code = null;
@@ -212,7 +212,7 @@ function polling_response(p_message) {
 	}
 }
 
-function QueryPasswordRequired(p_context, p_message) {
+export function QueryPasswordRequired(p_context, p_message) {
 	if (p_context.tab_tag.mode == "query") {
 		showPasswordPrompt(
 			p_context.database_index,
@@ -265,7 +265,7 @@ function QueryPasswordRequired(p_context, p_message) {
 	}
 }
 
-function createContext(p_context) {
+export function createContext(p_context) {
 	v_context_object.contextCode += 1;
 	v_context_code = v_context_object.contextCode;
 	p_context.v_context_code = v_context_code;
@@ -277,7 +277,7 @@ function createContext(p_context) {
 	return v_context;
 }
 
-function removeContext(p_context_code) {
+export function removeContext(p_context_code) {
 	for (var i = 0; i < v_context_object.contextList.length; i++) {
 		if (v_context_object.contextList[i].code == p_context_code) {
 			v_context_object.contextList.splice(i, 1);
@@ -286,7 +286,7 @@ function removeContext(p_context_code) {
 	}
 }
 
-function createRequest(p_messageCode, p_messageData, p_context) {
+export function createRequest(p_messageCode, p_messageData, p_context) {
 	var v_context_code = 0;
 
 	//Configuring context
@@ -330,6 +330,6 @@ function createRequest(p_messageCode, p_messageData, p_context) {
 	);
 }
 
-function SetAcked(p_context) {
+export function SetAcked(p_context) {
 	if (p_context) p_context.acked = true;
 }

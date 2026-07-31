@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function startTutorial(p_tutorial_name) {
+export function startTutorial(p_tutorial_name) {
 	if (v_omnis.omnis_ui_assistant) {
 		v_omnis.omnis_ui_assistant.self_destruct();
 	}

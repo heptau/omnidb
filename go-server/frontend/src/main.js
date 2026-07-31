@@ -39,6 +39,15 @@ import * as createTabFunctions from './create_tab_functions.js'
 import * as monitoring from './monitoring.js'
 import * as workspace from './workspace.js'
 import * as pluginHook from './plugin_hook.js'
+import * as users from './users.js'
+import * as shortcuts from './shortcuts.js'
+import * as connections from './connections.js'
+import * as commandHistory from './command_history.js'
+import * as consoleTab from './console.js'
+import * as terminal from './terminal.js'
+import * as autocomplete from './autocomplete.js'
+import * as tutorial from './tutorial_functions/tutorial.js'
+import * as longPolling from './long_polling.js'
 
 exposeGlobals(
   treeSnippets,
@@ -72,4 +81,13 @@ exposeGlobals(
   monitoring,
   workspace,
   pluginHook,
+  users,
+  shortcuts,
+  connections,
+  commandHistory,
+  consoleTab,
+  terminal,
+  autocomplete,
+  tutorial,
+  longPolling,
 )

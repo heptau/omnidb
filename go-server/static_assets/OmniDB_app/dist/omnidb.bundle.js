@@ -9168,7 +9168,7 @@
       postgresqlTerminateBackendConfirm(v_pid);
     });
   }
-  function getExplain(p_mode) {
+  function getExplain$1(p_mode) {
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_query;
     var v_selected_text = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText();
@@ -9277,7 +9277,7 @@
     getEventTriggerFunctionsPostgresql,
     getEventTriggersPostgresql,
     getExcludesPostgresql,
-    getExplain,
+    getExplain: getExplain$1,
     getExplainReturn,
     getExtensionsPostgresql,
     getFKsColumnsPostgresql,
@@ -18719,7 +18719,7 @@
     }
     td.className = "cellOdd";
   }
-  function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+  function whiteRightHtmlRenderer$1(instance, td, row, col, prop, value, cellProperties) {
     if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
       Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
     } else if (cellProperties.__proto__.type == "password") {
@@ -18854,7 +18854,7 @@
     redRenderer: redRenderer$1,
     whiteHtmlRenderer: whiteHtmlRenderer$1,
     whiteRenderer: whiteRenderer$1,
-    whiteRightHtmlRenderer,
+    whiteRightHtmlRenderer: whiteRightHtmlRenderer$1,
     yellowHtmlRenderer,
     yellowRenderer: yellowRenderer$1
   }, Symbol.toStringTag, { value: "Module" }));
@@ -19303,7 +19303,7 @@
     Terminal: 11,
     Ping: 12
   };
-  var v_queryResponseCodes = {
+  var v_queryResponseCodes$1 = {
     LoginResult: 0,
     QueryResult: 1,
     QueryEditDataResult: 2,
@@ -19332,9 +19332,9 @@
     if (p_tab_tag) v_tab_tag2 = p_tab_tag;
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     createRequest(v_queryRequestCodes$1.CancelThread, v_tab_tag2.tab_id);
-    cancelSQLTab();
+    cancelSQLTab$1();
   }
-  function cancelSQLTab(p_tab_tag) {
+  function cancelSQLTab$1(p_tab_tag) {
     var v_tab_tag2;
     if (p_tab_tag) v_tab_tag2 = p_tab_tag;
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -19346,7 +19346,7 @@
     v_tab_tag2.tab_check_span.style.display = "none";
     v_tab_tag2.bt_cancel.style.display = "none";
     v_tab_tag2.query_info.innerHTML = "Canceled.";
-    setTabStatus(v_tab_tag2, 0);
+    setTabStatus$1(v_tab_tag2, 0);
     removeContext(v_tab_tag2.context.v_context_code);
     SetAcked(v_tab_tag2.context);
   }
@@ -19444,7 +19444,7 @@
         v_tab_tag2.bt_commit.style.display = "none";
         v_tab_tag2.bt_rollback.style.display = "none";
         v_tab_tag2.div_notices.innerHTML = "";
-        setTabStatus(v_tab_tag2, 2);
+        setTabStatus$1(v_tab_tag2, 2);
         var v_has_selected_text = false;
         if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText() != "")
           v_has_selected_text = true;
@@ -19483,7 +19483,7 @@
       querySQLReturnRender(p_tab.tag.data, p_tab.tag.context);
     }
   }
-  function querySQLReturn(p_data, p_context) {
+  function querySQLReturn$1(p_data, p_context) {
     if (p_data.v_data.v_inserted_id) {
       p_context.tab_tag.tab_db_id = p_data.v_data.v_inserted_id;
     }
@@ -19501,7 +19501,7 @@
       }
     }
   }
-  function setTabStatus(p_tab_tag, p_con_status) {
+  function setTabStatus$1(p_tab_tag, p_con_status) {
     if (p_con_status == 0) {
       p_tab_tag.query_tab_status_text.innerHTML = "Not connected";
       p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-closed";
@@ -19546,7 +19546,7 @@
       p_context.tab_tag.bt_commit.style.display = "none";
       p_context.tab_tag.bt_rollback.style.display = "none";
     }
-    setTabStatus(p_context.tab_tag, p_message.v_data.v_con_status);
+    setTabStatus$1(p_context.tab_tag, p_message.v_data.v_con_status);
     if (p_context.callback != null) {
       if (p_message.v_error) {
         v_div_result.innerHTML = '<div class="error_text">' + escapeHtml$1(p_message.v_data.message) + "</div>";
@@ -19719,7 +19719,7 @@
     p_context.tab_tag.tab_check_span.style.display = "none";
     p_context.tab_tag.bt_cancel.style.display = "none";
   }
-  function queryError(p_message, p_context) {
+  function queryError$1(p_message, p_context) {
     var v_tab_tag2 = p_context.tab_tag;
     v_tab_tag2.state = v_queryState$1.Idle;
     v_tab_tag2.context = null;
@@ -19729,7 +19729,7 @@
     }
     v_tab_tag2.bt_commit.style.display = "none";
     v_tab_tag2.bt_rollback.style.display = "none";
-    setTabStatus(v_tab_tag2, 1);
+    setTabStatus$1(v_tab_tag2, 1);
     v_tab_tag2.div_notices.innerHTML = '<div class="error_text">' + escapeHtml$1(p_message.v_data) + "</div>";
     if (v_tab_tag2.div_count_notices) {
       v_tab_tag2.div_count_notices.innerHTML = 1;
@@ -19744,19 +19744,19 @@
   const query = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     cancelSQL,
-    cancelSQLTab,
+    cancelSQLTab: cancelSQLTab$1,
     checkQueryStatus: checkQueryStatus$1,
     destructiveSQLWarning,
     escapeHtml: escapeHtml$1,
     executeQuerySQL,
     getQueryEditorValue,
-    queryError,
+    queryError: queryError$1,
     querySQL: querySQL$1,
-    querySQLReturn,
+    querySQLReturn: querySQLReturn$1,
     querySQLReturnRender,
-    setTabStatus,
+    setTabStatus: setTabStatus$1,
     v_queryRequestCodes: v_queryRequestCodes$1,
-    v_queryResponseCodes,
+    v_queryResponseCodes: v_queryResponseCodes$1,
     v_queryState: v_queryState$1
   }, Symbol.toStringTag, { value: "Module" }));
   function customMenu$1(p_position, p_menu, p_object) {
@@ -20084,7 +20084,7 @@
     showError: showError$1,
     showMessageModal
   }, Symbol.toStringTag, { value: "Module" }));
-  var toggleSnippetPanel = function(p_set_state = false) {
+  var toggleSnippetPanel$1 = function(p_set_state = false) {
     v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
     v_connTabControl.snippet_tag;
     let v_set_state = p_set_state;
@@ -20104,7 +20104,7 @@
       p_close: false,
       p_selectable: false,
       p_clickFunction: function() {
-        toggleSnippetPanel();
+        toggleSnippetPanel$1();
       },
       p_omnidb_tooltip_name: '<h5 class="my-1">Snippets Panel</h5>'
     });
@@ -20152,7 +20152,7 @@
   };
   const outerSnippetPanel = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
-    toggleSnippetPanel,
+    toggleSnippetPanel: toggleSnippetPanel$1,
     v_createSnippetPanelFunction: v_createSnippetPanelFunction$1
   }, Symbol.toStringTag, { value: "Module" }));
   $(function() {
@@ -22476,7 +22476,7 @@
         v_currTabTag.editDataObject.firstRender = true;
         v_currTabTag.editDataObject.pk = p_return.v_data.v_pk;
         v_currTabTag.editDataObject.columns = p_return.v_data.v_cols;
-        queryEditData();
+        queryEditData$1();
       },
       function(p_return) {
         if (p_return.v_data.password_timeout) {
@@ -22519,9 +22519,9 @@
     if (p_tab_tag) v_tab_tag2 = p_tab_tag;
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id, false);
-    cancelEditDataTab();
+    cancelEditDataTab$1();
   }
-  function cancelEditDataTab(p_tab_tag) {
+  function cancelEditDataTab$1(p_tab_tag) {
     var v_tab_tag2;
     if (p_tab_tag) v_tab_tag2 = p_tab_tag;
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -22533,7 +22533,7 @@
     removeContext(v_tab_tag2.context.v_context_code);
     SetAcked(v_tab_tag2.context);
   }
-  function queryEditData() {
+  function queryEditData$1() {
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_state = v_currTabTag.state;
     if (v_state != 0) {
@@ -22570,7 +22570,7 @@
       createRequest(v_queryRequestCodes.QueryEditData, v_message_data, v_context);
       setTimeout(function() {
         if (!v_context.acked) {
-          cancelEditDataTab(v_context.tab_tag);
+          cancelEditDataTab$1(v_context.tab_tag);
           showAlert("No response from query server.");
         }
       }, 1e4);
@@ -22583,7 +22583,7 @@
       saveEditDataReturnRender(p_tab.tag.data, p_tab.tag.context);
     }
   }
-  function queryEditDataReturn(p_data, p_context) {
+  function queryEditDataReturn$1(p_data, p_context) {
     if (p_context.tab_tag.state != v_editDataState.Idle) {
       p_context.duration = (/* @__PURE__ */ new Date()).getTime() - p_context.start_time;
       if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
@@ -22820,7 +22820,7 @@
       createRequest(v_queryRequestCodes.SaveEditData, v_message_data, v_context);
     }
   }
-  function saveEditDataReturn(p_data, p_context) {
+  function saveEditDataReturn$1(p_data, p_context) {
     if (p_context.tab_tag.state != v_editDataState.Idle) {
       p_context.duration = (/* @__PURE__ */ new Date()).getTime() - p_context.start_time;
       if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
@@ -22915,14 +22915,14 @@
   const editData = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     cancelEditData,
-    cancelEditDataTab,
+    cancelEditDataTab: cancelEditDataTab$1,
     checkEditDataStatus: checkEditDataStatus$1,
     deleteRowEditData,
-    queryEditData,
-    queryEditDataReturn,
+    queryEditData: queryEditData$1,
+    queryEditDataReturn: queryEditDataReturn$1,
     queryEditDataReturnRender,
     saveEditData,
-    saveEditDataReturn,
+    saveEditDataReturn: saveEditDataReturn$1,
     saveEditDataReturnRender,
     v_editDataState,
     v_startEditData: v_startEditData$1
@@ -24148,7 +24148,7 @@
     }
     updateExplainComponent();
     getAllSnippets();
-    getDatabaseList(true, function() {
+    getDatabaseList$1(true, function() {
       v_connTabControl.createAddTab();
     });
     v_omnis.root = document.getElementById("omnidb__main");
@@ -24165,7 +24165,7 @@
     });
     $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
   });
-  function getDatabaseList(p_init, p_callback) {
+  function getDatabaseList$1(p_init, p_callback) {
     execAjax(
       "/get_database_list/",
       JSON.stringify({}),
@@ -25331,7 +25331,7 @@
     drop,
     getAttributesOmniDBTooltip: getAttributesOmniDBTooltip$1,
     getAttributesTooltip: getAttributesTooltip$1,
-    getDatabaseList,
+    getDatabaseList: getDatabaseList$1,
     getStringTooltip,
     getVerticalLinePosition,
     horizontalLinePosition,
@@ -25400,6 +25400,4728 @@
     __proto__: null,
     activateHook
   }, Symbol.toStringTag, { value: "Module" }));
+  function newUserConfirm() {
+    execAjax(
+      "/new_user/",
+      JSON.stringify({ p_data: window.newUsersObject.newUsers }),
+      function(p_return) {
+        v_usersObject.v_cellChanges = [];
+        window.newUsersObject.newUsers = [];
+        if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0)
+          document.getElementById("div_save_users").style.visibility = "hidden";
+        listUsers(true);
+      },
+      null,
+      "box"
+    );
+  }
+  function newUser() {
+    if (window.newUsersObject.newUsers.length > 0) {
+      window.newUsersObject.newUsers.length;
+      window.newUsersObject.newUsers.push(["", "", 0]);
+    } else {
+      window.newUsersObject.newUsers = [["", "", 0]];
+    }
+    listUsers(true, { adding_user: true });
+  }
+  function removeUserConfirm(p_id) {
+    var input = JSON.stringify({ p_id });
+    execAjax(
+      "/remove_user/",
+      input,
+      function(p_return) {
+        if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0)
+          document.getElementById("div_save_users").style.visibility = "hidden";
+        listUsers(true);
+      },
+      null,
+      "box"
+    );
+  }
+  function removeUser(p_id) {
+    showConfirm("Are you sure you want to remove this user?", function() {
+      removeUserConfirm(p_id);
+    });
+  }
+  function removeNewUserConfirm(p_index) {
+    if (window.newUsersObject.newUsers.length == 1) window.newUsersObject.newUsers = [];
+    else if (p_index == 0) window.newUsersObject.newUsers.shift();
+    else if (p_index + 1 == window.newUsersObject.newUsers.length) window.newUsersObject.newUsers.pop();
+    else window.newUsersObject.newUsers.splice(p_index, 1);
+    listUsers(true);
+  }
+  function removeNewUser(p_index) {
+    showConfirm("Are you sure you want to undo adding this user?", function() {
+      removeNewUserConfirm(p_index);
+    });
+  }
+  function saveUsers() {
+    if (v_usersObject.v_cellChanges.length == 0 && window.newUsersObject.newUsers.length == 0) return;
+    var v_unique_rows_changed = [];
+    var v_data_changed = [];
+    var v_user_id_list = [];
+    $.each(v_usersObject.v_cellChanges, function(i2, el) {
+      if ($.inArray(el["rowIndex"], v_unique_rows_changed) === -1) {
+        v_unique_rows_changed.push(el["rowIndex"]);
+      }
+    });
+    $.each(v_unique_rows_changed, function(i2, el) {
+      v_data_changed[i2] = v_usersObject.v_cellChanges[i2].p_data;
+      v_user_id_list[i2] = v_usersObject.v_user_ids[el];
+    });
+    var v_data = {
+      edited: v_data_changed,
+      new: window.newUsersObject.newUsers
+    };
+    var input = JSON.stringify({ p_data: v_data, p_user_id_list: v_user_id_list });
+    execAjax(
+      "/save_users/",
+      input,
+      function() {
+        v_usersObject.v_cellChanges = [];
+        window.newUsersObject.newUsers = [];
+        if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0) {
+          document.getElementById("div_save_users").style.visibility = "hidden";
+        }
+        listUsers(true, { users_update: v_data });
+      },
+      null,
+      "box"
+    );
+  }
+  function hideUsers() {
+    $("#div_users").removeClass("isActive");
+    document.getElementById("div_user_list").innerHTML = "";
+  }
+  $("#modal_users").on("shown.bs.modal", function(e) {
+    getUsers();
+  });
+  function changeUser(event2, p_row_index, p_col_index) {
+    var v_user_id = v_usersObject.v_user_ids[p_row_index];
+    var v_user_is_superuser = document.getElementById("user_item_superuser_" + p_row_index).checked ? 1 : 0;
+    var p_data_template = [
+      document.getElementById("user_item_username_" + p_row_index).value,
+      document.getElementById("user_item_password_" + p_row_index).value,
+      v_user_is_superuser,
+      `<i title="Remove User" class='fas fa-times action-grid action-close text-danger' onclick='removeUser("` + v_user_id + `")'></i>`
+    ];
+    var cellChange = {
+      rowIndex: p_row_index,
+      columnIndex: p_col_index,
+      p_data: p_data_template
+    };
+    v_usersObject.v_cellChanges.push(cellChange);
+    document.getElementById("div_save_users").style.visibility = "visible";
+    $(".omnidb__user-list__item--changed").removeClass("omnidb__user-list__item--changed");
+    for (var i2 = 0; i2 < v_usersObject.v_cellChanges.length; i2++) {
+      var v_row_value = v_usersObject.v_cellChanges[i2].rowIndex;
+      $("#omnidb_user_item_" + v_row_value).addClass("omnidb__user-list__item--changed");
+      $('#omnidb_user_select option[value="' + v_row_value + '"]').addClass("bg-warning");
+    }
+  }
+  function changeNewUser(event2, p_row_index, p_col_index) {
+    var v_user_is_superuser = document.getElementById("new_user_item_superuser_" + p_row_index).checked ? 1 : 0;
+    var p_data_template = [
+      document.getElementById("new_user_item_username_" + p_row_index).value,
+      document.getElementById("new_user_item_password_" + p_row_index).value,
+      v_user_is_superuser,
+      `<i title="Remove User" class='fas fa-times action-grid action-close text-danger' onclick='removeNewUser("` + p_row_index + `")'></i>`
+    ];
+    window.newUsersObject.newUsers[p_row_index] = p_data_template;
+    var v_render_index = parseInt(v_usersObject.list.length) + parseInt(p_row_index);
+    var v_event = { target: { value: v_render_index } };
+    renderSelectedUser(v_event);
+    document.getElementById("div_save_users").style.visibility = "visible";
+  }
+  function getUsers(p_options = false) {
+    if (p_options.adding_user) {
+      var v_new_value = v_usersObject.list.length + window.newUsersObject.newUsers.length - 1;
+      $("#omnidb_user_select").append(new Option("(pending info)", v_new_value));
+      $("#omnidb_user_select option:last-child").addClass("bg-success");
+      $("#omnidb_user_select option:last-child").trigger("change");
+      $("#omnidb_user_select").val(v_new_value);
+      endLoading();
+    } else {
+      if (!window.newUsersObject) {
+        window.newUsersObject = new Object();
+      }
+      if (window.newUsersObject.newUsers == void 0) {
+        window.newUsersObject.newUsers = [];
+      }
+      execAjax(
+        "/get_users/",
+        JSON.stringify({}),
+        function(p_return) {
+          v_usersObject = new Object();
+          v_usersObject.v_user_ids = p_return.v_data.v_user_ids;
+          v_usersObject.v_cellChanges = [];
+          v_usersObject.list = p_return.v_data.v_data;
+          var v_users_update_html = "";
+          if (p_options) {
+            if (p_options.users_update) {
+              if (p_options.users_update.edited.length > 0) {
+                v_users_update_html += '<div class="card p-4 mx-auto"><div><h5>Edited Users:</h5></div><ul class="pl-4">';
+                for (let i3 = 0; i3 < p_options.users_update.edited.length; i3++) {
+                  v_users_update_html += '<li class="mt-2"> - ' + p_options.users_update.edited[i3][0] + "</li>";
+                }
+                v_users_update_html += "</ul></div>";
+              }
+              if (p_options.users_update.new.length > 0) {
+                v_users_update_html += '<div class="card p-4 mx-auto"><div><h5>New Users:</h5></div><ul class="pl-4">';
+                for (let i3 = 0; i3 < p_options.users_update.new.length; i3++) {
+                  v_users_update_html += '<li class="mt-2"> - ' + p_options.users_update.new[i3][0] + "</li>";
+                }
+                v_users_update_html += "</ul></div>";
+              }
+            }
+          }
+          var v_user_list_data = p_return.v_data.v_data;
+          var v_user_list_element = document.createElement("div");
+          v_user_list_element.classList = ["omnidb__user-list"];
+          var v_user_count = 0;
+          var v_user_list_html = "<form class='d-none' autofill='false' onsubmit='(event)=>{event.preventDefault();};'><input id='fake_username' type='text' placeholder='User name' value=''><input id='fake_password' type='password' placeholder='Password' value=''><button type='submit' disabled aria-hidden='true'></button></form><form class='omnidb__user-list__form' autofill='false' autocomplete='disabled'><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''><div class='form-inline mb-4'><h5 class='mr-2'>Select an user</h5><select id='omnidb_user_select' onchange='renderSelectedUser(event)' class='form-control'>";
+          if (p_options.focus_last) v_user_list_html += "<option value=''> </option>";
+          else v_user_list_html += "<option value='' selected> </option>";
+          for (var i2 = 0; i2 < v_user_list_data.length; i2++) {
+            var v_user_item = v_user_list_data[i2];
+            var v_user_is_superuser = v_user_item[2] === 1 ? " (superuser)" : "";
+            v_user_list_html += "<option value='" + i2 + "'>" + escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + "</option>";
+            v_user_count++;
+          }
+          for (var i2 = 0; i2 < window.newUsersObject.newUsers.length; i2++) {
+            var v_user_item = window.newUsersObject.newUsers[i2];
+            var v_user_is_superuser = v_user_item[2] === 1 ? " (superuser)" : "";
+            var v_user_item_index = parseInt(v_user_count) + parseInt(i2);
+            var v_user_item_name = v_user_item[0] === "" ? "(pending info)" : escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + " (pending save)";
+            var v_user_is_selected = p_options.focus_last && i2 + 1 == window.newUsersObject.newUsers.length ? " selected " : "";
+            v_user_list_html += "<option class='bg-warning' value='" + v_user_item_index + "' " + v_user_is_selected + ">" + v_user_item_name + "</option>";
+          }
+          v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2' onclick='newUser()'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;' onclick='saveUsers()'>Save</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
+          v_user_list_element.innerHTML = v_user_list_html;
+          $("#div_users").addClass("isActive");
+          window.scrollTo(0, 0);
+          var v_div_result = document.getElementById("div_user_list");
+          var container = v_div_result;
+          container.appendChild(v_user_list_element);
+          if (p_options) {
+            if (p_options.focus_last) {
+              setTimeout(function() {
+                $("#omnidb_user_select option:last-child").trigger("change");
+              }, 300);
+            }
+          }
+          if (v_usersObject.v_cellChanges.length > 0 || window.newUsersObject.newUsers.length > 0)
+            document.getElementById("div_save_users").style.visibility = "visible";
+          $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+          endLoading();
+        },
+        null,
+        "box"
+      );
+    }
+  }
+  function listUsers(p_refresh, p_options = false) {
+    startLoading();
+    var v_save_button = document.getElementById("div_save_users");
+    if (v_save_button !== null) {
+      if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0) {
+        document.getElementById("div_save_users").style.visibility = "hidden";
+      }
+    }
+    var v_div_result = document.getElementById("div_user_list");
+    if (v_div_result.innerHTML != "" && !p_options.adding_user) {
+      v_div_result.innerHTML = "";
+    }
+    if (p_refresh == null) {
+      $("#modal_users").modal("show");
+    } else {
+      getUsers(p_options);
+    }
+  }
+  function renderSelectedUser(event2) {
+    var v_index = event2.target.value;
+    var v_user_div_content = document.getElementById("omnidb_user_content");
+    if (v_index == "") {
+      v_user_div_content.innerHTML = "<div class='col-12 text-center'><h5 class='my-4'>No users selected, select an user or click add new user.</h5></div>";
+    } else {
+      var v_user_count = 0;
+      for (var i2 = 0; i2 < v_usersObject.list.length; i2++) {
+        var v_user_item = v_usersObject.list[i2];
+        var v_superuser_checked = v_user_item[2] === 1 ? "checked" : "";
+        if (i2 == v_index) {
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "' onchange='changeUser(event," + i2 + ",0)'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + " onchange='changeUser(event," + i2 + ",2)'><label for='user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "' onchange='changeUser(event," + i2 + ",1)'></div><span class='mr-2 text-danger omnidb__user-list__close'>" + escapeHtml(String(v_user_item[3])) + "</span></div></div>";
+        }
+        v_user_count++;
+      }
+      for (var i2 = 0; i2 < window.newUsersObject.newUsers.length; i2++) {
+        var v_user_item = window.newUsersObject.newUsers[i2];
+        var v_superuser_checked = v_user_item[2] === 1 ? "checked" : "";
+        var v_user_item_index = parseInt(v_user_count) + parseInt(i2);
+        var v_user_div_content = document.getElementById("omnidb_user_content");
+        if (v_user_item_index == v_index) {
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='new_user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "' onchange='changeNewUser(event," + i2 + ",0)'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='new_user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + " onchange='changeNewUser(event," + i2 + ",2)'><label for='new_user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='new_user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "' onchange='changeNewUser(event," + i2 + `,1)'></div><span class='mr-2 text-danger omnidb__user-list__close'><i title="Remove User" class='fas fa-times action-grid action-close text-danger' onclick='removeNewUser("` + i2 + `")'></i></span></div></div>`;
+        }
+      }
+    }
+  }
+  const users = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    changeNewUser,
+    changeUser,
+    getUsers,
+    hideUsers,
+    listUsers,
+    newUser,
+    newUserConfirm,
+    removeNewUser,
+    removeNewUserConfirm,
+    removeUser,
+    removeUserConfirm,
+    renderSelectedUser,
+    saveUsers
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_default_shortcuts = {
+    shortcut_run_query: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "Q"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "Q"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "Q"
+      }
+    },
+    shortcut_cancel_query: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "C"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "C"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "C"
+      }
+    },
+    shortcut_indent: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "S"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "S"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "S"
+      }
+    },
+    shortcut_new_inner_tab: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "I"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "I"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "I"
+      }
+    },
+    shortcut_remove_inner_tab: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: true,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "Q"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: true,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "Q"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: true,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "Q"
+      }
+    },
+    shortcut_left_inner_tab: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "O"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "O"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "O"
+      }
+    },
+    shortcut_right_inner_tab: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "P"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "P"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "P"
+      }
+    },
+    shortcut_autocomplete: {
+      windows: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "SPACE"
+      },
+      linux: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "SPACE"
+      },
+      macos: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "SPACE"
+      }
+    },
+    shortcut_explain: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "W"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "W"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "W"
+      }
+    },
+    shortcut_explain_analyze: {
+      windows: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "E"
+      },
+      linux: {
+        ctrl_pressed: false,
+        shift_pressed: false,
+        alt_pressed: true,
+        meta_pressed: false,
+        shortcut_key: "E"
+      },
+      macos: {
+        ctrl_pressed: true,
+        shift_pressed: false,
+        alt_pressed: false,
+        meta_pressed: false,
+        shortcut_key: "E"
+      }
+    }
+  };
+  $(function() {
+    v_current_os = "Unknown OS";
+    if (navigator.appVersion.indexOf("Win") != -1) v_current_os = "windows";
+    if (navigator.appVersion.indexOf("Mac") != -1) v_current_os = "macos";
+    if (navigator.appVersion.indexOf("X11") != -1) v_current_os = "linux";
+    if (navigator.appVersion.indexOf("Linux") != -1) v_current_os = "linux";
+    v_shortcut_object.actions = {
+      shortcut_run_query: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query")
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.bt_start.click();
+          else if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console") consoleSQL(false);
+          else if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "edit") queryEditData();
+        } else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") terminalRun();
+      },
+      shortcut_explain: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query") getExplain(0);
+        }
+      },
+      shortcut_explain_analyze: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query") getExplain(1);
+        }
+      },
+      shortcut_cancel_query: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query" || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console") {
+            if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.bt_cancel.style.display != "none")
+              v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.bt_cancel.click();
+          }
+        }
+      },
+      shortcut_indent: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query" || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console")
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.bt_indent.click();
+        }
+      },
+      shortcut_new_inner_tab: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection" || v_connTabControl.selectedTab.tag.mode == "snippets") {
+          v_connTabControl.tag.createQueryTab();
+        } else if (v_connTabControl.selectedTab.tag.mode == "snippets") {
+          var v_tabControl = v_connTabControl.selectedTab.tag.tabControl;
+          v_tabControl.tabList[v_tabControl.tabList.length - 1].elementLi.click();
+        }
+      },
+      shortcut_remove_inner_tab: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          var v_tab = v_connTabControl.selectedTab.tag.tabControl.selectedTab;
+          if (v_tab) {
+            if (v_tab.closeFunction && v_tab.closeFunction != null) {
+              v_tab.closeFunction(null, v_tab);
+            } else {
+              v_connTabControl.selectedTab.tag.tabControl.removeTab(v_tab);
+            }
+          }
+        }
+      },
+      shortcut_left_inner_tab: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection" || v_connTabControl.selectedTab.tag.mode == "snippets") {
+          var v_tabControl = v_connTabControl.selectedTab.tag.tabControl;
+          var v_actualIndex = v_tabControl.tabList.indexOf(v_tabControl.selectedTab);
+          if (v_actualIndex == 0)
+            v_tabControl.tabList[v_tabControl.tabList.length - 2].elementA.click();
+          else v_tabControl.tabList[v_actualIndex - 1].elementA.click();
+        }
+      },
+      shortcut_right_inner_tab: function() {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          var v_tabControl = v_connTabControl.selectedTab.tag.tabControl;
+          var v_actualIndex = v_tabControl.tabList.indexOf(v_tabControl.selectedTab);
+          if (v_actualIndex == v_tabControl.tabList.length - 2)
+            v_tabControl.tabList[0].elementA.click();
+          else v_tabControl.tabList[v_actualIndex + 1].elementA.click();
+        }
+      },
+      shortcut_autocomplete: function(e) {
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query" || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console") {
+            var v_editor = null;
+            if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query") {
+              v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
+              autocomplete_start(v_editor, 0, e, true);
+            } else if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console") {
+              v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input;
+              autocomplete_start(v_editor, 1, e, true);
+            }
+          }
+        }
+      }
+    };
+    for (var default_code in v_default_shortcuts) {
+      if (v_default_shortcuts.hasOwnProperty(default_code)) {
+        var v_object = v_default_shortcuts[default_code];
+        var v_found = false;
+        for (var user_code in v_shortcut_object.shortcuts) {
+          if (v_shortcut_object.shortcuts.hasOwnProperty(user_code)) {
+            if (default_code == user_code && v_current_os == v_shortcut_object.shortcuts[user_code]["os"]) {
+              v_found = true;
+              break;
+            }
+          }
+        }
+        if (!v_found) {
+          v_shortcut_object.shortcuts[default_code] = v_default_shortcuts[default_code][v_current_os];
+          v_shortcut_object.shortcuts[default_code]["shortcut_code"] = default_code;
+        }
+      }
+    }
+    for (var property in v_shortcut_object.shortcuts) {
+      if (v_shortcut_object.shortcuts.hasOwnProperty(property)) {
+        var v_object = v_shortcut_object.shortcuts[property];
+        var v_button = document.getElementById(property);
+        if (v_button) buildButtonText(v_object, v_button);
+      }
+    }
+  });
+  function buildButtonText(p_shortcut_object, p_button) {
+    var v_text = "";
+    if (p_shortcut_object.ctrl_pressed) v_text += "Ctrl+";
+    if (p_shortcut_object.shift_pressed) v_text += "Shift+";
+    if (p_shortcut_object.alt_pressed) v_text += "Alt+";
+    if (p_shortcut_object.meta_pressed) v_text += "Meta+";
+    p_button.innerHTML = v_text + p_shortcut_object.shortcut_key;
+  }
+  function startSetShortcut(p_button) {
+    document.getElementById("div_shortcut_background_dark").style.display = "block";
+    p_button.style["z-index"] = 1002;
+    v_shortcut_object.button = p_button;
+    document.body.removeEventListener("keydown", v_keyBoardShortcuts);
+    document.body.removeEventListener("keydown", setShortcutEvent);
+    document.body.addEventListener("keydown", setShortcutEvent);
+  }
+  function setShortcutEvent(p_event) {
+    p_event.preventDefault();
+    p_event.stopPropagation();
+    if (p_event.keyCode == 27) {
+      finishSetShortcut();
+      return;
+    }
+    if (p_event.keyCode == 16 || p_event.keyCode == 17 || p_event.keyCode == 18 || p_event.keyCode == 91) return;
+    var v_shortcut_element = v_shortcut_object.shortcuts[v_shortcut_object.button.id];
+    if (v_shortcut_element) {
+      v_shortcut_element.ctrl_pressed = false;
+      v_shortcut_element.shift_pressed = false;
+      v_shortcut_element.alt_pressed = false;
+      v_shortcut_element.meta_pressed = false;
+      if (p_event.ctrlKey) v_shortcut_element.ctrl_pressed = true;
+      if (p_event.shiftKey) v_shortcut_element.shift_pressed = true;
+      if (p_event.altKey) v_shortcut_element.alt_pressed = true;
+      if (p_event.metaKey) v_shortcut_element.meta_pressed = true;
+      if (p_event.code.toUpperCase() != "SPACE") v_shortcut_element.shortcut_key = p_event.key.toUpperCase();
+      else v_shortcut_element.shortcut_key = "SPACE";
+      buildButtonText(v_shortcut_element, v_shortcut_object.button);
+    }
+    finishSetShortcut();
+  }
+  function finishSetShortcut() {
+    v_shortcut_object.button.style["z-index"] = 0;
+    v_shortcut_object.button = null;
+    document.getElementById("div_shortcut_background_dark").style.display = "none";
+    document.body.removeEventListener("keydown", setShortcutEvent);
+    document.body.addEventListener("keydown", v_keyBoardShortcuts);
+  }
+  function checkShortcutPressed(p_event, p_shortcut_element) {
+    if (p_event.ctrlKey && !p_shortcut_element.ctrl_pressed || !p_event.ctrlKey && p_shortcut_element.ctrl_pressed)
+      return false;
+    if (p_event.shiftKey && !p_shortcut_element.shift_pressed || !p_event.shiftKey && p_shortcut_element.shift_pressed)
+      return false;
+    if (p_event.altKey && !p_shortcut_element.alt_pressed || !p_event.altKey && p_shortcut_element.alt_pressed)
+      return false;
+    if (p_event.metaKey && !p_shortcut_element.meta_pressed || !p_event.metaKey && p_shortcut_element.meta_pressed)
+      return false;
+    if (p_event.key.toUpperCase() == p_shortcut_element.shortcut_key || p_event.code.toUpperCase() == p_shortcut_element.shortcut_key)
+      return true;
+    return false;
+  }
+  var v_keyBoardShortcuts = function(p_event) {
+    if (p_event.keyCode == 16 || p_event.keyCode == 17 || p_event.keyCode == 18 || p_event.keyCode == 91 || p_event.keyCode == 27)
+      return;
+    for (var property in v_shortcut_object.shortcuts) {
+      if (v_shortcut_object.shortcuts.hasOwnProperty(property)) {
+        var v_element2 = v_shortcut_object.shortcuts[property];
+        if (checkShortcutPressed(p_event, v_element2)) {
+          p_event.preventDefault();
+          p_event.stopPropagation();
+          var v_action = v_shortcut_object.actions[property];
+          if (v_action) v_action(p_event);
+        }
+      }
+    }
+  };
+  document.body.addEventListener("keydown", v_keyBoardShortcuts);
+  const shortcuts = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    buildButtonText,
+    checkShortcutPressed,
+    finishSetShortcut,
+    setShortcutEvent,
+    startSetShortcut,
+    v_default_shortcuts,
+    v_keyBoardShortcuts
+  }, Symbol.toStringTag, { value: "Module" }));
+  $(function() {
+    v_connections_data = new Object();
+    v_connections_data.technologies = null;
+    v_connections_data.card_list = [];
+    v_connections_data.current_id = -1;
+  });
+  function startConnectionManagement$1() {
+    getDatabaseList();
+    getGroups();
+    showConnectionList(true, true);
+  }
+  function showConnectionList(p_open_modal, p_change_group) {
+    var v_conn_id_list = [];
+    var v_total_public_conn = 0;
+    for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
+      var v_tab = v_connTabControl.tabList[i2];
+      if (v_tab.tag && v_tab.tag.mode == "connection") v_conn_id_list.push(v_tab.tag.selectedDatabaseIndex);
+      else if (v_tab.tag && v_tab.tag.mode == "outer_terminal" && v_tab.tag.connId != null)
+        v_conn_id_list.push(v_tab.tag.connId);
+    }
+    var input = JSON.stringify({ p_conn_id_list: v_conn_id_list });
+    execAjax(
+      "/get_connections/",
+      input,
+      function(p_return) {
+        v_connections_data.card_list = [];
+        v_connections_data.technologies = p_return.v_data.v_technologies;
+        var v_container = null;
+        var v_container = document.createElement("div");
+        v_container.className = "container-fluid";
+        var v_row = null;
+        var v_target_div = document.getElementById("connection_card_list");
+        var v_row = document.createElement("div");
+        v_row.className = "row";
+        v_row.innerHTML = '<div id="connections_management_empty_all" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections available.</h5><button type="button" class="mt-4 btn omnidb__theme__btn--primary" onclick="newConnection();">New Connection</button></div><div id="connections_management_empty_with_public" class="my-4 text-center w-100" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h5 class="">Your user has no connections configured yet, but there are <i class="fas fa-users text-info mx-2"></i> public connections.</h5><h5 class="d-inline-block mt-4 mr-2">You can also create your own</h5><button type="button" class="mt-2 btn omnidb__theme__btn--primary" onclick="newConnection();">New Connection</button></div><div id="connections_management_empty_group" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections assigned to this group yet.</h5><button type="button" class="mt-4 btn omnidb__theme__btn--primary" onclick="manageGroup();">Manage Groups</button></div>';
+        for (var i3 = 0; i3 < p_return.v_data.v_conn_list.length; i3++) {
+          var v_conn_obj2 = p_return.v_data.v_conn_list[i3];
+          var v_col_div = document.createElement("div");
+          v_col_div.className = "omnidb__connections__cols";
+          v_row.appendChild(v_col_div);
+          if (v_conn_obj2.public && !v_connections_data.show_public && !v_conn_obj2.is_mine) {
+            v_col_div.classList.add("d-none");
+          }
+          var v_card_div = document.createElement("div");
+          v_card_div.className = "card omnidb__connections__card";
+          v_col_div.appendChild(v_card_div);
+          var v_cover_div = document.createElement("label");
+          v_cover_div.className = "connection-card-cover m-0";
+          v_cover_div.setAttribute("for", "connection_item_input_" + i3);
+          var v_checkbox = document.createElement("input");
+          v_checkbox.className = "connection-card-checkbox";
+          v_checkbox.id = "connection_item_input_" + i3;
+          v_checkbox.type = "checkbox";
+          var v_check_svg = '<svg class="connection-card-svg" width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg"><path d="M 6 18 L 15 32 L 34 13" stroke-width="4" stroke="#4a81d4" fill="transparent"></path><circle r="19" cx="21" cy="21" stroke-width="2" stroke="#b2b2b2" fill="transparent"></circle></svg>';
+          v_cover_div.innerHTML = v_check_svg;
+          var v_card_body_div = document.createElement("div");
+          v_card_body_div.className = "card-body";
+          v_card_div.appendChild(v_card_body_div);
+          var v_icon = "";
+          var v_title = "";
+          var v_details = "";
+          var v_tunnel = '<div class="card-subtitle tunnel text-muted">No Tunnel Configured</div>';
+          if (v_conn_obj2.technology == "terminal") {
+            v_icon = '<i class="fas fa-terminal"></i>';
+            if (v_conn_obj2.alias && v_conn_obj2.alias !== "") {
+              v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
+            } else {
+              v_title = '<h5 class="card-title">Terminal</h5>';
+            }
+            v_tunnel = '<h6 class="card-subtitle text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</h6>";
+          } else {
+            v_icon = '<i class="technology-icon node-' + escapeHtml(v_conn_obj2.technology) + '"></i>';
+            v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
+            if (v_conn_obj2.conn_string && v_conn_obj2.conn_string != "") {
+              v_details += '<h6 class="card-subtitle mb-2 text-muted"><i title="Connection String" class="fas fa-quote-left"></i> ' + escapeHtml(v_conn_obj2.conn_string) + "</h6>";
+            } else {
+              v_details += '<h6 class="card-subtitle mb-2 text-muted">' + escapeHtml(v_conn_obj2.server) + ":" + escapeHtml(String(v_conn_obj2.port)) + '</h6><p class="card-text">' + escapeHtml(v_conn_obj2.user) + "@" + escapeHtml(v_conn_obj2.service) + "</p>";
+            }
+            if (v_conn_obj2.tunnel.enabled === true) {
+              v_tunnel = '<div class="card-subtitle tunnel text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</div>";
+            }
+          }
+          v_card_body_div.innerHTML += '<div class="card-body-icon">' + v_icon + '</div><div class="card-body-title">' + v_title + '</div><div class="card-body-details">' + v_details + '</div><div class="card-body-tunnel">' + v_tunnel + "</div>";
+          v_card_body_div.appendChild(v_checkbox);
+          v_card_body_div.appendChild(v_cover_div);
+          var v_card_body_buttons = document.createElement("div");
+          v_card_body_buttons.className = "card-body-buttons";
+          v_card_body_div.appendChild(v_card_body_buttons);
+          var v_button_select = document.createElement("button");
+          v_button_select.className = "btn btn-success btn-sm omnidb__connections__btn--select";
+          v_button_select.title = "Select";
+          v_button_select.innerHTML = '<svg width="15px" height="160px" viewBox="0 0 15 160" style="width: auto;height: 100%;stroke: none;stroke-width: 0;"><path stroke-width="0" stroke="none" d="M 0 0 L 15 80 L 0 160 Z"></path></svg><i class="fas fa-plug"></i>';
+          v_card_body_buttons.appendChild(v_button_select);
+          var v_button_edit = document.createElement("button");
+          v_button_edit.className = "btn btn-sm mx-1 omnidb__theme__btn--primary";
+          v_button_edit.title = "Edit";
+          v_button_edit.innerHTML = '<i class="fas fa-pen"</i>';
+          v_card_body_buttons.appendChild(v_button_edit);
+          var v_button_delete = document.createElement("button");
+          v_button_delete.className = "btn btn-danger btn-sm mx-1";
+          v_button_delete.title = "Delete";
+          if (v_conn_obj2.locked == true) {
+            v_button_delete.setAttribute("disabled", true);
+          }
+          v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>';
+          v_card_body_buttons.appendChild(v_button_delete);
+          v_button_select.onclick = /* @__PURE__ */ (function(conn_obj) {
+            return function() {
+              selectConnection(conn_obj);
+            };
+          })(v_conn_obj2);
+          v_button_edit.onclick = /* @__PURE__ */ (function(conn_obj) {
+            return function() {
+              editConnection(conn_obj);
+            };
+          })(v_conn_obj2);
+          v_button_delete.onclick = /* @__PURE__ */ (function(conn_obj) {
+            return function() {
+              deleteConnection(conn_obj);
+            };
+          })(v_conn_obj2);
+          if (v_conn_obj2.public) {
+            v_total_public_conn += 1;
+            var v_public_icon = document.createElement("i");
+            v_public_icon.setAttribute(
+              "style",
+              "color: #FFF;position: absolute;top: -5px;left: -5px;background-color: #c57dd2;padding: 4px 2px;border-radius: 100%;"
+            );
+            v_public_icon.classList = "fas fa-users";
+            v_card_body_div.appendChild(v_public_icon);
+            v_card_div.style["border-color"] = "#c57dd2";
+            v_card_div.classList.add("omnidb__connections__card--public");
+            v_card_div.classList.add("d-none");
+            v_card_div.classList.add("fade");
+            if (v_connections_data.show_public || v_conn_obj2.is_mine) {
+              v_card_div.classList.remove("d-none");
+              v_card_div.classList.add("show");
+            }
+          }
+          v_connections_data.card_list.push({
+            data: v_conn_obj2,
+            card_div: v_col_div,
+            cover_div: v_cover_div,
+            checkbox: v_checkbox
+          });
+        }
+        v_container.appendChild(v_row);
+        v_target_div.innerHTML = "";
+        v_target_div.appendChild(v_container);
+        if (p_open_modal) {
+          $("#modal_connections").modal("show");
+        }
+        if (p_change_group) {
+          groupChange(document.getElementById("group_selector").value);
+        }
+        document.getElementById("conn_list_public_counter").innerHTML = v_total_public_conn;
+        updateConnectionsTitleInfo();
+      },
+      null,
+      "box",
+      true
+    );
+  }
+  function groupChange(p_value) {
+    var v_empty_group_div = document.getElementById("connections_management_empty_group");
+    if (p_value != -1) {
+      document.getElementById("button_group_actions").style.display = "";
+      var v_group_obj = { conn_list: [] };
+      for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
+        if (p_value == v_connections_data.v_group_list[i2].id) {
+          v_group_obj = v_connections_data.v_group_list[i2];
+          break;
+        }
+      }
+      var v_group_valid_conn = 0;
+      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+        var v_conn_obj2 = v_connections_data.card_list[i2];
+        if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
+          $(v_conn_obj2.card_div).fadeIn(400);
+          v_group_valid_conn++;
+        } else {
+          $(v_conn_obj2.card_div).fadeOut(400);
+        }
+      }
+      if (v_empty_group_div) {
+        if (v_group_valid_conn === 0) {
+          v_empty_group_div.style.display = "";
+        } else {
+          v_empty_group_div.style.display = "none";
+        }
+      }
+    } else {
+      if (v_empty_group_div) {
+        v_empty_group_div.style.display = "none";
+      }
+      document.getElementById("button_group_actions").style.display = "none";
+      document.getElementById("group_selector").value = -1;
+      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+        var v_conn_obj2 = v_connections_data.card_list[i2];
+        $(v_conn_obj2.card_div).fadeIn(400);
+      }
+    }
+    updateConnectionsTitleInfo();
+  }
+  function manageGroup() {
+    document.getElementById("group_actions_1").style.display = "none";
+    document.getElementById("group_actions_2").style.display = "";
+    document.getElementById("button_new_connection").setAttribute("disabled", true);
+    document.getElementById("group_selector").setAttribute("disabled", true);
+    document.getElementById("button_new_group").setAttribute("disabled", true);
+    document.getElementById("button_group_actions").setAttribute("disabled", true);
+    var v_empty_group_div = document.getElementById("connections_management_empty_group");
+    if (v_empty_group_div) {
+      v_empty_group_div.style.display = "none";
+    }
+    $(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--connection-management");
+    var v_current_group_id = document.getElementById("group_selector").value;
+    var v_group_obj = null;
+    for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
+      if (v_current_group_id == v_connections_data.v_group_list[i2].id) {
+        v_group_obj = v_connections_data.v_group_list[i2];
+        break;
+      }
+    }
+    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+      var v_conn_obj2 = v_connections_data.card_list[i2];
+      $(v_conn_obj2.card_div).fadeIn(400);
+      if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
+        v_conn_obj2.checkbox.checked = true;
+      }
+    }
+    updateConnectionsTitleInfo();
+  }
+  function manageGroupSave() {
+    document.getElementById("group_actions_1").style.display = "";
+    document.getElementById("group_actions_2").style.display = "none";
+    document.getElementById("button_new_connection").removeAttribute("disabled");
+    document.getElementById("group_selector").removeAttribute("disabled");
+    document.getElementById("button_new_group").removeAttribute("disabled");
+    document.getElementById("button_group_actions").removeAttribute("disabled");
+    $(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--connection-management");
+    v_conn_data = [];
+    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+      var v_conn_obj2 = v_connections_data.card_list[i2];
+      v_conn_data.push({
+        id: v_conn_obj2.data.id,
+        selected: v_conn_obj2.checkbox.checked
+      });
+      v_conn_obj2.checkbox.checked = false;
+    }
+    execAjax(
+      "/save_group_connections/",
+      JSON.stringify({
+        p_group: document.getElementById("group_selector").value,
+        p_conn_data_list: v_conn_data
+      }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function newGroupConfirm(p_name) {
+    execAjax(
+      "/new_group/",
+      JSON.stringify({ p_name }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function renameGroupConfirm(p_id, p_name) {
+    execAjax(
+      "/edit_group/",
+      JSON.stringify({ p_id, p_name }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function deleteGroup() {
+    var v_group_id = document.getElementById("group_selector").value;
+    showConfirm("Are you sure you want to delete the current group?", function() {
+      deleteGroupConfirm(v_group_id);
+    });
+  }
+  function deleteGroupConfirm(p_group_id) {
+    execAjax(
+      "/delete_group/",
+      JSON.stringify({ p_id: p_group_id }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function newGroup() {
+    showConfirm("", function() {
+      newGroupConfirm(document.getElementById("group_name_input").value);
+    });
+    var v_input = document.createElement("input");
+    v_input.id = "group_name_input";
+    v_input.className = "form-control";
+    v_input.placeholder = "Group Name";
+    v_input.style.width = "100%";
+    document.getElementById("modal_message_content").appendChild(v_input);
+    v_input.onkeydown = function() {
+      if (event.keyCode == 13) {
+        document.getElementById("modal_message_ok").click();
+      } else if (event.keyCode == 27) {
+        document.getElementById("modal_message_cancel").click();
+      }
+    };
+    setTimeout(function() {
+      v_input.focus();
+    }, 500);
+  }
+  function renameGroup() {
+    var v_select = document.getElementById("group_selector");
+    showConfirm("", function() {
+      renameGroupConfirm(document.getElementById("group_selector").value, document.getElementById("group_name_input").value);
+    });
+    var v_input = document.createElement("input");
+    v_input.id = "group_name_input";
+    v_input.className = "form-control";
+    v_input.placeholder = "Group Name";
+    v_input.style.width = "100%";
+    v_input.value = v_select.options[v_select.selectedIndex].text;
+    document.getElementById("modal_message_content").appendChild(v_input);
+    v_input.onkeydown = function() {
+      if (event.keyCode == 13) {
+        document.getElementById("modal_message_ok").click();
+      } else if (event.keyCode == 27) {
+        document.getElementById("modal_message_cancel").click();
+      }
+    };
+    setTimeout(function() {
+      v_input.focus();
+      v_input.selectionStart = v_input.selectionEnd = 1e4;
+    }, 500);
+  }
+  function getGroups() {
+    execAjax(
+      "/get_groups/",
+      JSON.stringify({}),
+      function(p_return) {
+        v_connections_data.v_group_list = p_return.v_data;
+        var select = document.getElementById("group_selector");
+        var current_value = select.value;
+        select.innerHTML = "";
+        var option = document.createElement("option");
+        option.value = -1;
+        option.textContent = "All Connections";
+        select.appendChild(option);
+        var found = false;
+        for (var i2 = 0; i2 < p_return.v_data.length; i2++) {
+          option = document.createElement("option");
+          option.value = p_return.v_data[i2].id;
+          option.textContent = p_return.v_data[i2].name;
+          if (option.value == current_value) {
+            option.selected = true;
+            found = true;
+          }
+          select.appendChild(option);
+        }
+        if (!found && current_value != -1) {
+          groupChange(-1);
+        } else {
+          groupChange(document.getElementById("group_selector").value);
+        }
+      },
+      null,
+      "box"
+    );
+  }
+  function testConnection(p_password = null) {
+    var input = JSON.stringify({
+      id: v_connections_data.current_id,
+      type: document.getElementById("conn_form_type").value,
+      connstring: document.getElementById("conn_form_connstring").value,
+      server: document.getElementById("conn_form_server").value,
+      port: document.getElementById("conn_form_port").value,
+      database: document.getElementById("conn_form_database").value,
+      user: document.getElementById("conn_form_user").value,
+      password: document.getElementById("conn_form_user_pass").value,
+      temp_password: p_password,
+      tunnel: {
+        enabled: document.getElementById("conn_form_use_tunnel").checked,
+        server: document.getElementById("conn_form_ssh_server").value,
+        port: document.getElementById("conn_form_ssh_port").value,
+        user: document.getElementById("conn_form_ssh_user").value,
+        password: document.getElementById("conn_form_ssh_password").value,
+        key: document.getElementById("conn_form_ssh_key").value
+      }
+    });
+    execAjax(
+      "/test_connection/",
+      input,
+      function(p_return) {
+        if (p_return.v_data == "Connection successful.") showAlert(p_return.v_data);
+        else showError(p_return.v_data);
+      },
+      function(p_return) {
+        showConfirm(
+          "",
+          function() {
+            testConnection(document.getElementById("txt_test_password_prompt").value);
+          },
+          null,
+          function() {
+            var v_content_div = document.getElementById("modal_message_content");
+            v_content_div.appendChild(document.createTextNode(p_return.v_data));
+            var v_input = document.createElement("input");
+            v_input.id = "txt_test_password_prompt";
+            v_input.className = "form-control";
+            v_input.type = "password";
+            v_input.placeholder = "Password";
+            v_input.style.marginBottom = "20px";
+            v_input.style.marginTop = "20px";
+            v_input.style.textAlign = "center";
+            v_content_div.appendChild(v_input);
+            v_input.onkeydown = function() {
+              if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
+              else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+            };
+            v_input.focus();
+          }
+        );
+      },
+      "box",
+      true,
+      true
+    );
+  }
+  function saveConnection() {
+    var input = JSON.stringify({
+      id: v_connections_data.current_id,
+      type: document.getElementById("conn_form_type").value,
+      public: document.getElementById("conn_form_public").checked,
+      connstring: document.getElementById("conn_form_connstring").value,
+      server: document.getElementById("conn_form_server").value,
+      port: document.getElementById("conn_form_port").value,
+      database: document.getElementById("conn_form_database").value,
+      user: document.getElementById("conn_form_user").value,
+      password: document.getElementById("conn_form_user_pass").value,
+      title: document.getElementById("conn_form_title").value,
+      tunnel: {
+        enabled: document.getElementById("conn_form_use_tunnel").checked,
+        server: document.getElementById("conn_form_ssh_server").value,
+        port: document.getElementById("conn_form_ssh_port").value,
+        user: document.getElementById("conn_form_ssh_user").value,
+        password: document.getElementById("conn_form_ssh_password").value,
+        key: document.getElementById("conn_form_ssh_key").value
+      }
+    });
+    execAjax(
+      "/save_connection/",
+      input,
+      function(p_return) {
+        $("#modal_edit_connection").modal("hide");
+        getDatabaseList();
+        showConnectionList(false, true);
+      },
+      null,
+      "box"
+    );
+  }
+  function deleteConnection(p_conn_obj) {
+    showConfirm("Are you sure you want to delete this connection?", function() {
+      var input = JSON.stringify({
+        id: p_conn_obj.id
+      });
+      execAjax(
+        "/delete_connection/",
+        input,
+        function(p_return) {
+          getDatabaseList();
+          showConnectionList(false, true);
+        },
+        null,
+        "box"
+      );
+    });
+  }
+  function adjustTechSelector() {
+    var select = document.getElementById("conn_form_type");
+    select.innerHTML = "";
+    var option = document.createElement("option");
+    option.value = -1;
+    option.textContent = "Select Type";
+    select.appendChild(option);
+    for (var i2 = 0; i2 < v_connections_data.technologies.length; i2++) {
+      option = document.createElement("option");
+      option.value = v_connections_data.technologies[i2];
+      option.textContent = v_connections_data.technologies[i2];
+      select.appendChild(option);
+    }
+  }
+  function editConnection(p_conn_obj) {
+    v_connections_data.current_id = p_conn_obj.id;
+    adjustTechSelector();
+    document.getElementById("conn_form_type").value = p_conn_obj.technology;
+    document.getElementById("conn_form_title").value = p_conn_obj.alias;
+    document.getElementById("conn_form_connstring").value = p_conn_obj.conn_string;
+    document.getElementById("conn_form_server").value = p_conn_obj.server;
+    document.getElementById("conn_form_port").value = p_conn_obj.port;
+    document.getElementById("conn_form_database").value = p_conn_obj.service;
+    document.getElementById("conn_form_user").value = p_conn_obj.user;
+    document.getElementById("conn_form_user_pass").value = "";
+    document.getElementById("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
+    document.getElementById("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
+    document.getElementById("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
+    document.getElementById("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
+    document.getElementById("conn_form_ssh_password").value = "";
+    document.getElementById("conn_form_ssh_key").value = "";
+    document.getElementById("conn_form_public").checked = p_conn_obj.public;
+    let v_enable_list = [];
+    let v_disable_list = [];
+    if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
+      if ($("#conn_form_user_pass_check_icon").length === 0) {
+        $("#conn_form_user_pass").prev().append('<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>');
+      }
+    } else {
+      $("#conn_form_user_pass_check_icon").remove();
+    }
+    if (p_conn_obj.tunnel.password && p_conn_obj.tunnel.password !== null && p_conn_obj.tunnel.password !== "") {
+      if ($("#conn_form_ssh_password_check_icon").length === 0) {
+        $("#conn_form_ssh_password").prev().append('<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>');
+      }
+    } else {
+      $("#conn_form_ssh_password_check_icon").remove();
+    }
+    if (p_conn_obj.tunnel.key && p_conn_obj.tunnel.key !== null && p_conn_obj.tunnel.key !== "") {
+      if ($("#conn_form_ssh_key_check_icon").length === 0) {
+        $("#conn_form_ssh_key").prev().append('<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>');
+      }
+    } else {
+      $("#conn_form_ssh_key_check_icon").remove();
+    }
+    if (p_conn_obj.technology === "terminal") {
+      v_disable_list = [
+        "conn_form_connstring",
+        "conn_form_server",
+        "conn_form_port",
+        "conn_form_database",
+        "conn_form_user",
+        "conn_form_user_pass"
+      ];
+      v_enable_list = [
+        "conn_form_ssh_server",
+        "conn_form_ssh_port",
+        "conn_form_ssh_user",
+        "conn_form_ssh_password",
+        "conn_form_ssh_key",
+        "conn_form_ssh_key_input"
+      ];
+      document.getElementById("conn_form_use_tunnel").checked = true;
+      document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+    } else if (p_conn_obj.technology === "sqlite") {
+      v_disable_list = ["conn_form_connstring", "conn_form_server", "conn_form_port", "conn_form_user", "conn_form_user_pass"];
+      v_enable_list = ["conn_form_database"];
+      if (p_conn_obj.tunnel.enabled) {
+        v_enable_list = v_enable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      } else {
+        v_disable_list = v_disable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      }
+    } else {
+      if (p_conn_obj.conn_string.trim() !== "" && p_conn_obj.conn_string.trim() !== null) {
+        v_disable_list = ["conn_form_server", "conn_form_port", "conn_form_database", "conn_form_user", "conn_form_user_pass"];
+        v_enable_list = ["conn_form_connstring"];
+      } else if (p_conn_obj.server.trim() !== "" && p_conn_obj.server.trim() !== null) {
+        v_disable_list = ["conn_form_connstring"];
+        v_enable_list = ["conn_form_server", "conn_form_port", "conn_form_database", "conn_form_user", "conn_form_user_pass"];
+      }
+      if (p_conn_obj.tunnel.enabled) {
+        v_enable_list = v_enable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      } else {
+        v_disable_list = v_disable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      }
+    }
+    updateModalEditConnectionFields(v_disable_list, v_enable_list);
+    $("#modal_edit_connection").modal("show");
+  }
+  function newConnection() {
+    v_connections_data.current_id = -1;
+    adjustTechSelector();
+    document.getElementById("conn_form_button_test_connection").setAttribute("disabled", true);
+    document.getElementById("conn_form_button_save_connection").setAttribute("disabled", true);
+    document.getElementById("conn_form_type").value = -1;
+    document.getElementById("conn_form_title").value = "";
+    document.getElementById("conn_form_public").checked = false;
+    document.getElementById("conn_form_connstring").value = "";
+    document.getElementById("conn_form_server").value = "";
+    document.getElementById("conn_form_port").value = "";
+    document.getElementById("conn_form_database").value = "";
+    document.getElementById("conn_form_user").value = "";
+    document.getElementById("conn_form_user_pass").value = "";
+    document.getElementById("conn_form_use_tunnel").checked = false;
+    document.getElementById("conn_form_ssh_server").value = "";
+    document.getElementById("conn_form_ssh_port").value = "22";
+    document.getElementById("conn_form_ssh_user").value = "";
+    document.getElementById("conn_form_ssh_password").value = "";
+    document.getElementById("conn_form_ssh_key").value = "";
+    document.getElementById("conn_form_ssh_key_input").value = null;
+    document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+    $("#conn_form_user_pass_check_icon").remove();
+    $("#conn_form_ssh_password_check_icon").remove();
+    $("#conn_form_ssh_key_check_icon").remove();
+    $("#modal_edit_connection").modal("show");
+  }
+  function selectConnection(p_conn_obj) {
+    $("#modal_connections").modal("hide");
+    if (p_conn_obj.technology === "terminal") {
+      v_connTabControl.tag.createOuterTerminalTab(
+        p_conn_obj.id,
+        p_conn_obj.alias,
+        p_conn_obj.tunnel.user + "@" + p_conn_obj.tunnel.server + ":" + p_conn_obj.tunnel.port
+      );
+    } else {
+      v_connTabControl.tag.createConnTab(p_conn_obj.id);
+    }
+  }
+  function toggleConnectionsLayout(l_type) {
+    if (l_type === "cards") {
+      $(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--rows");
+      $(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--cards");
+    } else if (l_type === "rows") {
+      $(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--cards");
+      $(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--rows");
+    }
+  }
+  function toggleConnectionsPublic() {
+    updateConnectionsTitleInfo();
+    var v_public = document.getElementById("conn_list_public").checked;
+    if (v_public) {
+      v_connections_data.show_public = true;
+      $(".omnidb__connections__card--public").parent().removeClass("d-none");
+      $(".omnidb__connections__card--public").removeClass("d-none");
+      $(".omnidb__connections__card--public").addClass("show");
+    } else {
+      v_connections_data.show_public = false;
+      for (let i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+        v_conn_div = $(v_connections_data.card_list[i2].card_div);
+        v_conn_obj = v_connections_data.card_list[i2].data;
+        if (v_conn_obj.public) {
+          if (!v_conn_obj.is_mine) {
+            v_conn_div.children().removeClass("show");
+            v_conn_div.children().addClass("d-none");
+            v_conn_div.addClass("d-none");
+          }
+        }
+      }
+    }
+  }
+  function updateModalEditConnectionState(e) {
+    let v_e_target = e.target;
+    let v_e_target_id = v_e_target.getAttribute("id");
+    let v_e_value = e.target.value;
+    let v_disable_list = [];
+    let v_enable_list = [];
+    let v_form_cases = ["conn_form_type"];
+    let v_technology = document.getElementById("conn_form_type").value;
+    let v_allow_tunnel = document.getElementById("conn_form_use_tunnel").checked;
+    let v_use_connection_string = document.getElementById("conn_form_connstring").value;
+    document.getElementById("conn_form_ssh_key_input").value;
+    if (v_technology === "terminal") {
+      v_allow_tunnel = true;
+      document.getElementById("conn_form_use_tunnel").checked = true;
+      document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+    } else {
+      document.getElementById("conn_form_use_tunnel").removeAttribute("disabled");
+    }
+    if (typeof v_use_connection_string === "string") {
+      v_use_connection_string = v_use_connection_string.trim();
+    }
+    if (v_technology === "terminal") {
+      v_disable_list.push("conn_form_connstring");
+      v_disable_list.push("conn_form_server");
+      v_disable_list.push("conn_form_port");
+      v_disable_list.push("conn_form_database");
+      v_disable_list.push("conn_form_user");
+      v_disable_list.push("conn_form_user_pass");
+    } else if (v_technology === "sqlite") {
+      v_disable_list.push("conn_form_connstring");
+      v_disable_list.push("conn_form_server");
+      v_disable_list.push("conn_form_port");
+      v_disable_list.push("conn_form_user");
+      v_disable_list.push("conn_form_user_pass");
+      v_enable_list.push("conn_form_database");
+      v_form_cases.push("conn_form_database");
+    } else if (v_use_connection_string !== "" && v_use_connection_string !== null) {
+      v_disable_list.push("conn_form_server");
+      v_disable_list.push("conn_form_port");
+      v_disable_list.push("conn_form_database");
+      v_disable_list.push("conn_form_user");
+      v_disable_list.push("conn_form_user_pass");
+      v_form_cases.push("conn_form_connstring");
+    } else {
+      v_enable_list.push("conn_form_server");
+      v_enable_list.push("conn_form_port");
+      v_enable_list.push("conn_form_database");
+      v_enable_list.push("conn_form_user");
+      v_enable_list.push("conn_form_user_pass");
+      v_form_cases.push("conn_form_server");
+      v_form_cases.push("conn_form_port");
+      v_form_cases.push("conn_form_database");
+      v_form_cases.push("conn_form_user");
+      let v_block_conn_string = false;
+      let v_check_inputs = [
+        "conn_form_server",
+        "conn_form_port",
+        "conn_form_database",
+        "conn_form_user",
+        "conn_form_user_pass"
+      ];
+      let v_check_inputs_empty = true;
+      for (let i2 = 0; i2 < v_check_inputs.length; i2++) {
+        var v_check_input_value = document.getElementById(v_check_inputs[i2]).value;
+        if (typeof v_check_input_value === "string") {
+          v_check_input_value = v_check_input_value.trim();
+        }
+        if (v_check_input_value !== "" && v_check_input_value !== null) {
+          v_check_inputs_empty = false;
+        }
+      }
+      if (!v_check_inputs_empty) {
+        v_block_conn_string = true;
+      }
+      if (v_block_conn_string) {
+        v_disable_list.push("conn_form_connstring");
+      } else {
+        v_enable_list.push("conn_form_connstring");
+        v_form_cases.push("conn_form_connstring");
+      }
+    }
+    if (v_allow_tunnel) {
+      v_enable_list.push("conn_form_ssh_server");
+      v_enable_list.push("conn_form_ssh_port");
+      v_enable_list.push("conn_form_ssh_user");
+      v_enable_list.push("conn_form_ssh_password");
+      v_enable_list.push("conn_form_ssh_key");
+      v_enable_list.push("conn_form_ssh_key_input");
+      v_form_cases.push("conn_form_ssh_server");
+      v_form_cases.push("conn_form_ssh_port");
+      v_form_cases.push("conn_form_ssh_user");
+    } else {
+      v_disable_list.push("conn_form_ssh_server");
+      v_disable_list.push("conn_form_ssh_port");
+      v_disable_list.push("conn_form_ssh_user");
+      v_disable_list.push("conn_form_ssh_password");
+      v_disable_list.push("conn_form_ssh_key");
+      v_disable_list.push("conn_form_ssh_key_input");
+    }
+    if (v_e_target_id === "conn_form_type") {
+      if (v_e_value === "terminal") {
+        v_disable_list = [
+          "conn_form_connstring",
+          "conn_form_server",
+          "conn_form_port",
+          "conn_form_database",
+          "conn_form_user",
+          "conn_form_user_pass"
+        ];
+        v_enable_list = [
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ];
+        document.getElementById("conn_form_use_tunnel").checked = true;
+        document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+        v_form_cases.push("conn_form_ssh_server");
+        v_form_cases.push("conn_form_ssh_port");
+        v_form_cases.push("conn_form_ssh_user");
+      }
+    }
+    updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
+  }
+  function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
+    for (let i2 = 0; i2 < p_disable_list.length; i2++) {
+      var v_item = document.getElementById(p_disable_list[i2]);
+      v_item.setAttribute("readonly", true);
+      v_item.setAttribute("disabled", true);
+      v_item.value = null;
+    }
+    for (let i2 = 0; i2 < p_enable_list.length; i2++) {
+      var v_item = document.getElementById(p_enable_list[i2]);
+      v_item.removeAttribute("readonly");
+      v_item.removeAttribute("disabled");
+    }
+    $("#modal_edit_connection .required").removeClass("required");
+    let v_has_invalid = false;
+    if (p_form_cases) {
+      for (let i2 = 0; i2 < p_form_cases.length; i2++) {
+        $("#" + p_form_cases[i2]).parent().addClass("required");
+      }
+      for (let i2 = 0; i2 < p_form_cases.length; i2++) {
+        if (p_form_cases[i2] === "conn_form_type") {
+          if (document.getElementById(p_form_cases[i2]).value === "-1") {
+            v_has_invalid = true;
+            break;
+          }
+        } else {
+          let v_value_check = document.getElementById(p_form_cases[i2]).value.trim();
+          if (v_value_check === "" || v_value_check === null) {
+            v_has_invalid = true;
+            break;
+          }
+        }
+      }
+    }
+    if (v_has_invalid) {
+      document.getElementById("conn_form_button_test_connection").setAttribute("disabled", true);
+      document.getElementById("conn_form_button_save_connection").setAttribute("disabled", true);
+    } else {
+      document.getElementById("conn_form_button_test_connection").removeAttribute("disabled");
+      document.getElementById("conn_form_button_save_connection").removeAttribute("disabled");
+    }
+  }
+  function updateConnectionKey(e) {
+    var file = e.target.files ? e.target.files[0] : false;
+    var v_input = document.getElementById("conn_form_ssh_key");
+    if (!file) {
+      v_input.value = null;
+      document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+      updateModalEditConnectionState({ target: document.getElementById("conn_form_ssh_key_input") });
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e2) {
+      var v_contents = e2.target.result;
+      v_input.value = v_contents;
+      document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
+      updateModalEditConnectionState({ target: document.getElementById("conn_form_ssh_key_input") });
+    };
+    reader.readAsText(file);
+  }
+  function updateConnectionsTitleInfo() {
+    var v_public = document.getElementById("conn_list_public").checked;
+    var v_group_context = document.getElementById("group_selector").value;
+    var v_connection_owner = false;
+    var v_managing_group = v_group_context && document.getElementById("group_selector").getAttribute("disabled");
+    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+      var v_conn_obj2 = v_connections_data.card_list[i2].data;
+      if (v_conn_obj2.is_mine) {
+        v_connection_owner = true;
+      }
+    }
+    var v_empty_cards = document.getElementById("connections_management_empty_all");
+    var v_empty_with_public = document.getElementById("connections_management_empty_with_public");
+    if (v_empty_cards) {
+      if (v_connections_data.card_list.length === 0) {
+        v_empty_with_public.style.display = "none";
+        v_empty_cards.style.display = "";
+      } else if (v_group_context !== "-1") {
+        v_empty_cards.style.display = "none";
+        v_empty_with_public.style.display = "none";
+      } else if (v_public) {
+        v_empty_cards.style.display = "none";
+        v_empty_with_public.style.display = "none";
+      } else if (!v_connection_owner) {
+        v_empty_cards.style.display = "none";
+        v_empty_with_public.style.display = "";
+      }
+      if (!v_public && v_managing_group && !v_connection_owner) {
+        v_empty_with_public.style.display = "";
+      }
+    }
+  }
+  const connections = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    adjustTechSelector,
+    deleteConnection,
+    deleteGroup,
+    deleteGroupConfirm,
+    editConnection,
+    getGroups,
+    groupChange,
+    manageGroup,
+    manageGroupSave,
+    newConnection,
+    newGroup,
+    newGroupConfirm,
+    renameGroup,
+    renameGroupConfirm,
+    saveConnection,
+    selectConnection,
+    showConnectionList,
+    startConnectionManagement: startConnectionManagement$1,
+    testConnection,
+    toggleConnectionsLayout,
+    toggleConnectionsPublic,
+    updateConnectionKey,
+    updateConnectionsTitleInfo,
+    updateModalEditConnectionFields,
+    updateModalEditConnectionState
+  }, Symbol.toStringTag, { value: "Module" }));
+  function deleteCommandList() {
+    showConfirm("Are you sure you want to clear command history corresponding to applied filters?", function() {
+      execAjax(
+        "/clear_command_list/",
+        JSON.stringify({
+          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
+          p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
+          p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value
+        }),
+        function(p_return) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+          refreshCommandList();
+        }
+      );
+    });
+  }
+  function showCommandList() {
+    v_connTabControl.selectedTab.tag;
+    var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='mr-2 form-control' onchange='refreshCommandList();' /></div><div id='command_history_daterangepicker_container_" + v_tabTag.id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tabTag.tab_id + "' onclick='commandHistoryFirstPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tabTag.tab_id + "' onclick='commandHistoryPreviousPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span><button id='bt_next_" + v_tabTag.tab_id + "' onclick='commandHistoryNextPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tabTag.tab_id + "' onclick='commandHistoryLastPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tabTag.tab_id + "' onclick='refreshCommandList()' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tabTag.tab_id + "' onclick='deleteCommandList()' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
+    var v_gridDiv = v_tabTag.commandHistory.gridDiv;
+    v_gridDiv.innerHTML = "";
+    if (v_tabTag.commandHistory.grid != null) {
+      v_tabTag.commandHistory.grid.destroy();
+    }
+    var v_columnProperties = [];
+    var v_column = new Object();
+    v_column.title = "Start";
+    v_column.readOnly = true;
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "End";
+    v_column.readOnly = true;
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "Duration";
+    v_column.readOnly = true;
+    v_column.width = 100;
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "Status";
+    v_column.readOnly = true;
+    v_column.width = 50;
+    v_column.renderer = "html";
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "Command";
+    v_column.readOnly = true;
+    v_columnProperties.push(v_column);
+    v_tabTag.commandHistory.grid = new Handsontable(v_gridDiv, {
+      licenseKey: "non-commercial-and-evaluation",
+      data: [],
+      columns: v_columnProperties,
+      colHeaders: true,
+      rowHeaders: false,
+      stretchH: "last",
+      copyPaste: {
+        pasteMode: "",
+        rowsLimit: 1e9,
+        columnsLimit: 1e9
+      },
+      manualColumnResize: true,
+      fillHandle: false,
+      contextMenu: {
+        callback: function(p_key, p_options) {
+          if (p_key === "view_data") {
+            commandHistoryOpenCmd(p_options[0].start.row);
+          }
+        },
+        items: {
+          view_data: {
+            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy Content To Query Tab</div>'
+          }
+        }
+      },
+      cells: function(p_row, p_col, p_prop) {
+        var v_cellProperties = {};
+        if (p_row % 2 == 0) {
+          v_cellProperties.renderer = blueHtmlRenderer;
+        } else {
+          v_cellProperties.renderer = whiteHtmlRenderer;
+        }
+        return v_cellProperties;
+      }
+    });
+    $(v_tabTag.commandHistory.modal).modal("show");
+    v_tabTag.commandHistory.div.style.display = "block";
+    v_tabTag.commandHistory.currentPage = 1;
+    v_tabTag.commandHistory.pages = 1;
+    v_tabTag.commandHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.spanNumPages.innerHTML = 1;
+    v_tabTag.commandHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.spanCurrPage.innerHTML = 1;
+    v_tabTag.commandHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputStartedFrom.value = moment().subtract(6, "hour").toISOString();
+    v_tabTag.commandHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputStartedTo.value = moment().toISOString();
+    v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
+    var cl_time_range = document.getElementById("cl_time_range_" + v_tabTag.tab_id);
+    $(cl_time_range).daterangepicker(
+      {
+        timePicker: true,
+        startDate: moment(v_tabTag.commandHistory.inputStartedFrom.value).format("Y-MM-DD H"),
+        endDate: moment(v_tabTag.commandHistory.inputStartedTo.value).format("Y-MM-DD H"),
+        parentEl: document.getElementById("command_history_daterangepicker_container_" + v_tabTag.tab_id),
+        previewUTC: true,
+        locale: {
+          format: "Y-MM-DD H"
+        },
+        ranges: {
+          "Last 6 Hours": [moment().subtract(6, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 12 Hours": [moment().subtract(12, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 24 Hours": [moment().subtract(24, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 7 Days": [moment().subtract(7, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 30 Days": [moment().subtract(30, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          Yesterday: [
+            moment().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
+            moment().subtract(1, "days").endOf("day").format("Y-MM-DD H")
+          ],
+          "This Month": [moment().startOf("month").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last Month": [
+            moment().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
+            moment().subtract(1, "month").endOf("month").format("Y-MM-DD H")
+          ]
+        }
+      },
+      function(start, end, label) {
+        v_tabTag.commandHistory.inputStartedFrom.value = moment(start).toISOString();
+        if (label === "Custom Range") {
+          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(
+            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
+          );
+        } else {
+          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(label);
+        }
+        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
+          v_tabTag.commandHistory.inputStartedTo.value = moment(end).toISOString();
+        } else v_tabTag.commandHistory.inputStartedTo.value = null;
+        refreshCommandList();
+      }
+    );
+    refreshCommandList();
+  }
+  function commandHistoryNextPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage += 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryPreviousPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage > 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage -= 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryFirstPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryLastPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryOpenCmd(p_index) {
+    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[4];
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(v_command);
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+    closeCommandHistory();
+  }
+  function refreshCommandList() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value;
+    execAjax(
+      "/get_command_list/",
+      JSON.stringify({
+        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
+        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
+        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value,
+        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage,
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex
+      }),
+      function(p_return) {
+        if (p_return.v_data.commandList.length == 0) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages.innerHTML = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage;
+        for (let i2 = 0; i2 < p_return.v_data.commandList.length; i2++) {
+          p_return.v_data.commandList[i2][0] = new Date(p_return.v_data.commandList[i2][0]).toLocaleString();
+          p_return.v_data.commandList[i2][1] = new Date(p_return.v_data.commandList[i2][1]).toLocaleString();
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.loadData(p_return.v_data.commandList);
+      },
+      null,
+      "box"
+    );
+  }
+  function closeCommandHistory() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.destroy();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.div.style.display = "none";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.headerDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.gridDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
+    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal).modal("hide");
+  }
+  const commandHistory = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    closeCommandHistory,
+    commandHistoryFirstPage,
+    commandHistoryLastPage,
+    commandHistoryNextPage,
+    commandHistoryOpenCmd,
+    commandHistoryPreviousPage,
+    deleteCommandList,
+    refreshCommandList,
+    showCommandList
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_consoleState$1 = {
+    Idle: 0,
+    Executing: 1,
+    Ready: 2
+  };
+  function deleteConsoleHistoryList() {
+    showConfirm("Are you sure you want to clear console history corresponding to applied filters?", function() {
+      execAjax(
+        "/clear_console_list/",
+        JSON.stringify({
+          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          p_console_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value,
+          p_console_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value,
+          p_console_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value
+        }),
+        function(p_return) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+          refreshConsoleHistoryList();
+        }
+      );
+    });
+  }
+  function showConsoleHistory() {
+    v_connTabControl.selectedTab.tag;
+    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tab_tag2.consoleHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tab_tag2.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tab_tag2.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tab_tag2.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tab_tag2.tab_id + "' class='mr-2 form-control' onchange='refreshConsoleHistoryList();' /></div><div id='console_history_daterangepicker_container_" + v_tab_tag2.id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tab_tag2.tab_id + "' onclick='consoleHistoryFirstPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tab_tag2.tab_id + "' onclick='consoleHistoryPreviousPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tab_tag2.tab_id + "'></span> / <span id='cl_num_pages_" + v_tab_tag2.tab_id + "'></span><button id='bt_next_" + v_tab_tag2.tab_id + "' onclick='consoleHistoryNextPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tab_tag2.tab_id + "' onclick='consoleHistoryLastPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tab_tag2.tab_id + "' onclick='refreshConsoleHistoryList()' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tab_tag2.tab_id + "' onclick='deleteConsoleHistoryList()' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
+    var v_grid_div = v_tab_tag2.consoleHistory.gridDiv;
+    v_grid_div.innerHTML = "";
+    if (v_tab_tag2.consoleHistory.grid != null) {
+      v_tab_tag2.consoleHistory.grid.destroy();
+    }
+    var columnProperties = [];
+    var col = new Object();
+    col.readOnly = true;
+    col.title = "Date";
+    col.width = "141px";
+    columnProperties.push(col);
+    var col = new Object();
+    col.readOnly = true;
+    col.title = "Command";
+    col.width = "435px";
+    columnProperties.push(col);
+    v_tab_tag2.consoleHistory.grid = new Handsontable(v_grid_div, {
+      licenseKey: "non-commercial-and-evaluation",
+      // data: p_return.v_data.data,
+      data: [
+        ["2020-05-01 19:19:21", "?"],
+        ["2020-05-01 19:19:20", "?"],
+        ["2020-05-01 19:19:19", "?"]
+      ],
+      columns: columnProperties,
+      colHeaders: true,
+      rowHeaders: false,
+      stretchH: "last",
+      //copyRowsLimit : 1000000000,
+      //copyColsLimit : 1000000000,
+      copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
+      manualColumnResize: true,
+      fillHandle: false,
+      contextMenu: {
+        callback: function(key, options) {
+          if (key === "view_data") {
+            editCellData(
+              this,
+              options[0].start.row,
+              options[0].start.col,
+              this.getDataAtCell(options[0].start.row, options[0].start.col),
+              false
+            );
+          } else if (key === "copy") {
+            this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
+            document.execCommand("copy");
+          } else if (key === "copy_to_console") {
+            consoleHistoryOpenCmd(options[0].start.row);
+          }
+        },
+        items: {
+          copy: {
+            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+          },
+          copy_to_console: {
+            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy Content To Console Tab</div>'
+          },
+          view_data: {
+            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
+          }
+        }
+      },
+      cells: function(row, col2, prop) {
+        var cellProperties = {};
+        if (row % 2 == 0) cellProperties.renderer = blueHtmlRenderer;
+        else cellProperties.renderer = whiteHtmlRenderer;
+        return cellProperties;
+      }
+    });
+    $(v_tab_tag2.consoleHistory.modal).modal("show");
+    v_tab_tag2.consoleHistory.div.style.display = "block";
+    v_tab_tag2.consoleHistory.currentPage = 1;
+    v_tab_tag2.consoleHistory.pages = 1;
+    v_tab_tag2.consoleHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.spanNumPages.innerHTML = 1;
+    v_tab_tag2.consoleHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.spanCurrPage.innerHTML = 1;
+    v_tab_tag2.consoleHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.inputStartedFrom.value = moment().subtract(6, "hour").toISOString();
+    v_tab_tag2.consoleHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.inputStartedTo.value = moment().toISOString();
+    v_tab_tag2.consoleHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.inputCommandContains.value = v_tab_tag2.consoleHistory.inputCommandContainsLastValue;
+    var cl_time_range = document.getElementById("cl_time_range_" + v_tab_tag2.tab_id);
+    $(cl_time_range).daterangepicker(
+      {
+        timePicker: true,
+        startDate: moment(v_tab_tag2.consoleHistory.inputStartedFrom.value).format("Y-MM-DD H"),
+        endDate: moment(v_tab_tag2.consoleHistory.inputStartedTo.value).format("Y-MM-DD H"),
+        parentEl: document.getElementById("console_history_daterangepicker_container_" + v_tab_tag2.tab_id),
+        previewUTC: true,
+        locale: {
+          format: "Y-MM-DD H"
+        },
+        ranges: {
+          "Last 6 Hours": [moment().subtract(6, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 12 Hours": [moment().subtract(12, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 24 Hours": [moment().subtract(24, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 7 Days": [moment().subtract(7, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 30 Days": [moment().subtract(30, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          Yesterday: [
+            moment().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
+            moment().subtract(1, "days").endOf("day").format("Y-MM-DD H")
+          ],
+          "This Month": [moment().startOf("month").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last Month": [
+            moment().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
+            moment().subtract(1, "month").endOf("month").format("Y-MM-DD H")
+          ]
+        }
+      },
+      function(start, end, label) {
+        v_tab_tag2.consoleHistory.inputStartedFrom.value = moment(start).toISOString();
+        if (label === "Custom Range") {
+          $("#cl_time_range_" + v_tab_tag2.tab_id + " span").html(
+            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
+          );
+        } else {
+          $("#cl_time_range_" + v_tab_tag2.tab_id + " span").html(label);
+        }
+        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
+          v_tab_tag2.consoleHistory.inputStartedTo.value = moment(end).toISOString();
+        } else v_tab_tag2.consoleHistory.inputStartedTo.value = null;
+        refreshConsoleHistoryList();
+      }
+    );
+    refreshConsoleHistoryList();
+  }
+  function consoleHistoryNextPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage += 1;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryPreviousPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage > 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage -= 1;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryFirstPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage != 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryLastPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryOpenCmd(p_index) {
+    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.getDataAtRow(p_index)[1];
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.setValue(v_command);
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.clearSelection();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.gotoLine(0, 0, true);
+    closeConsoleHistory();
+  }
+  function refreshConsoleHistoryList() {
+    var v_conn_tag = v_connTabControl.selectedTab.tag;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value;
+    execAjax(
+      "/get_console_history/",
+      JSON.stringify({
+        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value,
+        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value,
+        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value,
+        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage,
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id
+      }),
+      function(p_return) {
+        v_conn_tag.consoleHistoryFecthed = true;
+        v_conn_tag.consoleHistoryList = p_return.v_data.commandList;
+        if (v_conn_tag.consoleHistoryList.length == 0) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages.innerHTML = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.loadData(
+          v_conn_tag.consoleHistoryList
+        );
+      },
+      null,
+      "box"
+    );
+  }
+  function closeConsoleHistory() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.destroy();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.div.style.display = "none";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.headerDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.gridDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains = null;
+    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal).modal("hide");
+  }
+  function consoleHistorySelectCommand() {
+    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    var v_grid = v_tab_tag2.consoleHistory.grid;
+    var v_sel = v_grid.getSelected();
+    if (!v_sel || v_sel.length === 0) return;
+    var v_command = v_grid.getDataAtRow(v_sel[0][0])[2];
+    closeConsoleHistory();
+    v_tab_tag2.editor_input.setValue(v_command);
+    v_tab_tag2.editor_input.clearSelection();
+    v_tab_tag2.editor_input.focus();
+  }
+  function appendToEditor(p_editor, p_text) {
+    p_editor.write(p_text);
+  }
+  function clearConsole() {
+    var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tag.editor_console.write("\x1B[H\x1B[2J");
+    v_tag.editor_console.write(v_connTabControl.selectedTab.tag.consoleHelp);
+  }
+  function consoleSQL$1(p_check_command = true, p_mode = 0) {
+    var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tag.tempData = "";
+    var v_content = v_tag.editor_input.getValue().trim();
+    if (!p_check_command || v_content[0] == "\\") {
+      if (v_tag.state != v_consoleState$1.Idle) {
+        showAlert("Tab with activity in progress.");
+      } else {
+        if (v_content == "" && p_mode == 0) {
+          showAlert("Please provide a string.");
+        } else {
+          if (v_connTabControl.selectedTab.tag.consoleHistoryList)
+            v_connTabControl.selectedTab.tag.consoleHistoryList.unshift(v_content);
+          v_tag.console_history_cmd_index = -1;
+          v_tag.editor_input.setValue("");
+          v_tag.editor_input.clearSelection();
+          v_tag.editor_input.setReadOnly(false);
+          v_tag.last_command = v_content;
+          var v_message_data = {
+            v_sql_cmd: v_content,
+            v_mode: p_mode,
+            v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            v_conn_tab_id: v_connTabControl.selectedTab.id,
+            v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
+            v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
+          };
+          v_tag.editor_input.setReadOnly(true);
+          var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+          var v_context = {
+            tab_tag: v_tag,
+            start_datetime: dformat,
+            database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            acked: false,
+            last_command: v_content,
+            check_command: p_check_command,
+            mode: p_mode
+          };
+          v_context.tab_tag.context = v_context;
+          createRequest(v_queryRequestCodes.Console, v_message_data, v_context);
+          v_tag.state = v_consoleState$1.Executing;
+          v_tag.tab_loading_span.style.visibility = "visible";
+          v_tag.tab_check_span.style.display = "none";
+          v_tag.bt_cancel.style.display = "";
+          v_tag.query_info.innerHTML = "<b>Start time</b>: " + dformat + "<br><b>Running...</b>";
+          v_tag.bt_fetch_more.style.display = "none";
+          v_tag.bt_fetch_all.style.display = "none";
+          v_tag.bt_skip_fetch.style.display = "none";
+          v_tag.bt_commit.style.display = "none";
+          v_tag.bt_rollback.style.display = "none";
+          setTabStatus(v_tag, 2);
+        }
+      }
+    }
+  }
+  function cancelConsole(p_tab_tag) {
+    var v_tab_tag2;
+    if (p_tab_tag) v_tab_tag2 = p_tab_tag;
+    else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id, null);
+    cancelConsoleTab$1(v_tab_tag2);
+  }
+  function cancelConsoleTab$1(p_tab_tag) {
+    var v_tab_tag2;
+    if (p_tab_tag) v_tab_tag2 = p_tab_tag;
+    else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    if (v_tab_tag2.editor_input) {
+      v_tab_tag2.editor_input.setReadOnly(false);
+    }
+    v_tab_tag2.state = v_consoleState$1.Idle;
+    v_tab_tag2.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag2.tab_check_span.style.display = "none";
+    v_tab_tag2.bt_cancel.style.display = "none";
+    v_tab_tag2.query_info.innerHTML = "Canceled.";
+    setTabStatus(v_tab_tag2, 0);
+    removeContext(v_tab_tag2.context.v_context_code);
+    SetAcked(v_tab_tag2.context);
+  }
+  function checkConsoleStatus$1(p_tab) {
+    if (p_tab.tag.state == v_consoleState$1.Ready) {
+      consoleReturnRender(p_tab.tag.data, p_tab.tag.context);
+    }
+  }
+  function consoleReturn$1(p_data, p_context) {
+    if (p_context.tab_tag.state != v_consoleState$1.Idle) {
+      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
+        consoleReturnRender(p_data, p_context);
+      } else {
+        p_context.tab_tag.state = v_consoleState$1.Ready;
+        p_context.tab_tag.context = p_context;
+        p_context.tab_tag.data = p_data;
+        p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+        p_context.tab_tag.tab_check_span.style.display = "";
+      }
+    }
+  }
+  function consoleReturnRender(p_message, p_context) {
+    p_context.tab_tag.state = v_consoleState$1.Idle;
+    var v_tag = p_context.tab_tag;
+    setTabStatus(p_context.tab_tag, p_message.v_data.v_con_status);
+    v_tag.editor_input.setReadOnly(false);
+    appendToEditor(v_tag.editor_console, v_tag.tempData);
+    v_tag.editor_input.setValue("");
+    v_tag.editor_input.clearSelection();
+    v_tag.query_info.innerHTML = "";
+    var v_qi_b1 = document.createElement("b");
+    v_qi_b1.textContent = "Start time";
+    var v_qi_b2 = document.createElement("b");
+    v_qi_b2.textContent = "Duration";
+    var v_qi_t1 = document.createTextNode(": " + p_context.start_datetime + " ");
+    var v_qi_t2 = document.createTextNode(": " + p_message.v_data.v_duration);
+    v_tag.query_info.appendChild(v_qi_b1);
+    v_tag.query_info.appendChild(v_qi_t1);
+    v_tag.query_info.appendChild(v_qi_b2);
+    v_tag.query_info.appendChild(v_qi_t2);
+    v_tag.tab_loading_span.style.visibility = "hidden";
+    v_tag.tab_check_span.style.display = "none";
+    v_tag.bt_cancel.style.display = "none";
+    if (p_message.v_data.v_show_fetch_button) {
+      v_tag.bt_fetch_more.style.display = "";
+      v_tag.bt_fetch_all.style.display = "";
+      v_tag.bt_skip_fetch.style.display = "";
+    }
+  }
+  const consoleTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    appendToEditor,
+    cancelConsole,
+    cancelConsoleTab: cancelConsoleTab$1,
+    checkConsoleStatus: checkConsoleStatus$1,
+    clearConsole,
+    closeConsoleHistory,
+    consoleHistoryFirstPage,
+    consoleHistoryLastPage,
+    consoleHistoryNextPage,
+    consoleHistoryOpenCmd,
+    consoleHistoryPreviousPage,
+    consoleHistorySelectCommand,
+    consoleReturn: consoleReturn$1,
+    consoleReturnRender,
+    consoleSQL: consoleSQL$1,
+    deleteConsoleHistoryList,
+    refreshConsoleHistoryList,
+    showConsoleHistory,
+    v_consoleState: v_consoleState$1
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_terminalState = {
+    Idle: 0,
+    Executing: 1,
+    Ready: 2
+  };
+  function clearTerminal() {
+    var v_tag = v_connTabControl.selectedTab.tag;
+    v_tag.editor_console.clear();
+  }
+  function startTerminal$1(p_conn_id) {
+    var v_tag = v_connTabControl.selectedTab.tag;
+    var v_context = {
+      tab_tag: v_tag,
+      acked: false
+    };
+    v_tag.context = createContext(v_context);
+    v_tag.editor_console.focus();
+    v_tag.editor_console.write("Starting terminal...");
+    v_tag.clear_terminal = true;
+    terminalRun$1(true, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
+  }
+  function terminalKey$1(p_key) {
+    terminalRun$1(false, p_key);
+  }
+  function terminalContextMenu$1(e, p_tab) {
+    var v_tab = p_tab ? p_tab : v_connTabControl.selectedTab;
+    var v_tag = v_tab.tag;
+    var v_option_list = [];
+    v_option_list.push({
+      text: "Adjust Terminal Dimensions",
+      icon: "fas cm-all fa-window-maximize",
+      action: function() {
+        terminalRun$1(false, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
+        setTimeout(function() {
+          v_tag.editor_console.focus();
+        }, 10);
+      }
+    });
+    v_option_list.push({
+      text: '<p class="mb-0 text-danger">Close Terminal</p>',
+      // icon: 'fas cm-all fa-terminal text-danger',
+      action: function() {
+        customMenu(
+          {
+            x: e.clientX + 5,
+            y: e.clientY + 5
+          },
+          [
+            {
+              text: "Confirm",
+              icon: "fas cm-all fa-check",
+              action: function() {
+                createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: v_tag.tab_id, tab_db_id: null }]);
+                if (v_tab.closeFunction != null) {
+                  v_tab.closeFunction(e, v_tab);
+                }
+              }
+            },
+            {
+              text: "Cancel",
+              icon: "fas cm-all fa-times",
+              action: function() {
+              }
+            }
+          ],
+          null
+        );
+      }
+    });
+    customMenu(
+      {
+        x: e.clientX + 5,
+        y: e.clientY + 5
+      },
+      v_option_list,
+      null
+    );
+  }
+  function terminalRun$1(p_spawn = false, p_query = "") {
+    var v_tag = v_connTabControl.selectedTab.tag;
+    v_tag.tempData = "";
+    var v_content = p_query;
+    v_tag.last_command = v_content;
+    var v_message_data = {
+      v_cmd: v_content,
+      v_tab_id: v_tag.tab_id,
+      v_db_index: null,
+      v_spawn: p_spawn,
+      v_ssh_id: v_tag.connId
+    };
+    var d = /* @__PURE__ */ new Date();
+    [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+    createRequest(v_queryRequestCodes.Terminal, v_message_data, v_tag.context.code);
+    v_tag.state = v_consoleState.Executing;
+  }
+  function terminalReturn$1(p_data, p_context) {
+    terminalReturnRender(p_data, p_context);
+  }
+  function terminalReturnRender(p_message, p_context) {
+    var v_tag = p_context.tab_tag;
+    if (p_context.tab_tag.clear_terminal == true) {
+      v_tag.editor_console.write("\x1B[H\x1B[2J");
+      p_context.tab_tag.clear_terminal = false;
+    }
+    p_context.tab_tag.state = v_consoleState.Idle;
+    v_tag.editor_console.write(p_message.v_data.v_data);
+  }
+  const terminal = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    clearTerminal,
+    startTerminal: startTerminal$1,
+    terminalContextMenu: terminalContextMenu$1,
+    terminalKey: terminalKey$1,
+    terminalReturn: terminalReturn$1,
+    terminalReturnRender,
+    terminalRun: terminalRun$1,
+    v_terminalState
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_autocomplete_object;
+  var Range = ace.require("ace/range").Range;
+  var v_keywords = [
+    "ABORT",
+    "ABS",
+    "ABSOLUTE",
+    "ACCESS",
+    "ACTION",
+    "ADA",
+    "ADD",
+    "ADMIN",
+    "AFTER",
+    "AGGREGATE",
+    "ALIAS",
+    "ALL",
+    "ALLOCATE",
+    "ALTER",
+    "ANALYSE",
+    "ANALYZE",
+    "AND",
+    "ANY",
+    "ARE",
+    "ARRAY",
+    "AS",
+    "ASC",
+    "ASENSITIVE",
+    "ASSERTION",
+    "ASSIGNMENT",
+    "ASYMMETRIC",
+    "AT",
+    "ATOMIC",
+    "AUTHORIZATION",
+    "AVG",
+    "BACKWARD",
+    "BEFORE",
+    "BEGIN",
+    "BETWEEN",
+    "BIGINT",
+    "BINARY",
+    "BIT",
+    "BITVAR",
+    "BIT_LENGTH",
+    "BLOB",
+    "BOOLEAN",
+    "BOTH",
+    "BREADTH",
+    "BY",
+    "C",
+    "CACHE",
+    "CALL",
+    "CALLED",
+    "CARDINALITY",
+    "CASCADE",
+    "CASCADED",
+    "CASE",
+    "CAST",
+    "CATALOG",
+    "CATALOG_NAME",
+    "CHAIN",
+    "CHAR",
+    "CHARACTER",
+    "CHARACTERISTICS",
+    "CHARACTER_LENGTH",
+    "CHARACTER_SET_CATALOG",
+    "CHARACTER_SET_NAME",
+    "CHARACTER_SET_SCHEMA",
+    "CHAR_LENGTH",
+    "CHECK",
+    "CHECKED",
+    "CHECKPOINT",
+    "CLASS",
+    "CLASS_ORIGIN",
+    "CLOB",
+    "CLOSE",
+    "CLUSTER",
+    "COALESCE",
+    "COBOL",
+    "COLLATE",
+    "COLLATION",
+    "COLLATION_CATALOG",
+    "COLLATION_NAME",
+    "COLLATION_SCHEMA",
+    "COLUMN",
+    "COLUMN_NAME",
+    "COMMAND_FUNCTION",
+    "COMMAND_FUNCTION_CODE",
+    "COMMENT",
+    "COMMIT",
+    "COMMITTED",
+    "COMPLETION",
+    "CONDITION_NUMBER",
+    "CONNECT",
+    "CONNECTION",
+    "CONNECTION_NAME",
+    "CONSTRAINT",
+    "CONSTRAINTS",
+    "CONSTRAINT_CATALOG",
+    "CONSTRAINT_NAME",
+    "CONSTRAINT_SCHEMA",
+    "CONSTRUCTOR",
+    "CONTAINS",
+    "CONTINUE",
+    "CONVERSION",
+    "CONVERT",
+    "COPY",
+    "CORRESPONDING",
+    "COUNT",
+    "CREATE",
+    "CREATEDB",
+    "CREATEUSER",
+    "CROSS",
+    "CUBE",
+    "CURRENT",
+    "CURRENT_DATE",
+    "CURRENT_PATH",
+    "CURRENT_ROLE",
+    "CURRENT_TIME",
+    "CURRENT_TIMESTAMP",
+    "CURRENT_USER",
+    "CURSOR",
+    "CURSOR_NAME",
+    "CYCLE",
+    "DATA",
+    "DATABASE",
+    "DATE",
+    "DATETIME_INTERVAL_CODE",
+    "DATETIME_INTERVAL_PRECISION",
+    "DAY",
+    "DEALLOCATE",
+    "DEC",
+    "DECIMAL",
+    "DECLARE",
+    "DEFAULT",
+    "DEFERRABLE",
+    "DEFERRED",
+    "DEFINED",
+    "DEFINER",
+    "DELETE",
+    "DELIMITER",
+    "DELIMITERS",
+    "DEPTH",
+    "DEREF",
+    "DESC",
+    "DESCRIBE",
+    "DESCRIPTOR",
+    "DESTROY",
+    "DESTRUCTOR",
+    "DETERMINISTIC",
+    "DIAGNOSTICS",
+    "DICTIONARY",
+    "DISCONNECT",
+    "DISPATCH",
+    "DISTINCT",
+    "DO",
+    "DOMAIN",
+    "DOUBLE",
+    "DROP",
+    "DYNAMIC",
+    "DYNAMIC_FUNCTION",
+    "DYNAMIC_FUNCTION_CODE",
+    "EACH",
+    "ELSE",
+    "ELSIF",
+    "ENCODING",
+    "ENCRYPTED",
+    "END",
+    "END-EXEC",
+    "EQUALS",
+    "ESCAPE",
+    "EVERY",
+    "EXCEPT",
+    "EXCEPTION",
+    "EXCLUSIVE",
+    "EXEC",
+    "EXECUTE",
+    "EXISTING",
+    "EXISTS",
+    "EXPLAIN",
+    "EXTERNAL",
+    "EXTRACT",
+    "FALSE",
+    "FETCH",
+    "FINAL",
+    "FIRST",
+    "FLOAT",
+    "FOR",
+    "FORCE",
+    "FOREIGN",
+    "FORTRAN",
+    "FORWARD",
+    "FOUND",
+    "FREE",
+    "FREEZE",
+    "FROM",
+    "FULL",
+    "FUNCTION",
+    "G",
+    "GENERAL",
+    "GENERATED",
+    "GET",
+    "GLOBAL",
+    "GO",
+    "GOTO",
+    "GRANT",
+    "GRANTED",
+    "GROUP",
+    "GROUPING",
+    "HANDLER",
+    "HAVING",
+    "HIERARCHY",
+    "HOLD",
+    "HOST",
+    "HOUR",
+    "IDENTITY",
+    "IGNORE",
+    "ILIKE",
+    "IMMEDIATE",
+    "IMMUTABLE",
+    "IMPLEMENTATION",
+    "IMPLICIT",
+    "IN",
+    "INCREMENT",
+    "INDEX",
+    "INDICATOR",
+    "INFIX",
+    "INHERITS",
+    "INITIALIZE",
+    "INITIALLY",
+    "INNER",
+    "INOUT",
+    "INPUT",
+    "INSENSITIVE",
+    "INSERT",
+    "INSTANCE",
+    "INSTANTIABLE",
+    "INSTEAD",
+    "INT",
+    "INTEGER",
+    "INTERSECT",
+    "INTERVAL",
+    "INTO",
+    "INVOKER",
+    "IS",
+    "ISNULL",
+    "ISOLATION",
+    "ITERATE",
+    "JOIN",
+    "K",
+    "KEY",
+    "KEY_MEMBER",
+    "KEY_TYPE",
+    "LANCOMPILER",
+    "LANGUAGE",
+    "LARGE",
+    "LAST",
+    "LATERAL",
+    "LEADING",
+    "LEFT",
+    "LENGTH",
+    "LESS",
+    "LEVEL",
+    "LIKE",
+    "LIMIT",
+    "LISTEN",
+    "LOAD",
+    "LOCAL",
+    "LOCALTIME",
+    "LOCALTIMESTAMP",
+    "LOCATION",
+    "LOCATOR",
+    "LOCK",
+    "LOWER",
+    "M",
+    "MAP",
+    "MATCH",
+    "MAX",
+    "MAXVALUE",
+    "MESSAGE_LENGTH",
+    "MESSAGE_OCTET_LENGTH",
+    "MESSAGE_TEXT",
+    "METHOD",
+    "MIN",
+    "MINUTE",
+    "MINVALUE",
+    "MOD",
+    "MODE",
+    "MODIFIES",
+    "MODIFY",
+    "MODULE",
+    "MONTH",
+    "MORE",
+    "MOVE",
+    "MUMPS",
+    "NAME",
+    "NAMES",
+    "NATIONAL",
+    "NATURAL",
+    "NCHAR",
+    "NCLOB",
+    "NEW",
+    "NEXT",
+    "NO",
+    "NOCREATEDB",
+    "NOCREATEUSER",
+    "NONE",
+    "NOT",
+    "NOTHING",
+    "NOTIFY",
+    "NOTNULL",
+    "NULL",
+    "NULLABLE",
+    "NULLIF",
+    "NUMBER",
+    "NUMERIC",
+    "OBJECT",
+    "OCTET_LENGTH",
+    "OF",
+    "OFF",
+    "OFFSET",
+    "OIDS",
+    "OLD",
+    "ON",
+    "ONLY",
+    "OPEN",
+    "OPERATION",
+    "OPERATOR",
+    "OPTION",
+    "OPTIONS",
+    "OR",
+    "ORDER",
+    "ORDINALITY",
+    "OUT",
+    "OUTER",
+    "OUTPUT",
+    "OVERLAPS",
+    "OVERLAY",
+    "OVERRIDING",
+    "OWNER",
+    "PAD",
+    "PARAMETER",
+    "PARAMETERS",
+    "PARAMETER_MODE",
+    "PARAMETER_NAME",
+    "PARAMETER_ORDINAL_POSITION",
+    "PARAMETER_SPECIFIC_CATALOG",
+    "PARAMETER_SPECIFIC_NAME",
+    "PARAMETER_SPECIFIC_SCHEMA",
+    "PARTIAL",
+    "PASCAL",
+    "PASSWORD",
+    "PATH",
+    "PENDANT",
+    "PLACING",
+    "PLI",
+    "POSITION",
+    "POSTFIX",
+    "PRECISION",
+    "PREFIX",
+    "PREORDER",
+    "PREPARE",
+    "PRESERVE",
+    "PRIMARY",
+    "PRIOR",
+    "PRIVILEGES",
+    "PROCEDURAL",
+    "PROCEDURE",
+    "READ",
+    "READS",
+    "REAL",
+    "RECHECK",
+    "RECURSIVE",
+    "REF",
+    "REFERENCES",
+    "REFERENCING",
+    "REINDEX",
+    "RELATIVE",
+    "RENAME",
+    "REPEATABLE",
+    "REPLACE",
+    "RESET",
+    "RESTRICT",
+    "RESULT",
+    "RETURN",
+    "RETURNED_LENGTH",
+    "RETURNED_OCTET_LENGTH",
+    "RETURNED_SQLSTATE",
+    "RETURNS",
+    "REVOKE",
+    "RIGHT",
+    "ROLE",
+    "ROLLBACK",
+    "ROLLUP",
+    "ROUTINE",
+    "ROUTINE_CATALOG",
+    "ROUTINE_NAME",
+    "ROUTINE_SCHEMA",
+    "ROW",
+    "ROWS",
+    "ROW_COUNT",
+    "RULE",
+    "SAVEPOINT",
+    "SCALE",
+    "SCHEMA",
+    "SCHEMA_NAME",
+    "SCOPE",
+    "SCROLL",
+    "SEARCH",
+    "SECOND",
+    "SECTION",
+    "SECURITY",
+    "SELECT",
+    "SELF",
+    "SENSITIVE",
+    "SEQUENCE",
+    "SERIALIZABLE",
+    "SERVER_NAME",
+    "SESSION",
+    "SESSION_USER",
+    "SET",
+    "SETOF",
+    "SETS",
+    "SHARE",
+    "SHOW",
+    "SIMILAR",
+    "SIMPLE",
+    "SIZE",
+    "SMALLINT",
+    "SOME",
+    "SOURCE",
+    "SPACE",
+    "SPECIFIC",
+    "SPECIFICTYPE",
+    "SPECIFIC_NAME",
+    "SQL",
+    "SQLCODE",
+    "SQLERROR",
+    "SQLEXCEPTION",
+    "SQLSTATE",
+    "SQLWARNING",
+    "STABLE",
+    "START",
+    "STATE",
+    "STATEMENT",
+    "STATIC",
+    "STATISTICS",
+    "STDIN",
+    "STDOUT",
+    "STORAGE",
+    "STRICT",
+    "STRUCTURE",
+    "STYLE",
+    "SUBCLASS_ORIGIN",
+    "SUBLIST",
+    "SUBSTRING",
+    "SUM",
+    "SYMMETRIC",
+    "SYSID",
+    "SYSTEM",
+    "SYSTEM_USER",
+    "TABLE",
+    "TABLE_NAME",
+    "TEMP",
+    "TEMPLATE",
+    "TEMPORARY",
+    "TERMINATE",
+    "THAN",
+    "THEN",
+    "TIME",
+    "TIMESTAMP",
+    "TIMEZONE_HOUR",
+    "TIMEZONE_MINUTE",
+    "TO",
+    "TOAST",
+    "TRAILING",
+    "TRANSACTION",
+    "TRANSACTIONS_COMMITTED",
+    "TRANSACTIONS_ROLLED_BACK",
+    "TRANSACTION_ACTIVE",
+    "TRANSFORM",
+    "TRANSFORMS",
+    "TRANSLATE",
+    "TRANSLATION",
+    "TREAT",
+    "TRIGGER",
+    "TRIGGER_CATALOG",
+    "TRIGGER_NAME",
+    "TRIGGER_SCHEMA",
+    "TRIM",
+    "TRUE",
+    "TRUNCATE",
+    "TRUSTED",
+    "TYPE",
+    "UNCOMMITTED",
+    "UNDER",
+    "UNENCRYPTED",
+    "UNION",
+    "UNIQUE",
+    "UNKNOWN",
+    "UNLISTEN",
+    "UNNAMED",
+    "UNNEST",
+    "UNTIL",
+    "UPDATE",
+    "UPPER",
+    "USAGE",
+    "USER",
+    "USER_DEFINED_TYPE_CATALOG",
+    "USER_DEFINED_TYPE_NAME",
+    "USER_DEFINED_TYPE_SCHEMA",
+    "USING",
+    "VACUUM",
+    "VALID",
+    "VALIDATOR",
+    "VALUE",
+    "VALUES",
+    "VARBIT",
+    "VARCHAR",
+    "VARIABLE",
+    "VARYING",
+    "VERBOSE",
+    "VERSION",
+    "VIEW",
+    "VOLATILE",
+    "WHEN",
+    "WHENEVER",
+    "WHERE",
+    "WITH",
+    "WITHOUT",
+    "WORK",
+    "WRITE",
+    "YEAR",
+    "ZONE"
+  ];
+  var v_keyword_suffixes = {
+    // Functions/operators - always "NAME(...)".
+    ABS: "(",
+    AVG: "(",
+    BIT_LENGTH: "(",
+    CAST: "(",
+    CHAR_LENGTH: "(",
+    CHARACTER_LENGTH: "(",
+    CHECK: "(",
+    COALESCE: "(",
+    CONVERT: "(",
+    COUNT: "(",
+    EXISTS: "(",
+    EXTRACT: "(",
+    LENGTH: "(",
+    LOWER: "(",
+    MAX: "(",
+    MIN: "(",
+    MOD: "(",
+    NULLIF: "(",
+    OCTET_LENGTH: "(",
+    OVERLAY: "(",
+    POSITION: "(",
+    SUBSTRING: "(",
+    SUM: "(",
+    TRANSLATE: "(",
+    TREAT: "(",
+    TRIM: "(",
+    UNNEST: "(",
+    UPPER: "(",
+    // Always-the-same two-word phrases.
+    FOREIGN: " KEY",
+    GROUP: " BY",
+    INSERT: " INTO",
+    ORDER: " BY",
+    PRIMARY: " KEY",
+    SIMILAR: " TO",
+    // Clause-starting keywords - always followed by more of the statement,
+    // even though what follows isn't a single fixed word.
+    ADD: " ",
+    ALTER: " ",
+    AND: " ",
+    BETWEEN: " ",
+    CREATE: " ",
+    CROSS: " ",
+    DELETE: " FROM",
+    DISTINCT: " ",
+    DROP: " ",
+    EXCEPT: " ",
+    FROM: " ",
+    FULL: " ",
+    GRANT: " ",
+    HAVING: " ",
+    ILIKE: " ",
+    INNER: " ",
+    INTERSECT: " ",
+    INTO: " ",
+    IS: " ",
+    JOIN: " ",
+    LATERAL: " ",
+    LEFT: " ",
+    LIKE: " ",
+    LIMIT: " ",
+    NATURAL: " ",
+    NOT: " ",
+    OFFSET: " ",
+    ON: " ",
+    OR: " ",
+    RECURSIVE: " ",
+    REFERENCES: " ",
+    RETURNING: " ",
+    REVOKE: " ",
+    RIGHT: " ",
+    SELECT: " ",
+    SET: " ",
+    TABLE: " ",
+    TRUNCATE: " ",
+    UNION: " ",
+    UPDATE: " ",
+    USING: " ",
+    VALUES: " ",
+    WHERE: " ",
+    WITH: " "
+  };
+  var v_data_type_keywords = [
+    "BIGINT",
+    "BINARY",
+    "BIT",
+    "BITVAR",
+    "BLOB",
+    "BOOLEAN",
+    "CHAR",
+    "CHARACTER",
+    "CLOB",
+    "DATE",
+    "DEC",
+    "DECIMAL",
+    "DOUBLE",
+    "FLOAT",
+    "INT",
+    "INTEGER",
+    "INTERVAL",
+    "NATIONAL",
+    "NCHAR",
+    "NCLOB",
+    "NUMERIC",
+    "REAL",
+    "SMALLINT",
+    "TIME",
+    "TIMESTAMP",
+    "VARBIT",
+    "VARCHAR",
+    "VARYING"
+  ];
+  var v_autocomplete_single_column_types = {
+    database: true,
+    tablespace: true,
+    role: true,
+    extension: true,
+    schema: true
+  };
+  $(function() {
+    v_autocomplete_object = {
+      active: false,
+      ready: false,
+      selected: null,
+      type_cast_mode: false,
+      alt_shift_meta_pressed: false,
+      //label: document.getElementById('div_autocomplete_label'),
+      active_input: null,
+      div: document.getElementById("div_autocomplete"),
+      test_length: document.getElementById("div_test_length"),
+      scroll: document.getElementById("div_autocomplete_scroll"),
+      no_results: document.getElementById("div_autocomplete_noresults"),
+      searching: document.getElementById("div_autocomplete_searching"),
+      loading: document.getElementById("div_autocomplete_loading"),
+      elements: [
+        {
+          type: "keyword",
+          container: document.getElementById("autocomplete_grid_keyword"),
+          count_div: document.getElementById("autocomplete_count_keyword"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "database",
+          container: document.getElementById("autocomplete_grid_database"),
+          count_div: document.getElementById("autocomplete_count_database"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "role",
+          container: document.getElementById("autocomplete_grid_role"),
+          count_div: document.getElementById("autocomplete_count_role"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "tablespace",
+          container: document.getElementById("autocomplete_grid_tablespace"),
+          count_div: document.getElementById("autocomplete_count_tablespace"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "schema",
+          container: document.getElementById("autocomplete_grid_schema"),
+          count_div: document.getElementById("autocomplete_count_schema"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "extension",
+          container: document.getElementById("autocomplete_grid_extension"),
+          count_div: document.getElementById("autocomplete_count_extension"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "table",
+          container: document.getElementById("autocomplete_grid_table"),
+          count_div: document.getElementById("autocomplete_count_table"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "view",
+          container: document.getElementById("autocomplete_grid_view"),
+          count_div: document.getElementById("autocomplete_count_view"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "column",
+          container: document.getElementById("autocomplete_grid_column"),
+          count_div: document.getElementById("autocomplete_count_column"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "function",
+          container: document.getElementById("autocomplete_grid_function"),
+          count_div: document.getElementById("autocomplete_count_function"),
+          elements: [],
+          num_visible: 0
+        },
+        {
+          type: "index",
+          container: document.getElementById("autocomplete_grid_index"),
+          count_div: document.getElementById("autocomplete_count_index"),
+          elements: [],
+          num_visible: 0
+        }
+      ]
+    };
+    for (var i2 = 0; i2 < v_autocomplete_object.elements.length; i2++) {
+      if (v_autocomplete_object.elements[i2].type != "keyword") {
+        var columnProperties = [];
+        var col = new Object();
+        col.title = "";
+        col.readOnly = true;
+        col.renderer = "html";
+        columnProperties.push(col);
+        if (!v_autocomplete_single_column_types[v_autocomplete_object.elements[i2].type]) {
+          var col = new Object();
+          col.title = "";
+          col.readOnly = true;
+          col.renderer = "html";
+          columnProperties.push(col);
+        }
+        v_autocomplete_object.elements[i2].grid = new Handsontable(v_autocomplete_object.elements[i2].container, {
+          licenseKey: "non-commercial-and-evaluation",
+          data: [],
+          columns: columnProperties,
+          colHeaders: false,
+          manualColumnResize: true,
+          fillHandle: false,
+          disableVisualSelection: true,
+          // This popup only ever needs the editor to hold real keyboard focus - see
+          // AgGridAdapter's suppressCellFocus comment for why this must be set here.
+          suppressCellFocus: true,
+          stretchH: "last",
+          afterRender: function() {
+            if (v_autocomplete_object.selected_grid == this) {
+              var v_cell = this.getCell(v_autocomplete_object.selected_grid_row, 0);
+              if (v_cell != null) {
+                this.getCell(v_autocomplete_object.selected_grid_row, 0).parentNode.classList.add(
+                  "omnidb__autocomplete__data-row--selected"
+                );
+              }
+            }
+          },
+          cells: function(row, col2, prop) {
+            var cellProperties = {};
+            cellProperties.renderer = whiteHtmlRenderer;
+            if (col2 == 1) cellProperties.renderer = whiteRightHtmlRenderer;
+            return cellProperties;
+          },
+          cell: [{ col: 0, className: "htRight" }]
+        });
+        v_autocomplete_object.elements[i2].container.onclick = /* @__PURE__ */ (function(group) {
+          return function(event2) {
+            event2.preventDefault();
+            event2.stopPropagation();
+            var v_sel = group.grid.getSelected();
+            if (!v_sel || v_sel.length === 0) return;
+            var v_clicked = group.displayed_elements && group.displayed_elements[v_sel[0][0]];
+            if (!v_clicked) return;
+            close_autocomplete(v_clicked.select_value);
+          };
+        })(v_autocomplete_object.elements[i2]);
+      }
+    }
+  });
+  function build_autocomplete_elements(p_data, p_value) {
+    var v_previous_element = null;
+    var v_first_element = null;
+    var v_last_element = null;
+    v_autocomplete_object.selected = null;
+    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
+      v_autocomplete_object.elements[k].container.parentNode.style.display = "none";
+      if (v_autocomplete_object.elements[k].type == "keyword") {
+        v_autocomplete_object.elements[k].container.parentNode.scrollTop = 0;
+        v_autocomplete_object.elements[k].container.innerHTML = "";
+      }
+      v_autocomplete_object.elements[k].elements = [];
+    }
+    var v_num_results = 0;
+    for (var i2 = 0; i2 < p_data.length; i2++) {
+      var v_local_group = p_data[i2];
+      var v_global_group;
+      for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
+        if (v_autocomplete_object.elements[k].type == v_local_group.type) {
+          v_global_group = v_autocomplete_object.elements[k];
+          break;
+        }
+      }
+      v_global_group.container.parentNode.style.display = "block";
+      v_global_group.num_visible = v_local_group.elements.length;
+      v_global_group.count_div.innerHTML = v_local_group.elements.length + " results";
+      var v_list2 = [];
+      var v_list_render = [];
+      var v_displayed = [];
+      for (var j2 = 0; j2 < v_local_group.elements.length; j2++) {
+        v_num_results++;
+        var v_element2;
+        var div = document.createElement("div");
+        if (v_local_group.type == "keyword") {
+          div.className = "omnidb__autocomplete__data-word";
+          var v_safe_val = document.createElement("span");
+          v_safe_val.textContent = v_local_group.elements[j2].value;
+          var v_safe_p = document.createElement("span");
+          v_safe_p.textContent = p_value;
+          div.innerHTML = v_safe_val.innerHTML.replace(v_safe_p.innerHTML, "<b>" + v_safe_p.innerHTML + "</b>");
+          var v_element2 = {
+            value: v_local_group.elements[j2].value,
+            select_value: v_local_group.elements[j2].select_value,
+            complement: v_local_group.elements[j2].complement,
+            container: div,
+            visible: true,
+            group_reference: v_global_group
+          };
+          v_global_group.container.appendChild(div);
+          div.onclick = /* @__PURE__ */ (function(v_value) {
+            return function(event2) {
+              event2.preventDefault();
+              event2.stopPropagation();
+              close_autocomplete(v_value);
+            };
+          })(v_element2.select_value);
+        } else {
+          v_list2.push([v_local_group.elements[j2].value, v_local_group.elements[j2].complement]);
+          v_list_render.push([
+            v_local_group.elements[j2].value.replace(p_value, "<b>" + p_value + "</b>"),
+            v_local_group.elements[j2].complement
+          ]);
+          var v_element2 = {
+            value: v_local_group.elements[j2].value,
+            select_value: v_local_group.elements[j2].select_value,
+            complement: v_local_group.elements[j2].complement,
+            visible: true,
+            index: j2,
+            visible_index: j2,
+            grid_reference: v_global_group.grid,
+            group_reference: v_global_group
+          };
+          v_displayed.push(v_element2);
+        }
+        if (v_first_element == null) v_first_element = v_element2;
+        if (i2 == p_data.length - 1 && j2 == v_local_group.elements.length - 1) v_last_element = v_element2;
+        v_global_group.elements.push(v_element2);
+        if (v_previous_element != null) v_previous_element.next = v_element2;
+        v_element2.previous = v_previous_element;
+        v_previous_element = v_element2;
+      }
+      if (v_global_group.type != "keyword") {
+        v_global_group.grid_data = v_list2;
+        v_global_group.displayed_elements = v_displayed;
+        v_global_group.grid.loadData(v_list_render);
+      }
+    }
+    if (v_first_element != null) {
+      v_autocomplete_object.first_element = v_first_element;
+      v_first_element.previous = v_last_element;
+    }
+    if (v_last_element != null) {
+      v_autocomplete_object.last_element = v_last_element;
+      v_last_element.next = v_first_element;
+    }
+    if (v_num_results > 0) {
+      v_autocomplete_object.no_results.style.display = "none";
+    } else {
+      v_autocomplete_object.no_results.style.display = "block";
+    }
+    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
+      if (v_autocomplete_object.elements[k].type != "keyword") {
+        v_autocomplete_object.elements[k].grid.render();
+        v_autocomplete_object.elements[k].grid.selectCell(0, 0);
+        v_autocomplete_object.elements[k].grid.deselectCell();
+      }
+    }
+    v_autocomplete_object.editor.focus();
+  }
+  function renew_autocomplete(p_new_value) {
+    var v_search_regex = null;
+    v_search_regex = new RegExp("^(" + p_new_value + ")", "i");
+    var v_num_results = 0;
+    for (var i2 = v_autocomplete_object.elements.length - 1; i2 >= 0; i2--) {
+      var v_group = v_autocomplete_object.elements[i2];
+      v_group.num_visible = 0;
+      if (v_group.type == "keyword") {
+        for (var j2 = v_group.elements.length - 1; j2 >= 0; j2--) {
+          var v_element2 = v_group.elements[j2];
+          if (!v_search_regex.test(v_element2.value)) {
+            v_element2.container.style.display = "none";
+            v_element2.visible = false;
+          } else {
+            var v_match_text = v_search_regex.exec(v_element2.value)[0];
+            v_num_results++;
+            v_element2.container.style.display = "inline-block";
+            v_element2.visible = true;
+            var v_safe_el = document.createElement("span");
+            v_safe_el.textContent = v_element2.value;
+            var v_safe_mt = document.createElement("span");
+            v_safe_mt.textContent = v_match_text;
+            v_element2.container.innerHTML = v_safe_el.innerHTML.replace(
+              v_safe_mt.innerHTML,
+              "<b>" + v_safe_mt.innerHTML + "</b>"
+            );
+            v_group.num_visible++;
+          }
+        }
+      } else {
+        var v_new_data2 = [];
+        var v_new_displayed = [];
+        for (var j2 = 0; j2 < v_group.elements.length; j2++) {
+          var v_element2 = v_group.elements[j2];
+          if (!v_search_regex.test(v_element2.value)) {
+            v_element2.visible = false;
+          } else {
+            var v_match_text = v_search_regex.exec(v_element2.value)[0];
+            v_num_results++;
+            v_element2.visible = true;
+            v_element2.visible_index = v_group.num_visible;
+            v_new_data2.push([
+              v_group.grid_data[j2][0].replace(v_match_text, "<b>" + v_match_text + "</b>"),
+              v_group.grid_data[j2][1]
+            ]);
+            v_new_displayed.push(v_element2);
+            v_group.num_visible++;
+          }
+        }
+        v_group.displayed_elements = v_new_displayed;
+        v_group.grid.loadData(v_new_data2);
+      }
+      v_group.count_div.innerHTML = v_group.num_visible + " results";
+      if (v_group.num_visible == 0) {
+        v_group.container.parentNode.style.display = "none";
+      } else {
+        v_group.container.parentNode.style.display = "block";
+      }
+    }
+    if (v_num_results > 0) {
+      v_autocomplete_object.no_results.style.display = "none";
+    } else {
+      v_autocomplete_object.no_results.style.display = "block";
+    }
+    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
+      if (v_autocomplete_object.elements[k].type != "keyword") {
+        v_autocomplete_object.elements[k].grid.render();
+        v_autocomplete_object.elements[k].grid.selectCell(0, 0);
+        v_autocomplete_object.elements[k].grid.deselectCell();
+      }
+    }
+    var v_new_selected = null;
+    if (v_autocomplete_object.selected == null) {
+      v_new_selected = find_next_visible_element(v_autocomplete_object.first_element);
+    } else {
+      v_new_selected = find_element_by_value(v_autocomplete_object.first_element, v_autocomplete_object.selected.value);
+      if (v_new_selected == null) {
+        v_new_selected = find_next_visible_element(v_autocomplete_object.first_element);
+      }
+    }
+    autocomplete_deselect_element();
+    if (v_new_selected) {
+      autocomplete_select_element(v_new_selected);
+    }
+    v_autocomplete_object.editor.focus();
+  }
+  function autocompleteTypeEnabled(p_type) {
+    return (typeof v_autocomplete_disabled_types !== "undefined" ? v_autocomplete_disabled_types : "").split(",").indexOf(p_type) === -1;
+  }
+  function autocomplete_get_results(p_sql, p_value, p_pos) {
+    v_autocomplete_object.div.style.width = "500px";
+    var v_data = [
+      {
+        type: "keyword",
+        elements: []
+      }
+    ];
+    if (autocompleteTypeEnabled("keyword")) {
+      for (var i2 = 0; i2 < v_keywords.length; i2++) {
+        var v_keyword_with_suffix = v_keywords[i2] + (v_keyword_suffixes[v_keywords[i2]] || "");
+        v_data[0].elements.push({
+          value: v_keyword_with_suffix,
+          select_value: v_keyword_with_suffix
+        });
+      }
+    }
+    build_autocomplete_elements(v_data, p_value);
+    renew_autocomplete(p_value);
+    v_autocomplete_object.ready = true;
+    v_autocomplete_object.searching.style.display = "block";
+    execAjax(
+      "/get_autocomplete_results/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_sql,
+        p_value,
+        p_pos
+      }),
+      function(p_return) {
+        v_autocomplete_object.searching.style.display = "none";
+        if (v_autocomplete_object.active) {
+          v_autocomplete_object.test_length.textContent = p_return.v_data.max_result_word;
+          var v_new_width_result = v_autocomplete_object.test_length.clientWidth;
+          v_autocomplete_object.test_length.textContent = p_return.v_data.max_complement_word;
+          var v_new_width_complement = v_autocomplete_object.test_length.clientWidth;
+          if (v_autocomplete_object.mode == 0)
+            v_autocomplete_object.scroll.style["max-height"] = window.innerHeight - $(v_autocomplete_object.div).offset().top - 50 + "px";
+          else v_autocomplete_object.scroll.style["max-height"] = $(v_autocomplete_object.div).offset().top - 20 + "px";
+          var v_new_width = v_new_width_result + v_new_width_complement + 160;
+          if (v_new_width < 500) v_new_width = 500;
+          v_autocomplete_object.div.style.width = v_new_width + "px";
+          for (var i3 = 0; i3 < v_autocomplete_object.elements.length; i3++) {
+            if (v_autocomplete_object.elements[i3].type != "keyword") {
+              var v_columns = v_autocomplete_object.elements[i3].grid.getSettings().columns;
+              v_columns[0].width = v_new_width_result + 30;
+              v_autocomplete_object.elements[i3].grid.updateSettings({ columns: v_columns });
+            }
+          }
+          v_data = v_data.concat(p_return.v_data.data.filter(function(p_group) {
+            return autocompleteTypeEnabled(p_group.type);
+          }));
+          build_autocomplete_elements(v_data, p_value);
+          renew_autocomplete(get_editor_last_word(v_autocomplete_object.editor).last_word);
+          v_autocomplete_object.ready = true;
+        }
+      },
+      function(p_return) {
+        if (p_return.v_data.password_timeout) {
+          showPasswordPrompt(
+            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            function() {
+              autocomplete_get_results(p_sql, p_value, p_pos);
+            },
+            null,
+            p_return.v_data.message
+          );
+        }
+      },
+      "box",
+      false,
+      true
+    );
+  }
+  function autocomplete_keyup(p_event) {
+    if (p_event.keyCode != 27 && p_event.keyCode != 40 && p_event.keyCode != 38 && p_event.keyCode != 13 && p_event.keyCode != 16 && p_event.keyCode != 17 && p_event.keyCode != 18) {
+      if (v_autocomplete_object.ready) {
+        var v_last_word = get_editor_last_word(v_autocomplete_object.editor).last_word;
+        var v_filter = v_last_word;
+        if (v_autocomplete_object.type_cast_mode) {
+          var v_type_filter = autocomplete_type_cast_filter(v_last_word);
+          if (v_type_filter === null) {
+            close_autocomplete();
+            return;
+          }
+          v_filter = v_type_filter;
+          autocomplete_narrow_range_to_type_filter(v_type_filter);
+        }
+        if (v_filter.length < v_autocomplete_object.search_base.length) close_autocomplete();
+        else renew_autocomplete(v_filter);
+      }
+    }
+  }
+  function autocomplete_keydown$1(p_editor, p_event) {
+    if (event.ctrlKey == true || event.altKey == true || event.metaKey == true) {
+      v_autocomplete_object.alt_shift_meta_pressed = true;
+    } else {
+      v_autocomplete_object.alt_shift_meta_pressed = false;
+    }
+    if (v_autocomplete_object.active) {
+      if (p_event.keyCode === 27) {
+        p_event.stopPropagation();
+        p_event.preventDefault();
+        close_autocomplete();
+      }
+      if (p_event.keyCode === 32) {
+        close_autocomplete();
+      }
+      if (p_event.keyCode === 13 || p_event.keyCode === 9) {
+        p_event.stopPropagation();
+        p_event.preventDefault();
+        if (v_autocomplete_object.selected)
+          close_autocomplete(v_autocomplete_object.selected.select_value);
+        else close_autocomplete();
+      } else if (p_event.keyCode === 40 || p_event.keyCode === 38) {
+        p_event.stopPropagation();
+        p_event.preventDefault();
+        var v_new_selected = null;
+        if (v_autocomplete_object.selected == null) {
+          if (p_event.keyCode === 40 && v_autocomplete_object.first_element != null) {
+            v_new_selected = find_next_visible_element(v_autocomplete_object.first_element);
+          } else if (p_event.keyCode === 38 && v_autocomplete_object.last_element != null) {
+            v_new_selected = find_previous_visible_element(v_autocomplete_object.last_element);
+          }
+        } else {
+          if (p_event.keyCode === 40) v_new_selected = find_next_visible_element(v_autocomplete_object.selected.next);
+          else if (p_event.keyCode === 38)
+            v_new_selected = find_previous_visible_element(v_autocomplete_object.selected.previous);
+        }
+        if (v_new_selected) {
+          autocomplete_select_element(v_new_selected);
+        }
+      }
+    } else {
+      autocomplete_update_editor_cursor$1(p_editor, p_event);
+    }
+  }
+  function autocomplete_update_editor_cursor$1(p_editor, p_event) {
+    if (!p_event.shiftKey && !p_event.altKey && !p_event.ctrlKey && !p_event.metaKey) {
+      if (p_event.keyCode === 40 || p_event.keyCode === 38) {
+        var v_cursor_pos = p_editor.getCursorPosition();
+        let v_target_row;
+        if (p_event.keyCode === 40) {
+          v_target_row = v_cursor_pos.row + 1;
+        } else {
+          v_target_row = v_cursor_pos.row - 1;
+        }
+        p_editor.moveCursorTo(v_target_row, v_cursor_pos.column);
+        p_editor.clearSelection();
+        p_editor.renderer.scrollCursorIntoView({ row: v_target_row });
+      }
+      if (p_event.keyCode === 9) {
+        p_event.preventDefault();
+        p_event.stopPropagation();
+        p_editor.getSelectionRange();
+        p_editor.indent();
+        p_editor.focus();
+      }
+    }
+    if (p_event.keyCode === 13) {
+      if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console") {
+        consoleSQL();
+      }
+    }
+  }
+  function find_next_visible_element(p_element) {
+    var v_element2 = p_element;
+    var v_first = p_element;
+    if (v_element2.visible == true) return v_element2;
+    if (v_element2.next == p_element) return null;
+    while (v_element2.next.visible == false) {
+      v_element2 = v_element2.next;
+      if (v_element2 == v_first) return null;
+    }
+    return v_element2.next;
+  }
+  function find_element_by_value(p_first_element, p_value) {
+    if (p_first_element == null) return null;
+    var v_element2 = p_first_element;
+    var v_first = p_first_element;
+    do {
+      if (v_element2.visible == true && v_element2.value == p_value) return v_element2;
+      v_element2 = v_element2.next;
+    } while (v_element2 != null && v_element2 != v_first);
+    return null;
+  }
+  function find_previous_visible_element(p_element) {
+    var v_element2 = p_element;
+    var v_first = p_element;
+    if (v_element2.visible == true) return v_element2;
+    if (v_element2.previous == p_element) return null;
+    while (v_element2.previous.visible == false) {
+      v_element2 = v_element2.previous;
+      if (v_element2 == v_first) return null;
+    }
+    return v_element2.previous;
+  }
+  function autocomplete_select_element(p_element) {
+    autocomplete_deselect_element();
+    var v_parent_block = p_element.group_reference.container.parentNode;
+    if (v_parent_block.offsetTop < v_parent_block.parentNode.scrollTop)
+      v_parent_block.parentNode.scrollTop = v_parent_block.offsetTop;
+    else {
+      var v_value = v_parent_block.offsetTop + 80 - v_parent_block.parentNode.offsetHeight - v_parent_block.parentNode.scrollTop;
+      if (v_value > 0) {
+        v_parent_block.parentNode.scrollTop += v_value;
+      }
+    }
+    if (p_element.visible_index == null) {
+      p_element.container.classList.add("omnidb__autocomplete__data-row--selected");
+      if (p_element.container.offsetTop < p_element.container.parentNode.scrollTop)
+        p_element.container.parentNode.scrollTop = p_element.container.offsetTop;
+      else {
+        var v_value = p_element.container.offsetTop + 22 - 80 - 2 - p_element.container.parentNode.scrollTop;
+        if (v_value > 0) {
+          p_element.container.parentNode.scrollTop += v_value;
+        }
+      }
+    } else {
+      p_element.grid_reference.selectCell(p_element.visible_index, 0);
+      p_element.grid_reference.deselectCell();
+      v_autocomplete_object.selected_grid = p_element.grid_reference;
+      v_autocomplete_object.selected_grid_row = p_element.visible_index;
+      update_selected_grid_row_position(p_element.grid_reference.getCell(p_element.visible_index, 0));
+      v_autocomplete_object.editor.focus();
+    }
+    v_autocomplete_object.selected = p_element;
+  }
+  function autocomplete_deselect_element() {
+    if (v_autocomplete_object.selected) {
+      var v_previous = v_autocomplete_object.selected;
+      if (v_previous.visible_index == null) v_previous.container.classList.remove("omnidb__autocomplete__data-row--selected");
+      else {
+        var v_cell = v_previous.grid_reference.getCell(v_previous.visible_index, 0);
+        if (v_cell != null) {
+          v_previous.grid_reference.getCell(v_previous.visible_index, 0).parentNode.classList.remove("omnidb__autocomplete__data-row--selected");
+        }
+        v_autocomplete_object.selected_grid = null;
+        v_autocomplete_object.selected_grid_row = null;
+      }
+    }
+    v_autocomplete_object.selected = null;
+  }
+  function update_selected_grid_row_position(p_cell) {
+    if (p_cell == null) return;
+    p_cell.parentNode.parentNode.parentNode.parentNode.parentNode.parentNode.scrollTop = p_cell.offsetTop + parseInt(p_cell.parentNode.parentNode.parentNode.parentNode.style.top, 10);
+    p_cell.parentNode.classList.add("omnidb__autocomplete__data-row--selected");
+  }
+  function close_autocomplete(p_additional_text) {
+    v_autocomplete_object.active = false;
+    v_autocomplete_object.ready = false;
+    v_autocomplete_object.type_cast_mode = false;
+    v_autocomplete_object.selected_grid = null;
+    v_autocomplete_object.selected_grid_row = null;
+    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
+      v_autocomplete_object.elements[k].container.parentNode.style.display = "none";
+      if (v_autocomplete_object.elements[k].type == "keyword") v_autocomplete_object.elements[k].container.innerHTML = "";
+      v_autocomplete_object.elements[k].elements = [];
+    }
+    v_autocomplete_object.div.style.display = "none";
+    v_autocomplete_object.close_div.parentNode.removeChild(v_autocomplete_object.close_div);
+    var v_editor = v_autocomplete_object.editor;
+    if (p_additional_text) {
+      v_editor.session.replace(v_autocomplete_object.range, p_additional_text);
+    }
+    v_editor.focus();
+    v_autocomplete_object.no_results.style.display = "none";
+  }
+  function autocomplete_type_cast_filter(p_last_word) {
+    var v_idx = p_last_word.lastIndexOf("::");
+    if (v_idx === -1) return null;
+    return p_last_word.substring(v_idx + 2);
+  }
+  function autocomplete_narrow_range_to_type_filter(p_type_filter) {
+    var v_range = v_autocomplete_object.range;
+    v_autocomplete_object.range = new Range(
+      v_range.end.row,
+      v_range.end.column - p_type_filter.length,
+      v_range.end.row,
+      v_range.end.column
+    );
+  }
+  function autocomplete_position_and_open(editor, mode) {
+    v_autocomplete_object.editor = editor;
+    v_autocomplete_object.active = true;
+    v_autocomplete_object.mode = mode;
+    var v_pixel_position = editor.renderer.$cursorLayer.getPixelPosition();
+    var v_editor_position = editor.container.getBoundingClientRect();
+    var v_pos = {
+      left: v_editor_position.left + v_pixel_position.left,
+      top: v_editor_position.top + v_pixel_position.top + 25
+    };
+    var v_top_pos = v_pos.top - editor.renderer.scrollTop;
+    var v_autocomplete_div = v_autocomplete_object.div;
+    v_autocomplete_div.style.left = v_pos.left + editor.renderer.gutterWidth + "px";
+    if (mode == 0) {
+      v_autocomplete_div.style.top = v_top_pos - 4 + "px";
+      v_autocomplete_div.style.bottom = "unset";
+    } else {
+      v_autocomplete_div.style.top = "unset";
+      v_autocomplete_div.style.bottom = window.innerHeight - v_top_pos + 30 + "px";
+    }
+    v_autocomplete_div.style.display = "block";
+    if (v_autocomplete_object.close_div && v_autocomplete_object.close_div.parentNode) {
+      v_autocomplete_object.close_div.parentNode.removeChild(v_autocomplete_object.close_div);
+    }
+    var v_closediv = document.createElement("div");
+    v_autocomplete_object.close_div = v_closediv;
+    v_closediv.className = "div_close_cm";
+    v_closediv.onmousedown = function() {
+      close_autocomplete();
+    };
+    document.body.appendChild(v_closediv);
+  }
+  function autocomplete_start_type_cast(editor, mode, p_type_filter) {
+    autocomplete_position_and_open(editor, mode);
+    v_autocomplete_object.type_cast_mode = true;
+    v_autocomplete_object.search_base = p_type_filter;
+    var v_data = [
+      {
+        type: "keyword",
+        elements: v_data_type_keywords.map(function(p_type) {
+          return { value: p_type, select_value: p_type };
+        })
+      }
+    ];
+    build_autocomplete_elements(v_data, p_type_filter);
+    renew_autocomplete(p_type_filter);
+    v_autocomplete_object.ready = true;
+  }
+  function autocomplete_start$1(editor, mode, event2, force = null) {
+    if (event2.keyCode != 32 && event2.keyCode != 27 && event2.keyCode != 39 && event2.keyCode != 37 && event2.keyCode != 40 && event2.keyCode != 38 && event2.keyCode != 13 && event2.keyCode != 16 && event2.keyCode != 17 && event2.keyCode != 18 && event2.keyCode != 91 || force) {
+      var v_is_dot = event2.keyCode == 190 && !v_autocomplete_object.alt_shift_meta_pressed;
+      var v_is_colon = event2.keyCode == 186 && !v_autocomplete_object.alt_shift_meta_pressed;
+      if (!v_autocomplete_object.active || v_is_dot || v_is_colon) {
+        if ((event2.keyCode >= 65 && event2.keyCode < 90 || event2.keyCode == 189 || event2.keyCode >= 48 && event2.keyCode < 57 && event2.shiftKey != true || event2.keyCode == 190 || event2.keyCode == 186) && !v_autocomplete_object.alt_shift_meta_pressed || force) {
+          var v_last_word_object = get_editor_last_word(editor);
+          var v_last_word = v_last_word_object.last_word;
+          var v_character_position = v_last_word_object.character_position;
+          var v_type_filter = autocomplete_type_cast_filter(v_last_word);
+          if (v_type_filter !== null) {
+            autocomplete_narrow_range_to_type_filter(v_type_filter);
+            autocomplete_start_type_cast(editor, mode, v_type_filter);
+          } else if (event2.keyCode != 186 && v_last_word != "" && v_last_word[0] != "'") {
+            autocomplete_position_and_open(editor, mode);
+            v_autocomplete_object.search_base = v_last_word;
+            autocomplete_get_results(editor.getValue(), v_last_word, v_character_position);
+          }
+        }
+      } else {
+        autocomplete_keyup(event2);
+      }
+    }
+  }
+  function get_editor_last_word(p_editor) {
+    var v_cursor = p_editor.selection.getCursor();
+    var v_character_position = p_editor.session.doc.positionToIndex(v_cursor);
+    var v_prefix_pos = p_editor.session.doc.positionToIndex(v_cursor) - 1;
+    var v_editor_text = p_editor.getValue();
+    var v_pos_iterator = v_prefix_pos;
+    var v_word_length = 0;
+    while (v_editor_text[v_pos_iterator] != " " && v_editor_text[v_pos_iterator] != "\n" && v_editor_text[v_pos_iterator] != "'" && v_editor_text[v_pos_iterator] != "(" && v_editor_text[v_pos_iterator] != ")" && v_editor_text[v_pos_iterator] != "," && v_pos_iterator >= 0) {
+      v_pos_iterator--;
+      v_word_length++;
+    }
+    if (v_pos_iterator >= 0) {
+      v_pos_iterator++;
+      v_autocomplete_object.range = new Range(v_cursor.row, v_cursor.column - v_word_length, v_cursor.row, v_cursor.column);
+      var v_last_word = v_editor_text.substring(v_pos_iterator, v_pos_iterator + v_word_length);
+    } else {
+      v_autocomplete_object.range = new Range(v_cursor.row, v_cursor.column - v_word_length - 1, v_cursor.row, v_cursor.column);
+      var v_last_word = v_editor_text.substring(v_pos_iterator, v_pos_iterator + v_word_length + 1);
+    }
+    return {
+      last_word: v_last_word,
+      character_position: v_character_position
+    };
+  }
+  const autocomplete = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    Range,
+    autocompleteTypeEnabled,
+    autocomplete_deselect_element,
+    autocomplete_get_results,
+    autocomplete_keydown: autocomplete_keydown$1,
+    autocomplete_keyup,
+    autocomplete_narrow_range_to_type_filter,
+    autocomplete_position_and_open,
+    autocomplete_select_element,
+    autocomplete_start: autocomplete_start$1,
+    autocomplete_start_type_cast,
+    autocomplete_type_cast_filter,
+    autocomplete_update_editor_cursor: autocomplete_update_editor_cursor$1,
+    build_autocomplete_elements,
+    close_autocomplete,
+    find_element_by_value,
+    find_next_visible_element,
+    find_previous_visible_element,
+    get_editor_last_word,
+    renew_autocomplete,
+    update_selected_grid_row_position,
+    get v_autocomplete_object() {
+      return v_autocomplete_object;
+    },
+    v_autocomplete_single_column_types,
+    v_data_type_keywords,
+    v_keyword_suffixes,
+    v_keywords
+  }, Symbol.toStringTag, { value: "Module" }));
+  function startTutorial$1(p_tutorial_name) {
+    if (v_omnis.omnis_ui_assistant) {
+      v_omnis.omnis_ui_assistant.self_destruct();
+    }
+    v_omnis.div.classList.add("omnis--active");
+    v_omnis.omnis_ui_assistant = createOmnisUiAssistant({
+      p_callback_end: function() {
+        delete v_omnis.omnis_ui_assistant;
+        v_omnis.div.classList.remove("omnis--active");
+      },
+      // Omnis Object
+      p_omnis: v_omnis
+    });
+    var v_tutorial_name = p_tutorial_name ? p_tutorial_name : "main";
+    var v_button_inner_query_attr = ' disabled title="Open a new connection first." ';
+    if (v_connTabControl.selectedTab.tag.tabControl) {
+      if (v_connTabControl.selectedTab.tag.tabControl.tabList.length > 0) {
+        v_button_inner_query_attr = "";
+      }
+    }
+    var v_button_inner_query = `<li class="mb-2"><button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connection_tab');"><i class="fas fa-list mr-2"></i>The Connection Tab</button></li>`;
+    var v_tutorials = {
+      main: [
+        {
+          p_message: "This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]",
+          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+          p_title: "Primary menu"
+        },
+        {
+          p_message: "This contains general settings and options, such as [ versioning, connections_list_manager, user_setting...]",
+          p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
+          p_title: "Utilities menu"
+        }
+      ],
+      utilities_menu: [
+        {
+          p_callback_end: function() {
+            $(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+          },
+          p_callback_start: function() {
+            $(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>Contains general settings and options:</p>
+				<ul>
+				<li>Username and versioning.</li>
+				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connection management.</li>
+				<li><i class="fas fa-user omnidb__theme__text--primary mr-2"></i>User management.</li>
+				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>UI settings (shortcuts, theme, fonts...).</li>
+				<li><i class="fas fa-sign-out-alt omnidb__theme__text--primary mr-2"></i>About.</li>
+				</ul>
+				`,
+          p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
+          p_title: "Utilities Menu",
+          p_update_delay: 350
+        },
+        {
+          p_callback_end: function() {
+            $(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+          },
+          p_callback_start: function() {
+            $(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>If you just configured OmniDB and logged with the default <strong>admin</strong> user, you should create the first user.</p>
+				<p>Follow this walkthrough if you want to create other users as well.</p>
+				`,
+          p_next_button: false,
+          p_target: document.getElementById("omnidb__utilities-menu__link-user"),
+          p_title: "Managing Users"
+        },
+        {
+          p_callback_after_update_start: function() {
+            setTimeout(function() {
+              if (v_omnis.omnis_ui_assistant.divClonedElement.children[0]) {
+                v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+              }
+            }, 50);
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>Click on <strong>Add new user</strong>.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("omnidb_utilities_menu_btn_new_user");
+            return v_target;
+          },
+          p_title: "Add a New User",
+          p_update_delay: 1e3
+        },
+        {
+          p_message: `
+				<ul>
+				<li><i class="fas fa-user omnidb__theme__text--primary mr-2"></i>OmniDB login name.</li>
+				<li><i class="fas fa-key omnidb__theme__text--primary mr-2"></i>OmniDB login password.</li>
+				<li><i class="fas fa-star omnidb__theme__text--primary mr-2"></i>Defines if the user can manage other OmniDB users.</li>
+				</ul>
+				<div class="alert alert-danger">The default <strong>admin user</strong> should be deleted once a new super user has been created.</div>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("omnidb_user_content");
+            return v_target;
+          },
+          p_title: "User Options",
+          p_update_delay: 350
+        }
+      ],
+      connections_menu: [
+        {
+          p_clone_target: true,
+          p_message: `
+				<p>This is the outer connections menu. Each connection added becomes a new item in this menu.</p>
+				<p>The menu initially contains.</p>
+				<ul>
+				<li>Connections manager.</li>
+				<li>Welcome, tutorial and useful links.</li>
+				<li>Snippets panel toggler.</li>
+				<li>Add connection.</li>
+				</ul>
+				<p>Let's first <span class="badge badge-info">add a new connection</span>.</p>
+				<p>Please, click on the <i class="fas fa-plus"></i> button.</p>
+				`,
+          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+          p_title: "Primary menu"
+        },
+        {
+          p_callback_after_update_start: function() {
+            setTimeout(function() {
+              document.getElementById("button_new_connection");
+              v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+            }, 50);
+          },
+          p_callback_start: function() {
+            startConnectionManagement();
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>Click on <strong>New Connection</strong>.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("button_new_connection");
+            return v_target;
+          },
+          p_title: "Add a New Connection",
+          p_update_delay: 1e3
+        },
+        {
+          p_message: `
+				<p>Select the proper DBMS technology.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_type");
+            return v_target;
+          },
+          p_title: "Connection Type",
+          p_update_delay: 300
+        },
+        {
+          p_message: `
+				<p>Type a helpful name for the connection.</p>
+				<p>This is used as name reference on many UI areas.</p>
+				<p>i.e: Local dvdrental barman.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_title");
+            return v_target;
+          },
+          p_title: "Title"
+        },
+        {
+          p_message: `
+				<p>Type the server address. Do not include ports.</p>
+				<p>i.e:127.0.0.1</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_server");
+            return v_target;
+          },
+          p_title: "Server"
+        },
+        {
+          p_message: `
+				<p>Type the port of the server.</p>
+				<p>i.e: PostgreSQL uses 5432 by default, but if you are using pgbouncer, you may want to use 6432 as the entry point.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_port");
+            return v_target;
+          },
+          p_title: "Port"
+        },
+        {
+          p_message: `
+				<p>Type the name of the database.</p>
+				<p>i.e: postgres, dvdrental.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_database");
+            return v_target;
+          },
+          p_title: "Database"
+        },
+        {
+          p_message: `
+				<p>Type the name of the user with priviledges to access the database.</p>
+				<p>i.e: postgres.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_user");
+            return v_target;
+          },
+          p_title: "User"
+        },
+        {
+          p_message: `
+				<p>This is <strong>optional</strong>.</p>
+				<p>If you don't save the user password, you will be required to manually input it everytime a new connection to this database is started.</p>
+				<p>If saved, this password will be stored in the database configured for OmniDB (default is omnidb.db).</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_user_pass");
+            return v_target;
+          },
+          p_title: "User password"
+        },
+        {
+          p_message: `
+				<p>You may want to hit 'test' before saving the conntion.</p>
+				<p>After that, click save.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_button_test_connection");
+            return v_target;
+          },
+          p_title: "Test the Connection"
+        }
+      ],
+      terminal_connection: [
+        {
+          p_clone_target: true,
+          p_message: `
+				<p>First let's open the <strong>connections management</strong> interface.</p>
+				<p>Please, click on the OmniDB Icon button.</p>
+				`,
+          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+          p_title: "Accessing connections managemnet"
+        },
+        {
+          p_callback_after_update_start: function() {
+            setTimeout(function() {
+              document.getElementById("button_new_connection");
+              v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+            }, 50);
+          },
+          p_callback_start: function() {
+            startConnectionManagement();
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>Click on <strong>New Connection</strong>.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("button_new_connection");
+            return v_target;
+          },
+          p_title: "Add a New Connection",
+          p_update_delay: 1e3
+        },
+        {
+          p_message: `
+				<p>Select the Terminal technology.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_type");
+            return v_target;
+          },
+          p_title: "Connection Type",
+          p_update_delay: 300
+        },
+        {
+          p_message: `
+				<p>Type a helpful name for the terminal connection.</p>
+				<p>This is used as name reference on many UI areas.</p>
+				<p>i.e: Local terminal.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_title");
+            return v_target;
+          },
+          p_title: "Title"
+        },
+        {
+          p_message: `
+				<p>The terminal utilizes SSH technology.</p>
+				<p>As you can see, in this case SSH parameters are mandatory.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_use_tunnel");
+            return v_target;
+          },
+          p_title: "SSH parameters"
+        },
+        {
+          p_message: `
+				<p>Type the ssh server address. Do not include ports.</p>
+				<p>i.e:127.0.0.1</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_server");
+            return v_target;
+          },
+          p_title: "SSH server"
+        },
+        {
+          p_message: `
+				<p>Type the port of the SSH server.</p>
+				<p>i.e: 22 is a default port for working with SSH tunnels.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_port");
+            return v_target;
+          },
+          p_title: "SSH Port"
+        },
+        {
+          p_message: `
+				<p>Type the name of the SSH user.</p>
+				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_user");
+            return v_target;
+          },
+          p_title: "SSH User"
+        },
+        {
+          p_message: `
+				<p>If you want you can save the password of your user.</p>
+				<p>* Leaving this empty will force the tool to request for your password everytime you open a terminal connection.</p>
+				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_password");
+            return v_target;
+          },
+          p_title: "SSH Password (optional)"
+        },
+        {
+          p_message: `
+				<p>This is <strong>optional</strong>.</p>
+				<p>It allows you to configure a SSH key.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_key_input_label");
+            return v_target;
+          },
+          p_title: "SSH Key"
+        },
+        {
+          p_message: `
+				<p>You may want to hit 'test' before saving the conntion.</p>
+				<p>After that, click save.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_button_test_connection");
+            return v_target;
+          },
+          p_title: "Test the Connection"
+        }
+      ],
+      snippets: [
+        {
+          p_clone_target: true,
+          p_message: `
+				<p>The snippet panel is now accessible globally.</p>
+				<p>Please, click on the <i class="fas fa-book"></i> button.</p>
+				`,
+          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+          p_title: "Global Snippet Panel"
+        },
+        {
+          // p_callback_after_update_start: function() {setTimeout(function(){var v_target = document.getElementById(v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editorDivId);},50);},
+          p_callback_start: function() {
+            toggleSnippetPanel();
+          },
+          p_message: `
+				<p>Inside this tab you can create and edit a snippet.</p>
+				<p>Go ahead and try to create some simple snippet, i.e:</p>
+				<code>WHERE true SELECT 1;</code>
+				<p>Then experiment clicking on the <strong>indent button</strong> below the editor, and then <strong>next</strong>.</p>
+				`,
+          p_next_button: true,
+          p_target: function() {
+            var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
+            return v_target;
+          },
+          p_title: "Snippets editor",
+          p_update_delay: 600
+        },
+        {
+          p_message: `
+				<p>As you can see, the identation feature automatically adjusts your code following a pattern.</p>
+				<p>Now go ahead and click <strong>save</strong></p>
+				`,
+          p_next_button: true,
+          p_target: function() {
+            var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
+            return v_target;
+          },
+          p_title: "Indenting"
+        },
+        {
+          p_message: `
+				<p>Every snippet you save is stored under your user.</p>
+				<p>The tree on the left allows you to easily access it by double-clicking on the snippet.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById(v_connTabControl.snippet_tag.divTree.getAttribute("id"));
+            return v_target;
+          },
+          p_title: "Saved Snippets",
+          p_update_delay: 600
+        }
+      ],
+      selecting_connection: [
+        {
+          p_message: `
+				<p>The <strong>outer_tab</strong> contains global panels related to workspace and also access to created connections.</p>
+				<ol style="padding-left: 1.5rem;">
+					<li class="mb-2">
+						To access a connection, click on the <i class="fas fa-plus"></i> button.
+					</li>
+					<li class="mb-2">
+						Navigate to the proper technology on the custom menu.
+					</li>
+					<li class="mb-2">
+						Click on the connection.
+					</li>
+				</ol>
+				<p>Now you can close this walkthrough and open a new connection.</p>
+				`,
+          p_position: function() {
+            var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
+            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
+          },
+          p_target: function() {
+            var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
+            return v_target;
+          },
+          p_title: "Selecting a Connection"
+        }
+      ],
+      connection_tab: [
+        {
+          p_message: `
+				<p>This identifies the database you are connected with:</p>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.divDetails;
+            return v_target;
+          },
+          p_title: "Current Connection"
+        },
+        {
+          p_message: `
+				<p>This tree is main your access point to this connection.</p>
+				<p><strong>How-to</strong>:</p>
+				<ul style="padding-left: 1.5rem;">
+					<li class="mb-1">
+						<strong>Double-click</strong>: expands child nodes based on the database internal structure.
+					</li>
+					<li class="mb-2">
+						<strong>Right-click</strong>: Context menu with actions based on the node type.
+					</li>
+				</ul>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.divTree;
+            return v_target;
+          },
+          p_title: "Aimara Tree"
+        },
+        {
+          p_message: `
+				<p>These tabs provide additional info to the node you interact with in the Aimara Tree.</p>
+				<p>Keep in mind that every node interaction that returns this type of info needs to query for consistency.</p>
+				<p>To minimize queries, these only run when one of these tabs is visible.</p>
+				<p><strong>Recommendation</strong>: Only open the property/ddl when you need to update this info.</p>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.divTreeTabs;
+            return v_target;
+          },
+          p_title: "Properties / DDL"
+        },
+        {
+          p_message: `
+				<p>There are two types of inner_tabs available.</p>
+				<ol style="padding-left: 1.5rem;">
+					<li class="mb-1">
+						<strong><i class="fas fa-terminal"></i> Console Tab</strong>: Contains a psql console.
+					</li>
+					<li class="mb-1">
+						<strong>Query Tabs</strong>: These have SQL editors whose commands are executed on the selected database.
+					</li>
+				</ol>
+				<div class="alert-info p-2">Keep in mind that when you run a query from the contextual menu of the Aimara Tree, it will open a new query tab and execute it.</div>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.tabList[0].elementA;
+            return v_target;
+          },
+          p_title: "Inner Tabs"
+        },
+        {
+          p_message: `
+				<p>These buttons request actions based on the SQL editor and the querying status.</p>
+				<p>For example, you can <span class="bg-info rounded px-1 text-white">run</span> a query, <span class="bg-info rounded px-1 text-white">cancel</span> an ongoing query, <span class="bg-info rounded px-1 text-white">fetch more</span>, <span class="bg-info rounded px-1 text-white">explain</span>, <span class="bg-info rounded px-1 text-white">explain analyze</span>.</p>
+				<p>If you navigate the Tree on the left to find a table and use the action Query Table from it's context menu, the editor will autofill and the run query will be issued.</p>
+				`,
+          p_position: function() {
+            var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+              ".omnidb__tab-actions"
+            )[0];
+            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
+          },
+          p_target: function() {
+            var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+              ".omnidb__tab-actions"
+            )[0];
+            return v_target;
+          },
+          p_title: "Actions Panel"
+        },
+        {
+          p_message: `
+				<p>Query returns will fill the area below your screen, even when they return errors.</p>
+				<p>After running a query, this area will contain 3 special tabs.</p>
+				<ol style="padding-left: 1.5rem;">
+					<li class="mb-1">
+						<strong>Data</strong>: Contains a table with query results, when successful.
+					</li>
+					<li class="mb-1">
+						<strong>Messages</strong>: Displays error messages.
+					</li>
+					<li class="mb-1">
+						<strong>Explain</strong>: Contains a special component to display explain/explain analyze results.
+					</li>
+				</ol>
+				`,
+          p_position: function() {
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y + 40 };
+          },
+          p_target: function() {
+            var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.divResult).find(
+              ".omnidb__tab-actions"
+            )[0];
+            return v_target;
+          },
+          p_title: "Query Result"
+        }
+      ]
+    };
+    let v_tutorial_link_creating_user = gv_desktopMode ? "" : `
+	<li class="mb-2">
+		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('utilities_menu');">
+			<i class="fas fa-user-plus mr-2"></i>Create an omnidb user
+		</button>
+	</li>`;
+    v_tutorials.getting_started = [
+      {
+        p_message: '<ol style="padding-left: 1.5rem;">' + v_tutorial_link_creating_user + `
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connections_menu');">
+						<i class="fas fa-plug mr-2"></i>Create a database connection
+					</button>
+				</li>
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('terminal_connection');">
+						<i class="fas fa-terminal mr-2"></i>Create a terminal connection
+					</button>
+				</li>
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('snippets');">
+						<i class="fas fa-book mr-2"></i>Meet the snippets panel
+					</button>
+				</li>
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('selecting_connection');">
+						<i class="fas fa-plus mr-2"></i>Using a connection
+					</button>
+				</li>
+				` + v_button_inner_query + "</ol>",
+        p_title: '<i class="fas fa-list mr-2"></i> Getting started'
+      }
+    ];
+    var v_steps = v_tutorials[v_tutorial_name];
+    v_omnis.omnis_ui_assistant.updateStepList(v_steps);
+    v_omnis.omnis_ui_assistant.goToStep(0);
+  }
+  const tutorial = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    startTutorial: startTutorial$1
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_client_id;
+  var v_polling_ajax = null;
+  var v_context_object = {
+    contextCode: 0,
+    contextList: []
+  };
+  var v_polling_started = false;
+  $(function() {
+    setInterval(function() {
+      execAjax("/client_keep_alive/", JSON.stringify({}), function(p_return) {
+      }, null, "box", false);
+    }, 6e4);
+  });
+  function call_polling(p_startup) {
+    v_polling_ajax = execAjax(
+      "/long_polling/",
+      JSON.stringify({
+        p_startup
+      }),
+      function(p_return) {
+        for (var i2 = 0; i2 < p_return.returning_rows.length; i2++) {
+          try {
+            polling_response(p_return.returning_rows[i2]);
+          } catch (err) {
+          }
+        }
+        call_polling(false);
+      },
+      null,
+      "box",
+      false,
+      null,
+      function() {
+      }
+    );
+  }
+  $(window).on("beforeunload", function() {
+    clear_client().then(function() {
+    });
+  });
+  async function clear_client() {
+    var csrftoken = getCookie("omnidb_csrftoken");
+    const v_ajax_call = await $.ajax({
+      url: v_url_folder + "/clear_client",
+      data: null,
+      type: "get",
+      dataType: "json",
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      },
+      success: function(p_return) {
+      },
+      error: function(msg) {
+      }
+    });
+    return v_ajax_call;
+  }
+  function polling_response(p_message) {
+    var v_message = p_message;
+    var p_context_code = null;
+    var p_context = null;
+    if (v_message.v_context_code != 0 && v_message.v_context_code != null) {
+      for (var i2 = 0; i2 < v_context_object.contextList.length; i2++) {
+        if (v_context_object.contextList[i2].code == v_message.v_context_code) {
+          p_context = v_context_object.contextList[i2].context;
+          p_context_code = v_context_object.contextList[i2].code;
+          break;
+        }
+      }
+    }
+    switch (v_message.v_code) {
+      case parseInt(v_queryResponseCodes.Pong): {
+        websocketPong();
+        break;
+      }
+      case parseInt(v_queryResponseCodes.SessionMissing): {
+        showAlert("Session not found please reload the page.");
+        break;
+      }
+      case parseInt(v_queryResponseCodes.MessageException): {
+        if (p_context) {
+          SetAcked$1(p_context);
+          queryError(p_message, p_context);
+          removeContext$1(p_context_code);
+        } else {
+          showError(p_message.v_data);
+        }
+        break;
+      }
+      case parseInt(v_queryResponseCodes.PasswordRequired): {
+        if (p_context) {
+          SetAcked$1(p_context);
+          QueryPasswordRequired(p_context, v_message.v_data);
+          break;
+        }
+      }
+      case parseInt(v_queryResponseCodes.QueryAck): {
+        if (p_context) {
+          SetAcked$1(p_context);
+          break;
+        }
+      }
+      case parseInt(v_queryResponseCodes.QueryResult): {
+        if (p_context) {
+          SetAcked$1(p_context);
+          if (!v_message.v_error || v_message.v_data.v_chunks) {
+            p_context.tab_tag.tempData = p_context.tab_tag.tempData.concat(v_message.v_data.v_data);
+          }
+          if (!v_message.v_data.v_chunks || v_message.v_data.v_last_block || v_message.v_error) {
+            v_message.v_data.v_data = [];
+            querySQLReturn(v_message, p_context);
+            removeContext$1(p_context_code);
+          }
+        }
+        break;
+      }
+      case parseInt(v_queryResponseCodes.ConsoleResult): {
+        if (p_context) {
+          if (!v_message.v_error) {
+            p_context.tab_tag.tempData += v_message.v_data.v_data;
+          }
+          if (v_message.v_data.v_last_block || v_message.v_error) {
+            v_message.v_data.v_data = [];
+            consoleReturn(v_message, p_context);
+            removeContext$1(p_context_code);
+          }
+        }
+        break;
+      }
+      case parseInt(v_queryResponseCodes.TerminalResult): {
+        if (p_context) {
+          terminalReturn(v_message, p_context);
+        }
+        break;
+      }
+      case parseInt(v_queryResponseCodes.QueryEditDataResult): {
+        if (p_context) {
+          SetAcked$1(p_context);
+          queryEditDataReturn(v_message, p_context);
+          removeContext$1(p_context_code);
+        }
+        break;
+      }
+      case parseInt(v_queryResponseCodes.SaveEditDataResult): {
+        if (p_context) {
+          saveEditDataReturn(v_message, p_context);
+          removeContext$1(p_context_code);
+        }
+        break;
+      }
+      case parseInt(v_queryResponseCodes.RemoveContext): {
+        if (p_context) {
+          removeContext$1(p_context_code);
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+      case parseInt(v_queryResponseCodes.AdvancedObjectSearchResult): {
+        if (p_context) {
+          SetAcked$1(p_context);
+          advancedObjectSearchReturn(v_message, p_context);
+          removeContext$1(p_context_code);
+        }
+        break;
+      }
+    }
+  }
+  function QueryPasswordRequired(p_context, p_message) {
+    if (p_context.tab_tag.mode == "query") {
+      showPasswordPrompt(
+        p_context.database_index,
+        function() {
+          cancelSQLTab(p_context.tab_tag);
+          querySQL(
+            p_context.mode,
+            p_context.all_data,
+            p_context.query,
+            p_context.callback,
+            p_context.log_query,
+            p_context.save_query,
+            p_context.cmd_type,
+            p_context.clear_data,
+            p_context.tab_title
+          );
+        },
+        function() {
+          cancelSQLTab(p_context.tab_tag);
+        },
+        p_message
+      );
+    } else if (p_context.tab_tag.mode == "edit") {
+      showPasswordPrompt(
+        p_context.database_index,
+        function() {
+          cancelEditDataTab(p_context.tab_tag);
+        },
+        function() {
+          cancelEditDataTab(p_context.tab_tag);
+        },
+        p_message
+      );
+    } else if (p_context.tab_tag.mode == "console") {
+      showPasswordPrompt(
+        p_context.database_index,
+        function() {
+          cancelConsoleTab(p_context.tab_tag);
+          p_context.tab_tag.editor_input.setValue(p_context.tab_tag.last_command);
+          p_context.tab_tag.editor_input.clearSelection();
+          consoleSQL(p_context.check_command, p_context.mode);
+        },
+        function() {
+          cancelConsoleTab(p_context.tab_tag);
+        },
+        p_message
+      );
+    }
+  }
+  function createContext$1(p_context) {
+    v_context_object.contextCode += 1;
+    v_context_code = v_context_object.contextCode;
+    p_context.v_context_code = v_context_code;
+    var v_context = {
+      code: v_context_code,
+      context: p_context
+    };
+    v_context_object.contextList.push(v_context);
+    return v_context;
+  }
+  function removeContext$1(p_context_code) {
+    for (var i2 = 0; i2 < v_context_object.contextList.length; i2++) {
+      if (v_context_object.contextList[i2].code == p_context_code) {
+        v_context_object.contextList.splice(i2, 1);
+        break;
+      }
+    }
+  }
+  function createRequest$1(p_messageCode, p_messageData, p_context) {
+    var v_context_code2 = 0;
+    if (p_context != null) {
+      if (p_context === parseInt(p_context, 10)) {
+        v_context_code2 = p_context;
+      } else {
+        v_context_object.contextCode += 1;
+        v_context_code2 = v_context_object.contextCode;
+        p_context.v_context_code = v_context_code2;
+        var v_context = {
+          code: v_context_code2,
+          context: p_context
+        };
+        v_context_object.contextList.push(v_context);
+      }
+    }
+    if (v_polling_ajax == null) call_polling(true);
+    else if (v_polling_ajax.readyState == 0 || v_polling_ajax.readyState == 4) {
+      call_polling(false);
+    }
+    execAjax(
+      "/create_request/",
+      JSON.stringify({
+        v_code: p_messageCode,
+        v_context_code: v_context_code2,
+        v_data: p_messageData
+      }),
+      function(p_return) {
+      },
+      null,
+      "box",
+      false
+    );
+  }
+  function SetAcked$1(p_context) {
+    if (p_context) p_context.acked = true;
+  }
+  const longPolling = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    QueryPasswordRequired,
+    SetAcked: SetAcked$1,
+    call_polling,
+    createContext: createContext$1,
+    createRequest: createRequest$1,
+    polling_response,
+    removeContext: removeContext$1,
+    v_client_id,
+    v_context_object,
+    get v_polling_ajax() {
+      return v_polling_ajax;
+    },
+    v_polling_started
+  }, Symbol.toStringTag, { value: "Module" }));
   exposeGlobals(
     treeSnippets,
     treePostgresql,
@@ -25431,7 +30153,16 @@
     createTabFunctions,
     monitoring,
     workspace,
-    pluginHook
+    pluginHook,
+    users,
+    shortcuts,
+    connections,
+    commandHistory,
+    consoleTab,
+    terminal,
+    autocomplete,
+    tutorial,
+    longPolling
   );
 })();
 //# sourceMappingURL=omnidb.bundle.js.map

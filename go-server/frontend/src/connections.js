@@ -41,13 +41,13 @@ $(function () {
 	// });
 });
 
-function startConnectionManagement() {
+export function startConnectionManagement() {
 	getDatabaseList();
 	getGroups();
 	showConnectionList(true, true);
 }
 
-function showConnectionList(p_open_modal, p_change_group) {
+export function showConnectionList(p_open_modal, p_change_group) {
 	var v_conn_id_list = [];
 	var v_total_public_conn = 0;
 
@@ -311,7 +311,7 @@ function showConnectionList(p_open_modal, p_change_group) {
 	);
 }
 
-function groupChange(p_value) {
+export function groupChange(p_value) {
 	var v_empty_group_div = document.getElementById("connections_management_empty_group");
 
 	if (p_value != -1) {
@@ -369,7 +369,7 @@ function groupChange(p_value) {
 	updateConnectionsTitleInfo();
 }
 
-function manageGroup() {
+export function manageGroup() {
 	document.getElementById("group_actions_1").style.display = "none";
 	document.getElementById("group_actions_2").style.display = "";
 	document.getElementById("button_new_connection").setAttribute("disabled", true);
@@ -410,7 +410,7 @@ function manageGroup() {
 	updateConnectionsTitleInfo();
 }
 
-function manageGroupSave() {
+export function manageGroupSave() {
 	document.getElementById("group_actions_1").style.display = "";
 	document.getElementById("group_actions_2").style.display = "none";
 
@@ -448,7 +448,7 @@ function manageGroupSave() {
 	);
 }
 
-function newGroupConfirm(p_name) {
+export function newGroupConfirm(p_name) {
 	execAjax(
 		"/new_group/",
 		JSON.stringify({ p_name: p_name }),
@@ -461,7 +461,7 @@ function newGroupConfirm(p_name) {
 	);
 }
 
-function renameGroupConfirm(p_id, p_name) {
+export function renameGroupConfirm(p_id, p_name) {
 	execAjax(
 		"/edit_group/",
 		JSON.stringify({ p_id: p_id, p_name: p_name }),
@@ -474,7 +474,7 @@ function renameGroupConfirm(p_id, p_name) {
 	);
 }
 
-function deleteGroup() {
+export function deleteGroup() {
 	var v_group_id = document.getElementById("group_selector").value;
 
 	showConfirm("Are you sure you want to delete the current group?", function () {
@@ -482,7 +482,7 @@ function deleteGroup() {
 	});
 }
 
-function deleteGroupConfirm(p_group_id) {
+export function deleteGroupConfirm(p_group_id) {
 	execAjax(
 		"/delete_group/",
 		JSON.stringify({ p_id: p_group_id }),
@@ -495,7 +495,7 @@ function deleteGroupConfirm(p_group_id) {
 	);
 }
 
-function newGroup() {
+export function newGroup() {
 	showConfirm("", function () {
 		newGroupConfirm(document.getElementById("group_name_input").value);
 	});
@@ -522,7 +522,7 @@ function newGroup() {
 	}, 500);
 }
 
-function renameGroup() {
+export function renameGroup() {
 	var v_select = document.getElementById("group_selector");
 	showConfirm("", function () {
 		renameGroupConfirm(document.getElementById("group_selector").value, document.getElementById("group_name_input").value);
@@ -551,7 +551,7 @@ function renameGroup() {
 	}, 500);
 }
 
-function getGroups() {
+export function getGroups() {
 	execAjax(
 		"/get_groups/",
 		JSON.stringify({}),
@@ -589,7 +589,7 @@ function getGroups() {
 /// <summary>
 /// Tests specific connection.
 /// </summary>
-function testConnection(p_password = null) {
+export function testConnection(p_password = null) {
 	var input = JSON.stringify({
 		id: v_connections_data.current_id,
 		type: document.getElementById("conn_form_type").value,
@@ -654,7 +654,7 @@ function testConnection(p_password = null) {
 	);
 }
 
-function saveConnection() {
+export function saveConnection() {
 	var input = JSON.stringify({
 		id: v_connections_data.current_id,
 		type: document.getElementById("conn_form_type").value,
@@ -689,7 +689,7 @@ function saveConnection() {
 	);
 }
 
-function deleteConnection(p_conn_obj) {
+export function deleteConnection(p_conn_obj) {
 	showConfirm("Are you sure you want to delete this connection?", function () {
 		var input = JSON.stringify({
 			id: p_conn_obj.id,
@@ -708,7 +708,7 @@ function deleteConnection(p_conn_obj) {
 	});
 }
 
-function adjustTechSelector() {
+export function adjustTechSelector() {
 	var select = document.getElementById("conn_form_type");
 	select.innerHTML = "";
 	var option = document.createElement("option");
@@ -723,7 +723,7 @@ function adjustTechSelector() {
 	}
 }
 
-function editConnection(p_conn_obj) {
+export function editConnection(p_conn_obj) {
 	v_connections_data.current_id = p_conn_obj.id;
 	adjustTechSelector();
 
@@ -855,7 +855,7 @@ function editConnection(p_conn_obj) {
 	$("#modal_edit_connection").modal("show");
 }
 
-function newConnection() {
+export function newConnection() {
 	v_connections_data.current_id = -1;
 	adjustTechSelector();
 
@@ -886,7 +886,7 @@ function newConnection() {
 	$("#modal_edit_connection").modal("show");
 }
 
-function selectConnection(p_conn_obj) {
+export function selectConnection(p_conn_obj) {
 	$("#modal_connections").modal("hide");
 	if (p_conn_obj.technology === "terminal") {
 		v_connTabControl.tag.createOuterTerminalTab(
@@ -899,7 +899,7 @@ function selectConnection(p_conn_obj) {
 	}
 }
 
-function toggleConnectionsLayout(l_type) {
+export function toggleConnectionsLayout(l_type) {
 	if (l_type === "cards") {
 		$(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--rows");
 		$(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--cards");
@@ -909,7 +909,7 @@ function toggleConnectionsLayout(l_type) {
 	}
 }
 
-function toggleConnectionsPublic() {
+export function toggleConnectionsPublic() {
 	updateConnectionsTitleInfo();
 	var v_public = document.getElementById("conn_list_public").checked;
 	if (v_public) {
@@ -944,7 +944,7 @@ function toggleConnectionsPublic() {
  *
  * @param  {Object} e Event.
  */
-function updateModalEditConnectionState(e) {
+export function updateModalEditConnectionState(e) {
 	let v_e_target = e.target;
 	let v_e_target_id = v_e_target.getAttribute("id");
 	let v_e_value = e.target.value;
@@ -1108,7 +1108,7 @@ function updateModalEditConnectionState(e) {
  * @param  {array} p_enable_list  IDs of elements that should be enabled.
  * @param  {array} p_form_cases   IDs of elements that should be required.
  */
-function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
+export function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
 	// Disabling elements.
 	for (let i = 0; i < p_disable_list.length; i++) {
 		var v_item = document.getElementById(p_disable_list[i]);
@@ -1158,7 +1158,7 @@ function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_c
 	}
 }
 
-function updateConnectionKey(e) {
+export function updateConnectionKey(e) {
 	var file = e.target.files ? e.target.files[0] : false;
 	var v_input = document.getElementById("conn_form_ssh_key");
 	if (!file) {
@@ -1177,7 +1177,7 @@ function updateConnectionKey(e) {
 	reader.readAsText(file);
 }
 
-function updateConnectionsTitleInfo() {
+export function updateConnectionsTitleInfo() {
 	var v_public = document.getElementById("conn_list_public").checked;
 	var v_group_context = document.getElementById("group_selector").value;
 	var v_connection_owner = false;
