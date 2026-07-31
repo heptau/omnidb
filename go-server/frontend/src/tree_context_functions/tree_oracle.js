@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Retrieving tree.
 /// </summary>
-function getTreeOracle(p_div) {
+export function getTreeOracle(p_div) {
 	var context_menu = {
 		cm_server: {
 			elements: [
@@ -1285,7 +1285,7 @@ function getTreeOracle(p_div) {
 /// Retrieving properties.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPropertiesOracle(node) {
+export function getPropertiesOracle(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "role") {
 			getProperties("/get_properties_oracle/", {
@@ -1372,7 +1372,7 @@ function getPropertiesOracle(node) {
 /// Refreshing tree node.
 /// </summary>
 /// <param name="node">Node object.</param>
-function refreshTreeOracle(node) {
+export function refreshTreeOracle(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "table_list") {
 			getTablesOracle(node);
@@ -1429,7 +1429,7 @@ function refreshTreeOracle(node) {
 		}
 }
 
-function afterNodeOpenedCallbackOracle(node) {
+export function afterNodeOpenedCallbackOracle(node) {
 	//Hooks
 	if (v_connTabControl.tag.hooks.oracleTreeNodeOpen.length > 0) {
 		for (var i = 0; i < v_connTabControl.tag.hooks.oracleTreeNodeOpen.length; i++)
@@ -1441,7 +1441,7 @@ function afterNodeOpenedCallbackOracle(node) {
 /// Retrieving tree details.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTreeDetailsOracle(node) {
+export function getTreeDetailsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1729,7 +1729,7 @@ function getTreeDetailsOracle(node) {
 /// Retrieving tablespaces.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTablespacesOracle(node) {
+export function getTablespacesOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1776,7 +1776,7 @@ function getTablespacesOracle(node) {
 /// Retrieving roles.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getRolesOracle(node) {
+export function getRolesOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1823,7 +1823,7 @@ function getRolesOracle(node) {
 /// Retrieving tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTablesOracle(node) {
+export function getTablesOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1892,7 +1892,7 @@ function getTablesOracle(node) {
 /// Retrieving sequences.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getSequencesOracle(node) {
+export function getSequencesOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1940,7 +1940,7 @@ function getSequencesOracle(node) {
 /// Retrieving views.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsOracle(node) {
+export function getViewsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2000,7 +2000,7 @@ function getViewsOracle(node) {
 /// Retrieving View Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsColumnsOracle(node) {
+export function getViewsColumnsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2094,7 +2094,7 @@ function getViewsColumnsOracle(node) {
 /// Retrieving view definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewDefinitionOracle(node) {
+export function getViewDefinitionOracle(node) {
 	execAjax(
 		"/get_view_definition_oracle/",
 		JSON.stringify({
@@ -2134,7 +2134,7 @@ function getViewDefinitionOracle(node) {
 /// Retrieving materialized views.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getMaterializedViewsOracle(node) {
+export function getMaterializedViewsOracle(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2179,7 +2179,7 @@ function getMaterializedViewsOracle(node) {
 /// Retrieving Materialized View Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getMaterializedViewsColumnsOracle(node) {
+export function getMaterializedViewsColumnsOracle(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2221,7 +2221,7 @@ function getMaterializedViewsColumnsOracle(node) {
 /// Retrieving materialized view definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getMaterializedViewDefinitionOracle(node) {
+export function getMaterializedViewDefinitionOracle(node) {
 
 	execAjax('/get_mview_definition_oracle/',
 		JSON.stringify({
@@ -2273,7 +2273,7 @@ function getMaterializedViewDefinitionOracle(node) {
 /// Retrieving columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getColumnsOracle(node) {
+export function getColumnsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2438,7 +2438,7 @@ function getColumnsOracle(node) {
 /// Retrieving PKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKOracle(node) {
+export function getPKOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2495,7 +2495,7 @@ function getPKOracle(node) {
 /// Retrieving PKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKColumnsOracle(node) {
+export function getPKColumnsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2539,7 +2539,7 @@ function getPKColumnsOracle(node) {
 /// Retrieving Uniques.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesOracle(node) {
+export function getUniquesOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2600,7 +2600,7 @@ function getUniquesOracle(node) {
 /// Retrieving Uniques Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesColumnsOracle(node) {
+export function getUniquesColumnsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2646,7 +2646,7 @@ function getUniquesColumnsOracle(node) {
 /// Retrieving Indexes.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesOracle(node) {
+export function getIndexesOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2709,7 +2709,7 @@ function getIndexesOracle(node) {
 /// Retrieving Indexes Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesColumnsOracle(node) {
+export function getIndexesColumnsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2755,7 +2755,7 @@ function getIndexesColumnsOracle(node) {
 /// Retrieving FKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsOracle(node) {
+export function getFKsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2831,7 +2831,7 @@ function getFKsOracle(node) {
 /// Retrieving FKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsColumnsOracle(node) {
+export function getFKsColumnsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2904,7 +2904,7 @@ function getFKsColumnsOracle(node) {
 /// Retrieving Triggers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggersOracle(node) {
+export function getTriggersOracle(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2959,7 +2959,7 @@ function getTriggersOracle(node) {
 /// Retrieving Partitions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPartitionsOracle(node) {
+export function getPartitionsOracle(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -3008,7 +3008,7 @@ function getPartitionsOracle(node) {
 /// Retrieving functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionsOracle(node) {
+export function getFunctionsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -3068,7 +3068,7 @@ function getFunctionsOracle(node) {
 /// Retrieving function fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionFieldsOracle(node) {
+export function getFunctionFieldsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -3166,7 +3166,7 @@ function getFunctionFieldsOracle(node) {
 /// Retrieving function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionDefinitionOracle(node) {
+export function getFunctionDefinitionOracle(node) {
 	execAjax(
 		"/get_function_definition_oracle/",
 		JSON.stringify({
@@ -3204,7 +3204,7 @@ function getFunctionDefinitionOracle(node) {
 /// Retrieving procedures.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProceduresOracle(node) {
+export function getProceduresOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -3264,7 +3264,7 @@ function getProceduresOracle(node) {
 /// Retrieving procedure fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureFieldsOracle(node) {
+export function getProcedureFieldsOracle(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -3362,7 +3362,7 @@ function getProcedureFieldsOracle(node) {
 /// Retrieving procedure definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureDefinitionOracle(node) {
+export function getProcedureDefinitionOracle(node) {
 	execAjax(
 		"/get_procedure_definition_oracle/",
 		JSON.stringify({
@@ -3401,7 +3401,7 @@ function getProcedureDefinitionOracle(node) {
 /// Retrieving trigger functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionsOracle(node) {
+export function getTriggerFunctionsOracle(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -3446,7 +3446,7 @@ function getTriggerFunctionsOracle(node) {
 /// Retrieving trigger function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionDefinitionOracle(node) {
+export function getTriggerFunctionDefinitionOracle(node) {
 
 	execAjax('/get_triggerfunction_definition_oracle/',
 		JSON.stringify({
@@ -3496,7 +3496,7 @@ function getTriggerFunctionDefinitionOracle(node) {
 /// <summary>
 /// Retrieving SELECT SQL template.
 /// </summary>
-function TemplateSelectOracle(p_schema, p_table) {
+export function TemplateSelectOracle(p_schema, p_table) {
 	execAjax(
 		"/template_select_oracle/",
 		JSON.stringify({
@@ -3529,7 +3529,7 @@ function TemplateSelectOracle(p_schema, p_table) {
 /// <summary>
 /// Retrieving INSERT SQL template.
 /// </summary>
-function TemplateInsertOracle(p_schema, p_table) {
+export function TemplateInsertOracle(p_schema, p_table) {
 	execAjax(
 		"/template_insert_oracle/",
 		JSON.stringify({
@@ -3554,7 +3554,7 @@ function TemplateInsertOracle(p_schema, p_table) {
 /// <summary>
 /// Retrieving UPDATE SQL template.
 /// </summary>
-function TemplateUpdateOracle(p_schema, p_table) {
+export function TemplateUpdateOracle(p_schema, p_table) {
 	execAjax(
 		"/template_update_oracle/",
 		JSON.stringify({
@@ -3576,7 +3576,7 @@ function TemplateUpdateOracle(p_schema, p_table) {
 	);
 }
 
-function nodeOpenErrorOracle(p_return, p_node) {
+export function nodeOpenErrorOracle(p_return, p_node) {
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(
@@ -3613,7 +3613,7 @@ function nodeOpenErrorOracle(p_return, p_node) {
 	return tmp.join('.')
 }*/
 
-function oracleTerminateBackendConfirm(p_pid) {
+export function oracleTerminateBackendConfirm(p_pid) {
 	execAjax(
 		"/kill_backend_oracle/",
 		JSON.stringify({
@@ -3643,7 +3643,7 @@ function oracleTerminateBackendConfirm(p_pid) {
 	);
 }
 
-function oracleTerminateBackend(p_row) {
+export function oracleTerminateBackend(p_row) {
 	var v_pid = p_row[1] + "," + p_row[2];
 
 	showConfirm("Are you sure you want to terminate session " + v_pid + "?", function () {

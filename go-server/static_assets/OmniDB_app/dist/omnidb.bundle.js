@@ -517,7 +517,7 @@
     snippetTreeFindNode,
     startEditSnippetText
   }, Symbol.toStringTag, { value: "Module" }));
-  function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
+  function tabSQLTemplate$1(p_tab_name, p_template, p_showTip = true) {
     v_connTabControl.tag.createQueryTab(p_tab_name);
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_template);
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
@@ -1467,7 +1467,7 @@
             text: "Create Database",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Database", node.tree.tag.create_database);
+              tabSQLTemplate$1("Create Database", node.tree.tag.create_database);
             }
           },
           {
@@ -1488,7 +1488,7 @@
             text: "Alter Database",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Database", node.tree.tag.alter_database.replace("#database_name#", node.text));
+              tabSQLTemplate$1("Alter Database", node.tree.tag.alter_database.replace("#database_name#", node.text));
             }
           },
           {
@@ -1502,7 +1502,7 @@
             text: "Drop Database",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Database", node.tree.tag.drop_database.replace("#database_name#", node.text));
+              tabSQLTemplate$1("Drop Database", node.tree.tag.drop_database.replace("#database_name#", node.text));
             }
           }
         ]
@@ -1524,7 +1524,7 @@
             text: "Create Tablespace",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Tablespace", node.tree.tag.create_tablespace);
+              tabSQLTemplate$1("Create Tablespace", node.tree.tag.create_tablespace);
             }
           },
           {
@@ -1545,7 +1545,7 @@
             text: "Alter Tablespace",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Tablespace", node.tree.tag.alter_tablespace.replace("#tablespace_name#", node.text));
+              tabSQLTemplate$1("Alter Tablespace", node.tree.tag.alter_tablespace.replace("#tablespace_name#", node.text));
             }
           },
           {
@@ -1559,7 +1559,7 @@
             text: "Drop Tablespace",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Tablespace", node.tree.tag.drop_tablespace.replace("#tablespace_name#", node.text));
+              tabSQLTemplate$1("Drop Tablespace", node.tree.tag.drop_tablespace.replace("#tablespace_name#", node.text));
             }
           }
         ]
@@ -1581,7 +1581,7 @@
             text: "Create Role",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Role", node.tree.tag.create_role);
+              tabSQLTemplate$1("Create Role", node.tree.tag.create_role);
             }
           },
           {
@@ -1667,7 +1667,7 @@
             text: "Alter Role",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Role", node.tree.tag.alter_role.replace("#role_name#", node.text));
+              tabSQLTemplate$1("Alter Role", node.tree.tag.alter_role.replace("#role_name#", node.text));
             }
           },
           {
@@ -1681,7 +1681,7 @@
             text: "Drop Role",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Role", node.tree.tag.drop_role.replace("#role_name#", node.text));
+              tabSQLTemplate$1("Drop Role", node.tree.tag.drop_role.replace("#role_name#", node.text));
             }
           }
         ]
@@ -1703,7 +1703,7 @@
             text: "Create Extension",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Extension", node.tree.tag.create_extension);
+              tabSQLTemplate$1("Create Extension", node.tree.tag.create_extension);
             }
           },
           {
@@ -1724,7 +1724,7 @@
             text: "Alter Extension",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Extension", node.tree.tag.alter_extension.replace("#extension_name#", node.text));
+              tabSQLTemplate$1("Alter Extension", node.tree.tag.alter_extension.replace("#extension_name#", node.text));
             }
           },
           {
@@ -1738,7 +1738,7 @@
             text: "Drop Extension",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Role", node.tree.tag.drop_extension.replace("#extension_name#", node.text));
+              tabSQLTemplate$1("Drop Role", node.tree.tag.drop_extension.replace("#extension_name#", node.text));
             }
           }
         ]
@@ -1760,7 +1760,7 @@
             text: "Create Schema",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Schema", node.tree.tag.create_schema);
+              tabSQLTemplate$1("Create Schema", node.tree.tag.create_schema);
             }
           },
           {
@@ -1807,7 +1807,7 @@
             text: "Alter Schema",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Schema", node.tree.tag.alter_schema.replace("#schema_name#", node.text));
+              tabSQLTemplate$1("Alter Schema", node.tree.tag.alter_schema.replace("#schema_name#", node.text));
             }
           },
           {
@@ -1821,7 +1821,7 @@
             text: "Drop Schema",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Schema", node.tree.tag.drop_schema.replace("#schema_name#", node.text));
+              tabSQLTemplate$1("Drop Schema", node.tree.tag.drop_schema.replace("#schema_name#", node.text));
             }
           }
         ]
@@ -1843,7 +1843,7 @@
             text: "Create Table",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Table", node.tree.tag.create_table.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create Table", node.tree.tag.create_table.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -1928,7 +1928,7 @@
                   text: "Delete Records",
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Delete Records",
                       node.tree.tag.delete.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -1938,7 +1938,7 @@
                   text: "Truncate Table",
                   icon: "fas cm-all fa-cut",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Truncate Table",
                       node.tree.tag.truncate.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -1956,7 +1956,7 @@
                   text: "Vacuum Table",
                   icon: "fas cm-all fa-broom",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Vacuum Table",
                       node.tree.tag.vacuum_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -1966,7 +1966,7 @@
                   text: "Analyze Table",
                   icon: "fas cm-all fa-search-plus",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Analyze Table",
                       node.tree.tag.analyze_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -1976,7 +1976,7 @@
                   text: "Alter Table",
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Alter Table",
                       node.tree.tag.alter_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -1993,7 +1993,7 @@
                   text: "Drop Table",
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Drop Table",
                       node.tree.tag.drop_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -2060,7 +2060,7 @@
             text: "Create Column",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Column",
                 node.tree.tag.create_column.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2074,7 +2074,7 @@
             text: "Alter Column",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Column",
                 node.tree.tag.alter_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
@@ -2091,7 +2091,7 @@
             text: "Drop Column",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Column",
                 node.tree.tag.drop_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
@@ -2116,7 +2116,7 @@
             text: "Create Primary Key",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Primary Key",
                 node.tree.tag.create_primarykey.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2148,7 +2148,7 @@
             text: "Drop Primary Key",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Primary Key",
                 node.tree.tag.drop_primarykey.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
@@ -2173,7 +2173,7 @@
             text: "Create Foreign Key",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Foreign Key",
                 node.tree.tag.create_foreignkey.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2205,7 +2205,7 @@
             text: "Drop Foreign Key",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Foreign Key",
                 node.tree.tag.drop_foreignkey.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
@@ -2230,7 +2230,7 @@
             text: "Create Unique",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Unique",
                 node.tree.tag.create_unique.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2262,7 +2262,7 @@
             text: "Drop Unique",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Unique",
                 node.tree.tag.drop_unique.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
@@ -2287,7 +2287,7 @@
             text: "Create Index",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Index",
                 node.tree.tag.create_index.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2322,7 +2322,7 @@
             text: "Alter Index",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Index",
                 node.tree.tag.alter_index.replace(
                   "#index_name#",
@@ -2335,7 +2335,7 @@
             text: "Reindex",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Reindex",
                 node.tree.tag.reindex.replace(
                   "#index_name#",
@@ -2355,7 +2355,7 @@
             text: "Drop Index",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Index",
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
@@ -2383,7 +2383,7 @@
             text: "Create Check",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Check",
                 node.tree.tag.create_check.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2404,7 +2404,7 @@
             text: "Drop Check",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Check",
                 node.tree.tag.drop_check.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
@@ -2429,7 +2429,7 @@
             text: "Create Exclude",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Exclude",
                 node.tree.tag.create_exclude.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2450,7 +2450,7 @@
             text: "Drop Exclude",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Exclude",
                 node.tree.tag.drop_exclude.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
@@ -2475,7 +2475,7 @@
             text: "Create Rule",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Rule",
                 node.tree.tag.create_rule.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2499,7 +2499,7 @@
             text: "Alter Rule",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Rule",
                 node.tree.tag.alter_rule.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#rule_name#", node.text)
               );
@@ -2524,7 +2524,7 @@
             text: "Drop Rule",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Rule",
                 node.tree.tag.drop_rule.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#rule_name#", node.text)
               );
@@ -2549,7 +2549,7 @@
             text: "Create Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Trigger",
                 node.tree.tag.create_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2584,7 +2584,7 @@
             text: "Create Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Trigger",
                 node.tree.tag.create_view_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2608,7 +2608,7 @@
             text: "Alter Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Trigger",
                 node.tree.tag.alter_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
@@ -2618,7 +2618,7 @@
             text: "Enable Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Enable Trigger",
                 node.tree.tag.enable_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
@@ -2628,7 +2628,7 @@
             text: "Disable Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Disable Trigger",
                 node.tree.tag.disable_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
@@ -2645,7 +2645,7 @@
             text: "Drop Trigger",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Trigger",
                 node.tree.tag.drop_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
@@ -2670,7 +2670,7 @@
             text: "Create Event Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Event Trigger", node.tree.tag.create_eventtrigger);
+              tabSQLTemplate$1("Create Event Trigger", node.tree.tag.create_eventtrigger);
             }
           },
           {
@@ -2691,14 +2691,14 @@
             text: "Alter Event Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Trigger", node.tree.tag.alter_eventtrigger.replace("#trigger_name#", node.text));
+              tabSQLTemplate$1("Alter Trigger", node.tree.tag.alter_eventtrigger.replace("#trigger_name#", node.text));
             }
           },
           {
             text: "Enable Event Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Enable Event Trigger",
                 node.tree.tag.enable_eventtrigger.replace("#trigger_name#", node.text)
               );
@@ -2708,7 +2708,7 @@
             text: "Disable Event Trigger",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Disable Event Trigger",
                 node.tree.tag.disable_eventtrigger.replace("#trigger_name#", node.text)
               );
@@ -2725,7 +2725,7 @@
             text: "Drop Event Trigger",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Event Trigger", node.tree.tag.drop_eventtrigger.replace("#trigger_name#", node.text));
+              tabSQLTemplate$1("Drop Event Trigger", node.tree.tag.drop_eventtrigger.replace("#trigger_name#", node.text));
             }
           }
         ]
@@ -2747,7 +2747,7 @@
             text: "Create Inherited",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Inherited",
                 node.tree.tag.create_inherited.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2771,7 +2771,7 @@
             text: "No Inherit Table",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "No Inherit Partition",
                 node.tree.tag.noinherit_partition.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#partition_name#", node.text)
               );
@@ -2781,7 +2781,7 @@
             text: "Drop Inherited",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Partition", node.tree.tag.drop_partition.replace("#partition_name#", node.text));
+              tabSQLTemplate$1("Drop Partition", node.tree.tag.drop_partition.replace("#partition_name#", node.text));
             }
           }
         ]
@@ -2803,7 +2803,7 @@
             text: "Create Partition",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Partition",
                 node.tree.tag.create_partition.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -2827,7 +2827,7 @@
             text: "Detach Partition",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Detach Partition",
                 node.tree.tag.detach_partition.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#partition_name#", node.text)
               );
@@ -2837,7 +2837,7 @@
             text: "Drop Partition",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Partition", node.tree.tag.drop_partition.replace("#partition_name#", node.text));
+              tabSQLTemplate$1("Drop Partition", node.tree.tag.drop_partition.replace("#partition_name#", node.text));
             }
           }
         ]
@@ -2859,7 +2859,7 @@
             text: "Create Statistics",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Statistics",
                 node.tree.tag.create_statistics.replace("#table_name#", node.tag.schema + "." + node.parent.text).replace("#schema_name#", node.tag.schema)
               );
@@ -2894,7 +2894,7 @@
             text: "Alter Statistics",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Statistics", node.tree.tag.alter_statistics.replace("#statistics_name#", node.text));
+              tabSQLTemplate$1("Alter Statistics", node.tree.tag.alter_statistics.replace("#statistics_name#", node.text));
             }
           },
           {
@@ -2908,7 +2908,7 @@
             text: "Drop Statistics",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Statistics", node.tree.tag.drop_statistics.replace("#statistics_name#", node.text));
+              tabSQLTemplate$1("Drop Statistics", node.tree.tag.drop_statistics.replace("#statistics_name#", node.text));
             }
           }
         ]
@@ -2930,7 +2930,7 @@
             text: "Create Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Function", node.tree.tag.create_function.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create Function", node.tree.tag.create_function.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -2977,7 +2977,7 @@
             text: "Alter Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Function", node.tree.tag.alter_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate$1("Alter Function", node.tree.tag.alter_function.replace("#function_name#", node.tag.id));
             }
           },
           {
@@ -2991,7 +2991,7 @@
             text: "Drop Function",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Function", node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate$1("Drop Function", node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -3013,7 +3013,7 @@
             text: "Create Procedure",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Procedure", node.tree.tag.create_procedure.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create Procedure", node.tree.tag.create_procedure.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -3060,7 +3060,7 @@
             text: "Alter Procedure",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Procedure", node.tree.tag.alter_procedure.replace("#procedure_name#", node.tag.id));
+              tabSQLTemplate$1("Alter Procedure", node.tree.tag.alter_procedure.replace("#procedure_name#", node.tag.id));
             }
           },
           {
@@ -3074,7 +3074,7 @@
             text: "Drop Procedure",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Procedure", node.tree.tag.drop_procedure.replace("#procedure_name#", node.tag.id));
+              tabSQLTemplate$1("Drop Procedure", node.tree.tag.drop_procedure.replace("#procedure_name#", node.tag.id));
             }
           }
         ]
@@ -3096,7 +3096,7 @@
             text: "Create Trigger Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Trigger Function",
                 node.tree.tag.create_triggerfunction.replace("#schema_name#", node.tag.schema)
               );
@@ -3139,7 +3139,7 @@
             text: "Alter Trigger Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Trigger Function",
                 node.tree.tag.alter_triggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3156,7 +3156,7 @@
             text: "Drop Trigger Function",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Trigger Function",
                 node.tree.tag.drop_triggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3189,7 +3189,7 @@
             text: "Alter Trigger Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Trigger Function",
                 node.tree.tag.alter_triggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3206,7 +3206,7 @@
             text: "Drop Trigger Function",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Trigger Function",
                 node.tree.tag.drop_triggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3231,7 +3231,7 @@
             text: "Create Event Trigger Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Event Trigger Function",
                 node.tree.tag.create_eventtriggerfunction.replace("#schema_name#", node.tag.schema)
               );
@@ -3274,7 +3274,7 @@
             text: "Alter Event Trigger Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Event Trigger Function",
                 node.tree.tag.alter_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3291,7 +3291,7 @@
             text: "Drop Event Trigger Function",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Event Trigger Function",
                 node.tree.tag.drop_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3324,7 +3324,7 @@
             text: "Alter Event Trigger Function",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Event Trigger Function",
                 node.tree.tag.alter_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3341,7 +3341,7 @@
             text: "Drop Event Trigger Function",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Event Trigger Function",
                 node.tree.tag.drop_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
@@ -3367,7 +3367,7 @@
             text: "Create Aggregate",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Aggregate", node.tree.tag.create_aggregate.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create Aggregate", node.tree.tag.create_aggregate.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -3400,7 +3400,7 @@
             text: "Alter Aggregate",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Aggregate", node.tree.tag.alter_aggregate.replace("#aggregate_name#", node.tag.id));
+              tabSQLTemplate$1("Alter Aggregate", node.tree.tag.alter_aggregate.replace("#aggregate_name#", node.tag.id));
             }
           },
           {
@@ -3414,7 +3414,7 @@
             text: "Drop Aggregate",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Aggregate", node.tree.tag.drop_aggregate.replace("#aggregate_name#", node.tag.id));
+              tabSQLTemplate$1("Drop Aggregate", node.tree.tag.drop_aggregate.replace("#aggregate_name#", node.tag.id));
             }
           }
         ]
@@ -3436,7 +3436,7 @@
             text: "Create Sequence",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Sequence", node.tree.tag.create_sequence.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create Sequence", node.tree.tag.create_sequence.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -3457,7 +3457,7 @@
             text: "Alter Sequence",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Sequence",
                 node.tree.tag.alter_sequence.replace("#sequence_name#", node.tag.schema + "." + node.text)
               );
@@ -3474,7 +3474,7 @@
             text: "Drop Sequence",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Sequence",
                 node.tree.tag.drop_sequence.replace("#sequence_name#", node.parent.parent.text + "." + node.text)
               );
@@ -3499,7 +3499,7 @@
             text: "Create View",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create View", node.tree.tag.create_view.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create View", node.tree.tag.create_view.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -3546,7 +3546,7 @@
             text: "Alter View",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter View",
                 node.tree.tag.alter_view.replace(/#view_name#/g, node.tag.schema + "." + node.text)
               );
@@ -3563,7 +3563,7 @@
             text: "Drop View",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop View",
                 node.tree.tag.drop_view.replace("#view_name#", node.tag.schema + "." + node.text)
               );
@@ -3588,7 +3588,7 @@
             text: "Create Mat. View",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Materialized View",
                 node.tree.tag.create_mview.replace("#schema_name#", node.tag.schema)
               );
@@ -3638,7 +3638,7 @@
             text: "Alter Mat. View",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Materialized View",
                 node.tree.tag.alter_mview.replace("#view_name#", node.tag.schema + "." + node.text)
               );
@@ -3648,7 +3648,7 @@
             text: "Refresh Mat. View",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Refresh Materialized View",
                 node.tree.tag.refresh_mview.replace("#view_name#", node.tag.schema + "." + node.text)
               );
@@ -3658,7 +3658,7 @@
             text: "Analyze Mat. View",
             icon: "fas cm-all fa-search-plus",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Analyze Mat. View",
                 node.tree.tag.analyze_table.replace("#table_name#", node.tag.schema + "." + node.text)
               );
@@ -3675,7 +3675,7 @@
             text: "Drop Mat. View",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Materialized View",
                 node.tree.tag.drop_mview.replace("#view_name#", node.tag.schema + "." + node.text)
               );
@@ -3700,7 +3700,7 @@
             text: "Create Slot",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Physical Replication Slot", node.tree.tag.create_physicalreplicationslot);
+              tabSQLTemplate$1("Create Physical Replication Slot", node.tree.tag.create_physicalreplicationslot);
             }
           },
           {
@@ -3721,7 +3721,7 @@
             text: "Drop Slot",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Physical Replication Slot",
                 node.tree.tag.drop_physicalreplicationslot.replace("#slot_name#", node.text)
               );
@@ -3746,7 +3746,7 @@
             text: "Create Slot",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Logical Replication Slot", node.tree.tag.create_logicalreplicationslot);
+              tabSQLTemplate$1("Create Logical Replication Slot", node.tree.tag.create_logicalreplicationslot);
             }
           },
           {
@@ -3767,7 +3767,7 @@
             text: "Drop Slot",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Logical Replication Slot",
                 node.tree.tag.drop_logicalreplicationslot.replace("#slot_name#", node.text)
               );
@@ -3792,7 +3792,7 @@
             text: "Create Publication",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Publication", node.tree.tag.create_publication);
+              tabSQLTemplate$1("Create Publication", node.tree.tag.create_publication);
             }
           },
           {
@@ -3813,7 +3813,7 @@
             text: "Alter Publication",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Publication", node.tree.tag.alter_publication.replace("#pub_name#", node.text));
+              tabSQLTemplate$1("Alter Publication", node.tree.tag.alter_publication.replace("#pub_name#", node.text));
             }
           },
           {
@@ -3827,7 +3827,7 @@
             text: "Drop Publication",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Publication", node.tree.tag.drop_publication.replace("#pub_name#", node.text));
+              tabSQLTemplate$1("Drop Publication", node.tree.tag.drop_publication.replace("#pub_name#", node.text));
             }
           }
         ]
@@ -3849,7 +3849,7 @@
             text: "Add Table",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Add Table", node.tree.tag.add_pubtable.replace("#pub_name#", node.parent.text));
+              tabSQLTemplate$1("Add Table", node.tree.tag.add_pubtable.replace("#pub_name#", node.parent.text));
             }
           }
         ]
@@ -3860,7 +3860,7 @@
             text: "Drop Table",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Table",
                 node.tree.tag.drop_pubtable.replace("#pub_name#", node.parent.parent.text).replace("#table_name#", node.text)
               );
@@ -3885,7 +3885,7 @@
             text: "Create Subscription",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Subscription", node.tree.tag.create_subscription);
+              tabSQLTemplate$1("Create Subscription", node.tree.tag.create_subscription);
             }
           },
           {
@@ -3906,7 +3906,7 @@
             text: "Alter Subscription",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Subscription", node.tree.tag.alter_subscription.replace("#sub_name#", node.text));
+              tabSQLTemplate$1("Alter Subscription", node.tree.tag.alter_subscription.replace("#sub_name#", node.text));
             }
           },
           {
@@ -3920,7 +3920,7 @@
             text: "Drop Subscription",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Subscription", node.tree.tag.drop_subscription.replace("#sub_name#", node.text));
+              tabSQLTemplate$1("Drop Subscription", node.tree.tag.drop_subscription.replace("#sub_name#", node.text));
             }
           }
         ]
@@ -3942,7 +3942,7 @@
             text: "Create Foreign Data Wrapper",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Foreign Data Wrapper", node.tree.tag.create_fdw);
+              tabSQLTemplate$1("Create Foreign Data Wrapper", node.tree.tag.create_fdw);
             }
           },
           {
@@ -3963,7 +3963,7 @@
             text: "Alter Foreign Data Wrapper",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Foreign Data Wrapper", node.tree.tag.alter_fdw.replace("#fdwname#", node.text));
+              tabSQLTemplate$1("Alter Foreign Data Wrapper", node.tree.tag.alter_fdw.replace("#fdwname#", node.text));
             }
           },
           {
@@ -3977,7 +3977,7 @@
             text: "Drop Foreign Data Wrapper",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Foreign Data Wrapper", node.tree.tag.drop_fdw.replace("#fdwname#", node.text));
+              tabSQLTemplate$1("Drop Foreign Data Wrapper", node.tree.tag.drop_fdw.replace("#fdwname#", node.text));
             }
           }
         ]
@@ -3999,7 +3999,7 @@
             text: "Create Foreign Server",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Foreign Server",
                 node.tree.tag.create_foreign_server.replace("#fdwname#", node.parent.text)
               );
@@ -4013,14 +4013,14 @@
             text: "Alter Foreign Server",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Alter Foreign Server", node.tree.tag.alter_foreign_server.replace("#srvname#", node.text));
+              tabSQLTemplate$1("Alter Foreign Server", node.tree.tag.alter_foreign_server.replace("#srvname#", node.text));
             }
           },
           {
             text: "Import Foreign Schema",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Import Foreign Schema", node.tree.tag.import_foreign_schema.replace("#srvname#", node.text));
+              tabSQLTemplate$1("Import Foreign Schema", node.tree.tag.import_foreign_schema.replace("#srvname#", node.text));
             }
           },
           {
@@ -4034,7 +4034,7 @@
             text: "Drop Foreign Server",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate("Drop Foreign Server", node.tree.tag.drop_foreign_server.replace("#srvname#", node.text));
+              tabSQLTemplate$1("Drop Foreign Server", node.tree.tag.drop_foreign_server.replace("#srvname#", node.text));
             }
           }
         ]
@@ -4056,7 +4056,7 @@
             text: "Create User Mapping",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create User Mapping",
                 node.tree.tag.create_user_mapping.replace("#srvname#", node.parent.text)
               );
@@ -4070,7 +4070,7 @@
             text: "Alter User Mapping",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter User Mapping",
                 node.tree.tag.alter_user_mapping.replace("#user_name#", node.text).replace("#srvname#", node.parent.parent.text)
               );
@@ -4080,7 +4080,7 @@
             text: "Drop User Mapping",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop User Mapping",
                 node.tree.tag.drop_user_mapping.replace("#user_name#", node.text).replace("#srvname#", node.parent.parent.text)
               );
@@ -4105,7 +4105,7 @@
             text: "Create Foreign Table",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Foreign Table",
                 node.tree.tag.create_foreign_table.replace("#schema_name#", node.tag.schema)
               );
@@ -4163,7 +4163,7 @@
                   text: "Delete Records",
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Delete Records",
                       node.tree.tag.delete.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -4181,7 +4181,7 @@
                   text: "Analyze Foreign Table",
                   icon: "fas cm-all fa-table",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Analyze Foreign Table",
                       node.tree.tag.analyze_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -4191,7 +4191,7 @@
                   text: "Alter Foreign Table",
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Alter Foreign Table",
                       node.tree.tag.alter_foreign_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -4208,7 +4208,7 @@
                   text: "Drop Foreign Table",
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(
+                    tabSQLTemplate$1(
                       "Drop Foreign Table",
                       node.tree.tag.drop_foreign_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
@@ -4225,7 +4225,7 @@
             text: "Create Foreign Column",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Create Foreign Column",
                 node.tree.tag.create_foreign_column.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
@@ -4239,7 +4239,7 @@
             text: "Alter Foreign Column",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Foreign Column",
                 node.tree.tag.alter_foreign_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
@@ -4249,7 +4249,7 @@
             text: "Drop Foreign Column",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Foreign Column",
                 node.tree.tag.drop_foreign_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
@@ -4274,7 +4274,7 @@
             text: "Create Type",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Type", node.tree.tag.create_type.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create Type", node.tree.tag.create_type.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -4295,7 +4295,7 @@
             text: "Alter Type",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Type",
                 node.tree.tag.alter_type.replace("#type_name#", node.tag.schema + "." + node.text)
               );
@@ -4312,7 +4312,7 @@
             text: "Drop Type",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Type",
                 node.tree.tag.drop_type.replace("#type_name#", node.tag.schema + "." + node.text)
               );
@@ -4337,7 +4337,7 @@
             text: "Create Domain",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate("Create Domain", node.tree.tag.create_domain.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate$1("Create Domain", node.tree.tag.create_domain.replace("#schema_name#", node.tag.schema));
             }
           },
           {
@@ -4358,7 +4358,7 @@
             text: "Alter Domain",
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Alter Domain",
                 node.tree.tag.alter_domain.replace("#domain_name#", node.tag.schema + "." + node.text)
               );
@@ -4375,7 +4375,7 @@
             text: "Drop Domain",
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(
+              tabSQLTemplate$1(
                 "Drop Domain",
                 node.tree.tag.drop_domain.replace("#domain_name#", node.tag.schema + "." + node.text)
               );
@@ -9030,7 +9030,7 @@
         p_schema
       }),
       function(p_return) {
-        tabSQLTemplate("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate$1("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -9050,7 +9050,7 @@
         p_schema
       }),
       function(p_return) {
-        tabSQLTemplate("Update " + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate$1("Update " + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -9071,7 +9071,7 @@
         p_schema
       }),
       function(p_return) {
-        tabSQLTemplate("Select " + p_schema + "." + p_function, p_return.v_data.v_template);
+        tabSQLTemplate$1("Select " + p_schema + "." + p_function, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -9092,7 +9092,7 @@
         p_schema
       }),
       function(p_return) {
-        tabSQLTemplate("Call " + p_schema + "." + p_procedure, p_return.v_data.v_template);
+        tabSQLTemplate$1("Call " + p_schema + "." + p_procedure, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -9342,11 +9342,2756 @@
     refreshTreePostgresql,
     refreshTreePostgresqlConfirm,
     tabAdvancedObjectSearch,
-    tabSQLTemplate
+    tabSQLTemplate: tabSQLTemplate$1
+  }, Symbol.toStringTag, { value: "Module" }));
+  function getTreeOracle(p_div) {
+    var context_menu = {
+      cm_server: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          }
+        ]
+      },
+      cm_connection: {
+        elements: [
+          {
+            text: "Render Graph",
+            icon: "fab cm-all fa-hubspot",
+            action: function(node) {
+            },
+            submenu: {
+              elements: [
+                {
+                  text: "Simple Graph",
+                  icon: "fab cm-all fa-hubspot",
+                  action: function(node) {
+                    v_connTabControl.tag.createGraphTab(node.text);
+                    drawGraph(false, node.tree.tag.v_username);
+                  }
+                },
+                {
+                  text: "Complete Graph",
+                  icon: "fab cm-all fa-hubspot",
+                  action: function(node) {
+                    v_connTabControl.tag.createGraphTab(node.text);
+                    drawGraph(true, node.tree.tag.v_username);
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      cm_tablespaces: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Tablespace",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Create Tablespace", node.tree.tag.create_tablespace);
+            }
+          }
+        ]
+      },
+      cm_tablespace: {
+        elements: [
+          {
+            text: "Alter Tablespace",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Alter Tablespace", node.tree.tag.alter_tablespace.replace("#tablespace_name#", node.text));
+            }
+          },
+          {
+            text: "Drop Tablespace",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate("Drop Tablespace", node.tree.tag.drop_tablespace.replace("#tablespace_name#", node.text));
+            }
+          }
+        ]
+      },
+      cm_roles: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Role",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Create Role", node.tree.tag.create_role);
+            }
+          }
+        ]
+      },
+      cm_role: {
+        elements: [
+          {
+            text: "Alter Role",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Alter Role", node.tree.tag.alter_role.replace("#role_name#", node.text));
+            }
+          },
+          {
+            text: "Drop Role",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate("Drop Role", node.tree.tag.drop_role.replace("#role_name#", node.text));
+            }
+          }
+        ]
+      },
+      cm_tables: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Table",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Create Table", node.tree.tag.create_table.replace("#schema_name#", node.tree.tag.v_username));
+            }
+          }
+        ]
+      },
+      cm_table: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Data Actions",
+            icon: "fas cm-all fa-list",
+            submenu: {
+              elements: [
+                {
+                  text: "Query Data",
+                  icon: "fas cm-all fa-search",
+                  action: function(node) {
+                    TemplateSelectOracle(node.tree.tag.v_username, node.text);
+                  }
+                },
+                {
+                  text: "Edit Data",
+                  icon: "fas cm-all fa-table",
+                  action: function(node) {
+                    v_startEditData(node.text, node.tree.tag.v_username);
+                  }
+                },
+                {
+                  text: "Insert Record",
+                  icon: "fas cm-all fa-edit",
+                  action: function(node) {
+                    TemplateInsertOracle(node.tree.tag.v_username, node.text);
+                  }
+                },
+                {
+                  text: "Update Records",
+                  icon: "fas cm-all fa-edit",
+                  action: function(node) {
+                    TemplateUpdateOracle(node.tree.tag.v_username, node.text);
+                  }
+                },
+                {
+                  text: "Delete Records",
+                  icon: "fas cm-all fa-times",
+                  action: function(node) {
+                    tabSQLTemplate(
+                      "Delete Records",
+                      node.tree.tag.delete.replace("#table_name#", node.tree.tag.v_username + "." + node.text)
+                    );
+                  }
+                }
+              ]
+            }
+          },
+          {
+            text: "Table Actions",
+            icon: "fas cm-all fa-list",
+            submenu: {
+              elements: [
+                {
+                  text: "Alter Table",
+                  icon: "fas cm-all fa-table",
+                  action: function(node) {
+                    startAlterTable(true, "alter", node.text, node.tree.tag.v_username);
+                  }
+                },
+                {
+                  text: "Alter Table (SQL)",
+                  icon: "fas cm-all fa-edit",
+                  action: function(node) {
+                    tabSQLTemplate(
+                      "Alter Table",
+                      node.tree.tag.alter_table.replace("#table_name#", node.tree.tag.v_username + "." + node.text)
+                    );
+                  }
+                },
+                {
+                  text: "Drop Table",
+                  icon: "fas cm-all fa-times",
+                  action: function(node) {
+                    tabSQLTemplate(
+                      "Drop Table",
+                      node.tree.tag.drop_table.replace("#table_name#", node.tree.tag.v_username + "." + node.text)
+                    );
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      cm_columns: {
+        elements: [
+          {
+            text: "Create Column",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Field",
+                node.tree.tag.create_column.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_column: {
+        elements: [
+          {
+            text: "Alter Column",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Alter Column",
+                node.tree.tag.alter_column.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
+              );
+            }
+          },
+          {
+            text: "Drop Column",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Column",
+                node.tree.tag.drop_column.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_pks: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Primary Key",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Primary Key",
+                node.tree.tag.create_primarykey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_pk: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Drop Primary Key",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Primary Key",
+                node.tree.tag.drop_primarykey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_fks: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Foreign Key",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Foreign Key",
+                node.tree.tag.create_foreignkey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_fk: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Drop Foreign Key",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Foreign Key",
+                node.tree.tag.drop_foreignkey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_uniques: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Unique",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Unique",
+                node.tree.tag.create_unique.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_unique: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Drop Unique",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Unique",
+                node.tree.tag.drop_unique.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_indexes: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Index",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Index",
+                node.tree.tag.create_index.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_index: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Alter Index",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Alter Index",
+                node.tree.tag.alter_index.replace(
+                  "#index_name#",
+                  node.tree.tag.v_username + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
+                )
+              );
+            }
+          },
+          {
+            text: "Drop Index",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Index",
+                node.tree.tag.drop_index.replace(
+                  "#index_name#",
+                  node.tree.tag.v_username + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
+                )
+              );
+            }
+          }
+        ]
+      },
+      cm_sequences: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Sequence",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Sequence",
+                node.tree.tag.create_sequence.replace("#schema_name#", node.tree.tag.v_username)
+              );
+            }
+          }
+        ]
+      },
+      cm_sequence: {
+        elements: [
+          {
+            text: "Alter Sequence",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Alter Sequence",
+                node.tree.tag.alter_sequence.replace("#sequence_name#", node.tree.tag.v_username + "." + node.text)
+              );
+            }
+          },
+          {
+            text: "Drop Sequence",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Sequence",
+                node.tree.tag.drop_sequence.replace("#sequence_name#", node.tree.tag.v_username + "." + node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_views: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create View",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Create View", node.tree.tag.create_view.replace("#schema_name#", node.tree.tag.v_username));
+            }
+          }
+        ]
+      },
+      cm_view: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Query Data",
+            icon: "fas cm-all fa-search",
+            action: function(node) {
+              var v_table_name = "";
+              v_table_name = node.tree.tag.v_username + "." + node.text;
+              v_connTabControl.tag.createQueryTab(node.text);
+              v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(
+                "-- Querying Data\nselect t.*\nfrom " + v_table_name + " t"
+              );
+              v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+              renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+              querySQL(0);
+            }
+          },
+          {
+            text: "Edit View",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              v_connTabControl.tag.createQueryTab(node.text);
+              getViewDefinitionOracle(node);
+            }
+          },
+          {
+            text: "Drop View",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop View",
+                node.tree.tag.drop_view.replace("#view_name#", node.tree.tag.v_username + "." + node.text)
+              );
+            }
+          }
+        ]
+      },
+      /*'cm_triggers': {
+      	elements: [{
+      		text: 'Refresh',
+      		icon: 'fas cm-all fa-sync-alt',
+      		action: function(node) {
+      			if (node.childNodes == 0)
+      				refreshTreeOracle(node);
+      			else {
+      				node.collapseNode();
+      				node.expandNode();
+      			}
+      		},
+      	}, {
+      		text: 'Create Trigger',
+      		icon: 'fas cm-all fa-edit',
+      		action: function(node) {
+      			tabSQLTemplate('Create Trigger', node.tree.tag
+      				.create_trigger.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' + node.parent
+      					.text));
+      		}
+      	}, {
+      		text: 'Doc: Triggers',
+      		icon: 'fas cm-all fa-globe-americas',
+      		action: function(node) {
+      			v_connTabControl.tag.createWebsiteTab(
+      				'Documentation: Triggers',
+      				'https://www.postgresql.org/docs/' +
+      				getMajorVersionOracle(node.tree.tag.version) +
+      				'/static/trigger-definition.html');
+      		}
+      	}]
+      },
+      'cm_view_triggers': {
+      	elements: [{
+      		text: 'Refresh',
+      		icon: 'fas cm-all fa-sync-alt',
+      		action: function(node) {
+      			if (node.childNodes == 0)
+      				refreshTreeOracle(node);
+      			else {
+      				node.collapseNode();
+      				node.expandNode();
+      			}
+      		},
+      	}, {
+      		text: 'Create Trigger',
+      		icon: 'fas cm-all fa-edit',
+      		action: function(node) {
+      			tabSQLTemplate('Create Trigger', node.tree.tag
+      				.create_view_trigger.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' + node.parent
+      					.text));
+      		}
+      	}, {
+      		text: 'Doc: Triggers',
+      		icon: 'fas cm-all fa-globe-americas',
+      		action: function(node) {
+      			v_connTabControl.tag.createWebsiteTab(
+      				'Documentation: Triggers',
+      				'https://www.postgresql.org/docs/' +
+      				getMajorVersionOracle(node.tree.tag.version) +
+      				'/static/trigger-definition.html');
+      		}
+      	}]
+      },
+      'cm_trigger': {
+      	elements: [{
+      		text: 'Alter Trigger',
+      		icon: 'fas cm-all fa-edit',
+      		action: function(node) {
+      			tabSQLTemplate('Alter Trigger', node.tree.tag
+      				.alter_trigger.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' +
+      					node.parent.parent.text).replace(
+      					'#trigger_name#', node.text));
+      		}
+      	}, {
+      		text: 'Enable Trigger',
+      		icon: 'fas cm-all fa-edit',
+      		action: function(node) {
+      			tabSQLTemplate('Enable Trigger', node.tree.tag
+      				.enable_trigger.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' +
+      					node.parent.parent.text).replace(
+      					'#trigger_name#', node.text));
+      		}
+      	}, {
+      		text: 'Disable Trigger',
+      		icon: 'fas cm-all fa-edit',
+      		action: function(node) {
+      			tabSQLTemplate('Disable Trigger', node.tree
+      				.tag.disable_trigger.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' +
+      					node.parent.parent.text).replace(
+      					'#trigger_name#', node.text));
+      		}
+      	}, {
+      		text: 'Drop Trigger',
+      		icon: 'fas cm-all fa-times',
+      		action: function(node) {
+      			tabSQLTemplate('Drop Trigger', node.tree.tag
+      				.drop_trigger.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' +
+      					node.parent.parent.text).replace(
+      					'#trigger_name#', node.text));
+      		}
+      	}]
+      },
+      'cm_partitions': {
+      	elements: [{
+      		text: 'Refresh',
+      		icon: 'fas cm-all fa-sync-alt',
+      		action: function(node) {
+      			if (node.childNodes == 0)
+      				refreshTreeOracle(node);
+      			else {
+      				node.collapseNode();
+      				node.expandNode();
+      			}
+      		}
+      	}, {
+      		text: 'Create Partition',
+      		icon: 'fas cm-all fa-edit',
+      		action: function(node) {
+      			tabSQLTemplate('Create Partition', node.tree
+      				.tag.create_partition.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' + node.parent
+      					.text));
+      		}
+      	}, {
+      		text: 'Doc: Partitions',
+      		icon: 'fas cm-all fa-globe-americas',
+      		action: function(node) {
+      			v_connTabControl.tag.createWebsiteTab(
+      				'Documentation: Partitions',
+      				'https://www.postgresql.org/docs/' +
+      				getMajorVersionOracle(node.tree.tag.version) +
+      				'/static/ddl-partitioning.html');
+      		}
+      	}]
+      },
+      'cm_partition': {
+      	elements: [{
+      		text: 'No Inherit Partition',
+      		icon: 'fas cm-all fa-edit',
+      		action: function(node) {
+      			tabSQLTemplate('No Inherit Partition', node
+      				.tree.tag.noinherit_partition.replace(
+      					'#table_name#', node.tree.tag.v_username + '.' +
+      					node.parent.parent.text).replace(
+      					'#partition_name#', node.text));
+      		}
+      	}, {
+      		text: 'Drop Partition',
+      		icon: 'fas cm-all fa-times',
+      		action: function(node) {
+      			tabSQLTemplate('Drop Partition', node.tree.tag
+      				.drop_partition.replace(
+      					'#partition_name#', node.text));
+      		}
+      	}]
+      },*/
+      cm_functions: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Function",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Function",
+                node.tree.tag.create_function.replace("#schema_name#", node.tree.tag.v_username)
+              );
+            }
+          }
+        ]
+      },
+      cm_function: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Edit Function",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              v_connTabControl.tag.createQueryTab(node.text);
+              getFunctionDefinitionOracle(node);
+            }
+          },
+          {
+            text: "Drop Function",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate("Drop Function", node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+            }
+          }
+        ]
+      },
+      cm_procedures: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Procedure",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Procedure",
+                node.tree.tag.create_procedure.replace("#schema_name#", node.tree.tag.v_username)
+              );
+            }
+          }
+        ]
+      },
+      cm_procedure: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Edit Procedure",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              v_connTabControl.tag.createQueryTab(node.text);
+              getProcedureDefinitionOracle(node);
+            }
+          },
+          {
+            text: "Drop Procedure",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate("Drop Procedure", node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+            }
+          }
+        ]
+      },
+      /*'cm_triggerfunctions': {
+        			elements: [{
+        				text: 'Refresh',
+        				icon: 'fas cm-all fa-sync-alt',
+        				action: function(node) {
+        					if (node.childNodes == 0)
+        						refreshTreeOracle(node);
+        					else {
+        						node.collapseNode();
+        						node.expandNode();
+        					}
+        				}
+        			}, {
+        				text: 'Create Trigger Function',
+        				icon: 'fas cm-all fa-edit',
+        				action: function(node) {
+        					tabSQLTemplate('Create Trigger Function',
+        						node.tree.tag.create_triggerfunction
+        						.replace('#schema_name#', node.tree.tag.v_username));
+        				}
+        			}, {
+        				text: 'Doc: Trigger Functions',
+        				icon: 'fas cm-all fa-globe-americas',
+        				action: function(node) {
+        					v_connTabControl.tag.createWebsiteTab(
+        						'Documentation: Trigger Functions',
+        						'https://www.postgresql.org/docs/' +
+        						getMajorVersionOracle(node.tree.tag.version) +
+        						'/static/plpgsql-trigger.html');
+        				}
+        			}]
+        		},
+        		'cm_triggerfunction': {
+        			elements: [{
+        				text: 'Refresh',
+        				icon: 'fas cm-all fa-sync-alt',
+        				action: function(node) {
+        					if (node.childNodes == 0)
+        						refreshTreeOracle(node);
+        					else {
+        						node.collapseNode();
+        						node.expandNode();
+        					}
+        				}
+        			}, {
+        				text: 'Edit Trigger Function',
+        				icon: 'fas cm-all fa-edit',
+        				action: function(node) {
+        					v_connTabControl.tag.createQueryTab(
+        						node.text);
+        					getTriggerFunctionDefinitionOracle(node);
+        				}
+        			}, {
+        				text: 'Drop Trigger Function',
+        				icon: 'fas cm-all fa-times',
+        				action: function(node) {
+        					tabSQLTemplate('Drop Trigger Function',
+        						node.tree.tag.drop_triggerfunction.replace(
+        							'#function_name#', node.tag.id)
+        					);
+        				}
+        			}]
+        		},
+        		'cm_mviews': {
+        			elements: [{
+        				text: 'Refresh',
+        				icon: 'fas cm-all fa-sync-alt',
+        				action: function(node) {
+        					if (node.childNodes == 0)
+        						refreshTreeOracle(node);
+        					else {
+        						node.collapseNode();
+        						node.expandNode();
+        					}
+        				}
+        			}, {
+        				text: 'Create Mat. View',
+        				icon: 'fas cm-all fa-edit',
+        				action: function(node) {
+        					tabSQLTemplate('Create Materialized View',
+        						node.tree.tag
+        						.create_mview.replace(
+        							'#schema_name#', node.tree.tag.v_username
+        						));
+        				}
+        			}, {
+        				text: 'Doc: Mat. Views',
+        				icon: 'fas cm-all fa-globe-americas',
+        				action: function(node) {
+        					v_connTabControl.tag.createWebsiteTab(
+        						'Documentation: Materialized Views',
+        						'https://www.postgresql.org/docs/' +
+        						getMajorVersionOracle(node.tree.tag.version) +
+        						'/static/sql-creatematerializedview.html'
+        					);
+        				}
+        			}]
+        		},
+        		'cm_mview': {
+        			elements: [{
+        				text: 'Refresh',
+        				icon: 'fas cm-all fa-sync-alt',
+        				action: function(node) {
+        					if (node.childNodes == 0)
+        						refreshTreeOracle(node);
+        					else {
+        						node.collapseNode();
+        						node.expandNode();
+        					}
+        				}
+        			}, {
+        				text: 'Query Data',
+        				icon: 'fas cm-all fa-search',
+        				action: function(node) {
+      
+        					var v_table_name = '';
+        					v_table_name = node.tree.tag.v_username + '.' + node.text;
+      
+        					v_connTabControl.tag.createQueryTab(
+        						node.text);
+      
+        					v_connTabControl.selectedTab.tag.tabControl
+        						.selectedTab.tag.sel_filtered_data.value =
+        						1;
+      
+        					v_connTabControl.selectedTab.tag.tabControl
+        						.selectedTab.tag.editor.setValue(
+        							'-- Querying Data\nselect t.*\nfrom ' +
+        							v_table_name + ' t');
+        					v_connTabControl.selectedTab.tag.tabControl
+        						.selectedTab.tag.editor.clearSelection();
+        					renameTabConfirm(v_connTabControl.selectedTab
+        						.tag.tabControl.selectedTab, node.text
+        					);
+      
+        					//minimizeEditor();
+      
+        					querySQL(0);
+        				}
+        			}, {
+        				text: 'Edit Mat. View',
+        				icon: 'fas cm-all fa-edit',
+        				action: function(node) {
+        					v_connTabControl.tag.createQueryTab(
+        						node.text);
+        					getMaterializedViewDefinitionOracle(
+        						node);
+        				}
+        			}, {
+        				text: 'Refresh Mat. View',
+        				icon: 'fas cm-all fa-edit',
+        				action: function(node) {
+        					tabSQLTemplate('Refresh Materialized View',
+        						node.tree.tag.refresh_mview
+        						.replace('#view_name#', node.tree.tag.v_username + '.' + node.text)
+        					);
+        				}
+        			}, {
+        				text: 'Drop Mat. View',
+        				icon: 'fas cm-all fa-times',
+        				action: function(node) {
+        					tabSQLTemplate('Drop Materialized View',
+        						node.tree.tag.drop_mview
+        						.replace('#view_name#', node.tree.tag.v_username + '.' + node.text)
+        					);
+        				}
+        			}]
+        		},*/
+      cm_refresh: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeOracle(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          }
+        ]
+      }
+    };
+    var tree = createTree(p_div, "#fcfdfd", context_menu);
+    v_connTabControl.selectedTab.tag.tree = tree;
+    let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle autocomplete.</h5><div>Switch OFF <b>disables the autocomplete</b> on the inner tabs for this connection.</div>"><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + `" class="omnidb__switch--input" onchange="toggleConnectionAutocomplete('autocomplete_toggler_` + v_connTabControl.selectedTab.tag.tab_id + `')"><label for="autocomplete_toggler_` + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    tree.nodeAfterOpenEvent = function(node) {
+      refreshTreeOracle(node);
+    };
+    tree.clickNodeEvent = function(node) {
+      if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
+        getPropertiesOracle(node);
+      }
+    };
+    tree.beforeContextMenuEvent = function(node, callback) {
+      var v_elements = [];
+      if (v_connTabControl.tag.hooks.oracleTreeContextMenu.length > 0) {
+        for (var i2 = 0; i2 < v_connTabControl.tag.hooks.oracleTreeContextMenu.length; i2++)
+          v_elements = v_elements.concat(v_connTabControl.tag.hooks.oracleTreeContextMenu[i2](node));
+      }
+      var v_customCallback = function() {
+        callback(v_elements);
+      };
+      v_customCallback();
+    };
+    var node_server = tree.createNode(
+      "Oracle",
+      false,
+      "node-oracle",
+      null,
+      {
+        type: "server"
+      },
+      "cm_server"
+    );
+    node_server.createChildNode("", true, "node-spin", null, null);
+    tree.drawTree();
+  }
+  function getPropertiesOracle(node) {
+    if (node.tag != void 0)
+      if (node.tag.type == "role") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "tablespace") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "table") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "sequence") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "view") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "mview") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "function") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "procedure") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "trigger") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: node.parent.parent.text,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "triggerfunction") {
+        getProperties("/get_properties_oracle/", {
+          p_schema: null,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else {
+        clearProperties();
+      }
+    if (v_connTabControl.tag.hooks.oracleTreeNodeClick.length > 0) {
+      for (var i2 = 0; i2 < v_connTabControl.tag.hooks.oracleTreeNodeClick.length; i2++)
+        v_connTabControl.tag.hooks.oracleTreeNodeClick[i2](node);
+    }
+  }
+  function refreshTreeOracle(node) {
+    if (node.tag != void 0)
+      if (node.tag.type == "table_list") {
+        getTablesOracle(node);
+      } else if (node.tag.type == "table") {
+        getColumnsOracle(node);
+      } else if (node.tag.type == "primary_key") {
+        getPKOracle(node);
+      } else if (node.tag.type == "pk") {
+        getPKColumnsOracle(node);
+      } else if (node.tag.type == "uniques") {
+        getUniquesOracle(node);
+      } else if (node.tag.type == "unique") {
+        getUniquesColumnsOracle(node);
+      } else if (node.tag.type == "foreign_keys") {
+        getFKsOracle(node);
+      } else if (node.tag.type == "foreign_key") {
+        getFKsColumnsOracle(node);
+      } else if (node.tag.type == "view_list") {
+        getViewsOracle(node);
+      } else if (node.tag.type == "view") {
+        getViewsColumnsOracle(node);
+      } else if (node.tag.type == "indexes") {
+        getIndexesOracle(node);
+      } else if (node.tag.type == "index") {
+        getIndexesColumnsOracle(node);
+      } else if (node.tag.type == "function_list") {
+        getFunctionsOracle(node);
+      } else if (node.tag.type == "function") {
+        getFunctionFieldsOracle(node);
+      } else if (node.tag.type == "procedure_list") {
+        getProceduresOracle(node);
+      } else if (node.tag.type == "procedure") {
+        getProcedureFieldsOracle(node);
+      } else if (node.tag.type == "sequence_list") {
+        getSequencesOracle(node);
+      } else if (node.tag.type == "tablespace_list") {
+        getTablespacesOracle(node);
+      } else if (node.tag.type == "role_list") {
+        getRolesOracle(node);
+      } else if (node.tag.type == "server") {
+        getTreeDetailsOracle(node);
+      } else {
+        afterNodeOpenedCallbackOracle(node);
+      }
+  }
+  function afterNodeOpenedCallbackOracle(node) {
+    if (v_connTabControl.tag.hooks.oracleTreeNodeOpen.length > 0) {
+      for (var i2 = 0; i2 < v_connTabControl.tag.hooks.oracleTreeNodeOpen.length; i2++)
+        v_connTabControl.tag.hooks.oracleTreeNodeOpen[i2](node);
+    }
+  }
+  function getTreeDetailsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_tree_info_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id
+      }),
+      function(p_return) {
+        node.tree.contextMenu.cm_server.elements = [];
+        node.tree.contextMenu.cm_server.elements.push({
+          text: "Refresh",
+          icon: "fas cm-all fa-sync-alt",
+          action: function(node2) {
+            if (node2.childNodes == 0) refreshTreeOracle(node2);
+            else {
+              node2.collapseNode();
+              node2.expandNode();
+            }
+          }
+        });
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.tree.tag = {
+          version: p_return.v_data.v_database_return.version,
+          v_username: p_return.v_data.v_database_return.v_username,
+          superuser: p_return.v_data.v_database_return.superuser,
+          express: p_return.v_data.v_database_return.express,
+          create_role: p_return.v_data.v_database_return.create_role,
+          alter_role: p_return.v_data.v_database_return.alter_role,
+          drop_role: p_return.v_data.v_database_return.drop_role,
+          create_tablespace: p_return.v_data.v_database_return.create_tablespace,
+          alter_tablespace: p_return.v_data.v_database_return.alter_tablespace,
+          drop_tablespace: p_return.v_data.v_database_return.drop_tablespace,
+          create_sequence: p_return.v_data.v_database_return.create_sequence,
+          alter_sequence: p_return.v_data.v_database_return.alter_sequence,
+          drop_sequence: p_return.v_data.v_database_return.drop_sequence,
+          create_function: p_return.v_data.v_database_return.create_function,
+          drop_function: p_return.v_data.v_database_return.drop_function,
+          create_procedure: p_return.v_data.v_database_return.create_procedure,
+          drop_procedure: p_return.v_data.v_database_return.drop_procedure,
+          //create_triggerfunction: p_return.v_data.v_database_return
+          //    .create_triggerfunction,
+          //drop_triggerfunction: p_return.v_data.v_database_return
+          //    .drop_triggerfunction,
+          create_view: p_return.v_data.v_database_return.create_view,
+          drop_view: p_return.v_data.v_database_return.drop_view,
+          //create_mview: p_return.v_data.v_database_return.create_mview,
+          //refresh_mview: p_return.v_data.v_database_return.refresh_mview,
+          //drop_mview: p_return.v_data.v_database_return.drop_mview,
+          create_table: p_return.v_data.v_database_return.create_table,
+          alter_table: p_return.v_data.v_database_return.alter_table,
+          drop_table: p_return.v_data.v_database_return.drop_table,
+          create_column: p_return.v_data.v_database_return.create_column,
+          alter_column: p_return.v_data.v_database_return.alter_column,
+          drop_column: p_return.v_data.v_database_return.drop_column,
+          create_primarykey: p_return.v_data.v_database_return.create_primarykey,
+          drop_primarykey: p_return.v_data.v_database_return.drop_primarykey,
+          create_unique: p_return.v_data.v_database_return.create_unique,
+          drop_unique: p_return.v_data.v_database_return.drop_unique,
+          create_foreignkey: p_return.v_data.v_database_return.create_foreignkey,
+          drop_foreignkey: p_return.v_data.v_database_return.drop_foreignkey,
+          create_index: p_return.v_data.v_database_return.create_index,
+          alter_index: p_return.v_data.v_database_return.alter_index,
+          drop_index: p_return.v_data.v_database_return.drop_index,
+          //create_trigger: p_return.v_data.v_database_return.create_trigger,
+          //create_view_trigger: p_return.v_data.v_database_return.create_view_trigger,
+          //alter_trigger: p_return.v_data.v_database_return.alter_trigger,
+          //enable_trigger: p_return.v_data.v_database_return.enable_trigger,
+          //disable_trigger: p_return.v_data.v_database_return.disable_trigger,
+          //drop_trigger: p_return.v_data.v_database_return.drop_trigger,
+          //create_partition: p_return.v_data.v_database_return.create_partition,
+          //noinherit_partition: p_return.v_data.v_database_return.noinherit_partition,
+          //drop_partition: p_return.v_data.v_database_return.drop_partition
+          delete: p_return.v_data.v_database_return.delete
+        };
+        if (node.tree.tag.superuser) {
+          node.tree.contextMenu.cm_server.elements.push({
+            text: "Monitoring",
+            icon: "fas cm-all fa-chart-line",
+            action: function(node2) {
+            },
+            submenu: {
+              elements: [
+                /*{
+                	text: 'Dashboard',
+                	icon: 'fas cm-all fa-chart-line',
+                	action: function(node) {
+                		v_connTabControl.tag.createMonitorDashboardTab();
+                		startMonitorDashboard();
+                	}
+                }, */
+                {
+                  text: "Sessions",
+                  icon: "fas cm-all fa-chart-line",
+                  action: function(node2) {
+                    v_connTabControl.tag.createMonitoringTab("Sessions", "select * from v$session", [
+                      {
+                        icon: "fas cm-all fa-times",
+                        title: "Terminate",
+                        action: "oracleTerminateBackend"
+                      }
+                    ]);
+                  }
+                }
+              ]
+            }
+          });
+        }
+        node.setText(p_return.v_data.v_database_return.version);
+        var node_connection = node.createChildNode(
+          p_return.v_data.v_database_return.v_database,
+          true,
+          "fas node-all fa-database node-database-list",
+          {
+            type: "connection"
+          },
+          "cm_connection"
+        );
+        if (node.tree.tag.superuser) {
+          var node_tablespaces = node.createChildNode(
+            "Tablespaces",
+            false,
+            "fas node-all fa-folder-open node-tablespace-list",
+            {
+              type: "tablespace_list",
+              num_tablespaces: 0
+            },
+            "cm_tablespaces"
+          );
+          node_tablespaces.createChildNode("", true, "node-spin", null, null);
+          var node_roles = node.createChildNode(
+            "Roles",
+            false,
+            "fas node-all fa-users node-user-list",
+            {
+              type: "role_list",
+              num_roles: 0
+            },
+            "cm_roles"
+          );
+          node_roles.createChildNode("", true, "node-spin", null, null);
+        }
+        var node_tables = node_connection.createChildNode(
+          "Tables",
+          false,
+          "fas node-all fa-th node-table-list",
+          {
+            type: "table_list",
+            num_tables: 0
+          },
+          "cm_tables"
+        );
+        node_tables.createChildNode("", true, "node-spin", null, null);
+        var node_sequences = node_connection.createChildNode(
+          "Sequences",
+          false,
+          "fas node-all fa-sort-numeric-down node-sequence-list",
+          {
+            type: "sequence_list",
+            num_sequences: 0
+          },
+          "cm_sequences"
+        );
+        node_sequences.createChildNode("", true, "node-spin", null, null);
+        var node_views = node_connection.createChildNode(
+          "Views",
+          false,
+          "fas node-all fa-eye node-view-list",
+          {
+            type: "view_list",
+            num_views: 0
+          },
+          "cm_views"
+        );
+        node_views.createChildNode("", true, "node-spin", null, null);
+        var node_functions = node_connection.createChildNode(
+          "Functions",
+          false,
+          "fas node-all fa-cog node-function-list",
+          {
+            type: "function_list",
+            num_functions: 0
+          },
+          "cm_functions"
+        );
+        node_functions.createChildNode("", true, "node-spin", null, null);
+        var node_functions = node_connection.createChildNode(
+          "Procedures",
+          false,
+          "fas node-all fa-cog node-procedure-list",
+          {
+            type: "procedure_list",
+            num_functions: 0
+          },
+          "cm_procedures"
+        );
+        node_functions.createChildNode("", true, "node-spin", null, null);
+        if (v_connTabControl.selectedTab.tag.firstTimeOpen) {
+          v_connTabControl.selectedTab.tag.firstTimeOpen = false;
+        }
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getTablespacesOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_tablespaces_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Tablespaces (" + p_return.v_data.length + ")");
+        node.tag.num_tablespaces = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i].v_name,
+            false,
+            "fas node-all fa-folder node-tablespace",
+            {
+              type: "tablespace"
+            },
+            "cm_tablespace",
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getRolesOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_roles_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Roles (" + p_return.v_data.length + ")");
+        node.tag.num_tablespaces = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i].v_name,
+            false,
+            "fas node-all fa-user node-user",
+            {
+              type: "role"
+            },
+            "cm_role",
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getTablesOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_tables_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Tables (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i].v_name,
+            false,
+            "fas node-all fa-table node-table",
+            {
+              type: "table",
+              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i].v_has_uniques,
+              has_indexes: p_return.v_data[i].v_has_indexes,
+              has_checks: p_return.v_data[i].v_has_checks,
+              has_excludes: p_return.v_data[i].v_has_excludes,
+              has_rules: p_return.v_data[i].v_has_rules,
+              has_triggers: p_return.v_data[i].v_has_triggers,
+              has_partitions: p_return.v_data[i].v_has_partitions,
+              has_statistics: p_return.v_data[i].v_has_statistics
+            },
+            "cm_table",
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "table_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getSequencesOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_sequences_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: null
+      }),
+      function(p_return) {
+        node.setText("Sequences (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i].v_sequence_name,
+            false,
+            "fas node-all fa-sort-numeric-down node-sequence",
+            {
+              type: "sequence"
+            },
+            "cm_sequence",
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getViewsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_views_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Views (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i].v_name,
+            false,
+            "fas node-all fa-eye node-view",
+            {
+              type: "view",
+              has_triggers: p_return.v_data[i].v_has_triggers
+            },
+            "cm_view",
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "view_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getViewsColumnsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_views_columns_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        v_list = node.createChildNode(
+          "Columns (" + p_return.v_data.length + ")",
+          false,
+          "fas node-all fa-columns node-column",
+          null,
+          null,
+          null,
+          false
+        );
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = v_list.createChildNode(
+            p_return.v_data[i].v_column_name,
+            false,
+            "fas node-all fa-columns node-column",
+            {
+              type: "table_field"
+            },
+            null,
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "Type: " + p_return.v_data[i].v_data_type,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        if (node.tag.has_rules) {
+          v_node = node.createChildNode(
+            "Rules",
+            false,
+            "fas node-all fa-lightbulb node-rule",
+            {
+              type: "rule_list"
+            },
+            "cm_rules",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_triggers) {
+          v_node = node.createChildNode(
+            "Triggers",
+            false,
+            "fas node-all fa-bolt node-trigger",
+            {
+              type: "trigger_list"
+            },
+            "cm_view_triggers",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getViewDefinitionOracle(node) {
+    execAjax(
+      "/get_view_definition_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_view: node.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+        var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
+        }
+        v_div_result.innerHTML = "";
+        maximizeEditor();
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      true
+    );
+  }
+  function getColumnsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_columns_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        v_list = node.createChildNode(
+          "Columns (" + p_return.v_data.length + ")",
+          false,
+          "fas node-all fa-columns node-column",
+          {
+            type: "column_list"
+          },
+          "cm_columns",
+          null,
+          false
+        );
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = v_list.createChildNode(
+            p_return.v_data[i].v_column_name,
+            false,
+            "fas node-all fa-columns node-column",
+            {
+              type: "table_field"
+            },
+            "cm_column",
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "Type: " + p_return.v_data[i].v_data_type,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "Nullable: " + p_return.v_data[i].v_nullable,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        if (node.tag.has_primary_keys) {
+          v_node = node.createChildNode(
+            "Primary Key",
+            false,
+            "fas node-all fa-key node-pkey",
+            {
+              type: "primary_key"
+            },
+            "cm_pks",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_foreign_keys) {
+          v_node = node.createChildNode(
+            "Foreign Keys",
+            false,
+            "fas node-all fa-key node-fkey",
+            {
+              type: "foreign_keys"
+            },
+            "cm_fks",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_uniques) {
+          v_node = node.createChildNode(
+            "Uniques",
+            false,
+            "fas node-all fa-key node-unique",
+            {
+              type: "uniques"
+            },
+            "cm_uniques",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_indexes) {
+          v_node = node.createChildNode(
+            "Indexes",
+            false,
+            "fas node-all fa-thumbtack node-index",
+            {
+              type: "indexes"
+            },
+            "cm_indexes",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_triggers) {
+          v_node = node.createChildNode(
+            "Triggers",
+            false,
+            "fas node-all fa-bolt node-trigger",
+            {
+              type: "trigger_list"
+            },
+            "cm_triggers",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_partitions) {
+          v_node = node.createChildNode(
+            "Partitions",
+            false,
+            "fas node-all fa-table node-partition",
+            {
+              type: "partition_list"
+            },
+            "cm_partitions",
+            null,
+            false
+          );
+          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getPKOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_pk_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        node.setText("Primary Key (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) {
+          node.removeChildNodes();
+        }
+        if (p_return.v_data.length > 0) {
+          v_node = node.createChildNode(
+            p_return.v_data[0][0],
+            false,
+            "fas node-all fa-key node-pkey",
+            {
+              type: "pk"
+            },
+            "cm_pk"
+          );
+          v_node.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "pk_field"
+            },
+            null
+          );
+        }
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getPKColumnsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_pk_columns_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_key: node.text,
+        p_table: node.parent.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node.createChildNode(
+            p_return.v_data[i][0],
+            false,
+            "fas node-all fa-columns node-column",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getUniquesOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_uniques_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        node.setText("Uniques (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        if (p_return.v_data.length > 0) {
+          for (i = 0; i < p_return.v_data.length; i++) {
+            v_node = node.createChildNode(
+              p_return.v_data[i][0],
+              false,
+              "fas node-all fa-key node-unique",
+              {
+                type: "unique"
+              },
+              "cm_unique",
+              null,
+              false
+            );
+            v_node.createChildNode(
+              "",
+              false,
+              "node-spin",
+              {
+                type: "unique_field"
+              },
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getUniquesColumnsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_uniques_columns_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_unique: node.text,
+        p_table: node.parent.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        if (p_return.v_data.length > 0) {
+          for (i = 0; i < p_return.v_data.length; i++) {
+            node.createChildNode(
+              p_return.v_data[i][0],
+              false,
+              "fas node-all fa-columns node-column",
+              null,
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getIndexesOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_indexes_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        node.setText("Indexes (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        var v_node2;
+        if (p_return.v_data.length > 0) {
+          for (i = 0; i < p_return.v_data.length; i++) {
+            v_node2 = node.createChildNode(
+              p_return.v_data[i][0] + " (" + p_return.v_data[i][1] + ")",
+              false,
+              "fas node-all fa-thumbtack node-index",
+              {
+                type: "index"
+              },
+              "cm_index",
+              null,
+              false
+            );
+            v_node2.createChildNode(
+              "",
+              false,
+              "node-spin",
+              {
+                type: "index_field"
+              },
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getIndexesColumnsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_indexes_columns_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_index: node.text.replace(" (Non Unique)", "").replace(" (Unique)", ""),
+        p_table: node.parent.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        if (p_return.v_data.length > 0) {
+          for (i = 0; i < p_return.v_data.length; i++) {
+            node.createChildNode(
+              p_return.v_data[i][0],
+              false,
+              "fas node-all fa-columns node-column",
+              null,
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFKsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_fks_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        node.setText("Foreign Keys (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i][0],
+            false,
+            "fas node-all fa-key node-fkey",
+            {
+              type: "foreign_key"
+            },
+            "cm_fk",
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "Referenced Table: " + p_return.v_data[i][1],
+            false,
+            "fas node-all fa-table node-table",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "Delete Rule: " + p_return.v_data[i][2],
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "Update Rule: " + p_return.v_data[i][3],
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+          v_curr_fk = p_return.v_data[i][0];
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFKsColumnsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_fks_columns_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_fkey: node.text,
+        p_table: node.parent.parent.text,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.createChildNode(
+          "Referenced Table: " + p_return.v_data[0][0],
+          false,
+          "fas node-all fa-table node-table",
+          null,
+          null,
+          null,
+          false
+        );
+        node.createChildNode(
+          "Delete Rule: " + p_return.v_data[0][1],
+          false,
+          "fas node-all fa-ellipsis-h node-bullet",
+          null,
+          null,
+          null,
+          false
+        );
+        node.createChildNode(
+          "Update Rule: " + p_return.v_data[0][2],
+          false,
+          "fas node-all fa-ellipsis-h node-bullet",
+          null,
+          null,
+          null,
+          false
+        );
+        for (i = 0; i < p_return.v_data.length; i++) {
+          node.createChildNode(
+            p_return.v_data[i][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i][4],
+            false,
+            "fas node-all fa-columns node-column",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFunctionsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_functions_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Functions (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i].v_name,
+            false,
+            "fas node-all fa-cog node-function",
+            {
+              type: "function",
+              id: p_return.v_data[i].v_id
+            },
+            "cm_function",
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "function_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFunctionFieldsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_function_fields_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_function: node.tag.id,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.tag.num_tables = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          if (p_return.v_data[i].v_type == "O")
+            v_node = node.createChildNode(
+              p_return.v_data[i].v_name,
+              false,
+              "fas node-all fa-arrow-right node-function-field",
+              null,
+              null,
+              null,
+              false
+            );
+          else {
+            if (p_return.v_data[i].v_type == "I")
+              v_node = node.createChildNode(
+                p_return.v_data[i].v_name,
+                false,
+                "fas node-all fa-arrow-left node-function-field",
+                null,
+                null,
+                null,
+                false
+              );
+            else
+              v_node = node.createChildNode(
+                p_return.v_data[i].v_name,
+                false,
+                "fas node-all fa-exchange-alt node-function-field",
+                null,
+                null,
+                null,
+                false
+              );
+          }
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFunctionDefinitionOracle(node) {
+    execAjax(
+      "/get_function_definition_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_function: node.tag.id
+      }),
+      function(p_return) {
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+        var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
+        }
+        v_div_result.innerHTML = "";
+        maximizeEditor();
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      true
+    );
+  }
+  function getProceduresOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_procedures_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Procedures (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          v_node = node.createChildNode(
+            p_return.v_data[i].v_name,
+            false,
+            "fas node-all fa-cog node-procedure",
+            {
+              type: "procedure",
+              id: p_return.v_data[i].v_id
+            },
+            "cm_procedure",
+            null,
+            false
+          );
+          v_node.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "procedure_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getProcedureFieldsOracle(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax(
+      "/get_procedure_fields_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_procedure: node.tag.id,
+        p_schema: null
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.tag.num_tables = p_return.v_data.length;
+        for (i = 0; i < p_return.v_data.length; i++) {
+          if (p_return.v_data[i].v_type == "O")
+            v_node = node.createChildNode(
+              p_return.v_data[i].v_name,
+              false,
+              "fas node-all fa-arrow-right node-function-field",
+              null,
+              null,
+              null,
+              false
+            );
+          else {
+            if (p_return.v_data[i].v_type == "I")
+              v_node = node.createChildNode(
+                p_return.v_data[i].v_name,
+                false,
+                "fas node-all fa-arrow-left node-function-field",
+                null,
+                null,
+                null,
+                false
+              );
+            else
+              v_node = node.createChildNode(
+                p_return.v_data[i].v_name,
+                false,
+                "fas node-all fa-exchange-alt node-function-field",
+                null,
+                null,
+                null,
+                false
+              );
+          }
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackOracle(node);
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getProcedureDefinitionOracle(node) {
+    execAjax(
+      "/get_procedure_definition_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_procedure: node.tag.id
+      }),
+      function(p_return) {
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+        var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
+        }
+        v_div_result.innerHTML = "";
+        maximizeEditor();
+      },
+      function(p_return) {
+        nodeOpenErrorOracle(p_return, node);
+      },
+      "box",
+      true
+    );
+  }
+  function TemplateSelectOracle(p_schema, p_table) {
+    execAjax(
+      "/template_select_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table,
+        p_schema
+      }),
+      function(p_return) {
+        v_connTabControl.tag.createQueryTab(p_schema + "." + p_table);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data.v_template);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, p_schema + "." + p_table);
+        querySQL(0);
+      },
+      function(p_return) {
+        showError(p_return.v_data);
+        return "";
+      },
+      "box",
+      true
+    );
+  }
+  function TemplateInsertOracle(p_schema, p_table) {
+    execAjax(
+      "/template_insert_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table,
+        p_schema
+      }),
+      function(p_return) {
+        tabSQLTemplate("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
+      },
+      function(p_return) {
+        showError(p_return.v_data);
+        return "";
+      },
+      "box",
+      true
+    );
+  }
+  function TemplateUpdateOracle(p_schema, p_table) {
+    execAjax(
+      "/template_update_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table,
+        p_schema
+      }),
+      function(p_return) {
+        tabSQLTemplate("Update " + p_schema + "." + p_table, p_return.v_data.v_template);
+      },
+      function(p_return) {
+        showError(p_return.v_data);
+        return "";
+      },
+      "box",
+      true
+    );
+  }
+  function nodeOpenErrorOracle(p_return, p_node) {
+    if (p_return.v_data.password_timeout) {
+      p_node.collapseNode();
+      showPasswordPrompt(
+        v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        function() {
+          p_node.expandNode();
+        },
+        null,
+        p_return.v_data.message
+      );
+    } else {
+      if (p_node.childNodes.length > 0) p_node.removeChildNodes();
+      v_node = p_node.createChildNode(
+        "Error - <a class='a_link' onclick='showError(&quot;" + p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, "") + "&quot;)'>View Detail</a>",
+        false,
+        "fas fa-times node-error",
+        {
+          type: "error",
+          message: p_return.v_data
+        },
+        null
+      );
+    }
+  }
+  function oracleTerminateBackendConfirm(p_pid) {
+    execAjax(
+      "/kill_backend_oracle/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_pid
+      }),
+      function(p_return) {
+        refreshMonitoring();
+      },
+      function(p_return) {
+        if (p_return.v_data.password_timeout) {
+          showPasswordPrompt(
+            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            function() {
+              oracleTerminateBackendConfirm(p_pid);
+            },
+            null,
+            p_return.v_data.message
+          );
+        } else {
+          showError(p_return.v_data);
+        }
+      },
+      "box",
+      true
+    );
+  }
+  function oracleTerminateBackend(p_row) {
+    var v_pid = p_row[1] + "," + p_row[2];
+    showConfirm("Are you sure you want to terminate session " + v_pid + "?", function() {
+      oracleTerminateBackendConfirm(v_pid);
+    });
+  }
+  const treeOracle = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    TemplateInsertOracle,
+    TemplateSelectOracle,
+    TemplateUpdateOracle,
+    afterNodeOpenedCallbackOracle,
+    getColumnsOracle,
+    getFKsColumnsOracle,
+    getFKsOracle,
+    getFunctionDefinitionOracle,
+    getFunctionFieldsOracle,
+    getFunctionsOracle,
+    getIndexesColumnsOracle,
+    getIndexesOracle,
+    getPKColumnsOracle,
+    getPKOracle,
+    getProcedureDefinitionOracle,
+    getProcedureFieldsOracle,
+    getProceduresOracle,
+    getPropertiesOracle,
+    getRolesOracle,
+    getSequencesOracle,
+    getTablesOracle,
+    getTablespacesOracle,
+    getTreeDetailsOracle,
+    getTreeOracle,
+    getUniquesColumnsOracle,
+    getUniquesOracle,
+    getViewDefinitionOracle,
+    getViewsColumnsOracle,
+    getViewsOracle,
+    nodeOpenErrorOracle,
+    oracleTerminateBackend,
+    oracleTerminateBackendConfirm,
+    refreshTreeOracle
   }, Symbol.toStringTag, { value: "Module" }));
   exposeGlobals(
     treeSnippets,
-    treePostgresql
+    treePostgresql,
+    treeOracle
   );
 })();
 //# sourceMappingURL=omnidb.bundle.js.map
