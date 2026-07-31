@@ -51,6 +51,7 @@ import * as longPolling from './long_polling.js'
 import * as jsonHtmlComponents from './lib/json_html/components.js'
 import * as omnisControl from './lib/omnis_ui_assistant/omnis-control.js'
 import * as omnisLegere from './lib/omnis_legere/omnis-legere.js'
+import * as AgGridAdapter from './AgGridAdapter.js'
 
 exposeGlobals(
   treeSnippets,
@@ -96,4 +97,5 @@ exposeGlobals(
   jsonHtmlComponents,
   omnisControl,
   omnisLegere,
+  AgGridAdapter,
 )

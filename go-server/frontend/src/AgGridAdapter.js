@@ -3,7 +3,7 @@
  * This adapter maps Handsontable API calls to AG Grid API
  */
 
-class AgGridAdapter {
+export class AgGridAdapter {
 	constructor(container, options) {
 		this.container = container;
 		this.options = options || {};
