@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Retrieving tree.
 /// </summary>
-function getTreeMariadb(p_div) {
+export function getTreeMariadb(p_div) {
 	var context_menu = {
 		cm_server: {
 			elements: [
@@ -1107,7 +1107,7 @@ function getTreeMariadb(p_div) {
 /// Retrieving properties.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPropertiesMariadb(node) {
+export function getPropertiesMariadb(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "table") {
 			getProperties("/get_properties_mariadb/", {
@@ -1159,7 +1159,7 @@ function getPropertiesMariadb(node) {
 /// Refreshing tree node.
 /// </summary>
 /// <param name="node">Node object.</param>
-function refreshTreeMariadb(node) {
+export function refreshTreeMariadb(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "table_list") {
 			getTablesMariadb(node);
@@ -1214,7 +1214,7 @@ function refreshTreeMariadb(node) {
 		}
 }
 
-function afterNodeOpenedCallbackMariaDB(node) {
+export function afterNodeOpenedCallbackMariaDB(node) {
 	//Hooks
 	if (v_connTabControl.tag.hooks.mariadbTreeNodeOpen.length > 0) {
 		for (var i = 0; i < v_connTabControl.tag.hooks.mariadbTreeNodeOpen.length; i++)
@@ -1226,7 +1226,7 @@ function afterNodeOpenedCallbackMariaDB(node) {
 /// Retrieving tree details.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTreeDetailsMariadb(node) {
+export function getTreeDetailsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1418,7 +1418,7 @@ function getTreeDetailsMariadb(node) {
 /// Retrieving database objects.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDatabaseObjectsMariadb(node) {
+export function getDatabaseObjectsMariadb(node) {
 	node.removeChildNodes();
 
 	var node_tables = node.createChildNode(
@@ -1495,7 +1495,7 @@ function getDatabaseObjectsMariadb(node) {
 /// Retrieving databases.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDatabasesMariadb(node) {
+export function getDatabasesMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1550,7 +1550,7 @@ function getDatabasesMariadb(node) {
 /// Retrieving roles.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getRolesMariadb(node) {
+export function getRolesMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1598,7 +1598,7 @@ function getRolesMariadb(node) {
 /// Retrieving tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTablesMariadb(node) {
+export function getTablesMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1669,7 +1669,7 @@ function getTablesMariadb(node) {
 /// Retrieving sequences.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getSequencesMariadb(node) {
+export function getSequencesMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1716,7 +1716,7 @@ function getSequencesMariadb(node) {
 /// Retrieving views.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsMariadb(node) {
+export function getViewsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1778,7 +1778,7 @@ function getViewsMariadb(node) {
 /// Retrieving View Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsColumnsMariadb(node) {
+export function getViewsColumnsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1875,7 +1875,7 @@ function getViewsColumnsMariadb(node) {
 /// Retrieving view definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewDefinitionMariadb(node) {
+export function getViewDefinitionMariadb(node) {
 	execAjax(
 		"/get_view_definition_mariadb/",
 		JSON.stringify({
@@ -1914,7 +1914,7 @@ function getViewDefinitionMariadb(node) {
 /// Retrieving columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getColumnsMariadb(node) {
+export function getColumnsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2087,7 +2087,7 @@ function getColumnsMariadb(node) {
 /// Retrieving PKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKMariadb(node) {
+export function getPKMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2146,7 +2146,7 @@ function getPKMariadb(node) {
 /// Retrieving PKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKColumnsMariadb(node) {
+export function getPKColumnsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2190,7 +2190,7 @@ function getPKColumnsMariadb(node) {
 /// Retrieving Uniques.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesMariadb(node) {
+export function getUniquesMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2253,7 +2253,7 @@ function getUniquesMariadb(node) {
 /// Retrieving Uniques Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesColumnsMariadb(node) {
+export function getUniquesColumnsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2299,7 +2299,7 @@ function getUniquesColumnsMariadb(node) {
 /// Retrieving Indexes.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesMariadb(node) {
+export function getIndexesMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2363,7 +2363,7 @@ function getIndexesMariadb(node) {
 /// Retrieving Indexes Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesColumnsMariadb(node) {
+export function getIndexesColumnsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2409,7 +2409,7 @@ function getIndexesColumnsMariadb(node) {
 /// Retrieving FKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsMariadb(node) {
+export function getFKsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2486,7 +2486,7 @@ function getFKsMariadb(node) {
 /// Retrieving FKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsColumnsMariadb(node) {
+export function getFKsColumnsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2559,7 +2559,7 @@ function getFKsColumnsMariadb(node) {
 /// Retrieving Triggers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggersMariadb(node) {
+export function getTriggersMariadb(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2615,7 +2615,7 @@ function getTriggersMariadb(node) {
 /// Retrieving Partitions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPartitionsMariadb(node) {
+export function getPartitionsMariadb(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2665,7 +2665,7 @@ function getPartitionsMariadb(node) {
 /// Retrieving functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionsMariadb(node) {
+export function getFunctionsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2726,7 +2726,7 @@ function getFunctionsMariadb(node) {
 /// Retrieving function fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionFieldsMariadb(node) {
+export function getFunctionFieldsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2824,7 +2824,7 @@ function getFunctionFieldsMariadb(node) {
 /// Retrieving function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionDefinitionMariadb(node) {
+export function getFunctionDefinitionMariadb(node) {
 	execAjax(
 		"/get_function_definition_mariadb/",
 		JSON.stringify({
@@ -2862,7 +2862,7 @@ function getFunctionDefinitionMariadb(node) {
 /// Retrieving procedures.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProceduresMariadb(node) {
+export function getProceduresMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2924,7 +2924,7 @@ function getProceduresMariadb(node) {
 /// Retrieving procedure fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureFieldsMariadb(node) {
+export function getProcedureFieldsMariadb(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -3022,7 +3022,7 @@ function getProcedureFieldsMariadb(node) {
 /// Retrieving procedure definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureDefinitionMariadb(node) {
+export function getProcedureDefinitionMariadb(node) {
 	execAjax(
 		"/get_procedure_definition_mariadb/",
 		JSON.stringify({
@@ -3061,7 +3061,7 @@ function getProcedureDefinitionMariadb(node) {
 /// Retrieving trigger functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionsMariadb(node) {
+export function getTriggerFunctionsMariadb(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -3106,7 +3106,7 @@ function getTriggerFunctionsMariadb(node) {
 /// Retrieving trigger function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionDefinitionMariadb(node) {
+export function getTriggerFunctionDefinitionMariadb(node) {
 
 	execAjax('/get_triggerfunction_definition_mariadb/',
 		JSON.stringify({
@@ -3156,7 +3156,7 @@ function getTriggerFunctionDefinitionMariadb(node) {
 /// <summary>
 /// Retrieving SELECT SQL template.
 /// </summary>
-function TemplateSelectMariadb(p_schema, p_table) {
+export function TemplateSelectMariadb(p_schema, p_table) {
 	execAjax(
 		"/template_select_mariadb/",
 		JSON.stringify({
@@ -3188,7 +3188,7 @@ function TemplateSelectMariadb(p_schema, p_table) {
 /// <summary>
 /// Retrieving INSERT SQL template.
 /// </summary>
-function TemplateInsertMariadb(p_schema, p_table) {
+export function TemplateInsertMariadb(p_schema, p_table) {
 	execAjax(
 		"/template_insert_mariadb/",
 		JSON.stringify({
@@ -3212,7 +3212,7 @@ function TemplateInsertMariadb(p_schema, p_table) {
 /// <summary>
 /// Retrieving UPDATE SQL template.
 /// </summary>
-function TemplateUpdateMariadb(p_schema, p_table) {
+export function TemplateUpdateMariadb(p_schema, p_table) {
 	execAjax(
 		"/template_update_mariadb/",
 		JSON.stringify({
@@ -3233,7 +3233,7 @@ function TemplateUpdateMariadb(p_schema, p_table) {
 	);
 }
 
-function nodeOpenErrorMariadb(p_return, p_node) {
+export function nodeOpenErrorMariadb(p_return, p_node) {
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(
@@ -3262,14 +3262,14 @@ function nodeOpenErrorMariadb(p_return, p_node) {
 	}
 }
 
-function getMajorVersionMariadb(p_version) {
+export function getMajorVersionMariadb(p_version) {
 	var v_version = p_version.split("-")[0];
 	var tmp = v_version.replace("MariaDB ", "").split(".");
 	tmp.pop();
 	return tmp.join(".");
 }
 
-function mariadbTerminateBackendConfirm(p_pid) {
+export function mariadbTerminateBackendConfirm(p_pid) {
 	execAjax(
 		"/kill_backend_mariadb/",
 		JSON.stringify({
@@ -3299,7 +3299,7 @@ function mariadbTerminateBackendConfirm(p_pid) {
 	);
 }
 
-function mariadbTerminateBackend(p_row) {
+export function mariadbTerminateBackend(p_row) {
 	showConfirm("Are you sure you want to terminate process " + p_row[0] + "?", function () {
 		mariadbTerminateBackendConfirm(p_row[0]);
 	});

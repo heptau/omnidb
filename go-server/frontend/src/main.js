@@ -11,9 +11,11 @@ import { exposeGlobals } from './legacy-globals.js'
 import * as treeSnippets from './tree_context_functions/tree_snippets.js'
 import * as treePostgresql from './tree_context_functions/tree_postgresql.js'
 import * as treeOracle from './tree_context_functions/tree_oracle.js'
+import * as treeMariadb from './tree_context_functions/tree_mariadb.js'
 
 exposeGlobals(
   treeSnippets,
   treePostgresql,
   treeOracle,
+  treeMariadb,
 )
