@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function initCreateTabFunctions() {
+export function initCreateTabFunctions() {
 	// var v_createAlterTableTabFunction = function(p_table) {
 	//
 	// 	v_connTabControl.selectedTab.tag.tabControl.removeTabIndex(v_connTabControl.selectedTab.tag.tabControl.tabList.length-1);
@@ -195,7 +195,7 @@ function initCreateTabFunctions() {
 	//v_connTabControl.tag.createNewMonitorNodeTab = v_createNewMonitorNodeTabFunction;
 }
 
-function beforeCloseTab(e, p_confirm_function) {
+export function beforeCloseTab(e, p_confirm_function) {
 	if (e) {
 		if (e.clientX == 0 && e.clientY == 0)
 			showConfirm("Are you sure you want to remove this tab?", function () {

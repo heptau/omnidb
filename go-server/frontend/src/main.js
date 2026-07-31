@@ -34,6 +34,11 @@ import * as innerConsoleTab from './tab_functions/inner_console_tab.js'
 import * as innerMonitoringDashboardTab from './tab_functions/inner_monitoring_dashboard_tab.js'
 import * as innerMonitoringTab from './tab_functions/inner_monitoring_tab.js'
 import * as websiteTab from './tab_functions/website_tab.js'
+import * as editData from './tree_context_functions/edit_data.js'
+import * as createTabFunctions from './create_tab_functions.js'
+import * as monitoring from './monitoring.js'
+import * as workspace from './workspace.js'
+import * as pluginHook from './plugin_hook.js'
 
 exposeGlobals(
   treeSnippets,
@@ -62,4 +67,9 @@ exposeGlobals(
   innerMonitoringDashboardTab,
   innerMonitoringTab,
   websiteTab,
+  editData,
+  createTabFunctions,
+  monitoring,
+  workspace,
+  pluginHook,
 )

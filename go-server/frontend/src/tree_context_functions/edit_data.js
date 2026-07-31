@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Query state
 /// </summary>
-var v_editDataState = {
+export var v_editDataState = {
 	Idle: 0,
 	Querying: 1,
 	QueryReady: 2,
@@ -43,7 +43,7 @@ var v_editDataState = {
 /// </summary>
 /// <param name="p_table">Table name.</param>
 /// <param name="p_schema">Schema name.</param>
-function v_startEditData(p_table, p_schema) {
+export function v_startEditData(p_table, p_schema) {
 	var input = JSON.stringify({
 		p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 		p_tab_id: v_connTabControl.selectedTab.id,
@@ -100,7 +100,7 @@ function v_startEditData(p_table, p_schema) {
 /// <summary>
 /// Triggered when X is pressed in specific record at the edit table data window.
 /// </summary>
-function deleteRowEditData() {
+export function deleteRowEditData() {
 	var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	var v_data = v_currTabTag.editDataObject.ht.getData();
 	var v_sel = v_currTabTag.editDataObject.ht.getSelected();
@@ -121,7 +121,7 @@ function deleteRowEditData() {
 	v_currTabTag.button_save.style.visibility = "visible";
 }
 
-function cancelEditData(p_tab_tag) {
+export function cancelEditData(p_tab_tag) {
 	var v_tab_tag;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -131,7 +131,7 @@ function cancelEditData(p_tab_tag) {
 	cancelEditDataTab();
 }
 
-function cancelEditDataTab(p_tab_tag) {
+export function cancelEditDataTab(p_tab_tag) {
 	var v_tab_tag;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -149,7 +149,7 @@ function cancelEditDataTab(p_tab_tag) {
 	SetAcked(v_tab_tag.context);
 }
 
-function queryEditData() {
+export function queryEditData() {
 	var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	var v_state = v_currTabTag.state;
@@ -203,7 +203,7 @@ function queryEditData() {
 	}
 }
 
-function checkEditDataStatus(p_tab) {
+export function checkEditDataStatus(p_tab) {
 	//Finished querying
 	if (p_tab.tag.state == v_editDataState.QueryReady) {
 		queryEditDataReturnRender(p_tab.tag.data, p_tab.tag.context);
@@ -214,7 +214,7 @@ function checkEditDataStatus(p_tab) {
 	}
 }
 
-function queryEditDataReturn(p_data, p_context) {
+export function queryEditDataReturn(p_data, p_context) {
 	//If query wasn't canceled already
 	if (p_context.tab_tag.state != v_editDataState.Idle) {
 		p_context.duration = new Date().getTime() - p_context.start_time;
@@ -236,7 +236,7 @@ function queryEditDataReturn(p_data, p_context) {
 	}
 }
 
-function queryEditDataReturnRender(p_message, p_context) {
+export function queryEditDataReturnRender(p_message, p_context) {
 	p_context.tab_tag.state = v_editDataState.Idle;
 	p_context.tab_tag.context = null;
 	p_context.tab_tag.data = null;
@@ -470,7 +470,7 @@ function queryEditDataReturnRender(p_message, p_context) {
 	$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
 }
 
-function saveEditData() {
+export function saveEditData() {
 	var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	var v_state = v_currTabTag.state;
@@ -522,7 +522,7 @@ function saveEditData() {
 	}
 }
 
-function saveEditDataReturn(p_data, p_context) {
+export function saveEditDataReturn(p_data, p_context) {
 	//If query wasn't canceled already
 	if (p_context.tab_tag.state != v_editDataState.Idle) {
 		p_context.duration = new Date().getTime() - p_context.start_time;
@@ -544,7 +544,7 @@ function saveEditDataReturn(p_data, p_context) {
 	}
 }
 
-function saveEditDataReturnRender(p_message, p_context) {
+export function saveEditDataReturnRender(p_message, p_context) {
 	p_context.tab_tag.state = v_editDataState.Idle;
 	p_context.tab_tag.context = null;
 	p_context.tab_tag.data = null;

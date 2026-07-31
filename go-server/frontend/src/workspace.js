@@ -112,7 +112,7 @@ $(function () {
 /// <summary>
 /// Retrieves database list.
 /// </summary>
-function getDatabaseList(p_init, p_callback) {
+export function getDatabaseList(p_init, p_callback) {
 	execAjax(
 		"/get_database_list/",
 		JSON.stringify({}),
@@ -194,14 +194,14 @@ function getDatabaseList(p_init, p_callback) {
 	);
 }
 
-function queueChangeActiveDatabaseThreadSafe(p_data) {
+export function queueChangeActiveDatabaseThreadSafe(p_data) {
 	v_connTabControl.tag.change_active_database_call_list.push(p_data);
 	if (!v_connTabControl.tag.change_active_database_call_running) {
 		changeActiveDatabaseThreadSafe(v_connTabControl.tag.change_active_database_call_list.pop());
 	}
 }
 
-function changeActiveDatabaseThreadSafe(p_data) {
+export function changeActiveDatabaseThreadSafe(p_data) {
 	v_connTabControl.tag.change_active_database_call_running = true;
 	execAjax(
 		"/change_active_database/",
@@ -219,7 +219,7 @@ function changeActiveDatabaseThreadSafe(p_data) {
 /// <summary>
 /// Changing database in the current connection tab.
 /// </summary>
-function changeDatabase(p_value) {
+export function changeDatabase(p_value) {
 	// Emptying the details of the connected db.
 	v_connTabControl.selectedTab.tag.divDetails.innerHTML = "";
 
@@ -266,7 +266,7 @@ function changeDatabase(p_value) {
 /// </summary>
 /// <param name="p_cancel_function">Ok function.</param>
 /// <param name="p_ok_function">Cancel function.</param>
-function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
+export function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
 	for (var i = 0; i < v_connTabControl.selectedTab.tag.tabControl.tabList.length; i++) {
 		var v_tab = v_connTabControl.selectedTab.tag.tabControl.tabList[i];
 		if (v_tab.tag != null) {
@@ -295,7 +295,7 @@ function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
 	}
 }
 
-function adjustQueryTabObjects(p_all_tabs) {
+export function adjustQueryTabObjects(p_all_tabs) {
 	var v_dbms = v_connTabControl.selectedTab.tag.selectedDBMS;
 
 	var v_target_div = null;
@@ -323,7 +323,7 @@ function adjustQueryTabObjects(p_all_tabs) {
 /// <summary>
 /// Draws graph.
 /// </summary>
-function drawGraph(p_all, p_schema) {
+export function drawGraph(p_all, p_schema) {
 	execAjax(
 		"/draw_graph/",
 		JSON.stringify({
@@ -466,7 +466,7 @@ function drawGraph(p_all, p_schema) {
 /// <summary>
 /// Rename tab.
 /// </summary>
-function renameTab(p_tab) {
+export function renameTab(p_tab) {
 	showConfirm(
 		"",
 		function () {
@@ -500,14 +500,14 @@ function renameTab(p_tab) {
 /// <summary>
 /// Renames tab.
 /// </summary>
-function renameTabConfirm(p_tab, p_name) {
+export function renameTabConfirm(p_tab, p_name) {
 	p_tab.tag.tab_title_span.textContent = p_name;
 }
 
 /// <summary>
 /// Removes tab.
 /// </summary>
-function removeTab(p_tab) {
+export function removeTab(p_tab) {
 	if (p_tab.tag.ht != null) {
 		p_tab.tag.ht.destroy();
 		p_tab.tag.div_result.innerHTML = "";
@@ -534,7 +534,7 @@ function removeTab(p_tab) {
 /// <summary>
 /// Resize snippet panel and transforms position when its visible.
 /// </summary>
-var resizeSnippetPanel = async function (p_left_pos_x = false) {
+export var resizeSnippetPanel = async function (p_left_pos_x = false) {
 	if (v_connTabControl.snippet_tag !== undefined) {
 		var v_element = $(v_connTabControl.snippet_tag.divPanel);
 		var v_snippet_tag = v_connTabControl.snippet_tag;
@@ -645,7 +645,7 @@ var resizeSnippetPanel = async function (p_left_pos_x = false) {
 /// <summary>
 /// Resize SQL editor and result div.
 /// </summary>
-function resizeTreeVertical(event) {
+export function resizeTreeVertical(event) {
 	var v_verticalLine = document.createElement("div");
 	v_verticalLine.id = "vertical-resize-line";
 	v_connTabControl.selectedTab.tag.divLeft.appendChild(v_verticalLine);
@@ -659,7 +659,7 @@ function resizeTreeVertical(event) {
 /// <summary>
 /// Resize SQL editor and result div.
 /// </summary>
-function resizeTreeVerticalEnd(event) {
+export function resizeTreeVerticalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeTreeVerticalEnd);
 	document.getElementById("vertical-resize-line").remove();
 
@@ -698,14 +698,14 @@ function resizeTreeVerticalEnd(event) {
 /// <summary>
 /// Redefines horizontal resize line position.
 /// </summary>
-function horizontalLinePosition(p_event) {
+export function horizontalLinePosition(p_event) {
 	document.getElementById("horizontal-resize-line").style.left = p_event.pageX + "px";
 }
 
 /// <summary>
 /// Resize Snippet panel editor horizontally.
 /// </summary>
-function resizeConnectionHorizontal(event) {
+export function resizeConnectionHorizontal(event) {
 	event.preventDefault();
 	var v_horizontalLine = document.createElement("div");
 	v_horizontalLine.id = "horizontal-resize-line";
@@ -720,7 +720,7 @@ function resizeConnectionHorizontal(event) {
 /// <summary>
 /// Resize Connection tab horizontally.
 /// </summary>
-function resizeConnectionHorizontalEnd(event) {
+export function resizeConnectionHorizontalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeConnectionHorizontalEnd);
 	var v_horizontal_line = document.getElementById("horizontal-resize-line");
 	if (v_horizontal_line) {
@@ -764,7 +764,7 @@ function resizeConnectionHorizontalEnd(event) {
 /// <summary>
 /// Resize Snippet panel editor horizontally.
 /// </summary>
-function resizeSnippetHorizontal(event) {
+export function resizeSnippetHorizontal(event) {
 	event.preventDefault();
 	var v_horizontalLine = document.createElement("div");
 	v_horizontalLine.id = "horizontal-resize-line";
@@ -779,7 +779,7 @@ function resizeSnippetHorizontal(event) {
 /// <summary>
 /// Resize Snippet panel editor horizontally.
 /// </summary>
-function resizeSnippetHorizontalEnd(event) {
+export function resizeSnippetHorizontalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeSnippetHorizontalEnd);
 	document.getElementById("horizontal-resize-line").remove();
 
@@ -793,7 +793,7 @@ function resizeSnippetHorizontalEnd(event) {
 /// <summary>
 /// Resize SQL editor and result div.
 /// </summary>
-function resizeVertical(event) {
+export function resizeVertical(event) {
 	event.preventDefault();
 	var v_verticalLine = document.createElement("div");
 	v_verticalLine.id = "vertical-resize-line";
@@ -808,7 +808,7 @@ function resizeVertical(event) {
 /// <summary>
 /// Resize SQL editor and result div.
 /// </summary>
-function resizeVerticalEnd(event) {
+export function resizeVerticalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeVerticalEnd);
 	document.getElementById("vertical-resize-line").remove();
 
@@ -832,11 +832,11 @@ function resizeVerticalEnd(event) {
 	refreshHeights();
 }
 
-function resizeWindow() {
+export function resizeWindow() {
 	refreshHeights(true);
 }
 
-var resizeTimeout;
+export var resizeTimeout;
 $(window).resize(function () {
 	clearTimeout(resizeTimeout);
 	resizeTimeout = setTimeout(resizeWindow, 200);
@@ -845,7 +845,7 @@ $(window).resize(function () {
 /// <summary>
 /// Refresh divs sizes and components of the currently selected tab
 /// </summary>
-function refreshHeights(p_all) {
+export function refreshHeights(p_all) {
 	setTimeout(function () {
 		//Adjusting tree height
 		// if (p_all) {
@@ -941,7 +941,7 @@ function refreshHeights(p_all) {
 	}, 351);
 }
 
-function refreshTreeHeight() {
+export function refreshTreeHeight() {
 	var v_tag = v_connTabControl.selectedTab.tag;
 
 	if (v_tag.currTreeTab == "properties") {
@@ -955,7 +955,7 @@ function refreshTreeHeight() {
 	}
 }
 
-function checkTabStatus(v_tab) {
+export function checkTabStatus(v_tab) {
 	if (v_tab.tag.tabControl.selectedTab.tag.mode == "query") checkQueryStatus(v_tab.tag.tabControl.selectedTab);
 	else if (v_tab.tag.tabControl.selectedTab.tag.mode == "edit") checkEditDataStatus(v_tab.tag.tabControl.selectedTab);
 	else if (v_tab.tag.tabControl.selectedTab.tag.mode == "console") checkConsoleStatus(v_tab.tag.tabControl.selectedTab);
@@ -964,7 +964,7 @@ function checkTabStatus(v_tab) {
 /// <summary>
 /// Indent SQL.
 /// </summary>
-function indentSQL(p_mode = false) {
+export function indentSQL(p_mode = false) {
 	var v_tab_tag = null;
 	var v_editor = null;
 	let v_mode = p_mode;
@@ -1012,7 +1012,7 @@ function indentSQL(p_mode = false) {
 	}
 }
 
-function showMenuNewTabOuter(e) {
+export function showMenuNewTabOuter(e) {
 	// Opening connections management when there are no configured connections.
 	if (!v_connTabControl.tag.connections || v_connTabControl.tag.connections.length === 0) {
 		startConnectionManagement();
@@ -1265,7 +1265,7 @@ function showMenuNewTabOuter(e) {
 	}
 }
 
-function showMenuNewTab(e) {
+export function showMenuNewTab(e) {
 	var v_option_list = [
 		{
 			text: "Query Tab",
@@ -1348,7 +1348,7 @@ function showMenuNewTab(e) {
 	);
 }
 
-function toggleTreeContainer() {
+export function toggleTreeContainer() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	if (v_tab_tag.divLeft) {
 		$(v_tab_tag.divLeft).toggleClass("omnidb__workspace__div-left--shrink");
@@ -1356,7 +1356,7 @@ function toggleTreeContainer() {
 	}
 }
 
-function toggleTreeTabsContainer(p_target_id, p_horizonta_line_id) {
+export function toggleTreeTabsContainer(p_target_id, p_horizonta_line_id) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	var v_target_element = $("#" + p_target_id);
 	if (v_target_element.hasClass("omnidb__tree-tabs--not-in-view")) {
@@ -1375,7 +1375,7 @@ function toggleTreeTabsContainer(p_target_id, p_horizonta_line_id) {
 	// $('#' + p_horizonta_line_id).toggleClass('d-none');
 }
 
-function dragStart(event, gridContainer) {
+export function dragStart(event, gridContainer) {
 	try {
 		event.dataTransfer.setData("Text", event.target.id);
 		event.dataTransfer.effectAllowed = "move";
@@ -1384,24 +1384,24 @@ function dragStart(event, gridContainer) {
 	} catch (e) {}
 }
 
-function dragEnd(event, grid_container) {
+export function dragEnd(event, grid_container) {
 	grid_container.classList.remove("omnidb__workspace-resize-grid--active");
 	event.target.classList.remove("omnidb__workspace-resize-grid__draggable--is-dragging");
 }
 
-function dragEnter(event) {
+export function dragEnter(event) {
 	event.target.classList.add("omnidb__workspace-resize-grid__column--enter");
 }
 
-function dragLeave(event) {
+export function dragLeave(event) {
 	event.target.classList.remove("omnidb__workspace-resize-grid__column--enter");
 }
 
-function allowDrop(event) {
+export function allowDrop(event) {
 	event.preventDefault();
 }
 
-function drop(event, grid_container, div_left, div_right) {
+export function drop(event, grid_container, div_left, div_right) {
 	event.preventDefault();
 	try {
 		var data = event.dataTransfer.getData("Text");
@@ -1431,11 +1431,11 @@ function drop(event, grid_container, div_left, div_right) {
  * @param  {Object} p_event UI action pointer event.
  * @return {String}         The Y position of the pointer in pixels.
  */
-function getVerticalLinePosition(p_event) {
+export function getVerticalLinePosition(p_event) {
 	document.getElementById("vertical-resize-line").style.top = p_event.pageY + "px";
 }
 
-function toggleExpandToPanelView(p_target_id) {
+export function toggleExpandToPanelView(p_target_id) {
 	let v_target = document.getElementById(p_target_id);
 	if (v_target) {
 		v_target.classList.toggle("omnidb__panel-view--full");
@@ -1445,7 +1445,7 @@ function toggleExpandToPanelView(p_target_id) {
 	}
 }
 
-function toggleExplainContext() {
+export function toggleExplainContext() {
 	if (v_explain_control.context === "default") {
 		v_explain_control.context = "legere";
 	} else {
@@ -1455,7 +1455,7 @@ function toggleExplainContext() {
 	updateExplainComponent();
 }
 
-function updateExplainComponent() {
+export function updateExplainComponent() {
 	if (v_explain_control.context === "default") {
 		$("#omnidb__main").addClass("omnidb__explain--default");
 	} else {
@@ -1471,7 +1471,7 @@ function updateExplainComponent() {
  * @param  {string} message Message string, accepts html.
  * @return {string}         HTML string.
  */
-function getAttributesTooltip(p_target, p_title, p_message, p_position = false) {
+export function getAttributesTooltip(p_target, p_title, p_message, p_position = false) {
 	let v_html = "";
 	if (p_message) {
 		v_html += p_title != undefined ? "<div>" + p_title + "</div>" : "";
@@ -1493,7 +1493,7 @@ function getAttributesTooltip(p_target, p_title, p_message, p_position = false) 
  * @param  {string} message Message string, accepts html.
  * @return {string}         HTML string.
  */
-function getStringTooltip(p_title, p_message, p_position = false) {
+export function getStringTooltip(p_title, p_message, p_position = false) {
 	let v_html = "";
 	if (p_message) {
 		v_html += p_title != undefined ? "<div>" + p_title + "</div>" : "";
@@ -1518,7 +1518,7 @@ function getStringTooltip(p_title, p_message, p_position = false) {
  * @param  {string} message Message string, accepts html.
  * @return {string}         HTML string.
  */
-function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_position = false) {
+export function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_position = false) {
 	let v_html = '<div class="omnidb__tooltip__inner tooltip-inner"><div class="arrow"></div>';
 	if (p_message) {
 		v_html += p_title != undefined ? "<div>" + p_title + "</div>" : "";
@@ -1555,7 +1555,7 @@ function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_position = f
 	});
 }
 
-var v_monitoring_action_whitelist = {
+export var v_monitoring_action_whitelist = {
 	postgresqlTerminateBackend: function (p_row) {
 		if (typeof postgresqlTerminateBackend === "function") postgresqlTerminateBackend(p_row);
 	},
@@ -1564,7 +1564,7 @@ var v_monitoring_action_whitelist = {
 	},
 };
 
-function monitoringAction(p_row_index, p_function) {
+export function monitoringAction(p_row_index, p_function) {
 	var v_fn = v_monitoring_action_whitelist[p_function];
 	var v_row_data = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.getDataAtRow(p_row_index);
 	v_row_data.shift();
@@ -1573,7 +1573,7 @@ function monitoringAction(p_row_index, p_function) {
 	}
 }
 
-function uiCopyTextToClipboard(p_value) {
+export function uiCopyTextToClipboard(p_value) {
 	var v_escaped = document.createElement("span");
 	v_escaped.textContent = p_value;
 	var v_safe_html =
@@ -1608,7 +1608,7 @@ function uiCopyTextToClipboard(p_value) {
 	showAlert(v_safe_html, null, null, true);
 }
 
-function toggleConnectionAutocomplete(p_toggler_id) {
+export function toggleConnectionAutocomplete(p_toggler_id) {
 	let checked = document.getElementById(p_toggler_id).checked;
 	v_connTabControl.selectedTab.tag.enable_autocomplete = checked;
 }

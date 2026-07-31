@@ -27,9 +27,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var v_unit_list_grid = null;
+export var v_unit_list_grid = null;
 
-function sanitizeLegend(p_html) {
+export function sanitizeLegend(p_html) {
 	var v_tmp = document.createElement("div");
 	v_tmp.innerHTML = p_html;
 	var v_nodes = v_tmp.querySelectorAll("*");
@@ -45,7 +45,7 @@ function sanitizeLegend(p_html) {
 	return v_tmp.innerHTML;
 }
 
-function closeMonitorUnit(p_div) {
+export function closeMonitorUnit(p_div) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
@@ -75,7 +75,7 @@ function closeMonitorUnit(p_div) {
 	}
 }
 
-function updateUnitSavedInterval(p_div) {
+export function updateUnitSavedInterval(p_div) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
@@ -95,7 +95,7 @@ function updateUnitSavedInterval(p_div) {
 	}
 }
 
-function pauseMonitorUnit(p_div) {
+export function pauseMonitorUnit(p_div) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
@@ -110,7 +110,7 @@ function pauseMonitorUnit(p_div) {
 	}
 }
 
-function playMonitorUnit(p_div) {
+export function playMonitorUnit(p_div) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
@@ -126,7 +126,7 @@ function playMonitorUnit(p_div) {
 	}
 }
 
-function buildMonitorUnit(p_unit, p_first) {
+export function buildMonitorUnit(p_unit, p_first) {
 	var v_dashboard_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.dashboard_div;
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
@@ -289,7 +289,7 @@ function buildMonitorUnit(p_unit, p_first) {
 	return div;
 }
 
-function startMonitorDashboard() {
+export function startMonitorDashboard() {
 	var input = JSON.stringify({
 		p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 		p_tab_id: v_connTabControl.selectedTab.id,
@@ -310,7 +310,7 @@ function startMonitorDashboard() {
 	);
 }
 
-function includeMonitorUnit(p_id, p_plugin_name) {
+export function includeMonitorUnit(p_id, p_plugin_name) {
 	var v_grid = v_unit_list_grid;
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	var v_selected = v_grid.getSelected();
@@ -326,7 +326,7 @@ function includeMonitorUnit(p_id, p_plugin_name) {
 	refreshMonitorDashboard(true, v_tab_tag, div);
 }
 
-function deleteMonitorUnit(p_unit_id) {
+export function deleteMonitorUnit(p_unit_id) {
 	showConfirm("Are you sure you want to delete this monitor unit?", function () {
 		var input = JSON.stringify({ p_unit_id: p_unit_id });
 
@@ -342,14 +342,14 @@ function deleteMonitorUnit(p_unit_id) {
 	});
 }
 
-function closeMonitorUnitList() {
+export function closeMonitorUnitList() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_grid_div.innerHTML = "";
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_div.style.display = "none";
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_grid.destroy();
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_grid = null;
 }
 
-function editMonitorUnit(p_unit_id) {
+export function editMonitorUnit(p_unit_id) {
 	$("#modal_monitoring_units").modal("hide");
 
 	v_connTabControl.tag.createNewMonitorUnitTab();
@@ -409,7 +409,7 @@ function editMonitorUnit(p_unit_id) {
 	}
 }
 
-function saveMonitorScript() {
+export function saveMonitorScript() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	if (v_tab_tag.input_unit_name.value.trim() == "") {
@@ -453,7 +453,7 @@ function saveMonitorScript() {
 	}
 }
 
-function selectUnitTemplate(p_value) {
+export function selectUnitTemplate(p_value) {
 	if (p_value != -1) {
 		var v_element_item = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.template_list[p_value];
 		var input = JSON.stringify({ p_unit_id: v_element_item.id, p_unit_plugin_name: v_element_item.plugin_name });
@@ -649,7 +649,7 @@ $("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
 	);
 });
 
-function testMonitorScript() {
+export function testMonitorScript() {
 	startLoading();
 
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -661,7 +661,7 @@ function testMonitorScript() {
 	$("#modal_monitoring_unit_test").modal("show");
 }
 
-function refreshMonitorUnitsList() {
+export function refreshMonitorUnitsList() {
 	var input = JSON.stringify({
 		p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 		p_tab_id: v_connTabControl.selectedTab.id,
@@ -755,7 +755,7 @@ function refreshMonitorUnitsList() {
 	);
 }
 
-function refreshMonitorUnitsObjects() {
+export function refreshMonitorUnitsObjects() {
 	v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		if (v_tab_tag.units[i].type == "grid") {
@@ -770,7 +770,7 @@ $("#modal_monitoring_units").on("shown.bs.modal", function (e) {
 	refreshMonitorUnitsList();
 });
 
-function showMonitorUnitList() {
+export function showMonitorUnitList() {
 	startLoading();
 
 	var v_grid_div = document.getElementById("monitoring_units_grid");
@@ -778,7 +778,7 @@ function showMonitorUnitList() {
 	$("#modal_monitoring_units").modal("show");
 }
 
-function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
+export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 	var v_units = [];
 	var v_tab_tag = null;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
@@ -1330,7 +1330,7 @@ function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 	}
 }
 
-function cancelMonitorUnits(p_tab_tag) {
+export function cancelMonitorUnits(p_tab_tag) {
 	var v_tab_tag = p_tab_tag;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
@@ -1345,7 +1345,7 @@ function cancelMonitorUnits(p_tab_tag) {
 /// Removes tab.
 /// </summary>
 /// <param name="p_tab">Tab object.</param>
-function closeMonitorDashboardTab(p_tab) {
+export function closeMonitorDashboardTab(p_tab) {
 	p_tab.removeTab();
 	p_tab.tag.tab_active = false;
 	cancelMonitorUnits(p_tab.tag);

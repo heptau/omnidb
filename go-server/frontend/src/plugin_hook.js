@@ -68,7 +68,7 @@ $(function () {
 	};
 });
 
-function activateHook(p_hook, p_function) {
+export function activateHook(p_hook, p_function) {
 	try {
 		v_connTabControl.tag.hooks[p_hook].push(p_function);
 	} catch (err) {}
