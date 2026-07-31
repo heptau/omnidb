@@ -48,6 +48,9 @@ import * as terminal from './terminal.js'
 import * as autocomplete from './autocomplete.js'
 import * as tutorial from './tutorial_functions/tutorial.js'
 import * as longPolling from './long_polling.js'
+import * as jsonHtmlComponents from './lib/json_html/components.js'
+import * as omnisControl from './lib/omnis_ui_assistant/omnis-control.js'
+import * as omnisLegere from './lib/omnis_legere/omnis-legere.js'
 
 exposeGlobals(
   treeSnippets,
@@ -90,4 +93,7 @@ exposeGlobals(
   autocomplete,
   tutorial,
   longPolling,
+  jsonHtmlComponents,
+  omnisControl,
+  omnisLegere,
 )

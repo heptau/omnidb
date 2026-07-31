@@ -31,13 +31,13 @@ SOFTWARE.
 // data comes straight from the database's own EXPLAIN output (relation
 // names, aliases, filters, etc.), which is not trusted content and must
 // never be interpreted as markup.
-function legereEscapeHtml(p_text) {
+export function legereEscapeHtml(p_text) {
 	var v_div = document.createElement("div");
 	v_div.appendChild(document.createTextNode(String(p_text)));
 	return v_div.innerHTML;
 }
 
-function createLegere(p_context = {parent: window, self: 'omnisLegere'}, p_options) {
+export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, p_options) {
 
 	var v_legereControl = {
 		// Params

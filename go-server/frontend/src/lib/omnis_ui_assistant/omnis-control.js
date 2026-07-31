@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function createOmnis() {
+export function createOmnis() {
 	return {
 		id: "omnis",
 		div: null,
@@ -98,7 +98,7 @@ function createOmnis() {
 	};
 }
 
-function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_steps = [] }) {
+export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_steps = [] }) {
 	// tmp steps
 	var v_steps =
 		p_steps.length !== 0

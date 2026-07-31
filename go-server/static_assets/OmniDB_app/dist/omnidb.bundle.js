@@ -30122,6 +30122,1130 @@
     },
     v_polling_started
   }, Symbol.toStringTag, { value: "Module" }));
+  function BsJsonComponent(config) {
+    this.target = config.target;
+    this.data = config.data;
+    this.template = "jsonBuilder--" + config.template;
+    this.getItems = (items) => {
+      let item, itemsArray = new Array();
+      for (var key in items) {
+        item = {
+          name: key,
+          type: typeof items[key],
+          value: items[key]
+        };
+        if (item.type === "array" || item.type === "object") {
+          item.children = this.getItems(item.value);
+        }
+        itemsArray.push(item);
+      }
+      return itemsArray;
+    };
+    this.items = this.getItems(this.data);
+    this.render = () => {
+      let el = this.renderList(this.items), elWrapper = document.createElement("DIV");
+      elWrapper.classList = [this.template];
+      elWrapper.append(el);
+      this.target.append(elWrapper);
+    };
+    this.renderLabel = (item) => {
+      let label = document.createElement("LABEL");
+      labelText = document.createElement("SPAN");
+      labelText.append(item.name);
+      labelText.classList = ["jsonBuilder__label-value"];
+      label.append(labelText);
+      label.classList = ["jsonBuilder__label d-flex align-items-center mb-1"];
+      return label;
+    };
+    this.renderList = (children) => {
+      let list = document.createElement("UL");
+      for (let i2 = 0; i2 < children.length; i2++) {
+        let item = children[i2], listItem = document.createElement("LI"), label = this.renderLabel(item);
+        listItem.classList = ["jsonBuilder__li"];
+        listItem.append(label);
+        if (item.type === "string" || item.type === "number" || item.type === "boolean") {
+          let content = document.createElement("SPAN");
+          content.classList = ["jsonBuilder__li-value"];
+          content.append(item.value);
+          listItem.append(content);
+        } else if (item.type === "array" || item.type === "object") {
+          listItem.append(this.renderList(item.children));
+        }
+        list.classList = ["jsonBuilder__ul"];
+        list.append(listItem);
+      }
+      return list;
+    };
+    this.update = () => {
+      this.target.innerHTML = null;
+      this.render();
+    };
+  }
+  const jsonHtmlComponents = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    BsJsonComponent
+  }, Symbol.toStringTag, { value: "Module" }));
+  function createOmnis() {
+    return {
+      id: "omnis",
+      div: null,
+      template: `<svg
+				class="animated-omnis"
+
+				version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+				x="0px" y="0px"
+				width="40px" height="40px"
+				viewBox="0 0 82.333 82.333" enable-background="new 0 0 82.333 82.333"
+				xml:space="preserve"
+		>
+				<g class="animated-omnis__icon-grid animated-omnis__group--to-blue">
+						<path fill="#878FC6" d="M57.694,31.129c-1.484-2.352-3.474-4.342-5.825-5.823c0.646,1.263,1.214,2.643,1.691,4.129
+								C55.049,29.915,56.43,30.486,57.694,31.129z"/>
+						<path fill="#878FC6" d="M43.292,22.507v5.234c2.323,0.072,4.553,0.333,6.649,0.762c-0.969-2.344-2.205-4.237-3.614-5.531
+								C45.343,22.736,44.331,22.58,43.292,22.507z"/>
+						<path fill="#878FC6" d="M57.692,50.87c-1.265,0.644-2.643,1.215-4.132,1.691c-0.477,1.489-1.046,2.867-1.691,4.132
+								C54.221,55.211,56.21,53.221,57.692,50.87z"/>
+						<path fill="#878FC6" d="M60.188,44.681c-0.359-0.742-0.612-1.537-0.744-2.381h-4.192c-0.072,2.322-0.332,4.551-0.756,6.645
+								c2.344-0.969,4.238-2.207,5.532-3.618C60.08,45.11,60.145,44.9,60.188,44.681z"/>
+						<path fill="#878FC6" d="M60.029,36.675c-1.293-1.414-3.187-2.652-5.534-3.624c0.424,2.097,0.684,4.325,0.756,6.647h4.192
+								c0.132-0.844,0.385-1.639,0.747-2.378C60.145,37.101,60.08,36.889,60.029,36.675z"/>
+						<path fill="#878FC6" d="M52.168,42.3h-8.875v8.873c2.79-0.092,5.421-0.475,7.782-1.094C51.693,47.718,52.076,45.09,52.168,42.3z"/>
+						<path fill="#878FC6" d="M43.292,39.699h8.875c-0.092-2.79-0.475-5.421-1.094-7.782c-2.361-0.619-4.992-1.002-7.782-1.094V39.699z"
+								/>
+						<path fill="#878FC6" d="M43.292,59.493c1.039-0.072,2.05-0.229,3.036-0.466c1.409-1.296,2.645-3.187,3.614-5.531
+								c-2.096,0.427-4.327,0.687-6.649,0.759V59.493z"/>
+						<path fill="#878FC6" d="M29.499,48.945c-0.427-2.094-0.687-4.322-0.759-6.645H23.5c0.071,1.036,0.228,2.046,0.462,3.026
+								C25.257,46.741,27.152,47.976,29.499,48.945z"/>
+						<path fill="#878FC6" d="M40.695,22.507c-1.038,0.072-2.05,0.229-3.034,0.465c-1.409,1.294-2.645,3.188-3.612,5.528
+								c2.096-0.426,4.324-0.687,6.646-0.759V22.507z"/>
+						<path fill="#878FC6" d="M40.695,30.823c-2.789,0.092-5.419,0.475-7.779,1.094c-0.621,2.361-1.002,4.992-1.094,7.782h8.873V30.823z"
+								/>
+						<path fill="#878FC6" d="M32.123,25.304c-2.353,1.481-4.344,3.472-5.827,5.822c1.265-0.643,2.645-1.214,4.135-1.691
+								C30.91,27.947,31.479,26.566,32.123,25.304z"/>
+						<path fill="#878FC6" d="M40.695,59.493v-5.238c-2.322-0.072-4.552-0.332-6.646-0.759c0.967,2.345,2.202,4.238,3.612,5.531
+								C38.646,59.263,39.657,59.42,40.695,59.493z"/>
+						<path fill="#878FC6" d="M23.499,39.699h5.241c0.071-2.322,0.332-4.551,0.759-6.647c-2.348,0.969-4.243,2.21-5.538,3.624
+								C23.727,37.656,23.571,38.665,23.499,39.699z"/>
+						<path fill="#878FC6" d="M32.123,56.695c-0.644-1.265-1.213-2.643-1.691-4.131c-1.489-0.478-2.868-1.049-4.133-1.691
+								C27.781,53.223,29.771,55.213,32.123,56.695z"/>
+						<path fill="#878FC6" d="M40.695,42.3h-8.873c0.092,2.79,0.475,5.418,1.094,7.779c2.359,0.619,4.99,1.002,7.779,1.094V42.3z"/>
+				</g>
+				<g class="animated-omnis__icon-external animated-omnis__group--to-blue">
+						<g class="animated-omnis__icon-external__rings">
+								<path fill="#878FC6" d="M36.436,14.434c0.642,1.11,0.979,2.306,1.082,3.505c1.451-0.281,2.944-0.438,4.477-0.438
+										c10.299,0,19.03,6.635,22.203,15.854c1.094-0.513,2.301-0.823,3.59-0.823c0.431,0,0.846,0.064,1.26,0.127
+										c-3.561-11.562-14.325-19.967-27.052-19.967c-2.165,0-4.264,0.266-6.291,0.726C35.961,13.743,36.223,14.065,36.436,14.434z"/>
+								<path fill="#878FC6" d="M21.771,59.104c0.646-1.115,1.519-2.007,2.513-2.695c-3.58-4.107-5.765-9.463-5.783-15.339
+										c0-0.022-0.006-0.044-0.006-0.068c0-0.019,0.005-0.036,0.005-0.055c0.013-5.874,2.193-11.227,5.766-15.339
+										c-0.99-0.689-1.854-1.593-2.497-2.706c-0.211-0.366-0.356-0.747-0.508-1.127c-4.685,5.052-7.572,11.795-7.572,19.227
+										c0,7.436,2.889,14.179,7.576,19.228C21.415,59.851,21.561,59.468,21.771,59.104z"/>
+								<path fill="#878FC6" d="M67.787,49.47c-1.289,0-2.499-0.311-3.592-0.826c-3.175,9.222-11.901,15.853-22.2,15.853
+										c-1.535,0-3.031-0.159-4.483-0.438c-0.103,1.202-0.432,2.401-1.072,3.515c-0.212,0.368-0.472,0.687-0.728,1.01
+										c2.023,0.46,4.121,0.725,6.283,0.725c12.728,0,23.492-8.403,27.055-19.965C68.632,49.405,68.218,49.47,67.787,49.47z"/>
+						</g>
+						<g class="animated-omnis__icon-external__spheres animated-omnis__group--to-darkblue">
+								<path fill="#525678" d="M73.462,41.001c0-3.137-2.539-5.678-5.676-5.678s-5.683,2.541-5.683,5.678s2.546,5.674,5.683,5.674
+										S73.462,44.138,73.462,41.001z"/>
+								<path fill="#525678" d="M26.262,13.754c-2.718,1.566-3.647,5.033-2.079,7.753c1.566,2.715,5.042,3.645,7.757,2.079
+										c2.718-1.568,3.645-5.045,2.079-7.755C32.446,13.116,28.979,12.181,26.262,13.754z"/>
+								<path fill="#525678" d="M26.267,68.256c2.72,1.568,6.187,0.639,7.755-2.076c1.566-2.715,0.636-6.189-2.077-7.755
+										c-2.72-1.571-6.191-0.639-7.752,2.074C22.622,63.219,23.549,66.691,26.267,68.256z"/>
+						</g>
+				</g>
+		</svg>`
+    };
+  }
+  function createOmnisUiAssistant$1({ p_callback_end = false, p_omnis, p_steps = [] }) {
+    p_steps.length !== 0 ? p_steps : [
+      {
+        p_message: "This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]",
+        p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+        p_title: "Primary menu"
+      },
+      {
+        p_message: "This contains general settings and options, such as [ versioning, connections_list_manager, user_setting, plugins...]",
+        p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
+        p_title: "Utilities menu"
+      }
+    ];
+    var v_state_active = true;
+    var v_omnisControl = {
+      // Params
+      callback_end: p_callback_end,
+      id: "omnis_control_" + Date.now(),
+      stateActive: v_state_active,
+      stepCounter: 0,
+      stepList: [],
+      stepSelected: null,
+      z_index: 999999,
+      // Actions
+      getPosition: function(p_el) {
+        var xPos = 0;
+        var yPos = 0;
+        var el = p_el;
+        while (el) {
+          if (el.tagName == "BODY") {
+            var xScroll = el.scrollLeft || document.documentElement.scrollLeft;
+            var yScroll = el.scrollTop || document.documentElement.scrollTop;
+            xPos += el.offsetLeft - xScroll + el.clientLeft;
+            yPos += el.offsetTop - yScroll + el.clientTop;
+          } else {
+            xPos += el.offsetLeft - el.scrollLeft + el.clientLeft;
+            yPos += el.offsetTop - el.scrollTop + el.clientTop;
+          }
+          el = el.offsetParent;
+        }
+        return {
+          x: xPos,
+          y: yPos
+        };
+      },
+      self_destruct: function() {
+        var v_control = this;
+        v_control.setStateDisabled();
+        document.getElementById("omnidb__main").removeChild(v_control.divElement);
+        for (let i2 = 0; i2 < v_control.stepList.length; i2++) {
+          if (v_control.stepList[i2].callback_end !== false) {
+            v_control.stepList[i2].callback_end();
+          }
+        }
+        if (this.callback_end) {
+          this.callback_end();
+        }
+        var v_omnis_div = p_omnis.div;
+        v_omnis_div.style.top = p_omnis.root.getBoundingClientRect().height - 45 + "px";
+        v_omnis_div.style.left = p_omnis.root.getBoundingClientRect().width - 45 + "px";
+      },
+      emptyStepList: function() {
+        this.stepCounter = 0;
+        this.stepList = [];
+      },
+      updateStepList: function(p_list) {
+        this.emptyStepList();
+        for (let i2 = 0; i2 < p_list.length; i2++) {
+          this.createStep(p_list[i2]);
+        }
+      },
+      goToStep: async function(p_index) {
+        for (let i2 = 0; i2 < this.stepList.length; i2++) {
+          if (p_index !== i2) {
+            if (this.stepList[i2].callback_end !== false) {
+              this.stepList[i2].callback_end();
+            }
+          }
+        }
+        if (this.stepList[p_index].callback_start) {
+          this.stepList[p_index].callback_start();
+        }
+        var v_control = this;
+        v_control.stepSelected = p_index;
+        var v_step_item = await v_control.renderStep();
+        if (v_step_item !== "stop") {
+          var get_v_target = new Promise((resolve) => {
+            setTimeout(function() {
+              var v_next_btn = document.getElementById("omnis_step_btn_next");
+              if (v_next_btn !== void 0 && v_next_btn !== null) {
+                v_next_btn.onclick = function() {
+                  v_control.goToStep(v_control.stepSelected + 1);
+                };
+              }
+              var v_target;
+              if (typeof v_step_item.target === "function") {
+                v_target = v_step_item.target();
+              } else {
+                v_target = v_step_item.target;
+              }
+              v_control.updateOmnisPosition(v_target, v_step_item.position);
+              resolve(v_target);
+            }, v_step_item.update_delay);
+          });
+          await get_v_target.then(function(v_target) {
+            if (v_step_item.clone_target && v_target) {
+              v_step_item.update_delay;
+              if (v_target !== null) {
+                let v_target_bounding_rect = v_target.getBoundingClientRect();
+                let v_target_bounding_rect_left = v_target_bounding_rect.x + "px";
+                let v_target_bounding_rect_top = v_target_bounding_rect.y + "px";
+                let v_target_bounding_rect_width = v_target_bounding_rect.width + "px";
+                setTimeout(function() {
+                  var v_cloned_element = v_target.cloneNode(true);
+                  v_cloned_element.setAttribute("id", "omnis_temp_clone");
+                  v_control.divClonedElement.style.left = v_target_bounding_rect_left;
+                  v_control.divClonedElement.style.top = v_target_bounding_rect_top;
+                  v_cloned_element.style.width = v_target_bounding_rect_width;
+                  v_control.updateClonedElementContent(v_cloned_element);
+                  v_control.divBackdropElement.style.display = "";
+                  v_cloned_element.addEventListener("click", function() {
+                    v_control.goToStep(v_control.stepSelected + 1);
+                  });
+                }, 50);
+              } else {
+                v_control.divClonedElement.innerHTML = "";
+                v_control.divClonedElement.style.left = "";
+                v_control.divClonedElement.style.top = "";
+                v_control.divBackdropElement.style.display = "none";
+              }
+            } else {
+              v_control.divClonedElement.innerHTML = "";
+              v_control.divClonedElement.style.left = "";
+              v_control.divClonedElement.style.top = "";
+              v_control.divBackdropElement.style.display = "none";
+            }
+            var v_previous_btn = document.getElementById("omnis_step_btn_previous");
+            if (v_previous_btn !== void 0 && v_previous_btn !== null) {
+              v_previous_btn.onclick = function() {
+                v_control.goToStep(v_control.stepSelected - 1);
+              };
+            }
+            var v_close_btn = document.getElementById("omnis_step_btn_close");
+            if (v_close_btn !== void 0 && v_close_btn !== null) {
+              v_close_btn.onclick = function() {
+                v_control.self_destruct();
+              };
+            }
+            if (v_control.stepList[v_control.stepSelected].callback_after_update_start) {
+              v_control.stepList[v_control.stepSelected].callback_after_update_start();
+            }
+          });
+        }
+      },
+      // Template
+      createStep: function({
+        p_callback_after_update_start = false,
+        p_callback_end: p_callback_end2 = false,
+        p_callback_start = false,
+        p_clone_target = false,
+        p_message = "Example",
+        p_next_button = true,
+        p_position = () => {
+          return false;
+        },
+        p_target = null,
+        p_title = "Omnis",
+        p_update_delay = 0
+      }) {
+        var v_control = this;
+        var v_index = v_control.stepCounter;
+        v_control.stepCounter++;
+        var v_step = {
+          callback_after_update_start: p_callback_after_update_start,
+          callback_end: p_callback_end2,
+          callback_start: p_callback_start,
+          clone_target: p_clone_target,
+          id: v_control.id + "_step_" + v_index,
+          message: p_message,
+          next_button: p_next_button,
+          position: p_position(),
+          target: p_target,
+          title: p_title,
+          update_delay: p_update_delay
+        };
+        this.stepList.push(v_step);
+      },
+      renderStep: function() {
+        if (this.stateActive) {
+          var v_control = this;
+          var v_step_item = this.stepList[this.stepSelected];
+          v_control.divClonedElement.innerHTML = "";
+          v_control.divClonedElement.style.left = "";
+          v_control.divClonedElement.style.top = "";
+          v_control.divBackdropElement.style.display = "";
+          v_control.divWavesElement.innerHTML = "";
+          var v_title = "";
+          if (v_step_item.title) {
+            v_title += '<div class="omnis__step__title card-title p-2 mt-2 mb-0"><h5 class="mb-0">' + v_step_item.title + "</h5></div>";
+          }
+          var v_message = "";
+          if (v_step_item.message) {
+            v_message += '<div class="omnis__step__body card-body p-2 mb-4">' + v_step_item.message + "</div>";
+          }
+          var v_step_btn_next = "";
+          if (this.stepList[this.stepSelected].next_button && this.stepSelected < this.stepCounter - 1) {
+            v_step_btn_next += '<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ml-2">Next</button>';
+          }
+          var v_step_btn_previous = "";
+          var v_step_btn_close = '<button id="omnis_step_btn_close" type="button" class="btn btn-sm btn-danger ml-auto">End walkthrough</button>';
+          var v_step_title = '<div class="mb-4 text-center" style="position: relative;">' + // '<div style="background: none; display: inline-block; height: 64px; width:64px;">' + v_animated_omnis + '</div>' +
+          v_title + "</div>";
+          var v_step_html = '<div class="omnis__step card">' + v_step_title + v_message + '<div class="omnis__step__footer card-footer d-flex align-items-center p-2">' + v_step_btn_previous + v_step_btn_next + v_step_btn_close + "</div></div>";
+          this.divCardElement.innerHTML = v_step_html;
+          this.divElement.style.display = "block";
+          return new Promise((resolve) => {
+            resolve(v_step_item);
+          });
+        } else {
+          this.divElement.style.display = "none";
+          this.divWavesElement.innerHTML = "";
+          return new Promise((resolve) => {
+            resolve("stop");
+          });
+        }
+      },
+      setStateEnabled: function() {
+        this.stateActive = true;
+        this.renderStep();
+      },
+      setStateDisabled: function() {
+        this.stateActive = false;
+        this.renderStep();
+      },
+      updateClonedElementContent: function(p_content_element) {
+        var v_control = this;
+        var v_cloned_element = v_control.divClonedElement;
+        var v_waves_element = v_control.divWavesElement;
+        v_cloned_element.innerHTML = "";
+        v_waves_element.innerHTML = "";
+        v_cloned_element.appendChild(p_content_element);
+        v_waves_element.innerHTML = '<span id="' + v_control.id + '_cloned_element_waves" class="omnis__cloned-element__waves"><span></span><span></span><span></span><span></span></span>';
+        let v_target = typeof v_control.stepList[v_control.stepSelected].target === "function" ? v_control.stepList[v_control.stepSelected].target() : v_control.stepList[v_control.stepSelected].target;
+        let v_cloned_element_bounding_rect = v_target.getBoundingClientRect();
+        v_waves_element.style.left = v_cloned_element_bounding_rect.x + "px";
+        v_waves_element.style.top = v_cloned_element_bounding_rect.y + "px";
+        v_waves_element.style.width = v_cloned_element_bounding_rect.width + "px";
+        v_waves_element.style.height = v_cloned_element_bounding_rect.height + "px";
+        v_waves_element.style.display = "block";
+        document.getElementById(v_control.id + "_cloned_element_waves");
+      },
+      updateOmnisPosition: function(p_target, p_pos = false) {
+        try {
+          let v_root = document.getElementById("omnidb__main");
+          let v_window_width = v_root.offsetWidth;
+          let v_window_width_half = Math.round(v_window_width / 2);
+          let v_window_height = v_root.offsetHeight;
+          let v_window_height_half = Math.round(v_window_height / 2);
+          var v_control = this;
+          var v_target = p_target;
+          if (!v_target) {
+            v_target = typeof v_control.stepList[v_control.stepSelected].target === "function" ? v_control.stepList[v_control.stepSelected].target() : v_control.stepList[v_control.stepSelected].target;
+          }
+          var v_target_position;
+          var v_target_offset_width = 0;
+          if (p_pos) {
+            v_target_position = { x: p_pos.x, y: p_pos.y };
+          } else if (v_target) {
+            v_target_position = v_control.getPosition(v_target);
+            v_target_offset_width = v_target.offsetWidth;
+          } else {
+            v_target_position = { x: v_window_width - 5, y: v_window_height - 5 };
+          }
+          var v_omnis_div = p_omnis.div;
+          if (v_target_position.x >= v_window_width_half) {
+            v_omnis_div.style.left = v_target_position.x - 56 + "px";
+            v_control.divCardElement.style.left = v_target_position.x - v_control.divCardElement.offsetWidth - 56 + "px";
+            if (v_target_position.y <= v_window_height_half) {
+              v_omnis_div.style.top = v_target_position.y + 16 + "px";
+              v_control.divCardElement.style.top = v_target_position.y + 20 + "px";
+            } else {
+              v_omnis_div.style.top = v_target_position.y - 56 + "px";
+              v_control.divCardElement.style.top = v_target_position.y - v_control.divCardElement.offsetHeight - 20 + "px";
+            }
+          } else {
+            v_omnis_div.style.left = v_target_position.x + v_target_offset_width + 16 + "px";
+            v_control.divCardElement.style.left = v_target_position.x + v_target_offset_width + 56 + "px";
+            if (v_target_position.y <= v_window_height_half) {
+              v_omnis_div.style.top = v_target_position.y + 16 + "px";
+              v_control.divCardElement.style.top = v_target_position.y + 20 + "px";
+            } else {
+              v_omnis_div.style.top = v_target_position.y - 56 + "px";
+              v_control.divCardElement.style.top = v_target_position.y - v_control.divCardElement.offsetHeight - 20 + "px";
+            }
+          }
+        } catch (e) {
+          console.warn("omnis-ui-assistant couldnt process the positioning of the target. Details:");
+          console.warn(e);
+        }
+      }
+    };
+    v_omnisControl.divCardElement = document.createElement("div");
+    v_omnisControl.divCardElement.setAttribute(
+      "style",
+      "position:fixed; width:280px; max-width: 90vw; z-index: " + v_omnisControl.z_index + 3 + "; box-shadow: 1px 0px 3px rgba(0,0,0,0.15); transition: all 0.45s ease 0.1s;"
+    );
+    v_omnisControl.divClonedElement = document.createElement("div");
+    v_omnisControl.divClonedElement.setAttribute(
+      "style",
+      "position:absolute; width:0px; height:0px; overflow:visible; z-index:" + v_omnisControl.z_index + 2 + ";"
+    );
+    v_omnisControl.divWavesElement = document.createElement("div");
+    v_omnisControl.divWavesElement.setAttribute(
+      "style",
+      "position:absolute; width:0px; height:0px; overflow:visible; z-index:" + v_omnisControl.z_index + 1 + ";"
+    );
+    v_omnisControl.divBackdropElement = document.createElement("div");
+    v_omnisControl.divBackdropElement.setAttribute(
+      "style",
+      "position:fixed; width:100vw; height:100vh; top: 0; left: 0; z-index:" + v_omnisControl.z_index + "; background-color:rgba(0,0,0,0.25);"
+    );
+    v_omnisControl.divElement = document.createElement("div");
+    v_omnisControl.divElement.setAttribute("id", v_omnisControl.id);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divCardElement);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divClonedElement);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divWavesElement);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divBackdropElement);
+    document.getElementById("omnidb__main").appendChild(v_omnisControl.divElement);
+    return v_omnisControl;
+  }
+  const omnisControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    createOmnis,
+    createOmnisUiAssistant: createOmnisUiAssistant$1
+  }, Symbol.toStringTag, { value: "Module" }));
+  function legereEscapeHtml(p_text) {
+    var v_div = document.createElement("div");
+    v_div.appendChild(document.createTextNode(String(p_text)));
+    return v_div.innerHTML;
+  }
+  function createLegere$1(p_context = { parent: window, self: "omnisLegere" }, p_options) {
+    var v_legereControl = {
+      // Params
+      backgroundColor: p_options.backgroundColor ? p_options.backgroundColor : "#e2e2e2",
+      context: p_context,
+      data: [],
+      dataMatrix: [],
+      defaultClass: p_options.bem_class_root ? p_options.bem_class_root : "omnis-legere",
+      defaultMessage: "No content",
+      divElement: false,
+      global_children_count: 0,
+      global_collapse: false,
+      grid: {
+        col_count: 0,
+        row_count: 0
+      },
+      id: "omnis_legere_control_" + Date.now(),
+      planCounter: 0,
+      planCountMatrix: [0],
+      planList: [],
+      stateActive: false,
+      targetDiv: p_options.target ? p_options.target : false,
+      totalCols: 0,
+      totalRows: 0,
+      // Actions
+      emptyPlanList: function() {
+        this.data = [];
+        this.dataMatrix = [];
+        this.global_children_count = 0;
+        this.grid = {
+          col_count: 0,
+          row_count: 0
+        };
+        this.planCounter = 0;
+        this.planCountMatrix = [0];
+        this.planList = [];
+        this.totalCols = 0;
+        this.totalRows = 0;
+      },
+      updatePlanList: function(p_data) {
+        var v_data = [];
+        for (let i2 = 0; i2 < p_data.length; i2++) {
+          v_data.push(p_data[i2]);
+        }
+        this.emptyPlanList();
+        this.data = v_data;
+        this.setStateEnabled();
+        this.createPlans();
+        this.renderPlans();
+      },
+      goToPlan: function(p_index) {
+        this.stepSelected = p_index;
+        this.renderStep();
+      },
+      /**
+      * @params:
+      * - p_data: node
+      * - p_index: position of the node inside the array
+      * - p_index_map: array[..., grand_parent_index, parent_index, node_index]
+      **/
+      createPlanCountMatrix: function({
+        p_data = {},
+        p_index = 0,
+        p_index_map = []
+      }) {
+        var v_legereControl2 = this;
+        v_legereControl2.planCounter++;
+        var v_node2 = p_data;
+        var v_index = p_index;
+        var v_index_map = [];
+        for (let i2 = 0; i2 < p_index_map.length; i2++) {
+          v_index_map.push(p_index_map[i2]);
+        }
+        v_index_map.push(v_index);
+        var v_row = v_index_map.length - 1;
+        var v_col = v_index;
+        if (v_node2["Plans"]) {
+          if (v_node2["Plans"].length > 0) {
+            for (let i2 = 0; i2 < v_node2["Plans"].length; i2++) {
+              this.createPlanCountMatrix({
+                p_data: v_node2["Plans"][i2],
+                p_index: i2,
+                p_index_map: v_index_map
+              });
+            }
+          } else {
+            v_col += 1;
+          }
+        } else {
+          v_col += 1;
+        }
+        this.planCountMatrix.push([v_row, v_col]);
+      },
+      createDataMatrix: function() {
+        this.total_progress_key_name = this.data[0]["Plan"]["Actual Total Time"] ? "Actual Total Time" : "Total Cost";
+        this.total_progress_cost = 0;
+        for (let i2 = 0; i2 < this.data.length; i2++) {
+          this.total_progress_cost += this.data[i2]["Plan"][this.total_progress_key_name];
+          this.createPlanCountMatrix({
+            p_data: this.data[i2]["Plan"],
+            p_index: i2,
+            p_index_map: []
+          });
+        }
+        this.updateRowsColsCount();
+      },
+      createPlan: function({
+        p_data = {},
+        p_index = 0,
+        p_index_map = []
+      }) {
+        var v_legereControl2 = this;
+        v_legereControl2.planCounter++;
+        if (p_data.omnis_legere_control === void 0) {
+          p_data.omnis_legere_control = {
+            is_collapsed: v_legereControl2.global_collapse
+          };
+        } else if (p_data.omnis_legere_control.is_collapsed === void 0) {
+          p_data.omnis_legere_control.is_collapsed = v_legereControl2.global_collapse;
+        }
+        var v_id = v_legereControl2.id + "_plan";
+        var v_index = p_index;
+        var v_index_map = [];
+        for (let i2 = 0; i2 < p_index_map.length; i2++) {
+          v_index_map.push(p_index_map[i2]);
+          v_index += p_index_map[i2];
+        }
+        v_index_map.push(v_index);
+        var v_row = v_index_map.length;
+        v_legereControl2.global_col_count;
+        var v_data = {};
+        Object.keys(p_data).forEach(function(p_data_key) {
+          if (p_data_key !== "Plans" && p_data_key !== "omnis_legere_control") {
+            v_data[p_data_key] = p_data[p_data_key];
+          }
+        });
+        var v_plan = {
+          // children_count: v_children_count,
+          data: v_data,
+          grid: {
+            // col: (v_children_count === 0) ? v_index + 1 : v_index + v_legereControl.global_children_count + 1,
+            col: v_legereControl2.global_children_count + 1,
+            row: v_row
+          },
+          id: v_id,
+          index: v_index,
+          index_map: v_index_map,
+          omnis_legere_control: p_data.omnis_legere_control,
+          planList: []
+        };
+        var v_plan_cost = v_plan.data[v_legereControl2.total_progress_key_name];
+        var v_plan_total_cost = {
+          label: v_legereControl2.total_progress_key_name + " (accumulated cost)",
+          percentage: v_plan_cost / v_legereControl2.total_progress_cost,
+          value: v_plan_cost
+        };
+        v_plan.total_cost = v_plan_total_cost;
+        var v_plan_node_cost = {
+          label: v_legereControl2.total_progress_key_name + " (node cost)",
+          value: v_plan_cost
+        };
+        if (p_data["Plans"]) {
+          if (p_data["Plans"].length > 0) {
+            v_legereControl2.grid.row_count += 1;
+            for (let i2 = 0; i2 < p_data["Plans"].length; i2++) {
+              v_plan.global_children_count += 1;
+              var v_new_plan = this.createPlan({
+                p_data: p_data["Plans"][i2],
+                p_index: i2,
+                p_index_map: v_plan.index_map
+              });
+              v_plan.planList.push(v_new_plan);
+              v_plan_node_cost.value -= v_new_plan.data[v_legereControl2.total_progress_key_name];
+            }
+          } else {
+            v_legereControl2.global_children_count += 1;
+          }
+        } else {
+          v_legereControl2.global_children_count += 1;
+        }
+        v_plan_node_cost.percentage = v_plan_node_cost.value / v_legereControl2.total_progress_cost;
+        v_plan.node_cost = v_plan_node_cost;
+        for (let i2 = 0; i2 < v_index_map.length; i2++) {
+          v_plan.id += "_" + v_index_map[i2];
+        }
+        return v_plan;
+      },
+      createPlans: function() {
+        this.createDataMatrix();
+        this.grid.row_count += 1;
+        for (let i2 = 0; i2 < this.data.length; i2++) {
+          var v_new_plan = this.createPlan({
+            p_data: this.data[i2]["Plan"],
+            p_index: i2,
+            p_index_map: []
+          });
+          this.planList.push(v_new_plan);
+        }
+      },
+      destroy: function() {
+        v_legereControl = this;
+        v_legereControl.divElement.remove();
+        v_legereControl.context.parent[v_legereControl.context.self] = null;
+        delete v_legereControl.context.parent[v_legereControl.context.self];
+      },
+      setClickEventButtonToggleCollapse: function(p_node) {
+        var v_legereControl2 = this;
+        var node_button_toggle_collapse_update = document.getElementById(p_node.id + "_button_toggle_collapse_update");
+        node_button_toggle_collapse_update.onclick = function(event2) {
+          v_legereControl2.toggleCollapseNodeUpdate(p_node.index_map);
+        };
+        var v_child_node = null;
+        if (p_node.planList) {
+          for (let i2 = 0; i2 < p_node.planList.length; i2++) {
+            v_child_node = p_node.planList[i2];
+            this.setClickEventButtonToggleCollapse(v_child_node);
+          }
+        }
+      },
+      renderPlan: function(p_plan_item) {
+        var v_legereControl2 = this;
+        var v_plan_item = p_plan_item;
+        var v_plans_html = "";
+        var v_title = "";
+        var v_progress_cost_html = "";
+        if (v_plan_item.data["Node Type"]) {
+          var v_child_count = v_plan_item["planList"] !== void 0 ? v_plan_item["planList"].length : 0;
+          v_title += '<div class="' + this.defaultClass + '__title card-title p-2 mb-0"><h5 class="mb-0"><strong>' + legereEscapeHtml(v_plan_item.data["Node Type"]) + "</strong><span>(" + v_child_count + ")</span></h5></div>";
+          var v_temp_progress_bars_data = [
+            v_plan_item.total_cost,
+            v_plan_item.node_cost
+          ];
+          v_progress_cost_html += '<div class="' + this.defaultClass + '__body card-body p-2">';
+          for (let i2 = 0; i2 < v_temp_progress_bars_data.length; i2++) {
+            var temp_bar_data = v_temp_progress_bars_data[i2];
+            v_progress_cost_html += '<div id="' + v_plan_item.id + "_svg_progress_" + i2 + '"></div><div>' + temp_bar_data.label + "</div><div>- percentage: " + 100 * temp_bar_data.percentage + "%</div><div>- value: " + temp_bar_data.value + "</div>";
+          }
+          var v_data_html = '<div class="mb-2">Toggle node data <button id="' + v_plan_item.id + '_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary ml-2 ' + v_legereControl2.defaultClass + '__btn-toggle-collapse-update" data-index-map="' + v_plan_item.index_map + '"></button></div><div class="alert alert-info mt-2">';
+          Object.keys(v_plan_item.data).forEach(function(p_data_key) {
+            v_data_html += "<div>" + legereEscapeHtml(p_data_key) + ': <span class="text-danger">' + legereEscapeHtml(v_plan_item.data[p_data_key]) + "</span></div>";
+          });
+          v_data_html += "</div>";
+          v_data_html += "</div>";
+        }
+        v_grid_row = v_plan_item.grid.row;
+        v_grid_col = v_plan_item.grid.col;
+        var v_plan_item_state_classes = " ";
+        if (v_plan_item.omnis_legere_control.is_collapsed) {
+          v_plan_item_state_classes += this.defaultClass + "__item--is_collapsed ";
+        }
+        var v_node_percentage = v_plan_item.node_cost.percentage;
+        var v_fill_color = false;
+        if (v_node_percentage > 0.3 && v_node_percentage < 0.6) {
+          v_fill_color = "#ceb22b;";
+        } else if (v_node_percentage >= 0.6) {
+          v_fill_color = "#ce2b2b;";
+        }
+        var v_temp_card_color = v_fill_color ? "box-shadow: 0px 4px 12px " + v_fill_color : "";
+        var v_plans_html = '<div id="' + v_plan_item.id + '" class="' + this.defaultClass + "__item " + v_plan_item_state_classes + '" style="grid-row: ' + v_grid_row + "; grid-column:" + v_grid_col + '"><div class="' + this.defaultClass + '__card card" style="' + v_temp_card_color + '">' + v_title + v_progress_cost_html + v_data_html + "</div></div>";
+        var v_children_html = "";
+        for (let i2 = 0; i2 < v_plan_item.planList.length; i2++) {
+          v_children_html += this.renderPlan(v_plan_item.planList[i2]);
+        }
+        v_plans_html += v_children_html;
+        return v_plans_html;
+      },
+      renderPlans: function() {
+        if (this.divGrid) {
+          this.divGrid.innerHTML = "";
+        }
+        if (this.stateActive) {
+          var v_plans_html = "";
+          for (let i2 = 0; i2 < this.planList.length; i2++) {
+            v_plans_html += this.renderPlan(this.planList[i2]);
+          }
+          this.renderTarget(v_plans_html);
+        } else {
+          this.divElement.style.display = "none";
+        }
+      },
+      renderProgressBar: function(p_plan_list) {
+        var v_node2 = null;
+        for (let i2 = 0; i2 < p_plan_list.length; i2++) {
+          v_node2 = p_plan_list[i2];
+          document.getElementById(v_node2.id);
+          var node_button_toggle_collapse_update = document.getElementById(v_node2.id + "_button_toggle_collapse_update");
+          if (node_button_toggle_collapse_update !== null) {
+            if (v_node2.omnis_legere_control.is_collapsed) {
+              node_button_toggle_collapse_update.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+              node_button_toggle_collapse_update.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+          }
+          var v_bar_width = 100;
+          var v_temp_progress_bars_data = [
+            v_node2.total_cost,
+            v_node2.node_cost
+          ];
+          for (let j2 = 0; j2 < v_temp_progress_bars_data.length; j2++) {
+            var v_bar_data = v_temp_progress_bars_data[j2];
+            v_bar_data.label;
+            var v_bar_data_percentage = v_bar_data.percentage;
+            v_bar_data.value;
+            var v_bar_progress_width = v_bar_width - 4;
+            var v_bar_progress_width_value = v_bar_progress_width * v_bar_data_percentage;
+            if (v_bar_progress_width_value < 0) {
+              v_bar_progress_width_value = v_bar_progress_width_value * -1;
+            }
+            var v_fill_color = "#4a81d4";
+            if (v_bar_data_percentage > 0.3 && v_bar_data_percentage < 0.6) {
+              v_fill_color = "#ceb22b";
+            } else if (v_bar_data_percentage >= 0.6) {
+              v_fill_color = "#ce2b2b";
+            }
+            var v_progress_bar_html = '<svg class="' + this.defaultClass + '__progress-bar"xmlns="http://www.w3.org/2000/svg"width="' + v_bar_width + '"height="8"viewBox="0 0 ' + v_bar_width + ' 8" ><path d="M 2 2 H ' + v_bar_progress_width_value + ' v 6 H 2 z" stroke="none" stroke-width="0" fill="' + v_fill_color + '" ></path><path d="M 2 2 H ' + v_bar_progress_width + ' v 6 H 2 z" stroke="#d2d2d2" stroke-width="1" fill="none" ></path></svg>';
+            var v_node_svg_container = document.getElementById(v_node2.id + "_svg_progress_" + j2);
+            if (v_node_svg_container) {
+              v_node_svg_container.innerHTML = v_progress_bar_html;
+            }
+          }
+          if (v_node2.planList) {
+            this.renderProgressBar(v_node2.planList);
+          }
+        }
+      },
+      renderSvg: function(p_plan_list) {
+        this.renderProgressBar(p_plan_list);
+        var v_parent_container = this.divGridContainer;
+        var v_parent_params = {
+          width: v_parent_container.scrollWidth,
+          height: v_parent_container.scrollHeight
+        };
+        var v_svg_paths_html = this.renderSvgPath(p_plan_list);
+        var v_svg_id = this.id + "_svg";
+        var v_svg_element = document.getElementById(v_svg_id);
+        if (v_svg_element) {
+          v_svg_element.remove();
+        }
+        var v_svg_html = '<svg id="' + v_svg_id + '"class="' + this.defaultClass + '__svg"xmlns="http://www.w3.org/2000/svg"width="' + v_parent_params.width + '"height="' + v_parent_params.height + '" viewBox="0 0 ' + v_parent_params.width + " " + v_parent_params.height + '" style="position: absolute; top: 0px; left: 0px;">' + v_svg_paths_html + "</svg>";
+        this.divGridContainer = document.getElementById(v_legereControl.divGridContainerId);
+        if (this.divGridContainer !== null) {
+          this.divGridContainer.innerHTML += v_svg_html;
+          for (let i2 = 0; i2 < p_plan_list.length; i2++) {
+            var v_node2 = p_plan_list[i2];
+            this.setClickEventButtonToggleCollapse(v_node2);
+          }
+        }
+      },
+      renderSvgPath: function(p_plan_list) {
+        var v_svg_html = "";
+        for (let i2 = 0; i2 < p_plan_list.length; i2++) {
+          var v_node2 = p_plan_list[i2];
+          if (v_node2) {
+            var v_node_child_list = v_node2.planList;
+            if (v_node_child_list) {
+              var v_source_id = document.getElementById(v_node2.id);
+              if (v_source_id) {
+                var v_source = document.getElementById(v_node2.id).lastChild;
+                if (v_source) {
+                  var v_source_x = v_source.offsetWidth / 2 + v_source.offsetLeft;
+                  var v_source_y = v_source.offsetTop + v_source.offsetHeight;
+                  for (let j2 = 0; j2 < v_node_child_list.length; j2++) {
+                    var v_child_node = v_node_child_list[j2];
+                    var v_target = document.getElementById(v_child_node.id).firstChild;
+                    if (v_target) {
+                      var v_target_x = v_target.offsetWidth / 2 + v_target.offsetLeft;
+                      var v_target_y = v_target.offsetTop;
+                      var v_path_style = "";
+                      if (j2 > 0) {
+                        v_target_x = v_target_x - 20;
+                        v_target_y = v_target_y - 40;
+                        v_svg_html += "<path " + v_path_style + ' d="M ' + v_source_x + " " + v_source_y + " V " + v_target_y + " c 0 20, 0 20, 20 20 H " + v_target_x + ' c 20 0, 20 0, 20 20 " stroke="#4a81d4" stroke-width="1" fill="none" /></path>';
+                      } else {
+                        v_svg_html += "<path " + v_path_style + ' d="M ' + v_source_x + " " + v_source_y + " L " + v_target_x + " " + v_target_y + '" stroke="#4a81d4" stroke-width="1" fill="none" /></path>';
+                      }
+                    }
+                  }
+                  v_svg_html += this.renderSvgPath(v_node_child_list);
+                }
+              }
+            }
+          }
+        }
+        return v_svg_html;
+      },
+      renderTarget: function(p_plans_html) {
+        var v_legereControl2 = this;
+        var v_parent = v_legereControl2.targetDiv;
+        var v_parent_width = v_parent.clientWidth;
+        var v_parent_height = v_parent.clientHeight;
+        if (!v_legereControl2.divElement) {
+          v_legereControl2.divElement = document.createElement("div");
+          v_legereControl2.divElementId = v_legereControl2.id;
+          v_legereControl2.divElement.setAttribute("id", v_legereControl2.divElementId);
+          v_legereControl2.divElement.classList = this.defaultClass + "__wrapper";
+          if (!v_legereControl2.targetDiv) {
+            v_legereControl2.divElement.setAttribute(
+              "style",
+              `
+						background-color: ` + v_legereControl2.backgroundColor + `;
+						box-shadow: 1px 0px 3px rgba(0,0,0,0.15);
+						display:none;
+						height: 90vh;
+						left: 5vw;
+						max-width: 90vw;
+						padding: 5px;
+						position:fixed;
+						top: 5vh;
+						width: 90vw;
+						z-index: 100;
+						`
+            );
+            document.body.appendChild(v_legereControl2.divElement);
+            var v_close_btn_html = '<div style="position:relative;"><button id="' + v_legereControl2.id + '_btn_close" type="button" class="btn btn-sm btn-danger ml-auto" style="position: absolute; top: -10px; right: -10px;"><i class="fas fa-times"></i></button></div>';
+            v_legereControl2.divElement.innerHTML = v_close_btn_html;
+          } else {
+            v_legereControl2.divElement.setAttribute(
+              "style",
+              `
+						background-color: ` + v_legereControl2.backgroundColor + `;
+						display:none;
+						height:` + v_parent_height + `px;
+						max-width: 100%;
+						padding: 5px;
+						position: relative;
+						width:` + v_parent_width + `px;
+						z-index: 100;
+						`
+            );
+            v_legereControl2.targetDiv.appendChild(v_legereControl2.divElement);
+          }
+          v_legereControl2.divElementContent = document.createElement("div");
+          v_legereControl2.divElementContentId = v_legereControl2.id + "_content";
+          v_legereControl2.divElementContent.setAttribute("id", v_legereControl2.divElementContentId);
+          v_legereControl2.divElementContent.setAttribute("style", "width:" + v_parent_width + "px; height:" + v_parent_height + "px; overflow: auto; padding: 10px;");
+          v_legereControl2.divElement.appendChild(v_legereControl2.divElementContent);
+          v_legereControl2.divGrid = document.createElement("div");
+          v_legereControl2.divGridId = v_legereControl2.id + "_div_grid";
+          v_legereControl2.divGrid.setAttribute("id", v_legereControl2.divGridId);
+          v_legereControl2.divGrid.style["grid-gap"] = "40px 40px";
+          v_legereControl2.divGrid.style.display = "grid";
+          v_legereControl2.divGrid.style.position = "relative";
+          v_legereControl2.divGrid.style["z-index"] = 1;
+          v_legereControl2.divGridContainer = document.createElement("div");
+          v_legereControl2.divGridContainerId = v_legereControl2.id + "_div_grid_container";
+          v_legereControl2.divGridContainer.setAttribute("id", v_legereControl2.divGridContainerId);
+          v_legereControl2.divGridContainer.style.position = "relative";
+          v_legereControl2.divGridContainer.style["transform-origin"] = "top left";
+          v_legereControl2.divGridContainer.style["transform"] = "scale(1)";
+          v_legereControl2.divGridContainer.style["transition"] = "transform 0.3s ease 0s";
+          v_legereControl2.divGridContainer.appendChild(v_legereControl2.divGrid);
+          v_legereControl2.divElementContent.appendChild(v_legereControl2.divGridContainer);
+          var v_control_panel_div = document.createElement("div");
+          v_control_panel_div.classList = v_legereControl2.defaultClass + "__control-panel";
+          v_control_panel_div.setAttribute("style", "align-items: center; display: flex; position: absolute; right: 15px; top: 15px;");
+          v_control_panel_div.innerHTML = '<button id="' + v_legereControl2.id + '_control_panel_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-eye"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_zoomin" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-search-plus"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_zoomout" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-search-minus"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_fit" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-vector-square"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_reset" class="btn btn-sm omnidb__theme__btn--secondary ml-2">reset</button>';
+          v_legereControl2.divElementContent.appendChild(v_control_panel_div);
+        }
+        document.getElementById(v_legereControl2.divGridId).innerHTML = p_plans_html;
+        var v_toggle_collapse_update_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_toggle_collapse_update");
+        if (v_toggle_collapse_update_btn !== void 0 && v_toggle_collapse_update_btn !== null) {
+          v_toggle_collapse_update_btn.onclick = function() {
+            v_legereControl2.global_collapse = !v_legereControl2.global_collapse;
+            var v_toggle_collapse = v_legereControl2.global_collapse;
+            if (v_toggle_collapse) {
+              v_toggle_collapse_update_btn.innerHTML = '<i class="fas fa-eye-slash"></i>';
+            } else {
+              v_toggle_collapse_update_btn.innerHTML = '<i class="fas fa-eye"></i>';
+            }
+            v_legereControl2.toggleCollapseUpdate("all", false, v_toggle_collapse);
+          };
+        }
+        var v_div_grid_container = document.getElementById(v_legereControl2.id + "_div_grid_container");
+        var v_zoomin_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_zoomin");
+        if (v_zoomin_btn !== void 0 && v_zoomin_btn !== null) {
+          v_zoomin_btn.onclick = function() {
+            var v_zoom_value = v_div_grid_container.style["transform"];
+            v_zoom_value = v_zoom_value.split("scale(")[1];
+            v_zoom_value = v_zoom_value.split(")")[0];
+            v_zoom_value = parseFloat(v_zoom_value);
+            v_zoom_value = v_zoom_value + 0.1;
+            v_div_grid_container.style["transform"] = "scale(" + v_zoom_value + ")";
+          };
+        }
+        var v_zoomout_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_zoomout");
+        if (v_zoomout_btn !== void 0 && v_zoomout_btn !== null) {
+          v_zoomout_btn.onclick = function() {
+            var v_zoom_value = v_div_grid_container.style["transform"];
+            v_zoom_value = v_zoom_value.split("scale(")[1];
+            v_zoom_value = v_zoom_value.split(")")[0];
+            v_zoom_value = parseFloat(v_zoom_value);
+            v_zoom_value = v_zoom_value - 0.1;
+            v_div_grid_container.style["transform"] = "scale(" + v_zoom_value + ")";
+          };
+        }
+        var v_fit_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_fit");
+        if (v_fit_btn !== void 0 && v_fit_btn !== null) {
+          v_fit_btn.onclick = function() {
+            var v_content_div = document.getElementById(v_legereControl2.id + "_content");
+            var v_svg_div = document.getElementById(v_legereControl2.id + "_svg");
+            var v_h_value = v_svg_div.clientWidth;
+            var v_content_h_value = v_content_div.offsetWidth;
+            var v_h_ratio = v_content_h_value / v_h_value;
+            var v_v_value = v_svg_div.clientHeight;
+            var v_content_v_value = v_content_div.offsetHeight;
+            var v_v_ratio = v_content_v_value / v_v_value;
+            if (v_h_ratio < v_v_ratio) {
+              v_div_grid_container.style["transform"] = "scale(" + v_h_ratio + ")";
+            } else {
+              v_div_grid_container.style["transform"] = "scale(" + v_v_ratio + ")";
+            }
+          };
+        }
+        var v_reset_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_reset");
+        if (v_reset_btn !== void 0 && v_reset_btn !== null) {
+          v_reset_btn.onclick = function() {
+            v_div_grid_container.style["transform"] = "scale(1)";
+          };
+        }
+        setTimeout(function() {
+          v_legereControl2.renderSvg(v_legereControl2.planList);
+        }, 150);
+        if (!v_legereControl2.targetDiv) {
+          var v_close_btn = document.getElementById(v_legereControl2.id + "_btn_close");
+          if (v_close_btn !== void 0 && v_close_btn !== null) {
+            v_close_btn.onclick = function() {
+              v_legereControl2.setStateDisabled();
+            };
+          }
+        }
+        v_legereControl2.divElement.style.display = "block";
+      },
+      resize() {
+        v_legereControl = this;
+        if (v_legereControl.divElement) {
+          var v_parent = v_legereControl.targetDiv;
+          var v_parent_width = v_parent.clientWidth;
+          var v_parent_height = v_parent.clientHeight;
+          v_legereControl.divElement.setAttribute(
+            "style",
+            `
+					background-color: ` + v_legereControl.backgroundColor + `;
+					display:none;
+					height:` + v_parent_height + `px;
+					max-width: 100%;
+					padding: 5px;
+					position: relative;
+					width:` + v_parent_width + `px;
+					z-index: 100;
+					`
+          );
+          v_legereControl.divElementContent.setAttribute("style", "width:" + v_parent_width + "px; height:" + v_parent_height + "px; overflow: auto; padding: 10px;");
+          if (v_legereControl.stateActive) {
+            this.divElement.style.display = "block";
+            setTimeout(function() {
+              v_legereControl.renderSvg(v_legereControl.planList);
+            }, 150);
+          }
+        }
+      },
+      setStateEnabled: function() {
+        this.stateActive = true;
+      },
+      setStateDisabled: function() {
+        this.stateActive = false;
+        this.updatePlanList([]);
+      },
+      toggleCollapse: function(p_type = false, p_node = false, p_set_state = null) {
+        var v_legereControl2 = this;
+        if (p_type === "all") {
+          var v_node_list = [];
+          if (p_node) {
+            v_legereControl2.toggleCollapse(false, p_node, p_set_state);
+            v_node_list = p_node.Plans;
+            if (v_node_list) {
+              for (let i2 = 0; i2 < v_node_list.length; i2++) {
+                var v_child_node = v_node_list[i2];
+                v_legereControl2.toggleCollapse("all", v_child_node, p_set_state);
+              }
+            }
+          } else {
+            var v_data = v_legereControl2.data;
+            if (v_data) {
+              v_node_list = v_legereControl2.data;
+              if (v_node_list) {
+                for (let i2 = 0; i2 < v_node_list.length; i2++) {
+                  if (v_node_list[i2].Plan) {
+                    var v_node2 = v_node_list[i2].Plan;
+                    v_legereControl2.toggleCollapse("all", v_node2, p_set_state);
+                  }
+                }
+              }
+            }
+          }
+        } else if (p_set_state !== null && p_node) {
+          p_node.omnis_legere_control.is_collapsed = p_set_state;
+        } else if (p_node) {
+          p_node.omnis_legere_control.is_collapsed = !p_node.omnis_legere_control.is_collapsed;
+        }
+      },
+      toggleCollapseNodeUpdate: function(p_index_map) {
+        var v_legereControl2 = this;
+        var v_parent_node = v_legereControl2.data[p_index_map[0]];
+        if (p_index_map.length === 1) {
+          v_legereControl2.toggleCollapseUpdate(false, v_parent_node.Plan, null);
+        } else {
+          v_parent_node.Plans;
+          let v_temp_node = null;
+          let v_temp_list = null;
+          for (let i2 = 0; i2 < p_index_map.length; i2++) {
+            var v_index = p_index_map[i2];
+            if (i2 === 0) {
+              v_temp_node = v_parent_node;
+            } else {
+              if (v_temp_node.Plan) {
+                v_temp_list = v_temp_node.Plan.Plans;
+                if (v_temp_list) {
+                  v_temp_node = v_temp_list[v_index];
+                  if (i2 === p_index_map.length - 1) {
+                    v_legereControl2.toggleCollapseUpdate(false, v_temp_node, null);
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      toggleCollapseUpdate: function(p_type = "all", p_node = false, p_set_state = null) {
+        this.toggleCollapse(p_type, p_node, p_set_state);
+        var v_legereControl2 = this;
+        this.updatePlanList(v_legereControl2.data);
+      },
+      updateRowsColsCount: function() {
+        this.totalRows = this.planCountMatrix.length;
+        var v_temp_largest_row = 0;
+        for (let i2 = 0; i2 < this.totalRows; i2++) {
+          if (this.planCountMatrix[i2] > v_temp_largest_row)
+            v_temp_largest_row = this.planCountMatrix[i2];
+        }
+        this.totalCols = v_temp_largest_row;
+      },
+      updateLegerePosition: function() {
+      }
+    };
+    return v_legereControl;
+  }
+  const omnisLegere = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    createLegere: createLegere$1,
+    legereEscapeHtml
+  }, Symbol.toStringTag, { value: "Module" }));
   exposeGlobals(
     treeSnippets,
     treePostgresql,
@@ -30162,7 +31286,10 @@
     terminal,
     autocomplete,
     tutorial,
-    longPolling
+    longPolling,
+    jsonHtmlComponents,
+    omnisControl,
+    omnisLegere
   );
 })();
 //# sourceMappingURL=omnidb.bundle.js.map

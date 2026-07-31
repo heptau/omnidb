@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function BsJsonComponent(config) {
+export function BsJsonComponent(config) {
 	this.target = config.target;
 	this.data = config.data;
 	this.template = "jsonBuilder--" + config.template;
