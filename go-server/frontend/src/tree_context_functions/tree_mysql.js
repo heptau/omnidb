@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Retrieving tree.
 /// </summary>
-function getTreeMysql(p_div) {
+export function getTreeMysql(p_div) {
 	var context_menu = {
 		cm_server: {
 			elements: [
@@ -1051,7 +1051,7 @@ function getTreeMysql(p_div) {
 /// Retrieving properties.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPropertiesMysql(node) {
+export function getPropertiesMysql(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "table") {
 			getProperties("/get_properties_mysql/", {
@@ -1096,7 +1096,7 @@ function getPropertiesMysql(node) {
 /// Refreshing tree node.
 /// </summary>
 /// <param name="node">Node object.</param>
-function refreshTreeMysql(node) {
+export function refreshTreeMysql(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "table_list") {
 			getTablesMysql(node);
@@ -1149,7 +1149,7 @@ function refreshTreeMysql(node) {
 		}
 }
 
-function afterNodeOpenedCallbackMysql(node) {
+export function afterNodeOpenedCallbackMysql(node) {
 	//Hooks
 	if (v_connTabControl.tag.hooks.mysqlTreeNodeOpen.length > 0) {
 		for (var i = 0; i < v_connTabControl.tag.hooks.mysqlTreeNodeOpen.length; i++)
@@ -1161,7 +1161,7 @@ function afterNodeOpenedCallbackMysql(node) {
 /// Retrieving tree details.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTreeDetailsMysql(node) {
+export function getTreeDetailsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1350,7 +1350,7 @@ function getTreeDetailsMysql(node) {
 /// Retrieving database objects.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDatabaseObjectsMysql(node) {
+export function getDatabaseObjectsMysql(node) {
 	node.removeChildNodes();
 
 	var node_tables = node.createChildNode(
@@ -1412,7 +1412,7 @@ function getDatabaseObjectsMysql(node) {
 /// Retrieving databases.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getDatabasesMysql(node) {
+export function getDatabasesMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1467,7 +1467,7 @@ function getDatabasesMysql(node) {
 /// Retrieving roles.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getRolesMysql(node) {
+export function getRolesMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1515,7 +1515,7 @@ function getRolesMysql(node) {
 /// Retrieving tables.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTablesMysql(node) {
+export function getTablesMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1586,7 +1586,7 @@ function getTablesMysql(node) {
 /// Retrieving views.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsMysql(node) {
+export function getViewsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1648,7 +1648,7 @@ function getViewsMysql(node) {
 /// Retrieving View Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewsColumnsMysql(node) {
+export function getViewsColumnsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1745,7 +1745,7 @@ function getViewsColumnsMysql(node) {
 /// Retrieving view definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getViewDefinitionMysql(node) {
+export function getViewDefinitionMysql(node) {
 	execAjax(
 		"/get_view_definition_mysql/",
 		JSON.stringify({
@@ -1784,7 +1784,7 @@ function getViewDefinitionMysql(node) {
 /// Retrieving columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getColumnsMysql(node) {
+export function getColumnsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -1957,7 +1957,7 @@ function getColumnsMysql(node) {
 /// Retrieving PKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKMysql(node) {
+export function getPKMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2016,7 +2016,7 @@ function getPKMysql(node) {
 /// Retrieving PKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPKColumnsMysql(node) {
+export function getPKColumnsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2060,7 +2060,7 @@ function getPKColumnsMysql(node) {
 /// Retrieving Uniques.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesMysql(node) {
+export function getUniquesMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2123,7 +2123,7 @@ function getUniquesMysql(node) {
 /// Retrieving Uniques Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getUniquesColumnsMysql(node) {
+export function getUniquesColumnsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2169,7 +2169,7 @@ function getUniquesColumnsMysql(node) {
 /// Retrieving Indexes.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesMysql(node) {
+export function getIndexesMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2233,7 +2233,7 @@ function getIndexesMysql(node) {
 /// Retrieving Indexes Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getIndexesColumnsMysql(node) {
+export function getIndexesColumnsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2279,7 +2279,7 @@ function getIndexesColumnsMysql(node) {
 /// Retrieving FKs.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsMysql(node) {
+export function getFKsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2356,7 +2356,7 @@ function getFKsMysql(node) {
 /// Retrieving FKs Columns.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFKsColumnsMysql(node) {
+export function getFKsColumnsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2429,7 +2429,7 @@ function getFKsColumnsMysql(node) {
 /// Retrieving Triggers.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggersMysql(node) {
+export function getTriggersMysql(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2485,7 +2485,7 @@ function getTriggersMysql(node) {
 /// Retrieving Partitions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getPartitionsMysql(node) {
+export function getPartitionsMysql(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2535,7 +2535,7 @@ function getPartitionsMysql(node) {
 /// Retrieving functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionsMysql(node) {
+export function getFunctionsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2596,7 +2596,7 @@ function getFunctionsMysql(node) {
 /// Retrieving function fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionFieldsMysql(node) {
+export function getFunctionFieldsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2694,7 +2694,7 @@ function getFunctionFieldsMysql(node) {
 /// Retrieving function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getFunctionDefinitionMysql(node) {
+export function getFunctionDefinitionMysql(node) {
 	execAjax(
 		"/get_function_definition_mysql/",
 		JSON.stringify({
@@ -2732,7 +2732,7 @@ function getFunctionDefinitionMysql(node) {
 /// Retrieving procedures.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProceduresMysql(node) {
+export function getProceduresMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2794,7 +2794,7 @@ function getProceduresMysql(node) {
 /// Retrieving procedure fields.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureFieldsMysql(node) {
+export function getProcedureFieldsMysql(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -2892,7 +2892,7 @@ function getProcedureFieldsMysql(node) {
 /// Retrieving procedure definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getProcedureDefinitionMysql(node) {
+export function getProcedureDefinitionMysql(node) {
 	execAjax(
 		"/get_procedure_definition_mysql/",
 		JSON.stringify({
@@ -2931,7 +2931,7 @@ function getProcedureDefinitionMysql(node) {
 /// Retrieving trigger functions.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionsMysql(node) {
+export function getTriggerFunctionsMysql(node) {
 
 	node.removeChildNodes();
 	node.createChildNode('', false, 'node-spin', null,
@@ -2976,7 +2976,7 @@ function getTriggerFunctionsMysql(node) {
 /// Retrieving trigger function definition.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getTriggerFunctionDefinitionMysql(node) {
+export function getTriggerFunctionDefinitionMysql(node) {
 
 	execAjax('/get_triggerfunction_definition_mysql/',
 		JSON.stringify({
@@ -3026,7 +3026,7 @@ function getTriggerFunctionDefinitionMysql(node) {
 /// <summary>
 /// Retrieving SELECT SQL template.
 /// </summary>
-function TemplateSelectMysql(p_schema, p_table) {
+export function TemplateSelectMysql(p_schema, p_table) {
 	execAjax(
 		"/template_select_mysql/",
 		JSON.stringify({
@@ -3058,7 +3058,7 @@ function TemplateSelectMysql(p_schema, p_table) {
 /// <summary>
 /// Retrieving INSERT SQL template.
 /// </summary>
-function TemplateInsertMysql(p_schema, p_table) {
+export function TemplateInsertMysql(p_schema, p_table) {
 	execAjax(
 		"/template_insert_mysql/",
 		JSON.stringify({
@@ -3082,7 +3082,7 @@ function TemplateInsertMysql(p_schema, p_table) {
 /// <summary>
 /// Retrieving UPDATE SQL template.
 /// </summary>
-function TemplateUpdateMysql(p_schema, p_table) {
+export function TemplateUpdateMysql(p_schema, p_table) {
 	execAjax(
 		"/template_update_mysql/",
 		JSON.stringify({
@@ -3103,7 +3103,7 @@ function TemplateUpdateMysql(p_schema, p_table) {
 	);
 }
 
-function nodeOpenErrorMysql(p_return, p_node) {
+export function nodeOpenErrorMysql(p_return, p_node) {
 	if (p_return.v_data.password_timeout) {
 		p_node.collapseNode();
 		showPasswordPrompt(
@@ -3140,7 +3140,7 @@ function nodeOpenErrorMysql(p_return, p_node) {
 	return tmp.join('.')
 }*/
 
-function mysqlTerminateBackendConfirm(p_pid) {
+export function mysqlTerminateBackendConfirm(p_pid) {
 	execAjax(
 		"/kill_backend_mysql/",
 		JSON.stringify({
@@ -3170,7 +3170,7 @@ function mysqlTerminateBackendConfirm(p_pid) {
 	);
 }
 
-function mysqlTerminateBackend(p_row) {
+export function mysqlTerminateBackend(p_row) {
 	showConfirm("Are you sure you want to terminate process " + p_row[0] + "?", function () {
 		mysqlTerminateBackendConfirm(p_row[0]);
 	});

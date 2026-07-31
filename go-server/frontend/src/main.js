@@ -12,10 +12,12 @@ import * as treeSnippets from './tree_context_functions/tree_snippets.js'
 import * as treePostgresql from './tree_context_functions/tree_postgresql.js'
 import * as treeOracle from './tree_context_functions/tree_oracle.js'
 import * as treeMariadb from './tree_context_functions/tree_mariadb.js'
+import * as treeMysql from './tree_context_functions/tree_mysql.js'
 
 exposeGlobals(
   treeSnippets,
   treePostgresql,
   treeOracle,
   treeMariadb,
+  treeMysql,
 )
