@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "watch": "vite build --watch"
+    "watch": "vite build --watch",
+    "check": "node scripts/check-bridge.mjs"
   },
   "devDependencies": {
     "vite": "^6.4.3"

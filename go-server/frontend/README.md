@@ -44,4 +44,10 @@ attributes in `workspace.html` still depend on. `src/legacy-globals.js` bridges
 that: every migrated module is re-exported onto `window` wholesale. The bridge
 shrinks as files move and disappears entirely at the end.
 
+The bridge assigns with `Object.assign`, which is a snapshot rather than a
+live binding. `npm run check` enforces the two invariants that keeps honest —
+nothing outside the bundle may assign to a bundled export, and nothing inside
+may reassign an exported `var`/`let` that unmigrated code reads. Both failures
+produce a stale value at runtime rather than an error, so CI runs it too.
+
 Run `SMOKE_CHECKLIST.md` after every step. There are no automated tests.
