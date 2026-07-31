@@ -1114,7 +1114,13 @@
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/aimaraJS/lib/Aimara.js?v{{static_cache_bust}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/moment/moment.min.js?v{{static_cache_bust}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/daterangepicker/daterangepicker.js?v{{static_cache_bust}}"></script>
-	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/tree_context_functions/tree_snippets.js?v{{static_cache_bust}}"></script>
+	<!-- Vite bundle (go-server/frontend/). Replaces the individual <script>
+	     tags for every workspace JS file migrated so far, in the position the
+	     first of them occupied -- the tag order in this file is the code's only
+	     dependency graph, so files are migrated top-down and the bundle stays
+	     where the block it absorbs used to start. It is a plain blocking
+	     script, not type="module", so nothing about load ordering changes. -->
+	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/dist/omnidb.bundle.js?v{{static_cache_bust}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/tree_context_functions/tree_postgresql.js?v{{static_cache_bust}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/tree_context_functions/tree_oracle.js?v{{static_cache_bust}}"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/tree_context_functions/tree_mariadb.js?v{{static_cache_bust}}"></script>

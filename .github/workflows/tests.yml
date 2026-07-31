@@ -20,6 +20,29 @@ jobs:
         with:
           go-version: 'stable'
 
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # static_assets/OmniDB_app/dist/ is committed, because //go:embed needs
+      # it to exist and `go build`/`go test` must keep working with no Node
+      # installed. Rebuilding it here and diffing is what keeps that committed
+      # copy honest — without it, a source change with a forgotten `npm run
+      # build` would ship the previous bundle silently.
+      - name: Build workspace frontend bundle
+        run: npm ci && npm run build
+        working-directory: go-server/frontend
+
+      - name: Check the committed bundle matches its sources
+        run: |
+          if ! git diff --exit-code -- static_assets/OmniDB_app/dist; then
+            echo
+            echo "The committed workspace bundle is stale."
+            echo "Run 'npm run build' in go-server/frontend and commit dist/."
+            exit 1
+          fi
+        working-directory: go-server
+
       - name: Build
         run: go build ./...
         working-directory: go-server

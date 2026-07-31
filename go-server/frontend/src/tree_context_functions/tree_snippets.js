@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function getAllSnippets() {
+export function getAllSnippets() {
 	execAjax(
 		"/get_all_snippets/",
 		JSON.stringify({}),
@@ -43,7 +43,7 @@ function getAllSnippets() {
 /// <summary>
 /// Retrieving tree.
 /// </summary>
-function getTreeSnippets(p_div) {
+export function getTreeSnippets(p_div) {
 	var context_menu = {
 		cm_node_root: {
 			elements: [
@@ -169,7 +169,7 @@ function getTreeSnippets(p_div) {
 /// Refreshing tree node.
 /// </summary>
 /// <param name="node">Node object.</param>
-function refreshTreeSnippets(node) {
+export function refreshTreeSnippets(node) {
 	if (node.tag != undefined)
 		if (node.tag.type == "node") {
 			getChildSnippetNodes(node);
@@ -180,7 +180,7 @@ function refreshTreeSnippets(node) {
 /// Retrieving snippet nodes.
 /// </summary>
 /// <param name="node">Node object.</param>
-function getChildSnippetNodes(node) {
+export function getChildSnippetNodes(node) {
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -234,7 +234,7 @@ function getChildSnippetNodes(node) {
 /// Removes tab.
 /// </summary>
 /// <param name="p_tab">Tab object.</param>
-function closeSnippetTab(p_tab) {
+export function closeSnippetTab(p_tab) {
 	p_tab.removeTab();
 	if (p_tab.tag.ht != null) {
 		p_tab.tag.ht.destroy();
@@ -244,7 +244,7 @@ function closeSnippetTab(p_tab) {
 	if (p_tab.tag.editor != null) p_tab.tag.editor.destroy();
 }
 
-function saveSnippetText(event) {
+export function saveSnippetText(event) {
 	var v_callback = function (p_return_object) {
 		v_connTabControl.snippet_tag.tabControl.selectedTab.tag.snippetObject = p_return_object;
 		v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_title_span.textContent = p_return_object.name;
@@ -280,7 +280,7 @@ function saveSnippetText(event) {
 	}
 }
 
-function snippetTreeFindNode(p_id, p_current_node) {
+export function snippetTreeFindNode(p_id, p_current_node) {
 	var v_node = null;
 
 	for (var i = 0; i < p_current_node.childNodes.length; i++) {
@@ -293,7 +293,7 @@ function snippetTreeFindNode(p_id, p_current_node) {
 	return v_node;
 }
 
-function saveSnippetTextConfirm(p_save_object, p_text, p_callback) {
+export function saveSnippetTextConfirm(p_save_object, p_text, p_callback) {
 	execAjax(
 		"/save_snippet_text/",
 		JSON.stringify({
@@ -329,7 +329,7 @@ function saveSnippetTextConfirm(p_save_object, p_text, p_callback) {
 	);
 }
 
-function newNodeSnippet(p_node, p_mode) {
+export function newNodeSnippet(p_node, p_mode) {
 	var v_placeholder = "Snippet Name";
 	if (p_mode == "node") v_placeholder = "Node Name";
 
@@ -374,7 +374,7 @@ function newNodeSnippet(p_node, p_mode) {
 	);
 }
 
-function renameNodeSnippet(p_node) {
+export function renameNodeSnippet(p_node) {
 	showConfirm(
 		"",
 		function () {
@@ -415,7 +415,7 @@ function renameNodeSnippet(p_node) {
 	);
 }
 
-function deleteNodeSnippet(p_node) {
+export function deleteNodeSnippet(p_node) {
 	showConfirm(
 		"Are you sure you want to delete this " + p_node.tag.type + "?",
 		function () {
@@ -439,7 +439,7 @@ function deleteNodeSnippet(p_node) {
 	);
 }
 
-function startEditSnippetText(p_node) {
+export function startEditSnippetText(p_node) {
 	// Checking if there is a tab for this snippet.
 	var v_snippet_tab_list = v_connTabControl.snippet_tag.tabControl.tabList;
 	var v_avaiable_tab = false;
@@ -471,7 +471,7 @@ function startEditSnippetText(p_node) {
 	);
 }
 
-function executeSnippet(p_id, p_editor) {
+export function executeSnippet(p_id, p_editor) {
 	execAjax(
 		"/get_snippet_text/",
 		JSON.stringify({ p_st_id: p_id }),
@@ -484,7 +484,7 @@ function executeSnippet(p_id, p_editor) {
 	);
 }
 
-function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_callback) {
+export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_callback) {
 	var v_elements = [];
 
 	if (p_mode == "save") {

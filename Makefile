@@ -47,7 +47,7 @@ endif
 .PHONY: help all clean _sync_version \
         build-mac-arm64 build-mac-intel build-linux build-linux-docker build-win \
         prepare-release release \
-        _prepare_dirs _ensure_wails _build_mac _build_linux _build_win \
+        _prepare_dirs _ensure_wails _build_frontend _build_mac _build_linux _build_win \
         docs-typo docs-typo-dry _ensure_typolima
 
 # --- Default Target: Help ---
@@ -106,27 +106,31 @@ build-linux:
 		WAILS_GOARCH=amd64
 
 # Build the Linux binary from macOS/Windows via Docker, since Wails' GTK/
-# webkit2gtk webview can't cross-compile. frontend/node_modules and the Go
-# module/build cache are each given their own named Docker volume, mounted
-# OVER the bind-mounted repo path — mounting a plain bind-mount subdirectory
-# would mean the container's `rm -rf`/npm install operate on the HOST's
-# actual node_modules (breaking it for the next native macOS/Windows build,
-# since esbuild ships platform-specific binaries). The named volumes also
-# cache across releases, so repeat runs don't redownload every Go module.
+# webkit2gtk webview can't cross-compile. Both node_modules trees (the Wails
+# shell's loading screen and the workspace UI bundle) and the Go module/build
+# cache are each given their own named Docker volume, mounted OVER the
+# bind-mounted repo path — mounting a plain bind-mount subdirectory would mean
+# the container's `rm -rf`/npm install operate on the HOST's actual
+# node_modules (breaking it for the next native macOS/Windows build, since
+# esbuild ships platform-specific binaries). The named volumes also cache
+# across releases, so repeat runs don't redownload every Go module.
 build-linux-docker:
 	docker build -q --platform linux/amd64 -t $(DOCKER_IMAGE) -f scripts/docker/linux-build.Dockerfile .
 	docker volume create omnidb-linux-frontend-node-modules >/dev/null
+	docker volume create omnidb-linux-workspace-node-modules >/dev/null
 	docker volume create omnidb-linux-gomod-cache >/dev/null
 	@# Fresh named volumes are root-owned; chown once (as root, idempotent) so
 	@# the non-root --user build below can write into them.
 	docker run --rm --platform linux/amd64 \
 		-v omnidb-linux-frontend-node-modules:/vol-node-modules \
+		-v omnidb-linux-workspace-node-modules:/vol-workspace-node-modules \
 		-v omnidb-linux-gomod-cache:/vol-gomod-cache \
 		$(DOCKER_IMAGE) \
-		chown -R "$$(id -u):$$(id -g)" /vol-node-modules /vol-gomod-cache
+		chown -R "$$(id -u):$$(id -g)" /vol-node-modules /vol-workspace-node-modules /vol-gomod-cache
 	docker run --rm --platform linux/amd64 \
 		-v "$(CURDIR)":/src \
 		-v omnidb-linux-frontend-node-modules:/src/wails-app/frontend/node_modules \
+		-v omnidb-linux-workspace-node-modules:/src/go-server/frontend/node_modules \
 		-v omnidb-linux-gomod-cache:/tmp/go \
 		-e HOME=/tmp \
 		-e GOPATH=/tmp/go \
@@ -169,8 +173,16 @@ _ensure_wails:
 		go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0; \
 	fi
 
+# Rebuild the workspace UI bundle (go-server/frontend/ -> the dist/ directory
+# static_assets.go embeds). The output is committed, so this is not what makes
+# a build possible -- it is what stops a release from shipping a bundle that
+# no longer matches its sources.
+_build_frontend:
+	@echo "Building workspace frontend bundle..."
+	cd go-server/frontend && npm ci && npm run build
+
 # --- MAC OS BUILD LOGIC (Wails) ---
-_build_mac: _prepare_dirs _ensure_wails
+_build_mac: _prepare_dirs _ensure_wails _build_frontend
 	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
 	cd wails-app && $(WAILS) build -clean -platform darwin/$(WAILS_GOARCH)
 
@@ -205,7 +217,7 @@ _build_mac: _prepare_dirs _ensure_wails
 # pkg-config lookup hardcodes the older webkit2gtk-4.0 and fails (verified
 # against github.com/wailsapp/wails/v2@v2.12.0's
 # pkg/assetserver/webview/*_linux.go `#cgo !webkit2_41 pkg-config: ...` tags).
-_build_linux: _prepare_dirs _ensure_wails
+_build_linux: _prepare_dirs _ensure_wails _build_frontend
 	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
 	cd wails-app && $(WAILS) build -clean -platform linux/$(WAILS_GOARCH) -tags webkit2_41
 
@@ -226,7 +238,7 @@ _build_linux: _prepare_dirs _ensure_wails
 # Fully cross-compiles from macOS/Linux (verified: produces a real PE32+
 # .exe using Wails' pure-Go WebView2 loader, no mingw/CGO needed) — but on
 # CI this runs natively on windows-latest anyway.
-_build_win: _prepare_dirs _ensure_wails
+_build_win: _prepare_dirs _ensure_wails _build_frontend
 	@echo "Building Wails desktop shell (windows/$(WAILS_GOARCH))..."
 	cd wails-app && $(WAILS) build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed
 

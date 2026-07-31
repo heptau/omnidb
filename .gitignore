@@ -7,4 +7,5 @@
 /.dev-home
 .claude/settings.local.json
 /go-server/omnidb-server
+/go-server/frontend/node_modules
 /wails-app/omnidb-shell
