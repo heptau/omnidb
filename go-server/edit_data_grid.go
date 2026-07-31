@@ -387,7 +387,7 @@ func runEditDataFetch(upstream *url.URL, cookie string, q editDataFetchRequestDa
 		schema = q.VSchema
 	}
 
-	rows, rowPKs, queryInfo, err := fetchEditDataRows(db, info.Technology, schema, q.VTable, q.VFilter, q.VCount, q.VPKList, q.VColumns)
+	rows, rowPKs, queryInfo, err := fetchEditDataRows(db, info.Technology, schema, q.VTable, q.VFilter, q.rowLimit(), q.VPKList, q.VColumns)
 	if err != nil {
 		queueNativeResponse(cookie, map[string]any{
 			"v_code":         responseQueryEditDataResult,

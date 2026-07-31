@@ -22582,7 +22582,10 @@
         v_schema: v_currTabTag.editDataObject.schema,
         v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
         v_filter: v_currTabTag.editDataObject.editor.getValue(),
-        v_count: v_currTabTag.sel_filtered_data.value,
+        // parseInt because a <select>'s .value is a string, and v_count is
+        // a row limit. The backend tolerates either spelling now, but the
+        // string is what silently broke this whole feature once already.
+        v_count: parseInt(v_currTabTag.sel_filtered_data.value, 10),
         v_pk_list: v_currTabTag.editDataObject.pk,
         v_columns: v_currTabTag.editDataObject.columns,
         v_conn_tab_id: v_connTabControl.selectedTab.id,

@@ -38,14 +38,31 @@ type createRequestBody struct {
 }
 
 type editDataFetchRequestData struct {
-	VDBIndex json.Number         `json:"v_db_index"`
-	VTabID   string              `json:"v_tab_id"`
-	VTable   string              `json:"v_table"`
-	VSchema  string              `json:"v_schema"`
-	VFilter  string              `json:"v_filter"`
-	VCount   int                 `json:"v_count"`
+	VDBIndex json.Number `json:"v_db_index"`
+	VTabID   string      `json:"v_tab_id"`
+	VTable   string      `json:"v_table"`
+	VSchema  string      `json:"v_schema"`
+	VFilter  string      `json:"v_filter"`
+	// json.Number, not int. edit_data.js reads this straight off a <select>
+	// element, so it arrives as the JSON string "10" rather than the number
+	// 10 — and unmarshalling a string into an int is an error, which used to
+	// drop the whole request into the no-upstream fallback and report "This
+	// feature is not available." json.Number accepts both spellings, same as
+	// VDBIndex right above it, which is quoted for exactly the same reason.
+	VCount   json.Number         `json:"v_count"`
 	VPKList  []editDataColumnRef `json:"v_pk_list"`
 	VColumns []editDataColumnRef `json:"v_columns"`
+}
+
+// rowLimit is the LIMIT for the fetch — the "Query N rows" dropdown. A
+// missing or unparseable value falls back to the dropdown's own default
+// rather than failing the request or fetching the whole table.
+func (q editDataFetchRequestData) rowLimit() int {
+	n, err := q.VCount.Int64()
+	if err != nil || n <= 0 {
+		return 10
+	}
+	return int(n)
 }
 
 type editDataSaveRequestData struct {
@@ -108,6 +125,24 @@ func formatDuration(d time.Duration) string {
 	minutes := (total % 3600) / 60
 	seconds := total % 60
 	return fmt.Sprintf("%02d:%02d:%02d", hours, minutes, seconds)
+}
+
+// decodeRequestData decodes one create_request payload, saying so in the log
+// when it can't.
+//
+// A malformed payload for a live request type is a contract bug between the
+// frontend and this handler; a genuinely unrecognized v_code is a
+// confirmed-dead Django-only path. Both end up at the same fallback, and the
+// user sees the same "This feature is not available." either way — which is
+// precisely how a string-vs-int mismatch on v_count managed to hide the whole
+// Edit Data feature without leaving a trace anywhere. The two are still
+// handled the same; at least the first one now leaves a log line.
+func decodeRequestData(vCode int, data json.RawMessage, out any) bool {
+	if err := json.Unmarshal(data, out); err != nil {
+		log.Printf("create_request: v_code %d payload rejected: %v", vCode, err)
+		return false
+	}
+	return true
 }
 
 // handleCreateRequest serves /create_request/ — this proxy's dispatch point
@@ -189,7 +224,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 
 		if body.VCode == requestTypeConsole {
 			var q consoleRequestData
-			if err := json.Unmarshal(body.VData, &q); err != nil {
+			if !decodeRequestData(body.VCode, body.VData, &q) {
 				fallback.ServeHTTP(w, r)
 				return
 			}
@@ -215,7 +250,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 
 		if body.VCode == requestTypeQueryEditData {
 			var q editDataFetchRequestData
-			if err := json.Unmarshal(body.VData, &q); err != nil {
+			if !decodeRequestData(body.VCode, body.VData, &q) {
 				fallback.ServeHTTP(w, r)
 				return
 			}
@@ -236,7 +271,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 
 		if body.VCode == requestTypeSaveEditData {
 			var q editDataSaveRequestData
-			if err := json.Unmarshal(body.VData, &q); err != nil {
+			if !decodeRequestData(body.VCode, body.VData, &q) {
 				fallback.ServeHTTP(w, r)
 				return
 			}
@@ -261,7 +296,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 		}
 
 		var q queryRequestData
-		if err := json.Unmarshal(body.VData, &q); err != nil {
+		if !decodeRequestData(body.VCode, body.VData, &q) {
 			fallback.ServeHTTP(w, r)
 			return
 		}
