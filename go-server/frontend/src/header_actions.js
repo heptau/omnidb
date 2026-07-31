@@ -30,11 +30,11 @@ SOFTWARE.
 /// <summary>
 /// Opens OmniDB about window.
 /// </summary>
-function showAbout() {
+export function showAbout() {
 	$("#modal_about").modal("show");
 }
 /*
-var v_light_terminal_theme = {
+export var v_light_terminal_theme = {
 	background: '#f4f4f4',
 	brightBlue: '#006de2',
 	brightGreen: '#4b9800',
@@ -44,7 +44,7 @@ var v_light_terminal_theme = {
 	selection: '#00000030'
 }
 */
-var v_light_terminal_theme = {
+export var v_light_terminal_theme = {
 	background: "#f4f4f4",
 	brightBlue: "#006de2",
 	brightGreen: "#4b9800",
@@ -54,11 +54,11 @@ var v_light_terminal_theme = {
 	selection: "#00000030",
 };
 
-var v_dark_terminal_theme = {
+export var v_dark_terminal_theme = {
 	background: "#1a1a1d",
 };
 
-var v_current_terminal_theme;
+export var v_current_terminal_theme;
 
 /// <summary>
 /// Startup function.
@@ -82,7 +82,7 @@ $(function () {
 	});
 });
 
-function adjustChartTheme(p_chart) {
+export function adjustChartTheme(p_chart) {
 	var v_chart_font_color = "#666666";
 	var v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
 
@@ -107,7 +107,7 @@ function adjustChartTheme(p_chart) {
 	p_chart.update();
 }
 
-function adjustGraphTheme(p_graph) {
+export function adjustGraphTheme(p_graph) {
 	var v_font_color = "#666666";
 
 	if (v_theme == "light") {
@@ -124,7 +124,7 @@ function adjustGraphTheme(p_graph) {
 	} catch (err) {}
 }
 
-function changeTheme(p_option) {
+export function changeTheme(p_option) {
 	// Always auto
 	v_theme = "auto";
 	var v_actual_theme = "light";
@@ -219,7 +219,7 @@ function changeTheme(p_option) {
 	}
 }
 
-function changeFontSize(p_option) {
+export function changeFontSize(p_option) {
 	var els = document.getElementsByClassName("ace_editor");
 	v_font_size = p_option;
 
@@ -240,7 +240,7 @@ function changeFontSize(p_option) {
 	});
 }
 
-function changeInterfaceFontSize(p_option) {
+export function changeInterfaceFontSize(p_option) {
 	v_font_size = p_option;
 	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
 	$(".ace_editor").each(function (index) {
@@ -272,7 +272,7 @@ function changeInterfaceFontSize(p_option) {
 /// <summary>
 /// Opens user config window.
 /// </summary>
-function updateIndentUnit() {
+export function updateIndentUnit() {
 	var charEl = document.querySelector('input[name="indent_char"]:checked');
 	var sizeEl = document.querySelector('input[name="indent_size"]:checked');
 	if (charEl) v_indent_char = charEl.value;
@@ -285,7 +285,7 @@ function updateIndentUnit() {
 	}
 }
 
-function applyEditorTabSize() {
+export function applyEditorTabSize() {
 	$(".ace_editor").each(function () {
 		let editor = ace.edit(this);
 		editor.session.setTabSize(v_indent_size || 4);
@@ -293,7 +293,7 @@ function applyEditorTabSize() {
 	});
 }
 
-function showConfigUser() {
+export function showConfigUser() {
 	if ($("#modal_config").hasClass("show")) {
 		// Already open — creating and showing ANOTHER bootstrap.Modal
 		// instance for the same element doesn't no-op the way calling
@@ -360,7 +360,7 @@ function showConfigUser() {
 /// <summary>
 /// Go to connections.
 /// </summary>
-function goToConnections() {
+export function goToConnections() {
 	showConfirm("You will lose existing changes. Would you like to continue?", function () {
 		window.open("../connections", "_self");
 	});
@@ -369,7 +369,7 @@ function goToConnections() {
 /// <summary>
 /// Go to connections.
 /// </summary>
-function confirmSignout() {
+export function confirmSignout() {
 	showConfirm("Are you sure you want to sign out?", function () {
 		window.open("../logout", "_self");
 	});
@@ -378,7 +378,7 @@ function confirmSignout() {
 /// <summary>
 /// Shows website in outer tab.
 /// </summary>
-function showWebsite(p_name, p_url) {
+export function showWebsite(p_name, p_url) {
 	if (v_connTabControl) $("#modal_about").modal("hide");
 	v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
 }
@@ -386,7 +386,7 @@ function showWebsite(p_name, p_url) {
 /// <summary>
 /// Checks or unchecks every autocomplete category checkbox in the Options tab.
 /// </summary>
-function setAllAutocompleteTypeCheckboxes(p_checked) {
+export function setAllAutocompleteTypeCheckboxes(p_checked) {
 	var typeCheckboxes = document.getElementsByName("autocomplete_type");
 	for (var i = 0; i < typeCheckboxes.length; i++) {
 		typeCheckboxes[i].checked = p_checked;
@@ -396,7 +396,7 @@ function setAllAutocompleteTypeCheckboxes(p_checked) {
 /// <summary>
 /// Saves user config to OmniDB database.
 /// </summary>
-function saveConfigUser() {
+export function saveConfigUser() {
 	v_font_size = document.getElementById("sel_interface_font_size").value;
 	// v_theme_id = document.getElementById('sel_editor_theme').value.split('/')[0];
 
@@ -439,7 +439,7 @@ function saveConfigUser() {
 /// <summary>
 /// Saves shortcuts to OmniDB database.
 /// </summary>
-function saveShortcuts() {
+export function saveShortcuts() {
 	var v_shortcut_list = [];
 
 	for (var property in v_shortcut_object.shortcuts) {
@@ -466,7 +466,7 @@ function saveShortcuts() {
 /// <param name="p_col">Column number.</param>
 /// <param name="p_content">Cell content.</param>
 /// <param name="p_can_alter">If ready only or not.</param>
-function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
+export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	var v_edit_modal = document.getElementById("div_edit_content");
 	if (!v_edit_modal) {
 		v_edit_modal = document.createElement("div");
@@ -555,7 +555,7 @@ function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	$("#div_edit_content").modal("show");
 }
 
-function saveEditContent() {
+export function saveEditContent() {
 	$("#div_edit_content").modal("hide");
 
 	if (v_canEditContent) {
@@ -571,7 +571,7 @@ function saveEditContent() {
 	v_editContentObject.editor.setValue("");
 }
 
-function cancelEditContent() {
+export function cancelEditContent() {
 	$("#div_edit_content").modal("hide");
 
 	v_editContentObject.editor.setValue("");
@@ -580,7 +580,7 @@ function cancelEditContent() {
 /// <summary>
 /// Hides edit cell window.
 /// </summary>
-function hideEditContent() {
+export function hideEditContent() {
 	$("#div_edit_content").modal("hide");
 
 	if (v_canEditContent)

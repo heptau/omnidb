@@ -14,6 +14,14 @@ import * as treeOracle from './tree_context_functions/tree_oracle.js'
 import * as treeMariadb from './tree_context_functions/tree_mariadb.js'
 import * as treeMysql from './tree_context_functions/tree_mysql.js'
 import * as treeSqlite from './tree_context_functions/tree_sqlite.js'
+import * as renderers from './renderers.js'
+import * as headerActions from './header_actions.js'
+import * as query from './query.js'
+import * as customMenu from './custom_menu.js'
+import * as notificationControl from './notification_control.js'
+import * as outerSnippetPanel from './panel_functions/outer_snippet_panel.js'
+import * as passwords from './passwords.js'
+import * as properties from './properties.js'
 
 exposeGlobals(
   treeSnippets,
@@ -22,4 +30,12 @@ exposeGlobals(
   treeMariadb,
   treeMysql,
   treeSqlite,
+  renderers,
+  headerActions,
+  query,
+  customMenu,
+  notificationControl,
+  outerSnippetPanel,
+  passwords,
+  properties,
 )

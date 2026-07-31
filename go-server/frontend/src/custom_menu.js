@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function customMenu(p_position, p_menu, p_object) {
+export function customMenu(p_position, p_menu, p_object) {
 	var v_outer_div = createSimpleElement("div", "ul_cm_overlay", "aimara_menu__overlay");
 
 	var v_div = createSimpleElement("ul", "ul_cm", "aimara_menu");
@@ -115,7 +115,7 @@ function customMenu(p_position, p_menu, p_object) {
 	customMenuReposition(v_div);
 }
 
-function customMenuRecursive(p_submenu, p_ul, p_object, p_closediv, p_cm_div, p_level, p_outer_div) {
+export function customMenuRecursive(p_submenu, p_ul, p_object, p_closediv, p_cm_div, p_level, p_outer_div) {
 	for (var i = 0; i < p_submenu.length; i++)
 		(function (i) {
 			var v_li = createSimpleElement("li", null, null);
@@ -169,7 +169,7 @@ function customMenuRecursive(p_submenu, p_ul, p_object, p_closediv, p_cm_div, p_
 		})(i);
 }
 
-function customMenuReposition(p_div) {
+export function customMenuReposition(p_div) {
 	var v_div = p_div;
 
 	// Repositioning the sub-menu if its out of the frame.
@@ -200,7 +200,7 @@ function customMenuReposition(p_div) {
 	document.getElementById("close_cm").style.height = document.getElementById("ul_cm_overlay").scrollHeight + "px";
 }
 
-function custoMenuRepositionSubmenu(p_ul) {
+export function custoMenuRepositionSubmenu(p_ul) {
 	var v_ul = p_ul;
 
 	// Repositioning the sub-menu if its out of the frame.

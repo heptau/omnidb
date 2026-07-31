@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function checkSessionMessage() {
+export function checkSessionMessage() {
 	execAjax(
 		"/check_session_message/",
 		JSON.stringify({}),
@@ -72,7 +72,7 @@ $(function () {
 	});
 });
 
-function showMessageModal(p_content_function, p_large) {
+export function showMessageModal(p_content_function, p_large) {
 	var v_dialog = document.getElementById("modal_message_dialog");
 
 	if (p_large == null || p_large == false) {
@@ -90,7 +90,7 @@ function showMessageModal(p_content_function, p_large) {
 	}
 }
 
-function showError(p_message) {
+export function showError(p_message) {
 	var v_content_div = document.getElementById("modal_message_content");
 	var v_button_yes = document.getElementById("modal_message_yes");
 	var v_button_ok = document.getElementById("modal_message_ok");
@@ -111,7 +111,7 @@ function showError(p_message) {
 	}, 500);
 }
 
-function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
+export function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
 	var v_create_content_function = function () {
 		var v_content_div = document.getElementById("modal_message_content");
 		var v_button_yes = document.getElementById("modal_message_yes");
@@ -143,7 +143,7 @@ function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) 
 	showMessageModal(v_create_content_function, p_large);
 }
 
-function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
+export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
 	var v_create_content_function = function () {
 		if (p_shownCallback != null) v_shown_callback = p_shownCallback;
 
@@ -172,7 +172,7 @@ function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback 
 	showMessageModal(v_create_content_function, p_large);
 }
 
-function showConfirm2(p_info, p_funcYes, p_funcNo) {
+export function showConfirm2(p_info, p_funcYes, p_funcNo) {
 	var v_content_div = document.getElementById("modal_message_content");
 	var v_button_yes = document.getElementById("modal_message_yes");
 	var v_button_ok = document.getElementById("modal_message_ok");
@@ -201,7 +201,7 @@ function showConfirm2(p_info, p_funcYes, p_funcNo) {
 	showMessageModal();
 }
 
-function showConfirm3(p_info, p_funcYes, p_funcNo) {
+export function showConfirm3(p_info, p_funcYes, p_funcNo) {
 	var v_content_div = document.getElementById("modal_message_content");
 	var v_button_yes = document.getElementById("modal_message_yes");
 	var v_button_ok = document.getElementById("modal_message_ok");

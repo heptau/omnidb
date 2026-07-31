@@ -58,7 +58,7 @@ $(function () {
 	v_modal_password_input = null;
 });
 
-function showPasswordPrompt(
+export function showPasswordPrompt(
 	p_database_index,
 	p_callback_function,
 	p_cancel_callback_function,
@@ -89,7 +89,7 @@ function showPasswordPrompt(
 	};
 }
 
-function checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id) {
+export function checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id) {
 	var v_password = document.getElementById("txt_password_prompt").value;
 	var v_tab_id = "";
 	if (p_send_tab_id) v_tab_id = v_connTabControl.selectedTab.id;

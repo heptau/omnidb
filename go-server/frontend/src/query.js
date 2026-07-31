@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Query state
 /// </summary>
-var v_queryState = {
+export var v_queryState = {
 	Idle: 0,
 	Executing: 1,
 	Ready: 2,
@@ -39,7 +39,7 @@ var v_queryState = {
 /// <summary>
 /// Transaction codes of client requests.
 /// </summary>
-var v_queryRequestCodes = {
+export var v_queryRequestCodes = {
 	Login: 0,
 	Query: 1,
 	Execute: 2,
@@ -57,7 +57,7 @@ var v_queryRequestCodes = {
 /// <summary>
 /// Transaction codes of server responses.
 /// </summary>
-var v_queryResponseCodes = {
+export var v_queryResponseCodes = {
 	LoginResult: 0,
 	QueryResult: 1,
 	QueryEditDataResult: 2,
@@ -73,7 +73,7 @@ var v_queryResponseCodes = {
 	Pong: 13,
 };
 
-function escapeHtml(p_str) {
+export function escapeHtml(p_str) {
 	var v_div = document.createElement("div");
 	v_div.appendChild(document.createTextNode(String(p_str)));
 	return v_div.innerHTML;
@@ -85,7 +85,7 @@ Number.prototype.padLeft = function (base, chr) {
 	return len > 0 ? new Array(len).join(chr || "0") + this : this;
 };
 
-function cancelSQL(p_tab_tag) {
+export function cancelSQL(p_tab_tag) {
 	var v_tab_tag;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -96,7 +96,7 @@ function cancelSQL(p_tab_tag) {
 	cancelSQLTab();
 }
 
-function cancelSQLTab(p_tab_tag) {
+export function cancelSQLTab(p_tab_tag) {
 	var v_tab_tag;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -117,7 +117,7 @@ function cancelSQLTab(p_tab_tag) {
 	SetAcked(v_tab_tag.context);
 }
 
-function getQueryEditorValue() {
+export function getQueryEditorValue() {
 	var v_selected_text = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText();
 
 	if (v_selected_text != "") return v_selected_text;
@@ -132,7 +132,7 @@ function getQueryEditorValue() {
 /// this is a safety net against an honest mistake, not a security boundary:
 /// a missed edge case just means no warning, never a blocked query.
 /// </summary>
-function destructiveSQLWarning(p_sql) {
+export function destructiveSQLWarning(p_sql) {
 	var v_stripped = p_sql;
 	for (;;) {
 		v_stripped = v_stripped.replace(/^[\s\r\n]+/, "");
@@ -167,7 +167,7 @@ function destructiveSQLWarning(p_sql) {
 	return null;
 }
 
-function querySQL(
+export function querySQL(
 	p_mode,
 	p_all_data = false,
 	p_query = getQueryEditorValue(),
@@ -192,7 +192,7 @@ function querySQL(
 	}
 }
 
-function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
+export function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
 	var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
 
 	if (v_state != v_queryState.Idle) {
@@ -303,13 +303,13 @@ function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p
 	}
 }
 
-function checkQueryStatus(p_tab) {
+export function checkQueryStatus(p_tab) {
 	if (p_tab.tag.state == v_queryState.Ready) {
 		querySQLReturnRender(p_tab.tag.data, p_tab.tag.context);
 	}
 }
 
-function querySQLReturn(p_data, p_context) {
+export function querySQLReturn(p_data, p_context) {
 	//Update tab_db_id if not null in response
 	if (p_data.v_data.v_inserted_id) {
 		p_context.tab_tag.tab_db_id = p_data.v_data.v_inserted_id;
@@ -337,7 +337,7 @@ function querySQLReturn(p_data, p_context) {
 	}
 }
 
-function setTabStatus(p_tab_tag, p_con_status) {
+export function setTabStatus(p_tab_tag, p_con_status) {
 	if (p_con_status == 0) {
 		p_tab_tag.query_tab_status_text.innerHTML = "Not connected";
 		p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-closed";
@@ -382,7 +382,7 @@ function setTabStatus(p_tab_tag, p_con_status) {
 	}
 }
 
-function querySQLReturnRender(p_message, p_context) {
+export function querySQLReturnRender(p_message, p_context) {
 	p_context.tab_tag.state = v_queryState.Idle;
 	p_context.tab_tag.context = null;
 	p_context.tab_tag.data = null;
@@ -653,7 +653,7 @@ function querySQLReturnRender(p_message, p_context) {
 	p_context.tab_tag.bt_cancel.style.display = "none";
 }
 
-function queryError(p_message, p_context) {
+export function queryError(p_message, p_context) {
 	var v_tab_tag = p_context.tab_tag;
 
 	v_tab_tag.state = v_queryState.Idle;

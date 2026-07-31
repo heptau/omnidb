@@ -16,7 +16,7 @@
       false
     );
   }
-  function getTreeSnippets(p_div) {
+  function getTreeSnippets$1(p_div) {
     var context_menu = {
       cm_node_root: {
         elements: [
@@ -508,7 +508,7 @@
     executeSnippet,
     getAllSnippets,
     getChildSnippetNodes,
-    getTreeSnippets,
+    getTreeSnippets: getTreeSnippets$1,
     newNodeSnippet,
     refreshTreeSnippets,
     renameNodeSnippet,
@@ -18671,13 +18671,1630 @@
     nodeOpenErrorSqlite,
     refreshTreeSqlite
   }, Symbol.toStringTag, { value: "Module" }));
+  function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "password") {
+      Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "checkbox") {
+      Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    td.className = "cellEven";
+  }
+  function greenHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "password") {
+      Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "checkbox") {
+      Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    td.className = "cellNew";
+  }
+  function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "password") {
+      Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "checkbox") {
+      Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    td.className = "cellEdit";
+  }
+  function whiteHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "password") {
+      Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "checkbox") {
+      Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    td.className = "cellOdd";
+  }
+  function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "password") {
+      Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "checkbox") {
+      Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    td.style.textAlign = "right";
+  }
+  function redHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "password") {
+      Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "checkbox") {
+      Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    td.className = "cellRemove";
+  }
+  function grayHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "password") {
+      Handsontable.renderers.PasswordRenderer.apply(this, arguments);
+    } else if (cellProperties.__proto__.type == "checkbox") {
+      Handsontable.renderers.CheckboxRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    td.className = "cellReadOnly";
+  }
+  function yellowRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+    }
+    td.className = "cellEdit";
+  }
+  function blueRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+    }
+    td.className = "cellEven";
+  }
+  function whiteRenderer$1(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+    }
+    td.className = "cellOdd";
+  }
+  function redRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+    }
+    td.className = "cellRemove";
+  }
+  function grayRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+    }
+    td.className = "cellReadOnly";
+  }
+  function greenRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.TextRenderer.apply(this, arguments);
+    }
+    td.className = "cellNew";
+  }
+  function grayEmptyRenderer(instance, td, row, col, prop, value, cellProperties) {
+    arguments[5] = "";
+    Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    td.className = "cellReadOnly";
+  }
+  function newRowRenderer(instance, td, row, col, prop, value, cellProperties) {
+    arguments[5] = "+";
+    td.style.textAlign = "center";
+    Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    td.className = "cellReadOnly";
+  }
+  function columnsActionRenderer(instance, td, row, col, prop, value, cellProperties) {
+    arguments[5] = "<i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='dropColumnAlterTable()'></i>";
+    Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    td.className = "cellReadOnly";
+  }
+  function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
+    arguments[5] = "<div class='text-center'><i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='deleteRowEditData()'></i></div>";
+    Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    td.className = "cellReadOnly";
+  }
+  function monitorStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
+    if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
+      Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
+    } else {
+      Handsontable.renderers.HtmlRenderer.apply(this, arguments);
+    }
+    if (value == "unknown") td.setAttribute("style", "background-color: rgb(165, 84, 175) !important");
+    else if (value == "ok" || value == "recovery") td.setAttribute("style", "background-color: rgb(74, 183, 65) !important");
+    else if (value == "warning") td.setAttribute("style", "background-color: rgb(255, 161, 45) !important");
+    else if (value == "critical") td.setAttribute("style", "background-color: rgb(232, 79, 79) !important");
+    td.style.color = "white";
+    td.style["text-align"] = "center";
+  }
+  const renderers = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    blueHtmlRenderer,
+    blueRenderer,
+    columnsActionRenderer,
+    editDataActionRenderer,
+    grayEmptyRenderer,
+    grayHtmlRenderer,
+    grayRenderer,
+    greenHtmlRenderer,
+    greenRenderer,
+    monitorStatusRenderer,
+    newRowRenderer,
+    redHtmlRenderer,
+    redRenderer,
+    whiteHtmlRenderer,
+    whiteRenderer: whiteRenderer$1,
+    whiteRightHtmlRenderer,
+    yellowHtmlRenderer,
+    yellowRenderer
+  }, Symbol.toStringTag, { value: "Module" }));
+  function showAbout() {
+    $("#modal_about").modal("show");
+  }
+  var v_light_terminal_theme = {
+    background: "#f4f4f4",
+    brightBlue: "#006de2",
+    brightGreen: "#4b9800",
+    foreground: "#454545",
+    cursor: "#454545",
+    cursorAccent: "#454545",
+    selection: "#00000030"
+  };
+  var v_dark_terminal_theme = {
+    background: "#1a1a1d"
+  };
+  var v_current_terminal_theme;
+  $(function() {
+    document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
+    changeTheme();
+    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event2) => {
+      changeTheme();
+    });
+  });
+  function adjustChartTheme(p_chart) {
+    var v_chart_font_color = "#666666";
+    var v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
+    if (v_theme == "light") {
+      v_chart_font_color = "#666666";
+      v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
+    } else {
+      v_chart_font_color = "#DCDDDE";
+      v_chart_grid_color = "rgba(100, 100, 100, 0.3)";
+    }
+    try {
+      p_chart.legend.options.labels.fontColor = v_chart_font_color;
+      p_chart.options.title.fontColor = v_chart_font_color;
+      p_chart.scales["y-axis-0"].options.gridLines.color = v_chart_grid_color;
+      p_chart.scales["x-axis-0"].options.gridLines.color = v_chart_grid_color;
+      p_chart.scales["y-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
+      p_chart.scales["y-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
+      p_chart.scales["x-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
+      p_chart.scales["x-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
+    } catch (err) {
+    }
+    p_chart.update();
+  }
+  function adjustGraphTheme(p_graph) {
+    var v_font_color = "#666666";
+    if (v_theme == "light") {
+      v_font_color = "#666666";
+    } else {
+      v_font_color = "#DCDDDE";
+    }
+    try {
+      p_graph.style().selector("node").style("color", v_font_color);
+      p_graph.style().selector("edge").style("color", v_font_color);
+      p_graph.nodes().updateStyle();
+      p_graph.edges().updateStyle();
+    } catch (err) {
+    }
+  }
+  function changeTheme(p_option) {
+    v_theme = "auto";
+    var v_actual_theme = "light";
+    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      v_actual_theme = "dark";
+    }
+    if (v_actual_theme == "dark") {
+      v_theme = "dark";
+      v_editor_theme = "sqlserver_dark";
+      v_current_terminal_theme = v_dark_terminal_theme;
+      document.body.classList.remove("omnidb--theme-light");
+      document.body.classList.add("omnidb--theme-dark");
+    } else {
+      v_theme = "light";
+      v_editor_theme = "sqlserver";
+      v_current_terminal_theme = v_light_terminal_theme;
+      document.body.classList.remove("omnidb--theme-dark");
+      document.body.classList.add("omnidb--theme-light");
+    }
+    try {
+      for (let i3 = 0; i3 < v_connTabControl.tabList.length; i3++) {
+        var v_outer_tab = v_connTabControl.tabList[i3];
+        if (v_outer_tab.tag) {
+          if (v_outer_tab.tag.tabControl) {
+            if (v_outer_tab.tag.tabControl.tabList) {
+              for (let j3 = 0; j3 < v_outer_tab.tag.tabControl.tabList.length; j3++) {
+                var v_inner_tab_tag = v_outer_tab.tag.tabControl.tabList[j3].tag;
+                if (v_inner_tab_tag.editor) {
+                  v_inner_tab_tag.editor.setTheme("ace/theme/" + v_editor_theme);
+                } else if (v_inner_tab_tag.editor_console) {
+                  v_inner_tab_tag.editor_console.setOption("theme", v_current_terminal_theme);
+                }
+              }
+            }
+          }
+        }
+      }
+    } catch (e) {
+      console.warn(e);
+    }
+    var els = document.getElementsByClassName("ace_editor");
+    Array.prototype.forEach.call(els, function(el) {
+      ace.edit(el).setTheme("ace/theme/" + v_editor_theme);
+    });
+    if (typeof Chart !== "undefined") {
+      Chart.helpers.each(Chart.instances, function(instance) {
+        adjustChartTheme(instance.chart);
+      });
+    }
+    if (typeof v_connTabControl !== "undefined") {
+      for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
+        var v_tab = v_connTabControl.tabList[i2];
+        if (v_tab.tag != null) {
+          if (v_tab.tag.mode == "outer_terminal") {
+            v_tab.tag.editor_console.setOption("theme", v_current_terminal_theme);
+          }
+        }
+      }
+      for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
+        var v_tab = v_connTabControl.tabList[i2];
+        if (v_tab.tag != null) {
+          if (v_tab.tag.mode == "connection") {
+            for (var j2 = 0; j2 < v_tab.tag.tabControl.tabList.length; j2++) {
+              var v_inner_tab = v_tab.tag.tabControl.tabList[j2];
+              if (v_inner_tab.tag != null) {
+                if (v_inner_tab.tag.mode == "monitor_dashboard") {
+                  for (var k = 0; k < v_inner_tab.tag.units.length; k++) {
+                    if (v_inner_tab.tag.units[k].type == "graph") adjustGraphTheme(v_inner_tab.tag.units[k].object);
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+      if (v_connTabControl.tag.hooks.changeTheme.length > 0) {
+        for (var i2 = 0; i2 < v_connTabControl.tag.hooks.changeTheme.length; i2++)
+          v_connTabControl.tag.hooks.changeTheme[i2](null, v_theme);
+      }
+    }
+  }
+  function changeFontSize(p_option) {
+    var els = document.getElementsByClassName("ace_editor");
+    v_font_size = p_option;
+    for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
+      var v_tab = v_connTabControl.tabList[i2];
+      if (v_tab.tag != null) {
+        if (v_tab.tag.mode == "outer_terminal") {
+          v_tab.tag.editor_console.setOption("fontSize", p_option);
+          v_tab.tag.editor_console.fit();
+        }
+      }
+    }
+    Array.prototype.forEach.call(els, function(el) {
+      ace.edit(el).setFontSize(Number(p_option));
+    });
+  }
+  function changeInterfaceFontSize(p_option) {
+    v_font_size = p_option;
+    document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
+    $(".ace_editor").each(function(index) {
+      let editor = ace.edit(this);
+      editor.setFontSize(v_font_size + "px");
+    });
+    var v_outer_tab_list = v_connTabControl.tabList;
+    for (let i2 = 0; i2 < v_outer_tab_list.length; i2++) {
+      var v_outer_tab_tag = v_outer_tab_list[i2].tag;
+      if (v_outer_tab_tag) {
+        var v_outer_tab_tag_inner_tab_control = v_outer_tab_tag.tabControl;
+        if (v_outer_tab_tag_inner_tab_control) {
+          var v_outer_tab_tag_inner_tab_list = v_outer_tab_tag_inner_tab_control.tabList;
+          for (let j2 = 0; j2 < v_outer_tab_tag_inner_tab_list.length; j2++) {
+            var v_inner_tab_tag = v_outer_tab_tag_inner_tab_list[j2].tag;
+            if (v_inner_tab_tag) {
+              if (v_inner_tab_tag.editor_console) {
+                v_inner_tab_tag.editor_console.setOption("fontSize", Number(v_font_size));
+              }
+            }
+          }
+        }
+      }
+    }
+    refreshHeights();
+  }
+  function updateIndentUnit() {
+    var charEl = document.querySelector('input[name="indent_char"]:checked');
+    var sizeEl = document.querySelector('input[name="indent_size"]:checked');
+    if (charEl) v_indent_char = charEl.value;
+    if (sizeEl) v_indent_size = parseInt(sizeEl.value);
+    if (v_indent_char === "tab") {
+      v_indent_unit = "	";
+    } else {
+      v_indent_unit = "";
+      for (var i2 = 0; i2 < v_indent_size; i2++) v_indent_unit += " ";
+    }
+  }
+  function applyEditorTabSize() {
+    $(".ace_editor").each(function() {
+      let editor = ace.edit(this);
+      editor.session.setTabSize(v_indent_size || 4);
+      editor.session.setUseSoftTabs(v_indent_char !== "tab");
+    });
+  }
+  function showConfigUser() {
+    if ($("#modal_config").hasClass("show")) {
+      return;
+    }
+    document.getElementById("sel_interface_font_size").value = v_font_size;
+    document.getElementById("txt_confirm_new_pwd").value = "";
+    document.getElementById("txt_new_pwd").value = "";
+    document.getElementById("sel_csv_encoding").value = v_csv_encoding;
+    document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
+    var charRadios = document.getElementsByName("indent_char");
+    for (var i2 = 0; i2 < charRadios.length; i2++) {
+      if (charRadios[i2].value === v_indent_char) {
+        charRadios[i2].checked = true;
+        break;
+      }
+    }
+    var sizeRadios = document.getElementsByName("indent_size");
+    for (var i2 = 0; i2 < sizeRadios.length; i2++) {
+      if (sizeRadios[i2].value === String(v_indent_size)) {
+        sizeRadios[i2].checked = true;
+        break;
+      }
+    }
+    var commaRadios = document.getElementsByName("comma_style");
+    for (var i2 = 0; i2 < commaRadios.length; i2++) {
+      if (commaRadios[i2].value === v_comma_style) {
+        commaRadios[i2].checked = true;
+        break;
+      }
+    }
+    var caseRadios = document.getElementsByName("keyword_case");
+    for (var i2 = 0; i2 < caseRadios.length; i2++) {
+      if (caseRadios[i2].value === v_keyword_case) {
+        caseRadios[i2].checked = true;
+        break;
+      }
+    }
+    var v_disabled_autocomplete_types = v_autocomplete_disabled_types.split(",");
+    var typeCheckboxes = document.getElementsByName("autocomplete_type");
+    for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
+      typeCheckboxes[i2].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i2].value) === -1;
+    }
+    var configModal = new bootstrap.Modal(document.getElementById("modal_config"), { backdrop: "static", keyboard: true });
+    configModal.show();
+  }
+  function goToConnections() {
+    showConfirm("You will lose existing changes. Would you like to continue?", function() {
+      window.open("../connections", "_self");
+    });
+  }
+  function confirmSignout() {
+    showConfirm("Are you sure you want to sign out?", function() {
+      window.open("../logout", "_self");
+    });
+  }
+  function showWebsite(p_name, p_url) {
+    if (v_connTabControl) $("#modal_about").modal("hide");
+    v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
+  }
+  function setAllAutocompleteTypeCheckboxes(p_checked) {
+    var typeCheckboxes = document.getElementsByName("autocomplete_type");
+    for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
+      typeCheckboxes[i2].checked = p_checked;
+    }
+  }
+  function saveConfigUser() {
+    v_font_size = document.getElementById("sel_interface_font_size").value;
+    var v_confirm_pwd = document.getElementById("txt_confirm_new_pwd");
+    var v_pwd = document.getElementById("txt_new_pwd");
+    v_csv_encoding = document.getElementById("sel_csv_encoding").value;
+    v_csv_delimiter = document.getElementById("txt_csv_delimiter").value;
+    var v_disabled_types = [];
+    var typeCheckboxes = document.getElementsByName("autocomplete_type");
+    for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
+      if (!typeCheckboxes[i2].checked) v_disabled_types.push(typeCheckboxes[i2].value);
+    }
+    v_autocomplete_disabled_types = v_disabled_types.join(",");
+    if ((v_confirm_pwd.value != "" || v_pwd.value != "") && v_pwd.value != v_confirm_pwd.value)
+      showAlert("New Password and Confirm New Password fields do not match.");
+    else {
+      var input = JSON.stringify({
+        p_font_size: v_font_size,
+        p_pwd: v_pwd.value,
+        p_csv_encoding: v_csv_encoding,
+        p_csv_delimiter: v_csv_delimiter,
+        p_indent_char: v_indent_char,
+        p_indent_size: v_indent_size,
+        p_comma_style: v_comma_style,
+        p_keyword_case: v_keyword_case,
+        p_autocomplete_disabled_types: v_autocomplete_disabled_types
+      });
+      execAjax("/save_config_user/", input, function(p_return) {
+        $("#modal_config").modal("hide");
+        showAlert("Configuration saved.");
+        applyEditorTabSize();
+      });
+    }
+  }
+  function saveShortcuts() {
+    var v_shortcut_list = [];
+    for (var property in v_shortcut_object.shortcuts) {
+      if (v_shortcut_object.shortcuts.hasOwnProperty(property)) {
+        v_shortcut_list.push(v_shortcut_object.shortcuts[property]);
+      }
+    }
+    var input = JSON.stringify({
+      p_shortcuts: v_shortcut_list,
+      p_current_os: v_current_os
+    });
+    execAjax("/save_shortcuts/", input, function(p_return) {
+      showAlert("Shortcuts saved.");
+    });
+  }
+  function editCellData$1(p_ht, p_row, p_col, p_content, p_can_alter) {
+    var v_edit_modal = document.getElementById("div_edit_content");
+    if (!v_edit_modal) {
+      v_edit_modal = document.createElement("div");
+      v_edit_modal.setAttribute("id", "div_edit_content");
+      v_edit_modal.setAttribute("tabindex", "-1");
+      v_edit_modal.setAttribute("role", "dialog");
+      v_edit_modal.setAttribute("aria-hidden", "true");
+      v_edit_modal.classList = "modal fade";
+      document.body.append(v_edit_modal);
+    }
+    v_canEditContent = p_can_alter;
+    var v_save_btn_attr = "";
+    if (!v_canEditContent) {
+      v_save_btn_attr = ' disabled title="Unable to manually edit data without primary key" ';
+    }
+    v_edit_modal.innerHTML = '<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;"><div class="modal-content"><div class="modal-header"><h4 class="mb-0">Edit Data</h4><button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancelEditContent()"><span aria-hidden="true">&times;</span></button></div><div id="modal_message_content" class="modal-body" style="white-space: pre-line;"><div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);"></div></div><div class="modal-footer"><button ' + v_save_btn_attr + ' type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal" onclick="saveEditContent()">Save</button><button type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal" onclick="cancelEditContent()">Cancel</button></div></div></div>';
+    if (v_editContentObject != null) {
+      if (v_editContentObject.editor != null) {
+        v_editContentObject.editor.destroy();
+        document.getElementById("txt_edit_content").innerHTML = "";
+      }
+    }
+    ace.require("ace/ext/language_tools");
+    var v_editor = ace.edit("txt_edit_content");
+    v_editor.setTheme("ace/theme/" + v_editor_theme);
+    v_editor.session.setMode("ace/mode/text");
+    v_editor.$blockScrolling = Infinity;
+    v_editor.setFontSize(Number(v_font_size));
+    v_editor.session.setTabSize(v_indent_size || 4);
+    v_editor.session.setUseSoftTabs(v_indent_char !== "tab");
+    v_editor.setOptions({ enableBasicAutocompletion: true });
+    document.getElementById("txt_edit_content").onclick = function() {
+      v_editor.focus();
+    };
+    if (p_content != null) v_editor.setValue(String(p_content));
+    else v_editor.setValue("");
+    v_editor.clearSelection();
+    if (p_can_alter) v_editor.setReadOnly(false);
+    else v_editor.setReadOnly(true);
+    v_editor.commands.bindKey("Cmd-,", null);
+    v_editor.commands.bindKey("Ctrl-,", null);
+    v_editor.commands.bindKey("Cmd-Delete", null);
+    v_editor.commands.bindKey("Ctrl-Delete", null);
+    v_editContentObject = new Object();
+    v_editContentObject.editor = v_editor;
+    v_editContentObject.row = p_row;
+    v_editContentObject.col = p_col;
+    v_editContentObject.ht = p_ht;
+    $("#div_edit_content").modal({
+      backdrop: "static",
+      keyboard: false
+    });
+    $("#div_edit_content").modal("show");
+  }
+  function saveEditContent() {
+    $("#div_edit_content").modal("hide");
+    if (v_canEditContent) {
+      v_editContentObject.ht.setDataAtCell(
+        v_editContentObject.row,
+        v_editContentObject.col,
+        v_editContentObject.editor.getValue()
+      );
+    } else {
+      alert("No permissions.");
+    }
+    v_editContentObject.editor.setValue("");
+  }
+  function cancelEditContent() {
+    $("#div_edit_content").modal("hide");
+    v_editContentObject.editor.setValue("");
+  }
+  function hideEditContent() {
+    $("#div_edit_content").modal("hide");
+    if (v_canEditContent)
+      v_editContentObject.ht.setDataAtCell(
+        v_editContentObject.row,
+        v_editContentObject.col,
+        v_editContentObject.editor.getValue()
+      );
+    v_editContentObject.editor.setValue("");
+  }
+  const headerActions = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    adjustChartTheme,
+    adjustGraphTheme,
+    applyEditorTabSize,
+    cancelEditContent,
+    changeFontSize,
+    changeInterfaceFontSize,
+    changeTheme,
+    confirmSignout,
+    editCellData: editCellData$1,
+    goToConnections,
+    hideEditContent,
+    saveConfigUser,
+    saveEditContent,
+    saveShortcuts,
+    setAllAutocompleteTypeCheckboxes,
+    showAbout,
+    showConfigUser,
+    showWebsite,
+    updateIndentUnit,
+    get v_current_terminal_theme() {
+      return v_current_terminal_theme;
+    },
+    v_dark_terminal_theme,
+    v_light_terminal_theme
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_queryState$1 = {
+    Idle: 0,
+    Executing: 1,
+    Ready: 2
+  };
+  var v_queryRequestCodes = {
+    Login: 0,
+    Query: 1,
+    Execute: 2,
+    Script: 3,
+    QueryEditData: 4,
+    SaveEditData: 5,
+    CancelThread: 6,
+    CloseTab: 8,
+    AdvancedObjectSearch: 9,
+    Console: 10,
+    Terminal: 11,
+    Ping: 12
+  };
+  var v_queryResponseCodes = {
+    LoginResult: 0,
+    QueryResult: 1,
+    QueryEditDataResult: 2,
+    SaveEditDataResult: 3,
+    SessionMissing: 4,
+    PasswordRequired: 5,
+    QueryAck: 6,
+    MessageException: 7,
+    RemoveContext: 9,
+    AdvancedObjectSearchResult: 10,
+    ConsoleResult: 11,
+    TerminalResult: 12,
+    Pong: 13
+  };
+  function escapeHtml$1(p_str) {
+    var v_div = document.createElement("div");
+    v_div.appendChild(document.createTextNode(String(p_str)));
+    return v_div.innerHTML;
+  }
+  Number.prototype.padLeft = function(base, chr) {
+    var len = String(base || 10).length - String(this).length + 1;
+    return len > 0 ? new Array(len).join(chr || "0") + this : this;
+  };
+  function cancelSQL(p_tab_tag) {
+    var v_tab_tag;
+    if (p_tab_tag) v_tab_tag = p_tab_tag;
+    else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag.tab_id);
+    cancelSQLTab();
+  }
+  function cancelSQLTab(p_tab_tag) {
+    var v_tab_tag;
+    if (p_tab_tag) v_tab_tag = p_tab_tag;
+    else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setReadOnly(false);
+    }
+    v_tab_tag.state = v_queryState$1.Idle;
+    v_tab_tag.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag.tab_check_span.style.display = "none";
+    v_tab_tag.bt_cancel.style.display = "none";
+    v_tab_tag.query_info.innerHTML = "Canceled.";
+    setTabStatus(v_tab_tag, 0);
+    removeContext(v_tab_tag.context.v_context_code);
+    SetAcked(v_tab_tag.context);
+  }
+  function getQueryEditorValue() {
+    var v_selected_text = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText();
+    if (v_selected_text != "") return v_selected_text;
+    else return v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
+  }
+  function destructiveSQLWarning(p_sql) {
+    var v_stripped = p_sql;
+    for (; ; ) {
+      v_stripped = v_stripped.replace(/^[\s\r\n]+/, "");
+      if (v_stripped.indexOf("--") === 0) {
+        var v_newline = v_stripped.indexOf("\n");
+        if (v_newline < 0) {
+          v_stripped = "";
+          break;
+        }
+        v_stripped = v_stripped.substring(v_newline + 1);
+        continue;
+      }
+      if (v_stripped.indexOf("/*") === 0) {
+        var v_end = v_stripped.indexOf("*/");
+        if (v_end < 0) {
+          v_stripped = "";
+          break;
+        }
+        v_stripped = v_stripped.substring(v_end + 2);
+        continue;
+      }
+      break;
+    }
+    var v_upper = v_stripped.toUpperCase();
+    if (/^(DROP|TRUNCATE)\b/.test(v_upper)) {
+      return "This statement is destructive and cannot be undone. Run it anyway?";
+    }
+    if (/^(DELETE|UPDATE)\b/.test(v_upper) && !/\bWHERE\b/.test(v_upper)) {
+      return "This statement has no WHERE clause and will affect ALL rows. Run it anyway?";
+    }
+    return null;
+  }
+  function querySQL$1(p_mode, p_all_data = false, p_query = getQueryEditorValue(), p_callback = null, p_log_query = true, p_save_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue(), p_cmd_type = null, p_clear_data = false, p_tab_title = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_title_span.innerHTML) {
+    var v_run = function() {
+      executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
+    };
+    var v_warning = p_mode == 0 ? destructiveSQLWarning(p_query) : null;
+    if (v_warning) {
+      showConfirm(v_warning, v_run);
+    } else {
+      v_run();
+    }
+  }
+  function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
+    var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
+    if (v_state != v_queryState$1.Idle) {
+      showAlert("Tab with activity in progress.");
+    } else {
+      var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+      v_tab_tag.tempData = [];
+      var v_sql_value = p_query;
+      var v_db_index = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_loading_span;
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_close_span;
+      if (v_sql_value.trim() == "") {
+        showAlert("Please provide a string.");
+      } else {
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex == null || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex != v_connTabControl.selectedTab.tag.selectedDatabaseIndex) {
+          p_mode = 0;
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
+        }
+        var v_message_data = {
+          v_sql_cmd: v_sql_value,
+          v_sql_save: p_save_query,
+          v_cmd_type: p_cmd_type,
+          v_db_index,
+          v_conn_tab_id: v_connTabControl.selectedTab.id,
+          v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
+          v_tab_db_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_db_id,
+          v_mode: p_mode,
+          v_all_data: p_all_data,
+          v_log_query: p_log_query,
+          v_tab_title: p_tab_title,
+          v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
+        };
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setReadOnly(true);
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_queryState$1.Executing;
+        (/* @__PURE__ */ new Date()).getTime();
+        var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+        v_tab_tag.tab_loading_span.style.visibility = "visible";
+        v_tab_tag.bt_cancel.style.display = "inline-block";
+        v_tab_tag.bt_fetch_more.style.display = "none";
+        v_tab_tag.bt_fetch_all.style.display = "none";
+        v_tab_tag.bt_commit.style.display = "none";
+        v_tab_tag.bt_rollback.style.display = "none";
+        v_tab_tag.div_notices.innerHTML = "";
+        setTabStatus(v_tab_tag, 2);
+        var v_has_selected_text = false;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText() != "")
+          v_has_selected_text = true;
+        var v_context = {
+          tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
+          start_time: (/* @__PURE__ */ new Date()).getTime(),
+          start_datetime: dformat,
+          cmd_type: p_cmd_type,
+          database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          mode: p_mode,
+          has_selected_text: v_has_selected_text,
+          callback: p_callback,
+          acked: false,
+          all_data: p_all_data,
+          query: p_query,
+          log_query: p_log_query,
+          save_query: p_save_query,
+          clear_data: p_clear_data,
+          tab_title: p_tab_title
+        };
+        v_context.tab_tag.context = v_context;
+        if (p_mode == 0 && p_callback == null || p_clear_data) {
+          if (v_context.tab_tag.ht != null) {
+            v_context.tab_tag.ht.destroy();
+            v_context.tab_tag.ht = null;
+          }
+          v_context.tab_tag.div_result.innerHTML = "";
+        }
+        v_context.tab_tag.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(dformat)) + "<br><b>Running...</b>";
+        createRequest(v_queryRequestCodes.Query, v_message_data, v_context);
+      }
+    }
+  }
+  function checkQueryStatus(p_tab) {
+    if (p_tab.tag.state == v_queryState$1.Ready) {
+      querySQLReturnRender(p_tab.tag.data, p_tab.tag.context);
+    }
+  }
+  function querySQLReturn(p_data, p_context) {
+    if (p_data.v_data.v_inserted_id) {
+      p_context.tab_tag.tab_db_id = p_data.v_data.v_inserted_id;
+    }
+    if (!p_data.v_error) p_data.v_data.v_data = p_context.tab_tag.tempData;
+    p_context.tab_tag.tempData = [];
+    if (p_context.tab_tag.state != v_queryState$1.Idle) {
+      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
+        querySQLReturnRender(p_data, p_context);
+      } else {
+        p_context.tab_tag.state = v_queryState$1.Ready;
+        p_context.tab_tag.context = p_context;
+        p_context.tab_tag.data = p_data;
+        p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+        p_context.tab_tag.tab_check_span.style.display = "";
+      }
+    }
+  }
+  function setTabStatus(p_tab_tag, p_con_status) {
+    if (p_con_status == 0) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Not connected";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-closed";
+      p_tab_tag.query_tab_status.title = "Not connected";
+      p_tab_tag.query_tab_status.innerHTML = "";
+    } else if (p_con_status == 1) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Idle";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle position-relative";
+      p_tab_tag.query_tab_status.title = "Idle";
+      p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--idle"><span></span><span></span><span></span><span></span></span></div>';
+    } else if (p_con_status == 2) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Running";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-running position-relative";
+      p_tab_tag.query_tab_status.title = "Running";
+      p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--running"><span></span><span></span><span></span><span></span></span></div>';
+    } else if (p_con_status == 3) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction";
+      p_tab_tag.query_tab_status.title = "Idle in transaction";
+      p_tab_tag.query_tab_status.innerHTML = "";
+    } else if (p_con_status == 4) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction (aborted)";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction_aborted";
+      p_tab_tag.query_tab_status.title = "Idle in transaction (aborted)";
+      p_tab_tag.query_tab_status.innerHTML = "";
+    }
+  }
+  function querySQLReturnRender(p_message, p_context) {
+    p_context.tab_tag.state = v_queryState$1.Idle;
+    p_context.tab_tag.context = null;
+    p_context.tab_tag.data = null;
+    if (p_context.tab_tag.editor) {
+      p_context.tab_tag.editor.setReadOnly(false);
+    }
+    var v_div_result = p_context.tab_tag.div_result;
+    var v_query_info = p_context.tab_tag.query_info;
+    var v_data = p_message.v_data;
+    if (v_data.v_con_status == 3 || v_data.v_con_status == 4) {
+      p_context.tab_tag.bt_commit.style.display = "";
+      p_context.tab_tag.bt_rollback.style.display = "";
+    } else {
+      p_context.tab_tag.bt_commit.style.display = "none";
+      p_context.tab_tag.bt_rollback.style.display = "none";
+    }
+    setTabStatus(p_context.tab_tag, p_message.v_data.v_con_status);
+    if (p_context.callback != null) {
+      if (p_message.v_error) {
+        v_div_result.innerHTML = '<div class="error_text">' + escapeHtml$1(p_message.v_data.message) + "</div>";
+        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml$1(String(p_message.v_data.v_duration));
+      } else {
+        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml$1(String(p_message.v_data.v_duration));
+        p_context.callback(p_message);
+      }
+    } else {
+      p_context.tab_tag.selectDataTabFunc();
+      if (p_context.tab_tag.div_count_notices) {
+        p_context.tab_tag.div_count_notices.style.display = "none";
+      }
+      if (v_data.v_notices_length > 0) {
+        if (p_context.tab_tag.div_count_notices) {
+          p_context.tab_tag.div_count_notices.innerHTML = v_data.v_notices_length;
+          p_context.tab_tag.div_count_notices.style.display = "inline-block";
+          p_context.tab_tag.div_notices.textContent = v_data.v_notices;
+        }
+      }
+      if (p_message.v_error) {
+        v_div_result.innerHTML = '<div class="error_text">' + escapeHtml$1(p_message.v_data.message) + "</div>";
+        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml$1(String(p_message.v_data.v_duration));
+        if (p_message.v_data.position != null) {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor && !p_context.has_selected_text) {
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(
+              p_message.v_data.position.row,
+              p_message.v_data.position.col
+            );
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.textInput.focus();
+          }
+        }
+      } else {
+        if (p_context.sel_value == 0) {
+          v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml$1(String(p_message.v_data.v_duration));
+          v_div_result.innerHTML = '<div class="query_info">' + escapeHtml$1(p_message.v_data.v_data) + "</div>";
+        } else {
+          if (v_data.v_data.length >= 50 && p_context.mode != 2) {
+            if (p_context.tab_tag.bt_fetch_more) {
+              p_context.tab_tag.bt_fetch_more.style.display = "";
+            }
+            if (p_context.tab_tag.bt_fetch_all) {
+              p_context.tab_tag.bt_fetch_all.style.display = "";
+            }
+          } else {
+            if (p_context.tab_tag.bt_fetch_more) {
+              p_context.tab_tag.bt_fetch_more.style.display = "none";
+            }
+            if (p_context.tab_tag.bt_fetch_all) {
+              p_context.tab_tag.bt_fetch_all.style.display = "none";
+            }
+          }
+          if (p_context.mode == 0) {
+            v_div_result.innerHTML = "";
+            window.scrollTo(0, 0);
+            if (v_data.v_data.length == 0 && v_data.v_col_names.length == 0) {
+              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml$1(String(p_message.v_data.v_duration));
+              if (typeof p_message.v_data.v_status == "string")
+                v_div_result.innerHTML = '<div class="query_info">' + escapeHtml$1(p_message.v_data.v_status) + "</div>";
+              else v_div_result.innerHTML = '<div class="query_info">Done</div>';
+            } else {
+              v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + v_data.v_data.length + "</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml$1(String(p_message.v_data.v_duration)) + "</span><br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml$1(String(p_context.start_datetime)) + "</span>";
+              var columnProperties = [];
+              for (var i2 = 0; i2 < v_data.v_col_names.length; i2++) {
+                var col = new Object();
+                col.readOnly = true;
+                col.title = v_data.v_col_names[i2];
+                if (i2 === 0) {
+                  col.pinned = "left";
+                }
+                var colType = v_data.v_col_types && v_data.v_col_types[i2] ? v_data.v_col_types[i2] : null;
+                if (colType) {
+                  col.tooltip = v_data.v_col_names[i2] + " [" + colType + "]";
+                  var typeUpper = String(colType).toUpperCase();
+                  if (/^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/.test(typeUpper)) {
+                    col.align = "right";
+                  } else if (/^(BOOL|BOOLEAN|BIT)$/.test(typeUpper)) {
+                    col.align = "center";
+                  } else if (/^(CHAR|BPCHAR)$/.test(typeUpper)) {
+                    col.align = "center";
+                  }
+                } else {
+                  col.tooltip = v_data.v_col_names[i2];
+                }
+                columnProperties.push(col);
+              }
+              var container = v_div_result;
+              p_context.tab_tag.ht = new Handsontable(container, {
+                licenseKey: "non-commercial-and-evaluation",
+                data: v_data.v_data,
+                columns: columnProperties,
+                colHeaders: true,
+                rowHeaders: true,
+                // stretchH: 'last',
+                autoRowSize: false,
+                //copyRowsLimit : 1000000000,
+                //copyColsLimit : 1000000000,
+                copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
+                manualColumnResize: true,
+                // modifyColWidth: function(width, col){
+                //   if(width > 300){
+                //     return 280
+                //   }
+                // },
+                fillHandle: false,
+                contextMenu: {
+                  callback: function(key, options) {
+                    if (key === "view_data") {
+                      editCellData(
+                        this,
+                        options[0].start.row,
+                        options[0].start.col,
+                        this.getDataAtCell(options[0].start.row, options[0].start.col),
+                        false
+                      );
+                    } else if (key === "copy") {
+                      var v_start_row = Math.min(options[0].start.row, options[0].end.row);
+                      var v_end_row = Math.max(options[0].start.row, options[0].end.row);
+                      var v_start_col = Math.min(options[0].start.col, options[0].end.col);
+                      var v_end_col = Math.max(options[0].start.col, options[0].end.col);
+                      var v_ht = this;
+                      var v_lines = [];
+                      for (var v_row = v_start_row; v_row <= v_end_row; v_row++) {
+                        var v_cells = [];
+                        for (var v_col = v_start_col; v_col <= v_end_col; v_col++) {
+                          var v_cell_value = v_ht.getDataAtCell(v_row, v_col);
+                          v_cells.push(v_cell_value == null ? "" : String(v_cell_value));
+                        }
+                        v_lines.push(v_cells.join("	"));
+                      }
+                      uiCopyTextToClipboard(v_lines.join("\n"));
+                    }
+                  },
+                  items: {
+                    copy: {
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+                    },
+                    view_data: {
+                      name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
+                    }
+                  }
+                },
+                cells: function(row, col2, prop) {
+                  var cellProperties = {};
+                  cellProperties.renderer = whiteRenderer;
+                  return cellProperties;
+                }
+              });
+            }
+          } else if (p_context.mode == 1 || p_context.mode == 2) {
+            v_new_data = p_context.tab_tag.ht.getSourceData();
+            v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + (v_new_data.length + v_data.v_data.length) + "</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml$1(String(p_message.v_data.v_duration)) + "</span><br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml$1(String(p_context.start_datetime)) + "</span>";
+            for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
+              v_new_data.push(v_data.v_data[i2]);
+            }
+            p_context.tab_tag.ht.loadData(v_new_data);
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollTop = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollHeight;
+          } else {
+            if (p_context.tab_tag.ht != null)
+              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml$1(String(p_message.v_data.v_duration)) + "<br/>Status: " + escapeHtml$1(p_message.v_data.v_status);
+            else {
+              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml$1(String(p_message.v_data.v_duration));
+              v_div_result.innerHTML = '<div class="query_info">' + escapeHtml$1(p_message.v_data.v_status) + "</div>";
+            }
+          }
+        }
+      }
+    }
+    p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+    p_context.tab_tag.tab_check_span.style.display = "none";
+    p_context.tab_tag.bt_cancel.style.display = "none";
+  }
+  function queryError(p_message, p_context) {
+    var v_tab_tag = p_context.tab_tag;
+    v_tab_tag.state = v_queryState$1.Idle;
+    v_tab_tag.context = null;
+    v_tab_tag.data = null;
+    if (v_tab_tag.editor) {
+      v_tab_tag.editor.setReadOnly(false);
+    }
+    v_tab_tag.bt_commit.style.display = "none";
+    v_tab_tag.bt_rollback.style.display = "none";
+    setTabStatus(v_tab_tag, 1);
+    v_tab_tag.div_notices.innerHTML = '<div class="error_text">' + escapeHtml$1(p_message.v_data) + "</div>";
+    if (v_tab_tag.div_count_notices) {
+      v_tab_tag.div_count_notices.innerHTML = 1;
+      v_tab_tag.div_count_notices.style.display = "inline-block";
+    }
+    v_tab_tag.selectMessageTabFunc();
+    v_tab_tag.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml$1(String(p_context.start_datetime)) + "<br><b>Error</b>";
+    v_tab_tag.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag.tab_check_span.style.display = "none";
+    v_tab_tag.bt_cancel.style.display = "none";
+  }
+  const query = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    cancelSQL,
+    cancelSQLTab,
+    checkQueryStatus,
+    destructiveSQLWarning,
+    escapeHtml: escapeHtml$1,
+    executeQuerySQL,
+    getQueryEditorValue,
+    queryError,
+    querySQL: querySQL$1,
+    querySQLReturn,
+    querySQLReturnRender,
+    setTabStatus,
+    v_queryRequestCodes,
+    v_queryResponseCodes,
+    v_queryState: v_queryState$1
+  }, Symbol.toStringTag, { value: "Module" }));
+  function customMenu$1(p_position, p_menu, p_object) {
+    var v_outer_div = createSimpleElement("div", "ul_cm_overlay", "aimara_menu__overlay");
+    var v_div = createSimpleElement("ul", "ul_cm", "aimara_menu");
+    var v_closediv = createSimpleElement("div", "close_cm", "div_close_cm");
+    v_closediv.onmousedown = function() {
+      v_div.parentNode.removeChild(v_div);
+      this.parentNode.removeChild(this);
+      v_outer_div.parentNode.removeChild(v_outer_div);
+    };
+    v_closediv.oncontextmenu = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      v_div.parentNode.removeChild(v_div);
+      this.parentNode.removeChild(this);
+      v_outer_div.parentNode.removeChild(v_outer_div);
+    };
+    v_outer_div.appendChild(v_div);
+    v_outer_div.appendChild(v_closediv);
+    document.body.appendChild(v_outer_div);
+    v_div.innerHTML = "";
+    var v_left = p_position.x - 5;
+    var v_right = p_position.y - 5;
+    v_div.style.display = "block";
+    v_div.style.position = "absolute";
+    v_div.style.left = v_left + "px";
+    v_div.style.top = v_right + "px";
+    for (var i2 = 0; i2 < p_menu.length; i2++)
+      (function(i3) {
+        var v_li = createSimpleElement("li", null, null);
+        v_li.aimara_level = 0;
+        var v_span = createSimpleElement("span", null, null);
+        v_span.onmousedown = function() {
+          v_div.parentNode.removeChild(v_div);
+          v_closediv.parentNode.removeChild(v_closediv);
+          v_outer_div.parentNode.removeChild(v_outer_div);
+          if (p_menu[i3].action != null) p_menu[i3].action(p_object);
+        };
+        var v_a = createSimpleElement("a", null, null);
+        var v_ul = createSimpleElement("ul", null, "aimara_sub-menu");
+        v_ul.aimara_level = 0;
+        v_a.innerHTML = p_menu[i3].text;
+        v_li.appendChild(v_span);
+        if (p_menu[i3].icon != void 0) {
+          var v_img = createSimpleElement("i", null, p_menu[i3].icon);
+          v_img.innerHTML = "&nbsp;";
+          v_li.appendChild(v_img);
+        }
+        v_li.appendChild(v_a);
+        v_div.appendChild(v_li);
+        if (p_menu[i3].submenu != void 0) {
+          v_li.onmouseenter = function() {
+            var v_submenus = document.getElementsByClassName("aimara_sub-menu");
+            for (var k = 0; k < v_submenus.length; k++) {
+              if (v_submenus[k].aimara_level >= this.aimara_level) v_submenus[k].style.display = "none";
+            }
+            v_ul.style.display = "block";
+            v_ul.style["z-index"] = this.aimara_level + 1;
+            custoMenuRepositionSubmenu(v_ul);
+          };
+          v_li.appendChild(v_ul);
+          var v_span_more = createSimpleElement("div", null, null);
+          v_span_more.appendChild(createImgElement(null, "menu_img", v_url_folder + "/static/OmniDB_app/images/right.png"));
+          v_li.appendChild(v_span_more);
+          customMenuRecursive(p_menu[i3].submenu.elements, v_ul, p_object, v_closediv, v_div, 1, v_outer_div);
+        }
+      })(i2);
+    customMenuReposition(v_div);
+  }
+  function customMenuRecursive(p_submenu, p_ul, p_object, p_closediv, p_cm_div, p_level, p_outer_div) {
+    for (var i2 = 0; i2 < p_submenu.length; i2++)
+      (function(i3) {
+        var v_li = createSimpleElement("li", null, null);
+        v_li.aimara_level = p_level;
+        var v_span = createSimpleElement("span", null, null);
+        v_span.onmousedown = function() {
+          p_cm_div.parentNode.removeChild(p_cm_div);
+          p_closediv.parentNode.removeChild(p_closediv);
+          p_outer_div.parentNode.removeChild(p_outer_div);
+          if (p_submenu[i3].action != null) p_submenu[i3].action(p_object);
+        };
+        var v_a = createSimpleElement("a", null, null);
+        var v_ul = createSimpleElement("ul", null, "aimara_sub-menu");
+        v_ul.aimara_level = p_level;
+        v_a.innerHTML = p_submenu[i3].text;
+        v_li.appendChild(v_span);
+        if (p_submenu[i3].icon != void 0) {
+          var v_img = createSimpleElement("i", null, p_submenu[i3].icon);
+          v_img.innerHTML = "&nbsp;";
+          v_li.appendChild(v_img);
+        }
+        v_li.appendChild(v_a);
+        p_ul.appendChild(v_li);
+        if (p_submenu[i3].submenu != void 0) {
+          v_li.onmouseenter = function() {
+            var v_submenus = document.getElementsByClassName("aimara_sub-menu");
+            for (var k = 0; k < v_submenus.length; k++) {
+              if (v_submenus[k].aimara_level >= this.aimara_level) v_submenus[k].style.display = "none";
+            }
+            v_ul.style.display = "block";
+            v_ul.style["z-index"] = this.aimara_level + 1;
+            custoMenuRepositionSubmenu(v_ul);
+          };
+          v_li.appendChild(v_ul);
+          var v_span_more = createSimpleElement("div", null, null);
+          v_span_more.appendChild(createImgElement(null, "menu_img", v_url_folder + "/static/OmniDB_app/images/right.png"));
+          v_li.appendChild(v_span_more);
+          customMenuRecursive(p_submenu[i3].submenu.elements, v_ul, p_object, p_closediv, p_cm_div, p_level + 1, p_outer_div);
+        }
+      })(i2);
+  }
+  function customMenuReposition(p_div) {
+    var v_div = p_div;
+    let v_div_rect = v_div.getBoundingClientRect();
+    let v_div_h_diff = v_div_rect.x + v_div_rect.width - window.innerWidth;
+    if (v_div_h_diff > 0) {
+      v_div.style.left = v_div_rect.x - v_div_h_diff - 5 + "px";
+      v_div.classList.add("aimara_menu_left");
+    }
+    let v_div_y = v_div_rect.y;
+    let v_div_v_diff = v_div_y + v_div_rect.height - window.innerHeight;
+    if (v_div_v_diff > 0) {
+      let v_div_v_fits = v_div_rect.height - window.innerHeight <= 5;
+      if (!v_div_v_fits) {
+        v_div.style.top = "5px";
+      } else {
+        v_div.style.top = v_div_y - v_div_v_diff - 5 + "px";
+      }
+    }
+    document.getElementById("close_cm").style.height = document.getElementById("ul_cm_overlay").scrollHeight + "px";
+  }
+  function custoMenuRepositionSubmenu(p_ul) {
+    var v_ul = p_ul;
+    let v_ul_rect = v_ul.getBoundingClientRect();
+    let v_ul_h_diff = v_ul_rect.x + v_ul_rect.width - window.innerWidth;
+    if (v_ul_h_diff > 0) {
+      v_ul.classList.add("aimara_menu_left");
+    }
+    let v_ul_y = v_ul_rect.y;
+    let v_ul_v_diff = v_ul_y + v_ul_rect.height - window.innerHeight;
+    if (v_ul_v_diff > 0) {
+      let v_ul_v_fits = v_ul_rect.height - window.innerHeight <= 5;
+      if (!v_ul_v_fits) {
+        v_ul.style.top = -1 * v_ul_y + 5 + "px";
+      } else {
+        v_ul.style.top = -1 * v_ul_v_diff - 5 + "px";
+      }
+    }
+    document.getElementById("close_cm").style.height = document.getElementById("ul_cm_overlay").scrollHeight + "px";
+  }
+  const customMenu$2 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    custoMenuRepositionSubmenu,
+    customMenu: customMenu$1,
+    customMenuRecursive,
+    customMenuReposition
+  }, Symbol.toStringTag, { value: "Module" }));
+  function checkSessionMessage() {
+    execAjax(
+      "/check_session_message/",
+      JSON.stringify({}),
+      function(p_return) {
+        if (p_return.v_data != "") showAlert$1(p_return.v_data);
+      },
+      null,
+      "box"
+    );
+  }
+  $(function() {
+    v_message_modal_animating = false;
+    v_message_modal_queued = false;
+    v_message_modal_queued_function = null;
+    v_shown_callback = null;
+    $("#modal_message").on("hide.bs.modal", function(e) {
+      v_message_modal_animating = true;
+    });
+    $("#modal_message").on("show.bs.modal", function(e) {
+      v_message_modal_animating = true;
+    });
+    $("#modal_message").on("hidden.bs.modal", function(e) {
+      document.getElementById("modal_message_content").innerHTML = "";
+      v_message_modal_animating = false;
+      if (v_message_modal_queued == true) {
+        if (v_message_modal_queued_function != null) v_message_modal_queued_function();
+        $("#modal_message").modal("show");
+      }
+      v_message_modal_queued = false;
+      v_message_modal_queued_function = null;
+    });
+    $("#modal_message").on("shown.bs.modal", function(e) {
+      v_message_modal_animating = false;
+      if (v_shown_callback) {
+        v_shown_callback();
+        v_shown_callback = null;
+      }
+    });
+  });
+  function showMessageModal(p_content_function, p_large) {
+    var v_dialog = document.getElementById("modal_message_dialog");
+    if (p_large == null || p_large == false) {
+      v_dialog.classList.remove("modal-xl");
+    } else {
+      v_dialog.classList.add("modal-xl");
+    }
+    if (!v_message_modal_animating) {
+      if (p_content_function != null) p_content_function();
+      $("#modal_message").modal("show");
+    } else {
+      v_message_modal_queued = true;
+      v_message_modal_queued_function = p_content_function;
+    }
+  }
+  function showError$1(p_message) {
+    var v_content_div = document.getElementById("modal_message_content");
+    var v_button_yes = document.getElementById("modal_message_yes");
+    var v_button_ok = document.getElementById("modal_message_ok");
+    var v_button_no = document.getElementById("modal_message_no");
+    var v_button_cancel = document.getElementById("modal_message_cancel");
+    v_content_div.textContent = p_message;
+    v_button_yes.style.display = "none";
+    v_button_ok.style.display = "";
+    v_button_no.style.display = "none";
+    v_button_cancel.style.display = "none";
+    showMessageModal();
+    setTimeout(function() {
+      v_button_yes.focus();
+    }, 500);
+  }
+  function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
+    var v_create_content_function = function() {
+      var v_content_div = document.getElementById("modal_message_content");
+      var v_button_yes = document.getElementById("modal_message_yes");
+      var v_button_ok = document.getElementById("modal_message_ok");
+      var v_button_no = document.getElementById("modal_message_no");
+      var v_button_cancel = document.getElementById("modal_message_cancel");
+      if (p_is_html) {
+        v_content_div.innerHTML = p_info;
+      } else {
+        v_content_div.textContent = p_info;
+      }
+      v_button_ok.onclick = function() {
+        if (p_funcYes != null) p_funcYes();
+      };
+      v_button_yes.style.display = "none";
+      v_button_ok.style.display = "";
+      v_button_no.style.display = "none";
+      v_button_cancel.style.display = "none";
+    };
+    showMessageModal(v_create_content_function, p_large);
+  }
+  function showConfirm$1(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
+    var v_create_content_function = function() {
+      if (p_shownCallback != null) v_shown_callback = p_shownCallback;
+      var v_content_div = document.getElementById("modal_message_content");
+      var v_button_yes = document.getElementById("modal_message_yes");
+      var v_button_ok = document.getElementById("modal_message_ok");
+      var v_button_no = document.getElementById("modal_message_no");
+      var v_button_cancel = document.getElementById("modal_message_cancel");
+      v_content_div.textContent = p_info;
+      v_button_ok.onclick = function() {
+        p_funcYes();
+      };
+      v_button_cancel.onclick = function() {
+        if (p_funcNo) p_funcNo();
+      };
+      v_button_yes.style.display = "none";
+      v_button_no.style.display = "none";
+      v_button_ok.style.display = "";
+      v_button_cancel.style.display = "";
+    };
+    showMessageModal(v_create_content_function, p_large);
+  }
+  function showConfirm2(p_info, p_funcYes, p_funcNo) {
+    var v_content_div = document.getElementById("modal_message_content");
+    var v_button_yes = document.getElementById("modal_message_yes");
+    var v_button_ok = document.getElementById("modal_message_ok");
+    var v_button_no = document.getElementById("modal_message_no");
+    var v_button_cancel = document.getElementById("modal_message_cancel");
+    v_content_div.textContent = p_info;
+    v_button_yes.onclick = function() {
+      p_funcYes();
+    };
+    v_button_no.onclick = function() {
+      if (p_funcNo != null) {
+        p_funcNo();
+      }
+    };
+    v_button_cancel.onclick = function() {
+    };
+    v_button_yes.style.display = "";
+    v_button_no.style.display = "";
+    v_button_ok.style.display = "none";
+    v_button_cancel.style.display = "";
+    showMessageModal();
+  }
+  function showConfirm3$1(p_info, p_funcYes, p_funcNo) {
+    var v_content_div = document.getElementById("modal_message_content");
+    var v_button_yes = document.getElementById("modal_message_yes");
+    var v_button_ok = document.getElementById("modal_message_ok");
+    var v_button_no = document.getElementById("modal_message_no");
+    var v_button_cancel = document.getElementById("modal_message_cancel");
+    v_content_div.textContent = p_info;
+    v_button_yes.onclick = function() {
+      p_funcYes();
+    };
+    v_button_no.onclick = function() {
+      if (p_funcNo != null) {
+        p_funcNo();
+      }
+    };
+    v_button_yes.style.display = "";
+    v_button_no.style.display = "";
+    v_button_ok.style.display = "none";
+    v_button_cancel.style.display = "none";
+    showMessageModal();
+  }
+  const notificationControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    checkSessionMessage,
+    showAlert: showAlert$1,
+    showConfirm: showConfirm$1,
+    showConfirm2,
+    showConfirm3: showConfirm3$1,
+    showError: showError$1,
+    showMessageModal
+  }, Symbol.toStringTag, { value: "Module" }));
+  var toggleSnippetPanel = function(p_set_state = false) {
+    v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
+    v_connTabControl.snippet_tag;
+    let v_set_state = p_set_state;
+    if (v_set_state === "visible") {
+      v_element.addClass("omnidb__panel--slide-in");
+    } else if (v_set_state === "hidden") {
+      v_element.removeClass("omnidb__panel--slide-in");
+    } else {
+      v_element.toggleClass("omnidb__panel--slide-in");
+    }
+    resizeSnippetPanel();
+  };
+  var v_createSnippetPanelFunction = function(p_index) {
+    var v_tab = v_connTabControl.createTab({
+      p_icon: `<i class="fas fa-book"></i>`,
+      p_name: `Snippets`,
+      p_close: false,
+      p_selectable: false,
+      p_clickFunction: function() {
+        toggleSnippetPanel();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Snippets Panel</h5>'
+    });
+    v_connTabControl.selectTab(v_tab);
+    var v_html = "<div id='" + v_tab.id + "_panel_snippet' class='omnidb__panel omnidb__panel--snippet'><button type='button' onclick='toggleSnippetPanel()' class='px-4 btn omnidb__theme__btn--secondary omnidb__panel__toggler'><i class='fas fa-arrows-alt-v'></i></button><div class='container-fluid h-100' style='position: relative;'><div id='" + v_tab.id + "_snippet_div_layout_grid' class='d-flex h-100'><div id='" + v_tab.id + "_snippet_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + v_tab.id + "_snippet_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div></div></div><div class='resize_line_vertical omnidb__resize-line__container' onmousedown='resizeSnippetHorizontal(event)' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + v_tab.id + "_snippet_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + v_tab.id + "_snippet_tabs' class='w-100'></div></div></div></div></div>";
+    v_connTabControl.snippet_div = document.createElement("div");
+    v_connTabControl.snippet_div.id = v_tab.id + "_snippet";
+    v_connTabControl.snippet_div.innerHTML = v_html;
+    document.getElementById(v_connTabControl.id).append(v_connTabControl.snippet_div);
+    var v_currTabControl = createTabControl({
+      p_div: v_tab.id + "_snippet_tabs",
+      p_hierarchy: "secondary"
+    });
+    v_currTabControl.createTab({
+      p_name: "+",
+      p_close: false,
+      p_selectable: false,
+      p_clickFunction: function(e) {
+        showMenuNewTab(e);
+      }
+    });
+    var v_tag = {
+      tab_id: v_tab.id,
+      tabControl: v_currTabControl,
+      tabTitle: "teste",
+      divLayoutGrid: document.getElementById(v_tab.id + "_snippet_div_layout_grid"),
+      divLeft: document.getElementById(v_tab.id + "_snippet_div_left"),
+      divPanel: document.getElementById(v_tab.id + "_panel_snippet"),
+      divRight: document.getElementById(v_tab.id + "_snippet_div_right"),
+      divTree: document.getElementById(v_tab.id + "_snippet_tree"),
+      connTabControl: v_connTabControl,
+      isVisible: false,
+      mode: "snippets"
+    };
+    v_tab.tag = v_tag;
+    v_connTabControl.snippet_tag = v_tag;
+    getTreeSnippets(v_tag.divTree.id);
+    if (v_connTabControl.snippet_tag.tabControl.tabList.length > 0) {
+      v_connTabControl.snippet_tag.tabControl.selectTab(v_connTabControl.snippet_tag.tabControl.tabList[0]);
+    }
+    v_connTabControl.tag.createSnippetTextTab();
+    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.setValue("");
+    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
+    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+  };
+  const outerSnippetPanel = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    toggleSnippetPanel,
+    v_createSnippetPanelFunction
+  }, Symbol.toStringTag, { value: "Module" }));
+  $(function() {
+    $("#modal_password").on("hidden.bs.modal", function(e) {
+      if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {
+        v_modal_password_cancel_callback();
+      } else if (v_modal_password_ok_clicked == true && v_modal_password_ok_after_hide_function != null) {
+        v_modal_password_ok_after_hide_function();
+      }
+    });
+    $("#modal_password").on("shown.bs.modal", function(e) {
+      if (v_modal_password_input != null) {
+        v_modal_password_input.focus();
+        v_modal_password_input.onkeydown = function(event2) {
+          if (event2.keyCode == 13) {
+            v_modal_password_ok_function();
+            $("#modal_password").modal("hide");
+          }
+        };
+      }
+    });
+    v_modal_password_ok_clicked = false;
+    v_modal_password_ok_function = null;
+    v_modal_password_ok_after_hide_function = null;
+    v_modal_password_cancel_callback = null;
+    v_modal_password_input = null;
+  });
+  function showPasswordPrompt$1(p_database_index, p_callback_function, p_cancel_callback_function, p_message, p_send_tab_id = true) {
+    v_modal_password_ok_clicked = false;
+    v_modal_password_cancel_callback = p_cancel_callback_function;
+    var v_content_div = document.getElementById("modal_password_content");
+    var v_button_ok = document.getElementById("modal_password_ok");
+    var v_button_cancel = document.getElementById("modal_password_cancel");
+    v_modal_password_input = document.getElementById("txt_password_prompt");
+    if (p_message) v_content_div.textContent = p_message;
+    $("#modal_password").modal("show");
+    v_modal_password_ok_function = function() {
+      v_modal_password_ok_clicked = true;
+      checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id);
+    };
+    v_button_ok.onclick = v_modal_password_ok_function;
+    v_button_cancel.onclick = function() {
+      v_modal_password_ok_clicked = false;
+      if (p_cancel_callback_function) p_cancel_callback_function();
+    };
+  }
+  function checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id) {
+    var v_password = document.getElementById("txt_password_prompt").value;
+    var v_tab_id = "";
+    if (p_send_tab_id) v_tab_id = v_connTabControl.selectedTab.id;
+    v_modal_password_ok_after_hide_function = function() {
+      execAjax(
+        "/renew_password/",
+        JSON.stringify({ p_database_index, p_tab_id: v_tab_id, p_password: v_password }),
+        function(p_return) {
+          if (p_callback_function) p_callback_function();
+        },
+        function(p_return) {
+          showPasswordPrompt$1(
+            p_database_index,
+            p_callback_function,
+            p_cancel_callback_function,
+            p_return.v_data,
+            p_send_tab_id
+          );
+        },
+        "box"
+      );
+    };
+  }
+  const passwords = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    checkPasswordPrompt,
+    showPasswordPrompt: showPasswordPrompt$1
+  }, Symbol.toStringTag, { value: "Module" }));
+  function getProperties$1(p_view, p_data) {
+    var v_tab_tag = v_connTabControl.selectedTab.tag;
+    $(v_tab_tag.divLoading).fadeIn(100);
+    execAjax(
+      p_view,
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_data
+      }),
+      function(p_return) {
+        v_tab_tag.gridProperties.loadData(p_return.v_data.properties);
+        v_tab_tag.ddlEditor.setValue(p_return.v_data.ddl);
+        v_tab_tag.ddlEditor.clearSelection();
+        v_tab_tag.ddlEditor.gotoLine(0, 0, true);
+        $(v_tab_tag.divLoading).fadeOut(100);
+        v_tab_tag.gridPropertiesCleared = false;
+      },
+      function(p_return) {
+        $(v_tab_tag.divLoading).fadeOut(100);
+        if (p_return.v_data.password_timeout) {
+          showPasswordPrompt(
+            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            function() {
+              getProperties$1(p_view, p_data);
+            },
+            null,
+            p_return.v_data.message
+          );
+        } else {
+          showError(p_return.v_data);
+        }
+      },
+      "box",
+      false
+    );
+  }
+  function clearProperties$1() {
+    var v_tab_tag = v_connTabControl.selectedTab.tag;
+    if (!v_tab_tag.gridPropertiesCleared) {
+      v_tab_tag.gridProperties.loadData([]);
+      v_tab_tag.gridPropertiesCleared = true;
+      v_tab_tag.ddlEditor.setValue("");
+      v_tab_tag.ddlEditor.clearSelection();
+      v_tab_tag.ddlEditor.gotoLine(0, 0, true);
+    }
+  }
+  const properties = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    clearProperties: clearProperties$1,
+    getProperties: getProperties$1
+  }, Symbol.toStringTag, { value: "Module" }));
   exposeGlobals(
     treeSnippets,
     treePostgresql,
     treeOracle,
     treeMariadb,
     treeMysql,
-    treeSqlite
+    treeSqlite,
+    renderers,
+    headerActions,
+    query,
+    customMenu$2,
+    notificationControl,
+    outerSnippetPanel,
+    passwords,
+    properties
   );
 })();
 //# sourceMappingURL=omnidb.bundle.js.map

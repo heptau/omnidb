@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-var toggleSnippetPanel = function (p_set_state = false) {
+export var toggleSnippetPanel = function (p_set_state = false) {
 	v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
 	var v_snippet_tag = v_connTabControl.snippet_tag;
 
@@ -43,7 +43,7 @@ var toggleSnippetPanel = function (p_set_state = false) {
 	resizeSnippetPanel();
 };
 
-var v_createSnippetPanelFunction = function (p_index) {
+export var v_createSnippetPanelFunction = function (p_index) {
 	// v_connTabControl.removeLastTab();
 
 	var v_tab = v_connTabControl.createTab({

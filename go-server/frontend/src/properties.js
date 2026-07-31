@@ -30,7 +30,7 @@ SOFTWARE.
 /// <summary>
 /// Retrieving Properties.
 /// </summary>
-function getProperties(p_view, p_data) {
+export function getProperties(p_view, p_data) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	$(v_tab_tag.divLoading).fadeIn(100);
 
@@ -72,7 +72,7 @@ function getProperties(p_view, p_data) {
 /// <summary>
 /// Clear property grid.
 /// </summary>
-function clearProperties() {
+export function clearProperties() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	if (!v_tab_tag.gridPropertiesCleared) {
 		v_tab_tag.gridProperties.loadData([]);

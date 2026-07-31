@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else if (cellProperties.__proto__.type == "password") {
@@ -41,7 +41,7 @@ function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellEven";
 }
 
-function greenHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function greenHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else if (cellProperties.__proto__.type == "password") {
@@ -55,7 +55,7 @@ function greenHtmlRenderer(instance, td, row, col, prop, value, cellProperties) 
 	td.className = "cellNew";
 }
 
-function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else if (cellProperties.__proto__.type == "password") {
@@ -69,7 +69,7 @@ function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProperties)
 	td.className = "cellEdit";
 }
 
-function whiteHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function whiteHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else if (cellProperties.__proto__.type == "password") {
@@ -83,7 +83,7 @@ function whiteHtmlRenderer(instance, td, row, col, prop, value, cellProperties) 
 	td.className = "cellOdd";
 }
 
-function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else if (cellProperties.__proto__.type == "password") {
@@ -97,7 +97,7 @@ function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellPropert
 	td.style.textAlign = "right";
 }
 
-function redHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function redHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else if (cellProperties.__proto__.type == "password") {
@@ -111,7 +111,7 @@ function redHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellRemove";
 }
 
-function grayHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function grayHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else if (cellProperties.__proto__.type == "password") {
@@ -125,7 +125,7 @@ function grayHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellReadOnly";
 }
 
-function yellowRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function yellowRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else {
@@ -135,7 +135,7 @@ function yellowRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellEdit";
 }
 
-function blueRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function blueRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else {
@@ -145,7 +145,7 @@ function blueRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellEven";
 }
 
-function whiteRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function whiteRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else {
@@ -155,7 +155,7 @@ function whiteRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellOdd";
 }
 
-function redRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function redRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else {
@@ -165,7 +165,7 @@ function redRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellRemove";
 }
 
-function grayRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function grayRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else {
@@ -175,7 +175,7 @@ function grayRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellReadOnly";
 }
 
-function greenRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function greenRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else {
@@ -185,7 +185,7 @@ function greenRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellNew";
 }
 
-function grayEmptyRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function grayEmptyRenderer(instance, td, row, col, prop, value, cellProperties) {
 	arguments[5] = "";
 
 	Handsontable.renderers.HtmlRenderer.apply(this, arguments);
@@ -193,7 +193,7 @@ function grayEmptyRenderer(instance, td, row, col, prop, value, cellProperties) 
 	td.className = "cellReadOnly";
 }
 
-function newRowRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function newRowRenderer(instance, td, row, col, prop, value, cellProperties) {
 	arguments[5] = "+";
 	td.style.textAlign = "center";
 
@@ -202,7 +202,7 @@ function newRowRenderer(instance, td, row, col, prop, value, cellProperties) {
 	td.className = "cellReadOnly";
 }
 
-function columnsActionRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function columnsActionRenderer(instance, td, row, col, prop, value, cellProperties) {
 	arguments[5] =
 		"<i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='dropColumnAlterTable()'></i>";
 
@@ -211,7 +211,7 @@ function columnsActionRenderer(instance, td, row, col, prop, value, cellProperti
 	td.className = "cellReadOnly";
 }
 
-function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
 	arguments[5] =
 		"<div class='text-center'><i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='deleteRowEditData()'></i></div>";
 
@@ -220,7 +220,7 @@ function editDataActionRenderer(instance, td, row, col, prop, value, cellPropert
 	td.className = "cellReadOnly";
 }
 
-function monitorStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
+export function monitorStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
 	} else {
