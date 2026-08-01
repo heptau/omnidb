@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Publishes the server-rendered page configuration onto `window`.
  *

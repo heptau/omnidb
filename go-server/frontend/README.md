@@ -8,6 +8,7 @@ Vite build for the workspace UI's own JavaScript. Output goes to
 npm ci
 npm run build
 npm run check      # legacy-globals bridge invariants, see below
+npm run typecheck  # opted-in files only, see below
 ```
 
 `dist/` **is committed**. `go build ./go-server` and `go test ./...` must work
@@ -75,6 +76,26 @@ produce a stale value at runtime rather than an error, so CI runs it too.
 configuration, several values of which the app reassigns at runtime. See its
 comment.
 
+## Type checking
+
+`npm run typecheck` runs `tsc` over this directory. `checkJs` is **off**, so
+only files whose first line is `// @ts-check` are actually checked — running it
+against all ~39k unannotated lines would produce thousands of findings and
+nothing would ever go green.
+
+Add `// @ts-check` to a file when you work on it. The set can only grow, and CI
+fails if anything already in it regresses. Currently checked:
+
+- the three bundle entry points, `legacy-globals.js`, `bootstrap-globals.js`
+- `AgGridAdapter.js`
+- `scripts/check-bridge.mjs`
+
+`src/globals.d.ts` declares the browser globals the bundle does not own —
+`agGrid`, `$`, `ace`, `window.Handsontable`. They are typed `any` on purpose:
+that is genuinely all that is known about them while they arrive as `<script>`
+tags, and pretending otherwise would be worse than saying so. Real types come
+with real npm packages.
+
 ## Where things stand
 
 Every line of workspace JavaScript this project owns is built from here.
@@ -92,11 +113,15 @@ What is deliberately not done yet:
   smaller install would come from. Ace should go last — it fetches its
   `mode-*` and worker files at runtime by URL relative to `basePath`, which
   needs explicit configuration under a bundler.
-- **Minification.** `minify: false` while the migration was in progress so each
-  commit's `dist/` diff could be read against the source change that produced
-  it. Nothing depends on it staying off.
-- **Type checking.** `checkJs` with per-file `// @ts-check` would find more
-  real bugs in code of this age than anything else on this list.
+- **Minification**, and on reflection it should probably stay off. It was
+  disabled during the migration so each commit's `dist/` diff could be read
+  against the source change that produced it — but `dist/` is committed
+  permanently, so minifying makes *every* future commit an unreadable
+  multi-megabyte diff. The usual argument for it does not apply either: the
+  bundle is embedded in the binary and served from loopback, so there is no
+  download to shrink. Turn it on only if parse time ever measurably hurts.
+- **Extending the `// @ts-check` set.** The infrastructure is in place (see
+  above); the ~39k unannotated lines are the work.
 - **Deleting the bridge.** Needs the ~18 `onclick=` attributes in
   `workspace.html` converted to `addEventListener` first.
 - **The CSS.** There is no `.scss` source in the repo — only

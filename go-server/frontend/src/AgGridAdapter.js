@@ -1,3 +1,4 @@
+// @ts-check
 /*
  * AG Grid Adapter - Provides Handsontable-like API for AG Grid v28
  * This adapter maps Handsontable API calls to AG Grid API
@@ -8,7 +9,16 @@ export class AgGridAdapter {
 		this.container = container;
 		this.options = options || {};
 		this.gridApi = null;
-		this.gridOptions = null;
+		this.columnApi = null;
+		/** @type {any} */
+		this.gridOptions = {};
+		/** @type {any} */
+		this._agGrid = null;
+		this._gridDiv = document.createElement("div");
+		/** @type {((e: MediaQueryListEvent) => void) | null} */
+		this._mediaQueryListener = null;
+		/** @type {HTMLElement | null} */
+		this._contextMenuElement = null;
 
 		// Opt-in, and deliberately not inferred from the Handsontable options
 		// that would seem to imply it. Almost every grid in the app passes a
@@ -103,7 +113,6 @@ export class AgGridAdapter {
 			this.gridOptions.suppressRowClickSelection = false;
 		}
 
-		this._gridDiv = document.createElement("div");
 		this._gridDiv.style.width = "100%";
 		this._gridDiv.style.height = "100%";
 
@@ -278,7 +287,9 @@ export class AgGridAdapter {
 		const str = String(value).trim().replace(/,/g, "");
 		if (str === "") return null;
 
-		if (!isNaN(str)) {
+		// isNaN(Number(str)), not Number.isNaN(str): the coercion is the point.
+		// Number.isNaN would answer false for every string, numeric or not.
+		if (!isNaN(Number(str))) {
 			const num = parseFloat(str);
 			if (isFinite(num)) {
 				return num;
@@ -327,12 +338,10 @@ export class AgGridAdapter {
 		// before click, so selecting here guarantees the handler sees its own
 		// row even if AG Grid's own click-to-select has not run yet.
 		if (this._editable) {
-			const self = this;
 			td.addEventListener("mousedown", function () {
 				if (params.node && typeof params.node.setSelected === "function") {
 					params.node.setSelected(true, true);
 				}
-				self._lastClickedColumn = colIndex;
 			});
 		}
 

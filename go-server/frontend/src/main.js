@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Bundle entry point for the workspace UI.
  *

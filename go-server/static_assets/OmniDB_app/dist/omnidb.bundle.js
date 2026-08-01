@@ -31296,7 +31296,12 @@
       this.container = container;
       this.options = options || {};
       this.gridApi = null;
-      this.gridOptions = null;
+      this.columnApi = null;
+      this.gridOptions = {};
+      this._agGrid = null;
+      this._gridDiv = document.createElement("div");
+      this._mediaQueryListener = null;
+      this._contextMenuElement = null;
       this._editable = !!this.options.omnidbEditable;
       this._minSpareRows = this._editable ? this.options.minSpareRows || 0 : 0;
       this._initGrid();
@@ -31370,7 +31375,6 @@
         this.gridOptions.singleClickEdit = false;
         this.gridOptions.suppressRowClickSelection = false;
       }
-      this._gridDiv = document.createElement("div");
       this._gridDiv.style.width = "100%";
       this._gridDiv.style.height = "100%";
       const applyTheme = () => {
@@ -31498,7 +31502,7 @@
       }
       const str = String(value).trim().replace(/,/g, "");
       if (str === "") return null;
-      if (!isNaN(str)) {
+      if (!isNaN(Number(str))) {
         const num = parseFloat(str);
         if (isFinite(num)) {
           return num;
@@ -31533,12 +31537,10 @@
         td.textContent = params.value == null ? "" : String(params.value);
       }
       if (this._editable) {
-        const self = this;
         td.addEventListener("mousedown", function() {
           if (params.node && typeof params.node.setSelected === "function") {
             params.node.setSelected(true, true);
           }
-          self._lastClickedColumn = colIndex;
         });
       }
       return td;

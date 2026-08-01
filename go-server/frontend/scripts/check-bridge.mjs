@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Guards the two ways src/legacy-globals.js can silently go wrong.
  *

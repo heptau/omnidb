@@ -37,6 +37,12 @@ jobs:
         run: npm run check
         working-directory: go-server/frontend
 
+      # Only files carrying a "// @ts-check" comment are checked — see
+      # go-server/frontend/README.md. The point is that the set can only grow.
+      - name: Typecheck the frontend
+        run: npm run typecheck
+        working-directory: go-server/frontend
+
       - name: Check the committed bundle matches its sources
         run: |
           if ! git diff --exit-code -- static_assets/OmniDB_app/dist; then

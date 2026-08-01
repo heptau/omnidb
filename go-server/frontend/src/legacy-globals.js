@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Re-publishes bundled modules onto `window`.
  *

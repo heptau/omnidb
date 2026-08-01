@@ -1,3 +1,4 @@
+// @ts-check
 /**
  * Entry point for the early bundle.
  *
