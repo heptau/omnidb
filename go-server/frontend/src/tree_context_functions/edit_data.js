@@ -349,6 +349,12 @@ export function queryEditDataReturnRender(p_message, p_context) {
 		var container = v_div_result;
 		v_currTabTag.editDataObject.ht = new Handsontable(container, {
 			licenseKey: "non-commercial-and-evaluation",
+			// Turns on the AG Grid shim's editable mode: per-cell renderers and
+			// readOnly flags from `cells`, the `beforeChange` hook, and
+			// `minSpareRows`. Opt-in because most other grids in the app pass a
+			// `cells` callback too but are meant to stay read-only — see
+			// AgGridAdapter's constructor.
+			omnidbEditable: true,
 			columns: columnProperties,
 			data: v_data.v_data,
 			colHeaders: true,

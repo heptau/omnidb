@@ -83,10 +83,26 @@ its own `tree_*.js`, and they do not share code.
 
 ## Edit data tab
 
+This screen is the only writable grid in the app, and the Handsontable→AG Grid
+shim reproduces that by hand — every item below is a separate piece of wiring
+in `src/AgGridAdapter.js`, so check them individually rather than assuming one
+implies the next.
+
 - [ ] Opens with the table's rows.
-- [ ] Edit a cell, add a row, mark a row for deletion.
-- [ ] Save applies the changes; the generated SQL is shown.
-- [ ] Cancel/revert discards pending changes.
+- [ ] Column headers show the column name, a key icon on primary keys, and an
+      ⓘ whose tooltip gives the type — not raw `<span>` markup.
+- [ ] There is a blank row at the bottom with a `+`, and every other row has a
+      red `×`.
+- [ ] Double-clicking a cell opens an editor; Enter commits it.
+- [ ] An edited row turns yellow and the Save button appears.
+- [ ] Typing into the bottom blank row turns it green, gives it a `×`, and a
+      fresh blank `+` row appears below it.
+- [ ] Clicking a row's `×` turns that row red; clicking it again reverts.
+- [ ] Changing "Query N rows" refetches and discards pending edits.
+- [ ] Save applies the changes and reports the generated SQL — one entry per
+      changed row, with the failure message inline for any that error.
+- [ ] Check the database directly: the update, insert and delete all landed.
+- [ ] A table with no primary key opens read-only, with the warning dialog.
 
 ## Console tab
 

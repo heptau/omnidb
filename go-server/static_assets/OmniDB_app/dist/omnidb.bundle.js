@@ -22714,6 +22714,12 @@
       var container = v_div_result;
       v_currTabTag.editDataObject.ht = new Handsontable(container, {
         licenseKey: "non-commercial-and-evaluation",
+        // Turns on the AG Grid shim's editable mode: per-cell renderers and
+        // readOnly flags from `cells`, the `beforeChange` hook, and
+        // `minSpareRows`. Opt-in because most other grids in the app pass a
+        // `cells` callback too but are meant to stay read-only — see
+        // AgGridAdapter's constructor.
+        omnidbEditable: true,
         columns: columnProperties,
         data: v_data.v_data,
         colHeaders: true,
@@ -31291,12 +31297,14 @@
       this.options = options || {};
       this.gridApi = null;
       this.gridOptions = null;
+      this._editable = !!this.options.omnidbEditable;
+      this._minSpareRows = this._editable ? this.options.minSpareRows || 0 : 0;
       this._initGrid();
     }
     _initGrid() {
       const self = this;
       let columns = this.options.columns || [];
-      const data = this.options.data || [];
+      const data = this._withSpareRows(this.options.data || []);
       if (columns.length === 0 && data.length > 0) {
         const numCols = data[0].length;
         for (let i2 = 0; i2 < numCols; i2++) {
@@ -31312,7 +31320,12 @@
         columnDefs: this._createColumnDefs(columns),
         rowData: this._createRowData(data),
         defaultColDef: {
-          sortable: true,
+          // Sorting is Handsontable-ish reordering of a fixed result set
+          // in every other grid, but in the editable one it would divorce
+          // the displayed row order from the infoRows[] indexes that
+          // edit_data.js addresses rows by — a sort would silently
+          // misattribute every pending change.
+          sortable: !this._editable,
           resizable: true,
           filter: false,
           editable: false
@@ -31352,6 +31365,11 @@
           }
         }
       };
+      if (this._editable) {
+        this.gridOptions.stopEditingWhenCellsLoseFocus = true;
+        this.gridOptions.singleClickEdit = false;
+        this.gridOptions.suppressRowClickSelection = false;
+      }
       this._gridDiv = document.createElement("div");
       this._gridDiv.style.width = "100%";
       this._gridDiv.style.height = "100%";
@@ -31383,25 +31401,48 @@
     }
     _createColumnDefs(columns) {
       const self = this;
+      const fixedLeft = this._editable ? this.options.fixedColumnsLeft || 0 : 0;
       return columns.map((col, index) => {
+        const fallbackName = "Column " + (index + 1);
+        const title = col.title || fallbackName;
+        const titleText = this._htmlToText(title) || fallbackName;
         const colDef = {
           field: "col_" + index,
-          headerName: col.title || "Column " + (index + 1),
+          // Plain text, always. AG Grid's headerName is text, not HTML,
+          // so markup used to be shown literally ("<span>name</...").
+          headerName: titleText,
           width: col.width || 120,
           resizable: true,
-          sortable: true,
-          headerTooltip: col.tooltip || col.title || "Column " + (index + 1),
+          sortable: !this._editable,
+          headerTooltip: this._htmlToText(col.tooltip) || titleText,
           comparator: function(valueA, valueB, nodeA, nodeB, isInverted) {
             return self._numericCompare(valueA, valueB, isInverted);
           }
         };
+        const headerTemplate = this._headerTemplate(title);
+        if (headerTemplate) {
+          colDef.headerComponentParams = { template: headerTemplate };
+        }
         if (col.pinned) {
           colDef.pinned = col.pinned;
+        } else if (index < fixedLeft) {
+          colDef.pinned = "left";
         }
         if (col.align) {
           colDef.cellStyle = { textAlign: col.align };
         }
-        if (col.renderer === "html") {
+        if (this._editable) {
+          colDef.editable = function(params) {
+            const props = self._cellProperties(params.node.rowIndex, index);
+            return !props.readOnly;
+          };
+          colDef.valueSetter = function(params) {
+            return self._applyCellEdit(params, index);
+          };
+          colDef.cellRenderer = function(params) {
+            return self._renderCell(params, index);
+          };
+        } else if (col.renderer === "html") {
           colDef.cellRenderer = function(params) {
             if (params.value) {
               return params.value;
@@ -31411,6 +31452,24 @@
         }
         return colDef;
       });
+    }
+    // Handsontable rendered a column title as HTML. AG Grid's default header
+    // component writes displayName into its eText node as text, so the markup
+    // has to go into the surrounding template instead. eText stays in the
+    // template (hidden) because AG Grid still writes to it, and the sort/filter
+    // refs stay because the component looks them up unconditionally.
+    _headerTemplate(title) {
+      if (typeof title !== "string" || !/<[a-z][\s\S]*>/i.test(title)) {
+        return null;
+      }
+      return '<div class="ag-cell-label-container" role="presentation"><span ref="eMenu" class="ag-header-icon ag-header-cell-menu-button" aria-hidden="true"></span><div ref="eLabel" class="ag-header-cell-label" role="presentation"><span ref="eText" class="ag-header-cell-text" style="display:none"></span><span class="ag-header-cell-text">' + title + '</span><span ref="eFilter" class="ag-header-icon ag-header-label-icon ag-filter-icon" aria-hidden="true"></span><span ref="eSortOrder" class="ag-header-icon ag-header-label-icon ag-sort-order" aria-hidden="true"></span><span ref="eSortAsc" class="ag-header-icon ag-header-label-icon ag-sort-ascending-icon" aria-hidden="true"></span><span ref="eSortDesc" class="ag-header-icon ag-header-label-icon ag-sort-descending-icon" aria-hidden="true"></span><span ref="eSortNone" class="ag-header-icon ag-header-label-icon ag-sort-none-icon" aria-hidden="true"></span></div></div>';
+    }
+    _htmlToText(html) {
+      if (typeof html !== "string" || html === "") return "";
+      if (!/[<&]/.test(html)) return html;
+      const el2 = document.createElement("div");
+      el2.innerHTML = html;
+      return (el2.textContent || "").trim();
     }
     _numericCompare(valueA, valueB, isInverted) {
       const numA = this._parseNumeric(valueA);
@@ -31447,6 +31506,112 @@
       }
       return null;
     }
+    // --- editable-grid support (opt-in via options.omnidbEditable) ---------
+    //
+    // Handsontable let a grid be written to; AG Grid needs each piece wired up
+    // explicitly. The four below reproduce the parts edit_data.js depends on:
+    // per-cell renderers and read-only flags from the `cells` callback, the
+    // `beforeChange` hook, and `minSpareRows`' trailing blank row.
+    // Handsontable called options.cells(row, col, prop) for every cell and used
+    // the returned object's `renderer` and `readOnly`. Renderers read
+    // `cellProperties.__proto__.type`, which on a plain object is simply
+    // undefined — the same "not a dropdown, not a checkbox" answer Handsontable
+    // gave for an untyped cell.
+    _cellProperties(row, col) {
+      if (typeof this.options.cells !== "function") return {};
+      return this.options.cells.call(this, row, col, col) || {};
+    }
+    _renderCell(params, colIndex) {
+      const props = this._cellProperties(params.node.rowIndex, colIndex);
+      const td = document.createElement("div");
+      td.style.width = "100%";
+      td.style.height = "100%";
+      const renderer = typeof props.renderer === "function" ? props.renderer : null;
+      if (renderer) {
+        renderer.call(this, this, td, params.node.rowIndex, colIndex, colIndex, params.value, props);
+      } else {
+        td.textContent = params.value == null ? "" : String(params.value);
+      }
+      if (this._editable) {
+        const self = this;
+        td.addEventListener("mousedown", function() {
+          if (params.node && typeof params.node.setSelected === "function") {
+            params.node.setSelected(true, true);
+          }
+          self._lastClickedColumn = colIndex;
+        });
+      }
+      return td;
+    }
+    _applyCellEdit(params, colIndex) {
+      const field = "col_" + colIndex;
+      const oldValue = params.data[field];
+      const newValue = params.newValue;
+      if (oldValue === newValue) return false;
+      if (typeof this.options.beforeChange === "function") {
+        this.options.beforeChange.call(this, [[params.node.rowIndex, colIndex, oldValue, newValue]], "edit");
+      }
+      params.data[field] = newValue;
+      const self = this;
+      const node = params.node;
+      setTimeout(function() {
+        self._ensureSpareRow();
+        if (self.gridApi) {
+          self.gridApi.refreshCells({ force: true, rowNodes: [node] });
+        }
+      }, 0);
+      return true;
+    }
+    _isEmptyRow(row) {
+      if (!row) return true;
+      for (let i2 = 0; i2 < row.length; i2++) {
+        const v = row[i2];
+        if (v !== null && v !== void 0 && v !== "") return false;
+      }
+      return true;
+    }
+    _rowWidth() {
+      if (this.gridOptions && this.gridOptions.columnDefs) return this.gridOptions.columnDefs.length;
+      return (this.options.columns || []).length;
+    }
+    _withSpareRows(data) {
+      const rows = (data || []).slice();
+      for (let i2 = 0; i2 < this._minSpareRows; i2++) {
+        rows.push(new Array(this._rowWidth()).fill(null));
+      }
+      return rows;
+    }
+    // loadData() is handed the grid's own current contents by callers that
+    // splice a row out and reload (deleteRowEditData), so the spare row comes
+    // back in with it and would accumulate. Trailing blank rows are dropped
+    // before _withSpareRows adds exactly one back. A genuine all-empty row
+    // would be dropped too, but every editable table here has a primary key,
+    // so no such row can exist.
+    _stripTrailingEmptyRows(data) {
+      if (!this._minSpareRows) return data || [];
+      const rows = (data || []).slice();
+      while (rows.length > 0 && this._isEmptyRow(rows[rows.length - 1])) {
+        rows.pop();
+      }
+      return rows;
+    }
+    _ensureSpareRow() {
+      if (!this._minSpareRows || !this.gridApi) return;
+      const rows = this.getSourceData();
+      if (rows.length > 0 && this._isEmptyRow(rows[rows.length - 1])) return;
+      const blank = { rowIndex: rows.length };
+      for (let i2 = 0; i2 < this._rowWidth(); i2++) {
+        blank["col_" + i2] = null;
+      }
+      this.gridApi.applyTransaction({ add: [blank] });
+    }
+    // AG Grid hands back whatever is in the row model; the save path wants
+    // plain strings or null so the Go side's []*string sees a real JSON null
+    // for an empty cell rather than the string "undefined".
+    _normalizeCellValue(value) {
+      if (value === void 0 || value === null || value === "") return null;
+      return typeof value === "string" ? value : String(value);
+    }
     _createRowData(data) {
       if (!data || data.length === 0) return [];
       return data.map((row, rowIndex) => {
@@ -31478,7 +31643,7 @@
     }
     loadData(data) {
       if (this.gridApi) {
-        this.gridApi.setRowData(this._createRowData(data));
+        this.gridApi.setRowData(this._createRowData(this._withSpareRows(this._stripTrailingEmptyRows(data))));
         setTimeout(() => {
           this._smartSizeColumns();
         }, 150);
@@ -31493,11 +31658,27 @@
       }
       return null;
     }
+    // Handsontable's getDataAtRow(row) — the whole row as a plain array, in
+    // column order. saveEditData() builds v_data_rows out of these, and the
+    // backend indexes them as dataRow[col+1] (column 0 is the row-action
+    // column), so the leading cell has to stay in.
+    getDataAtRow(row) {
+      if (!this.gridApi) return [];
+      const rowNode = this.gridApi.getDisplayedRowAtIndex(row);
+      if (!rowNode || !rowNode.data) return [];
+      const out = [];
+      const colCount = (this.gridOptions.columnDefs || []).length;
+      for (let i2 = 0; i2 < colCount; i2++) {
+        out.push(this._normalizeCellValue(rowNode.data["col_" + i2]));
+      }
+      return out;
+    }
     getSelected() {
       if (this.gridApi) {
-        const selectedRows = this.gridApi.getSelectedRows();
-        if (selectedRows.length > 0) {
-          return [[selectedRows[0].rowIndex]];
+        const nodes = this.gridApi.getSelectedNodes();
+        if (nodes.length > 0) {
+          const index = typeof nodes[0].rowIndex === "number" ? nodes[0].rowIndex : nodes[0].data.rowIndex;
+          return [[index]];
         }
       }
       return [];
@@ -31520,9 +31701,13 @@
         }
       }
     }
+    // force: true so custom cell renderers actually re-run. Without it AG Grid
+    // skips any cell whose value is unchanged, and deleteRowEditData() toggles
+    // a row's *mode* without touching a single value — the row would stay the
+    // colour it was and keep the wrong row-action icon.
     render() {
       if (this.gridApi) {
-        this.gridApi.refreshCells();
+        this.gridApi.refreshCells({ force: true });
       }
     }
     selectCell(row, col, endRow, endCol) {
@@ -31660,16 +31845,31 @@
   window.Handsontable = function(container, options) {
     return new AgGridAdapter(container, options);
   };
+  function htmlRendererValue(value) {
+    return value == null ? "" : value;
+  }
   window.Handsontable.renderers = {
-    AutocompleteRenderer: function() {
+    // No <select> ever reaches here — the cellProperties this shim builds have
+    // no `type`, so renderers.js takes its TextRenderer branch. Present because
+    // those renderers name it in the branch they do not take.
+    AutocompleteRenderer: function(instance, td, row, col, prop, value) {
+      td.textContent = String(htmlRendererValue(value));
     },
-    PasswordRenderer: function() {
+    PasswordRenderer: function(instance, td, row, col, prop, value) {
+      const text = String(htmlRendererValue(value));
+      td.textContent = text.replace(/./g, "*");
     },
-    CheckboxRenderer: function() {
+    CheckboxRenderer: function(instance, td, row, col, prop, value) {
+      td.textContent = String(htmlRendererValue(value));
     },
-    HtmlRenderer: function() {
+    // innerHTML is the point of this one: the row-action renderers build an
+    // <i> with an inline onclick, and the column headers a key icon. The markup
+    // is composed in renderers.js from constants, never from row data.
+    HtmlRenderer: function(instance, td, row, col, prop, value) {
+      td.innerHTML = htmlRendererValue(value);
     },
-    TextRenderer: function() {
+    TextRenderer: function(instance, td, row, col, prop, value) {
+      td.textContent = String(htmlRendererValue(value));
     }
   };
   const AgGridAdapter$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
