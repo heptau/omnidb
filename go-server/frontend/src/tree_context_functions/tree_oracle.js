@@ -1246,6 +1246,13 @@ export function getTreeOracle(p_div) {
 	};
 
 	tree.clickNodeEvent = function (node) {
+		// Error nodes (see nodeOpenError* below) carry their message on the
+		// tag, because the label itself is plain text — Aimara escapes node
+		// labels, so an error node cannot render its own "detail" link.
+		if (node.tag && node.tag.type === "error") {
+			showError(node.tag.message);
+			return;
+		}
 		if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
 			getPropertiesOracle(node);
 		} else {
@@ -3591,9 +3598,14 @@ export function nodeOpenErrorOracle(p_return, p_node) {
 		if (p_node.childNodes.length > 0) p_node.removeChildNodes();
 
 		v_node = p_node.createChildNode(
-			"Error - <a class='a_link' onclick='showError(&quot;" +
-				p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, "") +
-				"&quot;)'>View Detail</a>",
+			// Plain text, not markup. Aimara escapes every node label before
+			// it reaches innerHTML (see aimaraEscapeHtml), so the <a
+			// onclick='showError(...)'>View Detail</a> this used to build was
+			// displayed literally -- there has been no clickable link here
+			// since that escaping went in, just a wall of visible tags. The
+			// message rides on the node's tag instead, and clickNodeEvent
+			// below opens it.
+			"Error - click for detail",
 			false,
 			"fas fa-times node-error",
 			{

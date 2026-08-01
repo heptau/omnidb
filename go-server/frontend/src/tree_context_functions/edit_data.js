@@ -303,24 +303,26 @@ export function queryEditDataReturnRender(p_message, p_context) {
 		for (var i = 0; i < v_currTabTag.editDataObject.columns.length; i++) {
 			var col = new Object();
 
+			// Both of these are database-sourced identifiers, and this string
+			// really is rendered as markup now (AgGridAdapter turns a title
+			// carrying tags into an AG Grid header template). The type goes
+			// inside a quoted attribute, the column name into element text,
+			// so they need the attribute-safe and text-safe escapes
+			// respectively — an identifier is allowed to contain a quote.
 			var v_tooltip_attr =
 				" data-toggle=tooltip " +
 				"data-placement=bottom " +
 				"data-html=true " +
-				'title="<div><b>Type</b> ' +
-				v_currTabTag.editDataObject.columns[i].v_type +
-				'</div>" ';
+				'title="&lt;div&gt;&lt;b&gt;Type&lt;/b&gt; ' +
+				escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i].v_type) +
+				'&lt;/div&gt;" ';
 
 			var v_tooltip_html = '<i class="ml-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
 
-			if (!v_currTabTag.editDataObject.columns[i].v_is_pk)
-				col.title = "<span>" + v_currTabTag.editDataObject.columns[i].v_column + "</span>" + v_tooltip_html;
-			else
-				col.title =
-					'<i class="fas fa-key action-key text-secondary"></i> <span>' +
-					v_currTabTag.editDataObject.columns[i].v_column +
-					"</span>" +
-					v_tooltip_html;
+			var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i].v_column) + "</span>";
+
+			if (!v_currTabTag.editDataObject.columns[i].v_is_pk) col.title = v_column_html + v_tooltip_html;
+			else col.title = '<i class="fas fa-key action-key text-secondary"></i> ' + v_column_html + v_tooltip_html;
 
 			col.renderer = "text";
 			columnProperties.push(col);

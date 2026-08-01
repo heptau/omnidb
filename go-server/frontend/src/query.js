@@ -79,6 +79,20 @@ export function escapeHtml(p_str) {
 	return v_div.innerHTML;
 }
 
+// escapeHtml above goes through a text node, which escapes & < > but leaves
+// both quote characters alone — correct for text content, wrong for an
+// attribute value, where an unescaped quote ends the attribute and everything
+// after it is parsed as more attributes. Use this whenever a value is going
+// between quotes in a string of markup.
+export function escapeHtmlAttribute(p_str) {
+	return String(p_str)
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;")
+		.replace(/"/g, "&quot;")
+		.replace(/'/g, "&#39;");
+}
+
 //Adding padLeft function to Number
 Number.prototype.padLeft = function (base, chr) {
 	var len = String(base || 10).length - String(this).length + 1;

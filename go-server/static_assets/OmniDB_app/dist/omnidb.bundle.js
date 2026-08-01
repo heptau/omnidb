@@ -4480,6 +4480,10 @@
       }
     };
     tree.clickNodeEvent = function(node) {
+      if (node.tag && node.tag.type === "error") {
+        showError(node.tag.message);
+        return;
+      }
       if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
         getPropertiesPostgresql(node);
       }
@@ -9152,7 +9156,14 @@
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
       v_node = p_node.createChildNode(
-        "Error - <a class='a_link' onclick='showError(&quot;" + p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, "") + "&quot;)'>View Detail</a>",
+        // Plain text, not markup. Aimara escapes every node label before
+        // it reaches innerHTML (see aimaraEscapeHtml), so the <a
+        // onclick='showError(...)'>View Detail</a> this used to build was
+        // displayed literally -- there has been no clickable link here
+        // since that escaping went in, just a wall of visible tags. The
+        // message rides on the node's tag instead, and clickNodeEvent
+        // below opens it.
+        "Error - click for detail",
         false,
         "fas fa-times node-error",
         {
@@ -10463,6 +10474,10 @@
       refreshTreeOracle$1(node);
     };
     tree.clickNodeEvent = function(node) {
+      if (node.tag && node.tag.type === "error") {
+        showError(node.tag.message);
+        return;
+      }
       if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
         getPropertiesOracle(node);
       }
@@ -12042,7 +12057,14 @@
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
       v_node = p_node.createChildNode(
-        "Error - <a class='a_link' onclick='showError(&quot;" + p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, "") + "&quot;)'>View Detail</a>",
+        // Plain text, not markup. Aimara escapes every node label before
+        // it reaches innerHTML (see aimaraEscapeHtml), so the <a
+        // onclick='showError(...)'>View Detail</a> this used to build was
+        // displayed literally -- there has been no clickable link here
+        // since that escaping went in, just a wall of visible tags. The
+        // message rides on the node's tag instead, and clickNodeEvent
+        // below opens it.
+        "Error - click for detail",
         false,
         "fas fa-times node-error",
         {
@@ -13028,6 +13050,10 @@
       refreshTreeMariadb(node);
     };
     tree.clickNodeEvent = function(node) {
+      if (node.tag && node.tag.type === "error") {
+        showError(node.tag.message);
+        return;
+      }
       if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
         getPropertiesMariadb(node);
       }
@@ -14601,7 +14627,14 @@
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
       v_node = p_node.createChildNode(
-        "Error - <a class='a_link' onclick='showError(&quot;" + p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, "") + "&quot;)'>View Detail</a>",
+        // Plain text, not markup. Aimara escapes every node label before
+        // it reaches innerHTML (see aimaraEscapeHtml), so the <a
+        // onclick='showError(...)'>View Detail</a> this used to build was
+        // displayed literally -- there has been no clickable link here
+        // since that escaping went in, just a wall of visible tags. The
+        // message rides on the node's tag instead, and clickNodeEvent
+        // below opens it.
+        "Error - click for detail",
         false,
         "fas fa-times node-error",
         {
@@ -15548,6 +15581,10 @@
       refreshTreeMysql(node);
     };
     tree.clickNodeEvent = function(node) {
+      if (node.tag && node.tag.type === "error") {
+        showError(node.tag.message);
+        return;
+      }
       if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
         getPropertiesMysql(node);
       }
@@ -17059,7 +17096,14 @@
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
       v_node = p_node.createChildNode(
-        "Error - <a class='a_link' onclick='showError(&quot;" + p_return.v_data.replace(/\n/g, "<br/>").replace(/"/g, "") + "&quot;)'>View Detail</a>",
+        // Plain text, not markup. Aimara escapes every node label before
+        // it reaches innerHTML (see aimaraEscapeHtml), so the <a
+        // onclick='showError(...)'>View Detail</a> this used to build was
+        // displayed literally -- there has been no clickable link here
+        // since that escaping went in, just a wall of visible tags. The
+        // message rides on the node's tag instead, and clickNodeEvent
+        // below opens it.
+        "Error - click for detail",
         false,
         "fas fa-times node-error",
         {
@@ -19359,6 +19403,9 @@
     v_div.appendChild(document.createTextNode(String(p_str)));
     return v_div.innerHTML;
   }
+  function escapeHtmlAttribute$1(p_str) {
+    return String(p_str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+  }
   Number.prototype.padLeft = function(base, chr) {
     var len = String(base || 10).length - String(this).length + 1;
     return len > 0 ? new Array(len).join(chr || "0") + this : this;
@@ -19784,6 +19831,7 @@
     checkQueryStatus: checkQueryStatus$1,
     destructiveSQLWarning,
     escapeHtml: escapeHtml$1,
+    escapeHtmlAttribute: escapeHtmlAttribute$1,
     executeQuerySQL,
     getQueryEditorValue,
     queryError: queryError$1,
@@ -22687,12 +22735,11 @@
       columnProperties.push(col);
       for (var i2 = 0; i2 < v_currTabTag.editDataObject.columns.length; i2++) {
         var col = new Object();
-        var v_tooltip_attr = ' data-toggle=tooltip data-placement=bottom data-html=true title="<div><b>Type</b> ' + v_currTabTag.editDataObject.columns[i2].v_type + '</div>" ';
+        var v_tooltip_attr = ' data-toggle=tooltip data-placement=bottom data-html=true title="&lt;div&gt;&lt;b&gt;Type&lt;/b&gt; ' + escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i2].v_type) + '&lt;/div&gt;" ';
         var v_tooltip_html = '<i class="ml-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
-        if (!v_currTabTag.editDataObject.columns[i2].v_is_pk)
-          col.title = "<span>" + v_currTabTag.editDataObject.columns[i2].v_column + "</span>" + v_tooltip_html;
-        else
-          col.title = '<i class="fas fa-key action-key text-secondary"></i> <span>' + v_currTabTag.editDataObject.columns[i2].v_column + "</span>" + v_tooltip_html;
+        var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i2].v_column) + "</span>";
+        if (!v_currTabTag.editDataObject.columns[i2].v_is_pk) col.title = v_column_html + v_tooltip_html;
+        else col.title = '<i class="fas fa-key action-key text-secondary"></i> ' + v_column_html + v_tooltip_html;
         col.renderer = "text";
         columnProperties.push(col);
       }
