@@ -202,14 +202,6 @@ export function newRowRenderer(instance, td, row, col, prop, value, cellProperti
 	td.className = "cellReadOnly";
 }
 
-export function columnsActionRenderer(instance, td, row, col, prop, value, cellProperties) {
-	arguments[5] =
-		"<i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='dropColumnAlterTable()'></i>";
-
-	Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-
-	td.className = "cellReadOnly";
-}
 
 export function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
 	arguments[5] =

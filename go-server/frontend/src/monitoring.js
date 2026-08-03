@@ -565,11 +565,11 @@ $("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
 									chart.legend.legendItems[i].fillStyle +
 									'"></span><span id="legend-' +
 									i +
-									'-item" class="dashboard_unit_label" onclick="updateDataset(event, ' +
-									"'" +
-									i +
-									"'" +
-									')">' +
+									// No onclick: this used to call updateDataset(event, ...), a function
+									// that has never existed anywhere in this repository's history --
+									// clicking a legend label threw a ReferenceError. Toggling a dataset
+									// from the legend would be a feature to add, not a call to restore.
+									'-item" class="dashboard_unit_label">' +
 									chart.legend.legendItems[i].text +
 									"</span></span>",
 							);
@@ -917,11 +917,11 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 												chart.legend.legendItems[j].fillStyle +
 												'"></span><span id="legend-' +
 												i +
-												'-item" class="dashboard_unit_label" onclick="updateDataset(event, ' +
-												"'" +
-												j +
-												"'" +
-												')">' +
+												// No onclick: this used to call updateDataset(event, ...), a function
+												// that has never existed anywhere in this repository's history --
+												// clicking a legend label threw a ReferenceError. Toggling a dataset
+												// from the legend would be a feature to add, not a call to restore.
+												'-item" class="dashboard_unit_label">' +
 												chart.legend.legendItems[j].text +
 												"</span></span>",
 										);

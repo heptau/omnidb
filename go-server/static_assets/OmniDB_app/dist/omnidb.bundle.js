@@ -882,11 +882,6 @@
     Handsontable.renderers.HtmlRenderer.apply(this, arguments);
     td.className = "cellReadOnly";
   }
-  function columnsActionRenderer(instance, td, row, col, prop, value, cellProperties) {
-    arguments[5] = "<i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='dropColumnAlterTable()'></i>";
-    Handsontable.renderers.HtmlRenderer.apply(this, arguments);
-    td.className = "cellReadOnly";
-  }
   function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
     arguments[5] = "<div class='text-center'><i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='deleteRowEditData()'></i></div>";
     Handsontable.renderers.HtmlRenderer.apply(this, arguments);
@@ -909,7 +904,6 @@
     __proto__: null,
     blueHtmlRenderer,
     blueRenderer,
-    columnsActionRenderer,
     editDataActionRenderer,
     grayEmptyRenderer,
     grayHtmlRenderer,
@@ -6057,7 +6051,11 @@
               var text = [];
               for (var i2 = 0; i2 < chart.legend.legendItems.length; i2++) {
                 text.push(
-                  '<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' + chart.legend.legendItems[i2].fillStyle + '"></span><span id="legend-' + i2 + `-item" class="dashboard_unit_label" onclick="updateDataset(event, '` + i2 + `')">` + chart.legend.legendItems[i2].text + "</span></span>"
+                  '<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' + chart.legend.legendItems[i2].fillStyle + '"></span><span id="legend-' + i2 + // No onclick: this used to call updateDataset(event, ...), a function
+                  // that has never existed anywhere in this repository's history --
+                  // clicking a legend label threw a ReferenceError. Toggling a dataset
+                  // from the legend would be a feature to add, not a call to restore.
+                  '-item" class="dashboard_unit_label">' + chart.legend.legendItems[i2].text + "</span></span>"
                 );
               }
               return text.join("");
@@ -6356,7 +6354,11 @@
                     var text = [];
                     for (var j3 = 0; j3 < chart.legend.legendItems.length; j3++) {
                       text.push(
-                        '<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' + chart.legend.legendItems[j3].fillStyle + '"></span><span id="legend-' + i3 + `-item" class="dashboard_unit_label" onclick="updateDataset(event, '` + j3 + `')">` + chart.legend.legendItems[j3].text + "</span></span>"
+                        '<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' + chart.legend.legendItems[j3].fillStyle + '"></span><span id="legend-' + i3 + // No onclick: this used to call updateDataset(event, ...), a function
+                        // that has never existed anywhere in this repository's history --
+                        // clicking a legend label threw a ReferenceError. Toggling a dataset
+                        // from the legend would be a feature to add, not a call to restore.
+                        '-item" class="dashboard_unit_label">' + chart.legend.legendItems[j3].text + "</span></span>"
                       );
                     }
                     return text.join("");
