@@ -56,6 +56,10 @@ declare let v_connections_data: any;
 declare let v_omnis: any;
 declare let v_explain_control: any;
 declare let v_shortcut_object: any;
+declare let v_usersObject: any;
+declare let v_editContentObject: any;
+declare let v_canEditContent: any;
+declare let v_completer_ready: boolean;
 
 // --- server-rendered page config, published by src/bootstrap-globals.js ----
 //
@@ -67,8 +71,12 @@ declare let v_url_folder: string;
 declare let v_csrf_cookie_name: string;
 declare let v_editor_theme: string;
 declare let v_font_size: number;
+declare let v_theme: string;
 declare let v_indent_char: string;
 declare let v_indent_size: number;
+declare let v_indent_unit: string;
+declare let v_csv_encoding: string;
+declare let v_csv_delimiter: string;
 declare let v_comma_style: string;
 declare let v_keyword_case: string;
 declare let v_autocomplete_disabled_types: string;

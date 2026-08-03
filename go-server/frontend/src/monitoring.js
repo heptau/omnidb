@@ -34,6 +34,15 @@ import { showPasswordPrompt } from "./passwords.js";
 import { whiteHtmlRenderer } from "./renderers.js";
 import { toggleMonitorUnitChartType } from "./tab_functions/inner_monitoring_dashboard_tab.js";
 
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var v_tab_tag;
+
 
 export var v_unit_list_grid = null;
 

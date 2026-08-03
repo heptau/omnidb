@@ -41,6 +41,15 @@ import { drawGraph, renameTabConfirm } from "../workspace.js";
 import { v_startEditData } from "./edit_data.js";
 import { tabSQLTemplate } from "./tree_postgresql.js";
 
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var i, v_list, v_node;
+
 export function getTreeMysql(p_div) {
 	var context_menu = {
 		cm_server: {
@@ -2347,7 +2356,6 @@ export function getFKsMysql(node) {
 					false,
 				);
 
-				v_curr_fk = p_return.v_data[i][0];
 			}
 
 			node.drawChildNodes();

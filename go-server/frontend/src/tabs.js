@@ -529,7 +529,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 
 //Create a HTML element specified by parameter 'p_type'
 export function createSimpleElement(p_type, p_id, p_class) {
-	element = document.createElement(p_type);
+	var element = document.createElement(p_type);
 	if (p_id != undefined) element.id = p_id;
 	if (p_class != undefined) element.className = p_class;
 	return element;
@@ -537,7 +537,7 @@ export function createSimpleElement(p_type, p_id, p_class) {
 
 //Create img element
 export function createImgElement(p_id, p_class, p_src) {
-	element = document.createElement("img");
+	var element = document.createElement("img");
 	if (p_id != undefined) element.id = p_id;
 	if (p_class != undefined) element.className = p_class;
 	if (p_src != undefined) element.src = p_src;

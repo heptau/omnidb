@@ -27,6 +27,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
 export function checkSessionMessage() {
 	execAjax(
 		"/check_session_message/",

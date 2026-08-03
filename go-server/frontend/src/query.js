@@ -37,6 +37,15 @@ import { showAlert, showConfirm } from "./notification_control.js";
 import { whiteRenderer } from "./renderers.js";
 import { uiCopyTextToClipboard } from "./workspace.js";
 
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var v_new_data;
+
 export var v_queryState = {
 	Idle: 0,
 	Executing: 1,

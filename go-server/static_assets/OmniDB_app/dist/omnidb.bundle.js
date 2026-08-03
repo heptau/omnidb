@@ -142,6 +142,7 @@
     showAlert("Webserver was shutdown, please restart it and reload the application.");
     document.getElementById("ajax_status");
   }
+  var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function checkSessionMessage() {
     execAjax(
       "/check_session_message/",
@@ -1321,6 +1322,7 @@
     showConsoleHistory,
     v_consoleState
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   $(function() {
     $("#modal_password").on("hidden.bs.modal", function(e) {
       if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {
@@ -1797,8 +1799,8 @@
           if (!changes) {
             return;
           }
-          $.each(changes, function(index, element2) {
-            var change = element2;
+          $.each(changes, function(index, element) {
+            var change = element;
             var rowIndex = change[0];
             var columnIndex = change[1];
             var oldValue = change[2];
@@ -2005,6 +2007,7 @@
     v_editDataState,
     v_startEditData
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_context_code;
   var v_client_id;
   var v_polling_ajax = null;
   var v_context_object = {
@@ -2303,6 +2306,7 @@
     },
     v_polling_started
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_new_data;
   var v_queryState = {
     Idle: 0,
     Executing: 1,
@@ -2782,6 +2786,7 @@
     v_queryResponseCodes,
     v_queryState
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_conn_data, v_conn_div, v_conn_obj;
   $(function() {
     v_connections_data = new Object();
     v_connections_data.technologies = null;
@@ -3712,6 +3717,7 @@
     updateModalEditConnectionFields,
     updateModalEditConnectionState
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_element;
   var toggleSnippetPanel = function(p_set_state = false) {
     v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
     v_connTabControl.snippet_tag;
@@ -5610,6 +5616,7 @@
     __proto__: null,
     v_createGraphTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_tab_tag;
   var v_unit_list_grid = null;
   function sanitizeLegend(p_html) {
     var v_tmp = document.createElement("div");
@@ -8196,6 +8203,7 @@
     clearProperties,
     getProperties
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_grid_col, v_grid_row;
   function legereEscapeHtml(p_text) {
     var v_div = document.createElement("div");
     v_div.appendChild(document.createTextNode(String(p_text)));
@@ -8852,6 +8860,7 @@
     createLegere,
     legereEscapeHtml
   }, Symbol.toStringTag, { value: "Module" }));
+  var i$5, j, tmp, v_disconsiderSchemas, v_list$4, v_node$4, v_options, v_publications, v_tables;
   function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
     v_connTabControl.tag.createQueryTab(p_tab_name);
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_template);
@@ -13729,25 +13738,25 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Databases (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-database node-database",
             {
               type: "database",
-              database: p_return.v_data[i].v_name.replace(/"/g, ""),
-              oid: p_return.v_data[i].v_oid
+              database: p_return.v_data[i$5].v_name.replace(/"/g, ""),
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_database",
             null,
             false
           );
-          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i].v_name.replace(/"/g, "")) {
-            v_node.setNodeBold();
-            v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node;
+          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i$5].v_name.replace(/"/g, "")) {
+            v_node$4.setNodeBold();
+            v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node$4;
           }
-          v_node.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -13772,14 +13781,14 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tablespaces (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-folder node-tablespace",
             {
               type: "tablespace",
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_tablespace",
             null,
@@ -13809,16 +13818,16 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Roles (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          var v_role_icon = p_return.v_data[i].v_can_login ? "fas node-all fa-user node-user" : "fas node-all fa-user-friends node-user-group";
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          var v_role_icon = p_return.v_data[i$5].v_can_login ? "fas node-all fa-user node-user" : "fas node-all fa-user-friends node-user-group";
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             v_role_icon,
             {
               type: "role",
-              oid: p_return.v_data[i].v_oid,
-              can_login: p_return.v_data[i].v_can_login
+              oid: p_return.v_data[i$5].v_oid,
+              can_login: p_return.v_data[i$5].v_can_login
             },
             "cm_role",
             null,
@@ -13848,15 +13857,15 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Extensions (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cubes node-extension",
             {
               type: "extension",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_extension",
             null,
@@ -13886,32 +13895,32 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Schemas (" + p_return.v_data.length + ")");
         node.tag.num_schemas = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-layer-group node-schema",
             {
               type: "schema",
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name,
-              oid: p_return.v_data[i].v_oid
+              schema: p_return.v_data[i$5].v_name,
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_schema",
             null,
             false
           );
-          var node_tables = v_node.createChildNode(
+          var node_tables = v_node$4.createChildNode(
             "Tables",
             false,
             "fas node-all fa-th node-table-list",
             {
               type: "table_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_tables",
             null,
@@ -13919,16 +13928,16 @@
           );
           node_tables.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            var node_ptables = v_node.createChildNode(
+            var node_ptables = v_node$4.createChildNode(
               "Partitioned Tables",
               false,
               "fas node-all fa-th node-ptable-list",
               {
                 type: "partitioned_table_list",
-                schema: p_return.v_data[i].v_name,
+                schema: p_return.v_data[i$5].v_name,
                 num_tables: 0,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i].v_name
+                schema: p_return.v_data[i$5].v_name
               },
               "cm_partitioned_tables",
               null,
@@ -13936,64 +13945,64 @@
             );
             node_ptables.createChildNode("", true, "node-spin", null, null, null, false);
           }
-          var node_itables = v_node.createChildNode(
+          var node_itables = v_node$4.createChildNode(
             "Inheritance Tables",
             false,
             "fas node-all fa-th node-itable-list",
             {
               type: "inherited_table_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_inherited_tables",
             null,
             false
           );
           node_itables.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_foreign_tables = v_node.createChildNode(
+          var node_foreign_tables = v_node$4.createChildNode(
             "Foreign Tables",
             false,
             "fas node-all fa-th node-ftable-list",
             {
               type: "foreign_table_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_foreign_tables",
             null,
             false
           );
           node_foreign_tables.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_sequences = v_node.createChildNode(
+          var node_sequences = v_node$4.createChildNode(
             "Sequences",
             false,
             "fas node-all fa-sort-numeric-down node-sequence-list",
             {
               type: "sequence_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_sequences: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_sequences",
             null,
             false
           );
           node_sequences.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_views = v_node.createChildNode(
+          var node_views = v_node$4.createChildNode(
             "Views",
             false,
             "fas node-all fa-eye node-view-list",
             {
               type: "view_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_views: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_views",
             null,
@@ -14001,16 +14010,16 @@
           );
           node_views.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseFloat(getMajorVersionPostgresql(node.tree.tag.version)) >= 9.3) {
-            var node_views = v_node.createChildNode(
+            var node_views = v_node$4.createChildNode(
               "Materialized Views",
               false,
               "fas node-all fa-eye node-mview-list",
               {
                 type: "mview_list",
-                schema: p_return.v_data[i].v_name,
+                schema: p_return.v_data[i$5].v_name,
                 num_views: 0,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i].v_name
+                schema: p_return.v_data[i$5].v_name
               },
               "cm_mviews",
               null,
@@ -14018,48 +14027,48 @@
             );
             node_views.createChildNode("", true, "node-spin", null, null, null, false);
           }
-          var node_functions = v_node.createChildNode(
+          var node_functions = v_node$4.createChildNode(
             "Functions",
             false,
             "fas node-all fa-cog node-function-list",
             {
               type: "function_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_functions: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_functions",
             null,
             false
           );
           node_functions.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_triggerfunctions = v_node.createChildNode(
+          var node_triggerfunctions = v_node$4.createChildNode(
             "Trigger Functions",
             false,
             "fas node-all fa-cog node-tfunction-list",
             {
               type: "triggerfunction_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_triggerfunctions: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_triggerfunctions",
             null,
             false
           );
           node_triggerfunctions.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_eventtriggerfunctions = v_node.createChildNode(
+          var node_eventtriggerfunctions = v_node$4.createChildNode(
             "Event Trigger Functions",
             false,
             "fas node-all fa-cog node-etfunction-list",
             {
               type: "eventtriggerfunction_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_triggerfunctions: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_eventtriggerfunctions",
             null,
@@ -14067,16 +14076,16 @@
           );
           node_eventtriggerfunctions.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 11) {
-            var node_procedures = v_node.createChildNode(
+            var node_procedures = v_node$4.createChildNode(
               "Procedures",
               false,
               "fas node-all fa-cog node-procedure-list",
               {
                 type: "procedure_list",
-                schema: p_return.v_data[i].v_name,
+                schema: p_return.v_data[i$5].v_name,
                 num_procedures: 0,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i].v_name
+                schema: p_return.v_data[i$5].v_name
               },
               "cm_procedures",
               null,
@@ -14084,48 +14093,48 @@
             );
             node_procedures.createChildNode("", true, "node-spin", null, null, null, false);
           }
-          var node_aggregates = v_node.createChildNode(
+          var node_aggregates = v_node$4.createChildNode(
             "Aggregates",
             false,
             "fas node-all fa-cog node-aggregate-list",
             {
               type: "aggregate_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_aggregates: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_aggregates",
             null,
             false
           );
           node_aggregates.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_types = v_node.createChildNode(
+          var node_types = v_node$4.createChildNode(
             "Types",
             false,
             "fas node-all fa-square node-type-list",
             {
               type: "type_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_types: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_types",
             null,
             false
           );
           node_types.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_domains = v_node.createChildNode(
+          var node_domains = v_node$4.createChildNode(
             "Domains",
             false,
             "fas node-all fa-square node-domain-list",
             {
               type: "domain_list",
-              schema: p_return.v_data[i].v_name,
+              schema: p_return.v_data[i$5].v_name,
               num_domains: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i].v_name
+              schema: p_return.v_data[i$5].v_name
             },
             "cm_domains",
             null,
@@ -14157,32 +14166,32 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i].v_has_uniques,
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_checks: p_return.v_data[i].v_has_checks,
-              has_excludes: p_return.v_data[i].v_has_excludes,
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
-              has_partitions: p_return.v_data[i].v_has_partitions,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$5].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$5].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$5].v_has_uniques,
+              has_indexes: p_return.v_data[i$5].v_has_indexes,
+              has_checks: p_return.v_data[i$5].v_has_checks,
+              has_excludes: p_return.v_data[i$5].v_has_excludes,
+              has_rules: p_return.v_data[i$5].v_has_rules,
+              has_triggers: p_return.v_data[i$5].v_has_triggers,
+              has_partitions: p_return.v_data[i$5].v_has_partitions,
+              has_statistics: p_return.v_data[i$5].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_table",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -14219,16 +14228,16 @@
         node.setText("Sequences (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_sequence_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_sequence_name,
             false,
             "fas node-all fa-sort-numeric-down node-sequence",
             {
               type: "sequence",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_sequence",
             null,
@@ -14259,24 +14268,24 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-eye node-view",
             {
               type: "view",
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
+              has_rules: p_return.v_data[i$5].v_has_rules,
+              has_triggers: p_return.v_data[i$5].v_has_triggers,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_view",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -14312,7 +14321,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$4 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -14324,9 +14333,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = v_list$4.createChildNode(
+            p_return.v_data[i$5].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -14338,8 +14347,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$4.createChildNode(
+            "Type: " + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -14352,7 +14361,7 @@
           );
         }
         if (node.tag.has_rules) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -14365,10 +14374,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -14381,7 +14390,7 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -14435,24 +14444,24 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Materialized Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-eye node-mview",
             {
               type: "mview",
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_indexes: p_return.v_data[i$5].v_has_indexes,
+              has_statistics: p_return.v_data[i$5].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_mview",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -14488,7 +14497,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$4 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -14500,9 +14509,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = v_list$4.createChildNode(
+            p_return.v_data[i$5].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -14514,8 +14523,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$4.createChildNode(
+            "Type: " + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -14528,7 +14537,7 @@
           );
         }
         if (node.tag.has_indexes) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -14541,11 +14550,11 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node = node.createChildNode(
+            v_node$4 = node.createChildNode(
               "Statistics",
               false,
               "fas node-all fa-chart-bar node-statistics",
@@ -14558,7 +14567,7 @@
               null,
               false
             );
-            v_node.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         node.drawChildNodes();
@@ -14612,7 +14621,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$4 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -14625,23 +14634,23 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = v_list$4.createChildNode(
+            p_return.v_data[i$5].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
               type: "table_field",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              position: p_return.v_data[i].v_position
+              position: p_return.v_data[i$5].v_position
             },
             "cm_column",
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$4.createChildNode(
+            "Type: " + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -14652,8 +14661,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Nullable: " + p_return.v_data[i].v_nullable,
+          v_node$4.createChildNode(
+            "Nullable: " + p_return.v_data[i$5].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -14666,7 +14675,7 @@
           );
         }
         if (node.tag.has_primary_keys) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Primary Key",
             false,
             "fas node-all fa-key node-pkey",
@@ -14679,10 +14688,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_foreign_keys) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Foreign Keys",
             false,
             "fas node-all fa-key node-fkey",
@@ -14695,10 +14704,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_uniques) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Uniques",
             false,
             "fas node-all fa-key node-unique",
@@ -14711,10 +14720,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_checks) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Checks",
             false,
             "fas node-all fa-check-square node-check",
@@ -14727,10 +14736,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_excludes) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Excludes",
             false,
             "fas node-all fa-times-circle node-exclude",
@@ -14743,10 +14752,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_indexes) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -14759,10 +14768,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_rules) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -14775,10 +14784,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -14791,10 +14800,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_partitions) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Inherited Tables",
             false,
             "fas node-all fa-table node-inherited",
@@ -14807,9 +14816,9 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node = node.createChildNode(
+            v_node$4 = node.createChildNode(
               "Partitions",
               false,
               "fas node-all fa-table node-partition",
@@ -14822,12 +14831,12 @@
               null,
               false
             );
-            v_node.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node = node.createChildNode(
+            v_node$4 = node.createChildNode(
               "Statistics",
               false,
               "fas node-all fa-chart-bar node-statistics",
@@ -14840,7 +14849,7 @@
               null,
               false
             );
-            v_node.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         node.drawChildNodes();
@@ -14870,7 +14879,7 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          v_node = node.createChildNode(
+          v_node$4 = node.createChildNode(
             p_return.v_data[0][0],
             false,
             "fas node-all fa-key node-pkey",
@@ -14882,7 +14891,7 @@
             },
             "cm_pk"
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -14915,9 +14924,9 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4.createChildNode(
+            p_return.v_data[i$5][0],
             false,
             "fas node-all fa-columns node-column",
             {
@@ -14954,22 +14963,22 @@
         node.setText("Uniques (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
-            v_node = node.createChildNode(
-              p_return.v_data[i][0],
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+            v_node$4 = node.createChildNode(
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-key node-unique",
               {
                 type: "unique",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i][1]
+                oid: p_return.v_data[i$5][1]
               },
               "cm_unique",
               null,
               false
             );
-            v_node.createChildNode(
+            v_node$4.createChildNode(
               "",
               false,
               "node-spin",
@@ -15008,9 +15017,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-columns node-column",
               {
@@ -15049,16 +15058,16 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i][0] + " (" + p_return.v_data[i][1] + ")",
+              p_return.v_data[i$5][0] + " (" + p_return.v_data[i$5][1] + ")",
               false,
               "fas node-all fa-thumbtack node-index",
               {
                 type: "index",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i][2]
+                oid: p_return.v_data[i$5][2]
               },
               "cm_index",
               null,
@@ -15104,9 +15113,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-columns node-column",
               {
@@ -15143,23 +15152,23 @@
       function(p_return) {
         node.setText("Foreign Keys (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5][0],
             false,
             "fas node-all fa-key node-fkey",
             {
               type: "foreign_key",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i][4]
+              oid: p_return.v_data[i$5][4]
             },
             "cm_fk",
             null,
             false
           );
-          v_node.createChildNode(
-            "Referenced Table: " + p_return.v_data[i][1],
+          v_node$4.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$5][1],
             false,
             "fas node-all fa-table node-table",
             {
@@ -15170,8 +15179,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Delete Rule: " + p_return.v_data[i][2],
+          v_node$4.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$5][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -15182,8 +15191,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Update Rule: " + p_return.v_data[i][3],
+          v_node$4.createChildNode(
+            "Update Rule: " + p_return.v_data[i$5][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -15194,7 +15203,6 @@
             null,
             false
           );
-          v_curr_fk = p_return.v_data[i][0];
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -15256,9 +15264,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           node.createChildNode(
-            p_return.v_data[i][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i][4],
+            p_return.v_data[i$5][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$5][4],
             false,
             "fas node-all fa-columns node-column",
             {
@@ -15296,23 +15304,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-check-square node-check",
               {
                 type: "check",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i][2]
+                oid: p_return.v_data[i$5][2]
               },
               "cm_check",
               null,
               false
             );
             v_node2.createChildNode(
-              p_return.v_data[i][1],
+              p_return.v_data[i$5][1],
               false,
               "fas node-all fa-edit node-check-value",
               {
@@ -15351,23 +15359,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-times-circle node-exclude",
               {
                 type: "exclude",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i][3]
+                oid: p_return.v_data[i$5][3]
               },
               "cm_exclude",
               null,
               false
             );
             v_node2.createChildNode(
-              "Attributes: " + p_return.v_data[i][1],
+              "Attributes: " + p_return.v_data[i$5][1],
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -15379,7 +15387,7 @@
               false
             );
             v_node2.createChildNode(
-              "Operators: " + p_return.v_data[i][2],
+              "Operators: " + p_return.v_data[i$5][2],
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -15417,16 +15425,16 @@
         node.setText("Rules (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-lightbulb node-rule",
               {
                 type: "rule",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i][1]
+                oid: p_return.v_data[i$5][1]
               },
               "cm_rule",
               null,
@@ -15488,23 +15496,23 @@
         node.setText("Triggers (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             var v_node2 = node.createChildNode(
-              p_return.v_data[i].v_name,
+              p_return.v_data[i$5].v_name,
               false,
               "fas node-all fa-bolt node-trigger",
               {
                 type: "trigger",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i].v_oid
+                oid: p_return.v_data[i$5].v_oid
               },
               "cm_trigger",
               null,
               true
             );
             v_node2.createChildNode(
-              "Enabled: " + p_return.v_data[i].v_enabled,
+              "Enabled: " + p_return.v_data[i$5].v_enabled,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -15516,15 +15524,15 @@
               false
             );
             v_node2.createChildNode(
-              p_return.v_data[i].v_function,
+              p_return.v_data[i$5].v_function,
               false,
               "fas node-all fa-cog node-tfunction",
               {
                 type: "direct_triggerfunction",
-                id: p_return.v_data[i].v_id,
+                id: p_return.v_data[i$5].v_id,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                function_oid: p_return.v_data[i].v_function_oid
+                function_oid: p_return.v_data[i$5].v_function_oid
               },
               "cm_direct_triggerfunction",
               null,
@@ -15555,22 +15563,22 @@
         node.setText("Event Triggers (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             var v_node2 = node.createChildNode(
-              p_return.v_data[i].v_name,
+              p_return.v_data[i$5].v_name,
               false,
               "fas node-all fa-bolt node-eventtrigger",
               {
                 type: "eventtrigger",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                oid: p_return.v_data[i].v_oid
+                oid: p_return.v_data[i$5].v_oid
               },
               "cm_eventtrigger",
               null,
               true
             );
             v_node2.createChildNode(
-              "Enabled: " + p_return.v_data[i].v_enabled,
+              "Enabled: " + p_return.v_data[i$5].v_enabled,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -15581,7 +15589,7 @@
               false
             );
             v_node2.createChildNode(
-              "Event: " + p_return.v_data[i].v_event,
+              "Event: " + p_return.v_data[i$5].v_event,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -15592,14 +15600,14 @@
               false
             );
             v_node2.createChildNode(
-              p_return.v_data[i].v_function,
+              p_return.v_data[i$5].v_function,
               false,
               "fas node-all fa-cog node-etfunction",
               {
                 type: "direct_eventtriggerfunction",
-                id: p_return.v_data[i].v_id,
+                id: p_return.v_data[i$5].v_id,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                function_oid: p_return.v_data[i].v_function_oid
+                function_oid: p_return.v_data[i$5].v_function_oid
               },
               "cm_direct_eventtriggerfunction",
               null,
@@ -15632,9 +15640,9 @@
         node.setText("Inherited Tables (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-table node-inherited",
               {
@@ -15673,9 +15681,9 @@
         node.setText("Partitions (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-table node-partition",
               {
@@ -15717,17 +15725,17 @@
         }
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i][1] + "." + p_return.v_data[i][0],
+              p_return.v_data[i$5][1] + "." + p_return.v_data[i$5][0],
               false,
               "fas node-all fa-chart-bar node-statistic",
               {
                 type: "statistic",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i][1],
-                statistics: p_return.v_data[i][0],
-                oid: p_return.v_data[i][2]
+                schema: p_return.v_data[i$5][1],
+                statistics: p_return.v_data[i$5][0],
+                oid: p_return.v_data[i$5][2]
               },
               "cm_statistic",
               null,
@@ -15762,9 +15770,9 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i]["v_column_name"],
+              p_return.v_data[i$5]["v_column_name"],
               false,
               "fas node-all fa-columns node-column",
               {
@@ -15801,23 +15809,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cog node-function",
             {
               type: "function",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$5].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i].v_function_oid
+              function_oid: p_return.v_data[i$5].v_function_oid
             },
             "cm_function",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -15854,10 +15862,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          if (p_return.v_data[i$5].v_type == "O")
+            v_node$4 = node.createChildNode(
+              p_return.v_data[i$5].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               {
@@ -15869,9 +15877,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$5].v_type == "I")
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 {
@@ -15883,8 +15891,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 {
@@ -15948,23 +15956,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Procedures (" + p_return.v_data.length + ")");
         node.tag.num_procedures = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cog node-procedure",
             {
               type: "procedure",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$5].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i].v_function_oid
+              function_oid: p_return.v_data[i$5].v_function_oid
             },
             "cm_procedure",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -16001,10 +16009,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_fields = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          if (p_return.v_data[i$5].v_type == "O")
+            v_node$4 = node.createChildNode(
+              p_return.v_data[i$5].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               {
@@ -16016,9 +16024,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$5].v_type == "I")
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 {
@@ -16030,8 +16038,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 {
@@ -16095,17 +16103,17 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Trigger Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           node.createChildNode(
-            p_return.v_data[i].v_name,
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cog node-tfunction",
             {
               type: "triggerfunction",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$5].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i].v_function_oid
+              function_oid: p_return.v_data[i$5].v_function_oid
             },
             "cm_triggerfunction",
             null,
@@ -16163,17 +16171,17 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Event Trigger Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           node.createChildNode(
-            p_return.v_data[i].v_name,
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cog node-etfunction",
             {
               type: "eventtriggerfunction",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$5].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i].v_function_oid
+              function_oid: p_return.v_data[i$5].v_function_oid
             },
             "cm_eventtriggerfunction",
             null,
@@ -16233,23 +16241,23 @@
         }
         node.setText("Aggregates (" + p_return.v_data.length + ")");
         node.tag.num_aggregates = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cog node-aggregate",
             {
               type: "aggregate",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$5].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_aggregate",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -16285,9 +16293,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Physical Replication Slots (" + p_return.v_data.length + ")");
         node.tag.num_repslots = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-sitemap node-repslot",
             {
@@ -16322,9 +16330,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Logical Replication Slots (" + p_return.v_data.length + ")");
         node.tag.num_repslots = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-sitemap node-repslot",
             {
@@ -16359,22 +16367,22 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Publications (" + p_return.v_data.length + ")");
         node.tag.num_pubs = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-arrow-alt-circle-down node-publication",
             {
               type: "publication",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_publication",
             null,
             false
           );
-          v_node.createChildNode(
-            "All Tables: " + p_return.v_data[i].v_alltables,
+          v_node$4.createChildNode(
+            "All Tables: " + p_return.v_data[i$5].v_alltables,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16384,8 +16392,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Insert: " + p_return.v_data[i].v_insert,
+          v_node$4.createChildNode(
+            "Insert: " + p_return.v_data[i$5].v_insert,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16395,8 +16403,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Update: " + p_return.v_data[i].v_update,
+          v_node$4.createChildNode(
+            "Update: " + p_return.v_data[i$5].v_update,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16406,8 +16414,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Delete: " + p_return.v_data[i].v_delete,
+          v_node$4.createChildNode(
+            "Delete: " + p_return.v_data[i$5].v_delete,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16417,8 +16425,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Truncate: " + p_return.v_data[i].v_truncate,
+          v_node$4.createChildNode(
+            "Truncate: " + p_return.v_data[i$5].v_truncate,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16428,8 +16436,8 @@
             null,
             false
           );
-          if (p_return.v_data[i].v_alltables == "False") {
-            v_tables = v_node.createChildNode(
+          if (p_return.v_data[i$5].v_alltables == "False") {
+            v_tables = v_node$4.createChildNode(
               "Tables",
               false,
               "fas node-all fa-th node-table-list",
@@ -16468,9 +16476,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-table node-table",
             {
@@ -16505,22 +16513,22 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Subscriptions (" + p_return.v_data.length + ")");
         node.tag.num_subs = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-arrow-alt-circle-up node-subscription",
             {
               type: "subscription",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_subscription",
             null,
             false
           );
-          v_node.createChildNode(
-            "Enabled: " + p_return.v_data[i].v_enabled,
+          v_node$4.createChildNode(
+            "Enabled: " + p_return.v_data[i$5].v_enabled,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16530,8 +16538,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "ConnInfo: " + p_return.v_data[i].v_conninfo,
+          v_node$4.createChildNode(
+            "ConnInfo: " + p_return.v_data[i$5].v_conninfo,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16541,7 +16549,7 @@
             null,
             false
           );
-          v_publications = v_node.createChildNode(
+          v_publications = v_node$4.createChildNode(
             "Referenced Publications",
             false,
             "fas node-all fa-arrow-alt-circle-down node-publication",
@@ -16553,7 +16561,7 @@
             null,
             false
           );
-          tmp = p_return.v_data[i].v_publications.split(",");
+          tmp = p_return.v_data[i$5].v_publications.split(",");
           for (j = 0; j < tmp.length; j++) {
             v_publications.createChildNode(
               tmp[j],
@@ -16568,7 +16576,7 @@
               false
             );
           }
-          v_tables = v_node.createChildNode(
+          v_tables = v_node$4.createChildNode(
             "Tables",
             false,
             "fas node-all fa-th node-table-list",
@@ -16606,9 +16614,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-table node-table",
             {
@@ -16643,21 +16651,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Foreign Data Wrappers (" + p_return.v_data.length + ")");
         node.tag.num_fdws = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cube node-fdw",
             {
               type: "fdw",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_fdw",
             null,
             false
           );
-          v_node = v_node.createChildNode(
+          v_node$4 = v_node$4.createChildNode(
             "Foreign Servers",
             false,
             "fas node-all fa-server node-server",
@@ -16669,7 +16677,7 @@
             null,
             false
           );
-          v_node.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -16695,23 +16703,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Foreign Servers (" + p_return.v_data.length + ")");
         node.tag.num_foreign_servers = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-server node-server",
             {
               type: "foreign_server",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_foreign_server",
             null,
             false
           );
-          if (p_return.v_data[i].v_type != null) {
-            v_node.createChildNode(
-              "Type: " + p_return.v_data[i].v_type,
+          if (p_return.v_data[i$5].v_type != null) {
+            v_node$4.createChildNode(
+              "Type: " + p_return.v_data[i$5].v_type,
               true,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -16722,9 +16730,9 @@
               false
             );
           }
-          if (p_return.v_data[i].v_version != null) {
-            v_node.createChildNode(
-              "Version: " + p_return.v_data[i].v_version,
+          if (p_return.v_data[i$5].v_version != null) {
+            v_node$4.createChildNode(
+              "Version: " + p_return.v_data[i$5].v_version,
               true,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -16735,11 +16743,11 @@
               false
             );
           }
-          if (p_return.v_data[i].v_options != null) {
-            v_options = p_return.v_data[i].v_options.split(",");
+          if (p_return.v_data[i$5].v_options != null) {
+            v_options = p_return.v_data[i$5].v_options.split(",");
             if (v_options[0] != "") {
               for (j = 0; j < v_options.length; j++) {
-                v_node.createChildNode(
+                v_node$4.createChildNode(
                   v_options[j],
                   true,
                   "fas node-all fa-ellipsis-h node-bullet",
@@ -16753,7 +16761,7 @@
               }
             }
           }
-          v_node = v_node.createChildNode(
+          v_node$4 = v_node$4.createChildNode(
             "User Mappings",
             false,
             "fas node-all fa-user-friends node-user",
@@ -16765,7 +16773,7 @@
             null,
             false
           );
-          v_node.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -16791,25 +16799,25 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("User Mappings (" + p_return.v_data.length + ")");
         node.tag.num_user_mappings = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-user-friends node-user",
             {
               type: "user_mapping",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              foreign_server: p_return.v_data[i].v_foreign_server
+              foreign_server: p_return.v_data[i$5].v_foreign_server
             },
             "cm_user_mapping",
             null,
             false
           );
-          if (p_return.v_data[i].v_options != null) {
-            v_options = p_return.v_data[i].v_options.split(",");
+          if (p_return.v_data[i$5].v_options != null) {
+            v_options = p_return.v_data[i$5].v_options.split(",");
             if (v_options[0] != "") {
               for (j = 0; j < v_options.length; j++) {
-                v_node.createChildNode(
+                v_node$4.createChildNode(
                   v_options[j],
                   true,
                   "fas node-all fa-ellipsis-h node-bullet",
@@ -16848,23 +16856,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Foreign Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-table node-ftable",
             {
               type: "foreign_table",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_statistics: p_return.v_data[i$5].v_has_statistics,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_foreign_table",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -16900,7 +16908,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$4 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -16913,9 +16921,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = v_list$4.createChildNode(
+            p_return.v_data[i$5].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -16927,8 +16935,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$4.createChildNode(
+            "Type: " + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16939,8 +16947,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Nullable: " + p_return.v_data[i].v_nullable,
+          v_node$4.createChildNode(
+            "Nullable: " + p_return.v_data[i$5].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -16951,11 +16959,11 @@
             null,
             false
           );
-          if (p_return.v_data[i].v_options != null) {
-            v_options = p_return.v_data[i].v_options.split(",");
+          if (p_return.v_data[i$5].v_options != null) {
+            v_options = p_return.v_data[i$5].v_options.split(",");
             if (v_options[0] != "") {
               for (j = 0; j < v_options.length; j++) {
-                v_node.createChildNode(
+                v_node$4.createChildNode(
                   v_options[j],
                   true,
                   "fas node-all fa-ellipsis-h node-bullet",
@@ -17016,7 +17024,7 @@
         );
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node = node.createChildNode(
+            v_node$4 = node.createChildNode(
               "Statistics",
               false,
               "fas node-all fa-chart-bar node-statistics",
@@ -17029,7 +17037,7 @@
               null,
               false
             );
-            v_node.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         node.drawChildNodes();
@@ -17056,16 +17064,16 @@
         node.setText("Types (" + p_return.v_data.length + ")");
         node.tag.num_types = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_type_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_type_name,
             false,
             "fas node-all fa-square node-type",
             {
               type: "type",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_type",
             null,
@@ -17096,16 +17104,16 @@
         node.setText("Domains (" + p_return.v_data.length + ")");
         node.tag.num_domains = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_domain_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_domain_name,
             false,
             "fas node-all fa-square node-domain",
             {
               type: "domain",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_domain",
             null,
@@ -17136,14 +17144,14 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Partitioned Tables (" + p_return.v_data.length + ")");
         node.tag.num_partitioned = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-layer-group node-ptable",
             {
               type: "partitioned_parent",
-              id: p_return.v_data[i].v_name,
+              id: p_return.v_data[i$5].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema
@@ -17152,7 +17160,7 @@
             null,
             false
           );
-          v_node.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -17179,32 +17187,32 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText(node.tag.id + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-table node-ptable",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i].v_has_uniques,
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_checks: p_return.v_data[i].v_has_checks,
-              has_excludes: p_return.v_data[i].v_has_excludes,
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
-              has_partitions: p_return.v_data[i].v_has_partitions,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$5].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$5].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$5].v_has_uniques,
+              has_indexes: p_return.v_data[i$5].v_has_indexes,
+              has_checks: p_return.v_data[i$5].v_has_checks,
+              has_excludes: p_return.v_data[i$5].v_has_excludes,
+              has_rules: p_return.v_data[i$5].v_has_rules,
+              has_triggers: p_return.v_data[i$5].v_has_triggers,
+              has_partitions: p_return.v_data[i$5].v_has_partitions,
+              has_statistics: p_return.v_data[i$5].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_table",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -17241,14 +17249,14 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Inheritance Tables (" + p_return.v_data.length + ")");
         node.tag.num_partitioned = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-layer-group node-itable",
             {
               type: "inherited_parent",
-              id: p_return.v_data[i].v_name,
+              id: p_return.v_data[i$5].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema
@@ -17257,7 +17265,7 @@
             null,
             false
           );
-          v_node.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -17284,32 +17292,32 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText(node.tag.id + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-table node-itable",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i].v_has_uniques,
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_checks: p_return.v_data[i].v_has_checks,
-              has_excludes: p_return.v_data[i].v_has_excludes,
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
-              has_partitions: p_return.v_data[i].v_has_partitions,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$5].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$5].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$5].v_has_uniques,
+              has_indexes: p_return.v_data[i$5].v_has_indexes,
+              has_checks: p_return.v_data[i$5].v_has_checks,
+              has_excludes: p_return.v_data[i$5].v_has_excludes,
+              has_rules: p_return.v_data[i$5].v_has_rules,
+              has_triggers: p_return.v_data[i$5].v_has_triggers,
+              has_partitions: p_return.v_data[i$5].v_has_partitions,
+              has_statistics: p_return.v_data[i$5].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i].v_oid
+              oid: p_return.v_data[i$5].v_oid
             },
             "cm_table",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -17453,7 +17461,7 @@
       );
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
-      v_node = p_node.createChildNode(
+      v_node$4 = p_node.createChildNode(
         // Plain text, not markup. Aimara escapes every node label before
         // it reaches innerHTML (see aimaraEscapeHtml), so the <a
         // onclick='showError(...)'>View Detail</a> this used to build was
@@ -17689,6 +17697,7 @@
     tabAdvancedObjectSearch,
     tabSQLTemplate
   }, Symbol.toStringTag, { value: "Module" }));
+  var i$4, v_list$3, v_node$3;
   function getTreeOracle(p_div) {
     var context_menu = {
       cm_server: {
@@ -19152,9 +19161,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tablespaces (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-folder node-tablespace",
             {
@@ -19188,9 +19197,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Roles (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-user node-user",
             {
@@ -19225,29 +19234,29 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i].v_has_uniques,
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_checks: p_return.v_data[i].v_has_checks,
-              has_excludes: p_return.v_data[i].v_has_excludes,
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
-              has_partitions: p_return.v_data[i].v_has_partitions,
-              has_statistics: p_return.v_data[i].v_has_statistics
+              has_primary_keys: p_return.v_data[i$4].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$4].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$4].v_has_uniques,
+              has_indexes: p_return.v_data[i$4].v_has_indexes,
+              has_checks: p_return.v_data[i$4].v_has_checks,
+              has_excludes: p_return.v_data[i$4].v_has_excludes,
+              has_rules: p_return.v_data[i$4].v_has_rules,
+              has_triggers: p_return.v_data[i$4].v_has_triggers,
+              has_partitions: p_return.v_data[i$4].v_has_partitions,
+              has_statistics: p_return.v_data[i$4].v_has_statistics
             },
             "cm_table",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -19283,9 +19292,9 @@
         node.setText("Sequences (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_sequence_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_sequence_name,
             false,
             "fas node-all fa-sort-numeric-down node-sequence",
             {
@@ -19320,20 +19329,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-eye node-view",
             {
               type: "view",
-              has_triggers: p_return.v_data[i].v_has_triggers
+              has_triggers: p_return.v_data[i$4].v_has_triggers
             },
             "cm_view",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -19368,7 +19377,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$3 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -19377,9 +19386,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = v_list$3.createChildNode(
+            p_return.v_data[i$4].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -19389,8 +19398,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$3.createChildNode(
+            "Type: " + p_return.v_data[i$4].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -19400,7 +19409,7 @@
           );
         }
         if (node.tag.has_rules) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -19411,10 +19420,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -19425,7 +19434,7 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackOracle(node);
@@ -19478,7 +19487,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$3 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -19489,9 +19498,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = v_list$3.createChildNode(
+            p_return.v_data[i$4].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -19501,8 +19510,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$3.createChildNode(
+            "Type: " + p_return.v_data[i$4].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -19510,8 +19519,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Nullable: " + p_return.v_data[i].v_nullable,
+          v_node$3.createChildNode(
+            "Nullable: " + p_return.v_data[i$4].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -19521,7 +19530,7 @@
           );
         }
         if (node.tag.has_primary_keys) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Primary Key",
             false,
             "fas node-all fa-key node-pkey",
@@ -19532,10 +19541,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_foreign_keys) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Foreign Keys",
             false,
             "fas node-all fa-key node-fkey",
@@ -19546,10 +19555,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_uniques) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Uniques",
             false,
             "fas node-all fa-key node-unique",
@@ -19560,10 +19569,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_indexes) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -19574,10 +19583,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -19588,10 +19597,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_partitions) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Partitions",
             false,
             "fas node-all fa-table node-partition",
@@ -19602,7 +19611,7 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackOracle(node);
@@ -19631,7 +19640,7 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          v_node = node.createChildNode(
+          v_node$3 = node.createChildNode(
             p_return.v_data[0][0],
             false,
             "fas node-all fa-key node-pkey",
@@ -19640,7 +19649,7 @@
             },
             "cm_pk"
           );
-          v_node.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -19673,9 +19682,9 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3.createChildNode(
+            p_return.v_data[i$4][0],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -19709,9 +19718,9 @@
         node.setText("Uniques (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
-            v_node = node.createChildNode(
-              p_return.v_data[i][0],
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+            v_node$3 = node.createChildNode(
+              p_return.v_data[i$4][0],
               false,
               "fas node-all fa-key node-unique",
               {
@@ -19721,7 +19730,7 @@
               null,
               false
             );
-            v_node.createChildNode(
+            v_node$3.createChildNode(
               "",
               false,
               "node-spin",
@@ -19759,9 +19768,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$4][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -19797,9 +19806,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i][0] + " (" + p_return.v_data[i][1] + ")",
+              p_return.v_data[i$4][0] + " (" + p_return.v_data[i$4][1] + ")",
               false,
               "fas node-all fa-thumbtack node-index",
               {
@@ -19847,9 +19856,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$4][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -19883,9 +19892,9 @@
       function(p_return) {
         node.setText("Foreign Keys (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4][0],
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -19895,8 +19904,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Referenced Table: " + p_return.v_data[i][1],
+          v_node$3.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$4][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -19904,8 +19913,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Delete Rule: " + p_return.v_data[i][2],
+          v_node$3.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$4][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -19913,8 +19922,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Update Rule: " + p_return.v_data[i][3],
+          v_node$3.createChildNode(
+            "Update Rule: " + p_return.v_data[i$4][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -19922,7 +19931,6 @@
             null,
             false
           );
-          v_curr_fk = p_return.v_data[i][0];
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackOracle(node);
@@ -19975,9 +19983,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           node.createChildNode(
-            p_return.v_data[i][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i][4],
+            p_return.v_data[i$4][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$4][4],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -20010,20 +20018,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-cog node-function",
             {
               type: "function",
-              id: p_return.v_data[i].v_id
+              id: p_return.v_data[i$4].v_id
             },
             "cm_function",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -20059,10 +20067,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          if (p_return.v_data[i$4].v_type == "O")
+            v_node$3 = node.createChildNode(
+              p_return.v_data[i$4].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -20071,9 +20079,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$4].v_type == "I")
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -20082,8 +20090,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -20144,20 +20152,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Procedures (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-cog node-procedure",
             {
               type: "procedure",
-              id: p_return.v_data[i].v_id
+              id: p_return.v_data[i$4].v_id
             },
             "cm_procedure",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -20193,10 +20201,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          if (p_return.v_data[i$4].v_type == "O")
+            v_node$3 = node.createChildNode(
+              p_return.v_data[i$4].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -20205,9 +20213,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$4].v_type == "I")
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -20216,8 +20224,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -20344,7 +20352,7 @@
       );
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
-      v_node = p_node.createChildNode(
+      v_node$3 = p_node.createChildNode(
         // Plain text, not markup. Aimara escapes every node label before
         // it reaches innerHTML (see aimaraEscapeHtml), so the <a
         // onclick='showError(...)'>View Detail</a> this used to build was
@@ -20434,6 +20442,7 @@
     oracleTerminateBackendConfirm,
     refreshTreeOracle
   }, Symbol.toStringTag, { value: "Module" }));
+  var i$3, v_list$2, v_node$2;
   function getTreeMariadb(p_div) {
     var context_menu = {
       cm_server: {
@@ -21685,20 +21694,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Databases (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
           var v_node2 = node.createChildNode(
-            p_return.v_data[i].v_name,
+            p_return.v_data[i$3].v_name,
             false,
             "fas node-all fa-database node-database",
             {
               type: "database",
-              database: p_return.v_data[i].v_name.replace(/"/g, "")
+              database: p_return.v_data[i$3].v_name.replace(/"/g, "")
             },
             "cm_database",
             null,
             false
           );
-          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i].v_name.replace(/"/g, "")) {
+          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i$3].v_name.replace(/"/g, "")) {
             v_node2.setNodeBold();
             v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node2;
           }
@@ -21727,9 +21736,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Roles (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
             false,
             "fas node-all fa-user node-user",
             {
@@ -21765,30 +21774,30 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i].v_has_uniques,
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_checks: p_return.v_data[i].v_has_checks,
-              has_excludes: p_return.v_data[i].v_has_excludes,
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
-              has_partitions: p_return.v_data[i].v_has_partitions,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$3].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$3].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$3].v_has_uniques,
+              has_indexes: p_return.v_data[i$3].v_has_indexes,
+              has_checks: p_return.v_data[i$3].v_has_checks,
+              has_excludes: p_return.v_data[i$3].v_has_excludes,
+              has_rules: p_return.v_data[i$3].v_has_rules,
+              has_triggers: p_return.v_data[i$3].v_has_triggers,
+              has_partitions: p_return.v_data[i$3].v_has_partitions,
+              has_statistics: p_return.v_data[i$3].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_table",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$2.createChildNode(
             "",
             false,
             "node-spin",
@@ -21824,9 +21833,9 @@
         node.setText("Sequences (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_sequence_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_sequence_name,
             false,
             "fas node-all fa-sort-numeric-down node-sequence",
             {
@@ -21861,21 +21870,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
             false,
             "fas node-all fa-eye node-view",
             {
               type: "view",
-              has_triggers: p_return.v_data[i].v_has_triggers,
+              has_triggers: p_return.v_data[i$3].v_has_triggers,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_view",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$2.createChildNode(
             "",
             false,
             "node-spin",
@@ -21911,7 +21920,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$2 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -21920,9 +21929,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = v_list$2.createChildNode(
+            p_return.v_data[i$3].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -21933,8 +21942,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$2.createChildNode(
+            "Type: " + p_return.v_data[i$3].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -21944,7 +21953,7 @@
           );
         }
         if (node.tag.has_rules) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -21956,10 +21965,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -21971,7 +21980,7 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMariaDB(node);
@@ -22024,7 +22033,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$2 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -22036,9 +22045,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = v_list$2.createChildNode(
+            p_return.v_data[i$3].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -22049,8 +22058,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$2.createChildNode(
+            "Type: " + p_return.v_data[i$3].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -22058,8 +22067,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Nullable: " + p_return.v_data[i].v_nullable,
+          v_node$2.createChildNode(
+            "Nullable: " + p_return.v_data[i$3].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -22069,7 +22078,7 @@
           );
         }
         if (node.tag.has_primary_keys) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Primary Key",
             false,
             "fas node-all fa-key node-pkey",
@@ -22081,10 +22090,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_foreign_keys) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Foreign Keys",
             false,
             "fas node-all fa-key node-fkey",
@@ -22096,10 +22105,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_uniques) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Uniques",
             false,
             "fas node-all fa-key node-unique",
@@ -22111,10 +22120,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_indexes) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -22126,10 +22135,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -22141,10 +22150,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_partitions) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             "Partitions",
             false,
             "fas node-all fa-table node-partition",
@@ -22156,7 +22165,7 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMariaDB(node);
@@ -22185,7 +22194,7 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          v_node = node.createChildNode(
+          v_node$2 = node.createChildNode(
             p_return.v_data[0][0],
             false,
             "fas node-all fa-key node-pkey",
@@ -22195,7 +22204,7 @@
             },
             "cm_pk"
           );
-          v_node.createChildNode(
+          v_node$2.createChildNode(
             "",
             false,
             "node-spin",
@@ -22229,9 +22238,9 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2.createChildNode(
+            p_return.v_data[i$3][0],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -22265,9 +22274,9 @@
         node.setText("Uniques (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
-            v_node = node.createChildNode(
-              p_return.v_data[i][0],
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+            v_node$2 = node.createChildNode(
+              p_return.v_data[i$3][0],
               false,
               "fas node-all fa-key node-unique",
               {
@@ -22278,7 +22287,7 @@
               null,
               false
             );
-            v_node.createChildNode(
+            v_node$2.createChildNode(
               "",
               false,
               "node-spin",
@@ -22317,9 +22326,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$3][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -22355,9 +22364,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i][0] + " (" + p_return.v_data[i][1] + ")",
+              p_return.v_data[i$3][0] + " (" + p_return.v_data[i$3][1] + ")",
               false,
               "fas node-all fa-thumbtack node-index",
               {
@@ -22406,9 +22415,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$3][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -22442,9 +22451,9 @@
       function(p_return) {
         node.setText("Foreign Keys (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3][0],
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -22455,8 +22464,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Referenced Table: " + p_return.v_data[i][1],
+          v_node$2.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$3][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -22464,8 +22473,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Delete Rule: " + p_return.v_data[i][2],
+          v_node$2.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$3][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -22473,8 +22482,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Update Rule: " + p_return.v_data[i][3],
+          v_node$2.createChildNode(
+            "Update Rule: " + p_return.v_data[i$3][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -22482,7 +22491,6 @@
             null,
             false
           );
-          v_curr_fk = p_return.v_data[i][0];
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMariaDB(node);
@@ -22535,9 +22543,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
           node.createChildNode(
-            p_return.v_data[i][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i][4],
+            p_return.v_data[i$3][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$3][4],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -22570,21 +22578,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
             false,
             "fas node-all fa-cog node-function",
             {
               type: "function",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$3].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_function",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$2.createChildNode(
             "",
             false,
             "node-spin",
@@ -22620,10 +22628,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          if (p_return.v_data[i$3].v_type == "O")
+            v_node$2 = node.createChildNode(
+              p_return.v_data[i$3].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -22632,9 +22640,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$3].v_type == "I")
+              v_node$2 = node.createChildNode(
+                p_return.v_data[i$3].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -22643,8 +22651,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$2 = node.createChildNode(
+                p_return.v_data[i$3].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -22705,21 +22713,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Procedures (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
             false,
             "fas node-all fa-cog node-procedure",
             {
               type: "procedure",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$3].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_procedure",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$2.createChildNode(
             "",
             false,
             "node-spin",
@@ -22756,10 +22764,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          if (p_return.v_data[i$3].v_type == "O")
+            v_node$2 = node.createChildNode(
+              p_return.v_data[i$3].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -22768,9 +22776,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$3].v_type == "I")
+              v_node$2 = node.createChildNode(
+                p_return.v_data[i$3].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -22779,8 +22787,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$2 = node.createChildNode(
+                p_return.v_data[i$3].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -22904,7 +22912,7 @@
       );
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
-      v_node = p_node.createChildNode(
+      v_node$2 = p_node.createChildNode(
         // Plain text, not markup. Aimara escapes every node label before
         // it reaches innerHTML (see aimaraEscapeHtml), so the <a
         // onclick='showError(...)'>View Detail</a> this used to build was
@@ -23001,6 +23009,7 @@
     nodeOpenErrorMariadb,
     refreshTreeMariadb
   }, Symbol.toStringTag, { value: "Module" }));
+  var i$2, v_list$1, v_node$1;
   function getTreeMysql(p_div) {
     var context_menu = {
       cm_server: {
@@ -24180,20 +24189,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Databases (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           var v_node2 = node.createChildNode(
-            p_return.v_data[i].v_name,
+            p_return.v_data[i$2].v_name,
             false,
             "fas node-all fa-database node-database",
             {
               type: "database",
-              database: p_return.v_data[i].v_name.replace(/"/g, "")
+              database: p_return.v_data[i$2].v_name.replace(/"/g, "")
             },
             "cm_database",
             null,
             false
           );
-          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i].v_name.replace(/"/g, "")) {
+          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i$2].v_name.replace(/"/g, "")) {
             v_node2.setNodeBold();
             v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node2;
           }
@@ -24222,9 +24231,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Roles (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = node.createChildNode(
+            p_return.v_data[i$2].v_name,
             false,
             "fas node-all fa-user node-user",
             {
@@ -24260,30 +24269,30 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = node.createChildNode(
+            p_return.v_data[i$2].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i].v_has_uniques,
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_checks: p_return.v_data[i].v_has_checks,
-              has_excludes: p_return.v_data[i].v_has_excludes,
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
-              has_partitions: p_return.v_data[i].v_has_partitions,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$2].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$2].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$2].v_has_uniques,
+              has_indexes: p_return.v_data[i$2].v_has_indexes,
+              has_checks: p_return.v_data[i$2].v_has_checks,
+              has_excludes: p_return.v_data[i$2].v_has_excludes,
+              has_rules: p_return.v_data[i$2].v_has_rules,
+              has_triggers: p_return.v_data[i$2].v_has_triggers,
+              has_partitions: p_return.v_data[i$2].v_has_partitions,
+              has_statistics: p_return.v_data[i$2].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_table",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$1.createChildNode(
             "",
             false,
             "node-spin",
@@ -24320,21 +24329,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = node.createChildNode(
+            p_return.v_data[i$2].v_name,
             false,
             "fas node-all fa-eye node-view",
             {
               type: "view",
-              has_triggers: p_return.v_data[i].v_has_triggers,
+              has_triggers: p_return.v_data[i$2].v_has_triggers,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_view",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$1.createChildNode(
             "",
             false,
             "node-spin",
@@ -24370,7 +24379,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$1 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -24379,9 +24388,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = v_list$1.createChildNode(
+            p_return.v_data[i$2].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -24392,8 +24401,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$1.createChildNode(
+            "Type: " + p_return.v_data[i$2].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -24403,7 +24412,7 @@
           );
         }
         if (node.tag.has_rules) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -24415,10 +24424,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -24430,7 +24439,7 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMysql(node);
@@ -24483,7 +24492,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list = node.createChildNode(
+        v_list$1 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -24495,9 +24504,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = v_list$1.createChildNode(
+            p_return.v_data[i$2].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -24508,8 +24517,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+          v_node$1.createChildNode(
+            "Type: " + p_return.v_data[i$2].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -24517,8 +24526,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Nullable: " + p_return.v_data[i].v_nullable,
+          v_node$1.createChildNode(
+            "Nullable: " + p_return.v_data[i$2].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -24528,7 +24537,7 @@
           );
         }
         if (node.tag.has_primary_keys) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Primary Key",
             false,
             "fas node-all fa-key node-pkey",
@@ -24540,10 +24549,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_foreign_keys) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Foreign Keys",
             false,
             "fas node-all fa-key node-fkey",
@@ -24555,10 +24564,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_uniques) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Uniques",
             false,
             "fas node-all fa-key node-unique",
@@ -24570,10 +24579,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_indexes) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -24585,10 +24594,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -24600,10 +24609,10 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_partitions) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             "Partitions",
             false,
             "fas node-all fa-table node-partition",
@@ -24615,7 +24624,7 @@
             null,
             false
           );
-          v_node.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$1.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMysql(node);
@@ -24644,7 +24653,7 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          v_node = node.createChildNode(
+          v_node$1 = node.createChildNode(
             p_return.v_data[0][0],
             false,
             "fas node-all fa-key node-pkey",
@@ -24654,7 +24663,7 @@
             },
             "cm_pk"
           );
-          v_node.createChildNode(
+          v_node$1.createChildNode(
             "",
             false,
             "node-spin",
@@ -24688,9 +24697,9 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1.createChildNode(
+            p_return.v_data[i$2][0],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -24724,9 +24733,9 @@
         node.setText("Uniques (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
-            v_node = node.createChildNode(
-              p_return.v_data[i][0],
+          for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+            v_node$1 = node.createChildNode(
+              p_return.v_data[i$2][0],
               false,
               "fas node-all fa-key node-unique",
               {
@@ -24737,7 +24746,7 @@
               null,
               false
             );
-            v_node.createChildNode(
+            v_node$1.createChildNode(
               "",
               false,
               "node-spin",
@@ -24776,9 +24785,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$2][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -24814,9 +24823,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i][0] + " (" + p_return.v_data[i][1] + ")",
+              p_return.v_data[i$2][0] + " (" + p_return.v_data[i$2][1] + ")",
               false,
               "fas node-all fa-thumbtack node-index",
               {
@@ -24865,9 +24874,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i = 0; i < p_return.v_data.length; i++) {
+          for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
             node.createChildNode(
-              p_return.v_data[i][0],
+              p_return.v_data[i$2][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -24901,9 +24910,9 @@
       function(p_return) {
         node.setText("Foreign Keys (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i][0],
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = node.createChildNode(
+            p_return.v_data[i$2][0],
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -24914,8 +24923,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Referenced Table: " + p_return.v_data[i][1],
+          v_node$1.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$2][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -24923,8 +24932,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Delete Rule: " + p_return.v_data[i][2],
+          v_node$1.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$2][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -24932,8 +24941,8 @@
             null,
             false
           );
-          v_node.createChildNode(
-            "Update Rule: " + p_return.v_data[i][3],
+          v_node$1.createChildNode(
+            "Update Rule: " + p_return.v_data[i$2][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -24941,7 +24950,6 @@
             null,
             false
           );
-          v_curr_fk = p_return.v_data[i][0];
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMysql(node);
@@ -24994,9 +25002,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           node.createChildNode(
-            p_return.v_data[i][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i][4],
+            p_return.v_data[i$2][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$2][4],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -25029,21 +25037,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = node.createChildNode(
+            p_return.v_data[i$2].v_name,
             false,
             "fas node-all fa-cog node-function",
             {
               type: "function",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$2].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_function",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$1.createChildNode(
             "",
             false,
             "node-spin",
@@ -25079,10 +25087,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          if (p_return.v_data[i$2].v_type == "O")
+            v_node$1 = node.createChildNode(
+              p_return.v_data[i$2].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -25091,9 +25099,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$2].v_type == "I")
+              v_node$1 = node.createChildNode(
+                p_return.v_data[i$2].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -25102,8 +25110,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$1 = node.createChildNode(
+                p_return.v_data[i$2].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -25164,21 +25172,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Procedures (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          v_node$1 = node.createChildNode(
+            p_return.v_data[i$2].v_name,
             false,
             "fas node-all fa-cog node-procedure",
             {
               type: "procedure",
-              id: p_return.v_data[i].v_id,
+              id: p_return.v_data[i$2].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_procedure",
             null,
             false
           );
-          v_node.createChildNode(
+          v_node$1.createChildNode(
             "",
             false,
             "node-spin",
@@ -25215,10 +25223,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
-          if (p_return.v_data[i].v_type == "O")
-            v_node = node.createChildNode(
-              p_return.v_data[i].v_name,
+        for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
+          if (p_return.v_data[i$2].v_type == "O")
+            v_node$1 = node.createChildNode(
+              p_return.v_data[i$2].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -25227,9 +25235,9 @@
               false
             );
           else {
-            if (p_return.v_data[i].v_type == "I")
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+            if (p_return.v_data[i$2].v_type == "I")
+              v_node$1 = node.createChildNode(
+                p_return.v_data[i$2].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -25238,8 +25246,8 @@
                 false
               );
             else
-              v_node = node.createChildNode(
-                p_return.v_data[i].v_name,
+              v_node$1 = node.createChildNode(
+                p_return.v_data[i$2].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -25363,7 +25371,7 @@
       );
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
-      v_node = p_node.createChildNode(
+      v_node$1 = p_node.createChildNode(
         // Plain text, not markup. Aimara escapes every node label before
         // it reaches innerHTML (see aimaraEscapeHtml), so the <a
         // onclick='showError(...)'>View Detail</a> this used to build was
@@ -25452,6 +25460,7 @@
     nodeOpenErrorMysql,
     refreshTreeMysql
   }, Symbol.toStringTag, { value: "Module" }));
+  var i$1, v_list, v_node;
   function getTreeSqlite(p_div) {
     var context_menu = {
       cm_server: {
@@ -26055,23 +26064,23 @@
         }
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$1 = 0; i$1 < p_return.v_data.length; i$1++) {
           v_node = node.createChildNode(
-            p_return.v_data[i].v_name,
+            p_return.v_data[i$1].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i].v_has_uniques,
-              has_indexes: p_return.v_data[i].v_has_indexes,
-              has_checks: p_return.v_data[i].v_has_checks,
-              has_excludes: p_return.v_data[i].v_has_excludes,
-              has_rules: p_return.v_data[i].v_has_rules,
-              has_triggers: p_return.v_data[i].v_has_triggers,
-              has_partitions: p_return.v_data[i].v_has_partitions,
-              has_statistics: p_return.v_data[i].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$1].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$1].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$1].v_has_uniques,
+              has_indexes: p_return.v_data[i$1].v_has_indexes,
+              has_checks: p_return.v_data[i$1].v_has_checks,
+              has_excludes: p_return.v_data[i$1].v_has_excludes,
+              has_rules: p_return.v_data[i$1].v_has_rules,
+              has_triggers: p_return.v_data[i$1].v_has_triggers,
+              has_partitions: p_return.v_data[i$1].v_has_partitions,
+              has_statistics: p_return.v_data[i$1].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_table",
@@ -26126,9 +26135,9 @@
           null,
           false
         );
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$1 = 0; i$1 < p_return.v_data.length; i$1++) {
           v_node = v_list.createChildNode(
-            p_return.v_data[i].v_column_name,
+            p_return.v_data[i$1].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -26140,7 +26149,7 @@
             false
           );
           v_node.createChildNode(
-            "Type: " + p_return.v_data[i].v_data_type,
+            "Type: " + p_return.v_data[i$1].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -26151,7 +26160,7 @@
             false
           );
           v_node.createChildNode(
-            "Nullable: " + p_return.v_data[i].v_nullable,
+            "Nullable: " + p_return.v_data[i$1].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -26359,9 +26368,9 @@
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
-        for (i = 0; i < p_return.v_data.length; i++) {
+        for (i$1 = 0; i$1 < p_return.v_data.length; i$1++) {
           v_node = node.createChildNode(
-            p_return.v_data[i][0],
+            p_return.v_data[i$1][0],
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -26373,7 +26382,7 @@
             false
           );
           v_node.createChildNode(
-            "Referenced Table: " + p_return.v_data[i][1],
+            "Referenced Table: " + p_return.v_data[i$1][1],
             false,
             "fas node-all fa-table node-table",
             {
@@ -26384,7 +26393,7 @@
             false
           );
           v_node.createChildNode(
-            "Delete Rule: " + p_return.v_data[i][2],
+            "Delete Rule: " + p_return.v_data[i$1][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -26395,7 +26404,7 @@
             false
           );
           v_node.createChildNode(
-            "Update Rule: " + p_return.v_data[i][3],
+            "Update Rule: " + p_return.v_data[i$1][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -26405,7 +26414,6 @@
             null,
             false
           );
-          v_curr_fk = p_return.v_data[i][0];
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackSqlite(node);
@@ -28035,6 +28043,7 @@
     __proto__: null,
     startTutorial
   }, Symbol.toStringTag, { value: "Module" }));
+  var v_edges, v_nodes, v_start_height;
   $(function() {
     v_connTabControl = createTabControl({
       p_div: "omnidb_main_tablist",
@@ -28544,7 +28553,7 @@
     v_horizontalLine.id = "horizontal-resize-line";
     v_connTabControl.selectedDiv.appendChild(v_horizontalLine);
     document.body.addEventListener("mousemove", horizontalLinePosition);
-    v_start_width = event2.x;
+    event2.x;
     document.body.addEventListener("mouseup", resizeConnectionHorizontalEnd);
   }
   function resizeConnectionHorizontalEnd(event2) {
@@ -28573,7 +28582,7 @@
     v_horizontalLine.id = "horizontal-resize-line";
     v_connTabControl.snippet_tag.divPanel.appendChild(v_horizontalLine);
     document.body.addEventListener("mousemove", horizontalLinePosition);
-    v_start_width = event2.x;
+    event2.x;
     document.body.addEventListener("mouseup", resizeSnippetHorizontalEnd);
   }
   function resizeSnippetHorizontalEnd(event2) {
@@ -29657,13 +29666,13 @@
     return v_tabControl;
   }
   function createSimpleElement(p_type, p_id, p_class) {
-    element = document.createElement(p_type);
+    var element = document.createElement(p_type);
     if (p_id != void 0) element.id = p_id;
     if (p_class != void 0) element.className = p_class;
     return element;
   }
   function createImgElement(p_id, p_class, p_src) {
-    element = document.createElement("img");
+    var element = document.createElement("img");
     if (p_id != void 0) element.id = p_id;
     if (p_class != void 0) element.className = p_class;
     if (p_src != void 0) element.src = p_src;
@@ -29832,6 +29841,7 @@
     customMenuRecursive,
     customMenuReposition
   }, Symbol.toStringTag, { value: "Module" }));
+  var i;
   function getAllSnippets() {
     execAjax$1(
       "/get_all_snippets/",
@@ -31316,6 +31326,7 @@
     refreshCommandList,
     showCommandList
   }, Symbol.toStringTag, { value: "Module" }));
+  var labelText;
   function BsJsonComponent(config) {
     this.target = config.target;
     this.data = config.data;

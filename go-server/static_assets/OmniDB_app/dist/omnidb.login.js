@@ -4,6 +4,7 @@
       Object.assign(window, ns);
     }
   }
+  var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function checkSessionMessage() {
     execAjax(
       "/check_session_message/",

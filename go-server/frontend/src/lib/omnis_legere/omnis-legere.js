@@ -31,6 +31,15 @@ SOFTWARE.
 // data comes straight from the database's own EXPLAIN output (relation
 // names, aliases, filters, etc.), which is not trusted content and must
 // never be interpreted as markup.
+
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var v_grid_col, v_grid_row;
 export function legereEscapeHtml(p_text) {
 	var v_div = document.createElement("div");
 	v_div.appendChild(document.createTextNode(String(p_text)));

@@ -31,6 +31,15 @@ import { execAjax } from "../ajax_control.js";
 import { customMenu } from "../custom_menu.js";
 import { showAlert, showConfirm } from "../notification_control.js";
 
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var i;
+
 
 export function getAllSnippets() {
 	execAjax(

@@ -36,6 +36,15 @@ import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
 import { getDatabaseList } from "./workspace.js";
 
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var v_conn_data, v_conn_div, v_conn_obj;
+
 $(function () {
 	v_connections_data = new Object();
 	v_connections_data.technologies = null;

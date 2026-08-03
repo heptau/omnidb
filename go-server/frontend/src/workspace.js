@@ -52,6 +52,15 @@ import { getAllSnippets } from "./tree_context_functions/tree_snippets.js";
 import { getTreeSqlite } from "./tree_context_functions/tree_sqlite.js";
 import { startTutorial } from "./tutorial_functions/tutorial.js";
 
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var v_edges, v_nodes, v_start_height, v_start_width;
+
 $(function () {
 	// Instantiating outer tab component.
 	v_connTabControl = createTabControl({

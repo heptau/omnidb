@@ -40,6 +40,15 @@ import { createTabControl } from "../tabs.js";
 import { checkBeforeChangeDatabase, drawGraph, refreshHeights, removeTab, renameTab, renameTabConfirm, showMenuNewTab } from "../workspace.js";
 import { v_startEditData } from "./edit_data.js";
 
+// Declared here because these were implicit globals: assigned without
+// `var` anywhere in this file, so they leaked onto `window` and were
+// shared with every other file in the bundle. They are scratch values
+// used and re-read inside a single function each, so a file-level
+// declaration keeps the behaviour identical while taking them off the
+// global object -- which is what still forces the bundle out of strict
+// mode.
+var i, j, tmp, v_disconsiderSchemas, v_list, v_node, v_options, v_publications, v_tables;
+
 
 export function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
 	v_connTabControl.tag.createQueryTab(p_tab_name);
@@ -7077,7 +7086,6 @@ export function getFKsPostgresql(node) {
 					false,
 				);
 
-				v_curr_fk = p_return.v_data[i][0];
 			}
 
 			node.drawChildNodes();
