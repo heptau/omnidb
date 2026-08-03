@@ -97,15 +97,22 @@ export function updateUnitSavedInterval(p_div) {
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
 		if (v_unit.div == p_div) {
-			//Removing saved unit
-			execAjax(
-				"/update_saved_monitor_unit_interval/",
-				JSON.stringify({ p_saved_id: v_unit.saved_id, p_interval: v_unit.input_interval.value }),
-				function (p_return) {},
-				null,
-				"box",
-				false,
-			);
+			// parseInt because an <input>'s value is a string and the backend
+			// unmarshals this into an integer, which rejects "30" outright and
+			// fails the whole request. See flexInt in go-server/flex_int.go.
+			// A value that is not a positive whole number has nothing worth
+			// persisting, so it is not sent at all.
+			var v_interval = parseInt(v_unit.input_interval.value, 10);
+			if (v_interval > 0) {
+				execAjax(
+					"/update_saved_monitor_unit_interval/",
+					JSON.stringify({ p_saved_id: v_unit.saved_id, p_interval: v_interval }),
+					function (p_return) {},
+					null,
+					"box",
+					false,
+				);
+			}
 
 			break;
 		}
@@ -432,13 +439,17 @@ export function saveMonitorScript() {
 	if (v_tab_tag.input_unit_name.value.trim() == "") {
 		showAlert("Please provide name for this monitor.");
 	} else {
+		// parseInt: see the comment in updateUnitSavedInterval. Here an
+		// unparseable value goes as null, which the backend replaces with its
+		// own 30 second default.
+		var v_interval = parseInt(v_tab_tag.input_interval.value, 10);
 		var input = JSON.stringify({
 			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 			p_tab_id: v_connTabControl.selectedTab.id,
 			p_unit_id: v_tab_tag.unit_id,
 			p_unit_name: v_tab_tag.input_unit_name.value,
 			p_unit_type: v_tab_tag.select_type.value,
-			p_unit_interval: v_tab_tag.input_interval.value,
+			p_unit_interval: v_interval > 0 ? v_interval : null,
 			p_unit_script_data: v_tab_tag.editor_data.getValue(),
 			p_unit_script_chart: v_tab_tag.editor.getValue(),
 		});

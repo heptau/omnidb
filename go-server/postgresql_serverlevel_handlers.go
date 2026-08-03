@@ -251,7 +251,7 @@ func handleGetDomainsPostgreSQL(upstream *url.URL, fallback http.Handler) http.H
 
 type pgKillBackendRequest struct {
 	baseRequest
-	PPid int64 `json:"p_pid"`
+	PPid flexInt `json:"p_pid"`
 }
 
 func handleKillBackendPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -272,7 +272,7 @@ func handleKillBackendPostgreSQL(upstream *url.URL, fallback http.Handler) http.
 		}
 		defer db.Close()
 
-		if err := postgresqlKillBackend(db, reqBody.PPid); err != nil {
+		if err := postgresqlKillBackend(db, int64(reqBody.PPid)); err != nil {
 			writeEnvelope(w, map[string]any{"password_timeout": true, "message": err.Error()}, true, -1)
 			return
 		}

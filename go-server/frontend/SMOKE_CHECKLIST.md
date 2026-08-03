@@ -45,7 +45,13 @@ Run it after every migration step. It takes about ten minutes.
 - [ ] Test Connection reports success for a good connection and a readable
       error for a bad one.
 - [ ] Save, then reopen the dialog — the values round-tripped.
-- [ ] Connection groups: create, rename, assign a connection, delete.
+- [ ] Connection groups: create, rename, assign a connection, delete. Check
+      each one **took effect**, not just that the dialog closed — the group
+      dropdown reloads on success, so a group that is still listed under its
+      old name means the request was rejected. These four sent the group id as
+      the string a `<select>.value` always is, which the backend rejected while
+      the UI carried on as if it had worked (see `flexInt` in
+      `go-server/flex_int.go`).
 
 ## Object tree — once per engine
 
@@ -124,6 +130,14 @@ Only for a connection with SSH tunneling configured.
 - [ ] The dashboard renders its charts and refreshes on the configured
       interval.
 - [ ] Monitoring units dialog: add, edit and delete a unit.
+- [ ] Change a dashboard unit's refresh interval, reload the dashboard, and
+      check the new interval **persisted**. Same string-vs-integer trap as the
+      connection groups above: it is an `<input>.value`, and the failure is
+      silent.
+- [ ] Right-click a session in the server activity grid → Terminate. Also an
+      id that crosses the wire as a string (query results are `[][]string`).
+      PostgreSQL, MySQL and MariaDB take a bare pid; Oracle sends
+      `sid,serial#` and is deliberately a string on both sides.
 
 ## Snippets
 

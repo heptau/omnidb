@@ -174,8 +174,8 @@ func handleNewGroup(upstream *url.URL) http.HandlerFunc {
 }
 
 type editGroupRequest struct {
-	PID   int64  `json:"p_id"`
-	PName string `json:"p_name"`
+	PID   flexInt `json:"p_id"`
+	PName string  `json:"p_name"`
 }
 
 func handleEditGroup(upstream *url.URL) http.HandlerFunc {
@@ -196,7 +196,7 @@ func handleEditGroup(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		owner, err := groupOwner(db, reqBody.PID)
+		owner, err := groupOwner(db, int64(reqBody.PID))
 		if err != nil {
 			writeEnvelope(w, groupLookupErrorMessage(err), true, -1)
 			return
@@ -205,7 +205,7 @@ func handleEditGroup(upstream *url.URL) http.HandlerFunc {
 			writeEnvelope(w, "This group does not belong to you.", true, -1)
 			return
 		}
-		if err := editGroup(db, reqBody.PID, reqBody.PName); err != nil {
+		if err := editGroup(db, int64(reqBody.PID), reqBody.PName); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}
@@ -214,7 +214,7 @@ func handleEditGroup(upstream *url.URL) http.HandlerFunc {
 }
 
 type deleteGroupRequest struct {
-	PID int64 `json:"p_id"`
+	PID flexInt `json:"p_id"`
 }
 
 func handleDeleteGroup(upstream *url.URL) http.HandlerFunc {
@@ -235,7 +235,7 @@ func handleDeleteGroup(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		owner, err := groupOwner(db, reqBody.PID)
+		owner, err := groupOwner(db, int64(reqBody.PID))
 		if err != nil {
 			writeEnvelope(w, groupLookupErrorMessage(err), true, -1)
 			return
@@ -244,7 +244,7 @@ func handleDeleteGroup(upstream *url.URL) http.HandlerFunc {
 			writeEnvelope(w, "This group does not belong to you.", true, -1)
 			return
 		}
-		if err := deleteGroup(db, reqBody.PID); err != nil {
+		if err := deleteGroup(db, int64(reqBody.PID)); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}
@@ -361,7 +361,7 @@ type groupConnDataItem struct {
 }
 
 type saveGroupConnectionsRequest struct {
-	PGroup        int64               `json:"p_group"`
+	PGroup        flexInt             `json:"p_group"`
 	PConnDataList []groupConnDataItem `json:"p_conn_data_list"`
 }
 
@@ -383,7 +383,7 @@ func handleSaveGroupConnections(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
-		owner, err := groupOwner(db, reqBody.PGroup)
+		owner, err := groupOwner(db, int64(reqBody.PGroup))
 		if err == sql.ErrNoRows {
 			writeEnvelope(w, "Group not found.", true, -1)
 			return
@@ -403,7 +403,7 @@ func handleSaveGroupConnections(upstream *url.URL) http.HandlerFunc {
 				log.Printf("save_group_connections: connection %d not found or not owned by user", item.ID)
 				continue
 			}
-			if err := setGroupConnection(db, reqBody.PGroup, item.ID, item.Selected); err != nil {
+			if err := setGroupConnection(db, int64(reqBody.PGroup), item.ID, item.Selected); err != nil {
 				log.Printf("save_group_connections: %v", err)
 			}
 		}

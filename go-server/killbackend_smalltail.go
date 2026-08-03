@@ -16,7 +16,7 @@ import (
 
 type killBackendRequest struct {
 	baseRequest
-	PPid int64 `json:"p_pid"`
+	PPid flexInt `json:"p_pid"`
 }
 
 // handleKillBackendMySQL mirrors tree_mysql.py's/tree_mariadb.py's

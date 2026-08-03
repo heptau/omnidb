@@ -3191,7 +3191,10 @@ export function mysqlTerminateBackendConfirm(p_pid) {
 }
 
 export function mysqlTerminateBackend(p_row) {
+	// parseInt: query results cross the wire as [][]string, so the process id
+	// arrives quoted, and the backend unmarshals it into an integer. See
+	// flexInt in go-server/flex_int.go.
 	showConfirm("Are you sure you want to terminate process " + p_row[0] + "?", function () {
-		mysqlTerminateBackendConfirm(p_row[0]);
+		mysqlTerminateBackendConfirm(parseInt(p_row[0], 10));
 	});
 }

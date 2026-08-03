@@ -333,12 +333,12 @@ func handleGetMonitorUnitTemplate(upstream *url.URL) http.HandlerFunc {
 
 type saveMonitorUnitRequest struct {
 	baseRequest
-	PUnitID          *int64 `json:"p_unit_id"`
-	PUnitName        string `json:"p_unit_name"`
-	PUnitType        string `json:"p_unit_type"`
-	PUnitInterval    *int   `json:"p_unit_interval"`
-	PUnitScriptChart string `json:"p_unit_script_chart"`
-	PUnitScriptData  string `json:"p_unit_script_data"`
+	PUnitID          *int64   `json:"p_unit_id"`
+	PUnitName        string   `json:"p_unit_name"`
+	PUnitType        string   `json:"p_unit_type"`
+	PUnitInterval    *flexInt `json:"p_unit_interval"`
+	PUnitScriptChart string   `json:"p_unit_script_chart"`
+	PUnitScriptData  string   `json:"p_unit_script_data"`
 }
 
 // handleSaveMonitorUnit mirrors save_monitor_unit — still a full CRUD port
@@ -379,7 +379,7 @@ func handleSaveMonitorUnit(upstream *url.URL) http.HandlerFunc {
 
 		interval := 30
 		if req.PUnitInterval != nil {
-			interval = *req.PUnitInterval
+			interval = int(*req.PUnitInterval)
 		}
 
 		id, err := saveCustomMonitorUnit(appDB, int64(who.UserID), req.PUnitID, info.Technology, req.PUnitName, req.PUnitType, interval, req.PUnitScriptChart, req.PUnitScriptData)
@@ -475,8 +475,8 @@ func handleRemoveSavedMonitorUnit(upstream *url.URL) http.HandlerFunc {
 }
 
 type updateSavedMonitorUnitIntervalRequest struct {
-	PSavedID  int64 `json:"p_saved_id"`
-	PInterval int   `json:"p_interval"`
+	PSavedID  int64   `json:"p_saved_id"`
+	PInterval flexInt `json:"p_interval"`
 }
 
 // handleUpdateSavedMonitorUnitInterval mirrors
@@ -508,7 +508,7 @@ func handleUpdateSavedMonitorUnitInterval(upstream *url.URL) http.HandlerFunc {
 		}
 		defer appDB.Close()
 
-		if err := updateSavedMonitorUnitInterval(appDB, req.PSavedID, int64(who.UserID), req.PInterval); err != nil {
+		if err := updateSavedMonitorUnitInterval(appDB, req.PSavedID, int64(who.UserID), int(req.PInterval)); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

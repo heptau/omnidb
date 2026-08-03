@@ -5901,15 +5901,18 @@
     for (var i2 = 0; i2 < v_tab_tag2.units.length; i2++) {
       var v_unit = v_tab_tag2.units[i2];
       if (v_unit.div == p_div) {
-        execAjax$1(
-          "/update_saved_monitor_unit_interval/",
-          JSON.stringify({ p_saved_id: v_unit.saved_id, p_interval: v_unit.input_interval.value }),
-          function(p_return) {
-          },
-          null,
-          "box",
-          false
-        );
+        var v_interval = parseInt(v_unit.input_interval.value, 10);
+        if (v_interval > 0) {
+          execAjax$1(
+            "/update_saved_monitor_unit_interval/",
+            JSON.stringify({ p_saved_id: v_unit.saved_id, p_interval: v_interval }),
+            function(p_return) {
+            },
+            null,
+            "box",
+            false
+          );
+        }
         break;
       }
     }
@@ -6180,13 +6183,14 @@
     if (v_tab_tag2.input_unit_name.value.trim() == "") {
       showAlert$1("Please provide name for this monitor.");
     } else {
+      var v_interval = parseInt(v_tab_tag2.input_interval.value, 10);
       var input = JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
         p_tab_id: v_connTabControl.selectedTab.id,
         p_unit_id: v_tab_tag2.unit_id,
         p_unit_name: v_tab_tag2.input_unit_name.value,
         p_unit_type: v_tab_tag2.select_type.value,
-        p_unit_interval: v_tab_tag2.input_interval.value,
+        p_unit_interval: v_interval > 0 ? v_interval : null,
         p_unit_script_data: v_tab_tag2.editor_data.getValue(),
         p_unit_script_chart: v_tab_tag2.editor.getValue()
       });
@@ -15682,7 +15686,7 @@
     );
   }
   function postgresqlTerminateBackend(p_row) {
-    var v_pid = p_row[2];
+    var v_pid = parseInt(p_row[2], 10);
     showConfirm("Are you sure you want to terminate backend " + v_pid + "?", function() {
       postgresqlTerminateBackendConfirm(v_pid);
     });
@@ -17462,7 +17466,10 @@
     execAjax$1(
       "/save_group_connections/",
       JSON.stringify({
-        p_group: document.getElementById("group_selector").value,
+        // parseInt because a <select>'s value is a string and the backend
+        // unmarshals this into an integer, which rejects "1" outright and
+        // fails the whole request. See flexInt in go-server/flex_int.go.
+        p_group: parseInt(document.getElementById("group_selector").value, 10),
         p_conn_data_list: v_conn_data
       }),
       function(p_return) {
@@ -17495,7 +17502,7 @@
     );
   }
   function deleteGroup() {
-    var v_group_id = document.getElementById("group_selector").value;
+    var v_group_id = parseInt(document.getElementById("group_selector").value, 10);
     showConfirm("Are you sure you want to delete the current group?", function() {
       deleteGroupConfirm(v_group_id);
     });
@@ -17535,7 +17542,7 @@
   function renameGroup() {
     var v_select = document.getElementById("group_selector");
     showConfirm("", function() {
-      renameGroupConfirm(document.getElementById("group_selector").value, document.getElementById("group_name_input").value);
+      renameGroupConfirm(parseInt(document.getElementById("group_selector").value, 10), document.getElementById("group_name_input").value);
     });
     var v_input = document.createElement("input");
     v_input.id = "group_name_input";
@@ -23410,7 +23417,7 @@
   }
   function mariadbTerminateBackend(p_row) {
     showConfirm("Are you sure you want to terminate process " + p_row[0] + "?", function() {
-      mariadbTerminateBackendConfirm(p_row[0]);
+      mariadbTerminateBackendConfirm(parseInt(p_row[0], 10));
     });
   }
   const treeMariadb = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -25863,7 +25870,7 @@
   }
   function mysqlTerminateBackend(p_row) {
     showConfirm("Are you sure you want to terminate process " + p_row[0] + "?", function() {
-      mysqlTerminateBackendConfirm(p_row[0]);
+      mysqlTerminateBackendConfirm(parseInt(p_row[0], 10));
     });
   }
   const treeMysql = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({

@@ -9859,7 +9859,11 @@ export function postgresqlTerminateBackendConfirm(p_pid) {
 }
 
 export function postgresqlTerminateBackend(p_row) {
-	var v_pid = p_row[2];
+	// parseInt because query results cross the wire as [][]string, so the pid
+	// arrives quoted, and the backend unmarshals it into an integer -- which
+	// rejects "4711" outright and fails the whole request. See flexInt in
+	// go-server/flex_int.go.
+	var v_pid = parseInt(p_row[2], 10);
 
 	showConfirm("Are you sure you want to terminate backend " + v_pid + "?", function () {
 		postgresqlTerminateBackendConfirm(v_pid);

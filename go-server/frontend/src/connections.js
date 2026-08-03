@@ -451,7 +451,10 @@ export function manageGroupSave() {
 	execAjax(
 		"/save_group_connections/",
 		JSON.stringify({
-			p_group: document.getElementById("group_selector").value,
+			// parseInt because a <select>'s value is a string and the backend
+			// unmarshals this into an integer, which rejects "1" outright and
+			// fails the whole request. See flexInt in go-server/flex_int.go.
+			p_group: parseInt(document.getElementById("group_selector").value, 10),
 			p_conn_data_list: v_conn_data,
 		}),
 		function (p_return) {
@@ -490,7 +493,8 @@ export function renameGroupConfirm(p_id, p_name) {
 }
 
 export function deleteGroup() {
-	var v_group_id = document.getElementById("group_selector").value;
+	// parseInt: see the comment in manageGroupSave.
+	var v_group_id = parseInt(document.getElementById("group_selector").value, 10);
 
 	showConfirm("Are you sure you want to delete the current group?", function () {
 		deleteGroupConfirm(v_group_id);
@@ -540,7 +544,8 @@ export function newGroup() {
 export function renameGroup() {
 	var v_select = document.getElementById("group_selector");
 	showConfirm("", function () {
-		renameGroupConfirm(document.getElementById("group_selector").value, document.getElementById("group_name_input").value);
+		// parseInt: see the comment in manageGroupSave.
+		renameGroupConfirm(parseInt(document.getElementById("group_selector").value, 10), document.getElementById("group_name_input").value);
 	});
 
 	// See newGroup's comment above — built as a real DOM node, not an HTML
