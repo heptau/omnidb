@@ -29524,7 +29524,7 @@
        * @param  {boolean} p_selectable  Defines if the the tab-content is controlled by default bootstrap tab system selection. Used together with p_clickFunction to override the selecting tab behaviour, like the snippets panel.
        * @param  {string} p_tooltip_name  HTML string is accepted as an optional tooltip. This is bootstrap's default tooltip.
        * @param  {string} p_omnidb_tooltip_name  HTML string is accepted as an optional tooltip. This is OmniDB custom tooltip, used in the outer menu to avoid overflow bugs from bootstrap.
-       * @return {oject} Creates the tab object in this tabControl.
+       * @return {object} Creates the tab object in this tabControl.
        */
       createTab: function({
         p_clickFunction = null,

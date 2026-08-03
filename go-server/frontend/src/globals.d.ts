@@ -1,22 +1,104 @@
-// Ambient declarations for the browser globals this bundle does not own.
+// Ambient declarations for the globals this bundle uses but does not own.
 //
-// The third-party libraries are still plain <script> tags (see README.md), so
-// they arrive as globals with no types attached. Declaring them here is not an
-// attempt to describe their APIs — `any` is honest about what is actually
-// known — it just stops every reference to them reading as an undefined name
-// and burying the type errors that matter.
+// Nothing here changes what runs. It exists so `npm run typecheck` reports
+// real problems instead of drowning them in "Cannot find name" for every
+// reference to jQuery or to a value workspace.html put on the window. Every
+// name below was arrived at by elimination: it is read by at least one file
+// that never assigns it, so it cannot be turned into a module-local
+// declaration without breaking the coupling.
+//
+// `any` throughout, deliberately. That is honestly all that is known about a
+// library arriving as a <script> tag; inventing shapes here would produce
+// confident-looking nonsense. Real types are one of the payoffs of moving
+// these to npm packages.
 
-/** AG Grid Community v28, loaded from lib/ag-grid as a global. */
-declare const agGrid: any;
+// --- third-party libraries, loaded from lib/ as <script> tags --------------
 
-/** jQuery, loaded from lib/jquery as a global. */
 declare const $: any;
-
-/** Ace, loaded from lib/ace as a global. */
+declare const jQuery: any;
+declare const bootstrap: any;
 declare const ace: any;
+declare const agGrid: any;
+declare const cytoscape: any;
+declare const moment: any;
+declare const Chart: any;
+/** xterm.js */
+declare const Terminal: any;
+/** xterm's fit addon (lib/xterm/fit.js) */
+declare const fit: any;
+/** AimaraJS, the object tree (lib/aimaraJS) */
+declare const createTree: any;
+/** Bootstrap's Tooltip constructor, used directly in the PostgreSQL tree */
+declare const Tooltip: any;
+/** The pgexplain bundle in lib/explain — ships its own React and D3 */
+declare const React: any;
+declare const ReactDOM: any;
+declare const PGPlan: any;
+declare const PGPlanNodes: any;
 
 interface Window {
 	/** The Handsontable-compatible factory AgGridAdapter.js installs. */
 	Handsontable: any;
 	AgGridAdapter: any;
 }
+
+/** Installed by AgGridAdapter.js — see its bottom. */
+declare const Handsontable: any;
+
+// --- state owned by workspace.html's inline bootstrap script ---------------
+//
+// These are declared there because bundled code assigns to them at runtime and
+// they therefore have to be real properties of the global object rather than
+// module-local bindings. See the comment in workspace.html.
+
+declare let v_connTabControl: any;
+declare let v_connections_data: any;
+declare let v_omnis: any;
+declare let v_explain_control: any;
+declare let v_shortcut_object: any;
+
+// --- server-rendered page config, published by src/bootstrap-globals.js ----
+//
+// Several of these are reassigned at runtime (the Settings dialog writes the
+// editor theme, font size and formatting options straight back), which is why
+// bootstrap-globals publishes onto window instead of exporting.
+
+declare let v_url_folder: string;
+declare let v_csrf_cookie_name: string;
+declare let v_editor_theme: string;
+declare let v_font_size: number;
+declare let v_indent_char: string;
+declare let v_indent_size: number;
+declare let v_comma_style: string;
+declare let v_keyword_case: string;
+declare let v_autocomplete_disabled_types: string;
+declare let v_show_terminal_option: boolean;
+declare let gv_desktopMode: boolean;
+
+/** Set by shortcuts.js, read by header_actions.js to label the shortcut hints. */
+declare let v_current_os: string;
+
+// --- reachable across a bundle boundary ------------------------------------
+//
+// ajax_control.js and notification_control.js appear in more than one bundle,
+// so they cannot import from each other without Rollup duplicating a module
+// into every bundle that reaches it (see README.md). Their references to one
+// another stay runtime global lookups.
+
+declare function execAjax(
+	url: string,
+	data: string,
+	successFunc?: ((r: any) => void) | null,
+	errorFunc?: ((r: any) => void) | null,
+	notifMode?: string | null,
+	loading?: boolean | null,
+	cancelButton?: boolean | null,
+	onAjaxErrorCallBack?: ((msg: any) => void) | false,
+): void;
+declare function showAlert(info: any, funcYes?: (() => void) | null, large?: boolean | null, isHtml?: boolean): void;
+
+// NOT declared, on purpose: queryAdvancedObjectSearch,
+// checkAdvancedObjectSearchStatus and advancedObjectSearchReturn. Those are
+// called but defined nowhere — the Advanced Object Search feature was removed
+// from the backend and the docs, and its call sites are still here. Declaring
+// them would hide that; the typecheck errors are the reminder.

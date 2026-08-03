@@ -48,13 +48,13 @@ export function composedPath(el) {
  * @desc Creates the `tabControl` with methods to manipulate the tab-system.
  *
  * @param  {string} { p_div   String for the ID of the target DOM element where the tabControl will create/remove tabs.
- * @param  {type} p_hierarchy Optional string defining the tab-system classes with OmniDB pre-defined styles ['primary', 'secondary',...].
+ * @param  {string} p_hierarchy Optional string defining the tab-system classes with OmniDB pre-defined styles ['primary', 'secondary',...].
  * The classes system refers to BEM practices implemented inside OmniDB: 'omnidb__tab-menu' (default base class), 'omnidb__tab-menu--primary', 'omnidb__tab-menu--secondary'.
  * - 'primary': OmniDB Outer Tabs. Results in the tab classlists containing 'omnidb__tab-menu omnidb__tab-menu--primary', 'omnidb__tab-content omnidb__tab-content--primary'
  * - 'secondary': OmniDB Inner Tabs. Results in the tab classlists containing 'omnidb__tab-menu omnidb__tab-menu--secondary', 'omnidb__tab-content omnidb__tab-content--secondary'
- * @param  {type} p_layout}   String defining some additional ready-to-use styles for the tab system.
+ * @param  {string} p_layout   String defining some additional ready-to-use styles for the tab system.
  * - 'card': Adds a bootstrap based card style to the tab system, with the tab-menu inside the card-header and the tab-content inside the card-body.
- * @return {type} Returns the `tabControl` object.
+ * @return {object} Returns the `tabControl` object.
  */
 export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 	// Get an element's exact position
@@ -361,7 +361,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		 * @param  {boolean} p_selectable  Defines if the the tab-content is controlled by default bootstrap tab system selection. Used together with p_clickFunction to override the selecting tab behaviour, like the snippets panel.
 		 * @param  {string} p_tooltip_name  HTML string is accepted as an optional tooltip. This is bootstrap's default tooltip.
 		 * @param  {string} p_omnidb_tooltip_name  HTML string is accepted as an optional tooltip. This is OmniDB custom tooltip, used in the outer menu to avoid overflow bugs from bootstrap.
-		 * @return {oject} Creates the tab object in this tabControl.
+		 * @return {object} Creates the tab object in this tabControl.
 		 */
 		createTab: function ({
 			p_clickFunction = null,
