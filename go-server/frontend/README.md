@@ -83,6 +83,15 @@ globals — 46 variables assigned without `var`, so each became a property of
 being written. See the comment on `strict` in `vite.shared.js` for the rest of
 the audit.
 
+That audit missed one, and the way it missed is worth knowing. `v_current_os`
+had an ambient `declare let` in `globals.d.ts`, so it read as owned-by-someone-
+else rather than as an implicit global. Ambient declarations have no runtime
+effect: nothing created the global, its bare assignment threw ReferenceError,
+and because that assignment was the first line of a jQuery ready handler it took
+every keyboard shortcut in the app with it. `npm run check` now refuses any
+`declare let` that is neither declared in `workspace.html` nor published by
+`bootstrap-globals.js`.
+
 ## The legacy-globals bridge
 
 Cross-file references are real imports now, so the bridge is no longer what

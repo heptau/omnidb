@@ -17,10 +17,15 @@
  *
  * These are assigned onto `window` rather than declared here on purpose. Much
  * of the workspace reassigns them at runtime -- `v_theme` when the user
- * switches themes, for instance -- and the bundle is not in strict mode, so a
- * bare `v_theme = 'dark'` anywhere in it writes straight through to the global
- * object. A module-level `let` here would shadow that for the rest of the
- * bundle and silently split the value in two.
+ * switches themes, for instance -- and a bare `v_theme = 'dark'` anywhere in
+ * the bundle writes straight through to the global object. A module-level `let`
+ * here would shadow that for the rest of the bundle and silently split the
+ * value in two.
+ *
+ * Publishing here is also what makes those bare assignments legal at all: the
+ * bundle is in strict mode, where assigning to a name that is not already a
+ * global throws ReferenceError. `npm run check` enforces that every
+ * `declare let` in globals.d.ts is backed by a real global for that reason.
  */
 const el = document.getElementById('omnidb_bootstrap')
 if (!el) {

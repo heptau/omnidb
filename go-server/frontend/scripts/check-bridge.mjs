@@ -18,6 +18,19 @@
  * the migration -- both failures are invisible at build time and produce a
  * wrong value rather than an error at runtime.
  *
+ * It also checks a third thing, which is not about the bridge but fails the
+ * same way -- silently, at build time, wrongly at runtime:
+ *
+ *   3. Every `declare let`/`declare var` in globals.d.ts must name a global
+ *      something actually creates. Those declarations exist so tsc stops
+ *      reporting "Cannot find name" for state the bundle does not own, and
+ *      they have no runtime effect whatsoever. If nothing creates the global,
+ *      the declaration silences the one warning that would have caught it, and
+ *      a bare `name = value` in the bundle becomes a ReferenceError under
+ *      strict mode -- which takes out the rest of the enclosing function.
+ *      That is exactly how `v_current_os` killed shortcuts.js's whole ready
+ *      handler, and with it every keyboard shortcut in the app.
+ *
  * Matching is textual and deliberately over-eager: a hit inside a comment or
  * a string is a false positive, but a miss is a bug that ships.
  */
@@ -29,6 +42,8 @@ const here = (p) => fileURLToPath(new URL(p, import.meta.url))
 const BUNDLE_SRC = here('../src')
 const LEGACY_JS = here('../../static_assets/OmniDB_app/js')
 const WORKSPACE_HTML = here('../../static/workspace.html')
+const GLOBALS_DTS = here('../src/globals.d.ts')
+const BOOTSTRAP_GLOBALS = here('../src/bootstrap-globals.js')
 
 function jsFiles(dir) {
   const out = []
@@ -83,6 +98,34 @@ for (const [name, kind] of exported) {
         `    window keeps the value from before the reassignment.`,
     )
   }
+}
+
+// --- 3. every `declare let`/`declare var` must name a global that exists -----
+//
+// `declare const` is excluded: those are the third-party libraries arriving as
+// <script> tags from lib/, which this script cannot see and which are never
+// assigned to anyway. The mutable group is where the hazard is.
+const dts = readFileSync(GLOBALS_DTS, 'utf8')
+const inlineScript = readFileSync(WORKSPACE_HTML, 'utf8')
+const bootstrapSrc = readFileSync(BOOTSTRAP_GLOBALS, 'utf8')
+
+const declaredInHtml = new Set(
+  [...inlineScript.matchAll(/\b(?:var|let|const)\s+([A-Za-z_$][\w$]*)/g)].map((m) => m[1]),
+)
+const publishedByBootstrap = new Set(
+  [...bootstrapSrc.matchAll(/^\s{2}([A-Za-z_$][\w$]*):/gm)].map((m) => m[1]),
+)
+
+for (const m of dts.matchAll(/^declare\s+(?:let|var)\s+([A-Za-z_$][\w$]*)/gm)) {
+  const name = m[1]
+  if (declaredInHtml.has(name) || publishedByBootstrap.has(name)) continue
+  problems.push(
+    `globals.d.ts declares "${name}", but nothing creates that global.\n` +
+      `    Not declared in static/workspace.html and not published by bootstrap-globals.js.\n` +
+      `    An ambient declaration has no runtime effect: under strict mode a bare\n` +
+      `    "${name} = ..." in the bundle throws ReferenceError. Either create the global,\n` +
+      `    or make it a real export and import it.`,
+  )
 }
 
 if (problems.length) {

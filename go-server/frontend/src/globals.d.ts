@@ -83,9 +83,6 @@ declare let v_autocomplete_disabled_types: string;
 declare let v_show_terminal_option: boolean;
 declare let gv_desktopMode: boolean;
 
-/** Set by shortcuts.js, read by header_actions.js to label the shortcut hints. */
-declare let v_current_os: string;
-
 // --- reachable across a bundle boundary ------------------------------------
 //
 // ajax_control.js and notification_control.js appear in more than one bundle,

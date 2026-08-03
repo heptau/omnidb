@@ -73,7 +73,12 @@ export function workspaceBundle({ entry, fileName, name, emptyOutDir = false }) 
           //
           //  - Implicit globals were the real blocker. All 46 are declared now
           //    (`i`, `v_node` and friends across the tree files), which strict
-          //    mode is what keeps true from here on.
+          //    mode is what keeps true from here on. The audit missed one:
+          //    `v_current_os` had an ambient `declare let` in globals.d.ts,
+          //    which silenced tsc without creating anything, so its bare
+          //    assignment threw and took shortcuts.js's whole ready handler
+          //    with it. `npm run check` now enforces that every `declare let`
+          //    names a global something actually creates.
           //  - Strict-mode *syntax* was never at risk: these files carry
           //    `export`, so esbuild has always parsed them as ES modules,
           //    where duplicate parameter names, legacy octal literals and

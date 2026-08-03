@@ -33,6 +33,7 @@ SOFTWARE.
 
 import { execAjax } from "./ajax_control.js";
 import { showAlert, showConfirm } from "./notification_control.js";
+import { v_current_os } from "./shortcuts.js";
 import { refreshHeights } from "./workspace.js";
 
 export function showAbout() {

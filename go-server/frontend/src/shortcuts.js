@@ -267,14 +267,26 @@ export var v_default_shortcuts = {
 	},
 };
 
+/**
+ * Which platform's default shortcut set and key labels to use.
+ *
+ * Derived at module load rather than on DOM ready, which is where it used to
+ * happen: it only reads navigator.appVersion, and being buried in the ready
+ * handler is how it stayed an implicit global -- a bare `v_current_os = ...`
+ * assignment, which strict mode turns into a ReferenceError that takes the
+ * whole handler with it. A const also means nothing can go stale between this
+ * value and the copy exposeGlobals puts on `window`.
+ */
+export const v_current_os = (function () {
+	const v = navigator.appVersion;
+	if (v.indexOf("Win") != -1) return "windows";
+	if (v.indexOf("Mac") != -1) return "macos";
+	if (v.indexOf("X11") != -1 || v.indexOf("Linux") != -1) return "linux";
+	return "Unknown OS";
+})();
+
 //Initializing shortcut buttons
 $(function () {
-	v_current_os = "Unknown OS";
-	if (navigator.appVersion.indexOf("Win") != -1) v_current_os = "windows";
-	if (navigator.appVersion.indexOf("Mac") != -1) v_current_os = "macos";
-	if (navigator.appVersion.indexOf("X11") != -1) v_current_os = "linux";
-	if (navigator.appVersion.indexOf("Linux") != -1) v_current_os = "linux";
-
 	//Shortcut actions
 	v_shortcut_object.actions = {
 		shortcut_run_query: function () {
