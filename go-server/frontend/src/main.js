@@ -59,6 +59,11 @@ import * as omnisControl from './lib/omnis_ui_assistant/omnis-control.js'
 import * as omnisLegere from './lib/omnis_legere/omnis-legere.js'
 import * as AgGridAdapter from './AgGridAdapter.js'
 
+// Last, and side-effect only: it binds workspace.html's static markup to the
+// handlers above, replacing the on*= attributes those elements used to carry.
+// Its <script> tag position guarantees the elements exist by now.
+import './dom_event_bindings.js'
+
 exposeGlobals(
   treeSnippets,
   treePostgresql,

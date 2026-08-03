@@ -16,3 +16,10 @@ exposeGlobals(
   notificationControl,
   ajaxControl,
 )
+
+// Replaces the onclick="cancelAjax()" attribute on the loading overlay's Cancel
+// button. workspace.html's copy is bound from dom_event_bindings.js, for the
+// reason explained there.
+if (ajaxControl.v_cancel_button) {
+  ajaxControl.v_cancel_button.addEventListener('click', ajaxControl.cancelAjax)
+}

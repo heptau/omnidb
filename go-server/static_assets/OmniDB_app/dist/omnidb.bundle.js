@@ -31980,6 +31980,82 @@
     __proto__: null,
     AgGridAdapter
   }, Symbol.toStringTag, { value: "Module" }));
+  function bind(id, type, handler) {
+    const el2 = document.getElementById(id);
+    if (el2) el2.addEventListener(type, handler);
+  }
+  function bindAll(selector, type, handler) {
+    document.querySelectorAll(selector).forEach((el2) => el2.addEventListener(type, handler));
+  }
+  bind("omnidb__utilities-menu__link-connections", "click", () => startConnectionManagement());
+  bind("omnidb__utilities-menu__link-user", "click", () => listUsers());
+  bind("omnidb__utilities-menu__link-config", "click", () => showConfigUser());
+  bind("omnidb__utilities-menu__link-about", "click", () => showAbout());
+  bind("omnidb__utilities-menu__link-signout", "click", () => confirmSignout());
+  bind("button_new_connection", "click", () => newConnection());
+  bind("group_selector", "change", (e) => groupChange(
+    /** @type {HTMLSelectElement} */
+    e.target.value
+  ));
+  bind("button_new_group", "click", () => newGroup());
+  bind("button_group_rename", "click", () => renameGroup());
+  bind("button_group_manage", "click", () => manageGroup());
+  bind("button_group_delete", "click", () => deleteGroup());
+  bind("button_manage_group_save", "click", () => manageGroupSave());
+  bind("conn_list_public", "change", () => toggleConnectionsPublic());
+  for (const id of [
+    "conn_form_type",
+    "conn_form_server",
+    "conn_form_port",
+    "conn_form_database",
+    "conn_form_user",
+    "conn_form_connstring",
+    "conn_form_use_tunnel",
+    "conn_form_ssh_server",
+    "conn_form_ssh_port",
+    "conn_form_ssh_user"
+  ]) {
+    bind(id, "input", updateModalEditConnectionState);
+  }
+  bind("conn_form_ssh_password", "input", updateConnectionKey);
+  bind("conn_form_ssh_key_input", "change", updateConnectionKey);
+  bind("conn_form_button_test_connection", "click", () => testConnection());
+  bind("conn_form_button_save_connection", "click", () => saveConnection());
+  bind("about_link_website", "click", () => showWebsite("OmniDB", "https://www.omnidb.net"));
+  bind("about_link_github", "click", () => showWebsite("GitHub", "https://github.com/heptau/omnidb"));
+  bind("button_new_monitor_unit", "click", () => editMonitorUnit());
+  bindAll(
+    '#config_shortcuts button[id^="shortcut_"]',
+    "click",
+    (e) => startSetShortcut(e.currentTarget)
+  );
+  bind("button_save_shortcuts", "click", () => saveShortcuts());
+  bind(
+    "sel_interface_font_size",
+    "change",
+    (e) => changeInterfaceFontSize(
+      /** @type {HTMLInputElement} */
+      e.target.value
+    )
+  );
+  bind("link_autocomplete_all", "click", (e) => {
+    e.preventDefault();
+    setAllAutocompleteTypeCheckboxes(true);
+  });
+  bind("link_autocomplete_none", "click", (e) => {
+    e.preventDefault();
+    setAllAutocompleteTypeCheckboxes(false);
+  });
+  bindAll('input[name="indent_char"], input[name="indent_size"]', "change", () => updateIndentUnit());
+  bindAll('input[name="comma_style"]', "change", (e) => {
+    v_comma_style = /** @type {HTMLInputElement} */
+    e.target.value;
+  });
+  bindAll('input[name="keyword_case"]', "change", (e) => {
+    v_keyword_case = /** @type {HTMLInputElement} */
+    e.target.value;
+  });
+  bindAll(".omnidb__save-config-user", "click", () => saveConfigUser());
   exposeGlobals(
     treeSnippets,
     treePostgresql,

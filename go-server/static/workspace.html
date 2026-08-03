@@ -100,25 +100,20 @@
 						</a>
 						{% endif %}
 						<a id="omnidb__utilities-menu__link-connections"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"
-							onclick="startConnectionManagement();"><i class="fas fa-link" title="Connections"></i></a>
+							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-link" title="Connections"></i></a>
 						{% if not desktop_mode %}
 						{% if super_user == 1 %}
 						<a id="omnidb__utilities-menu__link-user"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"
-							onclick="listUsers();"><i class="fas fa-user" title="Users"></i></a>
+							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-user" title="Users"></i></a>
 						{% endif %}
 						{% endif %}
 						<a id="omnidb__utilities-menu__link-config"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"
-							onclick="showConfigUser();"><i class="fas fa-cog" title="Settings"></i></a>
+							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-cog" title="Settings"></i></a>
 						<a id="omnidb__utilities-menu__link-about"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"
-							onclick="showAbout();"><i class="fas fa-info-circle" title="About"></i></a>
+							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-info-circle" title="About"></i></a>
 						{% if not desktop_mode %}
 						<a id="omnidb__utilities-menu__link-signout"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"
-							onclick="confirmSignout()"><i class="fas fa-sign-out-alt" title="Sign out"></i></a>
+							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-sign-out-alt" title="Sign out"></i></a>
 						{% endif %}
 					</div>
 				</div>
@@ -138,8 +133,7 @@
 				<span class="sr-only ">Loading...</span>
 			</div>
 			<div>
-				<button id="bt_cancel_ajax" style='display: none; margin-top: 10px;' class='btn btn-light'
-					onclick="cancelAjax()">Cancel</button>
+				<button id="bt_cancel_ajax" style='display: none; margin-top: 10px;' class='btn btn-light'>Cancel</button>
 			</div>
 		</div>
 	</div>
@@ -151,8 +145,7 @@
 				<div class="modal-header">
 					<h5 class="modal-title">
 						Connections
-						<button id="button_new_connection" type="button" class="btn omnidb__theme__btn--primary"
-							onclick="newConnection();">New connection</button>
+						<button id="button_new_connection" type="button" class="btn omnidb__theme__btn--primary">New connection</button>
 					</h5>
 					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
@@ -162,25 +155,24 @@
 					<div class='mb-3 d-flex align-items-center justify-content-start'>
 						<span id="group_actions_1" class="d-flex align-items-center justify-content-start">
 							<span>Groups</span>
-							<select id="group_selector" class="form-control mx-1" onchange="groupChange(this.value);"
+							<select id="group_selector" class="form-control mx-1"
 								style='display: inline-block; width: 200px;'>
 								<option value=-1 selected>Select Group</option>
 							</select>
-							<button id="button_new_group" type="button" class="btn ms-2 omnidb__theme__btn--primary"
-								onclick="newGroup();">New group</button>
+							<button id="button_new_group" type="button" class="btn ms-2 omnidb__theme__btn--primary">New group</button>
 							<button id="button_group_actions" type="button"
 								class="btn ms-2 omnidb__theme__btn--secondary dropdown-toggle" style='display: none;'
 								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								Group Actions
 							</button>
 							<div class="dropdown-menu dropdown-menu-left">
-								<button class="dropdown-item" type="button" onclick="renameGroup();">Rename</button>
-								<button class="dropdown-item" type="button" onclick="manageGroup();">Manage Connections</button>
-								<button class="dropdown-item" type="button" onclick="deleteGroup();">Delete</button>
+								<button id="button_group_rename" class="dropdown-item" type="button">Rename</button>
+								<button id="button_group_manage" class="dropdown-item" type="button">Manage Connections</button>
+								<button id="button_group_delete" class="dropdown-item" type="button">Delete</button>
 							</div>
 						</span>
 						<span id="group_actions_2" style='display: none;'>
-							<button id="button_new_group" type="button" class="btn btn-success ms-2" onclick="manageGroupSave();">Save
+							<button id="button_manage_group_save" type="button" class="btn btn-success ms-2">Save
 								changes</button>
 						</span>
 						<div class="d-inline-block ms-4">
@@ -188,8 +180,7 @@
 							<div class="d-inline-block omnidb__switch ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
 								data-bs-html="true"
 								title="<h5>Show Public Connections.</h5><div>Switch ON shows all public connections.</div>">
-								<input type="checkbox" id="conn_list_public" class="omnidb__switch--input"
-									onchange="toggleConnectionsPublic(event)">
+								<input type="checkbox" id="conn_list_public" class="omnidb__switch--input">
 								<label for="conn_list_public" class="omnidb__switch--label"><span><i
 											class="fas fa-users"></i></span></label>
 							</div>
@@ -221,7 +212,7 @@
 					<div class="row">
 						<div class="col-md-4 mb-3 required">
 							<label for="conn_form_type">Connection Type</label>
-							<select id="conn_form_type" class="form-control" oninput="updateModalEditConnectionState(event)">
+							<select id="conn_form_type" class="form-control">
 								<option value=-1 selected>Select Type</option>
 							</select>
 						</div>
@@ -250,23 +241,19 @@
 							<div class="row">
 								<div class="col-md-3 mb-3">
 									<label for="conn_form_server">Server</label>
-									<input type="text" class="form-control" id="conn_form_server" placeholder="ex: 127.0.0.1"
-										oninput="updateModalEditConnectionState(event)">
+									<input type="text" class="form-control" id="conn_form_server" placeholder="ex: 127.0.0.1">
 								</div>
 								<div class="col-md-1 mb-3">
 									<label for="conn_form_port">Port</label>
-									<input type="text" class="form-control" id="conn_form_port" placeholder="ex: 5432"
-										oninput="updateModalEditConnectionState(event)">
+									<input type="text" class="form-control" id="conn_form_port" placeholder="ex: 5432">
 								</div>
 								<div class="col-md-3 mb-3">
 									<label for="conn_form_database">Database</label>
-									<input type="text" class="form-control" id="conn_form_database" placeholder="ex: postgres"
-										oninput="updateModalEditConnectionState(event)">
+									<input type="text" class="form-control" id="conn_form_database" placeholder="ex: postgres">
 								</div>
 								<div class="col-md-3 mb-3">
 									<label for="conn_form_user">User</label>
-									<input type="text" class="form-control" id="conn_form_user" placeholder="ex: postgres"
-										oninput="updateModalEditConnectionState(event)">
+									<input type="text" class="form-control" id="conn_form_user" placeholder="ex: postgres">
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="conn_form_user_pass">User Password <i class="fas fa-question-circle text-info"
@@ -288,8 +275,7 @@
 											data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
 											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional connection string</h5></h4><ul><li><strong>If provided:</strong> OmniDB will use this as the default config, and single inputs for server should not be filled.</li><li><strong>If blank:</strong> In this case, if this is not a terminal connection, you should instead fill the required single inputs for server above.</li></ul>"></i></label>
 									<input type="text" class="form-control" id="conn_form_connstring"
-										placeholder="ex: postgresql://postgres@localhost:5432/postgres"
-										oninput="updateModalEditConnectionState(event)">
+										placeholder="ex: postgresql://postgres@localhost:5432/postgres">
 								</div>
 							</div>
 						</div>
@@ -299,8 +285,7 @@
 						<div class="card-header">
 							<div class="form-group mb-0">
 								<div class="omnidb__form-check form-check form-check-inline">
-									<input class="form-check-input" type="checkbox" value="" id="conn_form_use_tunnel"
-										oninput="updateModalEditConnectionState(event)">
+									<input class="form-check-input" type="checkbox" value="" id="conn_form_use_tunnel">
 									<label class="form-check-label" for="conn_form_use_tunnel">
 										<b style="vertical-align: middle;">Use SSH tunnel</b>
 									</label>
@@ -311,18 +296,15 @@
 							<div class="row">
 								<div class="col-md-4 mb-3">
 									<label for="conn_form_ssh_server">SSH Server</label>
-									<input type="text" class="form-control" id="conn_form_ssh_server" placeholder="SSH server" readonly
-										oninput="updateModalEditConnectionState(event)">
+									<input type="text" class="form-control" id="conn_form_ssh_server" placeholder="SSH server" readonly>
 								</div>
 								<div class="col-md-2 mb-3">
 									<label for="conn_form_ssh_port">SSH Port</label>
-									<input type="text" class="form-control" id="conn_form_ssh_port" placeholder="SSH port" readonly
-										oninput="updateModalEditConnectionState(event)">
+									<input type="text" class="form-control" id="conn_form_ssh_port" placeholder="SSH port" readonly>
 								</div>
 								<div class="col-md-3 mb-3">
 									<label for="conn_form_ssh_user">SSH User</label>
-									<input type="text" class="form-control" id="conn_form_ssh_user" placeholder="SSH user" readonly
-										oninput="updateModalEditConnectionState(event)">
+									<input type="text" class="form-control" id="conn_form_ssh_user" placeholder="SSH user" readonly>
 								</div>
 								<div class="col-md-3 mb-3">
 									<label for="conn_form_ssh_password">
@@ -332,7 +314,7 @@
 											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional ssh password / passphrase</h5></h4><div>Leave this blank if you dont want the password to be stored.</div><ul><li><strong>If provided:</strong> OmniDB will use this password when opening a SSH tunnel.</li><li><strong>Leaving blank:</strong> When the SSH tunnel is requested, OmniDB will prompt an input requesting for this password to be used exclusively to open the connection, but it wont be stored.</li></ul>"></i>
 									</label>
 									<input type="password" class="form-control" id="conn_form_ssh_password"
-										placeholder="SSH password / passphrase" oninput="updateConnectionKey(event)" readonly>
+										placeholder="SSH password / passphrase" readonly>
 								</div>
 							</div>
 							<div class="row">
@@ -346,7 +328,7 @@
 									<textarea style="display:none;" class="form-control" id="conn_form_ssh_key" rows="4"
 										readonly></textarea>
 									<div class="ms-4 d-inline-block custom-file" style="width: 200px;">
-										<input type="file" id="conn_form_ssh_key_input" onchange="updateConnectionKey(event)"
+										<input type="file" id="conn_form_ssh_key_input"
 											style="width: 200px;height: 100%;" disabled />
 										<label id="conn_form_ssh_key_input_label" class="custom-file-label"
 											for="conn_form_ssh_key_input">Click to select</label>
@@ -357,9 +339,8 @@
 					</div>
 
 					<div class="mt-4">
-						<button id="conn_form_button_test_connection" class="btn omnidb__theme__btn--primary"
-							onclick="testConnection();" disabled>Test</button>
-						<button id="conn_form_button_save_connection" class="btn btn-success" onclick="saveConnection();"
+						<button id="conn_form_button_test_connection" class="btn omnidb__theme__btn--primary" disabled>Test</button>
+						<button id="conn_form_button_save_connection" class="btn btn-success"
 							disabled>Save</button>
 					</div>
 
@@ -433,10 +414,10 @@
 
 					<div class="my-4">
 						<div class="d-flex justify-content-center gap-4">
-							<a href="javascript:void(0)" onclick="showWebsite('OmniDB', 'https://www.omnidb.net')" class="text-decoration-none fw-bold">
+							<a id="about_link_website" href="javascript:void(0)" class="text-decoration-none fw-bold">
 								<i class="fas fa-globe me-1"></i> www.omnidb.net
 							</a>
-							<a href="javascript:void(0)" onclick="showWebsite('GitHub', 'https://github.com/heptau/omnidb')" class="text-decoration-none fw-bold">
+							<a id="about_link_github" href="javascript:void(0)" class="text-decoration-none fw-bold">
 								<i class="fab fa-github me-1"></i> GitHub
 							</a>
 						</div>
@@ -457,7 +438,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button class='btn omnidb__theme__btn--primary btn-sm mb-2' onclick='editMonitorUnit()'>New Unit</button>
+					<button id="button_new_monitor_unit" class='btn omnidb__theme__btn--primary btn-sm mb-2'>New Unit</button>
 					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
 						<span aria-hidden="true">&times;</span>
 					</button>
@@ -527,56 +508,49 @@
 								<div class="form-group row">
 									<label for="shortcut_run_query" class="col-sm-6 col-form-label">Run Query</label>
 									<div class="col-sm-6">
-										<button id="shortcut_run_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_run_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_explain" class="col-sm-6 col-form-label">Run Explain</label>
 									<div class="col-sm-6">
-										<button id="shortcut_explain" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_explain" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_explain_analyze" class="col-sm-6 col-form-label">Run Explain Analyze</label>
 									<div class="col-sm-6">
-										<button id="shortcut_explain_analyze" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_explain_analyze" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_cancel_query" class="col-sm-6 col-form-label">Cancel Query</label>
 									<div class="col-sm-6">
-										<button id="shortcut_cancel_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_cancel_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_indent" class="col-sm-6 col-form-label">Indent</label>
 									<div class="col-sm-6">
-										<button id="shortcut_indent" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_indent" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_autocomplete" class="col-sm-6 col-form-label">Autocomplete</label>
 									<div class="col-sm-6">
-										<button id="shortcut_autocomplete" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_autocomplete" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_new_inner_tab" class="col-sm-6 col-form-label">New Inner Tab</label>
 									<div class="col-sm-6">
-										<button id="shortcut_new_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_new_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
@@ -584,29 +558,26 @@
 									<label for="shortcut_remove_inner_tab" class="col-sm-6 col-form-label">Remove Current Inner
 										Tab</label>
 									<div class="col-sm-6">
-										<button id="shortcut_remove_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_remove_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_left_inner_tab" class="col-sm-6 col-form-label">Select Left Inner Tab</label>
 									<div class="col-sm-6">
-										<button id="shortcut_left_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_left_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div class="form-group row">
 									<label for="shortcut_right_inner_tab" class="col-sm-6 col-form-label">Select Right Inner Tab</label>
 									<div class="col-sm-6">
-										<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'
-											onclick="startSetShortcut(this)"></button>
+										<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 									</div>
 								</div>
 
 								<div style="text-align:right;">
-									<button class='btn btn-success' onclick='saveShortcuts()'>Save</button>
+									<button id="button_save_shortcuts" class='btn btn-success'>Save</button>
 								</div>
 							</div>
 
@@ -617,8 +588,6 @@
 										<label for="sel_interface_font_size">Font Size</label>
 										<input type="range" min="10"  max="20"  step="1" value="12"
 											class="form-control" style="flex:1; height:6px; margin:0"
-											oninput="this.nextElementSibling.value = this.value"
-											onchange="changeInterfaceFontSize(this.value)"
 											id="sel_interface_font_size">
 									</div>
 								</div>
@@ -736,9 +705,9 @@
 									<div class="col-md-12">
 										<label>Autocomplete Suggestions</label>
 										<div>
-											<a href="#" onclick="setAllAutocompleteTypeCheckboxes(true); return false;">All</a>
+											<a id="link_autocomplete_all" href="#">All</a>
 											&nbsp;/&nbsp;
-											<a href="#" onclick="setAllAutocompleteTypeCheckboxes(false); return false;">None</a>
+											<a id="link_autocomplete_none" href="#">None</a>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_keyword" value="keyword">
@@ -787,7 +756,7 @@
 									</div>
 								</div>
 								<div style="text-align:right;">
-									<button class='btn btn-success' onclick='saveConfigUser()'>Save</button>
+									<button class='btn btn-success omnidb__save-config-user'>Save</button>
 								</div>
 
 							</div>
@@ -799,13 +768,11 @@
 										<label>Indent Character</label>
 										<div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_space" value="space"
-													onchange="updateIndentUnit()">
+												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_space" value="space">
 												<label class="form-check-label" for="indent_char_space">Spaces</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_tab" value="tab"
-													onchange="updateIndentUnit()">
+												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_tab" value="tab">
 												<label class="form-check-label" for="indent_char_tab">Tab</label>
 											</div>
 										</div>
@@ -816,18 +783,15 @@
 										<label>Indent Size</label>
 										<div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_2" value="2"
-													onchange="updateIndentUnit()">
+												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_2" value="2">
 												<label class="form-check-label" for="indent_size_2">2</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_3" value="3"
-													onchange="updateIndentUnit()">
+												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_3" value="3">
 												<label class="form-check-label" for="indent_size_3">3</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_4" value="4"
-													onchange="updateIndentUnit()">
+												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_4" value="4">
 												<label class="form-check-label" for="indent_size_4">4</label>
 											</div>
 										</div>
@@ -839,13 +803,11 @@
 										<label>Comma Style</label>
 										<div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_leading" value="leading"
-													onchange="v_comma_style = this.value">
+												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_leading" value="leading">
 												<label class="form-check-label" for="comma_style_leading">Leading (, at line start)</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_trailing" value="trailing"
-													onchange="v_comma_style = this.value">
+												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_trailing" value="trailing">
 												<label class="form-check-label" for="comma_style_trailing">Trailing (, at line end)</label>
 											</div>
 										</div>
@@ -857,18 +819,15 @@
 										<label>Keyword Case</label>
 										<div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_preserve" value="preserve"
-													onchange="v_keyword_case = this.value">
+												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_preserve" value="preserve">
 												<label class="form-check-label" for="keyword_case_preserve">Preserve</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_upper" value="upper"
-													onchange="v_keyword_case = this.value">
+												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_upper" value="upper">
 												<label class="form-check-label" for="keyword_case_upper">UPPERCASE</label>
 											</div>
 											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_lower" value="lower"
-													onchange="v_keyword_case = this.value">
+												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_lower" value="lower">
 												<label class="form-check-label" for="keyword_case_lower">lowercase</label>
 											</div>
 										</div>
@@ -876,7 +835,7 @@
 								</div>
 
 								<div style="text-align:right;">
-									<button class='btn btn-success' onclick='saveConfigUser()'>Save</button>
+									<button class='btn btn-success omnidb__save-config-user'>Save</button>
 								</div>
 
 							</div>
@@ -893,7 +852,7 @@
 									</div>
 								</div>
 								<div style="text-align:right;">
-									<button class='btn btn-success' onclick='saveConfigUser()'>Save</button>
+									<button class='btn btn-success omnidb__save-config-user'>Save</button>
 								</div>
 							</div>
 						</div>

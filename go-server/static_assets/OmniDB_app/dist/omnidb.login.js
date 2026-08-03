@@ -312,5 +312,8 @@
     notificationControl,
     ajaxControl
   );
+  if (v_cancel_button) {
+    v_cancel_button.addEventListener("click", cancelAjax);
+  }
 })();
 //# sourceMappingURL=omnidb.login.js.map
