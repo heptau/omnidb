@@ -289,13 +289,6 @@ export function getTreeMariadb(p_div) {
 					submenu: {
 						elements: [
 							{
-								text: "Alter Table",
-								icon: "fas cm-all fa-table",
-								action: function (node) {
-									startAlterTable(true, "alter", node.text, node.parent.parent.text);
-								},
-							},
-							{
 								text: "Alter Table (SQL)",
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
@@ -1907,7 +1900,6 @@ export function getViewDefinitionMariadb(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorMariadb(p_return, node);
@@ -2855,7 +2847,6 @@ export function getFunctionDefinitionMariadb(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorMariadb(p_return, node);
@@ -3053,7 +3044,6 @@ export function getProcedureDefinitionMariadb(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorMariadb(p_return, node);
@@ -3148,7 +3138,6 @@ export function getTriggerFunctionDefinitionMariadb(node) {
 
 			v_div_result.innerHTML = '';
 
-			maximizeEditor();
 
 		},
 		function(p_return) {

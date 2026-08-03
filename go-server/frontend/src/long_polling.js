@@ -110,8 +110,13 @@ export function polling_response(p_message) {
 	}
 
 	switch (v_message.v_code) {
+		// Pong is a leftover of the WebSocket transport: the handler it called,
+		// websocketPong(), has not existed for a long time, and the Go backend
+		// never sends this code (there is no Pong in longpolling.go's response
+		// constants). Kept as an explicit no-op rather than deleted so an
+		// unexpected Pong falls through here instead of into the "unhandled
+		// code" path.
 		case parseInt(v_queryResponseCodes.Pong): {
-			websocketPong();
 			break;
 		}
 		case parseInt(v_queryResponseCodes.SessionMissing): {

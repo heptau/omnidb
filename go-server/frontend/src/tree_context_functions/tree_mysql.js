@@ -289,13 +289,6 @@ export function getTreeMysql(p_div) {
 					submenu: {
 						elements: [
 							{
-								text: "Alter Table",
-								icon: "fas cm-all fa-table",
-								action: function (node) {
-									startAlterTable(true, "alter", node.text, node.parent.parent.text);
-								},
-							},
-							{
 								text: "Alter Table (SQL)",
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
@@ -1777,7 +1770,6 @@ export function getViewDefinitionMysql(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorMysql(p_return, node);
@@ -2725,7 +2717,6 @@ export function getFunctionDefinitionMysql(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorMysql(p_return, node);
@@ -2923,7 +2914,6 @@ export function getProcedureDefinitionMysql(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorMysql(p_return, node);
@@ -3018,7 +3008,6 @@ export function getTriggerFunctionDefinitionMysql(node) {
 
 			v_div_result.innerHTML = '';
 
-			maximizeEditor();
 
 		},
 		function(p_return) {

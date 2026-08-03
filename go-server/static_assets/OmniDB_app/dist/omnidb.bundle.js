@@ -9605,13 +9605,6 @@
             submenu: {
               elements: [
                 {
-                  text: "Alter Table",
-                  icon: "fas cm-all fa-table",
-                  action: function(node) {
-                    startAlterTable(true, "alter", node.text, node.tree.tag.v_username);
-                  }
-                },
-                {
                   text: "Alter Table (SQL)",
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
@@ -11166,7 +11159,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorOracle(p_return, node);
@@ -11832,7 +11824,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorOracle(p_return, node);
@@ -11967,7 +11958,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorOracle(p_return, node);
@@ -12355,13 +12345,6 @@
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
-                {
-                  text: "Alter Table",
-                  icon: "fas cm-all fa-table",
-                  action: function(node) {
-                    startAlterTable(true, "alter", node.text, node.parent.parent.text);
-                  }
-                },
                 {
                   text: "Alter Table (SQL)",
                   icon: "fas cm-all fa-edit",
@@ -13722,7 +13705,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorMariadb(p_return, node);
@@ -14403,7 +14385,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorMariadb(p_return, node);
@@ -14540,7 +14521,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorMariadb(p_return, node);
@@ -14932,13 +14912,6 @@
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
-                {
-                  text: "Alter Table",
-                  icon: "fas cm-all fa-table",
-                  action: function(node) {
-                    startAlterTable(true, "alter", node.text, node.parent.parent.text);
-                  }
-                },
                 {
                   text: "Alter Table (SQL)",
                   icon: "fas cm-all fa-edit",
@@ -16191,7 +16164,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorMysql(p_return, node);
@@ -16872,7 +16844,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorMysql(p_return, node);
@@ -17009,7 +16980,6 @@
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
         }
         v_div_result.innerHTML = "";
-        maximizeEditor();
       },
       function(p_return) {
         nodeOpenErrorMysql(p_return, node);
@@ -21298,7 +21268,6 @@
         if (v_completer_ready && prefix != "") {
           var wordlist = [];
           v_completer_ready = false;
-          addLoadingCursor();
           execAjax(
             "/get_completions_table/",
             JSON.stringify({
@@ -21308,13 +21277,11 @@
               p_schema: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editDataObject.schema
             }),
             function(p_return) {
-              removeLoadingCursor();
               v_completer_ready = true;
               wordlist = p_return.v_data;
               callback(null, wordlist);
             },
             function(p_return) {
-              removeLoadingCursor();
               v_completer_ready = true;
               if (p_return.v_data.password_timeout) {
                 showPasswordPrompt(
@@ -22602,7 +22569,7 @@
     var v_tab_tag2;
     if (p_tab_tag) v_tab_tag2 = p_tab_tag;
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id, false);
+    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id);
     cancelEditDataTab$1();
   }
   function cancelEditDataTab$1(p_tab_tag) {
@@ -29994,8 +29961,13 @@
       }
     }
     switch (v_message.v_code) {
+      // Pong is a leftover of the WebSocket transport: the handler it called,
+      // websocketPong(), has not existed for a long time, and the Go backend
+      // never sends this code (there is no Pong in longpolling.go's response
+      // constants). Kept as an explicit no-op rather than deleted so an
+      // unexpected Pong falls through here instead of into the "unhandled
+      // code" path.
       case parseInt(v_queryResponseCodes.Pong): {
-        websocketPong();
         break;
       }
       case parseInt(v_queryResponseCodes.SessionMissing): {

@@ -294,13 +294,6 @@ export function getTreeOracle(p_div) {
 					submenu: {
 						elements: [
 							{
-								text: "Alter Table",
-								icon: "fas cm-all fa-table",
-								action: function (node) {
-									startAlterTable(true, "alter", node.text, node.tree.tag.v_username);
-								},
-							},
-							{
 								text: "Alter Table (SQL)",
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
@@ -2126,7 +2119,6 @@ export function getViewDefinitionOracle(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorOracle(p_return, node);
@@ -2264,7 +2256,6 @@ export function getMaterializedViewDefinitionOracle(node) {
 
 			v_div_result.innerHTML = '';
 
-			maximizeEditor();
 
 		},
 		function(p_return) {
@@ -3197,7 +3188,6 @@ export function getFunctionDefinitionOracle(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorOracle(p_return, node);
@@ -3393,7 +3383,6 @@ export function getProcedureDefinitionOracle(node) {
 
 			v_div_result.innerHTML = "";
 
-			maximizeEditor();
 		},
 		function (p_return) {
 			nodeOpenErrorOracle(p_return, node);
@@ -3488,7 +3477,6 @@ export function getTriggerFunctionDefinitionOracle(node) {
 
 			v_div_result.innerHTML = '';
 
-			maximizeEditor();
 
 		},
 		function(p_return) {

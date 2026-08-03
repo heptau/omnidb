@@ -126,7 +126,12 @@ export function cancelEditData(p_tab_tag) {
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
-	sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.CancelThread, v_tab_tag.tab_id, false);
+	// createRequest, not sendWebSocketMessage: the WebSocket transport is long
+	// gone and every other cancel path was converted to long polling (see
+	// cancelSQL in query.js, which this now matches). This one call was missed,
+	// so the Cancel button threw a ReferenceError and left the tab stuck
+	// mid-query instead of cancelling it.
+	createRequest(v_queryRequestCodes.CancelThread, v_tab_tag.tab_id);
 
 	cancelEditDataTab();
 }

@@ -161,9 +161,12 @@ export var v_createEditDataTabFunction = function (p_table) {
 			if (v_completer_ready && prefix != "") {
 				var wordlist = [];
 
+				// (An addLoadingCursor()/removeLoadingCursor() pair used to bracket
+				// this request. Neither function has existed for a long time, so the
+				// first call threw and took the whole completer with it — autocomplete
+				// in the edit-data filter never returned a suggestion.)
 				v_completer_ready = false;
 
-				addLoadingCursor();
 
 				execAjax(
 					"/get_completions_table/",
@@ -174,14 +177,12 @@ export var v_createEditDataTabFunction = function (p_table) {
 						p_schema: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editDataObject.schema,
 					}),
 					function (p_return) {
-						removeLoadingCursor();
 						v_completer_ready = true;
 
 						wordlist = p_return.v_data;
 						callback(null, wordlist);
 					},
 					function (p_return) {
-						removeLoadingCursor();
 						v_completer_ready = true;
 						if (p_return.v_data.password_timeout) {
 							showPasswordPrompt(
