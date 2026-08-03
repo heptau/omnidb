@@ -75,20 +75,34 @@ main one, and the block of globals at the very bottom. An IIFE bundle is an
 ordinary blocking script, so replacing a run of `<script src=...>` tags with it
 does not change when anything executes.
 
-For the same reason Rollup's `"use strict"` pragma is suppressed
-(`output.strict: false`). These ~39k lines were written as sloppy-mode classic
-scripts and have never been audited for the difference — implicit globals,
-top-level `this`, duplicate parameter names. Strict mode would turn each of
-those into a runtime error.
+Strict mode **is** on (`output.strict: true`). It was off through the migration,
+because these ~39k lines were written as sloppy-mode classic scripts and the
+difference had not been audited. It has been now, and the blocker was implicit
+globals — 46 variables assigned without `var`, so each became a property of
+`window`. They are declared, and strict mode is what keeps the next one from
+being written. See the comment on `strict` in `vite.shared.js` for the rest of
+the audit.
 
 ## The legacy-globals bridge
 
-Everything still lives in one shared scope, exactly as it did when each file
-was its own `<script>`, so no imports were added between the migrated files.
-What did change is that a bundled function is no longer automatically a
-property of `window` — and the `onclick=` attributes in `workspace.html` are
-still evaluated against the global scope. `src/legacy-globals.js` bridges that:
-every module is re-exported onto `window` wholesale.
+Cross-file references are real imports now, so the bridge is no longer what
+holds the bundle together. What still needs it:
+
+- the inline event handlers — around 30 `on*=` attributes in `workspace.html`
+  and roughly 80 more built as HTML strings inside JS and injected with
+  `innerHTML`. All of them are evaluated against the global scope.
+- `workspace.html`'s inline bootstrap script, which calls `createOmnis()`.
+- `showAlert`, called from `ajax_control.js` in the early bundle, which cannot
+  import it (see above).
+
+That comes to 87 names of 549 exports. The bridge still publishes all of them
+wholesale rather than an allowlist, because an allowlist that drifts fails at
+click time in a way nothing would catch.
+
+Deleting it means converting those ~110 inline handlers to `addEventListener`.
+The ones in `workspace.html` are easy; the ones assembled into HTML strings are
+the real work, and worth doing — an inline handler is also the only reason this
+frontend cannot adopt a Content-Security-Policy without `unsafe-inline`.
 
 It assigns with `Object.assign`, which is a snapshot rather than a live
 binding. `npm run check` enforces the two invariants that keeps honest —
@@ -115,6 +129,14 @@ fails if anything already in it regresses. Currently checked:
 - `AgGridAdapter.js`
 - `scripts/check-bridge.mjs`
 
+Running it over *everything* (set `checkJs` and see) reports around 740
+findings, down from 4,602 before cross-file references became imports. What is
+left is dominated by two shapes, neither of which is a bug: property access on
+values typed `any` from the declarations above, and calls that omit a trailing
+parameter the callee guards with `if (p_x)` — signatures that lie about being
+optional. Exactly four are "Cannot find name", and all four are the Advanced
+Object Search functions that do not exist.
+
 `src/globals.d.ts` declares the browser globals the bundle does not own —
 `agGrid`, `$`, `ace`, `window.Handsontable`. They are typed `any` on purpose:
 that is genuinely all that is known about them while they arrive as `<script>`
@@ -140,8 +162,9 @@ What is deliberately not done yet:
   needs explicit configuration under a bundler.
 - **Extending the `// @ts-check` set.** The infrastructure is in place (see
   above); the ~39k unannotated lines are the work.
-- **Deleting the bridge.** Needs the ~18 `onclick=` attributes in
-  `workspace.html` converted to `addEventListener` first.
+- **Deleting the bridge.** Needs ~110 inline handlers converted to
+  `addEventListener` — see above. Also the prerequisite for a CSP without
+  `unsafe-inline`.
 - **The CSS.** There is no `.scss` source in the repo — only
   `css/omnidb.min.css` and a source map naming nine files that no longer
   exist. Either reconstruct them from the map or accept the compiled CSS as
