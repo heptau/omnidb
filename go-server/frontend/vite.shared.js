@@ -15,7 +15,7 @@ const here = (p) => fileURLToPath(new URL(p, import.meta.url))
  * @param {{entry: string, fileName: string, name: string, emptyOutDir?: boolean}} opts
  */
 export function workspaceBundle({ entry, fileName, name, emptyOutDir = false }) {
-  return defineConfig({
+  return defineConfig(({ mode }) => ({
     build: {
       // Straight into the tree that static_assets.go's `//go:embed
       // all:static_assets` picks up, so a plain `go build ./go-server` keeps
@@ -33,11 +33,23 @@ export function workspaceBundle({ entry, fileName, name, emptyOutDir = false }) 
       // desktop shell, and the server mode targets current browsers. No need
       // to down-level anything.
       target: 'es2022',
-      // Deliberately off for now. The whole point of the file-by-file
-      // migration is that each commit's dist/ diff can be eyeballed against
-      // the source change that produced it; minified output makes that
-      // impossible. Turn this on once every file has moved.
-      minify: false,
+      // Off for the committed build, on for the one that ships.
+      //
+      // dist/ lives in git permanently (see README.md), so a minified build
+      // there would make every future commit an unreadable multi-megabyte
+      // diff. The binary embeds dist/ though, and there minification is worth
+      // having. So `npm run build` writes readable output for the repository
+      // and `npm run build:release` overwrites it with minified output just
+      // long enough for `go build` to embed it -- the Makefile restores the
+      // readable one afterwards.
+      //
+      // Selected by Vite's --mode rather than an environment variable: the
+      // Windows build runs these same scripts through cmd.exe, where
+      // `VAR=1 cmd` is not a thing.
+      minify: mode === 'release' ? 'esbuild' : false,
+      // On in both. It is the only way to make sense of a stack trace from a
+      // minified bundle, and the whole point of shipping one is that someone
+      // eventually reports an error from it.
       sourcemap: true,
       lib: {
         entry: here(entry),
@@ -65,5 +77,5 @@ export function workspaceBundle({ entry, fileName, name, emptyOutDir = false }) 
         },
       },
     },
-  })
+  }))
 }

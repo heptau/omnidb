@@ -47,7 +47,8 @@ endif
 .PHONY: help all clean _sync_version \
         build-mac-arm64 build-mac-intel build-linux build-linux-docker build-win \
         prepare-release release \
-        _prepare_dirs _ensure_wails _build_frontend _build_mac _build_linux _build_win \
+        _prepare_dirs _ensure_wails _build_frontend_release _restore_frontend \
+        _build_mac _build_linux _build_win \
         docs-typo docs-typo-dry _ensure_typolima
 
 # --- Default Target: Help ---
@@ -174,15 +175,25 @@ _ensure_wails:
 	fi
 
 # Rebuild the workspace UI bundle (go-server/frontend/ -> the dist/ directory
-# static_assets.go embeds). The output is committed, so this is not what makes
-# a build possible -- it is what stops a release from shipping a bundle that
-# no longer matches its sources.
-_build_frontend:
-	@echo "Building workspace frontend bundle..."
-	cd go-server/frontend && npm ci && npm run build
+# static_assets.go embeds) MINIFIED, for embedding into the shipped binary.
+#
+# The copy committed to git is deliberately unminified so that dist/ diffs stay
+# readable — see go-server/frontend/README.md. That is the wrong tradeoff for
+# the binary, so a release build overwrites dist/ with minified output (roughly
+# half the size), lets `go build` embed that, and then restores the readable
+# copy via _restore_frontend below. Nothing commits dist/ along the way:
+# scripts/prepare_release.sh stages an explicit file list.
+_build_frontend_release:
+	@echo "Building workspace frontend bundle (minified, for embedding)..."
+	cd go-server/frontend && npm ci && npm run build:release
+
+# Puts dist/ back the way git has it, so a release build leaves no diff behind.
+_restore_frontend:
+	@echo "Restoring unminified workspace frontend bundle..."
+	cd go-server/frontend && npm run build
 
 # --- MAC OS BUILD LOGIC (Wails) ---
-_build_mac: _prepare_dirs _ensure_wails _build_frontend
+_build_mac: _prepare_dirs _ensure_wails _build_frontend_release
 	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
 	cd wails-app && $(WAILS) build -clean -platform darwin/$(WAILS_GOARCH)
 
@@ -198,6 +209,7 @@ _build_mac: _prepare_dirs _ensure_wails _build_frontend
 
 	@echo "Building Go server..."
 	cd go-server && GOOS=darwin GOARCH=$(WAILS_GOARCH) go build -o "../$(APP_CONTENT)/MacOS/omnidb-server" .
+	$(MAKE) _restore_frontend
 
 	@echo "Signing..."
 	-xattr -cr $(BUILD_DIR)/$(APP_NAME).app
@@ -217,7 +229,7 @@ _build_mac: _prepare_dirs _ensure_wails _build_frontend
 # pkg-config lookup hardcodes the older webkit2gtk-4.0 and fails (verified
 # against github.com/wailsapp/wails/v2@v2.12.0's
 # pkg/assetserver/webview/*_linux.go `#cgo !webkit2_41 pkg-config: ...` tags).
-_build_linux: _prepare_dirs _ensure_wails _build_frontend
+_build_linux: _prepare_dirs _ensure_wails _build_frontend_release
 	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
 	cd wails-app && $(WAILS) build -clean -platform linux/$(WAILS_GOARCH) -tags webkit2_41
 
@@ -228,6 +240,7 @@ _build_linux: _prepare_dirs _ensure_wails _build_frontend
 
 	@echo "Building Go server..."
 	cd go-server && GOOS=linux GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-linux/omnidb-server" .
+	$(MAKE) _restore_frontend
 
 	@echo "Packaging Linux Dist..."
 	mkdir -p $(BUILD_DIR)/dist
@@ -238,7 +251,7 @@ _build_linux: _prepare_dirs _ensure_wails _build_frontend
 # Fully cross-compiles from macOS/Linux (verified: produces a real PE32+
 # .exe using Wails' pure-Go WebView2 loader, no mingw/CGO needed) — but on
 # CI this runs natively on windows-latest anyway.
-_build_win: _prepare_dirs _ensure_wails _build_frontend
+_build_win: _prepare_dirs _ensure_wails _build_frontend_release
 	@echo "Building Wails desktop shell (windows/$(WAILS_GOARCH))..."
 	cd wails-app && $(WAILS) build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed
 
@@ -249,6 +262,7 @@ _build_win: _prepare_dirs _ensure_wails _build_frontend
 
 	@echo "Building Go server..."
 	cd go-server && GOOS=windows GOARCH=$(WAILS_GOARCH) go build -o "../$(BUILD_DIR)/$(APP_NAME)-win/omnidb-server.exe" .
+	$(MAKE) _restore_frontend
 
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist

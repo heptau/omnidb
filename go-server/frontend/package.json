@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build --config vite.config.early.js && vite build --config vite.config.login.js && vite build",
+    "build": "vite build --mode development --config vite.config.early.js && vite build --mode development --config vite.config.login.js && vite build --mode development",
+    "build:release": "vite build --mode release --config vite.config.early.js && vite build --mode release --config vite.config.login.js && vite build --mode release",
     "check": "node scripts/check-bridge.mjs",
     "typecheck": "tsc -p jsconfig.json"
   },

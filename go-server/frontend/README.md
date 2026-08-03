@@ -6,15 +6,40 @@ Vite build for the workspace UI's own JavaScript. Output goes to
 
 ```bash
 npm ci
-npm run build
-npm run check      # legacy-globals bridge invariants, see below
-npm run typecheck  # opted-in files only, see below
+npm run build          # unminified — this is what gets committed
+npm run build:release  # minified — what the shipped binary embeds
+npm run check          # legacy-globals bridge invariants, see below
+npm run typecheck      # opted-in files only, see below
 ```
 
-`dist/` **is committed**. `go build ./go-server` and `go test ./...` must work
-on a machine with no Node installed, and `//go:embed` needs the files to
-already exist. CI rebuilds and fails if the committed output does not match the
-sources.
+## Two builds: readable in git, minified in the binary
+
+`dist/` lives in git permanently, so minifying it would turn every future
+commit into an unreadable multi-megabyte diff. The binary that ships is a
+different question — there, halving the bundle (1.2 MB → 666 kB) is free.
+
+So there are two modes, selected by Vite's `--mode` (not an environment
+variable: the Windows build runs these scripts through `cmd.exe`, where
+`VAR=1 cmd` is not a thing):
+
+| | `npm run build` | `npm run build:release` |
+| --- | --- | --- |
+| minified | no | yes |
+| sourcemap | yes | yes |
+| used by | commits, CI, `make _restore_frontend` | `make _build_frontend_release` |
+
+A release build overwrites `dist/` with minified output, lets `go build` embed
+it, and then `make _restore_frontend` puts the readable copy back — so a
+release leaves no diff behind. Nothing can commit the minified copy by
+accident either: `scripts/prepare_release.sh` stages an explicit file list.
+
+If a build is interrupted between those two steps, `dist/` is left minified.
+`npm run build` fixes it, and CI's dist-freshness check would catch it anyway.
+
+`dist/` is committed at all because `go build ./go-server` and `go test ./...`
+must work on a machine with no Node installed, and `//go:embed` needs the files
+to already exist. CI rebuilds and fails if the committed output does not match
+the sources.
 
 ## The three bundles
 
@@ -113,13 +138,6 @@ What is deliberately not done yet:
   smaller install would come from. Ace should go last — it fetches its
   `mode-*` and worker files at runtime by URL relative to `basePath`, which
   needs explicit configuration under a bundler.
-- **Minification**, and on reflection it should probably stay off. It was
-  disabled during the migration so each commit's `dist/` diff could be read
-  against the source change that produced it — but `dist/` is committed
-  permanently, so minifying makes *every* future commit an unreadable
-  multi-megabyte diff. The usual argument for it does not apply either: the
-  bundle is embedded in the binary and served from loopback, so there is no
-  download to shrink. Turn it on only if parse time ever measurably hurts.
 - **Extending the `// @ts-check` set.** The infrastructure is in place (see
   above); the ~39k unannotated lines are the work.
 - **Deleting the bridge.** Needs the ~18 `onclick=` attributes in
