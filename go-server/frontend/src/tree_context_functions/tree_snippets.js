@@ -27,6 +27,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { execAjax } from "../ajax_control.js";
+import { customMenu } from "../custom_menu.js";
+import { showAlert, showConfirm } from "../notification_control.js";
+
+
 export function getAllSnippets() {
 	execAjax(
 		"/get_all_snippets/",

@@ -30,6 +30,11 @@ SOFTWARE.
 /// <summary>
 /// Retrieving Properties.
 /// </summary>
+
+import { execAjax } from "./ajax_control.js";
+import { showError } from "./notification_control.js";
+import { showPasswordPrompt } from "./passwords.js";
+
 export function getProperties(p_view, p_data) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	$(v_tab_tag.divLoading).fadeIn(100);

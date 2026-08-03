@@ -30,6 +30,11 @@ SOFTWARE.
 /// <summary>
 /// Opens OmniDB about window.
 /// </summary>
+
+import { execAjax } from "./ajax_control.js";
+import { showAlert, showConfirm } from "./notification_control.js";
+import { refreshHeights } from "./workspace.js";
+
 export function showAbout() {
 	$("#modal_about").modal("show");
 }

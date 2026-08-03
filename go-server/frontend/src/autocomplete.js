@@ -27,6 +27,12 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { execAjax } from "./ajax_control.js";
+import { consoleSQL } from "./console.js";
+import { showPasswordPrompt } from "./passwords.js";
+import { whiteHtmlRenderer, whiteRightHtmlRenderer } from "./renderers.js";
+
+
 export var v_autocomplete_object;
 export var Range = ace.require("ace/range").Range;
 

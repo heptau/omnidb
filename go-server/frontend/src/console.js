@@ -30,6 +30,14 @@ SOFTWARE.
 /// <summary>
 /// Console state
 /// </summary>
+
+import { execAjax } from "./ajax_control.js";
+import { editCellData } from "./header_actions.js";
+import { SetAcked, createRequest, removeContext } from "./long_polling.js";
+import { showAlert, showConfirm } from "./notification_control.js";
+import { setTabStatus, v_queryRequestCodes } from "./query.js";
+import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";
+
 export var v_consoleState = {
 	Idle: 0,
 	Executing: 1,

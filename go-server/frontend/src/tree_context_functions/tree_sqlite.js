@@ -30,6 +30,16 @@ SOFTWARE.
 /// <summary>
 /// Retrieving tree.
 /// </summary>
+
+import { execAjax } from "../ajax_control.js";
+import { showError } from "../notification_control.js";
+import { showPasswordPrompt } from "../passwords.js";
+import { clearProperties, getProperties } from "../properties.js";
+import { escapeHtml, querySQL } from "../query.js";
+import { renameTabConfirm } from "../workspace.js";
+import { v_startEditData } from "./edit_data.js";
+import { tabSQLTemplate } from "./tree_postgresql.js";
+
 export function getTreeSqlite(p_div) {
 	var context_menu = {
 		cm_server: {

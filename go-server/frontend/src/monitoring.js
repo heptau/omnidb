@@ -27,6 +27,14 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { endLoading, execAjax, startLoading } from "./ajax_control.js";
+import { adjustChartTheme, adjustGraphTheme, editCellData } from "./header_actions.js";
+import { showAlert, showConfirm, showError } from "./notification_control.js";
+import { showPasswordPrompt } from "./passwords.js";
+import { whiteHtmlRenderer } from "./renderers.js";
+import { toggleMonitorUnitChartType } from "./tab_functions/inner_monitoring_dashboard_tab.js";
+
+
 export var v_unit_list_grid = null;
 
 export function sanitizeLegend(p_html) {

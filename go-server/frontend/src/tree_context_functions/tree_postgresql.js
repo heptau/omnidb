@@ -27,6 +27,20 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { execAjax } from "../ajax_control.js";
+import { customMenu } from "../custom_menu.js";
+import { createLegere } from "../lib/omnis_legere/omnis-legere.js";
+import { startMonitorDashboard } from "../monitoring.js";
+import { showAlert, showConfirm, showConfirm3, showError } from "../notification_control.js";
+import { showPasswordPrompt } from "../passwords.js";
+import { clearProperties, getProperties } from "../properties.js";
+import { escapeHtml, querySQL, v_queryState } from "../query.js";
+import { refreshMonitoring } from "../tab_functions/inner_monitoring_tab.js";
+import { createTabControl } from "../tabs.js";
+import { checkBeforeChangeDatabase, drawGraph, refreshHeights, removeTab, renameTab, renameTabConfirm, showMenuNewTab } from "../workspace.js";
+import { v_startEditData } from "./edit_data.js";
+
+
 export function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
 	v_connTabControl.tag.createQueryTab(p_tab_name);
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_template);

@@ -30,6 +30,17 @@ SOFTWARE.
 /// <summary>
 /// Retrieving tree.
 /// </summary>
+
+import { execAjax } from "../ajax_control.js";
+import { showConfirm, showError } from "../notification_control.js";
+import { showPasswordPrompt } from "../passwords.js";
+import { clearProperties, getProperties } from "../properties.js";
+import { escapeHtml, querySQL } from "../query.js";
+import { refreshMonitoring } from "../tab_functions/inner_monitoring_tab.js";
+import { drawGraph, renameTabConfirm } from "../workspace.js";
+import { v_startEditData } from "./edit_data.js";
+import { tabSQLTemplate } from "./tree_postgresql.js";
+
 export function getTreeMysql(p_div) {
 	var context_menu = {
 		cm_server: {

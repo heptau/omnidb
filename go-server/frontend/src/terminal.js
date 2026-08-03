@@ -30,6 +30,12 @@ SOFTWARE.
 /// <summary>
 /// Terminal state
 /// </summary>
+
+import { v_consoleState } from "./console.js";
+import { customMenu } from "./custom_menu.js";
+import { createContext, createRequest } from "./long_polling.js";
+import { v_queryRequestCodes } from "./query.js";
+
 export var v_terminalState = {
 	Idle: 0,
 	Executing: 1,

@@ -30,6 +30,28 @@ SOFTWARE.
 /// <summary>
 /// Startup function.
 /// </summary>
+
+import { endLoading, execAjax, startLoading } from "./ajax_control.js";
+import { startConnectionManagement } from "./connections.js";
+import { checkConsoleStatus } from "./console.js";
+import { initCreateTabFunctions } from "./create_tab_functions.js";
+import { customMenu } from "./custom_menu.js";
+import { createRequest } from "./long_polling.js";
+import { startMonitorDashboard } from "./monitoring.js";
+import { showAlert, showConfirm } from "./notification_control.js";
+import { showPasswordPrompt } from "./passwords.js";
+import { checkQueryStatus, escapeHtml, v_queryRequestCodes } from "./query.js";
+import { refreshOuterConnectionHeights } from "./tab_functions/outer_connection_tab.js";
+import { createTabControl } from "./tabs.js";
+import { checkEditDataStatus } from "./tree_context_functions/edit_data.js";
+import { getTreeMariadb } from "./tree_context_functions/tree_mariadb.js";
+import { getTreeMysql, mysqlTerminateBackend } from "./tree_context_functions/tree_mysql.js";
+import { getTreeOracle } from "./tree_context_functions/tree_oracle.js";
+import { getTreePostgresql, postgresqlTerminateBackend } from "./tree_context_functions/tree_postgresql.js";
+import { getAllSnippets } from "./tree_context_functions/tree_snippets.js";
+import { getTreeSqlite } from "./tree_context_functions/tree_sqlite.js";
+import { startTutorial } from "./tutorial_functions/tutorial.js";
+
 $(function () {
 	// Instantiating outer tab component.
 	v_connTabControl = createTabControl({

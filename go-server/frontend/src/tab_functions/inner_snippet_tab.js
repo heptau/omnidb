@@ -27,6 +27,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { refreshHeights, removeTab } from "../workspace.js";
+
+
 export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	var v_name = "New Snippet";
 	var v_details = {

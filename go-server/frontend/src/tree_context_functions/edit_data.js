@@ -30,6 +30,15 @@ SOFTWARE.
 /// <summary>
 /// Query state
 /// </summary>
+
+import { execAjax } from "../ajax_control.js";
+import { editCellData } from "../header_actions.js";
+import { SetAcked, createRequest, removeContext } from "../long_polling.js";
+import { showAlert, showError } from "../notification_control.js";
+import { showPasswordPrompt } from "../passwords.js";
+import { escapeHtml, escapeHtmlAttribute, v_queryRequestCodes } from "../query.js";
+import { editDataActionRenderer, grayEmptyRenderer, grayRenderer, greenRenderer, newRowRenderer, redRenderer, whiteRenderer, yellowRenderer } from "../renderers.js";
+
 export var v_editDataState = {
 	Idle: 0,
 	Querying: 1,

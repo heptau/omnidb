@@ -42,6 +42,11 @@ SOFTWARE.
 // to relay the request to wails-app instead, which calls the native
 // BrowserOpenURL API (see go-server/open_external_url.go's comment for the
 // full story — same pattern as /export_save_dialog/).
+
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { showAlert } from "../notification_control.js";
+import { removeTab, renameTab, showMenuNewTabOuter } from "../workspace.js";
+
 export var v_openExternalUrl = function (p_url) {
 	if (!gv_desktopMode) {
 		window.open(p_url, "_blank", "noopener");

@@ -30,6 +30,11 @@ SOFTWARE.
 /// <summary>
 /// Wipes command history.
 /// </summary>
+
+import { execAjax } from "./ajax_control.js";
+import { showConfirm } from "./notification_control.js";
+import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";
+
 export function deleteCommandList() {
 	showConfirm("Are you sure you want to clear command history corresponding to applied filters?", function () {
 		execAjax(

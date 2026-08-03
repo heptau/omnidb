@@ -27,6 +27,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { execAjax } from "../ajax_control.js";
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { showPasswordPrompt } from "../passwords.js";
+import { checkEditDataStatus } from "../tree_context_functions/edit_data.js";
+import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+
+
 export var v_createEditDataTabFunction = function (p_table) {
 	var v_name = "Query";
 	if (p_table) v_name = p_table;

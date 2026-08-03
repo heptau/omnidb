@@ -27,6 +27,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { endLoading } from "../ajax_control.js";
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { customMenu } from "../custom_menu.js";
+
+
 export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
 	// Removing the last `add` tab
 	// v_connTabControl.removeLastTab();

@@ -27,6 +27,19 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { endLoading } from "../ajax_control.js";
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { customMenu } from "../custom_menu.js";
+import { editCellData } from "../header_actions.js";
+import { createRequest } from "../long_polling.js";
+import { cancelMonitorUnits } from "../monitoring.js";
+import { showAlert } from "../notification_control.js";
+import { escapeHtml, v_queryRequestCodes } from "../query.js";
+import { whiteHtmlRenderer } from "../renderers.js";
+import { createTabControl } from "../tabs.js";
+import { changeDatabase, checkTabStatus, refreshHeights, refreshTreeHeight, showMenuNewTab } from "../workspace.js";
+
+
 export var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
 	// Creating the first outer tab without any connections created.
 	if (v_connTabControl.tag.connections.length == 0) {

@@ -27,6 +27,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { getAttributesOmniDBTooltip, getAttributesTooltip } from "./workspace.js";
+
+
 export function composedPath(el) {
 	var path = [];
 	while (el) {

@@ -27,6 +27,13 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { autocomplete_start } from "./autocomplete.js";
+import { consoleSQL } from "./console.js";
+import { terminalRun } from "./terminal.js";
+import { queryEditData } from "./tree_context_functions/edit_data.js";
+import { getExplain } from "./tree_context_functions/tree_postgresql.js";
+
+
 export var v_default_shortcuts = {
 	shortcut_run_query: {
 		windows: {

@@ -27,6 +27,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { closeMonitorDashboardTab, refreshMonitorUnitsObjects, showMonitorUnitList } from "../monitoring.js";
+import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+
+
 export var v_createMonitorDashboardTabFunction = function () {
 	// Removing last tab of the inner tab list
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();

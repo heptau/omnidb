@@ -27,6 +27,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { createTabControl } from "../tabs.js";
+import { getTreeSnippets } from "../tree_context_functions/tree_snippets.js";
+import { resizeSnippetPanel, showMenuNewTab } from "../workspace.js";
+
+
 export var toggleSnippetPanel = function (p_set_state = false) {
 	v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
 	var v_snippet_tag = v_connTabControl.snippet_tag;

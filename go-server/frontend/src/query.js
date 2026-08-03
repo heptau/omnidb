@@ -30,6 +30,13 @@ SOFTWARE.
 /// <summary>
 /// Query state
 /// </summary>
+
+import { editCellData } from "./header_actions.js";
+import { SetAcked, createRequest, removeContext } from "./long_polling.js";
+import { showAlert, showConfirm } from "./notification_control.js";
+import { whiteRenderer } from "./renderers.js";
+import { uiCopyTextToClipboard } from "./workspace.js";
+
 export var v_queryState = {
 	Idle: 0,
 	Executing: 1,

@@ -30,6 +30,9 @@ SOFTWARE.
 /// <summary>
 /// Startup function.
 /// </summary>
+
+import { execAjax } from "./ajax_control.js";
+
 $(function () {
 	$("#modal_password").on("hidden.bs.modal", function (e) {
 		if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {

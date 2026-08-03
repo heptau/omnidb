@@ -27,6 +27,23 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { customMenu } from "./custom_menu.js";
+import { showConfirm } from "./notification_control.js";
+import { v_createSnippetPanelFunction } from "./panel_functions/outer_snippet_panel.js";
+import { v_createConsoleTabFunction } from "./tab_functions/inner_console_tab.js";
+import { v_createEditDataTabFunction } from "./tab_functions/inner_edit_data_tab.js";
+import { v_createGraphTabFunction } from "./tab_functions/inner_graph_tab.js";
+import { v_createMonitorDashboardTabFunction, v_createNewMonitorUnitTabFunction } from "./tab_functions/inner_monitoring_dashboard_tab.js";
+import { v_createMonitoringTabFunction } from "./tab_functions/inner_monitoring_tab.js";
+import { v_createQueryTabFunction } from "./tab_functions/inner_query_tab.js";
+import { v_createSnippetTextTabFunction } from "./tab_functions/inner_snippet_tab.js";
+import { v_createConnTabFunction } from "./tab_functions/outer_connection_tab.js";
+import { v_createOuterTerminalTabFunction } from "./tab_functions/outer_terminal_tab.js";
+import { v_createWelcomeTabFunction } from "./tab_functions/outer_welcome_tab.js";
+import { v_createWebsiteOuterTabFunction, v_createWebsiteTabFunction } from "./tab_functions/website_tab.js";
+import { showMenuNewTabOuter } from "./workspace.js";
+
+
 export function initCreateTabFunctions() {
 	// var v_createAlterTableTabFunction = function(p_table) {
 	//

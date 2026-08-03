@@ -27,6 +27,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { execAjax } from "../ajax_control.js";
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { editCellData } from "../header_actions.js";
+import { showError } from "../notification_control.js";
+import { showPasswordPrompt } from "../passwords.js";
+import { blueHtmlRenderer, whiteHtmlRenderer } from "../renderers.js";
+import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+
+
 export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions) {
 	var v_name = "Backends";
 	if (p_name) v_name = p_name;

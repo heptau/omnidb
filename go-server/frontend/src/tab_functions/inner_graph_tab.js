@@ -27,6 +27,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+
+
 export var v_createGraphTabFunction = function (p_name) {
 	var v_name = "Graph";
 	if (p_name) v_name = p_name;

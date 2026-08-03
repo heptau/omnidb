@@ -30,6 +30,11 @@ SOFTWARE.
 /// <summary>
 /// Creates new users.
 /// </summary>
+
+import { endLoading, execAjax, startLoading } from "./ajax_control.js";
+import { showConfirm } from "./notification_control.js";
+import { escapeHtml } from "./query.js";
+
 export function newUserConfirm() {
 	execAjax(
 		"/new_user/",

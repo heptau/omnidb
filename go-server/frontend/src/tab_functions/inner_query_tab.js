@@ -27,6 +27,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { autocomplete_keydown, autocomplete_start, autocomplete_update_editor_cursor } from "../autocomplete.js";
+import { beforeCloseTab } from "../create_tab_functions.js";
+import { customMenu } from "../custom_menu.js";
+import { showAlert } from "../notification_control.js";
+import { checkQueryStatus, querySQL } from "../query.js";
+import { createTabControl } from "../tabs.js";
+import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
+import { adjustQueryTabObjects, removeTab, renameTab, showMenuNewTab, uiCopyTextToClipboard } from "../workspace.js";
+
+
 export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	// Removing last tab of the inner tab list.
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();

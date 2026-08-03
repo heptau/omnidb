@@ -27,6 +27,9 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { createImgElement, createSimpleElement } from "./tabs.js";
+
+
 export function customMenu(p_position, p_menu, p_object) {
 	var v_outer_div = createSimpleElement("div", "ul_cm_overlay", "aimara_menu__overlay");
 

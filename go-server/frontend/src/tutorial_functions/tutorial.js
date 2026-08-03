@@ -27,6 +27,11 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { startConnectionManagement } from "../connections.js";
+import { createOmnisUiAssistant } from "../lib/omnis_ui_assistant/omnis-control.js";
+import { toggleSnippetPanel } from "../panel_functions/outer_snippet_panel.js";
+
+
 export function startTutorial(p_tutorial_name) {
 	if (v_omnis.omnis_ui_assistant) {
 		v_omnis.omnis_ui_assistant.self_destruct();

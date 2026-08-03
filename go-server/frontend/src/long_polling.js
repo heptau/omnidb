@@ -27,6 +27,15 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { csrfSafeMethod, execAjax, getCookie } from "./ajax_control.js";
+import { cancelConsoleTab, consoleReturn, consoleSQL } from "./console.js";
+import { showAlert, showError } from "./notification_control.js";
+import { showPasswordPrompt } from "./passwords.js";
+import { cancelSQLTab, queryError, querySQL, querySQLReturn, v_queryResponseCodes } from "./query.js";
+import { terminalReturn } from "./terminal.js";
+import { cancelEditDataTab, queryEditDataReturn, saveEditDataReturn } from "./tree_context_functions/edit_data.js";
+
+
 export var v_client_id;
 export var v_polling_ajax = null;
 

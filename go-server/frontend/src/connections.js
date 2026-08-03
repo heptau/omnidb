@@ -30,6 +30,12 @@ SOFTWARE.
 /// <summary>
 /// Startup function.
 /// </summary>
+
+import { execAjax } from "./ajax_control.js";
+import { showAlert, showConfirm, showError } from "./notification_control.js";
+import { escapeHtml } from "./query.js";
+import { getDatabaseList } from "./workspace.js";
+
 $(function () {
 	v_connections_data = new Object();
 	v_connections_data.technologies = null;
