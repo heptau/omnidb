@@ -1,4 +1,5 @@
 (function() {
+  "use strict";
   const el = document.getElementById("omnidb_bootstrap");
   if (!el) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");

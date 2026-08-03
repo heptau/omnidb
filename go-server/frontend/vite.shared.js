@@ -66,14 +66,28 @@ export function workspaceBundle({ entry, fileName, name, emptyOutDir = false }) 
       },
       rollupOptions: {
         output: {
-          // No "use strict" pragma. ES modules are always strict, but the
-          // ~39k lines being migrated were written as sloppy-mode classic
-          // scripts and have never been audited for the differences
-          // (implicit globals, top-level `this`, duplicate parameter names).
-          // Rollup would otherwise wrap the bundle in a strict IIFE and turn
-          // every one of those into a runtime error. Revisit once the
-          // migration is finished and the code can be checked deliberately.
-          strict: false,
+          // "use strict" is on. It was off through the migration because these
+          // ~39k lines were written as sloppy-mode classic scripts and had
+          // never been audited for the difference; the audit has since
+          // happened, name by name:
+          //
+          //  - Implicit globals were the real blocker. All 46 are declared now
+          //    (`i`, `v_node` and friends across the tree files), which strict
+          //    mode is what keeps true from here on.
+          //  - Strict-mode *syntax* was never at risk: these files carry
+          //    `export`, so esbuild has always parsed them as ES modules,
+          //    where duplicate parameter names, legacy octal literals and
+          //    `with` are already errors. There are none.
+          //  - No top-level `this`, so nothing depends on it being the global
+          //    object.
+          //  - Nothing assigns to another module's exported binding, which
+          //    would now throw rather than silently do nothing.
+          //  - renderers.js mutates `arguments[5]` and forwards `arguments` to
+          //    the built-in renderer. Strict mode unmaps `arguments` from the
+          //    named parameters, but none of those functions reads the named
+          //    parameter afterwards, so the forwarded object still carries the
+          //    value they meant to substitute.
+          strict: true,
         },
       },
     },

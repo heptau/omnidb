@@ -1,4 +1,5 @@
 (function() {
+  "use strict";
   function exposeGlobals(...namespaces) {
     for (const ns of namespaces) {
       Object.assign(window, ns);
