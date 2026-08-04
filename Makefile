@@ -174,20 +174,24 @@ _ensure_wails:
 		go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0; \
 	fi
 
-# Rebuild the workspace UI bundle (go-server/frontend/ -> the dist/ directory
-# static_assets.go embeds) MINIFIED, for embedding into the shipped binary.
+# Rebuild the workspace UI (go-server/frontend/ -> the dist/ and css/
+# directories static_assets.go embeds) MINIFIED, for embedding into the shipped
+# binary. `npm run build:release` covers both: the JS bundles (Vite) and the
+# stylesheets (dart-sass, compiling scss/*.scss -> ../static_assets/OmniDB_app/
+# css/*.min.css) — see go-server/frontend/README.md for each.
 #
-# The copy committed to git is deliberately unminified so that dist/ diffs stay
-# readable — see go-server/frontend/README.md. That is the wrong tradeoff for
-# the binary, so a release build overwrites dist/ with minified output (roughly
-# half the size), lets `go build` embed that, and then restores the readable
-# copy via _restore_frontend below. Nothing commits dist/ along the way:
-# scripts/prepare_release.sh stages an explicit file list.
+# The copies committed to git are deliberately unminified so those diffs stay
+# readable. That is the wrong tradeoff for the binary, so a release build
+# overwrites both with minified output, lets `go build` embed that, and then
+# restores the readable copies via _restore_frontend below. Nothing commits
+# dist/ or css/ along the way: scripts/prepare_release.sh stages an explicit
+# file list.
 _build_frontend_release:
 	@echo "Building workspace frontend bundle (minified, for embedding)..."
 	cd go-server/frontend && npm ci && npm run build:release
 
-# Puts dist/ back the way git has it, so a release build leaves no diff behind.
+# Puts dist/ and css/ back the way git has it, so a release build leaves no
+# diff behind.
 _restore_frontend:
 	@echo "Restoring unminified workspace frontend bundle..."
 	cd go-server/frontend && npm run build

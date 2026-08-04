@@ -24,11 +24,14 @@ jobs:
         with:
           node-version: '22'
 
-      # static_assets/OmniDB_app/dist/ is committed, because //go:embed needs
-      # it to exist and `go build`/`go test` must keep working with no Node
-      # installed. Rebuilding it here and diffing is what keeps that committed
-      # copy honest — without it, a source change with a forgotten `npm run
-      # build` would ship the previous bundle silently.
+      # static_assets/OmniDB_app/dist/ and css/*.min.css are committed, because
+      # //go:embed needs them to exist and `go build`/`go test` must keep
+      # working with no Node installed. Rebuilding them here and diffing is
+      # what keeps those committed copies honest — without it, a source change
+      # with a forgotten `npm run build` would ship the previous bundle (or
+      # stylesheet) silently. This is exactly how the workspace CSS's real
+      # .scss source went missing for years before go-server/frontend/scss/
+      # existed: nothing ever rebuilt and compared it.
       - name: Build workspace frontend bundle
         run: npm ci && npm run build
         working-directory: go-server/frontend
@@ -43,12 +46,12 @@ jobs:
         run: npm run typecheck
         working-directory: go-server/frontend
 
-      - name: Check the committed bundle matches its sources
+      - name: Check the committed bundle and stylesheets match their sources
         run: |
-          if ! git diff --exit-code -- static_assets/OmniDB_app/dist; then
+          if ! git diff --exit-code -- static_assets/OmniDB_app/dist static_assets/OmniDB_app/css; then
             echo
-            echo "The committed workspace bundle is stale."
-            echo "Run 'npm run build' in go-server/frontend and commit dist/."
+            echo "The committed workspace bundle or stylesheet is stale."
+            echo "Run 'npm run build' in go-server/frontend and commit dist/ and css/."
             exit 1
           fi
         working-directory: go-server

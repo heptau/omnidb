@@ -205,9 +205,37 @@ What is deliberately not done yet:
   project's own markup blocks it any more. AimaraJS's
   `oncontextmenu="return false;"` on the tree container does; it is two lines in
   `lib/aimaraJS/lib/Aimara.js`.
-- **The CSS.** There is no `.scss` source in the repo — only
-  `css/omnidb.min.css` and a source map naming nine files that no longer
-  exist. Either reconstruct them from the map or accept the compiled CSS as
-  the source. That is a decision, not a task.
+
+## The stylesheets
+
+`scss/omnidb.scss` and `scss/login.scss` compile to
+`static_assets/OmniDB_app/css/omnidb.min.css` and `login.min.css` via dart-sass,
+the same committed-source / built-output split as the JS bundles above, and the
+same two npm scripts drive both: `npm run build` (readable, committed) and
+`npm run build:release` (compressed, for the shipped binary — see
+`package.json`). `ag-grid-custom.css`, `xterm.css` and `user_select_guard.css`
+are hand-written CSS with no `.scss` behind them and are untouched by any of
+this; only the two files that used to be generated have a source now.
+
+That "used to be" is worth spelling out, because it explains why this took
+longer than copying a file. There **was** a real `.scss` source for these once
+— the old source map (deleted along with the rest of the Django-era frontend)
+named nine files, and eight of the nine turned up unchanged in git history.
+Compiling them, though, did not reproduce the CSS that was actually shipping:
+a scrollbar width, a couple of alpha values, and the entire dark-theme block
+had already drifted from that source by the time it was deleted, with no
+record of when or why. Given that, "restore the old scss" would have silently
+reverted whatever those since-tuned values were fixing — so `scss/omnidb.scss`
+and `scss/login.scss` are direct transcriptions of the CSS that was actually
+committed, not reconstructions of the lost original. The one exception is two
+real defects in that shipped CSS a browser silently tolerated and a strict
+parser doesn't: a stray extra `}`, and a comment sitting mid-selector-list.
+Both are fixed; see the comment at the top of `scss/omnidb.scss` for specifics.
+
+Nesting, variables, and splitting into partials are all available to reach for
+incrementally from here. None of that happened this pass — turning ~5,700
+lines of flat CSS into idiomatic Sass in one sitting would have meant
+re-checking all of it by eye for a benefit no more real than doing it one rule
+at a time, later, as each part is actually touched.
 
 Run `SMOKE_CHECKLIST.md` after every change. There are no automated tests.
