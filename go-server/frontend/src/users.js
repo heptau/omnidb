@@ -179,15 +179,15 @@ $("#modal_users").on("shown.bs.modal", function (e) {
 });
 
 export function changeUser(event, p_row_index, p_col_index) {
-	var v_user_id = v_usersObject.v_user_ids[p_row_index];
 	var v_user_is_superuser = document.getElementById("user_item_superuser_" + p_row_index).checked ? 1 : 0;
+	// Three columns, not four. The fourth used to be a rebuilt copy of the remove
+	// button's HTML, carried along so the row shape matched what get_users sent
+	// -- which was markup too. Nothing ever read it: save_users takes columns
+	// 0-2, and the icon is a real element with a real listener now.
 	var p_data_template = [
 		document.getElementById("user_item_username_" + p_row_index).value,
 		document.getElementById("user_item_password_" + p_row_index).value,
 		v_user_is_superuser,
-		"<i title=\"Remove User\" class='fas fa-times action-grid action-close text-danger' onclick='removeUser(\"" +
-			v_user_id +
-			"\")'></i>",
 	];
 
 	var cellChange = {
@@ -208,13 +208,11 @@ export function changeUser(event, p_row_index, p_col_index) {
 
 export function changeNewUser(event, p_row_index, p_col_index) {
 	var v_user_is_superuser = document.getElementById("new_user_item_superuser_" + p_row_index).checked ? 1 : 0;
+	// Three columns — the same shape newUser() creates. See changeUser.
 	var p_data_template = [
 		document.getElementById("new_user_item_username_" + p_row_index).value,
 		document.getElementById("new_user_item_password_" + p_row_index).value,
 		v_user_is_superuser,
-		"<i title=\"Remove User\" class='fas fa-times action-grid action-close text-danger' onclick='removeNewUser(\"" +
-			p_row_index +
-			"\")'></i>",
 	];
 
 	window.newUsersObject.newUsers[p_row_index] = p_data_template;
@@ -232,8 +230,19 @@ export function getUsers(p_options = false) {
 		var v_new_value = v_usersObject.list.length + window.newUsersObject.newUsers.length - 1;
 		$("#omnidb_user_select").append(new Option("(pending info)", v_new_value));
 		$("#omnidb_user_select option:last-child").addClass("bg-success");
-		$("#omnidb_user_select option:last-child").trigger("change");
+		// A real DOM event, and only after the value is set.
+		//
+		// This was jQuery's .trigger("change") on the <option>, which invokes an
+		// `onchange` *attribute* but never an addEventListener listener -- jQuery
+		// simulates bubbling by calling handlers it registered plus the element's
+		// on* property, and does not dispatch anything the browser sees. Now that
+		// renderSelectedUser is bound properly, the select would never have
+		// re-rendered and Add new user would have left the previous user on screen.
+		//
+		// The .val() also has to come first: the old order relied on event.target
+		// being the option, whose value happened to be the new index.
 		$("#omnidb_user_select").val(v_new_value);
+		document.getElementById("omnidb_user_select").dispatchEvent(new Event("change", { bubbles: true }));
 
 		endLoading();
 	} else {
@@ -280,7 +289,11 @@ export function getUsers(p_options = false) {
 				v_user_list_element.classList = ["omnidb__user-list"];
 				var v_user_count = 0;
 				var v_user_list_html =
-					"<form class='d-none' autofill='false' onsubmit='(event)=>{event.preventDefault();};'>" +
+					// The onsubmit this used to carry was `(event)=>{...}` -- an arrow
+					// function *expression*, evaluated and thrown away, never called.
+					// The form is display:none with a disabled submit button, so there
+					// was nothing for it to prevent either way.
+					"<form class='d-none' autofill='false'>" +
 					"<input id='fake_username' type='text' placeholder='User name' value=''>" +
 					"<input id='fake_password' type='password' placeholder='Password' value=''>" +
 					"<button type='submit' disabled aria-hidden='true'></button>" +
@@ -290,7 +303,7 @@ export function getUsers(p_options = false) {
 					"<input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''>" +
 					"<div class='form-inline mb-4'>" +
 					"<h5 class='mr-2'>Select an user</h5>" +
-					"<select id='omnidb_user_select' onchange='renderSelectedUser(event)' class='form-control'>";
+					"<select id='omnidb_user_select' class='form-control'>";
 				if (p_options.focus_last) v_user_list_html += "<option value=''> </option>";
 				else v_user_list_html += "<option value='' selected> </option>";
 				for (var i = 0; i < v_user_list_data.length; i++) {
@@ -321,13 +334,13 @@ export function getUsers(p_options = false) {
 				}
 				v_user_list_html +=
 					"</select>" +
-					"<button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2' onclick='newUser()'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button>" +
+					"<button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button>" +
 					"</div>" +
 					"<div id='omnidb_user_content' class='row'>" +
 					v_users_update_html +
 					"</div>" +
 					"<div class='text-center'>" +
-					"<button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;' onclick='saveUsers()'>Save</button>" +
+					"<button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;'>Save</button>" +
 					"</div>" +
 					"<button type='submit' disabled style='display: none' aria-hidden='true'></button>" +
 					"</div>";
@@ -341,10 +354,24 @@ export function getUsers(p_options = false) {
 				var container = v_div_result;
 				container.appendChild(v_user_list_element);
 
+				// Bindings for the markup just built above, replacing the on*=
+				// attributes it used to carry -- see dom_event_bindings.js and
+				// README.md. They go here rather than in that file because this
+				// markup does not exist until getUsers has answered.
+				document.getElementById("omnidb_user_select").addEventListener("change", renderSelectedUser);
+				document
+					.getElementById("omnidb_utilities_menu_btn_new_user")
+					.addEventListener("click", () => newUser());
+				document.getElementById("div_save_users").addEventListener("click", () => saveUsers());
+
 				if (p_options) {
 					if (p_options.focus_last) {
 						setTimeout(function () {
-							$("#omnidb_user_select option:last-child").trigger("change");
+							// A real event, not jQuery's .trigger() -- see the comment on
+							// the other dispatch in this function. The last option is
+							// rendered with `selected`, so the value is already right.
+							const v_select = document.getElementById("omnidb_user_select");
+							if (v_select) v_select.dispatchEvent(new Event("change", { bubbles: true }));
 						}, 300);
 					}
 				}
@@ -418,9 +445,7 @@ export function renderSelectedUser(event) {
 					i +
 					"' type='text' class='form-control my-0' placeholder='User name' value='" +
 					escapeHtml(v_user_item[0]) +
-					"' onchange='changeUser(event," +
-					i +
-					",0)'>" +
+					"'>" +
 					"</div>" +
 					"<span class='ml-2'>Superuser?</span>" +
 					"<div class='ml-2 mb-2'>" +
@@ -429,9 +454,7 @@ export function renderSelectedUser(event) {
 					i +
 					"' class='omnidb__switch--input' " +
 					v_superuser_checked +
-					" onchange='changeUser(event," +
-					i +
-					",2)'>" +
+					">" +
 					"<label for='user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label>" +
@@ -450,15 +473,38 @@ export function renderSelectedUser(event) {
 					i +
 					"' type='password' class='form-control my-0' placeholder='New password' value='" +
 					escapeHtml(v_user_item[1]) +
-					"' onchange='changeUser(event," +
-					i +
-					",1)'>" +
+					"'>" +
 					"</div>" +
 					"<span class='mr-2 text-danger omnidb__user-list__close'>" +
-					escapeHtml(String(v_user_item[3])) +
+					// Built here, not taken from the row data. get_users used to send
+					// this button as a ready-made `<i ... onclick='removeUser("3")'>`
+					// string in column 3 -- markup as data, carried over byte-for-byte
+					// from the Python original -- and this line rendered it through
+					// escapeHtml, so what the user actually saw was the tag source as
+					// text, with no clickable icon at all. The id is what the listener
+					// below hooks, and the user id comes from v_user_ids, which the
+					// same response already carries.
+					"<i id='bt_remove_user_" +
+					i +
+					"' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i>" +
 					"</span>" +
 					"</div>" +
 					"</div>";
+
+				// Bindings for the row just rendered.
+				const rowIndex = i;
+				document
+					.getElementById("user_item_username_" + rowIndex)
+					.addEventListener("change", (e) => changeUser(e, rowIndex, 0));
+				document
+					.getElementById("user_item_password_" + rowIndex)
+					.addEventListener("change", (e) => changeUser(e, rowIndex, 1));
+				document
+					.getElementById("user_item_superuser_" + rowIndex)
+					.addEventListener("change", (e) => changeUser(e, rowIndex, 2));
+				document
+					.getElementById("bt_remove_user_" + rowIndex)
+					.addEventListener("click", () => removeUser(v_usersObject.v_user_ids[rowIndex]));
 			}
 			v_user_count++;
 		}
@@ -486,9 +532,7 @@ export function renderSelectedUser(event) {
 					i +
 					"' type='text' class='form-control my-0' placeholder='User name' value='" +
 					escapeHtml(v_user_item[0]) +
-					"' onchange='changeNewUser(event," +
-					i +
-					",0)'>" +
+					"'>" +
 					"</div>" +
 					"<span class='ml-2'>Superuser?</span>" +
 					"<div class='ml-2 mb-2'>" +
@@ -497,9 +541,7 @@ export function renderSelectedUser(event) {
 					i +
 					"' class='omnidb__switch--input' " +
 					v_superuser_checked +
-					" onchange='changeNewUser(event," +
-					i +
-					",2)'>" +
+					">" +
 					"<label for='new_user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label>" +
@@ -518,17 +560,30 @@ export function renderSelectedUser(event) {
 					i +
 					"' type='password' class='form-control my-0' placeholder='New password' value='" +
 					escapeHtml(v_user_item[1]) +
-					"' onchange='changeNewUser(event," +
-					i +
-					",1)'>" +
+					"'>" +
 					"</div>" +
 					"<span class='mr-2 text-danger omnidb__user-list__close'>" +
-					"<i title=\"Remove User\" class='fas fa-times action-grid action-close text-danger' onclick='removeNewUser(\"" +
+					"<i id='bt_remove_new_user_" +
 					i +
-					"\")'></i>" +
+					"' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i>" +
 					"</span>" +
 					"</div>" +
 					"</div>";
+
+				// Bindings for the pending-new-user row just rendered.
+				const newRowIndex = i;
+				document
+					.getElementById("new_user_item_username_" + newRowIndex)
+					.addEventListener("change", (e) => changeNewUser(e, newRowIndex, 0));
+				document
+					.getElementById("new_user_item_password_" + newRowIndex)
+					.addEventListener("change", (e) => changeNewUser(e, newRowIndex, 1));
+				document
+					.getElementById("new_user_item_superuser_" + newRowIndex)
+					.addEventListener("change", (e) => changeNewUser(e, newRowIndex, 2));
+				document
+					.getElementById("bt_remove_new_user_" + newRowIndex)
+					.addEventListener("click", () => removeNewUser(newRowIndex));
 			}
 		}
 	}

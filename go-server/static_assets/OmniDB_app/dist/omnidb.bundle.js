@@ -31189,13 +31189,11 @@
     getUsers();
   });
   function changeUser(event2, p_row_index, p_col_index) {
-    var v_user_id = v_usersObject.v_user_ids[p_row_index];
     var v_user_is_superuser = document.getElementById("user_item_superuser_" + p_row_index).checked ? 1 : 0;
     var p_data_template = [
       document.getElementById("user_item_username_" + p_row_index).value,
       document.getElementById("user_item_password_" + p_row_index).value,
-      v_user_is_superuser,
-      `<i title="Remove User" class='fas fa-times action-grid action-close text-danger' onclick='removeUser("` + v_user_id + `")'></i>`
+      v_user_is_superuser
     ];
     var cellChange = {
       rowIndex: p_row_index,
@@ -31216,8 +31214,7 @@
     var p_data_template = [
       document.getElementById("new_user_item_username_" + p_row_index).value,
       document.getElementById("new_user_item_password_" + p_row_index).value,
-      v_user_is_superuser,
-      `<i title="Remove User" class='fas fa-times action-grid action-close text-danger' onclick='removeNewUser("` + p_row_index + `")'></i>`
+      v_user_is_superuser
     ];
     window.newUsersObject.newUsers[p_row_index] = p_data_template;
     var v_render_index = parseInt(v_usersObject.list.length) + parseInt(p_row_index);
@@ -31230,8 +31227,8 @@
       var v_new_value = v_usersObject.list.length + window.newUsersObject.newUsers.length - 1;
       $("#omnidb_user_select").append(new Option("(pending info)", v_new_value));
       $("#omnidb_user_select option:last-child").addClass("bg-success");
-      $("#omnidb_user_select option:last-child").trigger("change");
       $("#omnidb_user_select").val(v_new_value);
+      document.getElementById("omnidb_user_select").dispatchEvent(new Event("change", { bubbles: true }));
       endLoading();
     } else {
       if (!window.newUsersObject) {
@@ -31271,7 +31268,13 @@
           var v_user_list_element = document.createElement("div");
           v_user_list_element.classList = ["omnidb__user-list"];
           var v_user_count = 0;
-          var v_user_list_html = "<form class='d-none' autofill='false' onsubmit='(event)=>{event.preventDefault();};'><input id='fake_username' type='text' placeholder='User name' value=''><input id='fake_password' type='password' placeholder='Password' value=''><button type='submit' disabled aria-hidden='true'></button></form><form class='omnidb__user-list__form' autofill='false' autocomplete='disabled'><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''><div class='form-inline mb-4'><h5 class='mr-2'>Select an user</h5><select id='omnidb_user_select' onchange='renderSelectedUser(event)' class='form-control'>";
+          var v_user_list_html = (
+            // The onsubmit this used to carry was `(event)=>{...}` -- an arrow
+            // function *expression*, evaluated and thrown away, never called.
+            // The form is display:none with a disabled submit button, so there
+            // was nothing for it to prevent either way.
+            "<form class='d-none' autofill='false'><input id='fake_username' type='text' placeholder='User name' value=''><input id='fake_password' type='password' placeholder='Password' value=''><button type='submit' disabled aria-hidden='true'></button></form><form class='omnidb__user-list__form' autofill='false' autocomplete='disabled'><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''><div class='form-inline mb-4'><h5 class='mr-2'>Select an user</h5><select id='omnidb_user_select' class='form-control'>"
+          );
           if (p_options.focus_last) v_user_list_html += "<option value=''> </option>";
           else v_user_list_html += "<option value='' selected> </option>";
           for (var i2 = 0; i2 < v_user_list_data.length; i2++) {
@@ -31288,17 +31291,21 @@
             var v_user_is_selected = p_options.focus_last && i2 + 1 == window.newUsersObject.newUsers.length ? " selected " : "";
             v_user_list_html += "<option class='bg-warning' value='" + v_user_item_index + "' " + v_user_is_selected + ">" + v_user_item_name + "</option>";
           }
-          v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2' onclick='newUser()'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;' onclick='saveUsers()'>Save</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
+          v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;'>Save</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
           v_user_list_element.innerHTML = v_user_list_html;
           $("#div_users").addClass("isActive");
           window.scrollTo(0, 0);
           var v_div_result = document.getElementById("div_user_list");
           var container = v_div_result;
           container.appendChild(v_user_list_element);
+          document.getElementById("omnidb_user_select").addEventListener("change", renderSelectedUser);
+          document.getElementById("omnidb_utilities_menu_btn_new_user").addEventListener("click", () => newUser());
+          document.getElementById("div_save_users").addEventListener("click", () => saveUsers());
           if (p_options) {
             if (p_options.focus_last) {
               setTimeout(function() {
-                $("#omnidb_user_select option:last-child").trigger("change");
+                const v_select = document.getElementById("omnidb_user_select");
+                if (v_select) v_select.dispatchEvent(new Event("change", { bubbles: true }));
               }, 300);
             }
           }
@@ -31340,7 +31347,12 @@
         var v_user_item = v_usersObject.list[i2];
         var v_superuser_checked = v_user_item[2] === 1 ? "checked" : "";
         if (i2 == v_index) {
-          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "' onchange='changeUser(event," + i2 + ",0)'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + " onchange='changeUser(event," + i2 + ",2)'><label for='user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "' onchange='changeUser(event," + i2 + ",1)'></div><span class='mr-2 text-danger omnidb__user-list__close'>" + escapeHtml(String(v_user_item[3])) + "</span></div></div>";
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "'></div><span class='mr-2 text-danger omnidb__user-list__close'><i id='bt_remove_user_" + i2 + "' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
+          const rowIndex = i2;
+          document.getElementById("user_item_username_" + rowIndex).addEventListener("change", (e) => changeUser(e, rowIndex, 0));
+          document.getElementById("user_item_password_" + rowIndex).addEventListener("change", (e) => changeUser(e, rowIndex, 1));
+          document.getElementById("user_item_superuser_" + rowIndex).addEventListener("change", (e) => changeUser(e, rowIndex, 2));
+          document.getElementById("bt_remove_user_" + rowIndex).addEventListener("click", () => removeUser(v_usersObject.v_user_ids[rowIndex]));
         }
         v_user_count++;
       }
@@ -31350,7 +31362,12 @@
         var v_user_item_index = parseInt(v_user_count) + parseInt(i2);
         var v_user_div_content = document.getElementById("omnidb_user_content");
         if (v_user_item_index == v_index) {
-          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='new_user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "' onchange='changeNewUser(event," + i2 + ",0)'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='new_user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + " onchange='changeNewUser(event," + i2 + ",2)'><label for='new_user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='new_user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "' onchange='changeNewUser(event," + i2 + `,1)'></div><span class='mr-2 text-danger omnidb__user-list__close'><i title="Remove User" class='fas fa-times action-grid action-close text-danger' onclick='removeNewUser("` + i2 + `")'></i></span></div></div>`;
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='new_user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='new_user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='new_user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='new_user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "'></div><span class='mr-2 text-danger omnidb__user-list__close'><i id='bt_remove_new_user_" + i2 + "' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
+          const newRowIndex = i2;
+          document.getElementById("new_user_item_username_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
+          document.getElementById("new_user_item_password_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
+          document.getElementById("new_user_item_superuser_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
+          document.getElementById("bt_remove_new_user_" + newRowIndex).addEventListener("click", () => removeNewUser(newRowIndex));
         }
       }
     }

@@ -25,9 +25,15 @@ func requireSuperuser(w http.ResponseWriter, r *http.Request, upstream *url.URL)
 	return who, true
 }
 
-// handleGetUsers mirrors users.py's get_users — the same "onclick" HTML
-// snippet Python builds inline for the grid's delete button is reproduced
-// byte-for-byte, since the frontend's grid renderer expects it verbatim.
+// handleGetUsers mirrors users.py's get_users.
+//
+// Three columns, not Python's four. The fourth was a ready-made
+// `<i ... onclick='removeUser("3")'>` string — markup as data, reproduced
+// byte-for-byte from the original on the assumption the frontend needed it
+// verbatim. It did not: users.js rendered it through escapeHtml, so the tag
+// source showed up as literal text and there was no clickable icon. The button
+// is built and bound in the frontend now, from v_user_ids, which this response
+// already carries. save_users only ever read columns 0-2.
 func handleGetUsers(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		if _, ok := requireSuperuser(w, r, upstream); !ok {
@@ -57,7 +63,6 @@ func handleGetUsers(upstream *url.URL) http.HandlerFunc {
 				u.Username,
 				"",
 				superuserFlag,
-				`<i title="Remove User" class='fas fa-times action-grid action-close' onclick='removeUser("` + strconv.FormatInt(u.ID, 10) + `")'></i>`,
 			})
 			ids = append(ids, u.ID)
 		}
