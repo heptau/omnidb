@@ -495,7 +495,7 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 		'<div class="modal-content">' +
 		'<div class="modal-header">' +
 		'<h4 class="mb-0">Edit Data</h4>' +
-		'<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="cancelEditContent()">' +
+		'<button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="Close">' +
 		'<span aria-hidden="true">&times;</span>' +
 		"</button>" +
 		"</div>" +
@@ -506,11 +506,19 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 		'<div class="modal-footer">' +
 		"<button " +
 		v_save_btn_attr +
-		' type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal" onclick="saveEditContent()">Save</button>' +
-		'<button type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal" onclick="cancelEditContent()">Cancel</button>' +
+		' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">Save</button>' +
+		'<button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">Cancel</button>' +
 		"</div>" +
 		"</div>" +
 		"</div>";
+
+	// Bindings for the dialog just rebuilt above, replacing the on*= attributes
+	// those three buttons carried -- see dom_event_bindings.js and README.md.
+	// innerHTML is reassigned on every open, so these are fresh elements each
+	// time and the listeners go with them.
+	document.getElementById("bt_edit_content_close").addEventListener("click", () => cancelEditContent());
+	document.getElementById("bt_edit_content_save").addEventListener("click", () => saveEditContent());
+	document.getElementById("bt_edit_content_cancel").addEventListener("click", () => cancelEditContent());
 
 	if (v_editContentObject != null)
 		if (v_editContentObject.editor != null) {

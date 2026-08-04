@@ -97,18 +97,26 @@ export function showConnectionList(p_open_modal, p_change_group) {
 			v_row.innerHTML =
 				'<div id="connections_management_empty_all" class="my-4 text-center w-100" style="display:none;">' +
 				'<h5 class="">No connections available.</h5>' +
-				'<button type="button" class="mt-4 btn omnidb__theme__btn--primary" onclick="newConnection();">New Connection</button>' +
+				'<button id="bt_empty_all_new_connection" type="button" class="mt-4 btn omnidb__theme__btn--primary">New Connection</button>' +
 				"</div>" +
 				'<div id="connections_management_empty_with_public" class="my-4 text-center w-100" style="display:none;">' +
 				'<i class="fas fa-arrow-up text-info"></i>' +
 				'<h5 class="">Your user has no connections configured yet, but there are <i class="fas fa-users text-info mx-2"></i> public connections.</h5>' +
 				'<h5 class="d-inline-block mt-4 mr-2">You can also create your own</h5>' +
-				'<button type="button" class="mt-2 btn omnidb__theme__btn--primary" onclick="newConnection();">New Connection</button>' +
+				'<button id="bt_empty_public_new_connection" type="button" class="mt-2 btn omnidb__theme__btn--primary">New Connection</button>' +
 				"</div>" +
 				'<div id="connections_management_empty_group" class="my-4 text-center w-100" style="display:none;">' +
 				'<h5 class="">No connections assigned to this group yet.</h5>' +
-				'<button type="button" class="mt-4 btn omnidb__theme__btn--primary" onclick="manageGroup();">Manage Groups</button>' +
+				'<button id="bt_empty_group_manage_groups" type="button" class="mt-4 btn omnidb__theme__btn--primary">Manage Groups</button>' +
 				"</div>";
+
+			// Bindings for the three empty-state buttons just built above,
+			// replacing the on*= attributes they carried -- see dom_event_bindings.js
+			// and README.md. v_row is not in the document yet, which is fine:
+			// addEventListener does not care whether the node is attached.
+			v_row.querySelector("#bt_empty_all_new_connection").addEventListener("click", () => newConnection());
+			v_row.querySelector("#bt_empty_public_new_connection").addEventListener("click", () => newConnection());
+			v_row.querySelector("#bt_empty_group_manage_groups").addEventListener("click", () => manageGroup());
 
 			for (var i = 0; i < p_return.v_data.v_conn_list.length; i++) {
 				var v_conn_obj = p_return.v_data.v_conn_list[i];
