@@ -104,6 +104,10 @@ implies the next.
 - [ ] Typing into the bottom blank row turns it green, gives it a `×`, and a
       fresh blank `+` row appears below it.
 - [ ] Clicking a row's `×` turns that row red; clicking it again reverts.
+- [ ] Right-click a cell → Edit Data opens the multi-line content dialog. Save
+      there must put the new value **in the grid** and turn the row yellow, then
+      the tab's Save must write it. This path is `setDataAtCell`, which is
+      separate wiring from the in-cell editor and used to discard the value.
 - [ ] Changing "Query N rows" refetches and discards pending edits.
 - [ ] Save applies the changes and reports the generated SQL — one entry per
       changed row, with the failure message inline for any that error.

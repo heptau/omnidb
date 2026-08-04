@@ -31829,15 +31829,25 @@
       }
       return [];
     }
+    // Handsontable's programmatic cell setter. The Edit cell content dialog is
+    // what calls it — see saveEditContent and hideEditContent in
+    // header_actions.js.
+    //
+    // This used to build a *copy* of the row data and hand it to
+    // applyTransaction({update}). AG Grid matches update rows by object identity
+    // unless getRowId is configured, so it never found the row: it logged "AG
+    // Grid: could not find data item as object was not found" and changed
+    // nothing. The dialog's Save discarded whatever the user had typed.
+    //
+    // Routing through _applyCellEdit instead does what an in-grid edit does,
+    // including calling `beforeChange` — which is what marks the row modified and
+    // reveals the edit-data tab's Save Changes button. Setting the value without
+    // that would put it on screen and still never write it to the database.
     setDataAtCell(row, col, value) {
-      if (this.gridApi) {
-        const rowNode = this.gridApi.getDisplayedRowAtIndex(row);
-        if (rowNode) {
-          const newData = Object.assign({}, rowNode.data);
-          newData["col_" + col] = value;
-          this.gridApi.applyTransaction({ update: [newData] });
-        }
-      }
+      if (!this.gridApi) return;
+      const rowNode = this.gridApi.getDisplayedRowAtIndex(row);
+      if (!rowNode) return;
+      this._applyCellEdit({ data: rowNode.data, node: rowNode, newValue: value }, col);
     }
     alter(action, index, amount) {
       if (this.gridApi && action === "remove_row") {
