@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
-	"strconv"
 )
 
 // requireSuperuser does the common auth + superuser-check preamble every
@@ -116,12 +115,14 @@ func handleNewUser(upstream *url.URL) http.HandlerFunc {
 	}
 }
 
-// removeUserRequest's p_id arrives as a JSON string, not a number — the
-// frontend's onclick HTML (`removeUser("3")`, see get_users' generated
-// button) always calls it with a quoted string literal, same as Python's own
-// `onclick='removeUser("{0}")'.format(user.id)`.
+// p_id used to be declared `string`, because the id reached removeUser() as a
+// quoted literal baked into the server-generated onclick HTML
+// (`removeUser("3")`, mirroring Python's
+// `onclick='removeUser("{0}")'.format(user.id)`). That markup is gone: the
+// button is bound in users.js now and passes v_user_ids' entry, which is a real
+// number. flexInt takes either, so neither form can break this again.
 type removeUserRequest struct {
-	PID string `json:"p_id"`
+	PID flexInt `json:"p_id"`
 }
 
 // handleRemoveUser mirrors users.py's remove_user.
@@ -140,11 +141,7 @@ func handleRemoveUser(upstream *url.URL) http.HandlerFunc {
 			writeBadRequest(w)
 			return
 		}
-		userID, err := strconv.ParseInt(req.PID, 10, 64)
-		if err != nil {
-			writeBadRequest(w)
-			return
-		}
+		userID := int64(req.PID)
 
 		db, err := openAppDB(upstream)
 		if err != nil {
@@ -162,14 +159,18 @@ func handleRemoveUser(upstream *url.URL) http.HandlerFunc {
 	}
 }
 
-// saveUsersData's "edited" rows arrive as a mixed-type array
-// [username(string), password(string), is_superuser(number 1/0), htmlSnippet
-// (string, unused)] — same shape get_users emits and users.js's changeUser()
-// round-trips back verbatim (see `v_user_is_superuser = ...checked ? 1 : 0`
-// in users.js), so it can't be unmarshaled as [][]string directly.
+// Both halves arrive as mixed-type arrays: [username(string),
+// password(string), is_superuser(number 1/0)]. users.js builds them from the
+// form with `v_user_is_superuser = ...checked ? 1 : 0`, so the third element is
+// a JSON number and neither can be unmarshaled as [][]string.
+//
+// "new" was [][]string, which meant json.Unmarshal rejected the entire request
+// the moment there was a pending new user — the whole save answered "Invalid or
+// missing request data." and nothing at all was written, not even the edits to
+// existing users in the same payload.
 type saveUsersData struct {
-	New    [][]string `json:"new"`
-	Edited [][]any    `json:"edited"`
+	New    [][]any `json:"new"`
+	Edited [][]any `json:"edited"`
 }
 
 type saveUsersRequest struct {
@@ -213,7 +214,18 @@ func handleSaveUsers(upstream *url.URL) http.HandlerFunc {
 			if len(u) < 2 {
 				continue
 			}
-			if err := createDjangoUser(db, u[0], u[1]); err != nil {
+			username, _ := u[0].(string)
+			password, _ := u[1].(string)
+			// "Add new user" appends a row before the form is filled in. Saving
+			// one of those would create an account nobody can log into, so it is
+			// skipped rather than inserted with a blank name.
+			if username == "" {
+				continue
+			}
+			// is_superuser (u[2]) is deliberately not read: createDjangoUser always
+			// inserts a non-superuser, matching Python, where promoting is a
+			// separate edit. See its doc comment.
+			if err := createDjangoUser(db, username, password); err != nil {
 				writeEnvelope(w, err.Error(), true, -1)
 				return
 			}

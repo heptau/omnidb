@@ -150,18 +150,59 @@ func deleteUserCascade(db *sql.DB, userID int64) error {
 		`delete from OmniDB_app_shortcut where user_id = ?`,
 		`delete from OmniDB_app_monunits where user_id = ?`,
 		`delete from OmniDB_app_userdetails where user_id = ?`,
-		`delete from auth_user_groups where user_id = ?`,
-		`delete from auth_user_user_permissions where user_id = ?`,
-		`delete from django_admin_log where user_id = ?`,
-		`delete from social_auth_usersocialauth where user_id = ?`,
-		`delete from auth_user where id = ?`,
 	} {
 		if _, err := tx.Exec(stmt, userID); err != nil {
 			return err
 		}
 	}
 
+	// The four Django framework tables below are the reason removing a user
+	// always failed: this schema does not create any of them (there is no Django
+	// admin, no permissions system and no social auth here), so the first
+	// statement aborted the transaction with "no such table:
+	// auth_user_groups". They are still attempted rather than dropped, because a
+	// configuration database carried over from the Django releases does have
+	// them, with rows that would otherwise be orphaned — so each is run only if
+	// the table is actually there.
+	for _, table := range []string{
+		"auth_user_groups",
+		"auth_user_user_permissions",
+		"django_admin_log",
+		"social_auth_usersocialauth",
+	} {
+		exists, err := sqliteTableExists(tx, table)
+		if err != nil {
+			return err
+		}
+		if !exists {
+			continue
+		}
+		if _, err := tx.Exec(`delete from `+table+` where user_id = ?`, userID); err != nil {
+			return err
+		}
+	}
+
+	if _, err := tx.Exec(`delete from auth_user where id = ?`, userID); err != nil {
+		return err
+	}
+
 	return tx.Commit()
+}
+
+// sqliteTableExists reports whether the named table is present. Only ever
+// called with the hard-coded names above, never anything request-derived, so
+// concatenating it into the delete statement is safe — SQLite has no bind
+// parameter for a table name.
+func sqliteTableExists(tx *sql.Tx, name string) (bool, error) {
+	var found string
+	err := tx.QueryRow(`select name from sqlite_master where type = 'table' and name = ?`, name).Scan(&found)
+	if err == sql.ErrNoRows {
+		return false, nil
+	}
+	if err != nil {
+		return false, err
+	}
+	return true, nil
 }
 
 // formatDjangoDatetime mirrors DjangoJSONEncoder-adjacent needs elsewhere in

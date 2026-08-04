@@ -62,6 +62,22 @@ its own `tree_*.js`, and they do not share code.
 - [ ] Connecting expands the tree root without error.
 - [ ] Expand schemas → tables → columns; the node icons are correct.
 - [ ] Login roles and group roles show different icons (PostgreSQL).
+
+## Users dialog — server mode only, as a superuser
+
+Every write here used to fail, each for its own reason, and the dialog gave no
+sign of it. Check the database, not the dialog.
+
+- [ ] Each account shows a red `×` — an actual icon, not the text of an `<i>`
+      tag.
+- [ ] Edit a username, password and the superuser switch; the row turns yellow
+      and Save appears. Save, then reopen: the values stuck.
+- [ ] Add new user, fill in both fields, Save. The account exists and can log
+      in. A new account is always created non-superuser (as in the Python
+      releases) — promoting it takes a second edit and Save.
+- [ ] Add new user and then undo it with the `×` before saving.
+- [ ] Remove an account. It is gone, and so are its connections, groups,
+      snippets and shortcuts.
 - [ ] Right-click a table → the context menu appears with the expected entries.
 - [ ] Context menu → Edit Data opens an edit-data tab.
 - [ ] Context menu → an action that generates SQL (e.g. Create/Drop) opens a
