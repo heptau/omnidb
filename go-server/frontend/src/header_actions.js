@@ -31,7 +31,7 @@ SOFTWARE.
 /// Opens OmniDB about window.
 /// </summary>
 
-import { execAjax } from "./ajax_control.js";
+import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { v_current_os } from "./shortcuts.js";
 import { refreshHeights } from "./workspace.js";

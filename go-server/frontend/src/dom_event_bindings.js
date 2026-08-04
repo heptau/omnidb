@@ -208,4 +208,6 @@ bindAll('input[name="keyword_case"]', 'change', (e) => {
 bindAll('.omnidb__save-config-user', 'click', () => saveConfigUser())
 
 // The loading overlay's Cancel button is bound in early.js, not here -- see the
-// comment there for why it has to be that bundle's copy of ajax_control.js.
+// comment there. It can still abort requests started from this bundle: every
+// file here imports execAjax from ajax_control_bridge.js, which forwards to
+// early.js's instance instead of bundling its own.

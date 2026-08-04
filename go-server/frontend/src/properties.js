@@ -31,7 +31,7 @@ SOFTWARE.
 /// Retrieving Properties.
 /// </summary>
 
-import { execAjax } from "./ajax_control.js";
+import { execAjax } from "./ajax_control_bridge.js";
 import { showError } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
 

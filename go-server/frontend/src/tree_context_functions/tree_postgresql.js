@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { execAjax } from "../ajax_control.js";
+import { execAjax } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
 import { createLegere } from "../lib/omnis_legere/omnis-legere.js";
 import { startMonitorDashboard } from "../monitoring.js";

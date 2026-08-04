@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { endLoading } from "../ajax_control.js";
+import { endLoading } from "../ajax_control_bridge.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { customMenu } from "../custom_menu.js";
 

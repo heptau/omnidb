@@ -31,7 +31,7 @@ SOFTWARE.
 /// Retrieving tree.
 /// </summary>
 
-import { execAjax } from "../ajax_control.js";
+import { execAjax } from "../ajax_control_bridge.js";
 import { showConfirm, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
 import { clearProperties, getProperties } from "../properties.js";

@@ -40,6 +40,18 @@ interface Window {
 	/** The Handsontable-compatible factory AgGridAdapter.js installs. */
 	Handsontable: any;
 	AgGridAdapter: any;
+	/**
+	 * early.js's `exposeGlobals(ajaxControl)` call publishes its instance of
+	 * ajax_control.js here before the main bundle runs. ajax_control_bridge.js
+	 * reads these back off `window` rather than importing ajax_control.js
+	 * directly, so every workspace request shares the one instance the loading
+	 * overlay's Cancel button is wired to. See ajax_control_bridge.js.
+	 */
+	execAjax: any;
+	startLoading: any;
+	endLoading: any;
+	getCookie: any;
+	csrfSafeMethod: any;
 }
 
 /** Installed by AgGridAdapter.js — see its bottom. */

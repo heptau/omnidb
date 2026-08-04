@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { csrfSafeMethod, execAjax, getCookie } from "./ajax_control.js";
+import { csrfSafeMethod, execAjax, getCookie } from "./ajax_control_bridge.js";
 import { cancelConsoleTab, consoleReturn, consoleSQL } from "./console.js";
 import { showAlert, showError } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";

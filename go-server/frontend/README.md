@@ -129,9 +129,15 @@ the bridge is down to:
 
 - `workspace.html`'s inline bootstrap script, which calls `createOmnis()` and
   declares the globals bundled code assigns to;
-- `execAjax` and `showAlert`, reached as globals from `ajax_control.js` and
-  `notification_control.js` — those two files appear in more than one bundle and
-  so cannot import from each other (see above).
+- `showAlert`, reached as a global from inside `ajax_control.js` —
+  `ajax_control.js` and `notification_control.js` appear in more than one bundle
+  each and so cannot import from each other (see above). `execAjax` itself no
+  longer needs this for the main bundle: every file there imports it from
+  `ajax_control_bridge.js`, a thin wrapper that forwards to the instance
+  early.js already published, so main.js and early.js share one instance (and
+  one `v_ajax_call`) instead of duplicating the module. login.js still has its
+  own real, independent instance — login.html never runs alongside the other
+  two, so that duplication is dead weight rather than a correctness problem.
 
 The bridge still publishes all 551 exports wholesale rather than an allowlist,
 because an allowlist that drifts fails at click time in a way nothing would
@@ -159,7 +165,7 @@ Add `// @ts-check` to a file when you work on it. The set can only grow, and CI
 fails if anything already in it regresses. Currently checked:
 
 - the three bundle entry points, `legacy-globals.js`, `bootstrap-globals.js`
-- `AgGridAdapter.js`
+- `AgGridAdapter.js`, `ajax_control_bridge.js`
 - `scripts/check-bridge.mjs`
 
 Running it over *everything* (set `checkJs` and see) reports 1,482 findings,
@@ -199,12 +205,17 @@ What is deliberately not done yet:
 - **Extending the `// @ts-check` set.** The infrastructure is in place (see
   above); the ~39k unannotated lines are the work.
 - **Deleting the bridge.** What is left needs `workspace.html`'s inline
-  bootstrap script to go and `ajax_control.js`/`notification_control.js` to stop
-  living in more than one bundle — see above.
-- **A Content-Security-Policy without `unsafe-inline`.** Nothing in this
-  project's own markup blocks it any more. AimaraJS's
-  `oncontextmenu="return false;"` on the tree container does; it is two lines in
-  `lib/aimaraJS/lib/Aimara.js`.
+  bootstrap script to go, plus `ajax_control.js` (early.js, login.js) and
+  `notification_control.js` (main.js, login.js) each still having a real
+  instance of their own in more than one bundle — see above. The main bundle no
+  longer duplicates ajax_control.js itself (see `ajax_control_bridge.js`), but
+  that only removed one of the two files, and only for one of the two bundles
+  each still appears in.
+- **A Content-Security-Policy without `unsafe-inline`.** Nothing blocks it any
+  more. AimaraJS's `oncontextmenu="return false;"` on the tree container used
+  to be the last thing in the way; it is now a property assignment
+  (`v_div.oncontextmenu = function () {...}`) in `lib/aimaraJS/lib/Aimara.js`
+  instead of an attribute, which CSP does not treat as inline script.
 
 ## The stylesheets
 

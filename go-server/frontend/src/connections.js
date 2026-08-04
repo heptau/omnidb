@@ -31,7 +31,7 @@ SOFTWARE.
 /// Startup function.
 /// </summary>
 
-import { execAjax } from "./ajax_control.js";
+import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
 import { getDatabaseList } from "./workspace.js";

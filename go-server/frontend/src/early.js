@@ -18,14 +18,13 @@ exposeGlobals(
 )
 
 // Replaces the onclick="cancelAjax()" attribute on the loading overlay's Cancel
-// button. It has to be *this* bundle's copy of ajax_control.js: the file ends up
-// in all three bundles, so workspace.html loads two independent instances of it,
-// each with its own `v_ajax_call`. main.js does not expose ajaxControl, so
-// `window.execAjax` -- what the inline handlers and this button used to reach --
-// is the early copy, and only the early copy's cancelAjax can abort what it
-// started. (Requests made through `import { execAjax }` inside the main bundle
-// use the other instance and have never been cancellable. Pre-existing; fixing
-// it means having one instance, not one per bundle.)
+// button. It has to be *this* bundle's copy of ajax_control.js: login.js has
+// its own real copy too (login.html never loads this bundle, so no conflict
+// there), but every file in the main bundle imports execAjax and friends from
+// ajax_control_bridge.js instead of ajax_control.js directly, forwarding to
+// `window.execAjax` etc -- what this button reaches -- so this is the only
+// instance running on workspace.html and its cancelAjax can abort anything
+// the main bundle starts too.
 if (ajaxControl.v_cancel_button) {
   ajaxControl.v_cancel_button.addEventListener('click', ajaxControl.cancelAjax)
 }

@@ -31,7 +31,7 @@ SOFTWARE.
 /// Startup function.
 /// </summary>
 
-import { execAjax } from "./ajax_control.js";
+import { execAjax } from "./ajax_control_bridge.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were

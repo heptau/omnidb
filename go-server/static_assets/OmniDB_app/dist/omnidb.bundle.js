@@ -41,107 +41,20 @@
       Object.assign(window, ns);
     }
   }
-  var v_calls_count = 0;
-  var v_is_loading = false;
-  function startLoading() {
-    v_calls_count++;
-    if (!v_is_loading) {
-      $("#div_loading").fadeIn(100);
-      v_is_loading = true;
-    }
+  function execAjax$1(...args) {
+    return window.execAjax(...args);
   }
-  function endLoading() {
-    if (v_calls_count > 0) {
-      v_calls_count--;
-    }
-    if (v_calls_count == 0) {
-      $("#div_loading").fadeOut(100);
-      v_is_loading = false;
-    }
+  function startLoading(...args) {
+    return window.startLoading(...args);
   }
-  function getCookie(name) {
-    var cookieValue = null;
-    if (document.cookie && document.cookie !== "") {
-      var cookies = document.cookie.split(";");
-      for (var i2 = 0; i2 < cookies.length; i2++) {
-        var cookie = jQuery.trim(cookies[i2]);
-        if (cookie.substring(0, name.length + 1) === name + "=") {
-          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-          break;
-        }
-      }
-    }
-    return cookieValue;
+  function endLoading(...args) {
+    return window.endLoading(...args);
   }
-  function csrfSafeMethod(method) {
-    return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
+  function getCookie(...args) {
+    return window.getCookie(...args);
   }
-  var v_ajax_call = null;
-  var v_cancel_button = document.getElementById("bt_cancel_ajax");
-  function execAjax$1(p_url, p_data, p_successFunc, p_errorFunc, p_notifMode, p_loading, p_cancel_button, p_onAjaxErrorCallBack = false) {
-    if (p_loading == null || p_loading == true) {
-      startLoading();
-    }
-    if (v_cancel_button !== void 0) {
-      v_cancel_button.style.display = "none";
-      if (p_cancel_button != null && p_cancel_button == true) {
-        v_cancel_button.style.display = "block";
-      }
-    }
-    var csrftoken = getCookie(v_csrf_cookie_name);
-    v_ajax_call = $.ajax({
-      url: v_url_folder + p_url,
-      data: {
-        data: p_data,
-        tab_token: ""
-      },
-      type: "post",
-      dataType: "json",
-      beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-      },
-      success: function(p_return) {
-        if (p_loading == null || p_loading == true) {
-          endLoading();
-        }
-        if (p_return.v_error) {
-          if (p_return.v_error_id == 1) {
-            showAlert("User not authenticated, please reload the page.");
-          } else if (p_errorFunc) {
-            p_errorFunc(p_return);
-          } else {
-            showAlert(p_return.v_data);
-          }
-        } else {
-          if (p_successFunc != null) {
-            p_successFunc(p_return);
-          }
-        }
-      },
-      error: function(msg) {
-        if (p_loading == null || p_loading == true) {
-          endLoading();
-        }
-        if (p_onAjaxErrorCallBack) {
-          p_onAjaxErrorCallBack(msg);
-        } else {
-          if (msg.readyState != 0) {
-            showAlert("Request error.");
-          } else {
-            if (msg.statusText != "abort") {
-              reportOffline();
-            }
-          }
-        }
-      }
-    });
-    return v_ajax_call;
-  }
-  function reportOffline() {
-    showAlert("Webserver was shutdown, please restart it and reload the application.");
-    document.getElementById("ajax_status");
+  function csrfSafeMethod(...args) {
+    return window.csrfSafeMethod(...args);
   }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function checkSessionMessage() {
@@ -149,7 +62,7 @@
       "/check_session_message/",
       JSON.stringify({}),
       function(p_return) {
-        if (p_return.v_data != "") showAlert$1(p_return.v_data);
+        if (p_return.v_data != "") showAlert(p_return.v_data);
       },
       null,
       "box"
@@ -215,7 +128,7 @@
       v_button_yes.focus();
     }, 500);
   }
-  function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
+  function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
       var v_content_div = document.getElementById("modal_message_content");
       var v_button_yes = document.getElementById("modal_message_yes");
@@ -306,7 +219,7 @@
   const notificationControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     checkSessionMessage,
-    showAlert: showAlert$1,
+    showAlert,
     showConfirm,
     showConfirm2,
     showConfirm3,
@@ -377,7 +290,8 @@
             p_return.v_data,
             p_send_tab_id
           );
-        }
+        },
+        "box"
       );
     };
   }
@@ -781,7 +695,7 @@
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_state = v_currTabTag.state;
     if (v_state != 0) {
-      showAlert$1("Tab with activity in progress.");
+      showAlert("Tab with activity in progress.");
     } else {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Querying;
       v_currTabTag.button_save.style.visibility = "hidden";
@@ -818,7 +732,7 @@
       setTimeout(function() {
         if (!v_context.acked) {
           cancelEditDataTab(v_context.tab_tag);
-          showAlert$1("No response from query server.");
+          showAlert("No response from query server.");
         }
       }, 1e4);
     }
@@ -866,7 +780,7 @@
       v_query_info.innerHTML = "Response time: " + request_time / 1e3 + " seconds";
     } else {
       if (v_currTabTag.editDataObject.pk.length == 0) {
-        if (v_currTabTag.editDataObject.firstRender) showAlert$1("Table has no primary key, existing rows will be read only.");
+        if (v_currTabTag.editDataObject.firstRender) showAlert("Table has no primary key, existing rows will be read only.");
         v_currTabTag.editDataObject.firstRender = false;
         v_currTabTag.editDataObject.hasPK = false;
       } else v_currTabTag.editDataObject.hasPK = true;
@@ -1036,7 +950,7 @@
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_state = v_currTabTag.state;
     if (v_state != v_editDataState.Idle) {
-      showAlert$1("Tab with activity in progress.");
+      showAlert("Tab with activity in progress.");
     } else {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Saving;
       v_currTabTag.button_save.style.visibility = "hidden";
@@ -1157,7 +1071,7 @@
       v_currTabTag.bt_cancel.style.display = "";
     }
     if (v_has_error) {
-      showAlert$1(v_commands_log);
+      showAlert(v_commands_log);
     }
     v_currTabTag.editDataObject.ht.render();
     p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
@@ -1222,7 +1136,7 @@
   });
   async function clear_client() {
     var csrftoken = getCookie("omnidb_csrftoken");
-    const v_ajax_call2 = await $.ajax({
+    const v_ajax_call = await $.ajax({
       url: v_url_folder + "/clear_client",
       data: null,
       type: "get",
@@ -1237,7 +1151,7 @@
       error: function(msg) {
       }
     });
-    return v_ajax_call2;
+    return v_ajax_call;
   }
   function polling_response(p_message) {
     var v_message = p_message;
@@ -1263,7 +1177,7 @@
         break;
       }
       case parseInt(v_queryResponseCodes.SessionMissing): {
-        showAlert$1("Session not found please reload the page.");
+        showAlert("Session not found please reload the page.");
         break;
       }
       case parseInt(v_queryResponseCodes.MessageException): {
@@ -1688,11 +1602,15 @@
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = p_return.v_data.pages;
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages.innerHTML = p_return.v_data.pages;
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage;
+        for (let i2 = 0; i2 < v_conn_tag.consoleHistoryList.length; i2++) {
+          v_conn_tag.consoleHistoryList[i2][0] = new Date(v_conn_tag.consoleHistoryList[i2][0]).toLocaleString();
+        }
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.loadData(
           v_conn_tag.consoleHistoryList
         );
       },
-      null
+      null,
+      "box"
     );
   }
   function closeConsoleHistory() {
@@ -1735,10 +1653,10 @@
     var v_content = v_tag.editor_input.getValue().trim();
     if (!p_check_command || v_content[0] == "\\") {
       if (v_tag.state != v_consoleState.Idle) {
-        showAlert$1("Tab with activity in progress.");
+        showAlert("Tab with activity in progress.");
       } else {
         if (v_content == "" && p_mode == 0) {
-          showAlert$1("Please provide a string.");
+          showAlert("Please provide a string.");
         } else {
           if (v_connTabControl.selectedTab.tag.consoleHistoryList)
             v_connTabControl.selectedTab.tag.consoleHistoryList.unshift(v_content);
@@ -4853,7 +4771,8 @@
         }
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.loadData(p_return.v_data.commandList);
       },
-      null
+      null,
+      "box"
     );
   }
   function closeCommandHistory() {
@@ -5059,12 +4978,12 @@
           return p_response.json();
         }).then(function(p_result) {
           if (p_result.error) {
-            showAlert$1("Error saving file: " + p_result.error);
+            showAlert("Error saving file: " + p_result.error);
           } else if (p_result.path) {
-            showAlert$1("File exported to: " + p_result.path);
+            showAlert("File exported to: " + p_result.path);
           }
         }).catch(function(p_error) {
-          showAlert$1("Error saving file: " + p_error);
+          showAlert("Error saving file: " + p_error);
         });
       };
       var v_exp_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
@@ -5303,7 +5222,7 @@
   var v_createConnTabFunction = function(p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
     if (v_connTabControl.tag.connections.length == 0) {
       v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
-      showAlert$1("Create connections first.");
+      showAlert("Create connections first.");
     } else {
       let v_conn = v_connTabControl.tag.connections[0];
       for (let i2 = 0; i2 < v_connTabControl.tag.connections.length; i2++) {
@@ -5808,10 +5727,10 @@
       return p_response.json();
     }).then(function(p_result) {
       if (p_result && p_result.error) {
-        showAlert$1("Error opening link: " + p_result.error);
+        showAlert("Error opening link: " + p_result.error);
       }
     }).catch(function() {
-      showAlert$1("Error opening link.");
+      showAlert("Error opening link.");
     });
   };
   var v_createWebsiteTabFunction = function(p_name, p_site) {
@@ -6385,7 +6304,8 @@
         }
         refreshMonitorDashboard(true, v_tab_tag2);
       },
-      null
+      null,
+      "box"
     );
   }
   function includeMonitorUnit(p_id, p_plugin_name) {
@@ -6411,7 +6331,8 @@
         function(p_return) {
           refreshMonitorUnitsList();
         },
-        null
+        null,
+        "box"
       );
     });
   }
@@ -6446,7 +6367,8 @@
           v_select_template.appendChild(v_option);
         });
       },
-      null
+      null,
+      "box"
     );
     if (p_unit_id != null) {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -6467,14 +6389,15 @@
           v_tab_tag2.editor_data.gotoLine(0, 0, true);
           v_tab_tag2.unit_id = p_unit_id;
         },
-        null
+        null,
+        "box"
       );
     }
   }
   function saveMonitorScript() {
     var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     if (v_tab_tag2.input_unit_name.value.trim() == "") {
-      showAlert$1("Please provide name for this monitor.");
+      showAlert("Please provide name for this monitor.");
     } else {
       var v_interval = parseInt(v_tab_tag2.input_interval.value, 10);
       var input = JSON.stringify({
@@ -6492,7 +6415,7 @@
         input,
         function(p_return) {
           v_tab_tag2.unit_id = p_return.v_data;
-          showAlert$1("Monitor unit saved.");
+          showAlert("Monitor unit saved.");
         },
         function(p_return) {
           if (p_return.v_data.password_timeout) {
@@ -6507,7 +6430,8 @@
           } else {
             showError(p_return.v_data);
           }
-        }
+        },
+        "box"
       );
     }
   }
@@ -6533,7 +6457,8 @@
           v_editor_data.clearSelection();
           v_editor_data.gotoLine(0, 0, true);
         },
-        null
+        null,
+        "box"
       );
     }
   }
@@ -6684,7 +6609,8 @@
         } else {
           showError(p_return.v_data);
         }
-      }
+      },
+      "box"
     );
   });
   function testMonitorScript() {
@@ -6774,7 +6700,8 @@
         });
         endLoading();
       },
-      null
+      null,
+      "box"
     );
   }
   function refreshMonitorUnitsObjects() {
@@ -7520,15 +7447,15 @@
                   var v_password = document.getElementById("change_pwd_role").value;
                   var v_password_confirm = document.getElementById("change_pwd_role_confirm").value;
                   if (v_password == "") {
-                    showAlert$1("Password is empty.");
+                    showAlert("Password is empty.");
                     return;
                   }
                   if (v_password_confirm == "") {
-                    showAlert$1("Password confirmation is empty.");
+                    showAlert("Password confirmation is empty.");
                     return;
                   }
                   if (v_password != v_password_confirm) {
-                    showAlert$1("Passwords do not match.");
+                    showAlert("Passwords do not match.");
                     return;
                   }
                   execAjax$1(
@@ -7540,10 +7467,10 @@
                       p_password: v_password
                     }),
                     function(p_return) {
-                      showAlert$1("Password changed successfully.");
+                      showAlert("Password changed successfully.");
                     },
                     function(p_return) {
-                      showAlert$1(p_return.v_data.message);
+                      showAlert(p_return.v_data.message);
                     },
                     "box",
                     false
@@ -10423,7 +10350,8 @@
                 },
                 function(p_return) {
                   nodeOpenErrorPostgresql(p_return, p_node);
-                }
+                },
+                "box"
               );
             }
           );
@@ -15082,7 +15010,7 @@
     if (v_selected_text != "") v_query = v_selected_text;
     else v_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
     if (v_query.trim() == "") {
-      showAlert$1("Please provide a string.");
+      showAlert("Please provide a string.");
     } else {
       if (v_explain_control.context === "default") {
         if (p_mode == 0) {
@@ -15971,7 +15899,7 @@
     }
     v_autocomplete_disabled_types = v_disabled_types.join(",");
     if ((v_confirm_pwd.value != "" || v_pwd.value != "") && v_pwd.value != v_confirm_pwd.value)
-      showAlert$1("New Password and Confirm New Password fields do not match.");
+      showAlert("New Password and Confirm New Password fields do not match.");
     else {
       var input = JSON.stringify({
         p_font_size: v_font_size,
@@ -15986,7 +15914,7 @@
       });
       execAjax$1("/save_config_user/", input, function(p_return) {
         $("#modal_config").modal("hide");
-        showAlert$1("Configuration saved.");
+        showAlert("Configuration saved.");
         applyEditorTabSize();
       });
     }
@@ -16003,7 +15931,7 @@
       p_current_os: v_current_os
     });
     execAjax$1("/save_shortcuts/", input, function(p_return) {
-      showAlert$1("Shortcuts saved.");
+      showAlert("Shortcuts saved.");
     });
   }
   function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
@@ -16242,7 +16170,7 @@
   function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
     var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
     if (v_state != v_queryState.Idle) {
-      showAlert$1("Tab with activity in progress.");
+      showAlert("Tab with activity in progress.");
     } else {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       v_tab_tag2.tempData = [];
@@ -16251,7 +16179,7 @@
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_loading_span;
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_close_span;
       if (v_sql_value.trim() == "") {
-        showAlert$1("Please provide a string.");
+        showAlert("Please provide a string.");
       } else {
         if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex == null || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex != v_connTabControl.selectedTab.tag.selectedDatabaseIndex) {
           p_mode = 0;
@@ -16867,7 +16795,8 @@
         getDatabaseList();
         getGroups();
       },
-      null
+      null,
+      "box"
     );
   }
   function newGroupConfirm(p_name) {
@@ -16878,7 +16807,8 @@
         getDatabaseList();
         getGroups();
       },
-      null
+      null,
+      "box"
     );
   }
   function renameGroupConfirm(p_id, p_name) {
@@ -16889,7 +16819,8 @@
         getDatabaseList();
         getGroups();
       },
-      null
+      null,
+      "box"
     );
   }
   function deleteGroup() {
@@ -16906,7 +16837,8 @@
         getDatabaseList();
         getGroups();
       },
-      null
+      null,
+      "box"
     );
   }
   function newGroup() {
@@ -16984,7 +16916,8 @@
           groupChange(document.getElementById("group_selector").value);
         }
       },
-      null
+      null,
+      "box"
     );
   }
   function testConnection(p_password = null) {
@@ -17011,7 +16944,7 @@
       "/test_connection/",
       input,
       function(p_return) {
-        if (p_return.v_data == "Connection successful.") showAlert$1(p_return.v_data);
+        if (p_return.v_data == "Connection successful.") showAlert(p_return.v_data);
         else showError(p_return.v_data);
       },
       function(p_return) {
@@ -17075,7 +17008,8 @@
         getDatabaseList();
         showConnectionList(false, true);
       },
-      null
+      null,
+      "box"
     );
   }
   function deleteConnection(p_conn_obj) {
@@ -17090,7 +17024,8 @@
           getDatabaseList();
           showConnectionList(false, true);
         },
-        null
+        null,
+        "box"
       );
     });
   }
@@ -27992,7 +27927,8 @@
         }
         endLoading();
       },
-      null
+      null,
+      "box"
     );
   }
   function queueChangeActiveDatabaseThreadSafe(p_data) {
@@ -28011,7 +27947,8 @@
         if (v_connTabControl.tag.change_active_database_call_list.length > 0)
           changeActiveDatabaseThreadSafe(v_connTabControl.tag.change_active_database_call_list.pop());
       },
-      null
+      null,
+      "box"
     );
   }
   function changeDatabase(p_value) {
@@ -28053,7 +27990,7 @@
       var v_tab = v_connTabControl.selectedTab.tag.tabControl.tabList[i2];
       if (v_tab.tag != null) {
         if (v_tab.tag.mode == "edit" || v_tab.tag.mode == "alter" || v_tab.tag.mode == "monitor_dashboard" || v_tab.tag.mode == "data_mining") {
-          showAlert$1(
+          showAlert(
             "Before changing connection please close any tab that belongs to the following types: <br/><br/><b>Edit Data<br/><br/>Alter Table<br/><br/>Monitoring Dashboard<br/><br/>Advanced Object Search",
             null,
             null,
@@ -28216,7 +28153,8 @@
             p_return.v_data.message
           );
         }
-      }
+      },
+      "box"
     );
   }
   function renameTab(p_tab) {
@@ -28558,7 +28496,7 @@
     if (v_mode) {
       var v_sql_value = v_editor.getValue();
       if (v_sql_value.trim() == "") {
-        showAlert$1("Please provide a string.");
+        showAlert("Please provide a string.");
       } else {
         execAjax$1(
           "/indent_sql/",
@@ -28574,7 +28512,8 @@
             v_editor.clearSelection();
             v_editor.gotoLine(0, 0, true);
           },
-          null
+          null,
+          "box"
         );
       }
     }
@@ -29054,9 +28993,9 @@
     var v_safe_html = '<b>Text copied:</b><div class="mt-2 p-2 border-1 omnidb__theme-bg--light"><code>' + v_escaped.innerHTML + "</code></div>";
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(p_value).then(function() {
-        showAlert$1(v_safe_html, null, null, true);
+        showAlert(v_safe_html, null, null, true);
       }).catch(function() {
-        showAlert$1(v_safe_html, null, null, true);
+        showAlert(v_safe_html, null, null, true);
       });
       return;
     }
@@ -29071,7 +29010,7 @@
     v_text_area.setSelectionRange(0, 9999999);
     document.execCommand("copy");
     document.body.removeChild(v_text_area);
-    showAlert$1(v_safe_html, null, null, true);
+    showAlert(v_safe_html, null, null, true);
   }
   function toggleConnectionAutocomplete(p_toggler_id) {
     let checked = document.getElementById(p_toggler_id).checked;
@@ -29933,10 +29872,11 @@
           }
         }
         if (p_callback != null) p_callback(p_return.v_data);
-        showAlert$1("Snippet saved.");
+        showAlert("Snippet saved.");
         getAllSnippets();
       },
-      null
+      null,
+      "box"
     );
   }
   function newNodeSnippet(p_node, p_mode) {
@@ -29956,7 +29896,8 @@
             refreshTreeSnippets(p_node);
             getAllSnippets();
           },
-          null
+          null,
+          "box"
         );
       },
       null,
@@ -29992,7 +29933,8 @@
             refreshTreeSnippets(p_node.parent);
             getAllSnippets();
           },
-          null
+          null,
+          "box"
         );
       },
       null,
@@ -30024,7 +29966,8 @@
             refreshTreeSnippets(p_node.parent);
             getAllSnippets();
           },
-          null
+          null,
+          "box"
         );
       },
       null,
@@ -30058,7 +30001,8 @@
         v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
         v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
       },
-      null
+      null,
+      "box"
     );
   }
   function executeSnippet(p_id, p_editor) {
@@ -30069,7 +30013,8 @@
         p_editor.insert(p_return.v_data);
         p_editor.clearSelection();
       },
-      null
+      null,
+      "box"
     );
   }
   function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_callback) {
@@ -30227,7 +30172,8 @@
           document.getElementById("div_save_users").style.visibility = "hidden";
         listUsers(true);
       },
-      null
+      null,
+      "box"
     );
   }
   function newUser() {
@@ -30249,7 +30195,8 @@
           document.getElementById("div_save_users").style.visibility = "hidden";
         listUsers(true);
       },
-      null
+      null,
+      "box"
     );
   }
   function removeUser(p_id) {
@@ -30299,7 +30246,8 @@
         }
         listUsers(true, { users_update: v_data });
       },
-      null
+      null,
+      "box"
     );
   }
   function hideUsers() {
@@ -30435,7 +30383,8 @@
           $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
           endLoading();
         },
-        null
+        null,
+        "box"
       );
     }
   }

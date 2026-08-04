@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { endLoading, execAjax, startLoading } from "./ajax_control.js";
+import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
 import { adjustChartTheme, adjustGraphTheme, editCellData } from "./header_actions.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";

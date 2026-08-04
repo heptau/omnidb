@@ -31,7 +31,7 @@ SOFTWARE.
 /// Console state
 /// </summary>
 
-import { execAjax } from "./ajax_control.js";
+import { execAjax } from "./ajax_control_bridge.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";
 import { showAlert, showConfirm } from "./notification_control.js";

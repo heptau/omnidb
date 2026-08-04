@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { execAjax } from "../ajax_control.js";
+import { execAjax } from "../ajax_control_bridge.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { editCellData } from "../header_actions.js";
 import { showError } from "../notification_control.js";

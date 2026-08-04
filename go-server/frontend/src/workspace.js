@@ -31,7 +31,7 @@ SOFTWARE.
 /// Startup function.
 /// </summary>
 
-import { endLoading, execAjax, startLoading } from "./ajax_control.js";
+import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
 import { startConnectionManagement } from "./connections.js";
 import { checkConsoleStatus } from "./console.js";
 import { initCreateTabFunctions } from "./create_tab_functions.js";

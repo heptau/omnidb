@@ -27,7 +27,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { execAjax } from "../ajax_control.js";
+import { execAjax } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
 import { showAlert, showConfirm } from "../notification_control.js";
 
