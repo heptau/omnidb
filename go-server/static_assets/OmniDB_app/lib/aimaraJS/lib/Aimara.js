@@ -586,7 +586,9 @@ function createTree(p_div, p_backColor, p_contextMenu) {
 
 	//Disabling context menu in tree div
 	var v_div = document.getElementById(p_div);
-	v_div.setAttribute("oncontextmenu", "return false;");
+	v_div.oncontextmenu = function () {
+		return false;
+	};
 	v_div.classList.add("aimara_tree");
 
 	return v_tree_object;
