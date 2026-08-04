@@ -107,14 +107,18 @@ export function cancelAjax() {
  * ## execAjax
  * @desc Used to execute an AJAX call.
  *
+ * Everything past p_data is optional -- the body guards each one with a null
+ * check -- and most call sites stop after p_notifMode. The @param types say so
+ * now; they used to be unconditional, which made every short call a type error.
+ *
  * @param {String} p_url - The url of the view to be executed.
  * @param {Object} p_data - A JavaScript object containing anything you want to pass as parameter to the server. Must be in JSON.stringify format.
- * @param {String} p_successFunc - A callback to be called if AJAX call succeeds.
- * @param {String} p_errorFunc - A callback to be called if AJAX call succeeds but returns with errors.
- * @param {Boolean} p_notifMode - The notification mode of this call.
- * @param {Boolean} p_loading - If this AJAX call should add a loading gif or not.
- * @param {Boolean} p_cancel_button - If the cancel button must be displayed or not.
- * @param {String} p_onAjaxErrorCallBack = false A callback to be called on AJAX error. Ex: connectivity issue.
+ * @param {Function|null} [p_successFunc] - A callback to be called if AJAX call succeeds.
+ * @param {Function|null} [p_errorFunc] - A callback to be called if AJAX call succeeds but returns with errors.
+ * @param {String|null} [p_notifMode] - The notification mode of this call.
+ * @param {Boolean|null} [p_loading] - If this AJAX call should add a loading gif or not.
+ * @param {Boolean|null} [p_cancel_button] - If the cancel button must be displayed or not.
+ * @param {Function|Boolean|null} [p_onAjaxErrorCallBack] - A callback to be called on AJAX error. Ex: connectivity issue.
  * @return {Function} Contextual callback returns based on status cases and returned data.
  */
 export function execAjax(

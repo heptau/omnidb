@@ -308,12 +308,73 @@
       event.preventDefault();
     }
   });
+  function validateField(field) {
+    if (!field) return;
+    const parent = field.parentElement;
+    if (!parent) return;
+    if (field.value !== null && field.value !== "") {
+      parent.classList.remove("isEmpty");
+    } else {
+      parent.classList.add("isEmpty");
+    }
+  }
+  const userField = () => (
+    /** @type {HTMLInputElement} */
+    document.getElementById("txt_user")
+  );
+  const pwdField = () => (
+    /** @type {HTMLInputElement} */
+    document.getElementById("txt_pwd")
+  );
+  function markEmptyFields() {
+    let anyEmpty = false;
+    for (const field of [userField(), pwdField()]) {
+      if (!field || field.value === "") anyEmpty = true;
+      validateField(field);
+    }
+    return anyEmpty;
+  }
+  function signIn() {
+    const user = userField();
+    const pwd = pwdField();
+    user.blur();
+    pwd.blur();
+    if (markEmptyFields()) return;
+    execAjax$1(
+      "/sign_in/",
+      JSON.stringify({ p_username: user.value, p_pwd: pwd.value }),
+      function(p_return) {
+        if (p_return.v_data >= 0) {
+          window.open(v_url_folder + "/workspace", "_self");
+        } else if (p_return.v_data == -2) {
+          showAlert$1("Invalid authentication token, use omnidb-server to support multiple users.");
+        } else {
+          showAlert$1("Invalid username or password.");
+        }
+      },
+      null
+    );
+  }
+  function initLoginPage() {
+    checkSessionMessage();
+    markEmptyFields();
+    for (const field of [userField(), pwdField()]) {
+      if (!field) continue;
+      field.addEventListener("change", () => validateField(field));
+      field.addEventListener("keydown", (event) => {
+        if (event.key === "Enter") signIn();
+      });
+    }
+    const signInButton = document.getElementById("bt_sign_in");
+    if (signInButton) signInButton.addEventListener("click", () => signIn());
+    if (v_cancel_button) {
+      v_cancel_button.addEventListener("click", cancelAjax);
+    }
+  }
   exposeGlobals(
     notificationControl,
     ajaxControl
   );
-  if (v_cancel_button) {
-    v_cancel_button.addEventListener("click", cancelAjax);
-  }
+  initLoginPage();
 })();
 //# sourceMappingURL=omnidb.login.js.map

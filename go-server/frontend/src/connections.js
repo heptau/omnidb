@@ -927,16 +927,6 @@ export function selectConnection(p_conn_obj) {
 	}
 }
 
-export function toggleConnectionsLayout(l_type) {
-	if (l_type === "cards") {
-		$(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--rows");
-		$(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--cards");
-	} else if (l_type === "rows") {
-		$(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--cards");
-		$(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--rows");
-	}
-}
-
 export function toggleConnectionsPublic() {
 	updateConnectionsTitleInfo();
 	var v_public = document.getElementById("conn_list_public").checked;

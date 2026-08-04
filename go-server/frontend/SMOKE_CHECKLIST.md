@@ -25,6 +25,16 @@ Run it after every migration step. It takes about ten minutes.
   code by far; the other engines share the same tab/grid machinery but have
   their own tree implementations.
 
+## Login page — server mode only
+
+- [ ] Both fields start outlined as empty; typing into one clears its outline.
+- [ ] Sign in with both fields blank does nothing (no request).
+- [ ] A wrong password reports "Invalid username or password."
+- [ ] Enter in either field signs in, as does the Sign in button.
+- [ ] Console is clean. This page's script all lives in the bundle now
+      (`src/login_page.js`); a ReferenceError here means something runs before
+      `exposeGlobals`.
+
 ## Startup
 
 - [ ] App window opens and the loading overlay (`#div_loading`) disappears.
@@ -38,7 +48,6 @@ Run it after every migration step. It takes about ten minutes.
 
 - [ ] Header → Connections opens `#modal_connections` and lists saved
       connections.
-- [ ] Toggle the list/card layout button.
 - [ ] New connection → the edit dialog opens with the correct fields for the
       selected engine (switching `#conn_form_type` reshuffles which fields
       are visible).
@@ -62,6 +71,12 @@ its own `tree_*.js`, and they do not share code.
 - [ ] Connecting expands the tree root without error.
 - [ ] Expand schemas → tables → columns; the node icons are correct.
 - [ ] Login roles and group roles show different icons (PostgreSQL).
+- [ ] Right-click a table → the context menu appears with the expected entries.
+- [ ] Context menu → Edit Data opens an edit-data tab.
+- [ ] Context menu → an action that generates SQL (e.g. Create/Drop) opens a
+      query tab pre-filled with a template.
+- [ ] The DDL / properties panel populates for a table, a view, a function and
+      a role — including the comment and privileges sections.
 
 ## Users dialog — server mode only, as a superuser
 
@@ -78,13 +93,6 @@ sign of it. Check the database, not the dialog.
 - [ ] Add new user and then undo it with the `×` before saving.
 - [ ] Remove an account. It is gone, and so are its connections, groups,
       snippets and shortcuts.
-- [ ] Right-click a table → the context menu appears with the expected entries.
-- [ ] Context menu → Edit Data opens an edit-data tab.
-- [ ] Context menu → an action that generates SQL (e.g. Create/Drop) opens a
-      query tab pre-filled with a template.
-- [ ] The DDL / properties panel populates for a table, a view, a function and
-      a role — including the comment and privileges sections.
-- [ ] Advanced object search finds a known table.
 
 ## Query tab
 

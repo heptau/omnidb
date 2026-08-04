@@ -92,26 +92,50 @@ every keyboard shortcut in the app with it. `npm run check` now refuses any
 `declare let` that is neither declared in `workspace.html` nor published by
 `bootstrap-globals.js`.
 
+## No inline event handlers
+
+There are none left. Not in `workspace.html`, not in `login.html`, not in any
+HTML string built inside JS, and not in the markup the Go side generates. The
+count went 59 + 13 + 4 in the templates and the Go handlers, plus about 90 in
+JS-built strings, to zero.
+
+Two remain in the rendered page and both come from the vendored AimaraJS, which
+puts `oncontextmenu="return false;"` on its tree container. That is third-party
+code in `lib/`, and it is the only thing between this frontend and a
+Content-Security-Policy without `unsafe-inline`.
+
+Handlers are bound one of two ways:
+
+- **Where the markup is written**, right after the `innerHTML` assignment or the
+  element's creation. This is most of them, and it is preferred: the handler is
+  an ordinary import, so a rename that breaks a binding is a build error.
+- **Through a delegated dispatcher** in `dom_event_bindings.js`, for markup that
+  cannot be reached at its write site — a tutorial step authored in
+  `tutorial.js` but injected by `omnis-control.js`, and grid row actions that
+  live in cell *data* and are re-rendered by the grid at will. Those elements
+  carry `data-omnidb-action="…"` (plus `data-omnidb-arg` / `data-omnidb-id`) and
+  one listener on `document` resolves the name against a table. Unknown names do
+  nothing, so it is an allowlist, not an eval.
+
+The Go side emits no executable markup either. `get_users` used to send a
+ready-made `<i … onclick='removeUser("3")'>` per row and
+`get_monitor_unit_list` one per action icon; both send ids now and the frontend
+builds the element.
+
 ## The legacy-globals bridge
 
-Cross-file references are real imports now, so the bridge is no longer what
-holds the bundle together. What still needs it:
+Cross-file references are real imports now, and the inline handlers are gone, so
+the bridge is down to:
 
-- the inline event handlers — around 30 `on*=` attributes in `workspace.html`
-  and roughly 80 more built as HTML strings inside JS and injected with
-  `innerHTML`. All of them are evaluated against the global scope.
-- `workspace.html`'s inline bootstrap script, which calls `createOmnis()`.
-- `showAlert`, called from `ajax_control.js` in the early bundle, which cannot
-  import it (see above).
+- `workspace.html`'s inline bootstrap script, which calls `createOmnis()` and
+  declares the globals bundled code assigns to;
+- `execAjax` and `showAlert`, reached as globals from `ajax_control.js` and
+  `notification_control.js` — those two files appear in more than one bundle and
+  so cannot import from each other (see above).
 
-That comes to 87 names of 549 exports. The bridge still publishes all of them
-wholesale rather than an allowlist, because an allowlist that drifts fails at
-click time in a way nothing would catch.
-
-Deleting it means converting those ~110 inline handlers to `addEventListener`.
-The ones in `workspace.html` are easy; the ones assembled into HTML strings are
-the real work, and worth doing — an inline handler is also the only reason this
-frontend cannot adopt a Content-Security-Policy without `unsafe-inline`.
+The bridge still publishes all 551 exports wholesale rather than an allowlist,
+because an allowlist that drifts fails at click time in a way nothing would
+catch.
 
 It assigns with `Object.assign`, which is a snapshot rather than a live
 binding. `npm run check` enforces the two invariants that keeps honest —
@@ -174,9 +198,13 @@ What is deliberately not done yet:
   needs explicit configuration under a bundler.
 - **Extending the `// @ts-check` set.** The infrastructure is in place (see
   above); the ~39k unannotated lines are the work.
-- **Deleting the bridge.** Needs ~110 inline handlers converted to
-  `addEventListener` — see above. Also the prerequisite for a CSP without
-  `unsafe-inline`.
+- **Deleting the bridge.** What is left needs `workspace.html`'s inline
+  bootstrap script to go and `ajax_control.js`/`notification_control.js` to stop
+  living in more than one bundle — see above.
+- **A Content-Security-Policy without `unsafe-inline`.** Nothing in this
+  project's own markup blocks it any more. AimaraJS's
+  `oncontextmenu="return false;"` on the tree container does; it is two lines in
+  `lib/aimaraJS/lib/Aimara.js`.
 - **The CSS.** There is no `.scss` source in the repo — only
   `css/omnidb.min.css` and a source map naming nine files that no longer
   exist. Either reconstruct them from the map or accept the compiled CSS as

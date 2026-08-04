@@ -31,13 +31,13 @@
 			<div class="loginWrap-body">
 				<div class="omnidb__login__input-wrapper">
 					<label id="user_title">user</label>
-					<input id="txt_user" type="text" placeholder="user" onchange="validateField(this)" onkeydown="if (event.keyCode == 13) signIn();">
+					<input id="txt_user" type="text" placeholder="user">
 				</div>
 				<div class="omnidb__login__input-wrapper">
 					<label id="pwd_title">pwd</label>
-					<input id="txt_pwd" type="password" placeholder="password" onchange="validateField(this)" onkeydown="if (event.keyCode == 13) signIn();">
+					<input id="txt_pwd" type="password" placeholder="password">
 				</div>
-				<button type="button" onclick="signIn()">Sign in</button>
+				<button id="bt_sign_in" type="button">Sign in</button>
 			</div>
 		</div>
 	</div>
@@ -79,95 +79,18 @@
 
 <script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/jquery/jquery.min.js?v{{static_cache_bust}}"></script>
 <script src="{{url_folder}}/static/OmniDB_app/lib/bootstrap/bootstrap.min.js?v{{static_cache_bust}}"></script>
-<!-- Vite bundle for this page (go-server/frontend/, src/login.js): the same
-     notification_control + ajax_control + context_menu_guard this page has
-     always loaded, now built rather than served as three separate files. -->
-<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/dist/omnidb.login.js?v{{static_cache_bust}}"></script>
+<!-- The two server-rendered values the bundle reads off `window`. They have to
+     be set *before* it loads: src/login_page.js calls checkSessionMessage() as
+     it evaluates, and execAjax reads both. -->
 <script type="text/javascript">
 	var v_url_folder = '{{url_folder}}';
 	var v_csrf_cookie_name = '{{csrf_cookie_name}}';
-	$(document).ready(function () {
-
-		checkSessionMessage();
-
-		var v_user_name = document.getElementById('txt_user');
-		var v_pwd = document.getElementById('txt_pwd');
-
-		var validate_fields = [
-			{el: v_user_name, val: v_user_name.value},
-			{el: v_pwd, val: v_pwd.value}
-		];
-		var field_errors = false;
-
-		for (let i = 0; i < validate_fields.length; i++) {
-			var v_field = validate_fields[i];
-			if (v_field === null || v_field === '') {
-				field_errors = true;
-				validateField(v_field);
-			}
-		}
-
-	});
-
-	function signIn() {
-
-		document.getElementById("txt_user").blur();
-		document.getElementById("txt_pwd").blur();
-
-		var v_user_name = document.getElementById('txt_user');
-		var v_pwd = document.getElementById('txt_pwd');
-
-		var validate_fields = [
-			{el: v_user_name, val: v_user_name.value},
-			{el: v_pwd, val: v_pwd.value}
-		];
-		var field_errors = false;
-
-		for (let i = 0; i < validate_fields.length; i++) {
-			var v_field = validate_fields[i];
-			if (v_field === null || v_field === '') {
-				field_errors = true;
-				validateField(v_field);
-			}
-		}
-
-		if (!field_errors) {
-			execAjax('/sign_in/',
-				JSON.stringify({"p_username": v_user_name.value, "p_pwd": v_pwd.value}),
-				function(p_return) {
-
-					if (p_return.v_data>=0) {
-						window.open(v_url_folder + "/workspace", '_self');
-					}
-					else if (p_return.v_data==-2) {
-						showAlert('Invalid authentication token, use omnidb-server to support multiple users.');
-					}
-					else
-						showAlert('Invalid username or password.');
-
-				},
-				null,
-				'box'
-			);
-		}
-
-	}
-
-	function validateField(p_field) {
-		if (p_field) {
-			var v_parent = p_field.parentElement;
-			if (p_field.value !== null && p_field.value !== '') {
-				v_parent.classList.remove('isEmpty');
-
-			}
-			else {
-				v_parent.classList.add('isEmpty');
-			}
-		}
-	}
-
-
 </script>
+<!-- Vite bundle for this page (go-server/frontend/, src/login.js):
+     notification_control + ajax_control + context_menu_guard, plus
+     login_page.js, which holds what used to be an inline <script> here and
+     binds the form. This page has no executable markup left. -->
+<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/dist/omnidb.login.js?v{{static_cache_bust}}"></script>
 
 </body>
 </html>
