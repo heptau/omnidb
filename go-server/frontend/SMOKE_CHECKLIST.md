@@ -137,6 +137,21 @@ implies the next.
 - [ ] Run a backslash command (`\dt` on PostgreSQL).
 - [ ] Command history navigates with the arrow keys.
 
+## History dialogs — the query tab's and the console tab's
+
+Both are built from the same shape and have the same seven controls, so check
+each dialog separately rather than assuming one covers the other.
+
+- [ ] The dialog lists the commands that were run.
+- [ ] First / Previous / Next / Last move between pages, and the counter
+      updates. Run enough statements to get more than one page.
+- [ ] Refresh reloads.
+- [ ] "Command contains" filters the list on change.
+- [ ] The daterange button opens the picker **inside the dialog**, not behind
+      it or at the top of the page — its container's id used to be built from a
+      field the tab tag does not have, so the picker had nowhere to mount.
+- [ ] Clear List asks for confirmation and empties the list.
+
 ## Terminal tab
 
 Only for a connection with SSH tunneling configured.

@@ -63,10 +63,6 @@ export function showCommandList() {
 
 	v_tabTag.commandHistory.headerDiv.innerHTML =
 		"<div class='mb-2 form-inline justify-content-center'>" +
-		// "<label class='mr-1'>Started from:</label>" +
-		// "<input type='date' id='cl_input_from_" + v_tabTag.tab_id + "' class='mr-2 form-control' onchange='refreshCommandList();' onchange='refreshCommandList();'/>" +
-		// "<label class='mr-1'>to:</label>" +
-		// "<input type='date' id='cl_input_to_" + v_tabTag.tab_id + "' class='mr-2 form-control' onchange='refreshCommandList(); '/>" +
 		"<div class='input-group w-auto mr-2'>" +
 		"<span class='my-auto'>Select a daterange:</span>&nbsp;" +
 		"<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" +
@@ -85,18 +81,18 @@ export function showCommandList() {
 		"<label class='mr-1'>Command contains:</label>" +
 		"<input type='text' id='cl_input_contains_" +
 		v_tabTag.tab_id +
-		"' class='mr-2 form-control' onchange='refreshCommandList();' />" +
+		"' class='mr-2 form-control' />" +
 		"</div>" +
 		"<div id='command_history_daterangepicker_container_" +
-		v_tabTag.id +
+		v_tabTag.tab_id +
 		"' style='position:relative;'></div>" +
 		"<div class='mb-2 d-flex justify-content-center align-items-center'>" +
 		"<button id='bt_first_" +
 		v_tabTag.tab_id +
-		"' onclick='commandHistoryFirstPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button>" +
 		"<button id='bt_previous_" +
 		v_tabTag.tab_id +
-		"' onclick='commandHistoryPreviousPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button>" +
 		"<span id='cl_curr_page_" +
 		v_tabTag.tab_id +
 		"'></span> / <span id='cl_num_pages_" +
@@ -104,16 +100,16 @@ export function showCommandList() {
 		"'></span>" +
 		"<button id='bt_next_" +
 		v_tabTag.tab_id +
-		"' onclick='commandHistoryNextPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button>" +
 		"<button id='bt_last_" +
 		v_tabTag.tab_id +
-		"' onclick='commandHistoryLastPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button>" +
 		"<button id='bt_refresh_" +
 		v_tabTag.tab_id +
-		"' onclick='refreshCommandList()' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button>" +
 		"<button id='bt_clear_" +
 		v_tabTag.tab_id +
-		"' onclick='deleteCommandList()' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button>" +
+		"' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button>" +
 		"</div>";
 
 	var v_gridDiv = v_tabTag.commandHistory.gridDiv;
@@ -223,6 +219,22 @@ export function showCommandList() {
 	v_tabTag.commandHistory.inputStartedTo.value = moment().toISOString();
 	v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
 	v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
+
+	// Bindings for the header just built above, replacing the on*= attributes it
+	// used to carry -- see dom_event_bindings.js and README.md. All six handlers
+	// live in this module and read the selected tab themselves, as they always
+	// did; this header only exists for the tab whose modal is open.
+	v_tabTag.commandHistory.inputCommandContains.addEventListener("change", () => refreshCommandList());
+	for (const [id, handler] of [
+		["bt_first_", commandHistoryFirstPage],
+		["bt_previous_", commandHistoryPreviousPage],
+		["bt_next_", commandHistoryNextPage],
+		["bt_last_", commandHistoryLastPage],
+		["bt_refresh_", refreshCommandList],
+		["bt_clear_", deleteCommandList],
+	]) {
+		document.getElementById(id + v_tabTag.tab_id).addEventListener("click", () => handler());
+	}
 
 	// Setting daterangepicker
 	var cl_time_range = document.getElementById("cl_time_range_" + v_tabTag.tab_id);

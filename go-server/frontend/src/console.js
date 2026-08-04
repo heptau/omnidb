@@ -94,18 +94,18 @@ export function showConsoleHistory() {
 		"<label class='mr-1'>Command contains:</label>" +
 		"<input type='text' id='cl_input_contains_" +
 		v_tab_tag.tab_id +
-		"' class='mr-2 form-control' onchange='refreshConsoleHistoryList();' />" +
+		"' class='mr-2 form-control' />" +
 		"</div>" +
 		"<div id='console_history_daterangepicker_container_" +
-		v_tab_tag.id +
+		v_tab_tag.tab_id +
 		"' style='position:relative;'></div>" +
 		"<div class='mb-2 d-flex justify-content-center align-items-center'>" +
 		"<button id='bt_first_" +
 		v_tab_tag.tab_id +
-		"' onclick='consoleHistoryFirstPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button>" +
 		"<button id='bt_previous_" +
 		v_tab_tag.tab_id +
-		"' onclick='consoleHistoryPreviousPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button>" +
 		"<span id='cl_curr_page_" +
 		v_tab_tag.tab_id +
 		"'></span> / <span id='cl_num_pages_" +
@@ -113,16 +113,16 @@ export function showConsoleHistory() {
 		"'></span>" +
 		"<button id='bt_next_" +
 		v_tab_tag.tab_id +
-		"' onclick='consoleHistoryNextPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button>" +
 		"<button id='bt_last_" +
 		v_tab_tag.tab_id +
-		"' onclick='consoleHistoryLastPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button>" +
 		"<button id='bt_refresh_" +
 		v_tab_tag.tab_id +
-		"' onclick='refreshConsoleHistoryList()' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button>" +
 		"<button id='bt_clear_" +
 		v_tab_tag.tab_id +
-		"' onclick='deleteConsoleHistoryList()' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button>" +
+		"' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button>" +
 		"</div>";
 
 	var v_grid_div = v_tab_tag.consoleHistory.gridDiv;
@@ -222,6 +222,21 @@ export function showConsoleHistory() {
 	v_tab_tag.consoleHistory.inputStartedTo.value = moment().toISOString();
 	v_tab_tag.consoleHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tab_tag.tab_id);
 	v_tab_tag.consoleHistory.inputCommandContains.value = v_tab_tag.consoleHistory.inputCommandContainsLastValue;
+
+	// Bindings for the header just built above, replacing the on*= attributes it
+	// used to carry -- see dom_event_bindings.js and README.md. Same shape as
+	// command_history.js's showCommandList.
+	v_tab_tag.consoleHistory.inputCommandContains.addEventListener("change", () => refreshConsoleHistoryList());
+	for (const [id, handler] of [
+		["bt_first_", consoleHistoryFirstPage],
+		["bt_previous_", consoleHistoryPreviousPage],
+		["bt_next_", consoleHistoryNextPage],
+		["bt_last_", consoleHistoryLastPage],
+		["bt_refresh_", refreshConsoleHistoryList],
+		["bt_clear_", deleteConsoleHistoryList],
+	]) {
+		document.getElementById(id + v_tab_tag.tab_id).addEventListener("click", () => handler());
+	}
 
 	// Setting daterangepicker
 	var cl_time_range = document.getElementById("cl_time_range_" + v_tab_tag.tab_id);
