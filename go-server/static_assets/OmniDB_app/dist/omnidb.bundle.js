@@ -5773,7 +5773,7 @@
 			</g>
 	</svg>`;
     let v_html_title = '<h1 class="mb-4" style="padding-left: 100px; position: relative;"><span class="omnidb__welcome__loading" style="background: none;">' + v_animated_omnis + '</span><span class="omnidb__welcome__intro-text">Hi, welcome to <span style="color:#4a6cbb;">OmniDB!</span></span></h1>';
-    let v_html_intro = `<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center"><span class="badge badge-danger" style="vertical-align: middle;">disclaimer</span> OmniDB is a powerful tool, and with great power...<br/>Please <strong><span class="text-danger">learn how to use it on a testing environment, NOT on production</span></strong>!</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" onclick="startTutorial('getting_started');"><i class="fas fa-list mr-2"></i>Getting started</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-exclamation-triangle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">
+    let v_html_intro = `<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center"><span class="badge badge-danger" style="vertical-align: middle;">disclaimer</span> OmniDB is a powerful tool, and with great power...<br/>Please <strong><span class="text-danger">learn how to use it on a testing environment, NOT on production</span></strong>!</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started"><i class="fas fa-list mr-2"></i>Getting started</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-exclamation-triangle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">
 				Our focus is to provide a very flexible, secure and work-effective environment for multiple DBMS.<br>
 				With that in mind, you should <strong>be aware the many actions on the UI can lead to a direct interaction with the database</strong> that you are connected with.</br>
 				</div></div></div>`;
@@ -28196,7 +28196,7 @@
         v_button_inner_query_attr = "";
       }
     }
-    var v_button_inner_query = `<li class="mb-2"><button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connection_tab');"><i class="fas fa-list mr-2"></i>The Connection Tab</button></li>`;
+    var v_button_inner_query = `<li class="mb-2"><button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab"><i class="fas fa-list mr-2"></i>The Connection Tab</button></li>`;
     var v_tutorials = {
       main: [
         {
@@ -28748,7 +28748,7 @@
     };
     let v_tutorial_link_creating_user = gv_desktopMode ? "" : `
 	<li class="mb-2">
-		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('utilities_menu');">
+		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="utilities_menu">
 			<i class="fas fa-user-plus mr-2"></i>Create an omnidb user
 		</button>
 	</li>`;
@@ -28756,22 +28756,22 @@
       {
         p_message: '<ol style="padding-left: 1.5rem;">' + v_tutorial_link_creating_user + `
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connections_menu');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connections_menu">
 						<i class="fas fa-plug mr-2"></i>Create a database connection
 					</button>
 				</li>
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('terminal_connection');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="terminal_connection">
 						<i class="fas fa-terminal mr-2"></i>Create a terminal connection
 					</button>
 				</li>
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('snippets');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
 						<i class="fas fa-book mr-2"></i>Meet the snippets panel
 					</button>
 				</li>
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('selecting_connection');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="selecting_connection">
 						<i class="fas fa-plus mr-2"></i>Using a connection
 					</button>
 				</li>
@@ -32080,6 +32080,17 @@
     __proto__: null,
     AgGridAdapter
   }, Symbol.toStringTag, { value: "Module" }));
+  const DELEGATED_CLICK = {
+    "start-tutorial": (el2) => startTutorial(el2.getAttribute("data-omnidb-arg"))
+  };
+  document.addEventListener("click", (event2) => {
+    const target = event2.target;
+    if (!(target instanceof Element)) return;
+    const el2 = target.closest("[data-omnidb-action]");
+    if (!el2) return;
+    const handler = DELEGATED_CLICK[el2.getAttribute("data-omnidb-action") || ""];
+    if (handler) handler(el2, event2);
+  });
   function bind(id, type, handler) {
     const el2 = document.getElementById(id);
     if (el2) el2.addEventListener(type, handler);

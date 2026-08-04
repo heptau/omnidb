@@ -61,7 +61,7 @@ export function startTutorial(p_tutorial_name) {
 		'<li class="mb-2">' +
 		`<button ` +
 		v_button_inner_query_attr +
-		` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connection_tab');">` +
+		` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab">` +
 		'<i class="fas fa-list mr-2"></i>The Connection Tab' +
 		"</button>" +
 		"</li>";
@@ -622,7 +622,7 @@ export function startTutorial(p_tutorial_name) {
 		? ""
 		: `
 	<li class="mb-2">
-		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('utilities_menu');">
+		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="utilities_menu">
 			<i class="fas fa-user-plus mr-2"></i>Create an omnidb user
 		</button>
 	</li>`;
@@ -633,22 +633,22 @@ export function startTutorial(p_tutorial_name) {
 				v_tutorial_link_creating_user +
 				`
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('connections_menu');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connections_menu">
 						<i class="fas fa-plug mr-2"></i>Create a database connection
 					</button>
 				</li>
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('terminal_connection');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="terminal_connection">
 						<i class="fas fa-terminal mr-2"></i>Create a terminal connection
 					</button>
 				</li>
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('snippets');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
 						<i class="fas fa-book mr-2"></i>Meet the snippets panel
 					</button>
 				</li>
 				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" onclick="startTutorial('selecting_connection');">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="selecting_connection">
 						<i class="fas fa-plus mr-2"></i>Using a connection
 					</button>
 				</li>

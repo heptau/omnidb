@@ -1,6 +1,7 @@
 // @ts-check
 /**
- * Event bindings for the static markup in workspace.html.
+ * Event bindings for the static markup in workspace.html, plus the delegated
+ * dispatcher used by markup that is generated as a string somewhere else.
  *
  * Every entry below replaces an `on*=` attribute that used to sit on the
  * element. Those attributes are evaluated against the global scope, which is
@@ -8,10 +9,6 @@
  * frontend cannot adopt a Content-Security-Policy without `unsafe-inline`.
  * Handlers here are ordinary imports instead, so a rename that breaks one is a
  * build error rather than a click that silently does nothing.
- *
- * This file covers workspace.html only. The handlers built as HTML strings
- * inside JS and injected with innerHTML are the larger remaining half; see
- * README.md.
  *
  * Order does not matter: it is imported from main.js, whose <script> tag sits
  * below all of this markup, so every element already exists.
@@ -44,7 +41,39 @@ import {
 } from './header_actions.js'
 import { editMonitorUnit } from './monitoring.js'
 import { startSetShortcut } from './shortcuts.js'
+import { startTutorial } from './tutorial_functions/tutorial.js'
 import { listUsers } from './users.js'
+
+// --- delegated actions, for markup this file cannot reach -------------------
+//
+// Most converted handlers are bound where their markup is written. Some cannot
+// be: a tutorial step's buttons are authored in tutorial.js but injected by
+// omnis-control.js, and a grid's row-action icon is authored as cell *data* and
+// re-rendered by the grid whenever it likes. Those elements carry
+//
+//     data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab"
+//
+// instead of an `on*=` attribute, and the one listener below resolves the action
+// name against the table. A name that is not in the table does nothing, so this
+// is an allowlist and not an eval -- the same shape workspace.js's
+// v_monitoring_action_whitelist already uses for monitoring row actions.
+//
+// One listener on `document`, installed once, so it also catches markup
+// injected long after this module ran.
+
+/** @type {Record<string, (el: Element, event: Event) => void>} */
+const DELEGATED_CLICK = {
+  'start-tutorial': (el) => startTutorial(el.getAttribute('data-omnidb-arg')),
+}
+
+document.addEventListener('click', (event) => {
+  const target = event.target
+  if (!(target instanceof Element)) return
+  const el = target.closest('[data-omnidb-action]')
+  if (!el) return
+  const handler = DELEGATED_CLICK[el.getAttribute('data-omnidb-action') || '']
+  if (handler) handler(el, event)
+})
 
 /**
  * @param {string} id

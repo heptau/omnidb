@@ -154,9 +154,7 @@ export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = 
 	let v_html_intro =
 		'<div class="card p-3 omnidb__welcome__intro-card">' +
 		'<p class="text-center"><span class="badge badge-danger" style="vertical-align: middle;">disclaimer</span> OmniDB is a powerful tool, and with great power...<br/>Please <strong><span class="text-danger">learn how to use it on a testing environment, NOT on production</span></strong>!</p>' +
-		'<button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" onclick="startTutorial(' +
-		"'getting_started'" +
-		');">' +
+		'<button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started">' +
 		'<i class="fas fa-list mr-2"></i>' +
 		"Getting started" +
 		"</button>" +
