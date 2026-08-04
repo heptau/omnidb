@@ -37,7 +37,17 @@ import { showAlert } from "../notification_control.js";
 import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { whiteHtmlRenderer } from "../renderers.js";
 import { createTabControl } from "../tabs.js";
-import { changeDatabase, checkTabStatus, refreshHeights, refreshTreeHeight, showMenuNewTab } from "../workspace.js";
+import {
+	changeDatabase,
+	checkTabStatus,
+	refreshHeights,
+	refreshTreeHeight,
+	resizeConnectionHorizontal,
+	resizeTreeVertical,
+	showMenuNewTab,
+	toggleTreeContainer,
+	toggleTreeTabsContainer,
+} from "../workspace.js";
 
 
 export var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
@@ -185,7 +195,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			'_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div>' +
 			'<div id="' +
 			v_tab.id +
-			'_left_resize_line_horizontal" onmousedown="resizeTreeVertical(event)" style="width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"></div>' +
+			'_left_resize_line_horizontal" style="width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"></div>' +
 			'<div id="tree_tabs_parent_' +
 			v_tab.id +
 			'" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;">' +
@@ -199,24 +209,24 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			"  </div>" +
 			"</div>" +
 			"</div>" +
-			'<button type="button" onclick="toggleTreeTabsContainer(' +
-			"'tree_tabs_parent_" +
+			'<button id="bt_toggle_tree_tabs_' +
 			v_tab.id +
-			"','" +
-			v_tab.id +
-			"_left_resize_line_horizontal'" +
-			')" class="btn omnidb__theme__btn--secondary omnidb__tree-tabs__toggler"><i class="fas fa-arrows-alt-v"></i></button>' +
+			'" type="button" class="btn omnidb__theme__btn--secondary omnidb__tree-tabs__toggler"><i class="fas fa-arrows-alt-v"></i></button>' +
 			'<div id="tree_tabs_' +
 			v_tab.id +
 			'" class="omnidb__tree-tabs__container" style="position: relative;"></div>' +
 			"</div>" +
 			"</div>" +
 			"</div>" + //.div_left
-			'<div class="resize_line_vertical omnidb__resize-line__container" onmousedown="resizeConnectionHorizontal(event)" style="grid-area: splitter; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;"></div>' +
+			'<div id="connection_resize_line_' +
+			v_tab.id +
+			'" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;"></div>' +
 			'<div id="' +
 			v_tab.id +
 			'_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;">' +
-			'<button type="button" class="py-4 px-0 btn omnidb__theme__btn--secondary omnidb__tree__toggler" onclick="toggleTreeContainer()"><i class="fas fa-arrows-alt-h"></i></button>' +
+			'<button id="bt_toggle_tree_container_' +
+			v_tab.id +
+			'" type="button" class="py-4 px-0 btn omnidb__theme__btn--secondary omnidb__tree__toggler"><i class="fas fa-arrows-alt-h"></i></button>' +
 			'<div id="' +
 			v_tab.id +
 			'_tabs" class="w-100"></div>' +
@@ -232,6 +242,26 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		}
 
 		v_tab.elementDiv.innerHTML = v_html;
+
+		// Bindings for the two resize lines and two togglers just built above,
+		// replacing the on*= attributes they carried -- see dom_event_bindings.js
+		// and README.md. The toggler ids were only needed because these elements
+		// had none; toggleTreeTabsContainer's two arguments used to be spliced into
+		// the attribute as string literals.
+		document
+			.getElementById(v_tab.id + "_left_resize_line_horizontal")
+			.addEventListener("mousedown", (event) => resizeTreeVertical(event));
+		document
+			.getElementById("connection_resize_line_" + v_tab.id)
+			.addEventListener("mousedown", (event) => resizeConnectionHorizontal(event));
+		document
+			.getElementById("bt_toggle_tree_tabs_" + v_tab.id)
+			.addEventListener("click", () =>
+				toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id, v_tab.id + "_left_resize_line_horizontal"),
+			);
+		document
+			.getElementById("bt_toggle_tree_container_" + v_tab.id)
+			.addEventListener("click", () => toggleTreeContainer());
 
 		// Tab control under the tree
 		var v_treeTabs = createTabControl({ p_div: "tree_tabs_" + v_tab.id });

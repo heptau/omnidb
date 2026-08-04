@@ -29,7 +29,7 @@ SOFTWARE.
 
 import { createTabControl } from "../tabs.js";
 import { getTreeSnippets } from "../tree_context_functions/tree_snippets.js";
-import { resizeSnippetPanel, showMenuNewTab } from "../workspace.js";
+import { resizeSnippetHorizontal, resizeSnippetPanel, showMenuNewTab } from "../workspace.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -77,7 +77,9 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"<div id='" +
 		v_tab.id +
 		"_panel_snippet' class='omnidb__panel omnidb__panel--snippet'>" +
-		"<button type='button' onclick='toggleSnippetPanel()' class='px-4 btn omnidb__theme__btn--secondary omnidb__panel__toggler'><i class='fas fa-arrows-alt-v'></i></button>" +
+		"<button id='bt_toggle_snippet_panel_" +
+		v_tab.id +
+		"' type='button' class='px-4 btn omnidb__theme__btn--secondary omnidb__panel__toggler'><i class='fas fa-arrows-alt-v'></i></button>" +
 		"<div class='container-fluid h-100' style='position: relative;'>" +
 		"<div id='" +
 		v_tab.id +
@@ -92,7 +94,9 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"_snippet_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
 		"</div>" +
 		"</div>" +
-		"<div class='resize_line_vertical omnidb__resize-line__container' onmousedown='resizeSnippetHorizontal(event)' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div>" +
+		"<div id='snippet_resize_line_" +
+		v_tab.id +
+		"' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div>" +
 		"</div>" + //.div_left
 		"<div id='" +
 		v_tab.id +
@@ -109,6 +113,16 @@ export var v_createSnippetPanelFunction = function (p_index) {
 	v_connTabControl.snippet_div.id = v_tab.id + "_snippet";
 	v_connTabControl.snippet_div.innerHTML = v_html;
 	document.getElementById(v_connTabControl.id).append(v_connTabControl.snippet_div);
+
+	// Bindings for the panel toggler and the resize line just built above,
+	// replacing the on*= attributes they carried -- see dom_event_bindings.js and
+	// README.md. Both elements needed an id; they had none.
+	document
+		.getElementById("bt_toggle_snippet_panel_" + v_tab.id)
+		.addEventListener("click", () => toggleSnippetPanel());
+	document
+		.getElementById("snippet_resize_line_" + v_tab.id)
+		.addEventListener("mousedown", (event) => resizeSnippetHorizontal(event));
 
 	var v_currTabControl = createTabControl({
 		p_div: v_tab.id + "_snippet_tabs",
