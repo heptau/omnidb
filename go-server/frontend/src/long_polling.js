@@ -223,15 +223,6 @@ export function polling_response(p_message) {
 		default: {
 			break;
 		}
-		case parseInt(v_queryResponseCodes.AdvancedObjectSearchResult): {
-			if (p_context) {
-				SetAcked(p_context);
-				advancedObjectSearchReturn(v_message, p_context);
-				//Remove context
-				removeContext(p_context_code);
-			}
-			break;
-		}
 	}
 }
 

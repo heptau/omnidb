@@ -150,9 +150,10 @@ func decodeRequestData(vCode int, data json.RawMessage, out any) bool {
 // SaveEditData/Terminal/CancelThread/CloseTab). The remaining IntEnum values
 // in Python's own requestType (Debug, Script, Execute,
 // AdvancedObjectSearch) are confirmed dead in the shipped frontend: Script/
-// Execute are never sent by any JS; AdvancedObjectSearch's own JS calls
-// queryAdvancedObjectSearch/checkAdvancedObjectSearchStatus, neither of
-// which exist anywhere in the static tree. Debug *was* reachable (a "Debug
+// Execute are never sent by any JS; AdvancedObjectSearch's own JS called
+// queryAdvancedObjectSearch/checkAdvancedObjectSearchStatus, which existed
+// nowhere in the static tree, and that JS is deleted now (its menu entry had
+// been commented out, so nothing could reach it). Debug *was* reachable (a "Debug
 // Function"/"Debug Procedure" tree menu entry called it) but had no handler
 // here — it silently fell through to this no-op fallback — and has since
 // been removed outright, menu entries included, rather than left as a
@@ -191,8 +192,8 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 		// that could still be running server-side (Query/Console/EditData/
 		// Terminal) is Go-native, so there's nothing left for Django's own
 		// create_request to do for these two codes (its only other
-		// consumer, AdvancedObjectSearch's thread-pool cancel, is dead
-		// code — see this function's package comment).
+		// consumer, AdvancedObjectSearch's thread-pool cancel, is gone —
+		// see this function's package comment).
 		if body.VCode == requestTypeCancelThread {
 			var tabID string
 			if json.Unmarshal(body.VData, &tabID) == nil {

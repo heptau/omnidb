@@ -138,13 +138,16 @@ fails if anything already in it regresses. Currently checked:
 - `AgGridAdapter.js`
 - `scripts/check-bridge.mjs`
 
-Running it over *everything* (set `checkJs` and see) reports around 740
-findings, down from 4,602 before cross-file references became imports. What is
-left is dominated by two shapes, neither of which is a bug: property access on
-values typed `any` from the declarations above, and calls that omit a trailing
-parameter the callee guards with `if (p_x)` — signatures that lie about being
-optional. Exactly four are "Cannot find name", and all four are the Advanced
-Object Search functions that do not exist.
+Running it over *everything* (set `checkJs` and see) reports 1,482 findings,
+down from 4,602 before cross-file references became imports. What is left is
+dominated by three shapes, none of which is a bug: property access on values
+typed `any` from the declarations above (TS2339, 409), possibly-null from a
+`getElementById` that is never checked (TS18047/TS2531/TS18048, 576 together),
+and calls that omit a trailing parameter the callee guards with `if (p_x)` —
+signatures that lie about being optional (TS2554, 217).
+
+"Cannot find name" is **zero**. It was four, all of them Advanced Object
+Search's, until that dead function was deleted.
 
 `src/globals.d.ts` declares the browser globals the bundle does not own —
 `agGrid`, `$`, `ace`, `window.Handsontable`. They are typed `any` on purpose:

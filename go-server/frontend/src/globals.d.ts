@@ -102,8 +102,8 @@ declare function execAjax(
 ): void;
 declare function showAlert(info: any, funcYes?: (() => void) | null, large?: boolean | null, isHtml?: boolean): void;
 
-// NOT declared, on purpose: queryAdvancedObjectSearch,
-// checkAdvancedObjectSearchStatus and advancedObjectSearchReturn. Those are
-// called but defined nowhere — the Advanced Object Search feature was removed
-// from the backend and the docs, and its call sites are still here. Declaring
-// them would hide that; the typecheck errors are the reminder.
+// There used to be a note here about queryAdvancedObjectSearch,
+// checkAdvancedObjectSearchStatus and advancedObjectSearchReturn being called
+// but defined nowhere. Their only caller — tabAdvancedObjectSearch, a thousand
+// lines whose menu entry had been commented out — is deleted, so there is
+// nothing left to declare or to warn about.

@@ -64,7 +64,9 @@ export var v_queryRequestCodes = {
 	SaveEditData: 5,
 	CancelThread: 6,
 	CloseTab: 8,
-	AdvancedObjectSearch: 9,
+	// 9 was AdvancedObjectSearch. The feature is gone (see the note in
+	// go-server/longpolling.go); the number is left unused rather than reassigned
+	// so the two sides keep matching.
 	Console: 10,
 	Terminal: 11,
 	Ping: 12,
@@ -83,7 +85,7 @@ export var v_queryResponseCodes = {
 	QueryAck: 6,
 	MessageException: 7,
 	RemoveContext: 9,
-	AdvancedObjectSearchResult: 10,
+	// 10 was AdvancedObjectSearchResult — see the request codes above.
 	ConsoleResult: 11,
 	TerminalResult: 12,
 	Pong: 13,
