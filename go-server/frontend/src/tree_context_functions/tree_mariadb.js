@@ -37,7 +37,7 @@ import { showPasswordPrompt } from "../passwords.js";
 import { clearProperties, getProperties } from "../properties.js";
 import { escapeHtml, querySQL } from "../query.js";
 import { refreshMonitoring } from "../tab_functions/inner_monitoring_tab.js";
-import { drawGraph, renameTabConfirm } from "../workspace.js";
+import { drawGraph, renameTabConfirm, toggleConnectionAutocomplete } from "../workspace.js";
 import { v_startEditData } from "./edit_data.js";
 import { refreshTreeOracle } from "./tree_oracle.js";
 import { tabSQLTemplate } from "./tree_postgresql.js";
@@ -1069,13 +1069,18 @@ export function getTreeMariadb(p_div) {
 		v_autocomplete_switch_status +
 		' id="autocomplete_toggler_' +
 		v_connTabControl.selectedTab.tag.tab_id +
-		'" class="omnidb__switch--input" onchange="toggleConnectionAutocomplete(\'autocomplete_toggler_' +
-		v_connTabControl.selectedTab.tag.tab_id +
-		"')\">" +
+		'" class="omnidb__switch--input">' +
 		'<label for="autocomplete_toggler_' +
 		v_connTabControl.selectedTab.tag.tab_id +
 		'" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label>' +
 		"</div>";
+
+	// Binding for the autocomplete switch just built above, replacing the
+	// onchange attribute that spliced the element's own id into itself as a string
+	// literal -- see dom_event_bindings.js and README.md.
+	document
+		.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id)
+		.addEventListener("change", (event) => toggleConnectionAutocomplete(event.target.id));
 
 	tree.nodeAfterOpenEvent = function (node) {
 		refreshTreeMariadb(node);
