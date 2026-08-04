@@ -31,6 +31,7 @@ SOFTWARE.
 /// Console state
 /// </summary>
 
+import moment from "moment";
 import { execAjax } from "./ajax_control_bridge.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";

@@ -41,19 +41,23 @@ must work on a machine with no Node installed, and `//go:embed` needs the files
 to already exist. CI rebuilds and fails if the committed output does not match
 the sources.
 
-## The three bundles
+## The four bundles
 
 | Bundle | Entry | Loaded by |
 | --- | --- | --- |
 | `omnidb.early.js` | `src/early.js` | `workspace.html`, before the inline `startLoading()` call |
-| `omnidb.bundle.js` | `src/main.js` | `workspace.html`, after the third-party libraries |
 | `omnidb.login.js` | `src/login.js` | `login.html` |
+| `omnidb.moment.js` | `src/moment-global.js` | `workspace.html`, where `lib/moment/moment.min.js` used to sit |
+| `omnidb.bundle.js` | `src/main.js` | `workspace.html`, after the third-party libraries |
 
 They are separate because their `<script>` tags sit at genuinely different
 points in the page, not for code-splitting. `ajax_control.js` reads
 `#bt_cancel_ajax` out of the DOM as it loads and has to run where its tag was;
 `login.html` is a different page that only ever needed three of these files and
-has no use for the workspace's 1.2 MB.
+has no use for the workspace's 1.2 MB; `moment-global.js` has to publish
+`window.moment` before `daterangepicker.js`'s own `<script>` tag runs, since
+that file is not migrated yet and its UMD wrapper falls back to reading the
+global when no AMD/CommonJS loader is present.
 
 Rollup cannot emit more than one IIFE bundle per build, so each has its own
 thin config file and `npm run build` runs them in sequence. The shared options
@@ -193,12 +197,21 @@ code, still loaded as plain `<script>` tags:
 
 - jQuery, Bootstrap, Ace (+ `mode-sql`, `ext-language_tools`), AG Grid,
   Cytoscape (+ spread, klay), Chart.js (+ annotation plugin), xterm (+ fit),
-  moment, daterangepicker, AimaraJS, and the pgexplain bundle (its own React,
-  React-DOM and D3).
+  daterangepicker, AimaraJS, and the pgexplain bundle (its own React, React-DOM
+  and D3).
+
+`moment` is the first one moved to a real npm package (`src/moment-global.js`,
+its own tiny bundle — see above). It could not just become an ordinary import
+in the main bundle: `daterangepicker.js` is not migrated yet and reads
+`window.moment` at load time, so something has to publish that global before
+its `<script>` tag runs. `console.js` and `command_history.js`, the only other
+consumers, `import moment from 'moment'` directly and get their own bundled
+copy — moment has no shared state to split-brain on, unlike `ajax_control.js`,
+so the small duplication is a reasonable trade for real types over `any`.
 
 What is deliberately not done yet:
 
-- **Replacing those with npm packages.** This is where tree-shaking and a
+- **Replacing the rest with npm packages.** This is where tree-shaking and a
   smaller install would come from. Ace should go last — it fetches its
   `mode-*` and worker files at runtime by URL relative to `basePath`, which
   needs explicit configuration under a bundler.

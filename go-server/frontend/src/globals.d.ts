@@ -20,7 +20,6 @@ declare const bootstrap: any;
 declare const ace: any;
 declare const agGrid: any;
 declare const cytoscape: any;
-declare const moment: any;
 declare const Chart: any;
 /** xterm.js */
 declare const Terminal: any;

@@ -31,6 +31,7 @@ SOFTWARE.
 /// Wipes command history.
 /// </summary>
 
+import moment from "moment";
 import { execAjax } from "./ajax_control_bridge.js";
 import { showConfirm } from "./notification_control.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";

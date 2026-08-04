@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build --mode development --config vite.config.early.js && vite build --mode development --config vite.config.login.js && vite build --mode development && npm run build:css",
-    "build:release": "vite build --mode release --config vite.config.early.js && vite build --mode release --config vite.config.login.js && vite build --mode release && npm run build:css:release",
+    "build": "vite build --mode development --config vite.config.early.js && vite build --mode development --config vite.config.login.js && vite build --mode development --config vite.config.moment.js && vite build --mode development && npm run build:css",
+    "build:release": "vite build --mode release --config vite.config.early.js && vite build --mode release --config vite.config.login.js && vite build --mode release --config vite.config.moment.js && vite build --mode release && npm run build:css:release",
     "build:css": "sass --style=expanded --source-map --no-charset scss/omnidb.scss:../static_assets/OmniDB_app/css/omnidb.min.css scss/login.scss:../static_assets/OmniDB_app/css/login.min.css",
     "build:css:release": "sass --style=compressed --source-map --no-charset scss/omnidb.scss:../static_assets/OmniDB_app/css/omnidb.min.css scss/login.scss:../static_assets/OmniDB_app/css/login.min.css",
     "check": "node scripts/check-bridge.mjs",
@@ -16,5 +16,8 @@
     "sass": "^1.102.0",
     "typescript": "^7.0.2",
     "vite": "^6.4.3"
+  },
+  "dependencies": {
+    "moment": "^2.30.1"
   }
 }
