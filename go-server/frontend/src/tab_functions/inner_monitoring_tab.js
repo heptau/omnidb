@@ -32,6 +32,7 @@ import { beforeCloseTab } from "../create_tab_functions.js";
 import { editCellData } from "../header_actions.js";
 import { showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
+import { escapeHtmlAttribute } from "../query.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "../renderers.js";
 import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 
@@ -203,14 +204,20 @@ export function refreshMonitoring(p_tab_tag) {
 						} else {
 							p_tab_tag.actions[j].icon += " omnidb__theme-text--primary";
 						}
+						// data attributes rather than an onclick: this is cell *data*, so
+						// the grid re-renders it whenever it likes and there is no moment
+						// at which a listener could be attached. One delegated listener in
+						// dom_event_bindings.js resolves the name. The row index is baked
+						// in here exactly as the attribute baked it in, and the action name
+						// is still checked against monitoringAction's own allowlist.
 						v_actions_html +=
 							'<div class="text-center"><i class="' +
 							p_tab_tag.actions[j].icon +
-							'" onclick="monitoringAction(' +
+							'" data-omnidb-action="monitoring-action" data-omnidb-id="' +
 							i +
-							",&apos;" +
-							p_tab_tag.actions[j].action +
-							'&apos;)"></div>';
+							'" data-omnidb-arg="' +
+							escapeHtmlAttribute(p_tab_tag.actions[j].action) +
+							'"></i></div>';
 					}
 					v_data.v_data[i].unshift(v_actions_html);
 				}

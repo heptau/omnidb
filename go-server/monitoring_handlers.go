@@ -9,14 +9,20 @@ import (
 	"strings"
 )
 
-// jsString escapes s so it is safe to embed as a JavaScript string literal
-// inside double quotes in an HTML onclick attribute.
-func jsString(s string) string {
+// htmlAttr escapes s for use inside a single-quoted HTML attribute value.
+//
+// It replaces jsString, which escaped for a JavaScript string literal inside an
+// onclick attribute — this file no longer emits any executable markup. The
+// grid's action icons carry data-omnidb-action attributes instead, which
+// dom_event_bindings.js resolves against an allowlist; see the comment there.
+// That was the last inline handler the Go side produced.
+func htmlAttr(s string) string {
 	return strings.NewReplacer(
-		"\\", "\\\\",
-		"\"", "\\\"",
-		"\n", "\\n",
-		"\r", "\\r",
+		"&", "&amp;",
+		"'", "&#39;",
+		`"`, "&quot;",
+		"<", "&lt;",
+		">", "&gt;",
 	).Replace(s)
 }
 
@@ -78,7 +84,7 @@ func handleGetMonitorUnitList(upstream *url.URL) http.HandlerFunc {
 		ids := make([]int64, 0)
 
 		for _, unit := range builtinUnitsForDBMS(info.Technology) {
-			actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' onclick='includeMonitorUnit(%d,"%s")'></i>`, unit.ID, jsString(unit.PluginName))
+			actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' data-omnidb-action='include-monitor-unit' data-omnidb-id='%d' data-omnidb-arg='%s'></i>`, unit.ID, htmlAttr(unit.PluginName))
 			if req.PMode == 0 {
 				rows = append(rows, []any{actions, unit.Title, unit.Type, unit.Interval})
 			} else {
@@ -90,11 +96,11 @@ func handleGetMonitorUnitList(upstream *url.URL) http.HandlerFunc {
 		customUnits, err := fetchAllCustomMonitorUnits(appDB)
 		if err == nil {
 			for _, unit := range customUnits {
-				actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' onclick='includeMonitorUnit(%d)'></i>`, unit.ID)
+				actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' data-omnidb-action='include-monitor-unit' data-omnidb-id='%d'></i>`, unit.ID)
 				if unit.UserID.Valid {
 					actions += fmt.Sprintf(`
-					<i title='Edit' class='fas fa-edit action-grid action-edit-monitor' onclick='editMonitorUnit(%d)'></i>
-					<i title='Delete' class='fas fa-times action-grid action-close text-danger' onclick='deleteMonitorUnit(%d)'></i>
+					<i title='Edit' class='fas fa-edit action-grid action-edit-monitor' data-omnidb-action='edit-monitor-unit' data-omnidb-id='%d'></i>
+					<i title='Delete' class='fas fa-times action-grid action-close text-danger' data-omnidb-action='delete-monitor-unit' data-omnidb-id='%d'></i>
 					`, unit.ID, unit.ID)
 				}
 				if req.PMode == 0 {

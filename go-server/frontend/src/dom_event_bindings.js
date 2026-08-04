@@ -39,10 +39,12 @@ import {
   showWebsite,
   updateIndentUnit,
 } from './header_actions.js'
-import { editMonitorUnit } from './monitoring.js'
+import { deleteMonitorUnit, editMonitorUnit, includeMonitorUnit } from './monitoring.js'
 import { startSetShortcut } from './shortcuts.js'
+import { deleteRowEditData } from './tree_context_functions/edit_data.js'
 import { startTutorial } from './tutorial_functions/tutorial.js'
 import { listUsers } from './users.js'
+import { monitoringAction } from './workspace.js'
 
 // --- delegated actions, for markup this file cannot reach -------------------
 //
@@ -61,9 +63,31 @@ import { listUsers } from './users.js'
 // One listener on `document`, installed once, so it also catches markup
 // injected long after this module ran.
 
+/** @param {Element} el */
+const arg = (el) => el.getAttribute('data-omnidb-arg')
+/** @param {Element} el */
+const numArg = (el) => parseInt(el.getAttribute('data-omnidb-id') || '', 10)
+
 /** @type {Record<string, (el: Element, event: Event) => void>} */
 const DELEGATED_CLICK = {
-  'start-tutorial': (el) => startTutorial(el.getAttribute('data-omnidb-arg')),
+  'start-tutorial': (el) => startTutorial(arg(el)),
+
+  // Edit data's row-action column. deleteRowEditData takes no arguments -- it
+  // reads the grid's selected row, and AgGridAdapter's own mousedown handler on
+  // the cell has already selected it by the time this click lands.
+  'edit-data-delete-row': () => deleteRowEditData(),
+
+  // A monitoring grid's row action (Terminate backend and friends). The row
+  // index is baked in at render time, exactly as the attribute did it;
+  // monitoringAction resolves the function name against its own allowlist.
+  'monitoring-action': (el) => monitoringAction(numArg(el), arg(el)),
+
+  // The monitoring units dialog. These three come from markup the *server*
+  // builds (monitoring_handlers.go) -- it emits the data attributes now instead
+  // of an onclick, so the last inline handlers on the Go side are gone too.
+  'include-monitor-unit': (el) => includeMonitorUnit(numArg(el), arg(el) || undefined),
+  'edit-monitor-unit': (el) => editMonitorUnit(numArg(el)),
+  'delete-monitor-unit': (el) => deleteMonitorUnit(numArg(el)),
 }
 
 document.addEventListener('click', (event) => {

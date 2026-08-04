@@ -204,8 +204,12 @@ export function newRowRenderer(instance, td, row, col, prop, value, cellProperti
 
 
 export function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
+	// data-omnidb-action rather than an onclick: this string is cell *data*, so
+	// the grid re-renders it whenever it likes and there is no moment at which a
+	// listener could be attached to the element. dom_event_bindings.js has one
+	// delegated listener that resolves the name.
 	arguments[5] =
-		"<div class='text-center'><i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='deleteRowEditData()'></i></div>";
+		"<div class='text-center'><i title='Remove' class='fas fa-times action-grid action-close text-danger' data-omnidb-action='edit-data-delete-row'></i></div>";
 
 	Handsontable.renderers.HtmlRenderer.apply(this, arguments);
 

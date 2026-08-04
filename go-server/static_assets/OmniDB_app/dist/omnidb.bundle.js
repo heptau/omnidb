@@ -648,7 +648,7 @@
     td.className = "cellReadOnly";
   }
   function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
-    arguments[5] = "<div class='text-center'><i title='Remove' class='fas fa-times action-grid action-close text-danger' onclick='deleteRowEditData()'></i></div>";
+    arguments[5] = "<div class='text-center'><i title='Remove' class='fas fa-times action-grid action-close text-danger' data-omnidb-action='edit-data-delete-row'></i></div>";
     Handsontable.renderers.HtmlRenderer.apply(this, arguments);
     td.className = "cellReadOnly";
   }
@@ -4557,7 +4557,7 @@
               } else {
                 p_tab_tag.actions[j2].icon += " omnidb__theme-text--primary";
               }
-              v_actions_html += '<div class="text-center"><i class="' + p_tab_tag.actions[j2].icon + '" onclick="monitoringAction(' + i2 + ",&apos;" + p_tab_tag.actions[j2].action + '&apos;)"></div>';
+              v_actions_html += '<div class="text-center"><i class="' + p_tab_tag.actions[j2].icon + '" data-omnidb-action="monitoring-action" data-omnidb-id="' + i2 + '" data-omnidb-arg="' + escapeHtmlAttribute(p_tab_tag.actions[j2].action) + '"></i></div>';
             }
             v_data.v_data[i2].unshift(v_actions_html);
           }
@@ -31180,8 +31180,24 @@
     __proto__: null,
     AgGridAdapter
   }, Symbol.toStringTag, { value: "Module" }));
+  const arg = (el2) => el2.getAttribute("data-omnidb-arg");
+  const numArg = (el2) => parseInt(el2.getAttribute("data-omnidb-id") || "", 10);
   const DELEGATED_CLICK = {
-    "start-tutorial": (el2) => startTutorial(el2.getAttribute("data-omnidb-arg"))
+    "start-tutorial": (el2) => startTutorial(arg(el2)),
+    // Edit data's row-action column. deleteRowEditData takes no arguments -- it
+    // reads the grid's selected row, and AgGridAdapter's own mousedown handler on
+    // the cell has already selected it by the time this click lands.
+    "edit-data-delete-row": () => deleteRowEditData(),
+    // A monitoring grid's row action (Terminate backend and friends). The row
+    // index is baked in at render time, exactly as the attribute did it;
+    // monitoringAction resolves the function name against its own allowlist.
+    "monitoring-action": (el2) => monitoringAction(numArg(el2), arg(el2)),
+    // The monitoring units dialog. These three come from markup the *server*
+    // builds (monitoring_handlers.go) -- it emits the data attributes now instead
+    // of an onclick, so the last inline handlers on the Go side are gone too.
+    "include-monitor-unit": (el2) => includeMonitorUnit(numArg(el2), arg(el2) || void 0),
+    "edit-monitor-unit": (el2) => editMonitorUnit(numArg(el2)),
+    "delete-monitor-unit": (el2) => deleteMonitorUnit(numArg(el2))
   };
   document.addEventListener("click", (event2) => {
     const target = event2.target;
