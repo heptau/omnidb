@@ -30,8 +30,13 @@ SOFTWARE.
 import { execAjax } from "../ajax_control.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { showPasswordPrompt } from "../passwords.js";
-import { checkEditDataStatus } from "../tree_context_functions/edit_data.js";
-import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import {
+	cancelEditData,
+	checkEditDataStatus,
+	queryEditData,
+	saveEditData,
+} from "../tree_context_functions/edit_data.js";
+import { removeTab, renameTab, resizeVertical, showMenuNewTab } from "../workspace.js";
 
 
 export var v_createEditDataTabFunction = function (p_table) {
@@ -111,24 +116,26 @@ export var v_createEditDataTabFunction = function (p_table) {
 		"<div id='txt_filter_data_" +
 		v_tab.id +
 		"' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div>" +
-		"<div class='omnidb__resize-line__container' onmousedown='resizeVertical(event)' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" +
+		"<div id='edit_data_resize_line_" +
+		v_tab.id +
+		"' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" +
 		"<div class='row mb-1'>" +
 		"<div class='tab_actions omnidb__tab-actions col-12'>" +
 		"<button id='bt_start_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' onclick='queryEditData();'><i class='fas fa-play'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button>" +
 		"<select id='sel_filtered_data_" +
 		v_tab.id +
-		"' class='sel_export_file_type form-control w-auto mr-2' onchange='queryEditData()'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select>" +
+		"' class='sel_export_file_type form-control w-auto mr-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select>" +
 		"<button id='bt_cancel_" +
 		v_tab.id +
-		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;' onclick='cancelEditData();'>Cancel</button>" +
+		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button>" +
 		"<div id='div_edit_data_query_info_" +
 		v_tab.id +
 		"' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div>" +
 		"<button id='bt_saveEditData_" +
 		v_tab.id +
-		"' onclick='saveEditData()' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button>" +
+		"' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button>" +
 		"</div>" +
 		"</div>" +
 		"<div class='p-2 omnidb__theme-border--primary'>" +
@@ -237,7 +244,6 @@ export var v_createEditDataTabFunction = function (p_table) {
 		button_save: document.getElementById("bt_saveEditData_" + v_tab.id),
 		sel_export_type: document.getElementById("sel_export_type_" + v_tab.id),
 		bt_cancel: document.getElementById("bt_cancel_" + v_tab.id),
-		bt_save: document.getElementById("bt_save_" + v_tab.id),
 		tab_title_span: v_tab_title_span,
 		tab_loading_span: v_tab_loading_span,
 		// tab_close_span : v_tab_close_span,
@@ -271,6 +277,16 @@ export var v_createEditDataTabFunction = function (p_table) {
 	// };
 
 	v_tab.tag = v_tag;
+
+	// Toolbar bindings, replacing the on*= attributes the buttons above used to
+	// carry inside the HTML string -- see dom_event_bindings.js and README.md.
+	document.getElementById("bt_start_" + v_tab.id).addEventListener("click", () => queryEditData());
+	v_tag.sel_filtered_data.addEventListener("change", () => queryEditData());
+	v_tag.bt_cancel.addEventListener("click", () => cancelEditData());
+	v_tag.button_save.addEventListener("click", () => saveEditData());
+	document
+		.getElementById("edit_data_resize_line_" + v_tab.id)
+		.addEventListener("mousedown", (event) => resizeVertical(event));
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({

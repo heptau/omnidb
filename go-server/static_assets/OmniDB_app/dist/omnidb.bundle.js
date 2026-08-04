@@ -4046,8 +4046,8 @@
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
     var v_tab_check_span = document.getElementById("tab_check");
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var console_history_modal = "<div class='modal fade' id='modal_console_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Console commands history</h5><button type='button' class='close' data-dismiss='modal' aria-label='Close' onclick='closeConsoleHistory()'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='console_history_div_" + v_tab.id + "' class='console_command_history'><div id='console_history_header_" + v_tab.id + "' class='console_command_history_header'></div><div id='console_history_grid_" + v_tab.id + "' class='console_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div><div class='omnidb__resize-line__container' onmousedown='resizeVertical(event)' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" + console_history_modal + "<div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' onclick='consoleSQL(false);'><i class='fas fa-play fa-light'></i></button><button id='bt_indent_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Indent SQL' onclick='indentSQL();'><i class='fas fa-indent fa-light'></i></button><button id='bt_clear_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Clear Console' onclick='clearConsole();'><i class='fas fa-broom fa-light'></i></button><button id='bt_history_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Command History' onclick='showConsoleHistory();'><i class='fas fa-list fa-light'></i></button><div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" + v_tab.id + "' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" + v_tab.id + "'>Autocommit</label></div><div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" + v_tab.id + "' title='Not connected' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" + v_tab.id + "' title='Not connected' class='tab-status-text query_info dbms_object postgresql_object ms-1'>Not connected</span></div><button id='bt_fetch_more_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch More' style='display: none; ' onclick='consoleSQL(false,1);'>Fetch more</button><button id='bt_fetch_all_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch All' style='margin-left: 5px; display: none; ' onclick='consoleSQL(false,2);'>Fetch all</button><button id='bt_skip_fetch_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Skip Fetch' style='margin-left: 5px; display: none; ' onclick='consoleSQL(false,3);'>Skip Fetch</button><button id='bt_commit_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; ' onclick='querySQL(3);'>Commit</button><button id='bt_rollback_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; ' onclick='querySQL(4);'>Rollback</button><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style=' display: none;' onclick='cancelConsole();'>Cancel</button><div id='div_query_info_" + v_tab.id + "' class='omnidb__query-info'></div></div></div><div id='txt_input_" + v_tab.id + "' class='omnidb__console__text-input' style=' width: 100%; height: 150px; border: 1px solid #c3c3c3;'></div>";
+    var console_history_modal = "<div class='modal fade' id='modal_console_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Console commands history</h5><button id='bt_close_console_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='console_history_div_" + v_tab.id + "' class='console_command_history'><div id='console_history_header_" + v_tab.id + "' class='console_command_history_header'></div><div id='console_history_grid_" + v_tab.id + "' class='console_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
+    var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div><div id='console_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" + console_history_modal + "<div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play fa-light'></i></button><button id='bt_indent_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Indent SQL'><i class='fas fa-indent fa-light'></i></button><button id='bt_clear_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Clear Console'><i class='fas fa-broom fa-light'></i></button><button id='bt_history_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Command History'><i class='fas fa-list fa-light'></i></button><div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" + v_tab.id + "' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" + v_tab.id + "'>Autocommit</label></div><div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" + v_tab.id + "' title='Not connected' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" + v_tab.id + "' title='Not connected' class='tab-status-text query_info dbms_object postgresql_object ms-1'>Not connected</span></div><button id='bt_fetch_more_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch More' style='display: none; '>Fetch more</button><button id='bt_fetch_all_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch All' style='margin-left: 5px; display: none; '>Fetch all</button><button id='bt_skip_fetch_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Skip Fetch' style='margin-left: 5px; display: none; '>Skip Fetch</button><button id='bt_commit_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Commit</button><button id='bt_rollback_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Rollback</button><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style=' display: none;'>Cancel</button><div id='div_query_info_" + v_tab.id + "' class='omnidb__query-info'></div></div></div><div id='txt_input_" + v_tab.id + "' class='omnidb__console__text-input' style=' width: 100%; height: 150px; border: 1px solid #c3c3c3;'></div>";
     document.getElementById("div_" + v_tab.id);
     v_tab.elementDiv.innerHTML = v_html;
     ace.require("ace/ext/language_tools");
@@ -4190,6 +4190,18 @@
       }
     };
     v_tab.tag = v_tag;
+    v_tag.bt_start.addEventListener("click", () => consoleSQL(false));
+    v_tag.bt_fetch_more.addEventListener("click", () => consoleSQL(false, 1));
+    v_tag.bt_fetch_all.addEventListener("click", () => consoleSQL(false, 2));
+    v_tag.bt_skip_fetch.addEventListener("click", () => consoleSQL(false, 3));
+    v_tag.bt_commit.addEventListener("click", () => querySQL(3));
+    v_tag.bt_rollback.addEventListener("click", () => querySQL(4));
+    v_tag.bt_cancel.addEventListener("click", () => cancelConsole());
+    v_tag.bt_indent.addEventListener("click", () => indentSQL());
+    document.getElementById("bt_clear_" + v_tab.id).addEventListener("click", () => clearConsole());
+    document.getElementById("bt_history_" + v_tab.id).addEventListener("click", () => showConsoleHistory());
+    document.getElementById("bt_close_console_history_" + v_tab.id).addEventListener("click", () => closeConsoleHistory());
+    document.getElementById("console_resize_line_" + v_tab.id).addEventListener("mousedown", (event2) => resizeVertical(event2));
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_name: "+",
       p_close: false,
@@ -4245,7 +4257,7 @@
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
     var v_tab_check_span = document.getElementById("tab_check");
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div class='omnidb__resize-line__container' onmousedown='resizeVertical(event)' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' onclick='queryEditData();'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto mr-2' onchange='queryEditData()'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;' onclick='cancelEditData();'>Cancel</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' onclick='saveEditData()' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div>";
+    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto mr-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div>";
     v_tab.elementDiv.innerHTML = v_html;
     var v_height = window.innerHeight - $("#div_edit_data_data_" + v_tab.id).offset().top - 20;
     document.getElementById("div_edit_data_data_" + v_tab.id).style.height = v_height + "px";
@@ -4327,7 +4339,6 @@
       button_save: document.getElementById("bt_saveEditData_" + v_tab.id),
       sel_export_type: document.getElementById("sel_export_type_" + v_tab.id),
       bt_cancel: document.getElementById("bt_cancel_" + v_tab.id),
-      bt_save: document.getElementById("bt_save_" + v_tab.id),
       tab_title_span: v_tab_title_span,
       tab_loading_span: v_tab_loading_span,
       // tab_close_span : v_tab_close_span,
@@ -4342,6 +4353,11 @@
       mode: "edit"
     };
     v_tab.tag = v_tag;
+    document.getElementById("bt_start_" + v_tab.id).addEventListener("click", () => queryEditData());
+    v_tag.sel_filtered_data.addEventListener("change", () => queryEditData());
+    v_tag.bt_cancel.addEventListener("click", () => cancelEditData());
+    v_tag.button_save.addEventListener("click", () => saveEditData());
+    document.getElementById("edit_data_resize_line_" + v_tab.id).addEventListener("mousedown", (event2) => resizeVertical(event2));
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_name: "+",
       p_close: false,
@@ -4622,6 +4638,238 @@
     refreshMonitoring,
     v_createMonitoringTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  function deleteCommandList() {
+    showConfirm("Are you sure you want to clear command history corresponding to applied filters?", function() {
+      execAjax$1(
+        "/clear_command_list/",
+        JSON.stringify({
+          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
+          p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
+          p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value
+        }),
+        function(p_return) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+          refreshCommandList();
+        }
+      );
+    });
+  }
+  function showCommandList() {
+    v_connTabControl.selectedTab.tag;
+    var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='mr-2 form-control' onchange='refreshCommandList();' /></div><div id='command_history_daterangepicker_container_" + v_tabTag.id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tabTag.tab_id + "' onclick='commandHistoryFirstPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tabTag.tab_id + "' onclick='commandHistoryPreviousPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span><button id='bt_next_" + v_tabTag.tab_id + "' onclick='commandHistoryNextPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tabTag.tab_id + "' onclick='commandHistoryLastPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tabTag.tab_id + "' onclick='refreshCommandList()' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tabTag.tab_id + "' onclick='deleteCommandList()' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
+    var v_gridDiv = v_tabTag.commandHistory.gridDiv;
+    v_gridDiv.innerHTML = "";
+    if (v_tabTag.commandHistory.grid != null) {
+      v_tabTag.commandHistory.grid.destroy();
+    }
+    var v_columnProperties = [];
+    var v_column = new Object();
+    v_column.title = "Start";
+    v_column.readOnly = true;
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "End";
+    v_column.readOnly = true;
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "Duration";
+    v_column.readOnly = true;
+    v_column.width = 100;
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "Status";
+    v_column.readOnly = true;
+    v_column.width = 50;
+    v_column.renderer = "html";
+    v_columnProperties.push(v_column);
+    var v_column = new Object();
+    v_column.title = "Command";
+    v_column.readOnly = true;
+    v_columnProperties.push(v_column);
+    v_tabTag.commandHistory.grid = new Handsontable(v_gridDiv, {
+      licenseKey: "non-commercial-and-evaluation",
+      data: [],
+      columns: v_columnProperties,
+      colHeaders: true,
+      rowHeaders: false,
+      stretchH: "last",
+      copyPaste: {
+        pasteMode: "",
+        rowsLimit: 1e9,
+        columnsLimit: 1e9
+      },
+      manualColumnResize: true,
+      fillHandle: false,
+      contextMenu: {
+        callback: function(p_key, p_options) {
+          if (p_key === "view_data") {
+            commandHistoryOpenCmd(p_options[0].start.row);
+          }
+        },
+        items: {
+          view_data: {
+            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy Content To Query Tab</div>'
+          }
+        }
+      },
+      cells: function(p_row, p_col, p_prop) {
+        var v_cellProperties = {};
+        if (p_row % 2 == 0) {
+          v_cellProperties.renderer = blueHtmlRenderer;
+        } else {
+          v_cellProperties.renderer = whiteHtmlRenderer;
+        }
+        return v_cellProperties;
+      }
+    });
+    $(v_tabTag.commandHistory.modal).modal("show");
+    v_tabTag.commandHistory.div.style.display = "block";
+    v_tabTag.commandHistory.currentPage = 1;
+    v_tabTag.commandHistory.pages = 1;
+    v_tabTag.commandHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.spanNumPages.innerHTML = 1;
+    v_tabTag.commandHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.spanCurrPage.innerHTML = 1;
+    v_tabTag.commandHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputStartedFrom.value = moment().subtract(6, "hour").toISOString();
+    v_tabTag.commandHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputStartedTo.value = moment().toISOString();
+    v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
+    v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
+    var cl_time_range = document.getElementById("cl_time_range_" + v_tabTag.tab_id);
+    $(cl_time_range).daterangepicker(
+      {
+        timePicker: true,
+        startDate: moment(v_tabTag.commandHistory.inputStartedFrom.value).format("Y-MM-DD H"),
+        endDate: moment(v_tabTag.commandHistory.inputStartedTo.value).format("Y-MM-DD H"),
+        parentEl: document.getElementById("command_history_daterangepicker_container_" + v_tabTag.tab_id),
+        previewUTC: true,
+        locale: {
+          format: "Y-MM-DD H"
+        },
+        ranges: {
+          "Last 6 Hours": [moment().subtract(6, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 12 Hours": [moment().subtract(12, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 24 Hours": [moment().subtract(24, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 7 Days": [moment().subtract(7, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last 30 Days": [moment().subtract(30, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          Yesterday: [
+            moment().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
+            moment().subtract(1, "days").endOf("day").format("Y-MM-DD H")
+          ],
+          "This Month": [moment().startOf("month").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
+          "Last Month": [
+            moment().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
+            moment().subtract(1, "month").endOf("month").format("Y-MM-DD H")
+          ]
+        }
+      },
+      function(start, end, label) {
+        v_tabTag.commandHistory.inputStartedFrom.value = moment(start).toISOString();
+        if (label === "Custom Range") {
+          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(
+            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
+          );
+        } else {
+          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(label);
+        }
+        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
+          v_tabTag.commandHistory.inputStartedTo.value = moment(end).toISOString();
+        } else v_tabTag.commandHistory.inputStartedTo.value = null;
+        refreshCommandList();
+      }
+    );
+    refreshCommandList();
+  }
+  function commandHistoryNextPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage += 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryPreviousPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage > 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage -= 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryFirstPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryLastPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages;
+      refreshCommandList();
+    }
+  }
+  function commandHistoryOpenCmd(p_index) {
+    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[4];
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(v_command);
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+    closeCommandHistory();
+  }
+  function refreshCommandList() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value;
+    execAjax$1(
+      "/get_command_list/",
+      JSON.stringify({
+        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
+        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
+        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value,
+        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage,
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex
+      }),
+      function(p_return) {
+        if (p_return.v_data.commandList.length == 0) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages.innerHTML = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage;
+        for (let i2 = 0; i2 < p_return.v_data.commandList.length; i2++) {
+          p_return.v_data.commandList[i2][0] = new Date(p_return.v_data.commandList[i2][0]).toLocaleString();
+          p_return.v_data.commandList[i2][1] = new Date(p_return.v_data.commandList[i2][1]).toLocaleString();
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.loadData(p_return.v_data.commandList);
+      },
+      null
+    );
+  }
+  function closeCommandHistory() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.destroy();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.div.style.display = "none";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.headerDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.gridDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
+    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal).modal("hide");
+  }
+  const commandHistory = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    closeCommandHistory,
+    commandHistoryFirstPage,
+    commandHistoryLastPage,
+    commandHistoryNextPage,
+    commandHistoryOpenCmd,
+    commandHistoryPreviousPage,
+    deleteCommandList,
+    refreshCommandList,
+    showCommandList
+  }, Symbol.toStringTag, { value: "Module" }));
   var v_createQueryTabFunction = function(p_table, p_tab_db_id) {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_name = "Query";
@@ -4655,8 +4903,8 @@
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
     var v_tab_check_span = document.getElementById("tab_check");
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Command history</h5><button type='button' class='close' data-dismiss='modal' aria-label='Close' onclick='closeCommandHistory()'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div><div class="omnidb__resize-line__container" onmousedown="resizeVertical(event)" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px; border-bottom: 1px dashed #acc4e8;"></div><div style="height:5px;"></div></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" onclick="querySQL(0);"><i class="fas fa-play fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL" onclick="indentSQL();"><i class="fas fa-indent fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Command History" onclick="showCommandList();"><i class="fas fa-list fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" onclick="getExplain(0)" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" onclick="getExplain(1)" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">Autocommit</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="Not connected" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ms-1">Not connected</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(1);">Fetch more</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(2);">Fetch all</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(3);">Commit</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(4);">Rollback</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;" onclick="cancelSQL();">Cancel</button><div id="div_query_info_' + v_tab.id + '" class="omnidb__query-info"></div><button class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data" onclick="v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.exportData();"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input" onclick="toggleExplainContext()"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary" onclick=toggleExpandToPanelView("query_result_tabs_container' + v_tab.id + '")><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
+    var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Command history</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
+    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px; border-bottom: 1px dashed #acc4e8;"></div><div style="height:5px;"></div></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run"><i class="fas fa-play fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Command History"><i class="fas fa-list fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">Autocommit</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="Not connected" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ms-1">Not connected</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch more</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch all</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;">Commit</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Rollback</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;">Cancel</button><div id="div_query_info_' + v_tab.id + '" class="omnidb__query-info"></div><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
     v_tab.elementDiv.innerHTML = v_html;
     var v_curr_tabs = createTabControl({ p_div: "query_result_tabs_" + v_tab.id });
     var v_selectDataTabFunc = function() {
@@ -4858,7 +5106,6 @@
       bt_fetch_all: document.getElementById("bt_fetch_all_" + v_tab.id),
       bt_commit: document.getElementById("bt_commit_" + v_tab.id),
       bt_rollback: document.getElementById("bt_rollback_" + v_tab.id),
-      bt_start: document.getElementById("bt_start_" + v_tab.id),
       bt_indent: document.getElementById("bt_indent_" + v_tab.id),
       bt_explain: document.getElementById("bt_explain_" + v_tab.id),
       bt_analyze: document.getElementById("bt_analyze_" + v_tab.id),
@@ -4898,6 +5145,21 @@
     v_tag.selectDataTabFunc = v_selectDataTabFunc;
     v_tag.selectMessageTabFunc = v_selectMessageTabFunc;
     v_tag.selectExplainTabFunc = v_selectExplainTabFunc;
+    v_tag.bt_start.addEventListener("click", () => querySQL(0));
+    v_tag.bt_fetch_more.addEventListener("click", () => querySQL(1));
+    v_tag.bt_fetch_all.addEventListener("click", () => querySQL(2));
+    v_tag.bt_commit.addEventListener("click", () => querySQL(3));
+    v_tag.bt_rollback.addEventListener("click", () => querySQL(4));
+    v_tag.bt_cancel.addEventListener("click", () => cancelSQL());
+    v_tag.bt_indent.addEventListener("click", () => indentSQL());
+    v_tag.bt_history.addEventListener("click", () => showCommandList());
+    v_tag.bt_explain.addEventListener("click", () => getExplain(0));
+    v_tag.bt_analyze.addEventListener("click", () => getExplain(1));
+    v_tag.bt_export.addEventListener("click", () => v_tag.exportData());
+    document.getElementById("bt_close_command_history_" + v_tab.id).addEventListener("click", () => closeCommandHistory());
+    document.getElementById("query_resize_line_" + v_tab.id).addEventListener("mousedown", (event2) => resizeVertical(event2));
+    document.getElementById("explainContextToggler" + v_tab.id).addEventListener("click", () => toggleExplainContext());
+    document.getElementById("bt_expand_query_result_" + v_tab.id).addEventListener("click", () => toggleExpandToPanelView("query_result_tabs_container" + v_tab.id));
     v_selectDataTabFunc();
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_name: "+",
@@ -4964,7 +5226,7 @@
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
     var v_tab_check_span = document.getElementById("tab_check");
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = '<div id="txt_snippet_' + v_tab.id + '" style="width: 100%; height: 200px; border: 1px solid #c3c3c3;"></div><div class="row mt-2"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_indent_' + v_tab.id + `" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL" onclick="indentSQL('snippet');"><i class="fas fa-indent mr-2"></i>indent</button><button id="bt_save_` + v_tab.id + '" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;" onclick="saveSnippetText(event);"><i class="fas fa-save mr-2"></i>save</button></div></div>';
+    var v_html = '<div id="txt_snippet_' + v_tab.id + '" style="width: 100%; height: 200px; border: 1px solid #c3c3c3;"></div><div class="row mt-2"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_indent_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent mr-2"></i>indent</button><button id="bt_save_' + v_tab.id + '" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;"><i class="fas fa-save mr-2"></i>save</button></div></div>';
     var v_div = document.getElementById("div_" + v_tab.id);
     v_div.innerHTML = v_html;
     var v_txt_snippet = document.getElementById("txt_snippet_" + v_tab.id);
@@ -5006,6 +5268,8 @@
       snippetObject: v_details
     };
     v_tab.tag = v_tag;
+    document.getElementById("bt_indent_" + v_tab.id).addEventListener("click", () => indentSQL("snippet"));
+    v_tag.bt_save.addEventListener("click", saveSnippetText);
     var v_add_tab = v_connTabControl.snippet_tag.tabControl.createTab({
       p_name: "+",
       p_close: false,
@@ -31106,238 +31370,6 @@
     removeUserConfirm,
     renderSelectedUser,
     saveUsers
-  }, Symbol.toStringTag, { value: "Module" }));
-  function deleteCommandList() {
-    showConfirm("Are you sure you want to clear command history corresponding to applied filters?", function() {
-      execAjax$1(
-        "/clear_command_list/",
-        JSON.stringify({
-          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-          p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
-          p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
-          p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value
-        }),
-        function(p_return) {
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-          refreshCommandList();
-        }
-      );
-    });
-  }
-  function showCommandList() {
-    v_connTabControl.selectedTab.tag;
-    var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='mr-2 form-control' onchange='refreshCommandList();' /></div><div id='command_history_daterangepicker_container_" + v_tabTag.id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tabTag.tab_id + "' onclick='commandHistoryFirstPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tabTag.tab_id + "' onclick='commandHistoryPreviousPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span><button id='bt_next_" + v_tabTag.tab_id + "' onclick='commandHistoryNextPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tabTag.tab_id + "' onclick='commandHistoryLastPage()' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tabTag.tab_id + "' onclick='refreshCommandList()' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tabTag.tab_id + "' onclick='deleteCommandList()' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
-    var v_gridDiv = v_tabTag.commandHistory.gridDiv;
-    v_gridDiv.innerHTML = "";
-    if (v_tabTag.commandHistory.grid != null) {
-      v_tabTag.commandHistory.grid.destroy();
-    }
-    var v_columnProperties = [];
-    var v_column = new Object();
-    v_column.title = "Start";
-    v_column.readOnly = true;
-    v_columnProperties.push(v_column);
-    var v_column = new Object();
-    v_column.title = "End";
-    v_column.readOnly = true;
-    v_columnProperties.push(v_column);
-    var v_column = new Object();
-    v_column.title = "Duration";
-    v_column.readOnly = true;
-    v_column.width = 100;
-    v_columnProperties.push(v_column);
-    var v_column = new Object();
-    v_column.title = "Status";
-    v_column.readOnly = true;
-    v_column.width = 50;
-    v_column.renderer = "html";
-    v_columnProperties.push(v_column);
-    var v_column = new Object();
-    v_column.title = "Command";
-    v_column.readOnly = true;
-    v_columnProperties.push(v_column);
-    v_tabTag.commandHistory.grid = new Handsontable(v_gridDiv, {
-      licenseKey: "non-commercial-and-evaluation",
-      data: [],
-      columns: v_columnProperties,
-      colHeaders: true,
-      rowHeaders: false,
-      stretchH: "last",
-      copyPaste: {
-        pasteMode: "",
-        rowsLimit: 1e9,
-        columnsLimit: 1e9
-      },
-      manualColumnResize: true,
-      fillHandle: false,
-      contextMenu: {
-        callback: function(p_key, p_options) {
-          if (p_key === "view_data") {
-            commandHistoryOpenCmd(p_options[0].start.row);
-          }
-        },
-        items: {
-          view_data: {
-            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy Content To Query Tab</div>'
-          }
-        }
-      },
-      cells: function(p_row, p_col, p_prop) {
-        var v_cellProperties = {};
-        if (p_row % 2 == 0) {
-          v_cellProperties.renderer = blueHtmlRenderer;
-        } else {
-          v_cellProperties.renderer = whiteHtmlRenderer;
-        }
-        return v_cellProperties;
-      }
-    });
-    $(v_tabTag.commandHistory.modal).modal("show");
-    v_tabTag.commandHistory.div.style.display = "block";
-    v_tabTag.commandHistory.currentPage = 1;
-    v_tabTag.commandHistory.pages = 1;
-    v_tabTag.commandHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.spanNumPages.innerHTML = 1;
-    v_tabTag.commandHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.spanCurrPage.innerHTML = 1;
-    v_tabTag.commandHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputStartedFrom.value = moment().subtract(6, "hour").toISOString();
-    v_tabTag.commandHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputStartedTo.value = moment().toISOString();
-    v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
-    var cl_time_range = document.getElementById("cl_time_range_" + v_tabTag.tab_id);
-    $(cl_time_range).daterangepicker(
-      {
-        timePicker: true,
-        startDate: moment(v_tabTag.commandHistory.inputStartedFrom.value).format("Y-MM-DD H"),
-        endDate: moment(v_tabTag.commandHistory.inputStartedTo.value).format("Y-MM-DD H"),
-        parentEl: document.getElementById("command_history_daterangepicker_container_" + v_tabTag.tab_id),
-        previewUTC: true,
-        locale: {
-          format: "Y-MM-DD H"
-        },
-        ranges: {
-          "Last 6 Hours": [moment().subtract(6, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-          "Last 12 Hours": [moment().subtract(12, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-          "Last 24 Hours": [moment().subtract(24, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-          "Last 7 Days": [moment().subtract(7, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-          "Last 30 Days": [moment().subtract(30, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-          Yesterday: [
-            moment().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
-            moment().subtract(1, "days").endOf("day").format("Y-MM-DD H")
-          ],
-          "This Month": [moment().startOf("month").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-          "Last Month": [
-            moment().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
-            moment().subtract(1, "month").endOf("month").format("Y-MM-DD H")
-          ]
-        }
-      },
-      function(start, end, label) {
-        v_tabTag.commandHistory.inputStartedFrom.value = moment(start).toISOString();
-        if (label === "Custom Range") {
-          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(
-            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
-          );
-        } else {
-          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(label);
-        }
-        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
-          v_tabTag.commandHistory.inputStartedTo.value = moment(end).toISOString();
-        } else v_tabTag.commandHistory.inputStartedTo.value = null;
-        refreshCommandList();
-      }
-    );
-    refreshCommandList();
-  }
-  function commandHistoryNextPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage += 1;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryPreviousPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage > 1) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage -= 1;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryFirstPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != 1) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryLastPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages;
-      refreshCommandList();
-    }
-  }
-  function commandHistoryOpenCmd(p_index) {
-    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[4];
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(v_command);
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
-    closeCommandHistory();
-  }
-  function refreshCommandList() {
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value;
-    execAjax$1(
-      "/get_command_list/",
-      JSON.stringify({
-        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
-        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value,
-        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value,
-        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage,
-        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex
-      }),
-      function(p_return) {
-        if (p_return.v_data.commandList.length == 0) {
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-        }
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = p_return.v_data.pages;
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages.innerHTML = p_return.v_data.pages;
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage;
-        for (let i2 = 0; i2 < p_return.v_data.commandList.length; i2++) {
-          p_return.v_data.commandList[i2][0] = new Date(p_return.v_data.commandList[i2][0]).toLocaleString();
-          p_return.v_data.commandList[i2][1] = new Date(p_return.v_data.commandList[i2][1]).toLocaleString();
-        }
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.loadData(p_return.v_data.commandList);
-      },
-      null
-    );
-  }
-  function closeCommandHistory() {
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.destroy();
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.div.style.display = "none";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.headerDiv.innerHTML = "";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.gridDiv.innerHTML = "";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = 1;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPages = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
-    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal).modal("hide");
-  }
-  const commandHistory = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    closeCommandHistory,
-    commandHistoryFirstPage,
-    commandHistoryLastPage,
-    commandHistoryNextPage,
-    commandHistoryOpenCmd,
-    commandHistoryPreviousPage,
-    deleteCommandList,
-    refreshCommandList,
-    showCommandList
   }, Symbol.toStringTag, { value: "Module" }));
   var labelText;
   function BsJsonComponent(config) {

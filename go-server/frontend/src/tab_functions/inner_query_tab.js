@@ -28,13 +28,25 @@ SOFTWARE.
 */
 
 import { autocomplete_keydown, autocomplete_start, autocomplete_update_editor_cursor } from "../autocomplete.js";
+import { closeCommandHistory, showCommandList } from "../command_history.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { customMenu } from "../custom_menu.js";
 import { showAlert } from "../notification_control.js";
-import { checkQueryStatus, querySQL } from "../query.js";
+import { cancelSQL, checkQueryStatus, querySQL } from "../query.js";
 import { createTabControl } from "../tabs.js";
+import { getExplain } from "../tree_context_functions/tree_postgresql.js";
 import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
-import { adjustQueryTabObjects, removeTab, renameTab, showMenuNewTab, uiCopyTextToClipboard } from "../workspace.js";
+import {
+	adjustQueryTabObjects,
+	indentSQL,
+	removeTab,
+	renameTab,
+	resizeVertical,
+	showMenuNewTab,
+	toggleExpandToPanelView,
+	toggleExplainContext,
+	uiCopyTextToClipboard,
+} from "../workspace.js";
 
 
 export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
@@ -98,7 +110,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		"<h5 class='modal-title'>" +
 		"Command history" +
 		"</h5>" +
-		"<button type='button' class='close' data-dismiss='modal' aria-label='Close' onclick='closeCommandHistory()'>" +
+		"<button id='bt_close_command_history_" +
+		v_tab.id +
+		"' type='button' class='close' data-dismiss='modal' aria-label='Close'>" +
 		"<span aria-hidden='true'>&times;</span>" +
 		"</button>" +
 		"</div>" +
@@ -123,25 +137,27 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<div id="txt_query_' +
 		v_tab.id +
 		'" style="width: 100%; height: 200px;"></div>' +
-		'<div class="omnidb__resize-line__container" onmousedown="resizeVertical(event)" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px; border-bottom: 1px dashed #acc4e8;"></div><div style="height:5px;"></div></div>' +
+		'<div id="query_resize_line_' +
+		v_tab.id +
+		'" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px; border-bottom: 1px dashed #acc4e8;"></div><div style="height:5px;"></div></div>' +
 		command_history_modal +
 		'<div class="row mb-1">' +
 		'<div class="tab_actions omnidb__tab-actions col-12">' +
 		'<button id="bt_start_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" onclick="querySQL(0);"><i class="fas fa-play fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run"><i class="fas fa-play fa-light"></i></button>' +
 		'<button id="bt_indent_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL" onclick="indentSQL();"><i class="fas fa-indent fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent fa-light"></i></button>' +
 		'<button id="bt_history_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Command History" onclick="showCommandList();"><i class="fas fa-list fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Command History"><i class="fas fa-list fa-light"></i></button>' +
 		'<button id="bt_explain_' +
 		v_tab.id +
-		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" onclick="getExplain(0)" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button>' +
+		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button>' +
 		'<button id="bt_analyze_' +
 		v_tab.id +
-		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" onclick="getExplain(1)" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button>' +
+		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button>' +
 		'<div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' +
 		v_tab.id +
 		'" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' +
@@ -154,23 +170,25 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ms-1">Not connected</span></div>' +
 		'<button id="bt_fetch_more_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(1);">Fetch more</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch more</button>' +
 		'<button id="bt_fetch_all_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(2);">Fetch all</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch all</button>' +
 		'<button id="bt_commit_' +
 		v_tab.id +
-		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(3);">Commit</button>' +
+		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;">Commit</button>' +
 		'<button id="bt_rollback_' +
 		v_tab.id +
-		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;" onclick="querySQL(4);">Rollback</button>' +
+		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Rollback</button>' +
 		'<button id="bt_cancel_' +
 		v_tab.id +
-		'" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;" onclick="cancelSQL();">Cancel</button>' +
+		'" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;">Cancel</button>' +
 		'<div id="div_query_info_' +
 		v_tab.id +
 		'" class="omnidb__query-info"></div>' +
-		'<button class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data" onclick="v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.exportData();"><i class="far fa-file fa-light"></i></button>' +
+		'<button id="bt_export_' +
+		v_tab.id +
+		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data"><i class="far fa-file fa-light"></i></button>' +
 		'<select id="sel_export_type_' +
 		v_tab.id +
 		'" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select>' +
@@ -183,7 +201,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>">' +
 		'<input id="explainContextToggler' +
 		v_tab.id +
-		'" type="checkbox" class="omnidb__switch--explain--input" onclick="toggleExplainContext()">' +
+		'" type="checkbox" class="omnidb__switch--explain--input">' +
 		'<label for="explainContextToggler' +
 		v_tab.id +
 		'" class="omnidb__switch--explain--label">' +
@@ -191,9 +209,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		"</label>" +
 		"</div>" +
 		"</div>" +
-		'<button style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary" onclick=toggleExpandToPanelView("query_result_tabs_container' +
+		'<button id="bt_expand_query_result_' +
 		v_tab.id +
-		'")><i class="fas fa-expand"></i></button>' +
+		'" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button>' +
 		'<div id="query_result_tabs_' +
 		v_tab.id +
 		'">' +
@@ -491,7 +509,6 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		bt_fetch_all: document.getElementById("bt_fetch_all_" + v_tab.id),
 		bt_commit: document.getElementById("bt_commit_" + v_tab.id),
 		bt_rollback: document.getElementById("bt_rollback_" + v_tab.id),
-		bt_start: document.getElementById("bt_start_" + v_tab.id),
 		bt_indent: document.getElementById("bt_indent_" + v_tab.id),
 		bt_explain: document.getElementById("bt_explain_" + v_tab.id),
 		bt_analyze: document.getElementById("bt_analyze_" + v_tab.id),
@@ -533,6 +550,40 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_tag.selectDataTabFunc = v_selectDataTabFunc;
 	v_tag.selectMessageTabFunc = v_selectMessageTabFunc;
 	v_tag.selectExplainTabFunc = v_selectExplainTabFunc;
+
+	// Toolbar bindings. These replace the on*= attributes the buttons above used
+	// to carry inside the HTML string, which were evaluated against the global
+	// scope -- see dom_event_bindings.js and README.md.
+	//
+	// Each handler resolves the tab it acts on the same way it always did, from
+	// v_connTabControl.selectedTab, rather than closing over v_tab: only the
+	// selected tab's toolbar is on screen to be clicked, so the two are the same
+	// element, and keeping the existing lookup keeps the behaviour identical.
+	v_tag.bt_start.addEventListener("click", () => querySQL(0));
+	v_tag.bt_fetch_more.addEventListener("click", () => querySQL(1));
+	v_tag.bt_fetch_all.addEventListener("click", () => querySQL(2));
+	v_tag.bt_commit.addEventListener("click", () => querySQL(3));
+	v_tag.bt_rollback.addEventListener("click", () => querySQL(4));
+	v_tag.bt_cancel.addEventListener("click", () => cancelSQL());
+	v_tag.bt_indent.addEventListener("click", () => indentSQL());
+	v_tag.bt_history.addEventListener("click", () => showCommandList());
+	v_tag.bt_explain.addEventListener("click", () => getExplain(0));
+	v_tag.bt_analyze.addEventListener("click", () => getExplain(1));
+	// bt_export used to be looked up by an id no element carried, so this tag
+	// entry was permanently null. The button has the id now.
+	v_tag.bt_export.addEventListener("click", () => v_tag.exportData());
+	document
+		.getElementById("bt_close_command_history_" + v_tab.id)
+		.addEventListener("click", () => closeCommandHistory());
+	document
+		.getElementById("query_resize_line_" + v_tab.id)
+		.addEventListener("mousedown", (event) => resizeVertical(event));
+	document
+		.getElementById("explainContextToggler" + v_tab.id)
+		.addEventListener("click", () => toggleExplainContext());
+	document
+		.getElementById("bt_expand_query_result_" + v_tab.id)
+		.addEventListener("click", () => toggleExpandToPanelView("query_result_tabs_container" + v_tab.id));
 
 	// Selecting the `data` tab by default.
 	v_selectDataTabFunc();

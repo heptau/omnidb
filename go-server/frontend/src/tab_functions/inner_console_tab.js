@@ -28,12 +28,20 @@ SOFTWARE.
 */
 
 import { autocomplete_keydown, autocomplete_start, autocomplete_update_editor_cursor } from "../autocomplete.js";
-import { checkConsoleStatus } from "../console.js";
+import {
+	cancelConsole,
+	checkConsoleStatus,
+	clearConsole,
+	closeConsoleHistory,
+	consoleSQL,
+	showConsoleHistory,
+} from "../console.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { customMenu } from "../custom_menu.js";
 import { v_current_terminal_theme } from "../header_actions.js";
+import { querySQL } from "../query.js";
 import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
-import { adjustQueryTabObjects, removeTab, showMenuNewTab, uiCopyTextToClipboard } from "../workspace.js";
+import { adjustQueryTabObjects, indentSQL, removeTab, resizeVertical, showMenuNewTab, uiCopyTextToClipboard } from "../workspace.js";
 
 
 export var v_createConsoleTabFunction = function () {
@@ -81,7 +89,9 @@ export var v_createConsoleTabFunction = function () {
 		"<h5 class='modal-title'>" +
 		"Console commands history" +
 		"</h5>" +
-		"<button type='button' class='close' data-dismiss='modal' aria-label='Close' onclick='closeConsoleHistory()'>" +
+		"<button id='bt_close_console_history_" +
+		v_tab.id +
+		"' type='button' class='close' data-dismiss='modal' aria-label='Close'>" +
 		"<span aria-hidden='true'>&times;</span>" +
 		"</button>" +
 		"</div>" +
@@ -105,22 +115,24 @@ export var v_createConsoleTabFunction = function () {
 		"<div id='txt_console_" +
 		v_tab.id +
 		"' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div>" +
-		"<div class='omnidb__resize-line__container' onmousedown='resizeVertical(event)' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" +
+		"<div id='console_resize_line_" +
+		v_tab.id +
+		"' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" +
 		console_history_modal +
 		"<div class='row mb-1'>" +
 		"<div class='tab_actions omnidb__tab-actions col-12'>" +
 		"<button id='bt_start_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' onclick='consoleSQL(false);'><i class='fas fa-play fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play fa-light'></i></button>" +
 		"<button id='bt_indent_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Indent SQL' onclick='indentSQL();'><i class='fas fa-indent fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Indent SQL'><i class='fas fa-indent fa-light'></i></button>" +
 		"<button id='bt_clear_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Clear Console' onclick='clearConsole();'><i class='fas fa-broom fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Clear Console'><i class='fas fa-broom fa-light'></i></button>" +
 		"<button id='bt_history_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Command History' onclick='showConsoleHistory();'><i class='fas fa-list fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Command History'><i class='fas fa-list fa-light'></i></button>" +
 		"<div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" +
 		v_tab.id +
 		"' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" +
@@ -133,22 +145,22 @@ export var v_createConsoleTabFunction = function () {
 		"' title='Not connected' class='tab-status-text query_info dbms_object postgresql_object ms-1'>Not connected</span></div>" +
 		"<button id='bt_fetch_more_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch More' style='display: none; ' onclick='consoleSQL(false,1);'>Fetch more</button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch More' style='display: none; '>Fetch more</button>" +
 		"<button id='bt_fetch_all_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch All' style='margin-left: 5px; display: none; ' onclick='consoleSQL(false,2);'>Fetch all</button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch All' style='margin-left: 5px; display: none; '>Fetch all</button>" +
 		"<button id='bt_skip_fetch_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Skip Fetch' style='margin-left: 5px; display: none; ' onclick='consoleSQL(false,3);'>Skip Fetch</button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Skip Fetch' style='margin-left: 5px; display: none; '>Skip Fetch</button>" +
 		"<button id='bt_commit_" +
 		v_tab.id +
-		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; ' onclick='querySQL(3);'>Commit</button>" +
+		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Commit</button>" +
 		"<button id='bt_rollback_" +
 		v_tab.id +
-		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; ' onclick='querySQL(4);'>Rollback</button>" +
+		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Rollback</button>" +
 		"<button id='bt_cancel_" +
 		v_tab.id +
-		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style=' display: none;' onclick='cancelConsole();'>Cancel</button>" +
+		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style=' display: none;'>Cancel</button>" +
 		"<div id='div_query_info_" +
 		v_tab.id +
 		"' class='omnidb__query-info'></div>" +
@@ -362,6 +374,36 @@ export var v_createConsoleTabFunction = function () {
 	};
 
 	v_tab.tag = v_tag;
+
+	// Toolbar bindings, replacing the on*= attributes the buttons above used to
+	// carry inside the HTML string -- see dom_event_bindings.js and README.md.
+	// Handlers resolve the tab they act on from v_connTabControl.selectedTab, as
+	// they always did; only the selected tab's toolbar is on screen to click.
+	v_tag.bt_start.addEventListener("click", () => consoleSQL(false));
+	v_tag.bt_fetch_more.addEventListener("click", () => consoleSQL(false, 1));
+	v_tag.bt_fetch_all.addEventListener("click", () => consoleSQL(false, 2));
+	v_tag.bt_skip_fetch.addEventListener("click", () => consoleSQL(false, 3));
+	// Commit and Rollback go through querySQL, which is the query tab's function
+	// and cannot work here: its default parameters read
+	// selectedTab.tag.editor.getSelectedText() and tag.tab_title_span, neither of
+	// which a console tab has, so both buttons throw TypeError before sending
+	// anything. Ported verbatim from the attributes they replace -- this is not a
+	// regression, they have never worked, and there is no console request mode to
+	// point them at (v_code 10 has modes 0-3: run, fetch more, fetch all, skip
+	// fetch). Whether the console should have these buttons at all is a decision
+	// about the feature, not something to settle while moving a handler.
+	v_tag.bt_commit.addEventListener("click", () => querySQL(3));
+	v_tag.bt_rollback.addEventListener("click", () => querySQL(4));
+	v_tag.bt_cancel.addEventListener("click", () => cancelConsole());
+	v_tag.bt_indent.addEventListener("click", () => indentSQL());
+	document.getElementById("bt_clear_" + v_tab.id).addEventListener("click", () => clearConsole());
+	document.getElementById("bt_history_" + v_tab.id).addEventListener("click", () => showConsoleHistory());
+	document
+		.getElementById("bt_close_console_history_" + v_tab.id)
+		.addEventListener("click", () => closeConsoleHistory());
+	document
+		.getElementById("console_resize_line_" + v_tab.id)
+		.addEventListener("mousedown", (event) => resizeVertical(event));
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({

@@ -28,7 +28,8 @@ SOFTWARE.
 */
 
 import { beforeCloseTab } from "../create_tab_functions.js";
-import { refreshHeights, removeTab } from "../workspace.js";
+import { saveSnippetText } from "../tree_context_functions/tree_snippets.js";
+import { indentSQL, refreshHeights, removeTab } from "../workspace.js";
 
 
 export var v_createSnippetTextTabFunction = function (p_snippet = null) {
@@ -96,14 +97,10 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		'<div class="tab_actions omnidb__tab-actions col-12">' +
 		'<button id="bt_indent_' +
 		v_tab.id +
-		'" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL" onclick="indentSQL(' +
-		"'" +
-		"snippet" +
-		"'" +
-		');"><i class="fas fa-indent mr-2"></i>indent</button>' +
+		'" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent mr-2"></i>indent</button>' +
 		'<button id="bt_save_' +
 		v_tab.id +
-		'" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;" onclick="saveSnippetText(event);"><i class="fas fa-save mr-2"></i>save</button>' +
+		'" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;"><i class="fas fa-save mr-2"></i>save</button>' +
 		"</div>" +
 		"</div>";
 
@@ -158,6 +155,12 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	};
 
 	v_tab.tag = v_tag;
+
+	// Toolbar bindings, replacing the on*= attributes the two buttons above used
+	// to carry -- see dom_event_bindings.js and README.md. saveSnippetText reads
+	// event.clientX/clientY to place its prompt, so it takes the event itself.
+	document.getElementById("bt_indent_" + v_tab.id).addEventListener("click", () => indentSQL("snippet"));
+	v_tag.bt_save.addEventListener("click", saveSnippetText);
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.snippet_tag.tabControl.createTab({
