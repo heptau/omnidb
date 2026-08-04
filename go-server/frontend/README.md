@@ -41,10 +41,11 @@ must work on a machine with no Node installed, and `//go:embed` needs the files
 to already exist. CI rebuilds and fails if the committed output does not match
 the sources.
 
-## The four bundles
+## The five bundles
 
 | Bundle | Entry | Loaded by |
 | --- | --- | --- |
+| `omnidb.jquery.js` | `src/jquery-global.js` | both pages, where `lib/jquery/jquery.min.js` used to sit -- the very first `<script>` tag on each |
 | `omnidb.early.js` | `src/early.js` | `workspace.html`, before the inline `startLoading()` call |
 | `omnidb.login.js` | `src/login.js` | `login.html` |
 | `omnidb.moment.js` | `src/moment-global.js` | `workspace.html`, where `lib/moment/moment.min.js` used to sit |
@@ -54,8 +55,11 @@ They are separate because their `<script>` tags sit at genuinely different
 points in the page, not for code-splitting. `ajax_control.js` reads
 `#bt_cancel_ajax` out of the DOM as it loads and has to run where its tag was;
 `login.html` is a different page that only ever needed three of these files and
-has no use for the workspace's 1.2 MB; `moment-global.js` has to publish
-`window.moment` before `daterangepicker.js`'s own `<script>` tag runs, since
+has no use for the workspace's 1.2 MB; `jquery-global.js` has to publish
+`window.$`/`window.jQuery` before literally anything else on either page,
+including the other four bundles, since none of the ~39k lines that read those
+globals were rewritten to import jQuery for themselves; `moment-global.js` has
+to publish `window.moment` before `daterangepicker.js`'s own `<script>` tag runs, since
 that file is not migrated yet and its UMD wrapper falls back to reading the
 global when no AMD/CommonJS loader is present.
 
@@ -195,19 +199,36 @@ Every line of workspace JavaScript this project owns is built from here.
 `static_assets/OmniDB_app/js/` is gone; `lib/` holds nothing but third-party
 code, still loaded as plain `<script>` tags:
 
-- jQuery, Bootstrap, Ace (+ `mode-sql`, `ext-language_tools`), AG Grid,
-  Cytoscape (+ spread, klay), Chart.js (+ annotation plugin), xterm (+ fit),
+- Bootstrap, Ace (+ `mode-sql`, `ext-language_tools`), AG Grid, Cytoscape
+  (+ spread, klay), Chart.js (+ annotation plugin), xterm (+ fit),
   daterangepicker, AimaraJS, and the pgexplain bundle (its own React, React-DOM
   and D3).
 
-`moment` is the first one moved to a real npm package (`src/moment-global.js`,
-its own tiny bundle — see above). It could not just become an ordinary import
-in the main bundle: `daterangepicker.js` is not migrated yet and reads
-`window.moment` at load time, so something has to publish that global before
-its `<script>` tag runs. `console.js` and `command_history.js`, the only other
-consumers, `import moment from 'moment'` directly and get their own bundled
-copy — moment has no shared state to split-brain on, unlike `ajax_control.js`,
-so the small duplication is a reasonable trade for real types over `any`.
+Two are moved to real npm packages so far:
+
+- `jquery` (`src/jquery-global.js`, its own tiny bundle — see above). The
+  vendored copy hashed byte-identical to npm's `3.7.1`, so this is a pure
+  delivery-mechanism swap: none of the ~39k lines reading the bare `$`/`jQuery`
+  globals had to change, and `globals.d.ts` still declares them for the same
+  reason moment's `execAjax`/`showAlert` stay declared — real imports
+  everywhere would be a much larger, separate change.
+- `moment` (`src/moment-global.js`, its own tiny bundle). It could not just
+  become an ordinary import in the main bundle: `daterangepicker.js` is not
+  migrated yet and reads `window.moment` at load time, so something has to
+  publish that global before its `<script>` tag runs. `console.js` and
+  `command_history.js`, the only other consumers, `import moment from
+  'moment'` directly and get their own bundled copy — moment has no shared
+  state to split-brain on, unlike `ajax_control.js`, so the small duplication
+  is a reasonable trade for real types over `any`.
+
+**`daterangepicker` is not a safe drop-in.** The vendored copy has a local
+patch to its start/end-date picking logic (`this.pickingEndDate`, changed
+around the `if ((this.endDate && !this.pickingEndDate) || ...)` branch) that
+the npm `daterangepicker@3.1.0` package — otherwise the matching version —
+does not have. Diff the two before ever touching this one; swapping it for the
+plain npm package would silently reintroduce whatever picking bug that patch
+fixed. This is also a reason to diff first, not just version-match, for every
+other library still on this list — jQuery and moment happened to be clean.
 
 What is deliberately not done yet:
 

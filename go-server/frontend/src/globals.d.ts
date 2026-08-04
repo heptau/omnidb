@@ -39,6 +39,9 @@ interface Window {
 	/** The Handsontable-compatible factory AgGridAdapter.js installs. */
 	Handsontable: any;
 	AgGridAdapter: any;
+	/** Published by jquery-global.js -- see its comment. */
+	$: any;
+	jQuery: any;
 	/**
 	 * early.js's `exposeGlobals(ajaxControl)` call publishes its instance of
 	 * ajax_control.js here before the main bundle runs. ajax_control_bridge.js
