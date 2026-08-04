@@ -28,7 +28,15 @@ SOFTWARE.
 */
 
 import { beforeCloseTab } from "../create_tab_functions.js";
-import { closeMonitorDashboardTab, refreshMonitorUnitsObjects, showMonitorUnitList } from "../monitoring.js";
+import {
+	closeMonitorDashboardTab,
+	refreshMonitorDashboard,
+	refreshMonitorUnitsObjects,
+	saveMonitorScript,
+	selectUnitTemplate,
+	showMonitorUnitList,
+	testMonitorScript,
+} from "../monitoring.js";
 import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 
 
@@ -83,8 +91,12 @@ export var v_createMonitorDashboardTabFunction = function () {
 	var v_html =
 		"<div class='omnidb__monitoring-result-tabs'>" +
 		"<div class='container-fluid'>" +
-		"<button class='btn omnidb__theme__btn--primary btn-sm my-2 me-2' onclick='refreshMonitorDashboard(true)'><i class='fas fa-sync-alt me-2'></i>Refresh All</button>" +
-		"<button class='btn omnidb__theme__btn--primary btn-sm my-2' onclick='showMonitorUnitList()'>Manage Units</button>" +
+		"<button id='bt_refresh_dashboard_" +
+		v_tab.id +
+		"' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>Refresh All</button>" +
+		"<button id='bt_manage_units_" +
+		v_tab.id +
+		"' class='btn omnidb__theme__btn--primary btn-sm my-2'>Manage Units</button>" +
 		"<div id='dashboard_" +
 		v_tab.id +
 		"' class='dashboard_all row'></div>" +
@@ -93,6 +105,13 @@ export var v_createMonitorDashboardTabFunction = function () {
 
 	// Updating the html.
 	v_tab.elementDiv.innerHTML = v_html;
+
+	// Bindings for the two toolbar buttons, replacing the on*= attributes they
+	// used to carry -- see dom_event_bindings.js and README.md.
+	document
+		.getElementById("bt_refresh_dashboard_" + v_tab.id)
+		.addEventListener("click", () => refreshMonitorDashboard(true));
+	document.getElementById("bt_manage_units_" + v_tab.id).addEventListener("click", () => showMonitorUnitList());
 
 	var v_resizeFunction = function () {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -194,8 +213,12 @@ export var v_createNewMonitorUnitTabFunction = function () {
 	// no built-in unit ever used that type, so there's no reference shape
 	// to design a SQL convention against.
 	var v_html =
-		'<button class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1" onclick="testMonitorScript()">Test</button>' +
-		'<button class="btn omnidb__theme__btn--secondary btn-sm my-1" onclick="saveMonitorScript()">Save</button>' +
+		'<button id="bt_test_unit_' +
+		v_tab.id +
+		'" class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1">Test</button>' +
+		'<button id="bt_save_unit_' +
+		v_tab.id +
+		'" class="btn omnidb__theme__btn--secondary btn-sm my-1">Save</button>' +
 		'<div class="row">' +
 		'  <div class="col-md-3 mb-3">' +
 		'    <label for="conn_form_title">Name</label>' +
@@ -207,9 +230,7 @@ export var v_createNewMonitorUnitTabFunction = function () {
 		'    <label for="conn_form_type">Type</label>' +
 		'    <select id="select_type_' +
 		v_tab.id +
-		'" onchange="toggleMonitorUnitChartType(' +
-		v_tab.id +
-		')" class="form-control">' +
+		'" class="form-control">' +
 		'      <option value="timeseries">Timeseries</option>' +
 		'      <option value="chart">Chart (No Append)</option>' +
 		'      <option value="grid">Grid</option>' +
@@ -225,7 +246,7 @@ export var v_createNewMonitorUnitTabFunction = function () {
 		'    <label for="conn_form_type">Template</label>' +
 		'    <select id="select_template_' +
 		v_tab.id +
-		'" onchange="selectUnitTemplate(this.value)" class="form-control">' +
+		'" class="form-control">' +
 		"      <option value=-1>Select Template</option>" +
 		"    </select>" +
 		"  </div>" +
@@ -258,6 +279,22 @@ export var v_createNewMonitorUnitTabFunction = function () {
 
 	var v_div = document.getElementById("div_" + v_tab.id);
 	v_div.innerHTML = v_html;
+
+	// Bindings for the unit editor just built above.
+	document.getElementById("bt_test_unit_" + v_tab.id).addEventListener("click", () => testMonitorScript());
+	document.getElementById("bt_save_unit_" + v_tab.id).addEventListener("click", () => saveMonitorScript());
+	// The attribute this replaces interpolated v_tab.id *unquoted*, so the
+	// browser evaluated `toggleMonitorUnitChartType(omnidb_main_tablist_tab6_...)`
+	// as an identifier and threw ReferenceError. Picking "Chart (No Append)" by
+	// hand therefore never revealed the Chart Type row -- it only appeared when
+	// loading a saved chart unit, where monitoring.js calls this with the id
+	// properly.
+	document
+		.getElementById("select_type_" + v_tab.id)
+		.addEventListener("change", () => toggleMonitorUnitChartType(v_tab.id));
+	document
+		.getElementById("select_template_" + v_tab.id)
+		.addEventListener("change", (e) => selectUnitTemplate(/** @type {HTMLSelectElement} */ (e.target).value));
 
 	var langTools = ace.require("ace/ext/language_tools");
 
