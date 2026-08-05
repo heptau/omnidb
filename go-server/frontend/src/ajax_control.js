@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -59,10 +60,11 @@ export function endLoading() {
 /**
  * Used to get a cookie value from document, based on cookie name.
  * @param {string} name - the name of the cookie in the document.
- * @returns {string} cookie value, if exists.
+ * @returns {string|null} cookie value, if exists.
  */
 
 export function getCookie(name) {
+	/** @type {string|null} */
 	var cookieValue = null;
 
 	if (document.cookie && document.cookie !== "") {
@@ -91,6 +93,7 @@ export function csrfSafeMethod(method) {
 	return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
 }
 
+/** @type {any} */
 export var v_ajax_call = null;
 export var v_cancel_button = document.getElementById("bt_cancel_ajax");
 
@@ -118,8 +121,8 @@ export function cancelAjax() {
  * @param {String|null} [p_notifMode] - The notification mode of this call.
  * @param {Boolean|null} [p_loading] - If this AJAX call should add a loading gif or not.
  * @param {Boolean|null} [p_cancel_button] - If the cancel button must be displayed or not.
- * @param {Function|Boolean|null} [p_onAjaxErrorCallBack] - A callback to be called on AJAX error. Ex: connectivity issue.
- * @return {Function} Contextual callback returns based on status cases and returned data.
+ * @param {Function|false} [p_onAjaxErrorCallBack] - A callback to be called on AJAX error. Ex: connectivity issue.
+ * @return {any} Contextual callback returns based on status cases and returned data.
  */
 export function execAjax(
 	p_url,
@@ -136,7 +139,7 @@ export function execAjax(
 		startLoading();
 	}
 	// Showing the cancel button during the ajax if requested.
-	if (v_cancel_button !== undefined) {
+	if (v_cancel_button != null) {
 		v_cancel_button.style.display = "none";
 
 		if (p_cancel_button != null && p_cancel_button == true) {

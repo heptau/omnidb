@@ -51,7 +51,7 @@
     if (p_loading == null || p_loading == true) {
       startLoading();
     }
-    if (v_cancel_button !== void 0) {
+    if (v_cancel_button != null) {
       v_cancel_button.style.display = "none";
       if (p_cancel_button != null && p_cancel_button == true) {
         v_cancel_button.style.display = "block";
