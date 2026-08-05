@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -249,7 +250,7 @@ export function changeFontSize(p_option) {
 export function changeInterfaceFontSize(p_option) {
 	v_font_size = p_option;
 	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
-	$(".ace_editor").each(function (index) {
+	$(".ace_editor").each(/** @this {any} */ function (index) {
 		let editor = ace.edit(this);
 		editor.setFontSize(v_font_size + "px");
 	});
@@ -279,8 +280,8 @@ export function changeInterfaceFontSize(p_option) {
 /// Opens user config window.
 /// </summary>
 export function updateIndentUnit() {
-	var charEl = document.querySelector('input[name="indent_char"]:checked');
-	var sizeEl = document.querySelector('input[name="indent_size"]:checked');
+	var charEl = /** @type {HTMLInputElement|null} */ (document.querySelector('input[name="indent_char"]:checked'));
+	var sizeEl = /** @type {HTMLInputElement|null} */ (document.querySelector('input[name="indent_size"]:checked'));
 	if (charEl) v_indent_char = charEl.value;
 	if (sizeEl) v_indent_size = parseInt(sizeEl.value);
 	if (v_indent_char === 'tab') {
@@ -292,7 +293,7 @@ export function updateIndentUnit() {
 }
 
 export function applyEditorTabSize() {
-	$(".ace_editor").each(function () {
+	$(".ace_editor").each(/** @this {any} */ function () {
 		let editor = ace.edit(this);
 		editor.session.setTabSize(v_indent_size || 4);
 		editor.session.setUseSoftTabs(v_indent_char !== 'tab');
@@ -311,38 +312,38 @@ export function showConfigUser() {
 		return;
 	}
 
-	document.getElementById("sel_interface_font_size").value = v_font_size;
+	/** @type {HTMLInputElement} */ (document.getElementById("sel_interface_font_size")).value = String(v_font_size);
 	// document.getElementById('sel_editor_theme').value = v_theme;
 
-	document.getElementById("txt_confirm_new_pwd").value = "";
-	document.getElementById("txt_new_pwd").value = "";
+	/** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd")).value = "";
+	/** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd")).value = "";
 
-	document.getElementById("sel_csv_encoding").value = v_csv_encoding;
-	document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
+	/** @type {HTMLInputElement} */ (document.getElementById("sel_csv_encoding")).value = v_csv_encoding;
+	/** @type {HTMLInputElement} */ (document.getElementById("txt_csv_delimiter")).value = v_csv_delimiter;
 
 	// Set formatting radio buttons from globals
-	var charRadios = document.getElementsByName("indent_char");
+	var charRadios = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("indent_char"));
 	for (var i = 0; i < charRadios.length; i++) {
 		if (charRadios[i].value === v_indent_char) {
 			charRadios[i].checked = true;
 			break;
 		}
 	}
-	var sizeRadios = document.getElementsByName("indent_size");
+	var sizeRadios = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("indent_size"));
 	for (var i = 0; i < sizeRadios.length; i++) {
 		if (sizeRadios[i].value === String(v_indent_size)) {
 			sizeRadios[i].checked = true;
 			break;
 		}
 	}
-	var commaRadios = document.getElementsByName("comma_style");
+	var commaRadios = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("comma_style"));
 	for (var i = 0; i < commaRadios.length; i++) {
 		if (commaRadios[i].value === v_comma_style) {
 			commaRadios[i].checked = true;
 			break;
 		}
 	}
-	var caseRadios = document.getElementsByName("keyword_case");
+	var caseRadios = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("keyword_case"));
 	for (var i = 0; i < caseRadios.length; i++) {
 		if (caseRadios[i].value === v_keyword_case) {
 			caseRadios[i].checked = true;
@@ -351,7 +352,7 @@ export function showConfigUser() {
 	}
 
 	var v_disabled_autocomplete_types = v_autocomplete_disabled_types.split(",");
-	var typeCheckboxes = document.getElementsByName("autocomplete_type");
+	var typeCheckboxes = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("autocomplete_type"));
 	for (var i = 0; i < typeCheckboxes.length; i++) {
 		typeCheckboxes[i].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i].value) === -1;
 	}
@@ -393,7 +394,7 @@ export function showWebsite(p_name, p_url) {
 /// Checks or unchecks every autocomplete category checkbox in the Options tab.
 /// </summary>
 export function setAllAutocompleteTypeCheckboxes(p_checked) {
-	var typeCheckboxes = document.getElementsByName("autocomplete_type");
+	var typeCheckboxes = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("autocomplete_type"));
 	for (var i = 0; i < typeCheckboxes.length; i++) {
 		typeCheckboxes[i].checked = p_checked;
 	}
@@ -403,17 +404,17 @@ export function setAllAutocompleteTypeCheckboxes(p_checked) {
 /// Saves user config to OmniDB database.
 /// </summary>
 export function saveConfigUser() {
-	v_font_size = document.getElementById("sel_interface_font_size").value;
+	v_font_size = Number(/** @type {HTMLInputElement} */ (document.getElementById("sel_interface_font_size")).value);
 	// v_theme_id = document.getElementById('sel_editor_theme').value.split('/')[0];
 
-	var v_confirm_pwd = document.getElementById("txt_confirm_new_pwd");
-	var v_pwd = document.getElementById("txt_new_pwd");
+	var v_confirm_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd"));
+	var v_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd"));
 
-	v_csv_encoding = document.getElementById("sel_csv_encoding").value;
-	v_csv_delimiter = document.getElementById("txt_csv_delimiter").value;
+	v_csv_encoding = /** @type {HTMLInputElement} */ (document.getElementById("sel_csv_encoding")).value;
+	v_csv_delimiter = /** @type {HTMLInputElement} */ (document.getElementById("txt_csv_delimiter")).value;
 
 	var v_disabled_types = [];
-	var typeCheckboxes = document.getElementsByName("autocomplete_type");
+	var typeCheckboxes = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("autocomplete_type"));
 	for (var i = 0; i < typeCheckboxes.length; i++) {
 		if (!typeCheckboxes[i].checked) v_disabled_types.push(typeCheckboxes[i].value);
 	}
@@ -516,14 +517,20 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	// those three buttons carried -- see dom_event_bindings.js and README.md.
 	// innerHTML is reassigned on every open, so these are fresh elements each
 	// time and the listeners go with them.
-	document.getElementById("bt_edit_content_close").addEventListener("click", () => cancelEditContent());
-	document.getElementById("bt_edit_content_save").addEventListener("click", () => saveEditContent());
-	document.getElementById("bt_edit_content_cancel").addEventListener("click", () => cancelEditContent());
+	/** @type {HTMLElement} */ (document.getElementById("bt_edit_content_close")).addEventListener("click", () =>
+		cancelEditContent(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_edit_content_save")).addEventListener("click", () =>
+		saveEditContent(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_edit_content_cancel")).addEventListener("click", () =>
+		cancelEditContent(),
+	);
 
 	if (v_editContentObject != null)
 		if (v_editContentObject.editor != null) {
 			v_editContentObject.editor.destroy();
-			document.getElementById("txt_edit_content").innerHTML = "";
+			/** @type {HTMLElement} */ (document.getElementById("txt_edit_content")).innerHTML = "";
 		}
 
 	var langTools = ace.require("ace/ext/language_tools");
@@ -538,7 +545,7 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 
 	v_editor.setOptions({ enableBasicAutocompletion: true });
 
-	document.getElementById("txt_edit_content").onclick = function () {
+	/** @type {HTMLElement} */ (document.getElementById("txt_edit_content")).onclick = function () {
 		v_editor.focus();
 	};
 

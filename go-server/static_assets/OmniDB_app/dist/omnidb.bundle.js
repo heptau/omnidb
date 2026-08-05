@@ -19959,10 +19959,13 @@
   function changeInterfaceFontSize(p_option) {
     v_font_size = p_option;
     document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
-    $(".ace_editor").each(function(index) {
-      let editor = ace.edit(this);
-      editor.setFontSize(v_font_size + "px");
-    });
+    $(".ace_editor").each(
+      /** @this {any} */
+      function(index) {
+        let editor = ace.edit(this);
+        editor.setFontSize(v_font_size + "px");
+      }
+    );
     var v_outer_tab_list = v_connTabControl.tabList;
     for (let i2 = 0; i2 < v_outer_tab_list.length; i2++) {
       var v_outer_tab_tag = v_outer_tab_list[i2].tag;
@@ -19984,8 +19987,14 @@
     refreshHeights();
   }
   function updateIndentUnit() {
-    var charEl = document.querySelector('input[name="indent_char"]:checked');
-    var sizeEl = document.querySelector('input[name="indent_size"]:checked');
+    var charEl = (
+      /** @type {HTMLInputElement|null} */
+      document.querySelector('input[name="indent_char"]:checked')
+    );
+    var sizeEl = (
+      /** @type {HTMLInputElement|null} */
+      document.querySelector('input[name="indent_size"]:checked')
+    );
     if (charEl) v_indent_char = charEl.value;
     if (sizeEl) v_indent_size = parseInt(sizeEl.value);
     if (v_indent_char === "tab") {
@@ -19996,43 +20005,58 @@
     }
   }
   function applyEditorTabSize() {
-    $(".ace_editor").each(function() {
-      let editor = ace.edit(this);
-      editor.session.setTabSize(v_indent_size || 4);
-      editor.session.setUseSoftTabs(v_indent_char !== "tab");
-    });
+    $(".ace_editor").each(
+      /** @this {any} */
+      function() {
+        let editor = ace.edit(this);
+        editor.session.setTabSize(v_indent_size || 4);
+        editor.session.setUseSoftTabs(v_indent_char !== "tab");
+      }
+    );
   }
   function showConfigUser() {
     if ($("#modal_config").hasClass("show")) {
       return;
     }
-    document.getElementById("sel_interface_font_size").value = v_font_size;
+    document.getElementById("sel_interface_font_size").value = String(v_font_size);
     document.getElementById("txt_confirm_new_pwd").value = "";
     document.getElementById("txt_new_pwd").value = "";
     document.getElementById("sel_csv_encoding").value = v_csv_encoding;
     document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
-    var charRadios = document.getElementsByName("indent_char");
+    var charRadios = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("indent_char")
+    );
     for (var i2 = 0; i2 < charRadios.length; i2++) {
       if (charRadios[i2].value === v_indent_char) {
         charRadios[i2].checked = true;
         break;
       }
     }
-    var sizeRadios = document.getElementsByName("indent_size");
+    var sizeRadios = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("indent_size")
+    );
     for (var i2 = 0; i2 < sizeRadios.length; i2++) {
       if (sizeRadios[i2].value === String(v_indent_size)) {
         sizeRadios[i2].checked = true;
         break;
       }
     }
-    var commaRadios = document.getElementsByName("comma_style");
+    var commaRadios = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("comma_style")
+    );
     for (var i2 = 0; i2 < commaRadios.length; i2++) {
       if (commaRadios[i2].value === v_comma_style) {
         commaRadios[i2].checked = true;
         break;
       }
     }
-    var caseRadios = document.getElementsByName("keyword_case");
+    var caseRadios = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("keyword_case")
+    );
     for (var i2 = 0; i2 < caseRadios.length; i2++) {
       if (caseRadios[i2].value === v_keyword_case) {
         caseRadios[i2].checked = true;
@@ -20040,7 +20064,10 @@
       }
     }
     var v_disabled_autocomplete_types = v_autocomplete_disabled_types.split(",");
-    var typeCheckboxes = document.getElementsByName("autocomplete_type");
+    var typeCheckboxes = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("autocomplete_type")
+    );
     for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
       typeCheckboxes[i2].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i2].value) === -1;
     }
@@ -20062,19 +20089,36 @@
     v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
   }
   function setAllAutocompleteTypeCheckboxes(p_checked) {
-    var typeCheckboxes = document.getElementsByName("autocomplete_type");
+    var typeCheckboxes = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("autocomplete_type")
+    );
     for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
       typeCheckboxes[i2].checked = p_checked;
     }
   }
   function saveConfigUser() {
-    v_font_size = document.getElementById("sel_interface_font_size").value;
-    var v_confirm_pwd = document.getElementById("txt_confirm_new_pwd");
-    var v_pwd = document.getElementById("txt_new_pwd");
-    v_csv_encoding = document.getElementById("sel_csv_encoding").value;
-    v_csv_delimiter = document.getElementById("txt_csv_delimiter").value;
+    v_font_size = Number(
+      /** @type {HTMLInputElement} */
+      document.getElementById("sel_interface_font_size").value
+    );
+    var v_confirm_pwd = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_confirm_new_pwd")
+    );
+    var v_pwd = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_new_pwd")
+    );
+    v_csv_encoding = /** @type {HTMLInputElement} */
+    document.getElementById("sel_csv_encoding").value;
+    v_csv_delimiter = /** @type {HTMLInputElement} */
+    document.getElementById("txt_csv_delimiter").value;
     var v_disabled_types = [];
-    var typeCheckboxes = document.getElementsByName("autocomplete_type");
+    var typeCheckboxes = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("autocomplete_type")
+    );
     for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
       if (!typeCheckboxes[i2].checked) v_disabled_types.push(typeCheckboxes[i2].value);
     }
@@ -20132,9 +20176,18 @@
       v_save_btn_attr = ' disabled title="Unable to manually edit data without primary key" ';
     }
     v_edit_modal.innerHTML = '<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;"><div class="modal-content"><div class="modal-header"><h4 class="mb-0">Edit Data</h4><button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button></div><div id="modal_message_content" class="modal-body" style="white-space: pre-line;"><div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);"></div></div><div class="modal-footer"><button ' + v_save_btn_attr + ' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">Save</button><button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">Cancel</button></div></div></div>';
-    document.getElementById("bt_edit_content_close").addEventListener("click", () => cancelEditContent());
-    document.getElementById("bt_edit_content_save").addEventListener("click", () => saveEditContent());
-    document.getElementById("bt_edit_content_cancel").addEventListener("click", () => cancelEditContent());
+    document.getElementById("bt_edit_content_close").addEventListener(
+      "click",
+      () => cancelEditContent()
+    );
+    document.getElementById("bt_edit_content_save").addEventListener(
+      "click",
+      () => saveEditContent()
+    );
+    document.getElementById("bt_edit_content_cancel").addEventListener(
+      "click",
+      () => cancelEditContent()
+    );
     if (v_editContentObject != null) {
       if (v_editContentObject.editor != null) {
         v_editContentObject.editor.destroy();
