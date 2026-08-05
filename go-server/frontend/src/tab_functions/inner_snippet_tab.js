@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -32,8 +33,10 @@ import { saveSnippetText } from "../tree_context_functions/tree_snippets.js";
 import { indentSQL, refreshHeights, removeTab } from "../workspace.js";
 
 
+/** @param {{id: any, name: string, id_parent: any}|null} [p_snippet] */
 export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	var v_name = "New Snippet";
+	/** @type {{id: any, name: string|null, parent: any, type: string}} */
 	var v_details = {
 		id: null,
 		name: null,
@@ -73,11 +76,11 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	v_connTabControl.snippet_tag.tabControl.selectTab(v_tab);
 
 	//Adding unique names to spans
-	var v_tab_title_span = document.getElementById("tab_title");
+	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
 	v_tab_title_span.id = "tab_title_" + v_tab.id;
-	var v_tab_loading_span = document.getElementById("tab_loading");
+	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = document.getElementById("tab_check");
+	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 	//var v_tab_close_span = document.getElementById('tab_close');
 	//v_tab_close_span.id = 'tab_close_' + v_tab.id;
@@ -104,10 +107,10 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		"</div>" +
 		"</div>";
 
-	var v_div = document.getElementById("div_" + v_tab.id);
+	var v_div = /** @type {HTMLElement} */ (document.getElementById("div_" + v_tab.id));
 	v_div.innerHTML = v_html;
 
-	var v_txt_snippet = document.getElementById("txt_snippet_" + v_tab.id);
+	var v_txt_snippet = /** @type {HTMLElement} */ (document.getElementById("txt_snippet_" + v_tab.id));
 
 	v_txt_snippet.style.height = window.innerHeight - $(v_txt_snippet).offset().top - 70 + "px";
 
@@ -148,7 +151,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		tab_loading_span: v_tab_loading_span,
 		tab_check_span: v_tab_check_span,
 		bt_start: document.getElementById("bt_start_" + v_tab.id),
-		bt_save: document.getElementById("bt_save_" + v_tab.id),
+		bt_save: /** @type {HTMLElement} */ (document.getElementById("bt_save_" + v_tab.id)),
 		tabControl: v_connTabControl.snippet_tag.tabControl,
 		snippetTab: v_connTabControl.selectedTab,
 		snippetObject: v_details,
@@ -159,7 +162,9 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	// Toolbar bindings, replacing the on*= attributes the two buttons above used
 	// to carry -- see dom_event_bindings.js and README.md. saveSnippetText reads
 	// event.clientX/clientY to place its prompt, so it takes the event itself.
-	document.getElementById("bt_indent_" + v_tab.id).addEventListener("click", () => indentSQL("snippet"));
+	/** @type {HTMLElement} */ (document.getElementById("bt_indent_" + v_tab.id)).addEventListener("click", () =>
+		indentSQL("snippet"),
+	);
 	v_tag.bt_save.addEventListener("click", saveSnippetText);
 
 	// Creating + tab in the outer tab list

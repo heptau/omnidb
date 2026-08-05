@@ -47,14 +47,15 @@ export function composedPath(el) {
  * ## createTabControl
  * @desc Creates the `tabControl` with methods to manipulate the tab-system.
  *
- * @param  {string} { p_div   String for the ID of the target DOM element where the tabControl will create/remove tabs.
- * @param  {string} p_hierarchy Optional string defining the tab-system classes with OmniDB pre-defined styles ['primary', 'secondary',...].
+ * @param {object} config
+ * @param {string} config.p_div String for the ID of the target DOM element where the tabControl will create/remove tabs.
+ * @param {string} [config.p_hierarchy] Optional string defining the tab-system classes with OmniDB pre-defined styles ['primary', 'secondary',...].
  * The classes system refers to BEM practices implemented inside OmniDB: 'omnidb__tab-menu' (default base class), 'omnidb__tab-menu--primary', 'omnidb__tab-menu--secondary'.
  * - 'primary': OmniDB Outer Tabs. Results in the tab classlists containing 'omnidb__tab-menu omnidb__tab-menu--primary', 'omnidb__tab-content omnidb__tab-content--primary'
  * - 'secondary': OmniDB Inner Tabs. Results in the tab classlists containing 'omnidb__tab-menu omnidb__tab-menu--secondary', 'omnidb__tab-content omnidb__tab-content--secondary'
- * @param  {string} p_layout   String defining some additional ready-to-use styles for the tab system.
+ * @param {string} [config.p_layout] String defining some additional ready-to-use styles for the tab system.
  * - 'card': Adds a bootstrap based card style to the tab system, with the tab-menu inside the card-header and the tab-content inside the card-body.
- * @return {object} Returns the `tabControl` object.
+ * @return {any} Returns the `tabControl` object.
  */
 export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 	// Get an element's exact position

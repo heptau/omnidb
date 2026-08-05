@@ -995,6 +995,7 @@ export function checkTabStatus(v_tab) {
 /// <summary>
 /// Indent SQL.
 /// </summary>
+/** @param {string|false} [p_mode] */
 export function indentSQL(p_mode = false) {
 	var v_tab_tag = null;
 	var v_editor = null;

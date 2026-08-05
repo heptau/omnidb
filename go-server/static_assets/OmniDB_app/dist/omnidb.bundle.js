@@ -7910,8 +7910,14 @@
     v_connTabControl.snippet_div.id = v_tab.id + "_snippet";
     v_connTabControl.snippet_div.innerHTML = v_html;
     document.getElementById(v_connTabControl.id).append(v_connTabControl.snippet_div);
-    document.getElementById("bt_toggle_snippet_panel_" + v_tab.id).addEventListener("click", () => toggleSnippetPanel());
-    document.getElementById("snippet_resize_line_" + v_tab.id).addEventListener("mousedown", (event2) => resizeSnippetHorizontal(event2));
+    document.getElementById("bt_toggle_snippet_panel_" + v_tab.id).addEventListener(
+      "click",
+      () => toggleSnippetPanel()
+    );
+    document.getElementById("snippet_resize_line_" + v_tab.id).addEventListener(
+      "mousedown",
+      (event2) => resizeSnippetHorizontal(event2)
+    );
     var v_currTabControl = createTabControl({
       p_div: v_tab.id + "_snippet_tabs",
       p_hierarchy: "secondary"
@@ -7932,7 +7938,10 @@
       divLeft: document.getElementById(v_tab.id + "_snippet_div_left"),
       divPanel: document.getElementById(v_tab.id + "_panel_snippet"),
       divRight: document.getElementById(v_tab.id + "_snippet_div_right"),
-      divTree: document.getElementById(v_tab.id + "_snippet_tree"),
+      divTree: (
+        /** @type {HTMLElement} */
+        document.getElementById(v_tab.id + "_snippet_tree")
+      ),
       connTabControl: v_connTabControl,
       isVisible: false,
       mode: "snippets"
@@ -9174,16 +9183,31 @@
       }
     });
     v_connTabControl.snippet_tag.tabControl.selectTab(v_tab);
-    var v_tab_title_span = document.getElementById("tab_title");
+    var v_tab_title_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_title")
+    );
     v_tab_title_span.id = "tab_title_" + v_tab.id;
-    var v_tab_loading_span = document.getElementById("tab_loading");
+    var v_tab_loading_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_loading")
+    );
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-    var v_tab_check_span = document.getElementById("tab_check");
+    var v_tab_check_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_check")
+    );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var v_html = '<div id="txt_snippet_' + v_tab.id + '" style="width: 100%; height: 200px; border: 1px solid #c3c3c3;"></div><div class="row mt-2"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_indent_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent mr-2"></i>indent</button><button id="bt_save_' + v_tab.id + '" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;"><i class="fas fa-save mr-2"></i>save</button></div></div>';
-    var v_div = document.getElementById("div_" + v_tab.id);
+    var v_div = (
+      /** @type {HTMLElement} */
+      document.getElementById("div_" + v_tab.id)
+    );
     v_div.innerHTML = v_html;
-    var v_txt_snippet = document.getElementById("txt_snippet_" + v_tab.id);
+    var v_txt_snippet = (
+      /** @type {HTMLElement} */
+      document.getElementById("txt_snippet_" + v_tab.id)
+    );
     v_txt_snippet.style.height = window.innerHeight - $(v_txt_snippet).offset().top - 70 + "px";
     ace.require("ace/ext/language_tools");
     var v_editor = ace.edit("txt_snippet_" + v_tab.id);
@@ -9216,13 +9240,19 @@
       tab_loading_span: v_tab_loading_span,
       tab_check_span: v_tab_check_span,
       bt_start: document.getElementById("bt_start_" + v_tab.id),
-      bt_save: document.getElementById("bt_save_" + v_tab.id),
+      bt_save: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_save_" + v_tab.id)
+      ),
       tabControl: v_connTabControl.snippet_tag.tabControl,
       snippetTab: v_connTabControl.selectedTab,
       snippetObject: v_details
     };
     v_tab.tag = v_tag;
-    document.getElementById("bt_indent_" + v_tab.id).addEventListener("click", () => indentSQL("snippet"));
+    document.getElementById("bt_indent_" + v_tab.id).addEventListener(
+      "click",
+      () => indentSQL("snippet")
+    );
     v_tag.bt_save.addEventListener("click", saveSnippetText);
     var v_add_tab = v_connTabControl.snippet_tag.tabControl.createTab({
       p_name: "+",

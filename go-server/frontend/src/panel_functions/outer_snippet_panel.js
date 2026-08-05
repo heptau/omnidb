@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -41,6 +42,7 @@ import { resizeSnippetHorizontal, resizeSnippetPanel, showMenuNewTab } from "../
 var v_element;
 
 
+/** @param {boolean|"visible"|"hidden"} [p_set_state] */
 export var toggleSnippetPanel = function (p_set_state = false) {
 	v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
 	var v_snippet_tag = v_connTabControl.snippet_tag;
@@ -112,17 +114,19 @@ export var v_createSnippetPanelFunction = function (p_index) {
 	v_connTabControl.snippet_div = document.createElement("div");
 	v_connTabControl.snippet_div.id = v_tab.id + "_snippet";
 	v_connTabControl.snippet_div.innerHTML = v_html;
-	document.getElementById(v_connTabControl.id).append(v_connTabControl.snippet_div);
+	/** @type {HTMLElement} */ (document.getElementById(v_connTabControl.id)).append(v_connTabControl.snippet_div);
 
 	// Bindings for the panel toggler and the resize line just built above,
 	// replacing the on*= attributes they carried -- see dom_event_bindings.js and
 	// README.md. Both elements needed an id; they had none.
-	document
-		.getElementById("bt_toggle_snippet_panel_" + v_tab.id)
-		.addEventListener("click", () => toggleSnippetPanel());
-	document
-		.getElementById("snippet_resize_line_" + v_tab.id)
-		.addEventListener("mousedown", (event) => resizeSnippetHorizontal(event));
+	/** @type {HTMLElement} */ (document.getElementById("bt_toggle_snippet_panel_" + v_tab.id)).addEventListener(
+		"click",
+		() => toggleSnippetPanel(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("snippet_resize_line_" + v_tab.id)).addEventListener(
+		"mousedown",
+		(event) => resizeSnippetHorizontal(event),
+	);
 
 	var v_currTabControl = createTabControl({
 		p_div: v_tab.id + "_snippet_tabs",
@@ -146,7 +150,7 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		divLeft: document.getElementById(v_tab.id + "_snippet_div_left"),
 		divPanel: document.getElementById(v_tab.id + "_panel_snippet"),
 		divRight: document.getElementById(v_tab.id + "_snippet_div_right"),
-		divTree: document.getElementById(v_tab.id + "_snippet_tree"),
+		divTree: /** @type {HTMLElement} */ (document.getElementById(v_tab.id + "_snippet_tree")),
 		connTabControl: v_connTabControl,
 		isVisible: false,
 		mode: "snippets",
