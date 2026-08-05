@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -48,6 +49,7 @@ export function legereEscapeHtml(p_text) {
 
 export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, p_options) {
 
+	/** @type {any} */
 	var v_legereControl = {
 		// Params
 		backgroundColor: (p_options.backgroundColor) ? p_options.backgroundColor : '#e2e2e2',
@@ -172,6 +174,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			// Updates the row and col range
 			this.updateRowsColsCount();
 		},
+		/** @param {{p_data?: any, p_index?: number, p_index_map?: any[]}} config */
 		createPlan : function({
 			p_data = {},
 			p_index = 0,
@@ -238,6 +241,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 				index: v_index,
 				index_map: v_index_map,
 				omnis_legere_control: p_data.omnis_legere_control,
+				/** @type {any[]} */
 				planList: []
 			};
 
@@ -323,7 +327,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			var v_legereControl = this;
 
 
-			var node_button_toggle_collapse_update = document.getElementById(p_node.id + '_button_toggle_collapse_update');
+			var node_button_toggle_collapse_update = /** @type {HTMLElement} */ (document.getElementById(p_node.id + '_button_toggle_collapse_update'));
 
 			node_button_toggle_collapse_update.onclick = function(event){
 				v_legereControl.toggleCollapseNodeUpdate(p_node.index_map);
@@ -346,6 +350,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 
 			var v_title = '';
 			var v_progress_cost_html = '';
+			var v_data_html = '';
 			if (v_plan_item.data['Node Type']) {
 				var v_child_count = (v_plan_item['planList'] !== undefined) ? v_plan_item['planList'].length : 0;
 
@@ -398,6 +403,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			// Setting color
 			var v_node_percentage = v_plan_item.node_cost.percentage;
 
+			/** @type {string|false} */
 			var v_fill_color = false;
 			if (v_node_percentage > 0.3 && v_node_percentage < 0.6) {
 				v_fill_color = '#ceb22b;';
@@ -451,6 +457,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 		},
 		renderProgressBar : function(p_plan_list) {
 			var v_legereControl = this;
+			/** @type {any} */
 			var v_node = null;
 
 			for (let i = 0; i < p_plan_list.length; i++) {
@@ -597,7 +604,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 						// Get position attributes of the v_node (source of the line)
 						var v_source_id = document.getElementById(v_node.id);
 						if (v_source_id) {
-							var v_source = document.getElementById(v_node.id).lastChild;
+							var v_source = /** @type {HTMLElement|null} */ (v_source_id.lastChild);
 							if (v_source) {
 								// var v_source_rect = v_source.getBoundingClientRect();
 								var v_source_x = (v_source.offsetWidth / 2) + v_source.offsetLeft;
@@ -606,7 +613,8 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 								for (let j = 0; j < v_node_child_list.length; j++) {
 									// Get the position of each v_child_node (target of the line)
 									var v_child_node = v_node_child_list[j];
-									var v_target = document.getElementById(v_child_node.id).firstChild;
+									var v_target_id = document.getElementById(v_child_node.id);
+									var v_target = v_target_id ? /** @type {HTMLElement|null} */ (v_target_id.firstChild) : null;
 									if (v_target) {
 										// var v_target_rect = v_target.getBoundingClientRect();
 										var v_target_x = (v_target.offsetWidth / 2) + v_target.offsetLeft;
@@ -754,11 +762,11 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			// this.divGrid.style['grid-template-rows'] = v_grid_row_attr;
 
 			// Sets the new content for the divGrid
-			document.getElementById(v_legereControl.divGridId).innerHTML = p_plans_html;
+			/** @type {HTMLElement} */ (document.getElementById(v_legereControl.divGridId)).innerHTML = p_plans_html;
 
 
 			// Adds the click event to the control panel buttons
-			var v_toggle_collapse_update_btn = document.getElementById(v_legereControl.id + '_control_panel_button_toggle_collapse_update');
+			var v_toggle_collapse_update_btn = /** @type {HTMLElement} */ (document.getElementById(v_legereControl.id + '_control_panel_button_toggle_collapse_update'));
 			if (v_toggle_collapse_update_btn !== undefined && v_toggle_collapse_update_btn !== null) {
 				v_toggle_collapse_update_btn.onclick = function(){
 					v_legereControl.global_collapse = !v_legereControl.global_collapse;
@@ -772,10 +780,11 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 					v_legereControl.toggleCollapseUpdate('all', false, v_toggle_collapse);
 				};
 			}
-			var v_div_grid_container = document.getElementById(v_legereControl.id + '_div_grid_container');
+			var v_div_grid_container = /** @type {HTMLElement} */ (document.getElementById(v_legereControl.id + '_div_grid_container'));
 			var v_zoomin_btn = document.getElementById(v_legereControl.id + '_control_panel_button_zoomin');
 			if (v_zoomin_btn !== undefined && v_zoomin_btn !== null) {
 				v_zoomin_btn.onclick = function(){
+					/** @type {any} */
 					var v_zoom_value = v_div_grid_container.style['transform'];
 					v_zoom_value = v_zoom_value.split("scale(")[1];
 					v_zoom_value = v_zoom_value.split(")")[0];
@@ -787,6 +796,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			var v_zoomout_btn = document.getElementById(v_legereControl.id + '_control_panel_button_zoomout');
 			if (v_zoomout_btn !== undefined && v_zoomout_btn !== null) {
 				v_zoomout_btn.onclick = function(){
+					/** @type {any} */
 					var v_zoom_value = v_div_grid_container.style['transform'];
 					v_zoom_value = v_zoom_value.split("scale(")[1];
 					v_zoom_value = v_zoom_value.split(")")[0];
@@ -798,8 +808,8 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			var v_fit_btn = document.getElementById(v_legereControl.id + '_control_panel_button_fit');
 			if (v_fit_btn !== undefined && v_fit_btn !== null) {
 				v_fit_btn.onclick = function(){
-					var v_content_div = document.getElementById(v_legereControl.id + '_content');
-					var v_svg_div = document.getElementById(v_legereControl.id + '_svg');
+					var v_content_div = /** @type {HTMLElement} */ (document.getElementById(v_legereControl.id + '_content'));
+					var v_svg_div = /** @type {HTMLElement} */ (document.getElementById(v_legereControl.id + '_svg'));
 					var v_h_value = v_svg_div.clientWidth;
 					var v_content_h_value = v_content_div.offsetWidth;
 					var v_h_ratio = v_content_h_value / v_h_value;
@@ -880,6 +890,11 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			this.stateActive = false;
 			this.updatePlanList([]);
 		},
+		/**
+		 * @param {any} [p_type]
+		 * @param {any} [p_node]
+		 * @param {boolean|null} [p_set_state]
+		 */
 		toggleCollapse: function(p_type = false, p_node = false, p_set_state = null) {
 			var v_legereControl = this;
 			if (p_type === 'all') {
@@ -926,6 +941,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			}
 			else {
 				var v_node_list = v_parent_node.Plans;
+				/** @type {any} */
 				let v_temp_node = null;
 				let v_temp_list = null;
 
@@ -949,6 +965,11 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 			}
 
 		},
+		/**
+		 * @param {any} [p_type]
+		 * @param {any} [p_node]
+		 * @param {boolean|null} [p_set_state]
+		 */
 		toggleCollapseUpdate: function(p_type = 'all', p_node = false, p_set_state = null) {
 			this.toggleCollapse(p_type, p_node, p_set_state);
 			var v_legereControl = this;

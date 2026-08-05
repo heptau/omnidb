@@ -7339,6 +7339,7 @@
         }
         this.updateRowsColsCount();
       },
+      /** @param {{p_data?: any, p_index?: number, p_index_map?: any[]}} config */
       createPlan: function({
         p_data = {},
         p_index = 0,
@@ -7381,6 +7382,7 @@
           index: v_index,
           index_map: v_index_map,
           omnis_legere_control: p_data.omnis_legere_control,
+          /** @type {any[]} */
           planList: []
         };
         var v_plan_cost = v_plan.data[v_legereControl2.total_progress_key_name];
@@ -7440,7 +7442,10 @@
       },
       setClickEventButtonToggleCollapse: function(p_node) {
         var v_legereControl2 = this;
-        var node_button_toggle_collapse_update = document.getElementById(p_node.id + "_button_toggle_collapse_update");
+        var node_button_toggle_collapse_update = (
+          /** @type {HTMLElement} */
+          document.getElementById(p_node.id + "_button_toggle_collapse_update")
+        );
         node_button_toggle_collapse_update.onclick = function(event2) {
           v_legereControl2.toggleCollapseNodeUpdate(p_node.index_map);
         };
@@ -7458,6 +7463,7 @@
         var v_plans_html = "";
         var v_title = "";
         var v_progress_cost_html = "";
+        var v_data_html = "";
         if (v_plan_item.data["Node Type"]) {
           var v_child_count = v_plan_item["planList"] !== void 0 ? v_plan_item["planList"].length : 0;
           v_title += '<div class="' + this.defaultClass + '__title card-title p-2 mb-0"><h5 class="mb-0"><strong>' + legereEscapeHtml(v_plan_item.data["Node Type"]) + "</strong><span>(" + v_child_count + ")</span></h5></div>";
@@ -7590,13 +7596,20 @@
             if (v_node_child_list) {
               var v_source_id = document.getElementById(v_node2.id);
               if (v_source_id) {
-                var v_source = document.getElementById(v_node2.id).lastChild;
+                var v_source = (
+                  /** @type {HTMLElement|null} */
+                  v_source_id.lastChild
+                );
                 if (v_source) {
                   var v_source_x = v_source.offsetWidth / 2 + v_source.offsetLeft;
                   var v_source_y = v_source.offsetTop + v_source.offsetHeight;
                   for (let j2 = 0; j2 < v_node_child_list.length; j2++) {
                     var v_child_node = v_node_child_list[j2];
-                    var v_target = document.getElementById(v_child_node.id).firstChild;
+                    var v_target_id = document.getElementById(v_child_node.id);
+                    var v_target = v_target_id ? (
+                      /** @type {HTMLElement|null} */
+                      v_target_id.firstChild
+                    ) : null;
                     if (v_target) {
                       var v_target_x = v_target.offsetWidth / 2 + v_target.offsetLeft;
                       var v_target_y = v_target.offsetTop;
@@ -7692,7 +7705,10 @@
           v_legereControl2.divElementContent.appendChild(v_control_panel_div);
         }
         document.getElementById(v_legereControl2.divGridId).innerHTML = p_plans_html;
-        var v_toggle_collapse_update_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_toggle_collapse_update");
+        var v_toggle_collapse_update_btn = (
+          /** @type {HTMLElement} */
+          document.getElementById(v_legereControl2.id + "_control_panel_button_toggle_collapse_update")
+        );
         if (v_toggle_collapse_update_btn !== void 0 && v_toggle_collapse_update_btn !== null) {
           v_toggle_collapse_update_btn.onclick = function() {
             v_legereControl2.global_collapse = !v_legereControl2.global_collapse;
@@ -7705,7 +7721,10 @@
             v_legereControl2.toggleCollapseUpdate("all", false, v_toggle_collapse);
           };
         }
-        var v_div_grid_container = document.getElementById(v_legereControl2.id + "_div_grid_container");
+        var v_div_grid_container = (
+          /** @type {HTMLElement} */
+          document.getElementById(v_legereControl2.id + "_div_grid_container")
+        );
         var v_zoomin_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_zoomin");
         if (v_zoomin_btn !== void 0 && v_zoomin_btn !== null) {
           v_zoomin_btn.onclick = function() {
@@ -7731,8 +7750,14 @@
         var v_fit_btn = document.getElementById(v_legereControl2.id + "_control_panel_button_fit");
         if (v_fit_btn !== void 0 && v_fit_btn !== null) {
           v_fit_btn.onclick = function() {
-            var v_content_div = document.getElementById(v_legereControl2.id + "_content");
-            var v_svg_div = document.getElementById(v_legereControl2.id + "_svg");
+            var v_content_div = (
+              /** @type {HTMLElement} */
+              document.getElementById(v_legereControl2.id + "_content")
+            );
+            var v_svg_div = (
+              /** @type {HTMLElement} */
+              document.getElementById(v_legereControl2.id + "_svg")
+            );
             var v_h_value = v_svg_div.clientWidth;
             var v_content_h_value = v_content_div.offsetWidth;
             var v_h_ratio = v_content_h_value / v_h_value;
@@ -7800,6 +7825,11 @@
         this.stateActive = false;
         this.updatePlanList([]);
       },
+      /**
+       * @param {any} [p_type]
+       * @param {any} [p_node]
+       * @param {boolean|null} [p_set_state]
+       */
       toggleCollapse: function(p_type = false, p_node = false, p_set_state = null) {
         var v_legereControl2 = this;
         if (p_type === "all") {
@@ -7860,6 +7890,11 @@
           }
         }
       },
+      /**
+       * @param {any} [p_type]
+       * @param {any} [p_node]
+       * @param {boolean|null} [p_set_state]
+       */
       toggleCollapseUpdate: function(p_type = "all", p_node = false, p_set_state = null) {
         this.toggleCollapse(p_type, p_node, p_set_state);
         var v_legereControl2 = this;
