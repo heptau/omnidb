@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -98,6 +99,12 @@ export function createOmnis() {
 	};
 }
 
+/**
+ * @param {object} config
+ * @param {(() => void)|false} [config.p_callback_end]
+ * @param {any} config.p_omnis
+ * @param {any[]} [config.p_steps]
+ */
 export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_steps = [] }) {
 	// tmp steps
 	var v_steps =
@@ -127,8 +134,9 @@ export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_step
 		id: "omnis_control_" + Date.now(),
 		stateActive: v_state_active,
 		stepCounter: 0,
+		/** @type {any[]} */
 		stepList: [],
-		stepSelected: null,
+		stepSelected: 0,
 		z_index: 999999,
 		// Actions
 		getPosition: function (p_el) {
@@ -159,7 +167,7 @@ export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_step
 		self_destruct: function () {
 			var v_control = this;
 			v_control.setStateDisabled();
-			document.getElementById("omnidb__main").removeChild(v_control.divElement);
+			/** @type {HTMLElement} */ (document.getElementById("omnidb__main")).removeChild(v_control.divElement);
 			for (let i = 0; i < v_control.stepList.length; i++) {
 				if (v_control.stepList[i].callback_end !== false) {
 					v_control.stepList[i].callback_end();
@@ -424,9 +432,10 @@ export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_step
 			v_waves_element.style.display = "block";
 			var v_cloned_element_waves = document.getElementById(v_control.id + "_cloned_element_waves");
 		},
+		/** @param {any} p_target @param {{x: number, y: number}|false} [p_pos] */
 		updateOmnisPosition: function (p_target, p_pos = false) {
 			try {
-				let v_root = document.getElementById("omnidb__main");
+				let v_root = /** @type {HTMLElement} */ (document.getElementById("omnidb__main"));
 				let v_window_width = v_root.offsetWidth;
 				let v_window_width_half = Math.round(v_window_width / 2);
 				let v_window_height = v_root.offsetHeight;
@@ -525,7 +534,7 @@ export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_step
 	v_omnisControl.divElement.appendChild(v_omnisControl.divClonedElement);
 	v_omnisControl.divElement.appendChild(v_omnisControl.divWavesElement);
 	v_omnisControl.divElement.appendChild(v_omnisControl.divBackdropElement);
-	document.getElementById("omnidb__main").appendChild(v_omnisControl.divElement);
+	/** @type {HTMLElement} */ (document.getElementById("omnidb__main")).appendChild(v_omnisControl.divElement);
 
 	return v_omnisControl;
 }

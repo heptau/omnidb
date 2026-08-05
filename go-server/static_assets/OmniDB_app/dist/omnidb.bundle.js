@@ -31063,8 +31063,9 @@
       id: "omnis_control_" + Date.now(),
       stateActive: v_state_active,
       stepCounter: 0,
+      /** @type {any[]} */
       stepList: [],
-      stepSelected: null,
+      stepSelected: 0,
       z_index: 999999,
       // Actions
       getPosition: function(p_el) {
@@ -31294,9 +31295,13 @@
         v_waves_element.style.display = "block";
         document.getElementById(v_control.id + "_cloned_element_waves");
       },
+      /** @param {any} p_target @param {{x: number, y: number}|false} [p_pos] */
       updateOmnisPosition: function(p_target, p_pos = false) {
         try {
-          let v_root = document.getElementById("omnidb__main");
+          let v_root = (
+            /** @type {HTMLElement} */
+            document.getElementById("omnidb__main")
+          );
           let v_window_width = v_root.offsetWidth;
           let v_window_width_half = Math.round(v_window_width / 2);
           let v_window_height = v_root.offsetHeight;
