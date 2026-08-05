@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -36,6 +37,15 @@ SOFTWARE.
 // global object -- which is what still forces the bundle out of strict
 // mode.
 var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
+
+// The message modal's markup is always present in workspace.html/login.html,
+// so these ids are guaranteed to resolve -- this just gets that past tsc
+// without a cast at every call site.
+/** @param {string} id @returns {HTMLElement} */
+function el(id) {
+	return /** @type {HTMLElement} */ (document.getElementById(id));
+}
+
 export function checkSessionMessage() {
 	execAjax(
 		"/check_session_message/",
@@ -63,7 +73,7 @@ $(function () {
 		v_message_modal_animating = true;
 	});
 	$("#modal_message").on("hidden.bs.modal", function (e) {
-		document.getElementById("modal_message_content").innerHTML = "";
+		el("modal_message_content").innerHTML = "";
 		v_message_modal_animating = false;
 		if (v_message_modal_queued == true) {
 			if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -81,8 +91,12 @@ $(function () {
 	});
 });
 
+/**
+ * @param {(() => void)|null} [p_content_function]
+ * @param {boolean|null} [p_large]
+ */
 export function showMessageModal(p_content_function, p_large) {
-	var v_dialog = document.getElementById("modal_message_dialog");
+	var v_dialog = el("modal_message_dialog");
 
 	if (p_large == null || p_large == false) {
 		v_dialog.classList.remove("modal-xl");
@@ -99,12 +113,13 @@ export function showMessageModal(p_content_function, p_large) {
 	}
 }
 
+/** @param {string} p_message */
 export function showError(p_message) {
-	var v_content_div = document.getElementById("modal_message_content");
-	var v_button_yes = document.getElementById("modal_message_yes");
-	var v_button_ok = document.getElementById("modal_message_ok");
-	var v_button_no = document.getElementById("modal_message_no");
-	var v_button_cancel = document.getElementById("modal_message_cancel");
+	var v_content_div = el("modal_message_content");
+	var v_button_yes = el("modal_message_yes");
+	var v_button_ok = el("modal_message_ok");
+	var v_button_no = el("modal_message_no");
+	var v_button_cancel = el("modal_message_cancel");
 
 	v_content_div.textContent = p_message;
 
@@ -120,13 +135,19 @@ export function showError(p_message) {
 	}, 500);
 }
 
+/**
+ * @param {string} p_info
+ * @param {(() => void)|null} [p_funcYes]
+ * @param {boolean|null} [p_large]
+ * @param {boolean} [p_is_html]
+ */
 export function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
 	var v_create_content_function = function () {
-		var v_content_div = document.getElementById("modal_message_content");
-		var v_button_yes = document.getElementById("modal_message_yes");
-		var v_button_ok = document.getElementById("modal_message_ok");
-		var v_button_no = document.getElementById("modal_message_no");
-		var v_button_cancel = document.getElementById("modal_message_cancel");
+		var v_content_div = el("modal_message_content");
+		var v_button_yes = el("modal_message_yes");
+		var v_button_ok = el("modal_message_ok");
+		var v_button_no = el("modal_message_no");
+		var v_button_cancel = el("modal_message_cancel");
 
 		// p_is_html is only for callers passing pre-built markup they wrote
 		// themselves (static strings, or dynamic values already HTML-escaped
@@ -152,20 +173,27 @@ export function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = 
 	showMessageModal(v_create_content_function, p_large);
 }
 
+/**
+ * @param {string} p_info
+ * @param {(() => void)|null} [p_funcYes]
+ * @param {(() => void)|null} [p_funcNo]
+ * @param {(() => void)|null} [p_shownCallback]
+ * @param {boolean|null} [p_large]
+ */
 export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
 	var v_create_content_function = function () {
 		if (p_shownCallback != null) v_shown_callback = p_shownCallback;
 
-		var v_content_div = document.getElementById("modal_message_content");
-		var v_button_yes = document.getElementById("modal_message_yes");
-		var v_button_ok = document.getElementById("modal_message_ok");
-		var v_button_no = document.getElementById("modal_message_no");
-		var v_button_cancel = document.getElementById("modal_message_cancel");
+		var v_content_div = el("modal_message_content");
+		var v_button_yes = el("modal_message_yes");
+		var v_button_ok = el("modal_message_ok");
+		var v_button_no = el("modal_message_no");
+		var v_button_cancel = el("modal_message_cancel");
 
 		v_content_div.textContent = p_info;
 
 		v_button_ok.onclick = function () {
-			p_funcYes();
+			if (p_funcYes != null) p_funcYes();
 		};
 
 		v_button_cancel.onclick = function () {
@@ -181,12 +209,17 @@ export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCa
 	showMessageModal(v_create_content_function, p_large);
 }
 
+/**
+ * @param {string} p_info
+ * @param {() => void} p_funcYes
+ * @param {(() => void)|null} [p_funcNo]
+ */
 export function showConfirm2(p_info, p_funcYes, p_funcNo) {
-	var v_content_div = document.getElementById("modal_message_content");
-	var v_button_yes = document.getElementById("modal_message_yes");
-	var v_button_ok = document.getElementById("modal_message_ok");
-	var v_button_no = document.getElementById("modal_message_no");
-	var v_button_cancel = document.getElementById("modal_message_cancel");
+	var v_content_div = el("modal_message_content");
+	var v_button_yes = el("modal_message_yes");
+	var v_button_ok = el("modal_message_ok");
+	var v_button_no = el("modal_message_no");
+	var v_button_cancel = el("modal_message_cancel");
 
 	v_content_div.textContent = p_info;
 
@@ -210,12 +243,17 @@ export function showConfirm2(p_info, p_funcYes, p_funcNo) {
 	showMessageModal();
 }
 
+/**
+ * @param {string} p_info
+ * @param {() => void} p_funcYes
+ * @param {(() => void)|null} [p_funcNo]
+ */
 export function showConfirm3(p_info, p_funcYes, p_funcNo) {
-	var v_content_div = document.getElementById("modal_message_content");
-	var v_button_yes = document.getElementById("modal_message_yes");
-	var v_button_ok = document.getElementById("modal_message_ok");
-	var v_button_no = document.getElementById("modal_message_no");
-	var v_button_cancel = document.getElementById("modal_message_cancel");
+	var v_content_div = el("modal_message_content");
+	var v_button_yes = el("modal_message_yes");
+	var v_button_ok = el("modal_message_ok");
+	var v_button_no = el("modal_message_no");
+	var v_button_cancel = el("modal_message_cancel");
 
 	v_content_div.textContent = p_info;
 

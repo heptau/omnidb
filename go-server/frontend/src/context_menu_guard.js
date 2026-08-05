@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -35,7 +36,8 @@ SOFTWARE.
 // handlers call event.stopPropagation() on the element itself, which stops
 // the event before it ever reaches this document-level listener.
 document.addEventListener("contextmenu", function (event) {
-	var v_editable = event.target.closest && event.target.closest('input, textarea, [contenteditable="true"], [contenteditable=""]');
+	var v_target = event.target;
+	var v_editable = v_target instanceof Element && v_target.closest('input, textarea, [contenteditable="true"], [contenteditable=""]');
 	if (!v_editable) {
 		event.preventDefault();
 	}

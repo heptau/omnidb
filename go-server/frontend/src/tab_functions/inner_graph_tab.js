@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -65,11 +66,11 @@ export var v_createGraphTabFunction = function (p_name) {
 	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
 
 	// Adding unique names to spans
-	var v_tab_title_span = document.getElementById("tab_title");
+	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
 	v_tab_title_span.id = "tab_title_" + v_tab.id;
-	var v_tab_loading_span = document.getElementById("tab_loading");
+	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = document.getElementById("tab_check");
+	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 
 	var v_html =

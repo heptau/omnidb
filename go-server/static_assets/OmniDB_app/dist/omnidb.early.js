@@ -133,7 +133,8 @@
     }
   }, Symbol.toStringTag, { value: "Module" }));
   document.addEventListener("contextmenu", function(event) {
-    var v_editable = event.target.closest && event.target.closest('input, textarea, [contenteditable="true"], [contenteditable=""]');
+    var v_target = event.target;
+    var v_editable = v_target instanceof Element && v_target.closest('input, textarea, [contenteditable="true"], [contenteditable=""]');
     if (!v_editable) {
       event.preventDefault();
     }

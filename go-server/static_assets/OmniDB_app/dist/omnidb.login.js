@@ -6,6 +6,12 @@
     }
   }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
+  function el(id) {
+    return (
+      /** @type {HTMLElement} */
+      document.getElementById(id)
+    );
+  }
   function checkSessionMessage() {
     execAjax(
       "/check_session_message/",
@@ -29,7 +35,7 @@
       v_message_modal_animating = true;
     });
     $("#modal_message").on("hidden.bs.modal", function(e) {
-      document.getElementById("modal_message_content").innerHTML = "";
+      el("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -47,7 +53,7 @@
     });
   });
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = document.getElementById("modal_message_dialog");
+    var v_dialog = el("modal_message_dialog");
     if (p_large == null || p_large == false) {
       v_dialog.classList.remove("modal-xl");
     } else {
@@ -62,11 +68,11 @@
     }
   }
   function showError(p_message) {
-    var v_content_div = document.getElementById("modal_message_content");
-    var v_button_yes = document.getElementById("modal_message_yes");
-    var v_button_ok = document.getElementById("modal_message_ok");
-    var v_button_no = document.getElementById("modal_message_no");
-    var v_button_cancel = document.getElementById("modal_message_cancel");
+    var v_content_div = el("modal_message_content");
+    var v_button_yes = el("modal_message_yes");
+    var v_button_ok = el("modal_message_ok");
+    var v_button_no = el("modal_message_no");
+    var v_button_cancel = el("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_yes.style.display = "none";
     v_button_ok.style.display = "";
@@ -79,11 +85,11 @@
   }
   function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = document.getElementById("modal_message_content");
-      var v_button_yes = document.getElementById("modal_message_yes");
-      var v_button_ok = document.getElementById("modal_message_ok");
-      var v_button_no = document.getElementById("modal_message_no");
-      var v_button_cancel = document.getElementById("modal_message_cancel");
+      var v_content_div = el("modal_message_content");
+      var v_button_yes = el("modal_message_yes");
+      var v_button_ok = el("modal_message_ok");
+      var v_button_no = el("modal_message_no");
+      var v_button_cancel = el("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -102,14 +108,14 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = document.getElementById("modal_message_content");
-      var v_button_yes = document.getElementById("modal_message_yes");
-      var v_button_ok = document.getElementById("modal_message_ok");
-      var v_button_no = document.getElementById("modal_message_no");
-      var v_button_cancel = document.getElementById("modal_message_cancel");
+      var v_content_div = el("modal_message_content");
+      var v_button_yes = el("modal_message_yes");
+      var v_button_ok = el("modal_message_ok");
+      var v_button_no = el("modal_message_no");
+      var v_button_cancel = el("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.onclick = function() {
-        p_funcYes();
+        if (p_funcYes != null) p_funcYes();
       };
       v_button_cancel.onclick = function() {
         if (p_funcNo) p_funcNo();
@@ -122,11 +128,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = document.getElementById("modal_message_content");
-    var v_button_yes = document.getElementById("modal_message_yes");
-    var v_button_ok = document.getElementById("modal_message_ok");
-    var v_button_no = document.getElementById("modal_message_no");
-    var v_button_cancel = document.getElementById("modal_message_cancel");
+    var v_content_div = el("modal_message_content");
+    var v_button_yes = el("modal_message_yes");
+    var v_button_ok = el("modal_message_ok");
+    var v_button_no = el("modal_message_no");
+    var v_button_cancel = el("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -145,11 +151,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = document.getElementById("modal_message_content");
-    var v_button_yes = document.getElementById("modal_message_yes");
-    var v_button_ok = document.getElementById("modal_message_ok");
-    var v_button_no = document.getElementById("modal_message_no");
-    var v_button_cancel = document.getElementById("modal_message_cancel");
+    var v_content_div = el("modal_message_content");
+    var v_button_yes = el("modal_message_yes");
+    var v_button_ok = el("modal_message_ok");
+    var v_button_no = el("modal_message_no");
+    var v_button_cancel = el("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -303,7 +309,8 @@
     }
   }, Symbol.toStringTag, { value: "Module" }));
   document.addEventListener("contextmenu", function(event) {
-    var v_editable = event.target.closest && event.target.closest('input, textarea, [contenteditable="true"], [contenteditable=""]');
+    var v_target = event.target;
+    var v_editable = v_target instanceof Element && v_target.closest('input, textarea, [contenteditable="true"], [contenteditable=""]');
     if (!v_editable) {
       event.preventDefault();
     }

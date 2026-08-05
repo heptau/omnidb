@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -28,20 +29,16 @@ SOFTWARE.
 */
 
 
-// Declared here because these were implicit globals: assigned without
-// `var` anywhere in this file, so they leaked onto `window` and were
-// shared with every other file in the bundle. They are scratch values
-// used and re-read inside a single function each, so a file-level
-// declaration keeps the behaviour identical while taking them off the
-// global object -- which is what still forces the bundle out of strict
-// mode.
-var labelText;
-export function BsJsonComponent(config) {
-	this.target = config.target;
-	this.data = config.data;
-	this.template = "jsonBuilder--" + config.template;
+export class BsJsonComponent {
+	/** @param {any} config */
+	constructor(config) {
+		this.target = config.target;
+		this.data = config.data;
+		this.template = "jsonBuilder--" + config.template;
+		this.items = this.getItems(this.data);
+	}
 
-	this.getItems = (items) => {
+	getItems = (items) => {
 		let item,
 			itemsArray = new Array();
 
@@ -60,34 +57,32 @@ export function BsJsonComponent(config) {
 		return itemsArray;
 	};
 
-	this.items = this.getItems(this.data);
-
-	this.render = () => {
+	render = () => {
 		let el = this.renderList(this.items),
 			elWrapper = document.createElement("DIV");
 
-		elWrapper.classList = [this.template];
+		elWrapper.className = this.template;
 
 		elWrapper.append(el);
 
 		this.target.append(elWrapper);
 	};
 
-	this.renderLabel = (item) => {
+	renderLabel = (item) => {
 		let label = document.createElement("LABEL");
-		labelText = document.createElement("SPAN");
+		let labelText = document.createElement("SPAN");
 		labelText.append(item.name);
 
-		labelText.classList = ["jsonBuilder__label-value"];
+		labelText.className = "jsonBuilder__label-value";
 
 		label.append(labelText);
 
-		label.classList = ["jsonBuilder__label d-flex align-items-center mb-1"];
+		label.className = "jsonBuilder__label d-flex align-items-center mb-1";
 
 		return label;
 	};
 
-	this.renderList = (children) => {
+	renderList = (children) => {
 		let list = document.createElement("UL");
 
 		for (let i = 0; i < children.length; i++) {
@@ -95,13 +90,13 @@ export function BsJsonComponent(config) {
 				listItem = document.createElement("LI"),
 				label = this.renderLabel(item);
 
-			listItem.classList = ["jsonBuilder__li"];
+			listItem.className = "jsonBuilder__li";
 			listItem.append(label);
 
 			if (item.type === "string" || item.type === "number" || item.type === "boolean") {
 				let content = document.createElement("SPAN");
 
-				content.classList = ["jsonBuilder__li-value"];
+				content.className = "jsonBuilder__li-value";
 				content.append(item.value);
 
 				listItem.append(content);
@@ -109,7 +104,7 @@ export function BsJsonComponent(config) {
 				listItem.append(this.renderList(item.children));
 			}
 
-			list.classList = ["jsonBuilder__ul"];
+			list.className = "jsonBuilder__ul";
 
 			list.append(listItem);
 		}
@@ -117,7 +112,7 @@ export function BsJsonComponent(config) {
 		return list;
 	};
 
-	this.update = () => {
+	update = () => {
 		this.target.innerHTML = null;
 		this.render();
 	};
