@@ -4808,7 +4808,7 @@
       var v_qi_time = document.createElement("span");
       v_qi_time.style.fontWeight = "900";
       v_qi_time.style.color = "#4a81d4";
-      v_qi_time.textContent = request_time / 1e3;
+      v_qi_time.textContent = String(request_time / 1e3);
       var v_qi_sec = document.createElement("span");
       v_qi_sec.textContent = " seconds";
       v_query_info.appendChild(v_qi_rows);
@@ -4816,12 +4816,12 @@
       v_query_info.appendChild(v_qi_time);
       v_query_info.appendChild(v_qi_sec);
       var columnProperties = [];
-      var col = new Object();
+      var col = {};
       col.title = " ";
       col.width = 40;
       columnProperties.push(col);
       for (var i2 = 0; i2 < v_currTabTag.editDataObject.columns.length; i2++) {
-        var col = new Object();
+        var col = {};
         var v_tooltip_attr = ' data-toggle=tooltip data-placement=bottom data-html=true title="&lt;div&gt;&lt;b&gt;Type&lt;/b&gt; ' + escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i2].v_type) + '&lt;/div&gt;" ';
         var v_tooltip_html = '<i class="ml-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
         var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i2].v_column) + "</span>";
@@ -4832,7 +4832,7 @@
       }
       var v_infoRows = [];
       for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
-        var v_object = new Object();
+        var v_object = {};
         v_object.mode = 0;
         v_object.old_mode = -1;
         v_object.index = i2;
@@ -4905,7 +4905,7 @@
             var oldValue = change[2];
             var newValue = change[3];
             if (rowIndex >= v_currTabTag.editDataObject.infoRows.length) {
-              var v_object2 = new Object();
+              var v_object2 = {};
               v_object2.mode = 2;
               v_object2.old_mode = -1;
               v_object2.changed_cols = [];

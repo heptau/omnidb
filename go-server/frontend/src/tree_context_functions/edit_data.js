@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -299,7 +300,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 		var v_qi_time = document.createElement("span");
 		v_qi_time.style.fontWeight = "900";
 		v_qi_time.style.color = "#4a81d4";
-		v_qi_time.textContent = request_time / 1000;
+		v_qi_time.textContent = String(request_time / 1000);
 		var v_qi_sec = document.createElement("span");
 		v_qi_sec.textContent = " seconds";
 		v_query_info.appendChild(v_qi_rows);
@@ -309,13 +310,15 @@ export function queryEditDataReturnRender(p_message, p_context) {
 
 		var columnProperties = [];
 
-		var col = new Object();
+		/** @type {any} */
+		var col = {};
 		col.title = " ";
 		col.width = 40;
 		columnProperties.push(col);
 
 		for (var i = 0; i < v_currTabTag.editDataObject.columns.length; i++) {
-			var col = new Object();
+			/** @type {any} */
+			var col = {};
 
 			// Both of these are database-sourced identifiers, and this string
 			// really is rendered as markup now (AgGridAdapter turns a title
@@ -345,7 +348,8 @@ export function queryEditDataReturnRender(p_message, p_context) {
 		var v_infoRows = [];
 
 		for (var i = 0; i < v_data.v_data.length; i++) {
-			var v_object = new Object();
+			/** @type {any} */
+			var v_object = {};
 			v_object.mode = 0;
 			v_object.old_mode = -1;
 			v_object.index = i;
@@ -424,7 +428,8 @@ export function queryEditDataReturnRender(p_message, p_context) {
 					var newValue = change[3];
 
 					if (rowIndex >= v_currTabTag.editDataObject.infoRows.length) {
-						var v_object = new Object();
+						/** @type {any} */
+						var v_object = {};
 						v_object.mode = 2;
 						v_object.old_mode = -1;
 						v_object.changed_cols = [];
