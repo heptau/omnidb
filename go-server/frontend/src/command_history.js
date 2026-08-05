@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -122,25 +123,29 @@ export function showCommandList() {
 
 	var v_columnProperties = [];
 
-	var v_column = new Object();
+	/** @type {any} */
+	var v_column = {};
 	v_column.title = "Start";
 	v_column.readOnly = true;
 	// v_column.width = 120;
 	v_columnProperties.push(v_column);
 
-	var v_column = new Object();
+	/** @type {any} */
+	var v_column = {};
 	v_column.title = "End";
 	v_column.readOnly = true;
 	// v_column.width = 120;
 	v_columnProperties.push(v_column);
 
-	var v_column = new Object();
+	/** @type {any} */
+	var v_column = {};
 	v_column.title = "Duration";
 	v_column.readOnly = true;
 	v_column.width = 100;
 	v_columnProperties.push(v_column);
 
-	var v_column = new Object();
+	/** @type {any} */
+	var v_column = {};
 	v_column.title = "Status";
 	v_column.readOnly = true;
 	v_column.width = 50;
@@ -153,7 +158,8 @@ export function showCommandList() {
 	// v_column.width = 60;
 	// v_columnProperties.push(v_column);
 
-	var v_column = new Object();
+	/** @type {any} */
+	var v_column = {};
 	v_column.title = "Command";
 	v_column.readOnly = true;
 	// v_column.width = 330;
@@ -226,15 +232,19 @@ export function showCommandList() {
 	// live in this module and read the selected tab themselves, as they always
 	// did; this header only exists for the tab whose modal is open.
 	v_tabTag.commandHistory.inputCommandContains.addEventListener("change", () => refreshCommandList());
-	for (const [id, handler] of [
+	/** @type {[string, () => void][]} */
+	var v_headerButtonHandlers = [
 		["bt_first_", commandHistoryFirstPage],
 		["bt_previous_", commandHistoryPreviousPage],
 		["bt_next_", commandHistoryNextPage],
 		["bt_last_", commandHistoryLastPage],
 		["bt_refresh_", refreshCommandList],
 		["bt_clear_", deleteCommandList],
-	]) {
-		document.getElementById(id + v_tabTag.tab_id).addEventListener("click", () => handler());
+	];
+	for (const [id, handler] of v_headerButtonHandlers) {
+		/** @type {HTMLElement} */ (document.getElementById(id + v_tabTag.tab_id)).addEventListener("click", () =>
+			handler(),
+		);
 	}
 
 	// Setting daterangepicker
@@ -388,7 +398,7 @@ export function closeCommandHistory() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = 1;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages = null;
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPages = null;
+	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;

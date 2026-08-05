@@ -8641,26 +8641,26 @@
       v_tabTag.commandHistory.grid.destroy();
     }
     var v_columnProperties = [];
-    var v_column = new Object();
+    var v_column = {};
     v_column.title = "Start";
     v_column.readOnly = true;
     v_columnProperties.push(v_column);
-    var v_column = new Object();
+    var v_column = {};
     v_column.title = "End";
     v_column.readOnly = true;
     v_columnProperties.push(v_column);
-    var v_column = new Object();
+    var v_column = {};
     v_column.title = "Duration";
     v_column.readOnly = true;
     v_column.width = 100;
     v_columnProperties.push(v_column);
-    var v_column = new Object();
+    var v_column = {};
     v_column.title = "Status";
     v_column.readOnly = true;
     v_column.width = 50;
     v_column.renderer = "html";
     v_columnProperties.push(v_column);
-    var v_column = new Object();
+    var v_column = {};
     v_column.title = "Command";
     v_column.readOnly = true;
     v_columnProperties.push(v_column);
@@ -8715,15 +8715,19 @@
     v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
     v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
     v_tabTag.commandHistory.inputCommandContains.addEventListener("change", () => refreshCommandList());
-    for (const [id, handler] of [
+    var v_headerButtonHandlers = [
       ["bt_first_", commandHistoryFirstPage],
       ["bt_previous_", commandHistoryPreviousPage],
       ["bt_next_", commandHistoryNextPage],
       ["bt_last_", commandHistoryLastPage],
       ["bt_refresh_", refreshCommandList],
       ["bt_clear_", deleteCommandList]
-    ]) {
-      document.getElementById(id + v_tabTag.tab_id).addEventListener("click", () => handler());
+    ];
+    for (const [id, handler] of v_headerButtonHandlers) {
+      document.getElementById(id + v_tabTag.tab_id).addEventListener(
+        "click",
+        () => handler()
+      );
     }
     var cl_time_range = document.getElementById("cl_time_range_" + v_tabTag.tab_id);
     $(cl_time_range).daterangepicker(
@@ -8840,7 +8844,7 @@
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.currentPage = 1;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.pages = 1;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanNumPages = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.spanCurrPage = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
