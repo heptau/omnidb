@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -347,23 +346,22 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			return
 		}
 
-		// Mode 2 / v_all_data ("fetch everything") streams the whole result
-		// set back in chunks over the same long-polling channel, rather
-		// than waiting for repeated mode-1 "fetch more" requests — see
-		// runNativeQueryAllData. Deliberately doesn't support cancellation
-		// mid-stream (Python's self.cancel via requestTypeCancelThread) —
-		// see that function's comment for why this is an acceptable, narrow
-		// gap for now rather than something silently different.
+		// Mode 2 / v_all_data ("fetch everything") streams the rest of the
+		// tab's already-open result set back in chunks over the same
+		// long-polling channel, continuing from wherever mode 0 (or a prior
+		// mode 1) left off — see runNativeQueryAllData. Deliberately doesn't
+		// support cancellation mid-stream (Python's self.cancel via
+		// requestTypeCancelThread) — see that function's comment for why
+		// this is an acceptable, narrow gap for now rather than something
+		// silently different.
 		if q.VAllData || q.VMode == 2 {
 			info, err := resolveConnection(upstream, cookie, q.VDBIndex.String())
 			if err != nil || !info.Found || !nativeQueryTechnology(info.Technology) {
 				fallback.ServeHTTP(w, r)
 				return
 			}
-			applyRememberedPassword(r, q.VDBIndex.String(), info)
-			applyActiveDatabaseOverride(r, q.VTabID, info)
 
-			go runNativeQueryAllData(upstream, cookie, q, body.VContextCode, info)
+			go runNativeQueryAllData(upstream, cookie, clientID, q, body.VContextCode)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("{}"))
 			return
@@ -535,121 +533,84 @@ func runNativeQuery(upstream *url.URL, cookie, clientID string, q queryRequestDa
 const allDataBlockSize = 10000
 
 // runNativeQueryAllData mirrors thread_query's `elif v_mode==2 or
-// v_all_data:` branch — fetches the entire result set in
+// v_all_data:` branch — fetches the rest of the result set in
 // allDataBlockSize-row chunks, delivering each intermediate chunk via
 // Django's queue as it goes (mirroring Python's repeated queue_response
 // calls inside its own loop) and a final chunk with v_last_block=true.
 //
-// Unlike runNativeQuery, this doesn't need the shared queryCursors map at
-// all — the entire fetch happens synchronously within this one goroutine,
-// with its own local *sql.Rows, not something a later mode-1/3/4 request
-// needs to find again.
+// Critically, this continues the same queryCursors entry mode 0 (or a
+// prior mode 1) already opened for this tab, exactly like mode 1's
+// continueCursor — it must NOT re-run the query from scratch. Re-running
+// would both re-execute any side-effecting statement a second time and
+// hand back rows already delivered to (and rendered by) the frontend,
+// which appends fetched rows onto what's already in the grid rather than
+// replacing it — so a fresh full result set would show every row already
+// on screen twice. If no cursor is open for this tab (it already ran to
+// exhaustion and was closed by an earlier request), every row has already
+// reached the frontend, so this reports an empty last block rather than
+// re-fetching anything.
 //
 // Deliberately does not support mid-stream cancellation (Python's
 // StoppableThread.cancel flag, settable via requestTypeCancelThread) —
 // today's requestTypeCancelThread handling only knows how to close a
-// queryCursors entry, and this path doesn't have one. For a very large
-// result set this means a cancel click won't stop the fetch already in
-// flight; accepted as a narrow, documented gap rather than building
-// cross-goroutine cancellation for a first cut of this mode.
-func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData, contextCode int, info *ConnectionInfo) {
+// queryCursors entry, and doing so here would race this goroutine's own
+// use of the cursor. For a very large result set this means a cancel
+// click won't stop the fetch already in flight; accepted as a narrow,
+// documented gap rather than building cross-goroutine cancellation for a
+// first cut of this mode.
+func runNativeQueryAllData(upstream *url.URL, cookie, clientID string, q queryRequestData, contextCode int) {
 	start := time.Now()
 
-	sqlText := q.VSQLCmd
-	if len(sqlText) > 0 && sqlText[len(sqlText)-1] == ';' {
-		sqlText = sqlText[:len(sqlText)-1]
+	emptyLastBlock := func() {
+		queueNativeResponse(cookie, map[string]any{
+			"v_code":         responseQueryResult,
+			"v_context_code": contextCode,
+			"v_error":        false,
+			"v_data": map[string]any{
+				"v_col_names":      []string{},
+				"v_col_types":      []string{},
+				"v_data":           [][]string{},
+				"v_last_block":     true,
+				"v_duration":       formatDuration(time.Since(start)),
+				"v_notices":        "",
+				"v_notices_length": 0,
+				"v_inserted_id":    nil,
+				"v_status":         nil,
+				"v_con_status":     1,
+				"v_chunks":         true,
+			},
+		})
 	}
 
-	db, err := openNativeQueryTarget(info)
-	if err != nil {
-		queueQueryError(upstream, cookie, contextCode, err)
-		return
-	}
-	defer db.Close()
-
-	// Same multi-statement handling as startCursor (querycursor.go): split
-	// on semicolons and run everything but the last statement via Exec, so
-	// a script like "select 1; select 2;" doesn't get handed to Postgres as
-	// one prepared statement (which it rejects outright).
-	statements := splitSQLStatements(sqlText)
-	if len(statements) == 0 {
-		statements = []string{sqlText}
-	}
-	last := statements[len(statements)-1]
-
-	ctx := context.Background()
-	var rows *sql.Rows
-	if q.VAutocommit {
-		var conn *sql.Conn
-		conn, err = db.Conn(ctx)
-		if err == nil {
-			defer conn.Close()
-			for _, stmt := range statements[:len(statements)-1] {
-				if _, err = conn.ExecContext(ctx, stmt); err != nil {
-					break
-				}
-			}
-			if err == nil {
-				rows, err = conn.QueryContext(ctx, last)
-			}
-		}
-	} else {
-		// Mode 2/all-data is a one-shot, read-only-in-practice fetch with
-		// no COMMIT/ROLLBACK button of its own anywhere in the UI for it
-		// (unlike mode 0/1's query tab) — so any implicit transaction it
-		// opens is committed once the fetch finishes, rather than left
-		// open for a later mode-3/4 request that will never come.
-		var tx *sql.Tx
-		tx, err = db.Begin()
-		if err == nil {
-			defer tx.Rollback()
-			for _, stmt := range statements[:len(statements)-1] {
-				if _, err = tx.ExecContext(ctx, stmt); err != nil {
-					break
-				}
-			}
-			if err == nil {
-				rows, err = tx.QueryContext(ctx, last)
-				if err == nil {
-					err = tx.Commit()
-				}
-			}
-		}
-	}
-	if err != nil {
-		queueQueryError(upstream, cookie, contextCode, err)
-		return
-	}
-	defer rows.Close()
-
-	cols, err := rows.Columns()
-	if err != nil {
-		queueQueryError(upstream, cookie, contextCode, err)
-		return
-	}
-
-	colTypes := make([]string, len(cols))
-	if rawTypes, err := rows.ColumnTypes(); err == nil {
-		for i, t := range rawTypes {
-			colTypes[i] = t.DatabaseTypeName()
-		}
-	}
-
+	first := true
 	for {
-		block := make([][]string, 0, allDataBlockSize)
-		for len(block) < allDataBlockSize {
-			if !rows.Next() {
-				break
+		cursor, ok := continueCursor(clientID, q.VTabID)
+		if !ok {
+			// No cursor for this tab. On the first iteration that means
+			// it already ran to exhaustion (and was closed) via an
+			// earlier mode-0/mode-1 request, so every row has already
+			// reached the frontend. Later in the loop it means the
+			// cursor was closed out from under us mid-stream (e.g. the
+			// tab was closed while this fetch was in flight).
+			if first {
+				emptyLastBlock()
+			} else {
+				queueQueryError(upstream, cookie, contextCode, fmt.Errorf("query cancelled"))
 			}
-			row, err := scanRowAsStrings(rows, len(cols))
-			if err != nil {
-				queueQueryError(upstream, cookie, contextCode, err)
-				return
-			}
-			block = append(block, row)
+			return
+		}
+		first = false
+		cols := cursor.cols
+		colTypes := cursor.colTypes
+
+		block, lastBlock, err := cursor.fetchBlockLocked(allDataBlockSize)
+		cursor.mu.Unlock()
+		if err != nil {
+			closeCursor(clientID, q.VTabID)
+			queueQueryError(upstream, cookie, contextCode, err)
+			return
 		}
 
-		lastBlock := len(block) < allDataBlockSize
 		queueNativeResponse(cookie, map[string]any{
 			"v_code":         responseQueryResult,
 			"v_context_code": contextCode,
@@ -668,7 +629,24 @@ func runNativeQueryAllData(upstream *url.URL, cookie string, q queryRequestData,
 				"v_chunks":         true,
 			},
 		})
+
 		if lastBlock {
+			// The frontend hides its fetch-more/fetch-all buttons for a
+			// mode-2 response (see query.js), so no later mode-1 request
+			// will come to resume from here. Only fully close the cursor
+			// (including its transaction) when autocommit is on — with
+			// autocommit off, the open transaction still needs to survive
+			// for a later COMMIT/ROLLBACK (mode 3/4).
+			if cursor.autocommit {
+				closeCursor(clientID, q.VTabID)
+			} else {
+				cursor.mu.Lock()
+				if cursor.rows != nil {
+					cursor.rows.Close()
+					cursor.rows = nil
+				}
+				cursor.mu.Unlock()
+			}
 			return
 		}
 	}
