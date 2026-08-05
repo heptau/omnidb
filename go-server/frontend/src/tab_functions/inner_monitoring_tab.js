@@ -96,8 +96,8 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		"' class='query_info'></span>" +
 		"<div id='div_result_" +
 		v_tab.id +
-		"' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: auto;'></div>";
-	("</div>");
+		"' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: auto;'></div>" +
+		"</div>";
 
 	// var v_div = document.getElementById('div_' + v_tab.id);
 	// v_div.innerHTML = v_html;
