@@ -10,7 +10,12 @@
     "noImplicitAny": false,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "types": ["node"]
+    "types": ["node"],
+    "paths": {
+      // tsc cannot parse chart.js@2.9.4's own dist/Chart.js (a syntax error
+      // in the package, not this project) -- see src/types/chart.js.d.ts.
+      "chart.js": ["./src/types/chart.js.d.ts"]
+    }
   },
   "include": ["src/**/*.js", "src/**/*.d.ts", "scripts/**/*.mjs"]
 }

@@ -34,8 +34,8 @@ declare const PGPlan: any;
 declare const PGPlanNodes: any;
 
 // Both a bare `declare const` above and a `Window` property below exist for
-// $, jQuery, bootstrap and agGrid: the bare form types code that reads them as
-// ordinary identifiers (nearly everything), the Window form types the
+// $, jQuery, bootstrap, agGrid and Chart: the bare form types code that reads
+// them as ordinary identifiers (nearly everything), the Window form types the
 // `window.x = x` assignment each *-global.js file makes to publish them.
 
 interface Window {
@@ -49,6 +49,8 @@ interface Window {
 	bootstrap: any;
 	/** Published by ag-grid-global.js -- see its comment. */
 	agGrid: any;
+	/** Published by chartjs-global.js -- see its comment. */
+	Chart: any;
 	/**
 	 * early.js's `exposeGlobals(ajaxControl)` call publishes its instance of
 	 * ajax_control.js here before the main bundle runs. ajax_control_bridge.js
@@ -65,6 +67,19 @@ interface Window {
 
 /** Installed by AgGridAdapter.js — see its bottom. */
 declare const Handsontable: any;
+
+// --- npm packages whose own source tsc cannot parse -------------------------
+//
+// chart.js@2.9.4 ships JSDoc old enough that this project's TypeScript chokes
+// parsing dist/Chart.js directly (a syntax error inside the package, not
+// anything under src/). A `declare module 'chart.js'` here would not help --
+// TypeScript only falls back to an ambient declaration when a specifier fails
+// to resolve, and chart.js resolves just fine. jsconfig.json's `paths` remaps
+// the specifier itself to src/types/chart.js.d.ts instead; Vite's bundler
+// resolution is untouched by tsconfig `paths`, so the real package still
+// ships at runtime.
+
+declare module 'chartjs-plugin-annotation';
 
 // --- state owned by workspace.html's inline bootstrap script ---------------
 //

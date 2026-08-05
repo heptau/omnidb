@@ -41,7 +41,7 @@ must work on a machine with no Node installed, and `//go:embed` needs the files
 to already exist. CI rebuilds and fails if the committed output does not match
 the sources.
 
-## The seven bundles
+## The eight bundles
 
 | Bundle | Entry | Loaded by |
 | --- | --- | --- |
@@ -51,6 +51,7 @@ the sources.
 | `omnidb.login.js` | `src/login.js` | `login.html` |
 | `omnidb.moment.js` | `src/moment-global.js` | `workspace.html`, where `lib/moment/moment.min.js` used to sit |
 | `omnidb.ag-grid.js` | `src/ag-grid-global.js` | `workspace.html`, where `lib/ag-grid/ag-grid-community.min.js` used to sit |
+| `omnidb.chartjs.js` | `src/chartjs-global.js` | `workspace.html`, where `Chart.bundle.js` + `chartjs-plugin-annotation.min.js` used to sit |
 | `omnidb.bundle.js` | `src/main.js` | `workspace.html`, after the third-party libraries |
 
 They are separate because their `<script>` tags sit at genuinely different
@@ -208,12 +209,12 @@ Every line of workspace JavaScript this project owns is built from here.
 code, still loaded as plain `<script>` tags:
 
 - Ace (+ `mode-sql`, `ext-language_tools`), Cytoscape (+ spread, klay),
-  Chart.js (+ annotation plugin), xterm (+ fit), daterangepicker, AimaraJS,
-  and the pgexplain bundle (its own React, React-DOM and D3). `bootstrap.min.css`
-  and the AG Grid CSS/themes too — only each library's JS moved so far; the
-  CSS side of this migration is a separate, not-yet-started question.
+  xterm (+ fit), daterangepicker, AimaraJS, and the pgexplain bundle (its own
+  React, React-DOM and D3). `bootstrap.min.css` and the AG Grid CSS/themes too
+  — only each library's JS moved so far; the CSS side of this migration is a
+  separate, not-yet-started question.
 
-Four are moved to real npm packages so far:
+Five are moved to real npm packages so far:
 
 - `jquery` (`src/jquery-global.js`, its own tiny bundle — see above). The
   vendored copy hashed byte-identical to npm's `3.7.1`, so this is a pure
@@ -246,6 +247,33 @@ Four are moved to real npm packages so far:
   enable each community feature one by one, where this bundle auto-registers
   all of them the same way the old `<script>` tag did. `AgGridAdapter.js`
   keeps reading `agGrid.Grid` off the global, unchanged.
+- `chart.js` + `chartjs-plugin-annotation` (`src/chartjs-global.js`, one tiny
+  bundle for both). The vendored "Chart.bundle.js" was `Chart.bundle.min.js`
+  under a plain name, same story as Bootstrap; the annotation plugin differed
+  from `chartjs-plugin-annotation@0.5.7` only in comment indentation and a
+  trailing newline. Imports the plain `chart.js` package (not the bundle) so
+  its own `require('moment')` resolves to this project's real `moment`
+  dependency instead of embedding a second copy; the annotation plugin does
+  its own `require('chart.js')` internally; and since both resolve to the
+  same module instance, the plugin's `Chart.Annotation = ...` side effect
+  patches the exact object this file publishes to `window.Chart`.
+  `chart.js@2.9.4`'s own `dist/Chart.js` has old JSDoc that this project's
+  TypeScript cannot parse — a syntax error inside the package, not anything
+  under `src/`. `jsconfig.json`'s `paths` remaps the `chart.js` specifier to
+  `src/types/chart.js.d.ts` for type-checking purposes only; Vite's bundling
+  is untouched by tsconfig `paths`, so the real package still ships at
+  runtime. A `declare module 'chart.js'` in `globals.d.ts` would not have
+  worked here — TypeScript only falls back to an ambient declaration when a
+  specifier fails to resolve, and `chart.js` resolves just fine.
+
+**Cytoscape's vendored version could not be identified.** Its
+`cytoscape.min.js` carries no version banner, and its size (304,971 bytes)
+falls between published `3.0.1` (288,849) and `3.1.0` (307,006) with no
+version in between — so it does not match any released build closely enough
+to diff with confidence. Given `daterangepicker`'s local patch, guessing the
+closest version and swapping it in unverified is exactly the mistake to
+avoid. Left vendored until someone can pin the exact source (checking the
+project's own git history predating this migration is the most likely way in).
 
 **`daterangepicker` is not a safe drop-in.** The vendored copy has a local
 patch to its start/end-date picking logic (`this.pickingEndDate`, changed
@@ -254,8 +282,9 @@ the npm `daterangepicker@3.1.0` package — otherwise the matching version —
 does not have. Diff the two before ever touching this one; swapping it for the
 plain npm package would silently reintroduce whatever picking bug that patch
 fixed. This is also a reason to diff first, not just version-match, for every
-other library still on this list — jQuery, Bootstrap, moment and AG Grid
-happened to be clean.
+other library still on this list — jQuery, Bootstrap, moment, AG Grid and
+Chart.js happened to be clean; Cytoscape could not even be version-matched
+enough to try.
 
 What is deliberately not done yet:
 

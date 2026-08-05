@@ -4,8 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "vite build --mode development --config vite.config.early.js && vite build --mode development --config vite.config.jquery.js && vite build --mode development --config vite.config.bootstrap.js && vite build --mode development --config vite.config.login.js && vite build --mode development --config vite.config.moment.js && vite build --mode development --config vite.config.ag-grid.js && vite build --mode development && npm run build:css",
-    "build:release": "vite build --mode release --config vite.config.early.js && vite build --mode release --config vite.config.jquery.js && vite build --mode release --config vite.config.bootstrap.js && vite build --mode release --config vite.config.login.js && vite build --mode release --config vite.config.moment.js && vite build --mode release --config vite.config.ag-grid.js && vite build --mode release && npm run build:css:release",
+    "build": "vite build --mode development --config vite.config.early.js && vite build --mode development --config vite.config.jquery.js && vite build --mode development --config vite.config.bootstrap.js && vite build --mode development --config vite.config.login.js && vite build --mode development --config vite.config.moment.js && vite build --mode development --config vite.config.ag-grid.js && vite build --mode development --config vite.config.chartjs.js && vite build --mode development && npm run build:css",
+    "build:release": "vite build --mode release --config vite.config.early.js && vite build --mode release --config vite.config.jquery.js && vite build --mode release --config vite.config.bootstrap.js && vite build --mode release --config vite.config.login.js && vite build --mode release --config vite.config.moment.js && vite build --mode release --config vite.config.ag-grid.js && vite build --mode release --config vite.config.chartjs.js && vite build --mode release && npm run build:css:release",
     "build:css": "sass --style=expanded --source-map --no-charset scss/omnidb.scss:../static_assets/OmniDB_app/css/omnidb.min.css scss/login.scss:../static_assets/OmniDB_app/css/login.min.css",
     "build:css:release": "sass --style=compressed --source-map --no-charset scss/omnidb.scss:../static_assets/OmniDB_app/css/omnidb.min.css scss/login.scss:../static_assets/OmniDB_app/css/login.min.css",
     "check": "node scripts/check-bridge.mjs",
@@ -21,6 +21,8 @@
     "@popperjs/core": "^2.11.8",
     "ag-grid-community": "28.0.2",
     "bootstrap": "5.3.3",
+    "chart.js": "2.9.4",
+    "chartjs-plugin-annotation": "0.5.7",
     "jquery": "3.7.1",
     "moment": "^2.30.1"
   }
