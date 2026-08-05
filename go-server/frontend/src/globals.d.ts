@@ -80,6 +80,8 @@ interface Window {
 	endLoading: any;
 	getCookie: any;
 	csrfSafeMethod: any;
+	/** users.js's scratch state for pending (unsaved) new users -- see getUsers(). */
+	newUsersObject: any;
 }
 
 /** Installed by AgGridAdapter.js — see its bottom. */

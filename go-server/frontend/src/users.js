@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -43,7 +44,7 @@ export function newUserConfirm() {
 			v_usersObject.v_cellChanges = [];
 			window.newUsersObject.newUsers = [];
 			if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0)
-				document.getElementById("div_save_users").style.visibility = "hidden";
+				/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "hidden";
 			listUsers(true);
 		},
 		null,
@@ -79,7 +80,7 @@ export function removeUserConfirm(p_id) {
 		input,
 		function (p_return) {
 			if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0)
-				document.getElementById("div_save_users").style.visibility = "hidden";
+				/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "hidden";
 			listUsers(true);
 		},
 		null,
@@ -154,7 +155,7 @@ export function saveUsers() {
 			v_usersObject.v_cellChanges = [];
 			window.newUsersObject.newUsers = [];
 			if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0) {
-				document.getElementById("div_save_users").style.visibility = "hidden";
+				/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "hidden";
 			}
 			listUsers(true, { users_update: v_data });
 		},
@@ -171,7 +172,7 @@ export function hideUsers() {
 
 	// v_usersObject.ht.destroy();
 
-	document.getElementById("div_user_list").innerHTML = "";
+	/** @type {HTMLElement} */ (document.getElementById("div_user_list")).innerHTML = "";
 }
 
 $("#modal_users").on("shown.bs.modal", function (e) {
@@ -179,14 +180,17 @@ $("#modal_users").on("shown.bs.modal", function (e) {
 });
 
 export function changeUser(event, p_row_index, p_col_index) {
-	var v_user_is_superuser = document.getElementById("user_item_superuser_" + p_row_index).checked ? 1 : 0;
+	var v_user_is_superuser = /** @type {HTMLInputElement} */ (document.getElementById("user_item_superuser_" + p_row_index))
+		.checked
+		? 1
+		: 0;
 	// Three columns, not four. The fourth used to be a rebuilt copy of the remove
 	// button's HTML, carried along so the row shape matched what get_users sent
 	// -- which was markup too. Nothing ever read it: save_users takes columns
 	// 0-2, and the icon is a real element with a real listener now.
 	var p_data_template = [
-		document.getElementById("user_item_username_" + p_row_index).value,
-		document.getElementById("user_item_password_" + p_row_index).value,
+		/** @type {HTMLInputElement} */ (document.getElementById("user_item_username_" + p_row_index)).value,
+		/** @type {HTMLInputElement} */ (document.getElementById("user_item_password_" + p_row_index)).value,
 		v_user_is_superuser,
 	];
 
@@ -196,7 +200,7 @@ export function changeUser(event, p_row_index, p_col_index) {
 		p_data: p_data_template,
 	};
 	v_usersObject.v_cellChanges.push(cellChange);
-	document.getElementById("div_save_users").style.visibility = "visible";
+	/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "visible";
 
 	$(".omnidb__user-list__item--changed").removeClass("omnidb__user-list__item--changed");
 	for (var i = 0; i < v_usersObject.v_cellChanges.length; i++) {
@@ -207,11 +211,15 @@ export function changeUser(event, p_row_index, p_col_index) {
 }
 
 export function changeNewUser(event, p_row_index, p_col_index) {
-	var v_user_is_superuser = document.getElementById("new_user_item_superuser_" + p_row_index).checked ? 1 : 0;
+	var v_user_is_superuser = /** @type {HTMLInputElement} */ (
+		document.getElementById("new_user_item_superuser_" + p_row_index)
+	).checked
+		? 1
+		: 0;
 	// Three columns — the same shape newUser() creates. See changeUser.
 	var p_data_template = [
-		document.getElementById("new_user_item_username_" + p_row_index).value,
-		document.getElementById("new_user_item_password_" + p_row_index).value,
+		/** @type {HTMLInputElement} */ (document.getElementById("new_user_item_username_" + p_row_index)).value,
+		/** @type {HTMLInputElement} */ (document.getElementById("new_user_item_password_" + p_row_index)).value,
 		v_user_is_superuser,
 	];
 
@@ -222,13 +230,14 @@ export function changeNewUser(event, p_row_index, p_col_index) {
 
 	renderSelectedUser(v_event);
 
-	document.getElementById("div_save_users").style.visibility = "visible";
+	/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "visible";
 }
 
+/** @param {{adding_user?: boolean, users_update?: any, focus_last?: boolean}|false} [p_options] */
 export function getUsers(p_options = false) {
-	if (p_options.adding_user) {
+	if (p_options && p_options.adding_user) {
 		var v_new_value = v_usersObject.list.length + window.newUsersObject.newUsers.length - 1;
-		$("#omnidb_user_select").append(new Option("(pending info)", v_new_value));
+		$("#omnidb_user_select").append(new Option("(pending info)", String(v_new_value)));
 		$("#omnidb_user_select option:last-child").addClass("bg-success");
 		// A real DOM event, and only after the value is set.
 		//
@@ -242,7 +251,9 @@ export function getUsers(p_options = false) {
 		// The .val() also has to come first: the old order relied on event.target
 		// being the option, whose value happened to be the new index.
 		$("#omnidb_user_select").val(v_new_value);
-		document.getElementById("omnidb_user_select").dispatchEvent(new Event("change", { bubbles: true }));
+		/** @type {HTMLElement} */ (document.getElementById("omnidb_user_select")).dispatchEvent(
+			new Event("change", { bubbles: true }),
+		);
 
 		endLoading();
 	} else {
@@ -286,7 +297,7 @@ export function getUsers(p_options = false) {
 
 				var v_user_list_data = p_return.v_data.v_data;
 				var v_user_list_element = document.createElement("div");
-				v_user_list_element.classList = ["omnidb__user-list"];
+				v_user_list_element.className = "omnidb__user-list";
 				var v_user_count = 0;
 				var v_user_list_html =
 					// The onsubmit this used to carry was `(event)=>{...}` -- an arrow
@@ -304,7 +315,7 @@ export function getUsers(p_options = false) {
 					"<div class='form-inline mb-4'>" +
 					"<h5 class='mr-2'>Select an user</h5>" +
 					"<select id='omnidb_user_select' class='form-control'>";
-				if (p_options.focus_last) v_user_list_html += "<option value=''> </option>";
+				if (p_options && p_options.focus_last) v_user_list_html += "<option value=''> </option>";
 				else v_user_list_html += "<option value='' selected> </option>";
 				for (var i = 0; i < v_user_list_data.length; i++) {
 					var v_user_item = v_user_list_data[i];
@@ -316,13 +327,13 @@ export function getUsers(p_options = false) {
 				for (var i = 0; i < window.newUsersObject.newUsers.length; i++) {
 					var v_user_item = window.newUsersObject.newUsers[i];
 					var v_user_is_superuser = v_user_item[2] === 1 ? " (superuser)" : "";
-					var v_user_item_index = parseInt(v_user_count) + parseInt(i);
+					var v_user_item_index = v_user_count + i;
 					var v_user_item_name =
 						v_user_item[0] === ""
 							? "(pending info)"
 							: escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + " (pending save)";
 					var v_user_is_selected =
-						p_options.focus_last && i + 1 == window.newUsersObject.newUsers.length ? " selected " : "";
+						p_options && p_options.focus_last && i + 1 == window.newUsersObject.newUsers.length ? " selected " : "";
 					v_user_list_html +=
 						"<option class='bg-warning' value='" +
 						v_user_item_index +
@@ -350,7 +361,7 @@ export function getUsers(p_options = false) {
 
 				window.scrollTo(0, 0);
 
-				var v_div_result = document.getElementById("div_user_list");
+				var v_div_result = /** @type {HTMLElement} */ (document.getElementById("div_user_list"));
 				var container = v_div_result;
 				container.appendChild(v_user_list_element);
 
@@ -358,11 +369,17 @@ export function getUsers(p_options = false) {
 				// attributes it used to carry -- see dom_event_bindings.js and
 				// README.md. They go here rather than in that file because this
 				// markup does not exist until getUsers has answered.
-				document.getElementById("omnidb_user_select").addEventListener("change", renderSelectedUser);
-				document
-					.getElementById("omnidb_utilities_menu_btn_new_user")
-					.addEventListener("click", () => newUser());
-				document.getElementById("div_save_users").addEventListener("click", () => saveUsers());
+				/** @type {HTMLElement} */ (document.getElementById("omnidb_user_select")).addEventListener(
+					"change",
+					renderSelectedUser,
+				);
+				/** @type {HTMLElement} */ (document.getElementById("omnidb_utilities_menu_btn_new_user")).addEventListener(
+					"click",
+					() => newUser(),
+				);
+				/** @type {HTMLElement} */ (document.getElementById("div_save_users")).addEventListener("click", () =>
+					saveUsers(),
+				);
 
 				if (p_options) {
 					if (p_options.focus_last) {
@@ -376,7 +393,7 @@ export function getUsers(p_options = false) {
 					}
 				}
 				if (v_usersObject.v_cellChanges.length > 0 || window.newUsersObject.newUsers.length > 0)
-					document.getElementById("div_save_users").style.visibility = "visible";
+					/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "visible";
 				$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
 				endLoading();
 			},
@@ -389,19 +406,23 @@ export function getUsers(p_options = false) {
 /// <summary>
 /// Retrieving and displaying users.
 /// </summary>
+/**
+ * @param {any} [p_refresh]
+ * @param {{adding_user?: boolean, users_update?: any, focus_last?: boolean}|false} [p_options]
+ */
 export function listUsers(p_refresh, p_options = false) {
 	startLoading();
 
 	var v_save_button = document.getElementById("div_save_users");
 	if (v_save_button !== null) {
 		if (v_usersObject.v_cellChanges.length === 0 && window.newUsersObject.newUsers.length === 0) {
-			document.getElementById("div_save_users").style.visibility = "hidden";
+			/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "hidden";
 		}
 	}
 
-	var v_div_result = document.getElementById("div_user_list");
+	var v_div_result = /** @type {HTMLElement} */ (document.getElementById("div_user_list"));
 
-	if (v_div_result.innerHTML != "" && !p_options.adding_user) {
+	if (v_div_result.innerHTML != "" && !(p_options && p_options.adding_user)) {
 		v_div_result.innerHTML = "";
 	}
 
@@ -417,7 +438,7 @@ export function listUsers(p_refresh, p_options = false) {
 /// </summary>
 export function renderSelectedUser(event) {
 	var v_index = event.target.value;
-	var v_user_div_content = document.getElementById("omnidb_user_content");
+	var v_user_div_content = /** @type {HTMLElement} */ (document.getElementById("omnidb_user_content"));
 	if (v_index == "") {
 		v_user_div_content.innerHTML =
 			"<div class='col-12 text-center'><h5 class='my-4'>No users selected, select an user or click add new user.</h5></div>";
@@ -493,26 +514,30 @@ export function renderSelectedUser(event) {
 
 				// Bindings for the row just rendered.
 				const rowIndex = i;
-				document
-					.getElementById("user_item_username_" + rowIndex)
-					.addEventListener("change", (e) => changeUser(e, rowIndex, 0));
-				document
-					.getElementById("user_item_password_" + rowIndex)
-					.addEventListener("change", (e) => changeUser(e, rowIndex, 1));
-				document
-					.getElementById("user_item_superuser_" + rowIndex)
-					.addEventListener("change", (e) => changeUser(e, rowIndex, 2));
-				document
-					.getElementById("bt_remove_user_" + rowIndex)
-					.addEventListener("click", () => removeUser(v_usersObject.v_user_ids[rowIndex]));
+				/** @type {HTMLElement} */ (document.getElementById("user_item_username_" + rowIndex)).addEventListener(
+					"change",
+					(e) => changeUser(e, rowIndex, 0),
+				);
+				/** @type {HTMLElement} */ (document.getElementById("user_item_password_" + rowIndex)).addEventListener(
+					"change",
+					(e) => changeUser(e, rowIndex, 1),
+				);
+				/** @type {HTMLElement} */ (document.getElementById("user_item_superuser_" + rowIndex)).addEventListener(
+					"change",
+					(e) => changeUser(e, rowIndex, 2),
+				);
+				/** @type {HTMLElement} */ (document.getElementById("bt_remove_user_" + rowIndex)).addEventListener(
+					"click",
+					() => removeUser(v_usersObject.v_user_ids[rowIndex]),
+				);
 			}
 			v_user_count++;
 		}
 		for (var i = 0; i < window.newUsersObject.newUsers.length; i++) {
 			var v_user_item = window.newUsersObject.newUsers[i];
 			var v_superuser_checked = v_user_item[2] === 1 ? "checked" : "";
-			var v_user_item_index = parseInt(v_user_count) + parseInt(i);
-			var v_user_div_content = document.getElementById("omnidb_user_content");
+			var v_user_item_index = v_user_count + i;
+			var v_user_div_content = /** @type {HTMLElement} */ (document.getElementById("omnidb_user_content"));
 			if (v_user_item_index == v_index) {
 				v_user_div_content.innerHTML =
 					"<div class='col-12 mb-4'>" +
@@ -572,18 +597,19 @@ export function renderSelectedUser(event) {
 
 				// Bindings for the pending-new-user row just rendered.
 				const newRowIndex = i;
-				document
-					.getElementById("new_user_item_username_" + newRowIndex)
-					.addEventListener("change", (e) => changeNewUser(e, newRowIndex, 0));
-				document
-					.getElementById("new_user_item_password_" + newRowIndex)
-					.addEventListener("change", (e) => changeNewUser(e, newRowIndex, 1));
-				document
-					.getElementById("new_user_item_superuser_" + newRowIndex)
-					.addEventListener("change", (e) => changeNewUser(e, newRowIndex, 2));
-				document
-					.getElementById("bt_remove_new_user_" + newRowIndex)
-					.addEventListener("click", () => removeNewUser(newRowIndex));
+				/** @type {HTMLElement} */ (
+					document.getElementById("new_user_item_username_" + newRowIndex)
+				).addEventListener("change", (e) => changeNewUser(e, newRowIndex, 0));
+				/** @type {HTMLElement} */ (
+					document.getElementById("new_user_item_password_" + newRowIndex)
+				).addEventListener("change", (e) => changeNewUser(e, newRowIndex, 1));
+				/** @type {HTMLElement} */ (
+					document.getElementById("new_user_item_superuser_" + newRowIndex)
+				).addEventListener("change", (e) => changeNewUser(e, newRowIndex, 2));
+				/** @type {HTMLElement} */ (document.getElementById("bt_remove_new_user_" + newRowIndex)).addEventListener(
+					"click",
+					() => removeNewUser(newRowIndex),
+				);
 			}
 		}
 	}
