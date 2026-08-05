@@ -5427,16 +5427,16 @@
       v_tab_tag2.consoleHistory.grid.destroy();
     }
     var columnProperties = [];
-    var col = new Object();
+    var col = {};
     col.readOnly = true;
     col.title = "Date";
     col.width = "141px";
     columnProperties.push(col);
-    var col = new Object();
-    col.readOnly = true;
-    col.title = "Command";
-    col.width = "435px";
-    columnProperties.push(col);
+    var col2 = {};
+    col2.readOnly = true;
+    col2.title = "Command";
+    col2.width = "435px";
+    columnProperties.push(col2);
     v_tab_tag2.consoleHistory.grid = new Handsontable(v_grid_div, {
       licenseKey: "non-commercial-and-evaluation",
       // data: p_return.v_data.data,
@@ -5483,7 +5483,7 @@
           }
         }
       },
-      cells: function(row, col2, prop) {
+      cells: function(row, col3, prop) {
         var cellProperties = {};
         if (row % 2 == 0) cellProperties.renderer = blueHtmlRenderer;
         else cellProperties.renderer = whiteHtmlRenderer;
@@ -5505,15 +5505,19 @@
     v_tab_tag2.consoleHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tab_tag2.tab_id);
     v_tab_tag2.consoleHistory.inputCommandContains.value = v_tab_tag2.consoleHistory.inputCommandContainsLastValue;
     v_tab_tag2.consoleHistory.inputCommandContains.addEventListener("change", () => refreshConsoleHistoryList());
-    for (const [id, handler] of [
+    var v_headerButtonHandlers = [
       ["bt_first_", consoleHistoryFirstPage],
       ["bt_previous_", consoleHistoryPreviousPage],
       ["bt_next_", consoleHistoryNextPage],
       ["bt_last_", consoleHistoryLastPage],
       ["bt_refresh_", refreshConsoleHistoryList],
       ["bt_clear_", deleteConsoleHistoryList]
-    ]) {
-      document.getElementById(id + v_tab_tag2.tab_id).addEventListener("click", () => handler());
+    ];
+    for (const [id, handler] of v_headerButtonHandlers) {
+      document.getElementById(id + v_tab_tag2.tab_id).addEventListener(
+        "click",
+        () => handler()
+      );
     }
     var cl_time_range = document.getElementById("cl_time_range_" + v_tab_tag2.tab_id);
     $(cl_time_range).daterangepicker(
@@ -5636,7 +5640,7 @@
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = 1;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains = null;

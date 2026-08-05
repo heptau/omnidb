@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -141,17 +142,19 @@ export function showConsoleHistory() {
 	// col.width = '26px';
 	// columnProperties.push(col);
 
-	var col = new Object();
+	/** @type {any} */
+	var col = {};
 	col.readOnly = true;
 	col.title = "Date";
 	col.width = "141px";
 	columnProperties.push(col);
 
-	var col = new Object();
-	col.readOnly = true;
-	col.title = "Command";
-	col.width = "435px";
-	columnProperties.push(col);
+	/** @type {any} */
+	var col2 = {};
+	col2.readOnly = true;
+	col2.title = "Command";
+	col2.width = "435px";
+	columnProperties.push(col2);
 
 	v_tab_tag.consoleHistory.grid = new Handsontable(v_grid_div, {
 		licenseKey: "non-commercial-and-evaluation",
@@ -228,15 +231,19 @@ export function showConsoleHistory() {
 	// used to carry -- see dom_event_bindings.js and README.md. Same shape as
 	// command_history.js's showCommandList.
 	v_tab_tag.consoleHistory.inputCommandContains.addEventListener("change", () => refreshConsoleHistoryList());
-	for (const [id, handler] of [
+	/** @type {[string, () => void][]} */
+	var v_headerButtonHandlers = [
 		["bt_first_", consoleHistoryFirstPage],
 		["bt_previous_", consoleHistoryPreviousPage],
 		["bt_next_", consoleHistoryNextPage],
 		["bt_last_", consoleHistoryLastPage],
 		["bt_refresh_", refreshConsoleHistoryList],
 		["bt_clear_", deleteConsoleHistoryList],
-	]) {
-		document.getElementById(id + v_tab_tag.tab_id).addEventListener("click", () => handler());
+	];
+	for (const [id, handler] of v_headerButtonHandlers) {
+		/** @type {HTMLElement} */ (document.getElementById(id + v_tab_tag.tab_id)).addEventListener("click", () =>
+			handler(),
+		);
 	}
 
 	// Setting daterangepicker
@@ -395,7 +402,7 @@ export function closeConsoleHistory() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = 1;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages = null;
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPages = null;
+	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains = null;
