@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -74,9 +75,9 @@ export var v_createConsoleTabFunction = function () {
 	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
 
 	//Adding unique names to spans
-	var v_tab_loading_span = document.getElementById("tab_loading");
+	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = document.getElementById("tab_check");
+	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 
 	var console_history_modal =
@@ -210,11 +211,11 @@ export var v_createConsoleTabFunction = function () {
 	v_editor1.commands.bindKey("Down", null);
 	v_editor1.commands.bindKey("Tab", null);
 
-	document.getElementById("txt_input_" + v_tab.id).onclick = function () {
+	/** @type {HTMLElement} */ (document.getElementById("txt_input_" + v_tab.id)).onclick = function () {
 		v_editor1.focus();
 	};
 
-	document.getElementById("txt_input_" + v_tab.id).addEventListener("contextmenu", function (event) {
+	/** @type {HTMLElement} */ (document.getElementById("txt_input_" + v_tab.id)).addEventListener("contextmenu", function (event) {
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -331,14 +332,14 @@ export var v_createConsoleTabFunction = function () {
 		query_info: document.getElementById("div_query_info_" + v_tab.id),
 		query_tab_status: document.getElementById("query_tab_status_" + v_tab.id),
 		query_tab_status_text: document.getElementById("query_tab_status_text_" + v_tab.id),
-		bt_start: document.getElementById("bt_start_" + v_tab.id),
-		bt_fetch_more: document.getElementById("bt_fetch_more_" + v_tab.id),
-		bt_fetch_all: document.getElementById("bt_fetch_all_" + v_tab.id),
-		bt_skip_fetch: document.getElementById("bt_skip_fetch_" + v_tab.id),
-		bt_commit: document.getElementById("bt_commit_" + v_tab.id),
-		bt_rollback: document.getElementById("bt_rollback_" + v_tab.id),
-		bt_indent: document.getElementById("bt_indent_" + v_tab.id),
-		bt_cancel: document.getElementById("bt_cancel_" + v_tab.id),
+		bt_start: /** @type {HTMLElement} */ (document.getElementById("bt_start_" + v_tab.id)),
+		bt_fetch_more: /** @type {HTMLElement} */ (document.getElementById("bt_fetch_more_" + v_tab.id)),
+		bt_fetch_all: /** @type {HTMLElement} */ (document.getElementById("bt_fetch_all_" + v_tab.id)),
+		bt_skip_fetch: /** @type {HTMLElement} */ (document.getElementById("bt_skip_fetch_" + v_tab.id)),
+		bt_commit: /** @type {HTMLElement} */ (document.getElementById("bt_commit_" + v_tab.id)),
+		bt_rollback: /** @type {HTMLElement} */ (document.getElementById("bt_rollback_" + v_tab.id)),
+		bt_indent: /** @type {HTMLElement} */ (document.getElementById("bt_indent_" + v_tab.id)),
+		bt_cancel: /** @type {HTMLElement} */ (document.getElementById("bt_cancel_" + v_tab.id)),
 		check_autocommit: document.getElementById("check_autocommit_" + v_tab.id),
 		tab_loading_span: v_tab_loading_span,
 		tab_check_span: v_tab_check_span,
@@ -396,14 +397,20 @@ export var v_createConsoleTabFunction = function () {
 	v_tag.bt_rollback.addEventListener("click", () => querySQL(4));
 	v_tag.bt_cancel.addEventListener("click", () => cancelConsole());
 	v_tag.bt_indent.addEventListener("click", () => indentSQL());
-	document.getElementById("bt_clear_" + v_tab.id).addEventListener("click", () => clearConsole());
-	document.getElementById("bt_history_" + v_tab.id).addEventListener("click", () => showConsoleHistory());
-	document
-		.getElementById("bt_close_console_history_" + v_tab.id)
-		.addEventListener("click", () => closeConsoleHistory());
-	document
-		.getElementById("console_resize_line_" + v_tab.id)
-		.addEventListener("mousedown", (event) => resizeVertical(event));
+	/** @type {HTMLElement} */ (document.getElementById("bt_clear_" + v_tab.id)).addEventListener("click", () =>
+		clearConsole(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_history_" + v_tab.id)).addEventListener("click", () =>
+		showConsoleHistory(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_close_console_history_" + v_tab.id)).addEventListener(
+		"click",
+		() => closeConsoleHistory(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("console_resize_line_" + v_tab.id)).addEventListener(
+		"mousedown",
+		(event) => resizeVertical(event),
+	);
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({

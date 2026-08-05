@@ -7985,9 +7985,15 @@
       }
     });
     v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-    var v_tab_loading_span = document.getElementById("tab_loading");
+    var v_tab_loading_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_loading")
+    );
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-    var v_tab_check_span = document.getElementById("tab_check");
+    var v_tab_check_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_check")
+    );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var console_history_modal = "<div class='modal fade' id='modal_console_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Console commands history</h5><button id='bt_close_console_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='console_history_div_" + v_tab.id + "' class='console_command_history'><div id='console_history_header_" + v_tab.id + "' class='console_command_history_header'></div><div id='console_history_grid_" + v_tab.id + "' class='console_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
     var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div><div id='console_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" + console_history_modal + "<div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play fa-light'></i></button><button id='bt_indent_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Indent SQL'><i class='fas fa-indent fa-light'></i></button><button id='bt_clear_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Clear Console'><i class='fas fa-broom fa-light'></i></button><button id='bt_history_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Command History'><i class='fas fa-list fa-light'></i></button><div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" + v_tab.id + "' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" + v_tab.id + "'>Autocommit</label></div><div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" + v_tab.id + "' title='Not connected' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" + v_tab.id + "' title='Not connected' class='tab-status-text query_info dbms_object postgresql_object ms-1'>Not connected</span></div><button id='bt_fetch_more_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch More' style='display: none; '>Fetch more</button><button id='bt_fetch_all_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch All' style='margin-left: 5px; display: none; '>Fetch all</button><button id='bt_skip_fetch_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Skip Fetch' style='margin-left: 5px; display: none; '>Skip Fetch</button><button id='bt_commit_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Commit</button><button id='bt_rollback_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Rollback</button><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style=' display: none;'>Cancel</button><div id='div_query_info_" + v_tab.id + "' class='omnidb__query-info'></div></div></div><div id='txt_input_" + v_tab.id + "' class='omnidb__console__text-input' style=' width: 100%; height: 150px; border: 1px solid #c3c3c3;'></div>";
@@ -8091,14 +8097,38 @@
       query_info: document.getElementById("div_query_info_" + v_tab.id),
       query_tab_status: document.getElementById("query_tab_status_" + v_tab.id),
       query_tab_status_text: document.getElementById("query_tab_status_text_" + v_tab.id),
-      bt_start: document.getElementById("bt_start_" + v_tab.id),
-      bt_fetch_more: document.getElementById("bt_fetch_more_" + v_tab.id),
-      bt_fetch_all: document.getElementById("bt_fetch_all_" + v_tab.id),
-      bt_skip_fetch: document.getElementById("bt_skip_fetch_" + v_tab.id),
-      bt_commit: document.getElementById("bt_commit_" + v_tab.id),
-      bt_rollback: document.getElementById("bt_rollback_" + v_tab.id),
-      bt_indent: document.getElementById("bt_indent_" + v_tab.id),
-      bt_cancel: document.getElementById("bt_cancel_" + v_tab.id),
+      bt_start: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_start_" + v_tab.id)
+      ),
+      bt_fetch_more: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_fetch_more_" + v_tab.id)
+      ),
+      bt_fetch_all: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_fetch_all_" + v_tab.id)
+      ),
+      bt_skip_fetch: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_skip_fetch_" + v_tab.id)
+      ),
+      bt_commit: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_commit_" + v_tab.id)
+      ),
+      bt_rollback: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_rollback_" + v_tab.id)
+      ),
+      bt_indent: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_indent_" + v_tab.id)
+      ),
+      bt_cancel: (
+        /** @type {HTMLElement} */
+        document.getElementById("bt_cancel_" + v_tab.id)
+      ),
       check_autocommit: document.getElementById("check_autocommit_" + v_tab.id),
       tab_loading_span: v_tab_loading_span,
       tab_check_span: v_tab_check_span,
@@ -8141,10 +8171,22 @@
     v_tag.bt_rollback.addEventListener("click", () => querySQL(4));
     v_tag.bt_cancel.addEventListener("click", () => cancelConsole());
     v_tag.bt_indent.addEventListener("click", () => indentSQL());
-    document.getElementById("bt_clear_" + v_tab.id).addEventListener("click", () => clearConsole());
-    document.getElementById("bt_history_" + v_tab.id).addEventListener("click", () => showConsoleHistory());
-    document.getElementById("bt_close_console_history_" + v_tab.id).addEventListener("click", () => closeConsoleHistory());
-    document.getElementById("console_resize_line_" + v_tab.id).addEventListener("mousedown", (event2) => resizeVertical(event2));
+    document.getElementById("bt_clear_" + v_tab.id).addEventListener(
+      "click",
+      () => clearConsole()
+    );
+    document.getElementById("bt_history_" + v_tab.id).addEventListener(
+      "click",
+      () => showConsoleHistory()
+    );
+    document.getElementById("bt_close_console_history_" + v_tab.id).addEventListener(
+      "click",
+      () => closeConsoleHistory()
+    );
+    document.getElementById("console_resize_line_" + v_tab.id).addEventListener(
+      "mousedown",
+      (event2) => resizeVertical(event2)
+    );
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_name: "+",
       p_close: false,
