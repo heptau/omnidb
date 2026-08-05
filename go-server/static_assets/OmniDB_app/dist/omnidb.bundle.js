@@ -33569,7 +33569,11 @@
           v_li.onmouseenter = function() {
             var v_submenus = document.getElementsByClassName("aimara_sub-menu");
             for (var k = 0; k < v_submenus.length; k++) {
-              if (v_submenus[k].aimara_level >= this.aimara_level) v_submenus[k].style.display = "none";
+              var v_submenu = (
+                /** @type {HTMLElement} */
+                v_submenus[k]
+              );
+              if ((v_submenu.aimara_level ?? 0) >= this.aimara_level) v_submenu.style.display = "none";
             }
             v_ul.style.display = "block";
             v_ul.style["z-index"] = this.aimara_level + 1;
@@ -33612,7 +33616,11 @@
           v_li.onmouseenter = function() {
             var v_submenus = document.getElementsByClassName("aimara_sub-menu");
             for (var k = 0; k < v_submenus.length; k++) {
-              if (v_submenus[k].aimara_level >= this.aimara_level) v_submenus[k].style.display = "none";
+              var v_submenu = (
+                /** @type {HTMLElement} */
+                v_submenus[k]
+              );
+              if ((v_submenu.aimara_level ?? 0) >= this.aimara_level) v_submenu.style.display = "none";
             }
             v_ul.style.display = "block";
             v_ul.style["z-index"] = this.aimara_level + 1;
@@ -33644,7 +33652,8 @@
         v_div.style.top = v_div_y - v_div_v_diff - 5 + "px";
       }
     }
-    document.getElementById("close_cm").style.height = document.getElementById("ul_cm_overlay").scrollHeight + "px";
+    document.getElementById("close_cm").style.height = /** @type {HTMLElement} */
+    document.getElementById("ul_cm_overlay").scrollHeight + "px";
   }
   function custoMenuRepositionSubmenu(p_ul) {
     var v_ul = p_ul;
@@ -33663,7 +33672,8 @@
         v_ul.style.top = -1 * v_ul_v_diff - 5 + "px";
       }
     }
-    document.getElementById("close_cm").style.height = document.getElementById("ul_cm_overlay").scrollHeight + "px";
+    document.getElementById("close_cm").style.height = /** @type {HTMLElement} */
+    document.getElementById("ul_cm_overlay").scrollHeight + "px";
   }
   const customMenu$1 = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,

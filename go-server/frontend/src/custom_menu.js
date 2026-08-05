@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -99,7 +100,8 @@ export function customMenu(p_position, p_menu, p_object) {
 				v_li.onmouseenter = function () {
 					var v_submenus = document.getElementsByClassName("aimara_sub-menu");
 					for (var k = 0; k < v_submenus.length; k++) {
-						if (v_submenus[k].aimara_level >= this.aimara_level) v_submenus[k].style.display = "none";
+						var v_submenu = /** @type {HTMLElement} */ (v_submenus[k]);
+						if ((v_submenu.aimara_level ?? 0) >= this.aimara_level) v_submenu.style.display = "none";
 					}
 					v_ul.style.display = "block";
 					v_ul.style["z-index"] = this.aimara_level + 1;
@@ -156,7 +158,8 @@ export function customMenuRecursive(p_submenu, p_ul, p_object, p_closediv, p_cm_
 				v_li.onmouseenter = function () {
 					var v_submenus = document.getElementsByClassName("aimara_sub-menu");
 					for (var k = 0; k < v_submenus.length; k++) {
-						if (v_submenus[k].aimara_level >= this.aimara_level) v_submenus[k].style.display = "none";
+						var v_submenu = /** @type {HTMLElement} */ (v_submenus[k]);
+						if ((v_submenu.aimara_level ?? 0) >= this.aimara_level) v_submenu.style.display = "none";
 					}
 					v_ul.style.display = "block";
 					v_ul.style["z-index"] = this.aimara_level + 1;
@@ -200,7 +203,8 @@ export function customMenuReposition(p_div) {
 			v_div.style.top = v_div_y - v_div_v_diff - 5 + "px";
 		}
 	}
-	document.getElementById("close_cm").style.height = document.getElementById("ul_cm_overlay").scrollHeight + "px";
+	/** @type {HTMLElement} */ (document.getElementById("close_cm")).style.height =
+		/** @type {HTMLElement} */ (document.getElementById("ul_cm_overlay")).scrollHeight + "px";
 }
 
 export function custoMenuRepositionSubmenu(p_ul) {
@@ -230,5 +234,6 @@ export function custoMenuRepositionSubmenu(p_ul) {
 			v_ul.style.top = -1 * v_ul_v_diff - 5 + "px";
 		}
 	}
-	document.getElementById("close_cm").style.height = document.getElementById("ul_cm_overlay").scrollHeight + "px";
+	/** @type {HTMLElement} */ (document.getElementById("close_cm")).style.height =
+		/** @type {HTMLElement} */ (document.getElementById("ul_cm_overlay")).scrollHeight + "px";
 }

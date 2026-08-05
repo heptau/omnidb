@@ -22,6 +22,13 @@ interface Number {
 	padLeft(base?: number, chr?: string): string;
 }
 
+// custom_menu.js's own ad-hoc nesting-depth marker on the elements it builds --
+// not a real DOM property, just a plain expando it reads back off `this`/
+// sibling elements while walking the menu tree it just created.
+interface HTMLElement {
+	aimara_level?: number;
+}
+
 // --- third-party libraries, loaded from lib/ as <script> tags --------------
 
 declare const $: any;
