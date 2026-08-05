@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -114,7 +115,7 @@ export function escapeHtmlAttribute(p_str) {
 //Adding padLeft function to Number
 Number.prototype.padLeft = function (base, chr) {
 	var len = String(base || 10).length - String(this).length + 1;
-	return len > 0 ? new Array(len).join(chr || "0") + this : this;
+	return len > 0 ? new Array(len).join(chr || "0") + this : String(this);
 };
 
 export function cancelSQL(p_tab_tag) {
@@ -549,7 +550,8 @@ export function querySQLReturnRender(p_message, p_context) {
 						var columnProperties = [];
 
 						for (var i = 0; i < v_data.v_col_names.length; i++) {
-							var col = new Object();
+							/** @type {any} */
+							var col = {};
 
 							col.readOnly = true;
 

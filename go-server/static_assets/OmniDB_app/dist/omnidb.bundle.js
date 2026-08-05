@@ -20394,7 +20394,7 @@
   }
   Number.prototype.padLeft = function(base, chr) {
     var len = String(base || 10).length - String(this).length + 1;
-    return len > 0 ? new Array(len).join(chr || "0") + this : this;
+    return len > 0 ? new Array(len).join(chr || "0") + this : String(this);
   };
   function cancelSQL(p_tab_tag) {
     var v_tab_tag2;
@@ -20680,7 +20680,7 @@
               v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + v_data.v_data.length + "</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
               var columnProperties = [];
               for (var i2 = 0; i2 < v_data.v_col_names.length; i2++) {
-                var col = new Object();
+                var col = {};
                 col.readOnly = true;
                 col.title = v_data.v_col_names[i2];
                 if (i2 === 0) {
