@@ -9457,13 +9457,22 @@
         v_tab_title_span.attr("id", "tab_title_" + v_tab.id);
       }
       v_tab.elementDiv.innerHTML = v_html;
-      document.getElementById(v_tab.id + "_left_resize_line_horizontal").addEventListener("mousedown", (event2) => resizeTreeVertical(event2));
-      document.getElementById("connection_resize_line_" + v_tab.id).addEventListener("mousedown", (event2) => resizeConnectionHorizontal(event2));
+      document.getElementById(v_tab.id + "_left_resize_line_horizontal").addEventListener(
+        "mousedown",
+        (event2) => resizeTreeVertical(event2)
+      );
+      document.getElementById("connection_resize_line_" + v_tab.id).addEventListener(
+        "mousedown",
+        (event2) => resizeConnectionHorizontal(event2)
+      );
       document.getElementById("bt_toggle_tree_tabs_" + v_tab.id).addEventListener(
         "click",
         () => toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id, v_tab.id + "_left_resize_line_horizontal")
       );
-      document.getElementById("bt_toggle_tree_container_" + v_tab.id).addEventListener("click", () => toggleTreeContainer());
+      document.getElementById("bt_toggle_tree_container_" + v_tab.id).addEventListener(
+        "click",
+        () => toggleTreeContainer()
+      );
       var v_treeTabs = createTabControl({ p_div: "tree_tabs_" + v_tab.id });
       var v_selectPropertiesTabFunc = function() {
         v_treeTabs.selectTabIndex(0);
@@ -9526,11 +9535,11 @@
       var v_divProperties = document.getElementById("div_properties_result_" + v_tab.id);
       var v_ddlProperties = v_ddl_tab.elementDiv;
       var columnProperties = [];
-      var col = new Object();
+      var col = {};
       col.title = "Property";
       col.readOnly = true;
       columnProperties.push(col);
-      var col = new Object();
+      var col = {};
       col.title = "Value";
       col.readOnly = true;
       columnProperties.push(col);

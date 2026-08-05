@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -50,6 +51,12 @@ import {
 } from "../workspace.js";
 
 
+/**
+ * @param {any} p_index
+ * @param {boolean} [p_create_query_tab]
+ * @param {string|false} [p_name]
+ * @param {string|false} [p_tooltip_name]
+ */
 export var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
 	// Creating the first outer tab without any connections created.
 	if (v_connTabControl.tag.connections.length == 0) {
@@ -248,20 +255,22 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		// and README.md. The toggler ids were only needed because these elements
 		// had none; toggleTreeTabsContainer's two arguments used to be spliced into
 		// the attribute as string literals.
-		document
-			.getElementById(v_tab.id + "_left_resize_line_horizontal")
-			.addEventListener("mousedown", (event) => resizeTreeVertical(event));
-		document
-			.getElementById("connection_resize_line_" + v_tab.id)
-			.addEventListener("mousedown", (event) => resizeConnectionHorizontal(event));
-		document
-			.getElementById("bt_toggle_tree_tabs_" + v_tab.id)
-			.addEventListener("click", () =>
-				toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id, v_tab.id + "_left_resize_line_horizontal"),
-			);
-		document
-			.getElementById("bt_toggle_tree_container_" + v_tab.id)
-			.addEventListener("click", () => toggleTreeContainer());
+		/** @type {HTMLElement} */ (document.getElementById(v_tab.id + "_left_resize_line_horizontal")).addEventListener(
+			"mousedown",
+			(event) => resizeTreeVertical(event),
+		);
+		/** @type {HTMLElement} */ (document.getElementById("connection_resize_line_" + v_tab.id)).addEventListener(
+			"mousedown",
+			(event) => resizeConnectionHorizontal(event),
+		);
+		/** @type {HTMLElement} */ (document.getElementById("bt_toggle_tree_tabs_" + v_tab.id)).addEventListener(
+			"click",
+			() => toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id, v_tab.id + "_left_resize_line_horizontal"),
+		);
+		/** @type {HTMLElement} */ (document.getElementById("bt_toggle_tree_container_" + v_tab.id)).addEventListener(
+			"click",
+			() => toggleTreeContainer(),
+		);
 
 		// Tab control under the tree
 		var v_treeTabs = createTabControl({ p_div: "tree_tabs_" + v_tab.id });
@@ -352,12 +361,14 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 
 		var columnProperties = [];
 
-		var col = new Object();
+		/** @type {any} */
+		var col = {};
 		col.title = "Property";
 		col.readOnly = true;
 		columnProperties.push(col);
 
-		var col = new Object();
+		/** @type {any} */
+		var col = {};
 		col.title = "Value";
 		col.readOnly = true;
 		columnProperties.push(col);
