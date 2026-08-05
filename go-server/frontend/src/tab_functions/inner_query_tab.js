@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -92,11 +93,11 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
 
 	// Adding unique names to spans.
-	var v_tab_title_span = document.getElementById("tab_title");
+	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
 	v_tab_title_span.id = "tab_title_" + v_tab.id;
-	var v_tab_loading_span = document.getElementById("tab_loading");
+	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = document.getElementById("tab_check");
+	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 
 	// Creating the template for the command_history_modal.
@@ -331,7 +332,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 			}
 		});
 
-	document.getElementById("txt_query_" + v_tab.id).addEventListener("contextmenu", function (event) {
+	/** @type {HTMLElement} */ (document.getElementById("txt_query_" + v_tab.id)).addEventListener("contextmenu", function (event) {
 		event.stopPropagation();
 		event.preventDefault();
 
@@ -387,7 +388,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_editor.commands.bindKey("Tab", null);
 
 	// Setting the autofocus for the editor component.
-	document.getElementById("txt_query_" + v_tab.id).onclick = function () {
+	/** @type {HTMLElement} */ (document.getElementById("txt_query_" + v_tab.id)).onclick = function () {
 		v_editor.focus();
 	};
 
@@ -504,23 +505,24 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		tab_check_span: v_tab_check_span,
 		query_tab_status: document.getElementById("query_tab_status_" + v_tab.id),
 		query_tab_status_text: document.getElementById("query_tab_status_text_" + v_tab.id),
-		bt_start: document.getElementById("bt_start_" + v_tab.id),
-		bt_fetch_more: document.getElementById("bt_fetch_more_" + v_tab.id),
-		bt_fetch_all: document.getElementById("bt_fetch_all_" + v_tab.id),
-		bt_commit: document.getElementById("bt_commit_" + v_tab.id),
-		bt_rollback: document.getElementById("bt_rollback_" + v_tab.id),
-		bt_indent: document.getElementById("bt_indent_" + v_tab.id),
-		bt_explain: document.getElementById("bt_explain_" + v_tab.id),
-		bt_analyze: document.getElementById("bt_analyze_" + v_tab.id),
-		bt_history: document.getElementById("bt_history_" + v_tab.id),
-		bt_cancel: document.getElementById("bt_cancel_" + v_tab.id),
-		bt_export: document.getElementById("bt_export_" + v_tab.id),
+		bt_start: /** @type {HTMLElement} */ (document.getElementById("bt_start_" + v_tab.id)),
+		bt_fetch_more: /** @type {HTMLElement} */ (document.getElementById("bt_fetch_more_" + v_tab.id)),
+		bt_fetch_all: /** @type {HTMLElement} */ (document.getElementById("bt_fetch_all_" + v_tab.id)),
+		bt_commit: /** @type {HTMLElement} */ (document.getElementById("bt_commit_" + v_tab.id)),
+		bt_rollback: /** @type {HTMLElement} */ (document.getElementById("bt_rollback_" + v_tab.id)),
+		bt_indent: /** @type {HTMLElement} */ (document.getElementById("bt_indent_" + v_tab.id)),
+		bt_explain: /** @type {HTMLElement} */ (document.getElementById("bt_explain_" + v_tab.id)),
+		bt_analyze: /** @type {HTMLElement} */ (document.getElementById("bt_analyze_" + v_tab.id)),
+		bt_history: /** @type {HTMLElement} */ (document.getElementById("bt_history_" + v_tab.id)),
+		bt_cancel: /** @type {HTMLElement} */ (document.getElementById("bt_cancel_" + v_tab.id)),
+		bt_export: /** @type {HTMLElement} */ (document.getElementById("bt_export_" + v_tab.id)),
 		check_autocommit: document.getElementById("check_autocommit_" + v_tab.id),
 		resize: v_resizeFunction,
 		state: 0,
 		context: null,
 		tabControl: v_connTabControl.selectedTab.tag.tabControl,
 		queryTabControl: v_curr_tabs,
+		/** @type {string|null} */
 		currQueryTab: null,
 		connTab: v_connTabControl.selectedTab,
 		currDatabaseIndex: null,
@@ -572,18 +574,22 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	// bt_export used to be looked up by an id no element carried, so this tag
 	// entry was permanently null. The button has the id now.
 	v_tag.bt_export.addEventListener("click", () => v_tag.exportData());
-	document
-		.getElementById("bt_close_command_history_" + v_tab.id)
-		.addEventListener("click", () => closeCommandHistory());
-	document
-		.getElementById("query_resize_line_" + v_tab.id)
-		.addEventListener("mousedown", (event) => resizeVertical(event));
-	document
-		.getElementById("explainContextToggler" + v_tab.id)
-		.addEventListener("click", () => toggleExplainContext());
-	document
-		.getElementById("bt_expand_query_result_" + v_tab.id)
-		.addEventListener("click", () => toggleExpandToPanelView("query_result_tabs_container" + v_tab.id));
+	/** @type {HTMLElement} */ (document.getElementById("bt_close_command_history_" + v_tab.id)).addEventListener(
+		"click",
+		() => closeCommandHistory(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("query_resize_line_" + v_tab.id)).addEventListener(
+		"mousedown",
+		(event) => resizeVertical(event),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("explainContextToggler" + v_tab.id)).addEventListener(
+		"click",
+		() => toggleExplainContext(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_expand_query_result_" + v_tab.id)).addEventListener(
+		"click",
+		() => toggleExpandToPanelView("query_result_tabs_container" + v_tab.id),
+	);
 
 	// Selecting the `data` tab by default.
 	v_selectDataTabFunc();

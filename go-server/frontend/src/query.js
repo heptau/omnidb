@@ -199,6 +199,10 @@ export function destructiveSQLWarning(p_sql) {
 	return null;
 }
 
+/**
+ * @param {Function|null} [p_callback]
+ * @param {string|null} [p_cmd_type]
+ */
 export function querySQL(
 	p_mode,
 	p_all_data = false,
