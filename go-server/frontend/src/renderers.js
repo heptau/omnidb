@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -27,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+/** @this {any} */
 export function blueHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -41,6 +43,7 @@ export function blueHtmlRenderer(instance, td, row, col, prop, value, cellProper
 	td.className = "cellEven";
 }
 
+/** @this {any} */
 export function greenHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -55,6 +58,7 @@ export function greenHtmlRenderer(instance, td, row, col, prop, value, cellPrope
 	td.className = "cellNew";
 }
 
+/** @this {any} */
 export function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -69,6 +73,7 @@ export function yellowHtmlRenderer(instance, td, row, col, prop, value, cellProp
 	td.className = "cellEdit";
 }
 
+/** @this {any} */
 export function whiteHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -83,6 +88,7 @@ export function whiteHtmlRenderer(instance, td, row, col, prop, value, cellPrope
 	td.className = "cellOdd";
 }
 
+/** @this {any} */
 export function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -97,6 +103,7 @@ export function whiteRightHtmlRenderer(instance, td, row, col, prop, value, cell
 	td.style.textAlign = "right";
 }
 
+/** @this {any} */
 export function redHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -111,6 +118,7 @@ export function redHtmlRenderer(instance, td, row, col, prop, value, cellPropert
 	td.className = "cellRemove";
 }
 
+/** @this {any} */
 export function grayHtmlRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -125,6 +133,7 @@ export function grayHtmlRenderer(instance, td, row, col, prop, value, cellProper
 	td.className = "cellReadOnly";
 }
 
+/** @this {any} */
 export function yellowRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -135,6 +144,7 @@ export function yellowRenderer(instance, td, row, col, prop, value, cellProperti
 	td.className = "cellEdit";
 }
 
+/** @this {any} */
 export function blueRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -145,6 +155,7 @@ export function blueRenderer(instance, td, row, col, prop, value, cellProperties
 	td.className = "cellEven";
 }
 
+/** @this {any} */
 export function whiteRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -155,6 +166,7 @@ export function whiteRenderer(instance, td, row, col, prop, value, cellPropertie
 	td.className = "cellOdd";
 }
 
+/** @this {any} */
 export function redRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -165,6 +177,7 @@ export function redRenderer(instance, td, row, col, prop, value, cellProperties)
 	td.className = "cellRemove";
 }
 
+/** @this {any} */
 export function grayRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -175,6 +188,7 @@ export function grayRenderer(instance, td, row, col, prop, value, cellProperties
 	td.className = "cellReadOnly";
 }
 
+/** @this {any} */
 export function greenRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
@@ -185,6 +199,7 @@ export function greenRenderer(instance, td, row, col, prop, value, cellPropertie
 	td.className = "cellNew";
 }
 
+/** @this {any} */
 export function grayEmptyRenderer(instance, td, row, col, prop, value, cellProperties) {
 	arguments[5] = "";
 
@@ -193,6 +208,7 @@ export function grayEmptyRenderer(instance, td, row, col, prop, value, cellPrope
 	td.className = "cellReadOnly";
 }
 
+/** @this {any} */
 export function newRowRenderer(instance, td, row, col, prop, value, cellProperties) {
 	arguments[5] = "+";
 	td.style.textAlign = "center";
@@ -203,6 +219,7 @@ export function newRowRenderer(instance, td, row, col, prop, value, cellProperti
 }
 
 
+/** @this {any} */
 export function editDataActionRenderer(instance, td, row, col, prop, value, cellProperties) {
 	// data-omnidb-action rather than an onclick: this string is cell *data*, so
 	// the grid re-renders it whenever it likes and there is no moment at which a
@@ -216,6 +233,7 @@ export function editDataActionRenderer(instance, td, row, col, prop, value, cell
 	td.className = "cellReadOnly";
 }
 
+/** @this {any} */
 export function monitorStatusRenderer(instance, td, row, col, prop, value, cellProperties) {
 	if (cellProperties.__proto__.type == "dropdown" || cellProperties.__proto__.type == "autocomplete") {
 		Handsontable.renderers.AutocompleteRenderer.apply(this, arguments);
