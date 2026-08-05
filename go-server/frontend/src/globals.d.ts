@@ -16,8 +16,9 @@
 
 declare const $: any;
 declare const jQuery: any;
-declare const ace: any;
+declare const bootstrap: any;
 declare const agGrid: any;
+declare const ace: any;
 declare const cytoscape: any;
 declare const Chart: any;
 /** xterm.js */
@@ -32,6 +33,11 @@ declare const ReactDOM: any;
 declare const PGPlan: any;
 declare const PGPlanNodes: any;
 
+// Both a bare `declare const` above and a `Window` property below exist for
+// $, jQuery, bootstrap and agGrid: the bare form types code that reads them as
+// ordinary identifiers (nearly everything), the Window form types the
+// `window.x = x` assignment each *-global.js file makes to publish them.
+
 interface Window {
 	/** The Handsontable-compatible factory AgGridAdapter.js installs. */
 	Handsontable: any;
@@ -41,6 +47,8 @@ interface Window {
 	jQuery: any;
 	/** Published by bootstrap-framework-global.js -- see its comment. */
 	bootstrap: any;
+	/** Published by ag-grid-global.js -- see its comment. */
+	agGrid: any;
 	/**
 	 * early.js's `exposeGlobals(ajaxControl)` call publishes its instance of
 	 * ajax_control.js here before the main bundle runs. ajax_control_bridge.js

@@ -41,7 +41,7 @@ must work on a machine with no Node installed, and `//go:embed` needs the files
 to already exist. CI rebuilds and fails if the committed output does not match
 the sources.
 
-## The six bundles
+## The seven bundles
 
 | Bundle | Entry | Loaded by |
 | --- | --- | --- |
@@ -50,6 +50,7 @@ the sources.
 | `omnidb.early.js` | `src/early.js` | `workspace.html`, before the inline `startLoading()` call |
 | `omnidb.login.js` | `src/login.js` | `login.html` |
 | `omnidb.moment.js` | `src/moment-global.js` | `workspace.html`, where `lib/moment/moment.min.js` used to sit |
+| `omnidb.ag-grid.js` | `src/ag-grid-global.js` | `workspace.html`, where `lib/ag-grid/ag-grid-community.min.js` used to sit |
 | `omnidb.bundle.js` | `src/main.js` | `workspace.html`, after the third-party libraries |
 
 They are separate because their `<script>` tags sit at genuinely different
@@ -65,7 +66,10 @@ though nothing actually depends on that order (Bootstrap 5 does not need
 jQuery); `moment-global.js` has
 to publish `window.moment` before `daterangepicker.js`'s own `<script>` tag runs, since
 that file is not migrated yet and its UMD wrapper falls back to reading the
-global when no AMD/CommonJS loader is present.
+global when no AMD/CommonJS loader is present; `ag-grid-global.js` keeps the
+position its `<script>` tag always had too, though again nothing depends on
+it — AgGridAdapter.js only reaches `agGrid.Grid` well after every bundle has
+run.
 
 Rollup cannot emit more than one IIFE bundle per build, so each has its own
 thin config file and `npm run build` runs them in sequence. The shared options
@@ -203,13 +207,13 @@ Every line of workspace JavaScript this project owns is built from here.
 `static_assets/OmniDB_app/js/` is gone; `lib/` holds nothing but third-party
 code, still loaded as plain `<script>` tags:
 
-- Ace (+ `mode-sql`, `ext-language_tools`), AG Grid, Cytoscape (+ spread,
-  klay), Chart.js (+ annotation plugin), xterm (+ fit), daterangepicker,
-  AimaraJS, and the pgexplain bundle (its own React, React-DOM and D3).
-  `bootstrap.min.css` too — only the JS moved so far; the CSS side of this
-  migration is a separate, not-yet-started question.
+- Ace (+ `mode-sql`, `ext-language_tools`), Cytoscape (+ spread, klay),
+  Chart.js (+ annotation plugin), xterm (+ fit), daterangepicker, AimaraJS,
+  and the pgexplain bundle (its own React, React-DOM and D3). `bootstrap.min.css`
+  and the AG Grid CSS/themes too — only each library's JS moved so far; the
+  CSS side of this migration is a separate, not-yet-started question.
 
-Three are moved to real npm packages so far:
+Four are moved to real npm packages so far:
 
 - `jquery` (`src/jquery-global.js`, its own tiny bundle — see above). The
   vendored copy hashed byte-identical to npm's `3.7.1`, so this is a pure
@@ -234,6 +238,14 @@ Three are moved to real npm packages so far:
   'moment'` directly and get their own bundled copy — moment has no shared
   state to split-brain on, unlike `ajax_control.js`, so the small duplication
   is a reasonable trade for real types over `any`.
+- `ag-grid-community` (`src/ag-grid-global.js`, its own tiny bundle). The
+  vendored `ag-grid-community.min.js` hashed byte-identical to the npm
+  package's own `dist/ag-grid-community.min.js` at the matching `28.0.2`.
+  Imports that exact file rather than the modular ESM entry point on purpose:
+  the modular API needs an explicit `ModuleRegistry.registerModules()` call to
+  enable each community feature one by one, where this bundle auto-registers
+  all of them the same way the old `<script>` tag did. `AgGridAdapter.js`
+  keeps reading `agGrid.Grid` off the global, unchanged.
 
 **`daterangepicker` is not a safe drop-in.** The vendored copy has a local
 patch to its start/end-date picking logic (`this.pickingEndDate`, changed
@@ -242,8 +254,8 @@ the npm `daterangepicker@3.1.0` package — otherwise the matching version —
 does not have. Diff the two before ever touching this one; swapping it for the
 plain npm package would silently reintroduce whatever picking bug that patch
 fixed. This is also a reason to diff first, not just version-match, for every
-other library still on this list — jQuery, Bootstrap and moment happened to
-be clean.
+other library still on this list — jQuery, Bootstrap, moment and AG Grid
+happened to be clean.
 
 What is deliberately not done yet:
 
