@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -821,7 +822,8 @@ $(function () {
 		if (v_autocomplete_object.elements[i].type != "keyword") {
 			var columnProperties = [];
 
-			var col = new Object();
+			/** @type {any} */
+			var col = {};
 			col.title = "";
 			col.readOnly = true;
 			col.renderer = "html";
@@ -832,11 +834,12 @@ $(function () {
 			// '' for these types - so there's nothing to show there. table/view/column/
 			// function/index do use it (schema qualifier or data type).
 			if (!v_autocomplete_single_column_types[v_autocomplete_object.elements[i].type]) {
-				var col = new Object();
-				col.title = "";
-				col.readOnly = true;
-				col.renderer = "html";
-				columnProperties.push(col);
+				/** @type {any} */
+				var col2 = {};
+				col2.title = "";
+				col2.readOnly = true;
+				col2.renderer = "html";
+				columnProperties.push(col2);
 			}
 
 			v_autocomplete_object.elements[i].grid = new Handsontable(v_autocomplete_object.elements[i].container, {
@@ -889,9 +892,13 @@ $(function () {
 });
 
 export function build_autocomplete_elements(p_data, p_value) {
+	/** @type {any} */
 	var v_previous_element = null;
+	/** @type {any} */
 	var v_next_element = null;
+	/** @type {any} */
 	var v_first_element = null;
+	/** @type {any} */
 	var v_last_element = null;
 	v_autocomplete_object.selected = null;
 
@@ -927,7 +934,6 @@ export function build_autocomplete_elements(p_data, p_value) {
 		var v_displayed = [];
 		for (var j = 0; j < v_local_group.elements.length; j++) {
 			v_num_results++;
-			var v_element;
 
 			var div = document.createElement("div");
 			if (v_local_group.type == "keyword") {
@@ -937,6 +943,7 @@ export function build_autocomplete_elements(p_data, p_value) {
 				var v_safe_p = document.createElement("span");
 				v_safe_p.textContent = p_value;
 				div.innerHTML = v_safe_val.innerHTML.replace(v_safe_p.innerHTML, "<b>" + v_safe_p.innerHTML + "</b>");
+				/** @type {any} */
 				var v_element = {
 					value: v_local_group.elements[j].value,
 					select_value: v_local_group.elements[j].select_value,
@@ -960,6 +967,7 @@ export function build_autocomplete_elements(p_data, p_value) {
 					v_local_group.elements[j].value.replace(p_value, "<b>" + p_value + "</b>"),
 					v_local_group.elements[j].complement,
 				]);
+				/** @type {any} */
 				var v_element = {
 					value: v_local_group.elements[j].value,
 					select_value: v_local_group.elements[j].select_value,
@@ -1021,6 +1029,7 @@ export function build_autocomplete_elements(p_data, p_value) {
 }
 
 export function renew_autocomplete(p_new_value) {
+	/** @type {RegExp|null} */
 	var v_search_regex = null;
 
 	v_search_regex = new RegExp("^(" + p_new_value + ")", "i");
@@ -1039,7 +1048,7 @@ export function renew_autocomplete(p_new_value) {
 					v_element.container.style.display = "none";
 					v_element.visible = false;
 				} else {
-					var v_match_text = v_search_regex.exec(v_element.value)[0];
+					var v_match_text = /** @type {RegExpExecArray} */ (v_search_regex.exec(v_element.value))[0];
 					v_num_results++;
 					v_element.container.style.display = "inline-block";
 					v_element.visible = true;
@@ -1065,7 +1074,7 @@ export function renew_autocomplete(p_new_value) {
 				if (!v_search_regex.test(v_element.value)) {
 					v_element.visible = false;
 				} else {
-					var v_match_text = v_search_regex.exec(v_element.value)[0];
+					var v_match_text = /** @type {RegExpExecArray} */ (v_search_regex.exec(v_element.value))[0];
 					v_num_results++;
 					v_element.visible = true;
 					v_element.visible_index = v_group.num_visible;
@@ -1149,6 +1158,7 @@ export function autocomplete_get_results(p_sql, p_value, p_pos) {
 	var v_data = [
 		{
 			type: "keyword",
+			/** @type {any[]} */
 			elements: [],
 		},
 	];
@@ -1271,7 +1281,7 @@ export function autocomplete_keyup(p_event) {
 }
 
 export function autocomplete_keydown(p_editor, p_event) {
-	if (event.ctrlKey == true || event.altKey == true || event.metaKey == true) {
+	if (/** @type {any} */ (event).ctrlKey == true || /** @type {any} */ (event).altKey == true || /** @type {any} */ (event).metaKey == true) {
 		v_autocomplete_object.alt_shift_meta_pressed = true;
 	} else {
 		v_autocomplete_object.alt_shift_meta_pressed = false;

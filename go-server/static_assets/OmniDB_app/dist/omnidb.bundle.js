@@ -6563,17 +6563,17 @@
     for (var i2 = 0; i2 < v_autocomplete_object.elements.length; i2++) {
       if (v_autocomplete_object.elements[i2].type != "keyword") {
         var columnProperties = [];
-        var col = new Object();
+        var col = {};
         col.title = "";
         col.readOnly = true;
         col.renderer = "html";
         columnProperties.push(col);
         if (!v_autocomplete_single_column_types[v_autocomplete_object.elements[i2].type]) {
-          var col = new Object();
-          col.title = "";
-          col.readOnly = true;
-          col.renderer = "html";
-          columnProperties.push(col);
+          var col2 = {};
+          col2.title = "";
+          col2.readOnly = true;
+          col2.renderer = "html";
+          columnProperties.push(col2);
         }
         v_autocomplete_object.elements[i2].grid = new Handsontable(v_autocomplete_object.elements[i2].container, {
           licenseKey: "non-commercial-and-evaluation",
@@ -6597,10 +6597,10 @@
               }
             }
           },
-          cells: function(row, col2, prop) {
+          cells: function(row, col3, prop) {
             var cellProperties = {};
             cellProperties.renderer = whiteHtmlRenderer;
-            if (col2 == 1) cellProperties.renderer = whiteRightHtmlRenderer;
+            if (col3 == 1) cellProperties.renderer = whiteRightHtmlRenderer;
             return cellProperties;
           },
           cell: [{ col: 0, className: "htRight" }]
@@ -6650,7 +6650,6 @@
       var v_displayed = [];
       for (var j2 = 0; j2 < v_local_group.elements.length; j2++) {
         v_num_results++;
-        var v_element2;
         var div = document.createElement("div");
         if (v_local_group.type == "keyword") {
           div.className = "omnidb__autocomplete__data-word";
@@ -6742,7 +6741,10 @@
             v_element2.container.style.display = "none";
             v_element2.visible = false;
           } else {
-            var v_match_text = v_search_regex.exec(v_element2.value)[0];
+            var v_match_text = (
+              /** @type {RegExpExecArray} */
+              v_search_regex.exec(v_element2.value)[0]
+            );
             v_num_results++;
             v_element2.container.style.display = "inline-block";
             v_element2.visible = true;
@@ -6765,7 +6767,10 @@
           if (!v_search_regex.test(v_element2.value)) {
             v_element2.visible = false;
           } else {
-            var v_match_text = v_search_regex.exec(v_element2.value)[0];
+            var v_match_text = (
+              /** @type {RegExpExecArray} */
+              v_search_regex.exec(v_element2.value)[0]
+            );
             v_num_results++;
             v_element2.visible = true;
             v_element2.visible_index = v_group.num_visible;
@@ -6822,6 +6827,7 @@
     var v_data = [
       {
         type: "keyword",
+        /** @type {any[]} */
         elements: []
       }
     ];
@@ -6912,7 +6918,12 @@
     }
   }
   function autocomplete_keydown(p_editor, p_event) {
-    if (event.ctrlKey == true || event.altKey == true || event.metaKey == true) {
+    if (
+      /** @type {any} */
+      event.ctrlKey == true || /** @type {any} */
+      event.altKey == true || /** @type {any} */
+      event.metaKey == true
+    ) {
       v_autocomplete_object.alt_shift_meta_pressed = true;
     } else {
       v_autocomplete_object.alt_shift_meta_pressed = false;
