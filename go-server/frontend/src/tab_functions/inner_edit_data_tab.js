@@ -142,8 +142,8 @@ export var v_createEditDataTabFunction = function (p_table) {
 		"<div class='p-2 omnidb__theme-border--primary'>" +
 		"<div id='div_edit_data_data_" +
 		v_tab.id +
-		"' style='width: 100%; overflow: auto;'></div>";
-	("</div>");
+		"' style='width: 100%; overflow: auto;'></div>" +
+		"</div>";
 
 	v_tab.elementDiv.innerHTML = v_html;
 
