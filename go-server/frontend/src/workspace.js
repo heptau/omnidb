@@ -1501,6 +1501,7 @@ export function updateExplainComponent() {
  *
  * @param  {string} title   Title string.
  * @param  {string} message Message string, accepts html.
+ * @param {string|false} [p_position]
  * @return {string}         HTML string.
  */
 export function getAttributesTooltip(p_target, p_title, p_message, p_position = false) {
@@ -1548,6 +1549,7 @@ export function getStringTooltip(p_title, p_message, p_position = false) {
  *
  * @param  {string} title   Title string.
  * @param  {string} message Message string, accepts html.
+ * @param {string|false} [p_position]
  * @return {string}         HTML string.
  */
 export function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_position = false) {

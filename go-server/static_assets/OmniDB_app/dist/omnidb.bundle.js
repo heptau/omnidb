@@ -33263,7 +33263,10 @@
     }
   }
   function createTabControl({ p_div, p_hierarchy, p_layout }) {
-    var v_div = document.getElementById(p_div);
+    var v_div = (
+      /** @type {HTMLElement} */
+      document.getElementById(p_div)
+    );
     v_div.innerHTML = "";
     var v_nav = document.createElement("nav");
     var v_div_tab_list = document.createElement("div");
@@ -33295,17 +33298,23 @@
     var v_tabControl = {
       // Params
       id: p_div,
+      /** @type {any} */
       selectedTab: null,
+      /** @type {any} */
       selectedDiv: null,
+      /** @type {any} */
       selectedA: null,
+      /** @type {any} */
       tabColor: null,
       tabCounter: 0,
       tabListContentDiv: v_div_tab_content_list,
+      /** @type {any[]} */
       tabList: [],
       tabListDiv: v_div_tab_list,
       tabMenu: v_tab_menu,
       tabCssVariation: css_tab_menu_variations[0],
-      tag: new Object(),
+      /** @type {any} */
+      tag: {},
       isToggleable: p_hierarchy === "primary",
       // Actions
       disableTabIndex: function(p_index) {
@@ -33459,11 +33468,15 @@
         }
       },
       hideTabMenu: function() {
-        document.getElementById(p_div).classList.remove(this.tabCssVariation + "container--menu-shown");
+        document.getElementById(p_div).classList.remove(
+          this.tabCssVariation + "container--menu-shown"
+        );
         this.tabMenu.classList.remove(this.tabCssVariation + "shown");
       },
       showTabMenu: function() {
-        document.getElementById(p_div).classList.add(this.tabCssVariation + "container--menu-shown");
+        document.getElementById(p_div).classList.add(
+          this.tabCssVariation + "container--menu-shown"
+        );
         this.tabMenu.classList.add(this.tabCssVariation + "shown");
       },
       toggleTabMenu: function(e) {
@@ -33476,19 +33489,21 @@
        * @desc Creates a generic tab object with optional parameters and callbacks.
        * Ex: p_mode === 'customer_dashboard' expects data based on columns from customer tables, and will return all data necessary to kickoff a customer dashboard.
        *
-       * @param  {function} p_clickFunction Callback for onclick.
-       * @param  {boolean} p_close Defines if the elementA has a closing icon.
-       * @param  {function} p_dblClickFunction  Callback for ondoubleclick.
-       * @param  {boolean} p_disabled  Defines if the elementA is disabled.
-       * @param  {string} p_icon HTML string is accepted as an optional icon.
-       * @param  {boolean} p_isDraggable Defines if the elementA is draggable inside the tab-menu.
-       * @param  {string} p_name HTML string is accepted as an optional name for the elementA.
-       * @param  {function} p_rightClickFunction Callback for oncontextmenu.
-       * @param  {function} p_selectFunction  Callback for after the tab-content is rendered.
-       * @param  {boolean} p_selectable  Defines if the the tab-content is controlled by default bootstrap tab system selection. Used together with p_clickFunction to override the selecting tab behaviour, like the snippets panel.
-       * @param  {string} p_tooltip_name  HTML string is accepted as an optional tooltip. This is bootstrap's default tooltip.
-       * @param  {string} p_omnidb_tooltip_name  HTML string is accepted as an optional tooltip. This is OmniDB custom tooltip, used in the outer menu to avoid overflow bugs from bootstrap.
-       * @return {object} Creates the tab object in this tabControl.
+       * @param {object} config
+       * @param {Function|null} [config.p_clickFunction] Callback for onclick.
+       * @param {boolean} [config.p_close] Defines if the elementA has a closing icon.
+       * @param {Function|null} [config.p_closeFunction] Callback for closing the tab.
+       * @param {Function|null} [config.p_dblClickFunction]  Callback for ondoubleclick.
+       * @param {boolean} [config.p_disabled]  Defines if the elementA is disabled.
+       * @param {string|false} [config.p_icon] HTML string is accepted as an optional icon.
+       * @param {boolean} [config.p_isDraggable] Defines if the elementA is draggable inside the tab-menu.
+       * @param {string} [config.p_name] HTML string is accepted as an optional name for the elementA.
+       * @param {Function|false} [config.p_rightClickFunction] Callback for oncontextmenu.
+       * @param {Function|null} [config.p_selectFunction]  Callback for after the tab-content is rendered.
+       * @param {boolean} [config.p_selectable]  Defines if the the tab-content is controlled by default bootstrap tab system selection. Used together with p_clickFunction to override the selecting tab behaviour, like the snippets panel.
+       * @param {string|false} [config.p_tooltip_name]  HTML string is accepted as an optional tooltip. This is bootstrap's default tooltip.
+       * @param {string|false} [config.p_omnidb_tooltip_name]  HTML string is accepted as an optional tooltip. This is OmniDB custom tooltip, used in the outer menu to avoid overflow bugs from bootstrap.
+       * @return {any} Creates the tab object in this tabControl.
        */
       createTab: function({
         p_clickFunction = null,
@@ -33513,9 +33528,13 @@
           seq: v_index,
           text: p_name,
           selected: false,
+          /** @type {any} */
           elementA: null,
+          /** @type {any} */
           elementDiv: null,
+          /** @type {any} */
           elementClose: null,
+          /** @type {any} */
           tag: null,
           clickFunction: p_clickFunction,
           dblClickFunction: p_dblClickFunction,
@@ -33549,12 +33568,13 @@
         v_a.setAttribute("href", "#div_" + v_tab.id);
         v_a.setAttribute("aria-controls", "div_" + v_tab.id);
         if (v_tab.isDraggable) {
-          v_a.setAttribute("draggable", "true");
-          v_a.ondragend = function(e) {
+          let v_onDragEnd = function(e) {
             e.stopPropagation();
             e.preventDefault();
             v_tab.dragEndFunction(e, this);
-          }.bind(this);
+          };
+          v_a.setAttribute("draggable", "true");
+          v_a.ondragend = v_onDragEnd.bind(this);
         }
         if (p_disabled) {
           v_a.className = "omnidb__tab-menu__link nav-item nav-link disabled";
