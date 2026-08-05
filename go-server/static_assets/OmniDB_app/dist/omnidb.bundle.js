@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$1 = document.getElementById("omnidb_bootstrap");
-  if (!el$1) {
+  const el$2 = document.getElementById("omnidb_bootstrap");
+  if (!el$2) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$1.textContent);
+  const cfg = JSON.parse(el$2.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -57,7 +57,7 @@
     return window.csrfSafeMethod(...args);
   }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el(id) {
+  function el$1(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -86,7 +86,7 @@
       v_message_modal_animating = true;
     });
     $("#modal_message").on("hidden.bs.modal", function(e) {
-      el("modal_message_content").innerHTML = "";
+      el$1("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -104,7 +104,7 @@
     });
   });
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el("modal_message_dialog");
+    var v_dialog = el$1("modal_message_dialog");
     if (p_large == null || p_large == false) {
       v_dialog.classList.remove("modal-xl");
     } else {
@@ -119,11 +119,11 @@
     }
   }
   function showError(p_message) {
-    var v_content_div = el("modal_message_content");
-    var v_button_yes = el("modal_message_yes");
-    var v_button_ok = el("modal_message_ok");
-    var v_button_no = el("modal_message_no");
-    var v_button_cancel = el("modal_message_cancel");
+    var v_content_div = el$1("modal_message_content");
+    var v_button_yes = el$1("modal_message_yes");
+    var v_button_ok = el$1("modal_message_ok");
+    var v_button_no = el$1("modal_message_no");
+    var v_button_cancel = el$1("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_yes.style.display = "none";
     v_button_ok.style.display = "";
@@ -136,11 +136,11 @@
   }
   function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el("modal_message_content");
-      var v_button_yes = el("modal_message_yes");
-      var v_button_ok = el("modal_message_ok");
-      var v_button_no = el("modal_message_no");
-      var v_button_cancel = el("modal_message_cancel");
+      var v_content_div = el$1("modal_message_content");
+      var v_button_yes = el$1("modal_message_yes");
+      var v_button_ok = el$1("modal_message_ok");
+      var v_button_no = el$1("modal_message_no");
+      var v_button_cancel = el$1("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -159,11 +159,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el("modal_message_content");
-      var v_button_yes = el("modal_message_yes");
-      var v_button_ok = el("modal_message_ok");
-      var v_button_no = el("modal_message_no");
-      var v_button_cancel = el("modal_message_cancel");
+      var v_content_div = el$1("modal_message_content");
+      var v_button_yes = el$1("modal_message_yes");
+      var v_button_ok = el$1("modal_message_ok");
+      var v_button_no = el$1("modal_message_no");
+      var v_button_cancel = el$1("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
@@ -179,11 +179,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el("modal_message_content");
-    var v_button_yes = el("modal_message_yes");
-    var v_button_ok = el("modal_message_ok");
-    var v_button_no = el("modal_message_no");
-    var v_button_cancel = el("modal_message_cancel");
+    var v_content_div = el$1("modal_message_content");
+    var v_button_yes = el$1("modal_message_yes");
+    var v_button_ok = el$1("modal_message_ok");
+    var v_button_no = el$1("modal_message_no");
+    var v_button_cancel = el$1("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -202,11 +202,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el("modal_message_content");
-    var v_button_yes = el("modal_message_yes");
-    var v_button_ok = el("modal_message_ok");
-    var v_button_no = el("modal_message_no");
-    var v_button_cancel = el("modal_message_cancel");
+    var v_content_div = el$1("modal_message_content");
+    var v_button_yes = el$1("modal_message_yes");
+    var v_button_ok = el$1("modal_message_ok");
+    var v_button_no = el$1("modal_message_no");
+    var v_button_cancel = el$1("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -20864,6 +20864,9 @@
     v_queryResponseCodes,
     v_queryState
   }, Symbol.toStringTag, { value: "Module" }));
+  function el(id) {
+    return document.getElementById(id);
+  }
   var v_conn_data, v_conn_div, v_conn_obj;
   $(function() {
     v_connections_data = new Object();
@@ -20892,17 +20895,24 @@
       function(p_return) {
         v_connections_data.card_list = [];
         v_connections_data.technologies = p_return.v_data.v_technologies;
-        var v_container = null;
         var v_container = document.createElement("div");
         v_container.className = "container-fluid";
-        var v_row = null;
-        var v_target_div = document.getElementById("connection_card_list");
+        var v_target_div = el("connection_card_list");
         var v_row = document.createElement("div");
         v_row.className = "row";
         v_row.innerHTML = '<div id="connections_management_empty_all" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections available.</h5><button id="bt_empty_all_new_connection" type="button" class="mt-4 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_with_public" class="my-4 text-center w-100" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h5 class="">Your user has no connections configured yet, but there are <i class="fas fa-users text-info mx-2"></i> public connections.</h5><h5 class="d-inline-block mt-4 mr-2">You can also create your own</h5><button id="bt_empty_public_new_connection" type="button" class="mt-2 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_group" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections assigned to this group yet.</h5><button id="bt_empty_group_manage_groups" type="button" class="mt-4 btn omnidb__theme__btn--primary">Manage Groups</button></div>';
-        v_row.querySelector("#bt_empty_all_new_connection").addEventListener("click", () => newConnection());
-        v_row.querySelector("#bt_empty_public_new_connection").addEventListener("click", () => newConnection());
-        v_row.querySelector("#bt_empty_group_manage_groups").addEventListener("click", () => manageGroup());
+        v_row.querySelector("#bt_empty_all_new_connection").addEventListener(
+          "click",
+          () => newConnection()
+        );
+        v_row.querySelector("#bt_empty_public_new_connection").addEventListener(
+          "click",
+          () => newConnection()
+        );
+        v_row.querySelector("#bt_empty_group_manage_groups").addEventListener(
+          "click",
+          () => manageGroup()
+        );
         for (var i3 = 0; i3 < p_return.v_data.v_conn_list.length; i3++) {
           var v_conn_obj2 = p_return.v_data.v_conn_list[i3];
           var v_col_div = document.createElement("div");
@@ -20970,7 +20980,7 @@
           v_button_delete.className = "btn btn-danger btn-sm mx-1";
           v_button_delete.title = "Delete";
           if (v_conn_obj2.locked == true) {
-            v_button_delete.setAttribute("disabled", true);
+            v_button_delete.setAttribute("disabled", "disabled");
           }
           v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>';
           v_card_body_buttons.appendChild(v_button_delete);
@@ -21021,9 +21031,9 @@
           $("#modal_connections").modal("show");
         }
         if (p_change_group) {
-          groupChange(document.getElementById("group_selector").value);
+          groupChange(el("group_selector").value);
         }
-        document.getElementById("conn_list_public_counter").innerHTML = v_total_public_conn;
+        el("conn_list_public_counter").innerHTML = v_total_public_conn;
         updateConnectionsTitleInfo();
       },
       null,
@@ -21032,9 +21042,9 @@
     );
   }
   function groupChange(p_value) {
-    var v_empty_group_div = document.getElementById("connections_management_empty_group");
+    var v_empty_group_div = el("connections_management_empty_group");
     if (p_value != -1) {
-      document.getElementById("button_group_actions").style.display = "";
+      el("button_group_actions").style.display = "";
       var v_group_obj = { conn_list: [] };
       for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
         if (p_value == v_connections_data.v_group_list[i2].id) {
@@ -21063,8 +21073,8 @@
       if (v_empty_group_div) {
         v_empty_group_div.style.display = "none";
       }
-      document.getElementById("button_group_actions").style.display = "none";
-      document.getElementById("group_selector").value = -1;
+      el("button_group_actions").style.display = "none";
+      el("group_selector").value = -1;
       for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
         var v_conn_obj2 = v_connections_data.card_list[i2];
         $(v_conn_obj2.card_div).fadeIn(400);
@@ -21073,18 +21083,18 @@
     updateConnectionsTitleInfo();
   }
   function manageGroup() {
-    document.getElementById("group_actions_1").style.display = "none";
-    document.getElementById("group_actions_2").style.display = "";
-    document.getElementById("button_new_connection").setAttribute("disabled", true);
-    document.getElementById("group_selector").setAttribute("disabled", true);
-    document.getElementById("button_new_group").setAttribute("disabled", true);
-    document.getElementById("button_group_actions").setAttribute("disabled", true);
-    var v_empty_group_div = document.getElementById("connections_management_empty_group");
+    el("group_actions_1").style.display = "none";
+    el("group_actions_2").style.display = "";
+    el("button_new_connection").setAttribute("disabled", true);
+    el("group_selector").setAttribute("disabled", true);
+    el("button_new_group").setAttribute("disabled", true);
+    el("button_group_actions").setAttribute("disabled", true);
+    var v_empty_group_div = el("connections_management_empty_group");
     if (v_empty_group_div) {
       v_empty_group_div.style.display = "none";
     }
     $(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--connection-management");
-    var v_current_group_id = document.getElementById("group_selector").value;
+    var v_current_group_id = el("group_selector").value;
     var v_group_obj = null;
     for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
       if (v_current_group_id == v_connections_data.v_group_list[i2].id) {
@@ -21102,12 +21112,12 @@
     updateConnectionsTitleInfo();
   }
   function manageGroupSave() {
-    document.getElementById("group_actions_1").style.display = "";
-    document.getElementById("group_actions_2").style.display = "none";
-    document.getElementById("button_new_connection").removeAttribute("disabled");
-    document.getElementById("group_selector").removeAttribute("disabled");
-    document.getElementById("button_new_group").removeAttribute("disabled");
-    document.getElementById("button_group_actions").removeAttribute("disabled");
+    el("group_actions_1").style.display = "";
+    el("group_actions_2").style.display = "none";
+    el("button_new_connection").removeAttribute("disabled");
+    el("group_selector").removeAttribute("disabled");
+    el("button_new_group").removeAttribute("disabled");
+    el("button_group_actions").removeAttribute("disabled");
     $(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--connection-management");
     v_conn_data = [];
     for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
@@ -21124,7 +21134,7 @@
         // parseInt because a <select>'s value is a string and the backend
         // unmarshals this into an integer, which rejects "1" outright and
         // fails the whole request. See flexInt in go-server/flex_int.go.
-        p_group: parseInt(document.getElementById("group_selector").value, 10),
+        p_group: parseInt(el("group_selector").value, 10),
         p_conn_data_list: v_conn_data
       }),
       function(p_return) {
@@ -21160,7 +21170,7 @@
     );
   }
   function deleteGroup() {
-    var v_group_id = parseInt(document.getElementById("group_selector").value, 10);
+    var v_group_id = parseInt(el("group_selector").value, 10);
     showConfirm("Are you sure you want to delete the current group?", function() {
       deleteGroupConfirm(v_group_id);
     });
@@ -21179,19 +21189,25 @@
   }
   function newGroup() {
     showConfirm("", function() {
-      newGroupConfirm(document.getElementById("group_name_input").value);
+      newGroupConfirm(el("group_name_input").value);
     });
     var v_input = document.createElement("input");
     v_input.id = "group_name_input";
     v_input.className = "form-control";
     v_input.placeholder = "Group Name";
     v_input.style.width = "100%";
-    document.getElementById("modal_message_content").appendChild(v_input);
+    el("modal_message_content").appendChild(v_input);
     v_input.onkeydown = function() {
-      if (event.keyCode == 13) {
-        document.getElementById("modal_message_ok").click();
-      } else if (event.keyCode == 27) {
-        document.getElementById("modal_message_cancel").click();
+      if (
+        /** @type {any} */
+        event.keyCode == 13
+      ) {
+        el("modal_message_ok").click();
+      } else if (
+        /** @type {any} */
+        event.keyCode == 27
+      ) {
+        el("modal_message_cancel").click();
       }
     };
     setTimeout(function() {
@@ -21199,9 +21215,9 @@
     }, 500);
   }
   function renameGroup() {
-    var v_select = document.getElementById("group_selector");
+    var v_select = el("group_selector");
     showConfirm("", function() {
-      renameGroupConfirm(parseInt(document.getElementById("group_selector").value, 10), document.getElementById("group_name_input").value);
+      renameGroupConfirm(parseInt(el("group_selector").value, 10), el("group_name_input").value);
     });
     var v_input = document.createElement("input");
     v_input.id = "group_name_input";
@@ -21209,12 +21225,18 @@
     v_input.placeholder = "Group Name";
     v_input.style.width = "100%";
     v_input.value = v_select.options[v_select.selectedIndex].text;
-    document.getElementById("modal_message_content").appendChild(v_input);
+    el("modal_message_content").appendChild(v_input);
     v_input.onkeydown = function() {
-      if (event.keyCode == 13) {
-        document.getElementById("modal_message_ok").click();
-      } else if (event.keyCode == 27) {
-        document.getElementById("modal_message_cancel").click();
+      if (
+        /** @type {any} */
+        event.keyCode == 13
+      ) {
+        el("modal_message_ok").click();
+      } else if (
+        /** @type {any} */
+        event.keyCode == 27
+      ) {
+        el("modal_message_cancel").click();
       }
     };
     setTimeout(function() {
@@ -21228,11 +21250,11 @@
       JSON.stringify({}),
       function(p_return) {
         v_connections_data.v_group_list = p_return.v_data;
-        var select = document.getElementById("group_selector");
+        var select = el("group_selector");
         var current_value = select.value;
         select.innerHTML = "";
         var option = document.createElement("option");
-        option.value = -1;
+        option.value = "-1";
         option.textContent = "All Connections";
         select.appendChild(option);
         var found = false;
@@ -21249,7 +21271,7 @@
         if (!found && current_value != -1) {
           groupChange(-1);
         } else {
-          groupChange(document.getElementById("group_selector").value);
+          groupChange(el("group_selector").value);
         }
       },
       null,
@@ -21259,21 +21281,21 @@
   function testConnection(p_password = null) {
     var input = JSON.stringify({
       id: v_connections_data.current_id,
-      type: document.getElementById("conn_form_type").value,
-      connstring: document.getElementById("conn_form_connstring").value,
-      server: document.getElementById("conn_form_server").value,
-      port: document.getElementById("conn_form_port").value,
-      database: document.getElementById("conn_form_database").value,
-      user: document.getElementById("conn_form_user").value,
-      password: document.getElementById("conn_form_user_pass").value,
+      type: el("conn_form_type").value,
+      connstring: el("conn_form_connstring").value,
+      server: el("conn_form_server").value,
+      port: el("conn_form_port").value,
+      database: el("conn_form_database").value,
+      user: el("conn_form_user").value,
+      password: el("conn_form_user_pass").value,
       temp_password: p_password,
       tunnel: {
-        enabled: document.getElementById("conn_form_use_tunnel").checked,
-        server: document.getElementById("conn_form_ssh_server").value,
-        port: document.getElementById("conn_form_ssh_port").value,
-        user: document.getElementById("conn_form_ssh_user").value,
-        password: document.getElementById("conn_form_ssh_password").value,
-        key: document.getElementById("conn_form_ssh_key").value
+        enabled: el("conn_form_use_tunnel").checked,
+        server: el("conn_form_ssh_server").value,
+        port: el("conn_form_ssh_port").value,
+        user: el("conn_form_ssh_user").value,
+        password: el("conn_form_ssh_password").value,
+        key: el("conn_form_ssh_key").value
       }
     });
     execAjax$1(
@@ -21287,11 +21309,11 @@
         showConfirm(
           "",
           function() {
-            testConnection(document.getElementById("txt_test_password_prompt").value);
+            testConnection(el("txt_test_password_prompt").value);
           },
           null,
           function() {
-            var v_content_div = document.getElementById("modal_message_content");
+            var v_content_div = el("modal_message_content");
             v_content_div.appendChild(document.createTextNode(p_return.v_data));
             var v_input = document.createElement("input");
             v_input.id = "txt_test_password_prompt";
@@ -21303,8 +21325,14 @@
             v_input.style.textAlign = "center";
             v_content_div.appendChild(v_input);
             v_input.onkeydown = function() {
-              if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-              else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+              if (
+                /** @type {any} */
+                event.keyCode == 13
+              ) el("modal_message_ok").click();
+              else if (
+                /** @type {any} */
+                event.keyCode == 27
+              ) el("modal_message_cancel").click();
             };
             v_input.focus();
           }
@@ -21318,22 +21346,22 @@
   function saveConnection() {
     var input = JSON.stringify({
       id: v_connections_data.current_id,
-      type: document.getElementById("conn_form_type").value,
-      public: document.getElementById("conn_form_public").checked,
-      connstring: document.getElementById("conn_form_connstring").value,
-      server: document.getElementById("conn_form_server").value,
-      port: document.getElementById("conn_form_port").value,
-      database: document.getElementById("conn_form_database").value,
-      user: document.getElementById("conn_form_user").value,
-      password: document.getElementById("conn_form_user_pass").value,
-      title: document.getElementById("conn_form_title").value,
+      type: el("conn_form_type").value,
+      public: el("conn_form_public").checked,
+      connstring: el("conn_form_connstring").value,
+      server: el("conn_form_server").value,
+      port: el("conn_form_port").value,
+      database: el("conn_form_database").value,
+      user: el("conn_form_user").value,
+      password: el("conn_form_user_pass").value,
+      title: el("conn_form_title").value,
       tunnel: {
-        enabled: document.getElementById("conn_form_use_tunnel").checked,
-        server: document.getElementById("conn_form_ssh_server").value,
-        port: document.getElementById("conn_form_ssh_port").value,
-        user: document.getElementById("conn_form_ssh_user").value,
-        password: document.getElementById("conn_form_ssh_password").value,
-        key: document.getElementById("conn_form_ssh_key").value
+        enabled: el("conn_form_use_tunnel").checked,
+        server: el("conn_form_ssh_server").value,
+        port: el("conn_form_ssh_port").value,
+        user: el("conn_form_ssh_user").value,
+        password: el("conn_form_ssh_password").value,
+        key: el("conn_form_ssh_key").value
       }
     });
     execAjax$1(
@@ -21366,10 +21394,10 @@
     });
   }
   function adjustTechSelector() {
-    var select = document.getElementById("conn_form_type");
+    var select = el("conn_form_type");
     select.innerHTML = "";
     var option = document.createElement("option");
-    option.value = -1;
+    option.value = "-1";
     option.textContent = "Select Type";
     select.appendChild(option);
     for (var i2 = 0; i2 < v_connections_data.technologies.length; i2++) {
@@ -21382,21 +21410,21 @@
   function editConnection(p_conn_obj) {
     v_connections_data.current_id = p_conn_obj.id;
     adjustTechSelector();
-    document.getElementById("conn_form_type").value = p_conn_obj.technology;
-    document.getElementById("conn_form_title").value = p_conn_obj.alias;
-    document.getElementById("conn_form_connstring").value = p_conn_obj.conn_string;
-    document.getElementById("conn_form_server").value = p_conn_obj.server;
-    document.getElementById("conn_form_port").value = p_conn_obj.port;
-    document.getElementById("conn_form_database").value = p_conn_obj.service;
-    document.getElementById("conn_form_user").value = p_conn_obj.user;
-    document.getElementById("conn_form_user_pass").value = "";
-    document.getElementById("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
-    document.getElementById("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
-    document.getElementById("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
-    document.getElementById("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
-    document.getElementById("conn_form_ssh_password").value = "";
-    document.getElementById("conn_form_ssh_key").value = "";
-    document.getElementById("conn_form_public").checked = p_conn_obj.public;
+    el("conn_form_type").value = p_conn_obj.technology;
+    el("conn_form_title").value = p_conn_obj.alias;
+    el("conn_form_connstring").value = p_conn_obj.conn_string;
+    el("conn_form_server").value = p_conn_obj.server;
+    el("conn_form_port").value = p_conn_obj.port;
+    el("conn_form_database").value = p_conn_obj.service;
+    el("conn_form_user").value = p_conn_obj.user;
+    el("conn_form_user_pass").value = "";
+    el("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
+    el("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
+    el("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
+    el("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
+    el("conn_form_ssh_password").value = "";
+    el("conn_form_ssh_key").value = "";
+    el("conn_form_public").checked = p_conn_obj.public;
     let v_enable_list = [];
     let v_disable_list = [];
     if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
@@ -21437,8 +21465,8 @@
         "conn_form_ssh_key",
         "conn_form_ssh_key_input"
       ];
-      document.getElementById("conn_form_use_tunnel").checked = true;
-      document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+      el("conn_form_use_tunnel").checked = true;
+      el("conn_form_use_tunnel").setAttribute("disabled", true);
     } else if (p_conn_obj.technology === "sqlite") {
       v_disable_list = ["conn_form_connstring", "conn_form_server", "conn_form_port", "conn_form_user", "conn_form_user_pass"];
       v_enable_list = ["conn_form_database"];
@@ -21495,25 +21523,25 @@
   function newConnection() {
     v_connections_data.current_id = -1;
     adjustTechSelector();
-    document.getElementById("conn_form_button_test_connection").setAttribute("disabled", true);
-    document.getElementById("conn_form_button_save_connection").setAttribute("disabled", true);
-    document.getElementById("conn_form_type").value = -1;
-    document.getElementById("conn_form_title").value = "";
-    document.getElementById("conn_form_public").checked = false;
-    document.getElementById("conn_form_connstring").value = "";
-    document.getElementById("conn_form_server").value = "";
-    document.getElementById("conn_form_port").value = "";
-    document.getElementById("conn_form_database").value = "";
-    document.getElementById("conn_form_user").value = "";
-    document.getElementById("conn_form_user_pass").value = "";
-    document.getElementById("conn_form_use_tunnel").checked = false;
-    document.getElementById("conn_form_ssh_server").value = "";
-    document.getElementById("conn_form_ssh_port").value = "22";
-    document.getElementById("conn_form_ssh_user").value = "";
-    document.getElementById("conn_form_ssh_password").value = "";
-    document.getElementById("conn_form_ssh_key").value = "";
-    document.getElementById("conn_form_ssh_key_input").value = null;
-    document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+    el("conn_form_button_test_connection").setAttribute("disabled", true);
+    el("conn_form_button_save_connection").setAttribute("disabled", true);
+    el("conn_form_type").value = -1;
+    el("conn_form_title").value = "";
+    el("conn_form_public").checked = false;
+    el("conn_form_connstring").value = "";
+    el("conn_form_server").value = "";
+    el("conn_form_port").value = "";
+    el("conn_form_database").value = "";
+    el("conn_form_user").value = "";
+    el("conn_form_user_pass").value = "";
+    el("conn_form_use_tunnel").checked = false;
+    el("conn_form_ssh_server").value = "";
+    el("conn_form_ssh_port").value = "22";
+    el("conn_form_ssh_user").value = "";
+    el("conn_form_ssh_password").value = "";
+    el("conn_form_ssh_key").value = "";
+    el("conn_form_ssh_key_input").value = null;
+    el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
     $("#conn_form_user_pass_check_icon").remove();
     $("#conn_form_ssh_password_check_icon").remove();
     $("#conn_form_ssh_key_check_icon").remove();
@@ -21533,7 +21561,7 @@
   }
   function toggleConnectionsPublic() {
     updateConnectionsTitleInfo();
-    var v_public = document.getElementById("conn_list_public").checked;
+    var v_public = el("conn_list_public").checked;
     if (v_public) {
       v_connections_data.show_public = true;
       $(".omnidb__connections__card--public").parent().removeClass("d-none");
@@ -21561,16 +21589,16 @@
     let v_disable_list = [];
     let v_enable_list = [];
     let v_form_cases = ["conn_form_type"];
-    let v_technology = document.getElementById("conn_form_type").value;
-    let v_allow_tunnel = document.getElementById("conn_form_use_tunnel").checked;
-    let v_use_connection_string = document.getElementById("conn_form_connstring").value;
-    document.getElementById("conn_form_ssh_key_input").value;
+    let v_technology = el("conn_form_type").value;
+    let v_allow_tunnel = el("conn_form_use_tunnel").checked;
+    let v_use_connection_string = el("conn_form_connstring").value;
+    el("conn_form_ssh_key_input").value;
     if (v_technology === "terminal") {
       v_allow_tunnel = true;
-      document.getElementById("conn_form_use_tunnel").checked = true;
-      document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+      el("conn_form_use_tunnel").checked = true;
+      el("conn_form_use_tunnel").setAttribute("disabled", true);
     } else {
-      document.getElementById("conn_form_use_tunnel").removeAttribute("disabled");
+      el("conn_form_use_tunnel").removeAttribute("disabled");
     }
     if (typeof v_use_connection_string === "string") {
       v_use_connection_string = v_use_connection_string.trim();
@@ -21617,7 +21645,7 @@
       ];
       let v_check_inputs_empty = true;
       for (let i2 = 0; i2 < v_check_inputs.length; i2++) {
-        var v_check_input_value = document.getElementById(v_check_inputs[i2]).value;
+        var v_check_input_value = el(v_check_inputs[i2]).value;
         if (typeof v_check_input_value === "string") {
           v_check_input_value = v_check_input_value.trim();
         }
@@ -21671,8 +21699,8 @@
           "conn_form_ssh_key",
           "conn_form_ssh_key_input"
         ];
-        document.getElementById("conn_form_use_tunnel").checked = true;
-        document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+        el("conn_form_use_tunnel").checked = true;
+        el("conn_form_use_tunnel").setAttribute("disabled", true);
         v_form_cases.push("conn_form_ssh_server");
         v_form_cases.push("conn_form_ssh_port");
         v_form_cases.push("conn_form_ssh_user");
@@ -21682,13 +21710,13 @@
   }
   function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
     for (let i2 = 0; i2 < p_disable_list.length; i2++) {
-      var v_item = document.getElementById(p_disable_list[i2]);
+      var v_item = el(p_disable_list[i2]);
       v_item.setAttribute("readonly", true);
       v_item.setAttribute("disabled", true);
       v_item.value = null;
     }
     for (let i2 = 0; i2 < p_enable_list.length; i2++) {
-      var v_item = document.getElementById(p_enable_list[i2]);
+      var v_item = el(p_enable_list[i2]);
       v_item.removeAttribute("readonly");
       v_item.removeAttribute("disabled");
     }
@@ -21700,12 +21728,12 @@
       }
       for (let i2 = 0; i2 < p_form_cases.length; i2++) {
         if (p_form_cases[i2] === "conn_form_type") {
-          if (document.getElementById(p_form_cases[i2]).value === "-1") {
+          if (el(p_form_cases[i2]).value === "-1") {
             v_has_invalid = true;
             break;
           }
         } else {
-          let v_value_check = document.getElementById(p_form_cases[i2]).value.trim();
+          let v_value_check = el(p_form_cases[i2]).value.trim();
           if (v_value_check === "" || v_value_check === null) {
             v_has_invalid = true;
             break;
@@ -21714,44 +21742,47 @@
       }
     }
     if (v_has_invalid) {
-      document.getElementById("conn_form_button_test_connection").setAttribute("disabled", true);
-      document.getElementById("conn_form_button_save_connection").setAttribute("disabled", true);
+      el("conn_form_button_test_connection").setAttribute("disabled", true);
+      el("conn_form_button_save_connection").setAttribute("disabled", true);
     } else {
-      document.getElementById("conn_form_button_test_connection").removeAttribute("disabled");
-      document.getElementById("conn_form_button_save_connection").removeAttribute("disabled");
+      el("conn_form_button_test_connection").removeAttribute("disabled");
+      el("conn_form_button_save_connection").removeAttribute("disabled");
     }
   }
   function updateConnectionKey(e) {
     var file = e.target.files ? e.target.files[0] : false;
-    var v_input = document.getElementById("conn_form_ssh_key");
+    var v_input = el("conn_form_ssh_key");
     if (!file) {
       v_input.value = null;
-      document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Click to select";
-      updateModalEditConnectionState({ target: document.getElementById("conn_form_ssh_key_input") });
+      el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
       return;
     }
     var reader = new FileReader();
     reader.onload = function(e2) {
-      var v_contents = e2.target.result;
+      var v_contents = (
+        /** @type {FileReader} */
+        e2.target.result
+      );
       v_input.value = v_contents;
-      document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
-      updateModalEditConnectionState({ target: document.getElementById("conn_form_ssh_key_input") });
+      el("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
+      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
     };
     reader.readAsText(file);
   }
   function updateConnectionsTitleInfo() {
-    var v_public = document.getElementById("conn_list_public").checked;
-    var v_group_context = document.getElementById("group_selector").value;
+    var v_public = el("conn_list_public").checked;
+    var v_group_context = el("group_selector").value;
     var v_connection_owner = false;
-    var v_managing_group = v_group_context && document.getElementById("group_selector").getAttribute("disabled");
+    var v_managing_group = v_group_context && el("group_selector").getAttribute("disabled");
     for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
       var v_conn_obj2 = v_connections_data.card_list[i2].data;
       if (v_conn_obj2.is_mine) {
         v_connection_owner = true;
       }
     }
-    var v_empty_cards = document.getElementById("connections_management_empty_all");
-    var v_empty_with_public = document.getElementById("connections_management_empty_with_public");
+    var v_empty_cards = el("connections_management_empty_all");
+    var v_empty_with_public = el("connections_management_empty_with_public");
     if (v_empty_cards) {
       if (v_connections_data.card_list.length === 0) {
         v_empty_with_public.style.display = "none";

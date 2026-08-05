@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -35,6 +36,15 @@ import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
 import { getDatabaseList } from "./workspace.js";
+
+// The connection-management markup is always present in workspace.html, so
+// these ids are guaranteed to resolve -- this just gets that past tsc
+// without a cast at every call site. `any` rather than HTMLElement because
+// callers read .value/.checked/.files as well as generic DOM properties.
+/** @param {string} id @returns {any} */
+function el(id) {
+	return document.getElementById(id);
+}
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -83,13 +93,10 @@ export function showConnectionList(p_open_modal, p_change_group) {
 			v_connections_data.technologies = p_return.v_data.v_technologies;
 
 			//Building connection cards
-			var v_container = null;
 			var v_container = document.createElement("div");
 			v_container.className = "container-fluid";
 
-			var v_row = null;
-
-			var v_target_div = document.getElementById("connection_card_list");
+			var v_target_div = el("connection_card_list");
 
 			var v_row = document.createElement("div");
 			v_row.className = "row";
@@ -114,9 +121,15 @@ export function showConnectionList(p_open_modal, p_change_group) {
 			// replacing the on*= attributes they carried -- see dom_event_bindings.js
 			// and README.md. v_row is not in the document yet, which is fine:
 			// addEventListener does not care whether the node is attached.
-			v_row.querySelector("#bt_empty_all_new_connection").addEventListener("click", () => newConnection());
-			v_row.querySelector("#bt_empty_public_new_connection").addEventListener("click", () => newConnection());
-			v_row.querySelector("#bt_empty_group_manage_groups").addEventListener("click", () => manageGroup());
+			/** @type {HTMLElement} */ (v_row.querySelector("#bt_empty_all_new_connection")).addEventListener("click", () =>
+				newConnection(),
+			);
+			/** @type {HTMLElement} */ (v_row.querySelector("#bt_empty_public_new_connection")).addEventListener("click", () =>
+				newConnection(),
+			);
+			/** @type {HTMLElement} */ (v_row.querySelector("#bt_empty_group_manage_groups")).addEventListener("click", () =>
+				manageGroup(),
+			);
 
 			for (var i = 0; i < p_return.v_data.v_conn_list.length; i++) {
 				var v_conn_obj = p_return.v_data.v_conn_list[i];
@@ -259,7 +272,7 @@ export function showConnectionList(p_open_modal, p_change_group) {
 				v_button_delete.className = "btn btn-danger btn-sm mx-1";
 				v_button_delete.title = "Delete";
 				if (v_conn_obj.locked == true) {
-					v_button_delete.setAttribute("disabled", true);
+					v_button_delete.setAttribute("disabled", "disabled");
 				}
 				v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>';
 				v_card_body_buttons.appendChild(v_button_delete);
@@ -320,11 +333,11 @@ export function showConnectionList(p_open_modal, p_change_group) {
 			}
 
 			if (p_change_group) {
-				groupChange(document.getElementById("group_selector").value);
+				groupChange(el("group_selector").value);
 			}
 
 			// Updating total public connections counter.
-			document.getElementById("conn_list_public_counter").innerHTML = v_total_public_conn;
+			el("conn_list_public_counter").innerHTML = v_total_public_conn;
 
 			updateConnectionsTitleInfo();
 		},
@@ -335,12 +348,13 @@ export function showConnectionList(p_open_modal, p_change_group) {
 }
 
 export function groupChange(p_value) {
-	var v_empty_group_div = document.getElementById("connections_management_empty_group");
+	var v_empty_group_div = el("connections_management_empty_group");
 
 	if (p_value != -1) {
-		document.getElementById("button_group_actions").style.display = "";
+		el("button_group_actions").style.display = "";
 
 		// Filtering group cards
+		/** @type {any} */
 		var v_group_obj = { conn_list: [] };
 
 		// Finding the selected group object
@@ -379,8 +393,8 @@ export function groupChange(p_value) {
 		if (v_empty_group_div) {
 			v_empty_group_div.style.display = "none";
 		}
-		document.getElementById("button_group_actions").style.display = "none";
-		document.getElementById("group_selector").value = -1;
+		el("button_group_actions").style.display = "none";
+		el("group_selector").value = -1;
 
 		// Going over the cards and adjusting cover div and checkbox
 		for (var i = 0; i < v_connections_data.card_list.length; i++) {
@@ -393,21 +407,22 @@ export function groupChange(p_value) {
 }
 
 export function manageGroup() {
-	document.getElementById("group_actions_1").style.display = "none";
-	document.getElementById("group_actions_2").style.display = "";
-	document.getElementById("button_new_connection").setAttribute("disabled", true);
-	document.getElementById("group_selector").setAttribute("disabled", true);
-	document.getElementById("button_new_group").setAttribute("disabled", true);
-	document.getElementById("button_group_actions").setAttribute("disabled", true);
+	el("group_actions_1").style.display = "none";
+	el("group_actions_2").style.display = "";
+	el("button_new_connection").setAttribute("disabled", true);
+	el("group_selector").setAttribute("disabled", true);
+	el("button_new_group").setAttribute("disabled", true);
+	el("button_group_actions").setAttribute("disabled", true);
 
-	var v_empty_group_div = document.getElementById("connections_management_empty_group");
+	var v_empty_group_div = el("connections_management_empty_group");
 	if (v_empty_group_div) {
 		v_empty_group_div.style.display = "none";
 	}
 
 	$(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--connection-management");
 
-	var v_current_group_id = document.getElementById("group_selector").value;
+	var v_current_group_id = el("group_selector").value;
+	/** @type {any} */
 	var v_group_obj = null;
 
 	// Finding the selected group object
@@ -434,13 +449,13 @@ export function manageGroup() {
 }
 
 export function manageGroupSave() {
-	document.getElementById("group_actions_1").style.display = "";
-	document.getElementById("group_actions_2").style.display = "none";
+	el("group_actions_1").style.display = "";
+	el("group_actions_2").style.display = "none";
 
-	document.getElementById("button_new_connection").removeAttribute("disabled");
-	document.getElementById("group_selector").removeAttribute("disabled");
-	document.getElementById("button_new_group").removeAttribute("disabled");
-	document.getElementById("button_group_actions").removeAttribute("disabled");
+	el("button_new_connection").removeAttribute("disabled");
+	el("group_selector").removeAttribute("disabled");
+	el("button_new_group").removeAttribute("disabled");
+	el("button_group_actions").removeAttribute("disabled");
 
 	$(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--connection-management");
 
@@ -462,7 +477,7 @@ export function manageGroupSave() {
 			// parseInt because a <select>'s value is a string and the backend
 			// unmarshals this into an integer, which rejects "1" outright and
 			// fails the whole request. See flexInt in go-server/flex_int.go.
-			p_group: parseInt(document.getElementById("group_selector").value, 10),
+			p_group: parseInt(el("group_selector").value, 10),
 			p_conn_data_list: v_conn_data,
 		}),
 		function (p_return) {
@@ -502,7 +517,7 @@ export function renameGroupConfirm(p_id, p_name) {
 
 export function deleteGroup() {
 	// parseInt: see the comment in manageGroupSave.
-	var v_group_id = parseInt(document.getElementById("group_selector").value, 10);
+	var v_group_id = parseInt(el("group_selector").value, 10);
 
 	showConfirm("Are you sure you want to delete the current group?", function () {
 		deleteGroupConfirm(v_group_id);
@@ -524,7 +539,7 @@ export function deleteGroupConfirm(p_group_id) {
 
 export function newGroup() {
 	showConfirm("", function () {
-		newGroupConfirm(document.getElementById("group_name_input").value);
+		newGroupConfirm(el("group_name_input").value);
 	});
 
 	// showConfirm's content div only renders plain text (see
@@ -535,13 +550,13 @@ export function newGroup() {
 	v_input.className = "form-control";
 	v_input.placeholder = "Group Name";
 	v_input.style.width = "100%";
-	document.getElementById("modal_message_content").appendChild(v_input);
+	el("modal_message_content").appendChild(v_input);
 
 	v_input.onkeydown = function () {
-		if (event.keyCode == 13) {
-			document.getElementById("modal_message_ok").click();
-		} else if (event.keyCode == 27) {
-			document.getElementById("modal_message_cancel").click();
+		if (/** @type {any} */ (event).keyCode == 13) {
+			el("modal_message_ok").click();
+		} else if (/** @type {any} */ (event).keyCode == 27) {
+			el("modal_message_cancel").click();
 		}
 	};
 	setTimeout(function () {
@@ -550,10 +565,10 @@ export function newGroup() {
 }
 
 export function renameGroup() {
-	var v_select = document.getElementById("group_selector");
+	var v_select = el("group_selector");
 	showConfirm("", function () {
 		// parseInt: see the comment in manageGroupSave.
-		renameGroupConfirm(parseInt(document.getElementById("group_selector").value, 10), document.getElementById("group_name_input").value);
+		renameGroupConfirm(parseInt(el("group_selector").value, 10), el("group_name_input").value);
 	});
 
 	// See newGroup's comment above — built as a real DOM node, not an HTML
@@ -564,13 +579,13 @@ export function renameGroup() {
 	v_input.placeholder = "Group Name";
 	v_input.style.width = "100%";
 	v_input.value = v_select.options[v_select.selectedIndex].text;
-	document.getElementById("modal_message_content").appendChild(v_input);
+	el("modal_message_content").appendChild(v_input);
 
 	v_input.onkeydown = function () {
-		if (event.keyCode == 13) {
-			document.getElementById("modal_message_ok").click();
-		} else if (event.keyCode == 27) {
-			document.getElementById("modal_message_cancel").click();
+		if (/** @type {any} */ (event).keyCode == 13) {
+			el("modal_message_ok").click();
+		} else if (/** @type {any} */ (event).keyCode == 27) {
+			el("modal_message_cancel").click();
 		}
 	};
 	setTimeout(function () {
@@ -585,11 +600,11 @@ export function getGroups() {
 		JSON.stringify({}),
 		function (p_return) {
 			v_connections_data.v_group_list = p_return.v_data;
-			var select = document.getElementById("group_selector");
+			var select = el("group_selector");
 			var current_value = select.value;
 			select.innerHTML = "";
 			var option = document.createElement("option");
-			option.value = -1;
+			option.value = "-1";
 			option.textContent = "All Connections";
 			select.appendChild(option);
 			var found = false;
@@ -606,7 +621,7 @@ export function getGroups() {
 			if (!found && current_value != -1) {
 				groupChange(-1);
 			} else {
-				groupChange(document.getElementById("group_selector").value);
+				groupChange(el("group_selector").value);
 			}
 		},
 		null,
@@ -620,21 +635,21 @@ export function getGroups() {
 export function testConnection(p_password = null) {
 	var input = JSON.stringify({
 		id: v_connections_data.current_id,
-		type: document.getElementById("conn_form_type").value,
-		connstring: document.getElementById("conn_form_connstring").value,
-		server: document.getElementById("conn_form_server").value,
-		port: document.getElementById("conn_form_port").value,
-		database: document.getElementById("conn_form_database").value,
-		user: document.getElementById("conn_form_user").value,
-		password: document.getElementById("conn_form_user_pass").value,
+		type: el("conn_form_type").value,
+		connstring: el("conn_form_connstring").value,
+		server: el("conn_form_server").value,
+		port: el("conn_form_port").value,
+		database: el("conn_form_database").value,
+		user: el("conn_form_user").value,
+		password: el("conn_form_user_pass").value,
 		temp_password: p_password,
 		tunnel: {
-			enabled: document.getElementById("conn_form_use_tunnel").checked,
-			server: document.getElementById("conn_form_ssh_server").value,
-			port: document.getElementById("conn_form_ssh_port").value,
-			user: document.getElementById("conn_form_ssh_user").value,
-			password: document.getElementById("conn_form_ssh_password").value,
-			key: document.getElementById("conn_form_ssh_key").value,
+			enabled: el("conn_form_use_tunnel").checked,
+			server: el("conn_form_ssh_server").value,
+			port: el("conn_form_ssh_port").value,
+			user: el("conn_form_ssh_user").value,
+			password: el("conn_form_ssh_password").value,
+			key: el("conn_form_ssh_key").value,
 		},
 	});
 
@@ -649,13 +664,13 @@ export function testConnection(p_password = null) {
 			showConfirm(
 				"",
 				function () {
-					testConnection(document.getElementById("txt_test_password_prompt").value);
+					testConnection(el("txt_test_password_prompt").value);
 				},
 				null,
 				function () {
 					// Built as real DOM nodes, not an HTML string — showConfirm's
 					// content div only renders plain text (see notification_control.js).
-					var v_content_div = document.getElementById("modal_message_content");
+					var v_content_div = el("modal_message_content");
 					v_content_div.appendChild(document.createTextNode(p_return.v_data));
 
 					var v_input = document.createElement("input");
@@ -669,8 +684,8 @@ export function testConnection(p_password = null) {
 					v_content_div.appendChild(v_input);
 
 					v_input.onkeydown = function () {
-						if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-						else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+						if (/** @type {any} */ (event).keyCode == 13) el("modal_message_ok").click();
+						else if (/** @type {any} */ (event).keyCode == 27) el("modal_message_cancel").click();
 					};
 					v_input.focus();
 				},
@@ -685,22 +700,22 @@ export function testConnection(p_password = null) {
 export function saveConnection() {
 	var input = JSON.stringify({
 		id: v_connections_data.current_id,
-		type: document.getElementById("conn_form_type").value,
-		public: document.getElementById("conn_form_public").checked,
-		connstring: document.getElementById("conn_form_connstring").value,
-		server: document.getElementById("conn_form_server").value,
-		port: document.getElementById("conn_form_port").value,
-		database: document.getElementById("conn_form_database").value,
-		user: document.getElementById("conn_form_user").value,
-		password: document.getElementById("conn_form_user_pass").value,
-		title: document.getElementById("conn_form_title").value,
+		type: el("conn_form_type").value,
+		public: el("conn_form_public").checked,
+		connstring: el("conn_form_connstring").value,
+		server: el("conn_form_server").value,
+		port: el("conn_form_port").value,
+		database: el("conn_form_database").value,
+		user: el("conn_form_user").value,
+		password: el("conn_form_user_pass").value,
+		title: el("conn_form_title").value,
 		tunnel: {
-			enabled: document.getElementById("conn_form_use_tunnel").checked,
-			server: document.getElementById("conn_form_ssh_server").value,
-			port: document.getElementById("conn_form_ssh_port").value,
-			user: document.getElementById("conn_form_ssh_user").value,
-			password: document.getElementById("conn_form_ssh_password").value,
-			key: document.getElementById("conn_form_ssh_key").value,
+			enabled: el("conn_form_use_tunnel").checked,
+			server: el("conn_form_ssh_server").value,
+			port: el("conn_form_ssh_port").value,
+			user: el("conn_form_ssh_user").value,
+			password: el("conn_form_ssh_password").value,
+			key: el("conn_form_ssh_key").value,
 		},
 	});
 
@@ -737,10 +752,10 @@ export function deleteConnection(p_conn_obj) {
 }
 
 export function adjustTechSelector() {
-	var select = document.getElementById("conn_form_type");
+	var select = el("conn_form_type");
 	select.innerHTML = "";
 	var option = document.createElement("option");
-	option.value = -1;
+	option.value = "-1";
 	option.textContent = "Select Type";
 	select.appendChild(option);
 	for (var i = 0; i < v_connections_data.technologies.length; i++) {
@@ -755,21 +770,21 @@ export function editConnection(p_conn_obj) {
 	v_connections_data.current_id = p_conn_obj.id;
 	adjustTechSelector();
 
-	document.getElementById("conn_form_type").value = p_conn_obj.technology;
-	document.getElementById("conn_form_title").value = p_conn_obj.alias;
-	document.getElementById("conn_form_connstring").value = p_conn_obj.conn_string;
-	document.getElementById("conn_form_server").value = p_conn_obj.server;
-	document.getElementById("conn_form_port").value = p_conn_obj.port;
-	document.getElementById("conn_form_database").value = p_conn_obj.service;
-	document.getElementById("conn_form_user").value = p_conn_obj.user;
-	document.getElementById("conn_form_user_pass").value = "";
-	document.getElementById("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
-	document.getElementById("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
-	document.getElementById("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
-	document.getElementById("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
-	document.getElementById("conn_form_ssh_password").value = "";
-	document.getElementById("conn_form_ssh_key").value = "";
-	document.getElementById("conn_form_public").checked = p_conn_obj.public;
+	el("conn_form_type").value = p_conn_obj.technology;
+	el("conn_form_title").value = p_conn_obj.alias;
+	el("conn_form_connstring").value = p_conn_obj.conn_string;
+	el("conn_form_server").value = p_conn_obj.server;
+	el("conn_form_port").value = p_conn_obj.port;
+	el("conn_form_database").value = p_conn_obj.service;
+	el("conn_form_user").value = p_conn_obj.user;
+	el("conn_form_user_pass").value = "";
+	el("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
+	el("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
+	el("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
+	el("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
+	el("conn_form_ssh_password").value = "";
+	el("conn_form_ssh_key").value = "";
+	el("conn_form_public").checked = p_conn_obj.public;
 
 	let v_enable_list = [];
 	let v_disable_list = [];
@@ -821,8 +836,8 @@ export function editConnection(p_conn_obj) {
 			"conn_form_ssh_key",
 			"conn_form_ssh_key_input",
 		];
-		document.getElementById("conn_form_use_tunnel").checked = true;
-		document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+		el("conn_form_use_tunnel").checked = true;
+		el("conn_form_use_tunnel").setAttribute("disabled", true);
 	} else if (p_conn_obj.technology === "sqlite") {
 		v_disable_list = ["conn_form_connstring", "conn_form_server", "conn_form_port", "conn_form_user", "conn_form_user_pass"];
 		v_enable_list = ["conn_form_database"];
@@ -887,25 +902,25 @@ export function newConnection() {
 	v_connections_data.current_id = -1;
 	adjustTechSelector();
 
-	document.getElementById("conn_form_button_test_connection").setAttribute("disabled", true);
-	document.getElementById("conn_form_button_save_connection").setAttribute("disabled", true);
-	document.getElementById("conn_form_type").value = -1;
-	document.getElementById("conn_form_title").value = "";
-	document.getElementById("conn_form_public").checked = false;
-	document.getElementById("conn_form_connstring").value = "";
-	document.getElementById("conn_form_server").value = "";
-	document.getElementById("conn_form_port").value = "";
-	document.getElementById("conn_form_database").value = "";
-	document.getElementById("conn_form_user").value = "";
-	document.getElementById("conn_form_user_pass").value = "";
-	document.getElementById("conn_form_use_tunnel").checked = false;
-	document.getElementById("conn_form_ssh_server").value = "";
-	document.getElementById("conn_form_ssh_port").value = "22";
-	document.getElementById("conn_form_ssh_user").value = "";
-	document.getElementById("conn_form_ssh_password").value = "";
-	document.getElementById("conn_form_ssh_key").value = "";
-	document.getElementById("conn_form_ssh_key_input").value = null;
-	document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+	el("conn_form_button_test_connection").setAttribute("disabled", true);
+	el("conn_form_button_save_connection").setAttribute("disabled", true);
+	el("conn_form_type").value = -1;
+	el("conn_form_title").value = "";
+	el("conn_form_public").checked = false;
+	el("conn_form_connstring").value = "";
+	el("conn_form_server").value = "";
+	el("conn_form_port").value = "";
+	el("conn_form_database").value = "";
+	el("conn_form_user").value = "";
+	el("conn_form_user_pass").value = "";
+	el("conn_form_use_tunnel").checked = false;
+	el("conn_form_ssh_server").value = "";
+	el("conn_form_ssh_port").value = "22";
+	el("conn_form_ssh_user").value = "";
+	el("conn_form_ssh_password").value = "";
+	el("conn_form_ssh_key").value = "";
+	el("conn_form_ssh_key_input").value = null;
+	el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
 
 	$("#conn_form_user_pass_check_icon").remove();
 	$("#conn_form_ssh_password_check_icon").remove();
@@ -929,7 +944,7 @@ export function selectConnection(p_conn_obj) {
 
 export function toggleConnectionsPublic() {
 	updateConnectionsTitleInfo();
-	var v_public = document.getElementById("conn_list_public").checked;
+	var v_public = el("conn_list_public").checked;
 	if (v_public) {
 		v_connections_data.show_public = true;
 		$(".omnidb__connections__card--public").parent().removeClass("d-none");
@@ -972,18 +987,18 @@ export function updateModalEditConnectionState(e) {
 	let v_enable_list = [];
 	// IDs of elements that should be required.
 	let v_form_cases = ["conn_form_type"];
-	let v_technology = document.getElementById("conn_form_type").value;
-	let v_allow_tunnel = document.getElementById("conn_form_use_tunnel").checked;
-	let v_use_connection_string = document.getElementById("conn_form_connstring").value;
-	let v_has_ssh_key_file = document.getElementById("conn_form_ssh_key_input").value;
+	let v_technology = el("conn_form_type").value;
+	let v_allow_tunnel = el("conn_form_use_tunnel").checked;
+	let v_use_connection_string = el("conn_form_connstring").value;
+	let v_has_ssh_key_file = el("conn_form_ssh_key_input").value;
 
 	// Case where technology is terminal.
 	if (v_technology === "terminal") {
 		v_allow_tunnel = true;
-		document.getElementById("conn_form_use_tunnel").checked = true;
-		document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+		el("conn_form_use_tunnel").checked = true;
+		el("conn_form_use_tunnel").setAttribute("disabled", true);
 	} else {
-		document.getElementById("conn_form_use_tunnel").removeAttribute("disabled");
+		el("conn_form_use_tunnel").removeAttribute("disabled");
 	}
 
 	// Checking connection string.
@@ -1045,7 +1060,7 @@ export function updateModalEditConnectionState(e) {
 		];
 		let v_check_inputs_empty = true;
 		for (let i = 0; i < v_check_inputs.length; i++) {
-			var v_check_input_value = document.getElementById(v_check_inputs[i]).value;
+			var v_check_input_value = el(v_check_inputs[i]).value;
 			if (typeof v_check_input_value === "string") {
 				v_check_input_value = v_check_input_value.trim();
 			}
@@ -1106,8 +1121,8 @@ export function updateModalEditConnectionState(e) {
 				"conn_form_ssh_key",
 				"conn_form_ssh_key_input",
 			];
-			document.getElementById("conn_form_use_tunnel").checked = true;
-			document.getElementById("conn_form_use_tunnel").setAttribute("disabled", true);
+			el("conn_form_use_tunnel").checked = true;
+			el("conn_form_use_tunnel").setAttribute("disabled", true);
 			v_form_cases.push("conn_form_ssh_server");
 			v_form_cases.push("conn_form_ssh_port");
 			v_form_cases.push("conn_form_ssh_user");
@@ -1122,21 +1137,21 @@ export function updateModalEditConnectionState(e) {
  * ## updateModalEditConnectionFields
  * @desc Verifies a set of arrays to either disable, enable, set as required and clear fields when necessary.
  *
- * @param  {array} p_disable_list IDs of elements that should be disabled.
- * @param  {array} p_enable_list  IDs of elements that should be enabled.
- * @param  {array} p_form_cases   IDs of elements that should be required.
+ * @param  {any[]} p_disable_list IDs of elements that should be disabled.
+ * @param  {any[]} p_enable_list  IDs of elements that should be enabled.
+ * @param  {any[]} [p_form_cases]   IDs of elements that should be required.
  */
 export function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
 	// Disabling elements.
 	for (let i = 0; i < p_disable_list.length; i++) {
-		var v_item = document.getElementById(p_disable_list[i]);
+		var v_item = el(p_disable_list[i]);
 		v_item.setAttribute("readonly", true);
 		v_item.setAttribute("disabled", true);
 		v_item.value = null;
 	}
 	// Enabling elements.
 	for (let i = 0; i < p_enable_list.length; i++) {
-		var v_item = document.getElementById(p_enable_list[i]);
+		var v_item = el(p_enable_list[i]);
 		v_item.removeAttribute("readonly");
 		v_item.removeAttribute("disabled");
 	}
@@ -1153,12 +1168,12 @@ export function updateModalEditConnectionFields(p_disable_list, p_enable_list, p
 		// Validating values of required elements.
 		for (let i = 0; i < p_form_cases.length; i++) {
 			if (p_form_cases[i] === "conn_form_type") {
-				if (document.getElementById(p_form_cases[i]).value === "-1") {
+				if (el(p_form_cases[i]).value === "-1") {
 					v_has_invalid = true;
 					break;
 				}
 			} else {
-				let v_value_check = document.getElementById(p_form_cases[i]).value.trim();
+				let v_value_check = el(p_form_cases[i]).value.trim();
 				if (v_value_check === "" || v_value_check === null) {
 					v_has_invalid = true;
 					break;
@@ -1168,38 +1183,38 @@ export function updateModalEditConnectionFields(p_disable_list, p_enable_list, p
 	}
 	// Enabling or Disabling the test and save buttons based on valid data of required fields.
 	if (v_has_invalid) {
-		document.getElementById("conn_form_button_test_connection").setAttribute("disabled", true);
-		document.getElementById("conn_form_button_save_connection").setAttribute("disabled", true);
+		el("conn_form_button_test_connection").setAttribute("disabled", true);
+		el("conn_form_button_save_connection").setAttribute("disabled", true);
 	} else {
-		document.getElementById("conn_form_button_test_connection").removeAttribute("disabled");
-		document.getElementById("conn_form_button_save_connection").removeAttribute("disabled");
+		el("conn_form_button_test_connection").removeAttribute("disabled");
+		el("conn_form_button_save_connection").removeAttribute("disabled");
 	}
 }
 
 export function updateConnectionKey(e) {
 	var file = e.target.files ? e.target.files[0] : false;
-	var v_input = document.getElementById("conn_form_ssh_key");
+	var v_input = el("conn_form_ssh_key");
 	if (!file) {
 		v_input.value = null;
-		document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Click to select";
-		updateModalEditConnectionState({ target: document.getElementById("conn_form_ssh_key_input") });
+		el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+		updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
 		return;
 	}
 	var reader = new FileReader();
 	reader.onload = function (e) {
-		var v_contents = e.target.result;
+		var v_contents = /** @type {FileReader} */ (e.target).result;
 		v_input.value = v_contents;
-		document.getElementById("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
-		updateModalEditConnectionState({ target: document.getElementById("conn_form_ssh_key_input") });
+		el("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
+		updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
 	};
 	reader.readAsText(file);
 }
 
 export function updateConnectionsTitleInfo() {
-	var v_public = document.getElementById("conn_list_public").checked;
-	var v_group_context = document.getElementById("group_selector").value;
+	var v_public = el("conn_list_public").checked;
+	var v_group_context = el("group_selector").value;
 	var v_connection_owner = false;
-	var v_managing_group = v_group_context && document.getElementById("group_selector").getAttribute("disabled");
+	var v_managing_group = v_group_context && el("group_selector").getAttribute("disabled");
 
 	for (var i = 0; i < v_connections_data.card_list.length; i++) {
 		var v_conn_obj = v_connections_data.card_list[i].data;
@@ -1210,8 +1225,8 @@ export function updateConnectionsTitleInfo() {
 	}
 
 	// Updating empty connections info status.
-	var v_empty_cards = document.getElementById("connections_management_empty_all");
-	var v_empty_with_public = document.getElementById("connections_management_empty_with_public");
+	var v_empty_cards = el("connections_management_empty_all");
+	var v_empty_with_public = el("connections_management_empty_with_public");
 	// Updating empty connections info status.
 	if (v_empty_cards) {
 		if (v_connections_data.card_list.length === 0) {
