@@ -10507,12 +10507,16 @@
     interval.className = "form-control form-control-sm";
     interval.style.width = "60px";
     interval.onkeypress = function() {
-      return event.charCode >= 48 && event.charCode <= 57;
+      var v_charCode = (
+        /** @type {any} */
+        event.charCode
+      );
+      return v_charCode >= 48 && v_charCode <= 57;
     };
     interval.onchange = function() {
       var v_value = interval.value;
       if (v_value == "" || v_value == "0") {
-        interval.value = 30;
+        interval.value = "30";
       }
       updateUnitSavedInterval(div);
     };
@@ -10818,7 +10822,7 @@
           } else if (v_type2 == "grid") {
             var columnProperties = [];
             for (var j2 = 0; j2 < p_return.v_data.v_object.columns.length; j2++) {
-              var col = new Object();
+              var col = {};
               col.readOnly = true;
               col.title = p_return.v_data.v_object.columns[j2];
               columnProperties.push(col);
@@ -10918,24 +10922,24 @@
       function(p_return) {
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_id_list = p_return.v_data.id_list;
         var columnProperties = [];
-        var col = new Object();
+        var col = {};
         col.readOnly = true;
         col.title = "Actions";
         col.renderer = "html";
         col.width = 80;
         columnProperties.push(col);
-        var col = new Object();
-        col.readOnly = true;
-        col.title = "Title";
-        columnProperties.push(col);
-        var col = new Object();
-        col.readOnly = true;
-        col.title = "Type";
-        columnProperties.push(col);
-        var col = new Object();
-        col.readOnly = true;
-        col.title = "Interval(s)";
-        columnProperties.push(col);
+        var col2 = {};
+        col2.readOnly = true;
+        col2.title = "Title";
+        columnProperties.push(col2);
+        var col3 = {};
+        col3.readOnly = true;
+        col3.title = "Type";
+        columnProperties.push(col3);
+        var col4 = {};
+        col4.readOnly = true;
+        col4.title = "Interval(s)";
+        columnProperties.push(col4);
         if (v_unit_list_grid) v_unit_list_grid.destroy();
         v_unit_list_grid = new Handsontable(v_grid_div, {
           licenseKey: "non-commercial-and-evaluation",
@@ -10975,7 +10979,7 @@
               }
             }
           },
-          cells: function(row, col2, prop) {
+          cells: function(row, col5, prop) {
             var cellProperties = {};
             cellProperties.renderer = whiteHtmlRenderer;
             return cellProperties;
@@ -11002,7 +11006,10 @@
   });
   function showMonitorUnitList() {
     startLoading();
-    var v_grid_div = document.getElementById("monitoring_units_grid");
+    var v_grid_div = (
+      /** @type {HTMLElement} */
+      document.getElementById("monitoring_units_grid")
+    );
     v_grid_div.innerHTML = "";
     $("#modal_monitoring_units").modal("show");
   }
@@ -11200,6 +11207,7 @@
                     } catch (err) {
                     }
                   } else {
+                    var v_need_rebuild_legend = false;
                     v_unit.object.data.labels.push(v_return_unit.v_object.labels[0]);
                     var v_shift = false;
                     if (v_unit.object.data.labels.length > 100) {
@@ -11258,7 +11266,7 @@
                   v_unit.div_content.innerHTML = "";
                   var columnProperties = [];
                   for (var j2 = 0; j2 < v_return_unit.v_object.columns.length; j2++) {
-                    var col = new Object();
+                    var col = {};
                     col.readOnly = true;
                     col.title = v_return_unit.v_object.columns[j2];
                     columnProperties.push(col);
@@ -11434,7 +11442,6 @@
             showError(p_return.v_data);
           }
         },
-        null,
         "box",
         false
       );

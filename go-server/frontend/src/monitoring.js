@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -44,6 +45,7 @@ import { toggleMonitorUnitChartType } from "./tab_functions/inner_monitoring_das
 var v_tab_tag;
 
 
+/** @type {any} */
 export var v_unit_list_grid = null;
 
 export function sanitizeLegend(p_html) {
@@ -156,6 +158,7 @@ export function buildMonitorUnit(p_unit, p_first) {
 
 	var v_return_unit = p_unit;
 
+	/** @type {any} */
 	var v_unit = null;
 
 	var div = document.createElement("div");
@@ -236,12 +239,13 @@ export function buildMonitorUnit(p_unit, p_first) {
 	interval.className = "form-control form-control-sm";
 	interval.style.width = "60px";
 	interval.onkeypress = function () {
-		return event.charCode >= 48 && event.charCode <= 57;
+		var v_charCode = /** @type {any} */ (event).charCode;
+		return v_charCode >= 48 && v_charCode <= 57;
 	};
 	interval.onchange = function () {
 		var v_value = interval.value;
 		if (v_value == "" || v_value == "0") {
-			interval.value = 30;
+			interval.value = "30";
 		}
 		updateUnitSavedInterval(div);
 	};
@@ -597,7 +601,8 @@ $("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
 					var columnProperties = [];
 
 					for (var j = 0; j < p_return.v_data.v_object.columns.length; j++) {
-						var col = new Object();
+						/** @type {any} */
+						var col = {};
 						col.readOnly = true;
 						col.title = p_return.v_data.v_object.columns[j];
 						columnProperties.push(col);
@@ -706,7 +711,8 @@ export function refreshMonitorUnitsList() {
 
 			var columnProperties = [];
 
-			var col = new Object();
+			/** @type {any} */
+			var col = {};
 			col.readOnly = true;
 			col.title = "Actions";
 			col.renderer = "html";
@@ -714,20 +720,23 @@ export function refreshMonitorUnitsList() {
 
 			columnProperties.push(col);
 
-			var col = new Object();
-			col.readOnly = true;
-			col.title = "Title";
-			columnProperties.push(col);
+			/** @type {any} */
+			var col2 = {};
+			col2.readOnly = true;
+			col2.title = "Title";
+			columnProperties.push(col2);
 
-			var col = new Object();
-			col.readOnly = true;
-			col.title = "Type";
-			columnProperties.push(col);
+			/** @type {any} */
+			var col3 = {};
+			col3.readOnly = true;
+			col3.title = "Type";
+			columnProperties.push(col3);
 
-			var col = new Object();
-			col.readOnly = true;
-			col.title = "Interval(s)";
-			columnProperties.push(col);
+			/** @type {any} */
+			var col4 = {};
+			col4.readOnly = true;
+			col4.title = "Interval(s)";
+			columnProperties.push(col4);
 
 			if (v_unit_list_grid) v_unit_list_grid.destroy();
 
@@ -801,13 +810,15 @@ $("#modal_monitoring_units").on("shown.bs.modal", function (e) {
 export function showMonitorUnitList() {
 	startLoading();
 
-	var v_grid_div = document.getElementById("monitoring_units_grid");
+	var v_grid_div = /** @type {HTMLElement} */ (document.getElementById("monitoring_units_grid"));
 	v_grid_div.innerHTML = "";
 	$("#modal_monitoring_units").modal("show");
 }
 
 export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
+	/** @type {any[]} */
 	var v_units = [];
+	/** @type {any} */
 	var v_tab_tag = null;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -858,6 +869,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 				for (var i = 0; i < p_return.v_data.length; i++) {
 					var v_return_unit = p_return.v_data[i];
 
+					/** @type {any} */
 					var v_unit = null;
 					//find corresponding object
 					for (var p = 0; p < v_tab_tag.units.length; p++) {
@@ -1059,6 +1071,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 								}
 								// Append data
 								else {
+									var v_need_rebuild_legend = false;
 									//adding new label in X axis
 									v_unit.object.data.labels.push(v_return_unit.v_object.labels[0]);
 									var v_shift = false;
@@ -1141,7 +1154,8 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 								var columnProperties = [];
 
 								for (var j = 0; j < v_return_unit.v_object.columns.length; j++) {
-									var col = new Object();
+									/** @type {any} */
+									var col = {};
 									col.readOnly = true;
 									col.title = v_return_unit.v_object.columns[j];
 									columnProperties.push(col);
@@ -1351,7 +1365,6 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 					showError(p_return.v_data);
 				}
 			},
-			null,
 			"box",
 			false,
 		);
