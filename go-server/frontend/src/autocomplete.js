@@ -1590,6 +1590,7 @@ export function autocomplete_start_type_cast(editor, mode, p_type_filter) {
 	v_autocomplete_object.ready = true;
 }
 
+/** @param {boolean|null} [force] */
 export function autocomplete_start(editor, mode, event, force = null) {
 	// Autocomplete doesn't start nor filters with the following keys:
 	// 32 = SPACE

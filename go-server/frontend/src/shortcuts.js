@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -429,7 +430,7 @@ export function buildButtonText(p_shortcut_object, p_button) {
 }
 
 export function startSetShortcut(p_button) {
-	document.getElementById("div_shortcut_background_dark").style.display = "block";
+	/** @type {HTMLElement} */ (document.getElementById("div_shortcut_background_dark")).style.display = "block";
 	p_button.style["z-index"] = 1002;
 	v_shortcut_object.button = p_button;
 
@@ -477,7 +478,7 @@ export function setShortcutEvent(p_event) {
 export function finishSetShortcut() {
 	v_shortcut_object.button.style["z-index"] = 0;
 	v_shortcut_object.button = null;
-	document.getElementById("div_shortcut_background_dark").style.display = "none";
+	/** @type {HTMLElement} */ (document.getElementById("div_shortcut_background_dark")).style.display = "none";
 
 	document.body.removeEventListener("keydown", setShortcutEvent);
 	document.body.addEventListener("keydown", v_keyBoardShortcuts);
