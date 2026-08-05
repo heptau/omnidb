@@ -235,7 +235,9 @@ func postgresqlRoutineDefinition(db *sql.DB, routineID string) (string, error) {
 // returnsSet false, generating a plain "SELECT schema.func(...)" instead of
 // "SELECT * FROM schema.func(...)" for a set-returning function. Fixed to
 // quote_ident() both sides of the match.
-func postgresqlTemplateSelectFunction(db *sql.DB, schema, function, functionID string) (string, error) {
+// indentUnit is the user's configured indent_char/indent_size Settings
+// (see indentUnitFromCharSize) used for every continuation line.
+func postgresqlTemplateSelectFunction(db *sql.DB, schema, function, functionID, indentUnit string) (string, error) {
 	var returnsSet bool
 	err := db.QueryRow(`
 		select p.proretset
@@ -270,8 +272,8 @@ func postgresqlTemplateSelectFunction(db *sql.DB, schema, function, functionID s
 		return prefix + call, nil
 	}
 
-	var b strings.Builder
-	b.WriteString(prefix + schema + "." + function + "(\n    ")
+	cores := make([]string, len(args))
+	comments := make([]string, len(args))
 	for i, a := range args {
 		argType := "IN"
 		switch a.Type {
@@ -280,11 +282,13 @@ func postgresqlTemplateSelectFunction(db *sql.DB, schema, function, functionID s
 		case "X":
 			argType = "INOUT"
 		}
-		if i > 0 {
-			b.WriteString("\n  , ")
-		}
-		b.WriteString("? -- " + a.Name + " " + argType)
+		cores[i] = "?"
+		comments[i] = a.Name + " " + argType
 	}
+
+	var b strings.Builder
+	b.WriteString(prefix + schema + "." + function + "(\n" + indentUnit)
+	b.WriteString(formatTemplateColumnList(cores, comments, indentUnit))
 	b.WriteString("\n)")
 	return b.String(), nil
 }
@@ -292,7 +296,8 @@ func postgresqlTemplateSelectFunction(db *sql.DB, schema, function, functionID s
 // postgresqlTemplateCallProcedure mirrors PostgreSQL.py's
 // TemplateCallProcedure — same shape, "CALL schema.name(...)" instead of
 // SELECT, no returns-pseudo-row to skip.
-func postgresqlTemplateCallProcedure(db *sql.DB, schema, procedure, procedureID string) (string, error) {
+// indentUnit is the user's configured indent_char/indent_size Settings.
+func postgresqlTemplateCallProcedure(db *sql.DB, schema, procedure, procedureID, indentUnit string) (string, error) {
 	fields, err := postgresqlRoutineFields(db, schema, procedureID, false)
 	if err != nil {
 		return "", err
@@ -301,8 +306,8 @@ func postgresqlTemplateCallProcedure(db *sql.DB, schema, procedure, procedureID 
 		return "CALL " + schema + "." + procedure + "()", nil
 	}
 
-	var b strings.Builder
-	b.WriteString("CALL " + schema + "." + procedure + "(\n    ")
+	cores := make([]string, len(fields))
+	comments := make([]string, len(fields))
 	for i, f := range fields {
 		argType := "IN"
 		switch f.Type {
@@ -311,11 +316,13 @@ func postgresqlTemplateCallProcedure(db *sql.DB, schema, procedure, procedureID 
 		case "X":
 			argType = "INOUT"
 		}
-		if i > 0 {
-			b.WriteString("\n  , ")
-		}
-		b.WriteString("? -- " + f.Name + " " + argType)
+		cores[i] = "?"
+		comments[i] = f.Name + " " + argType
 	}
+
+	var b strings.Builder
+	b.WriteString("CALL " + schema + "." + procedure + "(\n" + indentUnit)
+	b.WriteString(formatTemplateColumnList(cores, comments, indentUnit))
 	b.WriteString("\n)")
 	return b.String(), nil
 }

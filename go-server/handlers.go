@@ -84,8 +84,22 @@ type viewRequest struct {
 
 type templateSelectRequest struct {
 	baseRequest
-	PTable string `json:"p_table"`
-	PKind  string `json:"p_kind"`
+	PTable      string `json:"p_table"`
+	PKind       string `json:"p_kind"`
+	PIndentChar string `json:"p_indent_char"`
+	PIndentSize int    `json:"p_indent_size"`
+}
+
+// templateDMLRequest is TemplateInsert/TemplateUpdate's request shape —
+// like tableRequest, plus the user's indent Settings (see
+// indentUnitFromCharSize) so the generated INSERT/UPDATE template's
+// column-list indentation matches what they've configured, instead of a
+// fixed number of hardcoded spaces.
+type templateDMLRequest struct {
+	baseRequest
+	PTable      string `json:"p_table"`
+	PIndentChar string `json:"p_indent_char"`
+	PIndentSize int    `json:"p_indent_size"`
 }
 
 type propertiesRequestData struct {
@@ -729,7 +743,8 @@ func handleTemplateSelectSQLite(upstream *url.URL, fallback http.Handler) http.H
 		}
 		defer db.Close()
 
-		template, err := sqliteTemplateSelect(db, reqBody.PTable, reqBody.PKind)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := sqliteTemplateSelect(db, reqBody.PTable, reqBody.PKind, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -745,7 +760,7 @@ func handleTemplateInsertSQLite(upstream *url.URL, fallback http.Handler) http.H
 			writeBadRequest(w)
 			return
 		}
-		var reqBody tableRequest
+		var reqBody templateDMLRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -756,7 +771,8 @@ func handleTemplateInsertSQLite(upstream *url.URL, fallback http.Handler) http.H
 		}
 		defer db.Close()
 
-		template, err := sqliteTemplateInsert(db, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := sqliteTemplateInsert(db, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -772,7 +788,7 @@ func handleTemplateUpdateSQLite(upstream *url.URL, fallback http.Handler) http.H
 			writeBadRequest(w)
 			return
 		}
-		var reqBody tableRequest
+		var reqBody templateDMLRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -783,7 +799,8 @@ func handleTemplateUpdateSQLite(upstream *url.URL, fallback http.Handler) http.H
 		}
 		defer db.Close()
 
-		template, err := sqliteTemplateUpdate(db, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := sqliteTemplateUpdate(db, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

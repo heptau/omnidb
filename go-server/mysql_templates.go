@@ -11,7 +11,9 @@ import (
 // template_select view never passes one, it always just calls
 // TemplateSelect(schema, table) regardless of whether the target is a
 // table or a view.
-func mysqlTemplateSelect(db *sql.DB, schema, table string) (string, error) {
+// indentUnit is the user's configured indent_char/indent_size Settings
+// (see indentUnitFromCharSize) used for every continuation line.
+func mysqlTemplateSelect(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := mysqlColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -23,8 +25,8 @@ func mysqlTemplateSelect(db *sql.DB, schema, table string) (string, error) {
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
-	sb.WriteString(strings.Join(names, "\n     , t."))
-	sb.WriteString(fmt.Sprintf("\nFROM %s.%s t", schema, table))
+	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
+	sb.WriteString(fmt.Sprintf("\nFROM %s.%s AS t", schema, table))
 
 	pks, err := mysqlPrimaryKeys(db, schema, table)
 	if err != nil {
@@ -37,7 +39,7 @@ func mysqlTemplateSelect(db *sql.DB, schema, table string) (string, error) {
 		}
 		if len(pkCols) > 0 {
 			sb.WriteString("\nORDER BY t.")
-			sb.WriteString(strings.Join(pkCols, "\n       , t."))
+			sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
 		}
 	}
 	return sb.String(), nil
@@ -62,8 +64,9 @@ func mysqlPKColumnSet(db *sql.DB, schema, table string) (map[string]bool, error)
 	return set, nil
 }
 
-// mysqlTemplateInsert mirrors TemplateInsert.
-func mysqlTemplateInsert(db *sql.DB, schema, table string) (string, error) {
+// mysqlTemplateInsert mirrors TemplateInsert. indentUnit is the user's
+// configured indent_char/indent_size Settings.
+func mysqlTemplateInsert(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := mysqlColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -78,22 +81,25 @@ func mysqlTemplateInsert(db *sql.DB, schema, table string) (string, error) {
 
 	names := make([]string, len(columns))
 	values := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
 		names[i] = c.Name
-		values[i] = "? -- " + mysqlColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
+		values[i] = "?"
+		comments[i] = mysqlColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("INSERT INTO %s.%s (\n", schema, table))
-	sb.WriteString("      " + strings.Join(names, "\n    , "))
+	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
-	sb.WriteString("      " + strings.Join(values, "\n    , "))
+	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
 	sb.WriteString("\n)")
 	return sb.String(), nil
 }
 
-// mysqlTemplateUpdate mirrors TemplateUpdate.
-func mysqlTemplateUpdate(db *sql.DB, schema, table string) (string, error) {
+// mysqlTemplateUpdate mirrors TemplateUpdate. indentUnit is the user's
+// configured indent_char/indent_size Settings.
+func mysqlTemplateUpdate(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := mysqlColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -106,11 +112,13 @@ func mysqlTemplateUpdate(db *sql.DB, schema, table string) (string, error) {
 		return "", err
 	}
 
-	parts := make([]string, len(columns))
+	cores := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
-		parts[i] = c.Name + " = ? -- " + mysqlTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
+		cores[i] = c.Name + " = ?"
+		comments[i] = mysqlTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
 	}
-	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, strings.Join(parts, "\n    , ")), nil
+	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, formatTemplateColumnList(cores, comments, indentUnit)), nil
 }
 
 func mysqlColumnComment(name, dataType string, isPK bool, nullable string) string {

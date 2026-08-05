@@ -22,6 +22,19 @@ type oracleTableRequest struct {
 	PTable  string `json:"p_table"`
 }
 
+// oracleTemplateRequest is TemplateSelect/TemplateInsert/TemplateUpdate's
+// shared request shape — like oracleTableRequest, plus the user's indent
+// Settings (see indentUnitFromCharSize) so the generated template's
+// column-list indentation matches what they've configured, instead of a
+// fixed number of hardcoded spaces.
+type oracleTemplateRequest struct {
+	baseRequest
+	PSchema     string `json:"p_schema"`
+	PTable      string `json:"p_table"`
+	PIndentChar string `json:"p_indent_char"`
+	PIndentSize int    `json:"p_indent_size"`
+}
+
 type oracleKeyColumnsRequest struct {
 	baseRequest
 	PSchema string `json:"p_schema"`
@@ -936,7 +949,7 @@ func handleTemplateSelectOracle(upstream *url.URL, fallback http.Handler) http.H
 			writeBadRequest(w)
 			return
 		}
-		var reqBody oracleTableRequest
+		var reqBody oracleTemplateRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -947,7 +960,8 @@ func handleTemplateSelectOracle(upstream *url.URL, fallback http.Handler) http.H
 		}
 		defer db.Close()
 
-		template, err := oracleTemplateSelect(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := oracleTemplateSelect(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -963,7 +977,7 @@ func handleTemplateInsertOracle(upstream *url.URL, fallback http.Handler) http.H
 			writeBadRequest(w)
 			return
 		}
-		var reqBody oracleTableRequest
+		var reqBody oracleTemplateRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -974,7 +988,8 @@ func handleTemplateInsertOracle(upstream *url.URL, fallback http.Handler) http.H
 		}
 		defer db.Close()
 
-		template, err := oracleTemplateInsert(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := oracleTemplateInsert(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -990,7 +1005,7 @@ func handleTemplateUpdateOracle(upstream *url.URL, fallback http.Handler) http.H
 			writeBadRequest(w)
 			return
 		}
-		var reqBody oracleTableRequest
+		var reqBody oracleTemplateRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -1001,7 +1016,8 @@ func handleTemplateUpdateOracle(upstream *url.URL, fallback http.Handler) http.H
 		}
 		defer db.Close()
 
-		template, err := oracleTemplateUpdate(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := oracleTemplateUpdate(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

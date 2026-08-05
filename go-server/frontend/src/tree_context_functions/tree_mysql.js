@@ -3055,6 +3055,8 @@ export function TemplateSelectMysql(p_schema, p_table) {
 			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			v_connTabControl.tag.createQueryTab(p_schema + "." + p_table);
@@ -3087,6 +3089,8 @@ export function TemplateInsertMysql(p_schema, p_table) {
 			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			tabSQLTemplate("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
@@ -3111,6 +3115,8 @@ export function TemplateUpdateMysql(p_schema, p_table) {
 			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			tabSQLTemplate("Update " + p_schema + "." + p_table, p_return.v_data.v_template);

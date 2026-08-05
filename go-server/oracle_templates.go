@@ -6,8 +6,16 @@ import (
 	"strings"
 )
 
-// oracleTemplateSelect mirrors Oracle.py's TemplateSelect.
-func oracleTemplateSelect(db *sql.DB, schema, table string) (string, error) {
+// oracleTemplateSelect mirrors Oracle.py's TemplateSelect. indentUnit is
+// the user's configured indent_char/indent_size Settings (see
+// indentUnitFromCharSize) used for every continuation line.
+//
+// Unlike the other three engines' TemplateSelect, this deliberately does
+// NOT write "FROM schema.table AS t" — Oracle rejects the AS keyword
+// before a table/view alias (ORA-00933), unlike a column alias where AS
+// is accepted (if optional). "AS" stays valid Oracle SQL everywhere else
+// this template package uses it; this is the one place it can't be used.
+func oracleTemplateSelect(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := oracleColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -19,7 +27,7 @@ func oracleTemplateSelect(db *sql.DB, schema, table string) (string, error) {
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
-	sb.WriteString(strings.Join(names, "\n     , t."))
+	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
 	sb.WriteString(fmt.Sprintf("\nFROM %s.%s t", schema, table))
 
 	pkCols, err := oracleFirstPrimaryKeyColumns(db, schema, table)
@@ -28,7 +36,7 @@ func oracleTemplateSelect(db *sql.DB, schema, table string) (string, error) {
 	}
 	if len(pkCols) > 0 {
 		sb.WriteString("\nORDER BY t.")
-		sb.WriteString(strings.Join(pkCols, "\n       , t."))
+		sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
 	}
 	return sb.String(), nil
 }
@@ -44,8 +52,9 @@ func oracleFirstPrimaryKeyColumns(db *sql.DB, schema, table string) ([]string, e
 	return oraclePrimaryKeyColumns(db, schema, table, pks[0])
 }
 
-// oracleTemplateInsert mirrors TemplateInsert.
-func oracleTemplateInsert(db *sql.DB, schema, table string) (string, error) {
+// oracleTemplateInsert mirrors TemplateInsert. indentUnit is the user's
+// configured indent_char/indent_size Settings.
+func oracleTemplateInsert(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := oracleColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -60,22 +69,25 @@ func oracleTemplateInsert(db *sql.DB, schema, table string) (string, error) {
 
 	names := make([]string, len(columns))
 	values := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
 		names[i] = c.Name
-		values[i] = "? -- " + oracleColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
+		values[i] = "?"
+		comments[i] = oracleColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("INSERT INTO %s.%s (\n", schema, table))
-	sb.WriteString("      " + strings.Join(names, "\n    , "))
+	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
-	sb.WriteString("      " + strings.Join(values, "\n    , "))
+	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
 	sb.WriteString("\n)")
 	return sb.String(), nil
 }
 
-// oracleTemplateUpdate mirrors TemplateUpdate.
-func oracleTemplateUpdate(db *sql.DB, schema, table string) (string, error) {
+// oracleTemplateUpdate mirrors TemplateUpdate. indentUnit is the user's
+// configured indent_char/indent_size Settings.
+func oracleTemplateUpdate(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := oracleColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -88,11 +100,13 @@ func oracleTemplateUpdate(db *sql.DB, schema, table string) (string, error) {
 		return "", err
 	}
 
-	parts := make([]string, len(columns))
+	cores := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
-		parts[i] = c.Name + " = ? -- " + oracleTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
+		cores[i] = c.Name + " = ?"
+		comments[i] = oracleTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
 	}
-	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, strings.Join(parts, "\n    , ")), nil
+	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, formatTemplateColumnList(cores, comments, indentUnit)), nil
 }
 
 func oraclePKColumnSet(db *sql.DB, schema, table string) (map[string]bool, error) {

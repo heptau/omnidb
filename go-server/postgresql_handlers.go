@@ -59,9 +59,24 @@ type pgViewRequest struct {
 
 type pgTemplateSelectRequest struct {
 	baseRequest
-	PSchema string `json:"p_schema"`
-	PTable  string `json:"p_table"`
-	PKind   string `json:"p_kind"`
+	PSchema     string `json:"p_schema"`
+	PTable      string `json:"p_table"`
+	PKind       string `json:"p_kind"`
+	PIndentChar string `json:"p_indent_char"`
+	PIndentSize int    `json:"p_indent_size"`
+}
+
+// pgTemplateDMLRequest is TemplateInsert/TemplateUpdate's request shape —
+// like pgTableRequest, plus the user's indent Settings (see
+// indentUnitFromCharSize) so the generated INSERT/UPDATE template's
+// column-list indentation matches what they've configured, instead of a
+// fixed number of hardcoded spaces.
+type pgTemplateDMLRequest struct {
+	baseRequest
+	PSchema     string `json:"p_schema"`
+	PTable      string `json:"p_table"`
+	PIndentChar string `json:"p_indent_char"`
+	PIndentSize int    `json:"p_indent_size"`
 }
 
 type pgPropertiesRequestData struct {
@@ -672,7 +687,8 @@ func handleTemplateSelectPostgreSQL(upstream *url.URL, fallback http.Handler) ht
 		}
 		defer db.Close()
 
-		template, err := postgresqlTemplateSelect(db, reqBody.PSchema, reqBody.PTable, reqBody.PKind)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := postgresqlTemplateSelect(db, reqBody.PSchema, reqBody.PTable, reqBody.PKind, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -688,7 +704,7 @@ func handleTemplateInsertPostgreSQL(upstream *url.URL, fallback http.Handler) ht
 			writeBadRequest(w)
 			return
 		}
-		var reqBody pgTableRequest
+		var reqBody pgTemplateDMLRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -699,7 +715,8 @@ func handleTemplateInsertPostgreSQL(upstream *url.URL, fallback http.Handler) ht
 		}
 		defer db.Close()
 
-		template, err := postgresqlTemplateInsert(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := postgresqlTemplateInsert(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -715,7 +732,7 @@ func handleTemplateUpdatePostgreSQL(upstream *url.URL, fallback http.Handler) ht
 			writeBadRequest(w)
 			return
 		}
-		var reqBody pgTableRequest
+		var reqBody pgTemplateDMLRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -726,7 +743,8 @@ func handleTemplateUpdatePostgreSQL(upstream *url.URL, fallback http.Handler) ht
 		}
 		defer db.Close()
 
-		template, err := postgresqlTemplateUpdate(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := postgresqlTemplateUpdate(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

@@ -24,8 +24,10 @@ func primaryKeySet(db *sql.DB, table string) (map[string]bool, error) {
 // sqliteTemplateSelect mirrors SQLite.py's TemplateSelect. kind is "t"
 // (table) or "v" (view) — PRAGMA table_info works identically on both, so
 // the only behavioral difference is the ORDER BY clause tables get from
-// their primary key.
-func sqliteTemplateSelect(db *sql.DB, table, kind string) (string, error) {
+// their primary key. indentUnit is the user's configured
+// indent_char/indent_size Settings (see indentUnitFromCharSize) used for
+// every continuation line.
+func sqliteTemplateSelect(db *sql.DB, table, kind, indentUnit string) (string, error) {
 	columns, err := sqliteColumns(db, table)
 	if err != nil {
 		return "", err
@@ -38,8 +40,8 @@ func sqliteTemplateSelect(db *sql.DB, table, kind string) (string, error) {
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
-	sb.WriteString(strings.Join(names, "\n     , t."))
-	sb.WriteString(fmt.Sprintf("\nFROM %s t", table))
+	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
+	sb.WriteString(fmt.Sprintf("\nFROM %s AS t", table))
 
 	if kind == "t" {
 		pkCols, err := sqlitePrimaryKeyColumnNames(db, table)
@@ -48,7 +50,7 @@ func sqliteTemplateSelect(db *sql.DB, table, kind string) (string, error) {
 		}
 		if len(pkCols) > 0 {
 			sb.WriteString("\nORDER BY t.")
-			sb.WriteString(strings.Join(pkCols, "\n       , t."))
+			sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
 		}
 	}
 
@@ -68,8 +70,9 @@ func columnComment(name, dataType string, isPK bool, nullable string) string {
 	}
 }
 
-// sqliteTemplateInsert mirrors SQLite.py's TemplateInsert.
-func sqliteTemplateInsert(db *sql.DB, table string) (string, error) {
+// sqliteTemplateInsert mirrors SQLite.py's TemplateInsert. indentUnit is
+// the user's configured indent_char/indent_size Settings.
+func sqliteTemplateInsert(db *sql.DB, table, indentUnit string) (string, error) {
 	columns, err := sqliteColumns(db, table)
 	if err != nil {
 		return "", err
@@ -85,22 +88,25 @@ func sqliteTemplateInsert(db *sql.DB, table string) (string, error) {
 
 	names := make([]string, len(columns))
 	values := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
 		names[i] = c.Name
-		values[i] = "? -- " + columnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
+		values[i] = "?"
+		comments[i] = columnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("INSERT INTO %s (\n", table))
-	sb.WriteString("      " + strings.Join(names, "\n    , "))
+	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
-	sb.WriteString("      " + strings.Join(values, "\n    , "))
+	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
 	sb.WriteString("\n)")
 	return sb.String(), nil
 }
 
-// sqliteTemplateUpdate mirrors SQLite.py's TemplateUpdate.
-func sqliteTemplateUpdate(db *sql.DB, table string) (string, error) {
+// sqliteTemplateUpdate mirrors SQLite.py's TemplateUpdate. indentUnit is
+// the user's configured indent_char/indent_size Settings.
+func sqliteTemplateUpdate(db *sql.DB, table, indentUnit string) (string, error) {
 	columns, err := sqliteColumns(db, table)
 	if err != nil {
 		return "", err
@@ -114,10 +120,12 @@ func sqliteTemplateUpdate(db *sql.DB, table string) (string, error) {
 		return "", err
 	}
 
-	parts := make([]string, len(columns))
+	cores := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
-		parts[i] = c.Name + " = ? -- " + columnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
+		cores[i] = c.Name + " = ?"
+		comments[i] = columnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
-	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", table, strings.Join(parts, "\n    , ")), nil
+	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", table, formatTemplateColumnList(cores, comments, indentUnit)), nil
 }

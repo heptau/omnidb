@@ -29,6 +29,19 @@ type mysqlTableRequest struct {
 	PTable  string `json:"p_table"`
 }
 
+// mysqlTemplateRequest is TemplateSelect/TemplateInsert/TemplateUpdate's
+// shared request shape — like mysqlTableRequest, plus the user's indent
+// Settings (see indentUnitFromCharSize) so the generated template's
+// column-list indentation matches what they've configured, instead of a
+// fixed number of hardcoded spaces.
+type mysqlTemplateRequest struct {
+	baseRequest
+	PSchema     string `json:"p_schema"`
+	PTable      string `json:"p_table"`
+	PIndentChar string `json:"p_indent_char"`
+	PIndentSize int    `json:"p_indent_size"`
+}
+
 type mysqlKeyColumnsRequest struct {
 	baseRequest
 	PSchema string `json:"p_schema"`
@@ -944,7 +957,7 @@ func handleTemplateSelectMySQL(upstream *url.URL, fallback http.Handler) http.Ha
 			writeBadRequest(w)
 			return
 		}
-		var reqBody mysqlTableRequest
+		var reqBody mysqlTemplateRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -955,7 +968,8 @@ func handleTemplateSelectMySQL(upstream *url.URL, fallback http.Handler) http.Ha
 		}
 		defer db.Close()
 
-		template, err := mysqlTemplateSelect(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := mysqlTemplateSelect(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -971,7 +985,7 @@ func handleTemplateInsertMySQL(upstream *url.URL, fallback http.Handler) http.Ha
 			writeBadRequest(w)
 			return
 		}
-		var reqBody mysqlTableRequest
+		var reqBody mysqlTemplateRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -982,7 +996,8 @@ func handleTemplateInsertMySQL(upstream *url.URL, fallback http.Handler) http.Ha
 		}
 		defer db.Close()
 
-		template, err := mysqlTemplateInsert(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := mysqlTemplateInsert(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -998,7 +1013,7 @@ func handleTemplateUpdateMySQL(upstream *url.URL, fallback http.Handler) http.Ha
 			writeBadRequest(w)
 			return
 		}
-		var reqBody mysqlTableRequest
+		var reqBody mysqlTemplateRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
@@ -1009,7 +1024,8 @@ func handleTemplateUpdateMySQL(upstream *url.URL, fallback http.Handler) http.Ha
 		}
 		defer db.Close()
 
-		template, err := mysqlTemplateUpdate(db, reqBody.PSchema, reqBody.PTable)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		template, err := mysqlTemplateUpdate(db, reqBody.PSchema, reqBody.PTable, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

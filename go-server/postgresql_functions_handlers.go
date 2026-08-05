@@ -304,6 +304,8 @@ type pgTemplateSelectFunctionRequest struct {
 	PFunction   string `json:"p_function"`
 	PFunctionID string `json:"p_functionid"`
 	PSchema     string `json:"p_schema"`
+	PIndentChar string `json:"p_indent_char"`
+	PIndentSize int    `json:"p_indent_size"`
 }
 
 func handleTemplateSelectFunctionPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -324,7 +326,8 @@ func handleTemplateSelectFunctionPostgreSQL(upstream *url.URL, fallback http.Han
 		}
 		defer db.Close()
 
-		sql, err := postgresqlTemplateSelectFunction(db, reqBody.PSchema, reqBody.PFunction, reqBody.PFunctionID)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		sql, err := postgresqlTemplateSelectFunction(db, reqBody.PSchema, reqBody.PFunction, reqBody.PFunctionID, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -338,6 +341,8 @@ type pgTemplateCallProcedureRequest struct {
 	PProcedure   string `json:"p_procedure"`
 	PProcedureID string `json:"p_procedureid"`
 	PSchema      string `json:"p_schema"`
+	PIndentChar  string `json:"p_indent_char"`
+	PIndentSize  int    `json:"p_indent_size"`
 }
 
 func handleTemplateCallProcedurePostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -358,7 +363,8 @@ func handleTemplateCallProcedurePostgreSQL(upstream *url.URL, fallback http.Hand
 		}
 		defer db.Close()
 
-		sql, err := postgresqlTemplateCallProcedure(db, reqBody.PSchema, reqBody.PProcedure, reqBody.PProcedureID)
+		indentUnit := indentUnitFromCharSize(reqBody.PIndentChar, reqBody.PIndentSize)
+		sql, err := postgresqlTemplateCallProcedure(db, reqBody.PSchema, reqBody.PProcedure, reqBody.PProcedureID, indentUnit)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

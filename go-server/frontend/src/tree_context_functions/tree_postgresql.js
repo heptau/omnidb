@@ -8598,6 +8598,8 @@ export function TemplateSelectPostgresql(p_schema, p_table, p_kind) {
 			p_table: p_table,
 			p_schema: p_schema,
 			p_kind: p_kind,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			let v_tab_name = p_schema + "." + p_table;
@@ -8629,6 +8631,8 @@ export function TemplateInsertPostgresql(p_schema, p_table) {
 			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			tabSQLTemplate("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
@@ -8653,6 +8657,8 @@ export function TemplateUpdatePostgresql(p_schema, p_table) {
 			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			tabSQLTemplate("Update " + p_schema + "." + p_table, p_return.v_data.v_template);
@@ -8678,6 +8684,8 @@ export function TemplateSelectFunctionPostgresql(p_schema, p_function, p_functio
 			p_function: p_function,
 			p_functionid: p_functionid,
 			p_schema: p_schema,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			tabSQLTemplate("Select " + p_schema + "." + p_function, p_return.v_data.v_template);
@@ -8703,6 +8711,8 @@ export function TemplateCallProcedurePostgresql(p_schema, p_procedure, p_procedu
 			p_procedure: p_procedure,
 			p_procedureid: p_procedureid,
 			p_schema: p_schema,
+			p_indent_char: v_indent_char,
+			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
 			tabSQLTemplate("Call " + p_schema + "." + p_procedure, p_return.v_data.v_template);

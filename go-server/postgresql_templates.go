@@ -9,7 +9,9 @@ import (
 // postgresqlTemplateSelect mirrors PostgreSQL.py's TemplateSelect for kind
 // "t" (table) and "v" (view) — the only two kinds this migration slice
 // supports (functions/materialized views/foreign tables stay on Django).
-func postgresqlTemplateSelect(db *sql.DB, schema, table, kind string) (string, error) {
+// indentUnit is the user's configured indent_char/indent_size Settings
+// (see indentUnitFromCharSize) used for every continuation line.
+func postgresqlTemplateSelect(db *sql.DB, schema, table, kind, indentUnit string) (string, error) {
 	var names []string
 	if kind == "v" {
 		columns, err := postgresqlViewColumns(db, schema, table)
@@ -31,8 +33,8 @@ func postgresqlTemplateSelect(db *sql.DB, schema, table, kind string) (string, e
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
-	sb.WriteString(strings.Join(names, "\n     , t."))
-	sb.WriteString(fmt.Sprintf("\nFROM %s.%s t", schema, table))
+	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
+	sb.WriteString(fmt.Sprintf("\nFROM %s.%s AS t", schema, table))
 
 	if kind != "v" {
 		pks, err := postgresqlPrimaryKeys(db, schema, table)
@@ -46,7 +48,7 @@ func postgresqlTemplateSelect(db *sql.DB, schema, table, kind string) (string, e
 			}
 			if len(pkCols) > 0 {
 				sb.WriteString("\nORDER BY t.")
-				sb.WriteString(strings.Join(pkCols, "\n       , t."))
+				sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
 			}
 		}
 	}
@@ -77,7 +79,8 @@ func postgresqlPKColumnSet(db *sql.DB, schema, table string) (map[string]bool, e
 }
 
 // postgresqlTemplateInsert mirrors PostgreSQL.py's TemplateInsert.
-func postgresqlTemplateInsert(db *sql.DB, schema, table string) (string, error) {
+// indentUnit is the user's configured indent_char/indent_size Settings.
+func postgresqlTemplateInsert(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := postgresqlColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -93,22 +96,25 @@ func postgresqlTemplateInsert(db *sql.DB, schema, table string) (string, error) 
 
 	names := make([]string, len(columns))
 	values := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
 		names[i] = c.Name
-		values[i] = "? -- " + postgresqlColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
+		values[i] = "?"
+		comments[i] = postgresqlColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
 	sb.WriteString(fmt.Sprintf("INSERT INTO %s.%s (\n", schema, table))
-	sb.WriteString("      " + strings.Join(names, "\n    , "))
+	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
-	sb.WriteString("      " + strings.Join(values, "\n    , "))
+	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
 	sb.WriteString("\n)")
 	return sb.String(), nil
 }
 
 // postgresqlTemplateUpdate mirrors PostgreSQL.py's TemplateUpdate.
-func postgresqlTemplateUpdate(db *sql.DB, schema, table string) (string, error) {
+// indentUnit is the user's configured indent_char/indent_size Settings.
+func postgresqlTemplateUpdate(db *sql.DB, schema, table, indentUnit string) (string, error) {
 	columns, err := postgresqlColumns(db, schema, table)
 	if err != nil {
 		return "", err
@@ -122,12 +128,14 @@ func postgresqlTemplateUpdate(db *sql.DB, schema, table string) (string, error) 
 		return "", err
 	}
 
-	parts := make([]string, len(columns))
+	cores := make([]string, len(columns))
+	comments := make([]string, len(columns))
 	for i, c := range columns {
-		parts[i] = c.Name + " = ? -- " + postgresqlTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
+		cores[i] = c.Name + " = ?"
+		comments[i] = postgresqlTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
-	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, strings.Join(parts, "\n    , ")), nil
+	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, formatTemplateColumnList(cores, comments, indentUnit)), nil
 }
 
 // postgresqlColumnComment formats the "-- name type [PRIMARY KEY|NULLABLE]"
