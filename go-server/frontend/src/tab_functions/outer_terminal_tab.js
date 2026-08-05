@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -84,7 +85,7 @@ export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias 
 		"</div>";
 	// var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div>";
 
-	var v_div = document.getElementById("div_" + v_tab.id);
+	var v_div = /** @type {HTMLElement} */ (document.getElementById("div_" + v_tab.id));
 	v_div.innerHTML = v_html;
 
 	var term_div = document.getElementById("txt_console_" + v_tab.id);

@@ -12,6 +12,16 @@
 // confident-looking nonsense. Real types are one of the payoffs of moving
 // these to npm packages.
 
+// --- prototype extensions ---------------------------------------------------
+//
+// query.js installs this on Number.prototype as a side effect of being
+// imported; console.js and terminal.js rely on that import order rather than
+// defining their own copy.
+
+interface Number {
+	padLeft(base?: number, chr?: string): string;
+}
+
 // --- third-party libraries, loaded from lib/ as <script> tags --------------
 
 declare const $: any;

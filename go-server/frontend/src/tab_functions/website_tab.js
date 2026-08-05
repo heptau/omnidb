@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -114,7 +115,7 @@ export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p
 
 	var v_html = "<div id='website_" + v_tab.id + "' style=' width: 100%; height: 200px;'>" + p_html + "</div>";
 
-	var v_div = document.getElementById("div_" + v_tab.id);
+	var v_div = /** @type {HTMLElement} */ (document.getElementById("div_" + v_tab.id));
 	v_div.innerHTML = v_html;
 
 	var v_resizeFunction = function () {

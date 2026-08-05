@@ -4255,10 +4255,20 @@
   function showPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_message, p_send_tab_id = true) {
     v_modal_password_ok_clicked = false;
     v_modal_password_cancel_callback = p_cancel_callback_function;
-    var v_content_div = document.getElementById("modal_password_content");
-    var v_button_ok = document.getElementById("modal_password_ok");
-    var v_button_cancel = document.getElementById("modal_password_cancel");
-    v_modal_password_input = document.getElementById("txt_password_prompt");
+    var v_content_div = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password_content")
+    );
+    var v_button_ok = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password_ok")
+    );
+    var v_button_cancel = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password_cancel")
+    );
+    v_modal_password_input = /** @type {HTMLInputElement} */
+    document.getElementById("txt_password_prompt");
     if (p_message) v_content_div.textContent = p_message;
     $("#modal_password").modal("show");
     v_modal_password_ok_function = function() {
@@ -4272,7 +4282,10 @@
     };
   }
   function checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id) {
-    var v_password = document.getElementById("txt_password_prompt").value;
+    var v_password = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_password_prompt").value
+    );
     var v_tab_id = "";
     if (p_send_tab_id) v_tab_id = v_connTabControl.selectedTab.id;
     v_modal_password_ok_after_hide_function = function() {
@@ -9558,7 +9571,10 @@
     });
     v_connTabControl.selectTab(v_tab);
     var v_html = '<div class="container-fluid mt-2"><div class="row"><div class="col"><div class="omnidb__txt-console p-2"><div id="txt_console_' + v_tab.id + '" style="width: 100%; height: 120px;"></div></div></div></div></div>';
-    var v_div = document.getElementById("div_" + v_tab.id);
+    var v_div = (
+      /** @type {HTMLElement} */
+      document.getElementById("div_" + v_tab.id)
+    );
     v_div.innerHTML = v_html;
     var term_div = document.getElementById("txt_console_" + v_tab.id);
     var term = new Terminal({
@@ -9771,7 +9787,10 @@
     });
     v_connTabControl.selectTab(v_tab);
     var v_html = "<div id='website_" + v_tab.id + "' style=' width: 100%; height: 200px;'>" + p_html + "</div>";
-    var v_div = document.getElementById("div_" + v_tab.id);
+    var v_div = (
+      /** @type {HTMLElement} */
+      document.getElementById("div_" + v_tab.id)
+    );
     v_div.innerHTML = v_html;
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;

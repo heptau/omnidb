@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -79,10 +80,10 @@ export function showPasswordPrompt(
 ) {
 	v_modal_password_ok_clicked = false;
 	v_modal_password_cancel_callback = p_cancel_callback_function;
-	var v_content_div = document.getElementById("modal_password_content");
-	var v_button_ok = document.getElementById("modal_password_ok");
-	var v_button_cancel = document.getElementById("modal_password_cancel");
-	v_modal_password_input = document.getElementById("txt_password_prompt");
+	var v_content_div = /** @type {HTMLElement} */ (document.getElementById("modal_password_content"));
+	var v_button_ok = /** @type {HTMLElement} */ (document.getElementById("modal_password_ok"));
+	var v_button_cancel = /** @type {HTMLElement} */ (document.getElementById("modal_password_cancel"));
+	v_modal_password_input = /** @type {HTMLInputElement} */ (document.getElementById("txt_password_prompt"));
 
 	if (p_message) v_content_div.textContent = p_message;
 
@@ -102,7 +103,7 @@ export function showPasswordPrompt(
 }
 
 export function checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id) {
-	var v_password = document.getElementById("txt_password_prompt").value;
+	var v_password = /** @type {HTMLInputElement} */ (document.getElementById("txt_password_prompt")).value;
 	var v_tab_id = "";
 	if (p_send_tab_id) v_tab_id = v_connTabControl.selectedTab.id;
 
