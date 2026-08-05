@@ -4864,13 +4864,15 @@
         contextMenu: {
           callback: function(key, options) {
             if (key === "edit_data") {
+              var v_col_type = v_currTabTag.editDataObject.columns[options[0].start.col - 1] ? v_currTabTag.editDataObject.columns[options[0].start.col - 1].v_type : null;
               if (v_currTabTag.editDataObject.hasPK)
                 editCellData(
                   this,
                   options[0].start.row,
                   options[0].start.col,
                   this.getDataAtCell(options[0].start.row, options[0].start.col),
-                  true
+                  true,
+                  v_col_type
                 );
               else
                 editCellData(
@@ -4878,7 +4880,8 @@
                   options[0].start.row,
                   options[0].start.col,
                   this.getDataAtCell(options[0].start.row, options[0].start.col),
-                  false
+                  false,
+                  v_col_type
                 );
             } else if (key === "copy") {
               this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
@@ -20287,7 +20290,14 @@
       showAlert("Shortcuts saved.");
     });
   }
-  function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
+  function aceModeForDataType(p_data_type) {
+    if (!p_data_type) return "ace/mode/text";
+    var v_type = String(p_data_type).toLowerCase();
+    if (v_type === "json" || v_type === "jsonb") return "ace/mode/json";
+    if (v_type === "xml") return "ace/mode/xml";
+    return "ace/mode/text";
+  }
+  function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_type) {
     var v_edit_modal = document.getElementById("div_edit_content");
     if (!v_edit_modal) {
       v_edit_modal = document.createElement("div");
@@ -20325,7 +20335,7 @@
     ace.require("ace/ext/language_tools");
     var v_editor = ace.edit("txt_edit_content");
     v_editor.setTheme("ace/theme/" + v_editor_theme);
-    v_editor.session.setMode("ace/mode/text");
+    v_editor.session.setMode(aceModeForDataType(p_data_type));
     v_editor.$blockScrolling = Infinity;
     v_editor.setFontSize(Number(v_font_size));
     v_editor.session.setTabSize(v_indent_size || 4);
@@ -20790,7 +20800,8 @@
                         options[0].start.row,
                         options[0].start.col,
                         this.getDataAtCell(options[0].start.row, options[0].start.col),
-                        false
+                        false,
+                        v_data.v_col_types ? v_data.v_col_types[options[0].start.col] : null
                       );
                     } else if (key === "copy") {
                       var v_start_row = Math.min(options[0].start.row, options[0].end.row);

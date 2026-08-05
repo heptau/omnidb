@@ -385,6 +385,12 @@ export function queryEditDataReturnRender(p_message, p_context) {
 			contextMenu: {
 				callback: function (key, options) {
 					if (key === "edit_data") {
+						// columnProperties has a leading non-data column (row
+						// number/action, see the loop below) before one entry per
+						// editDataObject.columns, hence the -1 offset here.
+						var v_col_type = v_currTabTag.editDataObject.columns[options[0].start.col - 1]
+							? v_currTabTag.editDataObject.columns[options[0].start.col - 1].v_type
+							: null;
 						if (v_currTabTag.editDataObject.hasPK)
 							editCellData(
 								this,
@@ -392,6 +398,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 								options[0].start.col,
 								this.getDataAtCell(options[0].start.row, options[0].start.col),
 								true,
+								v_col_type,
 							);
 						else
 							editCellData(
@@ -400,6 +407,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 								options[0].start.col,
 								this.getDataAtCell(options[0].start.row, options[0].start.col),
 								false,
+								v_col_type,
 							);
 					} else if (key === "copy") {
 						this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);

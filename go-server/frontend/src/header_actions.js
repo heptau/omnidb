@@ -465,6 +465,20 @@ export function saveShortcuts() {
 	});
 }
 
+// aceModeForDataType maps a database column type name (e.g. "json",
+// "jsonb", "xml" — case-insensitive, as returned by the various engines'
+// v_col_types/v_type) to the Ace editor mode that gives it syntax
+// highlighting in the edit-cell/view-cell dialog. Anything else (including
+// an unknown or missing type) falls back to plain text, same as before
+// this distinction existed.
+function aceModeForDataType(p_data_type) {
+	if (!p_data_type) return "ace/mode/text";
+	var v_type = String(p_data_type).toLowerCase();
+	if (v_type === "json" || v_type === "jsonb") return "ace/mode/json";
+	if (v_type === "xml") return "ace/mode/xml";
+	return "ace/mode/text";
+}
+
 /// <summary>
 /// Displays edit cell window.
 /// </summary>
@@ -473,7 +487,8 @@ export function saveShortcuts() {
 /// <param name="p_col">Column number.</param>
 /// <param name="p_content">Cell content.</param>
 /// <param name="p_can_alter">If ready only or not.</param>
-export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
+/// <param name="p_data_type">Column's database type (e.g. "json", "jsonb", "xml"), for syntax highlighting. Optional.</param>
+export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_type) {
 	var v_edit_modal = document.getElementById("div_edit_content");
 	if (!v_edit_modal) {
 		v_edit_modal = document.createElement("div");
@@ -536,7 +551,7 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter) {
 	var langTools = ace.require("ace/ext/language_tools");
 	var v_editor = ace.edit("txt_edit_content");
 	v_editor.setTheme("ace/theme/" + v_editor_theme);
-	v_editor.session.setMode("ace/mode/text");
+	v_editor.session.setMode(aceModeForDataType(p_data_type));
 	v_editor.$blockScrolling = Infinity;
 
 	v_editor.setFontSize(Number(v_font_size));

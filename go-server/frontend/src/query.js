@@ -608,6 +608,7 @@ export function querySQLReturnRender(p_message, p_context) {
 											options[0].start.col,
 											this.getDataAtCell(options[0].start.row, options[0].start.col),
 											false,
+											v_data.v_col_types ? v_data.v_col_types[options[0].start.col] : null,
 										);
 									} else if (key === "copy") {
 										var v_start_row = Math.min(options[0].start.row, options[0].end.row);
