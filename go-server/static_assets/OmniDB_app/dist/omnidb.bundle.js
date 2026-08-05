@@ -9974,16 +9974,31 @@
       p_dblClickFunction: renameTab
     });
     v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-    var v_tab_title_span = document.getElementById("tab_title");
+    var v_tab_title_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_title")
+    );
     v_tab_title_span.id = "tab_title_" + v_tab.id;
-    var v_tab_loading_span = document.getElementById("tab_loading");
+    var v_tab_loading_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_loading")
+    );
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-    var v_tab_check_span = document.getElementById("tab_check");
+    var v_tab_check_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_check")
+    );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var v_html = "<div class='omnidb__monitoring-result-tabs'><div class='container-fluid'><button id='bt_refresh_dashboard_" + v_tab.id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>Refresh All</button><button id='bt_manage_units_" + v_tab.id + "' class='btn omnidb__theme__btn--primary btn-sm my-2'>Manage Units</button><div id='dashboard_" + v_tab.id + "' class='dashboard_all row'></div></div></div>";
     v_tab.elementDiv.innerHTML = v_html;
-    document.getElementById("bt_refresh_dashboard_" + v_tab.id).addEventListener("click", () => refreshMonitorDashboard(true));
-    document.getElementById("bt_manage_units_" + v_tab.id).addEventListener("click", () => showMonitorUnitList());
+    document.getElementById("bt_refresh_dashboard_" + v_tab.id).addEventListener(
+      "click",
+      () => refreshMonitorDashboard(true)
+    );
+    document.getElementById("bt_manage_units_" + v_tab.id).addEventListener(
+      "click",
+      () => showMonitorUnitList()
+    );
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.dashboard_div) {
@@ -10054,17 +10069,35 @@
     });
     v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
     var v_html = '<button id="bt_test_unit_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1">Test</button><button id="bt_save_unit_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary btn-sm my-1">Save</button><div class="row">  <div class="col-md-3 mb-3">    <label for="conn_form_title">Name</label>    <input type="text" class="form-control" id="txt_unit_name_' + v_tab.id + '" placeholder="Name">  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_type">Type</label>    <select id="select_type_' + v_tab.id + '" class="form-control">      <option value="timeseries">Timeseries</option>      <option value="chart">Chart (No Append)</option>      <option value="grid">Grid</option>    </select>  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_title">Refresh Interval</label>    <input type="text" class="form-control" id="txt_interval_' + v_tab.id + '" placeholder="Title">  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_type">Template</label>    <select id="select_template_' + v_tab.id + '" class="form-control">      <option value=-1>Select Template</option>    </select>  </div></div><div class="row" id="chart_type_row_' + v_tab.id + '" style="display:none;">  <div class="col-md-3 mb-3">    <label for="conn_form_type">Chart Type</label>    <select id="select_chart_type_' + v_tab.id + '" class="form-control">      <option value="bar">Bar</option>      <option value="pie">Pie</option>      <option value="doughnut">Doughnut</option>      <option value="line">Line</option>    </select>  </div></div><div class="row">  <div class="col-md-12 mb-1">    <label for="conn_form_title">SQL Query</label>  </div>  <div class="col-md-12">    <div id="txt_data_' + v_tab.id + '" style=" width: 100%; height: 250px;"></div>  </div></div>';
-    var v_div = document.getElementById("div_" + v_tab.id);
+    var v_div = (
+      /** @type {HTMLElement} */
+      document.getElementById("div_" + v_tab.id)
+    );
     v_div.innerHTML = v_html;
-    document.getElementById("bt_test_unit_" + v_tab.id).addEventListener("click", () => testMonitorScript());
-    document.getElementById("bt_save_unit_" + v_tab.id).addEventListener("click", () => saveMonitorScript());
-    document.getElementById("select_type_" + v_tab.id).addEventListener("change", () => toggleMonitorUnitChartType(v_tab.id));
-    document.getElementById("select_template_" + v_tab.id).addEventListener("change", (e) => selectUnitTemplate(
-      /** @type {HTMLSelectElement} */
-      e.target.value
-    ));
+    document.getElementById("bt_test_unit_" + v_tab.id).addEventListener(
+      "click",
+      () => testMonitorScript()
+    );
+    document.getElementById("bt_save_unit_" + v_tab.id).addEventListener(
+      "click",
+      () => saveMonitorScript()
+    );
+    document.getElementById("select_type_" + v_tab.id).addEventListener(
+      "change",
+      () => toggleMonitorUnitChartType(v_tab.id)
+    );
+    document.getElementById("select_template_" + v_tab.id).addEventListener(
+      "change",
+      (e) => selectUnitTemplate(
+        /** @type {HTMLSelectElement} */
+        e.target.value
+      )
+    );
     ace.require("ace/ext/language_tools");
-    var v_select_chart_type = document.getElementById("select_chart_type_" + v_tab.id);
+    var v_select_chart_type = (
+      /** @type {HTMLSelectElement} */
+      document.getElementById("select_chart_type_" + v_tab.id)
+    );
     var v_editor = {
       getValue: function() {
         return v_select_chart_type.value;
@@ -10143,8 +10176,14 @@
     }, 10);
   };
   function toggleMonitorUnitChartType(p_tab_id) {
-    var v_row = document.getElementById("chart_type_row_" + p_tab_id);
-    var v_type_select = document.getElementById("select_type_" + p_tab_id);
+    var v_row = (
+      /** @type {HTMLElement} */
+      document.getElementById("chart_type_row_" + p_tab_id)
+    );
+    var v_type_select = (
+      /** @type {HTMLSelectElement} */
+      document.getElementById("select_type_" + p_tab_id)
+    );
     if (!v_row || !v_type_select) return;
     v_row.style.display = v_type_select.value == "chart" ? "" : "none";
   }

@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -81,11 +82,11 @@ export var v_createMonitorDashboardTabFunction = function () {
 	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
 
 	// Adding unique names to spans.
-	var v_tab_title_span = document.getElementById("tab_title");
+	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
 	v_tab_title_span.id = "tab_title_" + v_tab.id;
-	var v_tab_loading_span = document.getElementById("tab_loading");
+	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = document.getElementById("tab_check");
+	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 
 	var v_html =
@@ -108,10 +109,13 @@ export var v_createMonitorDashboardTabFunction = function () {
 
 	// Bindings for the two toolbar buttons, replacing the on*= attributes they
 	// used to carry -- see dom_event_bindings.js and README.md.
-	document
-		.getElementById("bt_refresh_dashboard_" + v_tab.id)
-		.addEventListener("click", () => refreshMonitorDashboard(true));
-	document.getElementById("bt_manage_units_" + v_tab.id).addEventListener("click", () => showMonitorUnitList());
+	/** @type {HTMLElement} */ (document.getElementById("bt_refresh_dashboard_" + v_tab.id)).addEventListener(
+		"click",
+		() => refreshMonitorDashboard(true),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_manage_units_" + v_tab.id)).addEventListener("click", () =>
+		showMonitorUnitList(),
+	);
 
 	var v_resizeFunction = function () {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -277,28 +281,33 @@ export var v_createNewMonitorUnitTabFunction = function () {
 		"  </div>" +
 		"</div>";
 
-	var v_div = document.getElementById("div_" + v_tab.id);
+	var v_div = /** @type {HTMLElement} */ (document.getElementById("div_" + v_tab.id));
 	v_div.innerHTML = v_html;
 
 	// Bindings for the unit editor just built above.
-	document.getElementById("bt_test_unit_" + v_tab.id).addEventListener("click", () => testMonitorScript());
-	document.getElementById("bt_save_unit_" + v_tab.id).addEventListener("click", () => saveMonitorScript());
+	/** @type {HTMLElement} */ (document.getElementById("bt_test_unit_" + v_tab.id)).addEventListener("click", () =>
+		testMonitorScript(),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("bt_save_unit_" + v_tab.id)).addEventListener("click", () =>
+		saveMonitorScript(),
+	);
 	// The attribute this replaces interpolated v_tab.id *unquoted*, so the
 	// browser evaluated `toggleMonitorUnitChartType(omnidb_main_tablist_tab6_...)`
 	// as an identifier and threw ReferenceError. Picking "Chart (No Append)" by
 	// hand therefore never revealed the Chart Type row -- it only appeared when
 	// loading a saved chart unit, where monitoring.js calls this with the id
 	// properly.
-	document
-		.getElementById("select_type_" + v_tab.id)
-		.addEventListener("change", () => toggleMonitorUnitChartType(v_tab.id));
-	document
-		.getElementById("select_template_" + v_tab.id)
-		.addEventListener("change", (e) => selectUnitTemplate(/** @type {HTMLSelectElement} */ (e.target).value));
+	/** @type {HTMLElement} */ (document.getElementById("select_type_" + v_tab.id)).addEventListener("change", () =>
+		toggleMonitorUnitChartType(v_tab.id),
+	);
+	/** @type {HTMLElement} */ (document.getElementById("select_template_" + v_tab.id)).addEventListener(
+		"change",
+		(e) => selectUnitTemplate(/** @type {HTMLSelectElement} */ (e.target).value),
+	);
 
 	var langTools = ace.require("ace/ext/language_tools");
 
-	var v_select_chart_type = document.getElementById("select_chart_type_" + v_tab.id);
+	var v_select_chart_type = /** @type {HTMLSelectElement} */ (document.getElementById("select_chart_type_" + v_tab.id));
 	// Adapter so save/load/test code can keep calling .editor.getValue()/
 	// .setValue()/.clearSelection()/.gotoLine()/.resize() unchanged, whether
 	// "editor" is really an Ace instance (script_chart, historically) or —
@@ -389,8 +398,8 @@ export var v_createNewMonitorUnitTabFunction = function () {
 // that needs it — "timeseries" is always a line chart, "grid" doesn't chart
 // at all).
 export function toggleMonitorUnitChartType(p_tab_id) {
-	var v_row = document.getElementById("chart_type_row_" + p_tab_id);
-	var v_type_select = document.getElementById("select_type_" + p_tab_id);
+	var v_row = /** @type {HTMLElement} */ (document.getElementById("chart_type_row_" + p_tab_id));
+	var v_type_select = /** @type {HTMLSelectElement} */ (document.getElementById("select_type_" + p_tab_id));
 	if (!v_row || !v_type_select) return;
 	v_row.style.display = v_type_select.value == "chart" ? "" : "none";
 }
