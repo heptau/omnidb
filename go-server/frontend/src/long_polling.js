@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -46,10 +47,12 @@ var v_context_code;
 
 
 export var v_client_id;
+/** @type {any} */
 export var v_polling_ajax = null;
 
 export var v_context_object = {
 	contextCode: 0,
+	/** @type {{code: number, context: any}[]} */
 	contextList: [],
 };
 
@@ -114,7 +117,9 @@ async function clear_client() {
 export function polling_response(p_message) {
 	var v_message = p_message;
 
+	/** @type {number|null} */
 	var p_context_code = null;
+	/** @type {any} */
 	var p_context = null;
 
 	if (v_message.v_context_code != 0 && v_message.v_context_code != null) {
@@ -134,14 +139,14 @@ export function polling_response(p_message) {
 		// constants). Kept as an explicit no-op rather than deleted so an
 		// unexpected Pong falls through here instead of into the "unhandled
 		// code" path.
-		case parseInt(v_queryResponseCodes.Pong): {
+		case v_queryResponseCodes.Pong: {
 			break;
 		}
-		case parseInt(v_queryResponseCodes.SessionMissing): {
+		case v_queryResponseCodes.SessionMissing: {
 			showAlert("Session not found please reload the page.");
 			break;
 		}
-		case parseInt(v_queryResponseCodes.MessageException): {
+		case v_queryResponseCodes.MessageException: {
 			if (p_context) {
 				SetAcked(p_context);
 				queryError(p_message, p_context);
@@ -151,20 +156,20 @@ export function polling_response(p_message) {
 			}
 			break;
 		}
-		case parseInt(v_queryResponseCodes.PasswordRequired): {
+		case v_queryResponseCodes.PasswordRequired: {
 			if (p_context) {
 				SetAcked(p_context);
 				QueryPasswordRequired(p_context, v_message.v_data);
 				break;
 			}
 		}
-		case parseInt(v_queryResponseCodes.QueryAck): {
+		case v_queryResponseCodes.QueryAck: {
 			if (p_context) {
 				SetAcked(p_context);
 				break;
 			}
 		}
-		case parseInt(v_queryResponseCodes.QueryResult): {
+		case v_queryResponseCodes.QueryResult: {
 			if (p_context) {
 				SetAcked(p_context);
 				if (!v_message.v_error || v_message.v_data.v_chunks) {
@@ -179,7 +184,7 @@ export function polling_response(p_message) {
 			}
 			break;
 		}
-		case parseInt(v_queryResponseCodes.ConsoleResult): {
+		case v_queryResponseCodes.ConsoleResult: {
 			if (p_context) {
 				if (!v_message.v_error) {
 					p_context.tab_tag.tempData += v_message.v_data.v_data;
@@ -193,13 +198,13 @@ export function polling_response(p_message) {
 			}
 			break;
 		}
-		case parseInt(v_queryResponseCodes.TerminalResult): {
+		case v_queryResponseCodes.TerminalResult: {
 			if (p_context) {
 				terminalReturn(v_message, p_context);
 			}
 			break;
 		}
-		case parseInt(v_queryResponseCodes.QueryEditDataResult): {
+		case v_queryResponseCodes.QueryEditDataResult: {
 			if (p_context) {
 				SetAcked(p_context);
 				queryEditDataReturn(v_message, p_context);
@@ -207,14 +212,14 @@ export function polling_response(p_message) {
 			}
 			break;
 		}
-		case parseInt(v_queryResponseCodes.SaveEditDataResult): {
+		case v_queryResponseCodes.SaveEditDataResult: {
 			if (p_context) {
 				saveEditDataReturn(v_message, p_context);
 				removeContext(p_context_code);
 			}
 			break;
 		}
-		case parseInt(v_queryResponseCodes.RemoveContext): {
+		case v_queryResponseCodes.RemoveContext: {
 			if (p_context) {
 				removeContext(p_context_code);
 			}
