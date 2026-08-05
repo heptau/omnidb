@@ -266,14 +266,33 @@ Five are moved to real npm packages so far:
   worked here — TypeScript only falls back to an ambient declaration when a
   specifier fails to resolve, and `chart.js` resolves just fine.
 
-**Cytoscape's vendored version could not be identified.** Its
+**Cytoscape's and xterm's vendored versions could not be identified.**
 `cytoscape.min.js` carries no version banner, and its size (304,971 bytes)
 falls between published `3.0.1` (288,849) and `3.1.0` (307,006) with no
-version in between — so it does not match any released build closely enough
-to diff with confidence. Given `daterangepicker`'s local patch, guessing the
-closest version and swapping it in unverified is exactly the mistake to
-avoid. Left vendored until someone can pin the exact source (checking the
-project's own git history predating this migration is the most likely way in).
+version in between. `xterm.js` (no banner either) falls between `3.4.1`
+(295,088 bytes) and `3.5.0` (335,952) — and diffing it against `3.5.0` anyway
+turned up over 17,000 differing lines, not just a version gap, so it is not
+that release either. (`fit.js` and its `Terminal.applyAddon(fit)` call site in
+`outer_terminal_tab.js` confirm this is a pre-v4 xterm — the addon API v4
+removed.) Neither matches any released build closely enough to diff with
+confidence. Given `daterangepicker`'s local patch below, guessing the closest
+version and swapping it in unverified is exactly the mistake to avoid. Both
+stay vendored until someone can pin the exact source — the project's own git
+history predating this migration is the most likely way in.
+
+**Ace has a real local patch too, in `mode-sql.js`.** `ace.js` and
+`ext-language_tools.js` hash byte-identical to `ace-builds@1.37.3`'s own
+`src-min/` build (checked directly — the version string is right there in
+`ace.js`, no guessing needed for those two). `mode-sql.js` does not: the
+vendored copy is unminified and roughly 300 lines longer than the stock
+build, adding a `SqlFoldMode` with dollar-quoted string/function-body
+folding (`$$ ... $$` / `$tag$ ... $tag$`), IF/CASE block folding, and an
+indentation-based fallback — none of which stock `ace-builds` has. This is on
+top of the already-known reason Ace goes last (it fetches `mode-*` and worker
+files at runtime by URL relative to `basePath`, which needs explicit
+bundler configuration): migrating it means keeping this custom fold mode
+alive, most likely by moving its logic into project-owned source that
+extends the stock SQL mode rather than replacing the file outright.
 
 **`daterangepicker` is not a safe drop-in.** The vendored copy has a local
 patch to its start/end-date picking logic (`this.pickingEndDate`, changed
@@ -281,17 +300,30 @@ around the `if ((this.endDate && !this.pickingEndDate) || ...)` branch) that
 the npm `daterangepicker@3.1.0` package — otherwise the matching version —
 does not have. Diff the two before ever touching this one; swapping it for the
 plain npm package would silently reintroduce whatever picking bug that patch
-fixed. This is also a reason to diff first, not just version-match, for every
-other library still on this list — jQuery, Bootstrap, moment, AG Grid and
-Chart.js happened to be clean; Cytoscape could not even be version-matched
+fixed.
+
+**AimaraJS has no npm package at all** — not published under `aimarajs`,
+`aimara`, or any obvious name. It has to stay a vendored file regardless of
+how the rest of this list goes, unless it is replaced with a different
+library entirely.
+
+**The pgexplain bundle is not a vendoring problem, it's an age problem.**
+`react.js`/`react-dom.js` in `lib/explain/` are React **0.14.9** (2015) —
+`pgplan.js`, the actual explain-plan visualizer, is project-owned code
+written against that API (most likely `React.createClass`, removed in
+React 16). Moving this to a current npm React is not a script-tag swap, it is
+a rewrite of `pgplan.js` against a modern API; out of scope for this pass.
+
+This is also a reason to diff first, not just version-match, for every
+library on this list — jQuery, Bootstrap, moment, AG Grid, Chart.js, and two
+of Ace's three files happened to be clean; `daterangepicker` and Ace's
+`mode-sql.js` were not, and Cytoscape/xterm could not even be version-matched
 enough to try.
 
 What is deliberately not done yet:
 
 - **Replacing the rest with npm packages.** This is where tree-shaking and a
-  smaller install would come from. Ace should go last — it fetches its
-  `mode-*` and worker files at runtime by URL relative to `basePath`, which
-  needs explicit configuration under a bundler.
+  smaller install would come from.
 - **Extending the `// @ts-check` set.** The infrastructure is in place (see
   above); the ~39k unannotated lines are the work.
 - **Deleting the bridge.** What is left needs `workspace.html`'s inline
