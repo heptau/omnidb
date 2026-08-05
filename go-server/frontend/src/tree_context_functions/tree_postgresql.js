@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -282,8 +283,10 @@ export function getTreePostgresql(p_div) {
 						showConfirm(
 							"",
 							function (p_node) {
-								var v_password = document.getElementById("change_pwd_role").value;
-								var v_password_confirm = document.getElementById("change_pwd_role_confirm").value;
+								var v_password = /** @type {HTMLInputElement} */ (document.getElementById("change_pwd_role")).value;
+								var v_password_confirm = /** @type {HTMLInputElement} */ (
+									document.getElementById("change_pwd_role_confirm")
+								).value;
 
 								if (v_password == "") {
 									showAlert("Password is empty.");
@@ -324,7 +327,7 @@ export function getTreePostgresql(p_div) {
 								v_row.className = "form-row";
 								v_row.appendChild(buildPasswordField("Password", "change_pwd_role", "password"));
 								v_row.appendChild(buildPasswordField("Password confirmation", "change_pwd_role_confirm", "password confirmation"));
-								document.getElementById("modal_message_content").appendChild(v_row);
+								/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_row);
 							},
 						);
 					},
@@ -3218,9 +3221,9 @@ export function getTreePostgresql(p_div) {
 	// Binding for the autocomplete switch just built above, replacing the
 	// onchange attribute that spliced the element's own id into itself as a string
 	// literal -- see dom_event_bindings.js and README.md.
-	document
-		.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id)
-		.addEventListener("change", (event) => toggleConnectionAutocomplete(event.target.id));
+	/** @type {HTMLElement} */ (
+		document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id)
+	).addEventListener("change", (event) => toggleConnectionAutocomplete(/** @type {HTMLElement} */ (event.target).id));
 
 	tree.nodeAfterOpenEvent = function (node) {
 		refreshTreePostgresql(node);
@@ -3376,7 +3379,7 @@ export function checkCurrentDatabase(p_node, p_complete_check, p_callback_contin
 		// append right after the call above: showConfirm3 sets the (empty)
 		// content synchronously before this line runs, and nothing else
 		// touches modal_message_content before the modal is actually shown.
-		var v_content_div = document.getElementById("modal_message_content");
+		var v_content_div = /** @type {HTMLElement} */ (document.getElementById("modal_message_content"));
 		v_content_div.appendChild(document.createTextNode("This node belongs to another database, change active database to "));
 		var v_bold = document.createElement("b");
 		v_bold.textContent = p_node.tag.database;
@@ -3392,6 +3395,7 @@ export function checkCurrentDatabase(p_node, p_complete_check, p_callback_contin
 export function getObjectDescriptionPostgresql(p_node) {
 	var v_oid = null;
 	var v_type = p_node.tag.type;
+	/** @type {any} */
 	var v_position = null;
 
 	if (v_type == "table_field") {
@@ -4546,7 +4550,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_tables: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_tables",
 					null,
@@ -4564,7 +4567,6 @@ export function getSchemasPostgresql(node) {
 							schema: p_return.v_data[i].v_name,
 							num_tables: 0,
 							database: v_connTabControl.selectedTab.tag.selectedDatabase,
-							schema: p_return.v_data[i].v_name,
 						},
 						"cm_partitioned_tables",
 						null,
@@ -4582,7 +4584,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_tables: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_inherited_tables",
 					null,
@@ -4599,7 +4600,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_tables: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_foreign_tables",
 					null,
@@ -4616,7 +4616,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_sequences: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_sequences",
 					null,
@@ -4633,7 +4632,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_views: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_views",
 					null,
@@ -4651,7 +4649,6 @@ export function getSchemasPostgresql(node) {
 							schema: p_return.v_data[i].v_name,
 							num_views: 0,
 							database: v_connTabControl.selectedTab.tag.selectedDatabase,
-							schema: p_return.v_data[i].v_name,
 						},
 						"cm_mviews",
 						null,
@@ -4669,7 +4666,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_functions: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_functions",
 					null,
@@ -4686,7 +4682,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_triggerfunctions: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_triggerfunctions",
 					null,
@@ -4703,7 +4698,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_triggerfunctions: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_eventtriggerfunctions",
 					null,
@@ -4721,7 +4715,6 @@ export function getSchemasPostgresql(node) {
 							schema: p_return.v_data[i].v_name,
 							num_procedures: 0,
 							database: v_connTabControl.selectedTab.tag.selectedDatabase,
-							schema: p_return.v_data[i].v_name,
 						},
 						"cm_procedures",
 						null,
@@ -4739,7 +4732,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_aggregates: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_aggregates",
 					null,
@@ -4757,7 +4749,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_types: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_types",
 					null,
@@ -4774,7 +4765,6 @@ export function getSchemasPostgresql(node) {
 						schema: p_return.v_data[i].v_name,
 						num_domains: 0,
 						database: v_connTabControl.selectedTab.tag.selectedDatabase,
-						schema: p_return.v_data[i].v_name,
 					},
 					"cm_domains",
 					null,

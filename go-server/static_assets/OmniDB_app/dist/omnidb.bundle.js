@@ -11745,8 +11745,14 @@
               showConfirm(
                 "",
                 function(p_node) {
-                  var v_password = document.getElementById("change_pwd_role").value;
-                  var v_password_confirm = document.getElementById("change_pwd_role_confirm").value;
+                  var v_password = (
+                    /** @type {HTMLInputElement} */
+                    document.getElementById("change_pwd_role").value
+                  );
+                  var v_password_confirm = (
+                    /** @type {HTMLInputElement} */
+                    document.getElementById("change_pwd_role_confirm").value
+                  );
                   if (v_password == "") {
                     showAlert("Password is empty.");
                     return;
@@ -14558,7 +14564,10 @@
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
     v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle autocomplete.</h5><div>Switch OFF <b>disables the autocomplete</b> on the inner tabs for this connection.</div>"><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
-    document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(event2.target.id));
+    document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
+      /** @type {HTMLElement} */
+      event2.target.id
+    ));
     tree.nodeAfterOpenEvent = function(node) {
       refreshTreePostgresql(node);
       try {
@@ -14665,7 +14674,10 @@
       $("#modal_message").one("hidden.bs.modal", function() {
         if (!v_choice_made && p_callback_stop) p_callback_stop();
       });
-      var v_content_div = document.getElementById("modal_message_content");
+      var v_content_div = (
+        /** @type {HTMLElement} */
+        document.getElementById("modal_message_content")
+      );
       v_content_div.appendChild(document.createTextNode("This node belongs to another database, change active database to "));
       var v_bold = document.createElement("b");
       v_bold.textContent = p_node.tag.database;
@@ -15702,8 +15714,7 @@
               type: "table_list",
               schema: p_return.v_data[i$5].v_name,
               num_tables: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_tables",
             null,
@@ -15719,8 +15730,7 @@
                 type: "partitioned_table_list",
                 schema: p_return.v_data[i$5].v_name,
                 num_tables: 0,
-                database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i$5].v_name
+                database: v_connTabControl.selectedTab.tag.selectedDatabase
               },
               "cm_partitioned_tables",
               null,
@@ -15736,8 +15746,7 @@
               type: "inherited_table_list",
               schema: p_return.v_data[i$5].v_name,
               num_tables: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_inherited_tables",
             null,
@@ -15752,8 +15761,7 @@
               type: "foreign_table_list",
               schema: p_return.v_data[i$5].v_name,
               num_tables: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_foreign_tables",
             null,
@@ -15768,8 +15776,7 @@
               type: "sequence_list",
               schema: p_return.v_data[i$5].v_name,
               num_sequences: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_sequences",
             null,
@@ -15784,8 +15791,7 @@
               type: "view_list",
               schema: p_return.v_data[i$5].v_name,
               num_views: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_views",
             null,
@@ -15801,8 +15807,7 @@
                 type: "mview_list",
                 schema: p_return.v_data[i$5].v_name,
                 num_views: 0,
-                database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i$5].v_name
+                database: v_connTabControl.selectedTab.tag.selectedDatabase
               },
               "cm_mviews",
               null,
@@ -15818,8 +15823,7 @@
               type: "function_list",
               schema: p_return.v_data[i$5].v_name,
               num_functions: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_functions",
             null,
@@ -15834,8 +15838,7 @@
               type: "triggerfunction_list",
               schema: p_return.v_data[i$5].v_name,
               num_triggerfunctions: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_triggerfunctions",
             null,
@@ -15850,8 +15853,7 @@
               type: "eventtriggerfunction_list",
               schema: p_return.v_data[i$5].v_name,
               num_triggerfunctions: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_eventtriggerfunctions",
             null,
@@ -15867,8 +15869,7 @@
                 type: "procedure_list",
                 schema: p_return.v_data[i$5].v_name,
                 num_procedures: 0,
-                database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i$5].v_name
+                database: v_connTabControl.selectedTab.tag.selectedDatabase
               },
               "cm_procedures",
               null,
@@ -15884,8 +15885,7 @@
               type: "aggregate_list",
               schema: p_return.v_data[i$5].v_name,
               num_aggregates: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_aggregates",
             null,
@@ -15900,8 +15900,7 @@
               type: "type_list",
               schema: p_return.v_data[i$5].v_name,
               num_types: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_types",
             null,
@@ -15916,8 +15915,7 @@
               type: "domain_list",
               schema: p_return.v_data[i$5].v_name,
               num_domains: 0,
-              database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name
+              database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_domains",
             null,
