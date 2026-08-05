@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -59,7 +60,11 @@ import { startTutorial } from "./tutorial_functions/tutorial.js";
 // declaration keeps the behaviour identical while taking them off the
 // global object -- which is what still forces the bundle out of strict
 // mode.
-var v_edges, v_nodes, v_start_height, v_start_width;
+/** @type {any[]} */
+var v_edges;
+/** @type {any[]} */
+var v_nodes;
+var v_start_height, v_start_width;
 
 $(function () {
 	// Instantiating outer tab component.
@@ -166,6 +171,7 @@ export function getDatabaseList(p_init, p_callback) {
 						if (v_current_parent == null || v_current_parent != p_return.v_data.v_existing_tabs[i].index) {
 							startLoading();
 
+							/** @type {any} */
 							let v_conn = false;
 							let v_name = "";
 							let p_tooltip_name = "";
@@ -255,6 +261,7 @@ export function changeDatabase(p_value) {
 	v_connTabControl.selectedTab.tag.divDetails.innerHTML = "";
 
 	// Finding the connection object.
+	/** @type {any} */
 	var v_conn_object = null;
 	for (var i = 0; i < v_connTabControl.tag.connections.length; i++) {
 		if (p_value == v_connTabControl.tag.connections[i].v_conn_id) {
@@ -338,13 +345,13 @@ export function adjustQueryTabObjects(p_all_tabs) {
 
 	var v_objects = $(v_target_div)
 		.find(".dbms_object")
-		.each(function () {
+		.each(/** @this {any} */ function () {
 			$(this).css("display", "none");
 		});
 
-	var v_objects = $(v_target_div)
+	var v_objects2 = $(v_target_div)
 		.find("." + v_dbms + "_object")
-		.each(function () {
+		.each(/** @this {any} */ function () {
 			if (!$(this).hasClass("dbms_object_hidden")) {
 				$(this).css("display", "inline-block");
 			}
@@ -368,9 +375,10 @@ export function drawGraph(p_all, p_schema) {
 			v_edges = [];
 
 			for (var i = 0; i < p_return.v_data.v_nodes.length; i++) {
-				var v_node_object = new Object();
-				v_node_object.data = new Object();
-				v_node_object.position = new Object();
+				/** @type {any} */
+				var v_node_object = {};
+				v_node_object.data = {};
+				v_node_object.position = {};
 				v_node_object.data.id = p_return.v_data.v_nodes[i].id;
 				v_node_object.data.label = p_return.v_data.v_nodes[i].label;
 				v_node_object.classes = "group" + p_return.v_data.v_nodes[i].group;
@@ -379,8 +387,9 @@ export function drawGraph(p_all, p_schema) {
 			}
 
 			for (var i = 0; i < p_return.v_data.v_edges.length; i++) {
-				var v_edge_object = new Object();
-				v_edge_object.data = new Object();
+				/** @type {any} */
+				var v_edge_object = {};
+				v_edge_object.data = {};
 				v_edge_object.data.source = p_return.v_data.v_edges[i].from;
 				v_edge_object.data.target = p_return.v_data.v_edges[i].to;
 				v_edge_object.data.label = p_return.v_data.v_edges[i].label;
@@ -501,7 +510,7 @@ export function renameTab(p_tab) {
 	showConfirm(
 		"",
 		function () {
-			renameTabConfirm(p_tab, document.getElementById("tab_name").value);
+			renameTabConfirm(p_tab, /** @type {HTMLInputElement} */ (document.getElementById("tab_name")).value);
 		},
 		null,
 		function () {
@@ -511,14 +520,14 @@ export function renameTab(p_tab) {
 			v_input.id = "tab_name";
 			v_input.className = "form-control";
 			v_input.style.width = "100%";
-			document.getElementById("modal_message_content").appendChild(v_input);
+			/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_input);
 
 			v_input.value = p_tab.tag.tab_title_span.textContent;
 			v_input.onkeydown = function () {
-				if (event.keyCode == 13) {
-					document.getElementById("modal_message_ok").click();
-				} else if (event.keyCode == 27) {
-					document.getElementById("modal_message_cancel").click();
+				if (/** @type {any} */ (event).keyCode == 13) {
+					/** @type {HTMLElement} */ (document.getElementById("modal_message_ok")).click();
+				} else if (/** @type {any} */ (event).keyCode == 27) {
+					/** @type {HTMLElement} */ (document.getElementById("modal_message_cancel")).click();
 				}
 			};
 			v_input.focus();
@@ -565,6 +574,7 @@ export function removeTab(p_tab) {
 /// <summary>
 /// Resize snippet panel and transforms position when its visible.
 /// </summary>
+/** @param {number|false} [p_left_pos_x] */
 export var resizeSnippetPanel = async function (p_left_pos_x = false) {
 	if (v_connTabControl.snippet_tag !== undefined) {
 		var v_element = $(v_connTabControl.snippet_tag.divPanel);
@@ -692,7 +702,7 @@ export function resizeTreeVertical(event) {
 /// </summary>
 export function resizeTreeVerticalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeTreeVerticalEnd);
-	document.getElementById("vertical-resize-line").remove();
+	/** @type {HTMLElement} */ (document.getElementById("vertical-resize-line")).remove();
 
 	document.body.removeEventListener("mousemove", getVerticalLinePosition);
 
@@ -701,6 +711,7 @@ export function resizeTreeVerticalEnd(event) {
 	var v_tag = v_connTabControl.selectedTab.tag;
 
 	var v_tree_div = v_tag.divTree;
+	/** @type {any} */
 	var v_result_div = null;
 
 	var v_tree_tabs_div = v_tag.divTreeTabs;
@@ -730,7 +741,7 @@ export function resizeTreeVerticalEnd(event) {
 /// Redefines horizontal resize line position.
 /// </summary>
 export function horizontalLinePosition(p_event) {
-	document.getElementById("horizontal-resize-line").style.left = p_event.pageX + "px";
+	/** @type {HTMLElement} */ (document.getElementById("horizontal-resize-line")).style.left = p_event.pageX + "px";
 }
 
 /// <summary>
@@ -755,7 +766,7 @@ export function resizeConnectionHorizontalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeConnectionHorizontalEnd);
 	var v_horizontal_line = document.getElementById("horizontal-resize-line");
 	if (v_horizontal_line) {
-		document.getElementById("horizontal-resize-line").remove();
+		v_horizontal_line.remove();
 	}
 
 	document.body.removeEventListener("mousemove", horizontalLinePosition);
@@ -812,7 +823,7 @@ export function resizeSnippetHorizontal(event) {
 /// </summary>
 export function resizeSnippetHorizontalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeSnippetHorizontalEnd);
-	document.getElementById("horizontal-resize-line").remove();
+	/** @type {HTMLElement} */ (document.getElementById("horizontal-resize-line")).remove();
 
 	document.body.removeEventListener("mousemove", horizontalLinePosition);
 
@@ -841,13 +852,15 @@ export function resizeVertical(event) {
 /// </summary>
 export function resizeVerticalEnd(event) {
 	document.body.removeEventListener("mouseup", resizeVerticalEnd);
-	document.getElementById("vertical-resize-line").remove();
+	/** @type {HTMLElement} */ (document.getElementById("vertical-resize-line")).remove();
 
 	document.body.removeEventListener("mousemove", getVerticalLinePosition);
 
 	var v_height_diff = event.screenY - v_start_height;
 
-	var v_editor_div = document.getElementById(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editorDivId);
+	var v_editor_div = /** @type {HTMLElement} */ (
+		document.getElementById(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editorDivId)
+	);
 	var v_result_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
 
 	if (v_height_diff < 0) {
@@ -997,7 +1010,9 @@ export function checkTabStatus(v_tab) {
 /// </summary>
 /** @param {string|false} [p_mode] */
 export function indentSQL(p_mode = false) {
+	/** @type {any} */
 	var v_tab_tag = null;
+	/** @type {any} */
 	var v_editor = null;
 	let v_mode = p_mode;
 
@@ -1440,7 +1455,7 @@ export function drop(event, grid_container, div_left, div_right) {
 		event.target.appendChild(document.getElementById(data));
 
 		let pos = parseInt(event.srcElement.getBoundingClientRect().left);
-		let space = parseInt(window.innerWidth);
+		let space = window.innerWidth;
 		let cells = Math.round((pos * 12) / space);
 
 		div_left.classList = [" omnidb__workspace__div-left col-md-" + cells];
@@ -1461,10 +1476,9 @@ export function drop(event, grid_container, div_left, div_right) {
  * @desc Gets the Y position of the pointer event.
  *
  * @param  {Object} p_event UI action pointer event.
- * @return {String}         The Y position of the pointer in pixels.
  */
 export function getVerticalLinePosition(p_event) {
-	document.getElementById("vertical-resize-line").style.top = p_event.pageY + "px";
+	/** @type {HTMLElement} */ (document.getElementById("vertical-resize-line")).style.top = p_event.pageY + "px";
 }
 
 export function toggleExpandToPanelView(p_target_id) {
@@ -1499,10 +1513,9 @@ export function updateExplainComponent() {
  * ## getAttributesTooltip
  * @desc Creates and applies tooltip attributes to the target.
  *
- * @param  {string} title   Title string.
- * @param  {string} message Message string, accepts html.
+ * @param  {string|null} [p_title]   Title string.
+ * @param  {string|null} [p_message] Message string, accepts html.
  * @param {string|false} [p_position]
- * @return {string}         HTML string.
  */
 export function getAttributesTooltip(p_target, p_title, p_message, p_position = false) {
 	let v_html = "";
@@ -1522,8 +1535,8 @@ export function getAttributesTooltip(p_target, p_title, p_message, p_position = 
  * ## getStringTooltip
  * @desc Creates html string that renders as a tooltip.
  *
- * @param  {string} title   Title string.
- * @param  {string} message Message string, accepts html.
+ * @param  {string|null} [p_title]   Title string.
+ * @param  {string|null} [p_message] Message string, accepts html.
  * @return {string}         HTML string.
  */
 export function getStringTooltip(p_title, p_message, p_position = false) {
@@ -1547,10 +1560,9 @@ export function getStringTooltip(p_title, p_message, p_position = false) {
  * ## getAttributesOmniDBTooltip
  * @desc Creates and applies tooltip attributes to the target.
  *
- * @param  {string} title   Title string.
- * @param  {string} message Message string, accepts html.
+ * @param  {string|null} [p_title]   Title string.
+ * @param  {string|null} [p_message] Message string, accepts html.
  * @param {string|false} [p_position]
- * @return {string}         HTML string.
  */
 export function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_position = false) {
 	let v_html = '<div class="omnidb__tooltip__inner tooltip-inner"><div class="arrow"></div>';
@@ -1643,6 +1655,6 @@ export function uiCopyTextToClipboard(p_value) {
 }
 
 export function toggleConnectionAutocomplete(p_toggler_id) {
-	let checked = document.getElementById(p_toggler_id).checked;
+	let checked = /** @type {HTMLInputElement} */ (document.getElementById(p_toggler_id)).checked;
 	v_connTabControl.selectedTab.tag.enable_autocomplete = checked;
 }

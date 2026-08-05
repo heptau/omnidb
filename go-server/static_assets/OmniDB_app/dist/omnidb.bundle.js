@@ -32191,7 +32191,9 @@
     __proto__: null,
     startTutorial
   }, Symbol.toStringTag, { value: "Module" }));
-  var v_edges, v_nodes, v_start_height;
+  var v_edges;
+  var v_nodes;
+  var v_start_height;
   $(function() {
     v_connTabControl = createTabControl({
       p_div: "omnidb_main_tablist",
@@ -32394,14 +32396,20 @@
     } else {
       v_target_div = v_connTabControl.selectedTab.elementDiv;
     }
-    $(v_target_div).find(".dbms_object").each(function() {
-      $(this).css("display", "none");
-    });
-    $(v_target_div).find("." + v_dbms + "_object").each(function() {
-      if (!$(this).hasClass("dbms_object_hidden")) {
-        $(this).css("display", "inline-block");
+    $(v_target_div).find(".dbms_object").each(
+      /** @this {any} */
+      function() {
+        $(this).css("display", "none");
       }
-    });
+    );
+    $(v_target_div).find("." + v_dbms + "_object").each(
+      /** @this {any} */
+      function() {
+        if (!$(this).hasClass("dbms_object_hidden")) {
+          $(this).css("display", "inline-block");
+        }
+      }
+    );
   }
   function drawGraph(p_all, p_schema) {
     execAjax$1(
@@ -32416,17 +32424,17 @@
         v_nodes = [];
         v_edges = [];
         for (var i2 = 0; i2 < p_return.v_data.v_nodes.length; i2++) {
-          var v_node_object = new Object();
-          v_node_object.data = new Object();
-          v_node_object.position = new Object();
+          var v_node_object = {};
+          v_node_object.data = {};
+          v_node_object.position = {};
           v_node_object.data.id = p_return.v_data.v_nodes[i2].id;
           v_node_object.data.label = p_return.v_data.v_nodes[i2].label;
           v_node_object.classes = "group" + p_return.v_data.v_nodes[i2].group;
           v_nodes.push(v_node_object);
         }
         for (var i2 = 0; i2 < p_return.v_data.v_edges.length; i2++) {
-          var v_edge_object = new Object();
-          v_edge_object.data = new Object();
+          var v_edge_object = {};
+          v_edge_object.data = {};
           v_edge_object.data.source = p_return.v_data.v_edges[i2].from;
           v_edge_object.data.target = p_return.v_data.v_edges[i2].to;
           v_edge_object.data.label = p_return.v_data.v_edges[i2].label;
@@ -32540,7 +32548,11 @@
     showConfirm(
       "",
       function() {
-        renameTabConfirm(p_tab, document.getElementById("tab_name").value);
+        renameTabConfirm(
+          p_tab,
+          /** @type {HTMLInputElement} */
+          document.getElementById("tab_name").value
+        );
       },
       null,
       function() {
@@ -32551,9 +32563,15 @@
         document.getElementById("modal_message_content").appendChild(v_input);
         v_input.value = p_tab.tag.tab_title_span.textContent;
         v_input.onkeydown = function() {
-          if (event.keyCode == 13) {
+          if (
+            /** @type {any} */
+            event.keyCode == 13
+          ) {
             document.getElementById("modal_message_ok").click();
-          } else if (event.keyCode == 27) {
+          } else if (
+            /** @type {any} */
+            event.keyCode == 27
+          ) {
             document.getElementById("modal_message_cancel").click();
           }
         };
@@ -32711,7 +32729,7 @@
     document.body.removeEventListener("mouseup", resizeConnectionHorizontalEnd);
     var v_horizontal_line = document.getElementById("horizontal-resize-line");
     if (v_horizontal_line) {
-      document.getElementById("horizontal-resize-line").remove();
+      v_horizontal_line.remove();
     }
     document.body.removeEventListener("mousemove", horizontalLinePosition);
     var v_div_left = v_connTabControl.selectedTab.tag.divLeft;
@@ -32757,7 +32775,10 @@
     document.getElementById("vertical-resize-line").remove();
     document.body.removeEventListener("mousemove", getVerticalLinePosition);
     var v_height_diff = event2.screenY - v_start_height;
-    var v_editor_div = document.getElementById(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editorDivId);
+    var v_editor_div = (
+      /** @type {HTMLElement} */
+      document.getElementById(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editorDivId)
+    );
     var v_result_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
     if (v_height_diff < 0) {
       if (Math.abs(v_height_diff) > parseInt(v_editor_div.style.height, 10))
@@ -33245,7 +33266,7 @@
       var data = event2.dataTransfer.getData("Text");
       event2.target.appendChild(document.getElementById(data));
       let pos = parseInt(event2.srcElement.getBoundingClientRect().left);
-      let space = parseInt(window.innerWidth);
+      let space = window.innerWidth;
       let cells = Math.round(pos * 12 / space);
       div_left.classList = [" omnidb__workspace__div-left col-md-" + cells];
       div_right.classList = [" omnidb__workspace__div-right col-md-" + (12 - cells)];
@@ -33392,7 +33413,10 @@
     showAlert(v_safe_html, null, null, true);
   }
   function toggleConnectionAutocomplete(p_toggler_id) {
-    let checked = document.getElementById(p_toggler_id).checked;
+    let checked = (
+      /** @type {HTMLInputElement} */
+      document.getElementById(p_toggler_id).checked
+    );
     v_connTabControl.selectedTab.tag.enable_autocomplete = checked;
   }
   const workspace = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
