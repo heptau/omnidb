@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -1255,9 +1256,9 @@ export function getTreeOracle(p_div) {
 	// Binding for the autocomplete switch just built above, replacing the
 	// onchange attribute that spliced the element's own id into itself as a string
 	// literal -- see dom_event_bindings.js and README.md.
-	document
-		.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id)
-		.addEventListener("change", (event) => toggleConnectionAutocomplete(event.target.id));
+	/** @type {HTMLElement} */ (
+		document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id)
+	).addEventListener("change", (event) => toggleConnectionAutocomplete(/** @type {HTMLElement} */ (event.target).id));
 
 	tree.nodeAfterOpenEvent = function (node) {
 		refreshTreeOracle(node);
@@ -3521,7 +3522,6 @@ export function TemplateSelectOracle(p_schema, p_table) {
 		JSON.stringify({
 			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 			p_tab_id: v_connTabControl.selectedTab.id,
-			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
 		}),
@@ -3554,7 +3554,6 @@ export function TemplateInsertOracle(p_schema, p_table) {
 		JSON.stringify({
 			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
 			p_tab_id: v_connTabControl.selectedTab.id,
-			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
 		}),
@@ -3578,7 +3577,6 @@ export function TemplateUpdateOracle(p_schema, p_table) {
 		"/template_update_oracle/",
 		JSON.stringify({
 			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-			p_tab_id: v_connTabControl.selectedTab.id,
 			p_tab_id: v_connTabControl.selectedTab.id,
 			p_table: p_table,
 			p_schema: p_schema,
