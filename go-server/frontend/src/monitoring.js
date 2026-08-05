@@ -64,6 +64,35 @@ export function sanitizeLegend(p_html) {
 	return v_tmp.innerHTML;
 }
 
+// Chart.js v2 had a chart.generateLegend()/options.legendCallback pair for
+// building a custom HTML legend from a chart instance; both were removed in
+// v3+ with no replacement. The documented v3+ way to get the same per-item
+// {text, fillStyle, ...} data Chart.js's own built-in legend renders from is
+// to call the legend plugin's own generateLabels straight off the chart
+// instance -- this works whether or not the built-in legend is actually
+// displayed (see the "legend.display = false" toggle at each call site,
+// which exists so this custom label strip can replace it instead).
+function buildChartLegendHtml(p_chart) {
+	var v_items = p_chart.options.plugins.legend.labels.generateLabels(p_chart);
+	var v_text = [];
+	for (var i = 0; i < v_items.length; i++) {
+		v_text.push(
+			'<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' +
+				v_items[i].fillStyle +
+				'"></span><span id="legend-' +
+				i +
+				// No onclick: this used to call updateDataset(event, ...), a function
+				// that has never existed anywhere in this repository's history --
+				// clicking a legend label threw a ReferenceError. Toggling a dataset
+				// from the legend would be a feature to add, not a call to restore.
+				'-item" class="dashboard_unit_label">' +
+				v_items[i].text +
+				"</span></span>",
+		);
+	}
+	return v_text.join("");
+}
+
 export function closeMonitorUnit(p_div) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
@@ -562,40 +591,23 @@ $("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
 					try {
 						v_return_unit.v_object.options.responsive = true;
 						v_return_unit.v_object.options.maintainAspectRatio = false;
-						if (v_return_unit.v_object.options.legend == null) {
-							v_return_unit.v_object.options.legend = {
+						if (v_return_unit.v_object.options.plugins == null) {
+							v_return_unit.v_object.options.plugins = {};
+						}
+						if (v_return_unit.v_object.options.plugins.legend == null) {
+							v_return_unit.v_object.options.plugins.legend = {
 								display: false,
 							};
 							v_show_legend = true;
 						} else {
-							if (v_return_unit.v_object.options.legend.display == true) v_show_legend = true;
-							v_return_unit.v_object.options.legend.display = false;
+							if (v_return_unit.v_object.options.plugins.legend.display == true) v_show_legend = true;
+							v_return_unit.v_object.options.plugins.legend.display = false;
 						}
 					} catch (err) {}
-					v_return_unit.v_object.options.legendCallback = function (chart) {
-						var text = [];
-						for (var i = 0; i < chart.legend.legendItems.length; i++) {
-							text.push(
-								'<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' +
-									chart.legend.legendItems[i].fillStyle +
-									'"></span><span id="legend-' +
-									i +
-									// No onclick: this used to call updateDataset(event, ...), a function
-									// that has never existed anywhere in this repository's history --
-									// clicking a legend label threw a ReferenceError. Toggling a dataset
-									// from the legend would be a feature to add, not a call to restore.
-									'-item" class="dashboard_unit_label">' +
-									chart.legend.legendItems[i].text +
-									"</span></span>",
-							);
-						}
-						return text.join("");
-					};
 					v_tab_tag.object = new Chart(ctx, v_return_unit.v_object);
 					adjustChartTheme(v_tab_tag.object);
 					if (v_show_legend) {
-						var v_legend = v_tab_tag.object.generateLegend();
-						v_tab_tag.div_result_label.innerHTML = sanitizeLegend(v_legend);
+						v_tab_tag.div_result_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_tab_tag.object));
 					}
 				} else if (v_type == "grid") {
 					var columnProperties = [];
@@ -922,40 +934,23 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 								try {
 									v_return_unit.v_object.options.responsive = true;
 									v_return_unit.v_object.options.maintainAspectRatio = false;
-									if (v_return_unit.v_object.options.legend == null) {
-										v_return_unit.v_object.options.legend = {
+									if (v_return_unit.v_object.options.plugins == null) {
+										v_return_unit.v_object.options.plugins = {};
+									}
+									if (v_return_unit.v_object.options.plugins.legend == null) {
+										v_return_unit.v_object.options.plugins.legend = {
 											display: false,
 										};
 										v_show_legend = true;
 									} else {
-										if (v_return_unit.v_object.options.legend.display == true) v_show_legend = true;
-										v_return_unit.v_object.options.legend.display = false;
+										if (v_return_unit.v_object.options.plugins.legend.display == true) v_show_legend = true;
+										v_return_unit.v_object.options.plugins.legend.display = false;
 									}
 								} catch (err) {}
-								v_return_unit.v_object.options.legendCallback = function (chart) {
-									var text = [];
-									for (var j = 0; j < chart.legend.legendItems.length; j++) {
-										text.push(
-											'<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' +
-												chart.legend.legendItems[j].fillStyle +
-												'"></span><span id="legend-' +
-												i +
-												// No onclick: this used to call updateDataset(event, ...), a function
-												// that has never existed anywhere in this repository's history --
-												// clicking a legend label threw a ReferenceError. Toggling a dataset
-												// from the legend would be a feature to add, not a call to restore.
-												'-item" class="dashboard_unit_label">' +
-												chart.legend.legendItems[j].text +
-												"</span></span>",
-										);
-									}
-									return text.join("");
-								};
 								var v_chart = new Chart(ctx, v_return_unit.v_object);
 								adjustChartTheme(v_chart);
 								if (v_show_legend) {
-									var v_legend = v_chart.generateLegend();
-									v_unit.div_label.innerHTML = sanitizeLegend(v_legend);
+									v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_chart));
 								}
 
 								v_unit.object = v_chart;
@@ -1056,16 +1051,15 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 									v_unit.object.data.labels = v_return_unit.v_object.labels;
 
 									//update title
-									if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.title) {
-										v_unit.object.options.title.text = v_return_unit.v_object.title;
+									if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.plugins && v_unit.object.options.plugins.title) {
+										v_unit.object.options.plugins.title.text = v_return_unit.v_object.title;
 									}
 
 									try {
 										v_unit.object.update();
 										if (v_need_rebuild_legend) {
 											//rebuild labels
-											var v_legend = v_unit.object.generateLegend();
-											v_unit.div_label.innerHTML = sanitizeLegend(v_legend);
+											v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_unit.object));
 										}
 									} catch (err) {}
 								}
@@ -1116,16 +1110,15 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 									}
 
 									//update title
-									if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.title) {
-										v_unit.object.options.title.text = v_return_unit.v_object.title;
+									if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.plugins && v_unit.object.options.plugins.title) {
+										v_unit.object.options.plugins.title.text = v_return_unit.v_object.title;
 									}
 
 									try {
 										v_unit.object.update();
 										if (v_need_rebuild_legend) {
 											//rebuild labels
-											var v_legend = v_unit.object.generateLegend();
-											v_unit.div_label.innerHTML = sanitizeLegend(v_legend);
+											v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_unit.object));
 										}
 									} catch (err) {}
 								}

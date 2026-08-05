@@ -173,7 +173,7 @@ func buildCustomMonitorTimeseries(rows *sql.Rows, cols []string, previous map[st
 			"label":           name,
 			"backgroundColor": chartColorAt(i, 0.4),
 			"borderColor":     chartColorAt(i, 1),
-			"lineTension":     0,
+			"tension":         0,
 			"pointRadius":     0,
 			"borderWidth":     1,
 			"data":            []any{values[i]},
@@ -242,8 +242,10 @@ func buildCustomMonitorChart(rows *sql.Rows, cols []string, chartType string, pr
 			"data": map[string]any{"labels": labels, "datasets": datasets},
 			"options": map[string]any{
 				"responsive": true,
-				"legend":     map[string]any{"display": false},
-				"title":      mkTitle(false, ""),
+				"plugins": map[string]any{
+					"legend": map[string]any{"display": false},
+					"title":  mkTitle(false, ""),
+				},
 			},
 		}, nil
 	}

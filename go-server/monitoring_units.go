@@ -75,6 +75,10 @@ func mkTitle(display bool, text string) map[string]any {
 // lineChart mirrors every built-in unit's script_chart shape: a Chart.js
 // "line" config with "data": nil (filled in by the caller with script_data's
 // result, mirroring Python's `result['data'] = data`).
+//
+// Config keys use Chart.js v4's shape (plugins.legend/title/tooltip,
+// scales.x/scales.y, axis "title" instead of v2's "scaleLabel") — see
+// chartjs-global.js's comment for why v4 no longer needs moment.js at all.
 func lineChart(titleDisplay bool, titleText, yLabel string, yMax any, xAxisLabelDisplay bool) map[string]any {
 	yAxisTicks := map[string]any{"beginAtZero": true}
 	if yMax != nil {
@@ -84,21 +88,23 @@ func lineChart(titleDisplay bool, titleText, yLabel string, yMax any, xAxisLabel
 		"type": "line",
 		"data": nil,
 		"options": map[string]any{
-			"legend":     map[string]any{"display": false},
 			"responsive": true,
-			"title":      mkTitle(titleDisplay, titleText),
-			"tooltips":   map[string]any{"mode": "index", "intersect": false},
-			"hover":      map[string]any{"mode": "nearest", "intersect": true},
+			"plugins": map[string]any{
+				"legend":  map[string]any{"display": false},
+				"title":   mkTitle(titleDisplay, titleText),
+				"tooltip": map[string]any{"mode": "index", "intersect": false},
+			},
+			"hover": map[string]any{"mode": "nearest", "intersect": true},
 			"scales": map[string]any{
-				"xAxes": []any{map[string]any{
-					"display":    true,
-					"scaleLabel": map[string]any{"display": xAxisLabelDisplay, "labelString": "Time"},
-				}},
-				"yAxes": []any{map[string]any{
-					"display":    true,
-					"scaleLabel": map[string]any{"display": true, "labelString": yLabel},
-					"ticks":      yAxisTicks,
-				}},
+				"x": map[string]any{
+					"display": true,
+					"title":   map[string]any{"display": xAxisLabelDisplay, "text": "Time"},
+				},
+				"y": map[string]any{
+					"display": true,
+					"title":   map[string]any{"display": true, "text": yLabel},
+					"ticks":   yAxisTicks,
+				},
 			},
 		},
 	}
@@ -109,7 +115,7 @@ func singleDataset(label string, value any) []any {
 		"label":           label,
 		"backgroundColor": "rgba(129,223,129,0.4)",
 		"borderColor":     "rgba(129,223,129,1)",
-		"lineTension":     0,
+		"tension":         0,
 		"pointRadius":     0,
 		"borderWidth":     1,
 		"data":            []any{value},

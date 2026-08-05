@@ -102,14 +102,14 @@ export function adjustChartTheme(p_chart) {
 	}
 
 	try {
-		p_chart.legend.options.labels.fontColor = v_chart_font_color;
-		p_chart.options.title.fontColor = v_chart_font_color;
-		p_chart.scales["y-axis-0"].options.gridLines.color = v_chart_grid_color;
-		p_chart.scales["x-axis-0"].options.gridLines.color = v_chart_grid_color;
-		p_chart.scales["y-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
-		p_chart.scales["y-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
-		p_chart.scales["x-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
-		p_chart.scales["x-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
+		p_chart.options.plugins.legend.labels.color = v_chart_font_color;
+		p_chart.options.plugins.title.color = v_chart_font_color;
+		p_chart.options.scales.y.grid.color = v_chart_grid_color;
+		p_chart.options.scales.x.grid.color = v_chart_grid_color;
+		p_chart.options.scales.y.ticks.color = v_chart_font_color;
+		p_chart.options.scales.y.title.color = v_chart_font_color;
+		p_chart.options.scales.x.ticks.color = v_chart_font_color;
+		p_chart.options.scales.x.title.color = v_chart_font_color;
 	} catch (err) {}
 	p_chart.update();
 }
@@ -183,8 +183,11 @@ export function changeTheme(p_option) {
 	});
 
 	if (typeof Chart !== "undefined") {
-		Chart.helpers.each(Chart.instances, function (instance) {
-			adjustChartTheme(instance.chart);
+		// Chart.js v3+ dropped Chart.helpers.each as a general iterator, and
+		// Chart.instances is keyed by chart.id -> the chart instance itself
+		// directly (v2's `.chart` wrapper is gone too).
+		Object.values(Chart.instances).forEach(function (instance) {
+			adjustChartTheme(instance);
 		});
 	}
 

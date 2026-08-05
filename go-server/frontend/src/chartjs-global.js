@@ -1,23 +1,60 @@
 // @ts-check
 /**
- * Replaces the `<script src=".../lib/chartjs/Chart.bundle.js">` and
- * `.../chartjs-plugin-annotation.min.js` tags with the real npm packages,
- * published on `window` in the same spot.
+ * Replaces the `<script src=".../lib/chartjs/Chart.bundle.js">` tag with the
+ * real npm package, published on `window` in the same spot.
  *
- * The vendored "Chart.bundle.js" hashed identical to chart.js@2.9.4's own
- * `dist/Chart.bundle.min.js` under a plain name (like bootstrap.min.js did);
- * chartjs-plugin-annotation@0.5.7 differed from the vendored copy only in
- * comment indentation and a trailing newline. Neither has a local patch.
+ * `chart.js@2` forced a hard dependency on moment.js just to exist (its
+ * "time" scale required it unconditionally, even though nothing in this app
+ * ever configures a time axis -- every chart's x-axis is a plain category
+ * scale fed pre-formatted label strings from the Go side). `chart.js@4`
+ * dropped that: time scales are opt-in via a separate date-adapter package
+ * this app doesn't need at all, so moment is no longer pulled in by Chart.js.
  *
- * Importing the plain `chart.js` package instead of the bundle lets Chart.js's
- * own `require('moment')` resolve to the `moment` dependency this project
- * already has, rather than embedding a second copy of it. The annotation
- * plugin does its own `require('chart.js')` internally and mutates that same
- * module's `Chart.Annotation` namespace and plugin registry as a side effect
- * -- since both imports resolve to the identical module instance, that patches
- * the exact object this file publishes to `window.Chart`.
+ * `chartjs-plugin-annotation` was also dropped entirely -- grepping every
+ * chart config built anywhere in this codebase (Go and JS) for an
+ * `annotation:` option turned up nothing: the plugin was wired up but never
+ * actually configured by any chart.
+ *
+ * v4 requires explicitly registering whichever controllers/elements/scales/
+ * plugins a chart actually uses (nothing auto-registers, unlike v2/the
+ * `chart.js/auto` entry point) -- this app's chart type is always one of
+ * exactly four fixed values (see inner_monitoring_dashboard_tab.js's
+ * select_chart_type: "bar"/"pie"/"doughnut"/"line", the only options in that
+ * dropdown; monitoring_units.go's built-in units are always "line"), so
+ * registering precisely those keeps the bundle smaller than pulling in every
+ * chart type Chart.js ships.
  */
-import Chart from 'chart.js'
-import 'chartjs-plugin-annotation'
+import {
+	ArcElement,
+	BarController,
+	BarElement,
+	CategoryScale,
+	Chart,
+	DoughnutController,
+	Legend,
+	LinearScale,
+	LineController,
+	LineElement,
+	PieController,
+	PointElement,
+	Title,
+	Tooltip,
+} from 'chart.js'
+
+Chart.register(
+	ArcElement,
+	BarController,
+	BarElement,
+	CategoryScale,
+	DoughnutController,
+	Legend,
+	LinearScale,
+	LineController,
+	LineElement,
+	PieController,
+	PointElement,
+	Title,
+	Tooltip,
+)
 
 window.Chart = Chart

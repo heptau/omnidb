@@ -10381,6 +10381,20 @@
     }
     return v_tmp.innerHTML;
   }
+  function buildChartLegendHtml(p_chart) {
+    var v_items = p_chart.options.plugins.legend.labels.generateLabels(p_chart);
+    var v_text = [];
+    for (var i2 = 0; i2 < v_items.length; i2++) {
+      v_text.push(
+        '<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' + v_items[i2].fillStyle + '"></span><span id="legend-' + i2 + // No onclick: this used to call updateDataset(event, ...), a function
+        // that has never existed anywhere in this repository's history --
+        // clicking a legend label threw a ReferenceError. Toggling a dataset
+        // from the legend would be a feature to add, not a call to restore.
+        '-item" class="dashboard_unit_label">' + v_items[i2].text + "</span></span>"
+      );
+    }
+    return v_text.join("");
+  }
   function closeMonitorUnit(p_div) {
     var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     for (var i2 = 0; i2 < v_tab_tag2.units.length; i2++) {
@@ -10803,35 +10817,24 @@
             try {
               v_return_unit.v_object.options.responsive = true;
               v_return_unit.v_object.options.maintainAspectRatio = false;
-              if (v_return_unit.v_object.options.legend == null) {
-                v_return_unit.v_object.options.legend = {
+              if (v_return_unit.v_object.options.plugins == null) {
+                v_return_unit.v_object.options.plugins = {};
+              }
+              if (v_return_unit.v_object.options.plugins.legend == null) {
+                v_return_unit.v_object.options.plugins.legend = {
                   display: false
                 };
                 v_show_legend = true;
               } else {
-                if (v_return_unit.v_object.options.legend.display == true) v_show_legend = true;
-                v_return_unit.v_object.options.legend.display = false;
+                if (v_return_unit.v_object.options.plugins.legend.display == true) v_show_legend = true;
+                v_return_unit.v_object.options.plugins.legend.display = false;
               }
             } catch (err) {
             }
-            v_return_unit.v_object.options.legendCallback = function(chart) {
-              var text = [];
-              for (var i2 = 0; i2 < chart.legend.legendItems.length; i2++) {
-                text.push(
-                  '<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' + chart.legend.legendItems[i2].fillStyle + '"></span><span id="legend-' + i2 + // No onclick: this used to call updateDataset(event, ...), a function
-                  // that has never existed anywhere in this repository's history --
-                  // clicking a legend label threw a ReferenceError. Toggling a dataset
-                  // from the legend would be a feature to add, not a call to restore.
-                  '-item" class="dashboard_unit_label">' + chart.legend.legendItems[i2].text + "</span></span>"
-                );
-              }
-              return text.join("");
-            };
             v_tab_tag2.object = new Chart(ctx, v_return_unit.v_object);
             adjustChartTheme(v_tab_tag2.object);
             if (v_show_legend) {
-              var v_legend = v_tab_tag2.object.generateLegend();
-              v_tab_tag2.div_result_label.innerHTML = sanitizeLegend(v_legend);
+              v_tab_tag2.div_result_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_tab_tag2.object));
             }
           } else if (v_type2 == "grid") {
             var columnProperties = [];
@@ -11111,35 +11114,24 @@
                   try {
                     v_return_unit.v_object.options.responsive = true;
                     v_return_unit.v_object.options.maintainAspectRatio = false;
-                    if (v_return_unit.v_object.options.legend == null) {
-                      v_return_unit.v_object.options.legend = {
+                    if (v_return_unit.v_object.options.plugins == null) {
+                      v_return_unit.v_object.options.plugins = {};
+                    }
+                    if (v_return_unit.v_object.options.plugins.legend == null) {
+                      v_return_unit.v_object.options.plugins.legend = {
                         display: false
                       };
                       v_show_legend = true;
                     } else {
-                      if (v_return_unit.v_object.options.legend.display == true) v_show_legend = true;
-                      v_return_unit.v_object.options.legend.display = false;
+                      if (v_return_unit.v_object.options.plugins.legend.display == true) v_show_legend = true;
+                      v_return_unit.v_object.options.plugins.legend.display = false;
                     }
                   } catch (err) {
                   }
-                  v_return_unit.v_object.options.legendCallback = function(chart) {
-                    var text = [];
-                    for (var j3 = 0; j3 < chart.legend.legendItems.length; j3++) {
-                      text.push(
-                        '<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' + chart.legend.legendItems[j3].fillStyle + '"></span><span id="legend-' + i3 + // No onclick: this used to call updateDataset(event, ...), a function
-                        // that has never existed anywhere in this repository's history --
-                        // clicking a legend label threw a ReferenceError. Toggling a dataset
-                        // from the legend would be a feature to add, not a call to restore.
-                        '-item" class="dashboard_unit_label">' + chart.legend.legendItems[j3].text + "</span></span>"
-                      );
-                    }
-                    return text.join("");
-                  };
                   var v_chart = new Chart(ctx, v_return_unit.v_object);
                   adjustChartTheme(v_chart);
                   if (v_show_legend) {
-                    var v_legend = v_chart.generateLegend();
-                    v_unit.div_label.innerHTML = sanitizeLegend(v_legend);
+                    v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_chart));
                   }
                   v_unit.object = v_chart;
                 } else {
@@ -11209,14 +11201,13 @@
                       }
                     }
                     v_unit.object.data.labels = v_return_unit.v_object.labels;
-                    if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.title) {
-                      v_unit.object.options.title.text = v_return_unit.v_object.title;
+                    if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.plugins && v_unit.object.options.plugins.title) {
+                      v_unit.object.options.plugins.title.text = v_return_unit.v_object.title;
                     }
                     try {
                       v_unit.object.update();
                       if (v_need_rebuild_legend) {
-                        var v_legend = v_unit.object.generateLegend();
-                        v_unit.div_label.innerHTML = sanitizeLegend(v_legend);
+                        v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_unit.object));
                       }
                     } catch (err) {
                     }
@@ -11254,14 +11245,13 @@
                         v_unit.object.data.datasets.push(return_dataset);
                       }
                     }
-                    if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.title) {
-                      v_unit.object.options.title.text = v_return_unit.v_object.title;
+                    if (v_return_unit.v_object.title && v_unit.object.options && v_unit.object.options.plugins && v_unit.object.options.plugins.title) {
+                      v_unit.object.options.plugins.title.text = v_return_unit.v_object.title;
                     }
                     try {
                       v_unit.object.update();
                       if (v_need_rebuild_legend) {
-                        var v_legend = v_unit.object.generateLegend();
-                        v_unit.div_label.innerHTML = sanitizeLegend(v_legend);
+                        v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_unit.object));
                       }
                     } catch (err) {
                     }
@@ -19963,14 +19953,14 @@
       v_chart_grid_color = "rgba(100, 100, 100, 0.3)";
     }
     try {
-      p_chart.legend.options.labels.fontColor = v_chart_font_color;
-      p_chart.options.title.fontColor = v_chart_font_color;
-      p_chart.scales["y-axis-0"].options.gridLines.color = v_chart_grid_color;
-      p_chart.scales["x-axis-0"].options.gridLines.color = v_chart_grid_color;
-      p_chart.scales["y-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
-      p_chart.scales["y-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
-      p_chart.scales["x-axis-0"].options.ticks.minor.fontColor = v_chart_font_color;
-      p_chart.scales["x-axis-0"].options.scaleLabel.fontColor = v_chart_font_color;
+      p_chart.options.plugins.legend.labels.color = v_chart_font_color;
+      p_chart.options.plugins.title.color = v_chart_font_color;
+      p_chart.options.scales.y.grid.color = v_chart_grid_color;
+      p_chart.options.scales.x.grid.color = v_chart_grid_color;
+      p_chart.options.scales.y.ticks.color = v_chart_font_color;
+      p_chart.options.scales.y.title.color = v_chart_font_color;
+      p_chart.options.scales.x.ticks.color = v_chart_font_color;
+      p_chart.options.scales.x.title.color = v_chart_font_color;
     } catch (err) {
     }
     p_chart.update();
@@ -20035,8 +20025,8 @@
       ace.edit(el2).setTheme("ace/theme/" + v_editor_theme);
     });
     if (typeof Chart !== "undefined") {
-      Chart.helpers.each(Chart.instances, function(instance) {
-        adjustChartTheme(instance.chart);
+      Object.values(Chart.instances).forEach(function(instance) {
+        adjustChartTheme(instance);
       });
     }
     if (typeof v_connTabControl !== "undefined") {

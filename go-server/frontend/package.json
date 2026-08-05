@@ -24,8 +24,7 @@
     "@popperjs/core": "^2.11.8",
     "ag-grid-community": "28.0.2",
     "bootstrap": "5.3.3",
-    "chart.js": "2.9.4",
-    "chartjs-plugin-annotation": "0.5.7",
+    "chart.js": "^4.5.1",
     "jquery": "3.7.1",
     "moment": "^2.30.1"
   }
