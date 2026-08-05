@@ -57,6 +57,12 @@ SOFTWARE.
 // to use incrementally from here -- there was no need to invent structure
 // this pass just to have some.
 
+// _icons.scss is generated (see scripts/gen-icons.mjs) -- the Font Awesome
+// icon font replacement. Every existing `<i class="fas fa-x">` call site
+// across the JS bundle keeps working unchanged; only the CSS backing those
+// class names changed.
+@use "icons";
+
 .omnidb__theme-bg--menu-primary {
 	background-color: #f8f9fa;
 }

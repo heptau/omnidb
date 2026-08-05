@@ -9,11 +9,14 @@
     "build:css": "sass --style=expanded --source-map --no-charset scss/omnidb.scss:../static_assets/OmniDB_app/css/omnidb.min.css scss/login.scss:../static_assets/OmniDB_app/css/login.min.css",
     "build:css:release": "sass --style=compressed --source-map --no-charset scss/omnidb.scss:../static_assets/OmniDB_app/css/omnidb.min.css scss/login.scss:../static_assets/OmniDB_app/css/login.min.css",
     "check": "node scripts/check-bridge.mjs",
-    "typecheck": "tsc -p jsconfig.json"
+    "typecheck": "tsc -p jsconfig.json",
+    "gen-icons": "node scripts/gen-icons.mjs"
   },
   "devDependencies": {
     "@types/node": "^26.1.2",
+    "lucide-static": "^1.28.0",
     "sass": "^1.102.0",
+    "simple-icons": "^16.28.0",
     "typescript": "^7.0.2",
     "vite": "^6.4.3"
   },
