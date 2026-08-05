@@ -28009,7 +28009,10 @@
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
     v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle autocomplete.</h5><div>Switch OFF <b>disables the autocomplete</b> on the inner tabs for this connection.</div>"><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
-    document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(event2.target.id));
+    document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
+      /** @type {HTMLElement} */
+      event2.target.id
+    ));
     tree.nodeAfterOpenEvent = function(node) {
       refreshTreeMysql(node);
     };
