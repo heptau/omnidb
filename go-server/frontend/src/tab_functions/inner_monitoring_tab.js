@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -70,11 +71,11 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
 
 	// Adding unique names to spans
-	var v_tab_title_span = document.getElementById("tab_title");
+	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
 	v_tab_title_span.id = "tab_title_" + v_tab.id;
-	var v_tab_loading_span = document.getElementById("tab_loading");
+	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = document.getElementById("tab_check");
+	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 	// v_tab_close_span.id = 'tab_close_' + v_tab.id;
 	// v_tab_close_span.onclick = function(e) {
@@ -107,7 +108,7 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 	//   p_hierarchy: 'secondary'
 	// });
 
-	var v_bt_refresh = document.getElementById("bt_refresh_" + v_tab.id);
+	var v_bt_refresh = /** @type {HTMLElement} */ (document.getElementById("bt_refresh_" + v_tab.id));
 
 	var v_resizeFunction = function () {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -222,7 +223,8 @@ export function refreshMonitoring(p_tab_tag) {
 					v_data.v_data[i].unshift(v_actions_html);
 				}
 
-				var col = new Object();
+				/** @type {any} */
+				var col = {};
 				col.readOnly = true;
 				col.title = "Actions";
 				col.renderer = "html";
@@ -230,10 +232,11 @@ export function refreshMonitoring(p_tab_tag) {
 			}
 
 			for (var i = 0; i < v_data.v_col_names.length; i++) {
-				var col = new Object();
-				col.readOnly = true;
-				col.title = v_data.v_col_names[i];
-				columnProperties.push(col);
+				/** @type {any} */
+				var col2 = {};
+				col2.readOnly = true;
+				col2.title = v_data.v_col_names[i];
+				columnProperties.push(col2);
 			}
 
 			p_tab_tag.ht = new Handsontable(p_tab_tag.div_result, {

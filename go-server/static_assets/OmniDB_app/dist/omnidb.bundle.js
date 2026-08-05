@@ -8491,15 +8491,27 @@
       p_dblClickFunction: renameTab
     });
     v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-    var v_tab_title_span = document.getElementById("tab_title");
+    var v_tab_title_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_title")
+    );
     v_tab_title_span.id = "tab_title_" + v_tab.id;
-    var v_tab_loading_span = document.getElementById("tab_loading");
+    var v_tab_loading_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_loading")
+    );
     v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-    var v_tab_check_span = document.getElementById("tab_check");
+    var v_tab_check_span = (
+      /** @type {HTMLElement} */
+      document.getElementById("tab_check")
+    );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var v_html = "<div class='p-2 omnidb__theme-border--primary'><button id='bt_refresh_" + v_tab.id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 mr-1' title='Refresh'><i class='fas fa-sync-alt mr-2'></i>Refresh</button><span id='div_query_info_" + v_tab.id + "' class='query_info'></span><div id='div_result_" + v_tab.id + "' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: auto;'></div>";
     v_tab.elementDiv.innerHTML = v_html;
-    var v_bt_refresh = document.getElementById("bt_refresh_" + v_tab.id);
+    var v_bt_refresh = (
+      /** @type {HTMLElement} */
+      document.getElementById("bt_refresh_" + v_tab.id)
+    );
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.div_result) {
@@ -8581,17 +8593,17 @@
             }
             v_data.v_data[i2].unshift(v_actions_html);
           }
-          var col = new Object();
+          var col = {};
           col.readOnly = true;
           col.title = "Actions";
           col.renderer = "html";
           columnProperties.push(col);
         }
         for (var i2 = 0; i2 < v_data.v_col_names.length; i2++) {
-          var col = new Object();
-          col.readOnly = true;
-          col.title = v_data.v_col_names[i2];
-          columnProperties.push(col);
+          var col2 = {};
+          col2.readOnly = true;
+          col2.title = v_data.v_col_names[i2];
+          columnProperties.push(col2);
         }
         p_tab_tag.ht = new Handsontable(p_tab_tag.div_result, {
           licenseKey: "non-commercial-and-evaluation",
@@ -8629,7 +8641,7 @@
               }
             }
           },
-          cells: function(row, col2, prop) {
+          cells: function(row, col3, prop) {
             var cellProperties = {};
             if (row % 2 == 0) cellProperties.renderer = blueHtmlRenderer;
             else cellProperties.renderer = whiteHtmlRenderer;
