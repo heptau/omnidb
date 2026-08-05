@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -75,11 +76,11 @@ export var v_createEditDataTabFunction = function (p_table) {
 	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
 
 	// Adding unique names to spans
-	var v_tab_title_span = document.getElementById("tab_title");
+	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
 	v_tab_title_span.id = "tab_title_" + v_tab.id;
-	var v_tab_loading_span = document.getElementById("tab_loading");
+	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = document.getElementById("tab_check");
+	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 
 	// //Adding unique names to spans
@@ -148,7 +149,8 @@ export var v_createEditDataTabFunction = function (p_table) {
 
 	var v_height = window.innerHeight - $("#div_edit_data_data_" + v_tab.id).offset().top - 20;
 
-	document.getElementById("div_edit_data_data_" + v_tab.id).style.height = v_height + "px";
+	/** @type {HTMLElement} */ (document.getElementById("div_edit_data_data_" + v_tab.id)).style.height =
+		v_height + "px";
 
 	var langTools = ace.require("ace/ext/language_tools");
 	var v_editor = ace.edit("txt_filter_data_" + v_tab.id);
@@ -166,15 +168,14 @@ export var v_createEditDataTabFunction = function (p_table) {
 	v_editor.commands.bindKey("Ctrl-Up", null);
 	v_editor.commands.bindKey("Ctrl-Down", null);
 
-	document.getElementById("txt_filter_data_" + v_tab.id).onclick = function () {
+	/** @type {HTMLElement} */ (document.getElementById("txt_filter_data_" + v_tab.id)).onclick = function () {
 		v_editor.focus();
 	};
 
 	var qtags = {
 		getCompletions: function (editor, session, pos, prefix, callback) {
+			var wordlist = [];
 			if (v_completer_ready && prefix != "") {
-				var wordlist = [];
-
 				// (An addLoadingCursor()/removeLoadingCursor() pair used to bracket
 				// this request. Neither function has existed for a long time, so the
 				// first call threw and took the whole completer with it — autocomplete
@@ -240,10 +241,10 @@ export var v_createEditDataTabFunction = function (p_table) {
 		editorDivId: "txt_filter_data_" + v_tab.id,
 		query_info: document.getElementById("div_edit_data_query_info_" + v_tab.id),
 		div_result: document.getElementById("div_edit_data_data_" + v_tab.id),
-		sel_filtered_data: document.getElementById("sel_filtered_data_" + v_tab.id),
-		button_save: document.getElementById("bt_saveEditData_" + v_tab.id),
+		sel_filtered_data: /** @type {HTMLElement} */ (document.getElementById("sel_filtered_data_" + v_tab.id)),
+		button_save: /** @type {HTMLElement} */ (document.getElementById("bt_saveEditData_" + v_tab.id)),
 		sel_export_type: document.getElementById("sel_export_type_" + v_tab.id),
-		bt_cancel: document.getElementById("bt_cancel_" + v_tab.id),
+		bt_cancel: /** @type {HTMLElement} */ (document.getElementById("bt_cancel_" + v_tab.id)),
 		tab_title_span: v_tab_title_span,
 		tab_loading_span: v_tab_loading_span,
 		// tab_close_span : v_tab_close_span,
@@ -280,13 +281,16 @@ export var v_createEditDataTabFunction = function (p_table) {
 
 	// Toolbar bindings, replacing the on*= attributes the buttons above used to
 	// carry inside the HTML string -- see dom_event_bindings.js and README.md.
-	document.getElementById("bt_start_" + v_tab.id).addEventListener("click", () => queryEditData());
+	/** @type {HTMLElement} */ (document.getElementById("bt_start_" + v_tab.id)).addEventListener("click", () =>
+		queryEditData(),
+	);
 	v_tag.sel_filtered_data.addEventListener("change", () => queryEditData());
 	v_tag.bt_cancel.addEventListener("click", () => cancelEditData());
 	v_tag.button_save.addEventListener("click", () => saveEditData());
-	document
-		.getElementById("edit_data_resize_line_" + v_tab.id)
-		.addEventListener("mousedown", (event) => resizeVertical(event));
+	/** @type {HTMLElement} */ (document.getElementById("edit_data_resize_line_" + v_tab.id)).addEventListener(
+		"mousedown",
+		(event) => resizeVertical(event),
+	);
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
