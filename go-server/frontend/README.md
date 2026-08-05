@@ -41,11 +41,12 @@ must work on a machine with no Node installed, and `//go:embed` needs the files
 to already exist. CI rebuilds and fails if the committed output does not match
 the sources.
 
-## The five bundles
+## The six bundles
 
 | Bundle | Entry | Loaded by |
 | --- | --- | --- |
 | `omnidb.jquery.js` | `src/jquery-global.js` | both pages, where `lib/jquery/jquery.min.js` used to sit -- the very first `<script>` tag on each |
+| `omnidb.bootstrap.js` | `src/bootstrap-framework-global.js` | both pages, right after `omnidb.jquery.js`, where `lib/bootstrap/bootstrap.min.js` used to sit |
 | `omnidb.early.js` | `src/early.js` | `workspace.html`, before the inline `startLoading()` call |
 | `omnidb.login.js` | `src/login.js` | `login.html` |
 | `omnidb.moment.js` | `src/moment-global.js` | `workspace.html`, where `lib/moment/moment.min.js` used to sit |
@@ -57,8 +58,11 @@ points in the page, not for code-splitting. `ajax_control.js` reads
 `login.html` is a different page that only ever needed three of these files and
 has no use for the workspace's 1.2 MB; `jquery-global.js` has to publish
 `window.$`/`window.jQuery` before literally anything else on either page,
-including the other four bundles, since none of the ~39k lines that read those
-globals were rewritten to import jQuery for themselves; `moment-global.js` has
+including the other bundles, since none of the ~39k lines that read those
+globals were rewritten to import jQuery for themselves; `bootstrap-framework-global.js`
+keeps the same position its `<script>` tag always had, right after jQuery's,
+though nothing actually depends on that order (Bootstrap 5 does not need
+jQuery); `moment-global.js` has
 to publish `window.moment` before `daterangepicker.js`'s own `<script>` tag runs, since
 that file is not migrated yet and its UMD wrapper falls back to reading the
 global when no AMD/CommonJS loader is present.
@@ -199,19 +203,29 @@ Every line of workspace JavaScript this project owns is built from here.
 `static_assets/OmniDB_app/js/` is gone; `lib/` holds nothing but third-party
 code, still loaded as plain `<script>` tags:
 
-- Bootstrap, Ace (+ `mode-sql`, `ext-language_tools`), AG Grid, Cytoscape
-  (+ spread, klay), Chart.js (+ annotation plugin), xterm (+ fit),
-  daterangepicker, AimaraJS, and the pgexplain bundle (its own React, React-DOM
-  and D3).
+- Ace (+ `mode-sql`, `ext-language_tools`), AG Grid, Cytoscape (+ spread,
+  klay), Chart.js (+ annotation plugin), xterm (+ fit), daterangepicker,
+  AimaraJS, and the pgexplain bundle (its own React, React-DOM and D3).
+  `bootstrap.min.css` too — only the JS moved so far; the CSS side of this
+  migration is a separate, not-yet-started question.
 
-Two are moved to real npm packages so far:
+Three are moved to real npm packages so far:
 
 - `jquery` (`src/jquery-global.js`, its own tiny bundle — see above). The
   vendored copy hashed byte-identical to npm's `3.7.1`, so this is a pure
   delivery-mechanism swap: none of the ~39k lines reading the bare `$`/`jQuery`
-  globals had to change, and `globals.d.ts` still declares them for the same
-  reason moment's `execAjax`/`showAlert` stay declared — real imports
-  everywhere would be a much larger, separate change.
+  globals had to change, and `globals.d.ts` still declares them (plus
+  `window.bootstrap`, for the same reason) for the same reason moment's
+  `execAjax`/`showAlert` stay declared — real imports everywhere would be a
+  much larger, separate change.
+- `bootstrap` (`src/bootstrap-framework-global.js`, its own tiny bundle). The
+  vendored `bootstrap.min.js` turned out to be `bootstrap.bundle.min.js`
+  (Popper included) under a plain name — hashed identical once compared
+  against the right dist file. Imports the ESM build (`import * as bootstrap
+  from 'bootstrap'`) plus `@popperjs/core` as an ordinary dependency instead of
+  the pre-bundled file, which lets the bundler tree-shake unused components.
+  Named "framework", not "bootstrap-global.js", to stay well clear of
+  `bootstrap-globals.js` — unrelated, and one character away.
 - `moment` (`src/moment-global.js`, its own tiny bundle). It could not just
   become an ordinary import in the main bundle: `daterangepicker.js` is not
   migrated yet and reads `window.moment` at load time, so something has to
@@ -228,7 +242,8 @@ the npm `daterangepicker@3.1.0` package — otherwise the matching version —
 does not have. Diff the two before ever touching this one; swapping it for the
 plain npm package would silently reintroduce whatever picking bug that patch
 fixed. This is also a reason to diff first, not just version-match, for every
-other library still on this list — jQuery and moment happened to be clean.
+other library still on this list — jQuery, Bootstrap and moment happened to
+be clean.
 
 What is deliberately not done yet:
 

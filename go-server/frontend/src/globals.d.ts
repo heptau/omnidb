@@ -16,7 +16,6 @@
 
 declare const $: any;
 declare const jQuery: any;
-declare const bootstrap: any;
 declare const ace: any;
 declare const agGrid: any;
 declare const cytoscape: any;
@@ -27,8 +26,6 @@ declare const Terminal: any;
 declare const fit: any;
 /** AimaraJS, the object tree (lib/aimaraJS) */
 declare const createTree: any;
-/** Bootstrap's Tooltip constructor, used directly in the PostgreSQL tree */
-declare const Tooltip: any;
 /** The pgexplain bundle in lib/explain — ships its own React and D3 */
 declare const React: any;
 declare const ReactDOM: any;
@@ -42,6 +39,8 @@ interface Window {
 	/** Published by jquery-global.js -- see its comment. */
 	$: any;
 	jQuery: any;
+	/** Published by bootstrap-framework-global.js -- see its comment. */
+	bootstrap: any;
 	/**
 	 * early.js's `exposeGlobals(ajaxControl)` call publishes its instance of
 	 * ajax_control.js here before the main bundle runs. ajax_control_bridge.js
