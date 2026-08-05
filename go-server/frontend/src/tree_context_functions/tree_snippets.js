@@ -1,3 +1,4 @@
+// @ts-check
 /*
 This file is part of OmniDB.
 OmniDB is open-source software, distributed "AS IS" under the MIT license in the hope that it will be useful.
@@ -317,6 +318,7 @@ export function saveSnippetTextConfirm(p_save_object, p_text, p_callback) {
 			p_text: p_text,
 		}),
 		function (p_return) {
+			/** @type {any} */
 			var v_node = null;
 			if (p_return.v_data.parent == null) {
 				v_node = v_connTabControl.snippet_tree.childNodes[0];
@@ -355,7 +357,7 @@ export function newNodeSnippet(p_node, p_mode) {
 				JSON.stringify({
 					p_sn_id_parent: p_node.tag.id,
 					p_mode: p_mode,
-					p_name: document.getElementById("element_name").value,
+					p_name: /** @type {HTMLInputElement} */ (document.getElementById("element_name")).value,
 				}),
 				function (p_return) {
 					refreshTreeSnippets(p_node);
@@ -375,11 +377,13 @@ export function newNodeSnippet(p_node, p_mode) {
 			v_input.className = "form-control";
 			v_input.placeholder = v_placeholder;
 			v_input.style.width = "100%";
-			document.getElementById("modal_message_content").appendChild(v_input);
+			/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_input);
 
 			v_input.onkeydown = function () {
-				if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-				else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+				if (/** @type {any} */ (event).keyCode == 13)
+						/** @type {HTMLElement} */ (document.getElementById("modal_message_ok")).click();
+				else if (/** @type {any} */ (event).keyCode == 27)
+						/** @type {HTMLElement} */ (document.getElementById("modal_message_cancel")).click();
 			};
 			v_input.focus();
 			v_input.selectionStart = 0;
@@ -397,7 +401,7 @@ export function renameNodeSnippet(p_node) {
 				JSON.stringify({
 					p_id: p_node.tag.id,
 					p_mode: p_node.tag.type,
-					p_name: document.getElementById("element_name").value,
+					p_name: /** @type {HTMLInputElement} */ (document.getElementById("element_name")).value,
 				}),
 				function (p_return) {
 					refreshTreeSnippets(p_node.parent);
@@ -416,11 +420,13 @@ export function renameNodeSnippet(p_node) {
 			v_input.className = "form-control";
 			v_input.value = p_node.text;
 			v_input.style.width = "100%";
-			document.getElementById("modal_message_content").appendChild(v_input);
+			/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_input);
 
 			v_input.onkeydown = function () {
-				if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-				else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+				if (/** @type {any} */ (event).keyCode == 13)
+						/** @type {HTMLElement} */ (document.getElementById("modal_message_ok")).click();
+				else if (/** @type {any} */ (event).keyCode == 27)
+						/** @type {HTMLElement} */ (document.getElementById("modal_message_cancel")).click();
 			};
 			v_input.focus();
 			v_input.selectionStart = 0;
@@ -447,7 +453,7 @@ export function deleteNodeSnippet(p_node) {
 		},
 		null,
 		function () {
-			var v_input = document.getElementById("modal_message_ok");
+			var v_input = /** @type {HTMLElement} */ (document.getElementById("modal_message_ok"));
 			v_input.focus();
 		},
 	);
@@ -512,7 +518,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 						saveSnippetTextConfirm(
 							{
 								v_id: null,
-								v_name: document.getElementById("element_name").value,
+								v_name: /** @type {HTMLInputElement} */ (document.getElementById("element_name")).value,
 								v_parent: p_object.id,
 							},
 							p_editor.getValue(),
@@ -529,11 +535,13 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 						v_input.className = "form-control";
 						v_input.placeholder = "Snippet Name";
 						v_input.style.width = "100%";
-						document.getElementById("modal_message_content").appendChild(v_input);
+						/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_input);
 
 						v_input.onkeydown = function () {
-							if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-							else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+							if (/** @type {any} */ (event).keyCode == 13)
+						/** @type {HTMLElement} */ (document.getElementById("modal_message_ok")).click();
+							else if (/** @type {any} */ (event).keyCode == 27)
+						/** @type {HTMLElement} */ (document.getElementById("modal_message_cancel")).click();
 						};
 						v_input.focus();
 						v_input.selectionStart = 0;
@@ -572,7 +580,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 								// nodes (createTextNode) rather than interpolated
 								// into an HTML string, so it can never be
 								// rendered as markup regardless of its content.
-								var v_content_div = document.getElementById("modal_message_content");
+								var v_content_div = /** @type {HTMLElement} */ (document.getElementById("modal_message_content"));
 								var v_bold = document.createElement("b");
 								v_bold.textContent = "WARNING";
 								v_content_div.appendChild(v_bold);

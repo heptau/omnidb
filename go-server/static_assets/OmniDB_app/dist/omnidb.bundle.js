@@ -34106,7 +34106,10 @@
           JSON.stringify({
             p_sn_id_parent: p_node.tag.id,
             p_mode,
-            p_name: document.getElementById("element_name").value
+            p_name: (
+              /** @type {HTMLInputElement} */
+              document.getElementById("element_name").value
+            )
           }),
           function(p_return) {
             refreshTreeSnippets(p_node);
@@ -34125,8 +34128,16 @@
         v_input.style.width = "100%";
         document.getElementById("modal_message_content").appendChild(v_input);
         v_input.onkeydown = function() {
-          if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-          else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+          if (
+            /** @type {any} */
+            event.keyCode == 13
+          )
+            document.getElementById("modal_message_ok").click();
+          else if (
+            /** @type {any} */
+            event.keyCode == 27
+          )
+            document.getElementById("modal_message_cancel").click();
         };
         v_input.focus();
         v_input.selectionStart = 0;
@@ -34143,7 +34154,10 @@
           JSON.stringify({
             p_id: p_node.tag.id,
             p_mode: p_node.tag.type,
-            p_name: document.getElementById("element_name").value
+            p_name: (
+              /** @type {HTMLInputElement} */
+              document.getElementById("element_name").value
+            )
           }),
           function(p_return) {
             refreshTreeSnippets(p_node.parent);
@@ -34162,8 +34176,16 @@
         v_input.style.width = "100%";
         document.getElementById("modal_message_content").appendChild(v_input);
         v_input.onkeydown = function() {
-          if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-          else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+          if (
+            /** @type {any} */
+            event.keyCode == 13
+          )
+            document.getElementById("modal_message_ok").click();
+          else if (
+            /** @type {any} */
+            event.keyCode == 27
+          )
+            document.getElementById("modal_message_cancel").click();
         };
         v_input.focus();
         v_input.selectionStart = 0;
@@ -34188,7 +34210,10 @@
       },
       null,
       function() {
-        var v_input = document.getElementById("modal_message_ok");
+        var v_input = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_ok")
+        );
         v_input.focus();
       }
     );
@@ -34246,7 +34271,10 @@
               saveSnippetTextConfirm(
                 {
                   v_id: null,
-                  v_name: document.getElementById("element_name").value,
+                  v_name: (
+                    /** @type {HTMLInputElement} */
+                    document.getElementById("element_name").value
+                  ),
                   v_parent: p_object.id
                 },
                 p_editor.getValue(),
@@ -34262,8 +34290,16 @@
               v_input.style.width = "100%";
               document.getElementById("modal_message_content").appendChild(v_input);
               v_input.onkeydown = function() {
-                if (event.keyCode == 13) document.getElementById("modal_message_ok").click();
-                else if (event.keyCode == 27) document.getElementById("modal_message_cancel").click();
+                if (
+                  /** @type {any} */
+                  event.keyCode == 13
+                )
+                  document.getElementById("modal_message_ok").click();
+                else if (
+                  /** @type {any} */
+                  event.keyCode == 27
+                )
+                  document.getElementById("modal_message_cancel").click();
               };
               v_input.focus();
               v_input.selectionStart = 0;
@@ -34296,7 +34332,10 @@
                 },
                 null,
                 function() {
-                  var v_content_div = document.getElementById("modal_message_content");
+                  var v_content_div = (
+                    /** @type {HTMLElement} */
+                    document.getElementById("modal_message_content")
+                  );
                   var v_bold = document.createElement("b");
                   v_bold.textContent = "WARNING";
                   v_content_div.appendChild(v_bold);
