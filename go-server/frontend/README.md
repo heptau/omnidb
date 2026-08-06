@@ -41,7 +41,7 @@ must work on a machine with no Node installed, and `//go:embed` needs the files
 to already exist. CI rebuilds and fails if the committed output does not match
 the sources.
 
-## The eight bundles
+## The seven bundles
 
 | Bundle | Entry | Loaded by |
 | --- | --- | --- |
@@ -50,9 +50,14 @@ the sources.
 | `omnidb.early.js` | `src/early.js` | `workspace.html`, before the inline `startLoading()` call |
 | `omnidb.login.js` | `src/login.js` | `login.html` |
 | `omnidb.moment.js` | `src/moment-global.js` | `workspace.html`, where `lib/moment/moment.min.js` used to sit |
-| `omnidb.ag-grid.js` | `src/ag-grid-global.js` | `workspace.html`, where `lib/ag-grid/ag-grid-community.min.js` used to sit |
 | `omnidb.chartjs.js` | `src/chartjs-global.js` | `workspace.html`, where `Chart.bundle.js` + `chartjs-plugin-annotation.min.js` used to sit |
 | `omnidb.bundle.js` | `src/main.js` | `workspace.html`, after the third-party libraries |
+
+There used to be an eighth, `omnidb.ag-grid.js`. AG Grid is gone outright now
+(see "Where things stand"), and its replacement, `VirtualGrid.js`, is an
+ordinary module imported by `main.js` rather than something that needs to
+publish a global before a third-party `<script>` tag runs -- so it added no
+bundle of its own.
 
 They are separate because their `<script>` tags sit at genuinely different
 points in the page, not for code-splitting. `ajax_control.js` reads
@@ -67,10 +72,7 @@ though nothing actually depends on that order (Bootstrap 5 does not need
 jQuery); `moment-global.js` has
 to publish `window.moment` before `daterangepicker.js`'s own `<script>` tag runs, since
 that file is not migrated yet and its UMD wrapper falls back to reading the
-global when no AMD/CommonJS loader is present; `ag-grid-global.js` keeps the
-position its `<script>` tag always had too, though again nothing depends on
-it — AgGridAdapter.js only reaches `agGrid.Grid` well after every bundle has
-run.
+global when no AMD/CommonJS loader is present.
 
 Rollup cannot emit more than one IIFE bundle per build, so each has its own
 thin config file and `npm run build` runs them in sequence. The shared options
@@ -173,34 +175,31 @@ comment.
 
 ## Type checking
 
-`npm run typecheck` runs `tsc` over this directory. `checkJs` is **off**, so
-only files whose first line is `// @ts-check` are actually checked — running it
-against all ~39k unannotated lines would produce thousands of findings and
-nothing would ever go green.
+`npm run typecheck` runs `tsc` over this directory. `checkJs` is still **off**
+in `jsconfig.json` — there is no wholesale switch, a file is only checked if
+its first line is `// @ts-check` — but every one of the ~58 files under `src/`
+now carries it, file by file, one commit per file, over the course of this
+migration. `AgGridAdapter.js` was on that list at one point; it left with AG
+Grid rather than becoming an exception, and `VirtualGrid.js`, written after,
+had the pragma from its first commit. `npm run typecheck` is clean project-wide:
+zero findings, and CI fails on any regression.
 
-Add `// @ts-check` to a file when you work on it. The set can only grow, and CI
-fails if anything already in it regresses. Currently checked:
+"Cannot find name" — the failure mode a missing ambient declaration produces —
+was four at one point, all of them Advanced Object Search's, until that dead
+function was deleted. It has stayed at zero since.
 
-- the three bundle entry points, `legacy-globals.js`, `bootstrap-globals.js`
-- `AgGridAdapter.js`, `ajax_control_bridge.js`
-- `scripts/check-bridge.mjs`
-
-Running it over *everything* (set `checkJs` and see) reports 1,482 findings,
-down from 4,602 before cross-file references became imports. What is left is
-dominated by three shapes, none of which is a bug: property access on values
-typed `any` from the declarations above (TS2339, 409), possibly-null from a
-`getElementById` that is never checked (TS18047/TS2531/TS18048, 576 together),
-and calls that omit a trailing parameter the callee guards with `if (p_x)` —
-signatures that lie about being optional (TS2554, 217).
-
-"Cannot find name" is **zero**. It was four, all of them Advanced Object
-Search's, until that dead function was deleted.
-
-`src/globals.d.ts` declares the browser globals the bundle does not own —
-`agGrid`, `$`, `ace`, `window.Handsontable`. They are typed `any` on purpose:
-that is genuinely all that is known about them while they arrive as `<script>`
-tags, and pretending otherwise would be worse than saying so. Real types come
-with real npm packages.
+`src/globals.d.ts` declares the globals the bundle does not own outright —
+`$`, `ace`, `cytoscape`, `window.Handsontable`, and a dozen more. They are
+typed `any` on purpose: that is genuinely all that is known about a library
+arriving as a `<script>` tag, and pretending otherwise would be worse than
+saying so. `window.Handsontable` is declared for a related but different
+reason now that AG Grid is gone — VirtualGrid.js installs that global itself
+(a small factory function, not a third-party library) because the app's ~12
+call sites still reference the bare `Handsontable` identifier instead of
+importing the module; `any` here means "nothing imports this," not "this
+library's shape is unknowable." Real types come with real npm packages, or,
+for anything project-owned like VirtualGrid.js, with importing it directly
+instead of going through the global.
 
 ## Where things stand
 
@@ -210,11 +209,12 @@ code, still loaded as plain `<script>` tags:
 
 - Ace (+ `mode-sql`, `ext-language_tools`), Cytoscape (+ spread, klay),
   xterm (+ fit), daterangepicker, AimaraJS, and the pgexplain bundle (its own
-  React, React-DOM and D3). `bootstrap.min.css` and the AG Grid CSS/themes too
+  React, React-DOM and D3). `bootstrap.min.css` too
   — only each library's JS moved so far; the CSS side of this migration is a
-  separate, not-yet-started question.
+  separate, not-yet-started question. (The AG Grid CSS/themes that used to be
+  in this list are gone outright, not moved — see below.)
 
-Five are moved to real npm packages so far:
+Four are moved to real npm packages so far:
 
 - `jquery` (`src/jquery-global.js`, its own tiny bundle — see above). The
   vendored copy hashed byte-identical to npm's `3.7.1`, so this is a pure
@@ -239,32 +239,48 @@ Five are moved to real npm packages so far:
   'moment'` directly and get their own bundled copy — moment has no shared
   state to split-brain on, unlike `ajax_control.js`, so the small duplication
   is a reasonable trade for real types over `any`.
-- `ag-grid-community` (`src/ag-grid-global.js`, its own tiny bundle). The
-  vendored `ag-grid-community.min.js` hashed byte-identical to the npm
-  package's own `dist/ag-grid-community.min.js` at the matching `28.0.2`.
-  Imports that exact file rather than the modular ESM entry point on purpose:
-  the modular API needs an explicit `ModuleRegistry.registerModules()` call to
-  enable each community feature one by one, where this bundle auto-registers
-  all of them the same way the old `<script>` tag did. `AgGridAdapter.js`
-  keeps reading `agGrid.Grid` off the global, unchanged.
-- `chart.js` + `chartjs-plugin-annotation` (`src/chartjs-global.js`, one tiny
-  bundle for both). The vendored "Chart.bundle.js" was `Chart.bundle.min.js`
-  under a plain name, same story as Bootstrap; the annotation plugin differed
-  from `chartjs-plugin-annotation@0.5.7` only in comment indentation and a
-  trailing newline. Imports the plain `chart.js` package (not the bundle) so
-  its own `require('moment')` resolves to this project's real `moment`
-  dependency instead of embedding a second copy; the annotation plugin does
-  its own `require('chart.js')` internally; and since both resolve to the
-  same module instance, the plugin's `Chart.Annotation = ...` side effect
-  patches the exact object this file publishes to `window.Chart`.
-  `chart.js@2.9.4`'s own `dist/Chart.js` has old JSDoc that this project's
-  TypeScript cannot parse — a syntax error inside the package, not anything
-  under `src/`. `jsconfig.json`'s `paths` remaps the `chart.js` specifier to
-  `src/types/chart.js.d.ts` for type-checking purposes only; Vite's bundling
-  is untouched by tsconfig `paths`, so the real package still ships at
-  runtime. A `declare module 'chart.js'` in `globals.d.ts` would not have
-  worked here — TypeScript only falls back to an ambient declaration when a
-  specifier fails to resolve, and `chart.js` resolves just fine.
+- `chart.js` (`src/chartjs-global.js`, its own tiny bundle). Originally moved
+  in at `2.9.4` — the vendored "Chart.bundle.js" was `Chart.bundle.min.js`
+  under a plain name, same story as Bootstrap — then upgraded to `4.5.1`.
+  `chart.js@2` pulled in moment.js unconditionally (its "time" scale required
+  it even though nothing in this app configures a time axis; every chart's
+  x-axis is a plain category scale fed pre-formatted label strings from the Go
+  side); v4 made date adapters opt-in, so the upgrade drops that forced
+  dependency outright. It also drops `chartjs-plugin-annotation`
+  (`0.5.7`, Chart.js-2-only): grepping every chart config built anywhere in
+  this codebase for an `annotation:` option turned up nothing — the plugin was
+  wired up but never actually configured by any chart. v4 needs its
+  controllers/elements/scales registered explicitly (nothing auto-registers,
+  unlike v2 or the `chart.js/auto` entry point); `chartjs-global.js` registers
+  exactly the pieces this app's four chart types (`bar`/`pie`/`doughnut`/`line`)
+  use, which keeps the bundle smaller than pulling in every chart type Chart.js
+  ships. `chart.js@2.9.4`'s own `dist/Chart.js` had old JSDoc this project's
+  TypeScript could not parse — a syntax error inside the package, not anything
+  under `src/` — which is why `jsconfig.json` used to remap the `chart.js`
+  specifier to a hand-written `any`-typed stub for type-checking purposes only.
+  `chart.js@4` parses cleanly, so that remap and stub are gone and `tsc` now
+  resolves the package's own, accurate types.
+
+A fifth, `ag-grid-community`, was moved to npm the same way and later removed
+outright. `ag-grid-global.js` had imported the vendored
+`ag-grid-community.min.js`'s npm equivalent (both hashed byte-identical, at
+`28.0.2`) rather than the modular ESM entry point, because the modular API
+needs an explicit `ModuleRegistry.registerModules()` call to enable each
+community feature one by one, where the old `<script>` tag auto-registered
+all of them; `AgGridAdapter.js` read `agGrid.Grid` off the resulting global,
+unchanged from before the npm move. All of that — the dependency, the global,
+the adapter, and the bundle in the table above — is gone now, replaced by
+`VirtualGrid.js`: a from-scratch virtualized `<table>` implementing the exact
+Handsontable-shaped API the app's ~12 call sites already used (same
+`new Handsontable(container, options)` constructor, same
+`Handsontable.renderers.*` statics, same method names/signatures), since
+grepping the whole frontend turned up no direct AG Grid API access outside
+that one adapter. It drops the largest remaining frontend dependency
+(356 KB gzip) entirely rather than trading it for a smaller one, and it keeps
+publishing `window.Handsontable` (now a small factory function VirtualGrid.js
+installs itself, not a global arriving from a `<script>` tag) since the
+call sites still reference the bare identifier rather than importing the
+module.
 
 **Cytoscape's and xterm's vendored versions could not be identified.**
 `cytoscape.min.js` carries no version banner, and its size (304,971 bytes)
@@ -324,8 +340,6 @@ What is deliberately not done yet:
 
 - **Replacing the rest with npm packages.** This is where tree-shaking and a
   smaller install would come from.
-- **Extending the `// @ts-check` set.** The infrastructure is in place (see
-  above); the ~39k unannotated lines are the work.
 - **Deleting the bridge.** What is left needs `workspace.html`'s inline
   bootstrap script to go, plus `ajax_control.js` (early.js, login.js) and
   `notification_control.js` (main.js, login.js) each still having a real
@@ -346,9 +360,11 @@ What is deliberately not done yet:
 the same committed-source / built-output split as the JS bundles above, and the
 same two npm scripts drive both: `npm run build` (readable, committed) and
 `npm run build:release` (compressed, for the shipped binary — see
-`package.json`). `ag-grid-custom.css`, `xterm.css` and `user_select_guard.css`
-are hand-written CSS with no `.scss` behind them and are untouched by any of
-this; only the two files that used to be generated have a source now.
+`package.json`). `grid-custom.css` (VirtualGrid's stylesheet — renamed from
+`ag-grid-custom.css` when AG Grid was replaced, see "Where things stand"),
+`xterm.css` and `user_select_guard.css` are hand-written CSS with no `.scss`
+behind them and are untouched by any of this; only the two files that used to
+be generated have a source now.
 
 That "used to be" is worth spelling out, because it explains why this took
 longer than copying a file. There **was** a real `.scss` source for these once
