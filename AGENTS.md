@@ -187,11 +187,23 @@ context if something about window/login behavior looks odd):**
 
 ## Changelog
 
-- Every change that affects users (features, fixes, deprecations, removals, breaking
-  changes) **must** be recorded in `CHANGELOG.md` under the `[Unreleased]` section,
-  following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) conventions.
+- **Before you consider any task done, update `CHANGELOG.md`.** This isn't
+  optional and isn't just for feature work — it also covers bug fixes,
+  security fixes, dependency/tooling changes, and anything else a user or
+  future maintainer would want to know changed since the last release.
+- Every such change **must** be recorded under the `[Unreleased]` section,
+  following [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)
+  conventions (`Added`/`Changed`/`Fixed`/`Removed`/`Security`, etc.).
+- `[Unreleased]` must always describe the *relative* diff since the last
+  tagged release — nothing more, nothing less. Concretely, for each change:
+  - If it's genuinely new ground (a new fix, a new feature, a new removal),
+    add a new bullet under the right subsection.
+  - If it's a follow-up, correction, or continuation of something already
+    listed under `[Unreleased]` (same feature, same fix, a retry after the
+    first attempt didn't fully work), fold it into that existing bullet
+    instead of adding a second one — rewrite the bullet so it describes the
+    end state in one place, not a trail of "attempt 1", "attempt 2" entries.
+    Only something already shipped in a past release gets its own fresh
+    bullet when touched again.
 - When a release is cut, `[Unreleased]` is renamed to the new version number and a
   fresh empty `[Unreleased]` section is created at the top.
-- If a single feature/fix requires multiple attempts or follow-up fixes, the
-  `Unreleased` entry should be written once and encompass all the related changes,
-  rather than accumulating a trail of individual entries for each attempt.
