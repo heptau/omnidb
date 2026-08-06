@@ -203,6 +203,12 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 				}
 			}
 			if err == nil {
+				// codeql[go/sql-injection]: last is the user's own typed
+				// query-editor SQL, same trust boundary already accepted for
+				// this function's sibling alerts (#340-#343, non-autocommit
+				// branch below included) — this is a SQL query tool, running
+				// whatever the authenticated owner of the connection typed is
+				// the feature, not a privilege boundary crossing.
 				rows, err = conn.QueryContext(ctx, last)
 			}
 		}

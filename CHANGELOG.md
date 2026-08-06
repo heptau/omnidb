@@ -119,6 +119,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Changed) — the only inline handler left anywhere in the rendered page belongs to vendored
   AimaraJS, and even that one no longer uses an inline attribute. This was the last requirement
   standing in the way of a Content-Security-Policy without `unsafe-inline`.
+- Addressed the open GitHub code-scanning alerts as of 2026-08-06: the console's `\d NAME` catalog
+  lookup now binds the table/schema name as a query parameter instead of splicing it into the SQL
+  text (`console_meta.go`); the desktop shell's save-dialog file copy now opens the source file
+  through an `os.Root` rooted at the export temp dir instead of a string-checked path
+  (`wails-app/savedialog.go`), so containment is enforced by the OS on every path component
+  instead of resting on a `filepath.Rel` comparison; and the icon-build script's HTML-comment
+  stripping now loops to a fixpoint instead of a single regex pass (`gen-icons.mjs`). The SQL
+  console/query-editor alerts on `console.go`/`querycursor.go` were left as-is and annotated
+  in-line — they flag the user's own typed SQL reaching the database, which is the tool's intended
+  function, not a privilege boundary crossing (same call already made for that file's sibling
+  alerts).
 
 ## [4.1.0] - 2026-07-30
 

@@ -78,13 +78,14 @@ func (a *App) handleSaveDialogRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	verifiedSrcPath, err := validateSaveDialogSrcPath(req.SrcPath)
+	root, relSrcPath, err := validateSaveDialogSrcPath(req.SrcPath)
 	if err != nil {
 		writeSaveDialogError(w, err.Error())
 		return
 	}
+	defer root.Close()
 
-	if err := copySaveDialogFile(verifiedSrcPath, dst); err != nil {
+	if err := copySaveDialogFile(root, relSrcPath, dst); err != nil {
 		writeSaveDialogError(w, err.Error())
 		return
 	}
@@ -101,24 +102,34 @@ func (a *App) handleSaveDialogRequest(w http.ResponseWriter, r *http.Request) {
 // supplied one) means a malicious request still can't walk srcPath outside
 // the one directory this relay is meant to ever read from.
 //
-// Returns the cleaned path rather than just an ok/error bool — os.Open must
-// consume this returned value, not the original request field, so the only
-// path that can ever reach it is one that has actually passed the
-// containment check right here (same principle as go-server's
-// sqliteVerifiedTableName: a static analyzer can't assume a same-named
-// check elsewhere in the call chain already covered the value it sees
-// flowing into the sink).
-func validateSaveDialogSrcPath(srcPath string) (string, error) {
+// Returns an os.Root rooted at that directory plus the path relative to it,
+// rather than a cleaned absolute path — the caller opens the file through
+// root.Open(rel), so containment is enforced by the OS/runtime on every
+// path component (including symlinks), not just by a string comparison
+// against the request-controlled value. That also makes the sanitization
+// visible to static analysis: a string-based check (filepath.Rel plus a
+// ".." prefix test) still leaves the request-controlled string itself
+// flowing into the sink, which CodeQL's go/sql-injection-style dataflow
+// keeps flagging even though the check is correct at runtime — same class
+// of gap as go-server's sqliteVerifiedTableName comment describes, fixed
+// here the same way that fix uses: don't hand the sink the tainted value at
+// all, hand it something the containment check itself produced.
+func validateSaveDialogSrcPath(srcPath string) (*os.Root, string, error) {
 	tempDir, err := exportTempDir()
 	if err != nil {
-		return "", err
+		return nil, "", err
+	}
+	root, err := os.OpenRoot(tempDir)
+	if err != nil {
+		return nil, "", err
 	}
 	cleanPath := filepath.Clean(srcPath)
 	rel, err := filepath.Rel(tempDir, cleanPath)
 	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
-		return "", fmt.Errorf("invalid export path")
+		root.Close()
+		return nil, "", fmt.Errorf("invalid export path")
 	}
-	return cleanPath, nil
+	return root, rel, nil
 }
 
 // exportTempDir mirrors go-server/homedir.go's resolveHomeDir + appdb.go's
@@ -155,8 +166,8 @@ func homeDirFlag(args []string) string {
 	return ""
 }
 
-func copySaveDialogFile(srcPath, dstPath string) error {
-	src, err := os.Open(srcPath)
+func copySaveDialogFile(root *os.Root, relSrcPath, dstPath string) error {
+	src, err := root.Open(relSrcPath)
 	if err != nil {
 		return err
 	}

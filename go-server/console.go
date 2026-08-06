@@ -297,6 +297,11 @@ func (s *consoleSession) runSQLLocked(ctx context.Context, stmt, command string)
 
 	var text string
 	if returnsRows {
+		// codeql[go/sql-injection]: stmt is the user's own typed console SQL,
+		// same trust boundary already accepted for querycursor.go's sibling
+		// alerts (#340-#343) — this is a SQL console, running whatever the
+		// authenticated owner of the connection types is the feature, not a
+		// privilege boundary crossing.
 		rows, err := s.conn.QueryContext(ctx, stmt)
 		if err != nil {
 			return "", err
@@ -326,6 +331,8 @@ func (s *consoleSession) runSQLLocked(ctx context.Context, stmt, command string)
 			text = status
 		}
 	} else {
+		// codeql[go/sql-injection]: same trust boundary as the QueryContext
+		// call above — stmt is the user's own typed console SQL.
 		result, err := s.conn.ExecContext(ctx, stmt)
 		if err != nil {
 			return "", err

@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"path/filepath"
 	"testing"
 )
@@ -13,8 +14,18 @@ func TestValidateSaveDialogSrcPathAcceptsWithinTempDir(t *testing.T) {
 	if err != nil {
 		t.Fatalf("exportTempDir: %v", err)
 	}
-	if _, err := validateSaveDialogSrcPath(filepath.Join(tempDir, "export_20260728.csv")); err != nil {
+	// os.Root requires tempDir to exist (unlike the plain string check this
+	// replaces) — in production export.go has already created it by the
+	// time a save-dialog request can reference a file inside it.
+	if err := os.MkdirAll(tempDir, 0o700); err != nil {
+		t.Fatalf("MkdirAll(%s): %v", tempDir, err)
+	}
+	root, _, err := validateSaveDialogSrcPath(filepath.Join(tempDir, "export_20260728.csv"))
+	if err != nil {
 		t.Errorf("expected a path inside %s to be accepted, got: %v", tempDir, err)
+	}
+	if root != nil {
+		root.Close()
 	}
 }
 
@@ -27,6 +38,9 @@ func TestValidateSaveDialogSrcPathRejectsTraversalAndOutsidePaths(t *testing.T) 
 	if err != nil {
 		t.Fatalf("exportTempDir: %v", err)
 	}
+	if err := os.MkdirAll(tempDir, 0o700); err != nil {
+		t.Fatalf("MkdirAll(%s): %v", tempDir, err)
+	}
 
 	cases := []string{
 		filepath.Join(tempDir, "..", "..", "etc", "passwd"), // escapes via ".."
@@ -34,7 +48,9 @@ func TestValidateSaveDialogSrcPathRejectsTraversalAndOutsidePaths(t *testing.T) 
 		filepath.Dir(tempDir), // the temp dir's own parent
 	}
 	for _, srcPath := range cases {
-		if _, err := validateSaveDialogSrcPath(srcPath); err == nil {
+		root, _, err := validateSaveDialogSrcPath(srcPath)
+		if err == nil {
+			root.Close()
 			t.Errorf("expected %q to be rejected as outside %s, but it was accepted", srcPath, tempDir)
 		}
 	}

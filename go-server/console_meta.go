@@ -46,8 +46,8 @@ func consoleArg(stmt string) string {
 // connection (so it sees whatever database/schema/user context that
 // connection is already in — e.g. MySQL's USE, a search_path change) and
 // returns it in the same cols/rows-of-strings shape consolePretty wants.
-func (s *consoleSession) consoleQueryRows(ctx context.Context, sqlText string) (cols []string, rows [][]string, err error) {
-	r, err := s.conn.QueryContext(ctx, sqlText)
+func (s *consoleSession) consoleQueryRows(ctx context.Context, sqlText string, args ...any) (cols []string, rows [][]string, err error) {
+	r, err := s.conn.QueryContext(ctx, sqlText, args...)
 	if err != nil {
 		return nil, nil, err
 	}
@@ -129,6 +129,12 @@ func (s *consoleSession) consoleMetaRelations(ctx context.Context) (string, erro
 
 // consoleMetaDescribe implements \d NAME/\d+ NAME — list a table or view's
 // columns. Accepts an optional "schema."/"database." qualifier.
+//
+// schema/name are bound as query parameters rather than spliced into sqlText
+// (even though consoleRelationArgPattern already restricts arg to bare
+// identifier characters) — a static analyzer has no way to know that check
+// closes off every metacharacter the sink could act on, and a real bound
+// parameter removes the question entirely rather than resting on the regex.
 func (s *consoleSession) consoleMetaDescribe(ctx context.Context, arg string) (string, error) {
 	if !consoleRelationArgPattern.MatchString(arg) {
 		return "", fmt.Errorf("invalid relation name %q", arg)
@@ -137,37 +143,36 @@ func (s *consoleSession) consoleMetaDescribe(ctx context.Context, arg string) (s
 	if i := strings.IndexByte(arg, '.'); i >= 0 {
 		schema, name = arg[:i], arg[i+1:]
 	}
+	var schemaArg any
+	if schema != "" {
+		schemaArg = schema
+	}
 
 	var sqlText string
+	var args []any
 	switch s.technology {
 	case "postgresql":
-		if schema == "" {
-			schema = "current_schema()"
-		} else {
-			schema = "'" + schema + "'"
-		}
-		sqlText = fmt.Sprintf(`select column_name as "Column", data_type as "Type",
+		sqlText = `select column_name as "Column", data_type as "Type",
 			is_nullable as "Nullable", column_default as "Default"
 			from information_schema.columns
-			where table_schema = %s and table_name = '%s'
-			order by ordinal_position`, schema, name)
+			where table_schema = coalesce($1, current_schema()) and table_name = $2
+			order by ordinal_position`
+		args = []any{schemaArg, name}
 	case "mysql", "mariadb":
-		if schema == "" {
-			schema = "database()"
-		} else {
-			schema = "'" + schema + "'"
-		}
-		sqlText = fmt.Sprintf("select column_name as `Column`, column_type as `Type`, is_nullable as `Nullable`, column_default as `Default` "+
-			"from information_schema.columns where table_schema = %s and table_name = '%s' order by ordinal_position", schema, name)
+		sqlText = "select column_name as `Column`, column_type as `Type`, is_nullable as `Nullable`, column_default as `Default` " +
+			"from information_schema.columns where table_schema = coalesce(?, database()) and table_name = ? order by ordinal_position"
+		args = []any{schemaArg, name}
 	case "oracle":
-		sqlText = fmt.Sprintf(`select column_name as "Column", data_type as "Type", nullable as "Nullable", data_default as "Default"
-			from user_tab_columns where table_name = upper('%s') order by column_id`, name)
+		sqlText = `select column_name as "Column", data_type as "Type", nullable as "Nullable", data_default as "Default"
+			from user_tab_columns where table_name = upper(:1) order by column_id`
+		args = []any{name}
 	case "sqlite":
-		sqlText = fmt.Sprintf(`select name as "Column", type as "Type", case "notnull" when 0 then 'YES' else 'NO' end as "Nullable", dflt_value as "Default" from pragma_table_info('%s')`, name)
+		sqlText = `select name as "Column", type as "Type", case "notnull" when 0 then 'YES' else 'NO' end as "Nullable", dflt_value as "Default" from pragma_table_info(?)`
+		args = []any{name}
 	default:
 		return "", fmt.Errorf("\\d is not implemented for %s", s.technology)
 	}
-	cols, rows, err := s.consoleQueryRows(ctx, sqlText)
+	cols, rows, err := s.consoleQueryRows(ctx, sqlText, args...)
 	if err != nil {
 		return "", err
 	}

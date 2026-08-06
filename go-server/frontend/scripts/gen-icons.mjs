@@ -128,8 +128,21 @@ function loadSvg(kind, name) {
 	return readFileSync(join(dir, name + ".svg"), "utf8");
 }
 
+function stripComments(svgText) {
+	// Looping to a fixpoint (rather than one /g pass) avoids the classic
+	// "incomplete sanitization" gap where removing one match can splice the
+	// text on either side of it back into a comment delimiter that wasn't
+	// there before.
+	let prev;
+	do {
+		prev = svgText;
+		svgText = svgText.replace(/<!--[\s\S]*?-->/g, "");
+	} while (svgText !== prev);
+	return svgText;
+}
+
 function normalize(svgText, kind) {
-	svgText = svgText.replace(/<!--[\s\S]*?-->/g, "");
+	svgText = stripComments(svgText);
 	if (kind === "lucide") {
 		// A mask source has no notion of "currentColor" (there's no element
 		// for it to inherit from inside a standalone data-URI SVG document)
