@@ -31,6 +31,7 @@ SOFTWARE.
 import { endLoading } from "../ajax_control_bridge.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { customMenu } from "../custom_menu.js";
+import { refreshBootstrapTooltips } from "../workspace.js";
 
 
 export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
@@ -42,7 +43,7 @@ export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = 
 		p_name: "Welcome",
 		p_selectFunction: function () {
 			document.title = "Welcome to OmniDB";
-			$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+			refreshBootstrapTooltips();
 		},
 		p_close: false, // Replacing default close icon with contextMenu.
 		p_closeFunction: function (e, p_tab) {
@@ -273,7 +274,7 @@ export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = 
 	// Creating `Add` tab in the outer tab list
 	// v_connTabControl.createAddTab();
 
-	$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+	refreshBootstrapTooltips();
 
 	endLoading();
 };

@@ -32,28 +32,18 @@ import { createTabControl } from "../tabs.js";
 import { getTreeSnippets } from "../tree_context_functions/tree_snippets.js";
 import { resizeSnippetHorizontal, resizeSnippetPanel, showMenuNewTab } from "../workspace.js";
 
-// Declared here because these were implicit globals: assigned without
-// `var` anywhere in this file, so they leaked onto `window` and were
-// shared with every other file in the bundle. They are scratch values
-// used and re-read inside a single function each, so a file-level
-// declaration keeps the behaviour identical while taking them off the
-// global object -- which is what still forces the bundle out of strict
-// mode.
-var v_element;
-
-
 /** @param {boolean|"visible"|"hidden"} [p_set_state] */
 export var toggleSnippetPanel = function (p_set_state = false) {
-	v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
+	var v_element = v_connTabControl.snippet_tag.divPanel;
 	var v_snippet_tag = v_connTabControl.snippet_tag;
 
 	let v_set_state = p_set_state;
 	if (v_set_state === "visible") {
-		v_element.addClass("omnidb__panel--slide-in");
+		v_element.classList.add("omnidb__panel--slide-in");
 	} else if (v_set_state === "hidden") {
-		v_element.removeClass("omnidb__panel--slide-in");
+		v_element.classList.remove("omnidb__panel--slide-in");
 	} else {
-		v_element.toggleClass("omnidb__panel--slide-in");
+		v_element.classList.toggle("omnidb__panel--slide-in");
 	}
 
 	resizeSnippetPanel();

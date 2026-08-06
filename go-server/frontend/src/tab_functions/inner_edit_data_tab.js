@@ -37,7 +37,7 @@ import {
 	queryEditData,
 	saveEditData,
 } from "../tree_context_functions/edit_data.js";
-import { removeTab, renameTab, resizeVertical, showMenuNewTab } from "../workspace.js";
+import { refreshBootstrapTooltips, removeTab, renameTab, resizeVertical, showMenuNewTab } from "../workspace.js";
 
 
 export var v_createEditDataTabFunction = function (p_table) {
@@ -56,7 +56,7 @@ export var v_createEditDataTabFunction = function (p_table) {
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();
-				$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+				refreshBootstrapTooltips();
 			}
 			if (this.tag != null && this.tag.editor != null) {
 				this.tag.editor.focus();
@@ -147,7 +147,12 @@ export var v_createEditDataTabFunction = function (p_table) {
 
 	v_tab.elementDiv.innerHTML = v_html;
 
-	var v_height = window.innerHeight - $("#div_edit_data_data_" + v_tab.id).offset().top - 20;
+	var v_height =
+		window.innerHeight -
+		(/** @type {HTMLElement} */ (document.getElementById("div_edit_data_data_" + v_tab.id)).getBoundingClientRect()
+			.top +
+			window.scrollY) -
+		20;
 
 	/** @type {HTMLElement} */ (document.getElementById("div_edit_data_data_" + v_tab.id)).style.height =
 		v_height + "px";
@@ -228,7 +233,10 @@ export var v_createEditDataTabFunction = function (p_table) {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.editDataObject) {
 			v_tab_tag.div_result.style.height =
-				window.innerHeight - $(v_tab_tag.div_result).offset().top - 0.833 * v_font_size + "px";
+				window.innerHeight -
+				(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
+				0.833 * v_font_size +
+				"px";
 			if (v_tab_tag.editDataObject.ht != null) {
 				v_tab_tag.editDataObject.ht.render();
 			}

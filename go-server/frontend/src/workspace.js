@@ -141,9 +141,17 @@ $(function () {
 		startTutorial("getting_started");
 	});
 
-	// Loads or Updates all tooltips.
-	$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+	refreshBootstrapTooltips();
 });
+
+// getOrCreateInstance is idempotent -- calling this again on an already-
+// tooltip'd element just returns its existing instance instead of stacking
+// a duplicate, so it's safe to re-run every time a tab is (re)selected.
+export function refreshBootstrapTooltips() {
+	document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
+		bootstrap.Tooltip.getOrCreateInstance(el, { animation: true, html: true });
+	});
+}
 
 /// <summary>
 /// Retrieves database list.

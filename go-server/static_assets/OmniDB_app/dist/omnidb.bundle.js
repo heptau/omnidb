@@ -6661,7 +6661,7 @@
           var v_safe_p = document.createElement("span");
           v_safe_p.textContent = p_value;
           div.innerHTML = v_safe_val.innerHTML.replace(v_safe_p.innerHTML, "<b>" + v_safe_p.innerHTML + "</b>");
-          var v_element2 = {
+          var v_element = {
             value: v_local_group.elements[j2].value,
             select_value: v_local_group.elements[j2].select_value,
             complement: v_local_group.elements[j2].complement,
@@ -6676,14 +6676,14 @@
               event2.stopPropagation();
               close_autocomplete(v_value);
             };
-          })(v_element2.select_value);
+          })(v_element.select_value);
         } else {
           v_list2.push([v_local_group.elements[j2].value, v_local_group.elements[j2].complement]);
           v_list_render.push([
             v_local_group.elements[j2].value.replace(p_value, "<b>" + p_value + "</b>"),
             v_local_group.elements[j2].complement
           ]);
-          var v_element2 = {
+          var v_element = {
             value: v_local_group.elements[j2].value,
             select_value: v_local_group.elements[j2].select_value,
             complement: v_local_group.elements[j2].complement,
@@ -6693,14 +6693,14 @@
             grid_reference: v_global_group.grid,
             group_reference: v_global_group
           };
-          v_displayed.push(v_element2);
+          v_displayed.push(v_element);
         }
-        if (v_first_element == null) v_first_element = v_element2;
-        if (i2 == p_data.length - 1 && j2 == v_local_group.elements.length - 1) v_last_element = v_element2;
-        v_global_group.elements.push(v_element2);
-        if (v_previous_element != null) v_previous_element.next = v_element2;
-        v_element2.previous = v_previous_element;
-        v_previous_element = v_element2;
+        if (v_first_element == null) v_first_element = v_element;
+        if (i2 == p_data.length - 1 && j2 == v_local_group.elements.length - 1) v_last_element = v_element;
+        v_global_group.elements.push(v_element);
+        if (v_previous_element != null) v_previous_element.next = v_element;
+        v_element.previous = v_previous_element;
+        v_previous_element = v_element;
       }
       if (v_global_group.type != "keyword") {
         v_global_group.grid_data = v_list2;
@@ -6739,23 +6739,23 @@
       v_group.num_visible = 0;
       if (v_group.type == "keyword") {
         for (var j2 = v_group.elements.length - 1; j2 >= 0; j2--) {
-          var v_element2 = v_group.elements[j2];
-          if (!v_search_regex.test(v_element2.value)) {
-            v_element2.container.style.display = "none";
-            v_element2.visible = false;
+          var v_element = v_group.elements[j2];
+          if (!v_search_regex.test(v_element.value)) {
+            v_element.container.style.display = "none";
+            v_element.visible = false;
           } else {
             var v_match_text = (
               /** @type {RegExpExecArray} */
-              v_search_regex.exec(v_element2.value)[0]
+              v_search_regex.exec(v_element.value)[0]
             );
             v_num_results++;
-            v_element2.container.style.display = "inline-block";
-            v_element2.visible = true;
+            v_element.container.style.display = "inline-block";
+            v_element.visible = true;
             var v_safe_el = document.createElement("span");
-            v_safe_el.textContent = v_element2.value;
+            v_safe_el.textContent = v_element.value;
             var v_safe_mt = document.createElement("span");
             v_safe_mt.textContent = v_match_text;
-            v_element2.container.innerHTML = v_safe_el.innerHTML.replace(
+            v_element.container.innerHTML = v_safe_el.innerHTML.replace(
               v_safe_mt.innerHTML,
               "<b>" + v_safe_mt.innerHTML + "</b>"
             );
@@ -6766,22 +6766,22 @@
         var v_new_data2 = [];
         var v_new_displayed = [];
         for (var j2 = 0; j2 < v_group.elements.length; j2++) {
-          var v_element2 = v_group.elements[j2];
-          if (!v_search_regex.test(v_element2.value)) {
-            v_element2.visible = false;
+          var v_element = v_group.elements[j2];
+          if (!v_search_regex.test(v_element.value)) {
+            v_element.visible = false;
           } else {
             var v_match_text = (
               /** @type {RegExpExecArray} */
-              v_search_regex.exec(v_element2.value)[0]
+              v_search_regex.exec(v_element.value)[0]
             );
             v_num_results++;
-            v_element2.visible = true;
-            v_element2.visible_index = v_group.num_visible;
+            v_element.visible = true;
+            v_element.visible_index = v_group.num_visible;
             v_new_data2.push([
               v_group.grid_data[j2][0].replace(v_match_text, "<b>" + v_match_text + "</b>"),
               v_group.grid_data[j2][1]
             ]);
-            v_new_displayed.push(v_element2);
+            v_new_displayed.push(v_element);
             v_group.num_visible++;
           }
         }
@@ -6998,36 +6998,36 @@
     }
   }
   function find_next_visible_element(p_element) {
-    var v_element2 = p_element;
+    var v_element = p_element;
     var v_first = p_element;
-    if (v_element2.visible == true) return v_element2;
-    if (v_element2.next == p_element) return null;
-    while (v_element2.next.visible == false) {
-      v_element2 = v_element2.next;
-      if (v_element2 == v_first) return null;
+    if (v_element.visible == true) return v_element;
+    if (v_element.next == p_element) return null;
+    while (v_element.next.visible == false) {
+      v_element = v_element.next;
+      if (v_element == v_first) return null;
     }
-    return v_element2.next;
+    return v_element.next;
   }
   function find_element_by_value(p_first_element, p_value) {
     if (p_first_element == null) return null;
-    var v_element2 = p_first_element;
+    var v_element = p_first_element;
     var v_first = p_first_element;
     do {
-      if (v_element2.visible == true && v_element2.value == p_value) return v_element2;
-      v_element2 = v_element2.next;
-    } while (v_element2 != null && v_element2 != v_first);
+      if (v_element.visible == true && v_element.value == p_value) return v_element;
+      v_element = v_element.next;
+    } while (v_element != null && v_element != v_first);
     return null;
   }
   function find_previous_visible_element(p_element) {
-    var v_element2 = p_element;
+    var v_element = p_element;
     var v_first = p_element;
-    if (v_element2.visible == true) return v_element2;
-    if (v_element2.previous == p_element) return null;
-    while (v_element2.previous.visible == false) {
-      v_element2 = v_element2.previous;
-      if (v_element2 == v_first) return null;
+    if (v_element.visible == true) return v_element;
+    if (v_element.previous == p_element) return null;
+    while (v_element.previous.visible == false) {
+      v_element = v_element.previous;
+      if (v_element == v_first) return null;
     }
-    return v_element2.previous;
+    return v_element.previous;
   }
   function autocomplete_select_element(p_element) {
     autocomplete_deselect_element();
@@ -7933,17 +7933,16 @@
     createLegere,
     legereEscapeHtml
   }, Symbol.toStringTag, { value: "Module" }));
-  var v_element;
   var toggleSnippetPanel = function(p_set_state = false) {
-    v_element = $("#" + v_connTabControl.snippet_tag.divPanel.getAttribute("id"));
+    var v_element = v_connTabControl.snippet_tag.divPanel;
     v_connTabControl.snippet_tag;
     let v_set_state = p_set_state;
     if (v_set_state === "visible") {
-      v_element.addClass("omnidb__panel--slide-in");
+      v_element.classList.add("omnidb__panel--slide-in");
     } else if (v_set_state === "hidden") {
-      v_element.removeClass("omnidb__panel--slide-in");
+      v_element.classList.remove("omnidb__panel--slide-in");
     } else {
-      v_element.toggleClass("omnidb__panel--slide-in");
+      v_element.classList.toggle("omnidb__panel--slide-in");
     }
     resizeSnippetPanel();
   };
@@ -8058,12 +8057,17 @@
     v_editor1.setTheme("ace/theme/" + v_editor_theme);
     v_editor1.session.setMode("ace/mode/sql");
     v_editor1.setFontSize(Number(v_font_size));
-    $("#txt_input_" + v_tab.id).find(".ace_text-input").on("keyup", function(event2) {
+    var v_editor1_text_input = (
+      /** @type {HTMLElement} */
+      /** @type {HTMLElement} */
+      document.getElementById("txt_input_" + v_tab.id).querySelector(".ace_text-input")
+    );
+    v_editor1_text_input.addEventListener("keyup", function(event2) {
       if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
         autocomplete_start(v_editor1, 1, event2);
       }
     });
-    $("#txt_input_" + v_tab.id).find(".ace_text-input").on("keydown", function(event2) {
+    v_editor1_text_input.addEventListener("keydown", function(event2) {
       if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
         autocomplete_keydown(v_editor1, event2);
       } else {
@@ -8133,7 +8137,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.div_console) {
-        v_tab_tag2.div_console.style.height = window.innerHeight - $(v_tab_tag2.div_console).offset().top - parseInt(v_tab_tag2.div_result.style.height, 10) - 1.25 * v_font_size - 38 + "px";
+        v_tab_tag2.div_console.style.height = window.innerHeight - (v_tab_tag2.div_console.getBoundingClientRect().top + window.scrollY) - parseInt(v_tab_tag2.div_result.style.height, 10) - 1.25 * v_font_size - 38 + "px";
         v_tab_tag2.editor_console.resize();
         v_tab_tag2.editor_input.resize();
         v_tab_tag2.editor_console.fit();
@@ -8255,7 +8259,7 @@
       v_resizeFunction();
     }, 10);
     adjustQueryTabObjects(false);
-    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal).on("shown.bs.modal", function() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal.addEventListener("shown.bs.modal", function() {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.render();
     });
   };
@@ -8273,7 +8277,7 @@
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
-          $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+          refreshBootstrapTooltips();
         }
         if (this.tag != null && this.tag.editor != null) {
           this.tag.editor.focus();
@@ -8306,7 +8310,8 @@
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto mr-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div></div>";
     v_tab.elementDiv.innerHTML = v_html;
-    var v_height = window.innerHeight - $("#div_edit_data_data_" + v_tab.id).offset().top - 20;
+    var v_height = window.innerHeight - /** @type {HTMLElement} */
+    (document.getElementById("div_edit_data_data_" + v_tab.id).getBoundingClientRect().top + window.scrollY) - 20;
     document.getElementById("div_edit_data_data_" + v_tab.id).style.height = v_height + "px";
     var langTools = ace.require("ace/ext/language_tools");
     var v_editor = ace.edit("txt_filter_data_" + v_tab.id);
@@ -8370,7 +8375,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.editDataObject) {
-        v_tab_tag2.div_result.style.height = window.innerHeight - $(v_tab_tag2.div_result).offset().top - 0.833 * v_font_size + "px";
+        v_tab_tag2.div_result.style.height = window.innerHeight - (v_tab_tag2.div_result.getBoundingClientRect().top + window.scrollY) - 0.833 * v_font_size + "px";
         if (v_tab_tag2.editDataObject.ht != null) {
           v_tab_tag2.editDataObject.ht.render();
         }
@@ -8484,7 +8489,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.graph_div) {
-        v_tab_tag2.graph_div.style.height = window.innerHeight - $(v_tab_tag2.graph_div).offset().top - 0.833 * v_font_size + "px";
+        v_tab_tag2.graph_div.style.height = window.innerHeight - (v_tab_tag2.graph_div.getBoundingClientRect().top + window.scrollY) - 0.833 * v_font_size + "px";
       }
     };
     var v_tag = {
@@ -8564,7 +8569,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.div_result) {
-        v_tab_tag2.div_result.style.height = window.innerHeight - $(v_tab_tag2.div_result).offset().top - 1.25 * v_font_size + "px";
+        v_tab_tag2.div_result.style.height = window.innerHeight - (v_tab_tag2.div_result.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
         setTimeout(function() {
           if (v_tab_tag2.ht != null) {
             v_tab_tag2.ht.render();
@@ -9399,7 +9404,7 @@
       /** @type {HTMLElement} */
       document.getElementById("txt_snippet_" + v_tab.id)
     );
-    v_txt_snippet.style.height = window.innerHeight - $(v_txt_snippet).offset().top - 70 + "px";
+    v_txt_snippet.style.height = window.innerHeight - (v_txt_snippet.getBoundingClientRect().top + window.scrollY) - 70 + "px";
     ace.require("ace/ext/language_tools");
     var v_editor = ace.edit("txt_snippet_" + v_tab.id);
     v_editor.$blockScrolling = Infinity;
@@ -9833,7 +9838,7 @@
       connId: p_conn_id
     };
     v_tab.tag = v_tag;
-    $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+    refreshBootstrapTooltips();
     setTimeout(function() {
       refreshHeights();
       startTerminal();
@@ -9849,7 +9854,7 @@
       p_name: "Welcome",
       p_selectFunction: function() {
         document.title = "Welcome to OmniDB";
-        $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+        refreshBootstrapTooltips();
       },
       p_close: false,
       // Replacing default close icon with contextMenu.
@@ -9962,7 +9967,7 @@
       mode: "welcome"
     };
     v_tab.tag = v_tag;
-    $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+    refreshBootstrapTooltips();
     endLoading();
   };
   const outerWelcomeTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -10025,7 +10030,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.iframe) {
-        v_tab_tag2.iframe.style.height = window.innerHeight - $(v_tab_tag2.iframe).offset().top - 0.833 * v_font_size + "px";
+        v_tab_tag2.iframe.style.height = window.innerHeight - (v_tab_tag2.iframe.getBoundingClientRect().top + window.scrollY) - 0.833 * v_font_size + "px";
       }
     };
     var v_tag = {
@@ -10173,7 +10178,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.dashboard_div) {
-        v_tab_tag2.dashboard_div.style.height = window.innerHeight - $(v_tab_tag2.dashboard_div).offset().top - $(v_tab_tag2.dashboard_div.parentElement).scrollTop() - 0.833 * v_font_size + "px";
+        v_tab_tag2.dashboard_div.style.height = window.innerHeight - (v_tab_tag2.dashboard_div.getBoundingClientRect().top + window.scrollY) - v_tab_tag2.dashboard_div.parentElement.scrollTop - 0.833 * v_font_size + "px";
       }
     };
     var v_tag = {
@@ -10299,7 +10304,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.editorDataDiv) {
-        var v_new_height = window.innerHeight - $(v_tab_tag2.editorDataDiv).offset().top - v_font_size + "px";
+        var v_new_height = window.innerHeight - (v_tab_tag2.editorDataDiv.getBoundingClientRect().top + window.scrollY) - v_font_size + "px";
         v_tab_tag2.editorDataDiv.style.height = v_new_height;
         v_tab_tag2.editor_data.resize();
       }
@@ -11494,7 +11499,7 @@
   }, Symbol.toStringTag, { value: "Module" }));
   function getProperties(p_view, p_data) {
     var v_tab_tag2 = v_connTabControl.selectedTab.tag;
-    $(v_tab_tag2.divLoading).fadeIn(100);
+    v_tab_tag2.divLoading.style.display = "block";
     execAjax$1(
       p_view,
       JSON.stringify({
@@ -11507,11 +11512,11 @@
         v_tab_tag2.ddlEditor.setValue(p_return.v_data.ddl);
         v_tab_tag2.ddlEditor.clearSelection();
         v_tab_tag2.ddlEditor.gotoLine(0, 0, true);
-        $(v_tab_tag2.divLoading).fadeOut(100);
+        v_tab_tag2.divLoading.style.display = "none";
         v_tab_tag2.gridPropertiesCleared = false;
       },
       function(p_return) {
-        $(v_tab_tag2.divLoading).fadeOut(100);
+        v_tab_tag2.divLoading.style.display = "none";
         if (p_return.v_data.password_timeout) {
           showPasswordPrompt(
             v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -19719,7 +19724,7 @@
     if (v.indexOf("X11") != -1 || v.indexOf("Linux") != -1) return "linux";
     return "Unknown OS";
   })();
-  $(function() {
+  function initShortcuts() {
     v_shortcut_object.actions = {
       shortcut_run_query: function() {
         if (v_connTabControl.selectedTab.tag.mode == "connection") {
@@ -19831,7 +19836,9 @@
         if (v_button) buildButtonText(v_object, v_button);
       }
     }
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initShortcuts);
+  else setTimeout(initShortcuts, 0);
   function buildButtonText(p_shortcut_object, p_button) {
     var v_text = "";
     if (p_shortcut_object.ctrl_pressed) v_text += "Ctrl+";
@@ -19897,8 +19904,8 @@
       return;
     for (var property in v_shortcut_object.shortcuts) {
       if (v_shortcut_object.shortcuts.hasOwnProperty(property)) {
-        var v_element2 = v_shortcut_object.shortcuts[property];
-        if (checkShortcutPressed(p_event, v_element2)) {
+        var v_element = v_shortcut_object.shortcuts[property];
+        if (checkShortcutPressed(p_event, v_element)) {
           p_event.preventDefault();
           p_event.stopPropagation();
           var v_action = v_shortcut_object.actions[property];
@@ -32298,8 +32305,13 @@
     v_omnis.div.addEventListener("click", function() {
       startTutorial("getting_started");
     });
-    $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+    refreshBootstrapTooltips();
   });
+  function refreshBootstrapTooltips() {
+    document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el2) => {
+      bootstrap.Tooltip.getOrCreateInstance(el2, { animation: true, html: true });
+    });
+  }
   function getDatabaseList(p_init, p_callback) {
     execAjax$1(
       "/get_database_list/",
@@ -32654,9 +32666,9 @@
   }
   var resizeSnippetPanel = async function(p_left_pos_x = false) {
     if (v_connTabControl.snippet_tag !== void 0) {
-      var v_element2 = $(v_connTabControl.snippet_tag.divPanel);
+      var v_element = $(v_connTabControl.snippet_tag.divPanel);
       var v_snippet_tag = v_connTabControl.snippet_tag;
-      if (v_element2.hasClass("omnidb__panel--slide-in")) {
+      if (v_element.hasClass("omnidb__panel--slide-in")) {
         v_connTabControl.selectedTab;
         var v_target_tag_div_result_top = 30;
         if (v_connTabControl.selectedTab && v_connTabControl.selectedTab !== null) {
@@ -32674,10 +32686,10 @@
           v_target_tag_div_result_top = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
         }
         v_snippet_tag.isVisible = true;
-        v_element2.css("transform", "translateY(-" + v_target_tag_div_result_top + "px)");
+        v_element.css("transform", "translateY(-" + v_target_tag_div_result_top + "px)");
       } else {
         v_snippet_tag.isVisible = false;
-        v_element2.css("transform", "translateY(0px)");
+        v_element.css("transform", "translateY(0px)");
       }
       var v_snippet_tag = v_connTabControl.snippet_tag;
       var v_inner_snippet_tag = v_snippet_tag.tabControl.selectedTab.tag;
@@ -33495,6 +33507,7 @@
     indentSQL,
     monitoringAction,
     queueChangeActiveDatabaseThreadSafe,
+    refreshBootstrapTooltips,
     refreshHeights,
     refreshTreeHeight,
     removeTab,
@@ -34653,7 +34666,11 @@
     snippetTreeFindNode,
     startEditSnippetText
   }, Symbol.toStringTag, { value: "Module" }));
-  $(function() {
+  function initHookRegistry() {
+    if (typeof v_connTabControl === "undefined" || !v_connTabControl.tag) {
+      setTimeout(initHookRegistry, 50);
+      return;
+    }
     v_connTabControl.tag.hooks = {
       innerTabMenu: [],
       outerTabMenu: [],
@@ -34675,7 +34692,9 @@
       sqliteTreeContextMenu: [],
       sqliteTreeNodeClick: []
     };
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initHookRegistry);
+  else setTimeout(initHookRegistry, 0);
   function activateHook(p_hook, p_function) {
     try {
       v_connTabControl.tag.hooks[p_hook].push(p_function);

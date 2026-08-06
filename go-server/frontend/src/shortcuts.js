@@ -287,7 +287,7 @@ export const v_current_os = (function () {
 })();
 
 //Initializing shortcut buttons
-$(function () {
+function initShortcuts() {
 	//Shortcut actions
 	v_shortcut_object.actions = {
 		shortcut_run_query: function () {
@@ -418,7 +418,14 @@ $(function () {
 			if (v_button) buildButtonText(v_object, v_button);
 		}
 	}
-});
+}
+
+// jQuery's $(fn) always defers to a fresh task even when the document is
+// already ready (it never calls fn synchronously inline) -- match that here,
+// since other module-level code later in this same bundle depends on
+// running before this fires.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initShortcuts);
+else setTimeout(initShortcuts, 0);
 
 export function buildButtonText(p_shortcut_object, p_button) {
 	var v_text = "";

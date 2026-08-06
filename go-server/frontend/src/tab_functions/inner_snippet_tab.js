@@ -112,7 +112,8 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 
 	var v_txt_snippet = /** @type {HTMLElement} */ (document.getElementById("txt_snippet_" + v_tab.id));
 
-	v_txt_snippet.style.height = window.innerHeight - $(v_txt_snippet).offset().top - 70 + "px";
+	v_txt_snippet.style.height =
+		window.innerHeight - (v_txt_snippet.getBoundingClientRect().top + window.scrollY) - 70 + "px";
 
 	var langTools = ace.require("ace/ext/language_tools");
 	var v_editor = ace.edit("txt_snippet_" + v_tab.id);

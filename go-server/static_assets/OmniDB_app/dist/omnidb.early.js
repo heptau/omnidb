@@ -10,7 +10,7 @@
   function startLoading() {
     v_calls_count++;
     if (!v_is_loading) {
-      $("#div_loading").fadeIn(100);
+      document.getElementById("div_loading").style.display = "block";
       v_is_loading = true;
     }
   }
@@ -19,7 +19,7 @@
       v_calls_count--;
     }
     if (v_calls_count == 0) {
-      $("#div_loading").fadeOut(100);
+      document.getElementById("div_loading").style.display = "none";
       v_is_loading = false;
     }
   }
@@ -28,7 +28,7 @@
     if (document.cookie && document.cookie !== "") {
       var cookies = document.cookie.split(";");
       for (var i = 0; i < cookies.length; i++) {
-        var cookie = jQuery.trim(cookies[i]);
+        var cookie = cookies[i].trim();
         if (cookie.substring(0, name.length + 1) === name + "=") {
           cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
           break;

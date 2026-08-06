@@ -31,7 +31,7 @@ SOFTWARE.
 import { v_current_terminal_theme } from "../header_actions.js";
 import { escapeHtml } from "../query.js";
 import { startTerminal, terminalContextMenu, terminalKey } from "../terminal.js";
-import { refreshHeights } from "../workspace.js";
+import { refreshBootstrapTooltips, refreshHeights } from "../workspace.js";
 
 
 export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = "Terminal", p_details = false) {
@@ -123,7 +123,7 @@ export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias 
 	// Creating `Add` tab in the outer tab list
 	// v_connTabControl.createAddTab();
 
-	$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		refreshHeights();

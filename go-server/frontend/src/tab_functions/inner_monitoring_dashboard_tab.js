@@ -122,8 +122,8 @@ export var v_createMonitorDashboardTabFunction = function () {
 		if (v_tab_tag.dashboard_div) {
 			v_tab_tag.dashboard_div.style.height =
 				window.innerHeight -
-				$(v_tab_tag.dashboard_div).offset().top -
-				$(v_tab_tag.dashboard_div.parentElement).scrollTop() -
+				(v_tab_tag.dashboard_div.getBoundingClientRect().top + window.scrollY) -
+				v_tab_tag.dashboard_div.parentElement.scrollTop -
 				0.833 * v_font_size +
 				"px";
 		}
@@ -341,7 +341,11 @@ export var v_createNewMonitorUnitTabFunction = function () {
 	var v_resizeFunction = function () {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.editorDataDiv) {
-			var v_new_height = window.innerHeight - $(v_tab_tag.editorDataDiv).offset().top - v_font_size + "px";
+			var v_new_height =
+				window.innerHeight -
+				(v_tab_tag.editorDataDiv.getBoundingClientRect().top + window.scrollY) -
+				v_font_size +
+				"px";
 			v_tab_tag.editorDataDiv.style.height = v_new_height;
 			v_tab_tag.editor_data.resize();
 		}

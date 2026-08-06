@@ -88,7 +88,10 @@ export var v_createGraphTabFunction = function (p_name) {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.graph_div) {
 			v_tab_tag.graph_div.style.height =
-				window.innerHeight - $(v_tab_tag.graph_div).offset().top - 0.833 * v_font_size + "px";
+				window.innerHeight -
+				(v_tab_tag.graph_div.getBoundingClientRect().top + window.scrollY) -
+				0.833 * v_font_size +
+				"px";
 		}
 	};
 

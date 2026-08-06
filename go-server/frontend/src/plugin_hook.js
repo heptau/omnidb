@@ -45,7 +45,15 @@ SOFTWARE.
 // behavior change. Kept as a real (if currently unused) extension point
 // rather than deleted outright, in case internal code ever wants to hook
 // into these events itself.
-$(function () {
+function initHookRegistry() {
+	// v_connTabControl is only created once login succeeds, which can still be
+	// in flight when this fires (e.g. an automated/instant login submit) --
+	// jQuery's ready queue happened to swallow that race silently; this just
+	// waits it out explicitly instead of throwing on the first attempt.
+	if (typeof v_connTabControl === "undefined" || !v_connTabControl.tag) {
+		setTimeout(initHookRegistry, 50);
+		return;
+	}
 	v_connTabControl.tag.hooks = {
 		innerTabMenu: [],
 		outerTabMenu: [],
@@ -67,7 +75,14 @@ $(function () {
 		sqliteTreeContextMenu: [],
 		sqliteTreeNodeClick: [],
 	};
-});
+}
+
+// jQuery's $(fn) always defers to a fresh task even when the document is
+// already ready (it never calls fn synchronously inline) -- match that here,
+// since other module-level code later in this same bundle (e.g. workspace.js
+// creating v_connTabControl) depends on running before this fires.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initHookRegistry);
+else setTimeout(initHookRegistry, 0);
 
 export function activateHook(p_hook, p_function) {
 	try {

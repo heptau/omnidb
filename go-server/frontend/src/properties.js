@@ -38,7 +38,7 @@ import { showPasswordPrompt } from "./passwords.js";
 
 export function getProperties(p_view, p_data) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
-	$(v_tab_tag.divLoading).fadeIn(100);
+	v_tab_tag.divLoading.style.display = "block";
 
 	execAjax(
 		p_view,
@@ -52,11 +52,11 @@ export function getProperties(p_view, p_data) {
 			v_tab_tag.ddlEditor.setValue(p_return.v_data.ddl);
 			v_tab_tag.ddlEditor.clearSelection();
 			v_tab_tag.ddlEditor.gotoLine(0, 0, true);
-			$(v_tab_tag.divLoading).fadeOut(100);
+			v_tab_tag.divLoading.style.display = "none";
 			v_tab_tag.gridPropertiesCleared = false;
 		},
 		function (p_return) {
-			$(v_tab_tag.divLoading).fadeOut(100);
+			v_tab_tag.divLoading.style.display = "none";
 			if (p_return.v_data.password_timeout) {
 				showPasswordPrompt(
 					v_connTabControl.selectedTab.tag.selectedDatabaseIndex,

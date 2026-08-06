@@ -182,22 +182,21 @@ export var v_createConsoleTabFunction = function () {
 	v_editor1.setFontSize(Number(v_font_size));
 
 	// Setting custom keyboard shortcuts callbacks.
-	$("#txt_input_" + v_tab.id)
-		.find(".ace_text-input")
-		.on("keyup", function (event) {
-			if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
-				autocomplete_start(v_editor1, 1, event);
-			}
-		});
-	$("#txt_input_" + v_tab.id)
-		.find(".ace_text-input")
-		.on("keydown", function (event) {
-			if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
-				autocomplete_keydown(v_editor1, event);
-			} else {
-				autocomplete_update_editor_cursor(v_editor1, event);
-			}
-		});
+	var v_editor1_text_input = /** @type {HTMLElement} */ (
+		/** @type {HTMLElement} */ (document.getElementById("txt_input_" + v_tab.id)).querySelector(".ace_text-input")
+	);
+	v_editor1_text_input.addEventListener("keyup", function (event) {
+		if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
+			autocomplete_start(v_editor1, 1, event);
+		}
+	});
+	v_editor1_text_input.addEventListener("keydown", function (event) {
+		if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
+			autocomplete_keydown(v_editor1, event);
+		} else {
+			autocomplete_update_editor_cursor(v_editor1, event);
+		}
+	});
 
 	// Remove shortcuts from ace in order to avoid conflict with omnidb shortcuts
 	v_editor1.commands.bindKey("ctrl-space", null);
@@ -310,7 +309,7 @@ export var v_createConsoleTabFunction = function () {
 		if (v_tab_tag.div_console) {
 			v_tab_tag.div_console.style.height =
 				window.innerHeight -
-				$(v_tab_tag.div_console).offset().top -
+				(v_tab_tag.div_console.getBoundingClientRect().top + window.scrollY) -
 				parseInt(v_tab_tag.div_result.style.height, 10) -
 				1.25 * v_font_size -
 				38 +
@@ -432,7 +431,8 @@ export var v_createConsoleTabFunction = function () {
 	adjustQueryTabObjects(false);
 
 	// Sets a render refresh for the grid on the consoleHistory.modal after the modal is fully loaded
-	$(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal).on("shown.bs.modal", function () {
+	// (Bootstrap dispatches "shown.bs.modal" as a real DOM event, no jQuery needed to listen for it.)
+	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal.addEventListener("shown.bs.modal", function () {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.render();
 	});
 };

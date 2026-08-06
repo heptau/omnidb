@@ -114,7 +114,10 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.div_result) {
 			v_tab_tag.div_result.style.height =
-				window.innerHeight - $(v_tab_tag.div_result).offset().top - 1.25 * v_font_size + "px";
+				window.innerHeight -
+				(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
+				1.25 * v_font_size +
+				"px";
 			setTimeout(function () {
 				if (v_tab_tag.ht != null) {
 					v_tab_tag.ht.render();

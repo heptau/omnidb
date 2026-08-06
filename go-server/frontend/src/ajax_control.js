@@ -38,7 +38,7 @@ export var v_is_loading = false;
 export function startLoading() {
 	v_calls_count++;
 	if (!v_is_loading) {
-		$("#div_loading").fadeIn(100);
+		/** @type {HTMLElement} */ (document.getElementById("div_loading")).style.display = "block";
 		v_is_loading = true;
 	}
 }
@@ -52,7 +52,7 @@ export function endLoading() {
 	}
 
 	if (v_calls_count == 0) {
-		$("#div_loading").fadeOut(100);
+		/** @type {HTMLElement} */ (document.getElementById("div_loading")).style.display = "none";
 		v_is_loading = false;
 	}
 }
@@ -71,7 +71,7 @@ export function getCookie(name) {
 		var cookies = document.cookie.split(";");
 
 		for (var i = 0; i < cookies.length; i++) {
-			var cookie = jQuery.trim(cookies[i]);
+			var cookie = cookies[i].trim();
 
 			// Does this cookie string begin with the name we want?
 			if (cookie.substring(0, name.length + 1) === name + "=") {

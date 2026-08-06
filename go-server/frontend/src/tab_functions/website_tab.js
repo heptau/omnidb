@@ -121,7 +121,8 @@ export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p
 	var v_resizeFunction = function () {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.iframe) {
-			v_tab_tag.iframe.style.height = window.innerHeight - $(v_tab_tag.iframe).offset().top - 0.833 * v_font_size + "px";
+			v_tab_tag.iframe.style.height =
+			window.innerHeight - (v_tab_tag.iframe.getBoundingClientRect().top + window.scrollY) - 0.833 * v_font_size + "px";
 		}
 	};
 
