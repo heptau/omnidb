@@ -48,7 +48,7 @@ the Makefile installs the Wails CLI itself if it's missing.
 - **Frontend**: HTML, CSS, JavaScript (server-rendered, no SPA framework)
 - **Desktop shell**: Wails/Go — see `wails-app/` and `AGENTS.md` for details
 - **Database**: PostgreSQL, MySQL, MariaDB, Oracle, SQLite
-- **Libraries**: ACE Editor, AG Grid, Chart.js, Bootstrap
+- **Libraries**: ACE Editor, Chart.js, Bootstrap
 
 ## Requirements
 
