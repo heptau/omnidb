@@ -349,11 +349,9 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 		// Mode 2 / v_all_data ("fetch everything") streams the rest of the
 		// tab's already-open result set back in chunks over the same
 		// long-polling channel, continuing from wherever mode 0 (or a prior
-		// mode 1) left off — see runNativeQueryAllData. Deliberately doesn't
-		// support cancellation mid-stream (Python's self.cancel via
-		// requestTypeCancelThread) — see that function's comment for why
-		// this is an acceptable, narrow gap for now rather than something
-		// silently different.
+		// mode 1) left off — see runNativeQueryAllData. A requestTypeCancelThread
+		// arriving mid-stream does interrupt it — see queryCursor.cancel's
+		// comment in querycursor.go for how.
 		if q.VAllData || q.VMode == 2 {
 			info, err := resolveConnection(upstream, cookie, q.VDBIndex.String())
 			if err != nil || !info.Found || !nativeQueryTechnology(info.Technology) {
@@ -550,14 +548,13 @@ const allDataBlockSize = 10000
 // reached the frontend, so this reports an empty last block rather than
 // re-fetching anything.
 //
-// Deliberately does not support mid-stream cancellation (Python's
-// StoppableThread.cancel flag, settable via requestTypeCancelThread) —
-// today's requestTypeCancelThread handling only knows how to close a
-// queryCursors entry, and doing so here would race this goroutine's own
-// use of the cursor. For a very large result set this means a cancel
-// click won't stop the fetch already in flight; accepted as a narrow,
-// documented gap rather than building cross-goroutine cancellation for a
-// first cut of this mode.
+// Mid-stream cancellation (Python's StoppableThread.cancel flag, settable
+// via requestTypeCancelThread) works here the same way it does for mode 0/1:
+// requestTypeCancelThread calls closeCursor, which cancels the cursor's
+// context before it ever tries to lock c.mu. That interrupts whichever
+// rows.Next() call this loop is currently blocked in — via continueCursor's
+// held lock — rather than racing this goroutine's own use of the cursor by
+// closing rows out from under it directly.
 func runNativeQueryAllData(upstream *url.URL, cookie, clientID string, q queryRequestData, contextCode int) {
 	start := time.Now()
 

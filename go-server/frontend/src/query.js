@@ -158,6 +158,86 @@ export function getQueryEditorValue() {
 }
 
 /// <summary>
+/// Finds the SQL statement the cursor is sitting in, splitting the editor's
+/// full text on top-level semicolons. Quoted strings and comments are
+/// tracked so a `;` inside them isn't mistaken for a statement boundary, but
+/// this is still a lexer, not a real SQL parser -- same tradeoff as
+/// destructiveSQLWarning above.
+/// </summary>
+export function getStatementAtCursor() {
+	var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
+	var v_text = v_editor.getValue();
+	var v_pos = v_editor.getCursorPosition();
+
+	var v_lines = v_text.split("\n");
+	var v_cursor_index = v_pos.column;
+	for (var v_row = 0; v_row < v_pos.row; v_row++) v_cursor_index += v_lines[v_row].length + 1;
+
+	var v_bounds = [];
+	var v_start = 0;
+	var v_state = "normal";
+	for (var i = 0; i < v_text.length; i++) {
+		var v_char = v_text[i];
+		var v_next = v_text[i + 1];
+		if (v_state == "normal") {
+			if (v_char == "'") v_state = "single";
+			else if (v_char == '"') v_state = "double";
+			else if (v_char == "-" && v_next == "-") v_state = "line_comment";
+			else if (v_char == "/" && v_next == "*") v_state = "block_comment";
+			else if (v_char == ";") {
+				v_bounds.push([v_start, i + 1]);
+				v_start = i + 1;
+			}
+		} else if (v_state == "single") {
+			if (v_char == "'") v_state = "normal";
+		} else if (v_state == "double") {
+			if (v_char == '"') v_state = "normal";
+		} else if (v_state == "line_comment") {
+			if (v_char == "\n") v_state = "normal";
+		} else if (v_state == "block_comment") {
+			if (v_char == "*" && v_next == "/") {
+				v_state = "normal";
+				i++;
+			}
+		}
+	}
+	v_bounds.push([v_start, v_text.length]);
+
+	// The cursor may sit in a blank gap between statements (e.g. an empty
+	// line right after a `;`) -- scan forward for the next non-empty
+	// statement, then backward, so there's always something to run.
+	// Consecutive bounds share an endpoint (bounds[k][1] === bounds[k+1][0],
+	// both being "right after the `;`"), so a cursor sitting exactly there
+	// must prefer the *next* statement, not tie-break onto the one that just
+	// ended -- hence strictly less-than rather than <=.
+	var v_index = v_bounds.findIndex(function (b) {
+		return v_cursor_index < b[1];
+	});
+	if (v_index < 0) v_index = v_bounds.length - 1;
+
+	// Stripping the trailing `;` before the blank check matters for an empty
+	// statement between two consecutive semicolons (e.g. "A;;B;") -- that
+	// bound's raw text is just ";", which trim() alone doesn't reduce to "",
+	// so without stripping first it would look non-blank and get returned
+	// as an empty statement instead of the loop moving on to the real one.
+	for (var f = v_index; f < v_bounds.length; f++) {
+		var v_stmt = v_text
+			.substring(v_bounds[f][0], v_bounds[f][1])
+			.trim()
+			.replace(/;\s*$/, "");
+		if (v_stmt != "") return v_stmt;
+	}
+	for (var b = v_index - 1; b >= 0; b--) {
+		var v_stmt2 = v_text
+			.substring(v_bounds[b][0], v_bounds[b][1])
+			.trim()
+			.replace(/;\s*$/, "");
+		if (v_stmt2 != "") return v_stmt2;
+	}
+	return "";
+}
+
+/// <summary>
 /// Best-effort check for the classic "forgot the WHERE clause" mistake (or
 /// an always-destructive DROP/TRUNCATE), so querySQL can warn before running
 /// it instead of after. Comment-stripping mirrors the Go backend's

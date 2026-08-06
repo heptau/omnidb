@@ -9,6 +9,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unicode"
 )
 
 // consoleSession holds one console tab's persistent, single connection
@@ -34,6 +35,32 @@ type consoleSession struct {
 	autocommitOff bool // updated from v_autocommit on every request
 	inTx          bool // an implicit transaction is open (autocommit off)
 	txErrored     bool // last statement in that transaction failed
+
+	// cancelMu guards cancel, kept deliberately separate from mu: runStatement
+	// holds mu for the entire duration of a running SQL statement, so a
+	// Cancel request reading/calling cancel must not need mu itself or it
+	// would block behind the very statement it's trying to interrupt.
+	cancelMu sync.Mutex
+	cancel   context.CancelFunc // aborts whatever statement runConsole is currently running for this tab, if any
+}
+
+// setCancel records the CancelFunc for the run currently in flight (or nil
+// once it finishes), without touching s.mu.
+func (s *consoleSession) setCancel(cancel context.CancelFunc) {
+	s.cancelMu.Lock()
+	s.cancel = cancel
+	s.cancelMu.Unlock()
+}
+
+// cancelRunning aborts whatever statement this session is currently running,
+// if any — safe to call while another goroutine holds s.mu.
+func (s *consoleSession) cancelRunning() {
+	s.cancelMu.Lock()
+	cancel := s.cancel
+	s.cancelMu.Unlock()
+	if cancel != nil {
+		cancel()
+	}
 }
 
 var consoleSessions sync.Map // map[string]*consoleSession, keyed by cursorKey(clientID, tabID)
@@ -73,6 +100,9 @@ func openOrReuseConsoleSession(clientID, tabID string, info *ConnectionInfo) (*c
 // any. Safe to call for tabs Go never touched.
 func closeConsoleSession(clientID, tabID string) {
 	key := cursorKey(clientID, tabID)
+	if v, ok := consoleSessions.Load(key); ok {
+		v.(*consoleSession).cancelRunning()
+	}
 	v, ok := consoleSessions.LoadAndDelete(key)
 	if !ok {
 		return
@@ -97,6 +127,9 @@ func closeConsoleSessionsForClient(clientID string) {
 		return true
 	})
 	for _, k := range keys {
+		if v, ok := consoleSessions.Load(k); ok {
+			v.(*consoleSession).cancelRunning()
+		}
 		if v, ok := consoleSessions.LoadAndDelete(k); ok {
 			sess := v.(*consoleSession)
 			sess.mu.Lock()
@@ -325,19 +358,17 @@ func scanRowConsole(rows *sql.Rows, numCols int) ([]string, error) {
 }
 
 // splitSQLStatements mirrors sqlparse.split() closely enough for console
-// use: splits on semicolons, respecting single/double-quoted strings and
-// --line / block comments, dropping empty statements. Deliberately doesn't
-// handle Postgres dollar-quoting ($$...$$ function bodies) — a script
-// containing a semicolon inside a $$-quoted body would be split mid-body.
-// Narrow, documented gap: console use is aimed at ad hoc statements, not
-// multi-statement function definitions (those belong in the DDL/routine
-// editor, which doesn't go through this splitter at all).
+// use: splits on semicolons, respecting single/double-quoted strings,
+// --line / block comments, and Postgres dollar-quoted bodies ($$...$$ or
+// tagged $tag$...$tag$, as used by function/procedure definitions), dropping
+// empty statements.
 func splitSQLStatements(sqlText string) []string {
 	var statements []string
 	var current strings.Builder
 
 	runes := []rune(sqlText)
-	inSingle, inDouble, inLineComment, inBlockComment := false, false, false, false
+	inSingle, inDouble, inLineComment, inBlockComment, inDollar := false, false, false, false, false
+	var dollarTag []rune
 	for i := 0; i < len(runes); i++ {
 		c := runes[i]
 		var next rune
@@ -345,6 +376,18 @@ func splitSQLStatements(sqlText string) []string {
 			next = runes[i+1]
 		}
 
+		if inDollar {
+			current.WriteRune(c)
+			if c == '$' && runesHavePrefixAt(runes, i, dollarTag) {
+				for k := 1; k < len(dollarTag); k++ {
+					current.WriteRune(runes[i+k])
+				}
+				i += len(dollarTag) - 1
+				inDollar = false
+				dollarTag = nil
+			}
+			continue
+		}
 		if inLineComment {
 			current.WriteRune(c)
 			if c == '\n' {
@@ -387,6 +430,15 @@ func splitSQLStatements(sqlText string) []string {
 		}
 
 		switch {
+		case c == '$':
+			if tag, ok := dollarQuoteTagAt(runes, i); ok {
+				current.WriteString(string(tag))
+				i += len(tag) - 1
+				inDollar = true
+				dollarTag = tag
+			} else {
+				current.WriteRune(c)
+			}
 		case c == '\'':
 			inSingle = true
 			current.WriteRune(c)
@@ -417,6 +469,33 @@ func splitSQLStatements(sqlText string) []string {
 		}
 	}
 	return out
+}
+
+// dollarQuoteTagAt reports whether runes[i] starts a Postgres dollar-quote
+// tag ($$ or $tag$, tag being letters/digits/underscores) and returns it
+// including both delimiting dollar signs.
+func dollarQuoteTagAt(runes []rune, i int) ([]rune, bool) {
+	j := i + 1
+	for j < len(runes) && runes[j] != '$' && (runes[j] == '_' || unicode.IsLetter(runes[j]) || unicode.IsDigit(runes[j])) {
+		j++
+	}
+	if j < len(runes) && runes[j] == '$' {
+		return runes[i : j+1], true
+	}
+	return nil, false
+}
+
+// runesHavePrefixAt reports whether tag occurs verbatim in runes starting at i.
+func runesHavePrefixAt(runes []rune, i int, tag []rune) bool {
+	if i+len(tag) > len(runes) {
+		return false
+	}
+	for k, r := range tag {
+		if runes[i+k] != r {
+			return false
+		}
+	}
+	return true
 }
 
 // logConsoleHistory mirrors thread_console's mode-0 ConsoleHistory.save() —
@@ -496,7 +575,12 @@ func runConsole(upstream *url.URL, cookie string, clientID string, q consoleRequ
 	sess.autocommitOff = !q.VAutocommit
 	sess.mu.Unlock()
 
-	ctx := context.Background()
+	ctx, cancel := context.WithCancel(context.Background())
+	sess.setCancel(cancel)
+	defer func() {
+		cancel()
+		sess.setCancel(nil)
+	}()
 	var out strings.Builder
 	for _, stmt := range statements {
 		out.WriteString("\n")

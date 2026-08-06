@@ -150,3 +150,62 @@ func TestConsoleMetaDispatchViaRunStatement(t *testing.T) {
 		t.Errorf("expected \\d widgets dispatched through runStatement to describe it, got:\n%s", out)
 	}
 }
+
+func TestSplitSQLStatementsDollarQuoting(t *testing.T) {
+	// A semicolon inside a tagged dollar-quoted body (as in a real
+	// CREATE PROCEDURE) must not split the statement in two.
+	procedure := `CREATE OR REPLACE PROCEDURE fix_thing()
+LANGUAGE plpgsql
+AS $procedure$
+DECLARE
+    BATCH_SIZE CONSTANT INTEGER = 100;
+BEGIN
+    RAISE NOTICE 'hi;there';
+END;
+$procedure$;`
+	got := splitSQLStatements(procedure)
+	if len(got) != 1 {
+		t.Fatalf("expected 1 statement, got %d: %q", len(got), got)
+	}
+	if !strings.HasSuffix(strings.TrimSpace(got[0]), "$procedure$") {
+		t.Errorf("statement truncated before closing tag: %q", got[0])
+	}
+
+	cases := []struct {
+		name string
+		sql  string
+		want []string
+	}{
+		{
+			name: "bare $$ with embedded semicolon",
+			sql:  `select 1; create function f() returns int as $$ select 1; $$ language sql; select 2;`,
+			want: []string{
+				"select 1",
+				"create function f() returns int as $$ select 1; $$ language sql",
+				"select 2",
+			},
+		},
+		{
+			name: "tag containing digits and underscores",
+			sql:  `do $body_1$ begin perform 1; end; $body_1$;`,
+			want: []string{"do $body_1$ begin perform 1; end; $body_1$"},
+		},
+		{
+			name: "unrelated dollar signs inside body are literal",
+			sql:  `select $$a $ b; c$$ as x;`,
+			want: []string{"select $$a $ b; c$$ as x"},
+		},
+	}
+	for _, c := range cases {
+		got := splitSQLStatements(c.sql)
+		if len(got) != len(c.want) {
+			t.Errorf("%s: got %d statements %q, want %d %q", c.name, len(got), got, len(c.want), c.want)
+			continue
+		}
+		for i := range got {
+			if got[i] != c.want[i] {
+				t.Errorf("%s: statement %d = %q, want %q", c.name, i, got[i], c.want[i])
+			}
+		}
+	}
+}

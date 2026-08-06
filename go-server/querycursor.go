@@ -33,18 +33,62 @@ type queryCursor struct {
 	colTypes   []string // DatabaseTypeName for each column
 	pending    []string // one already-fetched row held back to detect "more data" without losing it
 	autocommit bool
+
+	// cancel aborts whatever QueryContext/ExecContext/rows.Next() call is
+	// currently in flight for this cursor (mode 0's initial run, or a later
+	// mode-1/mode-2 fetch — all share the same context, since Next() has no
+	// context parameter of its own and relies on the one QueryContext was
+	// first called with). Set once at cursor creation and never reassigned,
+	// so it's safe to read from another goroutine without holding mu — which
+	// is the whole point: a goroutine blocked inside a slow query holds mu
+	// for the entire call, so anything that needed mu to reach this field
+	// would deadlock behind the very query it's trying to interrupt.
+	cancel context.CancelFunc
 }
 
 var queryCursors sync.Map // map[string]*queryCursor, keyed by cursorKey(clientID, tabID)
 
+// cancelToken wraps a CancelFunc so it can live in a sync.Map that's cleaned
+// up with CompareAndDelete — func values aren't comparable in Go (comparing
+// two non-nil funcs panics), but pointers to this struct are, which is what
+// CompareAndDelete needs to tell "the entry I stored" apart from "a newer
+// entry a racing call already replaced it with".
+type cancelToken struct{ cancel context.CancelFunc }
+
+// queryCancels holds cancel tokens for a mode-0 query that's still inside its
+// initial QueryContext call, before startCursor has anything to publish to
+// queryCursors — closing over just the CancelFunc (not c.mu) means a Cancel
+// arriving mid-run can interrupt it immediately instead of finding no cursor
+// to close and silently doing nothing while the query keeps running on the
+// database. Entries are removed as soon as startCursor has either published
+// a cursor (whose own c.cancel field takes over from here) or failed.
+var queryCancels sync.Map // map[string]*cancelToken, keyed by cursorKey(clientID, tabID)
+
 func cursorKey(clientID, tabID string) string {
 	return clientID + "|" + tabID
+}
+
+// cancelKeyedQuery aborts whatever's running for this tab right now, whether
+// that's a mode-0 query still inside startCursor (via queryCancels) or an
+// already-published cursor mid-fetch (via its own c.cancel) — called before
+// any attempt to lock a cursor's mu, since the goroutine actually doing the
+// work holds that lock for the full duration of the blocking DB call.
+func cancelKeyedQuery(key string) {
+	if v, ok := queryCancels.Load(key); ok {
+		v.(*cancelToken).cancel()
+	}
+	if v, ok := queryCursors.Load(key); ok {
+		if c := v.(*queryCursor); c.cancel != nil {
+			c.cancel()
+		}
+	}
 }
 
 // closeCursor releases a tab's held-open connection/result set, if any.
 // Safe to call for tabs Go never touched.
 func closeCursor(clientID, tabID string) {
 	key := cursorKey(clientID, tabID)
+	cancelKeyedQuery(key)
 	v, ok := queryCursors.LoadAndDelete(key)
 	if !ok {
 		return
@@ -63,6 +107,9 @@ func closeCursor(clientID, tabID string) {
 // sql.Tx.Rollback() is a documented no-op/ErrTxDone in that case, which
 // this ignores). Caller must hold c.mu.
 func closeCursorLocked(c *queryCursor) {
+	if c.cancel != nil {
+		c.cancel()
+	}
 	if c.rows != nil {
 		c.rows.Close()
 	}
@@ -91,6 +138,7 @@ func closeCursorsForClient(clientID string) {
 		return true
 	})
 	for _, k := range keys {
+		cancelKeyedQuery(k)
 		if v, ok := queryCursors.LoadAndDelete(k); ok {
 			c := v.(*queryCursor)
 			c.mu.Lock()
@@ -127,7 +175,16 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 	}
 	last := statements[len(statements)-1]
 
-	ctx := context.Background()
+	// Published to queryCancels before the blocking QueryContext call below,
+	// not after — a slow first run (e.g. a SELECT with no WHERE/no index) is
+	// exactly the case where a Cancel needs to interrupt something that
+	// isn't a queryCursor yet. See queryCancels' own comment.
+	key := cursorKey(clientID, tabID)
+	ctx, cancel := context.WithCancel(context.Background())
+	tok := &cancelToken{cancel: cancel}
+	queryCancels.Store(key, tok)
+	defer queryCancels.CompareAndDelete(key, tok)
+
 	var tx *sql.Tx
 	var conn *sql.Conn
 	var rows *sql.Rows
@@ -150,7 +207,7 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 			}
 		}
 	} else {
-		tx, err = db.Begin()
+		tx, err = db.BeginTx(ctx, nil)
 		if err == nil {
 			for _, stmt := range statements[:len(statements)-1] {
 				if _, err = tx.ExecContext(ctx, stmt); err != nil {
@@ -192,8 +249,8 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 		}
 	}
 
-	c := &queryCursor{db: db, tx: tx, conn: conn, rows: rows, cols: cols, colTypes: colTypes, autocommit: autocommit}
-	queryCursors.Store(cursorKey(clientID, tabID), c)
+	c := &queryCursor{db: db, tx: tx, conn: conn, rows: rows, cols: cols, colTypes: colTypes, autocommit: autocommit, cancel: cancel}
+	queryCursors.Store(key, c)
 	return c, nil
 }
 

@@ -33,7 +33,7 @@ import { closeCommandHistory, showCommandList } from "../command_history.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { customMenu } from "../custom_menu.js";
 import { showAlert } from "../notification_control.js";
-import { cancelSQL, checkQueryStatus, querySQL } from "../query.js";
+import { cancelSQL, checkQueryStatus, getStatementAtCursor, querySQL } from "../query.js";
 import { createTabControl } from "../tabs.js";
 import { getExplain } from "../tree_context_functions/tree_postgresql.js";
 import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
@@ -147,6 +147,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<button id="bt_start_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run"><i class="fas fa-play fa-light"></i></button>' +
+		'<button id="bt_start_stmt_' +
+		v_tab.id +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run Statement at Cursor"><i class="fas fa-play-circle fa-light"></i></button>' +
 		'<button id="bt_indent_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent fa-light"></i></button>' +
@@ -506,6 +509,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		query_tab_status: document.getElementById("query_tab_status_" + v_tab.id),
 		query_tab_status_text: document.getElementById("query_tab_status_text_" + v_tab.id),
 		bt_start: /** @type {HTMLElement} */ (document.getElementById("bt_start_" + v_tab.id)),
+		bt_start_stmt: /** @type {HTMLElement} */ (document.getElementById("bt_start_stmt_" + v_tab.id)),
 		bt_fetch_more: /** @type {HTMLElement} */ (document.getElementById("bt_fetch_more_" + v_tab.id)),
 		bt_fetch_all: /** @type {HTMLElement} */ (document.getElementById("bt_fetch_all_" + v_tab.id)),
 		bt_commit: /** @type {HTMLElement} */ (document.getElementById("bt_commit_" + v_tab.id)),
@@ -562,6 +566,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	// selected tab's toolbar is on screen to be clicked, so the two are the same
 	// element, and keeping the existing lookup keeps the behaviour identical.
 	v_tag.bt_start.addEventListener("click", () => querySQL(0));
+	v_tag.bt_start_stmt.addEventListener("click", () => querySQL(0, false, getStatementAtCursor()));
 	v_tag.bt_fetch_more.addEventListener("click", () => querySQL(1));
 	v_tag.bt_fetch_all.addEventListener("click", () => querySQL(2));
 	v_tag.bt_commit.addEventListener("click", () => querySQL(3));

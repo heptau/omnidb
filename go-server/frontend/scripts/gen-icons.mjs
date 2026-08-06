@@ -83,6 +83,7 @@ const MAPPING = {
 	"fa-user-friends": ["lucide", "users-round"],
 	"fa-tasks": ["lucide", "list-checks"],
 	"fa-star": ["lucide", "star"],
+	"fa-play": ["lucide", "play"],
 	"fa-play-circle": ["lucide", "play-circle"],
 	"fa-pause-circle": ["lucide", "pause-circle"],
 	"fa-indent": ["lucide", "indent"],
