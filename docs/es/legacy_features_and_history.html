@@ -114,7 +114,6 @@
 			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
 			<a href="console_tab.html">Pestaña de consola</a>
-			<a href="advanced_object_search.html">Búsqueda avanzada de objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
 		</div>
 		<div class="nav-group">
@@ -218,6 +217,26 @@
 				o puede usar <a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
 				(el equivalente activamente mantenido que usa pgAdmin) directamente, fuera de
 				OmniDB.</p>
+
+			<h2 id="advanced-object-search">Búsqueda avanzada de objetos (eliminada)</h2>
+			<p>La búsqueda avanzada de objetos permitía a los usuarios aplicar
+				coincidencia de patrones — el operador SQL <code>LIKE</code> o una
+				expresión regular completa — sobre nombres de objetos de base de datos
+				y datos de tablas, buscando en varias tablas en paralelo y abriendo una
+				pestaña de consulta lista para cada coincidencia encontrada.</p>
+			<p><strong>La búsqueda avanzada de objetos ha sido eliminada.</strong> Su
+				entrada en el menú contextual del árbol ya estaba comentada, y su código
+				de frontend y backend llamaba a funciones que ya no existen en ningún
+				punto del historial de este repositorio — nunca se trasladó durante la
+				reescritura 3.6.x de Python/Django a Go, y desde entonces no ha sido
+				alcanzable ni funcional. El código muerto se ha eliminado ahora por
+				completo, en lugar de mantenerse como una entrada de menú que nunca
+				podría funcionar.</p>
+			<p>Hoy no existe ningún sustituto compatible. Una búsqueda con
+				<code>LIKE</code> o con expresión regular sobre tablas o columnas
+				concretas se puede seguir escribiendo a mano en el editor SQL habitual
+				— consulte <a href="writing_sql_queries.html">Escritura de consultas
+				SQL</a>.</p>
 
 			<h2 id="pglogical">pglogical (eliminado)</h2>
 			<p><a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>

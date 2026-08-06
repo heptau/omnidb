@@ -112,7 +112,6 @@
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
 			<a href="console_tab.html">Záložka Konzole</a>
-			<a href="advanced_object_search.html">Pokročilé vyhledávání objektů</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
 		<div class="nav-group">
@@ -217,6 +216,24 @@
 				nebo můžete mimo OmniDB přímo použít
 				<a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
 				(aktivně udržovaný ekvivalent používaný nástrojem pgAdmin).</p>
+
+			<h2 id="advanced-object-search">Pokročilé vyhledávání objektů (odstraněno)</h2>
+			<p>Pokročilé vyhledávání objektů umožňovalo uživatelům vyhledávat pomocí
+				porovnávání podle vzoru — standardního SQL operátoru <code>LIKE</code>
+				nebo komplexního regulárního výrazu — napříč databázovými objekty a
+				daty v tabulkách, s vyhledáváním souběžně napříč několika tabulkami
+				a s otevřením připravené záložky dotazu pro každou nalezenou shodu.</p>
+			<p><strong>Pokročilé vyhledávání objektů bylo odstraněno.</strong> Jeho
+				položka v kontextovém menu stromu byla už dříve zakomentovaná a
+				frontendový i backendový kód volal funkce, které v historii tohoto
+				repozitáře vůbec neexistují — nebyl převeden během přepisu backendu
+				3.6.x z Pythonu/Django do Go a od té doby nebyl dosažitelný ani
+				funkční. Mrtvý kód byl nyní rovnou odstraněn, místo aby zůstal jako
+				položka menu, která nikdy nemohla fungovat.</p>
+			<p>Dnes neexistuje žádná podporovaná náhrada. Vyhledávání podle
+				<code>LIKE</code> nebo regulárního výrazu v konkrétních tabulkách či
+				sloupcích lze ale stále napsat ručně v běžném SQL editoru — viz
+				<a href="writing_sql_queries.html">Psaní SQL dotazů</a>.</p>
 
 			<h2 id="pglogical">pglogical (odstraněno)</h2>
 			<p><a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>

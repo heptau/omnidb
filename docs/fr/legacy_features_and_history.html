@@ -113,7 +113,6 @@
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
 			<a href="console_tab.html">Onglet console</a>
-			<a href="advanced_object_search.html">Recherche avancée d’objets</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
 		<div class="nav-group">
@@ -214,6 +213,27 @@
 				<a href="https://github.com/OmniDB/OmniDB/tree/master/omnidb_plugin" target="_blank" rel="noopener">l’historique du dépôt d’origine</a>,
 				ou vous pouvez utiliser directement <a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
 				(l’équivalent activement maintenu utilisé par pgAdmin), en dehors d’OmniDB.</p>
+
+			<h2 id="advanced-object-search">Recherche avancée d’objets (supprimée)</h2>
+			<p>La recherche avancée d’objets permettait d’appliquer une correspondance
+				de motif — l’opérateur SQL <code>LIKE</code> ou une expression
+				régulière complète — sur les noms d’objets de la base de données et les
+				données des tables, en recherchant dans plusieurs tables en parallèle
+				et en ouvrant un onglet de requête prêt à l’emploi pour chaque
+				correspondance trouvée.</p>
+			<p><strong>La recherche avancée d’objets a été supprimée.</strong> Son
+				entrée dans le menu contextuel de l’arborescence était déjà mise en
+				commentaire, et son code frontend comme backend appelait des fonctions
+				qui n’existent plus nulle part dans l’historique de ce dépôt — elle
+				n’a jamais été portée lors de la réécriture 3.6.x de Python/Django vers
+				Go, et n’était donc plus accessible ni fonctionnelle depuis. Le code
+				mort a maintenant été supprimé purement et simplement, plutôt que
+				conservé comme une entrée de menu qui n’aurait jamais pu fonctionner.</p>
+			<p>Il n’existe aujourd’hui aucun remplacement pris en charge. Une
+				recherche par <code>LIKE</code> ou par expression régulière sur des
+				tables ou colonnes spécifiques peut toujours être écrite à la main dans
+				l’éditeur SQL habituel — voir <a href="writing_sql_queries.html">Écrire
+				des requêtes SQL</a>.</p>
 
 			<h2 id="pglogical">pglogical (supprimé)</h2>
 			<p><a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>

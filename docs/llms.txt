@@ -231,18 +231,6 @@ URL: https://www.omnidb.net/en/console_tab.html
 
 ---
 
-## Advanced Object Search
-
-URL: https://www.omnidb.net/en/advanced_object_search.html
-
-**Description:** Advanced search capabilities for database objects. Currently disabled in the interface (menu entry commented out); this chapter describes how it used to work.
-
-**Key Topics:**
-- Object search
-- Search filters
-
----
-
 
 ## Editor Keyboard Shortcuts
 
@@ -261,12 +249,13 @@ URL: https://www.omnidb.net/en/editor_keyboard_shortcuts.html
 
 URL: https://www.omnidb.net/en/legacy_features_and_history.html
 
-**Description:** OmniDB's version timeline, and what happened to its removed Python-based plugin system — including the pglogical, Postgres-BDR and Postgres-XL plugins — and the removed PL/pgSQL step debugger, after the 3.6.x rewrite from Python/Django to Go. Links to the original unmaintained repository for anyone who still needs an old release with plugin support.
+**Description:** OmniDB's version timeline, and what happened to its removed Python-based plugin system — including the pglogical, Postgres-BDR and Postgres-XL plugins — the removed PL/pgSQL step debugger, and the removed Advanced Object Search feature, after the 3.6.x rewrite from Python/Django to Go. Links to the original unmaintained repository for anyone who still needs an old release with plugin support.
 
 **Key Topics:**
 - Version history (original ASP.NET/C# project → Django → 2025-2026 revival → Go rewrite → Wails migration)
 - Why the plugin system, pglogical, Postgres-BDR and Postgres-XL support were removed and are not returning
 - Why the PL/pgSQL step debugger was removed (never ported to Go, and fundamentally incompatible with managed/cloud PostgreSQL)
+- Why Advanced Object Search was removed (dead code calling functions that no longer existed, never functional since the Go rewrite)
 - Where to find old releases (github.com/OmniDB/OmniDB, github.com/OmniDB/plugins)
 
 ---

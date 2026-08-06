@@ -809,27 +809,6 @@ These backslash commands are useful when dealing with databases every day. The c
 
 ---
 
-# Advanced Object Search
-URL: https://www.omnidb.net/en/advanced_object_search.html
-
-**Full Content:**
-
-Note: this feature is not available in the current release. Its tree menu entry is commented out, and the frontend functions and Go backend handler it depended on no longer exist — it was not carried over during the Go rewrite, and reviving it would mean building it again rather than flipping a switch. The rest of this chapter is kept as a description of how it used to work, for historical reference.
-
-Advanced Object Search let users apply pattern matching to search database objects and table data — the default SQL LIKE operator, or complex regular expressions.
-
-You can access the Advanced Object Search feature by right clicking in a specific database node in the tree:
-
-The interface allows you to filter categories of objects, schemas where searchs will be executed and also to limit the search space when the Data category is selected, so you search for a pattern in a subset of tables:
-
-After filling the fields and running OmniDB will perform the search using several threads that will speed up the process by running in parallel (It is customizable. For more info, see Deploying omnidb-server).
-
-When the search is finished OmniDB will display the result in a tree:
-
-For more details about the search in each category, right click the desired node and select 'See More'. OmniDB will open a query tab with the SQL command used to perform that specific search. Just run the command to get the results:
-
----
-
 # Editor Keyboard Shortcuts
 URL: https://www.omnidb.net/en/editor_keyboard_shortcuts.html
 
@@ -973,6 +952,14 @@ OmniDB 2.3.0 added an interactive step debugger for PL/pgSQL functions and proce
 The debugger has been removed, along with its "Debug Function"/"Debug Procedure" tree menu entries. It was never ported during the 3.6.x Go rewrite, and the `omnidb_plugin` extension itself hasn't been touched since 2020. Beyond the ongoing cost of keeping a PostgreSQL-internals C extension working across every new major PostgreSQL version, it fundamentally can't work at all against any managed/cloud PostgreSQL (RDS, Cloud SQL, Supabase, Neon, and similar) — none of them allow a custom `shared_preload_libraries` entry — so a large and growing share of today's users could never have used it regardless of how well it was maintained.
 
 Writing and running PL/pgSQL functions themselves is unaffected — see Writing PL/pgSQL Functions. If you need to step through PL/pgSQL execution against your own self-hosted PostgreSQL server, the original `omnidb_plugin` source is still available in the original repository's history (https://github.com/OmniDB/OmniDB/tree/master/omnidb_plugin), or you can use pldebugger (https://github.com/EnterpriseDB/pldebugger) (the actively-maintained equivalent used by pgAdmin) directly, outside of OmniDB.
+
+**Advanced Object Search (removed)**
+
+Advanced Object Search let users apply pattern matching — the SQL LIKE operator, or a full regular expression — across database object names and table data, searching across several tables in parallel and opening a ready-made query tab for any match found.
+
+Advanced Object Search has been removed. Its tree context-menu entry had already been commented out, and its frontend and backend code called functions that no longer exist anywhere in this codebase's history — it was never carried over during the 3.6.x rewrite from Python/Django to Go, and has not been reachable or functional since. The dead code has now been deleted outright rather than kept as a menu entry that could never work.
+
+There is no supported replacement today. A LIKE or regular-expression search across specific tables or columns can still be written by hand in the regular SQL editor — see Writing SQL Queries.
 
 **The plugin system (removed)**
 

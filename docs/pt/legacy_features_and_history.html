@@ -113,7 +113,6 @@
 			<span class="nav-group-label">Servidor e Ferramentas</span>
 			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
 			<a href="console_tab.html">Separador de Consola</a>
-			<a href="advanced_object_search.html">Pesquisa Avançada de Objetos</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
 		<div class="nav-group">
@@ -217,6 +216,26 @@
 				ou pode usar diretamente o <a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
 				(o equivalente ativamente mantido usado pelo pgAdmin), fora do
 				OmniDB.</p>
+
+			<h2 id="advanced-object-search">Pesquisa Avançada de Objetos (removida)</h2>
+			<p>A Pesquisa Avançada de Objetos permitia aplicar correspondência de
+				padrões — o operador SQL <code>LIKE</code> ou uma expressão regular
+				completa — sobre objetos de base de dados e dados de tabelas,
+				pesquisando em várias tabelas em paralelo e abrindo um separador de
+				consulta já preparado para cada correspondência encontrada.</p>
+			<p><strong>A Pesquisa Avançada de Objetos foi removida.</strong> A sua
+				entrada no menu de contexto da árvore já estava comentada, e o seu
+				código de frontend e de backend chamava funções que já não existem em
+				nenhum ponto do histórico deste repositório — nunca foi transportada
+				durante a reescrita 3.6.x de Python/Django para Go, e desde então não
+				estava acessível nem funcional. O código morto foi agora eliminado por
+				completo, em vez de se manter como uma entrada de menu que nunca
+				poderia funcionar.</p>
+			<p>Atualmente não existe qualquer alternativa suportada. Uma pesquisa por
+				<code>LIKE</code> ou por expressão regular sobre tabelas ou colunas
+				específicas pode continuar a ser escrita manualmente no editor SQL
+				habitual — consulte <a href="writing_sql_queries.html">Escrever
+				Consultas SQL</a>.</p>
 
 			<h2 id="pglogical">pglogical (removido)</h2>
 			<p>O <a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>

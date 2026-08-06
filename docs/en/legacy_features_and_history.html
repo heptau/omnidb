@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Legacy Features &amp; History – OmniDB Documentation</title>
-	<meta name="description" content="OmniDB's version history, and what happened to its old plugin system — pglogical, Postgres-BDR, Postgres-XL support, and the PL/pgSQL step debugger — after the 3.6.x rewrite from Python/Django to Go.">
+	<meta name="description" content="OmniDB's version history, and what happened to its old plugin system — pglogical, Postgres-BDR, Postgres-XL support — and to the PL/pgSQL step debugger and Advanced Object Search, after the 3.6.x rewrite from Python/Django to Go.">
 	<link rel="canonical" href="https://www.omnidb.net/en/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/legacy_features_and_history.html">
@@ -17,7 +17,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/en/legacy_features_and_history.html">
 	<meta property="og:title" content="Legacy Features & History - OmniDB Documentation">
-	<meta property="og:description" content="OmniDB's version history, and what happened to its old plugin system — pglogical, Postgres-BDR, Postgres-XL support, and the PL/pgSQL step debugger — after the 3.6.x rewrite from Python/Django to Go.">
+	<meta property="og:description" content="OmniDB's version history, and what happened to its old plugin system — pglogical, Postgres-BDR, Postgres-XL support — and to the PL/pgSQL step debugger and Advanced Object Search, after the 3.6.x rewrite from Python/Django to Go.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -113,7 +113,6 @@
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
 			<a href="console_tab.html">Console Tab</a>
-			<a href="advanced_object_search.html">Advanced Object Search</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
 		<div class="nav-group">
@@ -217,6 +216,11 @@
 				or you can use <a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
 				(the actively-maintained equivalent used by pgAdmin) directly, outside of
 				OmniDB.</p>
+
+			<h2 id="advanced-object-search">Advanced Object Search (removed)</h2>
+			<p>Advanced Object Search let users apply pattern matching — the SQL <code>LIKE</code> operator, or a full regular expression — across database object names and table data, searching across several tables in parallel and opening a ready-made query tab for any match found.</p>
+			<p><strong>Advanced Object Search has been removed.</strong> Its tree context-menu entry had already been commented out, and its frontend and backend code called functions that no longer exist anywhere in this codebase's history — it was never carried over during the 3.6.x rewrite from Python/Django to Go, and has not been reachable or functional since. The dead code has now been deleted outright rather than kept as a menu entry that could never work.</p>
+			<p>There is no supported replacement today. A <code>LIKE</code> or regular-expression search across specific tables or columns can still be written by hand in the regular SQL editor — see <a href="writing_sql_queries.html">Writing SQL Queries</a>.</p>
 
 			<h2 id="pglogical">pglogical (removed)</h2>
 			<p><a href="https://www.2ndquadrant.com/en/resources/pglogical/" target="_blank" rel="noopener">pglogical</a>

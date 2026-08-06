@@ -114,7 +114,6 @@
 			<span class="nav-group-label">Server &amp; Tools</span>
 			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
 			<a href="console_tab.html">Konsolen-Tab</a>
-			<a href="advanced_object_search.html">Erweiterte Objektsuche</a>
 			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
 		</div>
 		<div class="nav-group">
@@ -229,6 +228,26 @@
 				<a href="https://github.com/EnterpriseDB/pldebugger" target="_blank" rel="noopener">pldebugger</a>
 				(die aktiv gepflegte Entsprechung, die auch pgAdmin verwendet) direkt, außerhalb
 				von OmniDB.</p>
+
+			<h2 id="advanced-object-search">Erweiterte Objektsuche (entfernt)</h2>
+			<p>Die erweiterte Objektsuche ermöglichte es Benutzern, per Musterabgleich —
+				dem SQL-Operator <code>LIKE</code> oder einem vollständigen regulären
+				Ausdruck — Datenbankobjekte und Tabellendaten zu durchsuchen, wobei
+				mehrere Tabellen parallel durchsucht wurden und für jeden Treffer ein
+				fertiger Abfrage-Tab geöffnet wurde.</p>
+			<p><strong>Die erweiterte Objektsuche wurde entfernt.</strong> Ihr
+				Kontextmenü-Eintrag im Baum war bereits auskommentiert, und ihr
+				Frontend- und Backend-Code rief Funktionen auf, die nirgendwo mehr in
+				der Historie dieser Codebasis existieren — sie wurde beim 3.6.x-Rewrite
+				von Python/Django nach Go nie übernommen und war seither weder
+				erreichbar noch funktionsfähig. Der tote Code wurde nun vollständig
+				gelöscht, statt als Menüeintrag zu bleiben, der ohnehin nie
+				funktionieren konnte.</p>
+			<p>Einen unterstützten Ersatz gibt es heute nicht. Eine Suche mit
+				<code>LIKE</code> oder einem regulären Ausdruck über bestimmte Tabellen
+				oder Spalten lässt sich aber weiterhin von Hand im normalen SQL-Editor
+				schreiben — siehe <a href="writing_sql_queries.html">SQL-Abfragen
+				schreiben</a>.</p>
 
 			<h2 id="pglogical">pglogical (entfernt)</h2>
 			<p><a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>
