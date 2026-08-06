@@ -7,6 +7,119 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Query tab: a "Run Statement at Cursor" button that runs just the statement the cursor is
+  currently in, with cursor-to-statement matching fixed so a cursor sitting right after a `;`
+  always picks the following statement instead of only doing so when whitespace happens to
+  separate the two.
+- Edit/view cell dialog (Edit Data grid and "View Content" on a query result) now
+  syntax-highlights JSON/JSONB and XML values instead of showing them as plain text, based on
+  the cell's column type.
+- Frontend now has a real `.scss` source for its compiled CSS
+  (`go-server/frontend/scss/{omnidb,login}.scss`) — transcribed byte-for-byte from the CSS that
+  actually ships rather than restoring the old, already-drifted pre-Go-migration source, which
+  no longer matched several since-tuned values (a scrollbar width, some alpha values, the whole
+  dark-theme block).
+- TypeScript checking (`@ts-check`) now covers all 45 frontend JS files (up from 6), catching a
+  number of real bugs along the way — see Fixed.
+
+### Changed
+- The ~39,000-line workspace frontend now builds through Vite instead of loading as 72
+  hand-ordered `<script>` tags. Every cross-file reference is now a real ES module import instead
+  of a lookup through the global object, the bundle runs in strict mode, and a release build is
+  minified (666 kB) while the copy committed to the repo stays readable (1.2 MB) so future diffs
+  stay reviewable.
+- Every inline (`on*=`) event handler in the frontend — in `workspace.html`, in HTML strings built
+  by JS, and in Go-generated markup — is now a real `addEventListener` binding or, for markup
+  injected into grid cells or by widgets after the fact, goes through a small allowlisted
+  delegated dispatcher. No inline handler remains anywhere in this project's own code; the only
+  one left in the rendered page belongs to vendored AimaraJS, now set as a property instead of an
+  attribute. This closes off the last blocker to a Content-Security-Policy without
+  `unsafe-inline`.
+- jQuery, Bootstrap, moment.js, and Chart.js's original vendored files are now real npm
+  dependencies instead of hand-dropped scripts (each confirmed byte-identical to its released
+  package before the swap, so this is a pure delivery-mechanism change on its own).
+- Chart.js upgraded 2.9.4 → 4.5.1, dropping its previously-forced moment.js dependency — v2's
+  "time" scale needed moment.js internally even though every chart in this app is a plain
+  category scale — and the now-confirmed-unused `chartjs-plugin-annotation`. Monitoring dashboard
+  and custom-monitor-query chart configs, theme switching, and legend rendering updated for v4's
+  renamed options and APIs.
+- AG Grid — brought in back in 3.2.0 to replace deprecated Handsontable — is now gone entirely,
+  replaced by a hand-rolled, virtualized `VirtualGrid.js` behind the same Handsontable-compatible
+  API surface. Drops `ag-grid-community` (356KB gzip, the largest remaining frontend dependency)
+  and covers every grid in the app: query results, Edit Data, autocomplete dropdowns, and
+  monitoring/list grids.
+- The vendored 3.1MB Font Awesome icon font is replaced by a generated stylesheet
+  (`scss/_icons.scss`) of hand-mapped inline SVGs, masked over `currentColor` so they still
+  inherit color/theme the same way the font glyphs did. Every existing `fa-*` class name keeps
+  working unchanged.
+- jQuery usage inside the application's own code (as opposed to just its delivery mechanism) is
+  being removed file-by-file — roughly two dozen files converted so far to plain DOM APIs
+  (`getBoundingClientRect`, native Bootstrap modal/tooltip helpers, `addEventListener`, etc.); the
+  moment.js-based daterangepicker widget and its remaining callers, plus a handful of
+  heavier modal-lifecycle files, are deliberately deferred to a later pass.
+- Tree context-menu SQL templates (SELECT/INSERT/UPDATE, PostgreSQL routine calls) now use
+  trailing commas, `AS` table aliases (Oracle excepted — it rejects `AS` before a table alias),
+  and the user's own indent Settings, instead of a hardcoded leading-comma/no-`AS`/4-space style.
+
+### Fixed
+- Query tab Cancel was a no-op for the case it matters most: a slow initial query (e.g. a `SELECT`
+  with no `WHERE`/no index) ran with no way to abort it, and its cursor was only published after
+  the query returned, so clicking Cancel mid-run found nothing to close. Also fixes mid-stream
+  cancellation of "Fetch all", previously a documented gap.
+- "Fetch all" duplicated every row already loaded on screen instead of continuing from where the
+  grid left off — it re-executed the query from scratch and appended the whole result onto rows
+  already loaded by the initial run. It now resumes the same query cursor "Fetch more" uses.
+- Ctrl-F/Ctrl-H (find/replace) did nothing in any Ace-based editor (query, console, snippets,
+  edit-data filter, monitoring dashboard) — the search/replace commands were still bound to those
+  keys, but the Go migration never bundled Ace's search-box UI module, so invoking them silently
+  failed. Restored.
+- The Users dialog's Add/Remove/Edit was broken in three independent ways since the Go migration,
+  none of which logged anything or told the user a save had failed: adding a user sent a JSON
+  shape the backend couldn't decode (and silently discarded any pending edits to existing users in
+  the same request); removing a user sent an id type the backend no longer accepted; and deleting
+  a user always tried to delete from four Django-only tables the app database never creates,
+  aborting the whole transaction.
+- Several actions appeared to succeed but silently did nothing, because a browser `<select>`/
+  `<input>` value is always a string and the Go side couldn't decode a quoted number into its
+  integer field: renaming/deleting a connection group, saving a group's connection list, saving
+  the monitoring dashboard/unit refresh interval, and terminating a PostgreSQL/MySQL/MariaDB
+  backend from the monitoring grid. All now accept either form.
+- Edit Data was completely non-functional against the Go backend on every database engine —
+  opening it on any table reported "This feature is not available" outright, traced to the
+  row-limit field arriving as a quoted string the backend's decoder rejected. Editing and saving
+  now also work end-to-end (insert/update/delete verified against a live PostgreSQL server).
+- The Edit cell content dialog's Save silently discarded every edit instead of writing it back to
+  the grid — the only way to edit a multi-line value, so this affected every such edit made
+  through it.
+- Edit Data's Cancel button and its filter-editor autocomplete both threw and got stuck: a
+  leftover call to a long-removed WebSocket API, and a variable referenced before it was declared.
+- Console tab: command history dates weren't formatted for display, unlike the same column in the
+  Query tab's Command History.
+- Tree nodes for a failed catalog lookup showed the error as literal, unclickable escaped HTML
+  instead of a "View Detail" link — the label was already correctly escaped for XSS safety, which
+  incidentally also broke the link that safety measure sat inside of.
+- Several dead call sites that threw when actually clicked are removed rather than left as silent
+  dead ends: a monitoring dashboard chart-legend click handler and a duplicate "Alter Table" menu
+  entry in the MySQL/MariaDB/Oracle trees, both calling functions never defined anywhere in this
+  codebase's history.
+- Login page was missing `<meta charset="utf-8">`.
+
+### Removed
+- Advanced Object Search — 1,064 lines in `tree_postgresql.js` plus its two dedicated request
+  codes. Its only entry point was a commented-out context-menu item, and its body called three
+  functions that don't exist anywhere in this codebase's git history; it has been unreachable and
+  non-functional since the Go migration.
+- Dead vendored assets that were never actually loaded: `lib/popper`, `lib/json_html`, and
+  `lib/omnis_legere` — the features they used to back were migrated to real ES modules a while
+  ago, leaving these `go:embed`-ded copies as pure dead weight in the server binary.
+
+### Security
+- Every inline event handler in this project's own frontend and Go-generated markup is gone (see
+  Changed) — the only inline handler left anywhere in the rendered page belongs to vendored
+  AimaraJS, and even that one no longer uses an inline attribute. This was the last requirement
+  standing in the way of a Content-Security-Policy without `unsafe-inline`.
+
 ## [4.1.0] - 2026-07-30
 
 ### Added
