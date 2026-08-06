@@ -128,13 +128,6 @@
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/en/advanced_object_search.html</loc>
-    <lastmod>2026-07-24</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>
-
-  <url>
     <loc>https://www.omnidb.net/en/editor_keyboard_shortcuts.html</loc>
     <lastmod>2026-07-24</lastmod>
     <changefreq>yearly</changefreq>
@@ -156,140 +149,133 @@
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/introduction.html</loc>
+    <loc>https://www.omnidb.net/cs/introduction.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/installation.html</loc>
+    <loc>https://www.omnidb.net/cs/installation.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/creating_users_and_connections.html</loc>
+    <loc>https://www.omnidb.net/cs/creating_users_and_connections.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/managing_databases.html</loc>
+    <loc>https://www.omnidb.net/cs/managing_databases.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/creating_changing_and_removing_tables.html</loc>
+    <loc>https://www.omnidb.net/cs/creating_changing_and_removing_tables.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/managing_table_data.html</loc>
+    <loc>https://www.omnidb.net/cs/managing_table_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/writing_sql_queries.html</loc>
+    <loc>https://www.omnidb.net/cs/writing_sql_queries.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/visualizing_query_plans.html</loc>
+    <loc>https://www.omnidb.net/cs/visualizing_query_plans.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/visualizing_data.html</loc>
+    <loc>https://www.omnidb.net/cs/visualizing_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/managing_other_elements.html</loc>
+    <loc>https://www.omnidb.net/cs/managing_other_elements.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/additional_features.html</loc>
+    <loc>https://www.omnidb.net/cs/additional_features.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/omnidb_config_tool.html</loc>
+    <loc>https://www.omnidb.net/cs/omnidb_config_tool.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/writing_plpgsql_functions.html</loc>
+    <loc>https://www.omnidb.net/cs/writing_plpgsql_functions.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/monitoring_dashboard.html</loc>
+    <loc>https://www.omnidb.net/cs/monitoring_dashboard.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/logical_replication.html</loc>
+    <loc>https://www.omnidb.net/cs/logical_replication.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/deploying_omnidb-server.html</loc>
+    <loc>https://www.omnidb.net/cs/deploying_omnidb-server.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/console_tab.html</loc>
+    <loc>https://www.omnidb.net/cs/console_tab.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/advanced_object_search.html</loc>
+    <loc>https://www.omnidb.net/cs/editor_keyboard_shortcuts.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
 
   <url>
-    <loc>https://www.omnidb.net/cs/docs/editor_keyboard_shortcuts.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>
-
-  <url>
-    <loc>https://www.omnidb.net/cs/docs/legacy_features_and_history.html</loc>
+    <loc>https://www.omnidb.net/cs/legacy_features_and_history.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
@@ -303,121 +289,115 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/introduction.html</loc>
+    <loc>https://www.omnidb.net/de/introduction.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/installation.html</loc>
+    <loc>https://www.omnidb.net/de/installation.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/creating_users_and_connections.html</loc>
+    <loc>https://www.omnidb.net/de/creating_users_and_connections.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/managing_databases.html</loc>
+    <loc>https://www.omnidb.net/de/managing_databases.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/creating_changing_and_removing_tables.html</loc>
+    <loc>https://www.omnidb.net/de/creating_changing_and_removing_tables.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/managing_table_data.html</loc>
+    <loc>https://www.omnidb.net/de/managing_table_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/writing_sql_queries.html</loc>
+    <loc>https://www.omnidb.net/de/writing_sql_queries.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/visualizing_query_plans.html</loc>
+    <loc>https://www.omnidb.net/de/visualizing_query_plans.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/visualizing_data.html</loc>
+    <loc>https://www.omnidb.net/de/visualizing_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/managing_other_elements.html</loc>
+    <loc>https://www.omnidb.net/de/managing_other_elements.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/additional_features.html</loc>
+    <loc>https://www.omnidb.net/de/additional_features.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/omnidb_config_tool.html</loc>
+    <loc>https://www.omnidb.net/de/omnidb_config_tool.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/writing_plpgsql_functions.html</loc>
+    <loc>https://www.omnidb.net/de/writing_plpgsql_functions.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/monitoring_dashboard.html</loc>
+    <loc>https://www.omnidb.net/de/monitoring_dashboard.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/logical_replication.html</loc>
+    <loc>https://www.omnidb.net/de/logical_replication.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/deploying_omnidb-server.html</loc>
+    <loc>https://www.omnidb.net/de/deploying_omnidb-server.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/console_tab.html</loc>
+    <loc>https://www.omnidb.net/de/console_tab.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/advanced_object_search.html</loc>
+    <loc>https://www.omnidb.net/de/editor_keyboard_shortcuts.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/de/docs/editor_keyboard_shortcuts.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://www.omnidb.net/de/docs/legacy_features_and_history.html</loc>
+    <loc>https://www.omnidb.net/de/legacy_features_and_history.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
@@ -431,121 +411,115 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/introduction.html</loc>
+    <loc>https://www.omnidb.net/es/introduction.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/installation.html</loc>
+    <loc>https://www.omnidb.net/es/installation.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/creating_users_and_connections.html</loc>
+    <loc>https://www.omnidb.net/es/creating_users_and_connections.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/managing_databases.html</loc>
+    <loc>https://www.omnidb.net/es/managing_databases.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/creating_changing_and_removing_tables.html</loc>
+    <loc>https://www.omnidb.net/es/creating_changing_and_removing_tables.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/managing_table_data.html</loc>
+    <loc>https://www.omnidb.net/es/managing_table_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/writing_sql_queries.html</loc>
+    <loc>https://www.omnidb.net/es/writing_sql_queries.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/visualizing_query_plans.html</loc>
+    <loc>https://www.omnidb.net/es/visualizing_query_plans.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/visualizing_data.html</loc>
+    <loc>https://www.omnidb.net/es/visualizing_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/managing_other_elements.html</loc>
+    <loc>https://www.omnidb.net/es/managing_other_elements.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/additional_features.html</loc>
+    <loc>https://www.omnidb.net/es/additional_features.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/omnidb_config_tool.html</loc>
+    <loc>https://www.omnidb.net/es/omnidb_config_tool.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/writing_plpgsql_functions.html</loc>
+    <loc>https://www.omnidb.net/es/writing_plpgsql_functions.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/monitoring_dashboard.html</loc>
+    <loc>https://www.omnidb.net/es/monitoring_dashboard.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/logical_replication.html</loc>
+    <loc>https://www.omnidb.net/es/logical_replication.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/deploying_omnidb-server.html</loc>
+    <loc>https://www.omnidb.net/es/deploying_omnidb-server.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/console_tab.html</loc>
+    <loc>https://www.omnidb.net/es/console_tab.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/advanced_object_search.html</loc>
+    <loc>https://www.omnidb.net/es/editor_keyboard_shortcuts.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/es/docs/editor_keyboard_shortcuts.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://www.omnidb.net/es/docs/legacy_features_and_history.html</loc>
+    <loc>https://www.omnidb.net/es/legacy_features_and_history.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
@@ -559,121 +533,115 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/introduction.html</loc>
+    <loc>https://www.omnidb.net/fr/introduction.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/installation.html</loc>
+    <loc>https://www.omnidb.net/fr/installation.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/creating_users_and_connections.html</loc>
+    <loc>https://www.omnidb.net/fr/creating_users_and_connections.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/managing_databases.html</loc>
+    <loc>https://www.omnidb.net/fr/managing_databases.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/creating_changing_and_removing_tables.html</loc>
+    <loc>https://www.omnidb.net/fr/creating_changing_and_removing_tables.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/managing_table_data.html</loc>
+    <loc>https://www.omnidb.net/fr/managing_table_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/writing_sql_queries.html</loc>
+    <loc>https://www.omnidb.net/fr/writing_sql_queries.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/visualizing_query_plans.html</loc>
+    <loc>https://www.omnidb.net/fr/visualizing_query_plans.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/visualizing_data.html</loc>
+    <loc>https://www.omnidb.net/fr/visualizing_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/managing_other_elements.html</loc>
+    <loc>https://www.omnidb.net/fr/managing_other_elements.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/additional_features.html</loc>
+    <loc>https://www.omnidb.net/fr/additional_features.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/omnidb_config_tool.html</loc>
+    <loc>https://www.omnidb.net/fr/omnidb_config_tool.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/writing_plpgsql_functions.html</loc>
+    <loc>https://www.omnidb.net/fr/writing_plpgsql_functions.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/monitoring_dashboard.html</loc>
+    <loc>https://www.omnidb.net/fr/monitoring_dashboard.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/logical_replication.html</loc>
+    <loc>https://www.omnidb.net/fr/logical_replication.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/deploying_omnidb-server.html</loc>
+    <loc>https://www.omnidb.net/fr/deploying_omnidb-server.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/console_tab.html</loc>
+    <loc>https://www.omnidb.net/fr/console_tab.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/advanced_object_search.html</loc>
+    <loc>https://www.omnidb.net/fr/editor_keyboard_shortcuts.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/fr/docs/editor_keyboard_shortcuts.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://www.omnidb.net/fr/docs/legacy_features_and_history.html</loc>
+    <loc>https://www.omnidb.net/fr/legacy_features_and_history.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
@@ -687,121 +655,115 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/introduction.html</loc>
+    <loc>https://www.omnidb.net/it/introduction.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/installation.html</loc>
+    <loc>https://www.omnidb.net/it/installation.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/creating_users_and_connections.html</loc>
+    <loc>https://www.omnidb.net/it/creating_users_and_connections.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/managing_databases.html</loc>
+    <loc>https://www.omnidb.net/it/managing_databases.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/creating_changing_and_removing_tables.html</loc>
+    <loc>https://www.omnidb.net/it/creating_changing_and_removing_tables.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/managing_table_data.html</loc>
+    <loc>https://www.omnidb.net/it/managing_table_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/writing_sql_queries.html</loc>
+    <loc>https://www.omnidb.net/it/writing_sql_queries.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/visualizing_query_plans.html</loc>
+    <loc>https://www.omnidb.net/it/visualizing_query_plans.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/visualizing_data.html</loc>
+    <loc>https://www.omnidb.net/it/visualizing_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/managing_other_elements.html</loc>
+    <loc>https://www.omnidb.net/it/managing_other_elements.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/additional_features.html</loc>
+    <loc>https://www.omnidb.net/it/additional_features.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/omnidb_config_tool.html</loc>
+    <loc>https://www.omnidb.net/it/omnidb_config_tool.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/writing_plpgsql_functions.html</loc>
+    <loc>https://www.omnidb.net/it/writing_plpgsql_functions.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/monitoring_dashboard.html</loc>
+    <loc>https://www.omnidb.net/it/monitoring_dashboard.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/logical_replication.html</loc>
+    <loc>https://www.omnidb.net/it/logical_replication.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/deploying_omnidb-server.html</loc>
+    <loc>https://www.omnidb.net/it/deploying_omnidb-server.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/console_tab.html</loc>
+    <loc>https://www.omnidb.net/it/console_tab.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/advanced_object_search.html</loc>
+    <loc>https://www.omnidb.net/it/editor_keyboard_shortcuts.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/it/docs/editor_keyboard_shortcuts.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://www.omnidb.net/it/docs/legacy_features_and_history.html</loc>
+    <loc>https://www.omnidb.net/it/legacy_features_and_history.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
@@ -815,121 +777,115 @@
     <priority>1.00</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/introduction.html</loc>
+    <loc>https://www.omnidb.net/pt/introduction.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/installation.html</loc>
+    <loc>https://www.omnidb.net/pt/installation.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/creating_users_and_connections.html</loc>
+    <loc>https://www.omnidb.net/pt/creating_users_and_connections.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/managing_databases.html</loc>
+    <loc>https://www.omnidb.net/pt/managing_databases.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/creating_changing_and_removing_tables.html</loc>
+    <loc>https://www.omnidb.net/pt/creating_changing_and_removing_tables.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/managing_table_data.html</loc>
+    <loc>https://www.omnidb.net/pt/managing_table_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/writing_sql_queries.html</loc>
+    <loc>https://www.omnidb.net/pt/writing_sql_queries.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/visualizing_query_plans.html</loc>
+    <loc>https://www.omnidb.net/pt/visualizing_query_plans.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/visualizing_data.html</loc>
+    <loc>https://www.omnidb.net/pt/visualizing_data.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/managing_other_elements.html</loc>
+    <loc>https://www.omnidb.net/pt/managing_other_elements.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/additional_features.html</loc>
+    <loc>https://www.omnidb.net/pt/additional_features.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/omnidb_config_tool.html</loc>
+    <loc>https://www.omnidb.net/pt/omnidb_config_tool.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/writing_plpgsql_functions.html</loc>
+    <loc>https://www.omnidb.net/pt/writing_plpgsql_functions.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/monitoring_dashboard.html</loc>
+    <loc>https://www.omnidb.net/pt/monitoring_dashboard.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/logical_replication.html</loc>
+    <loc>https://www.omnidb.net/pt/logical_replication.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/deploying_omnidb-server.html</loc>
+    <loc>https://www.omnidb.net/pt/deploying_omnidb-server.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/console_tab.html</loc>
+    <loc>https://www.omnidb.net/pt/console_tab.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/advanced_object_search.html</loc>
+    <loc>https://www.omnidb.net/pt/editor_keyboard_shortcuts.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
   <url>
-    <loc>https://www.omnidb.net/pt/docs/editor_keyboard_shortcuts.html</loc>
-    <lastmod>2026-07-26</lastmod>
-    <changefreq>yearly</changefreq>
-    <priority>0.60</priority>
-  </url>
-  <url>
-    <loc>https://www.omnidb.net/pt/docs/legacy_features_and_history.html</loc>
+    <loc>https://www.omnidb.net/pt/legacy_features_and_history.html</loc>
     <lastmod>2026-07-26</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.50</priority>
