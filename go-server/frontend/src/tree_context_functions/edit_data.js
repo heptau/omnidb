@@ -39,6 +39,7 @@ import { showAlert, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
 import { escapeHtml, escapeHtmlAttribute, v_queryRequestCodes } from "../query.js";
 import { editDataActionRenderer, grayEmptyRenderer, grayRenderer, greenRenderer, newRowRenderer, redRenderer, whiteRenderer, yellowRenderer } from "../renderers.js";
+import { refreshBootstrapTooltips } from "../workspace.js";
 
 export var v_editDataState = {
 	Idle: 0,
@@ -505,7 +506,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 	p_context.tab_tag.tab_check_span.style.display = "none";
 	p_context.tab_tag.bt_cancel.style.display = "none";
 
-	$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+	refreshBootstrapTooltips();
 }
 
 export function saveEditData() {

@@ -722,7 +722,7 @@ export var v_autocomplete_single_column_types = {
 /// <summary>
 /// Startup function.
 /// </summary>
-$(function () {
+function initAutocompleteObject() {
 	v_autocomplete_object = {
 		active: false,
 		ready: false,
@@ -889,7 +889,12 @@ $(function () {
 			})(v_autocomplete_object.elements[i]);
 		}
 	}
-});
+}
+// This body only reads static DOM elements already present in workspace.html
+// at page load, so (unlike plugin_hook.js's initHookRegistry) it has nothing
+// to wait on -- a single deferred tick matches jQuery's $(fn) timing exactly.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAutocompleteObject);
+else setTimeout(initAutocompleteObject, 0);
 
 export function build_autocomplete_elements(p_data, p_value) {
 	/** @type {any} */
@@ -1198,10 +1203,10 @@ export function autocomplete_get_results(p_sql, p_value, p_pos) {
 				var v_new_width_result = v_autocomplete_object.test_length.clientWidth;
 				v_autocomplete_object.test_length.textContent = p_return.v_data.max_complement_word;
 				var v_new_width_complement = v_autocomplete_object.test_length.clientWidth;
+				var v_div_top = v_autocomplete_object.div.getBoundingClientRect().top + window.scrollY;
 				if (v_autocomplete_object.mode == 0)
-					v_autocomplete_object.scroll.style["max-height"] =
-						window.innerHeight - $(v_autocomplete_object.div).offset().top - 50 + "px";
-				else v_autocomplete_object.scroll.style["max-height"] = $(v_autocomplete_object.div).offset().top - 20 + "px";
+					v_autocomplete_object.scroll.style["max-height"] = window.innerHeight - v_div_top - 50 + "px";
+				else v_autocomplete_object.scroll.style["max-height"] = v_div_top - 20 + "px";
 				var v_new_width = v_new_width_result + v_new_width_complement + 160;
 				if (v_new_width < 500) v_new_width = 500;
 

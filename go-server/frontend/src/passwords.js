@@ -43,8 +43,10 @@ import { execAjax } from "./ajax_control_bridge.js";
 // mode.
 var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
 
-$(function () {
-	$("#modal_password").on("hidden.bs.modal", function (e) {
+function initPasswordModal() {
+	// Bootstrap dispatches these as real DOM events, no jQuery needed to listen for them.
+	var v_modal_password = /** @type {HTMLElement} */ (document.getElementById("modal_password"));
+	v_modal_password.addEventListener("hidden.bs.modal", function (e) {
 		if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {
 			v_modal_password_cancel_callback();
 		} else if (v_modal_password_ok_clicked == true && v_modal_password_ok_after_hide_function != null) {
@@ -52,13 +54,13 @@ $(function () {
 		}
 	});
 
-	$("#modal_password").on("shown.bs.modal", function (e) {
+	v_modal_password.addEventListener("shown.bs.modal", function (e) {
 		if (v_modal_password_input != null) {
 			v_modal_password_input.focus();
 			v_modal_password_input.onkeydown = function (event) {
 				if (event.keyCode == 13) {
 					v_modal_password_ok_function();
-					$("#modal_password").modal("hide");
+					bootstrap.Modal.getOrCreateInstance(v_modal_password).hide();
 				}
 			};
 		}
@@ -69,7 +71,14 @@ $(function () {
 	v_modal_password_ok_after_hide_function = null;
 	v_modal_password_cancel_callback = null;
 	v_modal_password_input = null;
-});
+}
+// This body only registers listeners on a static modal already present in
+// workspace.html at page load, so (like autocomplete.js's
+// initAutocompleteObject) a single deferred tick is enough -- no need to
+// poll for an async-created dependency the way plugin_hook.js's
+// initHookRegistry does.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initPasswordModal);
+else setTimeout(initPasswordModal, 0);
 
 export function showPasswordPrompt(
 	p_database_index,
@@ -87,7 +96,7 @@ export function showPasswordPrompt(
 
 	if (p_message) v_content_div.textContent = p_message;
 
-	$("#modal_password").modal("show");
+	bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_password"))).show();
 
 	v_modal_password_ok_function = function () {
 		v_modal_password_ok_clicked = true;

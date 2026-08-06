@@ -3336,21 +3336,15 @@ export function checkCurrentDatabase(p_node, p_complete_check, p_callback_contin
 										v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_list_database_nodes[i];
 
 										(function () {
-											// tabTitle is a jQuery collection (see outer_connection_tab.js's
-											// v_tab_title_span = $(...).find(...)), not a raw DOM node -
-											// .innerHTML/.appendChild silently no-op/throw on it. Used to
-											// throw here on every successful database switch, aborting this
-											// callback before it reached p_callback_continue() below and
-											// leaving the tree node's spinner stuck forever.
 											var v_tag = v_connTabControl.selectedTab.tag;
 											var v_img = document.createElement("img");
 											v_img.src = v_url_folder + "/static/OmniDB_app/images/" + v_tag.selectedDBMS + "_medium.png";
-											v_tag.tabTitle.empty();
-											v_tag.tabTitle.append(v_img);
+											v_tag.tabTitle.innerHTML = "";
+											v_tag.tabTitle.appendChild(v_img);
 											var v_text = v_tag.selectedTitle
 												? " " + v_tag.selectedTitle + " - " + v_tag.selectedDatabase
 												: " " + v_tag.selectedDatabase;
-											v_tag.tabTitle.append(document.createTextNode(v_text));
+											v_tag.tabTitle.appendChild(document.createTextNode(v_text));
 										})();
 									}
 								}
@@ -3370,9 +3364,14 @@ export function checkCurrentDatabase(p_node, p_complete_check, p_callback_contin
 			},
 		);
 
-		$("#modal_message").one("hidden.bs.modal", function () {
-			if (!v_choice_made && p_callback_stop) p_callback_stop();
-		});
+		// Bootstrap dispatches "hidden.bs.modal" as a real DOM event, no jQuery needed to listen for it.
+		/** @type {HTMLElement} */ (document.getElementById("modal_message")).addEventListener(
+			"hidden.bs.modal",
+			function () {
+				if (!v_choice_made && p_callback_stop) p_callback_stop();
+			},
+			{ once: true },
+		);
 
 		// Built as DOM nodes, not an HTML string — showConfirm3's content div
 		// only renders plain text (see notification_control.js). Safe to

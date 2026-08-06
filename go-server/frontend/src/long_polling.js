@@ -28,7 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { csrfSafeMethod, execAjax, getCookie } from "./ajax_control_bridge.js";
+import { execAjax } from "./ajax_control_bridge.js";
 import { cancelConsoleTab, consoleReturn, consoleSQL } from "./console.js";
 import { showAlert, showError } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
@@ -61,11 +61,17 @@ export var v_polling_started = false;
 /// <summary>
 /// Startup function.
 /// </summary>
-$(function () {
+function initKeepAlive() {
 	setInterval(function () {
 		execAjax("/client_keep_alive/", JSON.stringify({}), function (p_return) {}, null, "box", false);
 	}, 60000);
-});
+}
+// jQuery's $(fn) is never synchronous, even when the document is already
+// ready, so this defers the same way -- but unlike plugin_hook.js's
+// initHookRegistry, this body doesn't touch anything created
+// asynchronously, so a single deferred tick (no retry/poll) is enough.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initKeepAlive);
+else setTimeout(initKeepAlive, 0);
 
 export function call_polling(p_startup) {
 	v_polling_ajax = execAjax(
@@ -89,29 +95,17 @@ export function call_polling(p_startup) {
 	);
 }
 
-$(window).on("beforeunload", function () {
+window.addEventListener("beforeunload", function () {
 	clear_client().then(function () {});
 });
 
 async function clear_client() {
-	// Setting the token.
-	var csrftoken = getCookie("omnidb_csrftoken");
-	// Requesting data with ajax.
-	const v_ajax_call = await $.ajax({
-		url: v_url_folder + "/clear_client",
-		data: null,
-		type: "get",
-		dataType: "json",
-		beforeSend: function (xhr, settings) {
-			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-				xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			}
-		},
-		success: function (p_return) {},
-		error: function (msg) {},
-	});
-
-	return v_ajax_call;
+	// A plain GET needs no CSRF header (see csrfSafeMethod), and `keepalive`
+	// is what lets this request actually complete during page unload, which
+	// is the only time this is ever called.
+	try {
+		await fetch(v_url_folder + "/clear_client", { keepalive: true });
+	} catch (err) {}
 }
 
 export function polling_response(p_message) {

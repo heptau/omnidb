@@ -211,7 +211,7 @@ export function showConsoleHistory() {
 		},
 	});
 
-	$(v_tab_tag.consoleHistory.modal).modal("show");
+	bootstrap.Modal.getOrCreateInstance(v_tab_tag.consoleHistory.modal).show();
 	v_tab_tag.consoleHistory.div.style.display = "block";
 
 	v_tab_tag.consoleHistory.currentPage = 1;
@@ -406,7 +406,9 @@ export function closeConsoleHistory() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains = null;
-	$(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal).modal("hide");
+	bootstrap.Modal.getOrCreateInstance(
+		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal,
+	).hide();
 }
 
 export function consoleHistorySelectCommand() {

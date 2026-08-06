@@ -41,6 +41,7 @@ import { createTabControl } from "../tabs.js";
 import {
 	changeDatabase,
 	checkTabStatus,
+	refreshBootstrapTooltips,
 	refreshHeights,
 	refreshTreeHeight,
 	resizeConnectionHorizontal,
@@ -123,7 +124,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 				if (this.tag != null && this.tag.tabControl != null && this.tag.tabControl.selectedTab.tag.editor != null) {
 					this.tag.tabControl.selectedTab.tag.editor.focus();
 				}
-				$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+				refreshBootstrapTooltips();
 			},
 			p_close: false, // Replacing default close icon with contextMenu.
 			p_closeFunction: function (e, p_tab) {
@@ -241,11 +242,9 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			"</div>" + //.row
 			"</div>";
 
-		// var v_tab_title_span = document.getElementById('tab_title');
-		// v_tab_title_span.id = 'tab_title_' + v_tab.id;
-		var v_tab_title_span = $(v_tab.elementA).find(".omnidb__tab-menu__link-name");
+		var v_tab_title_span = v_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
 		if (v_tab_title_span) {
-			v_tab_title_span.attr("id", "tab_title_" + v_tab.id);
+			v_tab_title_span.id = "tab_title_" + v_tab.id;
 		}
 
 		v_tab.elementDiv.innerHTML = v_html;
@@ -462,7 +461,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		// Creating `Add` tab in the outer tab list
 		// v_connTabControl.createAddTab();
 
-		$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+		refreshBootstrapTooltips();
 
 		setTimeout(function () {
 			v_selectPropertiesTabFunc();
@@ -478,11 +477,11 @@ export function refreshOuterConnectionHeights() {
 		var v_div_left = v_tab_tag.divLeft;
 		var v_div_right = v_tab_tag.divRight;
 
-		var v_totalHeight = window.innerHeight - $(v_div_left).offset().top;
+		var v_totalHeight = window.innerHeight - (v_div_left.getBoundingClientRect().top + window.scrollY);
 		v_div_left.style["height"] = v_totalHeight + "px";
 
 		// Checking if the element is shrunk before resizing children elements.
-		var v_is_shrunk = $(v_div_left).hasClass("omnidb__workspace__div-left--shrink");
+		var v_is_shrunk = v_div_left.classList.contains("omnidb__workspace__div-left--shrink");
 		// if (!v_is_shrunk) {
 		var v_totalWidth = v_connTabControl.selectedDiv.getBoundingClientRect().width;
 		var v_div_left_width_value = v_div_left.getBoundingClientRect().width;

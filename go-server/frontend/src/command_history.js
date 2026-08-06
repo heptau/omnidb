@@ -211,7 +211,7 @@ export function showCommandList() {
 		},
 	});
 
-	$(v_tabTag.commandHistory.modal).modal("show");
+	bootstrap.Modal.getOrCreateInstance(v_tabTag.commandHistory.modal).show();
 	v_tabTag.commandHistory.div.style.display = "block";
 
 	v_tabTag.commandHistory.currentPage = 1;
@@ -402,5 +402,7 @@ export function closeCommandHistory() {
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
 	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
-	$(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal).modal("hide");
+	bootstrap.Modal.getOrCreateInstance(
+		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal,
+	).hide();
 }

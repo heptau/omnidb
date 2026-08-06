@@ -50,12 +50,6 @@
   function endLoading(...args) {
     return window.endLoading(...args);
   }
-  function getCookie(...args) {
-    return window.getCookie(...args);
-  }
-  function csrfSafeMethod(...args) {
-    return window.csrfSafeMethod(...args);
-  }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function el$1(id) {
     return (
@@ -4227,21 +4221,25 @@
     // <input type="month" />
   };
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
-  $(function() {
-    $("#modal_password").on("hidden.bs.modal", function(e) {
+  function initPasswordModal() {
+    var v_modal_password = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password")
+    );
+    v_modal_password.addEventListener("hidden.bs.modal", function(e) {
       if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {
         v_modal_password_cancel_callback();
       } else if (v_modal_password_ok_clicked == true && v_modal_password_ok_after_hide_function != null) {
         v_modal_password_ok_after_hide_function();
       }
     });
-    $("#modal_password").on("shown.bs.modal", function(e) {
+    v_modal_password.addEventListener("shown.bs.modal", function(e) {
       if (v_modal_password_input != null) {
         v_modal_password_input.focus();
         v_modal_password_input.onkeydown = function(event2) {
           if (event2.keyCode == 13) {
             v_modal_password_ok_function();
-            $("#modal_password").modal("hide");
+            bootstrap.Modal.getOrCreateInstance(v_modal_password).hide();
           }
         };
       }
@@ -4251,7 +4249,9 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initPasswordModal);
+  else setTimeout(initPasswordModal, 0);
   function showPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_message, p_send_tab_id = true) {
     v_modal_password_ok_clicked = false;
     v_modal_password_cancel_callback = p_cancel_callback_function;
@@ -4270,7 +4270,10 @@
     v_modal_password_input = /** @type {HTMLInputElement} */
     document.getElementById("txt_password_prompt");
     if (p_message) v_content_div.textContent = p_message;
-    $("#modal_password").modal("show");
+    bootstrap.Modal.getOrCreateInstance(
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password")
+    ).show();
     v_modal_password_ok_function = function() {
       v_modal_password_ok_clicked = true;
       checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id);
@@ -4960,7 +4963,7 @@
     p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
     p_context.tab_tag.tab_check_span.style.display = "none";
     p_context.tab_tag.bt_cancel.style.display = "none";
-    $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+    refreshBootstrapTooltips();
   }
   function saveEditData() {
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -5118,12 +5121,14 @@
     contextList: []
   };
   var v_polling_started = false;
-  $(function() {
+  function initKeepAlive() {
     setInterval(function() {
       execAjax$1("/client_keep_alive/", JSON.stringify({}), function(p_return) {
       }, null, "box", false);
     }, 6e4);
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initKeepAlive);
+  else setTimeout(initKeepAlive, 0);
   function call_polling(p_startup) {
     v_polling_ajax = execAjax$1(
       "/long_polling/",
@@ -5147,28 +5152,15 @@
       }
     );
   }
-  $(window).on("beforeunload", function() {
+  window.addEventListener("beforeunload", function() {
     clear_client().then(function() {
     });
   });
   async function clear_client() {
-    var csrftoken = getCookie("omnidb_csrftoken");
-    const v_ajax_call = await $.ajax({
-      url: v_url_folder + "/clear_client",
-      data: null,
-      type: "get",
-      dataType: "json",
-      beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-      },
-      success: function(p_return) {
-      },
-      error: function(msg) {
-      }
-    });
-    return v_ajax_call;
+    try {
+      await fetch(v_url_folder + "/clear_client", { keepalive: true });
+    } catch (err) {
+    }
   }
   function polling_response(p_message) {
     var v_message = p_message;
@@ -5493,7 +5485,7 @@
         return cellProperties;
       }
     });
-    $(v_tab_tag2.consoleHistory.modal).modal("show");
+    bootstrap.Modal.getOrCreateInstance(v_tab_tag2.consoleHistory.modal).show();
     v_tab_tag2.consoleHistory.div.style.display = "block";
     v_tab_tag2.consoleHistory.currentPage = 1;
     v_tab_tag2.consoleHistory.pages = 1;
@@ -5647,7 +5639,9 @@
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains = null;
-    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal).modal("hide");
+    bootstrap.Modal.getOrCreateInstance(
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal
+    ).hide();
   }
   function consoleHistorySelectCommand() {
     var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -6468,7 +6462,7 @@
     extension: true,
     schema: true
   };
-  $(function() {
+  function initAutocompleteObject() {
     v_autocomplete_object = {
       active: false,
       ready: false,
@@ -6621,7 +6615,9 @@
         })(v_autocomplete_object.elements[i2]);
       }
     }
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initAutocompleteObject);
+  else setTimeout(initAutocompleteObject, 0);
   function build_autocomplete_elements(p_data, p_value) {
     var v_previous_element = null;
     var v_first_element = null;
@@ -6863,9 +6859,10 @@
           var v_new_width_result = v_autocomplete_object.test_length.clientWidth;
           v_autocomplete_object.test_length.textContent = p_return.v_data.max_complement_word;
           var v_new_width_complement = v_autocomplete_object.test_length.clientWidth;
+          var v_div_top = v_autocomplete_object.div.getBoundingClientRect().top + window.scrollY;
           if (v_autocomplete_object.mode == 0)
-            v_autocomplete_object.scroll.style["max-height"] = window.innerHeight - $(v_autocomplete_object.div).offset().top - 50 + "px";
-          else v_autocomplete_object.scroll.style["max-height"] = $(v_autocomplete_object.div).offset().top - 20 + "px";
+            v_autocomplete_object.scroll.style["max-height"] = window.innerHeight - v_div_top - 50 + "px";
+          else v_autocomplete_object.scroll.style["max-height"] = v_div_top - 20 + "px";
           var v_new_width = v_new_width_result + v_new_width_complement + 160;
           if (v_new_width < 500) v_new_width = 500;
           v_autocomplete_object.div.style.width = v_new_width + "px";
@@ -8812,7 +8809,7 @@
         return v_cellProperties;
       }
     });
-    $(v_tabTag.commandHistory.modal).modal("show");
+    bootstrap.Modal.getOrCreateInstance(v_tabTag.commandHistory.modal).show();
     v_tabTag.commandHistory.div.style.display = "block";
     v_tabTag.commandHistory.currentPage = 1;
     v_tabTag.commandHistory.pages = 1;
@@ -8960,7 +8957,9 @@
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo = null;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains = null;
-    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal).modal("hide");
+    bootstrap.Modal.getOrCreateInstance(
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal
+    ).hide();
   }
   const commandHistory = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
@@ -9522,7 +9521,7 @@
           if (this.tag != null && this.tag.tabControl != null && this.tag.tabControl.selectedTab.tag.editor != null) {
             this.tag.tabControl.selectedTab.tag.editor.focus();
           }
-          $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+          refreshBootstrapTooltips();
         },
         p_close: false,
         // Replacing default close icon with contextMenu.
@@ -9577,9 +9576,9 @@
       });
       v_connTabControl.selectTab(v_tab);
       var v_html = `<div style="position: relative; height: 100%;"><div style="display: grid; grid-template-areas: 'left splitter right'; grid-template-columns: auto 12px minmax(0, 1fr); height: 100%;"><div id="` + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="grid-area: left; max-width: 300px; width: 300px;"><div class="omnidb__workspace__content-left"><div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div><div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div><div id="' + v_tab.id + '_left_resize_line_horizontal" style="width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"></div><div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;"><div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;"><div class="div_loading_cover"></div><div class="div_loading_content">  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">    <span class="sr-only ">Loading...</span>  </div></div></div><button id="bt_toggle_tree_tabs_' + v_tab.id + '" type="button" class="btn omnidb__theme__btn--secondary omnidb__tree-tabs__toggler"><i class="fas fa-arrows-alt-v"></i></button><div id="tree_tabs_' + v_tab.id + '" class="omnidb__tree-tabs__container" style="position: relative;"></div></div></div></div><div id="connection_resize_line_' + v_tab.id + '" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;"></div><div id="' + v_tab.id + '_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;"><button id="bt_toggle_tree_container_' + v_tab.id + '" type="button" class="py-4 px-0 btn omnidb__theme__btn--secondary omnidb__tree__toggler"><i class="fas fa-arrows-alt-h"></i></button><div id="' + v_tab.id + '_tabs" class="w-100"></div></div></div></div>';
-      var v_tab_title_span = $(v_tab.elementA).find(".omnidb__tab-menu__link-name");
+      var v_tab_title_span = v_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
       if (v_tab_title_span) {
-        v_tab_title_span.attr("id", "tab_title_" + v_tab.id);
+        v_tab_title_span.id = "tab_title_" + v_tab.id;
       }
       v_tab.elementDiv.innerHTML = v_html;
       document.getElementById(v_tab.id + "_left_resize_line_horizontal").addEventListener(
@@ -9747,7 +9746,7 @@
         v_connTabControl.tag.createConsoleTab();
         v_connTabControl.tag.createQueryTab();
       }
-      $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+      refreshBootstrapTooltips();
       setTimeout(function() {
         v_selectPropertiesTabFunc();
       }, 10);
@@ -9759,9 +9758,9 @@
     if (v_tab_tag2.divLeft) {
       var v_div_left = v_tab_tag2.divLeft;
       var v_div_right = v_tab_tag2.divRight;
-      var v_totalHeight = window.innerHeight - $(v_div_left).offset().top;
+      var v_totalHeight = window.innerHeight - (v_div_left.getBoundingClientRect().top + window.scrollY);
       v_div_left.style["height"] = v_totalHeight + "px";
-      $(v_div_left).hasClass("omnidb__workspace__div-left--shrink");
+      v_div_left.classList.contains("omnidb__workspace__div-left--shrink");
       var v_totalWidth = v_connTabControl.selectedDiv.getBoundingClientRect().width;
       var v_div_left_width_value = v_div_left.getBoundingClientRect().width;
       var v_right_width_value = v_totalWidth - v_div_left_width_value - 12;
@@ -14647,10 +14646,10 @@
                         var v_tag = v_connTabControl.selectedTab.tag;
                         var v_img = document.createElement("img");
                         v_img.src = v_url_folder + "/static/OmniDB_app/images/" + v_tag.selectedDBMS + "_medium.png";
-                        v_tag.tabTitle.empty();
-                        v_tag.tabTitle.append(v_img);
+                        v_tag.tabTitle.innerHTML = "";
+                        v_tag.tabTitle.appendChild(v_img);
                         var v_text = v_tag.selectedTitle ? " " + v_tag.selectedTitle + " - " + v_tag.selectedDatabase : " " + v_tag.selectedDatabase;
-                        v_tag.tabTitle.append(document.createTextNode(v_text));
+                        v_tag.tabTitle.appendChild(document.createTextNode(v_text));
                       })();
                     }
                   }
@@ -14669,9 +14668,13 @@
           if (p_callback_stop) p_callback_stop();
         }
       );
-      $("#modal_message").one("hidden.bs.modal", function() {
-        if (!v_choice_made && p_callback_stop) p_callback_stop();
-      });
+      document.getElementById("modal_message").addEventListener(
+        "hidden.bs.modal",
+        function() {
+          if (!v_choice_made && p_callback_stop) p_callback_stop();
+        },
+        { once: true }
+      );
       var v_content_div = (
         /** @type {HTMLElement} */
         document.getElementById("modal_message_content")
