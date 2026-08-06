@@ -1,0 +1,91 @@
+/* VirtualGrid (frontend/src/VirtualGrid.js) styling. Renders a real <table>
+   so most of its look already comes free from the app's existing
+   Handsontable-era rules in omnidb.scss (.handsontable th/td, .cellEven,
+   .cellNew, ...); this file covers what's specific to VirtualGrid itself:
+   header/row chrome, pinned-column dividers, and the resize handle. */
+
+.omnidb__virtual-grid {
+	font-size: 13px;
+	/* Pinned columns can't rely on `background-color: inherit` to occlude
+	   the cells scrolling underneath them (see VirtualGrid.js), so they use
+	   this instead -- keep it in sync with the row background implied by
+	   the .handsontable td rules in omnidb.scss for each theme. */
+	--omnidb-grid-row-bg: #fff;
+}
+
+.omnidb__virtual-grid th {
+	background-color: #e9ecef;
+	font-weight: 600;
+	padding: 0 8px;
+	border-right: 1px solid rgba(0, 0, 0, 0.09);
+	border-bottom: 1px solid #dee2e6;
+}
+
+.omnidb__virtual-grid td {
+	padding: 0 8px;
+	line-height: 28px;
+	border-right: 1px solid rgba(0, 0, 0, 0.06);
+	border-bottom: 1px solid #dee2e6;
+}
+
+.omnidb__virtual-grid tbody tr:hover td {
+	background-color: #f8f9fa;
+}
+
+@media (prefers-color-scheme: dark) {
+	.omnidb__virtual-grid {
+		--omnidb-grid-row-bg: #282a2f;
+	}
+
+	.omnidb__virtual-grid th {
+		background-color: #2a2e33;
+		border-right-color: rgba(255, 255, 255, 0.1);
+		border-bottom-color: #3c424a;
+	}
+
+	.omnidb__virtual-grid td {
+		border-right-color: rgba(255, 255, 255, 0.08);
+		border-bottom-color: #3c424a;
+	}
+
+	.omnidb__virtual-grid tbody tr:hover td {
+		background-color: #262a2f;
+	}
+}
+
+/* Custom Context Menu */
+.custom-context-menu {
+	position: fixed;
+	background-color: #fff;
+	color: #333;
+	border: 1px solid #ccc;
+	box-shadow: 2px 2px 5px rgba(0,0,0,0.2);
+	z-index: 999999;
+	min-width: 150px;
+	padding: 5px 0;
+	border-radius: 4px;
+}
+
+.custom-context-menu > div {
+	padding: 6px 15px;
+	cursor: pointer;
+	position: relative;
+	transition: background-color 0.1s;
+}
+
+.custom-context-menu > div:hover {
+	background-color: #f0f0f0;
+}
+
+@media (prefers-color-scheme: dark) {
+	.custom-context-menu {
+		background-color: #22262b;
+		color: #e0e0e0;
+		border: 1px solid #3c424a;
+		box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+	}
+
+	.custom-context-menu > div:hover {
+		background-color: #2c323a;
+	}
+}

@@ -321,11 +321,11 @@ export function queryEditDataReturnRender(p_message, p_context) {
 			var col = {};
 
 			// Both of these are database-sourced identifiers, and this string
-			// really is rendered as markup now (AgGridAdapter turns a title
-			// carrying tags into an AG Grid header template). The type goes
-			// inside a quoted attribute, the column name into element text,
-			// so they need the attribute-safe and text-safe escapes
-			// respectively — an identifier is allowed to contain a quote.
+			// really is rendered as markup (VirtualGrid sets a header cell's
+			// innerHTML directly from col.title). The type goes inside a
+			// quoted attribute, the column name into element text, so they
+			// need the attribute-safe and text-safe escapes respectively —
+			// an identifier is allowed to contain a quote.
 			var v_tooltip_attr =
 				" data-toggle=tooltip " +
 				"data-placement=bottom " +
@@ -369,11 +369,11 @@ export function queryEditDataReturnRender(p_message, p_context) {
 		var container = v_div_result;
 		v_currTabTag.editDataObject.ht = new Handsontable(container, {
 			licenseKey: "non-commercial-and-evaluation",
-			// Turns on the AG Grid shim's editable mode: per-cell renderers and
+			// Turns on VirtualGrid's editable mode: per-cell renderers and
 			// readOnly flags from `cells`, the `beforeChange` hook, and
 			// `minSpareRows`. Opt-in because most other grids in the app pass a
 			// `cells` callback too but are meant to stay read-only — see
-			// AgGridAdapter's constructor.
+			// VirtualGrid's constructor.
 			omnidbEditable: true,
 			columns: columnProperties,
 			data: v_data.v_data,

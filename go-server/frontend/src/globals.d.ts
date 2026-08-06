@@ -34,7 +34,6 @@ interface HTMLElement {
 declare const $: any;
 declare const jQuery: any;
 declare const bootstrap: any;
-declare const agGrid: any;
 declare const ace: any;
 declare const cytoscape: any;
 declare const Chart: any;
@@ -51,21 +50,19 @@ declare const PGPlan: any;
 declare const PGPlanNodes: any;
 
 // Both a bare `declare const` above and a `Window` property below exist for
-// $, jQuery, bootstrap, agGrid and Chart: the bare form types code that reads
+// $, jQuery, bootstrap and Chart: the bare form types code that reads
 // them as ordinary identifiers (nearly everything), the Window form types the
 // `window.x = x` assignment each *-global.js file makes to publish them.
 
 interface Window {
-	/** The Handsontable-compatible factory AgGridAdapter.js installs. */
+	/** The Handsontable-compatible factory VirtualGrid.js installs. */
 	Handsontable: any;
-	AgGridAdapter: any;
+	VirtualGrid: any;
 	/** Published by jquery-global.js -- see its comment. */
 	$: any;
 	jQuery: any;
 	/** Published by bootstrap-framework-global.js -- see its comment. */
 	bootstrap: any;
-	/** Published by ag-grid-global.js -- see its comment. */
-	agGrid: any;
 	/** Published by chartjs-global.js -- see its comment. */
 	Chart: any;
 	/**
@@ -86,7 +83,7 @@ interface Window {
 	cy: any;
 }
 
-/** Installed by AgGridAdapter.js — see its bottom. */
+/** Installed by VirtualGrid.js — see its bottom. */
 declare const Handsontable: any;
 
 // --- state owned by workspace.html's inline bootstrap script ---------------

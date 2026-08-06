@@ -73,7 +73,7 @@ const DELEGATED_CLICK = {
   'start-tutorial': (el) => startTutorial(arg(el)),
 
   // Edit data's row-action column. deleteRowEditData takes no arguments -- it
-  // reads the grid's selected row, and AgGridAdapter's own mousedown handler on
+  // reads the grid's selected row, and VirtualGrid's own mousedown handler on
   // the cell has already selected it by the time this click lands.
   'edit-data-delete-row': () => deleteRowEditData(),
 

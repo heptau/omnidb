@@ -851,7 +851,7 @@ $(function () {
 				fillHandle: false,
 				disableVisualSelection: true,
 				// This popup only ever needs the editor to hold real keyboard focus - see
-				// AgGridAdapter's suppressCellFocus comment for why this must be set here.
+				// VirtualGrid's suppressCellFocus comment for why this must be set here.
 				suppressCellFocus: true,
 				stretchH: "last",
 				afterRender: function () {
