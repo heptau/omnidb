@@ -129,7 +129,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   console/query-editor alerts on `console.go`/`querycursor.go` were left as-is and annotated
   in-line — they flag the user's own typed SQL reaching the database, which is the tool's intended
   function, not a privilege boundary crossing (same call already made for that file's sibling
-  alerts).
+  alerts). `querycursor.go`'s multi-statement runner had two more call sites doing the exact same
+  thing (the per-statement `Exec` in its statement-splitting loop, both the autocommit and
+  transaction branches) that were missed in the first pass and kept surfacing as new alerts on
+  every push; annotated the same way.
+- `npm run check` (the legacy-globals bridge script) crashed the `go-server` CI job outright: it
+  still scanned `static_assets/OmniDB_app/js/` for legacy files, a directory a prior commit emptied
+  and removed entirely once the last third-party scripts moved into `lib/`. Removed the dead
+  reference; the bridge check now only has `workspace.html` left to scan on the legacy side.
 
 ## [4.1.0] - 2026-07-30
 

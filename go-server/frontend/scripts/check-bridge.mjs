@@ -40,7 +40,6 @@ import { fileURLToPath, URL } from 'node:url'
 
 const here = (p) => fileURLToPath(new URL(p, import.meta.url))
 const BUNDLE_SRC = here('../src')
-const LEGACY_JS = here('../../static_assets/OmniDB_app/js')
 const WORKSPACE_HTML = here('../../static/workspace.html')
 const GLOBALS_DTS = here('../src/globals.d.ts')
 const BOOTSTRAP_GLOBALS = here('../src/bootstrap-globals.js')
@@ -60,10 +59,7 @@ const assignRe = (name) => new RegExp(`(?<![\\w$.])${name}\\s*=(?!=)`, 'g')
 const readRe = (name) => new RegExp(`(?<![\\w$.])${name}(?![\\w$])`)
 
 const bundleFiles = jsFiles(BUNDLE_SRC).map((p) => [p, readFileSync(p, 'utf8')])
-const legacyFiles = [
-  ...jsFiles(LEGACY_JS).map((p) => [p, readFileSync(p, 'utf8')]),
-  [WORKSPACE_HTML, readFileSync(WORKSPACE_HTML, 'utf8')],
-]
+const legacyFiles = [[WORKSPACE_HTML, readFileSync(WORKSPACE_HTML, 'utf8')]]
 
 /** @type {Map<string, string>} exported name -> declaration keyword */
 const exported = new Map()

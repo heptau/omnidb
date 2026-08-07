@@ -198,6 +198,12 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 		conn, err = db.Conn(ctx)
 		if err == nil {
 			for _, stmt := range statements[:len(statements)-1] {
+				// codeql[go/sql-injection]: stmt is the user's own typed
+				// query-editor SQL, same trust boundary already accepted for
+				// this function's sibling alerts (#340-#343) — this is a SQL
+				// query tool, running whatever the authenticated owner of the
+				// connection typed is the feature, not a privilege boundary
+				// crossing.
 				if _, err = conn.ExecContext(ctx, stmt); err != nil {
 					break
 				}
@@ -216,11 +222,23 @@ func startCursor(clientID, tabID string, db *sql.DB, sqlText string, autocommit 
 		tx, err = db.BeginTx(ctx, nil)
 		if err == nil {
 			for _, stmt := range statements[:len(statements)-1] {
+				// codeql[go/sql-injection]: stmt is the user's own typed
+				// query-editor SQL, same trust boundary already accepted for
+				// this function's sibling alerts (#340-#343) — this is a SQL
+				// query tool, running whatever the authenticated owner of the
+				// connection typed is the feature, not a privilege boundary
+				// crossing.
 				if _, err = tx.ExecContext(ctx, stmt); err != nil {
 					break
 				}
 			}
 			if err == nil {
+				// codeql[go/sql-injection]: last is the user's own typed
+				// query-editor SQL, same trust boundary already accepted for
+				// this function's sibling alerts (#340-#343) — this is a SQL
+				// query tool, running whatever the authenticated owner of the
+				// connection typed is the feature, not a privilege boundary
+				// crossing.
 				rows, err = tx.QueryContext(ctx, last)
 			}
 		}
