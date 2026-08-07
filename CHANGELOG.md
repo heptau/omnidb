@@ -53,11 +53,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`scss/_icons.scss`) of hand-mapped inline SVGs, masked over `currentColor` so they still
   inherit color/theme the same way the font glyphs did. Every existing `fa-*` class name keeps
   working unchanged.
-- jQuery usage inside the application's own code (as opposed to just its delivery mechanism) is
-  being removed file-by-file — roughly two dozen files converted so far to plain DOM APIs
-  (`getBoundingClientRect`, native Bootstrap modal/tooltip helpers, `addEventListener`, etc.); the
-  moment.js-based daterangepicker widget and its remaining callers, plus a handful of
-  heavier modal-lifecycle files, are deliberately deferred to a later pass.
+- jQuery usage inside the application's own code (as opposed to just its delivery mechanism) has
+  been fully removed and replaced with plain DOM APIs (`classList`, `querySelectorAll`/`forEach`,
+  `addEventListener`, `getBoundingClientRect`, native `bootstrap.Modal`/`Tooltip` helpers, etc.)
+  across every file in `go-server/frontend/src/`. The only remaining exceptions are `console.js`
+  and `command_history.js`, which each keep a single call into the third-party, moment.js-based
+  `daterangepicker` plugin — there is no vanilla replacement available, so this is a deliberate,
+  permanent exception rather than deferred work. Along the way, a handful of leftover
+  commented-out dead code blocks (from earlier, unrelated refactors) were also removed.
 - Tree context-menu SQL templates (SELECT/INSERT/UPDATE, PostgreSQL routine calls) now use
   trailing commas, `AS` table aliases (Oracle excepted — it rejects `AS` before a table alias),
   and the user's own indent Settings, instead of a hardcoded leading-comma/no-`AS`/4-space style.
@@ -111,6 +114,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   entry in the MySQL/MariaDB/Oracle trees, both calling functions never defined anywhere in this
   codebase's history.
 - Login page was missing `<meta charset="utf-8">`.
+- The tutorial walkthrough's "Query Result" step referenced a `divResult` property that doesn't
+  exist on a query tab's tag object (the real property is `div_result`) — jQuery's
+  `$(undefined).find(...)` had been silently swallowing that typo indefinitely, so the step never
+  highlighted anything; surfaced as a real crash only once converted to a direct DOM lookup (see
+  jQuery removal above). Fixed the property name.
+- The Users dialog referenced a `#div_users` element to toggle an `isActive` class on open/close,
+  but that id has never existed in `workspace.html` — another jQuery-selector-on-nothing case
+  masked by `$("#div_users")`'s silent no-op. Left as a no-op rather than adding markup for a class
+  nothing else reads.
 
 ### Removed
 - Advanced Object Search — 1,064 lines in `tree_postgresql.js` plus its two dedicated request
