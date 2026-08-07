@@ -83,27 +83,6 @@ export var v_createEditDataTabFunction = function (p_table) {
 	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 
-	// //Adding unique names to spans
-	// var v_tab_title_span = document.getElementById('tab_title');
-	// v_tab_title_span.id = 'tab_title_' + v_tab.id;
-	// var v_tab_loading_span = document.getElementById('tab_loading');
-	// v_tab_loading_span.id = 'tab_loading_' + v_tab.id;
-	// var v_tab_close_span = document.getElementById('tab_close');
-	// v_tab_close_span.id = 'tab_close_' + v_tab.id;
-	// v_tab_close_span.onclick = function(e) {
-	//   var v_current_tab = v_tab;
-	//   beforeCloseTab(e,
-	//     function() {
-	//       removeTab(v_current_tab);
-	//     });
-	// };
-	// var v_tab_check_span = document.getElementById('tab_check');
-	// v_tab_check_span.id = 'tab_check_' + v_tab.id;
-	// var v_tab_stub_span = document.getElementById('tab_stub');
-	// v_tab_stub_span.id = 'tab_stub_' + v_tab.id;
-	//
-	// v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-
 	var v_html =
 		"<div class='p-2 omnidb__theme-border-top--primary'>" +
 		"<div id='div_edit_data_select_" +
@@ -255,35 +234,14 @@ export var v_createEditDataTabFunction = function (p_table) {
 		bt_cancel: /** @type {HTMLElement} */ (document.getElementById("bt_cancel_" + v_tab.id)),
 		tab_title_span: v_tab_title_span,
 		tab_loading_span: v_tab_loading_span,
-		// tab_close_span : v_tab_close_span,
 		tab_check_span: v_tab_check_span,
 		state: 0,
 		context: null,
 		resize: v_resizeFunction,
 		tabControl: v_connTabControl.selectedTab.tag.tabControl,
 		connTab: v_connTabControl.selectedTab,
-		// tabId: v_connTabControl.selectedTab.tag.tabControl.tabCounter,
-		// tabCloseSpan: v_tab_close_span,
 		mode: "edit",
 	};
-
-	// {
-	//   tab_id: v_tab.id,
-	//   tabTitle: 'teste',
-	//   divTree: document.getElementById(v_tab.id + '_tree'),
-	//   divLeft: document.getElementById(v_tab.id + '_div_left'),
-	//   divRight: document.getElementById(v_tab.id + '_div_right'),
-	//   // tab_title_span : v_tab_title_span,
-	//   // tab_close_span : v_tab_close_span,
-	//   query_info: document.getElementById('div_query_info_' + v_tab.id),
-	//   div_result: document.getElementById('div_result_' + v_tab.id),
-	//   bt_refresh: v_bt_refresh,
-	//   tabControl: v_connTabControl.selectedTab.tag.tabControl,
-	//   ht: null,
-	//   query: p_query,
-	//   actions: p_actions,
-	//   mode: 'monitor_grid'
-	// };
 
 	v_tab.tag = v_tag;
 

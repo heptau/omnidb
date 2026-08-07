@@ -314,7 +314,7 @@ export function buildMonitorUnit(p_unit, p_first) {
 	div_content_group.appendChild(div_label);
 	div_card_body.appendChild(div_content_group);
 
-	if (p_first) $(v_dashboard_div).prepend(div);
+	if (p_first) v_dashboard_div.insertBefore(div, v_dashboard_div.firstChild);
 	else v_dashboard_div.appendChild(div);
 
 	//Increment unit sequence
@@ -407,7 +407,9 @@ export function closeMonitorUnitList() {
 }
 
 export function editMonitorUnit(p_unit_id) {
-	$("#modal_monitoring_units").modal("hide");
+	bootstrap.Modal.getOrCreateInstance(
+		/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_units")),
+	).hide();
 
 	v_connTabControl.tag.createNewMonitorUnitTab();
 
@@ -545,7 +547,10 @@ export function selectUnitTemplate(p_value) {
 	}
 }
 
-$("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
+// Bootstrap dispatches this as a real DOM event, no jQuery needed to listen for it.
+/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_unit_test")).addEventListener(
+	"shown.bs.modal",
+	function (e) {
 	var v_script_chart = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
 	var v_script_data = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_data.getValue();
 	var v_type = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.select_type.value;
@@ -692,7 +697,8 @@ $("#modal_monitoring_unit_test").on("shown.bs.modal", function (e) {
 		},
 		"box",
 	);
-});
+	},
+);
 
 export function testMonitorScript() {
 	startLoading();
@@ -703,7 +709,9 @@ export function testMonitorScript() {
 	v_div_result.innerHTML = "";
 	v_div_result.className = "";
 
-	$("#modal_monitoring_unit_test").modal("show");
+	bootstrap.Modal.getOrCreateInstance(
+		/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_unit_test")),
+	).show();
 }
 
 export function refreshMonitorUnitsList() {
@@ -815,16 +823,22 @@ export function refreshMonitorUnitsObjects() {
 	}
 }
 
-$("#modal_monitoring_units").on("shown.bs.modal", function (e) {
-	refreshMonitorUnitsList();
-});
+// Bootstrap dispatches this as a real DOM event, no jQuery needed to listen for it.
+/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_units")).addEventListener(
+	"shown.bs.modal",
+	function (e) {
+		refreshMonitorUnitsList();
+	},
+);
 
 export function showMonitorUnitList() {
 	startLoading();
 
 	var v_grid_div = /** @type {HTMLElement} */ (document.getElementById("monitoring_units_grid"));
 	v_grid_div.innerHTML = "";
-	$("#modal_monitoring_units").modal("show");
+	bootstrap.Modal.getOrCreateInstance(
+		/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_units")),
+	).show();
 }
 
 export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
@@ -841,7 +855,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 			if (v_tab_tag.units[i].object != null) v_unit_rendered = 1;
 
 			if (!p_div) {
-				if (p_loading) $(v_tab_tag.units[i].div_loading).fadeIn(100);
+				if (p_loading) v_tab_tag.units[i].div_loading.style.display = "block";
 				v_units.push({
 					saved_id: v_tab_tag.units[i].saved_id,
 					id: v_tab_tag.units[i].id,
@@ -853,7 +867,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 				});
 				clearTimeout(v_tab_tag.units[i].timeout_object);
 			} else if (p_div == v_tab_tag.units[i].div) {
-				if (p_loading) $(v_tab_tag.units[i].div_loading).fadeIn(100);
+				if (p_loading) v_tab_tag.units[i].div_loading.style.display = "block";
 				v_units.push({
 					saved_id: v_tab_tag.units[i].saved_id,
 					id: v_tab_tag.units[i].id,
@@ -909,7 +923,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 							v_return_unit.v_type == "chart" ||
 							v_return_unit.v_type == "chart_append"
 						) {
-							$(v_unit.div_loading).fadeOut(100);
+							v_unit.div_loading.style.display = "none";
 
 							v_return_unit.type = "chart";
 							v_unit.div_error.innerHTML = "";
@@ -1129,7 +1143,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 							v_unit.div_error.innerHTML = "";
 							v_unit.div_details.innerHTML = "";
 
-							$(v_unit.div_loading).fadeOut(100);
+							v_unit.div_loading.style.display = "none";
 
 							v_return_unit.type = "grid";
 
@@ -1217,7 +1231,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 							v_unit.div_error.innerHTML = "";
 							v_unit.div_details.innerHTML = "";
 
-							$(v_unit.div_loading).fadeOut(100);
+							v_unit.div_loading.style.display = "none";
 
 							v_return_unit.type = "graph";
 

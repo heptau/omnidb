@@ -61,35 +61,42 @@ export function checkSessionMessage() {
 /// <summary>
 /// Startup function.
 /// </summary>
-$(function () {
+function initMessageModal() {
 	v_message_modal_animating = false;
 	v_message_modal_queued = false;
 	v_message_modal_queued_function = null;
 	v_shown_callback = null;
-	$("#modal_message").on("hide.bs.modal", function (e) {
+	// Bootstrap dispatches these as real DOM events, no jQuery needed to listen for them.
+	var v_modal_message = el("modal_message");
+	v_modal_message.addEventListener("hide.bs.modal", function (e) {
 		v_message_modal_animating = true;
 	});
-	$("#modal_message").on("show.bs.modal", function (e) {
+	v_modal_message.addEventListener("show.bs.modal", function (e) {
 		v_message_modal_animating = true;
 	});
-	$("#modal_message").on("hidden.bs.modal", function (e) {
+	v_modal_message.addEventListener("hidden.bs.modal", function (e) {
 		el("modal_message_content").innerHTML = "";
 		v_message_modal_animating = false;
 		if (v_message_modal_queued == true) {
 			if (v_message_modal_queued_function != null) v_message_modal_queued_function();
-			$("#modal_message").modal("show");
+			bootstrap.Modal.getOrCreateInstance(v_modal_message).show();
 		}
 		v_message_modal_queued = false;
 		v_message_modal_queued_function = null;
 	});
-	$("#modal_message").on("shown.bs.modal", function (e) {
+	v_modal_message.addEventListener("shown.bs.modal", function (e) {
 		v_message_modal_animating = false;
 		if (v_shown_callback) {
 			v_shown_callback();
 			v_shown_callback = null;
 		}
 	});
-});
+}
+// This body only registers listeners on a static modal already present in
+// workspace.html/login.html at page load, so a single deferred tick is
+// enough -- see passwords.js's initPasswordModal for the same shape.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
+else setTimeout(initMessageModal, 0);
 
 /**
  * @param {(() => void)|null} [p_content_function]
@@ -106,7 +113,7 @@ export function showMessageModal(p_content_function, p_large) {
 
 	if (!v_message_modal_animating) {
 		if (p_content_function != null) p_content_function();
-		$("#modal_message").modal("show");
+		bootstrap.Modal.getOrCreateInstance(el("modal_message")).show();
 	} else {
 		v_message_modal_queued = true;
 		v_message_modal_queued_function = p_content_function;

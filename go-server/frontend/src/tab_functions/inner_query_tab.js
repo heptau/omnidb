@@ -40,6 +40,7 @@ import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_s
 import {
 	adjustQueryTabObjects,
 	indentSQL,
+	refreshBootstrapTooltips,
 	removeTab,
 	renameTab,
 	resizeVertical,
@@ -249,7 +250,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currQueryTab = "explain";
 		v_tab.tag.resize();
 		// Loads or Updates all tooltips.
-		$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+		refreshBootstrapTooltips();
 	};
 
 	// Creating the `data` tab.
@@ -318,22 +319,23 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
 
 	// Setting custom keyboard shortcuts callbacks.
-	$("#txt_query_" + v_tab.id)
-		.find(".ace_text-input")
-		.on("keyup", function (event) {
+	var v_ace_text_input = /** @type {HTMLElement} */ (document.getElementById("txt_query_" + v_tab.id)).querySelector(
+		".ace_text-input",
+	);
+	if (v_ace_text_input) {
+		v_ace_text_input.addEventListener("keyup", function (event) {
 			if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
 				autocomplete_start(v_editor, 0, event);
 			}
 		});
-	$("#txt_query_" + v_tab.id)
-		.find(".ace_text-input")
-		.on("keydown", function (event) {
+		v_ace_text_input.addEventListener("keydown", function (event) {
 			if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
 				autocomplete_keydown(v_editor, event);
 			} else {
 				autocomplete_update_editor_cursor(v_editor, event);
 			}
 		});
+	}
 
 	/** @type {HTMLElement} */ (document.getElementById("txt_query_" + v_tab.id)).addEventListener("contextmenu", function (event) {
 		event.stopPropagation();
@@ -463,7 +465,10 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.currQueryTab == "data") {
 			v_tab_tag.div_result.style.height =
-				window.innerHeight - $(v_tab_tag.div_result).offset().top - 1.25 * v_font_size + "px";
+				window.innerHeight -
+				(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
+				1.25 * v_font_size +
+				"px";
 			setTimeout(function () {
 				if (v_tab_tag.ht != null) {
 					v_tab_tag.ht.render();
@@ -474,12 +479,21 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 			}, 400);
 		} else if (v_tab_tag.currQueryTab == "message") {
 			v_tab_tag.div_notices.style.height =
-				window.innerHeight - $(v_tab_tag.div_notices).offset().top - 1.25 * v_font_size + "px";
+				window.innerHeight -
+				(v_tab_tag.div_notices.getBoundingClientRect().top + window.scrollY) -
+				1.25 * v_font_size +
+				"px";
 		} else if (v_tab_tag.currQueryTab == "explain") {
 			v_tab_tag.div_explain_default.style.height =
-				window.innerHeight - $(v_tab_tag.div_explain_default).offset().top - 1.25 * v_font_size + "px";
+				window.innerHeight -
+				(v_tab_tag.div_explain_default.getBoundingClientRect().top + window.scrollY) -
+				1.25 * v_font_size +
+				"px";
 			v_tab_tag.div_explain.style.height =
-				window.innerHeight - $(v_tab_tag.div_explain).offset().top - 1.25 * v_font_size + "px";
+				window.innerHeight -
+				(v_tab_tag.div_explain.getBoundingClientRect().top + window.scrollY) -
+				1.25 * v_font_size +
+				"px";
 			setTimeout(function () {
 				if (v_tab_tag.explainControl) {
 					v_tab_tag.explainControl.resize();
@@ -613,7 +627,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	};
 
 	// Loads or Updates all tooltips.
-	$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+	refreshBootstrapTooltips();
 
 	// Requesting an update on the workspace layout and sizes.
 	setTimeout(function () {
@@ -623,7 +637,11 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_editor.focus();
 
 	// Sets a render refresh for the grid on the commandHistory.modal after the modal is fully loaded
-	$(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal).on("shown.bs.modal", function () {
-		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.render();
-	});
+	// Bootstrap dispatches this as a real DOM event, no jQuery needed to listen for it.
+	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal.addEventListener(
+		"shown.bs.modal",
+		function () {
+			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.render();
+		},
+	);
 };

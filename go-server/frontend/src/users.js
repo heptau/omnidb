@@ -35,6 +35,7 @@ SOFTWARE.
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
 import { showConfirm } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
+import { refreshBootstrapTooltips } from "./workspace.js";
 
 export function newUserConfirm() {
 	execAjax(
@@ -130,13 +131,13 @@ export function saveUsers() {
 	var v_data_changed = [];
 	var v_user_id_list = [];
 
-	$.each(v_usersObject.v_cellChanges, function (i, el) {
-		if ($.inArray(el["rowIndex"], v_unique_rows_changed) === -1) {
+	v_usersObject.v_cellChanges.forEach(function (el) {
+		if (v_unique_rows_changed.indexOf(el["rowIndex"]) === -1) {
 			v_unique_rows_changed.push(el["rowIndex"]);
 		}
 	});
 
-	$.each(v_unique_rows_changed, function (i, el) {
+	v_unique_rows_changed.forEach(function (el, i) {
 		v_data_changed[i] = v_usersObject.v_cellChanges[i].p_data;
 		v_user_id_list[i] = v_usersObject.v_user_ids[el];
 	});
@@ -168,14 +169,15 @@ export function saveUsers() {
 /// Hides users window.
 /// </summary>
 export function hideUsers() {
-	$("#div_users").removeClass("isActive");
+	document.getElementById("div_users")?.classList.remove("isActive");
 
 	// v_usersObject.ht.destroy();
 
 	/** @type {HTMLElement} */ (document.getElementById("div_user_list")).innerHTML = "";
 }
 
-$("#modal_users").on("shown.bs.modal", function (e) {
+// Bootstrap dispatches this as a real DOM event, no jQuery needed to listen for it.
+/** @type {HTMLElement} */ (document.getElementById("modal_users")).addEventListener("shown.bs.modal", function (e) {
 	getUsers();
 });
 
@@ -202,11 +204,15 @@ export function changeUser(event, p_row_index, p_col_index) {
 	v_usersObject.v_cellChanges.push(cellChange);
 	/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "visible";
 
-	$(".omnidb__user-list__item--changed").removeClass("omnidb__user-list__item--changed");
+	document.querySelectorAll(".omnidb__user-list__item--changed").forEach((el) => {
+		el.classList.remove("omnidb__user-list__item--changed");
+	});
 	for (var i = 0; i < v_usersObject.v_cellChanges.length; i++) {
 		var v_row_value = v_usersObject.v_cellChanges[i].rowIndex;
-		$("#omnidb_user_item_" + v_row_value).addClass("omnidb__user-list__item--changed");
-		$('#omnidb_user_select option[value="' + v_row_value + '"]').addClass("bg-warning");
+		document.getElementById("omnidb_user_item_" + v_row_value)?.classList.add("omnidb__user-list__item--changed");
+		document
+			.querySelector('#omnidb_user_select option[value="' + v_row_value + '"]')
+			?.classList.add("bg-warning");
 	}
 }
 
@@ -237,8 +243,9 @@ export function changeNewUser(event, p_row_index, p_col_index) {
 export function getUsers(p_options = false) {
 	if (p_options && p_options.adding_user) {
 		var v_new_value = v_usersObject.list.length + window.newUsersObject.newUsers.length - 1;
-		$("#omnidb_user_select").append(new Option("(pending info)", String(v_new_value)));
-		$("#omnidb_user_select option:last-child").addClass("bg-success");
+		var v_user_select = /** @type {HTMLSelectElement} */ (document.getElementById("omnidb_user_select"));
+		v_user_select.appendChild(new Option("(pending info)", String(v_new_value)));
+		v_user_select.querySelector("option:last-child")?.classList.add("bg-success");
 		// A real DOM event, and only after the value is set.
 		//
 		// This was jQuery's .trigger("change") on the <option>, which invokes an
@@ -248,9 +255,9 @@ export function getUsers(p_options = false) {
 		// renderSelectedUser is bound properly, the select would never have
 		// re-rendered and Add new user would have left the previous user on screen.
 		//
-		// The .val() also has to come first: the old order relied on event.target
-		// being the option, whose value happened to be the new index.
-		$("#omnidb_user_select").val(v_new_value);
+		// Setting the value also has to come first: the old order relied on
+		// event.target being the option, whose value happened to be the new index.
+		v_user_select.value = String(v_new_value);
 		/** @type {HTMLElement} */ (document.getElementById("omnidb_user_select")).dispatchEvent(
 			new Event("change", { bubbles: true }),
 		);
@@ -357,7 +364,7 @@ export function getUsers(p_options = false) {
 					"</div>";
 				v_user_list_element.innerHTML = v_user_list_html;
 
-				$("#div_users").addClass("isActive");
+				document.getElementById("div_users")?.classList.add("isActive");
 
 				window.scrollTo(0, 0);
 
@@ -394,7 +401,7 @@ export function getUsers(p_options = false) {
 				}
 				if (v_usersObject.v_cellChanges.length > 0 || window.newUsersObject.newUsers.length > 0)
 					/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "visible";
-				$('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true }); // Loads or Updates all tooltips
+				refreshBootstrapTooltips(); // Loads or Updates all tooltips
 				endLoading();
 			},
 			null,
@@ -427,7 +434,7 @@ export function listUsers(p_refresh, p_options = false) {
 	}
 
 	if (p_refresh == null) {
-		$("#modal_users").modal("show");
+		bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_users"))).show();
 	} else {
 		getUsers(p_options);
 	}

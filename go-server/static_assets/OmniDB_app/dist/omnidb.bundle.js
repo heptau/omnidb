@@ -68,35 +68,38 @@
       "box"
     );
   }
-  $(function() {
+  function initMessageModal() {
     v_message_modal_animating = false;
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    $("#modal_message").on("hide.bs.modal", function(e) {
+    var v_modal_message = el$1("modal_message");
+    v_modal_message.addEventListener("hide.bs.modal", function(e) {
       v_message_modal_animating = true;
     });
-    $("#modal_message").on("show.bs.modal", function(e) {
+    v_modal_message.addEventListener("show.bs.modal", function(e) {
       v_message_modal_animating = true;
     });
-    $("#modal_message").on("hidden.bs.modal", function(e) {
+    v_modal_message.addEventListener("hidden.bs.modal", function(e) {
       el$1("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
-        $("#modal_message").modal("show");
+        bootstrap.Modal.getOrCreateInstance(v_modal_message).show();
       }
       v_message_modal_queued = false;
       v_message_modal_queued_function = null;
     });
-    $("#modal_message").on("shown.bs.modal", function(e) {
+    v_modal_message.addEventListener("shown.bs.modal", function(e) {
       v_message_modal_animating = false;
       if (v_shown_callback) {
         v_shown_callback();
         v_shown_callback = null;
       }
     });
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
+  else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
     var v_dialog = el$1("modal_message_dialog");
     if (p_large == null || p_large == false) {
@@ -106,7 +109,7 @@
     }
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      $("#modal_message").modal("show");
+      bootstrap.Modal.getOrCreateInstance(el$1("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
@@ -7382,10 +7385,8 @@
           }
         });
         var v_plan = {
-          // children_count: v_children_count,
           data: v_data,
           grid: {
-            // col: (v_children_count === 0) ? v_index + 1 : v_index + v_legereControl.global_children_count + 1,
             col: v_legereControl2.global_children_count + 1,
             row: v_row
           },
@@ -8399,15 +8400,12 @@
       ),
       tab_title_span: v_tab_title_span,
       tab_loading_span: v_tab_loading_span,
-      // tab_close_span : v_tab_close_span,
       tab_check_span: v_tab_check_span,
       state: 0,
       context: null,
       resize: v_resizeFunction,
       tabControl: v_connTabControl.selectedTab.tag.tabControl,
       connTab: v_connTabControl.selectedTab,
-      // tabId: v_connTabControl.selectedTab.tag.tabControl.tabCounter,
-      // tabCloseSpan: v_tab_close_span,
       mode: "edit"
     };
     v_tab.tag = v_tag;
@@ -8580,8 +8578,6 @@
       divTree: document.getElementById(v_tab.id + "_tree"),
       divLeft: document.getElementById(v_tab.id + "_div_left"),
       divRight: document.getElementById(v_tab.id + "_div_right"),
-      // tab_title_span : v_tab_title_span,
-      // tab_close_span : v_tab_close_span,
       query_info: document.getElementById("div_query_info_" + v_tab.id),
       div_result: document.getElementById("div_result_" + v_tab.id),
       bt_refresh: v_bt_refresh,
@@ -9034,7 +9030,7 @@
       v_curr_tabs.selectTabIndex(2);
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currQueryTab = "explain";
       v_tab.tag.resize();
-      $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+      refreshBootstrapTooltips();
     };
     var v_data_tab = v_curr_tabs.createTab({
       p_name: "Data",
@@ -9072,18 +9068,26 @@
     v_editor.setFontSize(Number(v_font_size));
     v_editor.session.setTabSize(v_indent_size || 4);
     v_editor.session.setUseSoftTabs(v_indent_char !== "tab");
-    $("#txt_query_" + v_tab.id).find(".ace_text-input").on("keyup", function(event2) {
-      if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
-        autocomplete_start(v_editor, 0, event2);
-      }
-    });
-    $("#txt_query_" + v_tab.id).find(".ace_text-input").on("keydown", function(event2) {
-      if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
-        autocomplete_keydown(v_editor, event2);
-      } else {
-        autocomplete_update_editor_cursor(v_editor, event2);
-      }
-    });
+    var v_ace_text_input = (
+      /** @type {HTMLElement} */
+      document.getElementById("txt_query_" + v_tab.id).querySelector(
+        ".ace_text-input"
+      )
+    );
+    if (v_ace_text_input) {
+      v_ace_text_input.addEventListener("keyup", function(event2) {
+        if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
+          autocomplete_start(v_editor, 0, event2);
+        }
+      });
+      v_ace_text_input.addEventListener("keydown", function(event2) {
+        if (v_connTabControl.selectedTab.tag.enable_autocomplete !== false) {
+          autocomplete_keydown(v_editor, event2);
+        } else {
+          autocomplete_update_editor_cursor(v_editor, event2);
+        }
+      });
+    }
     document.getElementById("txt_query_" + v_tab.id).addEventListener("contextmenu", function(event2) {
       event2.stopPropagation();
       event2.preventDefault();
@@ -9173,7 +9177,7 @@
     var v_resizeFunction = function() {
       var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       if (v_tab_tag2.currQueryTab == "data") {
-        v_tab_tag2.div_result.style.height = window.innerHeight - $(v_tab_tag2.div_result).offset().top - 1.25 * v_font_size + "px";
+        v_tab_tag2.div_result.style.height = window.innerHeight - (v_tab_tag2.div_result.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
         setTimeout(function() {
           if (v_tab_tag2.ht != null) {
             v_tab_tag2.ht.render();
@@ -9183,10 +9187,10 @@
           }
         }, 400);
       } else if (v_tab_tag2.currQueryTab == "message") {
-        v_tab_tag2.div_notices.style.height = window.innerHeight - $(v_tab_tag2.div_notices).offset().top - 1.25 * v_font_size + "px";
+        v_tab_tag2.div_notices.style.height = window.innerHeight - (v_tab_tag2.div_notices.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
       } else if (v_tab_tag2.currQueryTab == "explain") {
-        v_tab_tag2.div_explain_default.style.height = window.innerHeight - $(v_tab_tag2.div_explain_default).offset().top - 1.25 * v_font_size + "px";
-        v_tab_tag2.div_explain.style.height = window.innerHeight - $(v_tab_tag2.div_explain).offset().top - 1.25 * v_font_size + "px";
+        v_tab_tag2.div_explain_default.style.height = window.innerHeight - (v_tab_tag2.div_explain_default.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
+        v_tab_tag2.div_explain.style.height = window.innerHeight - (v_tab_tag2.div_explain.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
         setTimeout(function() {
           if (v_tab_tag2.explainControl) {
             v_tab_tag2.explainControl.resize();
@@ -9335,15 +9339,18 @@
     v_add_tab.tag = {
       mode: "add"
     };
-    $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+    refreshBootstrapTooltips();
     setTimeout(function() {
       v_resizeFunction();
     }, 10);
     adjustQueryTabObjects(false);
     v_editor.focus();
-    $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal).on("shown.bs.modal", function() {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.render();
-    });
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.modal.addEventListener(
+      "shown.bs.modal",
+      function() {
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.render();
+      }
+    );
   };
   const innerQueryTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
@@ -10586,7 +10593,7 @@
     div_content_group.appendChild(div_content);
     div_content_group.appendChild(div_label);
     div_card_body.appendChild(div_content_group);
-    if (p_first) $(v_dashboard_div).prepend(div);
+    if (p_first) v_dashboard_div.insertBefore(div, v_dashboard_div.firstChild);
     else v_dashboard_div.appendChild(div);
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_sequence += 1;
     v_unit = {
@@ -10667,7 +10674,10 @@
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_grid = null;
   }
   function editMonitorUnit(p_unit_id) {
-    $("#modal_monitoring_units").modal("hide");
+    bootstrap.Modal.getOrCreateInstance(
+      /** @type {HTMLElement} */
+      document.getElementById("modal_monitoring_units")
+    ).hide();
     v_connTabControl.tag.createNewMonitorUnitTab();
     var input1 = JSON.stringify({
       p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -10786,146 +10796,149 @@
       );
     }
   }
-  $("#modal_monitoring_unit_test").on("shown.bs.modal", function(e) {
-    var v_script_chart = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
-    var v_script_data = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_data.getValue();
-    var v_type = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.select_type.value;
-    var input = JSON.stringify({
-      p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-      p_tab_id: v_connTabControl.selectedTab.id,
-      p_script_chart: v_script_chart,
-      p_script_data: v_script_data,
-      p_type: v_type
-    });
-    execAjax$1(
-      "/test_monitor_script/",
-      input,
-      function(p_return) {
-        var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-        var v_type2 = v_tab_tag2.select_type.value;
-        var v_div_result = v_tab_tag2.div_result;
-        if (v_tab_tag2.object != null) {
-          v_tab_tag2.object.destroy();
-          v_tab_tag2.object = null;
-        }
-        var v_return_unit = p_return.v_data;
-        try {
-          if (p_return.v_data.v_error) {
-            v_div_result.textContent = "";
-            var v_err_div = document.createElement("div");
-            v_err_div.className = "error_text";
-            v_err_div.textContent = p_return.v_data.v_message;
-            v_div_result.appendChild(v_err_div);
-          } else if (v_type2 == "timeseries" || v_type2 == "chart" || v_return_unit.v_type == "chart_append") {
-            var canvas = document.createElement("canvas");
-            canvas.style.height = "250px";
-            canvas.style.width = v_div_result.offsetWidth;
-            v_div_result.appendChild(canvas);
-            var ctx = canvas.getContext("2d");
-            var v_show_legend = false;
-            try {
-              v_return_unit.v_object.options.responsive = true;
-              v_return_unit.v_object.options.maintainAspectRatio = false;
-              if (v_return_unit.v_object.options.plugins == null) {
-                v_return_unit.v_object.options.plugins = {};
+  document.getElementById("modal_monitoring_unit_test").addEventListener(
+    "shown.bs.modal",
+    function(e) {
+      var v_script_chart = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
+      var v_script_data = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_data.getValue();
+      var v_type = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.select_type.value;
+      var input = JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_script_chart: v_script_chart,
+        p_script_data: v_script_data,
+        p_type: v_type
+      });
+      execAjax$1(
+        "/test_monitor_script/",
+        input,
+        function(p_return) {
+          var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+          var v_type2 = v_tab_tag2.select_type.value;
+          var v_div_result = v_tab_tag2.div_result;
+          if (v_tab_tag2.object != null) {
+            v_tab_tag2.object.destroy();
+            v_tab_tag2.object = null;
+          }
+          var v_return_unit = p_return.v_data;
+          try {
+            if (p_return.v_data.v_error) {
+              v_div_result.textContent = "";
+              var v_err_div = document.createElement("div");
+              v_err_div.className = "error_text";
+              v_err_div.textContent = p_return.v_data.v_message;
+              v_div_result.appendChild(v_err_div);
+            } else if (v_type2 == "timeseries" || v_type2 == "chart" || v_return_unit.v_type == "chart_append") {
+              var canvas = document.createElement("canvas");
+              canvas.style.height = "250px";
+              canvas.style.width = v_div_result.offsetWidth;
+              v_div_result.appendChild(canvas);
+              var ctx = canvas.getContext("2d");
+              var v_show_legend = false;
+              try {
+                v_return_unit.v_object.options.responsive = true;
+                v_return_unit.v_object.options.maintainAspectRatio = false;
+                if (v_return_unit.v_object.options.plugins == null) {
+                  v_return_unit.v_object.options.plugins = {};
+                }
+                if (v_return_unit.v_object.options.plugins.legend == null) {
+                  v_return_unit.v_object.options.plugins.legend = {
+                    display: false
+                  };
+                  v_show_legend = true;
+                } else {
+                  if (v_return_unit.v_object.options.plugins.legend.display == true) v_show_legend = true;
+                  v_return_unit.v_object.options.plugins.legend.display = false;
+                }
+              } catch (err) {
               }
-              if (v_return_unit.v_object.options.plugins.legend == null) {
-                v_return_unit.v_object.options.plugins.legend = {
-                  display: false
-                };
-                v_show_legend = true;
-              } else {
-                if (v_return_unit.v_object.options.plugins.legend.display == true) v_show_legend = true;
-                v_return_unit.v_object.options.plugins.legend.display = false;
+              v_tab_tag2.object = new Chart(ctx, v_return_unit.v_object);
+              adjustChartTheme(v_tab_tag2.object);
+              if (v_show_legend) {
+                v_tab_tag2.div_result_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_tab_tag2.object));
               }
-            } catch (err) {
-            }
-            v_tab_tag2.object = new Chart(ctx, v_return_unit.v_object);
-            adjustChartTheme(v_tab_tag2.object);
-            if (v_show_legend) {
-              v_tab_tag2.div_result_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_tab_tag2.object));
-            }
-          } else if (v_type2 == "grid") {
-            var columnProperties = [];
-            for (var j2 = 0; j2 < p_return.v_data.v_object.columns.length; j2++) {
-              var col = {};
-              col.readOnly = true;
-              col.title = p_return.v_data.v_object.columns[j2];
-              columnProperties.push(col);
-            }
-            v_div_result.className = "dashboard_unit_grid";
-            v_tab_tag2.object = new Handsontable(v_div_result, {
-              licenseKey: "non-commercial-and-evaluation",
-              data: p_return.v_data.v_object.data,
-              columns: columnProperties,
-              colHeaders: true,
-              rowHeaders: true,
-              //copyRowsLimit : 1000000000,
-              //copyColsLimit : 1000000000,
-              copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
-              manualColumnResize: true,
-              fillHandle: false,
-              contextMenu: {
-                callback: function(key, options) {
-                  if (key === "view_data") {
-                    editCellData(
-                      this,
-                      options[0].start.row,
-                      options[0].start.col,
-                      this.getDataAtCell(options[0].start.row, options[0].start.col),
-                      false
-                    );
-                  } else if (key === "copy") {
-                    this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-                    document.execCommand("copy");
+            } else if (v_type2 == "grid") {
+              var columnProperties = [];
+              for (var j2 = 0; j2 < p_return.v_data.v_object.columns.length; j2++) {
+                var col = {};
+                col.readOnly = true;
+                col.title = p_return.v_data.v_object.columns[j2];
+                columnProperties.push(col);
+              }
+              v_div_result.className = "dashboard_unit_grid";
+              v_tab_tag2.object = new Handsontable(v_div_result, {
+                licenseKey: "non-commercial-and-evaluation",
+                data: p_return.v_data.v_object.data,
+                columns: columnProperties,
+                colHeaders: true,
+                rowHeaders: true,
+                //copyRowsLimit : 1000000000,
+                //copyColsLimit : 1000000000,
+                copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
+                manualColumnResize: true,
+                fillHandle: false,
+                contextMenu: {
+                  callback: function(key, options) {
+                    if (key === "view_data") {
+                      editCellData(
+                        this,
+                        options[0].start.row,
+                        options[0].start.col,
+                        this.getDataAtCell(options[0].start.row, options[0].start.col),
+                        false
+                      );
+                    } else if (key === "copy") {
+                      this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
+                      document.execCommand("copy");
+                    }
+                  },
+                  items: {
+                    copy: {
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+                    },
+                    view_data: {
+                      name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
+                    }
                   }
                 },
-                items: {
-                  copy: {
-                    name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
-                  },
-                  view_data: {
-                    name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
-                  }
+                cells: function(row, col2, prop) {
+                  var cellProperties = {};
+                  return cellProperties;
                 }
-              },
-              cells: function(row, col2, prop) {
-                var cellProperties = {};
-                return cellProperties;
-              }
-            });
-          } else if (v_type2 == "graph") {
-            v_div_result.className = "unit_graph";
-            p_return.v_data.v_object.container = v_div_result;
-            v_tab_tag2.object = cytoscape(p_return.v_data.v_object);
-            adjustGraphTheme(v_tab_tag2.object);
+              });
+            } else if (v_type2 == "graph") {
+              v_div_result.className = "unit_graph";
+              p_return.v_data.v_object.container = v_div_result;
+              v_tab_tag2.object = cytoscape(p_return.v_data.v_object);
+              adjustGraphTheme(v_tab_tag2.object);
+            }
+          } catch (err) {
+            v_div_result.textContent = "";
+            var v_err_div2 = document.createElement("div");
+            v_err_div2.className = "error_text";
+            v_err_div2.textContent = String(err);
+            v_div_result.appendChild(v_err_div2);
           }
-        } catch (err) {
-          v_div_result.textContent = "";
-          var v_err_div2 = document.createElement("div");
-          v_err_div2.className = "error_text";
-          v_err_div2.textContent = String(err);
-          v_div_result.appendChild(v_err_div2);
-        }
-        endLoading();
-      },
-      function(p_return) {
-        if (p_return.v_data.password_timeout) {
-          showPasswordPrompt(
-            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-            function() {
-              testMonitorScript();
-            },
-            null,
-            p_return.v_data.message
-          );
-        } else {
-          showError(p_return.v_data);
-        }
-      },
-      "box"
-    );
-  });
+          endLoading();
+        },
+        function(p_return) {
+          if (p_return.v_data.password_timeout) {
+            showPasswordPrompt(
+              v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+              function() {
+                testMonitorScript();
+              },
+              null,
+              p_return.v_data.message
+            );
+          } else {
+            showError(p_return.v_data);
+          }
+        },
+        "box"
+      );
+    }
+  );
   function testMonitorScript() {
     startLoading();
     var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
@@ -10933,7 +10946,10 @@
     var v_div_result = v_tab_tag2.div_result;
     v_div_result.innerHTML = "";
     v_div_result.className = "";
-    $("#modal_monitoring_unit_test").modal("show");
+    bootstrap.Modal.getOrCreateInstance(
+      /** @type {HTMLElement} */
+      document.getElementById("modal_monitoring_unit_test")
+    ).show();
   }
   function refreshMonitorUnitsList() {
     var input = JSON.stringify({
@@ -11027,9 +11043,12 @@
       }
     }
   }
-  $("#modal_monitoring_units").on("shown.bs.modal", function(e) {
-    refreshMonitorUnitsList();
-  });
+  document.getElementById("modal_monitoring_units").addEventListener(
+    "shown.bs.modal",
+    function(e) {
+      refreshMonitorUnitsList();
+    }
+  );
   function showMonitorUnitList() {
     startLoading();
     var v_grid_div = (
@@ -11037,7 +11056,10 @@
       document.getElementById("monitoring_units_grid")
     );
     v_grid_div.innerHTML = "";
-    $("#modal_monitoring_units").modal("show");
+    bootstrap.Modal.getOrCreateInstance(
+      /** @type {HTMLElement} */
+      document.getElementById("modal_monitoring_units")
+    ).show();
   }
   function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
     var v_units = [];
@@ -11049,7 +11071,7 @@
         var v_unit_rendered = 0;
         if (v_tab_tag2.units[i2].object != null) v_unit_rendered = 1;
         if (!p_div) {
-          if (p_loading) $(v_tab_tag2.units[i2].div_loading).fadeIn(100);
+          if (p_loading) v_tab_tag2.units[i2].div_loading.style.display = "block";
           v_units.push({
             saved_id: v_tab_tag2.units[i2].saved_id,
             id: v_tab_tag2.units[i2].id,
@@ -11061,7 +11083,7 @@
           });
           clearTimeout(v_tab_tag2.units[i2].timeout_object);
         } else if (p_div == v_tab_tag2.units[i2].div) {
-          if (p_loading) $(v_tab_tag2.units[i2].div_loading).fadeIn(100);
+          if (p_loading) v_tab_tag2.units[i2].div_loading.style.display = "block";
           v_units.push({
             saved_id: v_tab_tag2.units[i2].saved_id,
             id: v_tab_tag2.units[i2].id,
@@ -11106,7 +11128,7 @@
             }
             try {
               if (v_return_unit.v_type == "timeseries" || v_return_unit.v_type == "chart" || v_return_unit.v_type == "chart_append") {
-                $(v_unit.div_loading).fadeOut(100);
+                v_unit.div_loading.style.display = "none";
                 v_return_unit.type = "chart";
                 v_unit.div_error.innerHTML = "";
                 if (v_return_unit.v_error) {
@@ -11269,7 +11291,7 @@
               } else if (v_return_unit.v_type == "grid") {
                 v_unit.div_error.innerHTML = "";
                 v_unit.div_details.innerHTML = "";
-                $(v_unit.div_loading).fadeOut(100);
+                v_unit.div_loading.style.display = "none";
                 v_return_unit.type = "grid";
                 if (v_return_unit.v_error) {
                   v_unit.div_error.textContent = v_return_unit.v_message;
@@ -11338,7 +11360,7 @@
               } else if (v_return_unit.v_type == "graph") {
                 v_unit.div_error.innerHTML = "";
                 v_unit.div_details.innerHTML = "";
-                $(v_unit.div_loading).fadeOut(100);
+                v_unit.div_loading.style.display = "none";
                 v_return_unit.type = "graph";
                 if (v_return_unit.v_error) {
                   v_unit.div_error.textContent = v_return_unit.v_message;
@@ -19935,7 +19957,10 @@
     v_keyBoardShortcuts
   }, Symbol.toStringTag, { value: "Module" }));
   function showAbout() {
-    $("#modal_about").modal("show");
+    bootstrap.Modal.getOrCreateInstance(
+      /** @type {HTMLElement} */
+      document.getElementById("modal_about")
+    ).show();
   }
   var v_light_terminal_theme = {
     background: "#f4f4f4",
@@ -19950,13 +19975,15 @@
     background: "#1a1a1d"
   };
   var v_current_terminal_theme;
-  $(function() {
+  function initHeaderActions() {
     document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
     changeTheme();
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event2) => {
       changeTheme();
     });
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initHeaderActions);
+  else setTimeout(initHeaderActions, 0);
   function adjustChartTheme(p_chart) {
     var v_chart_font_color = "#666666";
     var v_chart_grid_color = "rgba(0, 0, 0, 0.1)";
@@ -20095,13 +20122,10 @@
   function changeInterfaceFontSize(p_option) {
     v_font_size = p_option;
     document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
-    $(".ace_editor").each(
-      /** @this {any} */
-      function(index) {
-        let editor = ace.edit(this);
-        editor.setFontSize(v_font_size + "px");
-      }
-    );
+    document.querySelectorAll(".ace_editor").forEach(function(el2) {
+      let editor = ace.edit(el2);
+      editor.setFontSize(v_font_size + "px");
+    });
     var v_outer_tab_list = v_connTabControl.tabList;
     for (let i2 = 0; i2 < v_outer_tab_list.length; i2++) {
       var v_outer_tab_tag = v_outer_tab_list[i2].tag;
@@ -20141,17 +20165,17 @@
     }
   }
   function applyEditorTabSize() {
-    $(".ace_editor").each(
-      /** @this {any} */
-      function() {
-        let editor = ace.edit(this);
-        editor.session.setTabSize(v_indent_size || 4);
-        editor.session.setUseSoftTabs(v_indent_char !== "tab");
-      }
-    );
+    document.querySelectorAll(".ace_editor").forEach(function(el2) {
+      let editor = ace.edit(el2);
+      editor.session.setTabSize(v_indent_size || 4);
+      editor.session.setUseSoftTabs(v_indent_char !== "tab");
+    });
   }
   function showConfigUser() {
-    if ($("#modal_config").hasClass("show")) {
+    if (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_config").classList.contains("show")
+    ) {
       return;
     }
     document.getElementById("sel_interface_font_size").value = String(v_font_size);
@@ -20221,7 +20245,11 @@
     });
   }
   function showWebsite(p_name, p_url) {
-    if (v_connTabControl) $("#modal_about").modal("hide");
+    if (v_connTabControl)
+      bootstrap.Modal.getOrCreateInstance(
+        /** @type {HTMLElement} */
+        document.getElementById("modal_about")
+      ).hide();
     v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
   }
   function setAllAutocompleteTypeCheckboxes(p_checked) {
@@ -20274,7 +20302,10 @@
         p_autocomplete_disabled_types: v_autocomplete_disabled_types
       });
       execAjax$1("/save_config_user/", input, function(p_return) {
-        $("#modal_config").modal("hide");
+        bootstrap.Modal.getOrCreateInstance(
+          /** @type {HTMLElement} */
+          document.getElementById("modal_config")
+        ).hide();
         showAlert("Configuration saved.");
         applyEditorTabSize();
       });
@@ -20363,14 +20394,17 @@
     v_editContentObject.row = p_row;
     v_editContentObject.col = p_col;
     v_editContentObject.ht = p_ht;
-    $("#div_edit_content").modal({
+    bootstrap.Modal.getOrCreateInstance(v_edit_modal, {
       backdrop: "static",
       keyboard: false
-    });
-    $("#div_edit_content").modal("show");
+    }).show();
+  }
+  function hideEditContentModal() {
+    var v_edit_modal = document.getElementById("div_edit_content");
+    if (v_edit_modal) bootstrap.Modal.getOrCreateInstance(v_edit_modal).hide();
   }
   function saveEditContent() {
-    $("#div_edit_content").modal("hide");
+    hideEditContentModal();
     if (v_canEditContent) {
       v_editContentObject.ht.setDataAtCell(
         v_editContentObject.row,
@@ -20383,11 +20417,11 @@
     v_editContentObject.editor.setValue("");
   }
   function cancelEditContent() {
-    $("#div_edit_content").modal("hide");
+    hideEditContentModal();
     v_editContentObject.editor.setValue("");
   }
   function hideEditContent() {
-    $("#div_edit_content").modal("hide");
+    hideEditContentModal();
     if (v_canEditContent)
       v_editContentObject.ht.setDataAtCell(
         v_editContentObject.row,
@@ -20961,12 +20995,14 @@
     return document.getElementById(id);
   }
   var v_conn_data, v_conn_div, v_conn_obj;
-  $(function() {
+  function initConnections() {
     v_connections_data = new Object();
     v_connections_data.technologies = null;
     v_connections_data.card_list = [];
     v_connections_data.current_id = -1;
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
+  else setTimeout(initConnections, 0);
   function startConnectionManagement() {
     getDatabaseList();
     getGroups();
@@ -21121,7 +21157,7 @@
         v_target_div.innerHTML = "";
         v_target_div.appendChild(v_container);
         if (p_open_modal) {
-          $("#modal_connections").modal("show");
+          bootstrap.Modal.getOrCreateInstance(el("modal_connections")).show();
         }
         if (p_change_group) {
           groupChange(el("group_selector").value);
@@ -21149,10 +21185,10 @@
       for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
         var v_conn_obj2 = v_connections_data.card_list[i2];
         if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
-          $(v_conn_obj2.card_div).fadeIn(400);
+          v_conn_obj2.card_div.style.display = "";
           v_group_valid_conn++;
         } else {
-          $(v_conn_obj2.card_div).fadeOut(400);
+          v_conn_obj2.card_div.style.display = "none";
         }
       }
       if (v_empty_group_div) {
@@ -21170,7 +21206,7 @@
       el("group_selector").value = -1;
       for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
         var v_conn_obj2 = v_connections_data.card_list[i2];
-        $(v_conn_obj2.card_div).fadeIn(400);
+        v_conn_obj2.card_div.style.display = "";
       }
     }
     updateConnectionsTitleInfo();
@@ -21186,7 +21222,9 @@
     if (v_empty_group_div) {
       v_empty_group_div.style.display = "none";
     }
-    $(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--connection-management");
+    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
+      v_card_list_el.classList.add("omnidb__connections__card-list--connection-management");
+    });
     var v_current_group_id = el("group_selector").value;
     var v_group_obj = null;
     for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
@@ -21197,7 +21235,7 @@
     }
     for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
       var v_conn_obj2 = v_connections_data.card_list[i2];
-      $(v_conn_obj2.card_div).fadeIn(400);
+      v_conn_obj2.card_div.style.display = "";
       if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
         v_conn_obj2.checkbox.checked = true;
       }
@@ -21211,7 +21249,9 @@
     el("group_selector").removeAttribute("disabled");
     el("button_new_group").removeAttribute("disabled");
     el("button_group_actions").removeAttribute("disabled");
-    $(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--connection-management");
+    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
+      v_card_list_el.classList.remove("omnidb__connections__card-list--connection-management");
+    });
     v_conn_data = [];
     for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
       var v_conn_obj2 = v_connections_data.card_list[i2];
@@ -21461,7 +21501,7 @@
       "/save_connection/",
       input,
       function(p_return) {
-        $("#modal_edit_connection").modal("hide");
+        bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).hide();
         getDatabaseList();
         showConnectionList(false, true);
       },
@@ -21521,25 +21561,34 @@
     let v_enable_list = [];
     let v_disable_list = [];
     if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
-      if ($("#conn_form_user_pass_check_icon").length === 0) {
-        $("#conn_form_user_pass").prev().append('<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>');
+      if (!el("conn_form_user_pass_check_icon")) {
+        el("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
+          "beforeend",
+          '<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>'
+        );
       }
     } else {
-      $("#conn_form_user_pass_check_icon").remove();
+      el("conn_form_user_pass_check_icon")?.remove();
     }
     if (p_conn_obj.tunnel.password && p_conn_obj.tunnel.password !== null && p_conn_obj.tunnel.password !== "") {
-      if ($("#conn_form_ssh_password_check_icon").length === 0) {
-        $("#conn_form_ssh_password").prev().append('<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>');
+      if (!el("conn_form_ssh_password_check_icon")) {
+        el("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
+          "beforeend",
+          '<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>'
+        );
       }
     } else {
-      $("#conn_form_ssh_password_check_icon").remove();
+      el("conn_form_ssh_password_check_icon")?.remove();
     }
     if (p_conn_obj.tunnel.key && p_conn_obj.tunnel.key !== null && p_conn_obj.tunnel.key !== "") {
-      if ($("#conn_form_ssh_key_check_icon").length === 0) {
-        $("#conn_form_ssh_key").prev().append('<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>');
+      if (!el("conn_form_ssh_key_check_icon")) {
+        el("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
+          "beforeend",
+          '<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>'
+        );
       }
     } else {
-      $("#conn_form_ssh_key_check_icon").remove();
+      el("conn_form_ssh_key_check_icon")?.remove();
     }
     if (p_conn_obj.technology === "terminal") {
       v_disable_list = [
@@ -21611,7 +21660,7 @@
       }
     }
     updateModalEditConnectionFields(v_disable_list, v_enable_list);
-    $("#modal_edit_connection").modal("show");
+    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
   }
   function newConnection() {
     v_connections_data.current_id = -1;
@@ -21635,13 +21684,13 @@
     el("conn_form_ssh_key").value = "";
     el("conn_form_ssh_key_input").value = null;
     el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
-    $("#conn_form_user_pass_check_icon").remove();
-    $("#conn_form_ssh_password_check_icon").remove();
-    $("#conn_form_ssh_key_check_icon").remove();
-    $("#modal_edit_connection").modal("show");
+    el("conn_form_user_pass_check_icon")?.remove();
+    el("conn_form_ssh_password_check_icon")?.remove();
+    el("conn_form_ssh_key_check_icon")?.remove();
+    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
   }
   function selectConnection(p_conn_obj) {
-    $("#modal_connections").modal("hide");
+    bootstrap.Modal.getOrCreateInstance(el("modal_connections")).hide();
     if (p_conn_obj.technology === "terminal") {
       v_connTabControl.tag.createOuterTerminalTab(
         p_conn_obj.id,
@@ -21657,19 +21706,23 @@
     var v_public = el("conn_list_public").checked;
     if (v_public) {
       v_connections_data.show_public = true;
-      $(".omnidb__connections__card--public").parent().removeClass("d-none");
-      $(".omnidb__connections__card--public").removeClass("d-none");
-      $(".omnidb__connections__card--public").addClass("show");
+      document.querySelectorAll(".omnidb__connections__card--public").forEach((v_card_el) => {
+        v_card_el.parentElement.classList.remove("d-none");
+        v_card_el.classList.remove("d-none");
+        v_card_el.classList.add("show");
+      });
     } else {
       v_connections_data.show_public = false;
       for (let i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-        v_conn_div = $(v_connections_data.card_list[i2].card_div);
+        v_conn_div = v_connections_data.card_list[i2].card_div;
         v_conn_obj = v_connections_data.card_list[i2].data;
         if (v_conn_obj.public) {
           if (!v_conn_obj.is_mine) {
-            v_conn_div.children().removeClass("show");
-            v_conn_div.children().addClass("d-none");
-            v_conn_div.addClass("d-none");
+            Array.from(v_conn_div.children).forEach((v_child) => {
+              v_child.classList.remove("show");
+              v_child.classList.add("d-none");
+            });
+            v_conn_div.classList.add("d-none");
           }
         }
       }
@@ -21813,11 +21866,13 @@
       v_item.removeAttribute("readonly");
       v_item.removeAttribute("disabled");
     }
-    $("#modal_edit_connection .required").removeClass("required");
+    document.querySelectorAll("#modal_edit_connection .required").forEach((v_required_el) => {
+      v_required_el.classList.remove("required");
+    });
     let v_has_invalid = false;
     if (p_form_cases) {
       for (let i2 = 0; i2 < p_form_cases.length; i2++) {
-        $("#" + p_form_cases[i2]).parent().addClass("required");
+        el(p_form_cases[i2]).parentElement.classList.add("required");
       }
       for (let i2 = 0; i2 < p_form_cases.length; i2++) {
         if (p_form_cases[i2] === "conn_form_type") {
@@ -31736,10 +31791,10 @@
       utilities_menu: [
         {
           p_callback_end: function() {
-            $(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
           },
           p_callback_start: function() {
-            $(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
           },
           p_clone_target: true,
           p_message: `
@@ -31758,10 +31813,10 @@
         },
         {
           p_callback_end: function() {
-            $(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
           },
           p_callback_start: function() {
-            $(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
           },
           p_clone_target: true,
           p_message: `
@@ -32226,15 +32281,15 @@
 				<p>If you navigate the Tree on the left to find a table and use the action Query Table from it's context menu, the editor will autofill and the run query will be issued.</p>
 				`,
           p_position: function() {
-            var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
               ".omnidb__tab-actions"
-            )[0];
+            );
             return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
           },
           p_target: function() {
-            var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
               ".omnidb__tab-actions"
-            )[0];
+            );
             return v_target;
           },
           p_title: "Actions Panel"
@@ -32260,9 +32315,9 @@
             return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y + 40 };
           },
           p_target: function() {
-            var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.divResult).find(
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.querySelector(
               ".omnidb__tab-actions"
-            )[0];
+            );
             return v_target;
           },
           p_title: "Query Result"
@@ -32313,7 +32368,7 @@
   var v_edges;
   var v_nodes;
   var v_start_height;
-  $(function() {
+  function initWorkspace() {
     v_connTabControl = createTabControl({
       p_div: "omnidb_main_tablist",
       p_hierarchy: "primary"
@@ -32365,7 +32420,9 @@
       startTutorial("getting_started");
     });
     refreshBootstrapTooltips();
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initWorkspace);
+  else setTimeout(initWorkspace, 0);
   function refreshBootstrapTooltips() {
     document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el2) => {
       bootstrap.Tooltip.getOrCreateInstance(el2, { animation: true, html: true });
@@ -32514,26 +32571,15 @@
   }
   function adjustQueryTabObjects(p_all_tabs) {
     var v_dbms = v_connTabControl.selectedTab.tag.selectedDBMS;
-    var v_target_div = null;
-    if (!p_all_tabs) {
-      v_target_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv;
-    } else {
-      v_target_div = v_connTabControl.selectedTab.elementDiv;
-    }
-    $(v_target_div).find(".dbms_object").each(
-      /** @this {any} */
-      function() {
-        $(this).css("display", "none");
+    var v_target_div = p_all_tabs ? v_connTabControl.selectedTab.elementDiv : v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv;
+    v_target_div.querySelectorAll(".dbms_object").forEach(function(el2) {
+      el2.style.display = "none";
+    });
+    v_target_div.querySelectorAll("." + v_dbms + "_object").forEach(function(el2) {
+      if (!el2.classList.contains("dbms_object_hidden")) {
+        el2.style.display = "inline-block";
       }
-    );
-    $(v_target_div).find("." + v_dbms + "_object").each(
-      /** @this {any} */
-      function() {
-        if (!$(this).hasClass("dbms_object_hidden")) {
-          $(this).css("display", "inline-block");
-        }
-      }
-    );
+    });
   }
   function drawGraph(p_all, p_schema) {
     execAjax$1(
@@ -32725,9 +32771,9 @@
   }
   var resizeSnippetPanel = async function(p_left_pos_x = false) {
     if (v_connTabControl.snippet_tag !== void 0) {
-      var v_element = $(v_connTabControl.snippet_tag.divPanel);
+      var v_element = v_connTabControl.snippet_tag.divPanel;
       var v_snippet_tag = v_connTabControl.snippet_tag;
-      if (v_element.hasClass("omnidb__panel--slide-in")) {
+      if (v_element.classList.contains("omnidb__panel--slide-in")) {
         v_connTabControl.selectedTab;
         var v_target_tag_div_result_top = 30;
         if (v_connTabControl.selectedTab && v_connTabControl.selectedTab !== null) {
@@ -32745,10 +32791,10 @@
           v_target_tag_div_result_top = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
         }
         v_snippet_tag.isVisible = true;
-        v_element.css("transform", "translateY(-" + v_target_tag_div_result_top + "px)");
+        v_element.style.transform = "translateY(-" + v_target_tag_div_result_top + "px)";
       } else {
         v_snippet_tag.isVisible = false;
-        v_element.css("transform", "translateY(0px)");
+        v_element.style.transform = "translateY(0px)";
       }
       var v_snippet_tag = v_connTabControl.snippet_tag;
       var v_inner_snippet_tag = v_snippet_tag.tabControl.selectedTab.tag;
@@ -32857,7 +32903,6 @@
     }
     document.body.removeEventListener("mousemove", horizontalLinePosition);
     var v_div_left = v_connTabControl.selectedTab.tag.divLeft;
-    v_connTabControl.selectedTab.tag.divRight;
     v_connTabControl.selectedDiv.getBoundingClientRect().width;
     var v_paddingCompensation = 8;
     var v_offsetLeft = v_div_left.getBoundingClientRect().left;
@@ -32919,7 +32964,7 @@
     refreshHeights();
   }
   var resizeTimeout;
-  $(window).resize(function() {
+  window.addEventListener("resize", function() {
     clearTimeout(resizeTimeout);
     resizeTimeout = setTimeout(resizeWindow, 200);
   });
@@ -32929,12 +32974,12 @@
         v_connections_data.ht.render();
       }
       if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
-        v_connTabControl.selectedTab.tag.tabControlDiv.style.height = window.innerHeight - $(v_connTabControl.selectedTab.tag.tabControlDiv).offset().top - 1.5 * v_font_size + "px";
+        v_connTabControl.selectedTab.tag.tabControlDiv.style.height = window.innerHeight - (v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) - 1.5 * v_font_size + "px";
       }
       if (v_connTabControl.selectedTab.tag.mode == "connection") {
         refreshOuterConnectionHeights();
       } else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
-        v_connTabControl.selectedTab.tag.div_console.style.height = window.innerHeight - $(v_connTabControl.selectedTab.tag.div_console).offset().top - 1.25 * v_font_size + "px";
+        v_connTabControl.selectedTab.tag.div_console.style.height = window.innerHeight - (v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
         v_connTabControl.selectedTab.tag.editor_console.fit();
       }
       if (v_connTabControl.selectedTab.tag.tabControl != null && v_connTabControl.selectedTab.tag.tabControl.selectedTab) {
@@ -32943,19 +32988,19 @@
           v_tab_tag2.resize();
         } else if (v_tab_tag2.mode == "alter") {
           if (v_tab_tag2.alterTableObject.window == "columns") {
-            var v_height = window.innerHeight - $(v_tab_tag2.htDivColumns).offset().top - 45;
+            var v_height = window.innerHeight - (v_tab_tag2.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
             v_tab_tag2.htDivColumns.style.height = v_height + "px";
             if (v_tab_tag2.alterTableObject.htColumns != null) {
               v_tab_tag2.alterTableObject.htColumns.render();
             }
           } else if (v_tab_tag2.alterTableObject.window == "constraints") {
-            var v_height = window.innerHeight - $(v_tab_tag2.htDivConstraints).offset().top - 45;
+            var v_height = window.innerHeight - (v_tab_tag2.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
             v_tab_tag2.htDivConstraints.style.height = v_height + "px";
             if (v_tab_tag2.alterTableObject.htConstraints != null) {
               v_tab_tag2.alterTableObject.htConstraints.render();
             }
           } else {
-            var v_height = window.innerHeight - $(v_tab_tag2.htDivIndexes).offset().top - 45;
+            var v_height = window.innerHeight - (v_tab_tag2.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
             v_tab_tag2.htDivIndexes.style.height = v_height + "px";
             if (v_tab_tag2.alterTableObject.htIndexes != null) {
               v_tab_tag2.alterTableObject.htIndexes.render();
@@ -32963,7 +33008,7 @@
           }
         } else if (v_tab_tag2.mode == "data_mining") {
           if (v_tab_tag2.currQueryTab == "data") {
-            v_tab_tag2.div_result.style.height = window.innerHeight - $(v_tab_tag2.div_result).offset().top - 1.25 * v_font_size + "px";
+            v_tab_tag2.div_result.style.height = window.innerHeight - (v_tab_tag2.div_result.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
           }
         }
       }
@@ -32985,11 +33030,11 @@
   function refreshTreeHeight() {
     var v_tag = v_connTabControl.selectedTab.tag;
     if (v_tag.currTreeTab == "properties") {
-      var v_height = window.innerHeight - $(v_tag.divProperties).offset().top - 15;
+      var v_height = window.innerHeight - (v_tag.divProperties.getBoundingClientRect().top + window.scrollY) - 15;
       v_tag.divProperties.style.height = v_height + "px";
       v_tag.gridProperties.render();
     } else if (v_tag.currTreeTab == "ddl") {
-      var v_height = window.innerHeight - $(v_tag.divDDL).offset().top - 15;
+      var v_height = window.innerHeight - (v_tag.divDDL.getBoundingClientRect().top + window.scrollY) - 15;
       v_tag.divDDL.style.height = v_height + "px";
       v_tag.ddlEditor.resize();
     }
@@ -33342,23 +33387,30 @@
   function toggleTreeContainer() {
     var v_tab_tag2 = v_connTabControl.selectedTab.tag;
     if (v_tab_tag2.divLeft) {
-      $(v_tab_tag2.divLeft).toggleClass("omnidb__workspace__div-left--shrink");
+      v_tab_tag2.divLeft.classList.toggle("omnidb__workspace__div-left--shrink");
       refreshHeights();
     }
   }
   function toggleTreeTabsContainer(p_target_id, p_horizonta_line_id) {
     var v_tab_tag2 = v_connTabControl.selectedTab.tag;
-    var v_target_element = $("#" + p_target_id);
-    if (v_target_element.hasClass("omnidb__tree-tabs--not-in-view")) {
-      $("#" + p_target_id).removeClass("omnidb__tree-tabs--not-in-view");
-      $("#" + p_horizonta_line_id).removeClass("d-none");
+    var v_target_element = (
+      /** @type {HTMLElement} */
+      document.getElementById(p_target_id)
+    );
+    var v_horizontal_line_element = (
+      /** @type {HTMLElement} */
+      document.getElementById(p_horizonta_line_id)
+    );
+    if (v_target_element.classList.contains("omnidb__tree-tabs--not-in-view")) {
+      v_target_element.classList.remove("omnidb__tree-tabs--not-in-view");
+      v_horizontal_line_element.classList.remove("d-none");
       v_tab_tag2.treeTabsVisible = true;
       setTimeout(function() {
         refreshTreeHeight();
       }, 360);
     } else {
-      $("#" + p_target_id).addClass("omnidb__tree-tabs--not-in-view");
-      $("#" + p_horizonta_line_id).addClass("d-none");
+      v_target_element.classList.add("omnidb__tree-tabs--not-in-view");
+      v_horizontal_line_element.classList.add("d-none");
       v_tab_tag2.treeTabsVisible = false;
     }
   }
@@ -33424,9 +33476,9 @@
   }
   function updateExplainComponent() {
     if (v_explain_control.context === "default") {
-      $("#omnidb__main").addClass("omnidb__explain--default");
+      document.getElementById("omnidb__main").classList.add("omnidb__explain--default");
     } else {
-      $("#omnidb__main").removeClass("omnidb__explain--default");
+      document.getElementById("omnidb__main").classList.remove("omnidb__explain--default");
     }
   }
   function getAttributesTooltip(p_target, p_title, p_message, p_position = false) {
@@ -33474,7 +33526,7 @@
     p_target.setAttribute("data-omnidb-toggle", "tooltip");
     p_target.setAttribute("data-title", v_html);
     let v_tooltip_element;
-    $(p_target).mouseenter(function(e) {
+    p_target.addEventListener("mouseenter", function(e) {
       v_tooltip_element = document.createElement("div");
       v_tooltip_element.innerHTML = v_html;
       v_tooltip_element.style.position = "fixed";
@@ -33489,7 +33541,7 @@
       v_tooltip_element.style.left = e.target.offsetWidth + 5 + "px";
       document.body.appendChild(v_tooltip_element);
     });
-    $(p_target).mouseleave(function(e) {
+    p_target.addEventListener("mouseleave", function(e) {
       if (v_tooltip_element) {
         document.body.removeChild(v_tooltip_element);
       }
@@ -33775,21 +33827,21 @@
         }
       },
       renameTab: function(p_tab, p_name) {
-        var v_tab_title_span = $(p_tab.elementA).find(".omnidb__tab-menu__link-name");
+        var v_tab_title_span = p_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
         if (v_tab_title_span) {
-          v_tab_title_span.html(p_name);
+          v_tab_title_span.innerHTML = p_name;
         }
         p_tab.text = p_name;
       },
       dragEndFunction: function(e, p_tab) {
         let el2 = e.target;
         el2.getBoundingClientRect();
-        let el_index = $(el2).index();
+        let el_index = Array.prototype.indexOf.call(el2.parentNode.children, el2);
         let drop_pos_x = e.x;
         let drop_pos_y = e.y;
         let old_index = el_index;
         let new_index;
-        let siblings = $(el2).siblings();
+        let siblings = Array.prototype.filter.call(el2.parentNode.children, (sibling) => sibling !== el2);
         let total = siblings.length;
         for (let i2 = 0; i2 < total; i2++) {
           let sibling = siblings[i2];
@@ -33827,8 +33879,10 @@
       },
       toggleTabMenu: function(e) {
         var v_this = this;
-        $("#" + p_div).toggleClass(this.tabCssVariation + "container--menu-shown");
-        $(v_this.tabMenu).toggleClass(v_this.tabCssVariation + "shown");
+        document.getElementById(p_div).classList.toggle(
+          this.tabCssVariation + "container--menu-shown"
+        );
+        v_this.tabMenu.classList.toggle(v_this.tabCssVariation + "shown");
       },
       /**
        * ## createTab
@@ -33975,7 +34029,7 @@
             v_tab.clickFunction(e);
           }
           if (p_tooltip_name) {
-            $(v_a).tooltip("hide");
+            bootstrap.Tooltip.getOrCreateInstance(v_a).hide();
           }
         };
         this.tabListDiv.appendChild(v_a);
@@ -34824,12 +34878,12 @@
     var v_unique_rows_changed = [];
     var v_data_changed = [];
     var v_user_id_list = [];
-    $.each(v_usersObject.v_cellChanges, function(i2, el2) {
-      if ($.inArray(el2["rowIndex"], v_unique_rows_changed) === -1) {
+    v_usersObject.v_cellChanges.forEach(function(el2) {
+      if (v_unique_rows_changed.indexOf(el2["rowIndex"]) === -1) {
         v_unique_rows_changed.push(el2["rowIndex"]);
       }
     });
-    $.each(v_unique_rows_changed, function(i2, el2) {
+    v_unique_rows_changed.forEach(function(el2, i2) {
       v_data_changed[i2] = v_usersObject.v_cellChanges[i2].p_data;
       v_user_id_list[i2] = v_usersObject.v_user_ids[el2];
     });
@@ -34854,10 +34908,10 @@
     );
   }
   function hideUsers() {
-    $("#div_users").removeClass("isActive");
+    document.getElementById("div_users")?.classList.remove("isActive");
     document.getElementById("div_user_list").innerHTML = "";
   }
-  $("#modal_users").on("shown.bs.modal", function(e) {
+  document.getElementById("modal_users").addEventListener("shown.bs.modal", function(e) {
     getUsers();
   });
   function changeUser(event2, p_row_index, p_col_index) {
@@ -34879,11 +34933,13 @@
     };
     v_usersObject.v_cellChanges.push(cellChange);
     document.getElementById("div_save_users").style.visibility = "visible";
-    $(".omnidb__user-list__item--changed").removeClass("omnidb__user-list__item--changed");
+    document.querySelectorAll(".omnidb__user-list__item--changed").forEach((el2) => {
+      el2.classList.remove("omnidb__user-list__item--changed");
+    });
     for (var i2 = 0; i2 < v_usersObject.v_cellChanges.length; i2++) {
       var v_row_value = v_usersObject.v_cellChanges[i2].rowIndex;
-      $("#omnidb_user_item_" + v_row_value).addClass("omnidb__user-list__item--changed");
-      $('#omnidb_user_select option[value="' + v_row_value + '"]').addClass("bg-warning");
+      document.getElementById("omnidb_user_item_" + v_row_value)?.classList.add("omnidb__user-list__item--changed");
+      document.querySelector('#omnidb_user_select option[value="' + v_row_value + '"]')?.classList.add("bg-warning");
     }
   }
   function changeNewUser(event2, p_row_index, p_col_index) {
@@ -34907,9 +34963,13 @@
   function getUsers(p_options = false) {
     if (p_options && p_options.adding_user) {
       var v_new_value = v_usersObject.list.length + window.newUsersObject.newUsers.length - 1;
-      $("#omnidb_user_select").append(new Option("(pending info)", String(v_new_value)));
-      $("#omnidb_user_select option:last-child").addClass("bg-success");
-      $("#omnidb_user_select").val(v_new_value);
+      var v_user_select = (
+        /** @type {HTMLSelectElement} */
+        document.getElementById("omnidb_user_select")
+      );
+      v_user_select.appendChild(new Option("(pending info)", String(v_new_value)));
+      v_user_select.querySelector("option:last-child")?.classList.add("bg-success");
+      v_user_select.value = String(v_new_value);
       document.getElementById("omnidb_user_select").dispatchEvent(
         new Event("change", { bubbles: true })
       );
@@ -34977,7 +35037,7 @@
           }
           v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;'>Save</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
           v_user_list_element.innerHTML = v_user_list_html;
-          $("#div_users").addClass("isActive");
+          document.getElementById("div_users")?.classList.add("isActive");
           window.scrollTo(0, 0);
           var v_div_result = (
             /** @type {HTMLElement} */
@@ -35007,7 +35067,7 @@
           }
           if (v_usersObject.v_cellChanges.length > 0 || window.newUsersObject.newUsers.length > 0)
             document.getElementById("div_save_users").style.visibility = "visible";
-          $('[data-bs-toggle="tooltip"]').tooltip({ animation: true, html: true });
+          refreshBootstrapTooltips();
           endLoading();
         },
         null,
@@ -35031,7 +35091,10 @@
       v_div_result.innerHTML = "";
     }
     if (p_refresh == null) {
-      $("#modal_users").modal("show");
+      bootstrap.Modal.getOrCreateInstance(
+        /** @type {HTMLElement} */
+        document.getElementById("modal_users")
+      ).show();
     } else {
       getUsers(p_options);
     }

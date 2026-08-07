@@ -85,10 +85,10 @@ export function startTutorial(p_tutorial_name) {
 		utilities_menu: [
 			{
 				p_callback_end: function () {
-					$(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
 				},
 				p_callback_start: function () {
-					$(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
 				},
 				p_clone_target: true,
 				p_message: `
@@ -107,10 +107,10 @@ export function startTutorial(p_tutorial_name) {
 			},
 			{
 				p_callback_end: function () {
-					$(".omnidb__utilities-menu").removeClass("omnidb__utilities-menu--show");
+					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
 				},
 				p_callback_start: function () {
-					$(".omnidb__utilities-menu").addClass("omnidb__utilities-menu--show");
+					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
 				},
 				p_clone_target: true,
 				p_message: `
@@ -575,15 +575,15 @@ export function startTutorial(p_tutorial_name) {
 				<p>If you navigate the Tree on the left to find a table and use the action Query Table from it's context menu, the editor will autofill and the run query will be issued.</p>
 				`,
 				p_position: function () {
-					var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+					var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
 						".omnidb__tab-actions",
-					)[0];
+					);
 					return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
 				},
 				p_target: function () {
-					var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv).find(
+					var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
 						".omnidb__tab-actions",
-					)[0];
+					);
 					return v_target;
 				},
 				p_title: "Actions Panel",
@@ -609,9 +609,9 @@ export function startTutorial(p_tutorial_name) {
 					return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y + 40 };
 				},
 				p_target: function () {
-					var v_target = $(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.divResult).find(
+					var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.querySelector(
 						".omnidb__tab-actions",
-					)[0];
+					);
 					return v_target;
 				},
 				p_title: "Query Result",

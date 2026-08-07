@@ -66,7 +66,7 @@ var v_edges;
 var v_nodes;
 var v_start_height, v_start_width;
 
-$(function () {
+function initWorkspace() {
 	// Instantiating outer tab component.
 	v_connTabControl = createTabControl({
 		p_div: "omnidb_main_tablist",
@@ -142,7 +142,13 @@ $(function () {
 	});
 
 	refreshBootstrapTooltips();
-});
+}
+// This creates v_connTabControl itself, so unlike plugin_hook.js's
+// initHookRegistry it has nothing to poll for -- every other file's
+// deferred init that touches v_connTabControl already guards behind a
+// `typeof v_connTabControl !== "undefined"` check for exactly this reason.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initWorkspace);
+else setTimeout(initWorkspace, 0);
 
 // getOrCreateInstance is idempotent -- calling this again on an already-
 // tooltip'd element just returns its existing instance instead of stacking
@@ -344,26 +350,19 @@ export function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
 export function adjustQueryTabObjects(p_all_tabs) {
 	var v_dbms = v_connTabControl.selectedTab.tag.selectedDBMS;
 
-	var v_target_div = null;
-	if (!p_all_tabs) {
-		v_target_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv;
-	} else {
-		v_target_div = v_connTabControl.selectedTab.elementDiv;
-	}
+	var v_target_div = p_all_tabs
+		? v_connTabControl.selectedTab.elementDiv
+		: v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv;
 
-	var v_objects = $(v_target_div)
-		.find(".dbms_object")
-		.each(/** @this {any} */ function () {
-			$(this).css("display", "none");
-		});
+	v_target_div.querySelectorAll(".dbms_object").forEach(function (el) {
+		el.style.display = "none";
+	});
 
-	var v_objects2 = $(v_target_div)
-		.find("." + v_dbms + "_object")
-		.each(/** @this {any} */ function () {
-			if (!$(this).hasClass("dbms_object_hidden")) {
-				$(this).css("display", "inline-block");
-			}
-		});
+	v_target_div.querySelectorAll("." + v_dbms + "_object").forEach(function (el) {
+		if (!el.classList.contains("dbms_object_hidden")) {
+			el.style.display = "inline-block";
+		}
+	});
 }
 
 /// <summary>
@@ -585,9 +584,9 @@ export function removeTab(p_tab) {
 /** @param {number|false} [p_left_pos_x] */
 export var resizeSnippetPanel = async function (p_left_pos_x = false) {
 	if (v_connTabControl.snippet_tag !== undefined) {
-		var v_element = $(v_connTabControl.snippet_tag.divPanel);
+		var v_element = v_connTabControl.snippet_tag.divPanel;
 		var v_snippet_tag = v_connTabControl.snippet_tag;
-		if (v_element.hasClass("omnidb__panel--slide-in")) {
+		if (v_element.classList.contains("omnidb__panel--slide-in")) {
 			// Getting the selected tab
 			var v_selected_tab = v_connTabControl.selectedTab;
 			// Setting a default max top position for the toggling event.
@@ -612,10 +611,10 @@ export var resizeSnippetPanel = async function (p_left_pos_x = false) {
 			}
 
 			v_snippet_tag.isVisible = true;
-			v_element.css("transform", "translateY(-" + v_target_tag_div_result_top + "px)");
+			v_element.style.transform = "translateY(-" + v_target_tag_div_result_top + "px)";
 		} else {
 			v_snippet_tag.isVisible = false;
-			v_element.css("transform", "translateY(0px)");
+			v_element.style.transform = "translateY(0px)";
 		}
 
 		var v_snippet_tag = v_connTabControl.snippet_tag;
@@ -780,19 +779,11 @@ export function resizeConnectionHorizontalEnd(event) {
 	document.body.removeEventListener("mousemove", horizontalLinePosition);
 
 	var v_div_left = v_connTabControl.selectedTab.tag.divLeft;
-	var v_div_right = v_connTabControl.selectedTab.tag.divRight;
 	var v_totalWidth = v_connTabControl.selectedDiv.getBoundingClientRect().width;
 
 	var v_paddingCompensation = 8;
 	var v_offsetLeft = v_div_left.getBoundingClientRect().left;
 	var v_mousePosX = event.x;
-
-	// if (event) {
-	//   v_mousePosX = event.x;
-	// }
-	// else {
-	//   v_mousePosX = v_offsetLeft + v_div_left.getBoundingClientRect().width - v_paddingCompensation;
-	// }
 
 	var v_pixel_value = v_mousePosX > v_offsetLeft ? v_paddingCompensation + v_mousePosX - v_offsetLeft : 0;
 
@@ -800,11 +791,6 @@ export function resizeConnectionHorizontalEnd(event) {
 
 	v_div_left.style["max-width"] = v_left_width_value;
 	v_div_left.style["width"] = v_left_width_value;
-
-	// var v_right_width_value = (v_totalWidth - v_pixel_value) + 'px';
-	//
-	// v_div_right.style['max-width'] = v_right_width_value;
-	// v_div_right.style['flex'] = '0 0 ' + v_right_width_value;
 
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
@@ -889,7 +875,7 @@ export function resizeWindow() {
 }
 
 export var resizeTimeout;
-$(window).resize(function () {
+window.addEventListener("resize", function () {
 	clearTimeout(resizeTimeout);
 	resizeTimeout = setTimeout(resizeWindow, 200);
 });
@@ -910,13 +896,19 @@ export function refreshHeights(p_all) {
 
 		if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
 			v_connTabControl.selectedTab.tag.tabControlDiv.style.height =
-				window.innerHeight - $(v_connTabControl.selectedTab.tag.tabControlDiv).offset().top - 1.5 * v_font_size + "px";
+				window.innerHeight -
+				(v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) -
+				1.5 * v_font_size +
+				"px";
 		}
 		if (v_connTabControl.selectedTab.tag.mode == "connection") {
 			refreshOuterConnectionHeights();
 		} else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
 			v_connTabControl.selectedTab.tag.div_console.style.height =
-				window.innerHeight - $(v_connTabControl.selectedTab.tag.div_console).offset().top - 1.25 * v_font_size + "px";
+				window.innerHeight -
+				(v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) -
+				1.25 * v_font_size +
+				"px";
 			v_connTabControl.selectedTab.tag.editor_console.fit();
 		}
 
@@ -937,26 +929,22 @@ export function refreshHeights(p_all) {
 			) {
 				v_tab_tag.resize();
 			}
-			// else if (v_tab_tag.mode=='query_history') {
-			//   v_tab_tag.div_result.style.height = window.innerHeight - $(v_tab_tag.div_result).offset().top - (1.75)*v_font_size + 'px';
-			//   if (v_tab_tag.ht!=null)
-			//   v_tab_tag.ht.render();
-			// }
 			else if (v_tab_tag.mode == "alter") {
 				if (v_tab_tag.alterTableObject.window == "columns") {
-					var v_height = window.innerHeight - $(v_tab_tag.htDivColumns).offset().top - 45;
+					var v_height = window.innerHeight - (v_tab_tag.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
 					v_tab_tag.htDivColumns.style.height = v_height + "px";
 					if (v_tab_tag.alterTableObject.htColumns != null) {
 						v_tab_tag.alterTableObject.htColumns.render();
 					}
 				} else if (v_tab_tag.alterTableObject.window == "constraints") {
-					var v_height = window.innerHeight - $(v_tab_tag.htDivConstraints).offset().top - 45;
+					var v_height =
+						window.innerHeight - (v_tab_tag.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
 					v_tab_tag.htDivConstraints.style.height = v_height + "px";
 					if (v_tab_tag.alterTableObject.htConstraints != null) {
 						v_tab_tag.alterTableObject.htConstraints.render();
 					}
 				} else {
-					var v_height = window.innerHeight - $(v_tab_tag.htDivIndexes).offset().top - 45;
+					var v_height = window.innerHeight - (v_tab_tag.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
 					v_tab_tag.htDivIndexes.style.height = v_height + "px";
 					if (v_tab_tag.alterTableObject.htIndexes != null) {
 						v_tab_tag.alterTableObject.htIndexes.render();
@@ -965,7 +953,10 @@ export function refreshHeights(p_all) {
 			} else if (v_tab_tag.mode == "data_mining") {
 				if (v_tab_tag.currQueryTab == "data") {
 					v_tab_tag.div_result.style.height =
-						window.innerHeight - $(v_tab_tag.div_result).offset().top - 1.25 * v_font_size + "px";
+						window.innerHeight -
+						(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
+						1.25 * v_font_size +
+						"px";
 				}
 			}
 		}
@@ -997,11 +988,11 @@ export function refreshTreeHeight() {
 	var v_tag = v_connTabControl.selectedTab.tag;
 
 	if (v_tag.currTreeTab == "properties") {
-		var v_height = window.innerHeight - $(v_tag.divProperties).offset().top - 15;
+		var v_height = window.innerHeight - (v_tag.divProperties.getBoundingClientRect().top + window.scrollY) - 15;
 		v_tag.divProperties.style.height = v_height + "px";
 		v_tag.gridProperties.render();
 	} else if (v_tag.currTreeTab == "ddl") {
-		var v_height = window.innerHeight - $(v_tag.divDDL).offset().top - 15;
+		var v_height = window.innerHeight - (v_tag.divDDL.getBoundingClientRect().top + window.scrollY) - 15;
 		v_tag.divDDL.style.height = v_height + "px";
 		v_tag.ddlEditor.resize();
 	}
@@ -1406,28 +1397,27 @@ export function showMenuNewTab(e) {
 export function toggleTreeContainer() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	if (v_tab_tag.divLeft) {
-		$(v_tab_tag.divLeft).toggleClass("omnidb__workspace__div-left--shrink");
+		v_tab_tag.divLeft.classList.toggle("omnidb__workspace__div-left--shrink");
 		refreshHeights();
 	}
 }
 
 export function toggleTreeTabsContainer(p_target_id, p_horizonta_line_id) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
-	var v_target_element = $("#" + p_target_id);
-	if (v_target_element.hasClass("omnidb__tree-tabs--not-in-view")) {
-		$("#" + p_target_id).removeClass("omnidb__tree-tabs--not-in-view");
-		$("#" + p_horizonta_line_id).removeClass("d-none");
+	var v_target_element = /** @type {HTMLElement} */ (document.getElementById(p_target_id));
+	var v_horizontal_line_element = /** @type {HTMLElement} */ (document.getElementById(p_horizonta_line_id));
+	if (v_target_element.classList.contains("omnidb__tree-tabs--not-in-view")) {
+		v_target_element.classList.remove("omnidb__tree-tabs--not-in-view");
+		v_horizontal_line_element.classList.remove("d-none");
 		v_tab_tag.treeTabsVisible = true;
 		setTimeout(function () {
 			refreshTreeHeight();
 		}, 360);
 	} else {
-		$("#" + p_target_id).addClass("omnidb__tree-tabs--not-in-view");
-		$("#" + p_horizonta_line_id).addClass("d-none");
+		v_target_element.classList.add("omnidb__tree-tabs--not-in-view");
+		v_horizontal_line_element.classList.add("d-none");
 		v_tab_tag.treeTabsVisible = false;
 	}
-	// $('#' + p_target_id).toggleClass('omnidb__tree-tabs--not-in-view');
-	// $('#' + p_horizonta_line_id).toggleClass('d-none');
 }
 
 export function dragStart(event, gridContainer) {
@@ -1511,9 +1501,9 @@ export function toggleExplainContext() {
 
 export function updateExplainComponent() {
 	if (v_explain_control.context === "default") {
-		$("#omnidb__main").addClass("omnidb__explain--default");
+		/** @type {HTMLElement} */ (document.getElementById("omnidb__main")).classList.add("omnidb__explain--default");
 	} else {
-		$("#omnidb__main").removeClass("omnidb__explain--default");
+		/** @type {HTMLElement} */ (document.getElementById("omnidb__main")).classList.remove("omnidb__explain--default");
 	}
 }
 
@@ -1587,7 +1577,7 @@ export function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_posit
 	p_target.setAttribute("data-omnidb-toggle", "tooltip");
 	p_target.setAttribute("data-title", v_html);
 	let v_tooltip_element;
-	$(p_target).mouseenter(function (e) {
+	p_target.addEventListener("mouseenter", function (e) {
 		v_tooltip_element = document.createElement("div");
 		v_tooltip_element.innerHTML = v_html;
 		v_tooltip_element.style.position = "fixed";
@@ -1602,7 +1592,7 @@ export function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_posit
 		v_tooltip_element.style.left = e.target.offsetWidth + 5 + "px";
 		document.body.appendChild(v_tooltip_element);
 	});
-	$(p_target).mouseleave(function (e) {
+	p_target.addEventListener("mouseleave", function (e) {
 		if (v_tooltip_element) {
 			document.body.removeChild(v_tooltip_element);
 		}

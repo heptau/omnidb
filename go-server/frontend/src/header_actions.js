@@ -38,7 +38,7 @@ import { v_current_os } from "./shortcuts.js";
 import { refreshHeights } from "./workspace.js";
 
 export function showAbout() {
-	$("#modal_about").modal("show");
+	bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_about"))).show();
 }
 /*
 export var v_light_terminal_theme = {
@@ -70,13 +70,7 @@ export var v_current_terminal_theme;
 /// <summary>
 /// Startup function.
 /// </summary>
-$(function () {
-	// var v_fileref = document.getElementById("ss_theme");
-	// v_fileref.setAttribute("href", v_url_folder + '/static/OmniDB_app/new/css/themes/' + v_theme + '.css');
-
-	//var v_configTabControl = createTabControl('config_tabs',0,null);
-	//v_configTabControl.selectTabIndex(0);
-
+function initHeaderActions() {
 	//setting font size of body
 	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
 
@@ -87,7 +81,13 @@ $(function () {
 	window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
 		changeTheme("auto");
 	});
-});
+}
+// changeTheme() itself guards every v_connTabControl access behind a
+// `typeof v_connTabControl !== "undefined"` check, so unlike plugin_hook.js's
+// initHookRegistry this doesn't need to poll for it -- a single deferred
+// tick (matching jQuery's always-async $(fn)) is enough.
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initHeaderActions);
+else setTimeout(initHeaderActions, 0);
 
 export function adjustChartTheme(p_chart) {
 	var v_chart_font_color = "#666666";
@@ -253,8 +253,8 @@ export function changeFontSize(p_option) {
 export function changeInterfaceFontSize(p_option) {
 	v_font_size = p_option;
 	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
-	$(".ace_editor").each(/** @this {any} */ function (index) {
-		let editor = ace.edit(this);
+	document.querySelectorAll(".ace_editor").forEach(function (el) {
+		let editor = ace.edit(el);
 		editor.setFontSize(v_font_size + "px");
 	});
 	var v_outer_tab_list = v_connTabControl.tabList;
@@ -296,15 +296,15 @@ export function updateIndentUnit() {
 }
 
 export function applyEditorTabSize() {
-	$(".ace_editor").each(/** @this {any} */ function () {
-		let editor = ace.edit(this);
+	document.querySelectorAll(".ace_editor").forEach(function (el) {
+		let editor = ace.edit(el);
 		editor.session.setTabSize(v_indent_size || 4);
 		editor.session.setUseSoftTabs(v_indent_char !== 'tab');
 	});
 }
 
 export function showConfigUser() {
-	if ($("#modal_config").hasClass("show")) {
+	if (/** @type {HTMLElement} */ (document.getElementById("modal_config")).classList.contains("show")) {
 		// Already open — creating and showing ANOTHER bootstrap.Modal
 		// instance for the same element doesn't no-op the way calling
 		// .modal("show") twice through jQuery does: this element's
@@ -389,7 +389,8 @@ export function confirmSignout() {
 /// Shows website in outer tab.
 /// </summary>
 export function showWebsite(p_name, p_url) {
-	if (v_connTabControl) $("#modal_about").modal("hide");
+	if (v_connTabControl)
+		bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_about"))).hide();
 	v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
 }
 
@@ -439,7 +440,7 @@ export function saveConfigUser() {
 		});
 
 		execAjax("/save_config_user/", input, function (p_return) {
-			$("#modal_config").modal("hide");
+			bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_config"))).hide();
 			showAlert("Configuration saved.");
 			applyEditorTabSize();
 		});
@@ -587,15 +588,19 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_
 	v_editContentObject.col = p_col;
 	v_editContentObject.ht = p_ht;
 
-	$("#div_edit_content").modal({
+	bootstrap.Modal.getOrCreateInstance(v_edit_modal, {
 		backdrop: "static",
 		keyboard: false,
-	});
-	$("#div_edit_content").modal("show");
+	}).show();
+}
+
+function hideEditContentModal() {
+	var v_edit_modal = document.getElementById("div_edit_content");
+	if (v_edit_modal) bootstrap.Modal.getOrCreateInstance(v_edit_modal).hide();
 }
 
 export function saveEditContent() {
-	$("#div_edit_content").modal("hide");
+	hideEditContentModal();
 
 	if (v_canEditContent) {
 		v_editContentObject.ht.setDataAtCell(
@@ -611,7 +616,7 @@ export function saveEditContent() {
 }
 
 export function cancelEditContent() {
-	$("#div_edit_content").modal("hide");
+	hideEditContentModal();
 
 	v_editContentObject.editor.setValue("");
 }
@@ -620,7 +625,7 @@ export function cancelEditContent() {
 /// Hides edit cell window.
 /// </summary>
 export function hideEditContent() {
-	$("#div_edit_content").modal("hide");
+	hideEditContentModal();
 
 	if (v_canEditContent)
 		v_editContentObject.ht.setDataAtCell(

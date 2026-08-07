@@ -23,35 +23,38 @@
       "box"
     );
   }
-  $(function() {
+  function initMessageModal() {
     v_message_modal_animating = false;
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    $("#modal_message").on("hide.bs.modal", function(e) {
+    var v_modal_message = el("modal_message");
+    v_modal_message.addEventListener("hide.bs.modal", function(e) {
       v_message_modal_animating = true;
     });
-    $("#modal_message").on("show.bs.modal", function(e) {
+    v_modal_message.addEventListener("show.bs.modal", function(e) {
       v_message_modal_animating = true;
     });
-    $("#modal_message").on("hidden.bs.modal", function(e) {
+    v_modal_message.addEventListener("hidden.bs.modal", function(e) {
       el("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
-        $("#modal_message").modal("show");
+        bootstrap.Modal.getOrCreateInstance(v_modal_message).show();
       }
       v_message_modal_queued = false;
       v_message_modal_queued_function = null;
     });
-    $("#modal_message").on("shown.bs.modal", function(e) {
+    v_modal_message.addEventListener("shown.bs.modal", function(e) {
       v_message_modal_animating = false;
       if (v_shown_callback) {
         v_shown_callback();
         v_shown_callback = null;
       }
     });
-  });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
+  else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
     var v_dialog = el("modal_message_dialog");
     if (p_large == null || p_large == false) {
@@ -61,7 +64,7 @@
     }
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      $("#modal_message").modal("show");
+      bootstrap.Modal.getOrCreateInstance(el("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;

@@ -221,19 +221,9 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 				}
 			});
 
-			// var v_children_count = 0;
-			// if (p_data['Plans']) {
-			//   if (p_data['Plans'].length > 0) {
-			//     v_children_count = p_data['Plans'].length;
-			//   }
-			// }
-
-
 			var v_plan = {
-				// children_count: v_children_count,
 				data: v_data,
 				grid: {
-					// col: (v_children_count === 0) ? v_index + 1 : v_index + v_legereControl.global_children_count + 1,
 					col: v_legereControl.global_children_count + 1,
 					row: v_row
 				},

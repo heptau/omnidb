@@ -483,12 +483,6 @@ export function queryEditDataReturnRender(p_message, p_context) {
 						cellProperties.renderer = yellowRenderer;
 					} else {
 						cellProperties.renderer = whiteRenderer;
-						// if (row % 2 == 0) {
-						// 	cellProperties.renderer = blueRenderer;
-						// }
-						// else {
-						// 	cellProperties.renderer = whiteRenderer;
-						// }
 					}
 				} else {
 					if (col == 0) {

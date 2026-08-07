@@ -77,14 +77,6 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
 	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
-	// v_tab_close_span.id = 'tab_close_' + v_tab.id;
-	// v_tab_close_span.onclick = function(e) {
-	//   var v_current_tab = v_tab;
-	//   beforeCloseTab(e,
-	//     function() {
-	//       removeTab(v_current_tab);
-	//     });
-	// };
 
 	var v_html =
 		"<div class='p-2 omnidb__theme-border--primary'>" +
@@ -99,14 +91,7 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		"' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: auto;'></div>" +
 		"</div>";
 
-	// var v_div = document.getElementById('div_' + v_tab.id);
-	// v_div.innerHTML = v_html;
 	v_tab.elementDiv.innerHTML = v_html;
-
-	// var v_currTabControl = createTabControl({
-	//   p_div: v_tab.id + '_tabs',
-	//   p_hierarchy: 'secondary'
-	// });
 
 	var v_bt_refresh = /** @type {HTMLElement} */ (document.getElementById("bt_refresh_" + v_tab.id));
 
@@ -132,8 +117,6 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		divTree: document.getElementById(v_tab.id + "_tree"),
 		divLeft: document.getElementById(v_tab.id + "_div_left"),
 		divRight: document.getElementById(v_tab.id + "_div_right"),
-		// tab_title_span : v_tab_title_span,
-		// tab_close_span : v_tab_close_span,
 		query_info: document.getElementById("div_query_info_" + v_tab.id),
 		div_result: document.getElementById("div_result_" + v_tab.id),
 		bt_refresh: v_bt_refresh,

@@ -190,8 +190,6 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 
 				this.selectedTab = this.tabList[p_index];
 
-				//$(this.tabList[p_index].elementA).tab('show');
-
 				if (this.selectedDiv != null) {
 					this.selectedDiv.classList.remove("active");
 					this.selectedA.classList.remove("active");
@@ -288,9 +286,9 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			}
 		},
 		renameTab: function (p_tab, p_name) {
-			var v_tab_title_span = $(p_tab.elementA).find(".omnidb__tab-menu__link-name");
+			var v_tab_title_span = p_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
 			if (v_tab_title_span) {
-				v_tab_title_span.html(p_name);
+				v_tab_title_span.innerHTML = p_name;
 			}
 
 			p_tab.text = p_name;
@@ -298,7 +296,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		dragEndFunction: function (e, p_tab) {
 			let el = e.target;
 			let el_pos = el.getBoundingClientRect();
-			let el_index = $(el).index();
+			let el_index = Array.prototype.indexOf.call(el.parentNode.children, el);
 
 			let drop_pos_x = e.x;
 			let drop_pos_y = e.y;
@@ -306,7 +304,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			let old_index = el_index;
 			let new_index;
 
-			let siblings = $(el).siblings();
+			let siblings = Array.prototype.filter.call(el.parentNode.children, (sibling) => sibling !== el);
 			let total = siblings.length;
 			for (let i = 0; i < total; i++) {
 				let sibling = siblings[i];
@@ -349,12 +347,10 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		},
 		toggleTabMenu: function (e) {
 			var v_this = this;
-			$("#" + p_div).toggleClass(this.tabCssVariation + "container--menu-shown");
-			$(v_this.tabMenu).toggleClass(v_this.tabCssVariation + "shown");
-			// if (this.tabMenu === e.target)
-			//   this.showTabMenu();
-			// else
-			//   this.hideTabMenu();
+			/** @type {HTMLElement} */ (document.getElementById(p_div)).classList.toggle(
+				this.tabCssVariation + "container--menu-shown",
+			);
+			v_this.tabMenu.classList.toggle(v_this.tabCssVariation + "shown");
 		},
 
 		/**
@@ -531,7 +527,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				}
 				// Hiding the tooltip on click if the has tooltips.
 				if (p_tooltip_name) {
-					$(v_a).tooltip("hide");
+					bootstrap.Tooltip.getOrCreateInstance(v_a).hide();
 				}
 			};
 

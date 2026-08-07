@@ -55,16 +55,14 @@ function el(id) {
 // mode.
 var v_conn_data, v_conn_div, v_conn_obj;
 
-$(function () {
+function initConnections() {
 	v_connections_data = new Object();
 	v_connections_data.technologies = null;
 	v_connections_data.card_list = [];
 	v_connections_data.current_id = -1;
-
-	// $('#modal_connections').on('hide.bs.modal', function (e) {
-	//   startConnectionManagement();
-	// });
-});
+}
+if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
+else setTimeout(initConnections, 0);
 
 export function startConnectionManagement() {
 	getDatabaseList();
@@ -329,7 +327,7 @@ export function showConnectionList(p_open_modal, p_change_group) {
 			v_target_div.appendChild(v_container);
 
 			if (p_open_modal) {
-				$("#modal_connections").modal("show");
+				bootstrap.Modal.getOrCreateInstance(el("modal_connections")).show();
 			}
 
 			if (p_change_group) {
@@ -373,10 +371,10 @@ export function groupChange(p_value) {
 
 			// Check the div if it belongs to the currently selected group
 			if (v_group_obj.conn_list.includes(v_conn_obj.data.id)) {
-				$(v_conn_obj.card_div).fadeIn(400);
+				v_conn_obj.card_div.style.display = "";
 				v_group_valid_conn++;
 			} else {
-				$(v_conn_obj.card_div).fadeOut(400);
+				v_conn_obj.card_div.style.display = "none";
 			}
 		}
 
@@ -399,7 +397,7 @@ export function groupChange(p_value) {
 		// Going over the cards and adjusting cover div and checkbox
 		for (var i = 0; i < v_connections_data.card_list.length; i++) {
 			var v_conn_obj = v_connections_data.card_list[i];
-			$(v_conn_obj.card_div).fadeIn(400);
+			v_conn_obj.card_div.style.display = "";
 		}
 	}
 
@@ -419,7 +417,9 @@ export function manageGroup() {
 		v_empty_group_div.style.display = "none";
 	}
 
-	$(".omnidb__connections__card-list").addClass("omnidb__connections__card-list--connection-management");
+	document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
+		v_card_list_el.classList.add("omnidb__connections__card-list--connection-management");
+	});
 
 	var v_current_group_id = el("group_selector").value;
 	/** @type {any} */
@@ -436,8 +436,7 @@ export function manageGroup() {
 	// Going over the cards and adjusting cover div and checkbox
 	for (var i = 0; i < v_connections_data.card_list.length; i++) {
 		var v_conn_obj = v_connections_data.card_list[i];
-		// v_conn_obj.cover_div.style.display = '';
-		$(v_conn_obj.card_div).fadeIn(400);
+		v_conn_obj.card_div.style.display = "";
 
 		// Check the div if it belongs to the currently selected group
 		if (v_group_obj.conn_list.includes(v_conn_obj.data.id)) {
@@ -457,7 +456,9 @@ export function manageGroupSave() {
 	el("button_new_group").removeAttribute("disabled");
 	el("button_group_actions").removeAttribute("disabled");
 
-	$(".omnidb__connections__card-list").removeClass("omnidb__connections__card-list--connection-management");
+	document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
+		v_card_list_el.classList.remove("omnidb__connections__card-list--connection-management");
+	});
 
 	v_conn_data = [];
 
@@ -723,7 +724,7 @@ export function saveConnection() {
 		"/save_connection/",
 		input,
 		function (p_return) {
-			$("#modal_edit_connection").modal("hide");
+			bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).hide();
 			getDatabaseList();
 			showConnectionList(false, true);
 		},
@@ -790,33 +791,36 @@ export function editConnection(p_conn_obj) {
 	let v_disable_list = [];
 
 	if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
-		if ($("#conn_form_user_pass_check_icon").length === 0) {
-			$("#conn_form_user_pass")
-				.prev()
-				.append('<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>');
+		if (!el("conn_form_user_pass_check_icon")) {
+			el("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
+				"beforeend",
+				'<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>',
+			);
 		}
 	} else {
-		$("#conn_form_user_pass_check_icon").remove();
+		el("conn_form_user_pass_check_icon")?.remove();
 	}
 
 	if (p_conn_obj.tunnel.password && p_conn_obj.tunnel.password !== null && p_conn_obj.tunnel.password !== "") {
-		if ($("#conn_form_ssh_password_check_icon").length === 0) {
-			$("#conn_form_ssh_password")
-				.prev()
-				.append('<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>');
+		if (!el("conn_form_ssh_password_check_icon")) {
+			el("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
+				"beforeend",
+				'<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>',
+			);
 		}
 	} else {
-		$("#conn_form_ssh_password_check_icon").remove();
+		el("conn_form_ssh_password_check_icon")?.remove();
 	}
 
 	if (p_conn_obj.tunnel.key && p_conn_obj.tunnel.key !== null && p_conn_obj.tunnel.key !== "") {
-		if ($("#conn_form_ssh_key_check_icon").length === 0) {
-			$("#conn_form_ssh_key")
-				.prev()
-				.append('<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>');
+		if (!el("conn_form_ssh_key_check_icon")) {
+			el("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
+				"beforeend",
+				'<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>',
+			);
 		}
 	} else {
-		$("#conn_form_ssh_key_check_icon").remove();
+		el("conn_form_ssh_key_check_icon")?.remove();
 	}
 
 	if (p_conn_obj.technology === "terminal") {
@@ -895,7 +899,7 @@ export function editConnection(p_conn_obj) {
 	// Updating the fields.
 	updateModalEditConnectionFields(v_disable_list, v_enable_list);
 
-	$("#modal_edit_connection").modal("show");
+	bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
 }
 
 export function newConnection() {
@@ -922,15 +926,15 @@ export function newConnection() {
 	el("conn_form_ssh_key_input").value = null;
 	el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
 
-	$("#conn_form_user_pass_check_icon").remove();
-	$("#conn_form_ssh_password_check_icon").remove();
-	$("#conn_form_ssh_key_check_icon").remove();
+	el("conn_form_user_pass_check_icon")?.remove();
+	el("conn_form_ssh_password_check_icon")?.remove();
+	el("conn_form_ssh_key_check_icon")?.remove();
 
-	$("#modal_edit_connection").modal("show");
+	bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
 }
 
 export function selectConnection(p_conn_obj) {
-	$("#modal_connections").modal("hide");
+	bootstrap.Modal.getOrCreateInstance(el("modal_connections")).hide();
 	if (p_conn_obj.technology === "terminal") {
 		v_connTabControl.tag.createOuterTerminalTab(
 			p_conn_obj.id,
@@ -947,19 +951,23 @@ export function toggleConnectionsPublic() {
 	var v_public = el("conn_list_public").checked;
 	if (v_public) {
 		v_connections_data.show_public = true;
-		$(".omnidb__connections__card--public").parent().removeClass("d-none");
-		$(".omnidb__connections__card--public").removeClass("d-none");
-		$(".omnidb__connections__card--public").addClass("show");
+		document.querySelectorAll(".omnidb__connections__card--public").forEach((v_card_el) => {
+			/** @type {HTMLElement} */ (v_card_el.parentElement).classList.remove("d-none");
+			v_card_el.classList.remove("d-none");
+			v_card_el.classList.add("show");
+		});
 	} else {
 		v_connections_data.show_public = false;
 		for (let i = 0; i < v_connections_data.card_list.length; i++) {
-			v_conn_div = $(v_connections_data.card_list[i].card_div);
+			v_conn_div = v_connections_data.card_list[i].card_div;
 			v_conn_obj = v_connections_data.card_list[i].data;
 			if (v_conn_obj.public) {
 				if (!v_conn_obj.is_mine) {
-					v_conn_div.children().removeClass("show");
-					v_conn_div.children().addClass("d-none");
-					v_conn_div.addClass("d-none");
+					Array.from(v_conn_div.children).forEach((v_child) => {
+						v_child.classList.remove("show");
+						v_child.classList.add("d-none");
+					});
+					v_conn_div.classList.add("d-none");
 				}
 			}
 		}
@@ -1156,14 +1164,14 @@ export function updateModalEditConnectionFields(p_disable_list, p_enable_list, p
 		v_item.removeAttribute("disabled");
 	}
 	// Removing 'required' class from elements inside the connection modal.
-	$("#modal_edit_connection .required").removeClass("required");
+	document.querySelectorAll("#modal_edit_connection .required").forEach((v_required_el) => {
+		v_required_el.classList.remove("required");
+	});
 	let v_has_invalid = false;
 	if (p_form_cases) {
 		// Adding 'required' class to required elements inside.
 		for (let i = 0; i < p_form_cases.length; i++) {
-			$("#" + p_form_cases[i])
-				.parent()
-				.addClass("required");
+			el(p_form_cases[i]).parentElement.classList.add("required");
 		}
 		// Validating values of required elements.
 		for (let i = 0; i < p_form_cases.length; i++) {
