@@ -61,6 +61,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Tree context-menu SQL templates (SELECT/INSERT/UPDATE, PostgreSQL routine calls) now use
   trailing commas, `AS` table aliases (Oracle excepted — it rejects `AS` before a table alias),
   and the user's own indent Settings, instead of a hardcoded leading-comma/no-`AS`/4-space style.
+- `scss/omnidb.scss` (5,757 lines) is split into `scss/omnidb/{base,theme-light,theme-dark,
+  variables,topbar}.scss`, cut along boundaries that already existed in the transcription
+  (structural rules, then the light-theme color pass, then the dark-theme
+  `@media (prefers-color-scheme: dark)` pass, then the CSS custom properties and the newer Topbar
+  redesign) rather than an invented grouping, so the reorganization carries no cascade risk.
+  `omnidb.scss` itself is now just the license header plus five `@use` statements; compiled CSS
+  output confirmed byte-identical before/after in both expanded and compressed styles.
 
 ### Fixed
 - Query tab Cancel was a no-op for the case it matters most: a slow initial query (e.g. a `SELECT`

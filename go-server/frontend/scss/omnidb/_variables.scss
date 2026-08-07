@@ -1,0 +1,95 @@
+// CSS custom properties (light/dark) backing the newer var()-based
+// components, plus the generic resets that consume them. Split out of the
+// single omnidb.scss transcription; see the note at the top of
+// ../omnidb.scss for background.
+
+:root {
+	--app-bg: #f5f5f7;
+	--panel-bg: #ffffff;
+	--input-bg: #fafafa;
+	--border-color: #d1d1d6;
+	--accent-color: #007aff;
+	--text-primary: #1d1d1f;
+	--text-secondary: #6e6e73;
+	--sidebar-bg: #e8e8ed;
+	--tab-inactive: #e5e5ea;
+	--close-red: #ff3b30;
+	--tab-bg: #fafafa;
+	--hover-bg: rgba(0, 122, 255, 0.12);
+	--title-color: #1c1c1e;
+
+	--tab-radius: 6px;
+	--tab-height: 28px;
+}
+
+@media (prefers-color-scheme: dark) {
+	:root {
+		--app-bg: #1e1e1e;
+		--panel-bg: #2c2c2e;
+		--input-bg: #3a3a3c;
+		--border-color: #38383a;
+		--accent-color: #0a84ff;
+		--text-primary: #f5f5f7;
+		--text-secondary: #98989d;
+		--sidebar-bg: #252525;
+		--tab-inactive: #3a3a3c;
+		--glass-bg: rgba(44, 44, 46, 0.95);
+		--tab-bg: #3a3a3c;
+		--hover-bg: rgba(10, 132, 255, 0.2);
+		--title-color: #f5f5f7;
+	}
+}
+
+body.omnidb--theme-dark {
+	--app-bg: #1e1e1e;
+	--panel-bg: #2c2c2e;
+	--input-bg: #3a3a3c;
+	--border-color: #38383a;
+	--accent-color: #0a84ff;
+	--text-primary: #f5f5f7;
+	--text-secondary: #98989d;
+	--sidebar-bg: #252525;
+	--tab-inactive: #3a3a3c;
+	--glass-bg: rgba(44, 44, 46, 0.95);
+	--tab-bg: #3a3a3c;
+	--hover-bg: rgba(10, 132, 255, 0.2);
+	--title-color: #f5f5f7;
+	--icon-color: #98989d;
+	--icon-hover-color: #f5f5f7;
+}
+
+body,
+.omnidb__main {
+	background-color: var(--app-bg) !important;
+	font-family: -apple-system, BlinkMacSystemFont, sans-serif !important;
+}
+
+.omnidb__panel-view--full,
+.card,
+.modal-content,
+input,
+select,
+textarea {
+	background-color: var(--panel-bg) !important;
+	border-color: var(--border-color) !important;
+	color: var(--text-primary) !important;
+}
+
+input,
+select,
+textarea {
+	border: 1px solid var(--border-color) !important;
+	border-radius: 6px !important;
+}
+
+.nav-tabs {
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+}
+
+.nav-item {
+	margin: 0 !important;
+	padding: 0 !important;
+	border: none !important;
+}

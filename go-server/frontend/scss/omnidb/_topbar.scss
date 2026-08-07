@@ -1,0 +1,414 @@
+// Topbar / tab-strip component styling, built on the CSS custom properties
+// from _variables.scss. Split out of the single omnidb.scss transcription;
+// see the note at the top of ../omnidb.scss for background.
+
+/* Topbar */
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link,
+.omnidb__panel-view--full .nav-link,
+.omnidb__query-result-tabs .nav-link,
+.omnidb__tree-tabs .nav-link,
+.modal-body .nav-link {
+
+	height: var(--tab-height) !important;
+	width: auto !important;
+	flex: 0 0 auto !important;
+	min-width: 100px !important;
+
+	border-radius: var(--tab-radius) var(--tab-radius) 0 0 !important;
+	margin: 0 4px 0 0 !important;
+
+	background-color: var(--tab-inactive) !important;
+	border: 1px solid var(--border-color) !important;
+	border-bottom: none !important;
+	color: var(--text-secondary) !important;
+
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	padding: 0 30px !important;
+	position: relative !important;
+
+	font-size: 13px !important;
+	opacity: 1 !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link.active,
+.omnidb__panel-view--full .nav-link.active,
+.omnidb__query-result-tabs .nav-link.active,
+.omnidb__tree-tabs .nav-link.active,
+.modal-body .nav-link.active {
+	background-color: var(--panel-bg) !important;
+	color: var(--text-primary) !important;
+	font-weight: 600 !important;
+	box-sizing: border-box !important;
+
+	border-color: var(--border-color) !important;
+	border-bottom: 1px solid var(--panel-bg) !important;
+	margin-bottom: 0 !important;
+	z-index: 10 !important;
+}
+
+.nav-link.active *,
+.omnidb__tab-menu__link.active * {
+	color: var(--text-primary) !important;
+}
+
+.nav-tabs,
+.omnidb__tab-menu .nav-tabs {
+	background-color: var(--app-bg) !important;
+	padding: 8px 8px 0 8px !important;
+	display: flex !important;
+	flex-direction: row !important;
+	align-items: flex-end !important;
+	border-bottom: 1px solid var(--border-color) !important;
+	height: auto !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown {
+	display: grid !important;
+	grid-template: "menu content" 100% / 100px 1fr !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary {
+	background-color: var(--sidebar-bg) !important;
+	border-right: 1px solid var(--border-color) !important;
+	border-bottom: none !important;
+	height: 100vh !important;
+	width: 100% !important;
+	padding: 10px 8px !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .nav-tabs {
+	flex-direction: column !important;
+	background-color: transparent !important;
+	border: none !important;
+	padding: 0 !important;
+	gap: 2px !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link {
+	width: 100% !important;
+	height: 34px !important;
+	border-radius: 6px !important;
+	border: none !important;
+	margin: 0 0 2px 0 !important;
+	background-color: transparent !important;
+
+	padding: 0 10px 0 34px !important;
+	justify-content: flex-start !important;
+	color: var(--text-primary) !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link.active {
+	background-color: var(--accent-color) !important;
+	color: #fff !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link.active * {
+	color: #fff !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__panel-view--full .nav-tabs,
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__query-result-tabs .nav-tabs,
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__tree-tabs .nav-tabs {
+	flex-direction: row !important;
+	border-bottom: 1px solid var(--border-color) !important;
+	background-color: var(--app-bg) !important;
+	padding: 8px 8px 0 8px !important;
+	height: auto !important;
+	align-items: flex-end !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__panel-view--full .nav-link,
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__query-result-tabs .nav-link,
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__tree-tabs .nav-link {
+	width: auto !important;
+	flex: 0 0 auto !important;
+	height: var(--tab-height) !important;
+	min-height: var(--tab-height) !important;
+	min-width: 100px !important;
+	margin: 0 4px 0 0 !important;
+
+	background-color: var(--tab-inactive) !important;
+	border: 1px solid var(--border-color) !important;
+	border-bottom: none !important;
+
+	border-radius: var(--tab-radius) var(--tab-radius) 0 0 !important;
+	border-top-left-radius: var(--tab-radius) !important;
+	border-top-right-radius: var(--tab-radius) !important;
+	border-bottom-left-radius: 0 !important;
+	border-bottom-right-radius: 0 !important;
+
+	color: var(--text-secondary) !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	padding: 0 30px !important;
+	box-shadow: none !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__panel-view--full .nav-link.active,
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__query-result-tabs .nav-link.active,
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__tree-tabs .nav-link.active {
+	background-color: var(--panel-bg) !important;
+	color: var(--text-primary) !important;
+	border-color: var(--border-color) !important;
+	border-bottom: 1px solid var(--panel-bg) !important;
+	margin-bottom: 0 !important;
+	z-index: 5 !important;
+	font-weight: 600 !important;
+	box-sizing: border-box !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__panel-view--full .nav-link.active * {
+	color: var(--text-primary) !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) {
+	display: flex !important;
+	flex-direction: column !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown)>.omnidb__tab-menu--primary {
+	display: block !important;
+	width: 100vw !important;
+	height: 42px !important;
+	flex: 0 0 42px !important;
+	border-bottom: 1px solid var(--border-color) !important;
+	background-color: var(--app-bg) !important;
+	padding: 0 !important;
+	z-index: 1000 !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__panel-view--full {
+	left: 0 !important;
+	padding-left: 0 !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__panel-view--full {
+	left: 0 !important;
+	top: 0 !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link .omnidb__tab-menu__link-name {
+	width: auto !important;
+	max-width: none !important;
+	display: inline-block !important;
+	opacity: 1 !important;
+	visibility: visible !important;
+	margin-left: 8px !important;
+	white-space: nowrap !important;
+	font-size: 13px !important;
+	line-height: normal !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link {
+	display: inline-flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link-close {
+	z-index: 10;
+}
+
+.omnidb__tab-menu__link-close,
+.nav-link .close {
+	position: absolute !important;
+	left: 4px !important;
+	/* Vlevo */
+	top: 50% !important;
+	transform: translateY(-50%) !important;
+	width: 16px !important;
+	height: 16px !important;
+	font-size: 14px !important;
+	opacity: 0 !important;
+	color: var(--text-secondary) !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	border-radius: 3px !important;
+}
+
+.nav-link:hover .close,
+.omnidb__tab-menu__link:hover .omnidb__tab-menu__link-close {
+	opacity: 1 !important;
+}
+
+.omnidb__tab-menu__link-close:hover,
+.nav-link .close:hover {
+	background-color: rgba(0, 0, 0, 0.15) !important;
+	color: var(--text-primary) !important;
+}
+
+.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-close {
+	left: 4px !important;
+	opacity: 0 !important;
+}
+
+.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link.active .omnidb__tab-menu__link-close {
+	color: rgba(255, 255, 255, 0.7) !important;
+}
+
+.modal-body .nav-tabs {
+	margin-bottom: 15px !important;
+	background-color: transparent !important;
+	padding-left: 0 !important;
+}
+
+.modal-body .nav-link {
+	padding: 0 16px !important;
+	min-width: auto !important;
+	justify-content: center !important;
+}
+
+.modal-header {
+	background-color: var(--panel-bg) !important;
+	border-bottom: 1px solid var(--border-color) !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	position: relative !important;
+	height: 44px !important;
+	padding: 0 !important;
+}
+
+.modal-title {
+	margin: 0 !important;
+	font-size: 15px !important;
+	font-weight: 600 !important;
+}
+
+.modal-header .close {
+	position: absolute !important;
+	left: 12px !important;
+	top: 50% !important;
+	transform: translateY(-50%) !important;
+	width: 14px !important;
+	height: 14px !important;
+	background-color: var(--close-red) !important;
+	border-radius: 50% !important;
+	opacity: 1 !important;
+	display: block !important;
+	color: transparent !important;
+	margin: 0 !important;
+	padding: 0 !important;
+}
+
+.modal-header .close:hover {
+	background-color: #d32f2f !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-icon {
+	font-size: 1.2rem !important;
+	width: auto !important;
+	height: auto !important;
+	line-height: 1 !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-name {
+	font-size: 12px !important;
+	line-height: 1.1 !important;
+	white-space: normal !important;
+	word-break: break-word !important;
+	text-align: center !important;
+	width: auto !important;
+	overflow: visible !important;
+	display: block !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link {
+	padding: 6px 8px !important;
+	min-height: 40px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link {
+	min-height: 56px !important;
+	height: auto !important;
+	padding: 8px 10px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 4px !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-icon {
+	font-size: 1rem !important;
+	line-height: 1 !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-icon img {
+	width: 24px !important;
+	height: auto !important;
+	max-width: none !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-name {
+	font-size: inherit !important;
+	white-space: normal !important;
+	word-break: break-word !important;
+	text-align: center !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link {
+	min-height: 48px !important;
+	height: auto !important;
+	padding: 6px 8px !important;
+	display: flex !important;
+	flex-direction: column !important;
+	align-items: center !important;
+	justify-content: center !important;
+	gap: 4px !important;
+	overflow: visible !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-icon {
+	font-size: 1.2rem !important;
+	line-height: 1 !important;
+	border-radius: 0 !important;
+	overflow: visible !important;
+	background: transparent !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-icon img {
+	width: 24px !important;
+	height: auto !important;
+	border-radius: 0 !important;
+	display: block !important;
+}
+
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-name {
+	font-size: 11px !important;
+	line-height: 1.1 !important;
+	white-space: normal !important;
+	word-break: break-word !important;
+	text-align: center !important;
+	margin: 0 !important;
+	padding: 0 !important;
+	overflow: visible !important;
+	width: auto !important;
+}
+
+.omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link {
+	width: auto !important;
+	flex: 0 0 auto !important;
+	height: var(--tab-height) !important;
+	min-height: var(--tab-height) !important;
+	margin: 0 4px 0 0 !important;
+	border: 1px solid var(--border-color) !important;
+	border-radius: var(--tab-radius) var(--tab-radius) 0 0 !important;
+	padding: 0 0 0 36px !important;
+	font-size: 13px !important;
+}
+
+.omnidb__tab-menu--container--menu-shown .nav-item:last-child .omnidb__tab-menu__link,
+.omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link:last-child {
+	padding-left: 12px !important;
+}
+
+/*# sourceMappingURL=../css/omnidb.min.css.map */
