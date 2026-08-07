@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.0] - 2026-08-07
+
 ### Added
 - Query tab: a "Run Statement at Cursor" button that runs just the statement the cursor is
   currently in, with cursor-to-statement matching fixed so a cursor sitting right after a `;`
