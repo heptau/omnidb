@@ -7,6 +7,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Wails bumped v2.12.0 → v2.15.0 (both the `wails-app` runtime dependency and the CLI pinned in
+  `Makefile`/`linux-build.Dockerfile`), fixing a build crash (`internal error: package "context"
+  without types was imported`) under Go 1.27 — the older CLI's `golang.org/x/tools` (v0.30.0)
+  couldn't parse export data from that Go version's compiler; v2.15.0 carries v0.47.0.
+- `modernc.org/sqlite` (go-server) bumped v1.53.0 → v1.57.0 — no CVEs in the gap, routine
+  upstream fixes and features.
+
+### Security
+- `github.com/labstack/echo/v4` (transitive, via `wails-app`) bumped v4.13.3 → v4.15.3, fixing
+  CVE-2026-55677 (GHSA-vfp3-v2gw-7wfq): an encoded slash (`%2F`) in a request path could bypass
+  route-level auth middleware and let the static file handler serve files outside the intended
+  route prefix.
+- `nanoid` (npm, dev-only build tooling behind `vite`/`postcss` in both frontends) bumped
+  v3.3.16 → v3.3.18+ via `npm audit fix`, fixing GHSA-2v37-7h3g-55p8 (indefinite loop when a
+  custom generator's size is zero). Never reached the shipped bundle — build-time only.
+
 ## [4.2.0] - 2026-08-07
 
 ### Added
