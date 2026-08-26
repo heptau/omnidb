@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.1] - 2026-08-26
+
 ### Changed
 - Wails bumped v2.12.0 → v2.15.0 (both the `wails-app` runtime dependency and the CLI pinned in
   `Makefile`/`linux-build.Dockerfile`), fixing a build crash (`internal error: package "context"
