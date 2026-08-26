@@ -29,6 +29,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 ENV GOBIN=/usr/local/bin
-RUN go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0
+RUN go install github.com/wailsapp/wails/v2/cmd/wails@v2.15.0
 
 WORKDIR /src

@@ -171,7 +171,7 @@ _prepare_dirs: _sync_version
 _ensure_wails:
 	@if [ ! -x "$(WAILS)" ]; then \
 		echo "Installing Wails CLI..."; \
-		go install github.com/wailsapp/wails/v2/cmd/wails@v2.12.0; \
+		go install github.com/wailsapp/wails/v2/cmd/wails@v2.15.0; \
 	fi
 
 # Rebuild the workspace UI (go-server/frontend/ -> the dist/ and css/
@@ -231,7 +231,7 @@ _build_mac: _prepare_dirs _ensure_wails _build_frontend_release
 # uses for Windows. The webkit2_41 build tag is required on distros that only
 # ship webkit2gtk-4.1 (Debian bookworm+, Ubuntu 24.04+) — without it Wails'
 # pkg-config lookup hardcodes the older webkit2gtk-4.0 and fails (verified
-# against github.com/wailsapp/wails/v2@v2.12.0's
+# against github.com/wailsapp/wails/v2@v2.15.0's
 # pkg/assetserver/webview/*_linux.go `#cgo !webkit2_41 pkg-config: ...` tags).
 _build_linux: _prepare_dirs _ensure_wails _build_frontend_release
 	@echo "Building Wails desktop shell (linux/$(WAILS_GOARCH))..."
