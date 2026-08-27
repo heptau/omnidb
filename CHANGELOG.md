@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Security
+- Autocomplete popup: table/view/column/function/index names from the database catalog were
+  spliced into the match-highlighting markup with a raw string `.replace()` and rendered via
+  `innerHTML` (`VirtualGrid.js`'s `renderer: "html"` column), so a quoted identifier containing
+  HTML (e.g. a table named `<img src=x onerror=...>`) would execute in the browser of anyone who
+  opened autocomplete against that connection. Fixed by escaping the value and its complement
+  through the same safe DOM-based (`textContent`/`innerHTML` round-trip) pattern the keyword
+  branch already used, before highlighting the match.
+
 ## [4.2.1] - 2026-08-26
 
 ### Changed

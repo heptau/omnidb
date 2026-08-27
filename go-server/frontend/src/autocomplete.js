@@ -968,9 +968,21 @@ export function build_autocomplete_elements(p_data, p_value) {
 				})(v_element.select_value);
 			} else {
 				v_list.push([v_local_group.elements[j].value, v_local_group.elements[j].complement]);
+				// value/complement come from DB catalog identifiers (table, column,
+				// function, index names) which can contain arbitrary characters via
+				// quoted identifiers, and this grid's columns use renderer: "html" —
+				// so both must go through the same safe-escaping pattern the
+				// "keyword" branch above uses, not a raw string .replace().
+				var v_safe_val = document.createElement("span");
+				v_safe_val.textContent = v_local_group.elements[j].value;
+				var v_safe_p = document.createElement("span");
+				v_safe_p.textContent = p_value;
+				var v_safe_complement = document.createElement("span");
+				v_safe_complement.textContent =
+					v_local_group.elements[j].complement == null ? "" : v_local_group.elements[j].complement;
 				v_list_render.push([
-					v_local_group.elements[j].value.replace(p_value, "<b>" + p_value + "</b>"),
-					v_local_group.elements[j].complement,
+					v_safe_val.innerHTML.replace(v_safe_p.innerHTML, "<b>" + v_safe_p.innerHTML + "</b>"),
+					v_safe_complement.innerHTML,
 				]);
 				/** @type {any} */
 				var v_element = {
