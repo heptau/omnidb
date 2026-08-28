@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.2.2] - 2026-08-28
+
 ### Changed
 - Release archives (built by `Makefile`, uploaded by `scripts/release.sh`) no longer embed the
   version number in the filename (`OmniDB-4.2.1-macOS-osx-arm64.zip` → `OmniDB-macOS-osx-arm64.zip`,
