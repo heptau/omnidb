@@ -140,9 +140,9 @@
 		<p>Pro aktuální verze použijte <a href="https://github.com/heptau/omnidb/releases">stránku s vydáními</a> oživeného projektu. Od přepsání do Go je každé vydání jediným samostatným archivem pro danou platformu — bez instalátoru, bez nutnosti nejprve instalovat samostatný runtime:</p>
 
 		<ul>
-			<li>macOS (Apple Silicon nebo Intel): <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
-			<li>Linux x64: <code>OmniDB-&lt;version&gt;-linux-x64.tar.gz</code></li>
-			<li>Windows x64: <code>OmniDB-&lt;version&gt;-win-x64.zip</code></li>
+			<li>macOS (Apple Silicon nebo Intel): <code>OmniDB-macOS-osx-arm64.zip</code> / <code>OmniDB-macOS-osx-x64.zip</code></li>
+			<li>Linux x64: <code>OmniDB-linux-x64.tar.gz</code></li>
+			<li>Windows x64: <code>OmniDB-win-x64.zip</code></li>
 		</ul>
 
 		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci/binárku <code>OmniDB</code> uvnitř — to je celá instalace. <strong>Sestavení pro Linux a Windows vznikají v CI při každém vydání, ale zatím nebyla ověřena na reálném hardwaru</strong>, na rozdíl od sestavení pro macOS; pokud narazíte na problém specifický pro jednu z těchto platforem, založte prosím issue.</p>
@@ -162,7 +162,14 @@ brew upgrade heptau/tap/omnidb</code></pre>
 
 		<h4>Přímé stažení (všechny platformy)</h4>
 
-		<p>Otevřete <a href="https://github.com/heptau/omnidb/releases/latest">nejnovější vydání</a> a v jeho sekci Assets stáhněte archiv odpovídající vašemu OS/architektuře z výše uvedeného seznamu. Názvy souborů u vydání obsahují číslo verze, takže neexistuje pevná URL adresa „vždy nejnovější“, na kterou by šlo odkázat přímo — vždy použijte samotnou stránku s vydáními.</p>
+		<ul>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip">macOS (Apple Silicon)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip">macOS (Intel)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz">Linux (x64)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip">Windows (x64)</a></li>
+		</ul>
+
+		<p>Tyto odkazy vždy vedou na nejnovější vydání. Starší verze, kontrolní součty a poznámky k vydání najdete na <a href="https://github.com/heptau/omnidb/releases">stránce se všemi vydáními</a>.</p>
 
 		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci obvyklým způsobem: na
 			macOS přetáhněte <code>OmniDB.app</code> do složky <em>Aplikace</em> a otevřete ji z

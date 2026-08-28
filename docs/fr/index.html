@@ -75,7 +75,7 @@
 		"author": {
 			"@type": "Person",
 			"name": "Zbyněk Vanžura",
-			"url": "https://www.pgarachne.com"
+			"url": "https://www.80.cz"
 		},
 		"maintainer": {
 			"@type": "Organization",
@@ -182,7 +182,7 @@
 			accompagner les workflows de développement modernes.
 		</p>
 		<p class="lead-secondary">
-			Activement relancé par les créateurs de <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
+			Activement relancé par l'auteur de <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
 			— alliant une administration de bases de données robuste à des architectures client léger modernes.
 		</p>
 
@@ -218,7 +218,13 @@
 					<span class="install-icon" aria-hidden="true">⬇️</span>
 					<h3>GitHub Releases <span class="install-tag">macOS · Linux · Windows</span></h3>
 					<p>Téléchargez l’archive autonome pour votre plateforme — sans installateur, sans runtime séparé.</p>
-					<a class="btn btn-outline btn-small" href="https://github.com/heptau/omnidb/releases/latest" target="_blank" rel="noopener">Dernière version →</a>
+					<ul class="download-links">
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" target="_blank" rel="noopener">macOS (Apple Silicon)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" target="_blank" rel="noopener">macOS (Intel)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" target="_blank" rel="noopener">Linux (x64)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip" target="_blank" rel="noopener">Windows (x64)</a></li>
+					</ul>
+					<p class="download-links-more"><a href="https://github.com/heptau/omnidb/releases" target="_blank" rel="noopener">Toutes les versions et le changelog →</a></p>
 				</div>
 			</div>
 			<p class="docs-link">
@@ -270,7 +276,10 @@
 		</section>
 
 		<div class="button-group">
-			<a href="https://github.com/heptau/omnidb/releases" class="btn btn-primary" target="_blank">Télécharger</a>
+			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" class="btn btn-primary" target="_blank" rel="noopener"
+				data-dl-mac-arm="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" data-dl-linux="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" data-dl-win="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip"
+				data-label-mac="Télécharger pour macOS" data-label-linux="Télécharger pour Linux" data-label-win="Télécharger pour Windows">Télécharger</a>
+			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" data-intel-fallback target="_blank" rel="noopener">Mac Intel ?</a>
 			<a href="https://github.com/heptau/omnidb" class="btn btn-outline" target="_blank" rel="noopener">GitHub</a>
 		</div>
 	</div>
@@ -279,10 +288,10 @@
 
 	<footer>
 		<div class="footer-inner">
-			<p class="footer-author">Maintenu et relancé par <strong>Zbyněk Vanžura</strong> (créateur de
-				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a>)</p>
+			<p class="footer-author">Maintenu et relancé par <a href="https://www.80.cz" target="_blank" rel="noopener"><strong>Zbyněk Vanžura</strong></a> (auteur de
+				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a> et <a href="https://www.80.cz/projects/" target="_blank" rel="noopener">d'autres projets</a>)</p>
 			<p class="footer-copyright">
-				© 2026 Projet OmniDB. Distribué sous licence <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
+				© 2026 Zbyněk Vanžura. Distribué sous licence <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
 			</p>
 			<p class="footer-note">
 				Créé à l’origine par l’équipe OmniDB. Cette renaissance vise à garder l’environnement léger
@@ -294,6 +303,7 @@
 	<script src="../assets/dropdown.js"></script>
 	<script src="../assets/lang-switcher.js"></script>
 	<script src="../assets/script.js"></script>
+	<script src="../assets/download-links.js"></script>
 	<script>
 		(function () {
 			var copyBtn = document.querySelector('.copy-btn');

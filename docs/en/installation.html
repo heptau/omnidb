@@ -140,9 +140,9 @@
 		<p>For current versions use the revived project’s <a href="https://github.com/heptau/omnidb/releases">releases page</a>. Since the Go rewrite, every release is a single self-contained archive per platform — no installer, no separate runtime to install first:</p>
 
 		<ul>
-			<li>macOS (Apple Silicon or Intel): <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
-			<li>Linux x64: <code>OmniDB-&lt;version&gt;-linux-x64.tar.gz</code></li>
-			<li>Windows x64: <code>OmniDB-&lt;version&gt;-win-x64.zip</code></li>
+			<li>macOS (Apple Silicon or Intel): <code>OmniDB-macOS-osx-arm64.zip</code> / <code>OmniDB-macOS-osx-x64.zip</code></li>
+			<li>Linux x64: <code>OmniDB-linux-x64.tar.gz</code></li>
+			<li>Windows x64: <code>OmniDB-win-x64.zip</code></li>
 		</ul>
 
 		<p>Unzip (or untar) the archive for your platform and run the <code>OmniDB</code> app/binary inside — that’s the whole install. <strong>Linux and Windows builds are produced by CI for every release but haven’t yet been verified on real hardware</strong>, unlike the macOS build; if you hit a platform-specific issue on one of those, please open an issue.</p>
@@ -162,7 +162,14 @@ brew upgrade heptau/tap/omnidb</code></pre>
 
 		<h4>Direct download (all platforms)</h4>
 
-		<p>Open the <a href="https://github.com/heptau/omnidb/releases/latest">latest release</a> and download the archive matching your OS/architecture from the list above, from its Assets section. Release asset filenames include the version number, so there’s no fixed “always latest” URL to link to directly — always go through the releases page itself.</p>
+		<ul>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip">macOS (Apple Silicon)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip">macOS (Intel)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz">Linux (x64)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip">Windows (x64)</a></li>
+		</ul>
+
+		<p>These links always point to the latest release. For older versions, checksums, and release notes, see the <a href="https://github.com/heptau/omnidb/releases">releases page</a>.</p>
 
 		<p>Unzip the archive for your platform and launch the app the normal way: on
 			macOS, drag <code>OmniDB.app</code> into <em>Applications</em> and open it from

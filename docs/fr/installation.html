@@ -140,9 +140,9 @@
 		<p>Pour les versions actuelles, utilisez la <a href="https://github.com/heptau/omnidb/releases">page des versions</a> du projet relancé. Depuis la réécriture en Go, chaque version est une archive unique et autonome par plateforme — pas d’installateur, pas de runtime séparé à installer au préalable :</p>
 
 		<ul>
-			<li>macOS (Apple Silicon ou Intel) : <code>OmniDB-&lt;version&gt;-macOS-osx-arm64.zip</code> / <code>OmniDB-&lt;version&gt;-macOS-osx-x64.zip</code></li>
-			<li>Linux x64 : <code>OmniDB-&lt;version&gt;-linux-x64.tar.gz</code></li>
-			<li>Windows x64 : <code>OmniDB-&lt;version&gt;-win-x64.zip</code></li>
+			<li>macOS (Apple Silicon ou Intel) : <code>OmniDB-macOS-osx-arm64.zip</code> / <code>OmniDB-macOS-osx-x64.zip</code></li>
+			<li>Linux x64 : <code>OmniDB-linux-x64.tar.gz</code></li>
+			<li>Windows x64 : <code>OmniDB-win-x64.zip</code></li>
 		</ul>
 
 		<p>Décompressez (ou désarchivez) l’archive correspondant à votre plateforme et exécutez l’application/binaire <code>OmniDB</code> qu’elle contient — c’est toute l’installation. <strong>Les versions Linux et Windows sont produites par la CI à chaque version, mais n’ont pas encore été vérifiées sur du matériel réel</strong>, contrairement à la version macOS ; si vous rencontrez un problème spécifique à l’une de ces plateformes, merci d’ouvrir un ticket.</p>
@@ -162,7 +162,14 @@ brew upgrade heptau/tap/omnidb</code></pre>
 
 		<h4>Téléchargement direct (toutes plateformes)</h4>
 
-		<p>Ouvrez la <a href="https://github.com/heptau/omnidb/releases/latest">dernière version</a> et téléchargez, dans sa section Assets, l’archive correspondant à votre système/architecture parmi la liste ci-dessus. Les noms des fichiers de version incluent le numéro de version, il n’existe donc pas d’URL fixe « toujours la dernière» à lier directement — passez toujours par la page des versions elle-même.</p>
+		<ul>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip">macOS (Apple Silicon)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip">macOS (Intel)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz">Linux (x64)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip">Windows (x64)</a></li>
+		</ul>
+
+		<p>Ces liens pointent toujours vers la dernière version. Pour les versions antérieures, les sommes de contrôle et les notes de version, consultez la <a href="https://github.com/heptau/omnidb/releases">page des versions</a>.</p>
 
 		<p>Décompressez l’archive correspondant à votre plateforme et lancez l’application de la manière habituelle : sur
 			macOS, glissez <code>OmniDB.app</code> dans <em>Applications</em> et ouvrez-la depuis

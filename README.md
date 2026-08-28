@@ -60,4 +60,5 @@ MIT License - See LICENSE file
 
 ## Screenshots
 
-![Dashboard](https://raw.githubusercontent.com/docs/assets/dashboard.png)
+![OmniDB workspace, light theme](https://raw.githubusercontent.com/heptau/omnidb/master/docs/assets/screenshot.png)
+![OmniDB workspace, dark theme](https://raw.githubusercontent.com/heptau/omnidb/master/docs/assets/screenshot-dark.png)

@@ -7,6 +7,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Release archives (built by `Makefile`, uploaded by `scripts/release.sh`) no longer embed the
+  version number in the filename (`OmniDB-4.2.1-macOS-osx-arm64.zip` → `OmniDB-macOS-osx-arm64.zip`,
+  etc.), enabling GitHub's stable `releases/latest/download/<filename>` URLs instead of always
+  routing through the releases page. `scripts/gen_cask.sh`'s checksum lookup and cask URL
+  templates updated to match (the version still appears in the release tag path). The landing
+  page's primary "Download" button now auto-detects the visitor's OS
+  (`docs/assets/download-links.js`) and links straight to the matching archive; the "GitHub
+  Releases" install card and each `installation.html`'s "Direct download" section now list all
+  four stable per-platform links instead of sending users to browse the releases page by hand.
+- Landing page footer (`docs/{en,cs,de,es,fr,it,pt}/index.html`): the author's name is now a link
+  to `https://www.80.cz`, "creator of PgArachne" became "author of PgArachne and other projects"
+  (adding a link to `https://www.80.cz/projects/`), and the copyright line now reads "© 2026
+  Zbyněk Vanžura" instead of "© 2026 OmniDB Project" — the Go rewrite means `LICENSE` already
+  lists his portions copyright alongside the original OmniDB Team and 2ndQuadrant. The hero
+  sentence ("revived by the creators of PgArachne") was changed to singular "author of" to match.
+  JSON-LD `author.url` updated from `pgarachne.com` to `80.cz` accordingly.
+
+### Fixed
+- `README.md`: the screenshot link pointed at a malformed URL
+  (`raw.githubusercontent.com/docs/assets/dashboard.png`, missing the owner/repo/branch segments)
+  and referenced a stale March-2026 screenshot of the pre-rewrite UI; replaced with the current
+  light/dark workspace screenshots already used on the landing page.
+
 ### Security
 - Autocomplete popup: table/view/column/function/index names from the database catalog were
   spliced into the match-highlighting markup with a raw string `.replace()` and rendered via

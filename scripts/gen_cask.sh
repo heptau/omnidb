@@ -20,7 +20,7 @@ GITHUB="https://github.com/heptau/omnidb"
 [[ -f "$CHECKSUM_FILE" ]] || { echo "Error: ${CHECKSUM_FILE} not found"; exit 1; }
 
 sha_for() {
-  grep "  OmniDB-${VERSION}-macOS-${1}.zip$" "$CHECKSUM_FILE" | awk '{print $1}'
+  grep "  OmniDB-macOS-${1}.zip$" "$CHECKSUM_FILE" | awk '{print $1}'
 }
 
 SHA_ARM64=$(sha_for "osx-arm64")
@@ -36,12 +36,12 @@ cask "omnidb" do
   on_arm do
     sha256 "${SHA_ARM64}"
 
-    url "${GITHUB}/releases/download/v#{version}/OmniDB-#{version}-macOS-osx-arm64.zip"
+    url "${GITHUB}/releases/download/v#{version}/OmniDB-macOS-osx-arm64.zip"
   end
   on_intel do
     sha256 "${SHA_X64}"
 
-    url "${GITHUB}/releases/download/v#{version}/OmniDB-#{version}-macOS-osx-x64.zip"
+    url "${GITHUB}/releases/download/v#{version}/OmniDB-macOS-osx-x64.zip"
   end
 
   name "OmniDB"

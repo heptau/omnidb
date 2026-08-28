@@ -74,7 +74,7 @@
 		"author": {
 			"@type": "Person",
 			"name": "Zbyněk Vanžura",
-			"url": "https://www.pgarachne.com"
+			"url": "https://www.80.cz"
 		},
 		"maintainer": {
 			"@type": "Organization",
@@ -182,7 +182,7 @@
 			workflows.
 		</p>
 		<p class="lead-secondary">
-			Actively revived by the creators of <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
+			Actively revived by the author of <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
 			— bridging robust database administration with modern, thin-client architectures.
 		</p>
 
@@ -218,7 +218,13 @@
 					<span class="install-icon" aria-hidden="true">⬇️</span>
 					<h3>GitHub Releases <span class="install-tag">macOS · Linux · Windows</span></h3>
 					<p>Download the self-contained archive for your platform — no installer, no separate runtime.</p>
-					<a class="btn btn-outline btn-small" href="https://github.com/heptau/omnidb/releases/latest" target="_blank" rel="noopener">Latest Release →</a>
+					<ul class="download-links">
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" target="_blank" rel="noopener">macOS (Apple Silicon)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" target="_blank" rel="noopener">macOS (Intel)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" target="_blank" rel="noopener">Linux (x64)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip" target="_blank" rel="noopener">Windows (x64)</a></li>
+					</ul>
+					<p class="download-links-more"><a href="https://github.com/heptau/omnidb/releases" target="_blank" rel="noopener">All releases &amp; changelog →</a></p>
 				</div>
 			</div>
 			<p class="docs-link">
@@ -270,7 +276,10 @@
 		</section>
 
 		<div class="button-group">
-			<a href="https://github.com/heptau/omnidb/releases" class="btn btn-primary" target="_blank">Download</a>
+			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" class="btn btn-primary" target="_blank" rel="noopener"
+				data-dl-mac-arm="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" data-dl-linux="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" data-dl-win="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip"
+				data-label-mac="Download for macOS" data-label-linux="Download for Linux" data-label-win="Download for Windows">Download</a>
+			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" data-intel-fallback target="_blank" rel="noopener">Intel Mac?</a>
 			<a href="https://github.com/heptau/omnidb" class="btn btn-outline" target="_blank" rel="noopener">GitHub</a>
 		</div>
 	</div>
@@ -279,10 +288,10 @@
 
 	<footer>
 		<div class="footer-inner">
-			<p class="footer-author">Maintained and revived by <strong>Zbyněk Vanžura</strong> (creator of
-				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a>)</p>
+			<p class="footer-author">Maintained and revived by <a href="https://www.80.cz" target="_blank" rel="noopener"><strong>Zbyněk Vanžura</strong></a> (author of
+				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a> and <a href="https://www.80.cz/projects/" target="_blank" rel="noopener">other projects</a>)</p>
 			<p class="footer-copyright">
-				© 2026 OmniDB Project. Released under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.
+				© 2026 Zbyněk Vanžura. Released under the <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT License</a>.
 			</p>
 			<p class="footer-note">
 				Originally created by the OmniDB team. This revival is dedicated to keeping the environment lightweight
@@ -294,6 +303,7 @@
 	<script src="../assets/dropdown.js"></script>
 	<script src="../assets/lang-switcher.js"></script>
 	<script src="../assets/script.js"></script>
+	<script src="../assets/download-links.js"></script>
 	<script>
 		(function () {
 			var copyBtn = document.querySelector('.copy-btn');

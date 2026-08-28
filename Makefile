@@ -221,8 +221,8 @@ _build_mac: _prepare_dirs _ensure_wails _build_frontend_release
 
 	@echo "Packaging Mac Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && zip -ry dist/OmniDB-$(VERSION)-macOS-$(MAC_ARCH).zip $(APP_NAME).app
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-macOS-$(MAC_ARCH).zip"
+	cd $(BUILD_DIR) && zip -ry dist/OmniDB-macOS-$(MAC_ARCH).zip $(APP_NAME).app
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-macOS-$(MAC_ARCH).zip"
 
 # --- LINUX BUILD LOGIC (Wails) ---
 # Wails refuses to cross-compile for Linux from another OS, so this target
@@ -248,8 +248,8 @@ _build_linux: _prepare_dirs _ensure_wails _build_frontend_release
 
 	@echo "Packaging Linux Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && tar -czf dist/OmniDB-$(VERSION)-linux-x64.tar.gz $(APP_NAME)-linux
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-linux-x64.tar.gz"
+	cd $(BUILD_DIR) && tar -czf dist/OmniDB-linux-x64.tar.gz $(APP_NAME)-linux
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-linux-x64.tar.gz"
 
 # --- WINDOWS BUILD LOGIC (Wails) ---
 # Fully cross-compiles from macOS/Linux (verified: produces a real PE32+
@@ -270,8 +270,8 @@ _build_win: _prepare_dirs _ensure_wails _build_frontend_release
 
 	@echo "Packaging Windows Dist..."
 	mkdir -p $(BUILD_DIR)/dist
-	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-$(VERSION)-win-x64.zip $(APP_NAME)-win
-	@echo "Done: $(BUILD_DIR)/dist/OmniDB-$(VERSION)-win-x64.zip"
+	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-win-x64.zip $(APP_NAME)-win
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-win-x64.zip"
 
 # --- DOCS TYPOGRAPHY (TypoLima, https://typolima.80.cz) ---
 # Install the TypoLima CLI (pip --user) if it isn't already available, so

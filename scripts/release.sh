@@ -55,10 +55,10 @@ make build-linux-docker
 
 echo "==> Verifying artifacts..."
 ARCHIVES=(
-  "$DIST/OmniDB-${VERSION}-macOS-osx-arm64.zip"
-  "$DIST/OmniDB-${VERSION}-macOS-osx-x64.zip"
-  "$DIST/OmniDB-${VERSION}-win-x64.zip"
-  "$DIST/OmniDB-${VERSION}-linux-x64.tar.gz"
+  "$DIST/OmniDB-macOS-osx-arm64.zip"
+  "$DIST/OmniDB-macOS-osx-x64.zip"
+  "$DIST/OmniDB-win-x64.zip"
+  "$DIST/OmniDB-linux-x64.tar.gz"
 )
 for f in "${ARCHIVES[@]}"; do
   [[ -f "$f" ]] || { echo "Error: expected artifact missing: $f" >&2; exit 1; }
