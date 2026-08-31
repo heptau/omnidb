@@ -285,12 +285,12 @@ body.loading .div_loading {
 }
 @keyframes svgToBlue {
   to {
-    fill: #878FC6;
+    fill: #1E88E5;
   }
 }
 @keyframes svgToDarkblue {
   to {
-    fill: #525678;
+    fill: #37517E;
   }
 }
 @keyframes fadeIn {
