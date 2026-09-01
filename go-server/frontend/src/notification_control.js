@@ -186,8 +186,11 @@ export function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = 
  * @param {(() => void)|null} [p_funcNo]
  * @param {(() => void)|null} [p_shownCallback]
  * @param {boolean|null} [p_large]
+ * @param {string|null} [p_yes_label] Overrides the affirmative button's label
+ * (default "Ok") -- e.g. "Delete", so a destructive confirmation names the
+ * actual action instead of a generic acknowledgement.
  */
-export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
+export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
 	var v_create_content_function = function () {
 		if (p_shownCallback != null) v_shown_callback = p_shownCallback;
 
@@ -198,6 +201,7 @@ export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCa
 		var v_button_cancel = el("modal_message_cancel");
 
 		v_content_div.textContent = p_info;
+		v_button_ok.textContent = p_yes_label || "Ok";
 
 		v_button_ok.onclick = function () {
 			if (p_funcYes != null) p_funcYes();

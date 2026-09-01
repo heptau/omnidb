@@ -52,6 +52,17 @@ import {
 } from "../workspace.js";
 
 
+// Local, not imported from connections.js: that module already imports from
+// workspace.js, which imports from this file, so importing connections.js
+// here would create a cycle. Kept in sync by hand with connections.js's
+// ENVIRONMENT_META -- same 4-entry whitelist, just the tab accent class.
+var ENVIRONMENT_TAB_CLASS = {
+	production: "omnidb__tab--env-production",
+	uat: "omnidb__tab--env-uat",
+	development: "omnidb__tab--env-development",
+	archive: "omnidb__tab--env-archive",
+};
+
 /**
  * @param {any} p_index
  * @param {boolean} [p_create_query_tab]
@@ -114,6 +125,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 
 		var v_tab = v_connTabControl.createTab({
 			p_icon: v_icon,
+			p_class: ENVIRONMENT_TAB_CLASS[v_conn.v_environment] || false,
 			p_name: v_conn_name,
 			p_selectFunction: function () {
 				document.title = "OmniDB";

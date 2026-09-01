@@ -539,15 +539,17 @@ func handleGetDatabaseList(upstream *url.URL) http.HandlerFunc {
 				"v_details1":     d.Details1,
 				"v_details2":     d.Details2,
 				"v_public":       d.Public,
+				"v_environment":  d.Environment,
 			})
 		}
 		terminalList := make([]map[string]any, 0, len(terminals))
 		for _, t := range terminals {
 			terminalList = append(terminalList, map[string]any{
-				"v_conn_id": t.ConnID,
-				"v_alias":   t.Alias,
-				"v_details": t.Details,
-				"v_public":  t.Public,
+				"v_conn_id":     t.ConnID,
+				"v_alias":       t.Alias,
+				"v_details":     t.Details,
+				"v_public":      t.Public,
+				"v_environment": t.Environment,
 			})
 		}
 

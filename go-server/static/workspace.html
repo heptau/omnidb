@@ -24,10 +24,6 @@
 			-webkit-appearance: auto !important;
 			background-image: none !important;
 		}
-		/* Smooth continuous modal sizing instead of Bootstrap's jumpy breakpoints */
-		#modal_edit_connection .modal-dialog {
-			max-width: min(calc(100vw - 3.5rem), 1140px);
-		}
 	</style>
 </head>
 
@@ -63,52 +59,233 @@
 		     tab_functions/outer_welcome_tab.js (initWelcomeSection). -->
 		<div id="omnidb__section_welcome" class="omnidb__section"></div>
 
-		<!-- Connections section (was #modal_connections). Full-screen instead
-		     of a modal; #connection_card_list is filled by connections.js. -->
+		<!-- Connections section (was #modal_connections). Full-screen,
+		     macOS/iPadOS System Settings style master-detail split view: a
+		     sidebar list of saved connections on the left
+		     (#connection_card_list, filled by connections.js) and, on the
+		     right, the selected connection's own form + actions -- no more
+		     separate edit-connection modal window. -->
 		<div id="omnidb__section_connections" class="omnidb__section">
-			<div class="omnidb__section__header">
-				<h5 class="mb-0">
-					Connections
-					<button id="button_new_connection" type="button" class="btn omnidb__theme__btn--primary">New connection</button>
-				</h5>
-			</div>
 			<div class="omnidb__section__body">
-				<div class='mb-3 d-flex align-items-center justify-content-start'>
-					<span id="group_actions_1" class="d-flex align-items-center justify-content-start">
-						<span>Groups</span>
-						<select id="group_selector" class="form-control mx-1"
-							style='display: inline-block; width: 200px;'>
-							<option value=-1 selected>Select Group</option>
-						</select>
-						<button id="button_new_group" type="button" class="btn ms-2 omnidb__theme__btn--primary">New group</button>
-						<button id="button_group_actions" type="button"
-							class="btn ms-2 omnidb__theme__btn--secondary dropdown-toggle" style='display: none;'
-							data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-							Group Actions
-						</button>
-						<div class="dropdown-menu dropdown-menu-left">
-							<button id="button_group_rename" class="dropdown-item" type="button">Rename</button>
-							<button id="button_group_manage" class="dropdown-item" type="button">Manage Connections</button>
-							<button id="button_group_delete" class="dropdown-item" type="button">Delete</button>
+				<div class="omnidb__connections">
+					<div class="omnidb__connections__sidebar">
+						<div class="omnidb__connections__sidebar-toolbar">
+							<select id="group_selector" class="form-control form-control-sm">
+								<option value=-1 selected>Select Group</option>
+							</select>
+							<span id="group_actions_1" class="omnidb__connections__sidebar-toolbar-actions">
+								<button id="button_new_group" type="button" class="omnidb__connections__pill-btn" title="New group">
+									<i class="fas fa-plus"></i> Group
+								</button>
+								<button id="button_group_actions" type="button"
+									class="omnidb__connections__icon-btn dropdown-toggle" style='display: none;'
+									data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Group actions">
+									<i class="fas fa-ellipsis-h"></i>
+								</button>
+								<div class="dropdown-menu dropdown-menu-end">
+									<button id="button_group_rename" class="dropdown-item" type="button">Rename</button>
+									<button id="button_group_manage" class="dropdown-item" type="button">Manage Connections</button>
+									<button id="button_group_delete" class="dropdown-item" type="button">Delete</button>
+								</div>
+							</span>
+							<span id="group_actions_2" class="omnidb__connections__sidebar-toolbar-actions" style='display: none;'>
+								<button id="button_manage_group_save" type="button" class="btn btn-success btn-sm">Save changes</button>
+							</span>
 						</div>
-					</span>
-					<span id="group_actions_2" style='display: none;'>
-						<button id="button_manage_group_save" type="button" class="btn btn-success ms-2">Save
-							changes</button>
-					</span>
-					<div class="d-inline-block ms-4">
-						<span>Show Public Connections (<span id="conn_list_public_counter">0</span>)</span>
-						<div class="d-inline-block omnidb__switch ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
-							data-bs-html="true"
-							title="<h5>Show Public Connections.</h5><div>Switch ON shows all public connections.</div>">
-							<input type="checkbox" id="conn_list_public" class="omnidb__switch--input">
-							<label for="conn_list_public" class="omnidb__switch--label"><span><i
-										class="fas fa-users"></i></span></label>
+
+						<div id="connection_card_list" class="omnidb__connections__list"></div>
+
+						<div class="omnidb__connections__sidebar-footer">
+							<div class="omnidb__connections__addremove">
+								<button id="button_new_connection" type="button" title="New Connection">
+									<i class="fas fa-plus"></i>
+								</button>
+								<span class="omnidb__connections__addremove-divider"></span>
+								<button id="button_delete_connection" type="button" title="Delete Connection" disabled>
+									<i class="fas fa-minus"></i>
+								</button>
+							</div>
+							<div class="omnidb__connections__public-toggle" data-bs-toggle="tooltip" data-bs-placement="left"
+								data-bs-html="true"
+								title="<h5>Show Public Connections.</h5><div>Switch ON shows all public connections.</div>">
+								<div class="omnidb__switch omnidb__switch--sm">
+									<input type="checkbox" id="conn_list_public" class="omnidb__switch--input">
+									<label for="conn_list_public" class="omnidb__switch--label"><span><i
+												class="fas fa-users"></i></span></label>
+								</div>
+								<span class="omnidb__connections__public-toggle-label">Public (<span id="conn_list_public_counter">0</span>)</span>
+							</div>
+						</div>
+					</div>
+
+					<div class="omnidb__connections__detail">
+						<div id="omnidb__connections__detail_empty" class="omnidb__connections__detail-empty">
+							<i class="fas fa-plug"></i>
+							<p>Select a connection on the left, or create a new one.</p>
+						</div>
+
+						<div id="omnidb__connections__detail_form" class="omnidb__connections__detail-form">
+							<div class="omnidb__connections__detail-header">
+								<div id="conn_detail_icon" class="omnidb__connections__detail-icon"></div>
+								<div class="omnidb__connections__detail-heading">
+									<input type="text" id="conn_form_title" class="omnidb__connections__detail-title-input"
+										placeholder="Connection name">
+								</div>
+								<div class="omnidb__connections__detail-actions">
+									<button id="conn_form_button_connect" type="button" class="btn omnidb__theme__btn--primary">
+										<i class="fas fa-plug"></i> Connect
+									</button>
+									<button id="conn_form_button_test_connection" type="button" class="btn omnidb__theme__btn--secondary"
+										disabled>Test Connection</button>
+									<button id="conn_form_button_save_connection" type="button" class="btn btn-success" disabled>Save</button>
+								</div>
+							</div>
+
+							<div class="omnidb__connections__detail-body">
+								<div class="row">
+									<div class="col-md-4 mb-3 required">
+										<label for="conn_form_type">Connection Type</label>
+										<select id="conn_form_type" class="form-control">
+											<option value=-1 selected>Select Type</option>
+										</select>
+									</div>
+									<div class="col-md-4 mb-3">
+										<label for="conn_form_environment">Environment</label>
+										<select id="conn_form_environment" class="form-control">
+											<option value="">None</option>
+											<option value="production">Production</option>
+											<option value="uat">UAT</option>
+											<option value="development">Development</option>
+											<option value="archive">Archive</option>
+										</select>
+									</div>
+									<div class="col-md-4 mt-auto mb-3">
+										<span class="ms-2">Public connection?</span>
+										<div class="d-inline-block ms-2">
+											<div class="omnidb__switch me-2" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
+												title="<h5>Toggle public status.</h5><div>Switch ON sets connection as usable for all other omnidb users.</div>">
+												<input type="checkbox" id="conn_form_public" class="omnidb__switch--input">
+												<label for="conn_form_public" class="omnidb__switch--label"><span><i
+															class="fas fa-users"></i></span></label>
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="card">
+									<div class="card-header">
+										<h6 class="mb-0">Host Connection Info</h6>
+									</div>
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_server">Server</label>
+												<input type="text" class="form-control" id="conn_form_server" placeholder="ex: 127.0.0.1">
+											</div>
+											<div class="col-md-3 mb-3">
+												<label for="conn_form_port">Port</label>
+												<input type="text" class="form-control" id="conn_form_port" placeholder="ex: 5432">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_database">Database</label>
+												<input type="text" class="form-control" id="conn_form_database" placeholder="ex: postgres">
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_user">User</label>
+												<input type="text" class="form-control" id="conn_form_user" placeholder="ex: postgres">
+											</div>
+											<div class="col-md-5 mb-3">
+												<label for="conn_form_user_pass">User Password <i class="fas fa-question-circle text-info"
+														data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
+														title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional user password</h5></h4><ul><li><strong>If provided:</strong> password will be stored to omnidb configuration's database and used when connecting to this connection.</li><li><strong>Leaving blank:</strong> No password will be saved and it will be requested to be manually type everytime the user tries to use this connection. If it's a <strong>PostgreSQL</strong> connection, OmniDB will try to retrieve password from <strong>.pgpass</strong>.</li></ul>"></i></label>
+												<input type="password" class="form-control" id="conn_form_user_pass" placeholder="User Password">
+											</div>
+										</div>
+
+										<div class="position-relative">
+											<div style="position: absolute; top: -1rem; left: 2rem; padding: 0.25rem;"
+												class="omnidb__theme-bg--light"><b>OR</b></div>
+											<hr />
+										</div>
+
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_connstring">Connection string <i class="fas fa-question-circle text-info"
+														data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
+														title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional connection string</h5></h4><ul><li><strong>If provided:</strong> OmniDB will use this as the default config, and single inputs for server should not be filled.</li><li><strong>If blank:</strong> In this case, if this is not a terminal connection, you should instead fill the required single inputs for server above.</li></ul>"></i></label>
+												<input type="text" class="form-control" id="conn_form_connstring"
+													placeholder="ex: postgresql://postgres@localhost:5432/postgres">
+											</div>
+										</div>
+									</div>
+								</div>
+
+								<div class="card mt-4">
+									<div class="card-header">
+										<div class="form-group mb-0">
+											<div class="omnidb__form-check form-check form-check-inline">
+												<input class="form-check-input" type="checkbox" value="" id="conn_form_use_tunnel">
+												<label class="form-check-label" for="conn_form_use_tunnel">
+													<b style="vertical-align: middle;">Use SSH tunnel</b>
+												</label>
+											</div>
+										</div>
+									</div>
+									<div class="card-body">
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_ssh_server">SSH Server</label>
+												<input type="text" class="form-control" id="conn_form_ssh_server" placeholder="SSH server" readonly>
+											</div>
+											<div class="col-md-3 mb-3">
+												<label for="conn_form_ssh_port">SSH Port</label>
+												<input type="text" class="form-control" id="conn_form_ssh_port" placeholder="SSH port" readonly>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_ssh_user">SSH User</label>
+												<input type="text" class="form-control" id="conn_form_ssh_user" placeholder="SSH user" readonly>
+											</div>
+											<div class="col-md-5 mb-3">
+												<label for="conn_form_ssh_password">
+													Password / Passphrase
+													<i class="fas fa-question-circle text-info ms-2" data-bs-toggle="tooltip" data-bs-html="true"
+														data-bs-placement="bottom"
+														title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional ssh password / passphrase</h5></h4><div>Leave this blank if you dont want the password to be stored.</div><ul><li><strong>If provided:</strong> OmniDB will use this password when opening a SSH tunnel.</li><li><strong>Leaving blank:</strong> When the SSH tunnel is requested, OmniDB will prompt an input requesting for this password to be used exclusively to open the connection, but it wont be stored.</li></ul>"></i>
+												</label>
+												<input type="password" class="form-control" id="conn_form_ssh_password"
+													placeholder="SSH password / passphrase" readonly>
+											</div>
+										</div>
+										<div class="row">
+											<div class="col-md mb-3">
+												<label for="conn_form_ssh_key">
+													SSH Key Text File
+													<i class="fas fa-question-circle text-info ms-2" data-bs-toggle="tooltip" data-bs-html="true"
+														data-bs-placement="bottom"
+														title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional ssh key</h5></h4><div>Leave this blank if you dont want the key to be stored.</div><ul><li><strong>If provided:</strong> When saving this SSH tunnel, OmniDB will read the content of this file and store just the text, but not the file.</li></ul>"></i>
+												</label>
+												<textarea style="display:none;" class="form-control" id="conn_form_ssh_key" rows="4"
+													readonly></textarea>
+												<div class="ms-4 d-inline-block custom-file" style="width: 200px;">
+													<input type="file" id="conn_form_ssh_key_input"
+														style="width: 200px;height: 100%;" disabled />
+													<label id="conn_form_ssh_key_input_label" class="custom-file-label"
+														for="conn_form_ssh_key_input">Click to select</label>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div id="connection_card_list"
-					class="text-center omnidb__connections__card-list omnidb__connections__card-list--rows"></div>
 			</div>
 		</div>
 
@@ -542,158 +719,6 @@
 			</div>
 			<div>
 				<button id="bt_cancel_ajax" style='display: none; margin-top: 10px;' class='btn btn-light'>Cancel</button>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal Edit Connection -->
-	<div class="modal fade" id="modal_edit_connection" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-xl" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Edit Connection</h5>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-
-					<div class="row">
-						<div class="col-md-4 mb-3 required">
-							<label for="conn_form_type">Connection Type</label>
-							<select id="conn_form_type" class="form-control">
-								<option value=-1 selected>Select Type</option>
-							</select>
-						</div>
-						<div class="col-md-4 mb-3">
-							<label for="conn_form_title">Title</label>
-							<input type="text" class="form-control" id="conn_form_title" placeholder="Title">
-						</div>
-						<div class="col-md-4 mt-auto mb-3">
-							<span class="ms-2">Public connection?</span>
-							<div class="d-inline-block ms-2">
-								<div class="omnidb__switch me-2" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true"
-									title="<h5>Toggle public status.</h5><div>Switch ON sets connection as usable for all other omnidb users.</div>">
-									<input type="checkbox" id="conn_form_public" class="omnidb__switch--input">
-									<label for="conn_form_public" class="omnidb__switch--label"><span><i
-												class="fas fa-users"></i></span></label>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="card">
-						<div class="card-header">
-							<h6 class="mb-0">Host Connection Info</h6>
-						</div>
-						<div class="card-body">
-							<div class="row">
-								<div class="col-md-3 mb-3">
-									<label for="conn_form_server">Server</label>
-									<input type="text" class="form-control" id="conn_form_server" placeholder="ex: 127.0.0.1">
-								</div>
-								<div class="col-md-1 mb-3">
-									<label for="conn_form_port">Port</label>
-									<input type="text" class="form-control" id="conn_form_port" placeholder="ex: 5432">
-								</div>
-								<div class="col-md-3 mb-3">
-									<label for="conn_form_database">Database</label>
-									<input type="text" class="form-control" id="conn_form_database" placeholder="ex: postgres">
-								</div>
-								<div class="col-md-3 mb-3">
-									<label for="conn_form_user">User</label>
-									<input type="text" class="form-control" id="conn_form_user" placeholder="ex: postgres">
-								</div>
-								<div class="col-md-2 mb-3">
-									<label for="conn_form_user_pass">User Password <i class="fas fa-question-circle text-info"
-											data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
-											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional user password</h5></h4><ul><li><strong>If provided:</strong> password will be stored to omnidb configuration's database and used when connecting to this connection.</li><li><strong>Leaving blank:</strong> No password will be saved and it will be requested to be manually type everytime the user tries to use this connection. If it's a <strong>PostgreSQL</strong> connection, OmniDB will try to retrieve password from <strong>.pgpass</strong>.</li></ul>"></i></label>
-									<input type="password" class="form-control" id="conn_form_user_pass" placeholder="User Password">
-								</div>
-							</div>
-
-							<div class="position-relative">
-								<div style="position: absolute; top: -1rem; left: 2rem; padding: 0.25rem;"
-									class="omnidb__theme-bg--light"><b>OR</b></div>
-								<hr />
-							</div>
-
-							<div class="row">
-								<div class="col-md mb-3">
-									<label for="conn_form_connstring">Connection string <i class="fas fa-question-circle text-info"
-											data-bs-toggle="tooltip" data-bs-html="true" data-bs-placement="bottom"
-											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional connection string</h5></h4><ul><li><strong>If provided:</strong> OmniDB will use this as the default config, and single inputs for server should not be filled.</li><li><strong>If blank:</strong> In this case, if this is not a terminal connection, you should instead fill the required single inputs for server above.</li></ul>"></i></label>
-									<input type="text" class="form-control" id="conn_form_connstring"
-										placeholder="ex: postgresql://postgres@localhost:5432/postgres">
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="card mt-4">
-						<div class="card-header">
-							<div class="form-group mb-0">
-								<div class="omnidb__form-check form-check form-check-inline">
-									<input class="form-check-input" type="checkbox" value="" id="conn_form_use_tunnel">
-									<label class="form-check-label" for="conn_form_use_tunnel">
-										<b style="vertical-align: middle;">Use SSH tunnel</b>
-									</label>
-								</div>
-							</div>
-						</div>
-						<div class="card-body">
-							<div class="row">
-								<div class="col-md-4 mb-3">
-									<label for="conn_form_ssh_server">SSH Server</label>
-									<input type="text" class="form-control" id="conn_form_ssh_server" placeholder="SSH server" readonly>
-								</div>
-								<div class="col-md-2 mb-3">
-									<label for="conn_form_ssh_port">SSH Port</label>
-									<input type="text" class="form-control" id="conn_form_ssh_port" placeholder="SSH port" readonly>
-								</div>
-								<div class="col-md-3 mb-3">
-									<label for="conn_form_ssh_user">SSH User</label>
-									<input type="text" class="form-control" id="conn_form_ssh_user" placeholder="SSH user" readonly>
-								</div>
-								<div class="col-md-3 mb-3">
-									<label for="conn_form_ssh_password">
-										Password / Passphrase
-										<i class="fas fa-question-circle text-info ms-2" data-bs-toggle="tooltip" data-bs-html="true"
-											data-bs-placement="bottom"
-											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional ssh password / passphrase</h5></h4><div>Leave this blank if you dont want the password to be stored.</div><ul><li><strong>If provided:</strong> OmniDB will use this password when opening a SSH tunnel.</li><li><strong>Leaving blank:</strong> When the SSH tunnel is requested, OmniDB will prompt an input requesting for this password to be used exclusively to open the connection, but it wont be stored.</li></ul>"></i>
-									</label>
-									<input type="password" class="form-control" id="conn_form_ssh_password"
-										placeholder="SSH password / passphrase" readonly>
-								</div>
-							</div>
-							<div class="row">
-								<div class="col-md mb-3">
-									<label for="conn_form_ssh_key">
-										SSH Key Text File
-										<i class="fas fa-question-circle text-info ms-2" data-bs-toggle="tooltip" data-bs-html="true"
-											data-bs-placement="bottom"
-											title="<h4 class=&quot;mb-0&quot;><h5 class=&quot;my-1&quot;>Optional ssh key</h5></h4><div>Leave this blank if you dont want the key to be stored.</div><ul><li><strong>If provided:</strong> When saving this SSH tunnel, OmniDB will read the content of this file and store just the text, but not the file.</li></ul>"></i>
-									</label>
-									<textarea style="display:none;" class="form-control" id="conn_form_ssh_key" rows="4"
-										readonly></textarea>
-									<div class="ms-4 d-inline-block custom-file" style="width: 200px;">
-										<input type="file" id="conn_form_ssh_key_input"
-											style="width: 200px;height: 100%;" disabled />
-										<label id="conn_form_ssh_key_input_label" class="custom-file-label"
-											for="conn_form_ssh_key_input">Click to select</label>
-									</div>
-								</div>
-							</div>
-						</div>
-					</div>
-
-					<div class="mt-4">
-						<button id="conn_form_button_test_connection" class="btn omnidb__theme__btn--primary" disabled>Test</button>
-						<button id="conn_form_button_save_connection" class="btn btn-success"
-							disabled>Save</button>
-					</div>
-
-				</div>
 			</div>
 		</div>
 	</div>

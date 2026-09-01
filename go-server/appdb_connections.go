@@ -42,6 +42,12 @@ type appConnection struct {
 	SSHUser     string
 	SSHPassword string
 	SSHKey      string
+	// Environment is one of "" (none), "production", "uat", "development" or
+	// "archive" -- a free-form-but-frontend-constrained tag the Connections
+	// sidebar/detail form and open Database tabs color-code, purely for the
+	// user's own visual organization. Never validated server-side against
+	// that set: an unrecognized value just renders with no color client-side.
+	Environment string
 }
 
 // fetchTechnologies mirrors the "for tech in Technology.objects.all()" loop
@@ -70,7 +76,7 @@ func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) 
 	rows, err := db.Query(`
 		select c.id, c.user_id, c.public, t.name, c.alias, c.conn_string,
 			   c.server, c.port, c.database, c.username, c.password,
-			   c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key
+			   c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment
 		from OmniDB_app_connection c
 		join OmniDB_app_technology t on t.id = c.technology_id
 		where c.user_id = ? or c.public = 1
@@ -85,7 +91,7 @@ func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) 
 		var c appConnection
 		if err := rows.Scan(&c.ID, &c.OwnerID, &c.Public, &c.Technology, &c.Alias, &c.ConnString,
 			&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
-			&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey); err != nil {
+			&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment); err != nil {
 			return nil, err
 		}
 		out = append(out, c)
@@ -108,13 +114,13 @@ func fetchConnectionByID(db *sql.DB, connID int64) (*appConnection, error) {
 	err := db.QueryRow(`
 		select c.id, c.user_id, c.public, t.name, c.alias, c.conn_string,
 			   c.server, c.port, c.database, c.username, c.password,
-			   c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key
+			   c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment
 		from OmniDB_app_connection c
 		join OmniDB_app_technology t on t.id = c.technology_id
 		where c.id = ?
 	`, connID).Scan(&c.ID, &c.OwnerID, &c.Public, &c.Technology, &c.Alias, &c.ConnString,
 		&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
-		&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey)
+		&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment)
 	if err != nil {
 		return nil, err
 	}
@@ -255,6 +261,7 @@ type saveConnectionInput struct {
 	UseTunnel   bool
 	ConnString  string
 	Public      bool
+	Environment string
 }
 
 // saveConnection mirrors save_connection's insert/update branch. Unlike the
@@ -272,10 +279,10 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 		res, err := db.Exec(`
 			insert into OmniDB_app_connection
 				(user_id, technology_id, server, port, database, username, password, alias,
-				 ssh_server, ssh_port, ssh_user, ssh_password, ssh_key, use_tunnel, conn_string, public)
-			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+				 ssh_server, ssh_port, ssh_user, ssh_password, ssh_key, use_tunnel, conn_string, public, environment)
+			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
 		`, userID, techID, in.Server, in.Port, in.Database, in.Username, in.Password, in.Alias,
-			in.SSHServer, in.SSHPort, in.SSHUser, in.SSHPassword, in.SSHKey, in.UseTunnel, in.ConnString, in.Public)
+			in.SSHServer, in.SSHPort, in.SSHUser, in.SSHPassword, in.SSHKey, in.UseTunnel, in.ConnString, in.Public, in.Environment)
 		if err != nil {
 			return 0, err
 		}
@@ -292,11 +299,11 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 
 	setParts := []string{
 		"technology_id = ?", "server = ?", "port = ?", "database = ?", "username = ?", "alias = ?",
-		"ssh_server = ?", "ssh_port = ?", "ssh_user = ?", "use_tunnel = ?", "conn_string = ?", "public = ?",
+		"ssh_server = ?", "ssh_port = ?", "ssh_user = ?", "use_tunnel = ?", "conn_string = ?", "public = ?", "environment = ?",
 	}
 	args := []any{
 		techID, in.Server, in.Port, in.Database, in.Username, in.Alias,
-		in.SSHServer, in.SSHPort, in.SSHUser, in.UseTunnel, in.ConnString, in.Public,
+		in.SSHServer, in.SSHPort, in.SSHUser, in.UseTunnel, in.ConnString, in.Public, in.Environment,
 	}
 	if in.Password != "" {
 		setParts = append(setParts, "password = ?")

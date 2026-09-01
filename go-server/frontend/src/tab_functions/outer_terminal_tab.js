@@ -34,7 +34,17 @@ import { startTerminal, terminalContextMenu, terminalKey } from "../terminal.js"
 import { refreshBootstrapTooltips, refreshHeights } from "../workspace.js";
 
 
-export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = "Terminal", p_details = false) {
+// Local, not imported from connections.js -- see the identical comment in
+// outer_connection_tab.js (same cycle risk, same 4-entry whitelist kept in
+// sync by hand with connections.js's ENVIRONMENT_META).
+var ENVIRONMENT_TAB_CLASS = {
+	production: "omnidb__tab--env-production",
+	uat: "omnidb__tab--env-uat",
+	development: "omnidb__tab--env-development",
+	archive: "omnidb__tab--env-archive",
+};
+
+export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = "Terminal", p_details = false, p_environment = "") {
 	// v_connTabControl.removeLastTab();
 
 	let v_tooltip_name = "";
@@ -48,6 +58,7 @@ export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias 
 
 	var v_tab = v_connTabControl.createTab({
 		p_icon: '<i class="fas fa-terminal"></i>',
+		p_class: ENVIRONMENT_TAB_CLASS[p_environment] || false,
 		p_name: escapeHtml(p_alias),
 		p_selectFunction: function () {
 			if (this.tag != null) {

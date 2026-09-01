@@ -80,6 +80,7 @@ func handleGetConnections(upstream *url.URL) http.HandlerFunc {
 				"is_mine":     c.OwnerID == int64(who.UserID),
 				"technology":  c.Technology,
 				"alias":       c.Alias,
+				"environment": c.Environment,
 				"conn_string": "",
 				"server":      "",
 				"port":        "",
@@ -263,17 +264,18 @@ func groupLookupErrorMessage(err error) string {
 }
 
 type saveConnectionRequest struct {
-	ID         int64             `json:"id"`
-	Type       string            `json:"type"`
-	Server     string            `json:"server"`
-	Port       string            `json:"port"`
-	Database   string            `json:"database"`
-	User       string            `json:"user"`
-	Password   string            `json:"password"`
-	Title      string            `json:"title"`
-	ConnString string            `json:"connstring"`
-	Public     bool              `json:"public"`
-	Tunnel     tunnelRequestData `json:"tunnel"`
+	ID          int64             `json:"id"`
+	Type        string            `json:"type"`
+	Server      string            `json:"server"`
+	Port        string            `json:"port"`
+	Database    string            `json:"database"`
+	User        string            `json:"user"`
+	Password    string            `json:"password"`
+	Title       string            `json:"title"`
+	ConnString  string            `json:"connstring"`
+	Public      bool              `json:"public"`
+	Environment string            `json:"environment"`
+	Tunnel      tunnelRequestData `json:"tunnel"`
 }
 
 // handleSaveConnection mirrors connections.py's save_connection — the ORM
@@ -315,6 +317,7 @@ func handleSaveConnection(upstream *url.URL) http.HandlerFunc {
 			UseTunnel:   req.Tunnel.Enabled,
 			ConnString:  req.ConnString,
 			Public:      req.Public,
+			Environment: req.Environment,
 		})
 		if err != nil {
 			writeEnvelope(w, connectionLookupErrorMessage(err), true, -1)

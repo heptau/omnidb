@@ -143,6 +143,17 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		/** @type {any} */
 		tag: {},
 		isToggleable: p_hierarchy === "primary",
+		// A tab that createTab() always inserts new tabs before instead of
+		// after -- e.g. the outer connection strip's trailing "+" Add
+		// Connection tab (see create_tab_functions.js's createAddTab),
+		// which would otherwise end up stuck wherever it happened to be
+		// created (usually startup) as every later connection/terminal/
+		// website tab got appended past it.
+		/** @type {any} */
+		trailingTab: null,
+		setTrailingTab: function (p_tab) {
+			this.trailingTab = p_tab;
+		},
 		// Actions
 		disableTabIndex: function (p_index) {
 			this.tabList[p_index].elementA.classList.add("disabled");
@@ -350,6 +361,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		 * @param {Function|null} [config.p_closeFunction] Callback for closing the tab.
 		 * @param {Function|null} [config.p_dblClickFunction]  Callback for ondoubleclick.
 		 * @param {boolean} [config.p_disabled]  Defines if the elementA is disabled.
+		 * @param {string|false} [config.p_class] Extra CSS class(es) appended to the elementA, e.g. for a per-tab color accent (see outer_connection_tab.js's environment tint).
 		 * @param {string|false} [config.p_icon] HTML string is accepted as an optional icon.
 		 * @param {boolean} [config.p_isDraggable] Defines if the elementA is draggable inside the tab-menu.
 		 * @param {string} [config.p_name] HTML string is accepted as an optional name for the elementA.
@@ -366,6 +378,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			p_closeFunction = null,
 			p_dblClickFunction = null,
 			p_disabled = false,
+			p_class = false,
 			p_icon = false,
 			p_isDraggable = true,
 			p_name = "",
@@ -447,6 +460,9 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			} else {
 				v_a.className = "omnidb__tab-menu__link nav-item nav-link";
 			}
+			if (p_class) {
+				v_a.className += " " + p_class;
+			}
 
 			var v_close = document.createElement("i");
 			v_close.className = "fas fa-times tab-icon icon-close omnidb__tab-menu__link-close";
@@ -517,11 +533,16 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				}
 			};
 
-			this.tabListDiv.appendChild(v_a);
-
-			this.tabListContentDiv.appendChild(v_div);
-
-			this.tabList.push(v_tab);
+			if (this.trailingTab && this.trailingTab !== v_tab) {
+				this.tabListDiv.insertBefore(v_a, this.trailingTab.elementA);
+				this.tabListContentDiv.insertBefore(v_div, this.trailingTab.elementDiv);
+				var v_trailing_index = this.tabList.indexOf(this.trailingTab);
+				this.tabList.splice(v_trailing_index === -1 ? this.tabList.length : v_trailing_index, 0, v_tab);
+			} else {
+				this.tabListDiv.appendChild(v_a);
+				this.tabListContentDiv.appendChild(v_div);
+				this.tabList.push(v_tab);
+			}
 
 			return v_tab;
 		},

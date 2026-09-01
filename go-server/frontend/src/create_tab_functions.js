@@ -58,6 +58,11 @@ export function initCreateTabFunctions() {
 			p_omnidb_tooltip_name: '<h5 class="my-1">Add Connection</h5>',
 		});
 		v_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
+		// Every connection/terminal/website tab created afterwards gets
+		// inserted before this one instead of appended past it -- otherwise
+		// it stays wherever it happened to land at startup while the strip
+		// fills in around it.
+		v_connTabControl.setTrailingTab(v_tab);
 	};
 
 	// Functions to create tabs globally

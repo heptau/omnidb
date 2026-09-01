@@ -14,7 +14,9 @@
  * below all of this markup, so every element already exists.
  */
 import {
+  connectSelectedConnection,
   deleteGroup,
+  deleteSelectedConnection,
   groupChange,
   manageGroup,
   manageGroupSave,
@@ -123,8 +125,9 @@ function bindAll(selector, type, handler) {
 // file's static markup, so nothing to bind here for those.
 bind('button_open_users', 'click', () => listUsers())
 
-// --- connections modal -----------------------------------------------------
+// --- connections section (sidebar + group toolbar) --------------------------
 bind('button_new_connection', 'click', () => newConnection())
+bind('button_delete_connection', 'click', () => deleteSelectedConnection())
 bind('group_selector', 'change', (e) => groupChange(/** @type {HTMLSelectElement} */ (e.target).value))
 bind('button_new_group', 'click', () => newGroup())
 bind('button_group_rename', 'click', () => renameGroup())
@@ -133,7 +136,7 @@ bind('button_group_delete', 'click', () => deleteGroup())
 bind('button_manage_group_save', 'click', () => manageGroupSave())
 bind('conn_list_public', 'change', () => toggleConnectionsPublic())
 
-// --- edit connection modal -------------------------------------------------
+// --- connections section: selected connection's detail form ----------------
 //
 // updateModalEditConnectionState reads e.target.id to decide which half of the
 // form to enable, so it gets the event itself rather than a wrapper.
@@ -153,6 +156,7 @@ for (const id of [
 }
 bind('conn_form_ssh_password', 'input', updateConnectionKey)
 bind('conn_form_ssh_key_input', 'change', updateConnectionKey)
+bind('conn_form_button_connect', 'click', () => connectSelectedConnection())
 bind('conn_form_button_test_connection', 'click', () => testConnection())
 bind('conn_form_button_save_connection', 'click', () => saveConnection())
 

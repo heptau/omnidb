@@ -108,7 +108,7 @@
     };
     showMessageModal(v_create_content_function, p_large);
   }
-  function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
+  function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
       var v_content_div = el("modal_message_content");
@@ -117,6 +117,7 @@
       var v_button_no = el("modal_message_no");
       var v_button_cancel = el("modal_message_cancel");
       v_content_div.textContent = p_info;
+      v_button_ok.textContent = p_yes_label || "Ok";
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
       };

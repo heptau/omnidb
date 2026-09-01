@@ -953,153 +953,11 @@ button.close {
 	margin: 0 2px;
 }
 
-.omnidb__connections__card-list--cards .row {
-	justify-content: center;
-	gap: 12px;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__card {
-	transition: all 0.2s ease;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__card:hover {
-	transform: translateY(-2px);
-	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__card .card-body {
-	position: relative;
-	border-radius: 12px;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__btn--select {
-	align-items: center;
-	border: none;
-	border-bottom-left-radius: 0;
-	border-top-left-radius: 0;
-	display: flex;
-	font-size: 30px;
-	height: 100%;
-	line-height: 30px;
-	margin: 0;
-	padding: 0;
-	position: absolute;
-	right: 0;
-	top: 0;
-	width: 50px;
-	z-index: 1;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__btn--select i {
-	margin: auto;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__btn--select svg {
-	height: 100%;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__cols {
-	flex: 0 1 350px;
-	padding: 15px;
-}
-
-.omnidb__connections__card-list--cards .technology-icon {
-	display: inline-block;
-	width: 24px;
-	height: 16px;
-	font-size: 15px;
-	background-repeat: no-repeat;
-	vertical-align: middle;
-	text-align: center;
-}
-
-.omnidb__connections__card-list--cards .card-body-buttons {
-	margin-top: 5px;
-}
-
-.omnidb__connections__card-list--rows .omnidb__connections__cols {
-	flex: 1 1 50%;
-	max-width: 50%;
-	padding: 5px 15px;
-}
-
-.omnidb__connections__card-list--rows .card-body {
-	align-items: center;
-	display: grid;
-	grid-template: "icon title buttons" 2rem "details details details" 1.5rem "tunnel tunnel tunnel" 1.5rem;
-	grid-template-columns: 24px auto;
-	padding: 5px;
-	padding-left: 14px;
-}
-
-.omnidb__connections__card-list--rows .card-body-icon {
-	grid-area: icon;
-}
-
-.omnidb__connections__card-list--rows .card-body-title {
-	grid-area: title;
-	text-align: left;
-}
-
-.omnidb__connections__card-list--rows .card-body-details {
-	grid-area: details;
-}
-
-.omnidb__connections__card-list--rows .card-body-buttons {
-	grid-area: buttons;
-}
-
-.omnidb__connections__card-list--rows .card-body-tunnel {
-	grid-area: tunnel;
-}
-
-.omnidb__connections__card-list--rows .card-body-icon {
-	width: 24px;
-}
-
-.omnidb__connections__card-list--rows .technology-icon {
-	display: inline-block;
-	width: 24px;
-	height: 16px;
-	font-size: 15px;
-	background-repeat: no-repeat;
-	vertical-align: middle;
-	text-align: center;
-}
-
-.omnidb__connections__card-list--rows .card-body-details,
-.omnidb__connections__card-list--rows .card-body-buttons {
-	display: flex;
-	align-items: center;
-	flex-direction: row;
-	text-align: left;
-}
-
-.omnidb__connections__card-list--rows .card-body-tunnel {
-	margin-top: 5px;
-	text-align: left;
-}
-
-.omnidb__connections__card-list--rows h5,
-.omnidb__connections__card-list--rows h6,
-.omnidb__connections__card-list--rows p {
-	margin-bottom: 0 !important;
-	margin-right: 5px;
-}
-
-.omnidb__connections__card-list--rows h6 {
-	margin-top: 3px;
-}
-
-.omnidb__connections__card-list--rows .omnidb__connections__btn--select {
-	margin-left: auto !important;
-	margin-right: 0.25rem;
-}
-
-.omnidb__connections__card-list--rows .omnidb__connections__btn--select svg {
-	display: none;
-}
-
+/* Selection checkbox overlay for the Connections sidebar list's "Manage
+ * Connections" (group-assignment) mode -- see connections.js's manageGroup.
+ * The cover label sits on top of a full list-item (position: relative, see
+ * _topbar.scss) and is only display:block while that mode is active, so it
+ * doesn't intercept normal row clicks otherwise. */
 .connection-card-checkbox {
 	display: none;
 	left: 5px;
@@ -1121,33 +979,26 @@ button.close {
 
 .connection-card-svg {
 	display: none;
-	height: 40px;
-	left: 10px;
+	height: 22px;
+	right: 8px;
 	position: absolute;
 	top: 50%;
 	transform: translateY(-50%);
-	width: 40px;
+	width: 22px;
 	z-index: 1;
 }
 
-.omnidb__connections__card-list--rows .connection-card-svg {
-	left: unset;
-	right: 5px;
-	top: 20px;
-	width: 20px;
-}
-
-.omnidb__connections__card-list--connection-management .connection-card-checkbox,
-.omnidb__connections__card-list--connection-management .connection-card-cover {
+.omnidb__connections__list--connection-management .connection-card-checkbox,
+.omnidb__connections__list--connection-management .connection-card-cover {
 	display: block;
 }
 
-.omnidb__connections__card-list--connection-management .connection-card-svg {
+.omnidb__connections__list--connection-management .connection-card-svg {
 	opacity: 0;
 }
 
-.omnidb__connections__card-list--connection-management .connection-card-svg circle,
-.omnidb__connections__card-list--connection-management .connection-card-svg path {
+.omnidb__connections__list--connection-management .connection-card-svg circle,
+.omnidb__connections__list--connection-management .connection-card-svg path {
 	stroke-dasharray: 125;
 	stroke-dashoffset: 125;
 }
@@ -1302,10 +1153,6 @@ button.close {
 	to {
 		stroke: transparent;
 	}
-}
-
-.omnidb__connections__card-list--connection-management button {
-	display: none !important;
 }
 
 .omnidb__user-list__item {
@@ -2122,6 +1969,19 @@ i.tab-status-idle_in_transaction_aborted {
 .cm-all {
 	color: #4a81d4;
 	font-size: 16px;
+}
+
+/* Sizing shared by every technology sprite below -- .node-xxx only supplies
+ * the background-image itself. Used by the Connections sidebar list rows and
+ * detail pane header (see _topbar.scss). */
+.technology-icon {
+	display: inline-block;
+	width: 24px;
+	height: 16px;
+	background-repeat: no-repeat;
+	background-position: center;
+	background-size: contain;
+	vertical-align: middle;
 }
 
 .node-spin {

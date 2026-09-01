@@ -4147,7 +4147,7 @@
     };
     showMessageModal(v_create_content_function, p_large);
   }
-  function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
+  function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
       var v_content_div = el$1("modal_message_content");
@@ -4156,6 +4156,7 @@
       var v_button_no = el$1("modal_message_no");
       var v_button_cancel = el$1("modal_message_cancel");
       v_content_div.textContent = p_info;
+      v_button_ok.textContent = p_yes_label || "Ok";
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
       };
@@ -5934,8 +5935,9 @@
   function initConnections() {
     v_connections_data = new Object();
     v_connections_data.technologies = null;
-    v_connections_data.card_list = [];
+    v_connections_data.list_items = [];
     v_connections_data.current_id = -1;
+    v_connections_data.current_obj = null;
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
   else setTimeout(initConnections, 0);
@@ -5944,7 +5946,7 @@
     getGroups();
     showConnectionList(true, true);
   }
-  function showConnectionList(p_show_section, p_change_group) {
+  function showConnectionList(p_show_section, p_change_group, p_callback) {
     var v_conn_id_list = [];
     var v_total_public_conn = 0;
     for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
@@ -5958,140 +5960,80 @@
       "/get_connections/",
       input,
       function(p_return) {
-        v_connections_data.card_list = [];
+        v_connections_data.list_items = [];
         v_connections_data.technologies = p_return.v_data.v_technologies;
-        var v_container = document.createElement("div");
-        v_container.className = "container-fluid";
         var v_target_div = el("connection_card_list");
-        var v_row = document.createElement("div");
-        v_row.className = "row";
-        v_row.innerHTML = '<div id="connections_management_empty_all" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections available.</h5><button id="bt_empty_all_new_connection" type="button" class="mt-4 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_with_public" class="my-4 text-center w-100" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h5 class="">Your user has no connections configured yet, but there are <i class="fas fa-users text-info mx-2"></i> public connections.</h5><h5 class="d-inline-block mt-4 mr-2">You can also create your own</h5><button id="bt_empty_public_new_connection" type="button" class="mt-2 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_group" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections assigned to this group yet.</h5><button id="bt_empty_group_manage_groups" type="button" class="mt-4 btn omnidb__theme__btn--primary">Manage Groups</button></div>';
-        v_row.querySelector("#bt_empty_all_new_connection").addEventListener(
+        v_target_div.innerHTML = '<div id="connections_management_empty_all" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-plug"></i><h6>No connections available.</h6><button id="bt_empty_all_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_with_public" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h6>No connections yet, but public connections are available.</h6><button id="bt_empty_public_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_group" class="omnidb__connections__empty" style="display:none;"><h6>No connections assigned to this group yet.</h6><button id="bt_empty_group_manage_groups" type="button" class="btn btn-sm omnidb__theme__btn--primary">Manage Groups</button></div>';
+        v_target_div.querySelector("#bt_empty_all_new_connection").addEventListener(
           "click",
           () => newConnection()
         );
-        v_row.querySelector("#bt_empty_public_new_connection").addEventListener(
+        v_target_div.querySelector("#bt_empty_public_new_connection").addEventListener(
           "click",
           () => newConnection()
         );
-        v_row.querySelector("#bt_empty_group_manage_groups").addEventListener(
+        v_target_div.querySelector("#bt_empty_group_manage_groups").addEventListener(
           "click",
           () => manageGroup()
         );
         for (var i3 = 0; i3 < p_return.v_data.v_conn_list.length; i3++) {
           var v_conn_obj2 = p_return.v_data.v_conn_list[i3];
-          var v_col_div = document.createElement("div");
-          v_col_div.className = "omnidb__connections__cols";
-          v_row.appendChild(v_col_div);
-          if (v_conn_obj2.public && !v_connections_data.show_public && !v_conn_obj2.is_mine) {
-            v_col_div.classList.add("d-none");
+          var v_item_div = document.createElement("div");
+          v_item_div.className = "omnidb__connections__list-item";
+          v_target_div.appendChild(v_item_div);
+          var v_icon_html;
+          var v_title;
+          var v_subtitle;
+          if (v_conn_obj2.technology == "terminal") {
+            v_icon_html = '<i class="fas fa-terminal"></i>';
+            v_title = v_conn_obj2.alias && v_conn_obj2.alias !== "" ? v_conn_obj2.alias : "Terminal";
+            v_subtitle = v_conn_obj2.tunnel.user + "@" + v_conn_obj2.tunnel.server + ":" + v_conn_obj2.tunnel.port;
+          } else {
+            v_icon_html = '<i class="technology-icon node-' + escapeHtml(v_conn_obj2.technology) + '"></i>';
+            v_title = v_conn_obj2.alias;
+            if (v_conn_obj2.conn_string && v_conn_obj2.conn_string != "") {
+              v_subtitle = v_conn_obj2.conn_string;
+            } else {
+              v_subtitle = (v_conn_obj2.user ? v_conn_obj2.user + "@" : "") + v_conn_obj2.server + ":" + v_conn_obj2.port;
+            }
           }
-          var v_card_div = document.createElement("div");
-          v_card_div.className = "card omnidb__connections__card";
-          v_col_div.appendChild(v_card_div);
-          var v_cover_div = document.createElement("label");
-          v_cover_div.className = "connection-card-cover m-0";
-          v_cover_div.setAttribute("for", "connection_item_input_" + i3);
+          var v_env_meta = ENVIRONMENT_META[v_conn_obj2.environment];
+          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + "</span>" + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + escapeHtml(v_title) + '</span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-lock omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>' : "");
           var v_checkbox = document.createElement("input");
           v_checkbox.className = "connection-card-checkbox";
           v_checkbox.id = "connection_item_input_" + i3;
           v_checkbox.type = "checkbox";
-          var v_check_svg = '<svg class="connection-card-svg" width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg"><path d="M 6 18 L 15 32 L 34 13" stroke-width="4" stroke="#4a81d4" fill="transparent"></path><circle r="19" cx="21" cy="21" stroke-width="2" stroke="#b2b2b2" fill="transparent"></circle></svg>';
-          v_cover_div.innerHTML = v_check_svg;
-          var v_card_body_div = document.createElement("div");
-          v_card_body_div.className = "card-body";
-          v_card_div.appendChild(v_card_body_div);
-          var v_icon = "";
-          var v_title = "";
-          var v_details = "";
-          var v_tunnel = '<div class="card-subtitle tunnel text-muted">No Tunnel Configured</div>';
-          if (v_conn_obj2.technology == "terminal") {
-            v_icon = '<i class="fas fa-terminal"></i>';
-            if (v_conn_obj2.alias && v_conn_obj2.alias !== "") {
-              v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
-            } else {
-              v_title = '<h5 class="card-title">Terminal</h5>';
-            }
-            v_tunnel = '<h6 class="card-subtitle text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</h6>";
-          } else {
-            v_icon = '<i class="technology-icon node-' + escapeHtml(v_conn_obj2.technology) + '"></i>';
-            v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
-            if (v_conn_obj2.conn_string && v_conn_obj2.conn_string != "") {
-              v_details += '<h6 class="card-subtitle mb-2 text-muted"><i title="Connection String" class="fas fa-quote-left"></i> ' + escapeHtml(v_conn_obj2.conn_string) + "</h6>";
-            } else {
-              v_details += '<h6 class="card-subtitle mb-2 text-muted">' + escapeHtml(v_conn_obj2.server) + ":" + escapeHtml(String(v_conn_obj2.port)) + '</h6><p class="card-text">' + escapeHtml(v_conn_obj2.user) + "@" + escapeHtml(v_conn_obj2.service) + "</p>";
-            }
-            if (v_conn_obj2.tunnel.enabled === true) {
-              v_tunnel = '<div class="card-subtitle tunnel text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</div>";
-            }
-          }
-          v_card_body_div.innerHTML += '<div class="card-body-icon">' + v_icon + '</div><div class="card-body-title">' + v_title + '</div><div class="card-body-details">' + v_details + '</div><div class="card-body-tunnel">' + v_tunnel + "</div>";
-          v_card_body_div.appendChild(v_checkbox);
-          v_card_body_div.appendChild(v_cover_div);
-          var v_card_body_buttons = document.createElement("div");
-          v_card_body_buttons.className = "card-body-buttons";
-          v_card_body_div.appendChild(v_card_body_buttons);
-          var v_button_select = document.createElement("button");
-          v_button_select.className = "btn btn-success btn-sm omnidb__connections__btn--select";
-          v_button_select.title = "Select";
-          v_button_select.innerHTML = '<svg width="15px" height="160px" viewBox="0 0 15 160" style="width: auto;height: 100%;stroke: none;stroke-width: 0;"><path stroke-width="0" stroke="none" d="M 0 0 L 15 80 L 0 160 Z"></path></svg><i class="fas fa-plug"></i>';
-          v_card_body_buttons.appendChild(v_button_select);
-          var v_button_edit = document.createElement("button");
-          v_button_edit.className = "btn btn-sm mx-1 omnidb__theme__btn--primary";
-          v_button_edit.title = "Edit";
-          v_button_edit.innerHTML = '<i class="fas fa-pen"</i>';
-          v_card_body_buttons.appendChild(v_button_edit);
-          var v_button_delete = document.createElement("button");
-          v_button_delete.className = "btn btn-danger btn-sm mx-1";
-          v_button_delete.title = "Delete";
-          if (v_conn_obj2.locked == true) {
-            v_button_delete.setAttribute("disabled", "disabled");
-          }
-          v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>';
-          v_card_body_buttons.appendChild(v_button_delete);
-          v_button_select.onclick = /* @__PURE__ */ (function(conn_obj) {
-            return function() {
-              selectConnection(conn_obj);
-            };
-          })(v_conn_obj2);
-          v_button_edit.onclick = /* @__PURE__ */ (function(conn_obj) {
-            return function() {
-              editConnection(conn_obj);
-            };
-          })(v_conn_obj2);
-          v_button_delete.onclick = /* @__PURE__ */ (function(conn_obj) {
-            return function() {
-              deleteConnection(conn_obj);
-            };
-          })(v_conn_obj2);
+          v_item_div.appendChild(v_checkbox);
+          var v_cover_div = document.createElement("label");
+          v_cover_div.className = "connection-card-cover m-0";
+          v_cover_div.setAttribute("for", "connection_item_input_" + i3);
+          v_cover_div.innerHTML = '<svg class="connection-card-svg" width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg"><path d="M 6 18 L 15 32 L 34 13" stroke-width="4" stroke="#4a81d4" fill="transparent"></path><circle r="19" cx="21" cy="21" stroke-width="2" stroke="#b2b2b2" fill="transparent"></circle></svg>';
+          v_item_div.appendChild(v_cover_div);
+          v_item_div.addEventListener(
+            "click",
+            /* @__PURE__ */ (function(p_conn_obj) {
+              return function() {
+                if (v_target_div.classList.contains("omnidb__connections__list--connection-management")) return;
+                editConnection(p_conn_obj);
+              };
+            })(v_conn_obj2)
+          );
           if (v_conn_obj2.public) {
             v_total_public_conn += 1;
-            var v_public_icon = document.createElement("i");
-            v_public_icon.setAttribute(
-              "style",
-              "color: #FFF;position: absolute;top: -5px;left: -5px;background-color: #c57dd2;padding: 4px 2px;border-radius: 100%;"
-            );
-            v_public_icon.classList = "fas fa-users";
-            v_card_body_div.appendChild(v_public_icon);
-            v_card_div.style["border-color"] = "#c57dd2";
-            v_card_div.classList.add("omnidb__connections__card--public");
-            v_card_div.classList.add("d-none");
-            v_card_div.classList.add("fade");
+            v_item_div.classList.add("omnidb__connections__list-item--public");
+            v_item_div.classList.add("fade");
             if (v_connections_data.show_public || v_conn_obj2.is_mine) {
-              v_card_div.classList.remove("d-none");
-              v_card_div.classList.add("show");
+              v_item_div.classList.add("show");
+            } else {
+              v_item_div.classList.add("d-none");
             }
           }
-          v_connections_data.card_list.push({
+          v_connections_data.list_items.push({
             data: v_conn_obj2,
-            card_div: v_col_div,
-            cover_div: v_cover_div,
+            item_div: v_item_div,
             checkbox: v_checkbox
           });
         }
-        v_container.appendChild(v_row);
-        v_target_div.innerHTML = "";
-        v_target_div.appendChild(v_container);
         if (p_show_section) {
           switchSection("connections");
         }
@@ -6100,6 +6042,8 @@
         }
         el("conn_list_public_counter").innerHTML = v_total_public_conn;
         updateConnectionsTitleInfo();
+        updateConnectionSelectionHighlight();
+        if (p_callback) p_callback();
       },
       null,
       "box",
@@ -6118,13 +6062,13 @@
         }
       }
       var v_group_valid_conn = 0;
-      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-        var v_conn_obj2 = v_connections_data.card_list[i2];
+      for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+        var v_conn_obj2 = v_connections_data.list_items[i2];
         if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
-          v_conn_obj2.card_div.style.display = "";
+          v_conn_obj2.item_div.style.display = "";
           v_group_valid_conn++;
         } else {
-          v_conn_obj2.card_div.style.display = "none";
+          v_conn_obj2.item_div.style.display = "none";
         }
       }
       if (v_empty_group_div) {
@@ -6140,9 +6084,9 @@
       }
       el("button_group_actions").style.display = "none";
       el("group_selector").value = -1;
-      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-        var v_conn_obj2 = v_connections_data.card_list[i2];
-        v_conn_obj2.card_div.style.display = "";
+      for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+        var v_conn_obj2 = v_connections_data.list_items[i2];
+        v_conn_obj2.item_div.style.display = "";
       }
     }
     updateConnectionsTitleInfo();
@@ -6158,8 +6102,8 @@
     if (v_empty_group_div) {
       v_empty_group_div.style.display = "none";
     }
-    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
-      v_card_list_el.classList.add("omnidb__connections__card-list--connection-management");
+    document.querySelectorAll(".omnidb__connections__list").forEach((v_list_el) => {
+      v_list_el.classList.add("omnidb__connections__list--connection-management");
     });
     var v_current_group_id = el("group_selector").value;
     var v_group_obj = null;
@@ -6169,9 +6113,9 @@
         break;
       }
     }
-    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-      var v_conn_obj2 = v_connections_data.card_list[i2];
-      v_conn_obj2.card_div.style.display = "";
+    for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+      var v_conn_obj2 = v_connections_data.list_items[i2];
+      v_conn_obj2.item_div.style.display = "";
       if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
         v_conn_obj2.checkbox.checked = true;
       }
@@ -6185,12 +6129,12 @@
     el("group_selector").removeAttribute("disabled");
     el("button_new_group").removeAttribute("disabled");
     el("button_group_actions").removeAttribute("disabled");
-    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
-      v_card_list_el.classList.remove("omnidb__connections__card-list--connection-management");
+    document.querySelectorAll(".omnidb__connections__list").forEach((v_list_el) => {
+      v_list_el.classList.remove("omnidb__connections__list--connection-management");
     });
     v_conn_data = [];
-    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-      var v_conn_obj2 = v_connections_data.card_list[i2];
+    for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+      var v_conn_obj2 = v_connections_data.list_items[i2];
       v_conn_data.push({
         id: v_conn_obj2.data.id,
         selected: v_conn_obj2.checkbox.checked
@@ -6413,10 +6357,13 @@
     );
   }
   function saveConnection() {
+    var v_was_new = v_connections_data.current_id === -1;
+    var v_saved_id = v_connections_data.current_id;
     var input = JSON.stringify({
       id: v_connections_data.current_id,
       type: el("conn_form_type").value,
       public: el("conn_form_public").checked,
+      environment: el("conn_form_environment").value,
       connstring: el("conn_form_connstring").value,
       server: el("conn_form_server").value,
       port: el("conn_form_port").value,
@@ -6437,50 +6384,123 @@
       "/save_connection/",
       input,
       function(p_return) {
-        bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).hide();
         getDatabaseList();
-        showConnectionList(false, true);
+        if (v_was_new) {
+          clearConnectionDetail();
+          showConnectionList(false, true);
+        } else {
+          showConnectionList(false, true, function() {
+            reselectConnection(v_saved_id);
+          });
+        }
       },
       null,
       "box"
     );
   }
   function deleteConnection(p_conn_obj) {
-    showConfirm("Are you sure you want to delete this connection?", function() {
-      var input = JSON.stringify({
-        id: p_conn_obj.id
-      });
-      execAjax$1(
-        "/delete_connection/",
-        input,
-        function(p_return) {
-          getDatabaseList();
-          showConnectionList(false, true);
-        },
-        null,
-        "box"
-      );
-    });
+    var v_name = p_conn_obj.alias && p_conn_obj.alias !== "" ? p_conn_obj.alias : "Terminal";
+    showConfirm(
+      'Are you sure you want to delete the connection "' + v_name + '"?',
+      function() {
+        var input = JSON.stringify({
+          id: p_conn_obj.id
+        });
+        execAjax$1(
+          "/delete_connection/",
+          input,
+          function(p_return) {
+            getDatabaseList();
+            if (v_connections_data.current_id === p_conn_obj.id) {
+              clearConnectionDetail();
+            }
+            showConnectionList(false, true);
+          },
+          null,
+          "box"
+        );
+      },
+      null,
+      null,
+      null,
+      "Delete"
+    );
   }
+  var TECHNOLOGY_DISPLAY_NAMES = {
+    postgresql: "PostgreSQL",
+    mysql: "MySQL",
+    mariadb: "MariaDB",
+    oracle: "Oracle",
+    sqlite: "SQLite",
+    terminal: "Terminal"
+  };
+  var ENVIRONMENT_META = {
+    production: { label: "Production", dotClass: "omnidb__env-dot--production", tabClass: "omnidb__tab--env-production" },
+    uat: { label: "UAT", dotClass: "omnidb__env-dot--uat", tabClass: "omnidb__tab--env-uat" },
+    development: { label: "Development", dotClass: "omnidb__env-dot--development", tabClass: "omnidb__tab--env-development" },
+    archive: { label: "Archive", dotClass: "omnidb__env-dot--archive", tabClass: "omnidb__tab--env-archive" }
+  };
   function adjustTechSelector() {
     var select = el("conn_form_type");
     select.innerHTML = "";
-    var option = document.createElement("option");
-    option.value = "-1";
-    option.textContent = "Select Type";
-    select.appendChild(option);
     for (var i2 = 0; i2 < v_connections_data.technologies.length; i2++) {
-      option = document.createElement("option");
-      option.value = v_connections_data.technologies[i2];
-      option.textContent = v_connections_data.technologies[i2];
+      var v_tech = v_connections_data.technologies[i2];
+      var option = document.createElement("option");
+      option.value = v_tech;
+      option.textContent = TECHNOLOGY_DISPLAY_NAMES[v_tech] || v_tech;
       select.appendChild(option);
     }
   }
+  function showConnectionDetail(p_conn_obj, p_is_new) {
+    el("omnidb__connections__detail_empty").style.display = "none";
+    el("omnidb__connections__detail_form").classList.add("omnidb__connections__detail-form--active");
+    el("conn_detail_icon").innerHTML = p_is_new ? '<i class="fas fa-plug"></i>' : p_conn_obj.technology === "terminal" ? '<i class="fas fa-terminal"></i>' : '<i class="technology-icon node-' + escapeHtml(p_conn_obj.technology) + '"></i>';
+    el("conn_form_button_connect").style.display = p_is_new ? "none" : "";
+    updateDeleteButtonState(p_conn_obj);
+    updateConnectionSelectionHighlight();
+  }
+  function updateDeleteButtonState(p_conn_obj) {
+    var v_btn = el("button_delete_connection");
+    if (!p_conn_obj || p_conn_obj.locked === true) {
+      v_btn.setAttribute("disabled", "disabled");
+    } else {
+      v_btn.removeAttribute("disabled");
+    }
+  }
+  function clearConnectionDetail() {
+    v_connections_data.current_id = -1;
+    v_connections_data.current_obj = null;
+    el("omnidb__connections__detail_form").classList.remove("omnidb__connections__detail-form--active");
+    el("omnidb__connections__detail_empty").style.display = "";
+    updateDeleteButtonState(null);
+    updateConnectionSelectionHighlight();
+  }
+  function updateConnectionSelectionHighlight() {
+    if (!v_connections_data.list_items) return;
+    for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+      var v_item = v_connections_data.list_items[i2];
+      v_item.item_div.classList.toggle(
+        "omnidb__connections__list-item--selected",
+        v_connections_data.current_id !== -1 && v_item.data.id === v_connections_data.current_id
+      );
+    }
+  }
+  function reselectConnection(p_id) {
+    for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+      if (v_connections_data.list_items[i2].data.id === p_id) {
+        editConnection(v_connections_data.list_items[i2].data);
+        return;
+      }
+    }
+    clearConnectionDetail();
+  }
   function editConnection(p_conn_obj) {
     v_connections_data.current_id = p_conn_obj.id;
+    v_connections_data.current_obj = p_conn_obj;
     adjustTechSelector();
     el("conn_form_type").value = p_conn_obj.technology;
     el("conn_form_title").value = p_conn_obj.alias;
+    el("conn_form_environment").value = p_conn_obj.environment || "";
     el("conn_form_connstring").value = p_conn_obj.conn_string;
     el("conn_form_server").value = p_conn_obj.server;
     el("conn_form_port").value = p_conn_obj.port;
@@ -6596,15 +6616,17 @@
       }
     }
     updateModalEditConnectionFields(v_disable_list, v_enable_list);
-    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
+    showConnectionDetail(p_conn_obj, false);
   }
   function newConnection() {
     v_connections_data.current_id = -1;
+    v_connections_data.current_obj = null;
     adjustTechSelector();
     el("conn_form_button_test_connection").setAttribute("disabled", true);
     el("conn_form_button_save_connection").setAttribute("disabled", true);
-    el("conn_form_type").value = -1;
+    el("conn_form_type").value = "postgresql";
     el("conn_form_title").value = "";
+    el("conn_form_environment").value = "";
     el("conn_form_public").checked = false;
     el("conn_form_connstring").value = "";
     el("conn_form_server").value = "";
@@ -6623,7 +6645,8 @@
     el("conn_form_user_pass_check_icon")?.remove();
     el("conn_form_ssh_password_check_icon")?.remove();
     el("conn_form_ssh_key_check_icon")?.remove();
-    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
+    updateModalEditConnectionState({ target: el("conn_form_type") });
+    showConnectionDetail(null, true);
   }
   function selectConnection(p_conn_obj) {
     switchSection("database");
@@ -6631,33 +6654,36 @@
       v_connTabControl.tag.createOuterTerminalTab(
         p_conn_obj.id,
         p_conn_obj.alias,
-        p_conn_obj.tunnel.user + "@" + p_conn_obj.tunnel.server + ":" + p_conn_obj.tunnel.port
+        p_conn_obj.tunnel.user + "@" + p_conn_obj.tunnel.server + ":" + p_conn_obj.tunnel.port,
+        p_conn_obj.environment
       );
     } else {
       v_connTabControl.tag.createConnTab(p_conn_obj.id);
     }
+  }
+  function connectSelectedConnection() {
+    if (v_connections_data.current_obj) selectConnection(v_connections_data.current_obj);
+  }
+  function deleteSelectedConnection() {
+    if (v_connections_data.current_obj) deleteConnection(v_connections_data.current_obj);
   }
   function toggleConnectionsPublic() {
     updateConnectionsTitleInfo();
     var v_public = el("conn_list_public").checked;
     if (v_public) {
       v_connections_data.show_public = true;
-      document.querySelectorAll(".omnidb__connections__card--public").forEach((v_card_el) => {
-        v_card_el.parentElement.classList.remove("d-none");
-        v_card_el.classList.remove("d-none");
-        v_card_el.classList.add("show");
+      document.querySelectorAll(".omnidb__connections__list-item--public").forEach((v_item_el) => {
+        v_item_el.classList.remove("d-none");
+        v_item_el.classList.add("show");
       });
     } else {
       v_connections_data.show_public = false;
-      for (let i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-        v_conn_div = v_connections_data.card_list[i2].card_div;
-        v_conn_obj = v_connections_data.card_list[i2].data;
+      for (let i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+        v_conn_div = v_connections_data.list_items[i2].item_div;
+        v_conn_obj = v_connections_data.list_items[i2].data;
         if (v_conn_obj.public) {
           if (!v_conn_obj.is_mine) {
-            Array.from(v_conn_div.children).forEach((v_child) => {
-              v_child.classList.remove("show");
-              v_child.classList.add("d-none");
-            });
+            v_conn_div.classList.remove("show");
             v_conn_div.classList.add("d-none");
           }
         }
@@ -6802,7 +6828,7 @@
       v_item.removeAttribute("readonly");
       v_item.removeAttribute("disabled");
     }
-    document.querySelectorAll("#modal_edit_connection .required").forEach((v_required_el) => {
+    document.querySelectorAll("#omnidb__connections__detail_form .required").forEach((v_required_el) => {
       v_required_el.classList.remove("required");
     });
     let v_has_invalid = false;
@@ -6859,8 +6885,8 @@
     var v_group_context = el("group_selector").value;
     var v_connection_owner = false;
     var v_managing_group = v_group_context && el("group_selector").getAttribute("disabled");
-    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-      var v_conn_obj2 = v_connections_data.card_list[i2].data;
+    for (var i2 = 0; i2 < v_connections_data.list_items.length; i2++) {
+      var v_conn_obj2 = v_connections_data.list_items[i2].data;
       if (v_conn_obj2.is_mine) {
         v_connection_owner = true;
       }
@@ -6868,7 +6894,7 @@
     var v_empty_cards = el("connections_management_empty_all");
     var v_empty_with_public = el("connections_management_empty_with_public");
     if (v_empty_cards) {
-      if (v_connections_data.card_list.length === 0) {
+      if (v_connections_data.list_items.length === 0) {
         v_empty_with_public.style.display = "none";
         v_empty_cards.style.display = "";
       } else if (v_group_context !== "-1") {
@@ -6888,10 +6914,13 @@
   }
   const connections = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
+    ENVIRONMENT_META,
     adjustTechSelector,
+    connectSelectedConnection,
     deleteConnection,
     deleteGroup,
     deleteGroupConfirm,
+    deleteSelectedConnection,
     editConnection,
     getGroups,
     groupChange,
@@ -10693,6 +10722,12 @@
     __proto__: null,
     v_createSnippetTextTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  var ENVIRONMENT_TAB_CLASS$1 = {
+    production: "omnidb__tab--env-production",
+    uat: "omnidb__tab--env-uat",
+    development: "omnidb__tab--env-development",
+    archive: "omnidb__tab--env-archive"
+  };
   var v_createConnTabFunction = function(p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
     if (v_connTabControl.tag.connections.length == 0) {
       v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
@@ -10738,6 +10773,7 @@
       }
       var v_tab = v_connTabControl.createTab({
         p_icon: v_icon,
+        p_class: ENVIRONMENT_TAB_CLASS$1[v_conn.v_environment] || false,
         p_name: v_conn_name,
         p_selectFunction: function() {
           document.title = "OmniDB";
@@ -11000,7 +11036,13 @@
     refreshOuterConnectionHeights,
     v_createConnTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
-  var v_createOuterTerminalTabFunction = function(p_conn_id = -1, p_alias = "Terminal", p_details = false) {
+  var ENVIRONMENT_TAB_CLASS = {
+    production: "omnidb__tab--env-production",
+    uat: "omnidb__tab--env-uat",
+    development: "omnidb__tab--env-development",
+    archive: "omnidb__tab--env-archive"
+  };
+  var v_createOuterTerminalTabFunction = function(p_conn_id = -1, p_alias = "Terminal", p_details = false, p_environment = "") {
     let v_tooltip_name = "";
     if (p_alias) {
       v_tooltip_name += '<h5 class="my-1">' + escapeHtml(p_alias) + "</h5>";
@@ -11010,6 +11052,7 @@
     }
     var v_tab = v_connTabControl.createTab({
       p_icon: '<i class="fas fa-terminal"></i>',
+      p_class: ENVIRONMENT_TAB_CLASS[p_environment] || false,
       p_name: escapeHtml(p_alias),
       p_selectFunction: function() {
         if (this.tag != null) {
@@ -11171,6 +11214,7 @@
         p_omnidb_tooltip_name: '<h5 class="my-1">Add Connection</h5>'
       });
       v_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
+      v_connTabControl.setTrailingTab(v_tab);
     };
     v_connTabControl.tag.createConnTab = v_createConnTabFunction;
     v_connTabControl.tag.createSnippetPanel = v_createSnippetPanelFunction;
@@ -33308,7 +33352,7 @@
               text: v_term_name,
               icon: "fas cm-all fa-terminal",
               action: function() {
-                v_connTabControl.tag.createOuterTerminalTab(v_term.v_conn_id, v_name, v_term.v_details);
+                v_connTabControl.tag.createOuterTerminalTab(v_term.v_conn_id, v_name, v_term.v_details, v_term.v_environment);
               }
             });
           })(i2);
@@ -33737,6 +33781,17 @@
       /** @type {any} */
       tag: {},
       isToggleable: p_hierarchy === "primary",
+      // A tab that createTab() always inserts new tabs before instead of
+      // after -- e.g. the outer connection strip's trailing "+" Add
+      // Connection tab (see create_tab_functions.js's createAddTab),
+      // which would otherwise end up stuck wherever it happened to be
+      // created (usually startup) as every later connection/terminal/
+      // website tab got appended past it.
+      /** @type {any} */
+      trailingTab: null,
+      setTrailingTab: function(p_tab) {
+        this.trailingTab = p_tab;
+      },
       // Actions
       disableTabIndex: function(p_index) {
         this.tabList[p_index].elementA.classList.add("disabled");
@@ -33909,6 +33964,7 @@
        * @param {Function|null} [config.p_closeFunction] Callback for closing the tab.
        * @param {Function|null} [config.p_dblClickFunction]  Callback for ondoubleclick.
        * @param {boolean} [config.p_disabled]  Defines if the elementA is disabled.
+       * @param {string|false} [config.p_class] Extra CSS class(es) appended to the elementA, e.g. for a per-tab color accent (see outer_connection_tab.js's environment tint).
        * @param {string|false} [config.p_icon] HTML string is accepted as an optional icon.
        * @param {boolean} [config.p_isDraggable] Defines if the elementA is draggable inside the tab-menu.
        * @param {string} [config.p_name] HTML string is accepted as an optional name for the elementA.
@@ -33925,6 +33981,7 @@
         p_closeFunction = null,
         p_dblClickFunction = null,
         p_disabled = false,
+        p_class = false,
         p_icon = false,
         p_isDraggable = true,
         p_name = "",
@@ -33995,6 +34052,9 @@
         } else {
           v_a.className = "omnidb__tab-menu__link nav-item nav-link";
         }
+        if (p_class) {
+          v_a.className += " " + p_class;
+        }
         var v_close = document.createElement("i");
         v_close.className = "fas fa-times tab-icon icon-close omnidb__tab-menu__link-close";
         v_tab.elementClose = v_close;
@@ -34046,9 +34106,16 @@
             bootstrap.Tooltip.getOrCreateInstance(v_a).hide();
           }
         };
-        this.tabListDiv.appendChild(v_a);
-        this.tabListContentDiv.appendChild(v_div2);
-        this.tabList.push(v_tab);
+        if (this.trailingTab && this.trailingTab !== v_tab) {
+          this.tabListDiv.insertBefore(v_a, this.trailingTab.elementA);
+          this.tabListContentDiv.insertBefore(v_div2, this.trailingTab.elementDiv);
+          var v_trailing_index = this.tabList.indexOf(this.trailingTab);
+          this.tabList.splice(v_trailing_index === -1 ? this.tabList.length : v_trailing_index, 0, v_tab);
+        } else {
+          this.tabListDiv.appendChild(v_a);
+          this.tabListContentDiv.appendChild(v_div2);
+          this.tabList.push(v_tab);
+        }
         return v_tab;
       }
     };
@@ -35932,6 +35999,7 @@
   }
   bind("button_open_users", "click", () => listUsers());
   bind("button_new_connection", "click", () => newConnection());
+  bind("button_delete_connection", "click", () => deleteSelectedConnection());
   bind("group_selector", "change", (e) => groupChange(
     /** @type {HTMLSelectElement} */
     e.target.value
@@ -35958,6 +36026,7 @@
   }
   bind("conn_form_ssh_password", "input", updateConnectionKey);
   bind("conn_form_ssh_key_input", "change", updateConnectionKey);
+  bind("conn_form_button_connect", "click", () => connectSelectedConnection());
   bind("conn_form_button_test_connection", "click", () => testConnection());
   bind("conn_form_button_save_connection", "click", () => saveConnection());
   bind("about_link_website", "click", () => showWebsite("OmniDB", "https://www.omnidb.net"));

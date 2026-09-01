@@ -591,6 +591,416 @@
 	flex: 1 1 auto;
 }
 
+/* Connections section: macOS/iPadOS System Settings style master-detail
+ * split view -- a sidebar list of saved connections, and, once one is
+ * picked, its own form + actions on the right. No more separate
+ * edit-connection modal window (see connections.js). */
+#omnidb__section_connections .omnidb__section__body {
+	padding: 0;
+	display: flex;
+	overflow: hidden;
+}
+
+.omnidb__connections {
+	display: flex;
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+}
+
+.omnidb__connections__sidebar {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 300px;
+	width: 300px;
+	min-width: 220px;
+	max-width: 340px;
+	height: 100%;
+	background-color: var(--sidebar-bg);
+	border-right: 1px solid var(--border-color);
+}
+
+.omnidb__connections__sidebar-toolbar {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	padding: 10px 10px 6px;
+	flex: 0 0 auto;
+}
+
+.omnidb__connections__sidebar-toolbar select {
+	flex: 1 1 auto;
+	min-width: 0;
+}
+
+.omnidb__connections__sidebar-toolbar-actions {
+	display: flex;
+	align-items: center;
+	gap: 2px;
+	position: relative;
+	flex: 0 0 auto;
+}
+
+.omnidb__connections__icon-btn {
+	width: 28px;
+	height: 28px;
+	flex: 0 0 auto;
+	border: none;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--text-secondary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.omnidb__connections__icon-btn:hover {
+	background-color: var(--hover-bg);
+	color: var(--text-primary);
+}
+
+/* "New group" -- a labeled pill rather than an icon-only square, since a
+ * folder glyph alone read as an unlabeled dark button. */
+.omnidb__connections__pill-btn {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	height: 26px;
+	flex: 0 0 auto;
+	padding: 0 8px;
+	border: none;
+	border-radius: 6px;
+	background: transparent;
+	color: var(--text-secondary);
+	font-size: 12px;
+	white-space: nowrap;
+}
+
+.omnidb__connections__pill-btn:hover {
+	background-color: var(--hover-bg);
+	color: var(--text-primary);
+}
+
+.omnidb__connections__pill-btn i {
+	font-size: 10px;
+}
+
+.omnidb__connections__list {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow-y: auto;
+	padding: 2px 8px 8px;
+}
+
+.omnidb__connections__list-item {
+	position: relative;
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 6px 8px;
+	margin-bottom: 1px;
+	border-radius: 6px;
+	cursor: pointer;
+}
+
+.omnidb__connections__list-item:hover {
+	background-color: var(--hover-bg);
+}
+
+.omnidb__connections__list-item--selected,
+.omnidb__connections__list-item--selected:hover {
+	background-color: var(--accent-color);
+}
+
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-title,
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-subtitle,
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-icon,
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-tunnel {
+	color: #fff !important;
+}
+
+.omnidb__connections__list-item-icon {
+	flex: 0 0 auto;
+	width: 20px;
+	text-align: center;
+	color: var(--text-secondary);
+	font-size: 14px;
+}
+
+.omnidb__connections__list-item-text {
+	flex: 1 1 auto;
+	min-width: 0;
+	display: flex;
+	flex-direction: column;
+	line-height: 1.3;
+}
+
+.omnidb__connections__list-item-title {
+	color: var(--text-primary);
+	font-size: 13px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.omnidb__connections__list-item-subtitle {
+	color: var(--text-secondary);
+	font-size: 11.5px;
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+.omnidb__connections__list-item-tunnel {
+	flex: 0 0 auto;
+	color: var(--text-secondary);
+	font-size: 11px;
+}
+
+/* Environment color coding (Production/UAT/Development/Archive) -- a plain
+ * dot next to the connection's name in the sidebar list, and the same color
+ * as a left-edge accent on its open Database/terminal tab (see
+ * outer_connection_tab.js/outer_terminal_tab.js's ENVIRONMENT_TAB_CLASS).
+ * Mainly a safety cue: reaching for the wrong tab should be visibly obvious
+ * once a connection is tagged "Production". */
+.omnidb__connections__list-item-env {
+	flex: 0 0 auto;
+	width: 8px;
+	height: 8px;
+	border-radius: 50%;
+}
+
+.omnidb__env-dot--production {
+	background-color: #ff3b30;
+}
+
+.omnidb__env-dot--uat {
+	background-color: #ff9500;
+}
+
+.omnidb__env-dot--development {
+	background-color: #34c759;
+}
+
+.omnidb__env-dot--archive {
+	background-color: #8e8e93;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-production {
+	box-shadow: inset 3px 0 0 0 #ff3b30;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-uat {
+	box-shadow: inset 3px 0 0 0 #ff9500;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-development {
+	box-shadow: inset 3px 0 0 0 #34c759;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-archive {
+	box-shadow: inset 3px 0 0 0 #8e8e93;
+}
+
+.omnidb__connections__empty {
+	padding: 20px 12px;
+	text-align: center;
+	color: var(--text-secondary);
+}
+
+.omnidb__connections__empty i {
+	display: block;
+	margin-bottom: 8px;
+	font-size: 18px;
+}
+
+.omnidb__connections__empty h6 {
+	font-size: 12.5px;
+	margin-bottom: 10px;
+}
+
+.omnidb__connections__sidebar-footer {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	gap: 6px;
+	padding: 8px 10px;
+	border-top: 1px solid var(--border-color);
+	flex: 0 0 auto;
+}
+
+.omnidb__connections__public-toggle {
+	display: flex;
+	align-items: center;
+	gap: 6px;
+	min-width: 0;
+}
+
+.omnidb__connections__public-toggle-label {
+	font-size: 12px;
+	color: var(--text-secondary);
+	white-space: nowrap;
+	overflow: hidden;
+	text-overflow: ellipsis;
+}
+
+/* Add/remove connection -- a macOS-style two-way segmented control (as seen
+ * in e.g. System Settings' account lists): "+" always creates a new
+ * connection, "-" deletes whichever one is currently loaded in the detail
+ * pane and is disabled while nothing is selected. */
+.omnidb__connections__addremove {
+	display: flex;
+	align-items: stretch;
+	flex: 0 0 auto;
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	overflow: hidden;
+}
+
+.omnidb__connections__addremove button {
+	width: 26px;
+	height: 24px;
+	border: none;
+	background: transparent;
+	color: var(--text-secondary);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 11px;
+}
+
+.omnidb__connections__addremove button:hover:not(:disabled) {
+	background-color: var(--hover-bg);
+	color: var(--text-primary);
+}
+
+.omnidb__connections__addremove button:disabled {
+	color: var(--border-color);
+}
+
+.omnidb__connections__addremove-divider {
+	width: 1px;
+	flex: 0 0 auto;
+	background-color: var(--border-color);
+}
+
+/* Detail pane: the selected connection's own form, right where the old
+ * edit-connection modal's fields used to live -- just no longer in a modal. */
+.omnidb__connections__detail {
+	flex: 1 1 auto;
+	min-width: 0;
+	height: 100%;
+	overflow-y: auto;
+	background-color: var(--app-bg);
+	display: flex;
+	flex-direction: column;
+}
+
+.omnidb__connections__detail-empty {
+	flex: 1 1 auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 12px;
+	color: var(--text-secondary);
+	text-align: center;
+}
+
+.omnidb__connections__detail-empty i {
+	font-size: 40px;
+	opacity: 0.35;
+}
+
+.omnidb__connections__detail-form {
+	display: none;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.omnidb__connections__detail-form--active {
+	display: flex;
+}
+
+.omnidb__connections__detail-header {
+	display: flex;
+	align-items: center;
+	gap: 14px;
+	padding: 18px 28px;
+	border-bottom: 1px solid var(--border-color);
+	flex: 0 0 auto;
+	flex-wrap: wrap;
+	// Capped like .omnidb__connections__detail-body below, so the title and
+	// its Connect/Test/Save actions line up with the form instead of
+	// spreading across the full pane on a wide monitor.
+	max-width: 680px;
+}
+
+.omnidb__connections__detail-icon {
+	flex: 0 0 auto;
+	width: 36px;
+	height: 36px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	font-size: 24px;
+	color: var(--text-secondary);
+}
+
+.omnidb__connections__detail-icon .technology-icon {
+	width: 32px;
+	height: 22px;
+}
+
+.omnidb__connections__detail-heading {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 220px;
+	min-width: 160px;
+}
+
+.omnidb__connections__detail-title-input {
+	border: none;
+	background: transparent;
+	font-size: 19px;
+	font-weight: 600;
+	color: var(--text-primary);
+	padding: 3px 5px;
+	margin-left: -5px;
+	border-radius: 5px;
+	width: 100%;
+}
+
+.omnidb__connections__detail-title-input::placeholder {
+	color: var(--text-secondary);
+	font-weight: 400;
+}
+
+.omnidb__connections__detail-title-input:focus {
+	outline: none;
+	background-color: var(--input-bg);
+}
+
+.omnidb__connections__detail-actions {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	margin-left: auto;
+	flex: 0 0 auto;
+}
+
+.omnidb__connections__detail-body {
+	flex: 1 1 auto;
+	overflow-y: auto;
+	padding: 20px 28px;
+	// A widescreen monitor stretched every field across the whole pane
+	// otherwise -- the Host Connection Info / SSH tunnel rows are already
+	// grouped narrow (Server+Port, User+Password, ...), this just keeps the
+	// card itself from ballooning past a comfortable form width.
+	max-width: 680px;
+}
+
 /* #omnidb_main_tablist (v_connTabControl) lives inside
  * #omnidb__section_database and reuses the ":not(container--menu-shown)"
  * horizontal-strip styling above -- that used to be what "Switch menu"
@@ -617,6 +1027,16 @@
 	flex: 0 0 40px !important;
 	padding: 0 !important;
 	justify-content: center !important;
+}
+
+/* The compact tab has no name (icon only), but createTab() always renders
+ * the (then-empty) .omnidb__tab-menu__link-name span anyway -- left as a
+ * phantom flex item, its `margin-left: 8px` (set above for every other tab's
+ * real label) throws off the compact tab's own justify-content: center,
+ * visibly off-centering the "+" glyph. Dropping it from the layout entirely
+ * fixes that; there's no text in it to lose. */
+#omnidb_main_tablist .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name {
+	display: none !important;
 }
 
 /* Snippets section body (was the slide-in .omnidb__panel overlay). */

@@ -325,6 +325,11 @@ SOFTWARE.
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M3 5h.01' /%3E%3Cpath d='M3 12h.01' /%3E%3Cpath d='M3 19h.01' /%3E%3Cpath d='M8 5h13' /%3E%3Cpath d='M8 12h13' /%3E%3Cpath d='M8 19h13' /%3E%3C/svg%3E");
 }
 
+.fa-minus {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M5 12h14' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M5 12h14' /%3E%3C/svg%3E");
+}
+
 .fa-pause-circle {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10' /%3E%3Cline x1='10' x2='10' y1='15' y2='9' /%3E%3Cline x1='14' x2='14' y1='15' y2='9' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10' /%3E%3Cline x1='10' x2='10' y1='15' y2='9' /%3E%3Cline x1='14' x2='14' y1='15' y2='9' /%3E%3C/svg%3E");
@@ -1428,153 +1433,11 @@ button.close {
   margin: 0 2px;
 }
 
-.omnidb__connections__card-list--cards .row {
-  justify-content: center;
-  gap: 12px;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__card {
-  transition: all 0.2s ease;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__card .card-body {
-  position: relative;
-  border-radius: 12px;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__btn--select {
-  align-items: center;
-  border: none;
-  border-bottom-left-radius: 0;
-  border-top-left-radius: 0;
-  display: flex;
-  font-size: 30px;
-  height: 100%;
-  line-height: 30px;
-  margin: 0;
-  padding: 0;
-  position: absolute;
-  right: 0;
-  top: 0;
-  width: 50px;
-  z-index: 1;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__btn--select i {
-  margin: auto;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__btn--select svg {
-  height: 100%;
-}
-
-.omnidb__connections__card-list--cards .omnidb__connections__cols {
-  flex: 0 1 350px;
-  padding: 15px;
-}
-
-.omnidb__connections__card-list--cards .technology-icon {
-  display: inline-block;
-  width: 24px;
-  height: 16px;
-  font-size: 15px;
-  background-repeat: no-repeat;
-  vertical-align: middle;
-  text-align: center;
-}
-
-.omnidb__connections__card-list--cards .card-body-buttons {
-  margin-top: 5px;
-}
-
-.omnidb__connections__card-list--rows .omnidb__connections__cols {
-  flex: 1 1 50%;
-  max-width: 50%;
-  padding: 5px 15px;
-}
-
-.omnidb__connections__card-list--rows .card-body {
-  align-items: center;
-  display: grid;
-  grid-template: "icon title buttons" 2rem "details details details" 1.5rem "tunnel tunnel tunnel" 1.5rem;
-  grid-template-columns: 24px auto;
-  padding: 5px;
-  padding-left: 14px;
-}
-
-.omnidb__connections__card-list--rows .card-body-icon {
-  grid-area: icon;
-}
-
-.omnidb__connections__card-list--rows .card-body-title {
-  grid-area: title;
-  text-align: left;
-}
-
-.omnidb__connections__card-list--rows .card-body-details {
-  grid-area: details;
-}
-
-.omnidb__connections__card-list--rows .card-body-buttons {
-  grid-area: buttons;
-}
-
-.omnidb__connections__card-list--rows .card-body-tunnel {
-  grid-area: tunnel;
-}
-
-.omnidb__connections__card-list--rows .card-body-icon {
-  width: 24px;
-}
-
-.omnidb__connections__card-list--rows .technology-icon {
-  display: inline-block;
-  width: 24px;
-  height: 16px;
-  font-size: 15px;
-  background-repeat: no-repeat;
-  vertical-align: middle;
-  text-align: center;
-}
-
-.omnidb__connections__card-list--rows .card-body-details,
-.omnidb__connections__card-list--rows .card-body-buttons {
-  display: flex;
-  align-items: center;
-  flex-direction: row;
-  text-align: left;
-}
-
-.omnidb__connections__card-list--rows .card-body-tunnel {
-  margin-top: 5px;
-  text-align: left;
-}
-
-.omnidb__connections__card-list--rows h5,
-.omnidb__connections__card-list--rows h6,
-.omnidb__connections__card-list--rows p {
-  margin-bottom: 0 !important;
-  margin-right: 5px;
-}
-
-.omnidb__connections__card-list--rows h6 {
-  margin-top: 3px;
-}
-
-.omnidb__connections__card-list--rows .omnidb__connections__btn--select {
-  margin-left: auto !important;
-  margin-right: 0.25rem;
-}
-
-.omnidb__connections__card-list--rows .omnidb__connections__btn--select svg {
-  display: none;
-}
-
+/* Selection checkbox overlay for the Connections sidebar list's "Manage
+ * Connections" (group-assignment) mode -- see connections.js's manageGroup.
+ * The cover label sits on top of a full list-item (position: relative, see
+ * _topbar.scss) and is only display:block while that mode is active, so it
+ * doesn't intercept normal row clicks otherwise. */
 .connection-card-checkbox {
   display: none;
   left: 5px;
@@ -1596,33 +1459,26 @@ button.close {
 
 .connection-card-svg {
   display: none;
-  height: 40px;
-  left: 10px;
+  height: 22px;
+  right: 8px;
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 40px;
+  width: 22px;
   z-index: 1;
 }
 
-.omnidb__connections__card-list--rows .connection-card-svg {
-  left: unset;
-  right: 5px;
-  top: 20px;
-  width: 20px;
-}
-
-.omnidb__connections__card-list--connection-management .connection-card-checkbox,
-.omnidb__connections__card-list--connection-management .connection-card-cover {
+.omnidb__connections__list--connection-management .connection-card-checkbox,
+.omnidb__connections__list--connection-management .connection-card-cover {
   display: block;
 }
 
-.omnidb__connections__card-list--connection-management .connection-card-svg {
+.omnidb__connections__list--connection-management .connection-card-svg {
   opacity: 0;
 }
 
-.omnidb__connections__card-list--connection-management .connection-card-svg circle,
-.omnidb__connections__card-list--connection-management .connection-card-svg path {
+.omnidb__connections__list--connection-management .connection-card-svg circle,
+.omnidb__connections__list--connection-management .connection-card-svg path {
   stroke-dasharray: 125;
   stroke-dashoffset: 125;
 }
@@ -1764,10 +1620,6 @@ button.close {
     stroke: transparent;
   }
 }
-.omnidb__connections__card-list--connection-management button {
-  display: none !important;
-}
-
 .omnidb__user-list__item {
   padding: 2rem 1rem 1rem 1rem;
   position: relative;
@@ -2560,6 +2412,19 @@ i.tab-status-idle_in_transaction_aborted {
 .cm-all {
   color: #4a81d4;
   font-size: 16px;
+}
+
+/* Sizing shared by every technology sprite below -- .node-xxx only supplies
+ * the background-image itself. Used by the Connections sidebar list rows and
+ * detail pane header (see _topbar.scss). */
+.technology-icon {
+  display: inline-block;
+  width: 24px;
+  height: 16px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  vertical-align: middle;
 }
 
 .node-spin {
@@ -6005,6 +5870,409 @@ textarea {
   flex: 1 1 auto;
 }
 
+/* Connections section: macOS/iPadOS System Settings style master-detail
+ * split view -- a sidebar list of saved connections, and, once one is
+ * picked, its own form + actions on the right. No more separate
+ * edit-connection modal window (see connections.js). */
+#omnidb__section_connections .omnidb__section__body {
+  padding: 0;
+  display: flex;
+  overflow: hidden;
+}
+
+.omnidb__connections {
+  display: flex;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+.omnidb__connections__sidebar {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 300px;
+  width: 300px;
+  min-width: 220px;
+  max-width: 340px;
+  height: 100%;
+  background-color: var(--sidebar-bg);
+  border-right: 1px solid var(--border-color);
+}
+
+.omnidb__connections__sidebar-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 10px 10px 6px;
+  flex: 0 0 auto;
+}
+
+.omnidb__connections__sidebar-toolbar select {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+
+.omnidb__connections__sidebar-toolbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 2px;
+  position: relative;
+  flex: 0 0 auto;
+}
+
+.omnidb__connections__icon-btn {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 auto;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.omnidb__connections__icon-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+/* "New group" -- a labeled pill rather than an icon-only square, since a
+ * folder glyph alone read as an unlabeled dark button. */
+.omnidb__connections__pill-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  height: 26px;
+  flex: 0 0 auto;
+  padding: 0 8px;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  white-space: nowrap;
+}
+
+.omnidb__connections__pill-btn:hover {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.omnidb__connections__pill-btn i {
+  font-size: 10px;
+}
+
+.omnidb__connections__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 8px 8px;
+}
+
+.omnidb__connections__list-item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  margin-bottom: 1px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.omnidb__connections__list-item:hover {
+  background-color: var(--hover-bg);
+}
+
+.omnidb__connections__list-item--selected,
+.omnidb__connections__list-item--selected:hover {
+  background-color: var(--accent-color);
+}
+
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-title,
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-subtitle,
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-icon,
+.omnidb__connections__list-item--selected .omnidb__connections__list-item-tunnel {
+  color: #fff !important;
+}
+
+.omnidb__connections__list-item-icon {
+  flex: 0 0 auto;
+  width: 20px;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.omnidb__connections__list-item-text {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  line-height: 1.3;
+}
+
+.omnidb__connections__list-item-title {
+  color: var(--text-primary);
+  font-size: 13px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.omnidb__connections__list-item-subtitle {
+  color: var(--text-secondary);
+  font-size: 11.5px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.omnidb__connections__list-item-tunnel {
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+
+/* Environment color coding (Production/UAT/Development/Archive) -- a plain
+ * dot next to the connection's name in the sidebar list, and the same color
+ * as a left-edge accent on its open Database/terminal tab (see
+ * outer_connection_tab.js/outer_terminal_tab.js's ENVIRONMENT_TAB_CLASS).
+ * Mainly a safety cue: reaching for the wrong tab should be visibly obvious
+ * once a connection is tagged "Production". */
+.omnidb__connections__list-item-env {
+  flex: 0 0 auto;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+
+.omnidb__env-dot--production {
+  background-color: #ff3b30;
+}
+
+.omnidb__env-dot--uat {
+  background-color: #ff9500;
+}
+
+.omnidb__env-dot--development {
+  background-color: #34c759;
+}
+
+.omnidb__env-dot--archive {
+  background-color: #8e8e93;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-production {
+  box-shadow: inset 3px 0 0 0 #ff3b30;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-uat {
+  box-shadow: inset 3px 0 0 0 #ff9500;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-development {
+  box-shadow: inset 3px 0 0 0 #34c759;
+}
+
+#omnidb_main_tablist .omnidb__tab--env-archive {
+  box-shadow: inset 3px 0 0 0 #8e8e93;
+}
+
+.omnidb__connections__empty {
+  padding: 20px 12px;
+  text-align: center;
+  color: var(--text-secondary);
+}
+
+.omnidb__connections__empty i {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 18px;
+}
+
+.omnidb__connections__empty h6 {
+  font-size: 12.5px;
+  margin-bottom: 10px;
+}
+
+.omnidb__connections__sidebar-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 6px;
+  padding: 8px 10px;
+  border-top: 1px solid var(--border-color);
+  flex: 0 0 auto;
+}
+
+.omnidb__connections__public-toggle {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  min-width: 0;
+}
+
+.omnidb__connections__public-toggle-label {
+  font-size: 12px;
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Add/remove connection -- a macOS-style two-way segmented control (as seen
+ * in e.g. System Settings' account lists): "+" always creates a new
+ * connection, "-" deletes whichever one is currently loaded in the detail
+ * pane and is disabled while nothing is selected. */
+.omnidb__connections__addremove {
+  display: flex;
+  align-items: stretch;
+  flex: 0 0 auto;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.omnidb__connections__addremove button {
+  width: 26px;
+  height: 24px;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 11px;
+}
+
+.omnidb__connections__addremove button:hover:not(:disabled) {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.omnidb__connections__addremove button:disabled {
+  color: var(--border-color);
+}
+
+.omnidb__connections__addremove-divider {
+  width: 1px;
+  flex: 0 0 auto;
+  background-color: var(--border-color);
+}
+
+/* Detail pane: the selected connection's own form, right where the old
+ * edit-connection modal's fields used to live -- just no longer in a modal. */
+.omnidb__connections__detail {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100%;
+  overflow-y: auto;
+  background-color: var(--app-bg);
+  display: flex;
+  flex-direction: column;
+}
+
+.omnidb__connections__detail-empty {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.omnidb__connections__detail-empty i {
+  font-size: 40px;
+  opacity: 0.35;
+}
+
+.omnidb__connections__detail-form {
+  display: none;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.omnidb__connections__detail-form--active {
+  display: flex;
+}
+
+.omnidb__connections__detail-header {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 18px 28px;
+  border-bottom: 1px solid var(--border-color);
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  max-width: 680px;
+}
+
+.omnidb__connections__detail-icon {
+  flex: 0 0 auto;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  color: var(--text-secondary);
+}
+
+.omnidb__connections__detail-icon .technology-icon {
+  width: 32px;
+  height: 22px;
+}
+
+.omnidb__connections__detail-heading {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 220px;
+  min-width: 160px;
+}
+
+.omnidb__connections__detail-title-input {
+  border: none;
+  background: transparent;
+  font-size: 19px;
+  font-weight: 600;
+  color: var(--text-primary);
+  padding: 3px 5px;
+  margin-left: -5px;
+  border-radius: 5px;
+  width: 100%;
+}
+
+.omnidb__connections__detail-title-input::placeholder {
+  color: var(--text-secondary);
+  font-weight: 400;
+}
+
+.omnidb__connections__detail-title-input:focus {
+  outline: none;
+  background-color: var(--input-bg);
+}
+
+.omnidb__connections__detail-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-left: auto;
+  flex: 0 0 auto;
+}
+
+.omnidb__connections__detail-body {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  padding: 20px 28px;
+  max-width: 680px;
+}
+
 /* #omnidb_main_tablist (v_connTabControl) lives inside
  * #omnidb__section_database and reuses the ":not(container--menu-shown)"
  * horizontal-strip styling above -- that used to be what "Switch menu"
@@ -6031,6 +6299,16 @@ textarea {
   flex: 0 0 40px !important;
   padding: 0 !important;
   justify-content: center !important;
+}
+
+/* The compact tab has no name (icon only), but createTab() always renders
+ * the (then-empty) .omnidb__tab-menu__link-name span anyway -- left as a
+ * phantom flex item, its `margin-left: 8px` (set above for every other tab's
+ * real label) throws off the compact tab's own justify-content: center,
+ * visibly off-centering the "+" glyph. Dropping it from the layout entirely
+ * fixes that; there's no text in it to lose. */
+#omnidb_main_tablist .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name {
+  display: none !important;
 }
 
 /* Snippets section body (was the slide-in .omnidb__panel overlay). */

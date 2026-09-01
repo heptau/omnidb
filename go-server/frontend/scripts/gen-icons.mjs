@@ -77,6 +77,7 @@ const MAPPING = {
 	"fa-save": ["lucide", "save"],
 	"fa-question-circle": ["lucide", "help-circle"],
 	"fa-plus": ["lucide", "plus"],
+	"fa-minus": ["lucide", "minus"],
 	"fa-broom": ["lucide", "brush"],
 	"fa-arrow-alt-circle-down": ["lucide", "arrow-down-circle"],
 	"fa-user-plus": ["lucide", "user-plus"],

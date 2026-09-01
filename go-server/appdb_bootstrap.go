@@ -128,6 +128,19 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("check OmniDB_app_tab.last_used: %w", err)
 	}
 
+	// Add environment column to OmniDB_app_connection if missing (v4.3.0+) --
+	// the color-coded Production/UAT/Development/Archive tag on the
+	// Connections sidebar and open Database tabs.
+	var hasEnvironment string
+	err = db.QueryRow(`select name from pragma_table_info('OmniDB_app_connection') where name = 'environment'`).Scan(&hasEnvironment)
+	if err == sql.ErrNoRows {
+		if _, err := db.Exec(`alter table OmniDB_app_connection add column "environment" varchar(20) NOT NULL DEFAULT ''`); err != nil {
+			return fmt.Errorf("add environment to OmniDB_app_connection: %w", err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_connection.environment: %w", err)
+	}
+
 	// Add indent format columns to OmniDB_app_userdetails if missing.
 	for _, c := range []struct {
 		name string

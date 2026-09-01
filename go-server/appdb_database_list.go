@@ -84,13 +84,15 @@ type databaseListEntry struct {
 	Details1    string
 	Details2    string
 	Public      bool
+	Environment string
 }
 
 type remoteTerminalEntry struct {
-	ConnID  int64
-	Alias   string
-	Details string
-	Public  bool
+	ConnID      int64
+	Alias       string
+	Details     string
+	Public      bool
+	Environment string
 }
 
 // buildDatabaseList mirrors get_database_list's two parallel loops over
@@ -104,10 +106,11 @@ func buildDatabaseList(conns []appConnection) (databases []databaseListEntry, te
 	for _, c := range conns {
 		if c.UseTunnel || c.Technology == "terminal" {
 			terminals = append(terminals, remoteTerminalEntry{
-				ConnID:  c.ID,
-				Alias:   c.Alias,
-				Details: c.SSHUser + "@" + c.SSHServer + ":" + c.SSHPort,
-				Public:  c.Public,
+				ConnID:      c.ID,
+				Alias:       c.Alias,
+				Details:     c.SSHUser + "@" + c.SSHServer + ":" + c.SSHPort,
+				Public:      c.Public,
+				Environment: c.Environment,
 			})
 		}
 		if c.Technology == "terminal" {
@@ -128,6 +131,7 @@ func buildDatabaseList(conns []appConnection) (databases []databaseListEntry, te
 			Details1:    printDatabaseInfo(c),
 			Details2:    details2,
 			Public:      c.Public,
+			Environment: c.Environment,
 		})
 	}
 	return databases, terminals
