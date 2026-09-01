@@ -25,7 +25,6 @@
 			background-image: none !important;
 		}
 		/* Smooth continuous modal sizing instead of Bootstrap's jumpy breakpoints */
-		#modal_connections .modal-dialog,
 		#modal_edit_connection .modal-dialog {
 			max-width: min(calc(100vw - 3.5rem), 1140px);
 		}
@@ -54,61 +53,485 @@
 		</div>
 	</div>
 
-	<div class="omnidb__utilities-menu omnidb__theme-bg--menu-utilities omnidb__rounded--lg">
-		<nav class="navbar p-0">
-			<!-- <img style='height: 40px;' src='/static/OmniDB_app/images/omnidb_logo.svg'/> -->
-			<span class="omnidb__utilities-menu__branding"></span>
-			<!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarMain" aria-controls="navbarMain" aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarMain">
-				<div class="navbar-nav">
-				</div>
-			</div> -->
+	<div id="omnidb__main" class="omnidb__main">
+		<!-- Vertical activity-bar style navigation (icon-only, VSCode-like).
+		     Built entirely in JS -- see section_switcher.js -- the same way
+		     the old outer tab list used to build its own icons. -->
+		<div id="omnidb_section_nav"></div>
 
-			<form class="form-inline">
-				<!-- <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSecond" aria-controls="navbarSecond" aria-expanded="false" aria-label="Toggle navigation">
-					<span class="navbar-toggler-icon"></span>
-				</button> -->
-				<div id="navbarSecond">
-					<div class="navbar-nav flex-row">
-						<a id="omnidb__utilities-menu__link-versioning"
-							class="omnidb__menu__btn-text-visible nav-item nav-link d-flex align-items-center justify-content-center">
-							<i class="fas fa-code-branch"></i>
-							<span class="badge badge-info">{{ omnidb_short_version }}</span>
-						</a>
-						{% if not desktop_mode %}
-						<a id="omnidb__utilities-menu__link-username"
-							class="omnidb__menu__btn-user omnidb__menu__btn-text nav-item nav-link d-flex align-items-center justify-content-center">
-							<!-- <i class="fas fa-user"></i> -->
-							<span>{{ user_name }}</span>
-						</a>
-						{% endif %}
-						<a id="omnidb__utilities-menu__link-connections"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-link" title="Connections"></i></a>
-						{% if not desktop_mode %}
-						{% if super_user == 1 %}
-						<a id="omnidb__utilities-menu__link-user"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-user" title="Users"></i></a>
-						{% endif %}
-						{% endif %}
-						<a id="omnidb__utilities-menu__link-config"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-cog" title="Settings"></i></a>
-						<a id="omnidb__utilities-menu__link-about"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-info-circle" title="About"></i></a>
-						{% if not desktop_mode %}
-						<a id="omnidb__utilities-menu__link-signout"
-							class="omnidb__menu__btn nav-item nav-link d-flex align-items-center justify-content-center" href="#"><i class="fas fa-sign-out-alt" title="Sign out"></i></a>
-						{% endif %}
+		<!-- Welcome section. Content is built once at startup by
+		     tab_functions/outer_welcome_tab.js (initWelcomeSection). -->
+		<div id="omnidb__section_welcome" class="omnidb__section"></div>
+
+		<!-- Connections section (was #modal_connections). Full-screen instead
+		     of a modal; #connection_card_list is filled by connections.js. -->
+		<div id="omnidb__section_connections" class="omnidb__section">
+			<div class="omnidb__section__header">
+				<h5 class="mb-0">
+					Connections
+					<button id="button_new_connection" type="button" class="btn omnidb__theme__btn--primary">New connection</button>
+				</h5>
+			</div>
+			<div class="omnidb__section__body">
+				<div class='mb-3 d-flex align-items-center justify-content-start'>
+					<span id="group_actions_1" class="d-flex align-items-center justify-content-start">
+						<span>Groups</span>
+						<select id="group_selector" class="form-control mx-1"
+							style='display: inline-block; width: 200px;'>
+							<option value=-1 selected>Select Group</option>
+						</select>
+						<button id="button_new_group" type="button" class="btn ms-2 omnidb__theme__btn--primary">New group</button>
+						<button id="button_group_actions" type="button"
+							class="btn ms-2 omnidb__theme__btn--secondary dropdown-toggle" style='display: none;'
+							data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							Group Actions
+						</button>
+						<div class="dropdown-menu dropdown-menu-left">
+							<button id="button_group_rename" class="dropdown-item" type="button">Rename</button>
+							<button id="button_group_manage" class="dropdown-item" type="button">Manage Connections</button>
+							<button id="button_group_delete" class="dropdown-item" type="button">Delete</button>
+						</div>
+					</span>
+					<span id="group_actions_2" style='display: none;'>
+						<button id="button_manage_group_save" type="button" class="btn btn-success ms-2">Save
+							changes</button>
+					</span>
+					<div class="d-inline-block ms-4">
+						<span>Show Public Connections (<span id="conn_list_public_counter">0</span>)</span>
+						<div class="d-inline-block omnidb__switch ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
+							data-bs-html="true"
+							title="<h5>Show Public Connections.</h5><div>Switch ON shows all public connections.</div>">
+							<input type="checkbox" id="conn_list_public" class="omnidb__switch--input">
+							<label for="conn_list_public" class="omnidb__switch--label"><span><i
+										class="fas fa-users"></i></span></label>
+						</div>
 					</div>
 				</div>
-			</form>
-		</nav>
-	</div>
-
-	<div id="omnidb__main" class="omnidb__main" style="min-height: 100vh;">
-		<div id="omnidb_main_tablist">
+				<div id="connection_card_list"
+					class="text-center omnidb__connections__card-list omnidb__connections__card-list--rows"></div>
+			</div>
 		</div>
+
+		<!-- Snippets section (was the slide-in panel). Content is built by
+		     panel_functions/outer_snippet_panel.js. -->
+		<div id="omnidb__section_snippets" class="omnidb__section"></div>
+
+		<!-- Database section: horizontal strip of open connections
+		     (#omnidb_main_tablist = v_connTabControl) plus, per connection,
+		     the tree/DDL and Query/Console/etc. tabs it already builds. -->
+		<div id="omnidb__section_database" class="omnidb__section">
+			<div id="omnidb_main_tablist"></div>
+		</div>
+
+		<!-- Settings section (was #modal_config). -->
+		<div id="omnidb__section_settings" class="omnidb__section">
+			<div class="omnidb__section__body">
+				<div class="omnidb__modal-config">
+
+					<ul class="nav nav-tabs" role="tablist">
+						<li class="nav-item">
+							<a class="nav-link active" id="config_shortcuts-tab" data-bs-toggle="tab" href="#config_shortcuts"
+								role="tab" aria-controls="config_shortcuts" aria-selected="true">Shortcuts</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="config_options-tab" data-bs-toggle="tab" href="#config_options" role="tab"
+								aria-controls="config_options" aria-selected="false">Options</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="config_formatting-tab" data-bs-toggle="tab" href="#config_formatting" role="tab"
+								aria-controls="config_formatting" aria-selected="false">Formatting</a>
+						</li>
+						<li class="nav-item">
+							<a class="nav-link" id="config_password-tab" data-bs-toggle="tab" href="#config_password" role="tab"
+								aria-controls="config_password" aria-selected="false">Password</a>
+						</li>
+						{% if not desktop_mode %}
+						{% if super_user == 1 %}
+						<li class="nav-item">
+							<a class="nav-link" id="config_account-tab" data-bs-toggle="tab" href="#config_account" role="tab"
+								aria-controls="config_account" aria-selected="false">Account</a>
+						</li>
+						{% endif %}
+						{% endif %}
+					</ul>
+					<div class="tab-content p-2">
+
+						<div class="tab-pane fade show active" id="config_shortcuts" role="tabpanel"
+							aria-labelledby="config_shortcuts-tab">
+							<div id="div_shortcut_background_dark">
+								<div style="position: absolute; top: 50%; width: 100%;">Press key combination... (ESC to cancel)</div>
+							</div>
+							<div class="form-group row">
+								<label for="shortcut_run_query" class="col-sm-6 col-form-label">Run Query</label>
+								<div class="col-sm-6">
+									<button id="shortcut_run_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_explain" class="col-sm-6 col-form-label">Run Explain</label>
+								<div class="col-sm-6">
+									<button id="shortcut_explain" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_explain_analyze" class="col-sm-6 col-form-label">Run Explain Analyze</label>
+								<div class="col-sm-6">
+									<button id="shortcut_explain_analyze" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_cancel_query" class="col-sm-6 col-form-label">Cancel Query</label>
+								<div class="col-sm-6">
+									<button id="shortcut_cancel_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_indent" class="col-sm-6 col-form-label">Indent</label>
+								<div class="col-sm-6">
+									<button id="shortcut_indent" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_autocomplete" class="col-sm-6 col-form-label">Autocomplete</label>
+								<div class="col-sm-6">
+									<button id="shortcut_autocomplete" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_new_inner_tab" class="col-sm-6 col-form-label">New Inner Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_new_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_remove_inner_tab" class="col-sm-6 col-form-label">Remove Current Inner
+									Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_remove_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_left_inner_tab" class="col-sm-6 col-form-label">Select Left Inner Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_left_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_right_inner_tab" class="col-sm-6 col-form-label">Select Right Inner Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div style="text-align:right;">
+								<button id="button_save_shortcuts" class='btn btn-success'>Save</button>
+							</div>
+						</div>
+
+						<div class="tab-pane fade" id="config_options" role="tabpanel" aria-labelledby="config_options-tab">
+
+							<div class="row">
+								<div class="col-md-6 mb-3">
+									<label for="sel_interface_font_size">Font Size</label>
+									<input type="range" min="10"  max="20"  step="1" value="12"
+										class="form-control" style="flex:1; height:6px; margin:0"
+										id="sel_interface_font_size">
+								</div>
+							</div>
+							<div class="row">
+								<div class="col-md-6 mb-3">
+									<label for="sel_csv_encoding">CSV Encoding</label>
+									<select id="sel_csv_encoding" class="form-control">
+										<option value="ascii">ascii</option>
+										<option value="big5">big5</option>
+										<option value="big5hkscs">big5hkscs</option>
+										<option value="cp037">cp037</option>
+										<option value="cp273">cp273</option>
+										<option value="cp424">cp424</option>
+										<option value="cp437">cp437</option>
+										<option value="cp500">cp500</option>
+										<option value="cp720">cp720</option>
+										<option value="cp737">cp737</option>
+										<option value="cp775">cp775</option>
+										<option value="cp850">cp850</option>
+										<option value="cp852">cp852</option>
+										<option value="cp855">cp855</option>
+										<option value="cp856">cp856</option>
+										<option value="cp857">cp857</option>
+										<option value="cp858">cp858</option>
+										<option value="cp860">cp860</option>
+										<option value="cp861">cp861</option>
+										<option value="cp862">cp862</option>
+										<option value="cp863">cp863</option>
+										<option value="cp864">cp864</option>
+										<option value="cp865">cp865</option>
+										<option value="cp866">cp866</option>
+										<option value="cp869">cp869</option>
+										<option value="cp874">cp874</option>
+										<option value="cp875">cp875</option>
+										<option value="cp932">cp932</option>
+										<option value="cp949">cp949</option>
+										<option value="cp950">cp950</option>
+										<option value="cp1006">cp1006</option>
+										<option value="cp1026">cp1026</option>
+										<option value="cp1125">cp1125</option>
+										<option value="cp1140">cp1140</option>
+										<option value="cp1250">cp1250</option>
+										<option value="cp1251">cp1251</option>
+										<option value="cp1252">cp1252</option>
+										<option value="cp1253">cp1253</option>
+										<option value="cp1254">cp1254</option>
+										<option value="cp1255">cp1255</option>
+										<option value="cp1256">cp1256</option>
+										<option value="cp1257">cp1257</option>
+										<option value="cp1258">cp1258</option>
+										<option value="cp65001">cp65001</option>
+										<option value="euc-jp">euc-jp</option>
+										<option value="euc-jis-2004">euc-jis-2004</option>
+										<option value="euc-jisx0213">euc-jisx0213</option>
+										<option value="euc-kr">euc-kr</option>
+										<option value="gb2312">gb2312</option>
+										<option value="gbk">gbk</option>
+										<option value="gb18030">gb18030</option>
+										<option value="hz">hz</option>
+										<option value="iso2022-jp">iso2022-jp</option>
+										<option value="iso2022-jp-1">iso2022-jp-1</option>
+										<option value="iso2022-jp-2">iso2022-jp-2</option>
+										<option value="iso2022-jp-2004">iso2022-jp-2004</option>
+										<option value="iso2022-jp-3">iso2022-jp-3</option>
+										<option value="iso2022-jp-ext">iso2022-jp-ext</option>
+										<option value="iso2022-kr">iso2022-kr</option>
+										<option value="latin-1">latin-1</option>
+										<option value="iso8859-2">iso8859-2</option>
+										<option value="iso8859-3">iso8859-3</option>
+										<option value="iso8859-4">iso8859-4</option>
+										<option value="iso8859-5">iso8859-5</option>
+										<option value="iso8859-6">iso8859-6</option>
+										<option value="iso8859-7">iso8859-7</option>
+										<option value="iso8859-8">iso8859-8</option>
+										<option value="iso8859-9">iso8859-9</option>
+										<option value="iso8859-10">iso8859-10</option>
+										<option value="iso8859-11">iso8859-11</option>
+										<option value="iso8859-13">iso8859-13</option>
+										<option value="iso8859-14">iso8859-14</option>
+										<option value="iso8859-15">iso8859-15</option>
+										<option value="iso8859-16">iso8859-16</option>
+										<option value="johab">johab</option>
+										<option value="koi8-r">koi8-r</option>
+										<option value="koi8-t">koi8-t</option>
+										<option value="koi8-u">koi8-u</option>
+										<option value="kz1048">kz1048</option>
+										<option value="mac-cyrillic">mac-cyrillic</option>
+										<option value="mac-greek">mac-greek</option>
+										<option value="mac-iceland">mac-iceland</option>
+										<option value="mac-latin2">mac-latin2</option>
+										<option value="mac-roman">mac-roman</option>
+										<option value="mac-turkish">mac-turkish</option>
+										<option value="ptcp154">ptcp154</option>
+										<option value="shift-jis">shift-jis</option>
+										<option value="shift-jis-2004">shift-jis-2004</option>
+										<option value="shift-jisx0213">shift-jisx0213</option>
+										<option value="utf-32">utf-32</option>
+										<option value="utf-32-be">utf-32-be</option>
+										<option value="utf-32-le">utf-32-le</option>
+										<option value="utf-16">utf-16</option>
+										<option value="utf-16-be">utf-16-be</option>
+										<option value="utf-16-le">utf-16-le</option>
+										<option value="utf-7">utf-7</option>
+										<option value="utf-8">utf-8</option>
+										<option value="utf-8-sig">utf-8-sig</option>
+										<option value="windows-1252">windows-1252</option>
+									</select>
+								</div>
+								<div class="col-md-6 mb-3">
+									<label for="txt_csv_delimiter">CSV Delimiter</label>
+									<input type="text" class="form-control" id="txt_csv_delimiter" placeholder="Delimiter">
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label>Autocomplete Suggestions</label>
+									<div>
+										<a id="link_autocomplete_all" href="#">All</a>
+										&nbsp;/&nbsp;
+										<a id="link_autocomplete_none" href="#">None</a>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_keyword" value="keyword">
+										<label class="form-check-label" for="autocomplete_type_keyword">Keywords</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_database" value="database">
+										<label class="form-check-label" for="autocomplete_type_database">Databases</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_role" value="role">
+										<label class="form-check-label" for="autocomplete_type_role">Roles</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_tablespace" value="tablespace">
+										<label class="form-check-label" for="autocomplete_type_tablespace">Tablespaces</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_schema" value="schema">
+										<label class="form-check-label" for="autocomplete_type_schema">Schemas</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_extension" value="extension">
+										<label class="form-check-label" for="autocomplete_type_extension">Extensions</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_table" value="table">
+										<label class="form-check-label" for="autocomplete_type_table">Tables</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_view" value="view">
+										<label class="form-check-label" for="autocomplete_type_view">Views</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_column" value="column">
+										<label class="form-check-label" for="autocomplete_type_column">Columns</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_function" value="function">
+										<label class="form-check-label" for="autocomplete_type_function">Functions</label>
+									</div>
+									<div class="form-check form-check-inline">
+										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_index" value="index">
+										<label class="form-check-label" for="autocomplete_type_index">Indexes</label>
+									</div>
+								</div>
+							</div>
+							<div style="text-align:right;">
+								<button class='btn btn-success omnidb__save-config-user'>Save</button>
+							</div>
+
+						</div>
+
+						<div class="tab-pane fade" id="config_formatting" role="tabpanel" aria-labelledby="config_formatting-tab">
+
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label>Indent Character</label>
+									<div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="indent_char" id="indent_char_space" value="space">
+											<label class="form-check-label" for="indent_char_space">Spaces</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="indent_char" id="indent_char_tab" value="tab">
+											<label class="form-check-label" for="indent_char_tab">Tab</label>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label>Indent Size</label>
+									<div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="indent_size" id="indent_size_2" value="2">
+											<label class="form-check-label" for="indent_size_2">2</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="indent_size" id="indent_size_3" value="3">
+											<label class="form-check-label" for="indent_size_3">3</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="indent_size" id="indent_size_4" value="4">
+											<label class="form-check-label" for="indent_size_4">4</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label>Comma Style</label>
+									<div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="comma_style" id="comma_style_leading" value="leading">
+											<label class="form-check-label" for="comma_style_leading">Leading (, at line start)</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="comma_style" id="comma_style_trailing" value="trailing">
+											<label class="form-check-label" for="comma_style_trailing">Trailing (, at line end)</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label>Keyword Case</label>
+									<div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_preserve" value="preserve">
+											<label class="form-check-label" for="keyword_case_preserve">Preserve</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_upper" value="upper">
+											<label class="form-check-label" for="keyword_case_upper">UPPERCASE</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_lower" value="lower">
+											<label class="form-check-label" for="keyword_case_lower">lowercase</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div style="text-align:right;">
+								<button class='btn btn-success omnidb__save-config-user'>Save</button>
+							</div>
+
+						</div>
+
+						<div class="tab-pane fade" id="config_password" role="tabpanel" aria-labelledby="config_password-tab">
+							<div class="row">
+								<div class="col-md-6 mb-3">
+									<label for="txt_new_pwd">New Password</label>
+									<input id="txt_new_pwd" type="password" class="form-control">
+								</div>
+								<div class="col-md-6 mb-3">
+									<label for="txt_confirm_new_pwd">Confirm</label>
+									<input id="txt_confirm_new_pwd" type="password" class="form-control">
+								</div>
+							</div>
+							<div style="text-align:right;">
+								<button class='btn btn-success omnidb__save-config-user'>Save</button>
+							</div>
+						</div>
+
+						{% if not desktop_mode %}
+						{% if super_user == 1 %}
+						<div class="tab-pane fade" id="config_account" role="tabpanel" aria-labelledby="config_account-tab">
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label>User Management</label>
+									<div>
+										<button id="button_open_users" type="button" class="btn omnidb__theme__btn--primary"><i class="fas fa-user me-1"></i> Manage Users</button>
+									</div>
+								</div>
+							</div>
+						</div>
+						{% endif %}
+						{% endif %}
+					</div>
+
+				</div><!-- .omnidb__modal-config -->
+			</div>
+		</div>
+
 	</div>
 
 	<div id="div_loading" class="div_loading" style='z-index: 100005;'>
@@ -119,61 +542,6 @@
 			</div>
 			<div>
 				<button id="bt_cancel_ajax" style='display: none; margin-top: 10px;' class='btn btn-light'>Cancel</button>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal Connections -->
-	<div class="modal fade" id="modal_connections" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-xl modal-dialog-scrollable" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">
-						Connections
-						<button id="button_new_connection" type="button" class="btn omnidb__theme__btn--primary">New connection</button>
-					</h5>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class='mb-3 d-flex align-items-center justify-content-start'>
-						<span id="group_actions_1" class="d-flex align-items-center justify-content-start">
-							<span>Groups</span>
-							<select id="group_selector" class="form-control mx-1"
-								style='display: inline-block; width: 200px;'>
-								<option value=-1 selected>Select Group</option>
-							</select>
-							<button id="button_new_group" type="button" class="btn ms-2 omnidb__theme__btn--primary">New group</button>
-							<button id="button_group_actions" type="button"
-								class="btn ms-2 omnidb__theme__btn--secondary dropdown-toggle" style='display: none;'
-								data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Group Actions
-							</button>
-							<div class="dropdown-menu dropdown-menu-left">
-								<button id="button_group_rename" class="dropdown-item" type="button">Rename</button>
-								<button id="button_group_manage" class="dropdown-item" type="button">Manage Connections</button>
-								<button id="button_group_delete" class="dropdown-item" type="button">Delete</button>
-							</div>
-						</span>
-						<span id="group_actions_2" style='display: none;'>
-							<button id="button_manage_group_save" type="button" class="btn btn-success ms-2">Save
-								changes</button>
-						</span>
-						<div class="d-inline-block ms-4">
-							<span>Show Public Connections (<span id="conn_list_public_counter">0</span>)</span>
-							<div class="d-inline-block omnidb__switch ms-2" data-bs-toggle="tooltip" data-bs-placement="right"
-								data-bs-html="true"
-								title="<h5>Show Public Connections.</h5><div>Switch ON shows all public connections.</div>">
-								<input type="checkbox" id="conn_list_public" class="omnidb__switch--input">
-								<label for="conn_list_public" class="omnidb__switch--label"><span><i
-											class="fas fa-users"></i></span></label>
-							</div>
-						</div>
-					</div>
-					<div id="connection_card_list"
-						class="text-center omnidb__connections__card-list omnidb__connections__card-list--rows"></div>
-				</div>
 			</div>
 		</div>
 	</div>
@@ -330,48 +698,6 @@
 		</div>
 	</div>
 
-	<!-- Modal Query History -->
-	<div class="modal fade" id="modal_query_history" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog modal-xl" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button class="btn btn-danger">Delete History</button>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-
-					<div class="row">
-						<div class="col-md-3 mb-3">
-							<label for="query_history_from">From</label>
-							<input type="text" class="form-control" id="query_history_from" placeholder="From Date">
-						</div>
-						<div class="col-md-3 mb-3">
-							<label for="query_history_to">To</label>
-							<input type="text" class="form-control" id="query_history_to" placeholder="To Date">
-						</div>
-						<div class="col-md-6 mb-3">
-							<label for="query_history_contains">Query Contains</label>
-							<input type="text" class="form-control" id="query_history_contains" placeholder="Filter">
-						</div>
-					</div>
-
-					<div class="text-center">
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">First</button>
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Previous</button>
-						<span class="me-1"> 1 / 217 </span>
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Next</button>
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Last</button>
-					</div>
-
-					<div id="query_history_grid" style="width: 100%; height: 300px; overflow: hidden;"></div>
-
-				</div>
-			</div>
-		</div>
-	</div>
-
 	<!-- Modal About -->
 	<div class="modal fade" id="modal_about" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -414,6 +740,48 @@
 		</div>
 	</div>
 
+	<!-- Modal Query History -->
+	<div class="modal fade" id="modal_query_history" tabindex="-1" role="dialog" aria-hidden="true">
+		<div class="modal-dialog modal-xl" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button class="btn btn-danger">Delete History</button>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+
+					<div class="row">
+						<div class="col-md-3 mb-3">
+							<label for="query_history_from">From</label>
+							<input type="text" class="form-control" id="query_history_from" placeholder="From Date">
+						</div>
+						<div class="col-md-3 mb-3">
+							<label for="query_history_to">To</label>
+							<input type="text" class="form-control" id="query_history_to" placeholder="To Date">
+						</div>
+						<div class="col-md-6 mb-3">
+							<label for="query_history_contains">Query Contains</label>
+							<input type="text" class="form-control" id="query_history_contains" placeholder="Filter">
+						</div>
+					</div>
+
+					<div class="text-center">
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">First</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Previous</button>
+						<span class="me-1"> 1 / 217 </span>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Next</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Last</button>
+					</div>
+
+					<div id="query_history_grid" style="width: 100%; height: 300px; overflow: hidden;"></div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Modal Monitoring Units -->
 	<div class="modal fade" id="modal_monitoring_units" tabindex="-1" role="dialog" aria-hidden="true">
 		<div class="modal-dialog" role="document">
@@ -443,402 +811,6 @@
 				</div>
 				<div class="modal-body">
 					<div id="div_user_list" style="width: 100%; height: 300px; overflow: hidden;"></div>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal Config -->
-	<div class="modal" id="modal_config" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title">Settings</h5>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div class="omnidb__modal-config">
-
-						<ul class="nav nav-tabs" role="tablist">
-							<li class="nav-item">
-								<a class="nav-link active" id="config_shortcuts-tab" data-bs-toggle="tab" href="#config_shortcuts"
-									role="tab" aria-controls="config_shortcuts" aria-selected="true">Shortcuts</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" id="config_options-tab" data-bs-toggle="tab" href="#config_options" role="tab"
-									aria-controls="config_options" aria-selected="false">Options</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" id="config_formatting-tab" data-bs-toggle="tab" href="#config_formatting" role="tab"
-									aria-controls="config_formatting" aria-selected="false">Formatting</a>
-							</li>
-							<li class="nav-item">
-								<a class="nav-link" id="config_password-tab" data-bs-toggle="tab" href="#config_password" role="tab"
-									aria-controls="config_password" aria-selected="false">Password</a>
-							</li>
-						</ul>
-						<div class="tab-content p-2">
-
-							<div class="tab-pane fade show active" id="config_shortcuts" role="tabpanel"
-								aria-labelledby="config_shortcuts-tab">
-								<div id="div_shortcut_background_dark">
-									<div style="position: absolute; top: 50%; width: 100%;">Press key combination... (ESC to cancel)</div>
-								</div>
-								<div class="form-group row">
-									<label for="shortcut_run_query" class="col-sm-6 col-form-label">Run Query</label>
-									<div class="col-sm-6">
-										<button id="shortcut_run_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_explain" class="col-sm-6 col-form-label">Run Explain</label>
-									<div class="col-sm-6">
-										<button id="shortcut_explain" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_explain_analyze" class="col-sm-6 col-form-label">Run Explain Analyze</label>
-									<div class="col-sm-6">
-										<button id="shortcut_explain_analyze" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_cancel_query" class="col-sm-6 col-form-label">Cancel Query</label>
-									<div class="col-sm-6">
-										<button id="shortcut_cancel_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_indent" class="col-sm-6 col-form-label">Indent</label>
-									<div class="col-sm-6">
-										<button id="shortcut_indent" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_autocomplete" class="col-sm-6 col-form-label">Autocomplete</label>
-									<div class="col-sm-6">
-										<button id="shortcut_autocomplete" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_new_inner_tab" class="col-sm-6 col-form-label">New Inner Tab</label>
-									<div class="col-sm-6">
-										<button id="shortcut_new_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_remove_inner_tab" class="col-sm-6 col-form-label">Remove Current Inner
-										Tab</label>
-									<div class="col-sm-6">
-										<button id="shortcut_remove_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_left_inner_tab" class="col-sm-6 col-form-label">Select Left Inner Tab</label>
-									<div class="col-sm-6">
-										<button id="shortcut_left_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div class="form-group row">
-									<label for="shortcut_right_inner_tab" class="col-sm-6 col-form-label">Select Right Inner Tab</label>
-									<div class="col-sm-6">
-										<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-									</div>
-								</div>
-
-								<div style="text-align:right;">
-									<button id="button_save_shortcuts" class='btn btn-success'>Save</button>
-								</div>
-							</div>
-
-							<div class="tab-pane fade" id="config_options" role="tabpanel" aria-labelledby="config_options-tab">
-
-								<div class="row">
-									<div class="col-md-6 mb-3">
-										<label for="sel_interface_font_size">Font Size</label>
-										<input type="range" min="10"  max="20"  step="1" value="12"
-											class="form-control" style="flex:1; height:6px; margin:0"
-											id="sel_interface_font_size">
-									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-6 mb-3">
-										<label for="sel_csv_encoding">CSV Encoding</label>
-										<select id="sel_csv_encoding" class="form-control">
-											<option value="ascii">ascii</option>
-											<option value="big5">big5</option>
-											<option value="big5hkscs">big5hkscs</option>
-											<option value="cp037">cp037</option>
-											<option value="cp273">cp273</option>
-											<option value="cp424">cp424</option>
-											<option value="cp437">cp437</option>
-											<option value="cp500">cp500</option>
-											<option value="cp720">cp720</option>
-											<option value="cp737">cp737</option>
-											<option value="cp775">cp775</option>
-											<option value="cp850">cp850</option>
-											<option value="cp852">cp852</option>
-											<option value="cp855">cp855</option>
-											<option value="cp856">cp856</option>
-											<option value="cp857">cp857</option>
-											<option value="cp858">cp858</option>
-											<option value="cp860">cp860</option>
-											<option value="cp861">cp861</option>
-											<option value="cp862">cp862</option>
-											<option value="cp863">cp863</option>
-											<option value="cp864">cp864</option>
-											<option value="cp865">cp865</option>
-											<option value="cp866">cp866</option>
-											<option value="cp869">cp869</option>
-											<option value="cp874">cp874</option>
-											<option value="cp875">cp875</option>
-											<option value="cp932">cp932</option>
-											<option value="cp949">cp949</option>
-											<option value="cp950">cp950</option>
-											<option value="cp1006">cp1006</option>
-											<option value="cp1026">cp1026</option>
-											<option value="cp1125">cp1125</option>
-											<option value="cp1140">cp1140</option>
-											<option value="cp1250">cp1250</option>
-											<option value="cp1251">cp1251</option>
-											<option value="cp1252">cp1252</option>
-											<option value="cp1253">cp1253</option>
-											<option value="cp1254">cp1254</option>
-											<option value="cp1255">cp1255</option>
-											<option value="cp1256">cp1256</option>
-											<option value="cp1257">cp1257</option>
-											<option value="cp1258">cp1258</option>
-											<option value="cp65001">cp65001</option>
-											<option value="euc-jp">euc-jp</option>
-											<option value="euc-jis-2004">euc-jis-2004</option>
-											<option value="euc-jisx0213">euc-jisx0213</option>
-											<option value="euc-kr">euc-kr</option>
-											<option value="gb2312">gb2312</option>
-											<option value="gbk">gbk</option>
-											<option value="gb18030">gb18030</option>
-											<option value="hz">hz</option>
-											<option value="iso2022-jp">iso2022-jp</option>
-											<option value="iso2022-jp-1">iso2022-jp-1</option>
-											<option value="iso2022-jp-2">iso2022-jp-2</option>
-											<option value="iso2022-jp-2004">iso2022-jp-2004</option>
-											<option value="iso2022-jp-3">iso2022-jp-3</option>
-											<option value="iso2022-jp-ext">iso2022-jp-ext</option>
-											<option value="iso2022-kr">iso2022-kr</option>
-											<option value="latin-1">latin-1</option>
-											<option value="iso8859-2">iso8859-2</option>
-											<option value="iso8859-3">iso8859-3</option>
-											<option value="iso8859-4">iso8859-4</option>
-											<option value="iso8859-5">iso8859-5</option>
-											<option value="iso8859-6">iso8859-6</option>
-											<option value="iso8859-7">iso8859-7</option>
-											<option value="iso8859-8">iso8859-8</option>
-											<option value="iso8859-9">iso8859-9</option>
-											<option value="iso8859-10">iso8859-10</option>
-											<option value="iso8859-11">iso8859-11</option>
-											<option value="iso8859-13">iso8859-13</option>
-											<option value="iso8859-14">iso8859-14</option>
-											<option value="iso8859-15">iso8859-15</option>
-											<option value="iso8859-16">iso8859-16</option>
-											<option value="johab">johab</option>
-											<option value="koi8-r">koi8-r</option>
-											<option value="koi8-t">koi8-t</option>
-											<option value="koi8-u">koi8-u</option>
-											<option value="kz1048">kz1048</option>
-											<option value="mac-cyrillic">mac-cyrillic</option>
-											<option value="mac-greek">mac-greek</option>
-											<option value="mac-iceland">mac-iceland</option>
-											<option value="mac-latin2">mac-latin2</option>
-											<option value="mac-roman">mac-roman</option>
-											<option value="mac-turkish">mac-turkish</option>
-											<option value="ptcp154">ptcp154</option>
-											<option value="shift-jis">shift-jis</option>
-											<option value="shift-jis-2004">shift-jis-2004</option>
-											<option value="shift-jisx0213">shift-jisx0213</option>
-											<option value="utf-32">utf-32</option>
-											<option value="utf-32-be">utf-32-be</option>
-											<option value="utf-32-le">utf-32-le</option>
-											<option value="utf-16">utf-16</option>
-											<option value="utf-16-be">utf-16-be</option>
-											<option value="utf-16-le">utf-16-le</option>
-											<option value="utf-7">utf-7</option>
-											<option value="utf-8">utf-8</option>
-											<option value="utf-8-sig">utf-8-sig</option>
-											<option value="windows-1252">windows-1252</option>
-										</select>
-									</div>
-									<div class="col-md-6 mb-3">
-										<label for="txt_csv_delimiter">CSV Delimiter</label>
-										<input type="text" class="form-control" id="txt_csv_delimiter" placeholder="Delimiter">
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-md-12">
-										<label>Autocomplete Suggestions</label>
-										<div>
-											<a id="link_autocomplete_all" href="#">All</a>
-											&nbsp;/&nbsp;
-											<a id="link_autocomplete_none" href="#">None</a>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_keyword" value="keyword">
-											<label class="form-check-label" for="autocomplete_type_keyword">Keywords</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_database" value="database">
-											<label class="form-check-label" for="autocomplete_type_database">Databases</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_role" value="role">
-											<label class="form-check-label" for="autocomplete_type_role">Roles</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_tablespace" value="tablespace">
-											<label class="form-check-label" for="autocomplete_type_tablespace">Tablespaces</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_schema" value="schema">
-											<label class="form-check-label" for="autocomplete_type_schema">Schemas</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_extension" value="extension">
-											<label class="form-check-label" for="autocomplete_type_extension">Extensions</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_table" value="table">
-											<label class="form-check-label" for="autocomplete_type_table">Tables</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_view" value="view">
-											<label class="form-check-label" for="autocomplete_type_view">Views</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_column" value="column">
-											<label class="form-check-label" for="autocomplete_type_column">Columns</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_function" value="function">
-											<label class="form-check-label" for="autocomplete_type_function">Functions</label>
-										</div>
-										<div class="form-check form-check-inline">
-											<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_index" value="index">
-											<label class="form-check-label" for="autocomplete_type_index">Indexes</label>
-										</div>
-									</div>
-								</div>
-								<div style="text-align:right;">
-									<button class='btn btn-success omnidb__save-config-user'>Save</button>
-								</div>
-
-							</div>
-
-							<div class="tab-pane fade" id="config_formatting" role="tabpanel" aria-labelledby="config_formatting-tab">
-
-								<div class="row mb-3">
-									<div class="col-md-12">
-										<label>Indent Character</label>
-										<div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_space" value="space">
-												<label class="form-check-label" for="indent_char_space">Spaces</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_char" id="indent_char_tab" value="tab">
-												<label class="form-check-label" for="indent_char_tab">Tab</label>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="row mb-3">
-									<div class="col-md-12">
-										<label>Indent Size</label>
-										<div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_2" value="2">
-												<label class="form-check-label" for="indent_size_2">2</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_3" value="3">
-												<label class="form-check-label" for="indent_size_3">3</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="indent_size" id="indent_size_4" value="4">
-												<label class="form-check-label" for="indent_size_4">4</label>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="row mb-3">
-									<div class="col-md-12">
-										<label>Comma Style</label>
-										<div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_leading" value="leading">
-												<label class="form-check-label" for="comma_style_leading">Leading (, at line start)</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="comma_style" id="comma_style_trailing" value="trailing">
-												<label class="form-check-label" for="comma_style_trailing">Trailing (, at line end)</label>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div class="row mb-3">
-									<div class="col-md-12">
-										<label>Keyword Case</label>
-										<div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_preserve" value="preserve">
-												<label class="form-check-label" for="keyword_case_preserve">Preserve</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_upper" value="upper">
-												<label class="form-check-label" for="keyword_case_upper">UPPERCASE</label>
-											</div>
-											<div class="form-check form-check-inline">
-												<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_lower" value="lower">
-												<label class="form-check-label" for="keyword_case_lower">lowercase</label>
-											</div>
-										</div>
-									</div>
-								</div>
-
-								<div style="text-align:right;">
-									<button class='btn btn-success omnidb__save-config-user'>Save</button>
-								</div>
-
-							</div>
-
-							<div class="tab-pane fade" id="config_password" role="tabpanel" aria-labelledby="config_password-tab">
-								<div class="row">
-									<div class="col-md-6 mb-3">
-										<label for="txt_new_pwd">New Password</label>
-										<input id="txt_new_pwd" type="password" class="form-control">
-									</div>
-									<div class="col-md-6 mb-3">
-										<label for="txt_confirm_new_pwd">Confirm</label>
-										<input id="txt_confirm_new_pwd" type="password" class="form-control">
-									</div>
-								</div>
-								<div style="text-align:right;">
-									<button class='btn btn-success omnidb__save-config-user'>Save</button>
-								</div>
-							</div>
-						</div>
-
-					</div><!-- .container-fluid -->
 				</div>
 			</div>
 		</div>

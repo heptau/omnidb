@@ -22,7 +22,6 @@ import {
   newGroup,
   renameGroup,
   saveConnection,
-  startConnectionManagement,
   testConnection,
   toggleConnectionsPublic,
   updateConnectionKey,
@@ -30,12 +29,9 @@ import {
 } from './connections.js'
 import {
   changeInterfaceFontSize,
-  confirmSignout,
   saveConfigUser,
   saveShortcuts,
   setAllAutocompleteTypeCheckboxes,
-  showAbout,
-  showConfigUser,
   showWebsite,
   updateIndentUnit,
 } from './header_actions.js'
@@ -120,15 +116,12 @@ function bindAll(selector, type, handler) {
   document.querySelectorAll(selector).forEach((el) => el.addEventListener(type, handler))
 }
 
-// --- header ----------------------------------------------------------------
+// --- settings: account (superuser-only "Manage Users" tab) -----------------
 //
-// These are `<a href="#">`, and the attributes they replace did not return
-// false, so the fragment navigation they cause is left as it was.
-bind('omnidb__utilities-menu__link-connections', 'click', () => startConnectionManagement())
-bind('omnidb__utilities-menu__link-user', 'click', () => listUsers())
-bind('omnidb__utilities-menu__link-config', 'click', () => showConfigUser())
-bind('omnidb__utilities-menu__link-about', 'click', () => showAbout())
-bind('omnidb__utilities-menu__link-signout', 'click', () => confirmSignout())
+// Username/version/Sign out moved to the Account icon at the bottom of the
+// vertical section nav (see section_switcher.js) -- not present in this
+// file's static markup, so nothing to bind here for those.
+bind('button_open_users', 'click', () => listUsers())
 
 // --- connections modal -----------------------------------------------------
 bind('button_new_connection', 'click', () => newConnection())

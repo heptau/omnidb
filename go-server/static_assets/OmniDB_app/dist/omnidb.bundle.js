@@ -50,185 +50,6 @@
   function endLoading(...args) {
     return window.endLoading(...args);
   }
-  var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$1(id) {
-    return (
-      /** @type {HTMLElement} */
-      document.getElementById(id)
-    );
-  }
-  function checkSessionMessage() {
-    execAjax(
-      "/check_session_message/",
-      JSON.stringify({}),
-      function(p_return) {
-        if (p_return.v_data != "") showAlert(p_return.v_data);
-      },
-      null,
-      "box"
-    );
-  }
-  function initMessageModal() {
-    v_message_modal_animating = false;
-    v_message_modal_queued = false;
-    v_message_modal_queued_function = null;
-    v_shown_callback = null;
-    var v_modal_message = el$1("modal_message");
-    v_modal_message.addEventListener("hide.bs.modal", function(e) {
-      v_message_modal_animating = true;
-    });
-    v_modal_message.addEventListener("show.bs.modal", function(e) {
-      v_message_modal_animating = true;
-    });
-    v_modal_message.addEventListener("hidden.bs.modal", function(e) {
-      el$1("modal_message_content").innerHTML = "";
-      v_message_modal_animating = false;
-      if (v_message_modal_queued == true) {
-        if (v_message_modal_queued_function != null) v_message_modal_queued_function();
-        bootstrap.Modal.getOrCreateInstance(v_modal_message).show();
-      }
-      v_message_modal_queued = false;
-      v_message_modal_queued_function = null;
-    });
-    v_modal_message.addEventListener("shown.bs.modal", function(e) {
-      v_message_modal_animating = false;
-      if (v_shown_callback) {
-        v_shown_callback();
-        v_shown_callback = null;
-      }
-    });
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
-  else setTimeout(initMessageModal, 0);
-  function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$1("modal_message_dialog");
-    if (p_large == null || p_large == false) {
-      v_dialog.classList.remove("modal-xl");
-    } else {
-      v_dialog.classList.add("modal-xl");
-    }
-    if (!v_message_modal_animating) {
-      if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$1("modal_message")).show();
-    } else {
-      v_message_modal_queued = true;
-      v_message_modal_queued_function = p_content_function;
-    }
-  }
-  function showError(p_message) {
-    var v_content_div = el$1("modal_message_content");
-    var v_button_yes = el$1("modal_message_yes");
-    var v_button_ok = el$1("modal_message_ok");
-    var v_button_no = el$1("modal_message_no");
-    var v_button_cancel = el$1("modal_message_cancel");
-    v_content_div.textContent = p_message;
-    v_button_yes.style.display = "none";
-    v_button_ok.style.display = "";
-    v_button_no.style.display = "none";
-    v_button_cancel.style.display = "none";
-    showMessageModal();
-    setTimeout(function() {
-      v_button_yes.focus();
-    }, 500);
-  }
-  function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
-    var v_create_content_function = function() {
-      var v_content_div = el$1("modal_message_content");
-      var v_button_yes = el$1("modal_message_yes");
-      var v_button_ok = el$1("modal_message_ok");
-      var v_button_no = el$1("modal_message_no");
-      var v_button_cancel = el$1("modal_message_cancel");
-      if (p_is_html) {
-        v_content_div.innerHTML = p_info;
-      } else {
-        v_content_div.textContent = p_info;
-      }
-      v_button_ok.onclick = function() {
-        if (p_funcYes != null) p_funcYes();
-      };
-      v_button_yes.style.display = "none";
-      v_button_ok.style.display = "";
-      v_button_no.style.display = "none";
-      v_button_cancel.style.display = "none";
-    };
-    showMessageModal(v_create_content_function, p_large);
-  }
-  function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
-    var v_create_content_function = function() {
-      if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$1("modal_message_content");
-      var v_button_yes = el$1("modal_message_yes");
-      var v_button_ok = el$1("modal_message_ok");
-      var v_button_no = el$1("modal_message_no");
-      var v_button_cancel = el$1("modal_message_cancel");
-      v_content_div.textContent = p_info;
-      v_button_ok.onclick = function() {
-        if (p_funcYes != null) p_funcYes();
-      };
-      v_button_cancel.onclick = function() {
-        if (p_funcNo) p_funcNo();
-      };
-      v_button_yes.style.display = "none";
-      v_button_no.style.display = "none";
-      v_button_ok.style.display = "";
-      v_button_cancel.style.display = "";
-    };
-    showMessageModal(v_create_content_function, p_large);
-  }
-  function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$1("modal_message_content");
-    var v_button_yes = el$1("modal_message_yes");
-    var v_button_ok = el$1("modal_message_ok");
-    var v_button_no = el$1("modal_message_no");
-    var v_button_cancel = el$1("modal_message_cancel");
-    v_content_div.textContent = p_info;
-    v_button_yes.onclick = function() {
-      p_funcYes();
-    };
-    v_button_no.onclick = function() {
-      if (p_funcNo != null) {
-        p_funcNo();
-      }
-    };
-    v_button_cancel.onclick = function() {
-    };
-    v_button_yes.style.display = "";
-    v_button_no.style.display = "";
-    v_button_ok.style.display = "none";
-    v_button_cancel.style.display = "";
-    showMessageModal();
-  }
-  function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$1("modal_message_content");
-    var v_button_yes = el$1("modal_message_yes");
-    var v_button_ok = el$1("modal_message_ok");
-    var v_button_no = el$1("modal_message_no");
-    var v_button_cancel = el$1("modal_message_cancel");
-    v_content_div.textContent = p_info;
-    v_button_yes.onclick = function() {
-      p_funcYes();
-    };
-    v_button_no.onclick = function() {
-      if (p_funcNo != null) {
-        p_funcNo();
-      }
-    };
-    v_button_yes.style.display = "";
-    v_button_no.style.display = "";
-    v_button_ok.style.display = "none";
-    v_button_cancel.style.display = "none";
-    showMessageModal();
-  }
-  const notificationControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    checkSessionMessage,
-    showAlert,
-    showConfirm,
-    showConfirm2,
-    showConfirm3,
-    showError,
-    showMessageModal
-  }, Symbol.toStringTag, { value: "Module" }));
   //! moment.js
   //! version : 2.30.1
   //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
@@ -4223,6 +4044,185 @@
     MONTH: "YYYY-MM"
     // <input type="month" />
   };
+  var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
+  function el$1(id) {
+    return (
+      /** @type {HTMLElement} */
+      document.getElementById(id)
+    );
+  }
+  function checkSessionMessage() {
+    execAjax(
+      "/check_session_message/",
+      JSON.stringify({}),
+      function(p_return) {
+        if (p_return.v_data != "") showAlert(p_return.v_data);
+      },
+      null,
+      "box"
+    );
+  }
+  function initMessageModal() {
+    v_message_modal_animating = false;
+    v_message_modal_queued = false;
+    v_message_modal_queued_function = null;
+    v_shown_callback = null;
+    var v_modal_message = el$1("modal_message");
+    v_modal_message.addEventListener("hide.bs.modal", function(e) {
+      v_message_modal_animating = true;
+    });
+    v_modal_message.addEventListener("show.bs.modal", function(e) {
+      v_message_modal_animating = true;
+    });
+    v_modal_message.addEventListener("hidden.bs.modal", function(e) {
+      el$1("modal_message_content").innerHTML = "";
+      v_message_modal_animating = false;
+      if (v_message_modal_queued == true) {
+        if (v_message_modal_queued_function != null) v_message_modal_queued_function();
+        bootstrap.Modal.getOrCreateInstance(v_modal_message).show();
+      }
+      v_message_modal_queued = false;
+      v_message_modal_queued_function = null;
+    });
+    v_modal_message.addEventListener("shown.bs.modal", function(e) {
+      v_message_modal_animating = false;
+      if (v_shown_callback) {
+        v_shown_callback();
+        v_shown_callback = null;
+      }
+    });
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
+  else setTimeout(initMessageModal, 0);
+  function showMessageModal(p_content_function, p_large) {
+    var v_dialog = el$1("modal_message_dialog");
+    if (p_large == null || p_large == false) {
+      v_dialog.classList.remove("modal-xl");
+    } else {
+      v_dialog.classList.add("modal-xl");
+    }
+    if (!v_message_modal_animating) {
+      if (p_content_function != null) p_content_function();
+      bootstrap.Modal.getOrCreateInstance(el$1("modal_message")).show();
+    } else {
+      v_message_modal_queued = true;
+      v_message_modal_queued_function = p_content_function;
+    }
+  }
+  function showError(p_message) {
+    var v_content_div = el$1("modal_message_content");
+    var v_button_yes = el$1("modal_message_yes");
+    var v_button_ok = el$1("modal_message_ok");
+    var v_button_no = el$1("modal_message_no");
+    var v_button_cancel = el$1("modal_message_cancel");
+    v_content_div.textContent = p_message;
+    v_button_yes.style.display = "none";
+    v_button_ok.style.display = "";
+    v_button_no.style.display = "none";
+    v_button_cancel.style.display = "none";
+    showMessageModal();
+    setTimeout(function() {
+      v_button_yes.focus();
+    }, 500);
+  }
+  function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
+    var v_create_content_function = function() {
+      var v_content_div = el$1("modal_message_content");
+      var v_button_yes = el$1("modal_message_yes");
+      var v_button_ok = el$1("modal_message_ok");
+      var v_button_no = el$1("modal_message_no");
+      var v_button_cancel = el$1("modal_message_cancel");
+      if (p_is_html) {
+        v_content_div.innerHTML = p_info;
+      } else {
+        v_content_div.textContent = p_info;
+      }
+      v_button_ok.onclick = function() {
+        if (p_funcYes != null) p_funcYes();
+      };
+      v_button_yes.style.display = "none";
+      v_button_ok.style.display = "";
+      v_button_no.style.display = "none";
+      v_button_cancel.style.display = "none";
+    };
+    showMessageModal(v_create_content_function, p_large);
+  }
+  function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null) {
+    var v_create_content_function = function() {
+      if (p_shownCallback != null) v_shown_callback = p_shownCallback;
+      var v_content_div = el$1("modal_message_content");
+      var v_button_yes = el$1("modal_message_yes");
+      var v_button_ok = el$1("modal_message_ok");
+      var v_button_no = el$1("modal_message_no");
+      var v_button_cancel = el$1("modal_message_cancel");
+      v_content_div.textContent = p_info;
+      v_button_ok.onclick = function() {
+        if (p_funcYes != null) p_funcYes();
+      };
+      v_button_cancel.onclick = function() {
+        if (p_funcNo) p_funcNo();
+      };
+      v_button_yes.style.display = "none";
+      v_button_no.style.display = "none";
+      v_button_ok.style.display = "";
+      v_button_cancel.style.display = "";
+    };
+    showMessageModal(v_create_content_function, p_large);
+  }
+  function showConfirm2(p_info, p_funcYes, p_funcNo) {
+    var v_content_div = el$1("modal_message_content");
+    var v_button_yes = el$1("modal_message_yes");
+    var v_button_ok = el$1("modal_message_ok");
+    var v_button_no = el$1("modal_message_no");
+    var v_button_cancel = el$1("modal_message_cancel");
+    v_content_div.textContent = p_info;
+    v_button_yes.onclick = function() {
+      p_funcYes();
+    };
+    v_button_no.onclick = function() {
+      if (p_funcNo != null) {
+        p_funcNo();
+      }
+    };
+    v_button_cancel.onclick = function() {
+    };
+    v_button_yes.style.display = "";
+    v_button_no.style.display = "";
+    v_button_ok.style.display = "none";
+    v_button_cancel.style.display = "";
+    showMessageModal();
+  }
+  function showConfirm3(p_info, p_funcYes, p_funcNo) {
+    var v_content_div = el$1("modal_message_content");
+    var v_button_yes = el$1("modal_message_yes");
+    var v_button_ok = el$1("modal_message_ok");
+    var v_button_no = el$1("modal_message_no");
+    var v_button_cancel = el$1("modal_message_cancel");
+    v_content_div.textContent = p_info;
+    v_button_yes.onclick = function() {
+      p_funcYes();
+    };
+    v_button_no.onclick = function() {
+      if (p_funcNo != null) {
+        p_funcNo();
+      }
+    };
+    v_button_yes.style.display = "";
+    v_button_no.style.display = "";
+    v_button_ok.style.display = "none";
+    v_button_cancel.style.display = "none";
+    showMessageModal();
+  }
+  const notificationControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    checkSessionMessage,
+    showAlert,
+    showConfirm,
+    showConfirm2,
+    showConfirm3,
+    showError,
+    showMessageModal
+  }, Symbol.toStringTag, { value: "Module" }));
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   function initPasswordModal() {
     var v_modal_password = (
@@ -5393,348 +5393,70 @@
     },
     v_polling_started
   }, Symbol.toStringTag, { value: "Module" }));
-  var v_consoleState = {
+  var v_new_data;
+  var v_queryState = {
     Idle: 0,
     Executing: 1,
     Ready: 2
   };
-  function deleteConsoleHistoryList() {
-    showConfirm("Are you sure you want to clear console history corresponding to applied filters?", function() {
-      execAjax$1(
-        "/clear_console_list/",
-        JSON.stringify({
-          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-          p_console_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value,
-          p_console_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value,
-          p_console_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value
-        }),
-        function(p_return) {
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
-          refreshConsoleHistoryList();
-        }
-      );
-    });
+  var v_queryRequestCodes = {
+    Login: 0,
+    Query: 1,
+    Execute: 2,
+    Script: 3,
+    QueryEditData: 4,
+    SaveEditData: 5,
+    CancelThread: 6,
+    CloseTab: 8,
+    // 9 was AdvancedObjectSearch. The feature is gone (see the note in
+    // go-server/longpolling.go); the number is left unused rather than reassigned
+    // so the two sides keep matching.
+    Console: 10,
+    Terminal: 11,
+    Ping: 12
+  };
+  var v_queryResponseCodes = {
+    LoginResult: 0,
+    QueryResult: 1,
+    QueryEditDataResult: 2,
+    SaveEditDataResult: 3,
+    SessionMissing: 4,
+    PasswordRequired: 5,
+    QueryAck: 6,
+    MessageException: 7,
+    RemoveContext: 9,
+    // 10 was AdvancedObjectSearchResult — see the request codes above.
+    ConsoleResult: 11,
+    TerminalResult: 12,
+    Pong: 13
+  };
+  function escapeHtml(p_str) {
+    var v_div = document.createElement("div");
+    v_div.appendChild(document.createTextNode(String(p_str)));
+    return v_div.innerHTML;
   }
-  function showConsoleHistory() {
-    v_connTabControl.selectedTab.tag;
-    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tab_tag2.consoleHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tab_tag2.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tab_tag2.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tab_tag2.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tab_tag2.tab_id + "' class='mr-2 form-control' /></div><div id='console_history_daterangepicker_container_" + v_tab_tag2.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tab_tag2.tab_id + "'></span> / <span id='cl_num_pages_" + v_tab_tag2.tab_id + "'></span><button id='bt_next_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
-    var v_grid_div = v_tab_tag2.consoleHistory.gridDiv;
-    v_grid_div.innerHTML = "";
-    if (v_tab_tag2.consoleHistory.grid != null) {
-      v_tab_tag2.consoleHistory.grid.destroy();
-    }
-    var columnProperties = [];
-    var col = {};
-    col.readOnly = true;
-    col.title = "Date";
-    col.width = "141px";
-    columnProperties.push(col);
-    var col2 = {};
-    col2.readOnly = true;
-    col2.title = "Command";
-    col2.width = "435px";
-    columnProperties.push(col2);
-    v_tab_tag2.consoleHistory.grid = new Handsontable(v_grid_div, {
-      licenseKey: "non-commercial-and-evaluation",
-      // data: p_return.v_data.data,
-      data: [
-        ["2020-05-01 19:19:21", "?"],
-        ["2020-05-01 19:19:20", "?"],
-        ["2020-05-01 19:19:19", "?"]
-      ],
-      columns: columnProperties,
-      colHeaders: true,
-      rowHeaders: false,
-      stretchH: "last",
-      //copyRowsLimit : 1000000000,
-      //copyColsLimit : 1000000000,
-      copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
-      manualColumnResize: true,
-      fillHandle: false,
-      contextMenu: {
-        callback: function(key, options) {
-          if (key === "view_data") {
-            editCellData(
-              this,
-              options[0].start.row,
-              options[0].start.col,
-              this.getDataAtCell(options[0].start.row, options[0].start.col),
-              false
-            );
-          } else if (key === "copy") {
-            this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-            document.execCommand("copy");
-          } else if (key === "copy_to_console") {
-            consoleHistoryOpenCmd(options[0].start.row);
-          }
-        },
-        items: {
-          copy: {
-            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
-          },
-          copy_to_console: {
-            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy Content To Console Tab</div>'
-          },
-          view_data: {
-            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
-          }
-        }
-      },
-      cells: function(row, col3, prop) {
-        var cellProperties = {};
-        if (row % 2 == 0) cellProperties.renderer = blueHtmlRenderer;
-        else cellProperties.renderer = whiteHtmlRenderer;
-        return cellProperties;
-      }
-    });
-    bootstrap.Modal.getOrCreateInstance(v_tab_tag2.consoleHistory.modal).show();
-    v_tab_tag2.consoleHistory.div.style.display = "block";
-    v_tab_tag2.consoleHistory.currentPage = 1;
-    v_tab_tag2.consoleHistory.pages = 1;
-    v_tab_tag2.consoleHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tab_tag2.tab_id);
-    v_tab_tag2.consoleHistory.spanNumPages.innerHTML = 1;
-    v_tab_tag2.consoleHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tab_tag2.tab_id);
-    v_tab_tag2.consoleHistory.spanCurrPage.innerHTML = 1;
-    v_tab_tag2.consoleHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tab_tag2.tab_id);
-    v_tab_tag2.consoleHistory.inputStartedFrom.value = hooks().subtract(6, "hour").toISOString();
-    v_tab_tag2.consoleHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tab_tag2.tab_id);
-    v_tab_tag2.consoleHistory.inputStartedTo.value = hooks().toISOString();
-    v_tab_tag2.consoleHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tab_tag2.tab_id);
-    v_tab_tag2.consoleHistory.inputCommandContains.value = v_tab_tag2.consoleHistory.inputCommandContainsLastValue;
-    v_tab_tag2.consoleHistory.inputCommandContains.addEventListener("change", () => refreshConsoleHistoryList());
-    var v_headerButtonHandlers = [
-      ["bt_first_", consoleHistoryFirstPage],
-      ["bt_previous_", consoleHistoryPreviousPage],
-      ["bt_next_", consoleHistoryNextPage],
-      ["bt_last_", consoleHistoryLastPage],
-      ["bt_refresh_", refreshConsoleHistoryList],
-      ["bt_clear_", deleteConsoleHistoryList]
-    ];
-    for (const [id, handler] of v_headerButtonHandlers) {
-      document.getElementById(id + v_tab_tag2.tab_id).addEventListener(
-        "click",
-        () => handler()
-      );
-    }
-    var cl_time_range = document.getElementById("cl_time_range_" + v_tab_tag2.tab_id);
-    $(cl_time_range).daterangepicker(
-      {
-        timePicker: true,
-        startDate: hooks(v_tab_tag2.consoleHistory.inputStartedFrom.value).format("Y-MM-DD H"),
-        endDate: hooks(v_tab_tag2.consoleHistory.inputStartedTo.value).format("Y-MM-DD H"),
-        parentEl: document.getElementById("console_history_daterangepicker_container_" + v_tab_tag2.tab_id),
-        previewUTC: true,
-        locale: {
-          format: "Y-MM-DD H"
-        },
-        ranges: {
-          "Last 6 Hours": [hooks().subtract(6, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 12 Hours": [hooks().subtract(12, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 24 Hours": [hooks().subtract(24, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 7 Days": [hooks().subtract(7, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 30 Days": [hooks().subtract(30, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          Yesterday: [
-            hooks().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
-            hooks().subtract(1, "days").endOf("day").format("Y-MM-DD H")
-          ],
-          "This Month": [hooks().startOf("month").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last Month": [
-            hooks().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
-            hooks().subtract(1, "month").endOf("month").format("Y-MM-DD H")
-          ]
-        }
-      },
-      function(start, end, label) {
-        v_tab_tag2.consoleHistory.inputStartedFrom.value = hooks(start).toISOString();
-        if (label === "Custom Range") {
-          $("#cl_time_range_" + v_tab_tag2.tab_id + " span").html(
-            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
-          );
-        } else {
-          $("#cl_time_range_" + v_tab_tag2.tab_id + " span").html(label);
-        }
-        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
-          v_tab_tag2.consoleHistory.inputStartedTo.value = hooks(end).toISOString();
-        } else v_tab_tag2.consoleHistory.inputStartedTo.value = null;
-        refreshConsoleHistoryList();
-      }
-    );
-    refreshConsoleHistoryList();
+  function escapeHtmlAttribute(p_str) {
+    return String(p_str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
   }
-  function consoleHistoryNextPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage += 1;
-      refreshConsoleHistoryList();
-    }
-  }
-  function consoleHistoryPreviousPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage > 1) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage -= 1;
-      refreshConsoleHistoryList();
-    }
-  }
-  function consoleHistoryFirstPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage != 1) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
-      refreshConsoleHistoryList();
-    }
-  }
-  function consoleHistoryLastPage() {
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages;
-      refreshConsoleHistoryList();
-    }
-  }
-  function consoleHistoryOpenCmd(p_index) {
-    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.getDataAtRow(p_index)[1];
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.setValue(v_command);
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.clearSelection();
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.gotoLine(0, 0, true);
-    closeConsoleHistory();
-  }
-  function refreshConsoleHistoryList() {
-    var v_conn_tag = v_connTabControl.selectedTab.tag;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value;
-    execAjax$1(
-      "/get_console_history/",
-      JSON.stringify({
-        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value,
-        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value,
-        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value,
-        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage,
-        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-        p_tab_id: v_connTabControl.selectedTab.id
-      }),
-      function(p_return) {
-        v_conn_tag.consoleHistoryFecthed = true;
-        v_conn_tag.consoleHistoryList = p_return.v_data.commandList;
-        if (v_conn_tag.consoleHistoryList.length == 0) {
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
-        }
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = p_return.v_data.pages;
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages.innerHTML = p_return.v_data.pages;
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage;
-        for (let i2 = 0; i2 < v_conn_tag.consoleHistoryList.length; i2++) {
-          v_conn_tag.consoleHistoryList[i2][0] = new Date(v_conn_tag.consoleHistoryList[i2][0]).toLocaleString();
-        }
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.loadData(
-          v_conn_tag.consoleHistoryList
-        );
-      },
-      null,
-      "box"
-    );
-  }
-  function closeConsoleHistory() {
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.destroy();
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.div.style.display = "none";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.headerDiv.innerHTML = "";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.gridDiv.innerHTML = "";
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = 1;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo = null;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains = null;
-    bootstrap.Modal.getOrCreateInstance(
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal
-    ).hide();
-  }
-  function consoleHistorySelectCommand() {
-    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    var v_grid = v_tab_tag2.consoleHistory.grid;
-    var v_sel = v_grid.getSelected();
-    if (!v_sel || v_sel.length === 0) return;
-    var v_command = v_grid.getDataAtRow(v_sel[0][0])[2];
-    closeConsoleHistory();
-    v_tab_tag2.editor_input.setValue(v_command);
-    v_tab_tag2.editor_input.clearSelection();
-    v_tab_tag2.editor_input.focus();
-  }
-  function appendToEditor(p_editor, p_text) {
-    p_editor.write(p_text);
-  }
-  function clearConsole() {
-    var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tag.editor_console.write("\x1B[H\x1B[2J");
-    v_tag.editor_console.write(v_connTabControl.selectedTab.tag.consoleHelp);
-  }
-  function consoleSQL(p_check_command = true, p_mode = 0) {
-    var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tag.tempData = "";
-    var v_content = v_tag.editor_input.getValue().trim();
-    if (!p_check_command || v_content[0] == "\\") {
-      if (v_tag.state != v_consoleState.Idle) {
-        showAlert("Tab with activity in progress.");
-      } else {
-        if (v_content == "" && p_mode == 0) {
-          showAlert("Please provide a string.");
-        } else {
-          if (v_connTabControl.selectedTab.tag.consoleHistoryList)
-            v_connTabControl.selectedTab.tag.consoleHistoryList.unshift(v_content);
-          v_tag.console_history_cmd_index = -1;
-          v_tag.editor_input.setValue("");
-          v_tag.editor_input.clearSelection();
-          v_tag.editor_input.setReadOnly(false);
-          v_tag.last_command = v_content;
-          var v_message_data = {
-            v_sql_cmd: v_content,
-            v_mode: p_mode,
-            v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-            v_conn_tab_id: v_connTabControl.selectedTab.id,
-            v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
-            v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
-          };
-          v_tag.editor_input.setReadOnly(true);
-          var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
-          var v_context = {
-            tab_tag: v_tag,
-            start_datetime: dformat,
-            database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-            acked: false,
-            last_command: v_content,
-            check_command: p_check_command,
-            mode: p_mode
-          };
-          v_context.tab_tag.context = v_context;
-          createRequest(v_queryRequestCodes.Console, v_message_data, v_context);
-          v_tag.state = v_consoleState.Executing;
-          v_tag.tab_loading_span.style.visibility = "visible";
-          v_tag.tab_check_span.style.display = "none";
-          v_tag.bt_cancel.style.display = "";
-          v_tag.query_info.innerHTML = "<b>Start time</b>: " + dformat + "<br><b>Running...</b>";
-          v_tag.bt_fetch_more.style.display = "none";
-          v_tag.bt_fetch_all.style.display = "none";
-          v_tag.bt_skip_fetch.style.display = "none";
-          v_tag.bt_commit.style.display = "none";
-          v_tag.bt_rollback.style.display = "none";
-          setTabStatus(v_tag, 2);
-        }
-      }
-    }
-  }
-  function cancelConsole(p_tab_tag) {
+  Number.prototype.padLeft = function(base, chr) {
+    var len = String(base || 10).length - String(this).length + 1;
+    return len > 0 ? new Array(len).join(chr || "0") + this : String(this);
+  };
+  function cancelSQL(p_tab_tag) {
     var v_tab_tag2;
     if (p_tab_tag) v_tab_tag2 = p_tab_tag;
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id, null);
-    cancelConsoleTab(v_tab_tag2);
+    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id);
+    cancelSQLTab();
   }
-  function cancelConsoleTab(p_tab_tag) {
+  function cancelSQLTab(p_tab_tag) {
     var v_tab_tag2;
     if (p_tab_tag) v_tab_tag2 = p_tab_tag;
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    if (v_tab_tag2.editor_input) {
-      v_tab_tag2.editor_input.setReadOnly(false);
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setReadOnly(false);
     }
-    v_tab_tag2.state = v_consoleState.Idle;
+    v_tab_tag2.state = v_queryState.Idle;
     v_tab_tag2.tab_loading_span.style.visibility = "hidden";
     v_tab_tag2.tab_check_span.style.display = "none";
     v_tab_tag2.bt_cancel.style.display = "none";
@@ -5743,17 +5465,200 @@
     removeContext(v_tab_tag2.context.v_context_code);
     SetAcked(v_tab_tag2.context);
   }
-  function checkConsoleStatus(p_tab) {
-    if (p_tab.tag.state == v_consoleState.Ready) {
-      consoleReturnRender(p_tab.tag.data, p_tab.tag.context);
+  function getQueryEditorValue() {
+    var v_selected_text = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText();
+    if (v_selected_text != "") return v_selected_text;
+    else return v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
+  }
+  function getStatementAtCursor() {
+    var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
+    var v_text = v_editor.getValue();
+    var v_pos = v_editor.getCursorPosition();
+    var v_lines = v_text.split("\n");
+    var v_cursor_index = v_pos.column;
+    for (var v_row = 0; v_row < v_pos.row; v_row++) v_cursor_index += v_lines[v_row].length + 1;
+    var v_bounds = [];
+    var v_start = 0;
+    var v_state = "normal";
+    for (var i2 = 0; i2 < v_text.length; i2++) {
+      var v_char = v_text[i2];
+      var v_next = v_text[i2 + 1];
+      if (v_state == "normal") {
+        if (v_char == "'") v_state = "single";
+        else if (v_char == '"') v_state = "double";
+        else if (v_char == "-" && v_next == "-") v_state = "line_comment";
+        else if (v_char == "/" && v_next == "*") v_state = "block_comment";
+        else if (v_char == ";") {
+          v_bounds.push([v_start, i2 + 1]);
+          v_start = i2 + 1;
+        }
+      } else if (v_state == "single") {
+        if (v_char == "'") v_state = "normal";
+      } else if (v_state == "double") {
+        if (v_char == '"') v_state = "normal";
+      } else if (v_state == "line_comment") {
+        if (v_char == "\n") v_state = "normal";
+      } else if (v_state == "block_comment") {
+        if (v_char == "*" && v_next == "/") {
+          v_state = "normal";
+          i2++;
+        }
+      }
+    }
+    v_bounds.push([v_start, v_text.length]);
+    var v_index = v_bounds.findIndex(function(b2) {
+      return v_cursor_index < b2[1];
+    });
+    if (v_index < 0) v_index = v_bounds.length - 1;
+    for (var f = v_index; f < v_bounds.length; f++) {
+      var v_stmt = v_text.substring(v_bounds[f][0], v_bounds[f][1]).trim().replace(/;\s*$/, "");
+      if (v_stmt != "") return v_stmt;
+    }
+    for (var b = v_index - 1; b >= 0; b--) {
+      var v_stmt2 = v_text.substring(v_bounds[b][0], v_bounds[b][1]).trim().replace(/;\s*$/, "");
+      if (v_stmt2 != "") return v_stmt2;
+    }
+    return "";
+  }
+  function destructiveSQLWarning(p_sql) {
+    var v_stripped = p_sql;
+    for (; ; ) {
+      v_stripped = v_stripped.replace(/^[\s\r\n]+/, "");
+      if (v_stripped.indexOf("--") === 0) {
+        var v_newline = v_stripped.indexOf("\n");
+        if (v_newline < 0) {
+          v_stripped = "";
+          break;
+        }
+        v_stripped = v_stripped.substring(v_newline + 1);
+        continue;
+      }
+      if (v_stripped.indexOf("/*") === 0) {
+        var v_end = v_stripped.indexOf("*/");
+        if (v_end < 0) {
+          v_stripped = "";
+          break;
+        }
+        v_stripped = v_stripped.substring(v_end + 2);
+        continue;
+      }
+      break;
+    }
+    var v_upper = v_stripped.toUpperCase();
+    if (/^(DROP|TRUNCATE)\b/.test(v_upper)) {
+      return "This statement is destructive and cannot be undone. Run it anyway?";
+    }
+    if (/^(DELETE|UPDATE)\b/.test(v_upper) && !/\bWHERE\b/.test(v_upper)) {
+      return "This statement has no WHERE clause and will affect ALL rows. Run it anyway?";
+    }
+    return null;
+  }
+  function querySQL(p_mode, p_all_data = false, p_query = getQueryEditorValue(), p_callback = null, p_log_query = true, p_save_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue(), p_cmd_type = null, p_clear_data = false, p_tab_title = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_title_span.innerHTML) {
+    var v_run = function() {
+      executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
+    };
+    var v_warning = p_mode == 0 ? destructiveSQLWarning(p_query) : null;
+    if (v_warning) {
+      showConfirm(v_warning, v_run);
+    } else {
+      v_run();
     }
   }
-  function consoleReturn(p_data, p_context) {
-    if (p_context.tab_tag.state != v_consoleState.Idle) {
-      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
-        consoleReturnRender(p_data, p_context);
+  function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
+    var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
+    if (v_state != v_queryState.Idle) {
+      showAlert("Tab with activity in progress.");
+    } else {
+      var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+      v_tab_tag2.tempData = [];
+      var v_sql_value = p_query;
+      var v_db_index = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_loading_span;
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_close_span;
+      if (v_sql_value.trim() == "") {
+        showAlert("Please provide a string.");
       } else {
-        p_context.tab_tag.state = v_consoleState.Ready;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex == null || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex != v_connTabControl.selectedTab.tag.selectedDatabaseIndex) {
+          p_mode = 0;
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
+        }
+        var v_message_data = {
+          v_sql_cmd: v_sql_value,
+          v_sql_save: p_save_query,
+          v_cmd_type: p_cmd_type,
+          v_db_index,
+          v_conn_tab_id: v_connTabControl.selectedTab.id,
+          v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
+          v_tab_db_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_db_id,
+          v_mode: p_mode,
+          v_all_data: p_all_data,
+          v_log_query: p_log_query,
+          v_tab_title: p_tab_title,
+          v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
+        };
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setReadOnly(true);
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_queryState.Executing;
+        (/* @__PURE__ */ new Date()).getTime();
+        var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+        v_tab_tag2.tab_loading_span.style.visibility = "visible";
+        v_tab_tag2.bt_cancel.style.display = "inline-block";
+        v_tab_tag2.bt_fetch_more.style.display = "none";
+        v_tab_tag2.bt_fetch_all.style.display = "none";
+        v_tab_tag2.bt_commit.style.display = "none";
+        v_tab_tag2.bt_rollback.style.display = "none";
+        v_tab_tag2.div_notices.innerHTML = "";
+        setTabStatus(v_tab_tag2, 2);
+        var v_has_selected_text = false;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText() != "")
+          v_has_selected_text = true;
+        var v_context = {
+          tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
+          start_time: (/* @__PURE__ */ new Date()).getTime(),
+          start_datetime: dformat,
+          cmd_type: p_cmd_type,
+          database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          mode: p_mode,
+          has_selected_text: v_has_selected_text,
+          callback: p_callback,
+          acked: false,
+          all_data: p_all_data,
+          query: p_query,
+          log_query: p_log_query,
+          save_query: p_save_query,
+          clear_data: p_clear_data,
+          tab_title: p_tab_title
+        };
+        v_context.tab_tag.context = v_context;
+        if (p_mode == 0 && p_callback == null || p_clear_data) {
+          if (v_context.tab_tag.ht != null) {
+            v_context.tab_tag.ht.destroy();
+            v_context.tab_tag.ht = null;
+          }
+          v_context.tab_tag.div_result.innerHTML = "";
+        }
+        v_context.tab_tag.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(dformat)) + "<br><b>Running...</b>";
+        createRequest(v_queryRequestCodes.Query, v_message_data, v_context);
+      }
+    }
+  }
+  function checkQueryStatus(p_tab) {
+    if (p_tab.tag.state == v_queryState.Ready) {
+      querySQLReturnRender(p_tab.tag.data, p_tab.tag.context);
+    }
+  }
+  function querySQLReturn(p_data, p_context) {
+    if (p_data.v_data.v_inserted_id) {
+      p_context.tab_tag.tab_db_id = p_data.v_data.v_inserted_id;
+    }
+    if (!p_data.v_error) p_data.v_data.v_data = p_context.tab_tag.tempData;
+    p_context.tab_tag.tempData = [];
+    if (p_context.tab_tag.state != v_queryState.Idle) {
+      if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
+        querySQLReturnRender(p_data, p_context);
+      } else {
+        p_context.tab_tag.state = v_queryState.Ready;
         p_context.tab_tag.context = p_context;
         p_context.tab_tag.data = p_data;
         p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
@@ -5761,55 +5666,1441 @@
       }
     }
   }
-  function consoleReturnRender(p_message, p_context) {
-    p_context.tab_tag.state = v_consoleState.Idle;
-    var v_tag = p_context.tab_tag;
-    setTabStatus(p_context.tab_tag, p_message.v_data.v_con_status);
-    v_tag.editor_input.setReadOnly(false);
-    appendToEditor(v_tag.editor_console, v_tag.tempData);
-    v_tag.editor_input.setValue("");
-    v_tag.editor_input.clearSelection();
-    v_tag.query_info.innerHTML = "";
-    var v_qi_b1 = document.createElement("b");
-    v_qi_b1.textContent = "Start time";
-    var v_qi_b2 = document.createElement("b");
-    v_qi_b2.textContent = "Duration";
-    var v_qi_t1 = document.createTextNode(": " + p_context.start_datetime + " ");
-    var v_qi_t2 = document.createTextNode(": " + p_message.v_data.v_duration);
-    v_tag.query_info.appendChild(v_qi_b1);
-    v_tag.query_info.appendChild(v_qi_t1);
-    v_tag.query_info.appendChild(v_qi_b2);
-    v_tag.query_info.appendChild(v_qi_t2);
-    v_tag.tab_loading_span.style.visibility = "hidden";
-    v_tag.tab_check_span.style.display = "none";
-    v_tag.bt_cancel.style.display = "none";
-    if (p_message.v_data.v_show_fetch_button) {
-      v_tag.bt_fetch_more.style.display = "";
-      v_tag.bt_fetch_all.style.display = "";
-      v_tag.bt_skip_fetch.style.display = "";
+  function setTabStatus(p_tab_tag, p_con_status) {
+    if (p_con_status == 0) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Not connected";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-closed";
+      p_tab_tag.query_tab_status.title = "Not connected";
+      p_tab_tag.query_tab_status.innerHTML = "";
+    } else if (p_con_status == 1) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Idle";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle position-relative";
+      p_tab_tag.query_tab_status.title = "Idle";
+      p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--idle"><span></span><span></span><span></span><span></span></span></div>';
+    } else if (p_con_status == 2) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Running";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-running position-relative";
+      p_tab_tag.query_tab_status.title = "Running";
+      p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--running"><span></span><span></span><span></span><span></span></span></div>';
+    } else if (p_con_status == 3) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction";
+      p_tab_tag.query_tab_status.title = "Idle in transaction";
+      p_tab_tag.query_tab_status.innerHTML = "";
+    } else if (p_con_status == 4) {
+      p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction (aborted)";
+      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction_aborted";
+      p_tab_tag.query_tab_status.title = "Idle in transaction (aborted)";
+      p_tab_tag.query_tab_status.innerHTML = "";
     }
   }
-  const consoleTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  function querySQLReturnRender(p_message, p_context) {
+    p_context.tab_tag.state = v_queryState.Idle;
+    p_context.tab_tag.context = null;
+    p_context.tab_tag.data = null;
+    if (p_context.tab_tag.editor) {
+      p_context.tab_tag.editor.setReadOnly(false);
+    }
+    var v_div_result = p_context.tab_tag.div_result;
+    var v_query_info = p_context.tab_tag.query_info;
+    var v_data = p_message.v_data;
+    if (v_data.v_con_status == 3 || v_data.v_con_status == 4) {
+      p_context.tab_tag.bt_commit.style.display = "";
+      p_context.tab_tag.bt_rollback.style.display = "";
+    } else {
+      p_context.tab_tag.bt_commit.style.display = "none";
+      p_context.tab_tag.bt_rollback.style.display = "none";
+    }
+    setTabStatus(p_context.tab_tag, p_message.v_data.v_con_status);
+    if (p_context.callback != null) {
+      if (p_message.v_error) {
+        v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
+        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+      } else {
+        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+        p_context.callback(p_message);
+      }
+    } else {
+      p_context.tab_tag.selectDataTabFunc();
+      if (p_context.tab_tag.div_count_notices) {
+        p_context.tab_tag.div_count_notices.style.display = "none";
+      }
+      if (v_data.v_notices_length > 0) {
+        if (p_context.tab_tag.div_count_notices) {
+          p_context.tab_tag.div_count_notices.innerHTML = v_data.v_notices_length;
+          p_context.tab_tag.div_count_notices.style.display = "inline-block";
+          p_context.tab_tag.div_notices.textContent = v_data.v_notices;
+        }
+      }
+      if (p_message.v_error) {
+        v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
+        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+        if (p_message.v_data.position != null) {
+          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor && !p_context.has_selected_text) {
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(
+              p_message.v_data.position.row,
+              p_message.v_data.position.col
+            );
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.textInput.focus();
+          }
+        }
+      } else {
+        if (p_context.sel_value == 0) {
+          v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+          v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_data) + "</div>";
+        } else {
+          if (v_data.v_data.length >= 50 && p_context.mode != 2) {
+            if (p_context.tab_tag.bt_fetch_more) {
+              p_context.tab_tag.bt_fetch_more.style.display = "";
+            }
+            if (p_context.tab_tag.bt_fetch_all) {
+              p_context.tab_tag.bt_fetch_all.style.display = "";
+            }
+          } else {
+            if (p_context.tab_tag.bt_fetch_more) {
+              p_context.tab_tag.bt_fetch_more.style.display = "none";
+            }
+            if (p_context.tab_tag.bt_fetch_all) {
+              p_context.tab_tag.bt_fetch_all.style.display = "none";
+            }
+          }
+          if (p_context.mode == 0) {
+            v_div_result.innerHTML = "";
+            window.scrollTo(0, 0);
+            if (v_data.v_data.length == 0 && v_data.v_col_names.length == 0) {
+              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+              if (typeof p_message.v_data.v_status == "string")
+                v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
+              else v_div_result.innerHTML = '<div class="query_info">Done</div>';
+            } else {
+              v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + v_data.v_data.length + "</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
+              var columnProperties = [];
+              for (var i2 = 0; i2 < v_data.v_col_names.length; i2++) {
+                var col = {};
+                col.readOnly = true;
+                col.title = v_data.v_col_names[i2];
+                if (i2 === 0) {
+                  col.pinned = "left";
+                }
+                var colType = v_data.v_col_types && v_data.v_col_types[i2] ? v_data.v_col_types[i2] : null;
+                if (colType) {
+                  col.tooltip = v_data.v_col_names[i2] + " [" + colType + "]";
+                  var typeUpper = String(colType).toUpperCase();
+                  if (/^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/.test(typeUpper)) {
+                    col.align = "right";
+                  } else if (/^(BOOL|BOOLEAN|BIT)$/.test(typeUpper)) {
+                    col.align = "center";
+                  } else if (/^(CHAR|BPCHAR)$/.test(typeUpper)) {
+                    col.align = "center";
+                  }
+                } else {
+                  col.tooltip = v_data.v_col_names[i2];
+                }
+                columnProperties.push(col);
+              }
+              var container = v_div_result;
+              p_context.tab_tag.ht = new Handsontable(container, {
+                licenseKey: "non-commercial-and-evaluation",
+                data: v_data.v_data,
+                columns: columnProperties,
+                colHeaders: true,
+                rowHeaders: true,
+                // stretchH: 'last',
+                autoRowSize: false,
+                //copyRowsLimit : 1000000000,
+                //copyColsLimit : 1000000000,
+                copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
+                manualColumnResize: true,
+                // modifyColWidth: function(width, col){
+                //   if(width > 300){
+                //     return 280
+                //   }
+                // },
+                fillHandle: false,
+                contextMenu: {
+                  callback: function(key, options) {
+                    if (key === "view_data") {
+                      editCellData(
+                        this,
+                        options[0].start.row,
+                        options[0].start.col,
+                        this.getDataAtCell(options[0].start.row, options[0].start.col),
+                        false,
+                        v_data.v_col_types ? v_data.v_col_types[options[0].start.col] : null
+                      );
+                    } else if (key === "copy") {
+                      var v_start_row = Math.min(options[0].start.row, options[0].end.row);
+                      var v_end_row = Math.max(options[0].start.row, options[0].end.row);
+                      var v_start_col = Math.min(options[0].start.col, options[0].end.col);
+                      var v_end_col = Math.max(options[0].start.col, options[0].end.col);
+                      var v_ht = this;
+                      var v_lines = [];
+                      for (var v_row = v_start_row; v_row <= v_end_row; v_row++) {
+                        var v_cells = [];
+                        for (var v_col = v_start_col; v_col <= v_end_col; v_col++) {
+                          var v_cell_value = v_ht.getDataAtCell(v_row, v_col);
+                          v_cells.push(v_cell_value == null ? "" : String(v_cell_value));
+                        }
+                        v_lines.push(v_cells.join("	"));
+                      }
+                      uiCopyTextToClipboard(v_lines.join("\n"));
+                    }
+                  },
+                  items: {
+                    copy: {
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+                    },
+                    view_data: {
+                      name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
+                    }
+                  }
+                },
+                cells: function(row, col2, prop) {
+                  var cellProperties = {};
+                  cellProperties.renderer = whiteRenderer;
+                  return cellProperties;
+                }
+              });
+            }
+          } else if (p_context.mode == 1 || p_context.mode == 2) {
+            v_new_data = p_context.tab_tag.ht.getSourceData();
+            v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + (v_new_data.length + v_data.v_data.length) + "</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
+            for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
+              v_new_data.push(v_data.v_data[i2]);
+            }
+            p_context.tab_tag.ht.loadData(v_new_data);
+            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollTop = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollHeight;
+          } else {
+            if (p_context.tab_tag.ht != null)
+              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration)) + "<br/>Status: " + escapeHtml(p_message.v_data.v_status);
+            else {
+              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+              v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
+            }
+          }
+        }
+      }
+    }
+    p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+    p_context.tab_tag.tab_check_span.style.display = "none";
+    p_context.tab_tag.bt_cancel.style.display = "none";
+  }
+  function queryError(p_message, p_context) {
+    var v_tab_tag2 = p_context.tab_tag;
+    v_tab_tag2.state = v_queryState.Idle;
+    v_tab_tag2.context = null;
+    v_tab_tag2.data = null;
+    if (v_tab_tag2.editor) {
+      v_tab_tag2.editor.setReadOnly(false);
+    }
+    v_tab_tag2.bt_commit.style.display = "none";
+    v_tab_tag2.bt_rollback.style.display = "none";
+    setTabStatus(v_tab_tag2, 1);
+    v_tab_tag2.div_notices.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data) + "</div>";
+    if (v_tab_tag2.div_count_notices) {
+      v_tab_tag2.div_count_notices.innerHTML = 1;
+      v_tab_tag2.div_count_notices.style.display = "inline-block";
+    }
+    v_tab_tag2.selectMessageTabFunc();
+    v_tab_tag2.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + "<br><b>Error</b>";
+    v_tab_tag2.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag2.tab_check_span.style.display = "none";
+    v_tab_tag2.bt_cancel.style.display = "none";
+  }
+  const query = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
-    appendToEditor,
-    cancelConsole,
-    cancelConsoleTab,
-    checkConsoleStatus,
-    clearConsole,
-    closeConsoleHistory,
-    consoleHistoryFirstPage,
-    consoleHistoryLastPage,
-    consoleHistoryNextPage,
-    consoleHistoryOpenCmd,
-    consoleHistoryPreviousPage,
-    consoleHistorySelectCommand,
-    consoleReturn,
-    consoleReturnRender,
-    consoleSQL,
-    deleteConsoleHistoryList,
-    refreshConsoleHistoryList,
-    showConsoleHistory,
-    v_consoleState
+    cancelSQL,
+    cancelSQLTab,
+    checkQueryStatus,
+    destructiveSQLWarning,
+    escapeHtml,
+    escapeHtmlAttribute,
+    executeQuerySQL,
+    getQueryEditorValue,
+    getStatementAtCursor,
+    queryError,
+    querySQL,
+    querySQLReturn,
+    querySQLReturnRender,
+    setTabStatus,
+    v_queryRequestCodes,
+    v_queryResponseCodes,
+    v_queryState
+  }, Symbol.toStringTag, { value: "Module" }));
+  function el(id) {
+    return document.getElementById(id);
+  }
+  var v_conn_data, v_conn_div, v_conn_obj;
+  function initConnections() {
+    v_connections_data = new Object();
+    v_connections_data.technologies = null;
+    v_connections_data.card_list = [];
+    v_connections_data.current_id = -1;
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
+  else setTimeout(initConnections, 0);
+  function startConnectionManagement() {
+    getDatabaseList();
+    getGroups();
+    showConnectionList(true, true);
+  }
+  function showConnectionList(p_show_section, p_change_group) {
+    var v_conn_id_list = [];
+    var v_total_public_conn = 0;
+    for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
+      var v_tab = v_connTabControl.tabList[i2];
+      if (v_tab.tag && v_tab.tag.mode == "connection") v_conn_id_list.push(v_tab.tag.selectedDatabaseIndex);
+      else if (v_tab.tag && v_tab.tag.mode == "outer_terminal" && v_tab.tag.connId != null)
+        v_conn_id_list.push(v_tab.tag.connId);
+    }
+    var input = JSON.stringify({ p_conn_id_list: v_conn_id_list });
+    execAjax$1(
+      "/get_connections/",
+      input,
+      function(p_return) {
+        v_connections_data.card_list = [];
+        v_connections_data.technologies = p_return.v_data.v_technologies;
+        var v_container = document.createElement("div");
+        v_container.className = "container-fluid";
+        var v_target_div = el("connection_card_list");
+        var v_row = document.createElement("div");
+        v_row.className = "row";
+        v_row.innerHTML = '<div id="connections_management_empty_all" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections available.</h5><button id="bt_empty_all_new_connection" type="button" class="mt-4 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_with_public" class="my-4 text-center w-100" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h5 class="">Your user has no connections configured yet, but there are <i class="fas fa-users text-info mx-2"></i> public connections.</h5><h5 class="d-inline-block mt-4 mr-2">You can also create your own</h5><button id="bt_empty_public_new_connection" type="button" class="mt-2 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_group" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections assigned to this group yet.</h5><button id="bt_empty_group_manage_groups" type="button" class="mt-4 btn omnidb__theme__btn--primary">Manage Groups</button></div>';
+        v_row.querySelector("#bt_empty_all_new_connection").addEventListener(
+          "click",
+          () => newConnection()
+        );
+        v_row.querySelector("#bt_empty_public_new_connection").addEventListener(
+          "click",
+          () => newConnection()
+        );
+        v_row.querySelector("#bt_empty_group_manage_groups").addEventListener(
+          "click",
+          () => manageGroup()
+        );
+        for (var i3 = 0; i3 < p_return.v_data.v_conn_list.length; i3++) {
+          var v_conn_obj2 = p_return.v_data.v_conn_list[i3];
+          var v_col_div = document.createElement("div");
+          v_col_div.className = "omnidb__connections__cols";
+          v_row.appendChild(v_col_div);
+          if (v_conn_obj2.public && !v_connections_data.show_public && !v_conn_obj2.is_mine) {
+            v_col_div.classList.add("d-none");
+          }
+          var v_card_div = document.createElement("div");
+          v_card_div.className = "card omnidb__connections__card";
+          v_col_div.appendChild(v_card_div);
+          var v_cover_div = document.createElement("label");
+          v_cover_div.className = "connection-card-cover m-0";
+          v_cover_div.setAttribute("for", "connection_item_input_" + i3);
+          var v_checkbox = document.createElement("input");
+          v_checkbox.className = "connection-card-checkbox";
+          v_checkbox.id = "connection_item_input_" + i3;
+          v_checkbox.type = "checkbox";
+          var v_check_svg = '<svg class="connection-card-svg" width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg"><path d="M 6 18 L 15 32 L 34 13" stroke-width="4" stroke="#4a81d4" fill="transparent"></path><circle r="19" cx="21" cy="21" stroke-width="2" stroke="#b2b2b2" fill="transparent"></circle></svg>';
+          v_cover_div.innerHTML = v_check_svg;
+          var v_card_body_div = document.createElement("div");
+          v_card_body_div.className = "card-body";
+          v_card_div.appendChild(v_card_body_div);
+          var v_icon = "";
+          var v_title = "";
+          var v_details = "";
+          var v_tunnel = '<div class="card-subtitle tunnel text-muted">No Tunnel Configured</div>';
+          if (v_conn_obj2.technology == "terminal") {
+            v_icon = '<i class="fas fa-terminal"></i>';
+            if (v_conn_obj2.alias && v_conn_obj2.alias !== "") {
+              v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
+            } else {
+              v_title = '<h5 class="card-title">Terminal</h5>';
+            }
+            v_tunnel = '<h6 class="card-subtitle text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</h6>";
+          } else {
+            v_icon = '<i class="technology-icon node-' + escapeHtml(v_conn_obj2.technology) + '"></i>';
+            v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
+            if (v_conn_obj2.conn_string && v_conn_obj2.conn_string != "") {
+              v_details += '<h6 class="card-subtitle mb-2 text-muted"><i title="Connection String" class="fas fa-quote-left"></i> ' + escapeHtml(v_conn_obj2.conn_string) + "</h6>";
+            } else {
+              v_details += '<h6 class="card-subtitle mb-2 text-muted">' + escapeHtml(v_conn_obj2.server) + ":" + escapeHtml(String(v_conn_obj2.port)) + '</h6><p class="card-text">' + escapeHtml(v_conn_obj2.user) + "@" + escapeHtml(v_conn_obj2.service) + "</p>";
+            }
+            if (v_conn_obj2.tunnel.enabled === true) {
+              v_tunnel = '<div class="card-subtitle tunnel text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</div>";
+            }
+          }
+          v_card_body_div.innerHTML += '<div class="card-body-icon">' + v_icon + '</div><div class="card-body-title">' + v_title + '</div><div class="card-body-details">' + v_details + '</div><div class="card-body-tunnel">' + v_tunnel + "</div>";
+          v_card_body_div.appendChild(v_checkbox);
+          v_card_body_div.appendChild(v_cover_div);
+          var v_card_body_buttons = document.createElement("div");
+          v_card_body_buttons.className = "card-body-buttons";
+          v_card_body_div.appendChild(v_card_body_buttons);
+          var v_button_select = document.createElement("button");
+          v_button_select.className = "btn btn-success btn-sm omnidb__connections__btn--select";
+          v_button_select.title = "Select";
+          v_button_select.innerHTML = '<svg width="15px" height="160px" viewBox="0 0 15 160" style="width: auto;height: 100%;stroke: none;stroke-width: 0;"><path stroke-width="0" stroke="none" d="M 0 0 L 15 80 L 0 160 Z"></path></svg><i class="fas fa-plug"></i>';
+          v_card_body_buttons.appendChild(v_button_select);
+          var v_button_edit = document.createElement("button");
+          v_button_edit.className = "btn btn-sm mx-1 omnidb__theme__btn--primary";
+          v_button_edit.title = "Edit";
+          v_button_edit.innerHTML = '<i class="fas fa-pen"</i>';
+          v_card_body_buttons.appendChild(v_button_edit);
+          var v_button_delete = document.createElement("button");
+          v_button_delete.className = "btn btn-danger btn-sm mx-1";
+          v_button_delete.title = "Delete";
+          if (v_conn_obj2.locked == true) {
+            v_button_delete.setAttribute("disabled", "disabled");
+          }
+          v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>';
+          v_card_body_buttons.appendChild(v_button_delete);
+          v_button_select.onclick = /* @__PURE__ */ (function(conn_obj) {
+            return function() {
+              selectConnection(conn_obj);
+            };
+          })(v_conn_obj2);
+          v_button_edit.onclick = /* @__PURE__ */ (function(conn_obj) {
+            return function() {
+              editConnection(conn_obj);
+            };
+          })(v_conn_obj2);
+          v_button_delete.onclick = /* @__PURE__ */ (function(conn_obj) {
+            return function() {
+              deleteConnection(conn_obj);
+            };
+          })(v_conn_obj2);
+          if (v_conn_obj2.public) {
+            v_total_public_conn += 1;
+            var v_public_icon = document.createElement("i");
+            v_public_icon.setAttribute(
+              "style",
+              "color: #FFF;position: absolute;top: -5px;left: -5px;background-color: #c57dd2;padding: 4px 2px;border-radius: 100%;"
+            );
+            v_public_icon.classList = "fas fa-users";
+            v_card_body_div.appendChild(v_public_icon);
+            v_card_div.style["border-color"] = "#c57dd2";
+            v_card_div.classList.add("omnidb__connections__card--public");
+            v_card_div.classList.add("d-none");
+            v_card_div.classList.add("fade");
+            if (v_connections_data.show_public || v_conn_obj2.is_mine) {
+              v_card_div.classList.remove("d-none");
+              v_card_div.classList.add("show");
+            }
+          }
+          v_connections_data.card_list.push({
+            data: v_conn_obj2,
+            card_div: v_col_div,
+            cover_div: v_cover_div,
+            checkbox: v_checkbox
+          });
+        }
+        v_container.appendChild(v_row);
+        v_target_div.innerHTML = "";
+        v_target_div.appendChild(v_container);
+        if (p_show_section) {
+          switchSection("connections");
+        }
+        if (p_change_group) {
+          groupChange(el("group_selector").value);
+        }
+        el("conn_list_public_counter").innerHTML = v_total_public_conn;
+        updateConnectionsTitleInfo();
+      },
+      null,
+      "box",
+      true
+    );
+  }
+  function groupChange(p_value) {
+    var v_empty_group_div = el("connections_management_empty_group");
+    if (p_value != -1) {
+      el("button_group_actions").style.display = "";
+      var v_group_obj = { conn_list: [] };
+      for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
+        if (p_value == v_connections_data.v_group_list[i2].id) {
+          v_group_obj = v_connections_data.v_group_list[i2];
+          break;
+        }
+      }
+      var v_group_valid_conn = 0;
+      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+        var v_conn_obj2 = v_connections_data.card_list[i2];
+        if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
+          v_conn_obj2.card_div.style.display = "";
+          v_group_valid_conn++;
+        } else {
+          v_conn_obj2.card_div.style.display = "none";
+        }
+      }
+      if (v_empty_group_div) {
+        if (v_group_valid_conn === 0) {
+          v_empty_group_div.style.display = "";
+        } else {
+          v_empty_group_div.style.display = "none";
+        }
+      }
+    } else {
+      if (v_empty_group_div) {
+        v_empty_group_div.style.display = "none";
+      }
+      el("button_group_actions").style.display = "none";
+      el("group_selector").value = -1;
+      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+        var v_conn_obj2 = v_connections_data.card_list[i2];
+        v_conn_obj2.card_div.style.display = "";
+      }
+    }
+    updateConnectionsTitleInfo();
+  }
+  function manageGroup() {
+    el("group_actions_1").style.display = "none";
+    el("group_actions_2").style.display = "";
+    el("button_new_connection").setAttribute("disabled", true);
+    el("group_selector").setAttribute("disabled", true);
+    el("button_new_group").setAttribute("disabled", true);
+    el("button_group_actions").setAttribute("disabled", true);
+    var v_empty_group_div = el("connections_management_empty_group");
+    if (v_empty_group_div) {
+      v_empty_group_div.style.display = "none";
+    }
+    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
+      v_card_list_el.classList.add("omnidb__connections__card-list--connection-management");
+    });
+    var v_current_group_id = el("group_selector").value;
+    var v_group_obj = null;
+    for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
+      if (v_current_group_id == v_connections_data.v_group_list[i2].id) {
+        v_group_obj = v_connections_data.v_group_list[i2];
+        break;
+      }
+    }
+    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+      var v_conn_obj2 = v_connections_data.card_list[i2];
+      v_conn_obj2.card_div.style.display = "";
+      if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
+        v_conn_obj2.checkbox.checked = true;
+      }
+    }
+    updateConnectionsTitleInfo();
+  }
+  function manageGroupSave() {
+    el("group_actions_1").style.display = "";
+    el("group_actions_2").style.display = "none";
+    el("button_new_connection").removeAttribute("disabled");
+    el("group_selector").removeAttribute("disabled");
+    el("button_new_group").removeAttribute("disabled");
+    el("button_group_actions").removeAttribute("disabled");
+    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
+      v_card_list_el.classList.remove("omnidb__connections__card-list--connection-management");
+    });
+    v_conn_data = [];
+    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+      var v_conn_obj2 = v_connections_data.card_list[i2];
+      v_conn_data.push({
+        id: v_conn_obj2.data.id,
+        selected: v_conn_obj2.checkbox.checked
+      });
+      v_conn_obj2.checkbox.checked = false;
+    }
+    execAjax$1(
+      "/save_group_connections/",
+      JSON.stringify({
+        // parseInt because a <select>'s value is a string and the backend
+        // unmarshals this into an integer, which rejects "1" outright and
+        // fails the whole request. See flexInt in go-server/flex_int.go.
+        p_group: parseInt(el("group_selector").value, 10),
+        p_conn_data_list: v_conn_data
+      }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function newGroupConfirm(p_name) {
+    execAjax$1(
+      "/new_group/",
+      JSON.stringify({ p_name }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function renameGroupConfirm(p_id, p_name) {
+    execAjax$1(
+      "/edit_group/",
+      JSON.stringify({ p_id, p_name }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function deleteGroup() {
+    var v_group_id = parseInt(el("group_selector").value, 10);
+    showConfirm("Are you sure you want to delete the current group?", function() {
+      deleteGroupConfirm(v_group_id);
+    });
+  }
+  function deleteGroupConfirm(p_group_id) {
+    execAjax$1(
+      "/delete_group/",
+      JSON.stringify({ p_id: p_group_id }),
+      function(p_return) {
+        getDatabaseList();
+        getGroups();
+      },
+      null,
+      "box"
+    );
+  }
+  function newGroup() {
+    showConfirm("", function() {
+      newGroupConfirm(el("group_name_input").value);
+    });
+    var v_input = document.createElement("input");
+    v_input.id = "group_name_input";
+    v_input.className = "form-control";
+    v_input.placeholder = "Group Name";
+    v_input.style.width = "100%";
+    el("modal_message_content").appendChild(v_input);
+    v_input.onkeydown = function() {
+      if (
+        /** @type {any} */
+        event.keyCode == 13
+      ) {
+        el("modal_message_ok").click();
+      } else if (
+        /** @type {any} */
+        event.keyCode == 27
+      ) {
+        el("modal_message_cancel").click();
+      }
+    };
+    setTimeout(function() {
+      v_input.focus();
+    }, 500);
+  }
+  function renameGroup() {
+    var v_select = el("group_selector");
+    showConfirm("", function() {
+      renameGroupConfirm(parseInt(el("group_selector").value, 10), el("group_name_input").value);
+    });
+    var v_input = document.createElement("input");
+    v_input.id = "group_name_input";
+    v_input.className = "form-control";
+    v_input.placeholder = "Group Name";
+    v_input.style.width = "100%";
+    v_input.value = v_select.options[v_select.selectedIndex].text;
+    el("modal_message_content").appendChild(v_input);
+    v_input.onkeydown = function() {
+      if (
+        /** @type {any} */
+        event.keyCode == 13
+      ) {
+        el("modal_message_ok").click();
+      } else if (
+        /** @type {any} */
+        event.keyCode == 27
+      ) {
+        el("modal_message_cancel").click();
+      }
+    };
+    setTimeout(function() {
+      v_input.focus();
+      v_input.selectionStart = v_input.selectionEnd = 1e4;
+    }, 500);
+  }
+  function getGroups() {
+    execAjax$1(
+      "/get_groups/",
+      JSON.stringify({}),
+      function(p_return) {
+        v_connections_data.v_group_list = p_return.v_data;
+        var select = el("group_selector");
+        var current_value = select.value;
+        select.innerHTML = "";
+        var option = document.createElement("option");
+        option.value = "-1";
+        option.textContent = "All Connections";
+        select.appendChild(option);
+        var found = false;
+        for (var i2 = 0; i2 < p_return.v_data.length; i2++) {
+          option = document.createElement("option");
+          option.value = p_return.v_data[i2].id;
+          option.textContent = p_return.v_data[i2].name;
+          if (option.value == current_value) {
+            option.selected = true;
+            found = true;
+          }
+          select.appendChild(option);
+        }
+        if (!found && current_value != -1) {
+          groupChange(-1);
+        } else {
+          groupChange(el("group_selector").value);
+        }
+      },
+      null,
+      "box"
+    );
+  }
+  function testConnection(p_password = null) {
+    var input = JSON.stringify({
+      id: v_connections_data.current_id,
+      type: el("conn_form_type").value,
+      connstring: el("conn_form_connstring").value,
+      server: el("conn_form_server").value,
+      port: el("conn_form_port").value,
+      database: el("conn_form_database").value,
+      user: el("conn_form_user").value,
+      password: el("conn_form_user_pass").value,
+      temp_password: p_password,
+      tunnel: {
+        enabled: el("conn_form_use_tunnel").checked,
+        server: el("conn_form_ssh_server").value,
+        port: el("conn_form_ssh_port").value,
+        user: el("conn_form_ssh_user").value,
+        password: el("conn_form_ssh_password").value,
+        key: el("conn_form_ssh_key").value
+      }
+    });
+    execAjax$1(
+      "/test_connection/",
+      input,
+      function(p_return) {
+        if (p_return.v_data == "Connection successful.") showAlert(p_return.v_data);
+        else showError(p_return.v_data);
+      },
+      function(p_return) {
+        showConfirm(
+          "",
+          function() {
+            testConnection(el("txt_test_password_prompt").value);
+          },
+          null,
+          function() {
+            var v_content_div = el("modal_message_content");
+            v_content_div.appendChild(document.createTextNode(p_return.v_data));
+            var v_input = document.createElement("input");
+            v_input.id = "txt_test_password_prompt";
+            v_input.className = "form-control";
+            v_input.type = "password";
+            v_input.placeholder = "Password";
+            v_input.style.marginBottom = "20px";
+            v_input.style.marginTop = "20px";
+            v_input.style.textAlign = "center";
+            v_content_div.appendChild(v_input);
+            v_input.onkeydown = function() {
+              if (
+                /** @type {any} */
+                event.keyCode == 13
+              ) el("modal_message_ok").click();
+              else if (
+                /** @type {any} */
+                event.keyCode == 27
+              ) el("modal_message_cancel").click();
+            };
+            v_input.focus();
+          }
+        );
+      },
+      "box",
+      true,
+      true
+    );
+  }
+  function saveConnection() {
+    var input = JSON.stringify({
+      id: v_connections_data.current_id,
+      type: el("conn_form_type").value,
+      public: el("conn_form_public").checked,
+      connstring: el("conn_form_connstring").value,
+      server: el("conn_form_server").value,
+      port: el("conn_form_port").value,
+      database: el("conn_form_database").value,
+      user: el("conn_form_user").value,
+      password: el("conn_form_user_pass").value,
+      title: el("conn_form_title").value,
+      tunnel: {
+        enabled: el("conn_form_use_tunnel").checked,
+        server: el("conn_form_ssh_server").value,
+        port: el("conn_form_ssh_port").value,
+        user: el("conn_form_ssh_user").value,
+        password: el("conn_form_ssh_password").value,
+        key: el("conn_form_ssh_key").value
+      }
+    });
+    execAjax$1(
+      "/save_connection/",
+      input,
+      function(p_return) {
+        bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).hide();
+        getDatabaseList();
+        showConnectionList(false, true);
+      },
+      null,
+      "box"
+    );
+  }
+  function deleteConnection(p_conn_obj) {
+    showConfirm("Are you sure you want to delete this connection?", function() {
+      var input = JSON.stringify({
+        id: p_conn_obj.id
+      });
+      execAjax$1(
+        "/delete_connection/",
+        input,
+        function(p_return) {
+          getDatabaseList();
+          showConnectionList(false, true);
+        },
+        null,
+        "box"
+      );
+    });
+  }
+  function adjustTechSelector() {
+    var select = el("conn_form_type");
+    select.innerHTML = "";
+    var option = document.createElement("option");
+    option.value = "-1";
+    option.textContent = "Select Type";
+    select.appendChild(option);
+    for (var i2 = 0; i2 < v_connections_data.technologies.length; i2++) {
+      option = document.createElement("option");
+      option.value = v_connections_data.technologies[i2];
+      option.textContent = v_connections_data.technologies[i2];
+      select.appendChild(option);
+    }
+  }
+  function editConnection(p_conn_obj) {
+    v_connections_data.current_id = p_conn_obj.id;
+    adjustTechSelector();
+    el("conn_form_type").value = p_conn_obj.technology;
+    el("conn_form_title").value = p_conn_obj.alias;
+    el("conn_form_connstring").value = p_conn_obj.conn_string;
+    el("conn_form_server").value = p_conn_obj.server;
+    el("conn_form_port").value = p_conn_obj.port;
+    el("conn_form_database").value = p_conn_obj.service;
+    el("conn_form_user").value = p_conn_obj.user;
+    el("conn_form_user_pass").value = "";
+    el("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
+    el("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
+    el("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
+    el("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
+    el("conn_form_ssh_password").value = "";
+    el("conn_form_ssh_key").value = "";
+    el("conn_form_public").checked = p_conn_obj.public;
+    let v_enable_list = [];
+    let v_disable_list = [];
+    if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
+      if (!el("conn_form_user_pass_check_icon")) {
+        el("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
+          "beforeend",
+          '<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>'
+        );
+      }
+    } else {
+      el("conn_form_user_pass_check_icon")?.remove();
+    }
+    if (p_conn_obj.tunnel.password && p_conn_obj.tunnel.password !== null && p_conn_obj.tunnel.password !== "") {
+      if (!el("conn_form_ssh_password_check_icon")) {
+        el("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
+          "beforeend",
+          '<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>'
+        );
+      }
+    } else {
+      el("conn_form_ssh_password_check_icon")?.remove();
+    }
+    if (p_conn_obj.tunnel.key && p_conn_obj.tunnel.key !== null && p_conn_obj.tunnel.key !== "") {
+      if (!el("conn_form_ssh_key_check_icon")) {
+        el("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
+          "beforeend",
+          '<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>'
+        );
+      }
+    } else {
+      el("conn_form_ssh_key_check_icon")?.remove();
+    }
+    if (p_conn_obj.technology === "terminal") {
+      v_disable_list = [
+        "conn_form_connstring",
+        "conn_form_server",
+        "conn_form_port",
+        "conn_form_database",
+        "conn_form_user",
+        "conn_form_user_pass"
+      ];
+      v_enable_list = [
+        "conn_form_ssh_server",
+        "conn_form_ssh_port",
+        "conn_form_ssh_user",
+        "conn_form_ssh_password",
+        "conn_form_ssh_key",
+        "conn_form_ssh_key_input"
+      ];
+      el("conn_form_use_tunnel").checked = true;
+      el("conn_form_use_tunnel").setAttribute("disabled", true);
+    } else if (p_conn_obj.technology === "sqlite") {
+      v_disable_list = ["conn_form_connstring", "conn_form_server", "conn_form_port", "conn_form_user", "conn_form_user_pass"];
+      v_enable_list = ["conn_form_database"];
+      if (p_conn_obj.tunnel.enabled) {
+        v_enable_list = v_enable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      } else {
+        v_disable_list = v_disable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      }
+    } else {
+      if (p_conn_obj.conn_string.trim() !== "" && p_conn_obj.conn_string.trim() !== null) {
+        v_disable_list = ["conn_form_server", "conn_form_port", "conn_form_database", "conn_form_user", "conn_form_user_pass"];
+        v_enable_list = ["conn_form_connstring"];
+      } else if (p_conn_obj.server.trim() !== "" && p_conn_obj.server.trim() !== null) {
+        v_disable_list = ["conn_form_connstring"];
+        v_enable_list = ["conn_form_server", "conn_form_port", "conn_form_database", "conn_form_user", "conn_form_user_pass"];
+      }
+      if (p_conn_obj.tunnel.enabled) {
+        v_enable_list = v_enable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      } else {
+        v_disable_list = v_disable_list.concat([
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ]);
+      }
+    }
+    updateModalEditConnectionFields(v_disable_list, v_enable_list);
+    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
+  }
+  function newConnection() {
+    v_connections_data.current_id = -1;
+    adjustTechSelector();
+    el("conn_form_button_test_connection").setAttribute("disabled", true);
+    el("conn_form_button_save_connection").setAttribute("disabled", true);
+    el("conn_form_type").value = -1;
+    el("conn_form_title").value = "";
+    el("conn_form_public").checked = false;
+    el("conn_form_connstring").value = "";
+    el("conn_form_server").value = "";
+    el("conn_form_port").value = "";
+    el("conn_form_database").value = "";
+    el("conn_form_user").value = "";
+    el("conn_form_user_pass").value = "";
+    el("conn_form_use_tunnel").checked = false;
+    el("conn_form_ssh_server").value = "";
+    el("conn_form_ssh_port").value = "22";
+    el("conn_form_ssh_user").value = "";
+    el("conn_form_ssh_password").value = "";
+    el("conn_form_ssh_key").value = "";
+    el("conn_form_ssh_key_input").value = null;
+    el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+    el("conn_form_user_pass_check_icon")?.remove();
+    el("conn_form_ssh_password_check_icon")?.remove();
+    el("conn_form_ssh_key_check_icon")?.remove();
+    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
+  }
+  function selectConnection(p_conn_obj) {
+    switchSection("database");
+    if (p_conn_obj.technology === "terminal") {
+      v_connTabControl.tag.createOuterTerminalTab(
+        p_conn_obj.id,
+        p_conn_obj.alias,
+        p_conn_obj.tunnel.user + "@" + p_conn_obj.tunnel.server + ":" + p_conn_obj.tunnel.port
+      );
+    } else {
+      v_connTabControl.tag.createConnTab(p_conn_obj.id);
+    }
+  }
+  function toggleConnectionsPublic() {
+    updateConnectionsTitleInfo();
+    var v_public = el("conn_list_public").checked;
+    if (v_public) {
+      v_connections_data.show_public = true;
+      document.querySelectorAll(".omnidb__connections__card--public").forEach((v_card_el) => {
+        v_card_el.parentElement.classList.remove("d-none");
+        v_card_el.classList.remove("d-none");
+        v_card_el.classList.add("show");
+      });
+    } else {
+      v_connections_data.show_public = false;
+      for (let i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+        v_conn_div = v_connections_data.card_list[i2].card_div;
+        v_conn_obj = v_connections_data.card_list[i2].data;
+        if (v_conn_obj.public) {
+          if (!v_conn_obj.is_mine) {
+            Array.from(v_conn_div.children).forEach((v_child) => {
+              v_child.classList.remove("show");
+              v_child.classList.add("d-none");
+            });
+            v_conn_div.classList.add("d-none");
+          }
+        }
+      }
+    }
+  }
+  function updateModalEditConnectionState(e) {
+    let v_e_target = e.target;
+    let v_e_target_id = v_e_target.getAttribute("id");
+    let v_e_value = e.target.value;
+    let v_disable_list = [];
+    let v_enable_list = [];
+    let v_form_cases = ["conn_form_type"];
+    let v_technology = el("conn_form_type").value;
+    let v_allow_tunnel = el("conn_form_use_tunnel").checked;
+    let v_use_connection_string = el("conn_form_connstring").value;
+    el("conn_form_ssh_key_input").value;
+    if (v_technology === "terminal") {
+      v_allow_tunnel = true;
+      el("conn_form_use_tunnel").checked = true;
+      el("conn_form_use_tunnel").setAttribute("disabled", true);
+    } else {
+      el("conn_form_use_tunnel").removeAttribute("disabled");
+    }
+    if (typeof v_use_connection_string === "string") {
+      v_use_connection_string = v_use_connection_string.trim();
+    }
+    if (v_technology === "terminal") {
+      v_disable_list.push("conn_form_connstring");
+      v_disable_list.push("conn_form_server");
+      v_disable_list.push("conn_form_port");
+      v_disable_list.push("conn_form_database");
+      v_disable_list.push("conn_form_user");
+      v_disable_list.push("conn_form_user_pass");
+    } else if (v_technology === "sqlite") {
+      v_disable_list.push("conn_form_connstring");
+      v_disable_list.push("conn_form_server");
+      v_disable_list.push("conn_form_port");
+      v_disable_list.push("conn_form_user");
+      v_disable_list.push("conn_form_user_pass");
+      v_enable_list.push("conn_form_database");
+      v_form_cases.push("conn_form_database");
+    } else if (v_use_connection_string !== "" && v_use_connection_string !== null) {
+      v_disable_list.push("conn_form_server");
+      v_disable_list.push("conn_form_port");
+      v_disable_list.push("conn_form_database");
+      v_disable_list.push("conn_form_user");
+      v_disable_list.push("conn_form_user_pass");
+      v_form_cases.push("conn_form_connstring");
+    } else {
+      v_enable_list.push("conn_form_server");
+      v_enable_list.push("conn_form_port");
+      v_enable_list.push("conn_form_database");
+      v_enable_list.push("conn_form_user");
+      v_enable_list.push("conn_form_user_pass");
+      v_form_cases.push("conn_form_server");
+      v_form_cases.push("conn_form_port");
+      v_form_cases.push("conn_form_database");
+      v_form_cases.push("conn_form_user");
+      let v_block_conn_string = false;
+      let v_check_inputs = [
+        "conn_form_server",
+        "conn_form_port",
+        "conn_form_database",
+        "conn_form_user",
+        "conn_form_user_pass"
+      ];
+      let v_check_inputs_empty = true;
+      for (let i2 = 0; i2 < v_check_inputs.length; i2++) {
+        var v_check_input_value = el(v_check_inputs[i2]).value;
+        if (typeof v_check_input_value === "string") {
+          v_check_input_value = v_check_input_value.trim();
+        }
+        if (v_check_input_value !== "" && v_check_input_value !== null) {
+          v_check_inputs_empty = false;
+        }
+      }
+      if (!v_check_inputs_empty) {
+        v_block_conn_string = true;
+      }
+      if (v_block_conn_string) {
+        v_disable_list.push("conn_form_connstring");
+      } else {
+        v_enable_list.push("conn_form_connstring");
+        v_form_cases.push("conn_form_connstring");
+      }
+    }
+    if (v_allow_tunnel) {
+      v_enable_list.push("conn_form_ssh_server");
+      v_enable_list.push("conn_form_ssh_port");
+      v_enable_list.push("conn_form_ssh_user");
+      v_enable_list.push("conn_form_ssh_password");
+      v_enable_list.push("conn_form_ssh_key");
+      v_enable_list.push("conn_form_ssh_key_input");
+      v_form_cases.push("conn_form_ssh_server");
+      v_form_cases.push("conn_form_ssh_port");
+      v_form_cases.push("conn_form_ssh_user");
+    } else {
+      v_disable_list.push("conn_form_ssh_server");
+      v_disable_list.push("conn_form_ssh_port");
+      v_disable_list.push("conn_form_ssh_user");
+      v_disable_list.push("conn_form_ssh_password");
+      v_disable_list.push("conn_form_ssh_key");
+      v_disable_list.push("conn_form_ssh_key_input");
+    }
+    if (v_e_target_id === "conn_form_type") {
+      if (v_e_value === "terminal") {
+        v_disable_list = [
+          "conn_form_connstring",
+          "conn_form_server",
+          "conn_form_port",
+          "conn_form_database",
+          "conn_form_user",
+          "conn_form_user_pass"
+        ];
+        v_enable_list = [
+          "conn_form_ssh_server",
+          "conn_form_ssh_port",
+          "conn_form_ssh_user",
+          "conn_form_ssh_password",
+          "conn_form_ssh_key",
+          "conn_form_ssh_key_input"
+        ];
+        el("conn_form_use_tunnel").checked = true;
+        el("conn_form_use_tunnel").setAttribute("disabled", true);
+        v_form_cases.push("conn_form_ssh_server");
+        v_form_cases.push("conn_form_ssh_port");
+        v_form_cases.push("conn_form_ssh_user");
+      }
+    }
+    updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
+  }
+  function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
+    for (let i2 = 0; i2 < p_disable_list.length; i2++) {
+      var v_item = el(p_disable_list[i2]);
+      v_item.setAttribute("readonly", true);
+      v_item.setAttribute("disabled", true);
+      v_item.value = null;
+    }
+    for (let i2 = 0; i2 < p_enable_list.length; i2++) {
+      var v_item = el(p_enable_list[i2]);
+      v_item.removeAttribute("readonly");
+      v_item.removeAttribute("disabled");
+    }
+    document.querySelectorAll("#modal_edit_connection .required").forEach((v_required_el) => {
+      v_required_el.classList.remove("required");
+    });
+    let v_has_invalid = false;
+    if (p_form_cases) {
+      for (let i2 = 0; i2 < p_form_cases.length; i2++) {
+        el(p_form_cases[i2]).parentElement.classList.add("required");
+      }
+      for (let i2 = 0; i2 < p_form_cases.length; i2++) {
+        if (p_form_cases[i2] === "conn_form_type") {
+          if (el(p_form_cases[i2]).value === "-1") {
+            v_has_invalid = true;
+            break;
+          }
+        } else {
+          let v_value_check = el(p_form_cases[i2]).value.trim();
+          if (v_value_check === "" || v_value_check === null) {
+            v_has_invalid = true;
+            break;
+          }
+        }
+      }
+    }
+    if (v_has_invalid) {
+      el("conn_form_button_test_connection").setAttribute("disabled", true);
+      el("conn_form_button_save_connection").setAttribute("disabled", true);
+    } else {
+      el("conn_form_button_test_connection").removeAttribute("disabled");
+      el("conn_form_button_save_connection").removeAttribute("disabled");
+    }
+  }
+  function updateConnectionKey(e) {
+    var file = e.target.files ? e.target.files[0] : false;
+    var v_input = el("conn_form_ssh_key");
+    if (!file) {
+      v_input.value = null;
+      el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
+      return;
+    }
+    var reader = new FileReader();
+    reader.onload = function(e2) {
+      var v_contents = (
+        /** @type {FileReader} */
+        e2.target.result
+      );
+      v_input.value = v_contents;
+      el("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
+      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
+    };
+    reader.readAsText(file);
+  }
+  function updateConnectionsTitleInfo() {
+    var v_public = el("conn_list_public").checked;
+    var v_group_context = el("group_selector").value;
+    var v_connection_owner = false;
+    var v_managing_group = v_group_context && el("group_selector").getAttribute("disabled");
+    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
+      var v_conn_obj2 = v_connections_data.card_list[i2].data;
+      if (v_conn_obj2.is_mine) {
+        v_connection_owner = true;
+      }
+    }
+    var v_empty_cards = el("connections_management_empty_all");
+    var v_empty_with_public = el("connections_management_empty_with_public");
+    if (v_empty_cards) {
+      if (v_connections_data.card_list.length === 0) {
+        v_empty_with_public.style.display = "none";
+        v_empty_cards.style.display = "";
+      } else if (v_group_context !== "-1") {
+        v_empty_cards.style.display = "none";
+        v_empty_with_public.style.display = "none";
+      } else if (v_public) {
+        v_empty_cards.style.display = "none";
+        v_empty_with_public.style.display = "none";
+      } else if (!v_connection_owner) {
+        v_empty_cards.style.display = "none";
+        v_empty_with_public.style.display = "";
+      }
+      if (!v_public && v_managing_group && !v_connection_owner) {
+        v_empty_with_public.style.display = "";
+      }
+    }
+  }
+  const connections = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    adjustTechSelector,
+    deleteConnection,
+    deleteGroup,
+    deleteGroupConfirm,
+    editConnection,
+    getGroups,
+    groupChange,
+    manageGroup,
+    manageGroupSave,
+    newConnection,
+    newGroup,
+    newGroupConfirm,
+    renameGroup,
+    renameGroupConfirm,
+    saveConnection,
+    selectConnection,
+    showConnectionList,
+    startConnectionManagement,
+    testConnection,
+    toggleConnectionsPublic,
+    updateConnectionKey,
+    updateConnectionsTitleInfo,
+    updateModalEditConnectionFields,
+    updateModalEditConnectionState
+  }, Symbol.toStringTag, { value: "Module" }));
+  function toggleSnippetPanel() {
+    switchSection("snippets");
+    resizeSnippetPanel();
+  }
+  var SNIPPET_PANEL_ID = "snippets_panel";
+  var v_createSnippetPanelFunction = function(p_index) {
+    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='container-fluid h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
+    var v_target = (
+      /** @type {HTMLElement} */
+      document.getElementById("omnidb__section_snippets")
+    );
+    v_target.innerHTML = v_html;
+    document.getElementById("snippet_resize_line_" + SNIPPET_PANEL_ID).addEventListener(
+      "mousedown",
+      (event2) => resizeSnippetHorizontal(event2)
+    );
+    var v_currTabControl = createTabControl({
+      p_div: SNIPPET_PANEL_ID + "_tabs",
+      p_hierarchy: "secondary"
+    });
+    v_currTabControl.createTab({
+      p_name: "+",
+      p_close: false,
+      p_selectable: false,
+      p_clickFunction: function(e) {
+        showMenuNewTab(e);
+      }
+    });
+    var v_tag = {
+      tab_id: SNIPPET_PANEL_ID,
+      tabControl: v_currTabControl,
+      tabTitle: "teste",
+      divLayoutGrid: document.getElementById(SNIPPET_PANEL_ID + "_div_layout_grid"),
+      divLeft: document.getElementById(SNIPPET_PANEL_ID + "_div_left"),
+      divPanel: document.getElementById(SNIPPET_PANEL_ID),
+      divRight: document.getElementById(SNIPPET_PANEL_ID + "_div_right"),
+      divTree: (
+        /** @type {HTMLElement} */
+        document.getElementById(SNIPPET_PANEL_ID + "_tree")
+      ),
+      connTabControl: v_connTabControl,
+      isVisible: false,
+      mode: "snippets"
+    };
+    v_connTabControl.snippet_tag = v_tag;
+    getTreeSnippets(v_tag.divTree.id);
+    if (v_connTabControl.snippet_tag.tabControl.tabList.length > 0) {
+      v_connTabControl.snippet_tag.tabControl.selectTab(v_connTabControl.snippet_tag.tabControl.tabList[0]);
+    }
+    v_connTabControl.tag.createSnippetTextTab();
+    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.setValue("");
+    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
+    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+  };
+  const outerSnippetPanel = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    toggleSnippetPanel,
+    v_createSnippetPanelFunction
+  }, Symbol.toStringTag, { value: "Module" }));
+  const SECTION_NAMES = ["welcome", "connections", "snippets", "database", "settings"];
+  var v_sectionDivs = {};
+  var v_sectionNav;
+  var v_sectionNavTabs = {};
+  function switchSection(p_name) {
+    for (let i2 = 0; i2 < SECTION_NAMES.length; i2++) {
+      var v_name = SECTION_NAMES[i2];
+      var v_div = v_sectionDivs[v_name];
+      if (v_div) v_div.classList.toggle("omnidb__section--active", v_name === p_name);
+    }
+    if (v_sectionNav && v_sectionNavTabs[p_name] && v_sectionNav.selectedTab !== v_sectionNavTabs[p_name]) {
+      v_sectionNav.selectTab(v_sectionNavTabs[p_name]);
+    }
+  }
+  function initSectionSwitcher() {
+    for (let i2 = 0; i2 < SECTION_NAMES.length; i2++) {
+      v_sectionDivs[SECTION_NAMES[i2]] = /** @type {HTMLElement} */
+      document.getElementById("omnidb__section_" + SECTION_NAMES[i2]);
+    }
+    v_sectionNav = createTabControl({ p_div: "omnidb_section_nav", p_hierarchy: "sectionnav" });
+    v_sectionNavTabs.welcome = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-hand-spock"></i>',
+      p_close: false,
+      p_selectFunction: function() {
+        switchSection("welcome");
+        document.title = "Welcome to OmniDB";
+        refreshBootstrapTooltips();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Welcome</h5>'
+    });
+    v_sectionNavTabs.connections = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-plug"></i>',
+      p_close: false,
+      p_selectFunction: function() {
+        startConnectionManagement();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Connections</h5>'
+    });
+    v_sectionNavTabs.snippets = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-book"></i>',
+      p_close: false,
+      p_selectFunction: function() {
+        toggleSnippetPanel();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Snippets</h5>'
+    });
+    v_sectionNavTabs.database = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-database"></i>',
+      p_close: false,
+      p_selectFunction: function() {
+        switchSection("database");
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Database</h5>'
+    });
+    var v_spacer = document.createElement("div");
+    v_spacer.className = "omnidb__section-nav__spacer";
+    v_sectionNav.tabListDiv.appendChild(v_spacer);
+    v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-info-circle"></i>',
+      p_close: false,
+      p_selectable: false,
+      p_clickFunction: function() {
+        showAbout();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">About</h5>'
+    });
+    if (!gv_desktopMode) {
+      initAccountMenu();
+    }
+    v_sectionNavTabs.settings = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-cog"></i>',
+      p_close: false,
+      p_selectFunction: function() {
+        showConfigUser();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Settings</h5>'
+    });
+  }
+  function initAccountMenu() {
+    var v_tab = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-user"></i>',
+      p_close: false,
+      p_selectable: false,
+      p_clickFunction: function(e) {
+        e.stopPropagation();
+        toggleAccountMenu();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Account</h5>'
+    });
+    var v_menu = document.createElement("div");
+    v_menu.id = "omnidb_section_nav__account_menu";
+    v_menu.className = "omnidb__account-menu";
+    var v_html = '<div class="omnidb__account-menu__version"><i class="fas fa-code-branch me-1"></i>' + escapeHtml(String(v_short_version)) + "</div>";
+    if (!gv_desktopMode) {
+      v_html += '<div class="omnidb__account-menu__username">' + escapeHtml(String(v_user_name)) + "</div>";
+      v_html += '<button id="omnidb_section_nav__link-signout" type="button" class="btn btn-sm omnidb__theme__btn--secondary w-100 mt-2"><i class="fas fa-sign-out-alt me-1"></i>Sign out</button>';
+    }
+    v_menu.innerHTML = v_html;
+    document.body.appendChild(v_menu);
+    if (!gv_desktopMode) {
+      document.getElementById("omnidb_section_nav__link-signout").addEventListener(
+        "click",
+        function() {
+          hideAccountMenu();
+          confirmSignout();
+        }
+      );
+    }
+    document.addEventListener("click", function(e) {
+      if (!(e.target instanceof Node)) return;
+      if (!v_menu.contains(e.target) && !v_tab.elementA.contains(e.target)) {
+        hideAccountMenu();
+      }
+    });
+  }
+  function toggleAccountMenu() {
+    document.getElementById("omnidb_section_nav__account_menu").classList.toggle(
+      "omnidb__account-menu--open"
+    );
+  }
+  function hideAccountMenu() {
+    document.getElementById("omnidb_section_nav__account_menu").classList.remove(
+      "omnidb__account-menu--open"
+    );
+  }
+  const sectionSwitcher = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    initSectionSwitcher,
+    switchSection
   }, Symbol.toStringTag, { value: "Module" }));
   var v_autocomplete_object;
   var Range = ace.require("ace/range").Range;
@@ -7937,88 +9228,6 @@
     createLegere,
     legereEscapeHtml
   }, Symbol.toStringTag, { value: "Module" }));
-  var toggleSnippetPanel = function(p_set_state = false) {
-    var v_element = v_connTabControl.snippet_tag.divPanel;
-    v_connTabControl.snippet_tag;
-    let v_set_state = p_set_state;
-    if (v_set_state === "visible") {
-      v_element.classList.add("omnidb__panel--slide-in");
-    } else if (v_set_state === "hidden") {
-      v_element.classList.remove("omnidb__panel--slide-in");
-    } else {
-      v_element.classList.toggle("omnidb__panel--slide-in");
-    }
-    resizeSnippetPanel();
-  };
-  var v_createSnippetPanelFunction = function(p_index) {
-    var v_tab = v_connTabControl.createTab({
-      p_icon: `<i class="fas fa-book"></i>`,
-      p_name: `Snippets`,
-      p_close: false,
-      p_selectable: false,
-      p_clickFunction: function() {
-        toggleSnippetPanel();
-      },
-      p_omnidb_tooltip_name: '<h5 class="my-1">Snippets Panel</h5>'
-    });
-    v_connTabControl.selectTab(v_tab);
-    var v_html = "<div id='" + v_tab.id + "_panel_snippet' class='omnidb__panel omnidb__panel--snippet'><button id='bt_toggle_snippet_panel_" + v_tab.id + "' type='button' class='px-4 btn omnidb__theme__btn--secondary omnidb__panel__toggler'><i class='fas fa-arrows-alt-v'></i></button><div class='container-fluid h-100' style='position: relative;'><div id='" + v_tab.id + "_snippet_div_layout_grid' class='d-flex h-100'><div id='" + v_tab.id + "_snippet_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + v_tab.id + "_snippet_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div></div></div><div id='snippet_resize_line_" + v_tab.id + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + v_tab.id + "_snippet_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + v_tab.id + "_snippet_tabs' class='w-100'></div></div></div></div></div>";
-    v_connTabControl.snippet_div = document.createElement("div");
-    v_connTabControl.snippet_div.id = v_tab.id + "_snippet";
-    v_connTabControl.snippet_div.innerHTML = v_html;
-    document.getElementById(v_connTabControl.id).append(v_connTabControl.snippet_div);
-    document.getElementById("bt_toggle_snippet_panel_" + v_tab.id).addEventListener(
-      "click",
-      () => toggleSnippetPanel()
-    );
-    document.getElementById("snippet_resize_line_" + v_tab.id).addEventListener(
-      "mousedown",
-      (event2) => resizeSnippetHorizontal(event2)
-    );
-    var v_currTabControl = createTabControl({
-      p_div: v_tab.id + "_snippet_tabs",
-      p_hierarchy: "secondary"
-    });
-    v_currTabControl.createTab({
-      p_name: "+",
-      p_close: false,
-      p_selectable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
-      }
-    });
-    var v_tag = {
-      tab_id: v_tab.id,
-      tabControl: v_currTabControl,
-      tabTitle: "teste",
-      divLayoutGrid: document.getElementById(v_tab.id + "_snippet_div_layout_grid"),
-      divLeft: document.getElementById(v_tab.id + "_snippet_div_left"),
-      divPanel: document.getElementById(v_tab.id + "_panel_snippet"),
-      divRight: document.getElementById(v_tab.id + "_snippet_div_right"),
-      divTree: (
-        /** @type {HTMLElement} */
-        document.getElementById(v_tab.id + "_snippet_tree")
-      ),
-      connTabControl: v_connTabControl,
-      isVisible: false,
-      mode: "snippets"
-    };
-    v_tab.tag = v_tag;
-    v_connTabControl.snippet_tag = v_tag;
-    getTreeSnippets(v_tag.divTree.id);
-    if (v_connTabControl.snippet_tag.tabControl.tabList.length > 0) {
-      v_connTabControl.snippet_tag.tabControl.selectTab(v_connTabControl.snippet_tag.tabControl.tabList[0]);
-    }
-    v_connTabControl.tag.createSnippetTextTab();
-    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.setValue("");
-    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
-    v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
-  };
-  const outerSnippetPanel = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    toggleSnippetPanel,
-    v_createSnippetPanelFunction
-  }, Symbol.toStringTag, { value: "Module" }));
   var v_createConsoleTabFunction = function() {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
@@ -9865,132 +11074,6 @@
     __proto__: null,
     v_createOuterTerminalTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
-  var v_createWelcomeTabFunction = function(p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
-    var v_tab = v_connTabControl.createTab({
-      p_icon: '<i class="fas fa-hand-spock"></i>',
-      p_name: "Welcome",
-      p_selectFunction: function() {
-        document.title = "Welcome to OmniDB";
-        refreshBootstrapTooltips();
-      },
-      p_close: false,
-      // Replacing default close icon with contextMenu.
-      p_closeFunction: function(e, p_tab) {
-        var v_this_tab = p_tab;
-        beforeCloseTab(e, function() {
-          v_this_tab.removeTab();
-        });
-      },
-      p_rightClickFunction: function(e) {
-        var v_option_list = [
-          {
-            text: '<p class="mb-0 text-danger">Close Welcome Tab</p>',
-            action: function() {
-              if (v_tab.closeFunction != null) {
-                v_tab.closeFunction(e, v_tab);
-              }
-            }
-          }
-        ];
-        customMenu(
-          {
-            x: e.clientX + 5,
-            y: e.clientY + 5
-          },
-          v_option_list,
-          null
-        );
-      },
-      p_omnidb_tooltip_name: '<h5 class="my-1">Welcome to OmniDB</h5>'
-    });
-    v_connTabControl.selectTab(v_tab);
-    var v_animated_omnis = `<svg
-			version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-			x="0px" y="0px"
-			width="82.333px" height="82.333px"
-			viewBox="0 0 82.333 82.333" enable-background="new 0 0 82.333 82.333"
-			xml:space="preserve"
-	>
-			<g class="animated-omnis__icon-grid animated-omnis__group--to-blue">
-					<path fill="#1E88E5" d="M57.694,31.129c-1.484-2.352-3.474-4.342-5.825-5.823c0.646,1.263,1.214,2.643,1.691,4.129
-							C55.049,29.915,56.43,30.486,57.694,31.129z"/>
-					<path fill="#1E88E5" d="M43.292,22.507v5.234c2.323,0.072,4.553,0.333,6.649,0.762c-0.969-2.344-2.205-4.237-3.614-5.531
-							C45.343,22.736,44.331,22.58,43.292,22.507z"/>
-					<path fill="#1E88E5" d="M57.692,50.87c-1.265,0.644-2.643,1.215-4.132,1.691c-0.477,1.489-1.046,2.867-1.691,4.132
-							C54.221,55.211,56.21,53.221,57.692,50.87z"/>
-					<path fill="#1E88E5" d="M60.188,44.681c-0.359-0.742-0.612-1.537-0.744-2.381h-4.192c-0.072,2.322-0.332,4.551-0.756,6.645
-							c2.344-0.969,4.238-2.207,5.532-3.618C60.08,45.11,60.145,44.9,60.188,44.681z"/>
-					<path fill="#1E88E5" d="M60.029,36.675c-1.293-1.414-3.187-2.652-5.534-3.624c0.424,2.097,0.684,4.325,0.756,6.647h4.192
-							c0.132-0.844,0.385-1.639,0.747-2.378C60.145,37.101,60.08,36.889,60.029,36.675z"/>
-					<path fill="#1E88E5" d="M52.168,42.3h-8.875v8.873c2.79-0.092,5.421-0.475,7.782-1.094C51.693,47.718,52.076,45.09,52.168,42.3z"/>
-					<path fill="#1E88E5" d="M43.292,39.699h8.875c-0.092-2.79-0.475-5.421-1.094-7.782c-2.361-0.619-4.992-1.002-7.782-1.094V39.699z"
-							/>
-					<path fill="#1E88E5" d="M43.292,59.493c1.039-0.072,2.05-0.229,3.036-0.466c1.409-1.296,2.645-3.187,3.614-5.531
-							c-2.096,0.427-4.327,0.687-6.649,0.759V59.493z"/>
-					<path fill="#1E88E5" d="M29.499,48.945c-0.427-2.094-0.687-4.322-0.759-6.645H23.5c0.071,1.036,0.228,2.046,0.462,3.026
-							C25.257,46.741,27.152,47.976,29.499,48.945z"/>
-					<path fill="#1E88E5" d="M40.695,22.507c-1.038,0.072-2.05,0.229-3.034,0.465c-1.409,1.294-2.645,3.188-3.612,5.528
-							c2.096-0.426,4.324-0.687,6.646-0.759V22.507z"/>
-					<path fill="#1E88E5" d="M40.695,30.823c-2.789,0.092-5.419,0.475-7.779,1.094c-0.621,2.361-1.002,4.992-1.094,7.782h8.873V30.823z"
-							/>
-					<path fill="#1E88E5" d="M32.123,25.304c-2.353,1.481-4.344,3.472-5.827,5.822c1.265-0.643,2.645-1.214,4.135-1.691
-							C30.91,27.947,31.479,26.566,32.123,25.304z"/>
-					<path fill="#1E88E5" d="M40.695,59.493v-5.238c-2.322-0.072-4.552-0.332-6.646-0.759c0.967,2.345,2.202,4.238,3.612,5.531
-							C38.646,59.263,39.657,59.42,40.695,59.493z"/>
-					<path fill="#1E88E5" d="M23.499,39.699h5.241c0.071-2.322,0.332-4.551,0.759-6.647c-2.348,0.969-4.243,2.21-5.538,3.624
-							C23.727,37.656,23.571,38.665,23.499,39.699z"/>
-					<path fill="#1E88E5" d="M32.123,56.695c-0.644-1.265-1.213-2.643-1.691-4.131c-1.489-0.478-2.868-1.049-4.133-1.691
-							C27.781,53.223,29.771,55.213,32.123,56.695z"/>
-					<path fill="#1E88E5" d="M40.695,42.3h-8.873c0.092,2.79,0.475,5.418,1.094,7.779c2.359,0.619,4.99,1.002,7.779,1.094V42.3z"/>
-			</g>
-			<g class="animated-omnis__icon-external animated-omnis__group--to-blue">
-					<g class="animated-omnis__icon-external__rings">
-							<path fill="#1E88E5" d="M36.436,14.434c0.642,1.11,0.979,2.306,1.082,3.505c1.451-0.281,2.944-0.438,4.477-0.438
-									c10.299,0,19.03,6.635,22.203,15.854c1.094-0.513,2.301-0.823,3.59-0.823c0.431,0,0.846,0.064,1.26,0.127
-									c-3.561-11.562-14.325-19.967-27.052-19.967c-2.165,0-4.264,0.266-6.291,0.726C35.961,13.743,36.223,14.065,36.436,14.434z"/>
-							<path fill="#1E88E5" d="M21.771,59.104c0.646-1.115,1.519-2.007,2.513-2.695c-3.58-4.107-5.765-9.463-5.783-15.339
-									c0-0.022-0.006-0.044-0.006-0.068c0-0.019,0.005-0.036,0.005-0.055c0.013-5.874,2.193-11.227,5.766-15.339
-									c-0.99-0.689-1.854-1.593-2.497-2.706c-0.211-0.366-0.356-0.747-0.508-1.127c-4.685,5.052-7.572,11.795-7.572,19.227
-									c0,7.436,2.889,14.179,7.576,19.228C21.415,59.851,21.561,59.468,21.771,59.104z"/>
-							<path fill="#1E88E5" d="M67.787,49.47c-1.289,0-2.499-0.311-3.592-0.826c-3.175,9.222-11.901,15.853-22.2,15.853
-									c-1.535,0-3.031-0.159-4.483-0.438c-0.103,1.202-0.432,2.401-1.072,3.515c-0.212,0.368-0.472,0.687-0.728,1.01
-									c2.023,0.46,4.121,0.725,6.283,0.725c12.728,0,23.492-8.403,27.055-19.965C68.632,49.405,68.218,49.47,67.787,49.47z"/>
-					</g>
-					<g class="animated-omnis__icon-external__spheres animated-omnis__group--to-darkblue">
-							<path fill="#37517E" d="M73.462,41.001c0-3.137-2.539-5.678-5.676-5.678s-5.683,2.541-5.683,5.678s2.546,5.674,5.683,5.674
-									S73.462,44.138,73.462,41.001z"/>
-							<path fill="#37517E" d="M26.262,13.754c-2.718,1.566-3.647,5.033-2.079,7.753c1.566,2.715,5.042,3.645,7.757,2.079
-									c2.718-1.568,3.645-5.045,2.079-7.755C32.446,13.116,28.979,12.181,26.262,13.754z"/>
-							<path fill="#37517E" d="M26.267,68.256c2.72,1.568,6.187,0.639,7.755-2.076c1.566-2.715,0.636-6.189-2.077-7.755
-									c-2.72-1.571-6.191-0.639-7.752,2.074C22.622,63.219,23.549,66.691,26.267,68.256z"/>
-					</g>
-			</g>
-	</svg>`;
-    let v_html_title = '<h1 class="mb-4" style="padding-left: 100px; position: relative;"><span class="omnidb__welcome__loading" style="background: none;">' + v_animated_omnis + '</span><span class="omnidb__welcome__intro-text">Hi, welcome to <span style="color:#4a6cbb;">OmniDB!</span></span></h1>';
-    let v_html_intro = `<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center"><span class="badge badge-danger" style="vertical-align: middle;">disclaimer</span> OmniDB is a powerful tool, and with great power...<br/>Please <strong><span class="text-danger">learn how to use it on a testing environment, NOT on production</span></strong>!</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started"><i class="fas fa-list mr-2"></i>Getting started</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-exclamation-triangle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">
-				Our focus is to provide a very flexible, secure and work-effective environment for multiple DBMS.<br>
-				With that in mind, you should <strong>be aware the many actions on the UI can lead to a direct interaction with the database</strong> that you are connected with.</br>
-				</div></div></div>`;
-    let v_html_useful_links = '<div class="alert alert-success p-3 omnidb__welcome__useful-card"><h2 class="text-center mb-4">Useful stuff</h2><ul><li class="mb-2"><a class="btn btn-success text-white" target="_blank" href="https://www.omnidb.net"><i class="fas fa-user"></i> <span>OmniDB website</span></a></li><li class="mb-2"><a class="btn btn-success text-white" target="_blank" href="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>Github repo</span></a></li><li><a class="btn btn-success text-white" target="_blank" href="https://www.omnidb.net"><i class="fas fa-list"></i> <span>Read the docs</span></a></li></ul></div>';
-    var v_html = '<div class="container" style="position: relative;"><div class="row"><div class="col-12"><div id="' + v_tab.id + '_welcome" class="omnidb__welcome" style="height: 100vh;display: flex;align-items: center;font-size: 1.2rem;justify-content: center;"><div>' + // Title
-    v_html_title + // Welcome grid
-    `<div style="display: grid; grid-template: 'intro getting_started links'; grid-gap: 64px;"><div style="grid-area: intro;">` + v_html_intro + '</div><div style="grid-area: links;">' + v_html_useful_links + "</div></div></div></div></div></div>";
-    v_tab.elementDiv.innerHTML = v_html;
-    var v_tag = {
-      tab_id: v_tab.id,
-      divWelcome: document.getElementById(v_tab.id + "_welcome"),
-      selectedDatabaseIndex: 0,
-      connTabControl: v_connTabControl,
-      mode: "welcome"
-    };
-    v_tab.tag = v_tag;
-    refreshBootstrapTooltips();
-    endLoading();
-  };
-  const outerWelcomeTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    v_createWelcomeTabFunction
-  }, Symbol.toStringTag, { value: "Module" }));
   var v_openExternalUrl = function(p_url) {
     if (!gv_desktopMode) {
       window.open(p_url, "_blank", "noopener");
@@ -10078,21 +11161,20 @@
   }, Symbol.toStringTag, { value: "Module" }));
   function initCreateTabFunctions() {
     v_connTabControl.createAddTab = function() {
-      v_connTabControl.createTab({
+      var v_tab = v_connTabControl.createTab({
         p_icon: '<i class="fas fa-plus"></i>',
-        p_name: "Add Connection",
         p_close: false,
         p_selectable: false,
         p_clickFunction: function(e) {
           showMenuNewTabOuter(e);
         },
-        p_omnidb_tooltip_name: '<h5 class="my-1">Add/Select Connections</h5>'
+        p_omnidb_tooltip_name: '<h5 class="my-1">Add Connection</h5>'
       });
+      v_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     };
     v_connTabControl.tag.createConnTab = v_createConnTabFunction;
     v_connTabControl.tag.createSnippetPanel = v_createSnippetPanelFunction;
     v_connTabControl.tag.createSnippetTextTab = v_createSnippetTextTabFunction;
-    v_connTabControl.tag.createWelcomeTab = v_createWelcomeTabFunction;
     v_connTabControl.tag.createQueryTab = v_createQueryTabFunction;
     v_connTabControl.tag.createConsoleTab = v_createConsoleTabFunction;
     v_connTabControl.tag.createWebsiteTab = v_createWebsiteTabFunction;
@@ -20178,12 +21260,6 @@
     });
   }
   function showConfigUser() {
-    if (
-      /** @type {HTMLElement} */
-      document.getElementById("modal_config").classList.contains("show")
-    ) {
-      return;
-    }
     document.getElementById("sel_interface_font_size").value = String(v_font_size);
     document.getElementById("txt_confirm_new_pwd").value = "";
     document.getElementById("txt_new_pwd").value = "";
@@ -20237,8 +21313,7 @@
     for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
       typeCheckboxes[i2].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i2].value) === -1;
     }
-    var configModal = new bootstrap.Modal(document.getElementById("modal_config"), { backdrop: "static", keyboard: true });
-    configModal.show();
+    switchSection("settings");
   }
   function goToConnections() {
     showConfirm("You will lose existing changes. Would you like to continue?", function() {
@@ -20251,11 +21326,13 @@
     });
   }
   function showWebsite(p_name, p_url) {
-    if (v_connTabControl)
+    if (v_connTabControl) {
       bootstrap.Modal.getOrCreateInstance(
         /** @type {HTMLElement} */
         document.getElementById("modal_about")
       ).hide();
+      switchSection("database");
+    }
     v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
   }
   function setAllAutocompleteTypeCheckboxes(p_checked) {
@@ -20308,10 +21385,6 @@
         p_autocomplete_disabled_types: v_autocomplete_disabled_types
       });
       execAjax$1("/save_config_user/", input, function(p_return) {
-        bootstrap.Modal.getOrCreateInstance(
-          /** @type {HTMLElement} */
-          document.getElementById("modal_config")
-        ).hide();
         showAlert("Configuration saved.");
         applyEditorTabSize();
       });
@@ -20463,70 +21536,348 @@
     v_dark_terminal_theme,
     v_light_terminal_theme
   }, Symbol.toStringTag, { value: "Module" }));
-  var v_new_data;
-  var v_queryState = {
+  var v_consoleState = {
     Idle: 0,
     Executing: 1,
     Ready: 2
   };
-  var v_queryRequestCodes = {
-    Login: 0,
-    Query: 1,
-    Execute: 2,
-    Script: 3,
-    QueryEditData: 4,
-    SaveEditData: 5,
-    CancelThread: 6,
-    CloseTab: 8,
-    // 9 was AdvancedObjectSearch. The feature is gone (see the note in
-    // go-server/longpolling.go); the number is left unused rather than reassigned
-    // so the two sides keep matching.
-    Console: 10,
-    Terminal: 11,
-    Ping: 12
-  };
-  var v_queryResponseCodes = {
-    LoginResult: 0,
-    QueryResult: 1,
-    QueryEditDataResult: 2,
-    SaveEditDataResult: 3,
-    SessionMissing: 4,
-    PasswordRequired: 5,
-    QueryAck: 6,
-    MessageException: 7,
-    RemoveContext: 9,
-    // 10 was AdvancedObjectSearchResult — see the request codes above.
-    ConsoleResult: 11,
-    TerminalResult: 12,
-    Pong: 13
-  };
-  function escapeHtml(p_str) {
-    var v_div = document.createElement("div");
-    v_div.appendChild(document.createTextNode(String(p_str)));
-    return v_div.innerHTML;
+  function deleteConsoleHistoryList() {
+    showConfirm("Are you sure you want to clear console history corresponding to applied filters?", function() {
+      execAjax$1(
+        "/clear_console_list/",
+        JSON.stringify({
+          p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+          p_console_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value,
+          p_console_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value,
+          p_console_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value
+        }),
+        function(p_return) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+          refreshConsoleHistoryList();
+        }
+      );
+    });
   }
-  function escapeHtmlAttribute(p_str) {
-    return String(p_str).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
-  }
-  Number.prototype.padLeft = function(base, chr) {
-    var len = String(base || 10).length - String(this).length + 1;
-    return len > 0 ? new Array(len).join(chr || "0") + this : String(this);
-  };
-  function cancelSQL(p_tab_tag) {
-    var v_tab_tag2;
-    if (p_tab_tag) v_tab_tag2 = p_tab_tag;
-    else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id);
-    cancelSQLTab();
-  }
-  function cancelSQLTab(p_tab_tag) {
-    var v_tab_tag2;
-    if (p_tab_tag) v_tab_tag2 = p_tab_tag;
-    else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor) {
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setReadOnly(false);
+  function showConsoleHistory() {
+    v_connTabControl.selectedTab.tag;
+    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tab_tag2.consoleHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tab_tag2.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tab_tag2.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tab_tag2.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tab_tag2.tab_id + "' class='mr-2 form-control' /></div><div id='console_history_daterangepicker_container_" + v_tab_tag2.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tab_tag2.tab_id + "'></span> / <span id='cl_num_pages_" + v_tab_tag2.tab_id + "'></span><button id='bt_next_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
+    var v_grid_div = v_tab_tag2.consoleHistory.gridDiv;
+    v_grid_div.innerHTML = "";
+    if (v_tab_tag2.consoleHistory.grid != null) {
+      v_tab_tag2.consoleHistory.grid.destroy();
     }
-    v_tab_tag2.state = v_queryState.Idle;
+    var columnProperties = [];
+    var col = {};
+    col.readOnly = true;
+    col.title = "Date";
+    col.width = "141px";
+    columnProperties.push(col);
+    var col2 = {};
+    col2.readOnly = true;
+    col2.title = "Command";
+    col2.width = "435px";
+    columnProperties.push(col2);
+    v_tab_tag2.consoleHistory.grid = new Handsontable(v_grid_div, {
+      licenseKey: "non-commercial-and-evaluation",
+      // data: p_return.v_data.data,
+      data: [
+        ["2020-05-01 19:19:21", "?"],
+        ["2020-05-01 19:19:20", "?"],
+        ["2020-05-01 19:19:19", "?"]
+      ],
+      columns: columnProperties,
+      colHeaders: true,
+      rowHeaders: false,
+      stretchH: "last",
+      //copyRowsLimit : 1000000000,
+      //copyColsLimit : 1000000000,
+      copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
+      manualColumnResize: true,
+      fillHandle: false,
+      contextMenu: {
+        callback: function(key, options) {
+          if (key === "view_data") {
+            editCellData(
+              this,
+              options[0].start.row,
+              options[0].start.col,
+              this.getDataAtCell(options[0].start.row, options[0].start.col),
+              false
+            );
+          } else if (key === "copy") {
+            this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
+            document.execCommand("copy");
+          } else if (key === "copy_to_console") {
+            consoleHistoryOpenCmd(options[0].start.row);
+          }
+        },
+        items: {
+          copy: {
+            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
+          },
+          copy_to_console: {
+            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy Content To Console Tab</div>'
+          },
+          view_data: {
+            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
+          }
+        }
+      },
+      cells: function(row, col3, prop) {
+        var cellProperties = {};
+        if (row % 2 == 0) cellProperties.renderer = blueHtmlRenderer;
+        else cellProperties.renderer = whiteHtmlRenderer;
+        return cellProperties;
+      }
+    });
+    bootstrap.Modal.getOrCreateInstance(v_tab_tag2.consoleHistory.modal).show();
+    v_tab_tag2.consoleHistory.div.style.display = "block";
+    v_tab_tag2.consoleHistory.currentPage = 1;
+    v_tab_tag2.consoleHistory.pages = 1;
+    v_tab_tag2.consoleHistory.spanNumPages = document.getElementById("cl_num_pages_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.spanNumPages.innerHTML = 1;
+    v_tab_tag2.consoleHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.spanCurrPage.innerHTML = 1;
+    v_tab_tag2.consoleHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.inputStartedFrom.value = hooks().subtract(6, "hour").toISOString();
+    v_tab_tag2.consoleHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.inputStartedTo.value = hooks().toISOString();
+    v_tab_tag2.consoleHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tab_tag2.tab_id);
+    v_tab_tag2.consoleHistory.inputCommandContains.value = v_tab_tag2.consoleHistory.inputCommandContainsLastValue;
+    v_tab_tag2.consoleHistory.inputCommandContains.addEventListener("change", () => refreshConsoleHistoryList());
+    var v_headerButtonHandlers = [
+      ["bt_first_", consoleHistoryFirstPage],
+      ["bt_previous_", consoleHistoryPreviousPage],
+      ["bt_next_", consoleHistoryNextPage],
+      ["bt_last_", consoleHistoryLastPage],
+      ["bt_refresh_", refreshConsoleHistoryList],
+      ["bt_clear_", deleteConsoleHistoryList]
+    ];
+    for (const [id, handler] of v_headerButtonHandlers) {
+      document.getElementById(id + v_tab_tag2.tab_id).addEventListener(
+        "click",
+        () => handler()
+      );
+    }
+    var cl_time_range = document.getElementById("cl_time_range_" + v_tab_tag2.tab_id);
+    $(cl_time_range).daterangepicker(
+      {
+        timePicker: true,
+        startDate: hooks(v_tab_tag2.consoleHistory.inputStartedFrom.value).format("Y-MM-DD H"),
+        endDate: hooks(v_tab_tag2.consoleHistory.inputStartedTo.value).format("Y-MM-DD H"),
+        parentEl: document.getElementById("console_history_daterangepicker_container_" + v_tab_tag2.tab_id),
+        previewUTC: true,
+        locale: {
+          format: "Y-MM-DD H"
+        },
+        ranges: {
+          "Last 6 Hours": [hooks().subtract(6, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
+          "Last 12 Hours": [hooks().subtract(12, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
+          "Last 24 Hours": [hooks().subtract(24, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
+          "Last 7 Days": [hooks().subtract(7, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
+          "Last 30 Days": [hooks().subtract(30, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
+          Yesterday: [
+            hooks().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
+            hooks().subtract(1, "days").endOf("day").format("Y-MM-DD H")
+          ],
+          "This Month": [hooks().startOf("month").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
+          "Last Month": [
+            hooks().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
+            hooks().subtract(1, "month").endOf("month").format("Y-MM-DD H")
+          ]
+        }
+      },
+      function(start, end, label) {
+        v_tab_tag2.consoleHistory.inputStartedFrom.value = hooks(start).toISOString();
+        if (label === "Custom Range") {
+          $("#cl_time_range_" + v_tab_tag2.tab_id + " span").html(
+            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
+          );
+        } else {
+          $("#cl_time_range_" + v_tab_tag2.tab_id + " span").html(label);
+        }
+        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
+          v_tab_tag2.consoleHistory.inputStartedTo.value = hooks(end).toISOString();
+        } else v_tab_tag2.consoleHistory.inputStartedTo.value = null;
+        refreshConsoleHistoryList();
+      }
+    );
+    refreshConsoleHistoryList();
+  }
+  function consoleHistoryNextPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage < v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage += 1;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryPreviousPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage > 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage -= 1;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryFirstPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage != 1) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryLastPage() {
+    if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage != v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages) {
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages;
+      refreshConsoleHistoryList();
+    }
+  }
+  function consoleHistoryOpenCmd(p_index) {
+    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.getDataAtRow(p_index)[1];
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.setValue(v_command);
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.clearSelection();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input.gotoLine(0, 0, true);
+    closeConsoleHistory();
+  }
+  function refreshConsoleHistoryList() {
+    var v_conn_tag = v_connTabControl.selectedTab.tag;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value;
+    execAjax$1(
+      "/get_console_history/",
+      JSON.stringify({
+        p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value,
+        p_command_to: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value,
+        p_command_contains: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value,
+        p_current_page: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage,
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id
+      }),
+      function(p_return) {
+        v_conn_tag.consoleHistoryFecthed = true;
+        v_conn_tag.consoleHistoryList = p_return.v_data.commandList;
+        if (v_conn_tag.consoleHistoryList.length == 0) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages.innerHTML = p_return.v_data.pages;
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage.innerHTML = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage;
+        for (let i2 = 0; i2 < v_conn_tag.consoleHistoryList.length; i2++) {
+          v_conn_tag.consoleHistoryList[i2][0] = new Date(v_conn_tag.consoleHistoryList[i2][0]).toLocaleString();
+        }
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.loadData(
+          v_conn_tag.consoleHistoryList
+        );
+      },
+      null,
+      "box"
+    );
+  }
+  function closeConsoleHistory() {
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.destroy();
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.div.style.display = "none";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.headerDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.gridDiv.innerHTML = "";
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.currentPage = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.pages = 1;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanNumPages = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.spanCurrPage = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo = null;
+    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains = null;
+    bootstrap.Modal.getOrCreateInstance(
+      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal
+    ).hide();
+  }
+  function consoleHistorySelectCommand() {
+    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    var v_grid = v_tab_tag2.consoleHistory.grid;
+    var v_sel = v_grid.getSelected();
+    if (!v_sel || v_sel.length === 0) return;
+    var v_command = v_grid.getDataAtRow(v_sel[0][0])[2];
+    closeConsoleHistory();
+    v_tab_tag2.editor_input.setValue(v_command);
+    v_tab_tag2.editor_input.clearSelection();
+    v_tab_tag2.editor_input.focus();
+  }
+  function appendToEditor(p_editor, p_text) {
+    p_editor.write(p_text);
+  }
+  function clearConsole() {
+    var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tag.editor_console.write("\x1B[H\x1B[2J");
+    v_tag.editor_console.write(v_connTabControl.selectedTab.tag.consoleHelp);
+  }
+  function consoleSQL(p_check_command = true, p_mode = 0) {
+    var v_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    v_tag.tempData = "";
+    var v_content = v_tag.editor_input.getValue().trim();
+    if (!p_check_command || v_content[0] == "\\") {
+      if (v_tag.state != v_consoleState.Idle) {
+        showAlert("Tab with activity in progress.");
+      } else {
+        if (v_content == "" && p_mode == 0) {
+          showAlert("Please provide a string.");
+        } else {
+          if (v_connTabControl.selectedTab.tag.consoleHistoryList)
+            v_connTabControl.selectedTab.tag.consoleHistoryList.unshift(v_content);
+          v_tag.console_history_cmd_index = -1;
+          v_tag.editor_input.setValue("");
+          v_tag.editor_input.clearSelection();
+          v_tag.editor_input.setReadOnly(false);
+          v_tag.last_command = v_content;
+          var v_message_data = {
+            v_sql_cmd: v_content,
+            v_mode: p_mode,
+            v_db_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            v_conn_tab_id: v_connTabControl.selectedTab.id,
+            v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
+            v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
+          };
+          v_tag.editor_input.setReadOnly(true);
+          var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+          var v_context = {
+            tab_tag: v_tag,
+            start_datetime: dformat,
+            database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            acked: false,
+            last_command: v_content,
+            check_command: p_check_command,
+            mode: p_mode
+          };
+          v_context.tab_tag.context = v_context;
+          createRequest(v_queryRequestCodes.Console, v_message_data, v_context);
+          v_tag.state = v_consoleState.Executing;
+          v_tag.tab_loading_span.style.visibility = "visible";
+          v_tag.tab_check_span.style.display = "none";
+          v_tag.bt_cancel.style.display = "";
+          v_tag.query_info.innerHTML = "<b>Start time</b>: " + dformat + "<br><b>Running...</b>";
+          v_tag.bt_fetch_more.style.display = "none";
+          v_tag.bt_fetch_all.style.display = "none";
+          v_tag.bt_skip_fetch.style.display = "none";
+          v_tag.bt_commit.style.display = "none";
+          v_tag.bt_rollback.style.display = "none";
+          setTabStatus(v_tag, 2);
+        }
+      }
+    }
+  }
+  function cancelConsole(p_tab_tag) {
+    var v_tab_tag2;
+    if (p_tab_tag) v_tab_tag2 = p_tab_tag;
+    else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    createRequest(v_queryRequestCodes.CancelThread, v_tab_tag2.tab_id, null);
+    cancelConsoleTab(v_tab_tag2);
+  }
+  function cancelConsoleTab(p_tab_tag) {
+    var v_tab_tag2;
+    if (p_tab_tag) v_tab_tag2 = p_tab_tag;
+    else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+    if (v_tab_tag2.editor_input) {
+      v_tab_tag2.editor_input.setReadOnly(false);
+    }
+    v_tab_tag2.state = v_consoleState.Idle;
     v_tab_tag2.tab_loading_span.style.visibility = "hidden";
     v_tab_tag2.tab_check_span.style.display = "none";
     v_tab_tag2.bt_cancel.style.display = "none";
@@ -20535,200 +21886,17 @@
     removeContext(v_tab_tag2.context.v_context_code);
     SetAcked(v_tab_tag2.context);
   }
-  function getQueryEditorValue() {
-    var v_selected_text = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText();
-    if (v_selected_text != "") return v_selected_text;
-    else return v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
-  }
-  function getStatementAtCursor() {
-    var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
-    var v_text = v_editor.getValue();
-    var v_pos = v_editor.getCursorPosition();
-    var v_lines = v_text.split("\n");
-    var v_cursor_index = v_pos.column;
-    for (var v_row = 0; v_row < v_pos.row; v_row++) v_cursor_index += v_lines[v_row].length + 1;
-    var v_bounds = [];
-    var v_start = 0;
-    var v_state = "normal";
-    for (var i2 = 0; i2 < v_text.length; i2++) {
-      var v_char = v_text[i2];
-      var v_next = v_text[i2 + 1];
-      if (v_state == "normal") {
-        if (v_char == "'") v_state = "single";
-        else if (v_char == '"') v_state = "double";
-        else if (v_char == "-" && v_next == "-") v_state = "line_comment";
-        else if (v_char == "/" && v_next == "*") v_state = "block_comment";
-        else if (v_char == ";") {
-          v_bounds.push([v_start, i2 + 1]);
-          v_start = i2 + 1;
-        }
-      } else if (v_state == "single") {
-        if (v_char == "'") v_state = "normal";
-      } else if (v_state == "double") {
-        if (v_char == '"') v_state = "normal";
-      } else if (v_state == "line_comment") {
-        if (v_char == "\n") v_state = "normal";
-      } else if (v_state == "block_comment") {
-        if (v_char == "*" && v_next == "/") {
-          v_state = "normal";
-          i2++;
-        }
-      }
-    }
-    v_bounds.push([v_start, v_text.length]);
-    var v_index = v_bounds.findIndex(function(b2) {
-      return v_cursor_index < b2[1];
-    });
-    if (v_index < 0) v_index = v_bounds.length - 1;
-    for (var f = v_index; f < v_bounds.length; f++) {
-      var v_stmt = v_text.substring(v_bounds[f][0], v_bounds[f][1]).trim().replace(/;\s*$/, "");
-      if (v_stmt != "") return v_stmt;
-    }
-    for (var b = v_index - 1; b >= 0; b--) {
-      var v_stmt2 = v_text.substring(v_bounds[b][0], v_bounds[b][1]).trim().replace(/;\s*$/, "");
-      if (v_stmt2 != "") return v_stmt2;
-    }
-    return "";
-  }
-  function destructiveSQLWarning(p_sql) {
-    var v_stripped = p_sql;
-    for (; ; ) {
-      v_stripped = v_stripped.replace(/^[\s\r\n]+/, "");
-      if (v_stripped.indexOf("--") === 0) {
-        var v_newline = v_stripped.indexOf("\n");
-        if (v_newline < 0) {
-          v_stripped = "";
-          break;
-        }
-        v_stripped = v_stripped.substring(v_newline + 1);
-        continue;
-      }
-      if (v_stripped.indexOf("/*") === 0) {
-        var v_end = v_stripped.indexOf("*/");
-        if (v_end < 0) {
-          v_stripped = "";
-          break;
-        }
-        v_stripped = v_stripped.substring(v_end + 2);
-        continue;
-      }
-      break;
-    }
-    var v_upper = v_stripped.toUpperCase();
-    if (/^(DROP|TRUNCATE)\b/.test(v_upper)) {
-      return "This statement is destructive and cannot be undone. Run it anyway?";
-    }
-    if (/^(DELETE|UPDATE)\b/.test(v_upper) && !/\bWHERE\b/.test(v_upper)) {
-      return "This statement has no WHERE clause and will affect ALL rows. Run it anyway?";
-    }
-    return null;
-  }
-  function querySQL(p_mode, p_all_data = false, p_query = getQueryEditorValue(), p_callback = null, p_log_query = true, p_save_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue(), p_cmd_type = null, p_clear_data = false, p_tab_title = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_title_span.innerHTML) {
-    var v_run = function() {
-      executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title);
-    };
-    var v_warning = p_mode == 0 ? destructiveSQLWarning(p_query) : null;
-    if (v_warning) {
-      showConfirm(v_warning, v_run);
-    } else {
-      v_run();
+  function checkConsoleStatus(p_tab) {
+    if (p_tab.tag.state == v_consoleState.Ready) {
+      consoleReturnRender(p_tab.tag.data, p_tab.tag.context);
     }
   }
-  function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
-    var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
-    if (v_state != v_queryState.Idle) {
-      showAlert("Tab with activity in progress.");
-    } else {
-      var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-      v_tab_tag2.tempData = [];
-      var v_sql_value = p_query;
-      var v_db_index = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_loading_span;
-      v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_close_span;
-      if (v_sql_value.trim() == "") {
-        showAlert("Please provide a string.");
-      } else {
-        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex == null || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex != v_connTabControl.selectedTab.tag.selectedDatabaseIndex) {
-          p_mode = 0;
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex = v_connTabControl.selectedTab.tag.selectedDatabaseIndex;
-        }
-        var v_message_data = {
-          v_sql_cmd: v_sql_value,
-          v_sql_save: p_save_query,
-          v_cmd_type: p_cmd_type,
-          v_db_index,
-          v_conn_tab_id: v_connTabControl.selectedTab.id,
-          v_tab_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_id,
-          v_tab_db_id: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_db_id,
-          v_mode: p_mode,
-          v_all_data: p_all_data,
-          v_log_query: p_log_query,
-          v_tab_title: p_tab_title,
-          v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
-        };
-        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor) {
-          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setReadOnly(true);
-        }
-        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_queryState.Executing;
-        (/* @__PURE__ */ new Date()).getTime();
-        var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
-        v_tab_tag2.tab_loading_span.style.visibility = "visible";
-        v_tab_tag2.bt_cancel.style.display = "inline-block";
-        v_tab_tag2.bt_fetch_more.style.display = "none";
-        v_tab_tag2.bt_fetch_all.style.display = "none";
-        v_tab_tag2.bt_commit.style.display = "none";
-        v_tab_tag2.bt_rollback.style.display = "none";
-        v_tab_tag2.div_notices.innerHTML = "";
-        setTabStatus(v_tab_tag2, 2);
-        var v_has_selected_text = false;
-        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getSelectedText() != "")
-          v_has_selected_text = true;
-        var v_context = {
-          tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
-          start_time: (/* @__PURE__ */ new Date()).getTime(),
-          start_datetime: dformat,
-          cmd_type: p_cmd_type,
-          database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-          mode: p_mode,
-          has_selected_text: v_has_selected_text,
-          callback: p_callback,
-          acked: false,
-          all_data: p_all_data,
-          query: p_query,
-          log_query: p_log_query,
-          save_query: p_save_query,
-          clear_data: p_clear_data,
-          tab_title: p_tab_title
-        };
-        v_context.tab_tag.context = v_context;
-        if (p_mode == 0 && p_callback == null || p_clear_data) {
-          if (v_context.tab_tag.ht != null) {
-            v_context.tab_tag.ht.destroy();
-            v_context.tab_tag.ht = null;
-          }
-          v_context.tab_tag.div_result.innerHTML = "";
-        }
-        v_context.tab_tag.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(dformat)) + "<br><b>Running...</b>";
-        createRequest(v_queryRequestCodes.Query, v_message_data, v_context);
-      }
-    }
-  }
-  function checkQueryStatus(p_tab) {
-    if (p_tab.tag.state == v_queryState.Ready) {
-      querySQLReturnRender(p_tab.tag.data, p_tab.tag.context);
-    }
-  }
-  function querySQLReturn(p_data, p_context) {
-    if (p_data.v_data.v_inserted_id) {
-      p_context.tab_tag.tab_db_id = p_data.v_data.v_inserted_id;
-    }
-    if (!p_data.v_error) p_data.v_data.v_data = p_context.tab_tag.tempData;
-    p_context.tab_tag.tempData = [];
-    if (p_context.tab_tag.state != v_queryState.Idle) {
+  function consoleReturn(p_data, p_context) {
+    if (p_context.tab_tag.state != v_consoleState.Idle) {
       if (p_context.tab_tag.tab_id == p_context.tab_tag.tabControl.selectedTab.id && p_context.tab_tag.connTab.id == p_context.tab_tag.connTab.tag.connTabControl.selectedTab.id) {
-        querySQLReturnRender(p_data, p_context);
+        consoleReturnRender(p_data, p_context);
       } else {
-        p_context.tab_tag.state = v_queryState.Ready;
+        p_context.tab_tag.state = v_consoleState.Ready;
         p_context.tab_tag.context = p_context;
         p_context.tab_tag.data = p_data;
         p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
@@ -20736,1252 +21904,139 @@
       }
     }
   }
-  function setTabStatus(p_tab_tag, p_con_status) {
-    if (p_con_status == 0) {
-      p_tab_tag.query_tab_status_text.innerHTML = "Not connected";
-      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-closed";
-      p_tab_tag.query_tab_status.title = "Not connected";
-      p_tab_tag.query_tab_status.innerHTML = "";
-    } else if (p_con_status == 1) {
-      p_tab_tag.query_tab_status_text.innerHTML = "Idle";
-      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle position-relative";
-      p_tab_tag.query_tab_status.title = "Idle";
-      p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--idle"><span></span><span></span><span></span><span></span></span></div>';
-    } else if (p_con_status == 2) {
-      p_tab_tag.query_tab_status_text.innerHTML = "Running";
-      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-running position-relative";
-      p_tab_tag.query_tab_status.title = "Running";
-      p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--running"><span></span><span></span><span></span><span></span></span></div>';
-    } else if (p_con_status == 3) {
-      p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction";
-      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction";
-      p_tab_tag.query_tab_status.title = "Idle in transaction";
-      p_tab_tag.query_tab_status.innerHTML = "";
-    } else if (p_con_status == 4) {
-      p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction (aborted)";
-      p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction_aborted";
-      p_tab_tag.query_tab_status.title = "Idle in transaction (aborted)";
-      p_tab_tag.query_tab_status.innerHTML = "";
-    }
-  }
-  function querySQLReturnRender(p_message, p_context) {
-    p_context.tab_tag.state = v_queryState.Idle;
-    p_context.tab_tag.context = null;
-    p_context.tab_tag.data = null;
-    if (p_context.tab_tag.editor) {
-      p_context.tab_tag.editor.setReadOnly(false);
-    }
-    var v_div_result = p_context.tab_tag.div_result;
-    var v_query_info = p_context.tab_tag.query_info;
-    var v_data = p_message.v_data;
-    if (v_data.v_con_status == 3 || v_data.v_con_status == 4) {
-      p_context.tab_tag.bt_commit.style.display = "";
-      p_context.tab_tag.bt_rollback.style.display = "";
-    } else {
-      p_context.tab_tag.bt_commit.style.display = "none";
-      p_context.tab_tag.bt_rollback.style.display = "none";
-    }
+  function consoleReturnRender(p_message, p_context) {
+    p_context.tab_tag.state = v_consoleState.Idle;
+    var v_tag = p_context.tab_tag;
     setTabStatus(p_context.tab_tag, p_message.v_data.v_con_status);
-    if (p_context.callback != null) {
-      if (p_message.v_error) {
-        v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
-        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
-      } else {
-        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
-        p_context.callback(p_message);
-      }
-    } else {
-      p_context.tab_tag.selectDataTabFunc();
-      if (p_context.tab_tag.div_count_notices) {
-        p_context.tab_tag.div_count_notices.style.display = "none";
-      }
-      if (v_data.v_notices_length > 0) {
-        if (p_context.tab_tag.div_count_notices) {
-          p_context.tab_tag.div_count_notices.innerHTML = v_data.v_notices_length;
-          p_context.tab_tag.div_count_notices.style.display = "inline-block";
-          p_context.tab_tag.div_notices.textContent = v_data.v_notices;
-        }
-      }
-      if (p_message.v_error) {
-        v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
-        v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
-        if (p_message.v_data.position != null) {
-          if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor && !p_context.has_selected_text) {
-            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(
-              p_message.v_data.position.row,
-              p_message.v_data.position.col
-            );
-            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.textInput.focus();
-          }
-        }
-      } else {
-        if (p_context.sel_value == 0) {
-          v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
-          v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_data) + "</div>";
-        } else {
-          if (v_data.v_data.length >= 50 && p_context.mode != 2) {
-            if (p_context.tab_tag.bt_fetch_more) {
-              p_context.tab_tag.bt_fetch_more.style.display = "";
-            }
-            if (p_context.tab_tag.bt_fetch_all) {
-              p_context.tab_tag.bt_fetch_all.style.display = "";
-            }
-          } else {
-            if (p_context.tab_tag.bt_fetch_more) {
-              p_context.tab_tag.bt_fetch_more.style.display = "none";
-            }
-            if (p_context.tab_tag.bt_fetch_all) {
-              p_context.tab_tag.bt_fetch_all.style.display = "none";
-            }
-          }
-          if (p_context.mode == 0) {
-            v_div_result.innerHTML = "";
-            window.scrollTo(0, 0);
-            if (v_data.v_data.length == 0 && v_data.v_col_names.length == 0) {
-              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
-              if (typeof p_message.v_data.v_status == "string")
-                v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
-              else v_div_result.innerHTML = '<div class="query_info">Done</div>';
-            } else {
-              v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + v_data.v_data.length + "</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
-              var columnProperties = [];
-              for (var i2 = 0; i2 < v_data.v_col_names.length; i2++) {
-                var col = {};
-                col.readOnly = true;
-                col.title = v_data.v_col_names[i2];
-                if (i2 === 0) {
-                  col.pinned = "left";
-                }
-                var colType = v_data.v_col_types && v_data.v_col_types[i2] ? v_data.v_col_types[i2] : null;
-                if (colType) {
-                  col.tooltip = v_data.v_col_names[i2] + " [" + colType + "]";
-                  var typeUpper = String(colType).toUpperCase();
-                  if (/^(INT2|INT4|INT8|SMALLINT|INTEGER|BIGINT|TINYINT|MEDIUMINT|OID|INT|NUMERIC|DECIMAL|DEC|REAL|FLOAT|FLOAT4|FLOAT8|DOUBLE|MONEY|NUMBER|BINARY_FLOAT|BINARY_DOUBLE)$/.test(typeUpper)) {
-                    col.align = "right";
-                  } else if (/^(BOOL|BOOLEAN|BIT)$/.test(typeUpper)) {
-                    col.align = "center";
-                  } else if (/^(CHAR|BPCHAR)$/.test(typeUpper)) {
-                    col.align = "center";
-                  }
-                } else {
-                  col.tooltip = v_data.v_col_names[i2];
-                }
-                columnProperties.push(col);
-              }
-              var container = v_div_result;
-              p_context.tab_tag.ht = new Handsontable(container, {
-                licenseKey: "non-commercial-and-evaluation",
-                data: v_data.v_data,
-                columns: columnProperties,
-                colHeaders: true,
-                rowHeaders: true,
-                // stretchH: 'last',
-                autoRowSize: false,
-                //copyRowsLimit : 1000000000,
-                //copyColsLimit : 1000000000,
-                copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
-                manualColumnResize: true,
-                // modifyColWidth: function(width, col){
-                //   if(width > 300){
-                //     return 280
-                //   }
-                // },
-                fillHandle: false,
-                contextMenu: {
-                  callback: function(key, options) {
-                    if (key === "view_data") {
-                      editCellData(
-                        this,
-                        options[0].start.row,
-                        options[0].start.col,
-                        this.getDataAtCell(options[0].start.row, options[0].start.col),
-                        false,
-                        v_data.v_col_types ? v_data.v_col_types[options[0].start.col] : null
-                      );
-                    } else if (key === "copy") {
-                      var v_start_row = Math.min(options[0].start.row, options[0].end.row);
-                      var v_end_row = Math.max(options[0].start.row, options[0].end.row);
-                      var v_start_col = Math.min(options[0].start.col, options[0].end.col);
-                      var v_end_col = Math.max(options[0].start.col, options[0].end.col);
-                      var v_ht = this;
-                      var v_lines = [];
-                      for (var v_row = v_start_row; v_row <= v_end_row; v_row++) {
-                        var v_cells = [];
-                        for (var v_col = v_start_col; v_col <= v_end_col; v_col++) {
-                          var v_cell_value = v_ht.getDataAtCell(v_row, v_col);
-                          v_cells.push(v_cell_value == null ? "" : String(v_cell_value));
-                        }
-                        v_lines.push(v_cells.join("	"));
-                      }
-                      uiCopyTextToClipboard(v_lines.join("\n"));
-                    }
-                  },
-                  items: {
-                    copy: {
-                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">Copy</div>'
-                    },
-                    view_data: {
-                      name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">View Content</div>'
-                    }
-                  }
-                },
-                cells: function(row, col2, prop) {
-                  var cellProperties = {};
-                  cellProperties.renderer = whiteRenderer;
-                  return cellProperties;
-                }
-              });
-            }
-          } else if (p_context.mode == 1 || p_context.mode == 2) {
-            v_new_data = p_context.tab_tag.ht.getSourceData();
-            v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + (v_new_data.length + v_data.v_data.length) + "</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
-            for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
-              v_new_data.push(v_data.v_data[i2]);
-            }
-            p_context.tab_tag.ht.loadData(v_new_data);
-            v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollTop = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollHeight;
-          } else {
-            if (p_context.tab_tag.ht != null)
-              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration)) + "<br/>Status: " + escapeHtml(p_message.v_data.v_status);
-            else {
-              v_query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>Duration</b>: " + escapeHtml(String(p_message.v_data.v_duration));
-              v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
-            }
-          }
-        }
-      }
+    v_tag.editor_input.setReadOnly(false);
+    appendToEditor(v_tag.editor_console, v_tag.tempData);
+    v_tag.editor_input.setValue("");
+    v_tag.editor_input.clearSelection();
+    v_tag.query_info.innerHTML = "";
+    var v_qi_b1 = document.createElement("b");
+    v_qi_b1.textContent = "Start time";
+    var v_qi_b2 = document.createElement("b");
+    v_qi_b2.textContent = "Duration";
+    var v_qi_t1 = document.createTextNode(": " + p_context.start_datetime + " ");
+    var v_qi_t2 = document.createTextNode(": " + p_message.v_data.v_duration);
+    v_tag.query_info.appendChild(v_qi_b1);
+    v_tag.query_info.appendChild(v_qi_t1);
+    v_tag.query_info.appendChild(v_qi_b2);
+    v_tag.query_info.appendChild(v_qi_t2);
+    v_tag.tab_loading_span.style.visibility = "hidden";
+    v_tag.tab_check_span.style.display = "none";
+    v_tag.bt_cancel.style.display = "none";
+    if (p_message.v_data.v_show_fetch_button) {
+      v_tag.bt_fetch_more.style.display = "";
+      v_tag.bt_fetch_all.style.display = "";
+      v_tag.bt_skip_fetch.style.display = "";
     }
-    p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
-    p_context.tab_tag.tab_check_span.style.display = "none";
-    p_context.tab_tag.bt_cancel.style.display = "none";
   }
-  function queryError(p_message, p_context) {
-    var v_tab_tag2 = p_context.tab_tag;
-    v_tab_tag2.state = v_queryState.Idle;
-    v_tab_tag2.context = null;
-    v_tab_tag2.data = null;
-    if (v_tab_tag2.editor) {
-      v_tab_tag2.editor.setReadOnly(false);
-    }
-    v_tab_tag2.bt_commit.style.display = "none";
-    v_tab_tag2.bt_rollback.style.display = "none";
-    setTabStatus(v_tab_tag2, 1);
-    v_tab_tag2.div_notices.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data) + "</div>";
-    if (v_tab_tag2.div_count_notices) {
-      v_tab_tag2.div_count_notices.innerHTML = 1;
-      v_tab_tag2.div_count_notices.style.display = "inline-block";
-    }
-    v_tab_tag2.selectMessageTabFunc();
-    v_tab_tag2.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + "<br><b>Error</b>";
-    v_tab_tag2.tab_loading_span.style.visibility = "hidden";
-    v_tab_tag2.tab_check_span.style.display = "none";
-    v_tab_tag2.bt_cancel.style.display = "none";
-  }
-  const query = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  const consoleTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
-    cancelSQL,
-    cancelSQLTab,
-    checkQueryStatus,
-    destructiveSQLWarning,
-    escapeHtml,
-    escapeHtmlAttribute,
-    executeQuerySQL,
-    getQueryEditorValue,
-    getStatementAtCursor,
-    queryError,
-    querySQL,
-    querySQLReturn,
-    querySQLReturnRender,
-    setTabStatus,
-    v_queryRequestCodes,
-    v_queryResponseCodes,
-    v_queryState
+    appendToEditor,
+    cancelConsole,
+    cancelConsoleTab,
+    checkConsoleStatus,
+    clearConsole,
+    closeConsoleHistory,
+    consoleHistoryFirstPage,
+    consoleHistoryLastPage,
+    consoleHistoryNextPage,
+    consoleHistoryOpenCmd,
+    consoleHistoryPreviousPage,
+    consoleHistorySelectCommand,
+    consoleReturn,
+    consoleReturnRender,
+    consoleSQL,
+    deleteConsoleHistoryList,
+    refreshConsoleHistoryList,
+    showConsoleHistory,
+    v_consoleState
   }, Symbol.toStringTag, { value: "Module" }));
-  function el(id) {
-    return document.getElementById(id);
-  }
-  var v_conn_data, v_conn_div, v_conn_obj;
-  function initConnections() {
-    v_connections_data = new Object();
-    v_connections_data.technologies = null;
-    v_connections_data.card_list = [];
-    v_connections_data.current_id = -1;
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
-  else setTimeout(initConnections, 0);
-  function startConnectionManagement() {
-    getDatabaseList();
-    getGroups();
-    showConnectionList(true, true);
-  }
-  function showConnectionList(p_open_modal, p_change_group) {
-    var v_conn_id_list = [];
-    var v_total_public_conn = 0;
-    for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
-      var v_tab = v_connTabControl.tabList[i2];
-      if (v_tab.tag && v_tab.tag.mode == "connection") v_conn_id_list.push(v_tab.tag.selectedDatabaseIndex);
-      else if (v_tab.tag && v_tab.tag.mode == "outer_terminal" && v_tab.tag.connId != null)
-        v_conn_id_list.push(v_tab.tag.connId);
-    }
-    var input = JSON.stringify({ p_conn_id_list: v_conn_id_list });
-    execAjax$1(
-      "/get_connections/",
-      input,
-      function(p_return) {
-        v_connections_data.card_list = [];
-        v_connections_data.technologies = p_return.v_data.v_technologies;
-        var v_container = document.createElement("div");
-        v_container.className = "container-fluid";
-        var v_target_div = el("connection_card_list");
-        var v_row = document.createElement("div");
-        v_row.className = "row";
-        v_row.innerHTML = '<div id="connections_management_empty_all" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections available.</h5><button id="bt_empty_all_new_connection" type="button" class="mt-4 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_with_public" class="my-4 text-center w-100" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h5 class="">Your user has no connections configured yet, but there are <i class="fas fa-users text-info mx-2"></i> public connections.</h5><h5 class="d-inline-block mt-4 mr-2">You can also create your own</h5><button id="bt_empty_public_new_connection" type="button" class="mt-2 btn omnidb__theme__btn--primary">New Connection</button></div><div id="connections_management_empty_group" class="my-4 text-center w-100" style="display:none;"><h5 class="">No connections assigned to this group yet.</h5><button id="bt_empty_group_manage_groups" type="button" class="mt-4 btn omnidb__theme__btn--primary">Manage Groups</button></div>';
-        v_row.querySelector("#bt_empty_all_new_connection").addEventListener(
-          "click",
-          () => newConnection()
-        );
-        v_row.querySelector("#bt_empty_public_new_connection").addEventListener(
-          "click",
-          () => newConnection()
-        );
-        v_row.querySelector("#bt_empty_group_manage_groups").addEventListener(
-          "click",
-          () => manageGroup()
-        );
-        for (var i3 = 0; i3 < p_return.v_data.v_conn_list.length; i3++) {
-          var v_conn_obj2 = p_return.v_data.v_conn_list[i3];
-          var v_col_div = document.createElement("div");
-          v_col_div.className = "omnidb__connections__cols";
-          v_row.appendChild(v_col_div);
-          if (v_conn_obj2.public && !v_connections_data.show_public && !v_conn_obj2.is_mine) {
-            v_col_div.classList.add("d-none");
-          }
-          var v_card_div = document.createElement("div");
-          v_card_div.className = "card omnidb__connections__card";
-          v_col_div.appendChild(v_card_div);
-          var v_cover_div = document.createElement("label");
-          v_cover_div.className = "connection-card-cover m-0";
-          v_cover_div.setAttribute("for", "connection_item_input_" + i3);
-          var v_checkbox = document.createElement("input");
-          v_checkbox.className = "connection-card-checkbox";
-          v_checkbox.id = "connection_item_input_" + i3;
-          v_checkbox.type = "checkbox";
-          var v_check_svg = '<svg class="connection-card-svg" width="42" height="42" viewBox="0 0 42 42" xmlns="http://www.w3.org/2000/svg"><path d="M 6 18 L 15 32 L 34 13" stroke-width="4" stroke="#4a81d4" fill="transparent"></path><circle r="19" cx="21" cy="21" stroke-width="2" stroke="#b2b2b2" fill="transparent"></circle></svg>';
-          v_cover_div.innerHTML = v_check_svg;
-          var v_card_body_div = document.createElement("div");
-          v_card_body_div.className = "card-body";
-          v_card_div.appendChild(v_card_body_div);
-          var v_icon = "";
-          var v_title = "";
-          var v_details = "";
-          var v_tunnel = '<div class="card-subtitle tunnel text-muted">No Tunnel Configured</div>';
-          if (v_conn_obj2.technology == "terminal") {
-            v_icon = '<i class="fas fa-terminal"></i>';
-            if (v_conn_obj2.alias && v_conn_obj2.alias !== "") {
-              v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
-            } else {
-              v_title = '<h5 class="card-title">Terminal</h5>';
-            }
-            v_tunnel = '<h6 class="card-subtitle text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</h6>";
-          } else {
-            v_icon = '<i class="technology-icon node-' + escapeHtml(v_conn_obj2.technology) + '"></i>';
-            v_title = '<h5 class="card-title">' + escapeHtml(v_conn_obj2.alias) + "</h5>";
-            if (v_conn_obj2.conn_string && v_conn_obj2.conn_string != "") {
-              v_details += '<h6 class="card-subtitle mb-2 text-muted"><i title="Connection String" class="fas fa-quote-left"></i> ' + escapeHtml(v_conn_obj2.conn_string) + "</h6>";
-            } else {
-              v_details += '<h6 class="card-subtitle mb-2 text-muted">' + escapeHtml(v_conn_obj2.server) + ":" + escapeHtml(String(v_conn_obj2.port)) + '</h6><p class="card-text">' + escapeHtml(v_conn_obj2.user) + "@" + escapeHtml(v_conn_obj2.service) + "</p>";
-            }
-            if (v_conn_obj2.tunnel.enabled === true) {
-              v_tunnel = '<div class="card-subtitle tunnel text-muted">' + escapeHtml(v_conn_obj2.tunnel.user) + "@" + escapeHtml(v_conn_obj2.tunnel.server) + ":" + escapeHtml(String(v_conn_obj2.tunnel.port)) + "</div>";
-            }
-          }
-          v_card_body_div.innerHTML += '<div class="card-body-icon">' + v_icon + '</div><div class="card-body-title">' + v_title + '</div><div class="card-body-details">' + v_details + '</div><div class="card-body-tunnel">' + v_tunnel + "</div>";
-          v_card_body_div.appendChild(v_checkbox);
-          v_card_body_div.appendChild(v_cover_div);
-          var v_card_body_buttons = document.createElement("div");
-          v_card_body_buttons.className = "card-body-buttons";
-          v_card_body_div.appendChild(v_card_body_buttons);
-          var v_button_select = document.createElement("button");
-          v_button_select.className = "btn btn-success btn-sm omnidb__connections__btn--select";
-          v_button_select.title = "Select";
-          v_button_select.innerHTML = '<svg width="15px" height="160px" viewBox="0 0 15 160" style="width: auto;height: 100%;stroke: none;stroke-width: 0;"><path stroke-width="0" stroke="none" d="M 0 0 L 15 80 L 0 160 Z"></path></svg><i class="fas fa-plug"></i>';
-          v_card_body_buttons.appendChild(v_button_select);
-          var v_button_edit = document.createElement("button");
-          v_button_edit.className = "btn btn-sm mx-1 omnidb__theme__btn--primary";
-          v_button_edit.title = "Edit";
-          v_button_edit.innerHTML = '<i class="fas fa-pen"</i>';
-          v_card_body_buttons.appendChild(v_button_edit);
-          var v_button_delete = document.createElement("button");
-          v_button_delete.className = "btn btn-danger btn-sm mx-1";
-          v_button_delete.title = "Delete";
-          if (v_conn_obj2.locked == true) {
-            v_button_delete.setAttribute("disabled", "disabled");
-          }
-          v_button_delete.innerHTML = '<i class="fas fa-trash-alt"></i>';
-          v_card_body_buttons.appendChild(v_button_delete);
-          v_button_select.onclick = /* @__PURE__ */ (function(conn_obj) {
-            return function() {
-              selectConnection(conn_obj);
-            };
-          })(v_conn_obj2);
-          v_button_edit.onclick = /* @__PURE__ */ (function(conn_obj) {
-            return function() {
-              editConnection(conn_obj);
-            };
-          })(v_conn_obj2);
-          v_button_delete.onclick = /* @__PURE__ */ (function(conn_obj) {
-            return function() {
-              deleteConnection(conn_obj);
-            };
-          })(v_conn_obj2);
-          if (v_conn_obj2.public) {
-            v_total_public_conn += 1;
-            var v_public_icon = document.createElement("i");
-            v_public_icon.setAttribute(
-              "style",
-              "color: #FFF;position: absolute;top: -5px;left: -5px;background-color: #c57dd2;padding: 4px 2px;border-radius: 100%;"
-            );
-            v_public_icon.classList = "fas fa-users";
-            v_card_body_div.appendChild(v_public_icon);
-            v_card_div.style["border-color"] = "#c57dd2";
-            v_card_div.classList.add("omnidb__connections__card--public");
-            v_card_div.classList.add("d-none");
-            v_card_div.classList.add("fade");
-            if (v_connections_data.show_public || v_conn_obj2.is_mine) {
-              v_card_div.classList.remove("d-none");
-              v_card_div.classList.add("show");
-            }
-          }
-          v_connections_data.card_list.push({
-            data: v_conn_obj2,
-            card_div: v_col_div,
-            cover_div: v_cover_div,
-            checkbox: v_checkbox
-          });
-        }
-        v_container.appendChild(v_row);
-        v_target_div.innerHTML = "";
-        v_target_div.appendChild(v_container);
-        if (p_open_modal) {
-          bootstrap.Modal.getOrCreateInstance(el("modal_connections")).show();
-        }
-        if (p_change_group) {
-          groupChange(el("group_selector").value);
-        }
-        el("conn_list_public_counter").innerHTML = v_total_public_conn;
-        updateConnectionsTitleInfo();
-      },
-      null,
-      "box",
-      true
+  function initWelcomeSection() {
+    var v_target = (
+      /** @type {HTMLElement} */
+      document.getElementById("omnidb__section_welcome")
     );
+    var v_animated_omnis = `<svg
+			version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+			x="0px" y="0px"
+			width="82.333px" height="82.333px"
+			viewBox="0 0 82.333 82.333" enable-background="new 0 0 82.333 82.333"
+			xml:space="preserve"
+	>
+			<g class="animated-omnis__icon-grid animated-omnis__group--to-blue">
+					<path fill="#1E88E5" d="M57.694,31.129c-1.484-2.352-3.474-4.342-5.825-5.823c0.646,1.263,1.214,2.643,1.691,4.129
+							C55.049,29.915,56.43,30.486,57.694,31.129z"/>
+					<path fill="#1E88E5" d="M43.292,22.507v5.234c2.323,0.072,4.553,0.333,6.649,0.762c-0.969-2.344-2.205-4.237-3.614-5.531
+							C45.343,22.736,44.331,22.58,43.292,22.507z"/>
+					<path fill="#1E88E5" d="M57.692,50.87c-1.265,0.644-2.643,1.215-4.132,1.691c-0.477,1.489-1.046,2.867-1.691,4.132
+							C54.221,55.211,56.21,53.221,57.692,50.87z"/>
+					<path fill="#1E88E5" d="M60.188,44.681c-0.359-0.742-0.612-1.537-0.744-2.381h-4.192c-0.072,2.322-0.332,4.551-0.756,6.645
+							c2.344-0.969,4.238-2.207,5.532-3.618C60.08,45.11,60.145,44.9,60.188,44.681z"/>
+					<path fill="#1E88E5" d="M60.029,36.675c-1.293-1.414-3.187-2.652-5.534-3.624c0.424,2.097,0.684,4.325,0.756,6.647h4.192
+							c0.132-0.844,0.385-1.639,0.747-2.378C60.145,37.101,60.08,36.889,60.029,36.675z"/>
+					<path fill="#1E88E5" d="M52.168,42.3h-8.875v8.873c2.79-0.092,5.421-0.475,7.782-1.094C51.693,47.718,52.076,45.09,52.168,42.3z"/>
+					<path fill="#1E88E5" d="M43.292,39.699h8.875c-0.092-2.79-0.475-5.421-1.094-7.782c-2.361-0.619-4.992-1.002-7.782-1.094V39.699z"
+							/>
+					<path fill="#1E88E5" d="M43.292,59.493c1.039-0.072,2.05-0.229,3.036-0.466c1.409-1.296,2.645-3.187,3.614-5.531
+							c-2.096,0.427-4.327,0.687-6.649,0.759V59.493z"/>
+					<path fill="#1E88E5" d="M29.499,48.945c-0.427-2.094-0.687-4.322-0.759-6.645H23.5c0.071,1.036,0.228,2.046,0.462,3.026
+							C25.257,46.741,27.152,47.976,29.499,48.945z"/>
+					<path fill="#1E88E5" d="M40.695,22.507c-1.038,0.072-2.05,0.229-3.034,0.465c-1.409,1.294-2.645,3.188-3.612,5.528
+							c2.096-0.426,4.324-0.687,6.646-0.759V22.507z"/>
+					<path fill="#1E88E5" d="M40.695,30.823c-2.789,0.092-5.419,0.475-7.779,1.094c-0.621,2.361-1.002,4.992-1.094,7.782h8.873V30.823z"
+							/>
+					<path fill="#1E88E5" d="M32.123,25.304c-2.353,1.481-4.344,3.472-5.827,5.822c1.265-0.643,2.645-1.214,4.135-1.691
+							C30.91,27.947,31.479,26.566,32.123,25.304z"/>
+					<path fill="#1E88E5" d="M40.695,59.493v-5.238c-2.322-0.072-4.552-0.332-6.646-0.759c0.967,2.345,2.202,4.238,3.612,5.531
+							C38.646,59.263,39.657,59.42,40.695,59.493z"/>
+					<path fill="#1E88E5" d="M23.499,39.699h5.241c0.071-2.322,0.332-4.551,0.759-6.647c-2.348,0.969-4.243,2.21-5.538,3.624
+							C23.727,37.656,23.571,38.665,23.499,39.699z"/>
+					<path fill="#1E88E5" d="M32.123,56.695c-0.644-1.265-1.213-2.643-1.691-4.131c-1.489-0.478-2.868-1.049-4.133-1.691
+							C27.781,53.223,29.771,55.213,32.123,56.695z"/>
+					<path fill="#1E88E5" d="M40.695,42.3h-8.873c0.092,2.79,0.475,5.418,1.094,7.779c2.359,0.619,4.99,1.002,7.779,1.094V42.3z"/>
+			</g>
+			<g class="animated-omnis__icon-external animated-omnis__group--to-blue">
+					<g class="animated-omnis__icon-external__rings">
+							<path fill="#1E88E5" d="M36.436,14.434c0.642,1.11,0.979,2.306,1.082,3.505c1.451-0.281,2.944-0.438,4.477-0.438
+									c10.299,0,19.03,6.635,22.203,15.854c1.094-0.513,2.301-0.823,3.59-0.823c0.431,0,0.846,0.064,1.26,0.127
+									c-3.561-11.562-14.325-19.967-27.052-19.967c-2.165,0-4.264,0.266-6.291,0.726C35.961,13.743,36.223,14.065,36.436,14.434z"/>
+							<path fill="#1E88E5" d="M21.771,59.104c0.646-1.115,1.519-2.007,2.513-2.695c-3.58-4.107-5.765-9.463-5.783-15.339
+									c0-0.022-0.006-0.044-0.006-0.068c0-0.019,0.005-0.036,0.005-0.055c0.013-5.874,2.193-11.227,5.766-15.339
+									c-0.99-0.689-1.854-1.593-2.497-2.706c-0.211-0.366-0.356-0.747-0.508-1.127c-4.685,5.052-7.572,11.795-7.572,19.227
+									c0,7.436,2.889,14.179,7.576,19.228C21.415,59.851,21.561,59.468,21.771,59.104z"/>
+							<path fill="#1E88E5" d="M67.787,49.47c-1.289,0-2.499-0.311-3.592-0.826c-3.175,9.222-11.901,15.853-22.2,15.853
+									c-1.535,0-3.031-0.159-4.483-0.438c-0.103,1.202-0.432,2.401-1.072,3.515c-0.212,0.368-0.472,0.687-0.728,1.01
+									c2.023,0.46,4.121,0.725,6.283,0.725c12.728,0,23.492-8.403,27.055-19.965C68.632,49.405,68.218,49.47,67.787,49.47z"/>
+					</g>
+					<g class="animated-omnis__icon-external__spheres animated-omnis__group--to-darkblue">
+							<path fill="#37517E" d="M73.462,41.001c0-3.137-2.539-5.678-5.676-5.678s-5.683,2.541-5.683,5.678s2.546,5.674,5.683,5.674
+									S73.462,44.138,73.462,41.001z"/>
+							<path fill="#37517E" d="M26.262,13.754c-2.718,1.566-3.647,5.033-2.079,7.753c1.566,2.715,5.042,3.645,7.757,2.079
+									c2.718-1.568,3.645-5.045,2.079-7.755C32.446,13.116,28.979,12.181,26.262,13.754z"/>
+							<path fill="#37517E" d="M26.267,68.256c2.72,1.568,6.187,0.639,7.755-2.076c1.566-2.715,0.636-6.189-2.077-7.755
+									c-2.72-1.571-6.191-0.639-7.752,2.074C22.622,63.219,23.549,66.691,26.267,68.256z"/>
+					</g>
+			</g>
+	</svg>`;
+    let v_html_title = '<h1 class="mb-4" style="padding-left: 100px; position: relative;"><span class="omnidb__welcome__loading" style="background: none;">' + v_animated_omnis + '</span><span class="omnidb__welcome__intro-text">Hi, welcome to <span style="color:#4a6cbb;">OmniDB!</span></span></h1>';
+    let v_html_intro = `<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center"><span class="badge badge-danger" style="vertical-align: middle;">disclaimer</span> OmniDB is a powerful tool, and with great power...<br/>Please <strong><span class="text-danger">learn how to use it on a testing environment, NOT on production</span></strong>!</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started"><i class="fas fa-list mr-2"></i>Getting started</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-exclamation-triangle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">
+				Our focus is to provide a very flexible, secure and work-effective environment for multiple DBMS.<br>
+				With that in mind, you should <strong>be aware the many actions on the UI can lead to a direct interaction with the database</strong> that you are connected with.</br>
+				</div></div></div>`;
+    let v_html_useful_links = '<div class="alert alert-success p-3 omnidb__welcome__useful-card"><h2 class="text-center mb-4">Useful stuff</h2><ul><li class="mb-2"><a class="btn btn-success text-white" target="_blank" href="https://www.omnidb.net"><i class="fas fa-user"></i> <span>OmniDB website</span></a></li><li class="mb-2"><a class="btn btn-success text-white" target="_blank" href="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>Github repo</span></a></li><li><a class="btn btn-success text-white" target="_blank" href="https://www.omnidb.net"><i class="fas fa-list"></i> <span>Read the docs</span></a></li></ul></div>';
+    var v_html = '<div class="container" style="position: relative;"><div class="row"><div class="col-12"><div id="welcome_content" class="omnidb__welcome" style="height: 100vh;display: flex;align-items: center;font-size: 1.2rem;justify-content: center;"><div>' + // Title
+    v_html_title + // Welcome grid
+    `<div style="display: grid; grid-template: 'intro getting_started links'; grid-gap: 64px;"><div style="grid-area: intro;">` + v_html_intro + '</div><div style="grid-area: links;">' + v_html_useful_links + "</div></div></div></div></div></div>";
+    v_target.innerHTML = v_html;
+    refreshBootstrapTooltips();
+    endLoading();
   }
-  function groupChange(p_value) {
-    var v_empty_group_div = el("connections_management_empty_group");
-    if (p_value != -1) {
-      el("button_group_actions").style.display = "";
-      var v_group_obj = { conn_list: [] };
-      for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
-        if (p_value == v_connections_data.v_group_list[i2].id) {
-          v_group_obj = v_connections_data.v_group_list[i2];
-          break;
-        }
-      }
-      var v_group_valid_conn = 0;
-      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-        var v_conn_obj2 = v_connections_data.card_list[i2];
-        if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
-          v_conn_obj2.card_div.style.display = "";
-          v_group_valid_conn++;
-        } else {
-          v_conn_obj2.card_div.style.display = "none";
-        }
-      }
-      if (v_empty_group_div) {
-        if (v_group_valid_conn === 0) {
-          v_empty_group_div.style.display = "";
-        } else {
-          v_empty_group_div.style.display = "none";
-        }
-      }
-    } else {
-      if (v_empty_group_div) {
-        v_empty_group_div.style.display = "none";
-      }
-      el("button_group_actions").style.display = "none";
-      el("group_selector").value = -1;
-      for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-        var v_conn_obj2 = v_connections_data.card_list[i2];
-        v_conn_obj2.card_div.style.display = "";
-      }
-    }
-    updateConnectionsTitleInfo();
-  }
-  function manageGroup() {
-    el("group_actions_1").style.display = "none";
-    el("group_actions_2").style.display = "";
-    el("button_new_connection").setAttribute("disabled", true);
-    el("group_selector").setAttribute("disabled", true);
-    el("button_new_group").setAttribute("disabled", true);
-    el("button_group_actions").setAttribute("disabled", true);
-    var v_empty_group_div = el("connections_management_empty_group");
-    if (v_empty_group_div) {
-      v_empty_group_div.style.display = "none";
-    }
-    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
-      v_card_list_el.classList.add("omnidb__connections__card-list--connection-management");
-    });
-    var v_current_group_id = el("group_selector").value;
-    var v_group_obj = null;
-    for (var i2 = 0; i2 < v_connections_data.v_group_list.length; i2++) {
-      if (v_current_group_id == v_connections_data.v_group_list[i2].id) {
-        v_group_obj = v_connections_data.v_group_list[i2];
-        break;
-      }
-    }
-    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-      var v_conn_obj2 = v_connections_data.card_list[i2];
-      v_conn_obj2.card_div.style.display = "";
-      if (v_group_obj.conn_list.includes(v_conn_obj2.data.id)) {
-        v_conn_obj2.checkbox.checked = true;
-      }
-    }
-    updateConnectionsTitleInfo();
-  }
-  function manageGroupSave() {
-    el("group_actions_1").style.display = "";
-    el("group_actions_2").style.display = "none";
-    el("button_new_connection").removeAttribute("disabled");
-    el("group_selector").removeAttribute("disabled");
-    el("button_new_group").removeAttribute("disabled");
-    el("button_group_actions").removeAttribute("disabled");
-    document.querySelectorAll(".omnidb__connections__card-list").forEach((v_card_list_el) => {
-      v_card_list_el.classList.remove("omnidb__connections__card-list--connection-management");
-    });
-    v_conn_data = [];
-    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-      var v_conn_obj2 = v_connections_data.card_list[i2];
-      v_conn_data.push({
-        id: v_conn_obj2.data.id,
-        selected: v_conn_obj2.checkbox.checked
-      });
-      v_conn_obj2.checkbox.checked = false;
-    }
-    execAjax$1(
-      "/save_group_connections/",
-      JSON.stringify({
-        // parseInt because a <select>'s value is a string and the backend
-        // unmarshals this into an integer, which rejects "1" outright and
-        // fails the whole request. See flexInt in go-server/flex_int.go.
-        p_group: parseInt(el("group_selector").value, 10),
-        p_conn_data_list: v_conn_data
-      }),
-      function(p_return) {
-        getDatabaseList();
-        getGroups();
-      },
-      null,
-      "box"
-    );
-  }
-  function newGroupConfirm(p_name) {
-    execAjax$1(
-      "/new_group/",
-      JSON.stringify({ p_name }),
-      function(p_return) {
-        getDatabaseList();
-        getGroups();
-      },
-      null,
-      "box"
-    );
-  }
-  function renameGroupConfirm(p_id, p_name) {
-    execAjax$1(
-      "/edit_group/",
-      JSON.stringify({ p_id, p_name }),
-      function(p_return) {
-        getDatabaseList();
-        getGroups();
-      },
-      null,
-      "box"
-    );
-  }
-  function deleteGroup() {
-    var v_group_id = parseInt(el("group_selector").value, 10);
-    showConfirm("Are you sure you want to delete the current group?", function() {
-      deleteGroupConfirm(v_group_id);
-    });
-  }
-  function deleteGroupConfirm(p_group_id) {
-    execAjax$1(
-      "/delete_group/",
-      JSON.stringify({ p_id: p_group_id }),
-      function(p_return) {
-        getDatabaseList();
-        getGroups();
-      },
-      null,
-      "box"
-    );
-  }
-  function newGroup() {
-    showConfirm("", function() {
-      newGroupConfirm(el("group_name_input").value);
-    });
-    var v_input = document.createElement("input");
-    v_input.id = "group_name_input";
-    v_input.className = "form-control";
-    v_input.placeholder = "Group Name";
-    v_input.style.width = "100%";
-    el("modal_message_content").appendChild(v_input);
-    v_input.onkeydown = function() {
-      if (
-        /** @type {any} */
-        event.keyCode == 13
-      ) {
-        el("modal_message_ok").click();
-      } else if (
-        /** @type {any} */
-        event.keyCode == 27
-      ) {
-        el("modal_message_cancel").click();
-      }
-    };
-    setTimeout(function() {
-      v_input.focus();
-    }, 500);
-  }
-  function renameGroup() {
-    var v_select = el("group_selector");
-    showConfirm("", function() {
-      renameGroupConfirm(parseInt(el("group_selector").value, 10), el("group_name_input").value);
-    });
-    var v_input = document.createElement("input");
-    v_input.id = "group_name_input";
-    v_input.className = "form-control";
-    v_input.placeholder = "Group Name";
-    v_input.style.width = "100%";
-    v_input.value = v_select.options[v_select.selectedIndex].text;
-    el("modal_message_content").appendChild(v_input);
-    v_input.onkeydown = function() {
-      if (
-        /** @type {any} */
-        event.keyCode == 13
-      ) {
-        el("modal_message_ok").click();
-      } else if (
-        /** @type {any} */
-        event.keyCode == 27
-      ) {
-        el("modal_message_cancel").click();
-      }
-    };
-    setTimeout(function() {
-      v_input.focus();
-      v_input.selectionStart = v_input.selectionEnd = 1e4;
-    }, 500);
-  }
-  function getGroups() {
-    execAjax$1(
-      "/get_groups/",
-      JSON.stringify({}),
-      function(p_return) {
-        v_connections_data.v_group_list = p_return.v_data;
-        var select = el("group_selector");
-        var current_value = select.value;
-        select.innerHTML = "";
-        var option = document.createElement("option");
-        option.value = "-1";
-        option.textContent = "All Connections";
-        select.appendChild(option);
-        var found = false;
-        for (var i2 = 0; i2 < p_return.v_data.length; i2++) {
-          option = document.createElement("option");
-          option.value = p_return.v_data[i2].id;
-          option.textContent = p_return.v_data[i2].name;
-          if (option.value == current_value) {
-            option.selected = true;
-            found = true;
-          }
-          select.appendChild(option);
-        }
-        if (!found && current_value != -1) {
-          groupChange(-1);
-        } else {
-          groupChange(el("group_selector").value);
-        }
-      },
-      null,
-      "box"
-    );
-  }
-  function testConnection(p_password = null) {
-    var input = JSON.stringify({
-      id: v_connections_data.current_id,
-      type: el("conn_form_type").value,
-      connstring: el("conn_form_connstring").value,
-      server: el("conn_form_server").value,
-      port: el("conn_form_port").value,
-      database: el("conn_form_database").value,
-      user: el("conn_form_user").value,
-      password: el("conn_form_user_pass").value,
-      temp_password: p_password,
-      tunnel: {
-        enabled: el("conn_form_use_tunnel").checked,
-        server: el("conn_form_ssh_server").value,
-        port: el("conn_form_ssh_port").value,
-        user: el("conn_form_ssh_user").value,
-        password: el("conn_form_ssh_password").value,
-        key: el("conn_form_ssh_key").value
-      }
-    });
-    execAjax$1(
-      "/test_connection/",
-      input,
-      function(p_return) {
-        if (p_return.v_data == "Connection successful.") showAlert(p_return.v_data);
-        else showError(p_return.v_data);
-      },
-      function(p_return) {
-        showConfirm(
-          "",
-          function() {
-            testConnection(el("txt_test_password_prompt").value);
-          },
-          null,
-          function() {
-            var v_content_div = el("modal_message_content");
-            v_content_div.appendChild(document.createTextNode(p_return.v_data));
-            var v_input = document.createElement("input");
-            v_input.id = "txt_test_password_prompt";
-            v_input.className = "form-control";
-            v_input.type = "password";
-            v_input.placeholder = "Password";
-            v_input.style.marginBottom = "20px";
-            v_input.style.marginTop = "20px";
-            v_input.style.textAlign = "center";
-            v_content_div.appendChild(v_input);
-            v_input.onkeydown = function() {
-              if (
-                /** @type {any} */
-                event.keyCode == 13
-              ) el("modal_message_ok").click();
-              else if (
-                /** @type {any} */
-                event.keyCode == 27
-              ) el("modal_message_cancel").click();
-            };
-            v_input.focus();
-          }
-        );
-      },
-      "box",
-      true,
-      true
-    );
-  }
-  function saveConnection() {
-    var input = JSON.stringify({
-      id: v_connections_data.current_id,
-      type: el("conn_form_type").value,
-      public: el("conn_form_public").checked,
-      connstring: el("conn_form_connstring").value,
-      server: el("conn_form_server").value,
-      port: el("conn_form_port").value,
-      database: el("conn_form_database").value,
-      user: el("conn_form_user").value,
-      password: el("conn_form_user_pass").value,
-      title: el("conn_form_title").value,
-      tunnel: {
-        enabled: el("conn_form_use_tunnel").checked,
-        server: el("conn_form_ssh_server").value,
-        port: el("conn_form_ssh_port").value,
-        user: el("conn_form_ssh_user").value,
-        password: el("conn_form_ssh_password").value,
-        key: el("conn_form_ssh_key").value
-      }
-    });
-    execAjax$1(
-      "/save_connection/",
-      input,
-      function(p_return) {
-        bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).hide();
-        getDatabaseList();
-        showConnectionList(false, true);
-      },
-      null,
-      "box"
-    );
-  }
-  function deleteConnection(p_conn_obj) {
-    showConfirm("Are you sure you want to delete this connection?", function() {
-      var input = JSON.stringify({
-        id: p_conn_obj.id
-      });
-      execAjax$1(
-        "/delete_connection/",
-        input,
-        function(p_return) {
-          getDatabaseList();
-          showConnectionList(false, true);
-        },
-        null,
-        "box"
-      );
-    });
-  }
-  function adjustTechSelector() {
-    var select = el("conn_form_type");
-    select.innerHTML = "";
-    var option = document.createElement("option");
-    option.value = "-1";
-    option.textContent = "Select Type";
-    select.appendChild(option);
-    for (var i2 = 0; i2 < v_connections_data.technologies.length; i2++) {
-      option = document.createElement("option");
-      option.value = v_connections_data.technologies[i2];
-      option.textContent = v_connections_data.technologies[i2];
-      select.appendChild(option);
-    }
-  }
-  function editConnection(p_conn_obj) {
-    v_connections_data.current_id = p_conn_obj.id;
-    adjustTechSelector();
-    el("conn_form_type").value = p_conn_obj.technology;
-    el("conn_form_title").value = p_conn_obj.alias;
-    el("conn_form_connstring").value = p_conn_obj.conn_string;
-    el("conn_form_server").value = p_conn_obj.server;
-    el("conn_form_port").value = p_conn_obj.port;
-    el("conn_form_database").value = p_conn_obj.service;
-    el("conn_form_user").value = p_conn_obj.user;
-    el("conn_form_user_pass").value = "";
-    el("conn_form_use_tunnel").checked = p_conn_obj.tunnel.enabled;
-    el("conn_form_ssh_server").value = p_conn_obj.tunnel.server;
-    el("conn_form_ssh_port").value = p_conn_obj.tunnel.port;
-    el("conn_form_ssh_user").value = p_conn_obj.tunnel.user;
-    el("conn_form_ssh_password").value = "";
-    el("conn_form_ssh_key").value = "";
-    el("conn_form_public").checked = p_conn_obj.public;
-    let v_enable_list = [];
-    let v_disable_list = [];
-    if (p_conn_obj.password && p_conn_obj.password !== null && p_conn_obj.password !== "") {
-      if (!el("conn_form_user_pass_check_icon")) {
-        el("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
-          "beforeend",
-          '<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>'
-        );
-      }
-    } else {
-      el("conn_form_user_pass_check_icon")?.remove();
-    }
-    if (p_conn_obj.tunnel.password && p_conn_obj.tunnel.password !== null && p_conn_obj.tunnel.password !== "") {
-      if (!el("conn_form_ssh_password_check_icon")) {
-        el("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
-          "beforeend",
-          '<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>'
-        );
-      }
-    } else {
-      el("conn_form_ssh_password_check_icon")?.remove();
-    }
-    if (p_conn_obj.tunnel.key && p_conn_obj.tunnel.key !== null && p_conn_obj.tunnel.key !== "") {
-      if (!el("conn_form_ssh_key_check_icon")) {
-        el("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
-          "beforeend",
-          '<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>'
-        );
-      }
-    } else {
-      el("conn_form_ssh_key_check_icon")?.remove();
-    }
-    if (p_conn_obj.technology === "terminal") {
-      v_disable_list = [
-        "conn_form_connstring",
-        "conn_form_server",
-        "conn_form_port",
-        "conn_form_database",
-        "conn_form_user",
-        "conn_form_user_pass"
-      ];
-      v_enable_list = [
-        "conn_form_ssh_server",
-        "conn_form_ssh_port",
-        "conn_form_ssh_user",
-        "conn_form_ssh_password",
-        "conn_form_ssh_key",
-        "conn_form_ssh_key_input"
-      ];
-      el("conn_form_use_tunnel").checked = true;
-      el("conn_form_use_tunnel").setAttribute("disabled", true);
-    } else if (p_conn_obj.technology === "sqlite") {
-      v_disable_list = ["conn_form_connstring", "conn_form_server", "conn_form_port", "conn_form_user", "conn_form_user_pass"];
-      v_enable_list = ["conn_form_database"];
-      if (p_conn_obj.tunnel.enabled) {
-        v_enable_list = v_enable_list.concat([
-          "conn_form_ssh_server",
-          "conn_form_ssh_port",
-          "conn_form_ssh_user",
-          "conn_form_ssh_password",
-          "conn_form_ssh_key",
-          "conn_form_ssh_key_input"
-        ]);
-      } else {
-        v_disable_list = v_disable_list.concat([
-          "conn_form_ssh_server",
-          "conn_form_ssh_port",
-          "conn_form_ssh_user",
-          "conn_form_ssh_password",
-          "conn_form_ssh_key",
-          "conn_form_ssh_key_input"
-        ]);
-      }
-    } else {
-      if (p_conn_obj.conn_string.trim() !== "" && p_conn_obj.conn_string.trim() !== null) {
-        v_disable_list = ["conn_form_server", "conn_form_port", "conn_form_database", "conn_form_user", "conn_form_user_pass"];
-        v_enable_list = ["conn_form_connstring"];
-      } else if (p_conn_obj.server.trim() !== "" && p_conn_obj.server.trim() !== null) {
-        v_disable_list = ["conn_form_connstring"];
-        v_enable_list = ["conn_form_server", "conn_form_port", "conn_form_database", "conn_form_user", "conn_form_user_pass"];
-      }
-      if (p_conn_obj.tunnel.enabled) {
-        v_enable_list = v_enable_list.concat([
-          "conn_form_ssh_server",
-          "conn_form_ssh_port",
-          "conn_form_ssh_user",
-          "conn_form_ssh_password",
-          "conn_form_ssh_key",
-          "conn_form_ssh_key_input"
-        ]);
-      } else {
-        v_disable_list = v_disable_list.concat([
-          "conn_form_ssh_server",
-          "conn_form_ssh_port",
-          "conn_form_ssh_user",
-          "conn_form_ssh_password",
-          "conn_form_ssh_key",
-          "conn_form_ssh_key_input"
-        ]);
-      }
-    }
-    updateModalEditConnectionFields(v_disable_list, v_enable_list);
-    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
-  }
-  function newConnection() {
-    v_connections_data.current_id = -1;
-    adjustTechSelector();
-    el("conn_form_button_test_connection").setAttribute("disabled", true);
-    el("conn_form_button_save_connection").setAttribute("disabled", true);
-    el("conn_form_type").value = -1;
-    el("conn_form_title").value = "";
-    el("conn_form_public").checked = false;
-    el("conn_form_connstring").value = "";
-    el("conn_form_server").value = "";
-    el("conn_form_port").value = "";
-    el("conn_form_database").value = "";
-    el("conn_form_user").value = "";
-    el("conn_form_user_pass").value = "";
-    el("conn_form_use_tunnel").checked = false;
-    el("conn_form_ssh_server").value = "";
-    el("conn_form_ssh_port").value = "22";
-    el("conn_form_ssh_user").value = "";
-    el("conn_form_ssh_password").value = "";
-    el("conn_form_ssh_key").value = "";
-    el("conn_form_ssh_key_input").value = null;
-    el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
-    el("conn_form_user_pass_check_icon")?.remove();
-    el("conn_form_ssh_password_check_icon")?.remove();
-    el("conn_form_ssh_key_check_icon")?.remove();
-    bootstrap.Modal.getOrCreateInstance(el("modal_edit_connection")).show();
-  }
-  function selectConnection(p_conn_obj) {
-    bootstrap.Modal.getOrCreateInstance(el("modal_connections")).hide();
-    if (p_conn_obj.technology === "terminal") {
-      v_connTabControl.tag.createOuterTerminalTab(
-        p_conn_obj.id,
-        p_conn_obj.alias,
-        p_conn_obj.tunnel.user + "@" + p_conn_obj.tunnel.server + ":" + p_conn_obj.tunnel.port
-      );
-    } else {
-      v_connTabControl.tag.createConnTab(p_conn_obj.id);
-    }
-  }
-  function toggleConnectionsPublic() {
-    updateConnectionsTitleInfo();
-    var v_public = el("conn_list_public").checked;
-    if (v_public) {
-      v_connections_data.show_public = true;
-      document.querySelectorAll(".omnidb__connections__card--public").forEach((v_card_el) => {
-        v_card_el.parentElement.classList.remove("d-none");
-        v_card_el.classList.remove("d-none");
-        v_card_el.classList.add("show");
-      });
-    } else {
-      v_connections_data.show_public = false;
-      for (let i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-        v_conn_div = v_connections_data.card_list[i2].card_div;
-        v_conn_obj = v_connections_data.card_list[i2].data;
-        if (v_conn_obj.public) {
-          if (!v_conn_obj.is_mine) {
-            Array.from(v_conn_div.children).forEach((v_child) => {
-              v_child.classList.remove("show");
-              v_child.classList.add("d-none");
-            });
-            v_conn_div.classList.add("d-none");
-          }
-        }
-      }
-    }
-  }
-  function updateModalEditConnectionState(e) {
-    let v_e_target = e.target;
-    let v_e_target_id = v_e_target.getAttribute("id");
-    let v_e_value = e.target.value;
-    let v_disable_list = [];
-    let v_enable_list = [];
-    let v_form_cases = ["conn_form_type"];
-    let v_technology = el("conn_form_type").value;
-    let v_allow_tunnel = el("conn_form_use_tunnel").checked;
-    let v_use_connection_string = el("conn_form_connstring").value;
-    el("conn_form_ssh_key_input").value;
-    if (v_technology === "terminal") {
-      v_allow_tunnel = true;
-      el("conn_form_use_tunnel").checked = true;
-      el("conn_form_use_tunnel").setAttribute("disabled", true);
-    } else {
-      el("conn_form_use_tunnel").removeAttribute("disabled");
-    }
-    if (typeof v_use_connection_string === "string") {
-      v_use_connection_string = v_use_connection_string.trim();
-    }
-    if (v_technology === "terminal") {
-      v_disable_list.push("conn_form_connstring");
-      v_disable_list.push("conn_form_server");
-      v_disable_list.push("conn_form_port");
-      v_disable_list.push("conn_form_database");
-      v_disable_list.push("conn_form_user");
-      v_disable_list.push("conn_form_user_pass");
-    } else if (v_technology === "sqlite") {
-      v_disable_list.push("conn_form_connstring");
-      v_disable_list.push("conn_form_server");
-      v_disable_list.push("conn_form_port");
-      v_disable_list.push("conn_form_user");
-      v_disable_list.push("conn_form_user_pass");
-      v_enable_list.push("conn_form_database");
-      v_form_cases.push("conn_form_database");
-    } else if (v_use_connection_string !== "" && v_use_connection_string !== null) {
-      v_disable_list.push("conn_form_server");
-      v_disable_list.push("conn_form_port");
-      v_disable_list.push("conn_form_database");
-      v_disable_list.push("conn_form_user");
-      v_disable_list.push("conn_form_user_pass");
-      v_form_cases.push("conn_form_connstring");
-    } else {
-      v_enable_list.push("conn_form_server");
-      v_enable_list.push("conn_form_port");
-      v_enable_list.push("conn_form_database");
-      v_enable_list.push("conn_form_user");
-      v_enable_list.push("conn_form_user_pass");
-      v_form_cases.push("conn_form_server");
-      v_form_cases.push("conn_form_port");
-      v_form_cases.push("conn_form_database");
-      v_form_cases.push("conn_form_user");
-      let v_block_conn_string = false;
-      let v_check_inputs = [
-        "conn_form_server",
-        "conn_form_port",
-        "conn_form_database",
-        "conn_form_user",
-        "conn_form_user_pass"
-      ];
-      let v_check_inputs_empty = true;
-      for (let i2 = 0; i2 < v_check_inputs.length; i2++) {
-        var v_check_input_value = el(v_check_inputs[i2]).value;
-        if (typeof v_check_input_value === "string") {
-          v_check_input_value = v_check_input_value.trim();
-        }
-        if (v_check_input_value !== "" && v_check_input_value !== null) {
-          v_check_inputs_empty = false;
-        }
-      }
-      if (!v_check_inputs_empty) {
-        v_block_conn_string = true;
-      }
-      if (v_block_conn_string) {
-        v_disable_list.push("conn_form_connstring");
-      } else {
-        v_enable_list.push("conn_form_connstring");
-        v_form_cases.push("conn_form_connstring");
-      }
-    }
-    if (v_allow_tunnel) {
-      v_enable_list.push("conn_form_ssh_server");
-      v_enable_list.push("conn_form_ssh_port");
-      v_enable_list.push("conn_form_ssh_user");
-      v_enable_list.push("conn_form_ssh_password");
-      v_enable_list.push("conn_form_ssh_key");
-      v_enable_list.push("conn_form_ssh_key_input");
-      v_form_cases.push("conn_form_ssh_server");
-      v_form_cases.push("conn_form_ssh_port");
-      v_form_cases.push("conn_form_ssh_user");
-    } else {
-      v_disable_list.push("conn_form_ssh_server");
-      v_disable_list.push("conn_form_ssh_port");
-      v_disable_list.push("conn_form_ssh_user");
-      v_disable_list.push("conn_form_ssh_password");
-      v_disable_list.push("conn_form_ssh_key");
-      v_disable_list.push("conn_form_ssh_key_input");
-    }
-    if (v_e_target_id === "conn_form_type") {
-      if (v_e_value === "terminal") {
-        v_disable_list = [
-          "conn_form_connstring",
-          "conn_form_server",
-          "conn_form_port",
-          "conn_form_database",
-          "conn_form_user",
-          "conn_form_user_pass"
-        ];
-        v_enable_list = [
-          "conn_form_ssh_server",
-          "conn_form_ssh_port",
-          "conn_form_ssh_user",
-          "conn_form_ssh_password",
-          "conn_form_ssh_key",
-          "conn_form_ssh_key_input"
-        ];
-        el("conn_form_use_tunnel").checked = true;
-        el("conn_form_use_tunnel").setAttribute("disabled", true);
-        v_form_cases.push("conn_form_ssh_server");
-        v_form_cases.push("conn_form_ssh_port");
-        v_form_cases.push("conn_form_ssh_user");
-      }
-    }
-    updateModalEditConnectionFields(v_disable_list, v_enable_list, v_form_cases);
-  }
-  function updateModalEditConnectionFields(p_disable_list, p_enable_list, p_form_cases) {
-    for (let i2 = 0; i2 < p_disable_list.length; i2++) {
-      var v_item = el(p_disable_list[i2]);
-      v_item.setAttribute("readonly", true);
-      v_item.setAttribute("disabled", true);
-      v_item.value = null;
-    }
-    for (let i2 = 0; i2 < p_enable_list.length; i2++) {
-      var v_item = el(p_enable_list[i2]);
-      v_item.removeAttribute("readonly");
-      v_item.removeAttribute("disabled");
-    }
-    document.querySelectorAll("#modal_edit_connection .required").forEach((v_required_el) => {
-      v_required_el.classList.remove("required");
-    });
-    let v_has_invalid = false;
-    if (p_form_cases) {
-      for (let i2 = 0; i2 < p_form_cases.length; i2++) {
-        el(p_form_cases[i2]).parentElement.classList.add("required");
-      }
-      for (let i2 = 0; i2 < p_form_cases.length; i2++) {
-        if (p_form_cases[i2] === "conn_form_type") {
-          if (el(p_form_cases[i2]).value === "-1") {
-            v_has_invalid = true;
-            break;
-          }
-        } else {
-          let v_value_check = el(p_form_cases[i2]).value.trim();
-          if (v_value_check === "" || v_value_check === null) {
-            v_has_invalid = true;
-            break;
-          }
-        }
-      }
-    }
-    if (v_has_invalid) {
-      el("conn_form_button_test_connection").setAttribute("disabled", true);
-      el("conn_form_button_save_connection").setAttribute("disabled", true);
-    } else {
-      el("conn_form_button_test_connection").removeAttribute("disabled");
-      el("conn_form_button_save_connection").removeAttribute("disabled");
-    }
-  }
-  function updateConnectionKey(e) {
-    var file = e.target.files ? e.target.files[0] : false;
-    var v_input = el("conn_form_ssh_key");
-    if (!file) {
-      v_input.value = null;
-      el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
-      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
-      return;
-    }
-    var reader = new FileReader();
-    reader.onload = function(e2) {
-      var v_contents = (
-        /** @type {FileReader} */
-        e2.target.result
-      );
-      v_input.value = v_contents;
-      el("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
-      updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
-    };
-    reader.readAsText(file);
-  }
-  function updateConnectionsTitleInfo() {
-    var v_public = el("conn_list_public").checked;
-    var v_group_context = el("group_selector").value;
-    var v_connection_owner = false;
-    var v_managing_group = v_group_context && el("group_selector").getAttribute("disabled");
-    for (var i2 = 0; i2 < v_connections_data.card_list.length; i2++) {
-      var v_conn_obj2 = v_connections_data.card_list[i2].data;
-      if (v_conn_obj2.is_mine) {
-        v_connection_owner = true;
-      }
-    }
-    var v_empty_cards = el("connections_management_empty_all");
-    var v_empty_with_public = el("connections_management_empty_with_public");
-    if (v_empty_cards) {
-      if (v_connections_data.card_list.length === 0) {
-        v_empty_with_public.style.display = "none";
-        v_empty_cards.style.display = "";
-      } else if (v_group_context !== "-1") {
-        v_empty_cards.style.display = "none";
-        v_empty_with_public.style.display = "none";
-      } else if (v_public) {
-        v_empty_cards.style.display = "none";
-        v_empty_with_public.style.display = "none";
-      } else if (!v_connection_owner) {
-        v_empty_cards.style.display = "none";
-        v_empty_with_public.style.display = "";
-      }
-      if (!v_public && v_managing_group && !v_connection_owner) {
-        v_empty_with_public.style.display = "";
-      }
-    }
-  }
-  const connections = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+  const outerWelcomeTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
-    adjustTechSelector,
-    deleteConnection,
-    deleteGroup,
-    deleteGroupConfirm,
-    editConnection,
-    getGroups,
-    groupChange,
-    manageGroup,
-    manageGroupSave,
-    newConnection,
-    newGroup,
-    newGroupConfirm,
-    renameGroup,
-    renameGroupConfirm,
-    saveConnection,
-    selectConnection,
-    showConnectionList,
-    startConnectionManagement,
-    testConnection,
-    toggleConnectionsPublic,
-    updateConnectionKey,
-    updateConnectionsTitleInfo,
-    updateModalEditConnectionFields,
-    updateModalEditConnectionState
+    initWelcomeSection
   }, Symbol.toStringTag, { value: "Module" }));
   var i$4, v_list$3, v_node$3;
   function getTreeOracle(p_div) {
@@ -31784,54 +31839,82 @@
     var v_tutorials = {
       main: [
         {
-          p_message: "This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]",
-          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
-          p_title: "Primary menu"
+          p_message: `
+				<p>This is the navigation rail. It gives you access to every section of OmniDB:</p>
+				<ul>
+				<li><i class="fas fa-hand-spock omnidb__theme__text--primary mr-2"></i>Welcome, tutorials and useful links.</li>
+				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connections management.</li>
+				<li><i class="fas fa-book omnidb__theme__text--primary mr-2"></i>Snippets panel.</li>
+				<li><i class="fas fa-database omnidb__theme__text--primary mr-2"></i>Database (your open connections).</li>
+				</ul>
+				<p>At the bottom you'll also find <i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings, <i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About, and your <i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
         },
         {
-          p_message: "This contains general settings and options, such as [ versioning, connections_list_manager, user_setting...]",
-          p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
-          p_title: "Utilities menu"
+          p_callback_end: function() {
+            document.getElementById("omnidb_section_nav__account_menu").classList.remove(
+              "omnidb__account-menu--open"
+            );
+          },
+          p_callback_start: function() {
+            document.getElementById("omnidb_section_nav__account_menu").classList.add(
+              "omnidb__account-menu--open"
+            );
+          },
+          p_clone_target: true,
+          p_message: "Clicking the account icon at the bottom of the rail opens this popup: your OmniDB version, username, and a sign-out button.",
+          p_target: document.getElementById("omnidb_section_nav__account_menu"),
+          p_title: "Account",
+          p_update_delay: 350
         }
       ],
       utilities_menu: [
         {
-          p_callback_end: function() {
-            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
-          },
+          p_message: `
+				<p>General settings and account management live at the bottom of the navigation rail:</p>
+				<ul>
+				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings (shortcuts, theme, fonts, and -- for superusers -- account/user management).</li>
+				<li><i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About.</li>
+				<li><i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account (username, version, sign out).</li>
+				</ul>
+				<p>Please, click on the <i class="fas fa-cog"></i> Settings icon.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
+        },
+        {
           p_callback_start: function() {
-            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
+            showConfigUser();
           },
           p_clone_target: true,
           p_message: `
-				<p>Contains general settings and options:</p>
-				<ul>
-				<li>Username and versioning.</li>
-				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connection management.</li>
-				<li><i class="fas fa-user omnidb__theme__text--primary mr-2"></i>User management.</li>
-				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>UI settings (shortcuts, theme, fonts...).</li>
-				<li><i class="fas fa-sign-out-alt omnidb__theme__text--primary mr-2"></i>About.</li>
-				</ul>
+				<p>If you're a superuser, this Settings section has an <strong>Account</strong> tab.</p>
+				<p>Click on it.</p>
 				`,
-          p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
-          p_title: "Utilities Menu",
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("config_account-tab");
+            return v_target;
+          },
+          p_title: "Settings",
           p_update_delay: 350
         },
         {
-          p_callback_end: function() {
-            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
-          },
-          p_callback_start: function() {
-            document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
-          },
           p_clone_target: true,
           p_message: `
-				<p>If you just configured OmniDB and logged with the default <strong>admin</strong> user, you should create the first user.</p>
+				<p>If you just configured OmniDB and logged in with the default <strong>admin</strong> user, you should create a proper superuser (and later delete the default admin account).</p>
 				<p>Follow this walkthrough if you want to create other users as well.</p>
+				<p>Click on <strong>Manage Users</strong>.</p>
 				`,
           p_next_button: false,
-          p_target: document.getElementById("omnidb__utilities-menu__link-user"),
-          p_title: "Managing Users"
+          p_target: function() {
+            var v_target = document.getElementById("button_open_users");
+            return v_target;
+          },
+          p_title: "Managing Users",
+          p_update_delay: 350
         },
         {
           p_callback_after_update_start: function() {
@@ -31874,19 +31957,18 @@
         {
           p_clone_target: true,
           p_message: `
-				<p>This is the outer connections menu. Each connection added becomes a new item in this menu.</p>
-				<p>The menu initially contains.</p>
+				<p>This is the navigation rail. It gives you access to:</p>
 				<ul>
 				<li>Connections manager.</li>
 				<li>Welcome, tutorial and useful links.</li>
-				<li>Snippets panel toggler.</li>
-				<li>Add connection.</li>
+				<li>Snippets panel.</li>
+				<li>Your open database connections.</li>
 				</ul>
 				<p>Let's first <span class="badge badge-info">add a new connection</span>.</p>
-				<p>Please, click on the <i class="fas fa-plus"></i> button.</p>
+				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon.</p>
 				`,
-          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
-          p_title: "Primary menu"
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
         },
         {
           p_callback_after_update_start: function() {
@@ -32006,9 +32088,9 @@
           p_clone_target: true,
           p_message: `
 				<p>First let's open the <strong>connections management</strong> interface.</p>
-				<p>Please, click on the OmniDB Icon button.</p>
+				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon in the navigation rail.</p>
 				`,
-          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+          p_target: document.getElementById("omnidb_section_nav"),
           p_title: "Accessing connections managemnet"
         },
         {
@@ -32139,10 +32221,10 @@
         {
           p_clone_target: true,
           p_message: `
-				<p>The snippet panel is now accessible globally.</p>
-				<p>Please, click on the <i class="fas fa-book"></i> button.</p>
+				<p>The snippet panel is now accessible globally, from the navigation rail.</p>
+				<p>Please, click on the <i class="fas fa-book"></i> icon.</p>
 				`,
-          p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+          p_target: document.getElementById("omnidb_section_nav"),
           p_title: "Global Snippet Panel"
         },
         {
@@ -32193,10 +32275,21 @@
       selecting_connection: [
         {
           p_message: `
-				<p>The <strong>outer_tab</strong> contains global panels related to workspace and also access to created connections.</p>
+				<p>Your open connections live in the <strong>Database</strong> section.</p>
+				<p>Click on the <i class="fas fa-database"></i> Database icon in the navigation rail.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
+        },
+        {
+          p_callback_start: function() {
+            switchSection("database");
+          },
+          p_message: `
+				<p>Open connections are listed here as a strip of tabs, much like browser tabs.</p>
 				<ol style="padding-left: 1.5rem;">
 					<li class="mb-2">
-						To access a connection, click on the <i class="fas fa-plus"></i> button.
+						To open a connection, click on the <i class="fas fa-plus"></i> button.
 					</li>
 					<li class="mb-2">
 						Navigate to the proper technology on the custom menu.
@@ -32215,11 +32308,15 @@
             var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
             return v_target;
           },
-          p_title: "Selecting a Connection"
+          p_title: "Selecting a Connection",
+          p_update_delay: 350
         }
       ],
       connection_tab: [
         {
+          p_callback_start: function() {
+            switchSection("database");
+          },
           p_message: `
 				<p>This identifies the database you are connected with:</p>
 				`,
@@ -32227,7 +32324,8 @@
             var v_target = v_connTabControl.selectedTab.tag.divDetails;
             return v_target;
           },
-          p_title: "Current Connection"
+          p_title: "Current Connection",
+          p_update_delay: 350
         },
         {
           p_message: `
@@ -32381,37 +32479,19 @@
     });
     v_connTabControl.tag.change_active_database_call_list = [];
     v_connTabControl.tag.change_active_database_call_running = false;
-    if (v_connTabControl.tabList.length === 0) {
-      v_connTabControl.createTab({
-        p_icon: '<i class="fas fa-bars collapse-menu"></i>',
-        p_name: "Switch menu",
-        p_close: false,
-        p_selectable: false,
-        p_clickFunction: function(e) {
-          v_connTabControl.toggleTabMenu();
-          refreshHeights();
-        }
-      });
-    }
+    v_connTabControl.hideTabMenu();
     initCreateTabFunctions();
-    if (v_connTabControl.tabList.length === 1) {
-      v_connTabControl.tag.createWelcomeTab();
-      v_connTabControl.createTab({
-        p_icon: '<i class="fas fa-plug"></i>',
-        p_name: "Connections",
-        p_close: false,
-        p_selectable: false,
-        p_omnidb_tooltip_name: '<h5 class="my-1">Manage Connections</h5>',
-        p_clickFunction: function(e) {
-          return startConnectionManagement();
-        }
-      });
-      v_connTabControl.tag.createSnippetPanel();
-    }
+    initWelcomeSection();
+    v_connTabControl.tag.createSnippetPanel();
+    initSectionSwitcher();
+    switchSection("database");
     updateExplainComponent();
     getAllSnippets();
     getDatabaseList(true, function() {
       v_connTabControl.createAddTab();
+      if (v_connTabControl.tabList.length === 0) {
+        switchSection("welcome");
+      }
     });
     v_omnis.root = document.getElementById("omnidb__main");
     v_omnis.div = document.createElement("div");
@@ -32776,85 +32856,44 @@
     p_tab.removeTab();
   }
   var resizeSnippetPanel = async function(p_left_pos_x = false) {
-    if (v_connTabControl.snippet_tag !== void 0) {
-      var v_element = v_connTabControl.snippet_tag.divPanel;
-      var v_snippet_tag = v_connTabControl.snippet_tag;
-      if (v_element.classList.contains("omnidb__panel--slide-in")) {
-        v_connTabControl.selectedTab;
-        var v_target_tag_div_result_top = 30;
-        if (v_connTabControl.selectedTab && v_connTabControl.selectedTab !== null) {
-          if (v_connTabControl.selectedTab.tag.tabControl) {
-            var v_target_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-            if (v_target_tag.div_result) {
-              v_target_tag_div_result_top = v_target_tag.div_result.getBoundingClientRect().height - 25;
-            } else {
-              v_target_tag_div_result_top = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-            }
-          } else {
-            v_target_tag_div_result_top = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-          }
-        } else {
-          v_target_tag_div_result_top = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
+    if (v_connTabControl.snippet_tag === void 0) return;
+    var v_snippet_tag = v_connTabControl.snippet_tag;
+    var v_section = document.getElementById("omnidb__section_snippets");
+    if (!v_section || !v_section.classList.contains("omnidb__section--active")) return;
+    var v_inner_snippet_tag = v_snippet_tag.tabControl.selectedTab.tag;
+    var updateOuterSnippetLayout = new Promise((resolve) => {
+      setTimeout(function() {
+        var v_totalWidth = v_snippet_tag.divLayoutGrid.getBoundingClientRect().width;
+        var v_max_allowed_left_width = v_totalWidth - 50;
+        var v_div_left = v_snippet_tag.divLeft;
+        let v_left_pos_x = v_div_left.getBoundingClientRect().width;
+        if (p_left_pos_x) {
+          var v_div_left_offset = v_div_left.getBoundingClientRect().left;
+          v_left_pos_x = p_left_pos_x - v_div_left_offset;
         }
-        v_snippet_tag.isVisible = true;
-        v_element.style.transform = "translateY(-" + v_target_tag_div_result_top + "px)";
-      } else {
-        v_snippet_tag.isVisible = false;
-        v_element.style.transform = "translateY(0px)";
+        var v_pixel_value = v_left_pos_x > 50 && v_left_pos_x < v_max_allowed_left_width ? v_left_pos_x : 120;
+        var v_left_width_value = v_pixel_value + "px";
+        v_div_left.style["max-width"] = v_left_width_value;
+        v_div_left.style["flex"] = "0 0 " + v_left_width_value;
+        var v_div_left_width = v_snippet_tag.divLeft.getBoundingClientRect().width;
+        var v_div_right = v_snippet_tag.divRight;
+        var v_right_width_value = v_totalWidth - v_div_left_width + "px";
+        v_div_right.style["max-width"] = v_right_width_value;
+        v_div_right.style["flex"] = "0 0 " + v_right_width_value;
+        var v_panel_height = (
+          /** @type {HTMLElement} */
+          v_section.getBoundingClientRect().height
+        );
+        resolve(v_panel_height);
+      }, 0);
+    });
+    await updateOuterSnippetLayout.then(function(v_panel_height) {
+      if (v_inner_snippet_tag.editor !== void 0) {
+        v_snippet_tag.divTree.style.height = v_panel_height + "px";
+        v_inner_snippet_tag.editorDiv.style.height = v_panel_height - 7 * v_font_size + "px";
+        v_inner_snippet_tag.editor.resize();
       }
-      var v_snippet_tag = v_connTabControl.snippet_tag;
-      var v_inner_snippet_tag = v_snippet_tag.tabControl.selectedTab.tag;
-      var updateOuterSnippetLayout = new Promise((resolve) => {
-        setTimeout(function() {
-          var v_totalWidth = v_snippet_tag.divLayoutGrid.getBoundingClientRect().width;
-          var v_max_allowed_left_width = v_totalWidth - 50;
-          var v_div_left = v_snippet_tag.divLeft;
-          let v_left_pos_x = v_div_left.getBoundingClientRect().width;
-          if (p_left_pos_x) {
-            var v_div_left_offset = v_div_left.getBoundingClientRect().left;
-            v_left_pos_x = p_left_pos_x - v_div_left_offset;
-          }
-          var v_pixel_value = v_left_pos_x > 50 && v_left_pos_x < v_max_allowed_left_width ? v_left_pos_x : 120;
-          var v_left_width_value = v_pixel_value + "px";
-          v_div_left.style["max-width"] = v_left_width_value;
-          v_div_left.style["flex"] = "0 0 " + v_left_width_value;
-          var v_div_left_width = v_snippet_tag.divLeft.getBoundingClientRect().width;
-          var v_div_right = v_snippet_tag.divRight;
-          var v_right_width_value = v_totalWidth - v_div_left_width + "px";
-          v_div_right.style["max-width"] = v_right_width_value;
-          v_div_right.style["flex"] = "0 0 " + v_right_width_value;
-          let v_target_tag_div_result_top2 = 100;
-          if (v_connTabControl.selectedTab && v_connTabControl.selectedTab !== null) {
-            if (v_connTabControl.selectedTab.tag.tabControl) {
-              var v_target_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-              if (v_target_tag2.div_result) {
-                v_target_tag_div_result_top2 = v_target_tag2.div_result.getBoundingClientRect().height - 25;
-              } else {
-                v_target_tag_div_result_top2 = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-              }
-            } else {
-              v_target_tag_div_result_top2 = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-            }
-          } else {
-            v_target_tag_div_result_top2 = document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-          }
-          setTimeout(function() {
-            resolve(v_target_tag_div_result_top2);
-          }, 10);
-        }, 400);
-      });
-      await updateOuterSnippetLayout.then(function(v_target_tag_div_result_top2) {
-        if (v_inner_snippet_tag.editor !== void 0) {
-          if (v_snippet_tag.isVisible) {
-            v_snippet_tag.divPanel.style.transform = "translateY(-" + v_target_tag_div_result_top2 + "px)";
-          }
-          v_snippet_tag.divPanel.style.height = v_target_tag_div_result_top2 + "px";
-          v_snippet_tag.divTree.style.height = v_target_tag_div_result_top2 + "px";
-          v_inner_snippet_tag.editorDiv.style.height = v_target_tag_div_result_top2 - 7 * v_font_size + "px";
-          v_inner_snippet_tag.editor.resize();
-        }
-      });
-    }
+    });
   };
   function resizeTreeVertical(event2) {
     var v_verticalLine = document.createElement("div");
@@ -32976,6 +33015,7 @@
   });
   function refreshHeights(p_all) {
     setTimeout(function() {
+      if (!v_connTabControl.selectedTab) return;
       if (v_connections_data && v_connections_data.v_active) {
         v_connections_data.ht.render();
       }
@@ -33094,9 +33134,7 @@
     }
   }
   function showMenuNewTabOuter(e) {
-    if (!v_connTabControl.tag.connections || v_connTabControl.tag.connections.length === 0) {
-      startConnectionManagement();
-    } else {
+    {
       var v_option_list = [];
       if (v_connTabControl.tag.hooks.outerTabMenu.length > 0) {
         for (var i2 = 0; i2 < v_connTabControl.tag.hooks.outerTabMenu.length; i2++) {
@@ -33150,13 +33188,7 @@
                 }
               });
             })(i2);
-          v_option_list.push({
-            text: "Connections",
-            icon: "fas cm-all fa-plug",
-            submenu: {
-              elements: v_submenu_connection_list
-            }
-          });
+          v_option_list = v_option_list.concat(v_submenu_connection_list);
         } else {
           var v_group_list = [];
           for (var i2 = 0; i2 < v_connTabControl.tag.groups.length; i2++)
@@ -33256,13 +33288,7 @@
               };
               v_group_list.push(v_group_data);
             })(i2);
-          v_option_list.push({
-            text: "Connections",
-            icon: "fas cm-all fa-plug",
-            submenu: {
-              elements: v_group_list
-            }
-          });
+          v_option_list = v_option_list.concat(v_group_list);
         }
       }
       if (v_connTabControl.tag.remote_terminals.length > 0) {
@@ -33295,15 +33321,6 @@
         });
       }
       if (v_option_list.length > 0) {
-        v_option_list.unshift({
-          text: "New Connection",
-          icon: "fas cm-all fa-plug",
-          action: function() {
-            setTimeout(function() {
-              startConnectionManagement();
-            }, 0);
-          }
-        });
         customMenu(
           {
             x: e.clientX + 5,
@@ -33815,22 +33832,13 @@
         if (v_index == v_current_index) {
           if (v_index > 0) this.selectTabIndex(v_index - 1);
           else if (this.tabList[v_index + 1] != null) this.selectTabIndex(v_index + 1);
+          else {
+            this.selectedTab = null;
+            this.selectedDiv = null;
+            this.selectedA = null;
+          }
         }
         this.tabList.splice(this.tabList.indexOf(p_tab), 1);
-        if (this === v_connTabControl && // Checking if the removed tab belongs to the outer menu.
-        v_connTabControl.tabList.indexOf(v_connTabControl.selectedTab) === -1) {
-          var v_welcome_tab_index = false;
-          for (let i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
-            if (v_connTabControl.tabList[i2].tag) {
-              if (v_connTabControl.tabList[i2].tag.mode === "welcome") {
-                v_welcome_tab_index = i2;
-              }
-            }
-          }
-          if (v_welcome_tab_index) {
-            this.selectTabIndex(v_welcome_tab_index);
-          }
-        }
       },
       renameTab: function(p_tab, p_name) {
         var v_tab_title_span = p_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
@@ -35922,11 +35930,7 @@
   function bindAll(selector, type, handler) {
     document.querySelectorAll(selector).forEach((el2) => el2.addEventListener(type, handler));
   }
-  bind("omnidb__utilities-menu__link-connections", "click", () => startConnectionManagement());
-  bind("omnidb__utilities-menu__link-user", "click", () => listUsers());
-  bind("omnidb__utilities-menu__link-config", "click", () => showConfigUser());
-  bind("omnidb__utilities-menu__link-about", "click", () => showAbout());
-  bind("omnidb__utilities-menu__link-signout", "click", () => confirmSignout());
+  bind("button_open_users", "click", () => listUsers());
   bind("button_new_connection", "click", () => newConnection());
   bind("group_selector", "change", (e) => groupChange(
     /** @type {HTMLSelectElement} */
@@ -36022,6 +36026,7 @@
     createTabFunctions,
     monitoring,
     workspace,
+    sectionSwitcher,
     pluginHook,
     users,
     shortcuts,

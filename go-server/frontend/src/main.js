@@ -44,6 +44,7 @@ import * as editData from './tree_context_functions/edit_data.js'
 import * as createTabFunctions from './create_tab_functions.js'
 import * as monitoring from './monitoring.js'
 import * as workspace from './workspace.js'
+import * as sectionSwitcher from './section_switcher.js'
 import * as pluginHook from './plugin_hook.js'
 import * as users from './users.js'
 import * as shortcuts from './shortcuts.js'
@@ -95,6 +96,7 @@ exposeGlobals(
   createTabFunctions,
   monitoring,
   workspace,
+  sectionSwitcher,
   pluginHook,
   users,
   shortcuts,

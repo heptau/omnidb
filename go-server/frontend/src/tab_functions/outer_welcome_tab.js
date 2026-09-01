@@ -29,53 +29,18 @@ SOFTWARE.
 */
 
 import { endLoading } from "../ajax_control_bridge.js";
-import { beforeCloseTab } from "../create_tab_functions.js";
-import { customMenu } from "../custom_menu.js";
 import { refreshBootstrapTooltips } from "../workspace.js";
 
 
-export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
-	// Removing the last `add` tab
-	// v_connTabControl.removeLastTab();
-
-	var v_tab = v_connTabControl.createTab({
-		p_icon: '<i class="fas fa-hand-spock"></i>',
-		p_name: "Welcome",
-		p_selectFunction: function () {
-			document.title = "Welcome to OmniDB";
-			refreshBootstrapTooltips();
-		},
-		p_close: false, // Replacing default close icon with contextMenu.
-		p_closeFunction: function (e, p_tab) {
-			var v_this_tab = p_tab;
-			beforeCloseTab(e, function () {
-				v_this_tab.removeTab();
-			});
-		},
-		p_rightClickFunction: function (e) {
-			var v_option_list = [
-				{
-					text: '<p class=\"mb-0 text-danger\">Close Welcome Tab</p>',
-					action: function () {
-						if (v_tab.closeFunction != null) {
-							v_tab.closeFunction(e, v_tab);
-						}
-					},
-				},
-			];
-			customMenu(
-				{
-					x: e.clientX + 5,
-					y: e.clientY + 5,
-				},
-				v_option_list,
-				null,
-			);
-		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Welcome to OmniDB</h5>',
-	});
-
-	v_connTabControl.selectTab(v_tab);
+/**
+ * Builds the Welcome section's content once, at startup. Static content --
+ * unlike a v_connTabControl connection tab, there is only ever one of these,
+ * so it is rendered directly into #omnidb__section_welcome rather than
+ * through the tab-control engine (no tab object, no close button: the
+ * section nav is what switches away from it now).
+ */
+export function initWelcomeSection() {
+	var v_target = /** @type {HTMLElement} */ (document.getElementById("omnidb__section_welcome"));
 
 	var v_width = Math.ceil((300 / window.innerWidth) * 100);
 	var v_complement_width = 100 - v_width;
@@ -186,9 +151,7 @@ export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = 
 		'<div class="row">' +
 		'<div class="col-12">' +
 		// Welcome main block
-		'<div id="' +
-		v_tab.id +
-		'_welcome" class="omnidb__welcome" style="height: 100vh;display: flex;align-items: center;font-size: 1.2rem;justify-content: center;">' +
+		'<div id="welcome_content" class="omnidb__welcome" style="height: 100vh;display: flex;align-items: center;font-size: 1.2rem;justify-content: center;">' +
 		"<div>" +
 		// Title
 		v_html_title +
@@ -208,22 +171,9 @@ export var v_createWelcomeTabFunction = function (p_index, p_create_query_tab = 
 		"</div>" + //.row
 		"</div>";
 
-	v_tab.elementDiv.innerHTML = v_html;
-
-	var v_tag = {
-		tab_id: v_tab.id,
-		divWelcome: document.getElementById(v_tab.id + "_welcome"),
-		selectedDatabaseIndex: 0,
-		connTabControl: v_connTabControl,
-		mode: "welcome",
-	};
-
-	v_tab.tag = v_tag;
-
-	// Creating `Add` tab in the outer tab list
-	// v_connTabControl.createAddTab();
+	v_target.innerHTML = v_html;
 
 	refreshBootstrapTooltips();
 
 	endLoading();
-};
+}

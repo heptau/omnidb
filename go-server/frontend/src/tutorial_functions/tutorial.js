@@ -29,8 +29,10 @@ SOFTWARE.
 */
 
 import { startConnectionManagement } from "../connections.js";
+import { showConfigUser } from "../header_actions.js";
 import { createOmnisUiAssistant } from "../lib/omnis_ui_assistant/omnis-control.js";
 import { toggleSnippetPanel } from "../panel_functions/outer_snippet_panel.js";
+import { switchSection } from "../section_switcher.js";
 
 
 export function startTutorial(p_tutorial_name) {
@@ -70,56 +72,83 @@ export function startTutorial(p_tutorial_name) {
 	var v_tutorials = {
 		main: [
 			{
-				p_message:
-					"This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]",
-				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
-				p_title: "Primary menu",
+				p_message: `
+				<p>This is the navigation rail. It gives you access to every section of OmniDB:</p>
+				<ul>
+				<li><i class="fas fa-hand-spock omnidb__theme__text--primary mr-2"></i>Welcome, tutorials and useful links.</li>
+				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connections management.</li>
+				<li><i class="fas fa-book omnidb__theme__text--primary mr-2"></i>Snippets panel.</li>
+				<li><i class="fas fa-database omnidb__theme__text--primary mr-2"></i>Database (your open connections).</li>
+				</ul>
+				<p>At the bottom you'll also find <i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings, <i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About, and your <i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account.</p>
+				`,
+				p_target: document.getElementById("omnidb_section_nav"),
+				p_title: "Navigation Rail",
 			},
 			{
+				p_callback_end: function () {
+					/** @type {HTMLElement} */ (document.getElementById("omnidb_section_nav__account_menu")).classList.remove(
+						"omnidb__account-menu--open",
+					);
+				},
+				p_callback_start: function () {
+					/** @type {HTMLElement} */ (document.getElementById("omnidb_section_nav__account_menu")).classList.add(
+						"omnidb__account-menu--open",
+					);
+				},
+				p_clone_target: true,
 				p_message:
-					"This contains general settings and options, such as [ versioning, connections_list_manager, user_setting...]",
-				p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
-				p_title: "Utilities menu",
+					"Clicking the account icon at the bottom of the rail opens this popup: your OmniDB version, username, and a sign-out button.",
+				p_target: document.getElementById("omnidb_section_nav__account_menu"),
+				p_title: "Account",
+				p_update_delay: 350,
 			},
 		],
 		utilities_menu: [
 			{
-				p_callback_end: function () {
-					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
-				},
+				p_message: `
+				<p>General settings and account management live at the bottom of the navigation rail:</p>
+				<ul>
+				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings (shortcuts, theme, fonts, and -- for superusers -- account/user management).</li>
+				<li><i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About.</li>
+				<li><i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account (username, version, sign out).</li>
+				</ul>
+				<p>Please, click on the <i class="fas fa-cog"></i> Settings icon.</p>
+				`,
+				p_target: document.getElementById("omnidb_section_nav"),
+				p_title: "Navigation Rail",
+			},
+			{
 				p_callback_start: function () {
-					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
+					showConfigUser();
 				},
 				p_clone_target: true,
 				p_message: `
-				<p>Contains general settings and options:</p>
-				<ul>
-				<li>Username and versioning.</li>
-				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connection management.</li>
-				<li><i class="fas fa-user omnidb__theme__text--primary mr-2"></i>User management.</li>
-				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>UI settings (shortcuts, theme, fonts...).</li>
-				<li><i class="fas fa-sign-out-alt omnidb__theme__text--primary mr-2"></i>About.</li>
-				</ul>
+				<p>If you're a superuser, this Settings section has an <strong>Account</strong> tab.</p>
+				<p>Click on it.</p>
 				`,
-				p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
-				p_title: "Utilities Menu",
+				p_next_button: false,
+				p_target: function () {
+					var v_target = document.getElementById("config_account-tab");
+					return v_target;
+				},
+				p_title: "Settings",
 				p_update_delay: 350,
 			},
 			{
-				p_callback_end: function () {
-					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.remove("omnidb__utilities-menu--show");
-				},
-				p_callback_start: function () {
-					document.getElementsByClassName("omnidb__utilities-menu")[0].classList.add("omnidb__utilities-menu--show");
-				},
 				p_clone_target: true,
 				p_message: `
-				<p>If you just configured OmniDB and logged with the default <strong>admin</strong> user, you should create the first user.</p>
+				<p>If you just configured OmniDB and logged in with the default <strong>admin</strong> user, you should create a proper superuser (and later delete the default admin account).</p>
 				<p>Follow this walkthrough if you want to create other users as well.</p>
+				<p>Click on <strong>Manage Users</strong>.</p>
 				`,
 				p_next_button: false,
-				p_target: document.getElementById("omnidb__utilities-menu__link-user"),
+				p_target: function () {
+					var v_target = document.getElementById("button_open_users");
+					return v_target;
+				},
 				p_title: "Managing Users",
+				p_update_delay: 350,
 			},
 			{
 				p_callback_after_update_start: function () {
@@ -162,19 +191,18 @@ export function startTutorial(p_tutorial_name) {
 			{
 				p_clone_target: true,
 				p_message: `
-				<p>This is the outer connections menu. Each connection added becomes a new item in this menu.</p>
-				<p>The menu initially contains.</p>
+				<p>This is the navigation rail. It gives you access to:</p>
 				<ul>
 				<li>Connections manager.</li>
 				<li>Welcome, tutorial and useful links.</li>
-				<li>Snippets panel toggler.</li>
-				<li>Add connection.</li>
+				<li>Snippets panel.</li>
+				<li>Your open database connections.</li>
 				</ul>
 				<p>Let's first <span class="badge badge-info">add a new connection</span>.</p>
-				<p>Please, click on the <i class="fas fa-plus"></i> button.</p>
+				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon.</p>
 				`,
-				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
-				p_title: "Primary menu",
+				p_target: document.getElementById("omnidb_section_nav"),
+				p_title: "Navigation Rail",
 			},
 			{
 				p_callback_after_update_start: function () {
@@ -294,9 +322,9 @@ export function startTutorial(p_tutorial_name) {
 				p_clone_target: true,
 				p_message: `
 				<p>First let's open the <strong>connections management</strong> interface.</p>
-				<p>Please, click on the OmniDB Icon button.</p>
+				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon in the navigation rail.</p>
 				`,
-				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+				p_target: document.getElementById("omnidb_section_nav"),
 				p_title: "Accessing connections managemnet",
 			},
 			{
@@ -427,10 +455,10 @@ export function startTutorial(p_tutorial_name) {
 			{
 				p_clone_target: true,
 				p_message: `
-				<p>The snippet panel is now accessible globally.</p>
-				<p>Please, click on the <i class="fas fa-book"></i> button.</p>
+				<p>The snippet panel is now accessible globally, from the navigation rail.</p>
+				<p>Please, click on the <i class="fas fa-book"></i> icon.</p>
 				`,
-				p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+				p_target: document.getElementById("omnidb_section_nav"),
 				p_title: "Global Snippet Panel",
 			},
 			{
@@ -481,10 +509,21 @@ export function startTutorial(p_tutorial_name) {
 		selecting_connection: [
 			{
 				p_message: `
-				<p>The <strong>outer_tab</strong> contains global panels related to workspace and also access to created connections.</p>
+				<p>Your open connections live in the <strong>Database</strong> section.</p>
+				<p>Click on the <i class="fas fa-database"></i> Database icon in the navigation rail.</p>
+				`,
+				p_target: document.getElementById("omnidb_section_nav"),
+				p_title: "Navigation Rail",
+			},
+			{
+				p_callback_start: function () {
+					switchSection("database");
+				},
+				p_message: `
+				<p>Open connections are listed here as a strip of tabs, much like browser tabs.</p>
 				<ol style="padding-left: 1.5rem;">
 					<li class="mb-2">
-						To access a connection, click on the <i class="fas fa-plus"></i> button.
+						To open a connection, click on the <i class="fas fa-plus"></i> button.
 					</li>
 					<li class="mb-2">
 						Navigate to the proper technology on the custom menu.
@@ -504,10 +543,14 @@ export function startTutorial(p_tutorial_name) {
 					return v_target;
 				},
 				p_title: "Selecting a Connection",
+				p_update_delay: 350,
 			},
 		],
 		connection_tab: [
 			{
+				p_callback_start: function () {
+					switchSection("database");
+				},
 				p_message: `
 				<p>This identifies the database you are connected with:</p>
 				`,
@@ -516,6 +559,7 @@ export function startTutorial(p_tutorial_name) {
 					return v_target;
 				},
 				p_title: "Current Connection",
+				p_update_delay: 350,
 			},
 			{
 				p_message: `

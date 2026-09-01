@@ -33,7 +33,6 @@ SOFTWARE.
 /// </summary>
 
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
-import { startConnectionManagement } from "./connections.js";
 import { checkConsoleStatus } from "./console.js";
 import { initCreateTabFunctions } from "./create_tab_functions.js";
 import { customMenu } from "./custom_menu.js";
@@ -42,7 +41,9 @@ import { startMonitorDashboard } from "./monitoring.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { checkQueryStatus, escapeHtml, v_queryRequestCodes } from "./query.js";
+import { initSectionSwitcher, switchSection } from "./section_switcher.js";
 import { refreshOuterConnectionHeights } from "./tab_functions/outer_connection_tab.js";
+import { initWelcomeSection } from "./tab_functions/outer_welcome_tab.js";
 import { createTabControl } from "./tabs.js";
 import { checkEditDataStatus } from "./tree_context_functions/edit_data.js";
 import { getTreeMariadb } from "./tree_context_functions/tree_mariadb.js";
@@ -77,43 +78,38 @@ function initWorkspace() {
 	v_connTabControl.tag.change_active_database_call_list = [];
 	v_connTabControl.tag.change_active_database_call_running = false;
 
-	// Create the branding item for omnidb.
-	if (v_connTabControl.tabList.length === 0) {
-		// Creating the toggling button.
-		v_connTabControl.createTab({
-			p_icon: '<i class="fas fa-bars collapse-menu"></i>',
-			p_name: "Switch menu",
-			p_close: false,
-			p_selectable: false,
-			p_clickFunction: function (e) {
-				v_connTabControl.toggleTabMenu();
-				refreshHeights();
-			},
-		});
-	}
+	// v_connTabControl now only ever holds DB connection/terminal outer
+	// tabs -- Welcome/Connections/Snippets/Database/Settings/About live in
+	// the vertical section nav instead (section_switcher.js), and this
+	// control renders as a permanent horizontal strip inside the Database
+	// section. Hiding its menu once, here, reuses the existing
+	// ":not(container--menu-shown)" CSS in _topbar.scss -- which used to be
+	// what the (now removed) "Switch menu" toggle switched *to*.
+	v_connTabControl.hideTabMenu();
 
 	// Instantiating functions responsible for creating all the different types of tabs.
 	initCreateTabFunctions();
 
-	if (v_connTabControl.tabList.length === 1) {
-		// Creating the welcome tab.
-		v_connTabControl.tag.createWelcomeTab();
+	// Creating the welcome section content.
+	initWelcomeSection();
 
-		// Creating the connections tab.
-		v_connTabControl.createTab({
-			p_icon: '<i class="fas fa-plug"></i>',
-			p_name: "Connections",
-			p_close: false,
-			p_selectable: false,
-			p_omnidb_tooltip_name: '<h5 class="my-1">Manage Connections</h5>',
-			p_clickFunction: function (e) {
-				return startConnectionManagement();
-			},
-		});
+	// Creating the snippets section content.
+	v_connTabControl.tag.createSnippetPanel();
 
-		// Creating the snippets panel.
-		v_connTabControl.tag.createSnippetPanel();
-	}
+	// Creating the vertical section nav (Welcome/Connections/Snippets/
+	// Database/Settings/About).
+	initSectionSwitcher();
+
+	// Showing the Database section *before* getDatabaseList() below
+	// restores any previously-open connection tabs -- outer_connection_tab.js
+	// and its inner Query/Console tabs size themselves against their own
+	// container's real, laid-out dimensions as they're created, which only
+	// exist once #omnidb__section_database is the visible (not
+	// display:none) section. This whole restore happens synchronously
+	// enough that it stays behind the full-page #div_loading overlay
+	// (started before this bundle even runs, ended at getDatabaseList's
+	// callback below), so there is nothing for the user to see either way.
+	switchSection("database");
 
 	// Updating explain component choice.
 	updateExplainComponent();
@@ -125,6 +121,12 @@ function initWorkspace() {
 	getDatabaseList(true, function () {
 		// Creating `Add` tab in the outer tab list.
 		v_connTabControl.createAddTab();
+
+		// Nothing was restored -- land on Welcome instead of an empty
+		// Database section.
+		if (v_connTabControl.tabList.length === 0) {
+			switchSection("welcome");
+		}
 	});
 
 	// Creating omnis.
@@ -579,115 +581,61 @@ export function removeTab(p_tab) {
 }
 
 /// <summary>
-/// Resize snippet panel and transforms position when its visible.
+/// Resizes the snippets section's tree/editor split. Snippets is a
+/// full-screen section now (see section_switcher.js), not a slide-in
+/// overlay, so this only sizes the tree/editor divs to fill it -- no more
+/// computing how far to peek above the underlying connection view.
 /// </summary>
 /** @param {number|false} [p_left_pos_x] */
 export var resizeSnippetPanel = async function (p_left_pos_x = false) {
-	if (v_connTabControl.snippet_tag !== undefined) {
-		var v_element = v_connTabControl.snippet_tag.divPanel;
-		var v_snippet_tag = v_connTabControl.snippet_tag;
-		if (v_element.classList.contains("omnidb__panel--slide-in")) {
-			// Getting the selected tab
-			var v_selected_tab = v_connTabControl.selectedTab;
-			// Setting a default max top position for the toggling event.
-			var v_target_tag_div_result_top = 30;
-			// Updating the max top position considering if a tab is selected.
-			if (v_connTabControl.selectedTab && v_connTabControl.selectedTab !== null) {
-				if (v_connTabControl.selectedTab.tag.tabControl) {
-					var v_target_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-					if (v_target_tag.div_result) {
-						v_target_tag_div_result_top = v_target_tag.div_result.getBoundingClientRect().height - 25;
-					} else {
-						v_target_tag_div_result_top =
-							document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-					}
-				} else {
-					v_target_tag_div_result_top =
-						document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-				}
-			} else {
-				v_target_tag_div_result_top =
-					document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
+	if (v_connTabControl.snippet_tag === undefined) return;
+
+	var v_snippet_tag = v_connTabControl.snippet_tag;
+	var v_section = document.getElementById("omnidb__section_snippets");
+	if (!v_section || !v_section.classList.contains("omnidb__section--active")) return;
+
+	var v_inner_snippet_tag = v_snippet_tag.tabControl.selectedTab.tag;
+
+	var updateOuterSnippetLayout = new Promise((resolve) => {
+		setTimeout(function () {
+			var v_totalWidth = v_snippet_tag.divLayoutGrid.getBoundingClientRect().width;
+			var v_max_allowed_left_width = v_totalWidth - 50;
+			var v_div_left = v_snippet_tag.divLeft;
+
+			let v_left_pos_x = v_div_left.getBoundingClientRect().width;
+			if (p_left_pos_x) {
+				var v_div_left_offset = v_div_left.getBoundingClientRect().left;
+				v_left_pos_x = p_left_pos_x - v_div_left_offset;
 			}
 
-			v_snippet_tag.isVisible = true;
-			v_element.style.transform = "translateY(-" + v_target_tag_div_result_top + "px)";
-		} else {
-			v_snippet_tag.isVisible = false;
-			v_element.style.transform = "translateY(0px)";
+			var v_pixel_value = v_left_pos_x > 50 && v_left_pos_x < v_max_allowed_left_width ? v_left_pos_x : 120;
+
+			var v_left_width_value = v_pixel_value + "px";
+
+			v_div_left.style["max-width"] = v_left_width_value;
+			v_div_left.style["flex"] = "0 0 " + v_left_width_value;
+
+			var v_div_left_width = v_snippet_tag.divLeft.getBoundingClientRect().width;
+
+			var v_div_right = v_snippet_tag.divRight;
+			var v_right_width_value = v_totalWidth - v_div_left_width + "px";
+
+			v_div_right.style["max-width"] = v_right_width_value;
+			v_div_right.style["flex"] = "0 0 " + v_right_width_value;
+
+			var v_panel_height = /** @type {HTMLElement} */ (v_section).getBoundingClientRect().height;
+
+			resolve(v_panel_height);
+		}, 0);
+	});
+
+	await updateOuterSnippetLayout.then(function (v_panel_height) {
+		if (v_inner_snippet_tag.editor !== undefined) {
+			v_snippet_tag.divTree.style.height = v_panel_height + "px";
+			v_inner_snippet_tag.editorDiv.style.height = v_panel_height - 7 * v_font_size + "px";
+			v_inner_snippet_tag.editor.resize();
 		}
-
-		var v_snippet_tag = v_connTabControl.snippet_tag;
-		var v_inner_snippet_tag = v_snippet_tag.tabControl.selectedTab.tag;
-
-		var updateOuterSnippetLayout = new Promise((resolve) => {
-			setTimeout(function () {
-				var v_totalWidth = v_snippet_tag.divLayoutGrid.getBoundingClientRect().width;
-				var v_max_allowed_left_width = v_totalWidth - 50;
-				var v_div_left = v_snippet_tag.divLeft;
-
-				let v_left_pos_x = v_div_left.getBoundingClientRect().width;
-				if (p_left_pos_x) {
-					var v_div_left_offset = v_div_left.getBoundingClientRect().left;
-					v_left_pos_x = p_left_pos_x - v_div_left_offset;
-				}
-
-				var v_pixel_value = v_left_pos_x > 50 && v_left_pos_x < v_max_allowed_left_width ? v_left_pos_x : 120;
-
-				var v_left_width_value = v_pixel_value + "px";
-
-				v_div_left.style["max-width"] = v_left_width_value;
-				v_div_left.style["flex"] = "0 0 " + v_left_width_value;
-
-				var v_div_left_width = v_snippet_tag.divLeft.getBoundingClientRect().width;
-
-				var v_div_right = v_snippet_tag.divRight;
-				var v_right_width_value = v_totalWidth - v_div_left_width + "px";
-
-				v_div_right.style["max-width"] = v_right_width_value;
-				v_div_right.style["flex"] = "0 0 " + v_right_width_value;
-
-				let v_target_tag_div_result_top = 100;
-
-				// Updating the max top position considering if a tab is selected.
-				if (v_connTabControl.selectedTab && v_connTabControl.selectedTab !== null) {
-					if (v_connTabControl.selectedTab.tag.tabControl) {
-						var v_target_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-						if (v_target_tag.div_result) {
-							v_target_tag_div_result_top = v_target_tag.div_result.getBoundingClientRect().height - 25;
-						} else {
-							v_target_tag_div_result_top =
-								document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-						}
-					} else {
-						v_target_tag_div_result_top =
-							document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-					}
-				} else {
-					v_target_tag_div_result_top =
-						document.getElementsByClassName("omnidb__main")[0].getBoundingClientRect().height - 25;
-				}
-
-				// Wait for containers animations.
-				setTimeout(function () {
-					resolve(v_target_tag_div_result_top);
-				}, 10);
-			}, 400);
-		});
-
-		await updateOuterSnippetLayout.then(function (v_target_tag_div_result_top) {
-			// Updating the inner_sinnpet_tag divs size.
-			if (v_inner_snippet_tag.editor !== undefined) {
-				if (v_snippet_tag.isVisible) {
-					v_snippet_tag.divPanel.style.transform = "translateY(-" + v_target_tag_div_result_top + "px)";
-				}
-				v_snippet_tag.divPanel.style.height = v_target_tag_div_result_top + "px";
-				v_snippet_tag.divTree.style.height = v_target_tag_div_result_top + "px";
-				v_inner_snippet_tag.editorDiv.style.height = v_target_tag_div_result_top - 7 * v_font_size + "px";
-				v_inner_snippet_tag.editor.resize();
-			}
-		});
-	}
+	});
 };
 
 /// <summary>
@@ -890,6 +838,11 @@ export function refreshHeights(p_all) {
 		//   refreshTreeHeight();
 		// }
 
+		// No open connection/terminal tab (e.g. the Database section is
+		// empty, or another section is active) -- nothing below this point
+		// applies.
+		if (!v_connTabControl.selectedTab) return;
+
 		if (v_connections_data && v_connections_data.v_active) {
 			v_connections_data.ht.render();
 		}
@@ -1059,12 +1012,10 @@ export function indentSQL(p_mode = false) {
 }
 
 export function showMenuNewTabOuter(e) {
-	// Opening connections management when there are no configured connections.
-	if (!v_connTabControl.tag.connections || v_connTabControl.tag.connections.length === 0) {
-		startConnectionManagement();
-	}
-	// Creating a custom menu for new outter connections.
-	else {
+	// Popup listing existing connections/terminals to open as a new tab.
+	// Creating a *new* connection is handled by the Connections section now
+	// (see section_switcher.js), not from here.
+	{
 		var v_option_list = [];
 		//Hooks
 		if (v_connTabControl.tag.hooks.outerTabMenu.length > 0) {
@@ -1125,13 +1076,10 @@ export function showMenuNewTabOuter(e) {
 						});
 					})(i);
 
-				v_option_list.push({
-					text: "Connections",
-					icon: "fas cm-all fa-plug",
-					submenu: {
-						elements: v_submenu_connection_list,
-					},
-				});
+				// Flattened directly into the menu -- this popup only ever
+				// lists connections, so a redundant "Connections" wrapper
+				// node around all of them added nothing.
+				v_option_list = v_option_list.concat(v_submenu_connection_list);
 			}
 			//Render connections split in groups
 			else {
@@ -1241,13 +1189,10 @@ export function showMenuNewTabOuter(e) {
 						v_group_list.push(v_group_data);
 					})(i);
 
-				v_option_list.push({
-					text: "Connections",
-					icon: "fas cm-all fa-plug",
-					submenu: {
-						elements: v_group_list,
-					},
-				});
+				// Each group stays its own submenu (the group name is real
+				// information), just not additionally nested under a
+				// redundant outer "Connections" node.
+				v_option_list = v_option_list.concat(v_group_list);
 			}
 		}
 
@@ -1284,16 +1229,6 @@ export function showMenuNewTabOuter(e) {
 		}
 
 		if (v_option_list.length > 0) {
-			v_option_list.unshift({
-				text: "New Connection",
-				icon: "fas cm-all fa-plug",
-				action: function () {
-					setTimeout(function () {
-						startConnectionManagement();
-					}, 0);
-				},
-			});
-
 			customMenu(
 				{
 					x: e.clientX + 5,

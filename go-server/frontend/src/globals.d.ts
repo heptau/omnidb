@@ -123,6 +123,8 @@ declare let v_keyword_case: string;
 declare let v_autocomplete_disabled_types: string;
 declare let v_show_terminal_option: boolean;
 declare let gv_desktopMode: boolean;
+declare let v_user_name: string;
+declare let v_short_version: string;
 
 // --- reachable across a bundle boundary ------------------------------------
 //

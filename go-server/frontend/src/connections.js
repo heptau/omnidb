@@ -35,6 +35,7 @@ SOFTWARE.
 import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
+import { switchSection } from "./section_switcher.js";
 import { getDatabaseList } from "./workspace.js";
 
 // The connection-management markup is always present in workspace.html, so
@@ -70,7 +71,7 @@ export function startConnectionManagement() {
 	showConnectionList(true, true);
 }
 
-export function showConnectionList(p_open_modal, p_change_group) {
+export function showConnectionList(p_show_section, p_change_group) {
 	var v_conn_id_list = [];
 	var v_total_public_conn = 0;
 
@@ -326,8 +327,8 @@ export function showConnectionList(p_open_modal, p_change_group) {
 			v_target_div.innerHTML = "";
 			v_target_div.appendChild(v_container);
 
-			if (p_open_modal) {
-				bootstrap.Modal.getOrCreateInstance(el("modal_connections")).show();
+			if (p_show_section) {
+				switchSection("connections");
 			}
 
 			if (p_change_group) {
@@ -934,7 +935,7 @@ export function newConnection() {
 }
 
 export function selectConnection(p_conn_obj) {
-	bootstrap.Modal.getOrCreateInstance(el("modal_connections")).hide();
+	switchSection("database");
 	if (p_conn_obj.technology === "terminal") {
 		v_connTabControl.tag.createOuterTerminalTab(
 			p_conn_obj.id,

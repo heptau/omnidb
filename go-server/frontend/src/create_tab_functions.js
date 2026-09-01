@@ -40,24 +40,24 @@ import { v_createQueryTabFunction } from "./tab_functions/inner_query_tab.js";
 import { v_createSnippetTextTabFunction } from "./tab_functions/inner_snippet_tab.js";
 import { v_createConnTabFunction } from "./tab_functions/outer_connection_tab.js";
 import { v_createOuterTerminalTabFunction } from "./tab_functions/outer_terminal_tab.js";
-import { v_createWelcomeTabFunction } from "./tab_functions/outer_welcome_tab.js";
 import { v_createWebsiteOuterTabFunction, v_createWebsiteTabFunction } from "./tab_functions/website_tab.js";
 import { showMenuNewTabOuter } from "./workspace.js";
 
 
 export function initCreateTabFunctions() {
-	// Functions to create a default `add` tab
+	// Functions to create a default `add` tab -- compact (icon only, tooltip
+	// carries the label) so it doesn't read as just another connection tab.
 	v_connTabControl.createAddTab = function () {
-		v_connTabControl.createTab({
+		var v_tab = v_connTabControl.createTab({
 			p_icon: '<i class="fas fa-plus"></i>',
-			p_name: "Add Connection",
 			p_close: false,
 			p_selectable: false,
 			p_clickFunction: function (e) {
 				showMenuNewTabOuter(e);
 			},
-			p_omnidb_tooltip_name: '<h5 class="my-1">Add/Select Connections</h5>',
+			p_omnidb_tooltip_name: '<h5 class="my-1">Add Connection</h5>',
 		});
+		v_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 	};
 
 	// Functions to create tabs globally
@@ -70,9 +70,6 @@ export function initCreateTabFunctions() {
 
 	// Functions to create tabs inside snippet panel
 	v_connTabControl.tag.createSnippetTextTab = v_createSnippetTextTabFunction;
-
-	// Functions to create welcome tab globally
-	v_connTabControl.tag.createWelcomeTab = v_createWelcomeTabFunction;
 
 	// Functions to create tabs inside a connection tab
 	v_connTabControl.tag.createQueryTab = v_createQueryTabFunction;

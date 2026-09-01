@@ -50,11 +50,13 @@ func (a *App) buildMenu() *menu.Menu {
 	// (Run Query, Indent, ...), and plain Cmd+<letter> already means
 	// something fixed system-wide (Cmd+C copy, Cmd+S save, Cmd+M minimize) —
 	// overriding those natively would be surprising. Shift avoids both.
+	// Same order as the vertical section-nav rail (section_switcher.js):
+	// Welcome, Connections, Snippets, Database.
 	viewMenu := menu.NewMenu()
+	viewMenu.AddText("Welcome", keys.Combo("w", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('welcome')"))
 	viewMenu.AddText("Connections", keys.Combo("c", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("startConnectionManagement()"))
 	viewMenu.AddText("Snippets", keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("toggleSnippetPanel()"))
-	viewMenu.AddSeparator()
-	viewMenu.AddText("Switch Menu", keys.Combo("m", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("v_connTabControl.toggleTabMenu(); refreshHeights();"))
+	viewMenu.AddText("Database", keys.Combo("d", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('database')"))
 	viewMenu.AddSeparator()
 	viewMenu.AddText("Toggle Database Tree", keys.CmdOrCtrl("b"), a.execJS("toggleTreeContainer()"))
 	viewMenu.AddText("Toggle Properties/DDL Panel", keys.Combo("b", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS(

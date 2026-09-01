@@ -34,6 +34,7 @@ SOFTWARE.
 
 import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm } from "./notification_control.js";
+import { switchSection } from "./section_switcher.js";
 import { v_current_os } from "./shortcuts.js";
 import { refreshHeights } from "./workspace.js";
 
@@ -304,17 +305,6 @@ export function applyEditorTabSize() {
 }
 
 export function showConfigUser() {
-	if (/** @type {HTMLElement} */ (document.getElementById("modal_config")).classList.contains("show")) {
-		// Already open — creating and showing ANOTHER bootstrap.Modal
-		// instance for the same element doesn't no-op the way calling
-		// .modal("show") twice through jQuery does: this element's
-		// "shown" state lives on the instance that opened it, and a
-		// brand-new instance has no idea a different instance already
-		// has it visible, so it happily reruns the whole show transition
-		// and stacks a second backdrop on top of the first.
-		return;
-	}
-
 	/** @type {HTMLInputElement} */ (document.getElementById("sel_interface_font_size")).value = String(v_font_size);
 	// document.getElementById('sel_editor_theme').value = v_theme;
 
@@ -360,11 +350,7 @@ export function showConfigUser() {
 		typeCheckboxes[i].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i].value) === -1;
 	}
 
-	// keyboard: true (unlike backdrop: "static", kept as-is) lets Esc close
-	// this dialog like Cancel would — clicking outside still won't, so an
-	// accidental stray click can't lose whatever you were about to change.
-	var configModal = new bootstrap.Modal(document.getElementById("modal_config"), { backdrop: "static", keyboard: true });
-	configModal.show();
+	switchSection("settings");
 }
 
 /// <summary>
@@ -389,8 +375,10 @@ export function confirmSignout() {
 /// Shows website in outer tab.
 /// </summary>
 export function showWebsite(p_name, p_url) {
-	if (v_connTabControl)
+	if (v_connTabControl) {
 		bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_about"))).hide();
+		switchSection("database");
+	}
 	v_connTabControl.tag.createWebsiteOuterTab(p_name, p_url);
 }
 
@@ -440,7 +428,6 @@ export function saveConfigUser() {
 		});
 
 		execAjax("/save_config_user/", input, function (p_return) {
-			bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_config"))).hide();
 			showAlert("Configuration saved.");
 			applyEditorTabSize();
 		});

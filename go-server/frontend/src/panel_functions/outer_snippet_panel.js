@@ -30,96 +30,70 @@ SOFTWARE.
 
 import { createTabControl } from "../tabs.js";
 import { getTreeSnippets } from "../tree_context_functions/tree_snippets.js";
+import { switchSection } from "../section_switcher.js";
 import { resizeSnippetHorizontal, resizeSnippetPanel, showMenuNewTab } from "../workspace.js";
 
-/** @param {boolean|"visible"|"hidden"} [p_set_state] */
-export var toggleSnippetPanel = function (p_set_state = false) {
-	var v_element = v_connTabControl.snippet_tag.divPanel;
-	var v_snippet_tag = v_connTabControl.snippet_tag;
-
-	let v_set_state = p_set_state;
-	if (v_set_state === "visible") {
-		v_element.classList.add("omnidb__panel--slide-in");
-	} else if (v_set_state === "hidden") {
-		v_element.classList.remove("omnidb__panel--slide-in");
-	} else {
-		v_element.classList.toggle("omnidb__panel--slide-in");
-	}
-
+/**
+ * Snippets is a full-screen section now (see section_switcher.js), not a
+ * slide-in overlay -- this just switches to it. Kept as a named export,
+ * rather than inlined at call sites, because the native Wails "Snippets"
+ * menu item and the onboarding tutorial both still call it by this name.
+ */
+export function toggleSnippetPanel() {
+	switchSection("snippets");
 	resizeSnippetPanel();
-};
+}
+
+// Fixed ids: unlike a v_connTabControl connection tab, there is only ever
+// one snippet panel instance, so it does not need a unique-per-tab prefix.
+var SNIPPET_PANEL_ID = "snippets_panel";
 
 export var v_createSnippetPanelFunction = function (p_index) {
-	// v_connTabControl.removeLastTab();
-
-	var v_tab = v_connTabControl.createTab({
-		p_icon: `<i class="fas fa-book"></i>`,
-		p_name: `Snippets`,
-		p_close: false,
-		p_selectable: false,
-		p_clickFunction: function () {
-			toggleSnippetPanel();
-		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Snippets Panel</h5>',
-	});
-
-	v_connTabControl.selectTab(v_tab);
-
 	var v_html =
 		"<div id='" +
-		v_tab.id +
-		"_panel_snippet' class='omnidb__panel omnidb__panel--snippet'>" +
-		"<button id='bt_toggle_snippet_panel_" +
-		v_tab.id +
-		"' type='button' class='px-4 btn omnidb__theme__btn--secondary omnidb__panel__toggler'><i class='fas fa-arrows-alt-v'></i></button>" +
+		SNIPPET_PANEL_ID +
+		"' class='omnidb__snippets__panel h-100'>" +
 		"<div class='container-fluid h-100' style='position: relative;'>" +
 		"<div id='" +
-		v_tab.id +
-		"_snippet_div_layout_grid' class='d-flex h-100'>" +
+		SNIPPET_PANEL_ID +
+		"_div_layout_grid' class='d-flex h-100'>" +
 		"<div id='" +
-		v_tab.id +
-		"_snippet_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0;'>" +
+		SNIPPET_PANEL_ID +
+		"_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0;'>" +
 		"<div class='h-100'>" +
 		"<div class='omnidb__snippets__content-left h-100 d-flex flex-column'>" +
 		"<div id='" +
-		v_tab.id +
-		"_snippet_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
+		SNIPPET_PANEL_ID +
+		"_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
 		"</div>" +
 		"</div>" +
 		"<div id='snippet_resize_line_" +
-		v_tab.id +
+		SNIPPET_PANEL_ID +
 		"' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div>" +
 		"</div>" + //.div_left
 		"<div id='" +
-		v_tab.id +
-		"_snippet_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'>" +
+		SNIPPET_PANEL_ID +
+		"_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'>" +
 		"<div id='" +
-		v_tab.id +
-		"_snippet_tabs' class='w-100'></div>" +
+		SNIPPET_PANEL_ID +
+		"_tabs' class='w-100'></div>" +
 		"</div>" + //.div_right
 		"</div>" + //.d-flex
 		"</div>" + //.container-fluid
 		"</div>";
 
-	v_connTabControl.snippet_div = document.createElement("div");
-	v_connTabControl.snippet_div.id = v_tab.id + "_snippet";
-	v_connTabControl.snippet_div.innerHTML = v_html;
-	/** @type {HTMLElement} */ (document.getElementById(v_connTabControl.id)).append(v_connTabControl.snippet_div);
+	var v_target = /** @type {HTMLElement} */ (document.getElementById("omnidb__section_snippets"));
+	v_target.innerHTML = v_html;
 
-	// Bindings for the panel toggler and the resize line just built above,
-	// replacing the on*= attributes they carried -- see dom_event_bindings.js and
-	// README.md. Both elements needed an id; they had none.
-	/** @type {HTMLElement} */ (document.getElementById("bt_toggle_snippet_panel_" + v_tab.id)).addEventListener(
-		"click",
-		() => toggleSnippetPanel(),
-	);
-	/** @type {HTMLElement} */ (document.getElementById("snippet_resize_line_" + v_tab.id)).addEventListener(
+	// Binding for the resize line just built above, replacing the on*=
+	// attribute it carried -- see dom_event_bindings.js and README.md.
+	/** @type {HTMLElement} */ (document.getElementById("snippet_resize_line_" + SNIPPET_PANEL_ID)).addEventListener(
 		"mousedown",
 		(event) => resizeSnippetHorizontal(event),
 	);
 
 	var v_currTabControl = createTabControl({
-		p_div: v_tab.id + "_snippet_tabs",
+		p_div: SNIPPET_PANEL_ID + "_tabs",
 		p_hierarchy: "secondary",
 	});
 
@@ -133,20 +107,18 @@ export var v_createSnippetPanelFunction = function (p_index) {
 	});
 
 	var v_tag = {
-		tab_id: v_tab.id,
+		tab_id: SNIPPET_PANEL_ID,
 		tabControl: v_currTabControl,
 		tabTitle: "teste",
-		divLayoutGrid: document.getElementById(v_tab.id + "_snippet_div_layout_grid"),
-		divLeft: document.getElementById(v_tab.id + "_snippet_div_left"),
-		divPanel: document.getElementById(v_tab.id + "_panel_snippet"),
-		divRight: document.getElementById(v_tab.id + "_snippet_div_right"),
-		divTree: /** @type {HTMLElement} */ (document.getElementById(v_tab.id + "_snippet_tree")),
+		divLayoutGrid: document.getElementById(SNIPPET_PANEL_ID + "_div_layout_grid"),
+		divLeft: document.getElementById(SNIPPET_PANEL_ID + "_div_left"),
+		divPanel: document.getElementById(SNIPPET_PANEL_ID),
+		divRight: document.getElementById(SNIPPET_PANEL_ID + "_div_right"),
+		divTree: /** @type {HTMLElement} */ (document.getElementById(SNIPPET_PANEL_ID + "_tree")),
 		connTabControl: v_connTabControl,
 		isVisible: false,
 		mode: "snippets",
 	};
-
-	v_tab.tag = v_tag;
 
 	v_connTabControl.snippet_tag = v_tag;
 

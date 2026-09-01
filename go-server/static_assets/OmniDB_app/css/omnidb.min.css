@@ -805,6 +805,8 @@ iframe {
   width: 100vw;
   height: 100vh;
   overflow: hidden;
+  display: flex;
+  flex-direction: row;
 }
 
 .btn,
@@ -5836,6 +5838,207 @@ textarea {
 .omnidb__tab-menu--container--menu-shown .nav-item:last-child .omnidb__tab-menu__link,
 .omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link:last-child {
   padding-left: 12px !important;
+}
+
+/* --- Vertical section-nav bar + full-screen sections (VSCode-style redesign) ---
+ *
+ * #omnidb_section_nav uses its own tabControl hierarchy ("sectionnav"),
+ * deliberately not "primary" -- that keeps it out of reach of every rule
+ * above, which all exist for v_connTabControl (hierarchy "primary"). That
+ * control now permanently stays in its ":not(container--menu-shown)"
+ * (horizontal) state via v_connTabControl.hideTabMenu() in workspace.js, so
+ * the "container--menu-shown" (vertical sidebar) branch above is dead code
+ * for it now -- left in place rather than deleted, since hand-deleting a
+ * large !important block is exactly the kind of edit that quietly breaks
+ * the sibling branch you meant to keep.
+ */
+#omnidb_section_nav.omnidb__tab-menu--container--sectionnav {
+  display: flex !important;
+  flex-direction: column !important;
+  width: 52px !important;
+  min-width: 52px !important;
+  max-width: 52px !important;
+  height: 100vh !important;
+  background-color: var(--sidebar-bg) !important;
+  border-right: 1px solid var(--border-color) !important;
+  flex-shrink: 0 !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu--sectionnav {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  overflow: visible !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu--sectionnav > nav {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+}
+
+#omnidb_section_nav .omnidb__tab-content--sectionnav {
+  display: none !important;
+}
+
+#omnidb_section_nav .nav-tabs {
+  background-color: transparent !important;
+  border-bottom: none !important;
+  padding: 4px 0 !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+  flex-wrap: nowrap !important;
+}
+
+#omnidb_section_nav .omnidb__section-nav__spacer {
+  flex: 1 1 auto !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link {
+  width: 40px !important;
+  height: 40px !important;
+  min-width: 0 !important;
+  border-radius: 0 !important;
+  border: none !important;
+  margin: 1px 0 !important;
+  padding: 0 !important;
+  background-color: transparent !important;
+  color: var(--text-secondary) !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link:hover {
+  color: var(--text-primary) !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link.active {
+  background-color: transparent !important;
+  color: var(--accent-color) !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link.active * {
+  color: var(--accent-color) !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link-name {
+  display: none !important;
+}
+
+#omnidb_section_nav .omnidb__menu__btn.omnidb__tab-menu__link-icon {
+  background-color: transparent !important;
+  border-radius: 0 !important;
+  width: auto !important;
+  height: auto !important;
+  overflow: visible !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link-icon {
+  font-size: 2rem !important;
+  color: inherit !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link-icon i {
+  color: inherit !important;
+}
+
+#omnidb_section_nav .omnidb__tab-menu__link-close {
+  display: none !important;
+}
+
+.omnidb__account-menu {
+  position: fixed;
+  left: 56px;
+  bottom: 8px;
+  z-index: 2000;
+  min-width: 200px;
+  background-color: var(--panel-bg);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
+  padding: 10px;
+  display: none;
+}
+
+.omnidb__account-menu--open {
+  display: block;
+}
+
+.omnidb__account-menu__version,
+.omnidb__account-menu__username {
+  color: var(--text-secondary);
+  font-size: 13px;
+  margin-bottom: 4px;
+}
+
+/* Full-screen sections: exactly one visible at a time, filling everything
+ * to the right of the vertical nav bar. */
+.omnidb__section {
+  display: none;
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 100vh;
+  overflow: auto;
+  background-color: var(--app-bg);
+}
+
+.omnidb__section--active {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.omnidb__section__header {
+  padding: 16px 24px;
+  border-bottom: 1px solid var(--border-color);
+  flex: 0 0 auto;
+}
+
+.omnidb__section__body {
+  padding: 24px;
+  overflow: auto;
+  flex: 1 1 auto;
+}
+
+/* #omnidb_main_tablist (v_connTabControl) lives inside
+ * #omnidb__section_database and reuses the ":not(container--menu-shown)"
+ * horizontal-strip styling above -- that used to be what "Switch menu"
+ * toggled *to*. It only needs a width fix: that CSS assumed
+ * #omnidb_main_tablist was a direct, full-viewport-width child of
+ * #omnidb__main, and it now sits inside the (narrower) Database section. */
+#omnidb_main_tablist.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) {
+  flex: 1 1 auto !important;
+  min-height: 0 !important;
+}
+
+#omnidb_main_tablist.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) > .omnidb__tab-menu--primary {
+  width: 100% !important;
+}
+
+/* The trailing "+" Add Connection tab -- compact (icon only, no label),
+ * unlike every actual connection tab beside it which keeps the shared
+ * min-width so its alias text has room. Higher specificity (id + class)
+ * than the shared min-width rule above on purpose, rather than relying on
+ * source order. */
+#omnidb_main_tablist .omnidb__tab-menu__link--compact {
+  min-width: 0 !important;
+  width: 40px !important;
+  flex: 0 0 40px !important;
+  padding: 0 !important;
+  justify-content: center !important;
+}
+
+/* Snippets section body (was the slide-in .omnidb__panel overlay). */
+.omnidb__snippets__panel {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
 }
 
 

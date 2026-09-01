@@ -256,34 +256,20 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			if (v_index == v_current_index) {
 				if (v_index > 0) this.selectTabIndex(v_index - 1);
 				else if (this.tabList[v_index + 1] != null) this.selectTabIndex(v_index + 1);
+				else {
+					// No other tab left to fall back to -- clear the
+					// selection rather than leaving it pointing at the tab
+					// object we are about to remove from tabList below, now
+					// detached from the DOM. Callers (e.g. workspace.js's
+					// refreshHeights) check for this to detect the empty
+					// state.
+					this.selectedTab = null;
+					this.selectedDiv = null;
+					this.selectedA = null;
+				}
 			}
 
 			this.tabList.splice(this.tabList.indexOf(p_tab), 1);
-
-			// When there are not outer tabs left to select, need to search and select or create a welcome tab.
-			if (
-				this === v_connTabControl && // Checking if the removed tab belongs to the outer menu.
-				v_connTabControl.tabList.indexOf(v_connTabControl.selectedTab) === -1 // Checking if there are no other tabs to select.
-			) {
-				// Looking for a welcome tab
-				/** @type {number|false} */
-				var v_welcome_tab_index = false;
-				for (let i = 0; i < v_connTabControl.tabList.length; i++) {
-					if (v_connTabControl.tabList[i].tag) {
-						if (v_connTabControl.tabList[i].tag.mode === "welcome") {
-							v_welcome_tab_index = i;
-						}
-					}
-				}
-
-				if (v_welcome_tab_index) {
-					this.selectTabIndex(v_welcome_tab_index);
-				}
-				// Not forcing user to have a welcome tab.
-				// else {
-				//   v_connTabControl.tag.createWelcomeTab();
-				// }
-			}
 		},
 		renameTab: function (p_tab, p_name) {
 			var v_tab_title_span = p_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
