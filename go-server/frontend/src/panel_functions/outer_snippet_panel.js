@@ -59,7 +59,7 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"_div_layout_grid' class='d-flex h-100'>" +
 		"<div id='" +
 		SNIPPET_PANEL_ID +
-		"_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0;'>" +
+		"_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'>" +
 		"<div class='h-100'>" +
 		"<div class='omnidb__snippets__content-left h-100 d-flex flex-column'>" +
 		"<div id='" +
@@ -67,6 +67,14 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
 		"</div>" +
 		"</div>" +
+		// This resize line is `position: absolute; right: 0` so it hugs
+		// div_left's own right edge -- which only works now that div_left
+		// itself got `position: relative` above. Without that, `right: 0`
+		// resolved against the next positioned ancestor up (the
+		// `container-fluid` a few levels up, styled `position: relative`
+		// too), pinning the drag handle to the far right edge of the whole
+		// panel -- past div_right, off past the visible editor -- instead
+		// of the tree/editor boundary, which made it silently unusable.
 		"<div id='snippet_resize_line_" +
 		SNIPPET_PANEL_ID +
 		"' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div>" +

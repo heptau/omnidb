@@ -171,12 +171,40 @@ export function getTreeSnippets(p_div) {
 		false,
 		"fas node-all fa-list-alt node-snippet-list",
 		null,
-		{ type: "node", id: null },
+		// locked: true stops this root from being collapsed (see
+		// Aimara.js's collapseNode) -- there's nothing else to see in this
+		// panel once it's closed, so there was never a good reason to.
+		{ type: "node", id: null, locked: true },
 		"cm_node_root",
 	);
 	node1.createChildNode("", true, "node-spin", null, null);
 
 	tree.drawTree();
+	// Expanded by default -- see the "locked" comment above; starting
+	// collapsed just cost every visit an extra click for no benefit.
+	node1.expandNode();
+
+	// The root's own row (icon + "Snippets" text) is hidden -- it never
+	// collapses and the panel has nothing else to show above it, so it was
+	// just a label taking up space. Its <li> holds exactly two children
+	// (see Aimara.js's drawNode): the row itself (an <a>) and the <div>
+	// wrapping its child <ul>, which stays untouched so the actual folders
+	// and snippets still render, now flush with the top of the panel.
+	/** @type {HTMLElement} */ (node1.elementLi.querySelector(":scope > a")).style.display = "none";
+
+	// Right-clicking a folder/snippet still opens that node's own context
+	// menu as before -- Aimara.js's per-node oncontextmenu calls
+	// stopPropagation() on right-clicks, so this never fires for those.
+	// createTree (Aimara.js) sets this same handler to just `return false`
+	// (context menus were only ever reachable via a node's own row), which
+	// is no longer good enough now that the one row with a "New
+	// Folder"/"New Snippet" menu is invisible -- right-clicking empty space
+	// in the panel needs to reach it some other way.
+	/** @type {HTMLElement} */ (document.getElementById(p_div)).oncontextmenu = function (e) {
+		e.preventDefault();
+		tree.nodeContextMenu(e, node1);
+	};
+
 	v_connTabControl.snippet_tree = tree;
 }
 

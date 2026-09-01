@@ -35,10 +35,42 @@ import { toggleSnippetPanel } from "../panel_functions/outer_snippet_panel.js";
 import { switchSection } from "../section_switcher.js";
 
 
-export function startTutorial(p_tutorial_name) {
+/**
+ * @param {string | null} [p_tutorial_name]
+ * @param {Element} [p_anchor_el] Element to anchor omnis (and its step
+ * popup) next to -- the icon/button that triggered this tutorial. Falls
+ * back to the bottom-right corner of the main content area when omitted.
+ */
+export function startTutorial(p_tutorial_name, p_anchor_el) {
 	if (v_omnis.omnis_ui_assistant) {
 		v_omnis.omnis_ui_assistant.self_destruct();
 	}
+	// Setting the tutorial to the default example tutorial `main`.
+	var v_tutorial_name = p_tutorial_name ? p_tutorial_name : "main";
+	if (p_anchor_el) {
+		var v_anchor_rect = p_anchor_el.getBoundingClientRect();
+		v_omnis.div.style.top = v_anchor_rect.top + "px";
+		v_omnis.div.style.left = v_anchor_rect.right + 8 + "px";
+	} else {
+		v_omnis.div.style.top = v_omnis.root.getBoundingClientRect().height - 45 + "px";
+		v_omnis.div.style.left = v_omnis.root.getBoundingClientRect().width - 45 + "px";
+	}
+	// omnis stays hidden (workspace.js) except while a tutorial is actually
+	// walking through steps -- shown here, hidden again in p_callback_end.
+	// Every tutorial reachable from the redesigned Getting Started menu
+	// (itself, and everything its buttons launch -- utilities_menu,
+	// connections_menu, terminal_connection, snippets, selecting_connection,
+	// connection_tab) keeps it hidden throughout: their targets are already
+	// clearly visible/labeled on screen, so the little circular logo
+	// sliding across the page to "point" at each one just adds distracting
+	// motion rather than clarity -- only its step card (built below) shows.
+	// "main" is the one exception, kept for the original, more elaborate
+	// tour (currently unreachable from any button, but harmless to keep
+	// working as designed). updateOmnisPosition (omnis-control.js) still
+	// positions omnis's div even while hidden, which is fine: the card's
+	// own position is computed independently, not derived from omnis's, so
+	// hiding it changes nothing else.
+	v_omnis.div.style.display = v_tutorial_name === "main" ? "" : "none";
 	// Disabling interactions with omnis.
 	v_omnis.div.classList.add("omnis--active");
 	// Instantiate the component.
@@ -48,12 +80,11 @@ export function startTutorial(p_tutorial_name) {
 			delete v_omnis.omnis_ui_assistant;
 			// Enabling interactions with omnis.
 			v_omnis.div.classList.remove("omnis--active");
+			v_omnis.div.style.display = "none";
 		},
 		// Omnis Object
 		p_omnis: v_omnis,
 	});
-	// Setting the tutorial to the default example tutorial `main`.
-	var v_tutorial_name = p_tutorial_name ? p_tutorial_name : "main";
 	var v_button_inner_query_attr = ' disabled title="Open a new connection first." ';
 	if (v_connTabControl.selectedTab.tag.tabControl) {
 		if (v_connTabControl.selectedTab.tag.tabControl.tabList.length > 0) {
@@ -65,7 +96,7 @@ export function startTutorial(p_tutorial_name) {
 		`<button ` +
 		v_button_inner_query_attr +
 		` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab">` +
-		'<i class="fas fa-list mr-2"></i>The Connection Tab' +
+		'<i class="fas fa-list me-2"></i>The Connection Tab' +
 		"</button>" +
 		"</li>";
 	// Configuring the available tutorials.
@@ -75,12 +106,12 @@ export function startTutorial(p_tutorial_name) {
 				p_message: `
 				<p>This is the navigation rail. It gives you access to every section of OmniDB:</p>
 				<ul>
-				<li><i class="fas fa-hand-spock omnidb__theme__text--primary mr-2"></i>Welcome, tutorials and useful links.</li>
-				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connections management.</li>
-				<li><i class="fas fa-book omnidb__theme__text--primary mr-2"></i>Snippets panel.</li>
-				<li><i class="fas fa-database omnidb__theme__text--primary mr-2"></i>Database (your open connections).</li>
+				<li><i class="fas fa-hand-spock omnidb__theme__text--primary me-2"></i>Welcome, tutorials and useful links.</li>
+				<li><i class="fas fa-plug omnidb__theme__text--primary me-2"></i>Connections management.</li>
+				<li><i class="fas fa-book omnidb__theme__text--primary me-2"></i>Snippets panel.</li>
+				<li><i class="fas fa-database omnidb__theme__text--primary me-2"></i>Database (your open connections).</li>
 				</ul>
-				<p>At the bottom you'll also find <i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings, <i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About, and your <i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account.</p>
+				<p>At the bottom you'll also find <i class="fas fa-lightbulb omnidb__theme__text--primary me-2"></i>Getting Started, <i class="fas fa-cog omnidb__theme__text--primary me-2"></i>Settings, and your <i class="fas fa-user omnidb__theme__text--primary me-2"></i>Account.</p>
 				`,
 				p_target: document.getElementById("omnidb_section_nav"),
 				p_title: "Navigation Rail",
@@ -109,9 +140,8 @@ export function startTutorial(p_tutorial_name) {
 				p_message: `
 				<p>General settings and account management live at the bottom of the navigation rail:</p>
 				<ul>
-				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings (shortcuts, theme, fonts, and -- for superusers -- account/user management).</li>
-				<li><i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About.</li>
-				<li><i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account (username, version, sign out).</li>
+				<li><i class="fas fa-cog omnidb__theme__text--primary me-2"></i>Settings (shortcuts, theme, fonts, and -- for superusers -- account/user management).</li>
+				<li><i class="fas fa-user omnidb__theme__text--primary me-2"></i>Account (username, version, sign out).</li>
 				</ul>
 				<p>Please, click on the <i class="fas fa-cog"></i> Settings icon.</p>
 				`,
@@ -154,7 +184,7 @@ export function startTutorial(p_tutorial_name) {
 				p_callback_after_update_start: function () {
 					setTimeout(function () {
 						if (v_omnis.omnis_ui_assistant.divClonedElement.children[0]) {
-							v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+							v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ms-2");
 						}
 					}, 50);
 				},
@@ -173,9 +203,9 @@ export function startTutorial(p_tutorial_name) {
 			{
 				p_message: `
 				<ul>
-				<li><i class="fas fa-user omnidb__theme__text--primary mr-2"></i>OmniDB login name.</li>
-				<li><i class="fas fa-key omnidb__theme__text--primary mr-2"></i>OmniDB login password.</li>
-				<li><i class="fas fa-star omnidb__theme__text--primary mr-2"></i>Defines if the user can manage other OmniDB users.</li>
+				<li><i class="fas fa-user omnidb__theme__text--primary me-2"></i>OmniDB login name.</li>
+				<li><i class="fas fa-key omnidb__theme__text--primary me-2"></i>OmniDB login password.</li>
+				<li><i class="fas fa-star omnidb__theme__text--primary me-2"></i>Defines if the user can manage other OmniDB users.</li>
 				</ul>
 				<div class="alert alert-danger">The default <strong>admin user</strong> should be deleted once a new super user has been created.</div>
 				`,
@@ -208,7 +238,7 @@ export function startTutorial(p_tutorial_name) {
 				p_callback_after_update_start: function () {
 					setTimeout(function () {
 						var v_target = document.getElementById("button_new_connection");
-						v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+						v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ms-2");
 					}, 50);
 				},
 				p_callback_start: function () {
@@ -331,7 +361,7 @@ export function startTutorial(p_tutorial_name) {
 				p_callback_after_update_start: function () {
 					setTimeout(function () {
 						var v_target = document.getElementById("button_new_connection");
-						v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
+						v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ms-2");
 					}, 50);
 				},
 				p_callback_start: function () {
@@ -668,7 +698,7 @@ export function startTutorial(p_tutorial_name) {
 		: `
 	<li class="mb-2">
 		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="utilities_menu">
-			<i class="fas fa-user-plus mr-2"></i>Create an omnidb user
+			<i class="fas fa-user-plus me-2"></i>Create an omnidb user
 		</button>
 	</li>`;
 	v_tutorials.getting_started = [
@@ -679,28 +709,40 @@ export function startTutorial(p_tutorial_name) {
 				`
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connections_menu">
-						<i class="fas fa-plug mr-2"></i>Create a database connection
+						<i class="fas fa-plug me-2"></i>Create a database connection
 					</button>
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="terminal_connection">
-						<i class="fas fa-terminal mr-2"></i>Create a terminal connection
+						<i class="fas fa-terminal me-2"></i>Create a terminal connection
 					</button>
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
-						<i class="fas fa-book mr-2"></i>Meet the snippets panel
+						<i class="fas fa-book me-2"></i>Meet the snippets panel
 					</button>
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="selecting_connection">
-						<i class="fas fa-plus mr-2"></i>Using a connection
+						<i class="fas fa-plus me-2"></i>Using a connection
 					</button>
 				</li>
 				` +
 				v_button_inner_query +
 				"</ol>",
-			p_title: '<i class="fas fa-list mr-2"></i> Getting started',
+			p_title: '<i class="fas fa-list me-2"></i> Getting started',
+			// Anchors omnis (and this step's card) next to whatever launched
+			// the tutorial -- the rail's lightbulb icon, typically -- instead
+			// of the bottom-right corner default that applies when a step
+			// has no target and no position override (updateOmnisPosition
+			// in omnis-control.js). Falls back to that default (`false`) for
+			// callers that don't pass an anchor, e.g. the Welcome section's
+			// own "Getting started" button.
+			p_position: function () {
+				if (!p_anchor_el) return false;
+				var v_anchor_rect = p_anchor_el.getBoundingClientRect();
+				return { x: v_anchor_rect.right + 8, y: v_anchor_rect.top };
+			},
 		},
 	];
 

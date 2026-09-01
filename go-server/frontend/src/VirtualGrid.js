@@ -241,14 +241,23 @@ export class VirtualGrid {
 		this._tbody = document.createElement("tbody");
 		this._table.appendChild(this._tbody);
 
+		// height:0 (not just padding/border/line-height) matters here: the
+		// global `.handsontable td { height: 2rem }` rule sets an explicit
+		// height on every td, which an empty spacer cell needs to override
+		// directly -- setting the height on the <tr> alone isn't enough,
+		// since the td's own explicit height still forces the row open. A
+		// spacer meant to be 0px tall (nothing scrolled past above/below)
+		// rendered as one extra blank row instead -- most visible as a gap
+		// between the header and the first data row, since start=0 (the top
+		// spacer) is 0px on essentially every render.
 		this._topSpacer = document.createElement("tr");
 		this._topSpacerCell = document.createElement("td");
-		this._topSpacerCell.style.cssText = "padding:0;border:none;";
+		this._topSpacerCell.style.cssText = "padding:0;border:none;line-height:0;height:0;";
 		this._topSpacer.appendChild(this._topSpacerCell);
 
 		this._bottomSpacer = document.createElement("tr");
 		this._bottomSpacerCell = document.createElement("td");
-		this._bottomSpacerCell.style.cssText = "padding:0;border:none;";
+		this._bottomSpacerCell.style.cssText = "padding:0;border:none;line-height:0;height:0;";
 		this._bottomSpacer.appendChild(this._bottomSpacerCell);
 
 		this._tbody.appendChild(this._topSpacer);

@@ -615,13 +615,14 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 
 	// Creating `Add` tab in the `inner_query` tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-		p_name: "+",
+		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
 	});
+	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 	v_add_tab.tag = {
 		mode: "add",
 	};

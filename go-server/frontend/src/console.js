@@ -78,7 +78,7 @@ export function showConsoleHistory() {
 
 	v_tab_tag.consoleHistory.headerDiv.innerHTML =
 		"<div class='mb-2 form-inline justify-content-center'>" +
-		"<div class='input-group w-auto mr-2'>" +
+		"<div class='input-group w-auto me-2'>" +
 		"<span class='my-auto'>Select a daterange:</span>&nbsp;" +
 		"<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" +
 		v_tab_tag.tab_id +
@@ -93,10 +93,10 @@ export function showConsoleHistory() {
 		"<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i>" +
 		"</button>" +
 		"</div>" +
-		"<label class='mr-1'>Command contains:</label>" +
+		"<label class='me-1'>Command contains:</label>" +
 		"<input type='text' id='cl_input_contains_" +
 		v_tab_tag.tab_id +
-		"' class='mr-2 form-control' />" +
+		"' class='me-2 form-control' />" +
 		"</div>" +
 		"<div id='console_history_daterangepicker_container_" +
 		v_tab_tag.tab_id +
@@ -121,10 +121,10 @@ export function showConsoleHistory() {
 		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button>" +
 		"<button id='bt_refresh_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt me-1'></i>Refresh</button>" +
 		"<button id='bt_clear_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button>" +
+		"' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom me-1'></i>Clear List</button>" +
 		"</div>";
 
 	var v_grid_div = v_tab_tag.consoleHistory.gridDiv;

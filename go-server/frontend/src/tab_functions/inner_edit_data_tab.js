@@ -106,7 +106,7 @@ export var v_createEditDataTabFunction = function (p_table) {
 		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button>" +
 		"<select id='sel_filtered_data_" +
 		v_tab.id +
-		"' class='sel_export_file_type form-control w-auto mr-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select>" +
+		"' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select>" +
 		"<button id='bt_cancel_" +
 		v_tab.id +
 		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button>" +

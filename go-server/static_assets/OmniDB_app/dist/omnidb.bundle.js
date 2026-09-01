@@ -4830,7 +4830,7 @@
       for (var i2 = 0; i2 < v_currTabTag.editDataObject.columns.length; i2++) {
         var col = {};
         var v_tooltip_attr = ' data-toggle=tooltip data-placement=bottom data-html=true title="&lt;div&gt;&lt;b&gt;Type&lt;/b&gt; ' + escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i2].v_type) + '&lt;/div&gt;" ';
-        var v_tooltip_html = '<i class="ml-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
+        var v_tooltip_html = '<i class="ms-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
         var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i2].v_column) + "</span>";
         if (!v_currTabTag.editDataObject.columns[i2].v_is_pk) col.title = v_column_html + v_tooltip_html;
         else col.title = '<i class="fas fa-key action-key text-secondary"></i> ' + v_column_html + v_tooltip_html;
@@ -5938,6 +5938,10 @@
     v_connections_data.list_items = [];
     v_connections_data.current_id = -1;
     v_connections_data.current_obj = null;
+    document.getElementById("connections_resize_line").addEventListener(
+      "mousedown",
+      (event2) => resizeConnectionsHorizontal(event2)
+    );
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
   else setTimeout(initConnections, 0);
@@ -5998,7 +6002,7 @@
             }
           }
           var v_env_meta = ENVIRONMENT_META[v_conn_obj2.environment];
-          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + "</span>" + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + escapeHtml(v_title) + '</span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-lock omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>' : "");
+          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + "</span>" + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + escapeHtml(v_title) + '</span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>' : "");
           var v_checkbox = document.createElement("input");
           v_checkbox.className = "connection-card-checkbox";
           v_checkbox.id = "connection_item_input_" + i3;
@@ -6520,7 +6524,7 @@
       if (!el("conn_form_user_pass_check_icon")) {
         el("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
           "beforeend",
-          '<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>'
+          '<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ms-2"></i>'
         );
       }
     } else {
@@ -6530,7 +6534,7 @@
       if (!el("conn_form_ssh_password_check_icon")) {
         el("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
           "beforeend",
-          '<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>'
+          '<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ms-2"></i>'
         );
       }
     } else {
@@ -6540,7 +6544,7 @@
       if (!el("conn_form_ssh_key_check_icon")) {
         el("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
           "beforeend",
-          '<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>'
+          '<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ms-2"></i>'
         );
       }
     } else {
@@ -6942,13 +6946,423 @@
     updateModalEditConnectionFields,
     updateModalEditConnectionState
   }, Symbol.toStringTag, { value: "Module" }));
+  function createOmnis() {
+    return {
+      id: "omnis",
+      div: null,
+      template: `<svg
+				class="animated-omnis"
+
+				version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+				x="0px" y="0px"
+				width="40px" height="40px"
+				viewBox="0 0 82.333 82.333" enable-background="new 0 0 82.333 82.333"
+				xml:space="preserve"
+		>
+				<g class="animated-omnis__icon-grid animated-omnis__group--to-blue">
+						<path fill="#1E88E5" d="M57.694,31.129c-1.484-2.352-3.474-4.342-5.825-5.823c0.646,1.263,1.214,2.643,1.691,4.129
+								C55.049,29.915,56.43,30.486,57.694,31.129z"/>
+						<path fill="#1E88E5" d="M43.292,22.507v5.234c2.323,0.072,4.553,0.333,6.649,0.762c-0.969-2.344-2.205-4.237-3.614-5.531
+								C45.343,22.736,44.331,22.58,43.292,22.507z"/>
+						<path fill="#1E88E5" d="M57.692,50.87c-1.265,0.644-2.643,1.215-4.132,1.691c-0.477,1.489-1.046,2.867-1.691,4.132
+								C54.221,55.211,56.21,53.221,57.692,50.87z"/>
+						<path fill="#1E88E5" d="M60.188,44.681c-0.359-0.742-0.612-1.537-0.744-2.381h-4.192c-0.072,2.322-0.332,4.551-0.756,6.645
+								c2.344-0.969,4.238-2.207,5.532-3.618C60.08,45.11,60.145,44.9,60.188,44.681z"/>
+						<path fill="#1E88E5" d="M60.029,36.675c-1.293-1.414-3.187-2.652-5.534-3.624c0.424,2.097,0.684,4.325,0.756,6.647h4.192
+								c0.132-0.844,0.385-1.639,0.747-2.378C60.145,37.101,60.08,36.889,60.029,36.675z"/>
+						<path fill="#1E88E5" d="M52.168,42.3h-8.875v8.873c2.79-0.092,5.421-0.475,7.782-1.094C51.693,47.718,52.076,45.09,52.168,42.3z"/>
+						<path fill="#1E88E5" d="M43.292,39.699h8.875c-0.092-2.79-0.475-5.421-1.094-7.782c-2.361-0.619-4.992-1.002-7.782-1.094V39.699z"
+								/>
+						<path fill="#1E88E5" d="M43.292,59.493c1.039-0.072,2.05-0.229,3.036-0.466c1.409-1.296,2.645-3.187,3.614-5.531
+								c-2.096,0.427-4.327,0.687-6.649,0.759V59.493z"/>
+						<path fill="#1E88E5" d="M29.499,48.945c-0.427-2.094-0.687-4.322-0.759-6.645H23.5c0.071,1.036,0.228,2.046,0.462,3.026
+								C25.257,46.741,27.152,47.976,29.499,48.945z"/>
+						<path fill="#1E88E5" d="M40.695,22.507c-1.038,0.072-2.05,0.229-3.034,0.465c-1.409,1.294-2.645,3.188-3.612,5.528
+								c2.096-0.426,4.324-0.687,6.646-0.759V22.507z"/>
+						<path fill="#1E88E5" d="M40.695,30.823c-2.789,0.092-5.419,0.475-7.779,1.094c-0.621,2.361-1.002,4.992-1.094,7.782h8.873V30.823z"
+								/>
+						<path fill="#1E88E5" d="M32.123,25.304c-2.353,1.481-4.344,3.472-5.827,5.822c1.265-0.643,2.645-1.214,4.135-1.691
+								C30.91,27.947,31.479,26.566,32.123,25.304z"/>
+						<path fill="#1E88E5" d="M40.695,59.493v-5.238c-2.322-0.072-4.552-0.332-6.646-0.759c0.967,2.345,2.202,4.238,3.612,5.531
+								C38.646,59.263,39.657,59.42,40.695,59.493z"/>
+						<path fill="#1E88E5" d="M23.499,39.699h5.241c0.071-2.322,0.332-4.551,0.759-6.647c-2.348,0.969-4.243,2.21-5.538,3.624
+								C23.727,37.656,23.571,38.665,23.499,39.699z"/>
+						<path fill="#1E88E5" d="M32.123,56.695c-0.644-1.265-1.213-2.643-1.691-4.131c-1.489-0.478-2.868-1.049-4.133-1.691
+								C27.781,53.223,29.771,55.213,32.123,56.695z"/>
+						<path fill="#1E88E5" d="M40.695,42.3h-8.873c0.092,2.79,0.475,5.418,1.094,7.779c2.359,0.619,4.99,1.002,7.779,1.094V42.3z"/>
+				</g>
+				<g class="animated-omnis__icon-external animated-omnis__group--to-blue">
+						<g class="animated-omnis__icon-external__rings">
+								<path fill="#1E88E5" d="M36.436,14.434c0.642,1.11,0.979,2.306,1.082,3.505c1.451-0.281,2.944-0.438,4.477-0.438
+										c10.299,0,19.03,6.635,22.203,15.854c1.094-0.513,2.301-0.823,3.59-0.823c0.431,0,0.846,0.064,1.26,0.127
+										c-3.561-11.562-14.325-19.967-27.052-19.967c-2.165,0-4.264,0.266-6.291,0.726C35.961,13.743,36.223,14.065,36.436,14.434z"/>
+								<path fill="#1E88E5" d="M21.771,59.104c0.646-1.115,1.519-2.007,2.513-2.695c-3.58-4.107-5.765-9.463-5.783-15.339
+										c0-0.022-0.006-0.044-0.006-0.068c0-0.019,0.005-0.036,0.005-0.055c0.013-5.874,2.193-11.227,5.766-15.339
+										c-0.99-0.689-1.854-1.593-2.497-2.706c-0.211-0.366-0.356-0.747-0.508-1.127c-4.685,5.052-7.572,11.795-7.572,19.227
+										c0,7.436,2.889,14.179,7.576,19.228C21.415,59.851,21.561,59.468,21.771,59.104z"/>
+								<path fill="#1E88E5" d="M67.787,49.47c-1.289,0-2.499-0.311-3.592-0.826c-3.175,9.222-11.901,15.853-22.2,15.853
+										c-1.535,0-3.031-0.159-4.483-0.438c-0.103,1.202-0.432,2.401-1.072,3.515c-0.212,0.368-0.472,0.687-0.728,1.01
+										c2.023,0.46,4.121,0.725,6.283,0.725c12.728,0,23.492-8.403,27.055-19.965C68.632,49.405,68.218,49.47,67.787,49.47z"/>
+						</g>
+						<g class="animated-omnis__icon-external__spheres animated-omnis__group--to-darkblue">
+								<path fill="#37517E" d="M73.462,41.001c0-3.137-2.539-5.678-5.676-5.678s-5.683,2.541-5.683,5.678s2.546,5.674,5.683,5.674
+										S73.462,44.138,73.462,41.001z"/>
+								<path fill="#37517E" d="M26.262,13.754c-2.718,1.566-3.647,5.033-2.079,7.753c1.566,2.715,5.042,3.645,7.757,2.079
+										c2.718-1.568,3.645-5.045,2.079-7.755C32.446,13.116,28.979,12.181,26.262,13.754z"/>
+								<path fill="#37517E" d="M26.267,68.256c2.72,1.568,6.187,0.639,7.755-2.076c1.566-2.715,0.636-6.189-2.077-7.755
+										c-2.72-1.571-6.191-0.639-7.752,2.074C22.622,63.219,23.549,66.691,26.267,68.256z"/>
+						</g>
+				</g>
+		</svg>`
+    };
+  }
+  function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_steps = [] }) {
+    p_steps.length !== 0 ? p_steps : [
+      {
+        p_message: "This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]",
+        p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
+        p_title: "Primary menu"
+      },
+      {
+        p_message: "This contains general settings and options, such as [ versioning, connections_list_manager, user_setting, plugins...]",
+        p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
+        p_title: "Utilities menu"
+      }
+    ];
+    var v_state_active = true;
+    var v_omnisControl = {
+      // Params
+      callback_end: p_callback_end,
+      id: "omnis_control_" + Date.now(),
+      stateActive: v_state_active,
+      stepCounter: 0,
+      /** @type {any[]} */
+      stepList: [],
+      stepSelected: 0,
+      z_index: 999999,
+      // Actions
+      getPosition: function(p_el) {
+        var xPos = 0;
+        var yPos = 0;
+        var el2 = p_el;
+        while (el2) {
+          if (el2.tagName == "BODY") {
+            var xScroll = el2.scrollLeft || document.documentElement.scrollLeft;
+            var yScroll = el2.scrollTop || document.documentElement.scrollTop;
+            xPos += el2.offsetLeft - xScroll + el2.clientLeft;
+            yPos += el2.offsetTop - yScroll + el2.clientTop;
+          } else {
+            xPos += el2.offsetLeft - el2.scrollLeft + el2.clientLeft;
+            yPos += el2.offsetTop - el2.scrollTop + el2.clientTop;
+          }
+          el2 = el2.offsetParent;
+        }
+        return {
+          x: xPos,
+          y: yPos
+        };
+      },
+      self_destruct: function() {
+        var v_control = this;
+        v_control.setStateDisabled();
+        document.getElementById("omnidb__main").removeChild(v_control.divElement);
+        for (let i2 = 0; i2 < v_control.stepList.length; i2++) {
+          if (v_control.stepList[i2].callback_end !== false) {
+            v_control.stepList[i2].callback_end();
+          }
+        }
+        if (this.callback_end) {
+          this.callback_end();
+        }
+        var v_omnis_div = p_omnis.div;
+        v_omnis_div.style.top = p_omnis.root.getBoundingClientRect().height - 45 + "px";
+        v_omnis_div.style.left = p_omnis.root.getBoundingClientRect().width - 45 + "px";
+      },
+      emptyStepList: function() {
+        this.stepCounter = 0;
+        this.stepList = [];
+      },
+      updateStepList: function(p_list) {
+        this.emptyStepList();
+        for (let i2 = 0; i2 < p_list.length; i2++) {
+          this.createStep(p_list[i2]);
+        }
+      },
+      goToStep: async function(p_index) {
+        for (let i2 = 0; i2 < this.stepList.length; i2++) {
+          if (p_index !== i2) {
+            if (this.stepList[i2].callback_end !== false) {
+              this.stepList[i2].callback_end();
+            }
+          }
+        }
+        if (this.stepList[p_index].callback_start) {
+          this.stepList[p_index].callback_start();
+        }
+        var v_control = this;
+        v_control.stepSelected = p_index;
+        var v_step_item = await v_control.renderStep();
+        if (v_step_item !== "stop") {
+          var get_v_target = new Promise((resolve) => {
+            setTimeout(function() {
+              var v_next_btn = document.getElementById("omnis_step_btn_next");
+              if (v_next_btn !== void 0 && v_next_btn !== null) {
+                v_next_btn.onclick = function() {
+                  v_control.goToStep(v_control.stepSelected + 1);
+                };
+              }
+              var v_target;
+              if (typeof v_step_item.target === "function") {
+                v_target = v_step_item.target();
+              } else {
+                v_target = v_step_item.target;
+              }
+              v_control.updateOmnisPosition(v_target, v_step_item.position);
+              resolve(v_target);
+            }, v_step_item.update_delay);
+          });
+          await get_v_target.then(function(v_target) {
+            if (v_step_item.clone_target && v_target) {
+              v_step_item.update_delay;
+              if (v_target !== null) {
+                let v_target_bounding_rect = v_target.getBoundingClientRect();
+                let v_target_bounding_rect_left = v_target_bounding_rect.x + "px";
+                let v_target_bounding_rect_top = v_target_bounding_rect.y + "px";
+                let v_target_bounding_rect_width = v_target_bounding_rect.width + "px";
+                setTimeout(function() {
+                  var v_cloned_element = v_target.cloneNode(true);
+                  v_cloned_element.setAttribute("id", "omnis_temp_clone");
+                  v_control.divClonedElement.style.left = v_target_bounding_rect_left;
+                  v_control.divClonedElement.style.top = v_target_bounding_rect_top;
+                  v_cloned_element.style.width = v_target_bounding_rect_width;
+                  v_control.updateClonedElementContent(v_cloned_element);
+                  v_control.divBackdropElement.style.display = "";
+                  v_cloned_element.addEventListener("click", function() {
+                    v_control.goToStep(v_control.stepSelected + 1);
+                  });
+                }, 50);
+              } else {
+                v_control.divClonedElement.innerHTML = "";
+                v_control.divClonedElement.style.left = "";
+                v_control.divClonedElement.style.top = "";
+                v_control.divBackdropElement.style.display = "none";
+              }
+            } else {
+              v_control.divClonedElement.innerHTML = "";
+              v_control.divClonedElement.style.left = "";
+              v_control.divClonedElement.style.top = "";
+              v_control.divBackdropElement.style.display = "none";
+            }
+            var v_previous_btn = document.getElementById("omnis_step_btn_previous");
+            if (v_previous_btn !== void 0 && v_previous_btn !== null) {
+              v_previous_btn.onclick = function() {
+                v_control.goToStep(v_control.stepSelected - 1);
+              };
+            }
+            var v_close_btn = document.getElementById("omnis_step_btn_close");
+            if (v_close_btn !== void 0 && v_close_btn !== null) {
+              v_close_btn.onclick = function() {
+                v_control.self_destruct();
+              };
+            }
+            if (v_control.stepList[v_control.stepSelected].callback_after_update_start) {
+              v_control.stepList[v_control.stepSelected].callback_after_update_start();
+            }
+          });
+        }
+      },
+      // Template
+      createStep: function({
+        p_callback_after_update_start = false,
+        p_callback_end: p_callback_end2 = false,
+        p_callback_start = false,
+        p_clone_target = false,
+        p_message = "Example",
+        p_next_button = true,
+        p_position = () => {
+          return false;
+        },
+        p_target = null,
+        p_title = "Omnis",
+        p_update_delay = 0
+      }) {
+        var v_control = this;
+        var v_index = v_control.stepCounter;
+        v_control.stepCounter++;
+        var v_step = {
+          callback_after_update_start: p_callback_after_update_start,
+          callback_end: p_callback_end2,
+          callback_start: p_callback_start,
+          clone_target: p_clone_target,
+          id: v_control.id + "_step_" + v_index,
+          message: p_message,
+          next_button: p_next_button,
+          position: p_position(),
+          target: p_target,
+          title: p_title,
+          update_delay: p_update_delay
+        };
+        this.stepList.push(v_step);
+      },
+      renderStep: function() {
+        if (this.stateActive) {
+          var v_control = this;
+          var v_step_item = this.stepList[this.stepSelected];
+          v_control.divClonedElement.innerHTML = "";
+          v_control.divClonedElement.style.left = "";
+          v_control.divClonedElement.style.top = "";
+          v_control.divBackdropElement.style.display = "";
+          v_control.divWavesElement.innerHTML = "";
+          var v_title = "";
+          if (v_step_item.title) {
+            v_title += '<div class="omnis__step__title card-title p-2 mt-2 mb-0"><h5 class="mb-0">' + v_step_item.title + "</h5></div>";
+          }
+          var v_message = "";
+          if (v_step_item.message) {
+            v_message += '<div class="omnis__step__body card-body p-2 mb-4">' + v_step_item.message + "</div>";
+          }
+          var v_step_btn_next = "";
+          if (this.stepList[this.stepSelected].next_button && this.stepSelected < this.stepCounter - 1) {
+            v_step_btn_next += '<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ms-2">Next</button>';
+          }
+          var v_step_btn_previous = "";
+          var v_step_btn_close = '<button id="omnis_step_btn_close" type="button" class="btn btn-sm btn-danger ml-auto">End walkthrough</button>';
+          var v_step_title = '<div class="mb-4 text-center" style="position: relative;">' + // '<div style="background: none; display: inline-block; height: 64px; width:64px;">' + v_animated_omnis + '</div>' +
+          v_title + "</div>";
+          var v_step_html = '<div class="omnis__step card">' + v_step_title + v_message + '<div class="omnis__step__footer card-footer d-flex align-items-center p-2">' + v_step_btn_previous + v_step_btn_next + v_step_btn_close + "</div></div>";
+          this.divCardElement.innerHTML = v_step_html;
+          this.divElement.style.display = "block";
+          return new Promise((resolve) => {
+            resolve(v_step_item);
+          });
+        } else {
+          this.divElement.style.display = "none";
+          this.divWavesElement.innerHTML = "";
+          return new Promise((resolve) => {
+            resolve("stop");
+          });
+        }
+      },
+      setStateEnabled: function() {
+        this.stateActive = true;
+        this.renderStep();
+      },
+      setStateDisabled: function() {
+        this.stateActive = false;
+        this.renderStep();
+      },
+      updateClonedElementContent: function(p_content_element) {
+        var v_control = this;
+        var v_cloned_element = v_control.divClonedElement;
+        var v_waves_element = v_control.divWavesElement;
+        v_cloned_element.innerHTML = "";
+        v_waves_element.innerHTML = "";
+        v_cloned_element.appendChild(p_content_element);
+        v_waves_element.innerHTML = '<span id="' + v_control.id + '_cloned_element_waves" class="omnis__cloned-element__waves"><span></span><span></span><span></span><span></span></span>';
+        let v_target = typeof v_control.stepList[v_control.stepSelected].target === "function" ? v_control.stepList[v_control.stepSelected].target() : v_control.stepList[v_control.stepSelected].target;
+        let v_cloned_element_bounding_rect = v_target.getBoundingClientRect();
+        v_waves_element.style.left = v_cloned_element_bounding_rect.x + "px";
+        v_waves_element.style.top = v_cloned_element_bounding_rect.y + "px";
+        v_waves_element.style.width = v_cloned_element_bounding_rect.width + "px";
+        v_waves_element.style.height = v_cloned_element_bounding_rect.height + "px";
+        v_waves_element.style.display = "block";
+        document.getElementById(v_control.id + "_cloned_element_waves");
+      },
+      /** @param {any} p_target @param {{x: number, y: number}|false} [p_pos] */
+      updateOmnisPosition: function(p_target, p_pos = false) {
+        try {
+          let v_root = (
+            /** @type {HTMLElement} */
+            document.getElementById("omnidb__main")
+          );
+          let v_window_width = v_root.offsetWidth;
+          let v_window_width_half = Math.round(v_window_width / 2);
+          let v_window_height = v_root.offsetHeight;
+          let v_window_height_half = Math.round(v_window_height / 2);
+          var v_control = this;
+          var v_target = p_target;
+          if (!v_target) {
+            v_target = typeof v_control.stepList[v_control.stepSelected].target === "function" ? v_control.stepList[v_control.stepSelected].target() : v_control.stepList[v_control.stepSelected].target;
+          }
+          var v_target_position;
+          var v_target_offset_width = 0;
+          if (p_pos) {
+            v_target_position = { x: p_pos.x, y: p_pos.y };
+          } else if (v_target) {
+            v_target_position = v_control.getPosition(v_target);
+            v_target_offset_width = v_target.offsetWidth;
+          } else {
+            v_target_position = { x: v_window_width - 5, y: v_window_height - 5 };
+          }
+          var v_omnis_div = p_omnis.div;
+          if (v_target_position.x >= v_window_width_half) {
+            v_omnis_div.style.left = v_target_position.x - 56 + "px";
+            v_control.divCardElement.style.left = v_target_position.x - v_control.divCardElement.offsetWidth - 56 + "px";
+            if (v_target_position.y <= v_window_height_half) {
+              v_omnis_div.style.top = v_target_position.y + 16 + "px";
+              v_control.divCardElement.style.top = v_target_position.y + 20 + "px";
+            } else {
+              v_omnis_div.style.top = v_target_position.y - 56 + "px";
+              v_control.divCardElement.style.top = v_target_position.y - v_control.divCardElement.offsetHeight - 20 + "px";
+            }
+          } else {
+            v_omnis_div.style.left = v_target_position.x + v_target_offset_width + 16 + "px";
+            v_control.divCardElement.style.left = v_target_position.x + v_target_offset_width + 56 + "px";
+            if (v_target_position.y <= v_window_height_half) {
+              v_omnis_div.style.top = v_target_position.y + 16 + "px";
+              v_control.divCardElement.style.top = v_target_position.y + 20 + "px";
+            } else {
+              v_omnis_div.style.top = v_target_position.y - 56 + "px";
+              v_control.divCardElement.style.top = v_target_position.y - v_control.divCardElement.offsetHeight - 20 + "px";
+            }
+          }
+        } catch (e) {
+          console.warn("omnis-ui-assistant couldnt process the positioning of the target. Details:");
+          console.warn(e);
+        }
+      }
+    };
+    v_omnisControl.divCardElement = document.createElement("div");
+    v_omnisControl.divCardElement.setAttribute(
+      "style",
+      "position:fixed; width:280px; max-width: 90vw; z-index: " + v_omnisControl.z_index + 3 + "; box-shadow: 1px 0px 3px rgba(0,0,0,0.15); transition: all 0.45s ease 0.1s;"
+    );
+    v_omnisControl.divClonedElement = document.createElement("div");
+    v_omnisControl.divClonedElement.setAttribute(
+      "style",
+      "position:absolute; width:0px; height:0px; overflow:visible; z-index:" + v_omnisControl.z_index + 2 + ";"
+    );
+    v_omnisControl.divWavesElement = document.createElement("div");
+    v_omnisControl.divWavesElement.setAttribute(
+      "style",
+      "position:absolute; width:0px; height:0px; overflow:visible; z-index:" + v_omnisControl.z_index + 1 + ";"
+    );
+    v_omnisControl.divBackdropElement = document.createElement("div");
+    v_omnisControl.divBackdropElement.setAttribute(
+      "style",
+      "position:fixed; width:100vw; height:100vh; top: 0; left: 0; z-index:" + v_omnisControl.z_index + "; background-color:rgba(0,0,0,0.25);"
+    );
+    v_omnisControl.divElement = document.createElement("div");
+    v_omnisControl.divElement.setAttribute("id", v_omnisControl.id);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divCardElement);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divClonedElement);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divWavesElement);
+    v_omnisControl.divElement.appendChild(v_omnisControl.divBackdropElement);
+    document.getElementById("omnidb__main").appendChild(v_omnisControl.divElement);
+    return v_omnisControl;
+  }
+  const omnisControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    createOmnis,
+    createOmnisUiAssistant
+  }, Symbol.toStringTag, { value: "Module" }));
   function toggleSnippetPanel() {
     switchSection("snippets");
     resizeSnippetPanel();
   }
   var SNIPPET_PANEL_ID = "snippets_panel";
   var v_createSnippetPanelFunction = function(p_index) {
-    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='container-fluid h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
+    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='container-fluid h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
     var v_target = (
       /** @type {HTMLElement} */
       document.getElementById("omnidb__section_snippets")
@@ -7001,7 +7415,682 @@
     toggleSnippetPanel,
     v_createSnippetPanelFunction
   }, Symbol.toStringTag, { value: "Module" }));
-  const SECTION_NAMES = ["welcome", "connections", "snippets", "database", "settings"];
+  function startTutorial(p_tutorial_name, p_anchor_el) {
+    if (v_omnis.omnis_ui_assistant) {
+      v_omnis.omnis_ui_assistant.self_destruct();
+    }
+    var v_tutorial_name = p_tutorial_name ? p_tutorial_name : "main";
+    if (p_anchor_el) {
+      var v_anchor_rect = p_anchor_el.getBoundingClientRect();
+      v_omnis.div.style.top = v_anchor_rect.top + "px";
+      v_omnis.div.style.left = v_anchor_rect.right + 8 + "px";
+    } else {
+      v_omnis.div.style.top = v_omnis.root.getBoundingClientRect().height - 45 + "px";
+      v_omnis.div.style.left = v_omnis.root.getBoundingClientRect().width - 45 + "px";
+    }
+    v_omnis.div.style.display = v_tutorial_name === "main" ? "" : "none";
+    v_omnis.div.classList.add("omnis--active");
+    v_omnis.omnis_ui_assistant = createOmnisUiAssistant({
+      p_callback_end: function() {
+        delete v_omnis.omnis_ui_assistant;
+        v_omnis.div.classList.remove("omnis--active");
+        v_omnis.div.style.display = "none";
+      },
+      // Omnis Object
+      p_omnis: v_omnis
+    });
+    var v_button_inner_query_attr = ' disabled title="Open a new connection first." ';
+    if (v_connTabControl.selectedTab.tag.tabControl) {
+      if (v_connTabControl.selectedTab.tag.tabControl.tabList.length > 0) {
+        v_button_inner_query_attr = "";
+      }
+    }
+    var v_button_inner_query = `<li class="mb-2"><button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab"><i class="fas fa-list me-2"></i>The Connection Tab</button></li>`;
+    var v_tutorials = {
+      main: [
+        {
+          p_message: `
+				<p>This is the navigation rail. It gives you access to every section of OmniDB:</p>
+				<ul>
+				<li><i class="fas fa-hand-spock omnidb__theme__text--primary me-2"></i>Welcome, tutorials and useful links.</li>
+				<li><i class="fas fa-plug omnidb__theme__text--primary me-2"></i>Connections management.</li>
+				<li><i class="fas fa-book omnidb__theme__text--primary me-2"></i>Snippets panel.</li>
+				<li><i class="fas fa-database omnidb__theme__text--primary me-2"></i>Database (your open connections).</li>
+				</ul>
+				<p>At the bottom you'll also find <i class="fas fa-lightbulb omnidb__theme__text--primary me-2"></i>Getting Started, <i class="fas fa-cog omnidb__theme__text--primary me-2"></i>Settings, and your <i class="fas fa-user omnidb__theme__text--primary me-2"></i>Account.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
+        },
+        {
+          p_callback_end: function() {
+            document.getElementById("omnidb_section_nav__account_menu").classList.remove(
+              "omnidb__account-menu--open"
+            );
+          },
+          p_callback_start: function() {
+            document.getElementById("omnidb_section_nav__account_menu").classList.add(
+              "omnidb__account-menu--open"
+            );
+          },
+          p_clone_target: true,
+          p_message: "Clicking the account icon at the bottom of the rail opens this popup: your OmniDB version, username, and a sign-out button.",
+          p_target: document.getElementById("omnidb_section_nav__account_menu"),
+          p_title: "Account",
+          p_update_delay: 350
+        }
+      ],
+      utilities_menu: [
+        {
+          p_message: `
+				<p>General settings and account management live at the bottom of the navigation rail:</p>
+				<ul>
+				<li><i class="fas fa-cog omnidb__theme__text--primary me-2"></i>Settings (shortcuts, theme, fonts, and -- for superusers -- account/user management).</li>
+				<li><i class="fas fa-user omnidb__theme__text--primary me-2"></i>Account (username, version, sign out).</li>
+				</ul>
+				<p>Please, click on the <i class="fas fa-cog"></i> Settings icon.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
+        },
+        {
+          p_callback_start: function() {
+            showConfigUser();
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>If you're a superuser, this Settings section has an <strong>Account</strong> tab.</p>
+				<p>Click on it.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("config_account-tab");
+            return v_target;
+          },
+          p_title: "Settings",
+          p_update_delay: 350
+        },
+        {
+          p_clone_target: true,
+          p_message: `
+				<p>If you just configured OmniDB and logged in with the default <strong>admin</strong> user, you should create a proper superuser (and later delete the default admin account).</p>
+				<p>Follow this walkthrough if you want to create other users as well.</p>
+				<p>Click on <strong>Manage Users</strong>.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("button_open_users");
+            return v_target;
+          },
+          p_title: "Managing Users",
+          p_update_delay: 350
+        },
+        {
+          p_callback_after_update_start: function() {
+            setTimeout(function() {
+              if (v_omnis.omnis_ui_assistant.divClonedElement.children[0]) {
+                v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ms-2");
+              }
+            }, 50);
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>Click on <strong>Add new user</strong>.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("omnidb_utilities_menu_btn_new_user");
+            return v_target;
+          },
+          p_title: "Add a New User",
+          p_update_delay: 1e3
+        },
+        {
+          p_message: `
+				<ul>
+				<li><i class="fas fa-user omnidb__theme__text--primary me-2"></i>OmniDB login name.</li>
+				<li><i class="fas fa-key omnidb__theme__text--primary me-2"></i>OmniDB login password.</li>
+				<li><i class="fas fa-star omnidb__theme__text--primary me-2"></i>Defines if the user can manage other OmniDB users.</li>
+				</ul>
+				<div class="alert alert-danger">The default <strong>admin user</strong> should be deleted once a new super user has been created.</div>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("omnidb_user_content");
+            return v_target;
+          },
+          p_title: "User Options",
+          p_update_delay: 350
+        }
+      ],
+      connections_menu: [
+        {
+          p_clone_target: true,
+          p_message: `
+				<p>This is the navigation rail. It gives you access to:</p>
+				<ul>
+				<li>Connections manager.</li>
+				<li>Welcome, tutorial and useful links.</li>
+				<li>Snippets panel.</li>
+				<li>Your open database connections.</li>
+				</ul>
+				<p>Let's first <span class="badge badge-info">add a new connection</span>.</p>
+				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
+        },
+        {
+          p_callback_after_update_start: function() {
+            setTimeout(function() {
+              document.getElementById("button_new_connection");
+              v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ms-2");
+            }, 50);
+          },
+          p_callback_start: function() {
+            startConnectionManagement();
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>Click on <strong>New Connection</strong>.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("button_new_connection");
+            return v_target;
+          },
+          p_title: "Add a New Connection",
+          p_update_delay: 1e3
+        },
+        {
+          p_message: `
+				<p>Select the proper DBMS technology.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_type");
+            return v_target;
+          },
+          p_title: "Connection Type",
+          p_update_delay: 300
+        },
+        {
+          p_message: `
+				<p>Type a helpful name for the connection.</p>
+				<p>This is used as name reference on many UI areas.</p>
+				<p>i.e: Local dvdrental barman.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_title");
+            return v_target;
+          },
+          p_title: "Title"
+        },
+        {
+          p_message: `
+				<p>Type the server address. Do not include ports.</p>
+				<p>i.e:127.0.0.1</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_server");
+            return v_target;
+          },
+          p_title: "Server"
+        },
+        {
+          p_message: `
+				<p>Type the port of the server.</p>
+				<p>i.e: PostgreSQL uses 5432 by default, but if you are using pgbouncer, you may want to use 6432 as the entry point.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_port");
+            return v_target;
+          },
+          p_title: "Port"
+        },
+        {
+          p_message: `
+				<p>Type the name of the database.</p>
+				<p>i.e: postgres, dvdrental.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_database");
+            return v_target;
+          },
+          p_title: "Database"
+        },
+        {
+          p_message: `
+				<p>Type the name of the user with priviledges to access the database.</p>
+				<p>i.e: postgres.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_user");
+            return v_target;
+          },
+          p_title: "User"
+        },
+        {
+          p_message: `
+				<p>This is <strong>optional</strong>.</p>
+				<p>If you don't save the user password, you will be required to manually input it everytime a new connection to this database is started.</p>
+				<p>If saved, this password will be stored in the database configured for OmniDB (default is omnidb.db).</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_user_pass");
+            return v_target;
+          },
+          p_title: "User password"
+        },
+        {
+          p_message: `
+				<p>You may want to hit 'test' before saving the conntion.</p>
+				<p>After that, click save.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_button_test_connection");
+            return v_target;
+          },
+          p_title: "Test the Connection"
+        }
+      ],
+      terminal_connection: [
+        {
+          p_clone_target: true,
+          p_message: `
+				<p>First let's open the <strong>connections management</strong> interface.</p>
+				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon in the navigation rail.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Accessing connections managemnet"
+        },
+        {
+          p_callback_after_update_start: function() {
+            setTimeout(function() {
+              document.getElementById("button_new_connection");
+              v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ms-2");
+            }, 50);
+          },
+          p_callback_start: function() {
+            startConnectionManagement();
+          },
+          p_clone_target: true,
+          p_message: `
+				<p>Click on <strong>New Connection</strong>.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById("button_new_connection");
+            return v_target;
+          },
+          p_title: "Add a New Connection",
+          p_update_delay: 1e3
+        },
+        {
+          p_message: `
+				<p>Select the Terminal technology.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_type");
+            return v_target;
+          },
+          p_title: "Connection Type",
+          p_update_delay: 300
+        },
+        {
+          p_message: `
+				<p>Type a helpful name for the terminal connection.</p>
+				<p>This is used as name reference on many UI areas.</p>
+				<p>i.e: Local terminal.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_title");
+            return v_target;
+          },
+          p_title: "Title"
+        },
+        {
+          p_message: `
+				<p>The terminal utilizes SSH technology.</p>
+				<p>As you can see, in this case SSH parameters are mandatory.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_use_tunnel");
+            return v_target;
+          },
+          p_title: "SSH parameters"
+        },
+        {
+          p_message: `
+				<p>Type the ssh server address. Do not include ports.</p>
+				<p>i.e:127.0.0.1</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_server");
+            return v_target;
+          },
+          p_title: "SSH server"
+        },
+        {
+          p_message: `
+				<p>Type the port of the SSH server.</p>
+				<p>i.e: 22 is a default port for working with SSH tunnels.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_port");
+            return v_target;
+          },
+          p_title: "SSH Port"
+        },
+        {
+          p_message: `
+				<p>Type the name of the SSH user.</p>
+				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_user");
+            return v_target;
+          },
+          p_title: "SSH User"
+        },
+        {
+          p_message: `
+				<p>If you want you can save the password of your user.</p>
+				<p>* Leaving this empty will force the tool to request for your password everytime you open a terminal connection.</p>
+				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_password");
+            return v_target;
+          },
+          p_title: "SSH Password (optional)"
+        },
+        {
+          p_message: `
+				<p>This is <strong>optional</strong>.</p>
+				<p>It allows you to configure a SSH key.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_ssh_key_input_label");
+            return v_target;
+          },
+          p_title: "SSH Key"
+        },
+        {
+          p_message: `
+				<p>You may want to hit 'test' before saving the conntion.</p>
+				<p>After that, click save.</p>
+				`,
+          p_target: function() {
+            var v_target = document.getElementById("conn_form_button_test_connection");
+            return v_target;
+          },
+          p_title: "Test the Connection"
+        }
+      ],
+      snippets: [
+        {
+          p_clone_target: true,
+          p_message: `
+				<p>The snippet panel is now accessible globally, from the navigation rail.</p>
+				<p>Please, click on the <i class="fas fa-book"></i> icon.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Global Snippet Panel"
+        },
+        {
+          // p_callback_after_update_start: function() {setTimeout(function(){var v_target = document.getElementById(v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editorDivId);},50);},
+          p_callback_start: function() {
+            toggleSnippetPanel();
+          },
+          p_message: `
+				<p>Inside this tab you can create and edit a snippet.</p>
+				<p>Go ahead and try to create some simple snippet, i.e:</p>
+				<code>WHERE true SELECT 1;</code>
+				<p>Then experiment clicking on the <strong>indent button</strong> below the editor, and then <strong>next</strong>.</p>
+				`,
+          p_next_button: true,
+          p_target: function() {
+            var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
+            return v_target;
+          },
+          p_title: "Snippets editor",
+          p_update_delay: 600
+        },
+        {
+          p_message: `
+				<p>As you can see, the identation feature automatically adjusts your code following a pattern.</p>
+				<p>Now go ahead and click <strong>save</strong></p>
+				`,
+          p_next_button: true,
+          p_target: function() {
+            var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
+            return v_target;
+          },
+          p_title: "Indenting"
+        },
+        {
+          p_message: `
+				<p>Every snippet you save is stored under your user.</p>
+				<p>The tree on the left allows you to easily access it by double-clicking on the snippet.</p>
+				`,
+          p_next_button: false,
+          p_target: function() {
+            var v_target = document.getElementById(v_connTabControl.snippet_tag.divTree.getAttribute("id"));
+            return v_target;
+          },
+          p_title: "Saved Snippets",
+          p_update_delay: 600
+        }
+      ],
+      selecting_connection: [
+        {
+          p_message: `
+				<p>Your open connections live in the <strong>Database</strong> section.</p>
+				<p>Click on the <i class="fas fa-database"></i> Database icon in the navigation rail.</p>
+				`,
+          p_target: document.getElementById("omnidb_section_nav"),
+          p_title: "Navigation Rail"
+        },
+        {
+          p_callback_start: function() {
+            switchSection("database");
+          },
+          p_message: `
+				<p>Open connections are listed here as a strip of tabs, much like browser tabs.</p>
+				<ol style="padding-left: 1.5rem;">
+					<li class="mb-2">
+						To open a connection, click on the <i class="fas fa-plus"></i> button.
+					</li>
+					<li class="mb-2">
+						Navigate to the proper technology on the custom menu.
+					</li>
+					<li class="mb-2">
+						Click on the connection.
+					</li>
+				</ol>
+				<p>Now you can close this walkthrough and open a new connection.</p>
+				`,
+          p_position: function() {
+            var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
+            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
+          },
+          p_target: function() {
+            var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
+            return v_target;
+          },
+          p_title: "Selecting a Connection",
+          p_update_delay: 350
+        }
+      ],
+      connection_tab: [
+        {
+          p_callback_start: function() {
+            switchSection("database");
+          },
+          p_message: `
+				<p>This identifies the database you are connected with:</p>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.divDetails;
+            return v_target;
+          },
+          p_title: "Current Connection",
+          p_update_delay: 350
+        },
+        {
+          p_message: `
+				<p>This tree is main your access point to this connection.</p>
+				<p><strong>How-to</strong>:</p>
+				<ul style="padding-left: 1.5rem;">
+					<li class="mb-1">
+						<strong>Double-click</strong>: expands child nodes based on the database internal structure.
+					</li>
+					<li class="mb-2">
+						<strong>Right-click</strong>: Context menu with actions based on the node type.
+					</li>
+				</ul>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.divTree;
+            return v_target;
+          },
+          p_title: "Aimara Tree"
+        },
+        {
+          p_message: `
+				<p>These tabs provide additional info to the node you interact with in the Aimara Tree.</p>
+				<p>Keep in mind that every node interaction that returns this type of info needs to query for consistency.</p>
+				<p>To minimize queries, these only run when one of these tabs is visible.</p>
+				<p><strong>Recommendation</strong>: Only open the property/ddl when you need to update this info.</p>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.divTreeTabs;
+            return v_target;
+          },
+          p_title: "Properties / DDL"
+        },
+        {
+          p_message: `
+				<p>There are two types of inner_tabs available.</p>
+				<ol style="padding-left: 1.5rem;">
+					<li class="mb-1">
+						<strong><i class="fas fa-terminal"></i> Console Tab</strong>: Contains a psql console.
+					</li>
+					<li class="mb-1">
+						<strong>Query Tabs</strong>: These have SQL editors whose commands are executed on the selected database.
+					</li>
+				</ol>
+				<div class="alert-info p-2">Keep in mind that when you run a query from the contextual menu of the Aimara Tree, it will open a new query tab and execute it.</div>
+				`,
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.tabList[0].elementA;
+            return v_target;
+          },
+          p_title: "Inner Tabs"
+        },
+        {
+          p_message: `
+				<p>These buttons request actions based on the SQL editor and the querying status.</p>
+				<p>For example, you can <span class="bg-info rounded px-1 text-white">run</span> a query, <span class="bg-info rounded px-1 text-white">cancel</span> an ongoing query, <span class="bg-info rounded px-1 text-white">fetch more</span>, <span class="bg-info rounded px-1 text-white">explain</span>, <span class="bg-info rounded px-1 text-white">explain analyze</span>.</p>
+				<p>If you navigate the Tree on the left to find a table and use the action Query Table from it's context menu, the editor will autofill and the run query will be issued.</p>
+				`,
+          p_position: function() {
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
+              ".omnidb__tab-actions"
+            );
+            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
+          },
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
+              ".omnidb__tab-actions"
+            );
+            return v_target;
+          },
+          p_title: "Actions Panel"
+        },
+        {
+          p_message: `
+				<p>Query returns will fill the area below your screen, even when they return errors.</p>
+				<p>After running a query, this area will contain 3 special tabs.</p>
+				<ol style="padding-left: 1.5rem;">
+					<li class="mb-1">
+						<strong>Data</strong>: Contains a table with query results, when successful.
+					</li>
+					<li class="mb-1">
+						<strong>Messages</strong>: Displays error messages.
+					</li>
+					<li class="mb-1">
+						<strong>Explain</strong>: Contains a special component to display explain/explain analyze results.
+					</li>
+				</ol>
+				`,
+          p_position: function() {
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y + 40 };
+          },
+          p_target: function() {
+            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.querySelector(
+              ".omnidb__tab-actions"
+            );
+            return v_target;
+          },
+          p_title: "Query Result"
+        }
+      ]
+    };
+    let v_tutorial_link_creating_user = gv_desktopMode ? "" : `
+	<li class="mb-2">
+		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="utilities_menu">
+			<i class="fas fa-user-plus me-2"></i>Create an omnidb user
+		</button>
+	</li>`;
+    v_tutorials.getting_started = [
+      {
+        p_message: '<ol style="padding-left: 1.5rem;">' + v_tutorial_link_creating_user + `
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connections_menu">
+						<i class="fas fa-plug me-2"></i>Create a database connection
+					</button>
+				</li>
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="terminal_connection">
+						<i class="fas fa-terminal me-2"></i>Create a terminal connection
+					</button>
+				</li>
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
+						<i class="fas fa-book me-2"></i>Meet the snippets panel
+					</button>
+				</li>
+				<li class="mb-2">
+					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="selecting_connection">
+						<i class="fas fa-plus me-2"></i>Using a connection
+					</button>
+				</li>
+				` + v_button_inner_query + "</ol>",
+        p_title: '<i class="fas fa-list me-2"></i> Getting started',
+        // Anchors omnis (and this step's card) next to whatever launched
+        // the tutorial -- the rail's lightbulb icon, typically -- instead
+        // of the bottom-right corner default that applies when a step
+        // has no target and no position override (updateOmnisPosition
+        // in omnis-control.js). Falls back to that default (`false`) for
+        // callers that don't pass an anchor, e.g. the Welcome section's
+        // own "Getting started" button.
+        p_position: function() {
+          if (!p_anchor_el) return false;
+          var v_anchor_rect2 = p_anchor_el.getBoundingClientRect();
+          return { x: v_anchor_rect2.right + 8, y: v_anchor_rect2.top };
+        }
+      }
+    ];
+    var v_steps = v_tutorials[v_tutorial_name];
+    v_omnis.omnis_ui_assistant.updateStepList(v_steps);
+    v_omnis.omnis_ui_assistant.goToStep(0);
+  }
+  const tutorial = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    startTutorial
+  }, Symbol.toStringTag, { value: "Module" }));
+  const SECTION_NAMES = ["welcome", "connections", "database", "snippets", "settings"];
   var v_sectionDivs = {};
   var v_sectionNav;
   var v_sectionNavTabs = {};
@@ -7039,14 +8128,6 @@
       },
       p_omnidb_tooltip_name: '<h5 class="my-1">Connections</h5>'
     });
-    v_sectionNavTabs.snippets = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-book"></i>',
-      p_close: false,
-      p_selectFunction: function() {
-        toggleSnippetPanel();
-      },
-      p_omnidb_tooltip_name: '<h5 class="my-1">Snippets</h5>'
-    });
     v_sectionNavTabs.database = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-database"></i>',
       p_close: false,
@@ -7055,17 +8136,25 @@
       },
       p_omnidb_tooltip_name: '<h5 class="my-1">Database</h5>'
     });
+    v_sectionNavTabs.snippets = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-book"></i>',
+      p_close: false,
+      p_selectFunction: function() {
+        toggleSnippetPanel();
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Snippets</h5>'
+    });
     var v_spacer = document.createElement("div");
     v_spacer.className = "omnidb__section-nav__spacer";
     v_sectionNav.tabListDiv.appendChild(v_spacer);
     v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-info-circle"></i>',
+      p_icon: '<i class="fas fa-lightbulb"></i>',
       p_close: false,
       p_selectable: false,
-      p_clickFunction: function() {
-        showAbout();
+      p_clickFunction: function(e) {
+        startTutorial("getting_started", e.currentTarget);
       },
-      p_omnidb_tooltip_name: '<h5 class="my-1">About</h5>'
+      p_omnidb_tooltip_name: '<h5 class="my-1">Getting Started</h5>'
     });
     if (!gv_desktopMode) {
       initAccountMenu();
@@ -8814,7 +9903,7 @@
             var temp_bar_data = v_temp_progress_bars_data[i2];
             v_progress_cost_html += '<div id="' + v_plan_item.id + "_svg_progress_" + i2 + '"></div><div>' + temp_bar_data.label + "</div><div>- percentage: " + 100 * temp_bar_data.percentage + "%</div><div>- value: " + temp_bar_data.value + "</div>";
           }
-          var v_data_html = '<div class="mb-2">Toggle node data <button id="' + v_plan_item.id + '_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary ml-2 ' + v_legereControl2.defaultClass + '__btn-toggle-collapse-update" data-index-map="' + v_plan_item.index_map + '"></button></div><div class="alert alert-info mt-2">';
+          var v_data_html = '<div class="mb-2">Toggle node data <button id="' + v_plan_item.id + '_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary ms-2 ' + v_legereControl2.defaultClass + '__btn-toggle-collapse-update" data-index-map="' + v_plan_item.index_map + '"></button></div><div class="alert alert-info mt-2">';
           Object.keys(v_plan_item.data).forEach(function(p_data_key) {
             v_data_html += "<div>" + legereEscapeHtml(p_data_key) + ': <span class="text-danger">' + legereEscapeHtml(v_plan_item.data[p_data_key]) + "</span></div>";
           });
@@ -9039,7 +10128,7 @@
           var v_control_panel_div = document.createElement("div");
           v_control_panel_div.classList = v_legereControl2.defaultClass + "__control-panel";
           v_control_panel_div.setAttribute("style", "align-items: center; display: flex; position: absolute; right: 15px; top: 15px;");
-          v_control_panel_div.innerHTML = '<button id="' + v_legereControl2.id + '_control_panel_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-eye"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_zoomin" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-search-plus"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_zoomout" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-search-minus"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_fit" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-vector-square"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_reset" class="btn btn-sm omnidb__theme__btn--secondary ml-2">reset</button>';
+          v_control_panel_div.innerHTML = '<button id="' + v_legereControl2.id + '_control_panel_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-eye"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_zoomin" class="btn btn-sm omnidb__theme__btn--secondary ms-2"><i class="fas fa-search-plus"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_zoomout" class="btn btn-sm omnidb__theme__btn--secondary ms-2"><i class="fas fa-search-minus"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_fit" class="btn btn-sm omnidb__theme__btn--secondary ms-2"><i class="fas fa-vector-square"></i></button><button id="' + v_legereControl2.id + '_control_panel_button_reset" class="btn btn-sm omnidb__theme__btn--secondary ms-2">reset</button>';
           v_legereControl2.divElementContent.appendChild(v_control_panel_div);
         }
         document.getElementById(v_legereControl2.divGridId).innerHTML = p_plans_html;
@@ -9487,13 +10576,14 @@
       (event2) => resizeVertical(event2)
     );
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
@@ -9550,7 +10640,7 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto mr-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div></div>";
+    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div></div>";
     v_tab.elementDiv.innerHTML = v_html;
     var v_height = window.innerHeight - /** @type {HTMLElement} */
     (document.getElementById("div_edit_data_data_" + v_tab.id).getBoundingClientRect().top + window.scrollY) - 20;
@@ -9799,7 +10889,7 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = "<div class='p-2 omnidb__theme-border--primary'><button id='bt_refresh_" + v_tab.id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 mr-1' title='Refresh'><i class='fas fa-sync-alt mr-2'></i>Refresh</button><span id='div_query_info_" + v_tab.id + "' class='query_info'></span><div id='div_result_" + v_tab.id + "' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: auto;'></div></div>";
+    var v_html = "<div class='p-2 omnidb__theme-border--primary'><button id='bt_refresh_" + v_tab.id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 me-1' title='Refresh'><i class='fas fa-sync-alt me-2'></i>Refresh</button><span id='div_query_info_" + v_tab.id + "' class='query_info'></span><div id='div_result_" + v_tab.id + "' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: auto;'></div></div>";
     v_tab.elementDiv.innerHTML = v_html;
     var v_bt_refresh = (
       /** @type {HTMLElement} */
@@ -9983,7 +11073,7 @@
   function showCommandList() {
     v_connTabControl.selectedTab.tag;
     var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='mr-2 form-control' /></div><div id='command_history_daterangepicker_container_" + v_tabTag.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span><button id='bt_next_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
+    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto me-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='me-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='me-2 form-control' /></div><div id='command_history_daterangepicker_container_" + v_tabTag.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span><button id='bt_next_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt me-1'></i>Refresh</button><button id='bt_clear_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom me-1'></i>Clear List</button></div>";
     var v_gridDiv = v_tabTag.commandHistory.gridDiv;
     v_gridDiv.innerHTML = "";
     if (v_tabTag.commandHistory.grid != null) {
@@ -10573,13 +11663,14 @@
     );
     v_selectDataTabFunc();
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
@@ -10649,7 +11740,7 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = '<div id="txt_snippet_' + v_tab.id + '" style="width: 100%; height: 200px; border: 1px solid #c3c3c3;"></div><div class="row mt-2"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_indent_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent mr-2"></i>indent</button><button id="bt_save_' + v_tab.id + '" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;"><i class="fas fa-save mr-2"></i>save</button></div></div>';
+    var v_html = '<div id="txt_snippet_' + v_tab.id + '" style="width: 100%; height: 200px; border: 1px solid #c3c3c3;"></div><div class="row mt-2"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_indent_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent me-2"></i>Indent</button><button id="bt_save_' + v_tab.id + '" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;"><i class="fas fa-save me-2"></i>Save</button></div></div>';
     var v_div = (
       /** @type {HTMLElement} */
       document.getElementById("div_" + v_tab.id)
@@ -10838,7 +11929,7 @@
         p_omnidb_tooltip_name: p_tooltip_name
       });
       v_connTabControl.selectTab(v_tab);
-      var v_html = `<div style="position: relative; height: 100%;"><div style="display: grid; grid-template-areas: 'left splitter right'; grid-template-columns: auto 12px minmax(0, 1fr); height: 100%;"><div id="` + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="grid-area: left; max-width: 300px; width: 300px;"><div class="omnidb__workspace__content-left"><div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div><div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div><div id="' + v_tab.id + '_left_resize_line_horizontal" style="width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"></div><div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;"><div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;"><div class="div_loading_cover"></div><div class="div_loading_content">  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">    <span class="sr-only ">Loading...</span>  </div></div></div><button id="bt_toggle_tree_tabs_' + v_tab.id + '" type="button" class="btn omnidb__theme__btn--secondary omnidb__tree-tabs__toggler"><i class="fas fa-arrows-alt-v"></i></button><div id="tree_tabs_' + v_tab.id + '" class="omnidb__tree-tabs__container" style="position: relative;"></div></div></div></div><div id="connection_resize_line_' + v_tab.id + '" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;"></div><div id="' + v_tab.id + '_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;"><button id="bt_toggle_tree_container_' + v_tab.id + '" type="button" class="py-4 px-0 btn omnidb__theme__btn--secondary omnidb__tree__toggler"><i class="fas fa-arrows-alt-h"></i></button><div id="' + v_tab.id + '_tabs" class="w-100"></div></div></div></div>';
+      var v_html = `<div style="position: relative; height: 100%;"><div style="display: grid; grid-template-areas: 'left splitter right'; grid-template-columns: auto 12px minmax(0, 1fr); height: 100%;"><div id="` + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="grid-area: left; max-width: 300px; width: 300px;"><div class="omnidb__workspace__content-left"><div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div><div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div><div id="' + v_tab.id + '_left_resize_line_horizontal" style="position: relative; width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"><button id="bt_toggle_tree_tabs_' + v_tab.id + '" type="button" class="omnidb__tree-tabs__toggler" title="Toggle Properties/DDL Panel"><i class="fas fa-arrows-alt-v"></i></button></div><div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;"><div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;"><div class="div_loading_cover"></div><div class="div_loading_content">  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">    <span class="sr-only ">Loading...</span>  </div></div></div><div id="tree_tabs_' + v_tab.id + '" class="omnidb__tree-tabs__container" style="position: relative;"></div></div></div></div><div id="connection_resize_line_' + v_tab.id + '" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;"><button id="bt_toggle_tree_container_' + v_tab.id + '" type="button" class="omnidb__tree__toggler" title="Toggle Database Tree"><i class="fas fa-arrows-alt-h"></i></button></div><div id="' + v_tab.id + '_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;"><div id="' + v_tab.id + '_tabs" class="w-100"></div></div></div></div>';
       var v_tab_title_span = v_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
       if (v_tab_title_span) {
         v_tab_title_span.id = "tab_title_" + v_tab.id;
@@ -10853,8 +11944,16 @@
         (event2) => resizeConnectionHorizontal(event2)
       );
       document.getElementById("bt_toggle_tree_tabs_" + v_tab.id).addEventListener(
+        "mousedown",
+        (event2) => event2.stopPropagation()
+      );
+      document.getElementById("bt_toggle_tree_tabs_" + v_tab.id).addEventListener(
         "click",
-        () => toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id, v_tab.id + "_left_resize_line_horizontal")
+        () => toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id)
+      );
+      document.getElementById("bt_toggle_tree_container_" + v_tab.id).addEventListener(
+        "mousedown",
+        (event2) => event2.stopPropagation()
       );
       document.getElementById("bt_toggle_tree_container_" + v_tab.id).addEventListener(
         "click",
@@ -10890,14 +11989,15 @@
         p_div: v_tab.id + "_tabs",
         p_hierarchy: "secondary"
       });
-      v_currTabControl.createTab({
-        p_name: "+",
+      var v_add_tab = v_currTabControl.createTab({
+        p_icon: '<i class="fas fa-plus"></i>',
         p_close: false,
         p_selectable: false,
         p_clickFunction: function(e) {
           showMenuNewTab(e);
         }
       });
+      v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
       var v_ddl_div = v_ddl_tab.elementDiv;
       ace.require("ace/ext/language_tools");
       var v_editor = ace.edit(v_ddl_tab.elementDiv);
@@ -21173,7 +22273,7 @@
       document.body.classList.remove("omnidb--theme-dark");
       document.body.classList.add("omnidb--theme-light");
     }
-    try {
+    if (typeof v_connTabControl !== "undefined") {
       for (let i3 = 0; i3 < v_connTabControl.tabList.length; i3++) {
         var v_outer_tab = v_connTabControl.tabList[i3];
         if (v_outer_tab.tag) {
@@ -21191,8 +22291,6 @@
           }
         }
       }
-    } catch (e) {
-      console.warn(e);
     }
     var els = document.getElementsByClassName("ace_editor");
     Array.prototype.forEach.call(els, function(el2) {
@@ -21605,7 +22703,7 @@
   function showConsoleHistory() {
     v_connTabControl.selectedTab.tag;
     var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tab_tag2.consoleHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto mr-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tab_tag2.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tab_tag2.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tab_tag2.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='mr-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tab_tag2.tab_id + "' class='mr-2 form-control' /></div><div id='console_history_daterangepicker_container_" + v_tab_tag2.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tab_tag2.tab_id + "'></span> / <span id='cl_num_pages_" + v_tab_tag2.tab_id + "'></span><button id='bt_next_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt mr-1'></i>Refresh</button><button id='bt_clear_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom mr-1'></i>Clear List</button></div>";
+    v_tab_tag2.consoleHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto me-2'><span class='my-auto'>Select a daterange:</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" + v_tab_tag2.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" + v_tab_tag2.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tab_tag2.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='me-1'>Command contains:</label><input type='text' id='cl_input_contains_" + v_tab_tag2.tab_id + "' class='me-2 form-control' /></div><div id='console_history_daterangepicker_container_" + v_tab_tag2.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button><button id='bt_previous_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button><span id='cl_curr_page_" + v_tab_tag2.tab_id + "'></span> / <span id='cl_num_pages_" + v_tab_tag2.tab_id + "'></span><button id='bt_next_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button><button id='bt_last_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button><button id='bt_refresh_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt me-1'></i>Refresh</button><button id='bt_clear_" + v_tab_tag2.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom me-1'></i>Clear List</button></div>";
     var v_grid_div = v_tab_tag2.consoleHistory.gridDiv;
     v_grid_div.innerHTML = "";
     if (v_tab_tag2.consoleHistory.grid != null) {
@@ -22006,11 +23104,83 @@
     var v_animated_omnis = `<svg
 			version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
 			x="0px" y="0px"
-			width="82.333px" height="82.333px"
-			viewBox="0 0 82.333 82.333" enable-background="new 0 0 82.333 82.333"
+			width="269.667px" height="82.333px"
+			viewBox="0 0 269.667 82.333" enable-background="new 0 0 269.667 82.333"
 			xml:space="preserve"
 	>
-			<g class="animated-omnis__icon-grid animated-omnis__group--to-blue">
+			<style>
+					.welcome-logo__to-blue path,
+					.welcome-logo__to-blue rect,
+					.welcome-logo__to-darkblue path,
+					.welcome-logo__to-darkblue rect {
+							stroke: #818181;
+							stroke-width: 1px;
+							stroke-dasharray: 100;
+							stroke-dashoffset: 100;
+					}
+
+					.welcome-logo__to-blue path,
+					.welcome-logo__to-blue rect {
+							fill: transparent;
+							animation:
+									welcome-logo-draw 1s ease forwards 0s,
+									welcome-logo-fill-blue 0.8s ease forwards 1s,
+									welcome-logo-fade-stroke 0.8s ease forwards 1s;
+					}
+
+					.welcome-logo__to-darkblue path,
+					.welcome-logo__to-darkblue rect {
+							fill: transparent;
+							animation:
+									welcome-logo-draw 1s ease forwards 0s,
+									welcome-logo-fill-darkblue 0.8s ease forwards 1s,
+									welcome-logo-fade-stroke 0.8s ease forwards 1s;
+					}
+
+					@keyframes welcome-logo-draw {
+							to { stroke-dashoffset: 0; }
+					}
+
+					@keyframes welcome-logo-fade-stroke {
+							to { stroke: transparent; }
+					}
+
+					@keyframes welcome-logo-fill-blue {
+							from { fill: #cfe4fb; }
+							to { fill: #1e88e5; }
+					}
+
+					@keyframes welcome-logo-fill-darkblue {
+							from { fill: #d7dbe8; }
+							to { fill: #37517e; }
+					}
+			</style>
+			<g class="welcome-logo__to-blue">
+					<path fill="#1E88E5" d="M109.192,30.407H98.141c-5.478,0-9.919,4.847-9.919,10.826c0,5.982,4.441,10.829,9.919,10.829h11.051
+							c5.48,0,9.921-4.847,9.921-10.829C119.113,35.253,114.672,30.407,109.192,30.407z M106.959,47.145h-6.585
+							c-3.264,0-5.911-2.645-5.911-5.912c0-3.264,2.646-5.909,5.911-5.909h6.585c3.266,0,5.911,2.646,5.911,5.909
+							C112.871,44.5,110.225,47.145,106.959,47.145z"/>
+					<path fill="#1E88E5" d="M150.642,33.76c-0.66-2.21-1.79-3.358-3.812-3.358c-1.313,0-2.932,0.419-3.816,2.163
+							c-1.638,3.23-5.112,10.241-5.112,10.241s-3.464-6.972-5.103-10.202c-0.884-1.745-2.513-2.202-3.825-2.202
+							c-2.021,0-3.151,1.148-3.812,3.358c-0.655,2.194-5.286,17.963-5.286,17.963h6.365L129.557,39c0,0,1.636,4.402,3.127,7.943
+							c1.026,2.438,3.197,3.315,4.987,3.315s3.551-0.805,4.842-3.113c1.581-2.823,3.734-8.249,3.734-8.249l3.315,12.827h6.364
+							C155.927,51.723,151.297,35.955,150.642,33.76z"/>
+					<path fill="#1E88E5" d="M158.298,51.723c0,0,0-15.711,0-17.401c0-1.691,1.19-3.92,3.245-3.92s3.731,1.869,4.688,2.729
+							c0.956,0.86,11.397,10.188,11.397,10.188V30.747h5.599c0,0,0,15.63,0,17.56s-1.192,3.761-3.575,3.761s-3.541-1.477-5.057-2.992
+							c-1.516-1.515-10.432-10.739-10.432-10.739v13.388H158.298z"/>
+					<rect x="187.146" y="30.747" fill="#1E88E5" width="5.599" height="20.977"/>
+			</g>
+			<g class="welcome-logo__to-darkblue">
+					<path fill="#37517E" d="M196.758,38.648c0,0,0,8.991,0,10.275s0.506,2.8,2.664,2.8c2.159,0,6.265,0,11.381,0
+							c5.117,0,12.639-4.041,12.639-10.692s-5.927-10.284-12.814-10.284s-9.73,0-9.73,0l-4.139,5.456c0,0,8.466,0,14.045,0
+							c5.58,0,6.211,3.886,6.211,5.11c0,1.224-0.894,5.016-6.211,5.016c-5.316,0-7.525,0-7.525,0v-7.681H196.758z"/>
+					<path fill="#37517E" d="M250.405,40.937c0,0,2.853-1.397,2.853-4.39s-2.125-5.801-8.244-5.801c-6.12,0-13.892,0-13.892,0
+							l-4.39,5.456c0,0,16.303,0,17.917,0s2.465,0.354,2.465,1.347c0,0.993-0.767,1.412-2.565,1.412c-1.8,0-17.816,0-17.816,0
+							s0,8.061,0,9.448s0.648,3.313,4.503,3.313s10.441,0,13.933,0c3.49,0,8.521-1.923,8.521-5.831
+							C253.688,41.985,250.405,40.937,250.405,40.937z M244.495,46.329c-1.746,0-11.243,0-11.243,0v-2.884c0,0,9.923,0,11.397,0
+							s2.557,0.07,2.557,1.412S246.242,46.329,244.495,46.329z"/>
+			</g>
+			<g class="welcome-logo__to-blue">
 					<path fill="#1E88E5" d="M57.694,31.129c-1.484-2.352-3.474-4.342-5.825-5.823c0.646,1.263,1.214,2.643,1.691,4.129
 							C55.049,29.915,56.43,30.486,57.694,31.129z"/>
 					<path fill="#1E88E5" d="M43.292,22.507v5.234c2.323,0.072,4.553,0.333,6.649,0.762c-0.969-2.344-2.205-4.237-3.614-5.531
@@ -22042,8 +23212,8 @@
 							C27.781,53.223,29.771,55.213,32.123,56.695z"/>
 					<path fill="#1E88E5" d="M40.695,42.3h-8.873c0.092,2.79,0.475,5.418,1.094,7.779c2.359,0.619,4.99,1.002,7.779,1.094V42.3z"/>
 			</g>
-			<g class="animated-omnis__icon-external animated-omnis__group--to-blue">
-					<g class="animated-omnis__icon-external__rings">
+			<g class="welcome-logo__to-blue">
+					<g>
 							<path fill="#1E88E5" d="M36.436,14.434c0.642,1.11,0.979,2.306,1.082,3.505c1.451-0.281,2.944-0.438,4.477-0.438
 									c10.299,0,19.03,6.635,22.203,15.854c1.094-0.513,2.301-0.823,3.59-0.823c0.431,0,0.846,0.064,1.26,0.127
 									c-3.561-11.562-14.325-19.967-27.052-19.967c-2.165,0-4.264,0.266-6.291,0.726C35.961,13.743,36.223,14.065,36.436,14.434z"/>
@@ -22055,7 +23225,7 @@
 									c-1.535,0-3.031-0.159-4.483-0.438c-0.103,1.202-0.432,2.401-1.072,3.515c-0.212,0.368-0.472,0.687-0.728,1.01
 									c2.023,0.46,4.121,0.725,6.283,0.725c12.728,0,23.492-8.403,27.055-19.965C68.632,49.405,68.218,49.47,67.787,49.47z"/>
 					</g>
-					<g class="animated-omnis__icon-external__spheres animated-omnis__group--to-darkblue">
+					<g class="welcome-logo__to-darkblue">
 							<path fill="#37517E" d="M73.462,41.001c0-3.137-2.539-5.678-5.676-5.678s-5.683,2.541-5.683,5.678s2.546,5.674,5.683,5.674
 									S73.462,44.138,73.462,41.001z"/>
 							<path fill="#37517E" d="M26.262,13.754c-2.718,1.566-3.647,5.033-2.079,7.753c1.566,2.715,5.042,3.645,7.757,2.079
@@ -22065,15 +23235,14 @@
 					</g>
 			</g>
 	</svg>`;
-    let v_html_title = '<h1 class="mb-4" style="padding-left: 100px; position: relative;"><span class="omnidb__welcome__loading" style="background: none;">' + v_animated_omnis + '</span><span class="omnidb__welcome__intro-text">Hi, welcome to <span style="color:#4a6cbb;">OmniDB!</span></span></h1>';
-    let v_html_intro = `<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center"><span class="badge badge-danger" style="vertical-align: middle;">disclaimer</span> OmniDB is a powerful tool, and with great power...<br/>Please <strong><span class="text-danger">learn how to use it on a testing environment, NOT on production</span></strong>!</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started"><i class="fas fa-list mr-2"></i>Getting started</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-exclamation-triangle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">
-				Our focus is to provide a very flexible, secure and work-effective environment for multiple DBMS.<br>
-				With that in mind, you should <strong>be aware the many actions on the UI can lead to a direct interaction with the database</strong> that you are connected with.</br>
+    let v_html_title = '<div class="d-flex justify-content-center mb-4"><span class="omnidb__welcome__logo">' + v_animated_omnis + "</span></div>";
+    let v_html_intro = `<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center">OmniDB puts you directly in the driver's seat of your databases &mdash; that's what makes it so useful. While you're getting comfortable with it, we recommend practicing on a <strong>test environment rather than production</strong>.</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started"><i class="fas fa-list me-2"></i>Getting started</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-info-circle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">
+				We aim to keep OmniDB flexible, secure and work-effective across multiple DBMS.<br>
+				Just keep in mind that many actions here <strong>talk directly to the database you're connected to</strong>.
 				</div></div></div>`;
-    let v_html_useful_links = '<div class="alert alert-success p-3 omnidb__welcome__useful-card"><h2 class="text-center mb-4">Useful stuff</h2><ul><li class="mb-2"><a class="btn btn-success text-white" target="_blank" href="https://www.omnidb.net"><i class="fas fa-user"></i> <span>OmniDB website</span></a></li><li class="mb-2"><a class="btn btn-success text-white" target="_blank" href="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>Github repo</span></a></li><li><a class="btn btn-success text-white" target="_blank" href="https://www.omnidb.net"><i class="fas fa-list"></i> <span>Read the docs</span></a></li></ul></div>';
-    var v_html = '<div class="container" style="position: relative;"><div class="row"><div class="col-12"><div id="welcome_content" class="omnidb__welcome" style="height: 100vh;display: flex;align-items: center;font-size: 1.2rem;justify-content: center;"><div>' + // Title
-    v_html_title + // Welcome grid
-    `<div style="display: grid; grid-template: 'intro getting_started links'; grid-gap: 64px;"><div style="grid-area: intro;">` + v_html_intro + '</div><div style="grid-area: links;">' + v_html_useful_links + "</div></div></div></div></div></div>";
+    let v_html_useful_links = '<div class="alert alert-success p-3 omnidb__welcome__useful-card"><h2 class="text-center mb-4">Useful stuff</h2><ul><li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net"><i class="fas fa-globe-americas"></i> <span>OmniDB web</span></a></li><li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>GitHub repo</span></a></li><li><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net/en/introduction.html"><i class="fas fa-list"></i> <span>Read the docs</span></a></li></ul></div>';
+    let v_html_about = '<div class="card p-3 mt-3 text-center"><span class="badge bg-light text-dark border p-2 mb-2"><i class="fas fa-code-branch me-1"></i> Version ' + v_short_version + '</span><span class="badge bg-light text-dark border p-2"><i class="fas fa-balance-scale me-1"></i> License: MIT</span></div>';
+    var v_html = `<div class="container" style="position: relative;"><div class="row"><div class="col-12"><div id="welcome_content" class="omnidb__welcome" style="height: 100vh;display: flex;align-items: center;font-size: 1.2rem;justify-content: center;"><div><div style="display: grid; grid-template: 'intro getting_started links'; grid-gap: 64px;"><div style="grid-area: intro;">` + v_html_title + v_html_intro + '</div><div style="grid-area: links;">' + v_html_useful_links + v_html_about + "</div></div></div></div></div></div>";
     v_target.innerHTML = v_html;
     refreshBootstrapTooltips();
     endLoading();
@@ -31449,1070 +32618,6 @@
     nodeOpenErrorSqlite,
     refreshTreeSqlite
   }, Symbol.toStringTag, { value: "Module" }));
-  function createOmnis() {
-    return {
-      id: "omnis",
-      div: null,
-      template: `<svg
-				class="animated-omnis"
-
-				version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
-				x="0px" y="0px"
-				width="40px" height="40px"
-				viewBox="0 0 82.333 82.333" enable-background="new 0 0 82.333 82.333"
-				xml:space="preserve"
-		>
-				<g class="animated-omnis__icon-grid animated-omnis__group--to-blue">
-						<path fill="#1E88E5" d="M57.694,31.129c-1.484-2.352-3.474-4.342-5.825-5.823c0.646,1.263,1.214,2.643,1.691,4.129
-								C55.049,29.915,56.43,30.486,57.694,31.129z"/>
-						<path fill="#1E88E5" d="M43.292,22.507v5.234c2.323,0.072,4.553,0.333,6.649,0.762c-0.969-2.344-2.205-4.237-3.614-5.531
-								C45.343,22.736,44.331,22.58,43.292,22.507z"/>
-						<path fill="#1E88E5" d="M57.692,50.87c-1.265,0.644-2.643,1.215-4.132,1.691c-0.477,1.489-1.046,2.867-1.691,4.132
-								C54.221,55.211,56.21,53.221,57.692,50.87z"/>
-						<path fill="#1E88E5" d="M60.188,44.681c-0.359-0.742-0.612-1.537-0.744-2.381h-4.192c-0.072,2.322-0.332,4.551-0.756,6.645
-								c2.344-0.969,4.238-2.207,5.532-3.618C60.08,45.11,60.145,44.9,60.188,44.681z"/>
-						<path fill="#1E88E5" d="M60.029,36.675c-1.293-1.414-3.187-2.652-5.534-3.624c0.424,2.097,0.684,4.325,0.756,6.647h4.192
-								c0.132-0.844,0.385-1.639,0.747-2.378C60.145,37.101,60.08,36.889,60.029,36.675z"/>
-						<path fill="#1E88E5" d="M52.168,42.3h-8.875v8.873c2.79-0.092,5.421-0.475,7.782-1.094C51.693,47.718,52.076,45.09,52.168,42.3z"/>
-						<path fill="#1E88E5" d="M43.292,39.699h8.875c-0.092-2.79-0.475-5.421-1.094-7.782c-2.361-0.619-4.992-1.002-7.782-1.094V39.699z"
-								/>
-						<path fill="#1E88E5" d="M43.292,59.493c1.039-0.072,2.05-0.229,3.036-0.466c1.409-1.296,2.645-3.187,3.614-5.531
-								c-2.096,0.427-4.327,0.687-6.649,0.759V59.493z"/>
-						<path fill="#1E88E5" d="M29.499,48.945c-0.427-2.094-0.687-4.322-0.759-6.645H23.5c0.071,1.036,0.228,2.046,0.462,3.026
-								C25.257,46.741,27.152,47.976,29.499,48.945z"/>
-						<path fill="#1E88E5" d="M40.695,22.507c-1.038,0.072-2.05,0.229-3.034,0.465c-1.409,1.294-2.645,3.188-3.612,5.528
-								c2.096-0.426,4.324-0.687,6.646-0.759V22.507z"/>
-						<path fill="#1E88E5" d="M40.695,30.823c-2.789,0.092-5.419,0.475-7.779,1.094c-0.621,2.361-1.002,4.992-1.094,7.782h8.873V30.823z"
-								/>
-						<path fill="#1E88E5" d="M32.123,25.304c-2.353,1.481-4.344,3.472-5.827,5.822c1.265-0.643,2.645-1.214,4.135-1.691
-								C30.91,27.947,31.479,26.566,32.123,25.304z"/>
-						<path fill="#1E88E5" d="M40.695,59.493v-5.238c-2.322-0.072-4.552-0.332-6.646-0.759c0.967,2.345,2.202,4.238,3.612,5.531
-								C38.646,59.263,39.657,59.42,40.695,59.493z"/>
-						<path fill="#1E88E5" d="M23.499,39.699h5.241c0.071-2.322,0.332-4.551,0.759-6.647c-2.348,0.969-4.243,2.21-5.538,3.624
-								C23.727,37.656,23.571,38.665,23.499,39.699z"/>
-						<path fill="#1E88E5" d="M32.123,56.695c-0.644-1.265-1.213-2.643-1.691-4.131c-1.489-0.478-2.868-1.049-4.133-1.691
-								C27.781,53.223,29.771,55.213,32.123,56.695z"/>
-						<path fill="#1E88E5" d="M40.695,42.3h-8.873c0.092,2.79,0.475,5.418,1.094,7.779c2.359,0.619,4.99,1.002,7.779,1.094V42.3z"/>
-				</g>
-				<g class="animated-omnis__icon-external animated-omnis__group--to-blue">
-						<g class="animated-omnis__icon-external__rings">
-								<path fill="#1E88E5" d="M36.436,14.434c0.642,1.11,0.979,2.306,1.082,3.505c1.451-0.281,2.944-0.438,4.477-0.438
-										c10.299,0,19.03,6.635,22.203,15.854c1.094-0.513,2.301-0.823,3.59-0.823c0.431,0,0.846,0.064,1.26,0.127
-										c-3.561-11.562-14.325-19.967-27.052-19.967c-2.165,0-4.264,0.266-6.291,0.726C35.961,13.743,36.223,14.065,36.436,14.434z"/>
-								<path fill="#1E88E5" d="M21.771,59.104c0.646-1.115,1.519-2.007,2.513-2.695c-3.58-4.107-5.765-9.463-5.783-15.339
-										c0-0.022-0.006-0.044-0.006-0.068c0-0.019,0.005-0.036,0.005-0.055c0.013-5.874,2.193-11.227,5.766-15.339
-										c-0.99-0.689-1.854-1.593-2.497-2.706c-0.211-0.366-0.356-0.747-0.508-1.127c-4.685,5.052-7.572,11.795-7.572,19.227
-										c0,7.436,2.889,14.179,7.576,19.228C21.415,59.851,21.561,59.468,21.771,59.104z"/>
-								<path fill="#1E88E5" d="M67.787,49.47c-1.289,0-2.499-0.311-3.592-0.826c-3.175,9.222-11.901,15.853-22.2,15.853
-										c-1.535,0-3.031-0.159-4.483-0.438c-0.103,1.202-0.432,2.401-1.072,3.515c-0.212,0.368-0.472,0.687-0.728,1.01
-										c2.023,0.46,4.121,0.725,6.283,0.725c12.728,0,23.492-8.403,27.055-19.965C68.632,49.405,68.218,49.47,67.787,49.47z"/>
-						</g>
-						<g class="animated-omnis__icon-external__spheres animated-omnis__group--to-darkblue">
-								<path fill="#37517E" d="M73.462,41.001c0-3.137-2.539-5.678-5.676-5.678s-5.683,2.541-5.683,5.678s2.546,5.674,5.683,5.674
-										S73.462,44.138,73.462,41.001z"/>
-								<path fill="#37517E" d="M26.262,13.754c-2.718,1.566-3.647,5.033-2.079,7.753c1.566,2.715,5.042,3.645,7.757,2.079
-										c2.718-1.568,3.645-5.045,2.079-7.755C32.446,13.116,28.979,12.181,26.262,13.754z"/>
-								<path fill="#37517E" d="M26.267,68.256c2.72,1.568,6.187,0.639,7.755-2.076c1.566-2.715,0.636-6.189-2.077-7.755
-										c-2.72-1.571-6.191-0.639-7.752,2.074C22.622,63.219,23.549,66.691,26.267,68.256z"/>
-						</g>
-				</g>
-		</svg>`
-    };
-  }
-  function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_steps = [] }) {
-    p_steps.length !== 0 ? p_steps : [
-      {
-        p_message: "This contains the outer connection and global panels [ connections_list_manager, snippets_panel, [conn_1, conn_2, ...], add_connection]",
-        p_target: document.getElementsByClassName("omnidb__tab-menu omnidb__tab-menu--primary")[0],
-        p_title: "Primary menu"
-      },
-      {
-        p_message: "This contains general settings and options, such as [ versioning, connections_list_manager, user_setting, plugins...]",
-        p_target: document.getElementsByClassName("omnidb__utilities-menu")[0],
-        p_title: "Utilities menu"
-      }
-    ];
-    var v_state_active = true;
-    var v_omnisControl = {
-      // Params
-      callback_end: p_callback_end,
-      id: "omnis_control_" + Date.now(),
-      stateActive: v_state_active,
-      stepCounter: 0,
-      /** @type {any[]} */
-      stepList: [],
-      stepSelected: 0,
-      z_index: 999999,
-      // Actions
-      getPosition: function(p_el) {
-        var xPos = 0;
-        var yPos = 0;
-        var el2 = p_el;
-        while (el2) {
-          if (el2.tagName == "BODY") {
-            var xScroll = el2.scrollLeft || document.documentElement.scrollLeft;
-            var yScroll = el2.scrollTop || document.documentElement.scrollTop;
-            xPos += el2.offsetLeft - xScroll + el2.clientLeft;
-            yPos += el2.offsetTop - yScroll + el2.clientTop;
-          } else {
-            xPos += el2.offsetLeft - el2.scrollLeft + el2.clientLeft;
-            yPos += el2.offsetTop - el2.scrollTop + el2.clientTop;
-          }
-          el2 = el2.offsetParent;
-        }
-        return {
-          x: xPos,
-          y: yPos
-        };
-      },
-      self_destruct: function() {
-        var v_control = this;
-        v_control.setStateDisabled();
-        document.getElementById("omnidb__main").removeChild(v_control.divElement);
-        for (let i2 = 0; i2 < v_control.stepList.length; i2++) {
-          if (v_control.stepList[i2].callback_end !== false) {
-            v_control.stepList[i2].callback_end();
-          }
-        }
-        if (this.callback_end) {
-          this.callback_end();
-        }
-        var v_omnis_div = p_omnis.div;
-        v_omnis_div.style.top = p_omnis.root.getBoundingClientRect().height - 45 + "px";
-        v_omnis_div.style.left = p_omnis.root.getBoundingClientRect().width - 45 + "px";
-      },
-      emptyStepList: function() {
-        this.stepCounter = 0;
-        this.stepList = [];
-      },
-      updateStepList: function(p_list) {
-        this.emptyStepList();
-        for (let i2 = 0; i2 < p_list.length; i2++) {
-          this.createStep(p_list[i2]);
-        }
-      },
-      goToStep: async function(p_index) {
-        for (let i2 = 0; i2 < this.stepList.length; i2++) {
-          if (p_index !== i2) {
-            if (this.stepList[i2].callback_end !== false) {
-              this.stepList[i2].callback_end();
-            }
-          }
-        }
-        if (this.stepList[p_index].callback_start) {
-          this.stepList[p_index].callback_start();
-        }
-        var v_control = this;
-        v_control.stepSelected = p_index;
-        var v_step_item = await v_control.renderStep();
-        if (v_step_item !== "stop") {
-          var get_v_target = new Promise((resolve) => {
-            setTimeout(function() {
-              var v_next_btn = document.getElementById("omnis_step_btn_next");
-              if (v_next_btn !== void 0 && v_next_btn !== null) {
-                v_next_btn.onclick = function() {
-                  v_control.goToStep(v_control.stepSelected + 1);
-                };
-              }
-              var v_target;
-              if (typeof v_step_item.target === "function") {
-                v_target = v_step_item.target();
-              } else {
-                v_target = v_step_item.target;
-              }
-              v_control.updateOmnisPosition(v_target, v_step_item.position);
-              resolve(v_target);
-            }, v_step_item.update_delay);
-          });
-          await get_v_target.then(function(v_target) {
-            if (v_step_item.clone_target && v_target) {
-              v_step_item.update_delay;
-              if (v_target !== null) {
-                let v_target_bounding_rect = v_target.getBoundingClientRect();
-                let v_target_bounding_rect_left = v_target_bounding_rect.x + "px";
-                let v_target_bounding_rect_top = v_target_bounding_rect.y + "px";
-                let v_target_bounding_rect_width = v_target_bounding_rect.width + "px";
-                setTimeout(function() {
-                  var v_cloned_element = v_target.cloneNode(true);
-                  v_cloned_element.setAttribute("id", "omnis_temp_clone");
-                  v_control.divClonedElement.style.left = v_target_bounding_rect_left;
-                  v_control.divClonedElement.style.top = v_target_bounding_rect_top;
-                  v_cloned_element.style.width = v_target_bounding_rect_width;
-                  v_control.updateClonedElementContent(v_cloned_element);
-                  v_control.divBackdropElement.style.display = "";
-                  v_cloned_element.addEventListener("click", function() {
-                    v_control.goToStep(v_control.stepSelected + 1);
-                  });
-                }, 50);
-              } else {
-                v_control.divClonedElement.innerHTML = "";
-                v_control.divClonedElement.style.left = "";
-                v_control.divClonedElement.style.top = "";
-                v_control.divBackdropElement.style.display = "none";
-              }
-            } else {
-              v_control.divClonedElement.innerHTML = "";
-              v_control.divClonedElement.style.left = "";
-              v_control.divClonedElement.style.top = "";
-              v_control.divBackdropElement.style.display = "none";
-            }
-            var v_previous_btn = document.getElementById("omnis_step_btn_previous");
-            if (v_previous_btn !== void 0 && v_previous_btn !== null) {
-              v_previous_btn.onclick = function() {
-                v_control.goToStep(v_control.stepSelected - 1);
-              };
-            }
-            var v_close_btn = document.getElementById("omnis_step_btn_close");
-            if (v_close_btn !== void 0 && v_close_btn !== null) {
-              v_close_btn.onclick = function() {
-                v_control.self_destruct();
-              };
-            }
-            if (v_control.stepList[v_control.stepSelected].callback_after_update_start) {
-              v_control.stepList[v_control.stepSelected].callback_after_update_start();
-            }
-          });
-        }
-      },
-      // Template
-      createStep: function({
-        p_callback_after_update_start = false,
-        p_callback_end: p_callback_end2 = false,
-        p_callback_start = false,
-        p_clone_target = false,
-        p_message = "Example",
-        p_next_button = true,
-        p_position = () => {
-          return false;
-        },
-        p_target = null,
-        p_title = "Omnis",
-        p_update_delay = 0
-      }) {
-        var v_control = this;
-        var v_index = v_control.stepCounter;
-        v_control.stepCounter++;
-        var v_step = {
-          callback_after_update_start: p_callback_after_update_start,
-          callback_end: p_callback_end2,
-          callback_start: p_callback_start,
-          clone_target: p_clone_target,
-          id: v_control.id + "_step_" + v_index,
-          message: p_message,
-          next_button: p_next_button,
-          position: p_position(),
-          target: p_target,
-          title: p_title,
-          update_delay: p_update_delay
-        };
-        this.stepList.push(v_step);
-      },
-      renderStep: function() {
-        if (this.stateActive) {
-          var v_control = this;
-          var v_step_item = this.stepList[this.stepSelected];
-          v_control.divClonedElement.innerHTML = "";
-          v_control.divClonedElement.style.left = "";
-          v_control.divClonedElement.style.top = "";
-          v_control.divBackdropElement.style.display = "";
-          v_control.divWavesElement.innerHTML = "";
-          var v_title = "";
-          if (v_step_item.title) {
-            v_title += '<div class="omnis__step__title card-title p-2 mt-2 mb-0"><h5 class="mb-0">' + v_step_item.title + "</h5></div>";
-          }
-          var v_message = "";
-          if (v_step_item.message) {
-            v_message += '<div class="omnis__step__body card-body p-2 mb-4">' + v_step_item.message + "</div>";
-          }
-          var v_step_btn_next = "";
-          if (this.stepList[this.stepSelected].next_button && this.stepSelected < this.stepCounter - 1) {
-            v_step_btn_next += '<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ml-2">Next</button>';
-          }
-          var v_step_btn_previous = "";
-          var v_step_btn_close = '<button id="omnis_step_btn_close" type="button" class="btn btn-sm btn-danger ml-auto">End walkthrough</button>';
-          var v_step_title = '<div class="mb-4 text-center" style="position: relative;">' + // '<div style="background: none; display: inline-block; height: 64px; width:64px;">' + v_animated_omnis + '</div>' +
-          v_title + "</div>";
-          var v_step_html = '<div class="omnis__step card">' + v_step_title + v_message + '<div class="omnis__step__footer card-footer d-flex align-items-center p-2">' + v_step_btn_previous + v_step_btn_next + v_step_btn_close + "</div></div>";
-          this.divCardElement.innerHTML = v_step_html;
-          this.divElement.style.display = "block";
-          return new Promise((resolve) => {
-            resolve(v_step_item);
-          });
-        } else {
-          this.divElement.style.display = "none";
-          this.divWavesElement.innerHTML = "";
-          return new Promise((resolve) => {
-            resolve("stop");
-          });
-        }
-      },
-      setStateEnabled: function() {
-        this.stateActive = true;
-        this.renderStep();
-      },
-      setStateDisabled: function() {
-        this.stateActive = false;
-        this.renderStep();
-      },
-      updateClonedElementContent: function(p_content_element) {
-        var v_control = this;
-        var v_cloned_element = v_control.divClonedElement;
-        var v_waves_element = v_control.divWavesElement;
-        v_cloned_element.innerHTML = "";
-        v_waves_element.innerHTML = "";
-        v_cloned_element.appendChild(p_content_element);
-        v_waves_element.innerHTML = '<span id="' + v_control.id + '_cloned_element_waves" class="omnis__cloned-element__waves"><span></span><span></span><span></span><span></span></span>';
-        let v_target = typeof v_control.stepList[v_control.stepSelected].target === "function" ? v_control.stepList[v_control.stepSelected].target() : v_control.stepList[v_control.stepSelected].target;
-        let v_cloned_element_bounding_rect = v_target.getBoundingClientRect();
-        v_waves_element.style.left = v_cloned_element_bounding_rect.x + "px";
-        v_waves_element.style.top = v_cloned_element_bounding_rect.y + "px";
-        v_waves_element.style.width = v_cloned_element_bounding_rect.width + "px";
-        v_waves_element.style.height = v_cloned_element_bounding_rect.height + "px";
-        v_waves_element.style.display = "block";
-        document.getElementById(v_control.id + "_cloned_element_waves");
-      },
-      /** @param {any} p_target @param {{x: number, y: number}|false} [p_pos] */
-      updateOmnisPosition: function(p_target, p_pos = false) {
-        try {
-          let v_root = (
-            /** @type {HTMLElement} */
-            document.getElementById("omnidb__main")
-          );
-          let v_window_width = v_root.offsetWidth;
-          let v_window_width_half = Math.round(v_window_width / 2);
-          let v_window_height = v_root.offsetHeight;
-          let v_window_height_half = Math.round(v_window_height / 2);
-          var v_control = this;
-          var v_target = p_target;
-          if (!v_target) {
-            v_target = typeof v_control.stepList[v_control.stepSelected].target === "function" ? v_control.stepList[v_control.stepSelected].target() : v_control.stepList[v_control.stepSelected].target;
-          }
-          var v_target_position;
-          var v_target_offset_width = 0;
-          if (p_pos) {
-            v_target_position = { x: p_pos.x, y: p_pos.y };
-          } else if (v_target) {
-            v_target_position = v_control.getPosition(v_target);
-            v_target_offset_width = v_target.offsetWidth;
-          } else {
-            v_target_position = { x: v_window_width - 5, y: v_window_height - 5 };
-          }
-          var v_omnis_div = p_omnis.div;
-          if (v_target_position.x >= v_window_width_half) {
-            v_omnis_div.style.left = v_target_position.x - 56 + "px";
-            v_control.divCardElement.style.left = v_target_position.x - v_control.divCardElement.offsetWidth - 56 + "px";
-            if (v_target_position.y <= v_window_height_half) {
-              v_omnis_div.style.top = v_target_position.y + 16 + "px";
-              v_control.divCardElement.style.top = v_target_position.y + 20 + "px";
-            } else {
-              v_omnis_div.style.top = v_target_position.y - 56 + "px";
-              v_control.divCardElement.style.top = v_target_position.y - v_control.divCardElement.offsetHeight - 20 + "px";
-            }
-          } else {
-            v_omnis_div.style.left = v_target_position.x + v_target_offset_width + 16 + "px";
-            v_control.divCardElement.style.left = v_target_position.x + v_target_offset_width + 56 + "px";
-            if (v_target_position.y <= v_window_height_half) {
-              v_omnis_div.style.top = v_target_position.y + 16 + "px";
-              v_control.divCardElement.style.top = v_target_position.y + 20 + "px";
-            } else {
-              v_omnis_div.style.top = v_target_position.y - 56 + "px";
-              v_control.divCardElement.style.top = v_target_position.y - v_control.divCardElement.offsetHeight - 20 + "px";
-            }
-          }
-        } catch (e) {
-          console.warn("omnis-ui-assistant couldnt process the positioning of the target. Details:");
-          console.warn(e);
-        }
-      }
-    };
-    v_omnisControl.divCardElement = document.createElement("div");
-    v_omnisControl.divCardElement.setAttribute(
-      "style",
-      "position:fixed; width:280px; max-width: 90vw; z-index: " + v_omnisControl.z_index + 3 + "; box-shadow: 1px 0px 3px rgba(0,0,0,0.15); transition: all 0.45s ease 0.1s;"
-    );
-    v_omnisControl.divClonedElement = document.createElement("div");
-    v_omnisControl.divClonedElement.setAttribute(
-      "style",
-      "position:absolute; width:0px; height:0px; overflow:visible; z-index:" + v_omnisControl.z_index + 2 + ";"
-    );
-    v_omnisControl.divWavesElement = document.createElement("div");
-    v_omnisControl.divWavesElement.setAttribute(
-      "style",
-      "position:absolute; width:0px; height:0px; overflow:visible; z-index:" + v_omnisControl.z_index + 1 + ";"
-    );
-    v_omnisControl.divBackdropElement = document.createElement("div");
-    v_omnisControl.divBackdropElement.setAttribute(
-      "style",
-      "position:fixed; width:100vw; height:100vh; top: 0; left: 0; z-index:" + v_omnisControl.z_index + "; background-color:rgba(0,0,0,0.25);"
-    );
-    v_omnisControl.divElement = document.createElement("div");
-    v_omnisControl.divElement.setAttribute("id", v_omnisControl.id);
-    v_omnisControl.divElement.appendChild(v_omnisControl.divCardElement);
-    v_omnisControl.divElement.appendChild(v_omnisControl.divClonedElement);
-    v_omnisControl.divElement.appendChild(v_omnisControl.divWavesElement);
-    v_omnisControl.divElement.appendChild(v_omnisControl.divBackdropElement);
-    document.getElementById("omnidb__main").appendChild(v_omnisControl.divElement);
-    return v_omnisControl;
-  }
-  const omnisControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    createOmnis,
-    createOmnisUiAssistant
-  }, Symbol.toStringTag, { value: "Module" }));
-  function startTutorial(p_tutorial_name) {
-    if (v_omnis.omnis_ui_assistant) {
-      v_omnis.omnis_ui_assistant.self_destruct();
-    }
-    v_omnis.div.classList.add("omnis--active");
-    v_omnis.omnis_ui_assistant = createOmnisUiAssistant({
-      p_callback_end: function() {
-        delete v_omnis.omnis_ui_assistant;
-        v_omnis.div.classList.remove("omnis--active");
-      },
-      // Omnis Object
-      p_omnis: v_omnis
-    });
-    var v_tutorial_name = p_tutorial_name ? p_tutorial_name : "main";
-    var v_button_inner_query_attr = ' disabled title="Open a new connection first." ';
-    if (v_connTabControl.selectedTab.tag.tabControl) {
-      if (v_connTabControl.selectedTab.tag.tabControl.tabList.length > 0) {
-        v_button_inner_query_attr = "";
-      }
-    }
-    var v_button_inner_query = `<li class="mb-2"><button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab"><i class="fas fa-list mr-2"></i>The Connection Tab</button></li>`;
-    var v_tutorials = {
-      main: [
-        {
-          p_message: `
-				<p>This is the navigation rail. It gives you access to every section of OmniDB:</p>
-				<ul>
-				<li><i class="fas fa-hand-spock omnidb__theme__text--primary mr-2"></i>Welcome, tutorials and useful links.</li>
-				<li><i class="fas fa-plug omnidb__theme__text--primary mr-2"></i>Connections management.</li>
-				<li><i class="fas fa-book omnidb__theme__text--primary mr-2"></i>Snippets panel.</li>
-				<li><i class="fas fa-database omnidb__theme__text--primary mr-2"></i>Database (your open connections).</li>
-				</ul>
-				<p>At the bottom you'll also find <i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings, <i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About, and your <i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account.</p>
-				`,
-          p_target: document.getElementById("omnidb_section_nav"),
-          p_title: "Navigation Rail"
-        },
-        {
-          p_callback_end: function() {
-            document.getElementById("omnidb_section_nav__account_menu").classList.remove(
-              "omnidb__account-menu--open"
-            );
-          },
-          p_callback_start: function() {
-            document.getElementById("omnidb_section_nav__account_menu").classList.add(
-              "omnidb__account-menu--open"
-            );
-          },
-          p_clone_target: true,
-          p_message: "Clicking the account icon at the bottom of the rail opens this popup: your OmniDB version, username, and a sign-out button.",
-          p_target: document.getElementById("omnidb_section_nav__account_menu"),
-          p_title: "Account",
-          p_update_delay: 350
-        }
-      ],
-      utilities_menu: [
-        {
-          p_message: `
-				<p>General settings and account management live at the bottom of the navigation rail:</p>
-				<ul>
-				<li><i class="fas fa-cog omnidb__theme__text--primary mr-2"></i>Settings (shortcuts, theme, fonts, and -- for superusers -- account/user management).</li>
-				<li><i class="fas fa-info-circle omnidb__theme__text--primary mr-2"></i>About.</li>
-				<li><i class="fas fa-user-circle omnidb__theme__text--primary mr-2"></i>Account (username, version, sign out).</li>
-				</ul>
-				<p>Please, click on the <i class="fas fa-cog"></i> Settings icon.</p>
-				`,
-          p_target: document.getElementById("omnidb_section_nav"),
-          p_title: "Navigation Rail"
-        },
-        {
-          p_callback_start: function() {
-            showConfigUser();
-          },
-          p_clone_target: true,
-          p_message: `
-				<p>If you're a superuser, this Settings section has an <strong>Account</strong> tab.</p>
-				<p>Click on it.</p>
-				`,
-          p_next_button: false,
-          p_target: function() {
-            var v_target = document.getElementById("config_account-tab");
-            return v_target;
-          },
-          p_title: "Settings",
-          p_update_delay: 350
-        },
-        {
-          p_clone_target: true,
-          p_message: `
-				<p>If you just configured OmniDB and logged in with the default <strong>admin</strong> user, you should create a proper superuser (and later delete the default admin account).</p>
-				<p>Follow this walkthrough if you want to create other users as well.</p>
-				<p>Click on <strong>Manage Users</strong>.</p>
-				`,
-          p_next_button: false,
-          p_target: function() {
-            var v_target = document.getElementById("button_open_users");
-            return v_target;
-          },
-          p_title: "Managing Users",
-          p_update_delay: 350
-        },
-        {
-          p_callback_after_update_start: function() {
-            setTimeout(function() {
-              if (v_omnis.omnis_ui_assistant.divClonedElement.children[0]) {
-                v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
-              }
-            }, 50);
-          },
-          p_clone_target: true,
-          p_message: `
-				<p>Click on <strong>Add new user</strong>.</p>
-				`,
-          p_next_button: false,
-          p_target: function() {
-            var v_target = document.getElementById("omnidb_utilities_menu_btn_new_user");
-            return v_target;
-          },
-          p_title: "Add a New User",
-          p_update_delay: 1e3
-        },
-        {
-          p_message: `
-				<ul>
-				<li><i class="fas fa-user omnidb__theme__text--primary mr-2"></i>OmniDB login name.</li>
-				<li><i class="fas fa-key omnidb__theme__text--primary mr-2"></i>OmniDB login password.</li>
-				<li><i class="fas fa-star omnidb__theme__text--primary mr-2"></i>Defines if the user can manage other OmniDB users.</li>
-				</ul>
-				<div class="alert alert-danger">The default <strong>admin user</strong> should be deleted once a new super user has been created.</div>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("omnidb_user_content");
-            return v_target;
-          },
-          p_title: "User Options",
-          p_update_delay: 350
-        }
-      ],
-      connections_menu: [
-        {
-          p_clone_target: true,
-          p_message: `
-				<p>This is the navigation rail. It gives you access to:</p>
-				<ul>
-				<li>Connections manager.</li>
-				<li>Welcome, tutorial and useful links.</li>
-				<li>Snippets panel.</li>
-				<li>Your open database connections.</li>
-				</ul>
-				<p>Let's first <span class="badge badge-info">add a new connection</span>.</p>
-				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon.</p>
-				`,
-          p_target: document.getElementById("omnidb_section_nav"),
-          p_title: "Navigation Rail"
-        },
-        {
-          p_callback_after_update_start: function() {
-            setTimeout(function() {
-              document.getElementById("button_new_connection");
-              v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
-            }, 50);
-          },
-          p_callback_start: function() {
-            startConnectionManagement();
-          },
-          p_clone_target: true,
-          p_message: `
-				<p>Click on <strong>New Connection</strong>.</p>
-				`,
-          p_next_button: false,
-          p_target: function() {
-            var v_target = document.getElementById("button_new_connection");
-            return v_target;
-          },
-          p_title: "Add a New Connection",
-          p_update_delay: 1e3
-        },
-        {
-          p_message: `
-				<p>Select the proper DBMS technology.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_type");
-            return v_target;
-          },
-          p_title: "Connection Type",
-          p_update_delay: 300
-        },
-        {
-          p_message: `
-				<p>Type a helpful name for the connection.</p>
-				<p>This is used as name reference on many UI areas.</p>
-				<p>i.e: Local dvdrental barman.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_title");
-            return v_target;
-          },
-          p_title: "Title"
-        },
-        {
-          p_message: `
-				<p>Type the server address. Do not include ports.</p>
-				<p>i.e:127.0.0.1</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_server");
-            return v_target;
-          },
-          p_title: "Server"
-        },
-        {
-          p_message: `
-				<p>Type the port of the server.</p>
-				<p>i.e: PostgreSQL uses 5432 by default, but if you are using pgbouncer, you may want to use 6432 as the entry point.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_port");
-            return v_target;
-          },
-          p_title: "Port"
-        },
-        {
-          p_message: `
-				<p>Type the name of the database.</p>
-				<p>i.e: postgres, dvdrental.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_database");
-            return v_target;
-          },
-          p_title: "Database"
-        },
-        {
-          p_message: `
-				<p>Type the name of the user with priviledges to access the database.</p>
-				<p>i.e: postgres.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_user");
-            return v_target;
-          },
-          p_title: "User"
-        },
-        {
-          p_message: `
-				<p>This is <strong>optional</strong>.</p>
-				<p>If you don't save the user password, you will be required to manually input it everytime a new connection to this database is started.</p>
-				<p>If saved, this password will be stored in the database configured for OmniDB (default is omnidb.db).</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_user_pass");
-            return v_target;
-          },
-          p_title: "User password"
-        },
-        {
-          p_message: `
-				<p>You may want to hit 'test' before saving the conntion.</p>
-				<p>After that, click save.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_button_test_connection");
-            return v_target;
-          },
-          p_title: "Test the Connection"
-        }
-      ],
-      terminal_connection: [
-        {
-          p_clone_target: true,
-          p_message: `
-				<p>First let's open the <strong>connections management</strong> interface.</p>
-				<p>Please, click on the <i class="fas fa-plug"></i> Connections icon in the navigation rail.</p>
-				`,
-          p_target: document.getElementById("omnidb_section_nav"),
-          p_title: "Accessing connections managemnet"
-        },
-        {
-          p_callback_after_update_start: function() {
-            setTimeout(function() {
-              document.getElementById("button_new_connection");
-              v_omnis.omnis_ui_assistant.divClonedElement.children[0].classList.remove("ml-2");
-            }, 50);
-          },
-          p_callback_start: function() {
-            startConnectionManagement();
-          },
-          p_clone_target: true,
-          p_message: `
-				<p>Click on <strong>New Connection</strong>.</p>
-				`,
-          p_next_button: false,
-          p_target: function() {
-            var v_target = document.getElementById("button_new_connection");
-            return v_target;
-          },
-          p_title: "Add a New Connection",
-          p_update_delay: 1e3
-        },
-        {
-          p_message: `
-				<p>Select the Terminal technology.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_type");
-            return v_target;
-          },
-          p_title: "Connection Type",
-          p_update_delay: 300
-        },
-        {
-          p_message: `
-				<p>Type a helpful name for the terminal connection.</p>
-				<p>This is used as name reference on many UI areas.</p>
-				<p>i.e: Local terminal.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_title");
-            return v_target;
-          },
-          p_title: "Title"
-        },
-        {
-          p_message: `
-				<p>The terminal utilizes SSH technology.</p>
-				<p>As you can see, in this case SSH parameters are mandatory.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_use_tunnel");
-            return v_target;
-          },
-          p_title: "SSH parameters"
-        },
-        {
-          p_message: `
-				<p>Type the ssh server address. Do not include ports.</p>
-				<p>i.e:127.0.0.1</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_ssh_server");
-            return v_target;
-          },
-          p_title: "SSH server"
-        },
-        {
-          p_message: `
-				<p>Type the port of the SSH server.</p>
-				<p>i.e: 22 is a default port for working with SSH tunnels.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_ssh_port");
-            return v_target;
-          },
-          p_title: "SSH Port"
-        },
-        {
-          p_message: `
-				<p>Type the name of the SSH user.</p>
-				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_ssh_user");
-            return v_target;
-          },
-          p_title: "SSH User"
-        },
-        {
-          p_message: `
-				<p>If you want you can save the password of your user.</p>
-				<p>* Leaving this empty will force the tool to request for your password everytime you open a terminal connection.</p>
-				<p>i.e: If you are on linux, your linux user is available for a local connection.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_ssh_password");
-            return v_target;
-          },
-          p_title: "SSH Password (optional)"
-        },
-        {
-          p_message: `
-				<p>This is <strong>optional</strong>.</p>
-				<p>It allows you to configure a SSH key.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_ssh_key_input_label");
-            return v_target;
-          },
-          p_title: "SSH Key"
-        },
-        {
-          p_message: `
-				<p>You may want to hit 'test' before saving the conntion.</p>
-				<p>After that, click save.</p>
-				`,
-          p_target: function() {
-            var v_target = document.getElementById("conn_form_button_test_connection");
-            return v_target;
-          },
-          p_title: "Test the Connection"
-        }
-      ],
-      snippets: [
-        {
-          p_clone_target: true,
-          p_message: `
-				<p>The snippet panel is now accessible globally, from the navigation rail.</p>
-				<p>Please, click on the <i class="fas fa-book"></i> icon.</p>
-				`,
-          p_target: document.getElementById("omnidb_section_nav"),
-          p_title: "Global Snippet Panel"
-        },
-        {
-          // p_callback_after_update_start: function() {setTimeout(function(){var v_target = document.getElementById(v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editorDivId);},50);},
-          p_callback_start: function() {
-            toggleSnippetPanel();
-          },
-          p_message: `
-				<p>Inside this tab you can create and edit a snippet.</p>
-				<p>Go ahead and try to create some simple snippet, i.e:</p>
-				<code>WHERE true SELECT 1;</code>
-				<p>Then experiment clicking on the <strong>indent button</strong> below the editor, and then <strong>next</strong>.</p>
-				`,
-          p_next_button: true,
-          p_target: function() {
-            var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
-            return v_target;
-          },
-          p_title: "Snippets editor",
-          p_update_delay: 600
-        },
-        {
-          p_message: `
-				<p>As you can see, the identation feature automatically adjusts your code following a pattern.</p>
-				<p>Now go ahead and click <strong>save</strong></p>
-				`,
-          p_next_button: true,
-          p_target: function() {
-            var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
-            return v_target;
-          },
-          p_title: "Indenting"
-        },
-        {
-          p_message: `
-				<p>Every snippet you save is stored under your user.</p>
-				<p>The tree on the left allows you to easily access it by double-clicking on the snippet.</p>
-				`,
-          p_next_button: false,
-          p_target: function() {
-            var v_target = document.getElementById(v_connTabControl.snippet_tag.divTree.getAttribute("id"));
-            return v_target;
-          },
-          p_title: "Saved Snippets",
-          p_update_delay: 600
-        }
-      ],
-      selecting_connection: [
-        {
-          p_message: `
-				<p>Your open connections live in the <strong>Database</strong> section.</p>
-				<p>Click on the <i class="fas fa-database"></i> Database icon in the navigation rail.</p>
-				`,
-          p_target: document.getElementById("omnidb_section_nav"),
-          p_title: "Navigation Rail"
-        },
-        {
-          p_callback_start: function() {
-            switchSection("database");
-          },
-          p_message: `
-				<p>Open connections are listed here as a strip of tabs, much like browser tabs.</p>
-				<ol style="padding-left: 1.5rem;">
-					<li class="mb-2">
-						To open a connection, click on the <i class="fas fa-plus"></i> button.
-					</li>
-					<li class="mb-2">
-						Navigate to the proper technology on the custom menu.
-					</li>
-					<li class="mb-2">
-						Click on the connection.
-					</li>
-				</ol>
-				<p>Now you can close this walkthrough and open a new connection.</p>
-				`,
-          p_position: function() {
-            var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
-            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
-          },
-          p_target: function() {
-            var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
-            return v_target;
-          },
-          p_title: "Selecting a Connection",
-          p_update_delay: 350
-        }
-      ],
-      connection_tab: [
-        {
-          p_callback_start: function() {
-            switchSection("database");
-          },
-          p_message: `
-				<p>This identifies the database you are connected with:</p>
-				`,
-          p_target: function() {
-            var v_target = v_connTabControl.selectedTab.tag.divDetails;
-            return v_target;
-          },
-          p_title: "Current Connection",
-          p_update_delay: 350
-        },
-        {
-          p_message: `
-				<p>This tree is main your access point to this connection.</p>
-				<p><strong>How-to</strong>:</p>
-				<ul style="padding-left: 1.5rem;">
-					<li class="mb-1">
-						<strong>Double-click</strong>: expands child nodes based on the database internal structure.
-					</li>
-					<li class="mb-2">
-						<strong>Right-click</strong>: Context menu with actions based on the node type.
-					</li>
-				</ul>
-				`,
-          p_target: function() {
-            var v_target = v_connTabControl.selectedTab.tag.divTree;
-            return v_target;
-          },
-          p_title: "Aimara Tree"
-        },
-        {
-          p_message: `
-				<p>These tabs provide additional info to the node you interact with in the Aimara Tree.</p>
-				<p>Keep in mind that every node interaction that returns this type of info needs to query for consistency.</p>
-				<p>To minimize queries, these only run when one of these tabs is visible.</p>
-				<p><strong>Recommendation</strong>: Only open the property/ddl when you need to update this info.</p>
-				`,
-          p_target: function() {
-            var v_target = v_connTabControl.selectedTab.tag.divTreeTabs;
-            return v_target;
-          },
-          p_title: "Properties / DDL"
-        },
-        {
-          p_message: `
-				<p>There are two types of inner_tabs available.</p>
-				<ol style="padding-left: 1.5rem;">
-					<li class="mb-1">
-						<strong><i class="fas fa-terminal"></i> Console Tab</strong>: Contains a psql console.
-					</li>
-					<li class="mb-1">
-						<strong>Query Tabs</strong>: These have SQL editors whose commands are executed on the selected database.
-					</li>
-				</ol>
-				<div class="alert-info p-2">Keep in mind that when you run a query from the contextual menu of the Aimara Tree, it will open a new query tab and execute it.</div>
-				`,
-          p_target: function() {
-            var v_target = v_connTabControl.selectedTab.tag.tabControl.tabList[0].elementA;
-            return v_target;
-          },
-          p_title: "Inner Tabs"
-        },
-        {
-          p_message: `
-				<p>These buttons request actions based on the SQL editor and the querying status.</p>
-				<p>For example, you can <span class="bg-info rounded px-1 text-white">run</span> a query, <span class="bg-info rounded px-1 text-white">cancel</span> an ongoing query, <span class="bg-info rounded px-1 text-white">fetch more</span>, <span class="bg-info rounded px-1 text-white">explain</span>, <span class="bg-info rounded px-1 text-white">explain analyze</span>.</p>
-				<p>If you navigate the Tree on the left to find a table and use the action Query Table from it's context menu, the editor will autofill and the run query will be issued.</p>
-				`,
-          p_position: function() {
-            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
-              ".omnidb__tab-actions"
-            );
-            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
-          },
-          p_target: function() {
-            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
-              ".omnidb__tab-actions"
-            );
-            return v_target;
-          },
-          p_title: "Actions Panel"
-        },
-        {
-          p_message: `
-				<p>Query returns will fill the area below your screen, even when they return errors.</p>
-				<p>After running a query, this area will contain 3 special tabs.</p>
-				<ol style="padding-left: 1.5rem;">
-					<li class="mb-1">
-						<strong>Data</strong>: Contains a table with query results, when successful.
-					</li>
-					<li class="mb-1">
-						<strong>Messages</strong>: Displays error messages.
-					</li>
-					<li class="mb-1">
-						<strong>Explain</strong>: Contains a special component to display explain/explain analyze results.
-					</li>
-				</ol>
-				`,
-          p_position: function() {
-            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
-            return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y + 40 };
-          },
-          p_target: function() {
-            var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.querySelector(
-              ".omnidb__tab-actions"
-            );
-            return v_target;
-          },
-          p_title: "Query Result"
-        }
-      ]
-    };
-    let v_tutorial_link_creating_user = gv_desktopMode ? "" : `
-	<li class="mb-2">
-		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="utilities_menu">
-			<i class="fas fa-user-plus mr-2"></i>Create an omnidb user
-		</button>
-	</li>`;
-    v_tutorials.getting_started = [
-      {
-        p_message: '<ol style="padding-left: 1.5rem;">' + v_tutorial_link_creating_user + `
-				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connections_menu">
-						<i class="fas fa-plug mr-2"></i>Create a database connection
-					</button>
-				</li>
-				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="terminal_connection">
-						<i class="fas fa-terminal mr-2"></i>Create a terminal connection
-					</button>
-				</li>
-				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
-						<i class="fas fa-book mr-2"></i>Meet the snippets panel
-					</button>
-				</li>
-				<li class="mb-2">
-					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="selecting_connection">
-						<i class="fas fa-plus mr-2"></i>Using a connection
-					</button>
-				</li>
-				` + v_button_inner_query + "</ol>",
-        p_title: '<i class="fas fa-list mr-2"></i> Getting started'
-      }
-    ];
-    var v_steps = v_tutorials[v_tutorial_name];
-    v_omnis.omnis_ui_assistant.updateStepList(v_steps);
-    v_omnis.omnis_ui_assistant.goToStep(0);
-  }
-  const tutorial = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    startTutorial
-  }, Symbol.toStringTag, { value: "Module" }));
   var v_edges;
   var v_nodes;
   var v_start_height;
@@ -32544,11 +32649,9 @@
     v_omnis.div.style.top = v_omnis.root.getBoundingClientRect().height - 45 + "px";
     v_omnis.div.style.left = v_omnis.root.getBoundingClientRect().width - 45 + "px";
     v_omnis.div.style["z-index"] = "99999999";
+    v_omnis.div.style.display = "none";
     v_omnis.div.innerHTML = v_omnis.template;
     document.body.appendChild(v_omnis.div);
-    v_omnis.div.addEventListener("click", function() {
-      startTutorial("getting_started");
-    });
     refreshBootstrapTooltips();
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initWorkspace);
@@ -33019,6 +33122,41 @@
     var v_mousePosX = event2.x;
     resizeSnippetPanel(v_mousePosX);
   }
+  function resizeConnectionsHorizontal(event2) {
+    event2.preventDefault();
+    var v_horizontalLine = document.createElement("div");
+    v_horizontalLine.id = "horizontal-resize-line";
+    document.getElementById("omnidb__section_connections").appendChild(v_horizontalLine);
+    document.body.addEventListener("mousemove", horizontalLinePosition);
+    event2.x;
+    document.body.addEventListener("mouseup", resizeConnectionsHorizontalEnd);
+  }
+  function resizeConnectionsHorizontalEnd(event2) {
+    document.body.removeEventListener("mouseup", resizeConnectionsHorizontalEnd);
+    document.getElementById("horizontal-resize-line").remove();
+    document.body.removeEventListener("mousemove", horizontalLinePosition);
+    resizeConnectionsPanel(event2.x);
+  }
+  function resizeConnectionsPanel(p_mouse_x) {
+    var v_sidebar = (
+      /** @type {HTMLElement} */
+      document.querySelector(".omnidb__connections__sidebar")
+    );
+    var v_container = (
+      /** @type {HTMLElement} */
+      document.querySelector(".omnidb__connections")
+    );
+    if (!v_sidebar || !v_container) return;
+    var v_totalWidth = v_container.getBoundingClientRect().width;
+    var v_max_allowed_width = v_totalWidth - 50;
+    var v_offsetLeft = v_sidebar.getBoundingClientRect().left;
+    var v_pixel_value = p_mouse_x - v_offsetLeft;
+    if (v_pixel_value < 220) v_pixel_value = 220;
+    if (v_pixel_value > v_max_allowed_width) v_pixel_value = v_max_allowed_width;
+    var v_width_value = v_pixel_value + "px";
+    v_sidebar.style["max-width"] = v_width_value;
+    v_sidebar.style["flex"] = "0 0 " + v_width_value;
+  }
   function resizeVertical(event2) {
     event2.preventDefault();
     var v_verticalLine = document.createElement("div");
@@ -33204,7 +33342,7 @@
               let p_tooltip_name = "";
               let v_name = "";
               if (v_conn.v_public) {
-                v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
+                v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
               }
               if (v_conn.v_alias && v_conn.v_alias !== "") {
                 v_name = escapeHtml(v_conn.v_alias);
@@ -33247,7 +33385,7 @@
                     let p_tooltip_name = "";
                     let v_name = "";
                     if (v_conn.v_public) {
-                      v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
+                      v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
                     }
                     if (v_conn.v_alias && v_conn.v_alias !== "") {
                       v_name = escapeHtml(v_conn.v_alias);
@@ -33287,7 +33425,7 @@
                       let p_tooltip_name = "";
                       let v_name = "";
                       if (v_conn.v_public) {
-                        v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
+                        v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
                       }
                       if (v_conn.v_alias && v_conn.v_alias !== "") {
                         v_name = escapeHtml(v_conn.v_alias);
@@ -33458,26 +33596,20 @@
       refreshHeights();
     }
   }
-  function toggleTreeTabsContainer(p_target_id, p_horizonta_line_id) {
+  function toggleTreeTabsContainer(p_target_id) {
     var v_tab_tag2 = v_connTabControl.selectedTab.tag;
     var v_target_element = (
       /** @type {HTMLElement} */
       document.getElementById(p_target_id)
     );
-    var v_horizontal_line_element = (
-      /** @type {HTMLElement} */
-      document.getElementById(p_horizonta_line_id)
-    );
     if (v_target_element.classList.contains("omnidb__tree-tabs--not-in-view")) {
       v_target_element.classList.remove("omnidb__tree-tabs--not-in-view");
-      v_horizontal_line_element.classList.remove("d-none");
       v_tab_tag2.treeTabsVisible = true;
       setTimeout(function() {
         refreshTreeHeight();
       }, 360);
     } else {
       v_target_element.classList.add("omnidb__tree-tabs--not-in-view");
-      v_horizontal_line_element.classList.add("d-none");
       v_tab_tag2.treeTabsVisible = false;
     }
   }
@@ -33605,7 +33737,7 @@
         v_tooltip_element.style.bottom = v_pos_diff - 27 + "px";
         v_tooltip_element.classList.add("omnidb__tooltip--bottom");
       }
-      v_tooltip_element.style.left = e.target.offsetWidth + 5 + "px";
+      v_tooltip_element.style.left = e.target.getBoundingClientRect().right + 5 + "px";
       document.body.appendChild(v_tooltip_element);
     });
     p_target.addEventListener("mouseleave", function(e) {
@@ -33693,6 +33825,9 @@
     renameTabConfirm,
     resizeConnectionHorizontal,
     resizeConnectionHorizontalEnd,
+    resizeConnectionsHorizontal,
+    resizeConnectionsHorizontalEnd,
+    resizeConnectionsPanel,
     resizeSnippetHorizontal,
     resizeSnippetHorizontalEnd,
     resizeSnippetPanel,
@@ -34430,11 +34565,20 @@
       false,
       "fas node-all fa-list-alt node-snippet-list",
       null,
-      { type: "node", id: null },
+      // locked: true stops this root from being collapsed (see
+      // Aimara.js's collapseNode) -- there's nothing else to see in this
+      // panel once it's closed, so there was never a good reason to.
+      { type: "node", id: null, locked: true },
       "cm_node_root"
     );
     node1.createChildNode("", true, "node-spin", null, null);
     tree.drawTree();
+    node1.expandNode();
+    node1.elementLi.querySelector(":scope > a").style.display = "none";
+    document.getElementById(p_div).oncontextmenu = function(e) {
+      e.preventDefault();
+      tree.nodeContextMenu(e, node1);
+    };
     v_connTabControl.snippet_tree = tree;
   }
   function refreshTreeSnippets(node) {
@@ -35098,7 +35242,7 @@
             // function *expression*, evaluated and thrown away, never called.
             // The form is display:none with a disabled submit button, so there
             // was nothing for it to prevent either way.
-            "<form class='d-none' autofill='false'><input id='fake_username' type='text' placeholder='User name' value=''><input id='fake_password' type='password' placeholder='Password' value=''><button type='submit' disabled aria-hidden='true'></button></form><form class='omnidb__user-list__form' autofill='false' autocomplete='disabled'><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''><div class='form-inline mb-4'><h5 class='mr-2'>Select an user</h5><select id='omnidb_user_select' class='form-control'>"
+            "<form class='d-none' autofill='false'><input id='fake_username' type='text' placeholder='User name' value=''><input id='fake_password' type='password' placeholder='Password' value=''><button type='submit' disabled aria-hidden='true'></button></form><form class='omnidb__user-list__form' autofill='false' autocomplete='disabled'><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''><div class='form-inline mb-4'><h5 class='me-2'>Select an user</h5><select id='omnidb_user_select' class='form-control'>"
           );
           if (p_options && p_options.focus_last) v_user_list_html += "<option value=''> </option>";
           else v_user_list_html += "<option value='' selected> </option>";
@@ -35116,7 +35260,7 @@
             var v_user_is_selected = p_options && p_options.focus_last && i2 + 1 == window.newUsersObject.newUsers.length ? " selected " : "";
             v_user_list_html += "<option class='bg-warning' value='" + v_user_item_index + "' " + v_user_is_selected + ">" + v_user_item_name + "</option>";
           }
-          v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;'>Save</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
+          v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ms-2'><i class='fas fa-user-plus'></i><span class='ms-2'>Add new user</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ms-1' style='visibility: hidden;'>Save</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
           v_user_list_element.innerHTML = v_user_list_html;
           document.getElementById("div_users")?.classList.add("isActive");
           window.scrollTo(0, 0);
@@ -35194,7 +35338,7 @@
         var v_user_item = v_usersObject.list[i2];
         var v_superuser_checked = v_user_item[2] === 1 ? "checked" : "";
         if (i2 == v_index) {
-          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "'></div><span class='mr-2 text-danger omnidb__user-list__close'><i id='bt_remove_user_" + i2 + "' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "'></div><span class='ms-2'>Superuser?</span><div class='ms-2 mb-2'><div class='omnidb__switch me-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "'></div><span class='me-2 text-danger omnidb__user-list__close'><i id='bt_remove_user_" + i2 + "' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
           const rowIndex = i2;
           document.getElementById("user_item_username_" + rowIndex).addEventListener(
             "change",
@@ -35224,7 +35368,7 @@
           document.getElementById("omnidb_user_content")
         );
         if (v_user_item_index == v_index) {
-          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='new_user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "'></div><span class='ml-2'>Superuser?</span><div class='ml-2 mb-2'><div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='new_user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='new_user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='new_user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "'></div><span class='mr-2 text-danger omnidb__user-list__close'><i id='bt_remove_new_user_" + i2 + "' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='new_user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='User name' value='" + escapeHtml(v_user_item[0]) + "'></div><span class='ms-2'>Superuser?</span><div class='ms-2 mb-2'><div class='omnidb__switch me-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'><input type='checkbox' id='new_user_item_superuser_" + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='new_user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='new_user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='New password' value='" + escapeHtml(v_user_item[1]) + "'></div><span class='me-2 text-danger omnidb__user-list__close'><i id='bt_remove_new_user_" + i2 + "' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
           const newRowIndex = i2;
           document.getElementById("new_user_item_username_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
           document.getElementById("new_user_item_password_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
@@ -35468,11 +35612,11 @@
       this._table.appendChild(this._tbody);
       this._topSpacer = document.createElement("tr");
       this._topSpacerCell = document.createElement("td");
-      this._topSpacerCell.style.cssText = "padding:0;border:none;";
+      this._topSpacerCell.style.cssText = "padding:0;border:none;line-height:0;height:0;";
       this._topSpacer.appendChild(this._topSpacerCell);
       this._bottomSpacer = document.createElement("tr");
       this._bottomSpacerCell = document.createElement("td");
-      this._bottomSpacerCell.style.cssText = "padding:0;border:none;";
+      this._bottomSpacerCell.style.cssText = "padding:0;border:none;line-height:0;height:0;";
       this._bottomSpacer.appendChild(this._bottomSpacerCell);
       this._tbody.appendChild(this._topSpacer);
       this._tbody.appendChild(this._bottomSpacer);
@@ -35980,7 +36124,12 @@
     // of an onclick, so the last inline handlers on the Go side are gone too.
     "include-monitor-unit": (el2) => includeMonitorUnit(numArg(el2), arg(el2) || void 0),
     "edit-monitor-unit": (el2) => editMonitorUnit(numArg(el2)),
-    "delete-monitor-unit": (el2) => deleteMonitorUnit(numArg(el2))
+    "delete-monitor-unit": (el2) => deleteMonitorUnit(numArg(el2)),
+    // Welcome section's "Useful stuff" links (outer_welcome_tab.js). A plain
+    // `<a target="_blank">` is a silent no-op inside the Wails desktop webview,
+    // so these go through the same external-link relay as the About dialog's
+    // OmniDB/GitHub links and the tree's "Doc: ..." menu items.
+    "open-external-url": (el2) => v_openExternalUrl(arg(el2))
   };
   document.addEventListener("click", (event2) => {
     const target = event2.target;
@@ -35988,7 +36137,9 @@
     const el2 = target.closest("[data-omnidb-action]");
     if (!el2) return;
     const handler = DELEGATED_CLICK[el2.getAttribute("data-omnidb-action") || ""];
-    if (handler) handler(el2, event2);
+    if (!handler) return;
+    event2.preventDefault();
+    handler(el2, event2);
   });
   function bind(id, type, handler) {
     const el2 = document.getElementById(id);

@@ -36,7 +36,7 @@ import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
 import { switchSection } from "./section_switcher.js";
-import { getDatabaseList } from "./workspace.js";
+import { getDatabaseList, resizeConnectionsHorizontal } from "./workspace.js";
 
 // The connection-management markup is always present in workspace.html, so
 // these ids are guaranteed to resolve -- this just gets that past tsc
@@ -62,6 +62,15 @@ function initConnections() {
 	v_connections_data.list_items = [];
 	v_connections_data.current_id = -1;
 	v_connections_data.current_obj = null;
+
+	// Binding for the resize line between the connection list and the
+	// edit form (workspace.html), same drag pattern as the Database
+	// section's tree/query divider and the Snippets panel's tree/editor
+	// one.
+	/** @type {HTMLElement} */ (document.getElementById("connections_resize_line")).addEventListener(
+		"mousedown",
+		(event) => resizeConnectionsHorizontal(event),
+	);
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
 else setTimeout(initConnections, 0);
@@ -175,7 +184,7 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					"</span>" +
 					"</span>" +
 					(v_conn_obj.tunnel && v_conn_obj.tunnel.enabled
-						? '<i class="fas fa-lock omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>'
+						? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>'
 						: "");
 
 				var v_checkbox = document.createElement("input");
@@ -826,7 +835,7 @@ export function editConnection(p_conn_obj) {
 		if (!el("conn_form_user_pass_check_icon")) {
 			el("conn_form_user_pass").previousElementSibling.insertAdjacentHTML(
 				"beforeend",
-				'<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ml-2"></i>',
+				'<i id="conn_form_user_pass_check_icon" class="fas fa-check text-success ms-2"></i>',
 			);
 		}
 	} else {
@@ -837,7 +846,7 @@ export function editConnection(p_conn_obj) {
 		if (!el("conn_form_ssh_password_check_icon")) {
 			el("conn_form_ssh_password").previousElementSibling.insertAdjacentHTML(
 				"beforeend",
-				'<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ml-2"></i>',
+				'<i id="conn_form_ssh_password_check_icon" class="fas fa-check text-success ms-2"></i>',
 			);
 		}
 	} else {
@@ -848,7 +857,7 @@ export function editConnection(p_conn_obj) {
 		if (!el("conn_form_ssh_key_check_icon")) {
 			el("conn_form_ssh_key").previousElementSibling.insertAdjacentHTML(
 				"beforeend",
-				'<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ml-2"></i>',
+				'<i id="conn_form_ssh_key_check_icon" class="fas fa-check text-success ms-2"></i>',
 			);
 		}
 	} else {

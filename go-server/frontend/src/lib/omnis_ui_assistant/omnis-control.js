@@ -349,14 +349,14 @@ export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_step
 				var v_step_btn_next = "";
 				if (this.stepList[this.stepSelected].next_button && this.stepSelected < this.stepCounter - 1) {
 					v_step_btn_next +=
-						'<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ml-2">Next</button>';
+						'<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ms-2">Next</button>';
 				}
 
 				// Temporarily disabling previous button.
 				// TODO: implement a better goto method when going to previous steps, allowing the UI not to break because of callbacks.
 				var v_step_btn_previous = "";
 				// if (this.stepSelected > 0) {
-				//   v_step_btn_previous += '<button id="omnis_step_btn_previous" type="button" class="btn btn-sm omnidb__theme__btn--secondary mr-2">Previous</button>';
+				//   v_step_btn_previous += '<button id="omnis_step_btn_previous" type="button" class="btn btn-sm omnidb__theme__btn--secondary me-2">Previous</button>';
 				// }
 
 				var v_step_btn_close =

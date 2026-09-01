@@ -154,8 +154,11 @@ export function changeTheme(p_option) {
 		document.body.classList.remove("omnidb--theme-dark");
 		document.body.classList.add("omnidb--theme-light");
 	}
-	// Updating theme of all consoles.
-	try {
+	// Updating theme of all consoles. v_connTabControl doesn't exist yet the
+	// first time this runs -- initHeaderActions fires on DOMContentLoaded,
+	// which is earlier than workspace.js sets it up -- so this is guarded the
+	// same way as every other v_connTabControl access below.
+	if (typeof v_connTabControl !== "undefined") {
 		for (let i = 0; i < v_connTabControl.tabList.length; i++) {
 			var v_outer_tab = v_connTabControl.tabList[i];
 			if (v_outer_tab.tag) {
@@ -173,8 +176,6 @@ export function changeTheme(p_option) {
 				}
 			}
 		}
-	} catch (e) {
-		console.warn(e);
 	}
 
 	var els = document.getElementsByClassName("ace_editor");

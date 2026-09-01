@@ -215,7 +215,11 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			'_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div>' +
 			'<div id="' +
 			v_tab.id +
-			'_left_resize_line_horizontal" style="width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"></div>' +
+			'_left_resize_line_horizontal" style="position: relative; width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;">' +
+			'<button id="bt_toggle_tree_tabs_' +
+			v_tab.id +
+			'" type="button" class="omnidb__tree-tabs__toggler" title="Toggle Properties/DDL Panel"><i class="fas fa-arrows-alt-v"></i></button>' +
+			"</div>" +
 			'<div id="tree_tabs_parent_' +
 			v_tab.id +
 			'" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;">' +
@@ -229,9 +233,6 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			"  </div>" +
 			"</div>" +
 			"</div>" +
-			'<button id="bt_toggle_tree_tabs_' +
-			v_tab.id +
-			'" type="button" class="btn omnidb__theme__btn--secondary omnidb__tree-tabs__toggler"><i class="fas fa-arrows-alt-v"></i></button>' +
 			'<div id="tree_tabs_' +
 			v_tab.id +
 			'" class="omnidb__tree-tabs__container" style="position: relative;"></div>' +
@@ -240,13 +241,14 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			"</div>" + //.div_left
 			'<div id="connection_resize_line_' +
 			v_tab.id +
-			'" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;"></div>' +
+			'" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;">' +
+			'<button id="bt_toggle_tree_container_' +
+			v_tab.id +
+			'" type="button" class="omnidb__tree__toggler" title="Toggle Database Tree"><i class="fas fa-arrows-alt-h"></i></button>' +
+			"</div>" +
 			'<div id="' +
 			v_tab.id +
 			'_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;">' +
-			'<button id="bt_toggle_tree_container_' +
-			v_tab.id +
-			'" type="button" class="py-4 px-0 btn omnidb__theme__btn--secondary omnidb__tree__toggler"><i class="fas fa-arrows-alt-h"></i></button>' +
 			'<div id="' +
 			v_tab.id +
 			'_tabs" class="w-100"></div>' +
@@ -274,9 +276,23 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			"mousedown",
 			(event) => resizeConnectionHorizontal(event),
 		);
+		// Both togglers now live inside their resize line's own hit-area (a
+		// deliberate move -- see the html above), so a click on either one
+		// bubbles up into that same mousedown listener first and would
+		// otherwise also kick off a drag. stopPropagation on the button's own
+		// mousedown keeps that from happening without touching the drag
+		// handlers themselves.
+		/** @type {HTMLElement} */ (document.getElementById("bt_toggle_tree_tabs_" + v_tab.id)).addEventListener(
+			"mousedown",
+			(event) => event.stopPropagation(),
+		);
 		/** @type {HTMLElement} */ (document.getElementById("bt_toggle_tree_tabs_" + v_tab.id)).addEventListener(
 			"click",
-			() => toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id, v_tab.id + "_left_resize_line_horizontal"),
+			() => toggleTreeTabsContainer("tree_tabs_parent_" + v_tab.id),
+		);
+		/** @type {HTMLElement} */ (document.getElementById("bt_toggle_tree_container_" + v_tab.id)).addEventListener(
+			"mousedown",
+			(event) => event.stopPropagation(),
 		);
 		/** @type {HTMLElement} */ (document.getElementById("bt_toggle_tree_container_" + v_tab.id)).addEventListener(
 			"click",
@@ -321,14 +337,15 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			p_div: v_tab.id + "_tabs",
 			p_hierarchy: "secondary",
 		});
-		v_currTabControl.createTab({
-			p_name: "+",
+		var v_add_tab = v_currTabControl.createTab({
+			p_icon: '<i class="fas fa-plus"></i>',
 			p_close: false,
 			p_selectable: false,
 			p_clickFunction: function (e) {
 				showMenuNewTab(e);
 			},
 		});
+		v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 
 		//DDL editor
 		var v_ddl_div = v_ddl_tab.elementDiv;

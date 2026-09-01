@@ -52,7 +52,6 @@ import { getTreeOracle } from "./tree_context_functions/tree_oracle.js";
 import { getTreePostgresql, postgresqlTerminateBackend } from "./tree_context_functions/tree_postgresql.js";
 import { getAllSnippets } from "./tree_context_functions/tree_snippets.js";
 import { getTreeSqlite } from "./tree_context_functions/tree_sqlite.js";
-import { startTutorial } from "./tutorial_functions/tutorial.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -129,7 +128,13 @@ function initWorkspace() {
 		}
 	});
 
-	// Creating omnis.
+	// Creating omnis -- the tutorial system's walking-guide anchor (see
+	// tutorial.js's startTutorial, which reads v_omnis.div/.root). Hidden
+	// until a tutorial is actually running: it used to sit visible in the
+	// bottom-right corner as an unlabeled, always-there way to *launch* the
+	// tutorial by clicking it, but that's now the "Getting Started" rail
+	// icon in section_switcher.js instead. tutorial.js shows/hides this
+	// element alongside its existing "omnis--active" class toggle.
 	v_omnis.root = document.getElementById("omnidb__main");
 	v_omnis.div = document.createElement("div");
 	v_omnis.div.setAttribute("id", "omnis");
@@ -137,11 +142,9 @@ function initWorkspace() {
 	v_omnis.div.style.top = v_omnis.root.getBoundingClientRect().height - 45 + "px";
 	v_omnis.div.style.left = v_omnis.root.getBoundingClientRect().width - 45 + "px";
 	v_omnis.div.style["z-index"] = "99999999";
+	v_omnis.div.style.display = "none";
 	v_omnis.div.innerHTML = v_omnis.template;
 	document.body.appendChild(v_omnis.div);
-	v_omnis.div.addEventListener("click", function () {
-		startTutorial("getting_started");
-	});
 
 	refreshBootstrapTooltips();
 }
@@ -775,6 +778,54 @@ export function resizeSnippetHorizontalEnd(event) {
 }
 
 /// <summary>
+/// Resize Connections management sidebar horizontally.
+/// </summary>
+export function resizeConnectionsHorizontal(event) {
+	event.preventDefault();
+	var v_horizontalLine = document.createElement("div");
+	v_horizontalLine.id = "horizontal-resize-line";
+	/** @type {HTMLElement} */ (document.getElementById("omnidb__section_connections")).appendChild(v_horizontalLine);
+
+	document.body.addEventListener("mousemove", horizontalLinePosition);
+
+	v_start_width = event.x;
+	document.body.addEventListener("mouseup", resizeConnectionsHorizontalEnd);
+}
+
+export function resizeConnectionsHorizontalEnd(event) {
+	document.body.removeEventListener("mouseup", resizeConnectionsHorizontalEnd);
+	/** @type {HTMLElement} */ (document.getElementById("horizontal-resize-line")).remove();
+
+	document.body.removeEventListener("mousemove", horizontalLinePosition);
+
+	resizeConnectionsPanel(event.x);
+}
+
+/// <summary>
+/// Applies a new sidebar width to the Connections management section --
+/// shared by the drag handler above and by anything that needs to
+/// re-clamp the width later (e.g. a window resize), mirroring
+/// resizeSnippetPanel's shape.
+/// </summary>
+export function resizeConnectionsPanel(p_mouse_x) {
+	var v_sidebar = /** @type {HTMLElement} */ (document.querySelector(".omnidb__connections__sidebar"));
+	var v_container = /** @type {HTMLElement} */ (document.querySelector(".omnidb__connections"));
+	if (!v_sidebar || !v_container) return;
+
+	var v_totalWidth = v_container.getBoundingClientRect().width;
+	var v_max_allowed_width = v_totalWidth - 50;
+	var v_offsetLeft = v_sidebar.getBoundingClientRect().left;
+
+	var v_pixel_value = p_mouse_x - v_offsetLeft;
+	if (v_pixel_value < 220) v_pixel_value = 220;
+	if (v_pixel_value > v_max_allowed_width) v_pixel_value = v_max_allowed_width;
+
+	var v_width_value = v_pixel_value + "px";
+	v_sidebar.style["max-width"] = v_width_value;
+	v_sidebar.style["flex"] = "0 0 " + v_width_value;
+}
+
+/// <summary>
 /// Resize SQL editor and result div.
 /// </summary>
 export function resizeVertical(event) {
@@ -1047,7 +1098,7 @@ export function showMenuNewTabOuter(e) {
 						let p_tooltip_name = "";
 						let v_name = "";
 						if (v_conn.v_public) {
-							v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
+							v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
 						}
 						if (v_conn.v_alias && v_conn.v_alias !== "") {
 							v_name = escapeHtml(v_conn.v_alias);
@@ -1100,7 +1151,7 @@ export function showMenuNewTabOuter(e) {
 									let p_tooltip_name = "";
 									let v_name = "";
 									if (v_conn.v_public) {
-										v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
+										v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
 									}
 									if (v_conn.v_alias && v_conn.v_alias !== "") {
 										v_name = escapeHtml(v_conn.v_alias);
@@ -1141,7 +1192,7 @@ export function showMenuNewTabOuter(e) {
 										let p_tooltip_name = "";
 										let v_name = "";
 										if (v_conn.v_public) {
-											v_conn_name += '<i class="fas fa-users mr-3" style="color:#c57dd2;"></i>';
+											v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
 										}
 										if (v_conn.v_alias && v_conn.v_alias !== "") {
 											v_name = escapeHtml(v_conn.v_alias);
@@ -1337,20 +1388,23 @@ export function toggleTreeContainer() {
 	}
 }
 
-export function toggleTreeTabsContainer(p_target_id, p_horizonta_line_id) {
+export function toggleTreeTabsContainer(p_target_id) {
 	var v_tab_tag = v_connTabControl.selectedTab.tag;
 	var v_target_element = /** @type {HTMLElement} */ (document.getElementById(p_target_id));
-	var v_horizontal_line_element = /** @type {HTMLElement} */ (document.getElementById(p_horizonta_line_id));
+	// The horizontal resize line stays visible either way now -- its own
+	// toggle button (bt_toggle_tree_tabs_*) lives inside it, so hiding it
+	// used to strand that button with no way to click it again and expand
+	// back. Harmless while collapsed: the panel's `!important` collapsed
+	// height wins over anything a drag on this line would try to set, so it
+	// just can't do anything until expanded again.
 	if (v_target_element.classList.contains("omnidb__tree-tabs--not-in-view")) {
 		v_target_element.classList.remove("omnidb__tree-tabs--not-in-view");
-		v_horizontal_line_element.classList.remove("d-none");
 		v_tab_tag.treeTabsVisible = true;
 		setTimeout(function () {
 			refreshTreeHeight();
 		}, 360);
 	} else {
 		v_target_element.classList.add("omnidb__tree-tabs--not-in-view");
-		v_horizontal_line_element.classList.add("d-none");
 		v_tab_tag.treeTabsVisible = false;
 	}
 }
@@ -1524,7 +1578,14 @@ export function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_posit
 			v_tooltip_element.style.bottom = v_pos_diff - 27 + "px";
 			v_tooltip_element.classList.add("omnidb__tooltip--bottom");
 		}
-		v_tooltip_element.style.left = e.target.offsetWidth + 5 + "px";
+		// The target's own on-screen right edge, not just its width -- this
+		// tooltip is `position: fixed`, so `left` needs viewport coordinates.
+		// Using offsetWidth alone happened to work for the vertical
+		// section-nav rail (whose icons sit flush against the left edge of
+		// the screen, so right edge == width), but put the tooltip at the
+		// literal left edge of the viewport for anything positioned further
+		// right, e.g. the outer tab strip's "Add Connection" "+" tab.
+		v_tooltip_element.style.left = e.target.getBoundingClientRect().right + 5 + "px";
 		document.body.appendChild(v_tooltip_element);
 	});
 	p_target.addEventListener("mouseleave", function (e) {

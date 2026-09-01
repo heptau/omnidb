@@ -65,3 +65,23 @@ textarea,
 	-ms-user-select: text;
 	user-select: text;
 }
+
+/* Two narrower exceptions to the re-enables above: real content living
+ * inside a broadly-reenabled container, vs. static chrome that just
+ * happens to share its class/container with that content.
+ *   - .handsontable th: column headers ("Property"/"Value") aren't data,
+ *     unlike the cell values beside them, which should stay selectable.
+ *   - .query_info is shared by genuinely copyable status text (query
+ *     duration, row counts, "Response time: ...") and by static labels
+ *     that just reuse it for font styling (the "Autocommit" checkbox
+ *     label, the "Not connected"/"Connected" status text) -- only the
+ *     latter two get excluded back out here. */
+.handsontable th,
+.form-check-label.query_info,
+.tab-status-text.query_info {
+	-webkit-user-select: none;
+	-webkit-touch-callout: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
+}

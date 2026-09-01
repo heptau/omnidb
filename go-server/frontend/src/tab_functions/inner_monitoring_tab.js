@@ -82,7 +82,7 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		"<div class='p-2 omnidb__theme-border--primary'>" +
 		"<button id='bt_refresh_" +
 		v_tab.id +
-		"' class='btn omnidb__theme__btn--primary btn-sm my-2 mr-1' title='Refresh'><i class='fas fa-sync-alt mr-2'></i>Refresh</button>" +
+		"' class='btn omnidb__theme__btn--primary btn-sm my-2 me-1' title='Refresh'><i class='fas fa-sync-alt me-2'></i>Refresh</button>" +
 		"<span id='div_query_info_" +
 		v_tab.id +
 		"' class='query_info'></span>" +

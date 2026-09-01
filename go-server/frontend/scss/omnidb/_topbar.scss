@@ -269,13 +269,15 @@
 	align-items: center !important;
 	justify-content: center !important;
 	position: relative !important;
-	height: 44px !important;
+	// 28px matches a native macOS window's title bar; this was 44px (nearly
+	// double), which is why these traffic-light-styled dialogs looked off.
+	height: 28px !important;
 	padding: 0 !important;
 }
 
 .modal-title {
 	margin: 0 !important;
-	font-size: 15px !important;
+	font-size: 13px !important;
 	font-weight: 600 !important;
 }
 
@@ -598,6 +600,21 @@
 #omnidb__section_connections .omnidb__section__body {
 	padding: 0;
 	display: flex;
+	overflow: hidden;
+}
+
+/* Snippets section: outer_snippet_panel.js sizes the tree/editor split to
+ * fill this section exactly (see resizeSnippetPanel in workspace.js, run on
+ * every window resize), but that's pixel math against a fixed editor-chrome
+ * budget (`7 * v_font_size`) that doesn't perfectly match the actual
+ * rendered height of the tab strip + Indent/Save button row below the
+ * editor -- so it's consistently off by some single-digit px. On the
+ * general `.omnidb__section` rule's `overflow: auto`, that was enough to
+ * pop a scrollbar in and out on every resize; nothing here actually needs
+ * to scroll at this level (the tree and the editor already scroll
+ * internally on their own), so hidden just silently absorbs the slop.
+ */
+#omnidb__section_snippets {
 	overflow: hidden;
 }
 

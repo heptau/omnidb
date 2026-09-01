@@ -335,7 +335,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 				escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i].v_type) +
 				'&lt;/div&gt;" ';
 
-			var v_tooltip_html = '<i class="ml-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
+			var v_tooltip_html = '<i class="ms-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
 
 			var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i].v_column) + "</span>";
 

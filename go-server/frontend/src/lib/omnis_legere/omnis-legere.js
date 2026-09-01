@@ -368,7 +368,7 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 				}
 
 				var v_data_html =
-				'<div class="mb-2">Toggle node data <button id="' + v_plan_item.id + '_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary ml-2 ' + v_legereControl.defaultClass + '__btn-toggle-collapse-update" data-index-map="' + v_plan_item.index_map + '"></button></div>' +
+				'<div class="mb-2">Toggle node data <button id="' + v_plan_item.id + '_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary ms-2 ' + v_legereControl.defaultClass + '__btn-toggle-collapse-update" data-index-map="' + v_plan_item.index_map + '"></button></div>' +
 				'<div class="alert alert-info mt-2">';
 				Object.keys(v_plan_item.data).forEach(function (p_data_key) {
 					v_data_html +=
@@ -725,10 +725,10 @@ export function createLegere(p_context = {parent: window, self: 'omnisLegere'}, 
 
 				v_control_panel_div.innerHTML =
 				'<button id="' + v_legereControl.id + '_control_panel_button_toggle_collapse_update" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-eye"></i></button>' +
-				'<button id="' + v_legereControl.id + '_control_panel_button_zoomin" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-search-plus"></i></button>' +
-				'<button id="' + v_legereControl.id + '_control_panel_button_zoomout" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-search-minus"></i></button>' +
-				'<button id="' + v_legereControl.id + '_control_panel_button_fit" class="btn btn-sm omnidb__theme__btn--secondary ml-2"><i class="fas fa-vector-square"></i></button>' +
-				'<button id="' + v_legereControl.id + '_control_panel_button_reset" class="btn btn-sm omnidb__theme__btn--secondary ml-2">reset</button>';
+				'<button id="' + v_legereControl.id + '_control_panel_button_zoomin" class="btn btn-sm omnidb__theme__btn--secondary ms-2"><i class="fas fa-search-plus"></i></button>' +
+				'<button id="' + v_legereControl.id + '_control_panel_button_zoomout" class="btn btn-sm omnidb__theme__btn--secondary ms-2"><i class="fas fa-search-minus"></i></button>' +
+				'<button id="' + v_legereControl.id + '_control_panel_button_fit" class="btn btn-sm omnidb__theme__btn--secondary ms-2"><i class="fas fa-vector-square"></i></button>' +
+				'<button id="' + v_legereControl.id + '_control_panel_button_reset" class="btn btn-sm omnidb__theme__btn--secondary ms-2">reset</button>';
 
 				v_legereControl.divElementContent.appendChild(v_control_panel_div);
 

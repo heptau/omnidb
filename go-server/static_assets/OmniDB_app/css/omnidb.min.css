@@ -919,24 +919,16 @@ button.close {
   border-radius: 0;
 }
 
-.omnidb__welcome__loading {
-  animation: workspaceFadeIn 0.45s ease forwards 0.3s;
-  background: url("../images/omnidb_loading.svg") no-repeat;
-  background-size: 84px 84px;
+.omnidb__welcome__logo {
   display: inline-block;
-  height: 84px;
-  width: 84px;
-  opacity: 0;
-  position: absolute;
-  z-index: 1;
-  left: 0;
-  bottom: -36px;
+  height: 56px;
+  width: auto;
 }
 
-.omnidb__welcome__intro-text {
-  animation: workspaceSlideInFromRight 0.45s ease forwards 0.85s;
-  display: inline-block;
-  transform: translateX(100vw);
+.omnidb__welcome__logo svg {
+  display: block;
+  height: 100%;
+  width: auto;
 }
 
 .omnidb__welcome__intro-card {
@@ -1148,13 +1140,27 @@ button.close {
 }
 
 .omnidb__tree-tabs__toggler {
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
-  cursor: pointer;
-  height: 2.4rem;
   position: absolute;
-  right: 0;
-  z-index: 1;
+  top: 50%;
+  right: 8px;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 10px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 8px;
+  line-height: 1;
+  cursor: pointer;
+  z-index: 2;
+}
+
+.omnidb__tree-tabs__toggler:hover {
+  color: var(--text-primary);
 }
 
 .omnidb__resize-line__container {
@@ -1194,22 +1200,22 @@ button.close {
 
 .omnidb__tree__toggler {
   position: absolute;
-  left: 4px;
-  top: 80px;
-  transform: scaleX(0.5);
-  transform-origin: left center;
-  transition: 0.35s;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  transition: opacity 0.2s;
   opacity: 0.7;
-  z-index: 100;
-  padding: 8px 4px;
-  background-color: var(--app-bg);
-  border-radius: 0 6px 6px 0;
+  z-index: 2;
+  padding: 6px 0;
+  border: none;
+  background: transparent;
+  color: var(--text-secondary);
+  cursor: pointer;
 }
 
 .omnidb__tree__toggler:focus,
 .omnidb__tree__toggler:hover {
   opacity: 1;
-  transform: scaleX(1);
 }
 
 .omnidb__tab-actions {
@@ -2158,11 +2164,6 @@ body {
     opacity: 1;
   }
 }
-@keyframes workspaceSlideInFromRight {
-  to {
-    transform: translateX(0);
-  }
-}
 #ul_cm.aimara_menu {
   box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
@@ -2486,6 +2487,11 @@ i.tab-status-idle_in_transaction_aborted {
 
 .node-snippet-snippet {
   color: #2bb79c;
+}
+
+#snippets_panel_tree > ul > li > div.collapse > ul > li > a > .node,
+#snippets_panel_tree > ul > li > div.collapse > ul > li > a > .node_selected {
+  padding-left: 0 !important;
 }
 
 .node-tablespace-list {
@@ -5563,13 +5569,13 @@ textarea {
   align-items: center !important;
   justify-content: center !important;
   position: relative !important;
-  height: 44px !important;
+  height: 28px !important;
   padding: 0 !important;
 }
 
 .modal-title {
   margin: 0 !important;
-  font-size: 15px !important;
+  font-size: 13px !important;
   font-weight: 600 !important;
 }
 
@@ -5877,6 +5883,21 @@ textarea {
 #omnidb__section_connections .omnidb__section__body {
   padding: 0;
   display: flex;
+  overflow: hidden;
+}
+
+/* Snippets section: outer_snippet_panel.js sizes the tree/editor split to
+ * fill this section exactly (see resizeSnippetPanel in workspace.js, run on
+ * every window resize), but that's pixel math against a fixed editor-chrome
+ * budget (`7 * v_font_size`) that doesn't perfectly match the actual
+ * rendered height of the tab strip + Indent/Save button row below the
+ * editor -- so it's consistently off by some single-digit px. On the
+ * general `.omnidb__section` rule's `overflow: auto`, that was enough to
+ * pop a scrollbar in and out on every resize; nothing here actually needs
+ * to scroll at this level (the tree and the editor already scroll
+ * internally on their own), so hidden just silently absorbs the slop.
+ */
+#omnidb__section_snippets {
   overflow: hidden;
 }
 

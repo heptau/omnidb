@@ -41,13 +41,14 @@ SOFTWARE.
  */
 
 import { startConnectionManagement } from "./connections.js";
-import { confirmSignout, showAbout, showConfigUser } from "./header_actions.js";
+import { confirmSignout, showConfigUser } from "./header_actions.js";
+import { startTutorial } from "./tutorial_functions/tutorial.js";
 import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
 import { refreshBootstrapTooltips } from "./workspace.js";
 
-const SECTION_NAMES = ["welcome", "connections", "snippets", "database", "settings"];
+const SECTION_NAMES = ["welcome", "connections", "database", "snippets", "settings"];
 
 /** @type {Record<string, HTMLElement>} */
 var v_sectionDivs = {};
@@ -112,15 +113,6 @@ export function initSectionSwitcher() {
 		p_omnidb_tooltip_name: '<h5 class="my-1">Connections</h5>',
 	});
 
-	v_sectionNavTabs.snippets = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-book"></i>',
-		p_close: false,
-		p_selectFunction: function () {
-			toggleSnippetPanel();
-		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Snippets</h5>',
-	});
-
 	v_sectionNavTabs.database = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-database"></i>',
 		p_close: false,
@@ -130,22 +122,34 @@ export function initSectionSwitcher() {
 		p_omnidb_tooltip_name: '<h5 class="my-1">Database</h5>',
 	});
 
+	v_sectionNavTabs.snippets = v_sectionNav.createTab({
+		p_icon: '<i class="fas fa-book"></i>',
+		p_close: false,
+		p_selectFunction: function () {
+			toggleSnippetPanel();
+		},
+		p_omnidb_tooltip_name: '<h5 class="my-1">Snippets</h5>',
+	});
+
 	// Pushes About/Account/Settings to the bottom of the rail, VSCode-style.
 	var v_spacer = document.createElement("div");
 	v_spacer.className = "omnidb__section-nav__spacer";
 	v_sectionNav.tabListDiv.appendChild(v_spacer);
 
-	// About stays a small modal dialog (like it always was) rather than a
-	// full-screen section -- not selectable, just a click trigger, same
-	// shape as the Account icon below.
+	// Getting Started used to be reachable only by clicking the floating
+	// omnis icon in the bottom-right corner (see workspace.js) -- that was
+	// its one and only purpose there, so it's a rail icon now instead. Not
+	// selectable, just a click trigger, same shape as the Account icon
+	// below (this replaces the old About entry -- About's info now lives
+	// on the Welcome section instead, see outer_welcome_tab.js).
 	v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-info-circle"></i>',
+		p_icon: '<i class="fas fa-lightbulb"></i>',
 		p_close: false,
 		p_selectable: false,
-		p_clickFunction: function () {
-			showAbout();
+		p_clickFunction: function (e) {
+			startTutorial("getting_started", e.currentTarget);
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">About</h5>',
+		p_omnidb_tooltip_name: '<h5 class="my-1">Getting Started</h5>',
 	});
 
 	// The account icon (username/version/sign-out) only has anything to show

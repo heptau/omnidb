@@ -464,6 +464,13 @@ function createTree(p_div, p_backColor, p_contextMenu) {
 		///// Collapsing node
 		// p_node: Reference to the node;
 		collapseNode: function (p_node) {
+			// Opt-in via p_tag.locked (e.g. the Snippets tree's root, which
+			// has nothing else in that panel to fall back to once closed) --
+			// a no-op here also makes toggleNode/doubleClickNode leave an
+			// already-expanded locked node alone, since both just call this.
+			if (p_node.tag && p_node.tag.locked) {
+				return;
+			}
 			if (p_node.childNodes.length > 0 && p_node.expanded == true) {
 				var img = p_node.elementExpCol;
 

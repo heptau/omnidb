@@ -439,25 +439,28 @@ button.close {
 	border-radius: 0;
 }
 
-.omnidb__welcome__loading {
-	animation: workspaceFadeIn 0.45s ease forwards 0.3s;
-	background: url("../images/omnidb_loading.svg") no-repeat;
-	background-size: 84px 84px;
+.omnidb__welcome__logo {
 	display: inline-block;
-	height: 84px;
-	width: 84px;
-	opacity: 0;
-	position: absolute;
-	z-index: 1;
-	left: 0;
-	bottom: -36px;
+	height: 56px;
+	width: auto;
 }
 
-.omnidb__welcome__intro-text {
-	animation: workspaceSlideInFromRight 0.45s ease forwards 0.85s;
-	display: inline-block;
-	transform: translateX(100vw);
+.omnidb__welcome__logo svg {
+	display: block;
+	height: 100%;
+	width: auto;
 }
+
+// The draw-in animation itself lives in a <style> block inside the SVG
+// markup (outer_welcome_tab.js's v_animated_omnis), not here. It used to be
+// here, scoped through .animated-omnis__group--to-blue/--to-darkblue --
+// classes already used, with different static colors, by the AI assistant's
+// idle icon elsewhere in this file. Same specificity plus later source
+// order meant that rule silently won the cascade and this logo's "start
+// transparent" never actually applied outside the fill animation's own
+// active window. Keeping the whole animation self-contained in the SVG's
+// own <style> avoids that class of bug entirely -- nothing outside the SVG
+// can collide with it.
 
 .omnidb__welcome__intro-card {
 	animation: workspaceFadeIn 0.45s ease forwards 1.15s;
@@ -667,14 +670,33 @@ button.close {
 	flex-shrink: 1;
 }
 
+// Lives inside #{tabId}_left_resize_line_horizontal now (a 12px-tall, full
+// width strip) instead of floating over the Properties/DDL panel it
+// toggles, so it has to be small enough to actually fit that height -- no
+// more room here for the button chrome (background/border/padding) it used
+// to have as a free-floating corner button.
 .omnidb__tree-tabs__toggler {
-	border-bottom-right-radius: 0;
-	border-bottom-left-radius: 0;
-	cursor: pointer;
-	height: 2.4rem;
 	position: absolute;
-	right: 0;
-	z-index: 1;
+	top: 50%;
+	right: 8px;
+	transform: translateY(-50%);
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	width: 16px;
+	height: 10px;
+	padding: 0;
+	border: none;
+	background: transparent;
+	color: var(--text-secondary);
+	font-size: 8px;
+	line-height: 1;
+	cursor: pointer;
+	z-index: 2;
+}
+
+.omnidb__tree-tabs__toggler:hover {
+	color: var(--text-primary);
 }
 
 .omnidb__resize-line__container {
@@ -712,24 +734,31 @@ button.close {
 	padding: 8px 12px;
 }
 
+// Lives inside #connection_resize_line_{tabId} now (a 12px-wide,
+// full-height strip) instead of floating over the query/console area, so
+// it's centered in that strip rather than pinned to a fixed pixel offset
+// down the page. Its scaleX peek-out-on-hover animation doesn't apply
+// either now that it's not perched at the edge of open content -- a plain
+// opacity fade to match the strip's own hover feedback
+// (.omnidb__resize-line__container) is enough.
 .omnidb__tree__toggler {
 	position: absolute;
-	left: 4px;
-	top: 80px;
-	transform: scaleX(0.5);
-	transform-origin: left center;
-	transition: 0.35s;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	transition: opacity 0.2s;
 	opacity: 0.7;
-	z-index: 100;
-	padding: 8px 4px;
-	background-color: var(--app-bg);
-	border-radius: 0 6px 6px 0;
+	z-index: 2;
+	padding: 6px 0;
+	border: none;
+	background: transparent;
+	color: var(--text-secondary);
+	cursor: pointer;
 }
 
 .omnidb__tree__toggler:focus,
 .omnidb__tree__toggler:hover {
 	opacity: 1;
-	transform: scaleX(1);
 }
 
 .omnidb__tab-actions {
@@ -1694,12 +1723,6 @@ body {
 	}
 }
 
-@keyframes workspaceSlideInFromRight {
-	to {
-		transform: translateX(0);
-	}
-}
-
 #ul_cm.aimara_menu {
 	box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
 }
@@ -2043,6 +2066,27 @@ i.tab-status-idle_in_transaction_aborted {
 
 .node-snippet-snippet {
 	color: #2bb79c;
+}
+
+// The Snippets tree's root row is hidden (tree_snippets.js), so its direct
+// children -- the actual folders/snippets -- are the topmost thing visible
+// in the panel, but Aimara.js still indents them one level in (16px) as if
+// the row above them were still there. This walks the DOM structure
+// Aimara.js always builds rather than targeting a class or id on the <ul>
+// that holds those children, because that specific <ul> gets torn down and
+// replaced by a fresh one (drawChildNodes in Aimara.js) on every refresh --
+// anything attached to it directly wouldn't survive that. #snippets_panel_tree
+// is a fixed, singleton id (SNIPPET_PANEL_ID in outer_snippet_panel.js), and
+// .collapse (the root's own child-wrapping div, never replaced) is what
+// stays put across refreshes to anchor this selector to.
+//
+// Both .node and .node_selected: Aimara.js's selectNode swaps a node's span
+// between these two class names (nothing else changes), so a rule that only
+// covered .node lost its grip -- and its 16px inline padding-left came back
+// -- the moment a row was selected, e.g. right after creating it.
+#snippets_panel_tree > ul > li > div.collapse > ul > li > a > .node,
+#snippets_panel_tree > ul > li > div.collapse > ul > li > a > .node_selected {
+	padding-left: 0 !important;
 }
 
 .node-tablespace-list {

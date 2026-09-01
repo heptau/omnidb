@@ -7,6 +7,84 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Connections view rebuilt as a macOS/iPadOS-style master-detail split (sidebar list + the
+  selected connection's own form on the right) instead of a card grid with a separate edit
+  modal; new/removed connections use a compact "+/-" control, group management gets a labeled
+  "+ Group" pill, and the delete confirmation now names the connection instead of a generic
+  "Ok" (`notification_control.js`'s `showConfirm` gains an optional button-label override).
+- Per-connection "Environment" tag (None/Production/UAT/Development/Archive): a color dot in
+  the Connections sidebar and a matching accent on the connection's open Database/terminal tab.
+  New `environment` column on `OmniDB_app_connection` with a migration for existing app
+  databases (`appdb_bootstrap.go`, `appdb_schema.sql`).
+- Welcome page: the same animated logo/wordmark shown on startup, plus version and MIT-license
+  badges, replacing the plain "Hi, welcome to OmniDB!" heading; its links now work (globe icon
+  instead of a person, "OmniDB web" opens in the real system browser via the desktop relay,
+  "GitHub repo" links to the correct repository, "Read the docs" links to the docs site).
+- Vertical rail: a "Getting Started" entry (lightbulb icon) replacing "About", reusing the
+  floating AI-assistant's tutorial-launch behavior.
+- Snippets and Connections panels each get a draggable resize divider (tree/editor,
+  list/edit-form) matching the Database section's existing drag-to-resize pattern.
+
+### Changed
+- Native startup splash (`wails-app/frontend/index.html`) reduced to a near-invisible
+  passthrough — it used to render the full animated logo and version, but never stayed on
+  screen long enough to actually read.
+- Vertical rail and native app menu: Database and Snippets swapped order.
+- Welcome page's "OmniDB website" button shortened to "OmniDB web" so its three buttons read in
+  ascending size order.
+- Snippets tree: the root item is now expanded by default and can no longer be collapsed
+  (`Aimara.js`'s `collapseNode` no-ops for a `locked` node), and its row is hidden entirely —
+  its "New Folder"/"New Snippet" context menu now opens on right-click anywhere in the empty
+  panel area instead of only on the root row. The resulting leftover left indentation on
+  now-topmost items was also removed.
+- Snippets panel's "indent"/"save" buttons relabeled "Indent"/"Save" with spacing added between
+  icon and text.
+- Database section: the tree-sidebar and Properties/DDL-panel collapse-toggle buttons now live
+  inside their own resize-strip's hit area instead of floating outside it (shrunk to fit the
+  Properties/DDL strip's 12px height).
+- The floating "omnis" AI-assistant icon is hidden by default instead of sitting in the
+  bottom-right corner, and no longer reappears mid-screen when a Getting-Started sub-tutorial
+  launches from the rail.
+- Swept the remaining Bootstrap 4 `mr-*`/`ml-*` utility classes (unsupported by the app's
+  Bootstrap 5, which only ships `me-*`/`ms-*`) to the correct classes across ~12 files.
+
+### Fixed
+- macOS-styled dialog headers (`.modal-header`) rendered at ~44px instead of the correct ~28px
+  native title-bar height.
+- Welcome page logo's draw-in animation briefly flashed fully colored before animating, due to a
+  CSS specificity collision with an unrelated hover-icon rule (`.animated-omnis__group--to-blue
+  path`); the whole animation was moved self-contained into the logo SVG's own `<style>` tag
+  under uniquely-named classes.
+- Horizontal Database tab-strip tooltips (e.g. "Add Connection") rendered at the wrong
+  horizontal position (`getBoundingClientRect().right` instead of `offsetWidth`, in
+  `workspace.js`).
+- Tutorial content: a missing FontAwesome class rendered as a black square in two places
+  (`fa-user-circle` → `fa-user`); stale "About" references updated to "Getting Started".
+- Snippets tree items shifted horizontally depending on selection state and on whether a row had
+  an expand arrow — Aimara's `selectNode()` swaps a row's class from `.node` to `.node_selected`,
+  which the indentation fix hadn't covered for both classes.
+- Snippets panel: resize line was unusable due to a missing `position: relative` on its
+  containing block, which made `position: absolute; right: 0` anchor to a much wider ancestor.
+- Snippets panel: spurious scrollbars appeared on window resize.
+- Outer connection tab strip's trailing "+" Add Connection tab drifted into the middle of the
+  strip as new tabs got appended past it (`tabs.js` gains a general "trailing tab" concept so new
+  tabs insert before it instead), and its icon no longer sits off-center (a phantom empty label
+  span was throwing off the centering).
+- Query/Console tab strips' own trailing "+" tab rendered far wider (100px+) than intended,
+  because — being nested inside `#omnidb_main_tablist` — it inherited a `min-width`/padding rule
+  meant only for top-level connection tabs, via an unscoped descendant selector
+  (`_topbar.scss`). Now uses the same compact, icon-only treatment as "Add Connection".
+- Query result grid: an empty spacer `<td>` still reserved a full line-box height despite zeroed
+  padding/border, rendering as a spurious blank row between the header and the first data row;
+  fixed in `VirtualGrid.js` by also zeroing the cell's `height`, not just its `line-height`.
+- Cmd+A (select-all) selected static GUI chrome text — the Properties grid's "Property"/"Value"
+  column headers, the "Autocommit" checkbox label, and the "Not connected" status text — because
+  they shared a CSS class with genuinely copyable status text (query duration, row counts);
+  narrowed the exception in `user_select_guard.css` to exclude just those two static labels.
+- macOS window's green "zoom" title-bar button was non-functional; added Wails `Mac` options
+  (`wails-app/main.go`) — Wails only wires up the zoom button when `Mac` options are non-nil.
+
 ## [4.2.2] - 2026-08-28
 
 ### Changed

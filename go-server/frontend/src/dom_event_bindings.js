@@ -39,6 +39,7 @@ import {
 } from './header_actions.js'
 import { deleteMonitorUnit, editMonitorUnit, includeMonitorUnit } from './monitoring.js'
 import { startSetShortcut } from './shortcuts.js'
+import { v_openExternalUrl } from './tab_functions/website_tab.js'
 import { deleteRowEditData } from './tree_context_functions/edit_data.js'
 import { startTutorial } from './tutorial_functions/tutorial.js'
 import { listUsers } from './users.js'
@@ -86,6 +87,12 @@ const DELEGATED_CLICK = {
   'include-monitor-unit': (el) => includeMonitorUnit(numArg(el), arg(el) || undefined),
   'edit-monitor-unit': (el) => editMonitorUnit(numArg(el)),
   'delete-monitor-unit': (el) => deleteMonitorUnit(numArg(el)),
+
+  // Welcome section's "Useful stuff" links (outer_welcome_tab.js). A plain
+  // `<a target="_blank">` is a silent no-op inside the Wails desktop webview,
+  // so these go through the same external-link relay as the About dialog's
+  // OmniDB/GitHub links and the tree's "Doc: ..." menu items.
+  'open-external-url': (el) => v_openExternalUrl(arg(el)),
 }
 
 document.addEventListener('click', (event) => {
@@ -94,7 +101,11 @@ document.addEventListener('click', (event) => {
   const el = target.closest('[data-omnidb-action]')
   if (!el) return
   const handler = DELEGATED_CLICK[el.getAttribute('data-omnidb-action') || '']
-  if (handler) handler(el, event)
+  if (!handler) return
+  // Some of these markers sit on an `<a href="#">` for styling/focusability
+  // (e.g. the Welcome section's links) rather than a real navigation target.
+  event.preventDefault()
+  handler(el, event)
 })
 
 /**

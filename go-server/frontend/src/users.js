@@ -320,7 +320,7 @@ export function getUsers(p_options = false) {
 					"<input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''>" +
 					"<input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''>" +
 					"<div class='form-inline mb-4'>" +
-					"<h5 class='mr-2'>Select an user</h5>" +
+					"<h5 class='me-2'>Select an user</h5>" +
 					"<select id='omnidb_user_select' class='form-control'>";
 				if (p_options && p_options.focus_last) v_user_list_html += "<option value=''> </option>";
 				else v_user_list_html += "<option value='' selected> </option>";
@@ -352,13 +352,13 @@ export function getUsers(p_options = false) {
 				}
 				v_user_list_html +=
 					"</select>" +
-					"<button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ml-2'><i class='fas fa-user-plus'></i><span class='ml-2'>Add new user</span></button>" +
+					"<button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ms-2'><i class='fas fa-user-plus'></i><span class='ms-2'>Add new user</span></button>" +
 					"</div>" +
 					"<div id='omnidb_user_content' class='row'>" +
 					v_users_update_html +
 					"</div>" +
 					"<div class='text-center'>" +
-					"<button type='button' id='div_save_users' class='btn btn-success ml-1' style='visibility: hidden;'>Save</button>" +
+					"<button type='button' id='div_save_users' class='btn btn-success ms-1' style='visibility: hidden;'>Save</button>" +
 					"</div>" +
 					"<button type='submit' disabled style='display: none' aria-hidden='true'></button>" +
 					"</div>";
@@ -475,9 +475,9 @@ export function renderSelectedUser(event) {
 					escapeHtml(v_user_item[0]) +
 					"'>" +
 					"</div>" +
-					"<span class='ml-2'>Superuser?</span>" +
-					"<div class='ml-2 mb-2'>" +
-					"<div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'>" +
+					"<span class='ms-2'>Superuser?</span>" +
+					"<div class='ms-2 mb-2'>" +
+					"<div class='omnidb__switch me-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'>" +
 					"<input type='checkbox' id='user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +
@@ -503,7 +503,7 @@ export function renderSelectedUser(event) {
 					escapeHtml(v_user_item[1]) +
 					"'>" +
 					"</div>" +
-					"<span class='mr-2 text-danger omnidb__user-list__close'>" +
+					"<span class='me-2 text-danger omnidb__user-list__close'>" +
 					// Built here, not taken from the row data. get_users used to send
 					// this button as a ready-made `<i ... onclick='removeUser("3")'>`
 					// string in column 3 -- markup as data, carried over byte-for-byte
@@ -566,9 +566,9 @@ export function renderSelectedUser(event) {
 					escapeHtml(v_user_item[0]) +
 					"'>" +
 					"</div>" +
-					"<span class='ml-2'>Superuser?</span>" +
-					"<div class='ml-2 mb-2'>" +
-					"<div class='omnidb__switch mr-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'>" +
+					"<span class='ms-2'>Superuser?</span>" +
+					"<div class='ms-2 mb-2'>" +
+					"<div class='omnidb__switch me-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'>" +
 					"<input type='checkbox' id='new_user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +
@@ -594,7 +594,7 @@ export function renderSelectedUser(event) {
 					escapeHtml(v_user_item[1]) +
 					"'>" +
 					"</div>" +
-					"<span class='mr-2 text-danger omnidb__user-list__close'>" +
+					"<span class='me-2 text-danger omnidb__user-list__close'>" +
 					"<i id='bt_remove_new_user_" +
 					i +
 					"' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i>" +
