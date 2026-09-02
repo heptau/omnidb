@@ -80,6 +80,10 @@ func (s *consoleSession) consoleMetaTables(ctx context.Context) (string, error) 
 		sqlText = `select table_name as "Name" from user_tables order by table_name`
 	case "sqlite":
 		sqlText = `select name as "Name" from sqlite_master where type = 'table' and name not like 'sqlite_%' order by name`
+	case "mssql":
+		sqlText = `select s.name as "Schema", t.name as "Name"
+			from sys.tables t join sys.schemas s on s.schema_id = t.schema_id
+			where s.name = schema_name() order by t.name`
 	default:
 		return "", fmt.Errorf("\\dt is not implemented for %s", s.technology)
 	}
@@ -114,6 +118,12 @@ func (s *consoleSession) consoleMetaRelations(ctx context.Context) (string, erro
 		sqlText = `select object_name as "Name", object_type as "Type" from user_objects where object_type in ('TABLE','VIEW','SEQUENCE','MATERIALIZED VIEW') order by object_name`
 	case "sqlite":
 		sqlText = `select name as "Name", type as "Type" from sqlite_master where type in ('table','view') and name not like 'sqlite_%' order by name`
+	case "mssql":
+		sqlText = `select s.name as "Schema", o.name as "Name",
+			case o.type when 'U' then 'table' when 'V' then 'view' else o.type end as "Type"
+			from sys.objects o join sys.schemas s on s.schema_id = o.schema_id
+			where s.name = schema_name() and o.type in ('U','V')
+			order by o.name`
 	default:
 		return "", fmt.Errorf("\\d is not implemented for %s", s.technology)
 	}
@@ -169,6 +179,13 @@ func (s *consoleSession) consoleMetaDescribe(ctx context.Context, arg string) (s
 	case "sqlite":
 		sqlText = `select name as "Column", type as "Type", case "notnull" when 0 then 'YES' else 'NO' end as "Nullable", dflt_value as "Default" from pragma_table_info(?)`
 		args = []any{name}
+	case "mssql":
+		sqlText = `select column_name as "Column", data_type as "Type",
+			is_nullable as "Nullable", column_default as "Default"
+			from INFORMATION_SCHEMA.COLUMNS
+			where table_schema = coalesce(@p1, schema_name()) and table_name = @p2
+			order by ordinal_position`
+		args = []any{schemaArg, name}
 	default:
 		return "", fmt.Errorf("\\d is not implemented for %s", s.technology)
 	}
@@ -194,6 +211,8 @@ func (s *consoleSession) consoleMetaRoles(ctx context.Context) (string, error) {
 		sqlText = `select username as "Username", account_status as "Status" from all_users order by username`
 	case "sqlite":
 		return "SQLite has no user/role concept — a connection is just a file on disk.", nil
+	case "mssql":
+		sqlText = `select name as "Login name", type_desc as "Type", is_disabled as "Disabled" from sys.server_principals where type in ('S','U','G') order by name`
 	default:
 		return "", fmt.Errorf("\\du is not implemented for %s", s.technology)
 	}
@@ -219,6 +238,8 @@ func (s *consoleSession) consoleMetaDatabases(ctx context.Context) (string, erro
 		return "Oracle has one database per instance; use \\d to list objects, or \\du to list schemas/users.", nil
 	case "sqlite":
 		return "SQLite connections are single-database — there's nothing else to list.", nil
+	case "mssql":
+		sqlText = `select name as "Name", suser_sname(owner_sid) as "Owner", state_desc as "State" from sys.databases order by name`
 	default:
 		return "", fmt.Errorf("\\l is not implemented for %s", s.technology)
 	}
@@ -248,6 +269,12 @@ func (s *consoleSession) consoleMetaFunctions(ctx context.Context) (string, erro
 		sqlText = `select object_name as "Name", object_type as "Type" from user_objects where object_type in ('FUNCTION','PROCEDURE') order by object_name`
 	case "sqlite":
 		return "SQLite has no catalog of user-defined functions to list.", nil
+	case "mssql":
+		sqlText = `select s.name as "Schema", o.name as "Name",
+			case o.type when 'P' then 'procedure' when 'FN' then 'function' when 'IF' then 'function' when 'TF' then 'function' else o.type end as "Type"
+			from sys.objects o join sys.schemas s on s.schema_id = o.schema_id
+			where s.name = schema_name() and o.type in ('P','FN','IF','TF')
+			order by o.name`
 	default:
 		return "", fmt.Errorf("\\df is not implemented for %s", s.technology)
 	}

@@ -32,6 +32,8 @@ func verifiedSchemaTable(technology string, db *sql.DB, schema, table string) (s
 		return mysqlVerifiedSchemaTable(db, schema, table)
 	case "oracle":
 		return oracleVerifiedSchemaTable(db, schema, table)
+	case "mssql":
+		return mssqlVerifiedSchemaTable(db, schema, table)
 	default:
 		return "", "", fmt.Errorf("unsupported technology %q", technology)
 	}
@@ -93,6 +95,28 @@ func quoteOracleIdent(name string) string {
 	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
 }
 
+// mssqlVerifiedSchemaTable mirrors postgresqlVerifiedSchemaTable —
+// INFORMATION_SCHEMA.TABLES covers both base tables and views in SQL Server
+// alike, same as it does for Postgres/MySQL.
+func mssqlVerifiedSchemaTable(db *sql.DB, schema, table string) (string, string, error) {
+	var s, t string
+	err := db.QueryRow(`
+		select table_schema, table_name from INFORMATION_SCHEMA.TABLES
+		where table_schema = @p1 and table_name = @p2
+	`, schema, table).Scan(&s, &t)
+	if err == sql.ErrNoRows {
+		return "", "", nil
+	}
+	return s, t, err
+}
+
+// quoteMSSQLIdent brackets an MSSQL identifier, doubling any embedded ']'
+// character — the standard T-SQL bracket-quoted-identifier rule (same shape
+// as quoteOracleIdent/quotePostgresIdentifierDoubleQuoted).
+func quoteMSSQLIdent(name string) string {
+	return "[" + strings.ReplaceAll(name, "]", "]]") + "]"
+}
+
 // quotedSchemaTableRef builds a `schema.table` (or bare `table`, for engines
 // without schemas) FROM-clause fragment out of an already-verified
 // schema/table pair, quoting each part the way that engine's DDL/DML already
@@ -111,6 +135,8 @@ func quotedSchemaTableRef(technology, schema, table string) string {
 		return quoteMySQLIdent(schema) + "." + quoteMySQLIdent(table)
 	case "oracle":
 		return quoteOracleIdent(schema) + "." + quoteOracleIdent(table)
+	case "mssql":
+		return quoteMSSQLIdent(schema) + "." + quoteMSSQLIdent(table)
 	default:
 		return table
 	}

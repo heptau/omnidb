@@ -6439,6 +6439,7 @@
     mysql: "MySQL",
     mariadb: "MariaDB",
     oracle: "Oracle",
+    mssql: "MS SQL Server",
     sqlite: "SQLite",
     terminal: "Terminal"
   };
@@ -6448,11 +6449,24 @@
     development: { label: "Development", dotClass: "omnidb__env-dot--development", tabClass: "omnidb__tab--env-development" },
     archive: { label: "Archive", dotClass: "omnidb__env-dot--archive", tabClass: "omnidb__tab--env-archive" }
   };
+  function technologySortRank(v_tech) {
+    if (v_tech === "postgresql") return 0;
+    if (v_tech === "terminal") return 2;
+    return 1;
+  }
   function adjustTechSelector() {
     var select = el("conn_form_type");
     select.innerHTML = "";
-    for (var i2 = 0; i2 < v_connections_data.technologies.length; i2++) {
-      var v_tech = v_connections_data.technologies[i2];
+    var v_sorted = v_connections_data.technologies.slice().sort(function(a, b) {
+      var v_rank_a = technologySortRank(a);
+      var v_rank_b = technologySortRank(b);
+      if (v_rank_a !== v_rank_b) return v_rank_a - v_rank_b;
+      var v_name_a = TECHNOLOGY_DISPLAY_NAMES[a] || a;
+      var v_name_b = TECHNOLOGY_DISPLAY_NAMES[b] || b;
+      return v_name_a.localeCompare(v_name_b);
+    });
+    for (var i2 = 0; i2 < v_sorted.length; i2++) {
+      var v_tech = v_sorted[i2];
       var option = document.createElement("option");
       option.value = v_tech;
       option.textContent = TECHNOLOGY_DISPLAY_NAMES[v_tech] || v_tech;
@@ -11861,7 +11875,7 @@
         }
       }
       let v_icon = '<img src="' + v_url_folder + "/static/OmniDB_app/images/" + v_conn.v_db_type;
-      if (v_conn.v_db_type === "postgresql" || v_conn.v_db_type === "oracle" || v_conn.v_db_type === "mariadb" || v_conn.v_db_type === "mysql" || v_conn.v_db_type === "sqlite") {
+      if (v_conn.v_db_type === "postgresql" || v_conn.v_db_type === "oracle" || v_conn.v_db_type === "mariadb" || v_conn.v_db_type === "mysql" || v_conn.v_db_type === "sqlite" || v_conn.v_db_type === "mssql") {
         v_icon += '.svg"/>';
       } else {
         v_icon += '_medium.png"/>';
@@ -13811,7 +13825,7 @@
     clearProperties,
     getProperties
   }, Symbol.toStringTag, { value: "Module" }));
-  var i$5, j, tmp, v_list$4, v_node$4, v_options, v_publications, v_tables;
+  var i$6, j, tmp, v_list$5, v_node$5, v_options, v_publications, v_tables;
   function tabSQLTemplate(p_tab_name, p_template, p_showTip = true) {
     v_connTabControl.tag.createQueryTab(p_tab_name);
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_template);
@@ -17798,25 +17812,25 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Databases (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-database node-database",
             {
               type: "database",
-              database: p_return.v_data[i$5].v_name.replace(/"/g, ""),
-              oid: p_return.v_data[i$5].v_oid
+              database: p_return.v_data[i$6].v_name.replace(/"/g, ""),
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_database",
             null,
             false
           );
-          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i$5].v_name.replace(/"/g, "")) {
-            v_node$4.setNodeBold();
-            v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node$4;
+          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i$6].v_name.replace(/"/g, "")) {
+            v_node$5.setNodeBold();
+            v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node$5;
           }
-          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -17841,14 +17855,14 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tablespaces (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-folder node-tablespace",
             {
               type: "tablespace",
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_tablespace",
             null,
@@ -17878,16 +17892,16 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Roles (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          var v_role_icon = p_return.v_data[i$5].v_can_login ? "fas node-all fa-user node-user" : "fas node-all fa-user-friends node-user-group";
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          var v_role_icon = p_return.v_data[i$6].v_can_login ? "fas node-all fa-user node-user" : "fas node-all fa-user-friends node-user-group";
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             v_role_icon,
             {
               type: "role",
-              oid: p_return.v_data[i$5].v_oid,
-              can_login: p_return.v_data[i$5].v_can_login
+              oid: p_return.v_data[i$6].v_oid,
+              can_login: p_return.v_data[i$6].v_can_login
             },
             "cm_role",
             null,
@@ -17917,15 +17931,15 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Extensions (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-cubes node-extension",
             {
               type: "extension",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_extension",
             null,
@@ -17955,29 +17969,29 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Schemas (" + p_return.v_data.length + ")");
         node.tag.num_schemas = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-layer-group node-schema",
             {
               type: "schema",
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              schema: p_return.v_data[i$5].v_name,
-              oid: p_return.v_data[i$5].v_oid
+              schema: p_return.v_data[i$6].v_name,
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_schema",
             null,
             false
           );
-          var node_tables = v_node$4.createChildNode(
+          var node_tables = v_node$5.createChildNode(
             "Tables",
             false,
             "fas node-all fa-th node-table-list",
             {
               type: "table_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -17987,13 +18001,13 @@
           );
           node_tables.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            var node_ptables = v_node$4.createChildNode(
+            var node_ptables = v_node$5.createChildNode(
               "Partitioned Tables",
               false,
               "fas node-all fa-th node-ptable-list",
               {
                 type: "partitioned_table_list",
-                schema: p_return.v_data[i$5].v_name,
+                schema: p_return.v_data[i$6].v_name,
                 num_tables: 0,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase
               },
@@ -18003,13 +18017,13 @@
             );
             node_ptables.createChildNode("", true, "node-spin", null, null, null, false);
           }
-          var node_itables = v_node$4.createChildNode(
+          var node_itables = v_node$5.createChildNode(
             "Inheritance Tables",
             false,
             "fas node-all fa-th node-itable-list",
             {
               type: "inherited_table_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18018,13 +18032,13 @@
             false
           );
           node_itables.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_foreign_tables = v_node$4.createChildNode(
+          var node_foreign_tables = v_node$5.createChildNode(
             "Foreign Tables",
             false,
             "fas node-all fa-th node-ftable-list",
             {
               type: "foreign_table_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18033,13 +18047,13 @@
             false
           );
           node_foreign_tables.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_sequences = v_node$4.createChildNode(
+          var node_sequences = v_node$5.createChildNode(
             "Sequences",
             false,
             "fas node-all fa-sort-numeric-down node-sequence-list",
             {
               type: "sequence_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_sequences: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18048,13 +18062,13 @@
             false
           );
           node_sequences.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_views = v_node$4.createChildNode(
+          var node_views = v_node$5.createChildNode(
             "Views",
             false,
             "fas node-all fa-eye node-view-list",
             {
               type: "view_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_views: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18064,13 +18078,13 @@
           );
           node_views.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseFloat(getMajorVersionPostgresql(node.tree.tag.version)) >= 9.3) {
-            var node_views = v_node$4.createChildNode(
+            var node_views = v_node$5.createChildNode(
               "Materialized Views",
               false,
               "fas node-all fa-eye node-mview-list",
               {
                 type: "mview_list",
-                schema: p_return.v_data[i$5].v_name,
+                schema: p_return.v_data[i$6].v_name,
                 num_views: 0,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase
               },
@@ -18080,13 +18094,13 @@
             );
             node_views.createChildNode("", true, "node-spin", null, null, null, false);
           }
-          var node_functions = v_node$4.createChildNode(
+          var node_functions = v_node$5.createChildNode(
             "Functions",
             false,
             "fas node-all fa-cog node-function-list",
             {
               type: "function_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_functions: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18095,13 +18109,13 @@
             false
           );
           node_functions.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_triggerfunctions = v_node$4.createChildNode(
+          var node_triggerfunctions = v_node$5.createChildNode(
             "Trigger Functions",
             false,
             "fas node-all fa-cog node-tfunction-list",
             {
               type: "triggerfunction_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_triggerfunctions: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18110,13 +18124,13 @@
             false
           );
           node_triggerfunctions.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_eventtriggerfunctions = v_node$4.createChildNode(
+          var node_eventtriggerfunctions = v_node$5.createChildNode(
             "Event Trigger Functions",
             false,
             "fas node-all fa-cog node-etfunction-list",
             {
               type: "eventtriggerfunction_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_triggerfunctions: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18126,13 +18140,13 @@
           );
           node_eventtriggerfunctions.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 11) {
-            var node_procedures = v_node$4.createChildNode(
+            var node_procedures = v_node$5.createChildNode(
               "Procedures",
               false,
               "fas node-all fa-cog node-procedure-list",
               {
                 type: "procedure_list",
-                schema: p_return.v_data[i$5].v_name,
+                schema: p_return.v_data[i$6].v_name,
                 num_procedures: 0,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase
               },
@@ -18142,13 +18156,13 @@
             );
             node_procedures.createChildNode("", true, "node-spin", null, null, null, false);
           }
-          var node_aggregates = v_node$4.createChildNode(
+          var node_aggregates = v_node$5.createChildNode(
             "Aggregates",
             false,
             "fas node-all fa-cog node-aggregate-list",
             {
               type: "aggregate_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_aggregates: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18157,13 +18171,13 @@
             false
           );
           node_aggregates.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_types = v_node$4.createChildNode(
+          var node_types = v_node$5.createChildNode(
             "Types",
             false,
             "fas node-all fa-square node-type-list",
             {
               type: "type_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_types: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18172,13 +18186,13 @@
             false
           );
           node_types.createChildNode("", true, "node-spin", null, null, null, false);
-          var node_domains = v_node$4.createChildNode(
+          var node_domains = v_node$5.createChildNode(
             "Domains",
             false,
             "fas node-all fa-square node-domain-list",
             {
               type: "domain_list",
-              schema: p_return.v_data[i$5].v_name,
+              schema: p_return.v_data[i$6].v_name,
               num_domains: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
@@ -18212,32 +18226,32 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i$5].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i$5].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i$5].v_has_uniques,
-              has_indexes: p_return.v_data[i$5].v_has_indexes,
-              has_checks: p_return.v_data[i$5].v_has_checks,
-              has_excludes: p_return.v_data[i$5].v_has_excludes,
-              has_rules: p_return.v_data[i$5].v_has_rules,
-              has_triggers: p_return.v_data[i$5].v_has_triggers,
-              has_partitions: p_return.v_data[i$5].v_has_partitions,
-              has_statistics: p_return.v_data[i$5].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$6].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$6].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$6].v_has_uniques,
+              has_indexes: p_return.v_data[i$6].v_has_indexes,
+              has_checks: p_return.v_data[i$6].v_has_checks,
+              has_excludes: p_return.v_data[i$6].v_has_excludes,
+              has_rules: p_return.v_data[i$6].v_has_rules,
+              has_triggers: p_return.v_data[i$6].v_has_triggers,
+              has_partitions: p_return.v_data[i$6].v_has_partitions,
+              has_statistics: p_return.v_data[i$6].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_table",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -18274,16 +18288,16 @@
         node.setText("Sequences (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_sequence_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_sequence_name,
             false,
             "fas node-all fa-sort-numeric-down node-sequence",
             {
               type: "sequence",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_sequence",
             null,
@@ -18314,24 +18328,24 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-eye node-view",
             {
               type: "view",
-              has_rules: p_return.v_data[i$5].v_has_rules,
-              has_triggers: p_return.v_data[i$5].v_has_triggers,
+              has_rules: p_return.v_data[i$6].v_has_rules,
+              has_triggers: p_return.v_data[i$6].v_has_triggers,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_view",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -18367,7 +18381,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$4 = node.createChildNode(
+        v_list$5 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -18379,9 +18393,9 @@
           null,
           false
         );
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = v_list$4.createChildNode(
-            p_return.v_data[i$5].v_column_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = v_list$5.createChildNode(
+            p_return.v_data[i$6].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -18393,8 +18407,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Type: " + p_return.v_data[i$5].v_data_type,
+          v_node$5.createChildNode(
+            "Type: " + p_return.v_data[i$6].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -18407,7 +18421,7 @@
           );
         }
         if (node.tag.has_rules) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -18420,10 +18434,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -18436,7 +18450,7 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -18490,24 +18504,24 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Materialized Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-eye node-mview",
             {
               type: "mview",
-              has_indexes: p_return.v_data[i$5].v_has_indexes,
-              has_statistics: p_return.v_data[i$5].v_has_statistics,
+              has_indexes: p_return.v_data[i$6].v_has_indexes,
+              has_statistics: p_return.v_data[i$6].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_mview",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -18543,7 +18557,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$4 = node.createChildNode(
+        v_list$5 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -18555,9 +18569,9 @@
           null,
           false
         );
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = v_list$4.createChildNode(
-            p_return.v_data[i$5].v_column_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = v_list$5.createChildNode(
+            p_return.v_data[i$6].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -18569,8 +18583,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Type: " + p_return.v_data[i$5].v_data_type,
+          v_node$5.createChildNode(
+            "Type: " + p_return.v_data[i$6].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -18583,7 +18597,7 @@
           );
         }
         if (node.tag.has_indexes) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -18596,11 +18610,11 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node$4 = node.createChildNode(
+            v_node$5 = node.createChildNode(
               "Statistics",
               false,
               "fas node-all fa-chart-bar node-statistics",
@@ -18613,7 +18627,7 @@
               null,
               false
             );
-            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         node.drawChildNodes();
@@ -18667,7 +18681,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$4 = node.createChildNode(
+        v_list$5 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -18680,23 +18694,23 @@
           null,
           false
         );
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = v_list$4.createChildNode(
-            p_return.v_data[i$5].v_column_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = v_list$5.createChildNode(
+            p_return.v_data[i$6].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
               type: "table_field",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              position: p_return.v_data[i$5].v_position
+              position: p_return.v_data[i$6].v_position
             },
             "cm_column",
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Type: " + p_return.v_data[i$5].v_data_type,
+          v_node$5.createChildNode(
+            "Type: " + p_return.v_data[i$6].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -18707,8 +18721,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Nullable: " + p_return.v_data[i$5].v_nullable,
+          v_node$5.createChildNode(
+            "Nullable: " + p_return.v_data[i$6].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -18721,7 +18735,7 @@
           );
         }
         if (node.tag.has_primary_keys) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Primary Key",
             false,
             "fas node-all fa-key node-pkey",
@@ -18734,10 +18748,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_foreign_keys) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Foreign Keys",
             false,
             "fas node-all fa-key node-fkey",
@@ -18750,10 +18764,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_uniques) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Uniques",
             false,
             "fas node-all fa-key node-unique",
@@ -18766,10 +18780,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_checks) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Checks",
             false,
             "fas node-all fa-check-square node-check",
@@ -18782,10 +18796,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_excludes) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Excludes",
             false,
             "fas node-all fa-times-circle node-exclude",
@@ -18798,10 +18812,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_indexes) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -18814,10 +18828,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_rules) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -18830,10 +18844,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -18846,10 +18860,10 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_partitions) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             "Inherited Tables",
             false,
             "fas node-all fa-table node-inherited",
@@ -18862,9 +18876,9 @@
             null,
             false
           );
-          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node$4 = node.createChildNode(
+            v_node$5 = node.createChildNode(
               "Partitions",
               false,
               "fas node-all fa-table node-partition",
@@ -18877,12 +18891,12 @@
               null,
               false
             );
-            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node$4 = node.createChildNode(
+            v_node$5 = node.createChildNode(
               "Statistics",
               false,
               "fas node-all fa-chart-bar node-statistics",
@@ -18895,7 +18909,7 @@
               null,
               false
             );
-            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         node.drawChildNodes();
@@ -18925,7 +18939,7 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          v_node$4 = node.createChildNode(
+          v_node$5 = node.createChildNode(
             p_return.v_data[0][0],
             false,
             "fas node-all fa-key node-pkey",
@@ -18937,7 +18951,7 @@
             },
             "cm_pk"
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -18970,9 +18984,9 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4.createChildNode(
-            p_return.v_data[i$5][0],
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5.createChildNode(
+            p_return.v_data[i$6][0],
             false,
             "fas node-all fa-columns node-column",
             {
@@ -19009,22 +19023,22 @@
         node.setText("Uniques (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-            v_node$4 = node.createChildNode(
-              p_return.v_data[i$5][0],
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+            v_node$5 = node.createChildNode(
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-key node-unique",
               {
                 type: "unique",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i$5][1]
+                oid: p_return.v_data[i$6][1]
               },
               "cm_unique",
               null,
               false
             );
-            v_node$4.createChildNode(
+            v_node$5.createChildNode(
               "",
               false,
               "node-spin",
@@ -19063,9 +19077,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             node.createChildNode(
-              p_return.v_data[i$5][0],
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-columns node-column",
               {
@@ -19104,16 +19118,16 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i$5][0] + " (" + p_return.v_data[i$5][1] + ")",
+              p_return.v_data[i$6][0] + " (" + p_return.v_data[i$6][1] + ")",
               false,
               "fas node-all fa-thumbtack node-index",
               {
                 type: "index",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i$5][2]
+                oid: p_return.v_data[i$6][2]
               },
               "cm_index",
               null,
@@ -19159,9 +19173,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             node.createChildNode(
-              p_return.v_data[i$5][0],
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-columns node-column",
               {
@@ -19198,23 +19212,23 @@
       function(p_return) {
         node.setText("Foreign Keys (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5][0],
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6][0],
             false,
             "fas node-all fa-key node-fkey",
             {
               type: "foreign_key",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5][4]
+              oid: p_return.v_data[i$6][4]
             },
             "cm_fk",
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Referenced Table: " + p_return.v_data[i$5][1],
+          v_node$5.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$6][1],
             false,
             "fas node-all fa-table node-table",
             {
@@ -19225,8 +19239,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Delete Rule: " + p_return.v_data[i$5][2],
+          v_node$5.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$6][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -19237,8 +19251,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Update Rule: " + p_return.v_data[i$5][3],
+          v_node$5.createChildNode(
+            "Update Rule: " + p_return.v_data[i$6][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -19310,9 +19324,9 @@
           null,
           false
         );
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           node.createChildNode(
-            p_return.v_data[i$5][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$5][4],
+            p_return.v_data[i$6][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$6][4],
             false,
             "fas node-all fa-columns node-column",
             {
@@ -19350,23 +19364,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i$5][0],
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-check-square node-check",
               {
                 type: "check",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i$5][2]
+                oid: p_return.v_data[i$6][2]
               },
               "cm_check",
               null,
               false
             );
             v_node2.createChildNode(
-              p_return.v_data[i$5][1],
+              p_return.v_data[i$6][1],
               false,
               "fas node-all fa-edit node-check-value",
               {
@@ -19405,23 +19419,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i$5][0],
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-times-circle node-exclude",
               {
                 type: "exclude",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i$5][3]
+                oid: p_return.v_data[i$6][3]
               },
               "cm_exclude",
               null,
               false
             );
             v_node2.createChildNode(
-              "Attributes: " + p_return.v_data[i$5][1],
+              "Attributes: " + p_return.v_data[i$6][1],
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -19433,7 +19447,7 @@
               false
             );
             v_node2.createChildNode(
-              "Operators: " + p_return.v_data[i$5][2],
+              "Operators: " + p_return.v_data[i$6][2],
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -19471,16 +19485,16 @@
         node.setText("Rules (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             node.createChildNode(
-              p_return.v_data[i$5][0],
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-lightbulb node-rule",
               {
                 type: "rule",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i$5][1]
+                oid: p_return.v_data[i$6][1]
               },
               "cm_rule",
               null,
@@ -19542,23 +19556,23 @@
         node.setText("Triggers (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             var v_node2 = node.createChildNode(
-              p_return.v_data[i$5].v_name,
+              p_return.v_data[i$6].v_name,
               false,
               "fas node-all fa-bolt node-trigger",
               {
                 type: "trigger",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                oid: p_return.v_data[i$5].v_oid
+                oid: p_return.v_data[i$6].v_oid
               },
               "cm_trigger",
               null,
               true
             );
             v_node2.createChildNode(
-              "Enabled: " + p_return.v_data[i$5].v_enabled,
+              "Enabled: " + p_return.v_data[i$6].v_enabled,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -19570,15 +19584,15 @@
               false
             );
             v_node2.createChildNode(
-              p_return.v_data[i$5].v_function,
+              p_return.v_data[i$6].v_function,
               false,
               "fas node-all fa-cog node-tfunction",
               {
                 type: "direct_triggerfunction",
-                id: p_return.v_data[i$5].v_id,
+                id: p_return.v_data[i$6].v_id,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
                 schema: node.tag.schema,
-                function_oid: p_return.v_data[i$5].v_function_oid
+                function_oid: p_return.v_data[i$6].v_function_oid
               },
               "cm_direct_triggerfunction",
               null,
@@ -19609,22 +19623,22 @@
         node.setText("Event Triggers (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             var v_node2 = node.createChildNode(
-              p_return.v_data[i$5].v_name,
+              p_return.v_data[i$6].v_name,
               false,
               "fas node-all fa-bolt node-eventtrigger",
               {
                 type: "eventtrigger",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                oid: p_return.v_data[i$5].v_oid
+                oid: p_return.v_data[i$6].v_oid
               },
               "cm_eventtrigger",
               null,
               true
             );
             v_node2.createChildNode(
-              "Enabled: " + p_return.v_data[i$5].v_enabled,
+              "Enabled: " + p_return.v_data[i$6].v_enabled,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -19635,7 +19649,7 @@
               false
             );
             v_node2.createChildNode(
-              "Event: " + p_return.v_data[i$5].v_event,
+              "Event: " + p_return.v_data[i$6].v_event,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -19646,14 +19660,14 @@
               false
             );
             v_node2.createChildNode(
-              p_return.v_data[i$5].v_function,
+              p_return.v_data[i$6].v_function,
               false,
               "fas node-all fa-cog node-etfunction",
               {
                 type: "direct_eventtriggerfunction",
-                id: p_return.v_data[i$5].v_id,
+                id: p_return.v_data[i$6].v_id,
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                function_oid: p_return.v_data[i$5].v_function_oid
+                function_oid: p_return.v_data[i$6].v_function_oid
               },
               "cm_direct_eventtriggerfunction",
               null,
@@ -19686,9 +19700,9 @@
         node.setText("Inherited Tables (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             node.createChildNode(
-              p_return.v_data[i$5][0],
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-table node-inherited",
               {
@@ -19727,9 +19741,9 @@
         node.setText("Partitions (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             node.createChildNode(
-              p_return.v_data[i$5][0],
+              p_return.v_data[i$6][0],
               false,
               "fas node-all fa-table node-partition",
               {
@@ -19771,17 +19785,17 @@
         }
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i$5][1] + "." + p_return.v_data[i$5][0],
+              p_return.v_data[i$6][1] + "." + p_return.v_data[i$6][0],
               false,
               "fas node-all fa-chart-bar node-statistic",
               {
                 type: "statistic",
                 database: v_connTabControl.selectedTab.tag.selectedDatabase,
-                schema: p_return.v_data[i$5][1],
-                statistics: p_return.v_data[i$5][0],
-                oid: p_return.v_data[i$5][2]
+                schema: p_return.v_data[i$6][1],
+                statistics: p_return.v_data[i$6][0],
+                oid: p_return.v_data[i$6][2]
               },
               "cm_statistic",
               null,
@@ -19816,9 +19830,9 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
             node.createChildNode(
-              p_return.v_data[i$5]["v_column_name"],
+              p_return.v_data[i$6]["v_column_name"],
               false,
               "fas node-all fa-columns node-column",
               {
@@ -19855,23 +19869,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-cog node-function",
             {
               type: "function",
-              id: p_return.v_data[i$5].v_id,
+              id: p_return.v_data[i$6].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i$5].v_function_oid
+              function_oid: p_return.v_data[i$6].v_function_oid
             },
             "cm_function",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -19908,10 +19922,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          if (p_return.v_data[i$5].v_type == "O")
-            v_node$4 = node.createChildNode(
-              p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          if (p_return.v_data[i$6].v_type == "O")
+            v_node$5 = node.createChildNode(
+              p_return.v_data[i$6].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               {
@@ -19923,9 +19937,9 @@
               false
             );
           else {
-            if (p_return.v_data[i$5].v_type == "I")
-              v_node$4 = node.createChildNode(
-                p_return.v_data[i$5].v_name,
+            if (p_return.v_data[i$6].v_type == "I")
+              v_node$5 = node.createChildNode(
+                p_return.v_data[i$6].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 {
@@ -19937,8 +19951,8 @@
                 false
               );
             else
-              v_node$4 = node.createChildNode(
-                p_return.v_data[i$5].v_name,
+              v_node$5 = node.createChildNode(
+                p_return.v_data[i$6].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 {
@@ -20002,23 +20016,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Procedures (" + p_return.v_data.length + ")");
         node.tag.num_procedures = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-cog node-procedure",
             {
               type: "procedure",
-              id: p_return.v_data[i$5].v_id,
+              id: p_return.v_data[i$6].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i$5].v_function_oid
+              function_oid: p_return.v_data[i$6].v_function_oid
             },
             "cm_procedure",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -20055,10 +20069,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_fields = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          if (p_return.v_data[i$5].v_type == "O")
-            v_node$4 = node.createChildNode(
-              p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          if (p_return.v_data[i$6].v_type == "O")
+            v_node$5 = node.createChildNode(
+              p_return.v_data[i$6].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               {
@@ -20070,9 +20084,9 @@
               false
             );
           else {
-            if (p_return.v_data[i$5].v_type == "I")
-              v_node$4 = node.createChildNode(
-                p_return.v_data[i$5].v_name,
+            if (p_return.v_data[i$6].v_type == "I")
+              v_node$5 = node.createChildNode(
+                p_return.v_data[i$6].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 {
@@ -20084,8 +20098,8 @@
                 false
               );
             else
-              v_node$4 = node.createChildNode(
-                p_return.v_data[i$5].v_name,
+              v_node$5 = node.createChildNode(
+                p_return.v_data[i$6].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 {
@@ -20149,17 +20163,17 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Trigger Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           node.createChildNode(
-            p_return.v_data[i$5].v_name,
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-cog node-tfunction",
             {
               type: "triggerfunction",
-              id: p_return.v_data[i$5].v_id,
+              id: p_return.v_data[i$6].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i$5].v_function_oid
+              function_oid: p_return.v_data[i$6].v_function_oid
             },
             "cm_triggerfunction",
             null,
@@ -20217,17 +20231,17 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Event Trigger Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           node.createChildNode(
-            p_return.v_data[i$5].v_name,
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-cog node-etfunction",
             {
               type: "eventtriggerfunction",
-              id: p_return.v_data[i$5].v_id,
+              id: p_return.v_data[i$6].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              function_oid: p_return.v_data[i$5].v_function_oid
+              function_oid: p_return.v_data[i$6].v_function_oid
             },
             "cm_eventtriggerfunction",
             null,
@@ -20287,23 +20301,23 @@
         }
         node.setText("Aggregates (" + p_return.v_data.length + ")");
         node.tag.num_aggregates = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-cog node-aggregate",
             {
               type: "aggregate",
-              id: p_return.v_data[i$5].v_id,
+              id: p_return.v_data[i$6].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_aggregate",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -20339,9 +20353,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Physical Replication Slots (" + p_return.v_data.length + ")");
         node.tag.num_repslots = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-sitemap node-repslot",
             {
@@ -20376,9 +20390,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Logical Replication Slots (" + p_return.v_data.length + ")");
         node.tag.num_repslots = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-sitemap node-repslot",
             {
@@ -20413,22 +20427,22 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Publications (" + p_return.v_data.length + ")");
         node.tag.num_pubs = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-arrow-alt-circle-down node-publication",
             {
               type: "publication",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_publication",
             null,
             false
           );
-          v_node$4.createChildNode(
-            "All Tables: " + p_return.v_data[i$5].v_alltables,
+          v_node$5.createChildNode(
+            "All Tables: " + p_return.v_data[i$6].v_alltables,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20438,8 +20452,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Insert: " + p_return.v_data[i$5].v_insert,
+          v_node$5.createChildNode(
+            "Insert: " + p_return.v_data[i$6].v_insert,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20449,8 +20463,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Update: " + p_return.v_data[i$5].v_update,
+          v_node$5.createChildNode(
+            "Update: " + p_return.v_data[i$6].v_update,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20460,8 +20474,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Delete: " + p_return.v_data[i$5].v_delete,
+          v_node$5.createChildNode(
+            "Delete: " + p_return.v_data[i$6].v_delete,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20471,8 +20485,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Truncate: " + p_return.v_data[i$5].v_truncate,
+          v_node$5.createChildNode(
+            "Truncate: " + p_return.v_data[i$6].v_truncate,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20482,8 +20496,8 @@
             null,
             false
           );
-          if (p_return.v_data[i$5].v_alltables == "False") {
-            v_tables = v_node$4.createChildNode(
+          if (p_return.v_data[i$6].v_alltables == "False") {
+            v_tables = v_node$5.createChildNode(
               "Tables",
               false,
               "fas node-all fa-th node-table-list",
@@ -20522,9 +20536,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-table node-table",
             {
@@ -20559,22 +20573,22 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Subscriptions (" + p_return.v_data.length + ")");
         node.tag.num_subs = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-arrow-alt-circle-up node-subscription",
             {
               type: "subscription",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_subscription",
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Enabled: " + p_return.v_data[i$5].v_enabled,
+          v_node$5.createChildNode(
+            "Enabled: " + p_return.v_data[i$6].v_enabled,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20584,8 +20598,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "ConnInfo: " + p_return.v_data[i$5].v_conninfo,
+          v_node$5.createChildNode(
+            "ConnInfo: " + p_return.v_data[i$6].v_conninfo,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20595,7 +20609,7 @@
             null,
             false
           );
-          v_publications = v_node$4.createChildNode(
+          v_publications = v_node$5.createChildNode(
             "Referenced Publications",
             false,
             "fas node-all fa-arrow-alt-circle-down node-publication",
@@ -20607,7 +20621,7 @@
             null,
             false
           );
-          tmp = p_return.v_data[i$5].v_publications.split(",");
+          tmp = p_return.v_data[i$6].v_publications.split(",");
           for (j = 0; j < tmp.length; j++) {
             v_publications.createChildNode(
               tmp[j],
@@ -20622,7 +20636,7 @@
               false
             );
           }
-          v_tables = v_node$4.createChildNode(
+          v_tables = v_node$5.createChildNode(
             "Tables",
             false,
             "fas node-all fa-th node-table-list",
@@ -20660,9 +20674,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-table node-table",
             {
@@ -20697,21 +20711,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Foreign Data Wrappers (" + p_return.v_data.length + ")");
         node.tag.num_fdws = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-cube node-fdw",
             {
               type: "fdw",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_fdw",
             null,
             false
           );
-          v_node$4 = v_node$4.createChildNode(
+          v_node$5 = v_node$5.createChildNode(
             "Foreign Servers",
             false,
             "fas node-all fa-server node-server",
@@ -20723,7 +20737,7 @@
             null,
             false
           );
-          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -20749,23 +20763,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Foreign Servers (" + p_return.v_data.length + ")");
         node.tag.num_foreign_servers = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-server node-server",
             {
               type: "foreign_server",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_foreign_server",
             null,
             false
           );
-          if (p_return.v_data[i$5].v_type != null) {
-            v_node$4.createChildNode(
-              "Type: " + p_return.v_data[i$5].v_type,
+          if (p_return.v_data[i$6].v_type != null) {
+            v_node$5.createChildNode(
+              "Type: " + p_return.v_data[i$6].v_type,
               true,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -20776,9 +20790,9 @@
               false
             );
           }
-          if (p_return.v_data[i$5].v_version != null) {
-            v_node$4.createChildNode(
-              "Version: " + p_return.v_data[i$5].v_version,
+          if (p_return.v_data[i$6].v_version != null) {
+            v_node$5.createChildNode(
+              "Version: " + p_return.v_data[i$6].v_version,
               true,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -20789,11 +20803,11 @@
               false
             );
           }
-          if (p_return.v_data[i$5].v_options != null) {
-            v_options = p_return.v_data[i$5].v_options.split(",");
+          if (p_return.v_data[i$6].v_options != null) {
+            v_options = p_return.v_data[i$6].v_options.split(",");
             if (v_options[0] != "") {
               for (j = 0; j < v_options.length; j++) {
-                v_node$4.createChildNode(
+                v_node$5.createChildNode(
                   v_options[j],
                   true,
                   "fas node-all fa-ellipsis-h node-bullet",
@@ -20807,7 +20821,7 @@
               }
             }
           }
-          v_node$4 = v_node$4.createChildNode(
+          v_node$5 = v_node$5.createChildNode(
             "User Mappings",
             false,
             "fas node-all fa-user-friends node-user",
@@ -20819,7 +20833,7 @@
             null,
             false
           );
-          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -20845,25 +20859,25 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("User Mappings (" + p_return.v_data.length + ")");
         node.tag.num_user_mappings = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-user-friends node-user",
             {
               type: "user_mapping",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              foreign_server: p_return.v_data[i$5].v_foreign_server
+              foreign_server: p_return.v_data[i$6].v_foreign_server
             },
             "cm_user_mapping",
             null,
             false
           );
-          if (p_return.v_data[i$5].v_options != null) {
-            v_options = p_return.v_data[i$5].v_options.split(",");
+          if (p_return.v_data[i$6].v_options != null) {
+            v_options = p_return.v_data[i$6].v_options.split(",");
             if (v_options[0] != "") {
               for (j = 0; j < v_options.length; j++) {
-                v_node$4.createChildNode(
+                v_node$5.createChildNode(
                   v_options[j],
                   true,
                   "fas node-all fa-ellipsis-h node-bullet",
@@ -20902,23 +20916,23 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Foreign Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-table node-ftable",
             {
               type: "foreign_table",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
-              has_statistics: p_return.v_data[i$5].v_has_statistics,
+              has_statistics: p_return.v_data[i$6].v_has_statistics,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_foreign_table",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -20954,7 +20968,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$4 = node.createChildNode(
+        v_list$5 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -20967,9 +20981,9 @@
           null,
           false
         );
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = v_list$4.createChildNode(
-            p_return.v_data[i$5].v_column_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = v_list$5.createChildNode(
+            p_return.v_data[i$6].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -20981,8 +20995,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Type: " + p_return.v_data[i$5].v_data_type,
+          v_node$5.createChildNode(
+            "Type: " + p_return.v_data[i$6].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20993,8 +21007,8 @@
             null,
             false
           );
-          v_node$4.createChildNode(
-            "Nullable: " + p_return.v_data[i$5].v_nullable,
+          v_node$5.createChildNode(
+            "Nullable: " + p_return.v_data[i$6].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -21005,11 +21019,11 @@
             null,
             false
           );
-          if (p_return.v_data[i$5].v_options != null) {
-            v_options = p_return.v_data[i$5].v_options.split(",");
+          if (p_return.v_data[i$6].v_options != null) {
+            v_options = p_return.v_data[i$6].v_options.split(",");
             if (v_options[0] != "") {
               for (j = 0; j < v_options.length; j++) {
-                v_node$4.createChildNode(
+                v_node$5.createChildNode(
                   v_options[j],
                   true,
                   "fas node-all fa-ellipsis-h node-bullet",
@@ -21070,7 +21084,7 @@
         );
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
-            v_node$4 = node.createChildNode(
+            v_node$5 = node.createChildNode(
               "Statistics",
               false,
               "fas node-all fa-chart-bar node-statistics",
@@ -21083,7 +21097,7 @@
               null,
               false
             );
-            v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
+            v_node$5.createChildNode("", false, "node-spin", null, null, null, false);
           }
         }
         node.drawChildNodes();
@@ -21110,16 +21124,16 @@
         node.setText("Types (" + p_return.v_data.length + ")");
         node.tag.num_types = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_type_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_type_name,
             false,
             "fas node-all fa-square node-type",
             {
               type: "type",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_type",
             null,
@@ -21150,16 +21164,16 @@
         node.setText("Domains (" + p_return.v_data.length + ")");
         node.tag.num_domains = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_domain_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_domain_name,
             false,
             "fas node-all fa-square node-domain",
             {
               type: "domain",
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_domain",
             null,
@@ -21190,14 +21204,14 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Partitioned Tables (" + p_return.v_data.length + ")");
         node.tag.num_partitioned = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-layer-group node-ptable",
             {
               type: "partitioned_parent",
-              id: p_return.v_data[i$5].v_name,
+              id: p_return.v_data[i$6].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema
@@ -21206,7 +21220,7 @@
             null,
             false
           );
-          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -21233,32 +21247,32 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText(node.tag.id + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-table node-ptable",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i$5].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i$5].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i$5].v_has_uniques,
-              has_indexes: p_return.v_data[i$5].v_has_indexes,
-              has_checks: p_return.v_data[i$5].v_has_checks,
-              has_excludes: p_return.v_data[i$5].v_has_excludes,
-              has_rules: p_return.v_data[i$5].v_has_rules,
-              has_triggers: p_return.v_data[i$5].v_has_triggers,
-              has_partitions: p_return.v_data[i$5].v_has_partitions,
-              has_statistics: p_return.v_data[i$5].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$6].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$6].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$6].v_has_uniques,
+              has_indexes: p_return.v_data[i$6].v_has_indexes,
+              has_checks: p_return.v_data[i$6].v_has_checks,
+              has_excludes: p_return.v_data[i$6].v_has_excludes,
+              has_rules: p_return.v_data[i$6].v_has_rules,
+              has_triggers: p_return.v_data[i$6].v_has_triggers,
+              has_partitions: p_return.v_data[i$6].v_has_partitions,
+              has_statistics: p_return.v_data[i$6].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_table",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -21295,14 +21309,14 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Inheritance Tables (" + p_return.v_data.length + ")");
         node.tag.num_partitioned = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-layer-group node-itable",
             {
               type: "inherited_parent",
-              id: p_return.v_data[i$5].v_name,
+              id: p_return.v_data[i$6].v_name,
               num_tables: 0,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema
@@ -21311,7 +21325,7 @@
             null,
             false
           );
-          v_node$4.createChildNode("", true, "node-spin", null, null, null, false);
+          v_node$5.createChildNode("", true, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackPostgreSQL(node);
@@ -21338,32 +21352,32 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText(node.tag.id + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
-          v_node$4 = node.createChildNode(
-            p_return.v_data[i$5].v_name,
+        for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
+          v_node$5 = node.createChildNode(
+            p_return.v_data[i$6].v_name,
             false,
             "fas node-all fa-table node-itable",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i$5].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i$5].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i$5].v_has_uniques,
-              has_indexes: p_return.v_data[i$5].v_has_indexes,
-              has_checks: p_return.v_data[i$5].v_has_checks,
-              has_excludes: p_return.v_data[i$5].v_has_excludes,
-              has_rules: p_return.v_data[i$5].v_has_rules,
-              has_triggers: p_return.v_data[i$5].v_has_triggers,
-              has_partitions: p_return.v_data[i$5].v_has_partitions,
-              has_statistics: p_return.v_data[i$5].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$6].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$6].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$6].v_has_uniques,
+              has_indexes: p_return.v_data[i$6].v_has_indexes,
+              has_checks: p_return.v_data[i$6].v_has_checks,
+              has_excludes: p_return.v_data[i$6].v_has_excludes,
+              has_rules: p_return.v_data[i$6].v_has_rules,
+              has_triggers: p_return.v_data[i$6].v_has_triggers,
+              has_partitions: p_return.v_data[i$6].v_has_partitions,
+              has_statistics: p_return.v_data[i$6].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase,
               schema: node.tag.schema,
-              oid: p_return.v_data[i$5].v_oid
+              oid: p_return.v_data[i$6].v_oid
             },
             "cm_table",
             null,
             false
           );
-          v_node$4.createChildNode(
+          v_node$5.createChildNode(
             "",
             false,
             "node-spin",
@@ -21517,7 +21531,7 @@
       );
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
-      v_node$4 = p_node.createChildNode(
+      v_node$5 = p_node.createChildNode(
         // Plain text, not markup. Aimara escapes every node label before
         // it reaches innerHTML (see aimaraEscapeHtml), so the <a
         // onclick='showError(...)'>View Detail</a> this used to build was
@@ -23335,7 +23349,7 @@
     __proto__: null,
     initWelcomeSection
   }, Symbol.toStringTag, { value: "Module" }));
-  var i$4, v_list$3, v_node$3;
+  var i$5, v_list$4, v_node$4;
   function getTreeOracle(p_div) {
     var context_menu = {
       cm_server: {
@@ -24803,9 +24817,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tablespaces (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-folder node-tablespace",
             {
@@ -24839,9 +24853,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Roles (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-user node-user",
             {
@@ -24876,29 +24890,29 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i$4].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i$4].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i$4].v_has_uniques,
-              has_indexes: p_return.v_data[i$4].v_has_indexes,
-              has_checks: p_return.v_data[i$4].v_has_checks,
-              has_excludes: p_return.v_data[i$4].v_has_excludes,
-              has_rules: p_return.v_data[i$4].v_has_rules,
-              has_triggers: p_return.v_data[i$4].v_has_triggers,
-              has_partitions: p_return.v_data[i$4].v_has_partitions,
-              has_statistics: p_return.v_data[i$4].v_has_statistics
+              has_primary_keys: p_return.v_data[i$5].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$5].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$5].v_has_uniques,
+              has_indexes: p_return.v_data[i$5].v_has_indexes,
+              has_checks: p_return.v_data[i$5].v_has_checks,
+              has_excludes: p_return.v_data[i$5].v_has_excludes,
+              has_rules: p_return.v_data[i$5].v_has_rules,
+              has_triggers: p_return.v_data[i$5].v_has_triggers,
+              has_partitions: p_return.v_data[i$5].v_has_partitions,
+              has_statistics: p_return.v_data[i$5].v_has_statistics
             },
             "cm_table",
             null,
             false
           );
-          v_node$3.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -24934,9 +24948,9 @@
         node.setText("Sequences (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4].v_sequence_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_sequence_name,
             false,
             "fas node-all fa-sort-numeric-down node-sequence",
             {
@@ -24971,20 +24985,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-eye node-view",
             {
               type: "view",
-              has_triggers: p_return.v_data[i$4].v_has_triggers
+              has_triggers: p_return.v_data[i$5].v_has_triggers
             },
             "cm_view",
             null,
             false
           );
-          v_node$3.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -25019,7 +25033,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$3 = node.createChildNode(
+        v_list$4 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -25028,9 +25042,9 @@
           null,
           false
         );
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = v_list$3.createChildNode(
-            p_return.v_data[i$4].v_column_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = v_list$4.createChildNode(
+            p_return.v_data[i$5].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -25040,8 +25054,8 @@
             null,
             false
           );
-          v_node$3.createChildNode(
-            "Type: " + p_return.v_data[i$4].v_data_type,
+          v_node$4.createChildNode(
+            "Type: " + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -25051,7 +25065,7 @@
           );
         }
         if (node.tag.has_rules) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -25062,10 +25076,10 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -25076,7 +25090,7 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackOracle(node);
@@ -25129,7 +25143,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$3 = node.createChildNode(
+        v_list$4 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -25140,9 +25154,9 @@
           null,
           false
         );
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = v_list$3.createChildNode(
-            p_return.v_data[i$4].v_column_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = v_list$4.createChildNode(
+            p_return.v_data[i$5].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -25152,8 +25166,8 @@
             null,
             false
           );
-          v_node$3.createChildNode(
-            "Type: " + p_return.v_data[i$4].v_data_type,
+          v_node$4.createChildNode(
+            "Type: " + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -25161,8 +25175,8 @@
             null,
             false
           );
-          v_node$3.createChildNode(
-            "Nullable: " + p_return.v_data[i$4].v_nullable,
+          v_node$4.createChildNode(
+            "Nullable: " + p_return.v_data[i$5].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -25172,7 +25186,7 @@
           );
         }
         if (node.tag.has_primary_keys) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Primary Key",
             false,
             "fas node-all fa-key node-pkey",
@@ -25183,10 +25197,10 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_foreign_keys) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Foreign Keys",
             false,
             "fas node-all fa-key node-fkey",
@@ -25197,10 +25211,10 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_uniques) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Uniques",
             false,
             "fas node-all fa-key node-unique",
@@ -25211,10 +25225,10 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_indexes) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -25225,10 +25239,10 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -25239,10 +25253,10 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_partitions) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             "Partitions",
             false,
             "fas node-all fa-table node-partition",
@@ -25253,7 +25267,7 @@
             null,
             false
           );
-          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$4.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackOracle(node);
@@ -25282,7 +25296,7 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          v_node$3 = node.createChildNode(
+          v_node$4 = node.createChildNode(
             p_return.v_data[0][0],
             false,
             "fas node-all fa-key node-pkey",
@@ -25291,7 +25305,7 @@
             },
             "cm_pk"
           );
-          v_node$3.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -25324,9 +25338,9 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3.createChildNode(
-            p_return.v_data[i$4][0],
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4.createChildNode(
+            p_return.v_data[i$5][0],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -25360,9 +25374,9 @@
         node.setText("Uniques (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-            v_node$3 = node.createChildNode(
-              p_return.v_data[i$4][0],
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+            v_node$4 = node.createChildNode(
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-key node-unique",
               {
@@ -25372,7 +25386,7 @@
               null,
               false
             );
-            v_node$3.createChildNode(
+            v_node$4.createChildNode(
               "",
               false,
               "node-spin",
@@ -25410,9 +25424,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i$4][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -25448,9 +25462,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i$4][0] + " (" + p_return.v_data[i$4][1] + ")",
+              p_return.v_data[i$5][0] + " (" + p_return.v_data[i$5][1] + ")",
               false,
               "fas node-all fa-thumbtack node-index",
               {
@@ -25498,9 +25512,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
             node.createChildNode(
-              p_return.v_data[i$4][0],
+              p_return.v_data[i$5][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -25534,9 +25548,9 @@
       function(p_return) {
         node.setText("Foreign Keys (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4][0],
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5][0],
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -25546,8 +25560,8 @@
             null,
             false
           );
-          v_node$3.createChildNode(
-            "Referenced Table: " + p_return.v_data[i$4][1],
+          v_node$4.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$5][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -25555,8 +25569,8 @@
             null,
             false
           );
-          v_node$3.createChildNode(
-            "Delete Rule: " + p_return.v_data[i$4][2],
+          v_node$4.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$5][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -25564,8 +25578,8 @@
             null,
             false
           );
-          v_node$3.createChildNode(
-            "Update Rule: " + p_return.v_data[i$4][3],
+          v_node$4.createChildNode(
+            "Update Rule: " + p_return.v_data[i$5][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -25625,9 +25639,9 @@
           null,
           false
         );
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           node.createChildNode(
-            p_return.v_data[i$4][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$4][4],
+            p_return.v_data[i$5][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$5][4],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -25660,20 +25674,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cog node-function",
             {
               type: "function",
-              id: p_return.v_data[i$4].v_id
+              id: p_return.v_data[i$5].v_id
             },
             "cm_function",
             null,
             false
           );
-          v_node$3.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -25709,10 +25723,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          if (p_return.v_data[i$4].v_type == "O")
-            v_node$3 = node.createChildNode(
-              p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          if (p_return.v_data[i$5].v_type == "O")
+            v_node$4 = node.createChildNode(
+              p_return.v_data[i$5].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -25721,9 +25735,9 @@
               false
             );
           else {
-            if (p_return.v_data[i$4].v_type == "I")
-              v_node$3 = node.createChildNode(
-                p_return.v_data[i$4].v_name,
+            if (p_return.v_data[i$5].v_type == "I")
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -25732,8 +25746,8 @@
                 false
               );
             else
-              v_node$3 = node.createChildNode(
-                p_return.v_data[i$4].v_name,
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -25794,20 +25808,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Procedures (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          v_node$3 = node.createChildNode(
-            p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          v_node$4 = node.createChildNode(
+            p_return.v_data[i$5].v_name,
             false,
             "fas node-all fa-cog node-procedure",
             {
               type: "procedure",
-              id: p_return.v_data[i$4].v_id
+              id: p_return.v_data[i$5].v_id
             },
             "cm_procedure",
             null,
             false
           );
-          v_node$3.createChildNode(
+          v_node$4.createChildNode(
             "",
             false,
             "node-spin",
@@ -25843,10 +25857,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
-          if (p_return.v_data[i$4].v_type == "O")
-            v_node$3 = node.createChildNode(
-              p_return.v_data[i$4].v_name,
+        for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
+          if (p_return.v_data[i$5].v_type == "O")
+            v_node$4 = node.createChildNode(
+              p_return.v_data[i$5].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -25855,9 +25869,9 @@
               false
             );
           else {
-            if (p_return.v_data[i$4].v_type == "I")
-              v_node$3 = node.createChildNode(
-                p_return.v_data[i$4].v_name,
+            if (p_return.v_data[i$5].v_type == "I")
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -25866,8 +25880,8 @@
                 false
               );
             else
-              v_node$3 = node.createChildNode(
-                p_return.v_data[i$4].v_name,
+              v_node$4 = node.createChildNode(
+                p_return.v_data[i$5].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -25997,7 +26011,7 @@
       );
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
-      v_node$3 = p_node.createChildNode(
+      v_node$4 = p_node.createChildNode(
         // Plain text, not markup. Aimara escapes every node label before
         // it reaches innerHTML (see aimaraEscapeHtml), so the <a
         // onclick='showError(...)'>View Detail</a> this used to build was
@@ -26087,7 +26101,7 @@
     oracleTerminateBackendConfirm,
     refreshTreeOracle
   }, Symbol.toStringTag, { value: "Module" }));
-  var i$3, v_list$2, v_node$2;
+  var i$4, v_list$3, v_node$3;
   function getTreeMariadb(p_div) {
     var context_menu = {
       cm_server: {
@@ -27343,20 +27357,20 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Databases (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           var v_node2 = node.createChildNode(
-            p_return.v_data[i$3].v_name,
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-database node-database",
             {
               type: "database",
-              database: p_return.v_data[i$3].v_name.replace(/"/g, "")
+              database: p_return.v_data[i$4].v_name.replace(/"/g, "")
             },
             "cm_database",
             null,
             false
           );
-          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i$3].v_name.replace(/"/g, "")) {
+          if (v_connTabControl.selectedTab.tag.selectedDatabase == p_return.v_data[i$4].v_name.replace(/"/g, "")) {
             v_node2.setNodeBold();
             v_connTabControl.selectedTab.tag.selectedDatabaseNode = v_node2;
           }
@@ -27385,9 +27399,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Roles (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = node.createChildNode(
-            p_return.v_data[i$3].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-user node-user",
             {
@@ -27423,30 +27437,30 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Tables (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = node.createChildNode(
-            p_return.v_data[i$3].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-table node-table",
             {
               type: "table",
-              has_primary_keys: p_return.v_data[i$3].v_has_primary_keys,
-              has_foreign_keys: p_return.v_data[i$3].v_has_foreign_keys,
-              has_uniques: p_return.v_data[i$3].v_has_uniques,
-              has_indexes: p_return.v_data[i$3].v_has_indexes,
-              has_checks: p_return.v_data[i$3].v_has_checks,
-              has_excludes: p_return.v_data[i$3].v_has_excludes,
-              has_rules: p_return.v_data[i$3].v_has_rules,
-              has_triggers: p_return.v_data[i$3].v_has_triggers,
-              has_partitions: p_return.v_data[i$3].v_has_partitions,
-              has_statistics: p_return.v_data[i$3].v_has_statistics,
+              has_primary_keys: p_return.v_data[i$4].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$4].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$4].v_has_uniques,
+              has_indexes: p_return.v_data[i$4].v_has_indexes,
+              has_checks: p_return.v_data[i$4].v_has_checks,
+              has_excludes: p_return.v_data[i$4].v_has_excludes,
+              has_rules: p_return.v_data[i$4].v_has_rules,
+              has_triggers: p_return.v_data[i$4].v_has_triggers,
+              has_partitions: p_return.v_data[i$4].v_has_partitions,
+              has_statistics: p_return.v_data[i$4].v_has_statistics,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_table",
             null,
             false
           );
-          v_node$2.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -27482,9 +27496,9 @@
         node.setText("Sequences (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = node.createChildNode(
-            p_return.v_data[i$3].v_sequence_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_sequence_name,
             false,
             "fas node-all fa-sort-numeric-down node-sequence",
             {
@@ -27519,21 +27533,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Views (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = node.createChildNode(
-            p_return.v_data[i$3].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-eye node-view",
             {
               type: "view",
-              has_triggers: p_return.v_data[i$3].v_has_triggers,
+              has_triggers: p_return.v_data[i$4].v_has_triggers,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_view",
             null,
             false
           );
-          v_node$2.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -27569,7 +27583,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$2 = node.createChildNode(
+        v_list$3 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -27578,9 +27592,9 @@
           null,
           false
         );
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = v_list$2.createChildNode(
-            p_return.v_data[i$3].v_column_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = v_list$3.createChildNode(
+            p_return.v_data[i$4].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -27591,8 +27605,8 @@
             null,
             false
           );
-          v_node$2.createChildNode(
-            "Type: " + p_return.v_data[i$3].v_data_type,
+          v_node$3.createChildNode(
+            "Type: " + p_return.v_data[i$4].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27602,7 +27616,7 @@
           );
         }
         if (node.tag.has_rules) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Rules",
             false,
             "fas node-all fa-lightbulb node-rule",
@@ -27614,10 +27628,10 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -27629,7 +27643,7 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMariaDB(node);
@@ -27682,7 +27696,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        v_list$2 = node.createChildNode(
+        v_list$3 = node.createChildNode(
           "Columns (" + p_return.v_data.length + ")",
           false,
           "fas node-all fa-columns node-column",
@@ -27694,9 +27708,9 @@
           null,
           false
         );
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = v_list$2.createChildNode(
-            p_return.v_data[i$3].v_column_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = v_list$3.createChildNode(
+            p_return.v_data[i$4].v_column_name,
             false,
             "fas node-all fa-columns node-column",
             {
@@ -27707,8 +27721,8 @@
             null,
             false
           );
-          v_node$2.createChildNode(
-            "Type: " + p_return.v_data[i$3].v_data_type,
+          v_node$3.createChildNode(
+            "Type: " + p_return.v_data[i$4].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27716,8 +27730,8 @@
             null,
             false
           );
-          v_node$2.createChildNode(
-            "Nullable: " + p_return.v_data[i$3].v_nullable,
+          v_node$3.createChildNode(
+            "Nullable: " + p_return.v_data[i$4].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27727,7 +27741,7 @@
           );
         }
         if (node.tag.has_primary_keys) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Primary Key",
             false,
             "fas node-all fa-key node-pkey",
@@ -27739,10 +27753,10 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_foreign_keys) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Foreign Keys",
             false,
             "fas node-all fa-key node-fkey",
@@ -27754,10 +27768,10 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_uniques) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Uniques",
             false,
             "fas node-all fa-key node-unique",
@@ -27769,10 +27783,10 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_indexes) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Indexes",
             false,
             "fas node-all fa-thumbtack node-index",
@@ -27784,10 +27798,10 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_triggers) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Triggers",
             false,
             "fas node-all fa-bolt node-trigger",
@@ -27799,10 +27813,10 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         if (node.tag.has_partitions) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             "Partitions",
             false,
             "fas node-all fa-table node-partition",
@@ -27814,7 +27828,7 @@
             null,
             false
           );
-          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+          v_node$3.createChildNode("", false, "node-spin", null, null, null, false);
         }
         node.drawChildNodes();
         afterNodeOpenedCallbackMariaDB(node);
@@ -27843,7 +27857,7 @@
           node.removeChildNodes();
         }
         if (p_return.v_data.length > 0) {
-          v_node$2 = node.createChildNode(
+          v_node$3 = node.createChildNode(
             p_return.v_data[0][0],
             false,
             "fas node-all fa-key node-pkey",
@@ -27853,7 +27867,7 @@
             },
             "cm_pk"
           );
-          v_node$2.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -27887,9 +27901,9 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2.createChildNode(
-            p_return.v_data[i$3][0],
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3.createChildNode(
+            p_return.v_data[i$4][0],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -27923,9 +27937,9 @@
         node.setText("Uniques (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-            v_node$2 = node.createChildNode(
-              p_return.v_data[i$3][0],
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+            v_node$3 = node.createChildNode(
+              p_return.v_data[i$4][0],
               false,
               "fas node-all fa-key node-unique",
               {
@@ -27936,7 +27950,7 @@
               null,
               false
             );
-            v_node$2.createChildNode(
+            v_node$3.createChildNode(
               "",
               false,
               "node-spin",
@@ -27975,9 +27989,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
             node.createChildNode(
-              p_return.v_data[i$3][0],
+              p_return.v_data[i$4][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -28013,9 +28027,9 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
-          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
             v_node2 = node.createChildNode(
-              p_return.v_data[i$3][0] + " (" + p_return.v_data[i$3][1] + ")",
+              p_return.v_data[i$4][0] + " (" + p_return.v_data[i$4][1] + ")",
               false,
               "fas node-all fa-thumbtack node-index",
               {
@@ -28064,9 +28078,9 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
-          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
             node.createChildNode(
-              p_return.v_data[i$3][0],
+              p_return.v_data[i$4][0],
               false,
               "fas node-all fa-columns node-column",
               null,
@@ -28100,9 +28114,9 @@
       function(p_return) {
         node.setText("Foreign Keys (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = node.createChildNode(
-            p_return.v_data[i$3][0],
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4][0],
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -28113,8 +28127,8 @@
             null,
             false
           );
-          v_node$2.createChildNode(
-            "Referenced Table: " + p_return.v_data[i$3][1],
+          v_node$3.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$4][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -28122,8 +28136,8 @@
             null,
             false
           );
-          v_node$2.createChildNode(
-            "Delete Rule: " + p_return.v_data[i$3][2],
+          v_node$3.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$4][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -28131,8 +28145,8 @@
             null,
             false
           );
-          v_node$2.createChildNode(
-            "Update Rule: " + p_return.v_data[i$3][3],
+          v_node$3.createChildNode(
+            "Update Rule: " + p_return.v_data[i$4][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -28192,9 +28206,9 @@
           null,
           false
         );
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           node.createChildNode(
-            p_return.v_data[i$3][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$3][4],
+            p_return.v_data[i$4][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$4][4],
             false,
             "fas node-all fa-columns node-column",
             null,
@@ -28227,21 +28241,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Functions (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = node.createChildNode(
-            p_return.v_data[i$3].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-cog node-function",
             {
               type: "function",
-              id: p_return.v_data[i$3].v_id,
+              id: p_return.v_data[i$4].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_function",
             null,
             false
           );
-          v_node$2.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -28277,10 +28291,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          if (p_return.v_data[i$3].v_type == "O")
-            v_node$2 = node.createChildNode(
-              p_return.v_data[i$3].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          if (p_return.v_data[i$4].v_type == "O")
+            v_node$3 = node.createChildNode(
+              p_return.v_data[i$4].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -28289,9 +28303,9 @@
               false
             );
           else {
-            if (p_return.v_data[i$3].v_type == "I")
-              v_node$2 = node.createChildNode(
-                p_return.v_data[i$3].v_name,
+            if (p_return.v_data[i$4].v_type == "I")
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -28300,8 +28314,8 @@
                 false
               );
             else
-              v_node$2 = node.createChildNode(
-                p_return.v_data[i$3].v_name,
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -28362,21 +28376,21 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.setText("Procedures (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          v_node$2 = node.createChildNode(
-            p_return.v_data[i$3].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          v_node$3 = node.createChildNode(
+            p_return.v_data[i$4].v_name,
             false,
             "fas node-all fa-cog node-procedure",
             {
               type: "procedure",
-              id: p_return.v_data[i$3].v_id,
+              id: p_return.v_data[i$4].v_id,
               database: v_connTabControl.selectedTab.tag.selectedDatabase
             },
             "cm_procedure",
             null,
             false
           );
-          v_node$2.createChildNode(
+          v_node$3.createChildNode(
             "",
             false,
             "node-spin",
@@ -28413,10 +28427,10 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.num_tables = p_return.v_data.length;
-        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
-          if (p_return.v_data[i$3].v_type == "O")
-            v_node$2 = node.createChildNode(
-              p_return.v_data[i$3].v_name,
+        for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
+          if (p_return.v_data[i$4].v_type == "O")
+            v_node$3 = node.createChildNode(
+              p_return.v_data[i$4].v_name,
               false,
               "fas node-all fa-arrow-right node-function-field",
               null,
@@ -28425,9 +28439,9 @@
               false
             );
           else {
-            if (p_return.v_data[i$3].v_type == "I")
-              v_node$2 = node.createChildNode(
-                p_return.v_data[i$3].v_name,
+            if (p_return.v_data[i$4].v_type == "I")
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-arrow-left node-function-field",
                 null,
@@ -28436,8 +28450,8 @@
                 false
               );
             else
-              v_node$2 = node.createChildNode(
-                p_return.v_data[i$3].v_name,
+              v_node$3 = node.createChildNode(
+                p_return.v_data[i$4].v_name,
                 false,
                 "fas node-all fa-exchange-alt node-function-field",
                 null,
@@ -28567,7 +28581,7 @@
       );
     } else {
       if (p_node.childNodes.length > 0) p_node.removeChildNodes();
-      v_node$2 = p_node.createChildNode(
+      v_node$3 = p_node.createChildNode(
         // Plain text, not markup. Aimara escapes every node label before
         // it reaches innerHTML (see aimaraEscapeHtml), so the <a
         // onclick='showError(...)'>View Detail</a> this used to build was
@@ -28663,6 +28677,1944 @@
     mariadbTerminateBackendConfirm,
     nodeOpenErrorMariadb,
     refreshTreeMariadb
+  }, Symbol.toStringTag, { value: "Module" }));
+  const MSSQL_DEFAULT_SCHEMA = "dbo";
+  var i$3, v_list$2, v_node$2;
+  function getTreeMssql(p_div) {
+    var context_menu = {
+      cm_server: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          }
+        ]
+      },
+      cm_tables: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Table",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Create Table", node.tree.tag.create_table.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA));
+            }
+          }
+        ]
+      },
+      cm_table: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Data Actions",
+            icon: "fas cm-all fa-list",
+            submenu: {
+              elements: [
+                {
+                  text: "Query Data",
+                  icon: "fas cm-all fa-search",
+                  action: function(node) {
+                    TemplateSelectMssql(MSSQL_DEFAULT_SCHEMA, node.text);
+                  }
+                },
+                {
+                  text: "Edit Data",
+                  icon: "fas cm-all fa-table",
+                  action: function(node) {
+                    v_startEditData(node.text, MSSQL_DEFAULT_SCHEMA);
+                  }
+                },
+                {
+                  text: "Insert Record",
+                  icon: "fas cm-all fa-edit",
+                  action: function(node) {
+                    TemplateInsertMssql(MSSQL_DEFAULT_SCHEMA, node.text);
+                  }
+                },
+                {
+                  text: "Update Records",
+                  icon: "fas cm-all fa-edit",
+                  action: function(node) {
+                    TemplateUpdateMssql(MSSQL_DEFAULT_SCHEMA, node.text);
+                  }
+                },
+                {
+                  text: "Delete Records",
+                  icon: "fas cm-all fa-times",
+                  action: function(node) {
+                    tabSQLTemplate(
+                      "Delete Records",
+                      node.tree.tag.delete.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
+                    );
+                  }
+                }
+              ]
+            }
+          },
+          {
+            text: "Table Actions",
+            icon: "fas cm-all fa-list",
+            submenu: {
+              elements: [
+                {
+                  text: "Alter Table (SQL)",
+                  icon: "fas cm-all fa-edit",
+                  action: function(node) {
+                    tabSQLTemplate(
+                      "Alter Table",
+                      node.tree.tag.alter_table.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
+                    );
+                  }
+                },
+                {
+                  text: "Drop Table",
+                  icon: "fas cm-all fa-times",
+                  action: function(node) {
+                    tabSQLTemplate(
+                      "Drop Table",
+                      node.tree.tag.drop_table.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
+                    );
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      },
+      cm_columns: {
+        elements: [
+          {
+            text: "Create Column",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Field",
+                node.tree.tag.create_column.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_column: {
+        elements: [
+          {
+            text: "Alter Column",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Alter Column",
+                node.tree.tag.alter_column.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
+              );
+            }
+          },
+          {
+            text: "Drop Column",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Column",
+                node.tree.tag.drop_column.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_pks: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Primary Key",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Primary Key",
+                node.tree.tag.create_primarykey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_pk: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Drop Primary Key",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Primary Key",
+                node.tree.tag.drop_primarykey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_fks: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Foreign Key",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Foreign Key",
+                node.tree.tag.create_foreignkey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_fk: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Drop Foreign Key",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Foreign Key",
+                node.tree.tag.drop_foreignkey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_uniques: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Unique",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Unique",
+                node.tree.tag.create_unique.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_unique: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Drop Unique",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Unique",
+                node.tree.tag.drop_unique.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_indexes: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Index",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Index",
+                node.tree.tag.create_index.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_index: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Alter Index",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Alter Index",
+                node.tree.tag.alter_index.replace(
+                  "#index_name#",
+                  MSSQL_DEFAULT_SCHEMA + "." + node.text.replace(" (UNIQUE)", "").replace(" (NONUNIQUE)", "")
+                )
+              );
+            }
+          },
+          {
+            text: "Drop Index",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop Index",
+                node.tree.tag.drop_index.replace(
+                  "#index_name#",
+                  MSSQL_DEFAULT_SCHEMA + "." + node.text.replace(" (UNIQUE)", "").replace(" (NONUNIQUE)", "")
+                )
+              );
+            }
+          }
+        ]
+      },
+      cm_views: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create View",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate("Create View", node.tree.tag.create_view.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA));
+            }
+          }
+        ]
+      },
+      cm_view: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Query Data",
+            icon: "fas cm-all fa-search",
+            action: function(node) {
+              var v_table_name = MSSQL_DEFAULT_SCHEMA + "." + node.text;
+              v_connTabControl.tag.createQueryTab(node.text);
+              v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(
+                "-- Querying Data\nselect t.*\nfrom " + v_table_name + " t"
+              );
+              v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+              renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+              querySQL(0);
+            }
+          },
+          {
+            text: "Edit View",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              v_connTabControl.tag.createQueryTab(node.text);
+              getViewDefinitionMssql(node);
+            }
+          },
+          {
+            text: "Drop View",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate(
+                "Drop View",
+                node.tree.tag.drop_view.replace("#view_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
+              );
+            }
+          }
+        ]
+      },
+      cm_functions: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Function",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Function",
+                node.tree.tag.create_function.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA)
+              );
+            }
+          }
+        ]
+      },
+      cm_function: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Edit Function",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              v_connTabControl.tag.createQueryTab(node.text);
+              getFunctionDefinitionMssql(node);
+            }
+          },
+          {
+            text: "Drop Function",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate("Drop Function", node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+            }
+          }
+        ]
+      },
+      cm_procedures: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Create Procedure",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              tabSQLTemplate(
+                "Create Procedure",
+                node.tree.tag.create_procedure.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA)
+              );
+            }
+          }
+        ]
+      },
+      cm_procedure: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          },
+          {
+            text: "Edit Procedure",
+            icon: "fas cm-all fa-edit",
+            action: function(node) {
+              v_connTabControl.tag.createQueryTab(node.text);
+              getProcedureDefinitionMssql(node);
+            }
+          },
+          {
+            text: "Drop Procedure",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              tabSQLTemplate("Drop Procedure", node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+            }
+          }
+        ]
+      },
+      cm_refresh: {
+        elements: [
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              if (node.childNodes == 0) refreshTreeMssql(node);
+              else {
+                node.collapseNode();
+                node.expandNode();
+              }
+            }
+          }
+        ]
+      }
+    };
+    var tree = createTree(p_div, "#fcfdfd", context_menu);
+    v_connTabControl.selectedTab.tag.tree = tree;
+    let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle autocomplete.</h5><div>Switch OFF <b>disables the autocomplete</b> on the inner tabs for this connection.</div>"><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
+      /** @type {HTMLElement} */
+      event2.target.id
+    ));
+    tree.nodeAfterOpenEvent = function(node) {
+      refreshTreeMssql(node);
+    };
+    tree.clickNodeEvent = function(node) {
+      if (node.tag && node.tag.type === "error") {
+        showError(node.tag.message);
+        return;
+      }
+      if (v_connTabControl.selectedTab.tag.treeTabsVisible) {
+        getPropertiesMssql(node);
+      }
+    };
+    tree.beforeContextMenuEvent = function(node, callback) {
+      var v_elements = [];
+      if (v_connTabControl.tag.hooks.mssqlTreeContextMenu.length > 0) {
+        for (var i2 = 0; i2 < v_connTabControl.tag.hooks.mssqlTreeContextMenu.length; i2++)
+          v_elements = v_elements.concat(v_connTabControl.tag.hooks.mssqlTreeContextMenu[i2](node));
+      }
+      var v_customCallback = function() {
+        callback(v_elements);
+      };
+      v_customCallback();
+    };
+    var node_server = tree.createNode(
+      "MS SQL Server",
+      false,
+      "node-mssql",
+      null,
+      {
+        type: "server"
+      },
+      "cm_server"
+    );
+    node_server.createChildNode("", true, "node-spin", null, null);
+    tree.drawTree();
+  }
+  function getPropertiesMssql(node) {
+    if (node.tag != void 0)
+      if (node.tag.type == "table") {
+        getProperties("/get_properties_mssql/", {
+          p_schema: MSSQL_DEFAULT_SCHEMA,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "view") {
+        getProperties("/get_properties_mssql/", {
+          p_schema: MSSQL_DEFAULT_SCHEMA,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "function") {
+        getProperties("/get_properties_mssql/", {
+          p_schema: MSSQL_DEFAULT_SCHEMA,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else if (node.tag.type == "procedure") {
+        getProperties("/get_properties_mssql/", {
+          p_schema: MSSQL_DEFAULT_SCHEMA,
+          p_table: null,
+          p_object: node.text,
+          p_type: node.tag.type
+        });
+      } else {
+        clearProperties();
+      }
+    if (v_connTabControl.tag.hooks.mssqlTreeNodeClick.length > 0) {
+      for (var i2 = 0; i2 < v_connTabControl.tag.hooks.mssqlTreeNodeClick.length; i2++)
+        v_connTabControl.tag.hooks.mssqlTreeNodeClick[i2](node);
+    }
+  }
+  function refreshTreeMssql(node) {
+    if (node.tag != void 0)
+      if (node.tag.type == "table_list") {
+        getTablesMssql(node);
+      } else if (node.tag.type == "table") {
+        getColumnsMssql(node);
+      } else if (node.tag.type == "primary_key") {
+        getPKMssql(node);
+      } else if (node.tag.type == "pk") {
+        getPKColumnsMssql(node);
+      } else if (node.tag.type == "uniques") {
+        getUniquesMssql(node);
+      } else if (node.tag.type == "unique") {
+        getUniquesColumnsMssql(node);
+      } else if (node.tag.type == "foreign_keys") {
+        getFKsMssql(node);
+      } else if (node.tag.type == "foreign_key") {
+        getFKsColumnsMssql(node);
+      } else if (node.tag.type == "view_list") {
+        getViewsMssql(node);
+      } else if (node.tag.type == "view") {
+        getViewsColumnsMssql(node);
+      } else if (node.tag.type == "indexes") {
+        getIndexesMssql(node);
+      } else if (node.tag.type == "index") {
+        getIndexesColumnsMssql(node);
+      } else if (node.tag.type == "function_list") {
+        getFunctionsMssql(node);
+      } else if (node.tag.type == "function") {
+        getFunctionFieldsMssql(node);
+      } else if (node.tag.type == "procedure_list") {
+        getProceduresMssql(node);
+      } else if (node.tag.type == "procedure") {
+        getProcedureFieldsMssql(node);
+      } else if (node.tag.type == "server") {
+        getTreeDetailsMssql(node);
+      } else {
+        afterNodeOpenedCallbackMssql(node);
+      }
+  }
+  function afterNodeOpenedCallbackMssql(node) {
+    if (v_connTabControl.tag.hooks.mssqlTreeNodeOpen.length > 0) {
+      for (var i2 = 0; i2 < v_connTabControl.tag.hooks.mssqlTreeNodeOpen.length; i2++)
+        v_connTabControl.tag.hooks.mssqlTreeNodeOpen[i2](node);
+    }
+  }
+  function getTreeDetailsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_tree_info_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id
+      }),
+      function(p_return) {
+        node.tree.contextMenu.cm_server.elements = [];
+        node.tree.contextMenu.cm_server.elements.push({
+          text: "Refresh",
+          icon: "fas cm-all fa-sync-alt",
+          action: function(node2) {
+            if (node2.childNodes == 0) refreshTreeMssql(node2);
+            else {
+              node2.collapseNode();
+              node2.expandNode();
+            }
+          }
+        });
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.tree.tag = {
+          v_database: p_return.v_data.v_database_return.v_database,
+          version: p_return.v_data.v_database_return.version,
+          v_username: p_return.v_data.v_database_return.v_username,
+          superuser: p_return.v_data.v_database_return.superuser,
+          create_function: p_return.v_data.v_database_return.create_function,
+          drop_function: p_return.v_data.v_database_return.drop_function,
+          create_procedure: p_return.v_data.v_database_return.create_procedure,
+          drop_procedure: p_return.v_data.v_database_return.drop_procedure,
+          create_view: p_return.v_data.v_database_return.create_view,
+          drop_view: p_return.v_data.v_database_return.drop_view,
+          create_table: p_return.v_data.v_database_return.create_table,
+          alter_table: p_return.v_data.v_database_return.alter_table,
+          drop_table: p_return.v_data.v_database_return.drop_table,
+          create_column: p_return.v_data.v_database_return.create_column,
+          alter_column: p_return.v_data.v_database_return.alter_column,
+          drop_column: p_return.v_data.v_database_return.drop_column,
+          create_primarykey: p_return.v_data.v_database_return.create_primarykey,
+          drop_primarykey: p_return.v_data.v_database_return.drop_primarykey,
+          create_unique: p_return.v_data.v_database_return.create_unique,
+          drop_unique: p_return.v_data.v_database_return.drop_unique,
+          create_foreignkey: p_return.v_data.v_database_return.create_foreignkey,
+          drop_foreignkey: p_return.v_data.v_database_return.drop_foreignkey,
+          create_index: p_return.v_data.v_database_return.create_index,
+          alter_index: p_return.v_data.v_database_return.alter_index,
+          drop_index: p_return.v_data.v_database_return.drop_index,
+          delete: p_return.v_data.v_database_return.delete
+        };
+        if (node.tree.tag.superuser) {
+          node.tree.contextMenu.cm_server.elements.push({
+            text: "Monitoring",
+            icon: "fas cm-all fa-chart-line",
+            action: function(node2) {
+            },
+            submenu: {
+              elements: [
+                {
+                  text: "Sessions",
+                  icon: "fas cm-all fa-chart-line",
+                  action: function(node2) {
+                    v_connTabControl.tag.createMonitoringTab(
+                      "Sessions",
+                      "select session_id, login_name, host_name, program_name, status from sys.dm_exec_sessions where is_user_process = 1",
+                      [
+                        {
+                          icon: "fas cm-all fa-times",
+                          title: "Terminate",
+                          action: "mssqlTerminateBackend"
+                        }
+                      ]
+                    );
+                  }
+                }
+              ]
+            }
+          });
+        }
+        node.setText(p_return.v_data.v_database_return.version);
+        var node_tables = node.createChildNode(
+          "Tables",
+          false,
+          "fas node-all fa-th node-table-list",
+          {
+            type: "table_list",
+            num_tables: 0
+          },
+          "cm_tables"
+        );
+        node_tables.createChildNode("", true, "node-spin", null, null);
+        var node_views = node.createChildNode(
+          "Views",
+          false,
+          "fas node-all fa-eye node-view-list",
+          {
+            type: "view_list",
+            num_views: 0
+          },
+          "cm_views"
+        );
+        node_views.createChildNode("", true, "node-spin", null, null);
+        var node_functions = node.createChildNode(
+          "Functions",
+          false,
+          "fas node-all fa-cog node-function-list",
+          {
+            type: "function_list",
+            num_functions: 0
+          },
+          "cm_functions"
+        );
+        node_functions.createChildNode("", true, "node-spin", null, null);
+        var node_procedures = node.createChildNode(
+          "Procedures",
+          false,
+          "fas node-all fa-cog node-procedure-list",
+          {
+            type: "procedure_list",
+            num_functions: 0
+          },
+          "cm_procedures"
+        );
+        node_procedures.createChildNode("", true, "node-spin", null, null);
+        if (v_connTabControl.selectedTab.tag.firstTimeOpen) {
+          v_connTabControl.selectedTab.tag.firstTimeOpen = false;
+        }
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getTablesMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_tables_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Tables (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
+            false,
+            "fas node-all fa-table node-table",
+            {
+              type: "table",
+              has_primary_keys: p_return.v_data[i$3].v_has_primary_keys,
+              has_foreign_keys: p_return.v_data[i$3].v_has_foreign_keys,
+              has_uniques: p_return.v_data[i$3].v_has_uniques,
+              has_indexes: p_return.v_data[i$3].v_has_indexes
+            },
+            "cm_table",
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "table_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getViewsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_views_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Views (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
+            false,
+            "fas node-all fa-eye node-view",
+            {
+              type: "view"
+            },
+            "cm_view",
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "view_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getViewsColumnsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_views_columns_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        v_list$2 = node.createChildNode(
+          "Columns (" + p_return.v_data.length + ")",
+          false,
+          "fas node-all fa-columns node-column",
+          null,
+          null,
+          null,
+          false
+        );
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = v_list$2.createChildNode(
+            p_return.v_data[i$3].v_column_name,
+            false,
+            "fas node-all fa-columns node-column",
+            {
+              type: "table_field"
+            },
+            null,
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Type: " + p_return.v_data[i$3].v_data_type,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getViewDefinitionMssql(node) {
+    execAjax$1(
+      "/get_view_definition_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_view: node.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+        var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
+        }
+        v_div_result.innerHTML = "";
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      true
+    );
+  }
+  function getColumnsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_columns_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        v_list$2 = node.createChildNode(
+          "Columns (" + p_return.v_data.length + ")",
+          false,
+          "fas node-all fa-columns node-column",
+          {
+            type: "column_list"
+          },
+          "cm_columns",
+          null,
+          false
+        );
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = v_list$2.createChildNode(
+            p_return.v_data[i$3].v_column_name,
+            false,
+            "fas node-all fa-columns node-column",
+            {
+              type: "table_field"
+            },
+            "cm_column",
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Type: " + p_return.v_data[i$3].v_data_type,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Nullable: " + p_return.v_data[i$3].v_nullable,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        if (node.tag.has_primary_keys) {
+          v_node$2 = node.createChildNode(
+            "Primary Key",
+            false,
+            "fas node-all fa-key node-pkey",
+            {
+              type: "primary_key"
+            },
+            "cm_pks",
+            null,
+            false
+          );
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_foreign_keys) {
+          v_node$2 = node.createChildNode(
+            "Foreign Keys",
+            false,
+            "fas node-all fa-key node-fkey",
+            {
+              type: "foreign_keys"
+            },
+            "cm_fks",
+            null,
+            false
+          );
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_uniques) {
+          v_node$2 = node.createChildNode(
+            "Uniques",
+            false,
+            "fas node-all fa-key node-unique",
+            {
+              type: "uniques"
+            },
+            "cm_uniques",
+            null,
+            false
+          );
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        if (node.tag.has_indexes) {
+          v_node$2 = node.createChildNode(
+            "Indexes",
+            false,
+            "fas node-all fa-thumbtack node-index",
+            {
+              type: "indexes"
+            },
+            "cm_indexes",
+            null,
+            false
+          );
+          v_node$2.createChildNode("", false, "node-spin", null, null, null, false);
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getPKMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_pk_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        node.setText("Primary Key (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) {
+          node.removeChildNodes();
+        }
+        if (p_return.v_data.length > 0) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[0][0],
+            false,
+            "fas node-all fa-key node-pkey",
+            {
+              type: "pk"
+            },
+            "cm_pk"
+          );
+          v_node$2.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "pk_field"
+            },
+            null
+          );
+        }
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getPKColumnsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_pk_columns_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_key: node.text,
+        p_table: node.parent.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2.createChildNode(
+            p_return.v_data[i$3][0],
+            false,
+            "fas node-all fa-columns node-column",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getUniquesMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_uniques_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        node.setText("Uniques (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        if (p_return.v_data.length > 0) {
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+            v_node$2 = node.createChildNode(
+              p_return.v_data[i$3][0],
+              false,
+              "fas node-all fa-key node-unique",
+              {
+                type: "unique"
+              },
+              "cm_unique",
+              null,
+              false
+            );
+            v_node$2.createChildNode(
+              "",
+              false,
+              "node-spin",
+              {
+                type: "unique_field"
+              },
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getUniquesColumnsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_uniques_columns_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_unique: node.text,
+        p_table: node.parent.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        if (p_return.v_data.length > 0) {
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+            node.createChildNode(
+              p_return.v_data[i$3][0],
+              false,
+              "fas node-all fa-columns node-column",
+              null,
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getIndexesMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_indexes_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        node.setText("Indexes (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        var v_node2;
+        if (p_return.v_data.length > 0) {
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+            v_node2 = node.createChildNode(
+              p_return.v_data[i$3][0] + " (" + p_return.v_data[i$3][1] + ")",
+              false,
+              "fas node-all fa-thumbtack node-index",
+              {
+                type: "index"
+              },
+              "cm_index",
+              null,
+              false
+            );
+            v_node2.createChildNode(
+              "",
+              false,
+              "node-spin",
+              {
+                type: "index_field"
+              },
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getIndexesColumnsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_indexes_columns_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_index: node.text.replace(" (NONUNIQUE)", "").replace(" (UNIQUE)", ""),
+        p_table: node.parent.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        if (p_return.v_data.length > 0) {
+          for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+            node.createChildNode(
+              p_return.v_data[i$3][0],
+              false,
+              "fas node-all fa-columns node-column",
+              null,
+              null,
+              null,
+              false
+            );
+          }
+          node.drawChildNodes();
+        }
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFKsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_fks_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table: node.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        node.setText("Foreign Keys (" + p_return.v_data.length + ")");
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3][0],
+            false,
+            "fas node-all fa-key node-fkey",
+            {
+              type: "foreign_key"
+            },
+            "cm_fk",
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Referenced Table: " + p_return.v_data[i$3][1],
+            false,
+            "fas node-all fa-table node-table",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Delete Rule: " + p_return.v_data[i$3][2],
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Update Rule: " + p_return.v_data[i$3][3],
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFKsColumnsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_fks_columns_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_fkey: node.text,
+        p_table: node.parent.parent.text,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        if (p_return.v_data.length > 0) {
+          node.createChildNode(
+            "Referenced Table: " + p_return.v_data[0][0],
+            false,
+            "fas node-all fa-table node-table",
+            null,
+            null,
+            null,
+            false
+          );
+          node.createChildNode(
+            "Delete Rule: " + p_return.v_data[0][1],
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+          node.createChildNode(
+            "Update Rule: " + p_return.v_data[0][2],
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          node.createChildNode(
+            p_return.v_data[i$3][3] + " <i class='fas node-all fa-arrow-right'></i> " + p_return.v_data[i$3][4],
+            false,
+            "fas node-all fa-columns node-column",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFunctionsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_functions_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Functions (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
+            false,
+            "fas node-all fa-cog node-function",
+            {
+              type: "function",
+              id: p_return.v_data[i$3].v_id
+            },
+            "cm_function",
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "function_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFunctionFieldsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_function_fields_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_function: node.tag.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.tag.num_tables = p_return.v_data.length;
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
+            false,
+            "fas node-all fa-exchange-alt node-function-field",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Type: " + p_return.v_data[i$3].v_type,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getFunctionDefinitionMssql(node) {
+    execAjax$1(
+      "/get_function_definition_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_function: node.tag.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+        var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
+        }
+        v_div_result.innerHTML = "";
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      true
+    );
+  }
+  function getProceduresMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_procedures_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.setText("Procedures (" + p_return.v_data.length + ")");
+        node.tag.num_tables = p_return.v_data.length;
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
+            false,
+            "fas node-all fa-cog node-procedure",
+            {
+              type: "procedure",
+              id: p_return.v_data[i$3].v_id
+            },
+            "cm_procedure",
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "",
+            false,
+            "node-spin",
+            {
+              type: "procedure_field"
+            },
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getProcedureFieldsMssql(node) {
+    node.removeChildNodes();
+    node.createChildNode("", false, "node-spin", null, null);
+    execAjax$1(
+      "/get_procedure_fields_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_procedure: node.tag.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        if (node.childNodes.length > 0) node.removeChildNodes();
+        node.tag.num_tables = p_return.v_data.length;
+        for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
+          v_node$2 = node.createChildNode(
+            p_return.v_data[i$3].v_name,
+            false,
+            "fas node-all fa-exchange-alt node-function-field",
+            null,
+            null,
+            null,
+            false
+          );
+          v_node$2.createChildNode(
+            "Type: " + p_return.v_data[i$3].v_type,
+            false,
+            "fas node-all fa-ellipsis-h node-bullet",
+            null,
+            null,
+            null,
+            false
+          );
+        }
+        node.drawChildNodes();
+        afterNodeOpenedCallbackMssql(node);
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      false
+    );
+  }
+  function getProcedureDefinitionMssql(node) {
+    execAjax$1(
+      "/get_procedure_definition_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_procedure: node.tag.id,
+        p_schema: MSSQL_DEFAULT_SCHEMA
+      }),
+      function(p_return) {
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, node.text);
+        var v_div_result = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
+        if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht != null) {
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.destroy();
+          v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht = null;
+        }
+        v_div_result.innerHTML = "";
+      },
+      function(p_return) {
+        nodeOpenErrorMssql(p_return, node);
+      },
+      "box",
+      true
+    );
+  }
+  function TemplateSelectMssql(p_schema, p_table) {
+    execAjax$1(
+      "/template_select_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table,
+        p_schema,
+        p_indent_char: v_indent_char,
+        p_indent_size: v_indent_size
+      }),
+      function(p_return) {
+        v_connTabControl.tag.createQueryTab(p_schema + "." + p_table);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data.v_template);
+        v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
+        renameTabConfirm(v_connTabControl.selectedTab.tag.tabControl.selectedTab, p_schema + "." + p_table);
+        querySQL(0);
+      },
+      function(p_return) {
+        showError(p_return.v_data);
+        return "";
+      },
+      "box",
+      true
+    );
+  }
+  function TemplateInsertMssql(p_schema, p_table) {
+    execAjax$1(
+      "/template_insert_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table,
+        p_schema,
+        p_indent_char: v_indent_char,
+        p_indent_size: v_indent_size
+      }),
+      function(p_return) {
+        tabSQLTemplate("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
+      },
+      function(p_return) {
+        showError(p_return.v_data);
+        return "";
+      },
+      "box",
+      true
+    );
+  }
+  function TemplateUpdateMssql(p_schema, p_table) {
+    execAjax$1(
+      "/template_update_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_table,
+        p_schema,
+        p_indent_char: v_indent_char,
+        p_indent_size: v_indent_size
+      }),
+      function(p_return) {
+        tabSQLTemplate("Update " + p_schema + "." + p_table, p_return.v_data.v_template);
+      },
+      function(p_return) {
+        showError(p_return.v_data);
+        return "";
+      },
+      "box",
+      true
+    );
+  }
+  function nodeOpenErrorMssql(p_return, p_node) {
+    if (p_return.v_data.password_timeout) {
+      p_node.collapseNode();
+      showPasswordPrompt(
+        v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        function() {
+          p_node.expandNode();
+        },
+        null,
+        p_return.v_data.message
+      );
+    } else {
+      if (p_node.childNodes.length > 0) p_node.removeChildNodes();
+      v_node$2 = p_node.createChildNode(
+        // Plain text, not markup -- see the matching comment in
+        // nodeOpenErrorOracle (tree_oracle.js): node labels are escaped, so
+        // the message rides on the node's tag and clickNodeEvent opens it.
+        "Error - click for detail",
+        false,
+        "fas fa-times node-error",
+        {
+          type: "error",
+          message: p_return.v_data
+        },
+        null
+      );
+    }
+  }
+  function mssqlTerminateBackendConfirm(p_pid) {
+    execAjax$1(
+      "/kill_backend_mssql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_pid
+      }),
+      function(p_return) {
+        refreshMonitoring();
+      },
+      function(p_return) {
+        if (p_return.v_data.password_timeout) {
+          showPasswordPrompt(
+            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+            function() {
+              mssqlTerminateBackendConfirm(p_pid);
+            },
+            null,
+            p_return.v_data.message
+          );
+        } else {
+          showError(p_return.v_data);
+        }
+      },
+      "box",
+      true
+    );
+  }
+  function mssqlTerminateBackend(p_row) {
+    var v_pid = p_row[0];
+    showConfirm("Are you sure you want to terminate session " + v_pid + "?", function() {
+      mssqlTerminateBackendConfirm(v_pid);
+    });
+  }
+  const treeMssql = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    TemplateInsertMssql,
+    TemplateSelectMssql,
+    TemplateUpdateMssql,
+    afterNodeOpenedCallbackMssql,
+    getColumnsMssql,
+    getFKsColumnsMssql,
+    getFKsMssql,
+    getFunctionDefinitionMssql,
+    getFunctionFieldsMssql,
+    getFunctionsMssql,
+    getIndexesColumnsMssql,
+    getIndexesMssql,
+    getPKColumnsMssql,
+    getPKMssql,
+    getProcedureDefinitionMssql,
+    getProcedureFieldsMssql,
+    getProceduresMssql,
+    getPropertiesMssql,
+    getTablesMssql,
+    getTreeDetailsMssql,
+    getTreeMssql,
+    getUniquesColumnsMssql,
+    getUniquesMssql,
+    getViewDefinitionMssql,
+    getViewsColumnsMssql,
+    getViewsMssql,
+    mssqlTerminateBackend,
+    mssqlTerminateBackendConfirm,
+    nodeOpenErrorMssql,
+    refreshTreeMssql
   }, Symbol.toStringTag, { value: "Module" }));
   var i$2, v_list$1, v_node$1;
   function getTreeMysql(p_div) {
@@ -32856,6 +34808,8 @@
       getTreePostgresql(v_connTabControl.selectedTab.tag.divTree.id);
     } else if (v_conn_object.v_db_type == "oracle") {
       getTreeOracle(v_connTabControl.selectedTab.tag.divTree.id);
+    } else if (v_conn_object.v_db_type == "mssql") {
+      getTreeMssql(v_connTabControl.selectedTab.tag.divTree.id);
     } else if (v_conn_object.v_db_type == "mysql") {
       getTreeMysql(v_connTabControl.selectedTab.tag.divTree.id);
     } else if (v_conn_object.v_db_type == "mariadb") {
@@ -33836,6 +35790,9 @@
     },
     mysqlTerminateBackend: function(p_row) {
       if (typeof mysqlTerminateBackend === "function") mysqlTerminateBackend(p_row);
+    },
+    mssqlTerminateBackend: function(p_row) {
+      if (typeof mssqlTerminateBackend === "function") mssqlTerminateBackend(p_row);
     }
   };
   function monitoringAction(p_row_index, p_function) {
@@ -35104,6 +37061,9 @@
       oracleTreeNodeOpen: [],
       oracleTreeContextMenu: [],
       oracleTreeNodeClick: [],
+      mssqlTreeNodeOpen: [],
+      mssqlTreeContextMenu: [],
+      mssqlTreeNodeClick: [],
       mysqlTreeNodeOpen: [],
       mysqlTreeContextMenu: [],
       mysqlTreeNodeClick: [],
@@ -36336,6 +38296,7 @@
     treeSnippets,
     treePostgresql,
     treeOracle,
+    treeMssql,
     treeMariadb,
     treeMysql,
     treeSqlite,

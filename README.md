@@ -10,9 +10,11 @@ A user-friendly, lightweight, cross-platform database management tool with stron
 
 **Website**: https://www.omnidb.net
 
+> **Note:** Large parts of this project's code and documentation are developed with the assistance of AI/LLM tools (e.g. Claude). Every change is reviewed by a human maintainer before release — see [CONTRIBUTING.md](CONTRIBUTING.md#ai-assisted-development).
+
 ## Features
 
-- **Multi-Database Support**: PostgreSQL, MySQL, MariaDB, SQLite, Oracle, SQL Server, Firebird, IBM DB2
+- **Multi-Database Support**: PostgreSQL, MySQL, MariaDB, SQLite, Oracle, MS SQL Server
 - **Cross-Platform**: Runs on Windows, macOS, and Linux
 - **Modern UI**: Dark/Light theme with automatic OS preference detection
 - **Advanced SQL Editor**: Syntax highlighting, auto-completion, code formatting
@@ -47,7 +49,7 @@ the Makefile installs the Wails CLI itself if it's missing.
 - **Backend**: Go — see `go-server/` and `AGENTS.md` for details
 - **Frontend**: HTML, CSS, JavaScript (server-rendered, no SPA framework)
 - **Desktop shell**: Wails/Go — see `wails-app/` and `AGENTS.md` for details
-- **Database**: PostgreSQL, MySQL, MariaDB, Oracle, SQLite
+- **Database**: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, SQLite
 - **Libraries**: ACE Editor, Chart.js, Bootstrap
 
 ## Requirements

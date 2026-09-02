@@ -64,6 +64,16 @@ func editDataColumns(technology string, db *sql.DB, schema, table string) ([]edi
 			out[i] = editDataColumn{c.Name, c.DataType}
 		}
 		return out, nil
+	case "mssql":
+		cols, err := mssqlColumns(db, schema, table)
+		if err != nil {
+			return nil, err
+		}
+		out := make([]editDataColumn, len(cols))
+		for i, c := range cols {
+			out[i] = editDataColumn{c.Name, c.DataType}
+		}
+		return out, nil
 	default:
 		return nil, fmt.Errorf("unsupported technology %q", technology)
 	}
@@ -99,6 +109,12 @@ func editDataPrimaryKeyColumns(technology string, db *sql.DB, schema, table stri
 			return nil, err
 		}
 		return oraclePrimaryKeyColumns(db, schema, table, pks[0])
+	case "mssql":
+		pks, err := mssqlPrimaryKeys(db, schema, table)
+		if err != nil || len(pks) == 0 {
+			return nil, err
+		}
+		return mssqlPrimaryKeyColumns(db, schema, table, pks[0])
 	default:
 		return nil, fmt.Errorf("unsupported technology %q", technology)
 	}
@@ -142,6 +158,16 @@ func graphTableNames(technology string, db *sql.DB, schema string) ([]string, er
 		return names, nil
 	case "oracle":
 		tables, err := oracleTables(db, schema)
+		if err != nil {
+			return nil, err
+		}
+		names := make([]string, len(tables))
+		for i, t := range tables {
+			names[i] = t.Name
+		}
+		return names, nil
+	case "mssql":
+		tables, err := mssqlTables(db, schema)
 		if err != nil {
 			return nil, err
 		}
@@ -196,6 +222,16 @@ func graphForeignKeyTargets(technology string, db *sql.DB, schema, table string)
 		return out, nil
 	case "oracle":
 		fks, err := oracleForeignKeys(db, schema, table)
+		if err != nil {
+			return nil, err
+		}
+		out := make([]string, len(fks))
+		for i, fk := range fks {
+			out[i] = fk.RTableName
+		}
+		return out, nil
+	case "mssql":
+		fks, err := mssqlForeignKeys(db, schema, table)
 		if err != nil {
 			return nil, err
 		}

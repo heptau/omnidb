@@ -7,7 +7,7 @@ URL: https://www.omnidb.net/en/introduction.html
 
 **Full Content:**
 
-OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle and MySQL. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. OmniDB is actively developed, automatically tested on a variety of databases and browsers and comes with full documentation.
+OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle, MySQL and MS SQL Server. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. OmniDB is actively developed, automatically tested on a variety of databases and browsers and comes with full documentation.
 
 Since early development, OmniDB was designed as a browser-based app. Consequently, it runs in any browser, from any operational system. It can be accessed by several computers and multiple users, each one of them with his/her own group of connections. It also can be hosted in any operational system, without the need of install any dependencies. We will see further details on installation in the next chapters.
 
@@ -139,7 +139,7 @@ And we can see the window again. Note that now there is no Users icon, because t
 
 **Creating connections**
 
-OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle and SQLite.
+OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server and SQLite.
 
 We will now create one connection to a PostgreSQL database, one connection to an Oracle database and one connection to a MariaDB database. To create the connections you have to click on the button New Connection and then choose the connection and fill the other fields. After filling all the fields for both connections, click on the Save button.
 

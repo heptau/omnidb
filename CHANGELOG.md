@@ -8,6 +8,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- **MS SQL Server support** (`mssql`), dropped during the Django→Go migration, is back — connect, browse
+  the tree (tables/columns/primary keys/foreign keys/uniques/indexes/views/functions/procedures),
+  run console queries (`\dt`/`\d`/`\du`/`\l`/`\df` all implemented), Edit Data, and the
+  Properties/DDL tabs and Select/Insert/Update/DDL-wizard templates, at the same feature depth as
+  the existing Oracle support. New driver dependency `github.com/microsoft/go-mssqldb` (pure Go, no
+  native client/cgo, consistent with `pgx`/`go-sql-driver`/`go-ora`/`modernc.org/sqlite`), registered
+  under the `sqlserver` driver name so bind parameters use SQL Server's native `@p1`..`@pN` syntax
+  rather than the driver's legacy `?`-rewriting mode. Identifiers are `[bracket]`-quoted; pagination
+  uses `TOP N` (SQL Server has no `LIMIT`). Table DDL is manually reconstructed from
+  `sys.columns`/`sys.types`/`sys.default_constraints`/`sys.key_constraints`/`sys.foreign_keys`
+  (SQL Server has no `DBMS_METADATA.GET_DDL`-style builtin for tables); views/functions/procedures
+  use `OBJECT_DEFINITION()` instead, which returns their verbatim source. New `mssql*.go` files
+  (`mssql.go`, `mssql_constraints.go`, `mssql_routines.go`, `mssql_properties.go`, `mssql_ddl.go`,
+  `mssql_templates.go`, `mssql_treeinfo.go`, `mssql_handlers.go`) plus a new frontend
+  `tree_mssql.js`; a new `mssql` technology row is seeded for fresh installs and migrated in for
+  existing ones (`appdb_bootstrap.go`). Out of scope for this pass: tablespace/role/sequence tree
+  nodes (SQL Server's closest analogues aren't part of this port) and discrete Windows/Integrated
+  Authentication fields — the existing "Connection string" field covers `encrypt=`/
+  `trustservercertificate=`/Kerberos options as an escape hatch, same as every other engine here.
 - Settings > Appearance gains a Theme control (Automatic/Light/Dark), replacing the previous
   OS-only behavior. `changeTheme()` (`header_actions.js`) now honors an explicit choice instead of
   always resolving to the system preference; a new `theme_preference` radio group persists it

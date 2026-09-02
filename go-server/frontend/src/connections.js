@@ -703,6 +703,7 @@ var TECHNOLOGY_DISPLAY_NAMES = {
 	mysql: "MySQL",
 	mariadb: "MariaDB",
 	oracle: "Oracle",
+	mssql: "MS SQL Server",
 	sqlite: "SQLite",
 	terminal: "Terminal",
 };
@@ -725,11 +726,29 @@ export var ENVIRONMENT_META = {
 // No "Select Type" placeholder option: newConnection() always preselects
 // postgresql and editConnection() always sets the saved connection's real
 // technology, so the select never actually needs an empty/unset state.
+// technologySortRank pins postgresql first and terminal last -- everything
+// else (mysql/mariadb/oracle/mssql/sqlite/...) sorts alphabetically by its
+// own display name instead, so a newly added engine slots in without this
+// list needing to know its name ahead of time.
+function technologySortRank(v_tech) {
+	if (v_tech === "postgresql") return 0;
+	if (v_tech === "terminal") return 2;
+	return 1;
+}
+
 export function adjustTechSelector() {
 	var select = el("conn_form_type");
 	select.innerHTML = "";
-	for (var i = 0; i < v_connections_data.technologies.length; i++) {
-		var v_tech = v_connections_data.technologies[i];
+	var v_sorted = v_connections_data.technologies.slice().sort(function (a, b) {
+		var v_rank_a = technologySortRank(a);
+		var v_rank_b = technologySortRank(b);
+		if (v_rank_a !== v_rank_b) return v_rank_a - v_rank_b;
+		var v_name_a = TECHNOLOGY_DISPLAY_NAMES[a] || a;
+		var v_name_b = TECHNOLOGY_DISPLAY_NAMES[b] || b;
+		return v_name_a.localeCompare(v_name_b);
+	});
+	for (var i = 0; i < v_sorted.length; i++) {
+		var v_tech = v_sorted[i];
 		var option = document.createElement("option");
 		option.value = v_tech;
 		option.textContent = TECHNOLOGY_DISPLAY_NAMES[v_tech] || v_tech;

@@ -11,9 +11,16 @@ transparent as possible, whether it's:
 - Becoming a maintainer
 
 
+## AI-Assisted Development
+
+Large parts of this project's code and documentation are developed with the
+assistance of AI/LLM tools (e.g. Claude). Every change is reviewed by a human
+maintainer before it's merged or released.
+
+
 ## OmniDB Database Support
 
-Currently OmniDB supports `PostgreSQL`, `Oracle`, `MySQL` and `MariaDB`.
+Currently OmniDB supports `PostgreSQL`, `Oracle`, `MySQL`, `MariaDB` and `MS SQL Server`.
 Suggestions and even pull requests for other databases are welcome.
 
 

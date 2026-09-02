@@ -89,7 +89,7 @@ func testConnectionMessage(technology string, info *ConnectionInfo) string {
 		return testSQLiteConnectionMessage(info.Database)
 	case "postgresql":
 		return testPostgreSQLConnectionMessage(info)
-	default: // mysql, mariadb, oracle
+	default: // mysql, mariadb, oracle, mssql
 		return testGenericPingMessage(info)
 	}
 }

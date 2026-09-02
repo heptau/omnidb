@@ -15,11 +15,14 @@ var appDBSchema string
 
 // appDBBootstrapTechnologies mirrors OmniDB_app/migrations/0001_3_0_0.py's
 // populate_technologies (postgresql..terminal) plus 0003_3_1_0.py's later
-// addition of sqlite — same names, same order. technologyID (appdb_
+// addition of sqlite, and this Go server's own later addition of mssql —
+// same names, same order for the historical ones. technologyID (appdb_
 // connections.go) looks a row up by name, not a hardcoded id, so the exact
 // autoincremented ids these get don't need to match the historical ones.
+// Only seeds a brand-new install; an existing install needs the matching
+// "insert missing technology row" step in migrateAppDB below instead.
 var appDBBootstrapTechnologies = []string{
-	"postgresql", "mysql", "mariadb", "oracle", "terminal", "sqlite",
+	"postgresql", "mysql", "mariadb", "oracle", "terminal", "sqlite", "mssql",
 }
 
 var (
@@ -184,6 +187,23 @@ func migrateAppDB(db *sql.DB) error {
 		}
 	} else if err != nil {
 		return fmt.Errorf("check OmniDB_app_userdetails.theme_default_migrated: %w", err)
+	}
+
+	// Add the mssql technology row if missing (v4.4.0+) -- unlike the
+	// migrations above, which all add a missing *column*,
+	// appDBBootstrapTechnologies only seeds OmniDB_app_technology on a
+	// brand-new install; an existing install's table was already fully
+	// populated by an earlier version's bootstrap and needs this row
+	// inserted explicitly, the same "check first, act only if missing"
+	// idiom applied to a data row instead of a column.
+	var hasMSSQL string
+	err = db.QueryRow(`select name from OmniDB_app_technology where name = 'mssql'`).Scan(&hasMSSQL)
+	if err == sql.ErrNoRows {
+		if _, err := db.Exec(`insert into OmniDB_app_technology (name) values ('mssql')`); err != nil {
+			return fmt.Errorf("seed mssql technology: %w", err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_technology for mssql: %w", err)
 	}
 
 	return nil

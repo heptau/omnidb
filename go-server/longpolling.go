@@ -393,7 +393,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 // connection's engine — everything else still proxies to Django's own
 // thread_query/long_polling machinery unchanged.
 func nativeQueryTechnology(technology string) bool {
-	return technology == "sqlite" || technology == "postgresql" || isMySQLFamily(technology) || isOracle(technology)
+	return technology == "sqlite" || technology == "postgresql" || isMySQLFamily(technology) || isOracle(technology) || isMSSQL(technology)
 }
 
 // openNativeQueryTarget opens the right native driver for mode-0 (fresh
@@ -409,6 +409,9 @@ func openNativeQueryTarget(info *ConnectionInfo) (*sql.DB, error) {
 	}
 	if isOracle(info.Technology) {
 		return openOracleTarget(info)
+	}
+	if isMSSQL(info.Technology) {
+		return openMSSQLTarget(info)
 	}
 	return openSQLiteTarget(info.Database)
 }

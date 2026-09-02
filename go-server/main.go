@@ -324,6 +324,37 @@ func run() error {
 	mux.Handle("/template_insert_oracle/", handleTemplateInsertOracle(upstream, proxy))
 	mux.Handle("/template_update_oracle/", handleTemplateUpdateOracle(upstream, proxy))
 	mux.Handle("/kill_backend_oracle/", handleKillBackendOracle(upstream, proxy))
+	// SQL Server: tree/introspection routes (migration-plan phase 3 — "Tree
+	// browsing"). No tablespace/role/sequence routes — this port's mssql
+	// tree has none of those nodes (see mssql_handlers.go's package
+	// comment). get_properties_mssql and the template_*_mssql routes are
+	// registered but stubbed to the Django fallback until phase 5 adds
+	// mssql_properties.go/mssql_templates.go/mssql_ddl.go.
+	mux.Handle("/get_tree_info_mssql/", handleGetTreeInfoMSSQL(upstream, proxy))
+	mux.Handle("/get_tables_mssql/", handleGetTablesMSSQL(upstream, proxy))
+	mux.Handle("/get_columns_mssql/", handleGetColumnsMSSQL(upstream, proxy))
+	mux.Handle("/get_pk_mssql/", handleGetPKMSSQL(upstream, proxy))
+	mux.Handle("/get_pk_columns_mssql/", handleGetPKColumnsMSSQL(upstream, proxy))
+	mux.Handle("/get_fks_mssql/", handleGetFKsMSSQL(upstream, proxy))
+	mux.Handle("/get_fks_columns_mssql/", handleGetFKsColumnsMSSQL(upstream, proxy))
+	mux.Handle("/get_uniques_mssql/", handleGetUniquesMSSQL(upstream, proxy))
+	mux.Handle("/get_uniques_columns_mssql/", handleGetUniquesColumnsMSSQL(upstream, proxy))
+	mux.Handle("/get_indexes_mssql/", handleGetIndexesMSSQL(upstream, proxy))
+	mux.Handle("/get_indexes_columns_mssql/", handleGetIndexesColumnsMSSQL(upstream, proxy))
+	mux.Handle("/get_functions_mssql/", handleGetFunctionsMSSQL(upstream, proxy))
+	mux.Handle("/get_function_fields_mssql/", handleGetFunctionFieldsMSSQL(upstream, proxy))
+	mux.Handle("/get_function_definition_mssql/", handleGetFunctionDefinitionMSSQL(upstream, proxy))
+	mux.Handle("/get_procedures_mssql/", handleGetProceduresMSSQL(upstream, proxy))
+	mux.Handle("/get_procedure_fields_mssql/", handleGetProcedureFieldsMSSQL(upstream, proxy))
+	mux.Handle("/get_procedure_definition_mssql/", handleGetProcedureDefinitionMSSQL(upstream, proxy))
+	mux.Handle("/get_views_mssql/", handleGetViewsMSSQL(upstream, proxy))
+	mux.Handle("/get_views_columns_mssql/", handleGetViewsColumnsMSSQL(upstream, proxy))
+	mux.Handle("/get_view_definition_mssql/", handleGetViewDefinitionMSSQL(upstream, proxy))
+	mux.Handle("/get_properties_mssql/", handleGetPropertiesMSSQL(upstream, proxy))
+	mux.Handle("/template_select_mssql/", handleTemplateSelectMSSQL(upstream, proxy))
+	mux.Handle("/template_insert_mssql/", handleTemplateInsertMSSQL(upstream, proxy))
+	mux.Handle("/template_update_mssql/", handleTemplateUpdateMSSQL(upstream, proxy))
+	mux.Handle("/kill_backend_mssql/", handleKillBackendMSSQL(upstream, proxy))
 	// DB-agnostic app-level views (migration-plan phase 6, now complete) —
 	// CRUD against the app's own SQLite database (see go-server/appdb.go),
 	// not any user's saved target connection. save_connection/
