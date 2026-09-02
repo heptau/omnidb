@@ -31,11 +31,15 @@ import {
 } from './connections.js'
 import {
   changeInterfaceFontSize,
-  saveConfigUser,
-  saveShortcuts,
+  changePassword,
+  debouncedPersistConfigUser,
+  persistConfigUser,
+  selectSettingsCategory,
   setAllAutocompleteTypeCheckboxes,
   showWebsite,
+  updateFontSizeLabel,
   updateIndentUnit,
+  updatePasswordButtonState,
 } from './header_actions.js'
 import { deleteMonitorUnit, editMonitorUnit, includeMonitorUnit } from './monitoring.js'
 import { startSetShortcut } from './shortcuts.js'
@@ -178,42 +182,68 @@ bind('about_link_github', 'click', () => showWebsite('GitHub', 'https://github.c
 // --- monitoring units modal ------------------------------------------------
 bind('button_new_monitor_unit', 'click', () => editMonitorUnit())
 
-// --- settings: shortcuts ---------------------------------------------------
+// --- settings: sidebar category switcher ------------------------------------
+bindAll('.omnidb__settings__list-item', 'click', (e) =>
+  selectSettingsCategory(/** @type {HTMLElement} */ (e.currentTarget).getAttribute('data-category')),
+)
+
+// --- settings: shortcuts -----------------------------------------------------
 //
 // By prefix rather than by listing ten ids, so adding a shortcut row to the
-// template needs no change here. The Save button is `button_save_shortcuts`
-// and so does not match.
+// template needs no change here. Auto-saves as soon as a combo is captured
+// (see shortcuts.js's setShortcutEvent) -- no Save button any more.
 bindAll('#config_shortcuts button[id^="shortcut_"]', 'click', (e) =>
   startSetShortcut(e.currentTarget),
 )
-bind('button_save_shortcuts', 'click', () => saveShortcuts())
 
-// --- settings: options -----------------------------------------------------
-bind('sel_interface_font_size', 'change', (e) =>
-  changeInterfaceFontSize(/** @type {HTMLInputElement} */ (e.target).value),
+// --- settings: appearance ----------------------------------------------------
+// "input" keeps the "12" label live while dragging; the heavier editor-wide
+// resize + auto-save only run once the drag commits, on "change".
+bind('sel_interface_font_size', 'input', (e) =>
+  updateFontSizeLabel(/** @type {HTMLInputElement} */ (e.target).value),
 )
+bind('sel_interface_font_size', 'change', (e) => {
+  changeInterfaceFontSize(/** @type {HTMLInputElement} */ (e.target).value)
+  persistConfigUser()
+})
+
+// --- settings: export --------------------------------------------------------
+bind('sel_csv_encoding', 'change', () => persistConfigUser())
+bind('txt_csv_delimiter', 'input', () => debouncedPersistConfigUser())
+
+// --- settings: autocomplete ---------------------------------------------------
 // The `return false;` these carried is why they get preventDefault -- they are
-// `<a href="#">` and the fragment jump would scroll the modal body.
+// `<a href="#">` and the fragment jump would scroll the pane.
 bind('link_autocomplete_all', 'click', (e) => {
   e.preventDefault()
   setAllAutocompleteTypeCheckboxes(true)
+  persistConfigUser()
 })
 bind('link_autocomplete_none', 'click', (e) => {
   e.preventDefault()
   setAllAutocompleteTypeCheckboxes(false)
+  persistConfigUser()
 })
+bindAll('input[name="autocomplete_type"]', 'change', () => persistConfigUser())
 
-// --- settings: formatting --------------------------------------------------
-bindAll('input[name="indent_char"], input[name="indent_size"]', 'change', () => updateIndentUnit())
+// --- settings: formatting ------------------------------------------------------
+bindAll('input[name="indent_char"], input[name="indent_size"]', 'change', () => {
+  updateIndentUnit()
+  persistConfigUser()
+})
 bindAll('input[name="comma_style"]', 'change', (e) => {
   v_comma_style = /** @type {HTMLInputElement} */ (e.target).value
+  persistConfigUser()
 })
 bindAll('input[name="keyword_case"]', 'change', (e) => {
   v_keyword_case = /** @type {HTMLInputElement} */ (e.target).value
+  persistConfigUser()
 })
 
-// --- settings: all three tabs share one Save ------------------------------
-bindAll('.omnidb__save-config-user', 'click', () => saveConfigUser())
+// --- settings: password -- the one field that keeps an explicit action ------
+bind('button_change_password', 'click', () => changePassword())
+bind('txt_new_pwd', 'input', () => updatePasswordButtonState())
+bind('txt_confirm_new_pwd', 'input', () => updatePasswordButtonState())
 
 // The loading overlay's Cancel button is bound in early.js, not here -- see the
 // comment there. It can still abort requests started from this bundle: every

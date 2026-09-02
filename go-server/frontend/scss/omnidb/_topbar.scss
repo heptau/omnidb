@@ -1018,6 +1018,146 @@
 	max-width: 680px;
 }
 
+/* Settings section: VS Code-style master-detail -- a static sidebar list of
+ * categories (Appearance/Export/Autocomplete/Formatting/Shortcuts/Password/
+ * Account), and the selected category's fields on the right. Same tokens and
+ * shape as the Connections master-detail above, but its own class family:
+ * this sidebar is a short static list with no toolbar/footer/search, so
+ * reusing the (dynamic, filterable) Connections classes directly would drag
+ * along markup this doesn't need. */
+#omnidb__section_settings .omnidb__section__body {
+	padding: 0;
+	display: flex;
+	overflow: hidden;
+}
+
+.omnidb__settings {
+	display: flex;
+	flex: 1 1 auto;
+	min-width: 0;
+	min-height: 0;
+}
+
+.omnidb__settings__sidebar {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 220px;
+	width: 220px;
+	min-width: 180px;
+	max-width: 260px;
+	height: 100%;
+	background-color: var(--sidebar-bg);
+	border-right: 1px solid var(--border-color);
+	overflow-y: auto;
+}
+
+.omnidb__settings__list {
+	padding: 8px;
+}
+
+.omnidb__settings__list-item {
+	display: flex;
+	align-items: center;
+	gap: 10px;
+	padding: 7px 10px;
+	margin-bottom: 1px;
+	border-radius: 6px;
+	cursor: pointer;
+	font-size: 13px;
+	color: var(--text-primary);
+}
+
+.omnidb__settings__list-item:hover {
+	background-color: var(--hover-bg);
+}
+
+.omnidb__settings__list-item--selected,
+.omnidb__settings__list-item--selected:hover {
+	background-color: var(--accent-color);
+	color: #fff;
+}
+
+.omnidb__settings__list-item-icon {
+	flex: 0 0 auto;
+	width: 16px;
+	text-align: center;
+	color: var(--text-secondary);
+	font-size: 13px;
+}
+
+.omnidb__settings__list-item--selected .omnidb__settings__list-item-icon {
+	color: #fff;
+}
+
+.omnidb__settings__detail {
+	flex: 1 1 auto;
+	min-width: 0;
+	height: 100%;
+	overflow-y: auto;
+	background-color: var(--app-bg);
+	padding: 20px 28px;
+}
+
+.omnidb__settings__pane {
+	display: none;
+	max-width: 680px;
+}
+
+.omnidb__settings__pane--active {
+	display: block;
+}
+
+.omnidb__settings__pane-header {
+	margin-bottom: 16px;
+}
+
+.omnidb__settings__pane-header h5 {
+	margin: 0;
+	font-weight: 600;
+	color: var(--text-primary);
+}
+
+/* One setting per row, label above its control -- VS Code's Settings list
+ * shape, replacing the old side-by-side Bootstrap col-md-6 pairs (CSV
+ * Encoding next to CSV Delimiter, New Password next to Confirm, ...). */
+.omnidb__settings__field {
+	margin-bottom: 20px;
+}
+
+.omnidb__settings__field label {
+	display: block;
+	margin-bottom: 6px;
+	color: var(--text-primary);
+}
+
+/* Autocomplete Suggestions: one checkbox per line instead of the old
+ * form-check-inline flow, matching the rest of the Settings list shape. */
+.omnidb__settings__checkbox-list .form-check {
+	margin-bottom: 6px;
+}
+
+.omnidb__settings__range-row {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+}
+
+.omnidb__settings__range {
+	flex: 1 1 auto;
+	max-width: 280px;
+	height: 6px;
+	margin: 0;
+}
+
+.omnidb__settings__range-value {
+	flex: 0 0 auto;
+	min-width: 2ch;
+	text-align: right;
+	color: var(--text-secondary);
+	font-size: 13px;
+	font-variant-numeric: tabular-nums;
+}
+
 /* #omnidb_main_tablist (v_connTabControl) lives inside
  * #omnidb__section_database and reuses the ":not(container--menu-shown)"
  * horizontal-strip styling above -- that used to be what "Switch menu"

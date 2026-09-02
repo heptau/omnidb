@@ -252,8 +252,18 @@ export function changeFontSize(p_option) {
 	});
 }
 
+/// <summary>
+/// Updates the "12" next to the Font Size slider (also called live on
+/// "input" while dragging, before the slider's own "change" commits).
+/// </summary>
+export function updateFontSizeLabel(p_option) {
+	var v_label = document.getElementById("lbl_interface_font_size");
+	if (v_label) v_label.textContent = String(p_option);
+}
+
 export function changeInterfaceFontSize(p_option) {
 	v_font_size = p_option;
+	updateFontSizeLabel(p_option);
 	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
 	document.querySelectorAll(".ace_editor").forEach(function (el) {
 		let editor = ace.edit(el);
@@ -295,6 +305,7 @@ export function updateIndentUnit() {
 		v_indent_unit = '';
 		for (var i = 0; i < v_indent_size; i++) v_indent_unit += ' ';
 	}
+	applyEditorTabSize();
 }
 
 export function applyEditorTabSize() {
@@ -305,12 +316,49 @@ export function applyEditorTabSize() {
 	});
 }
 
+// Settings sidebar: which category pane is currently shown. Not persisted --
+// each time Settings is opened it starts back on the first category, same as
+// VS Code's Settings UI does.
+var v_settings_active_category = "appearance";
+
+/// <summary>
+/// Selects a Settings sidebar category, showing its pane and hiding the rest.
+/// </summary>
+export function selectSettingsCategory(p_category) {
+	v_settings_active_category = p_category;
+	document.querySelectorAll(".omnidb__settings__list-item").forEach(function (el) {
+		el.classList.toggle("omnidb__settings__list-item--selected", el.getAttribute("data-category") === p_category);
+	});
+	document.querySelectorAll(".omnidb__settings__pane").forEach(function (el) {
+		el.classList.toggle("omnidb__settings__pane--active", el.getAttribute("data-category") === p_category);
+	});
+}
+
+/// <summary>
+/// Runs p_fn p_ms after the last call -- used to auto-save free-text fields
+/// (e.g. CSV Delimiter) without persisting on every keystroke.
+/// </summary>
+function debounce(p_fn, p_ms) {
+	/** @type {ReturnType<typeof setTimeout>|undefined} */
+	var v_timer;
+	return function () {
+		clearTimeout(v_timer);
+		v_timer = setTimeout(p_fn, p_ms);
+	};
+}
+
+export var debouncedPersistConfigUser = debounce(function () {
+	persistConfigUser();
+}, 600);
+
 export function showConfigUser() {
 	/** @type {HTMLInputElement} */ (document.getElementById("sel_interface_font_size")).value = String(v_font_size);
+	updateFontSizeLabel(v_font_size);
 	// document.getElementById('sel_editor_theme').value = v_theme;
 
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd")).value = "";
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd")).value = "";
+	updatePasswordButtonState();
 
 	/** @type {HTMLInputElement} */ (document.getElementById("sel_csv_encoding")).value = v_csv_encoding;
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_csv_delimiter")).value = v_csv_delimiter;
@@ -351,6 +399,7 @@ export function showConfigUser() {
 		typeCheckboxes[i].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i].value) === -1;
 	}
 
+	selectSettingsCategory(v_settings_active_category);
 	switchSection("settings");
 }
 
@@ -394,14 +443,15 @@ export function setAllAutocompleteTypeCheckboxes(p_checked) {
 }
 
 /// <summary>
-/// Saves user config to OmniDB database.
+/// Saves user config to OmniDB database, optionally including a new
+/// password. Internal -- persistConfigUser (auto-save) and changePassword
+/// (explicit) are the two entry points, so a field change elsewhere in
+/// Settings can never accidentally push whatever is still sitting unconfirmed
+/// in the password fields.
 /// </summary>
-export function saveConfigUser() {
+function persistConfigUserInternal(p_pwd, p_callback) {
 	v_font_size = Number(/** @type {HTMLInputElement} */ (document.getElementById("sel_interface_font_size")).value);
 	// v_theme_id = document.getElementById('sel_editor_theme').value.split('/')[0];
-
-	var v_confirm_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd"));
-	var v_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd"));
 
 	v_csv_encoding = /** @type {HTMLInputElement} */ (document.getElementById("sel_csv_encoding")).value;
 	v_csv_delimiter = /** @type {HTMLInputElement} */ (document.getElementById("txt_csv_delimiter")).value;
@@ -413,30 +463,74 @@ export function saveConfigUser() {
 	}
 	v_autocomplete_disabled_types = v_disabled_types.join(",");
 
-	if ((v_confirm_pwd.value != "" || v_pwd.value != "") && v_pwd.value != v_confirm_pwd.value)
-		showAlert("New Password and Confirm New Password fields do not match.");
-	else {
-		var input = JSON.stringify({
-			p_font_size: v_font_size,
-			p_pwd: v_pwd.value,
-			p_csv_encoding: v_csv_encoding,
-			p_csv_delimiter: v_csv_delimiter,
-			p_indent_char: v_indent_char,
-			p_indent_size: v_indent_size,
-			p_comma_style: v_comma_style,
-			p_keyword_case: v_keyword_case,
-			p_autocomplete_disabled_types: v_autocomplete_disabled_types,
-		});
+	var input = JSON.stringify({
+		// p_font_size is a string on the wire (saveConfigUserRequest.PFontSize
+		// in appdb_workspace_handlers.go, parsed server-side via strconv.Atoi)
+		// -- sending the bare number here made json.Unmarshal reject the whole
+		// request as malformed, so every save (old manual Save button and this
+		// auto-save alike) silently failed with "Invalid or missing request
+		// data." Pre-existing bug, caught while wiring up auto-save.
+		p_font_size: String(v_font_size),
+		p_pwd: p_pwd,
+		p_csv_encoding: v_csv_encoding,
+		p_csv_delimiter: v_csv_delimiter,
+		p_indent_char: v_indent_char,
+		p_indent_size: v_indent_size,
+		p_comma_style: v_comma_style,
+		p_keyword_case: v_keyword_case,
+		p_autocomplete_disabled_types: v_autocomplete_disabled_types,
+	});
 
-		execAjax("/save_config_user/", input, function (p_return) {
-			showAlert("Configuration saved.");
-			applyEditorTabSize();
-		});
-	}
+	execAjax("/save_config_user/", input, function (p_return) {
+		applyEditorTabSize();
+		if (p_callback) p_callback();
+	});
 }
 
 /// <summary>
-/// Saves shortcuts to OmniDB database.
+/// Auto-save entry point: silently persists every Settings field except the
+/// password (see changePassword) -- called after any field in Appearance,
+/// Export, Autocomplete or Formatting changes.
+/// </summary>
+export function persistConfigUser() {
+	persistConfigUserInternal("");
+}
+
+/// <summary>
+/// Enables the Change Password button once both fields are non-empty and
+/// match; disables it otherwise.
+/// </summary>
+export function updatePasswordButtonState() {
+	var v_confirm_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd"));
+	var v_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd"));
+	var v_button = /** @type {HTMLButtonElement} */ (document.getElementById("button_change_password"));
+	v_button.disabled = !(v_pwd.value !== "" && v_pwd.value === v_confirm_pwd.value);
+}
+
+/// <summary>
+/// The one Settings field that keeps an explicit button instead of
+/// auto-saving on every keystroke -- a password shouldn't change mid-typing.
+/// </summary>
+export function changePassword() {
+	var v_confirm_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd"));
+	var v_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd"));
+
+	if (v_pwd.value === "" || v_pwd.value !== v_confirm_pwd.value) {
+		showAlert("New Password and Confirm New Password fields do not match.");
+		return;
+	}
+
+	persistConfigUserInternal(v_pwd.value, function () {
+		v_pwd.value = "";
+		v_confirm_pwd.value = "";
+		updatePasswordButtonState();
+		showAlert("Password changed.");
+	});
+}
+
+/// <summary>
+/// Saves shortcuts to OmniDB database. Auto-save entry point, called
+/// silently by shortcuts.js right after a key combo is captured.
 /// </summary>
 export function saveShortcuts() {
 	var v_shortcut_list = [];
@@ -452,9 +546,7 @@ export function saveShortcuts() {
 		p_current_os: v_current_os,
 	});
 
-	execAjax("/save_shortcuts/", input, function (p_return) {
-		showAlert("Shortcuts saved.");
-	});
+	execAjax("/save_shortcuts/", input, function (p_return) {});
 }
 
 // aceModeForDataType maps a database column type name (e.g. "json",

@@ -122,6 +122,12 @@ const MAPPING = {
 	"fa-balance-scale": ["lucide", "scale"],
 	"fa-arrows-alt-h": ["lucide", "move-horizontal"],
 	"fa-arrow-up": ["lucide", "arrow-up"],
+	"fa-paint-brush": ["lucide", "paintbrush"],
+	"fa-file-csv": ["lucide", "file-spreadsheet"],
+	"fa-magic": ["lucide", "wand-2"],
+	"fa-keyboard": ["lucide", "keyboard"],
+	"fa-lock": ["lucide", "lock"],
+	"fa-user-shield": ["lucide", "user-shield"],
 };
 
 function loadSvg(kind, name) {

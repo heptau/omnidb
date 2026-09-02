@@ -154,12 +154,12 @@ export function startTutorial(p_tutorial_name, p_anchor_el) {
 				},
 				p_clone_target: true,
 				p_message: `
-				<p>If you're a superuser, this Settings section has an <strong>Account</strong> tab.</p>
+				<p>If you're a superuser, this Settings section has an <strong>Account</strong> category in the sidebar.</p>
 				<p>Click on it.</p>
 				`,
 				p_next_button: false,
 				p_target: function () {
-					var v_target = document.getElementById("config_account-tab");
+					var v_target = document.getElementById("settings_category_account");
 					return v_target;
 				},
 				p_title: "Settings",

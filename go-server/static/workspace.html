@@ -304,133 +304,74 @@
 			<div id="omnidb_main_tablist"></div>
 		</div>
 
-		<!-- Settings section (was #modal_config). -->
+		<!-- Settings section (was #modal_config): VS Code-style master-detail --
+		     a left sidebar of categories, a right pane per category. All
+		     fields auto-save (see header_actions.js's persistConfigUser),
+		     no Save buttons except the Password pane's. -->
 		<div id="omnidb__section_settings" class="omnidb__section">
 			<div class="omnidb__section__body">
-				<div class="omnidb__modal-config">
+				<div class="omnidb__settings">
 
-					<ul class="nav nav-tabs" role="tablist">
-						<li class="nav-item">
-							<a class="nav-link active" id="config_shortcuts-tab" data-bs-toggle="tab" href="#config_shortcuts"
-								role="tab" aria-controls="config_shortcuts" aria-selected="true">Shortcuts</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" id="config_options-tab" data-bs-toggle="tab" href="#config_options" role="tab"
-								aria-controls="config_options" aria-selected="false">Options</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" id="config_formatting-tab" data-bs-toggle="tab" href="#config_formatting" role="tab"
-								aria-controls="config_formatting" aria-selected="false">Formatting</a>
-						</li>
-						<li class="nav-item">
-							<a class="nav-link" id="config_password-tab" data-bs-toggle="tab" href="#config_password" role="tab"
-								aria-controls="config_password" aria-selected="false">Password</a>
-						</li>
-						{% if not desktop_mode %}
-						{% if super_user == 1 %}
-						<li class="nav-item">
-							<a class="nav-link" id="config_account-tab" data-bs-toggle="tab" href="#config_account" role="tab"
-								aria-controls="config_account" aria-selected="false">Account</a>
-						</li>
-						{% endif %}
-						{% endif %}
-					</ul>
-					<div class="tab-content p-2">
-
-						<div class="tab-pane fade show active" id="config_shortcuts" role="tabpanel"
-							aria-labelledby="config_shortcuts-tab">
-							<div id="div_shortcut_background_dark">
-								<div style="position: absolute; top: 50%; width: 100%;">Press key combination... (ESC to cancel)</div>
+					<div class="omnidb__settings__sidebar">
+						<div class="omnidb__settings__list" id="settings_category_list">
+							<div class="omnidb__settings__list-item" data-category="appearance">
+								<i class="fas fa-paint-brush omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title">Appearance</span>
 							</div>
-							<div class="form-group row">
-								<label for="shortcut_run_query" class="col-sm-6 col-form-label">Run Query</label>
-								<div class="col-sm-6">
-									<button id="shortcut_run_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+							<div class="omnidb__settings__list-item" data-category="export">
+								<i class="fas fa-file-csv omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title">Export</span>
+							</div>
+							<div class="omnidb__settings__list-item" data-category="autocomplete">
+								<i class="fas fa-magic omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title">Autocomplete</span>
+							</div>
+							<div class="omnidb__settings__list-item" data-category="formatting">
+								<i class="fas fa-align-left omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title">Formatting</span>
+							</div>
+							<div class="omnidb__settings__list-item" data-category="shortcuts">
+								<i class="fas fa-keyboard omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title">Shortcuts</span>
+							</div>
+							<div class="omnidb__settings__list-item" data-category="password">
+								<i class="fas fa-lock omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title">Password</span>
+							</div>
+							{% if not desktop_mode %}
+							{% if super_user == 1 %}
+							<div class="omnidb__settings__list-item" id="settings_category_account" data-category="account">
+								<i class="fas fa-user-shield omnidb__settings__list-item-icon"></i>
+								<span class="omnidb__settings__list-item-title">Account</span>
+							</div>
+							{% endif %}
+							{% endif %}
+						</div>
+					</div>
+
+					<div class="omnidb__settings__detail">
+
+						<div class="omnidb__settings__pane" data-category="appearance">
+							<div class="omnidb__settings__pane-header">
+								<h5>Appearance</h5>
+							</div>
+							<div class="omnidb__settings__field">
+								<label for="sel_interface_font_size">Font Size</label>
+								<div class="omnidb__settings__range-row">
+									<input type="range" min="10" max="20" step="1" value="12"
+										class="omnidb__settings__range"
+										id="sel_interface_font_size">
+									<span id="lbl_interface_font_size" class="omnidb__settings__range-value">12</span>
 								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_explain" class="col-sm-6 col-form-label">Run Explain</label>
-								<div class="col-sm-6">
-									<button id="shortcut_explain" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_explain_analyze" class="col-sm-6 col-form-label">Run Explain Analyze</label>
-								<div class="col-sm-6">
-									<button id="shortcut_explain_analyze" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_cancel_query" class="col-sm-6 col-form-label">Cancel Query</label>
-								<div class="col-sm-6">
-									<button id="shortcut_cancel_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_indent" class="col-sm-6 col-form-label">Indent</label>
-								<div class="col-sm-6">
-									<button id="shortcut_indent" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_autocomplete" class="col-sm-6 col-form-label">Autocomplete</label>
-								<div class="col-sm-6">
-									<button id="shortcut_autocomplete" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_new_inner_tab" class="col-sm-6 col-form-label">New Inner Tab</label>
-								<div class="col-sm-6">
-									<button id="shortcut_new_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_remove_inner_tab" class="col-sm-6 col-form-label">Remove Current Inner
-									Tab</label>
-								<div class="col-sm-6">
-									<button id="shortcut_remove_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_left_inner_tab" class="col-sm-6 col-form-label">Select Left Inner Tab</label>
-								<div class="col-sm-6">
-									<button id="shortcut_left_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div class="form-group row">
-								<label for="shortcut_right_inner_tab" class="col-sm-6 col-form-label">Select Right Inner Tab</label>
-								<div class="col-sm-6">
-									<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
-								</div>
-							</div>
-
-							<div style="text-align:right;">
-								<button id="button_save_shortcuts" class='btn btn-success'>Save</button>
 							</div>
 						</div>
 
-						<div class="tab-pane fade" id="config_options" role="tabpanel" aria-labelledby="config_options-tab">
-
-							<div class="row">
-								<div class="col-md-6 mb-3">
-									<label for="sel_interface_font_size">Font Size</label>
-									<input type="range" min="10"  max="20"  step="1" value="12"
-										class="form-control" style="flex:1; height:6px; margin:0"
-										id="sel_interface_font_size">
-								</div>
+						<div class="omnidb__settings__pane" data-category="export">
+							<div class="omnidb__settings__pane-header">
+								<h5>Export</h5>
 							</div>
-							<div class="row">
-								<div class="col-md-6 mb-3">
-									<label for="sel_csv_encoding">CSV Encoding</label>
+							<div class="omnidb__settings__field">
+								<label for="sel_csv_encoding">CSV Encoding</label>
 									<select id="sel_csv_encoding" class="form-control">
 										<option value="ascii">ascii</option>
 										<option value="big5">big5</option>
@@ -532,73 +473,77 @@
 										<option value="utf-8-sig">utf-8-sig</option>
 										<option value="windows-1252">windows-1252</option>
 									</select>
-								</div>
-								<div class="col-md-6 mb-3">
-									<label for="txt_csv_delimiter">CSV Delimiter</label>
-									<input type="text" class="form-control" id="txt_csv_delimiter" placeholder="Delimiter">
-								</div>
 							</div>
-							<div class="row mb-3">
-								<div class="col-md-12">
-									<label>Autocomplete Suggestions</label>
-									<div>
-										<a id="link_autocomplete_all" href="#">All</a>
-										&nbsp;/&nbsp;
-										<a id="link_autocomplete_none" href="#">None</a>
-									</div>
-									<div class="form-check form-check-inline">
+							<div class="omnidb__settings__field">
+								<label for="txt_csv_delimiter">CSV Delimiter</label>
+								<input type="text" class="form-control" id="txt_csv_delimiter" placeholder="Delimiter">
+							</div>
+						</div>
+
+						<div class="omnidb__settings__pane" data-category="autocomplete">
+							<div class="omnidb__settings__pane-header">
+								<h5>Autocomplete</h5>
+							</div>
+							<div class="omnidb__settings__field">
+								<label>Autocomplete Suggestions</label>
+								<div class="mb-2">
+									<a id="link_autocomplete_all" href="#">All</a>
+									&nbsp;/&nbsp;
+									<a id="link_autocomplete_none" href="#">None</a>
+								</div>
+								<div class="omnidb__settings__checkbox-list">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_keyword" value="keyword">
 										<label class="form-check-label" for="autocomplete_type_keyword">Keywords</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_database" value="database">
 										<label class="form-check-label" for="autocomplete_type_database">Databases</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_role" value="role">
 										<label class="form-check-label" for="autocomplete_type_role">Roles</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_tablespace" value="tablespace">
 										<label class="form-check-label" for="autocomplete_type_tablespace">Tablespaces</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_schema" value="schema">
 										<label class="form-check-label" for="autocomplete_type_schema">Schemas</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_extension" value="extension">
 										<label class="form-check-label" for="autocomplete_type_extension">Extensions</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_table" value="table">
 										<label class="form-check-label" for="autocomplete_type_table">Tables</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_view" value="view">
 										<label class="form-check-label" for="autocomplete_type_view">Views</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_column" value="column">
 										<label class="form-check-label" for="autocomplete_type_column">Columns</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_function" value="function">
 										<label class="form-check-label" for="autocomplete_type_function">Functions</label>
 									</div>
-									<div class="form-check form-check-inline">
+									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_index" value="index">
 										<label class="form-check-label" for="autocomplete_type_index">Indexes</label>
 									</div>
 								</div>
 							</div>
-							<div style="text-align:right;">
-								<button class='btn btn-success omnidb__save-config-user'>Save</button>
-							</div>
-
 						</div>
 
-						<div class="tab-pane fade" id="config_formatting" role="tabpanel" aria-labelledby="config_formatting-tab">
+						<div class="omnidb__settings__pane" data-category="formatting">
+							<div class="omnidb__settings__pane-header">
+								<h5>Formatting</h5>
+							</div>
 
 							<div class="row mb-3">
 								<div class="col-md-12">
@@ -670,32 +615,110 @@
 									</div>
 								</div>
 							</div>
-
-							<div style="text-align:right;">
-								<button class='btn btn-success omnidb__save-config-user'>Save</button>
-							</div>
-
 						</div>
 
-						<div class="tab-pane fade" id="config_password" role="tabpanel" aria-labelledby="config_password-tab">
-							<div class="row">
-								<div class="col-md-6 mb-3">
-									<label for="txt_new_pwd">New Password</label>
-									<input id="txt_new_pwd" type="password" class="form-control">
-								</div>
-								<div class="col-md-6 mb-3">
-									<label for="txt_confirm_new_pwd">Confirm</label>
-									<input id="txt_confirm_new_pwd" type="password" class="form-control">
+						<div class="omnidb__settings__pane" id="config_shortcuts" data-category="shortcuts">
+							<div class="omnidb__settings__pane-header">
+								<h5>Shortcuts</h5>
+							</div>
+							<div id="div_shortcut_background_dark">
+								<div style="position: absolute; top: 50%; width: 100%;">Press key combination... (ESC to cancel)</div>
+							</div>
+							<div class="form-group row">
+								<label for="shortcut_run_query" class="col-sm-6 col-form-label">Run Query</label>
+								<div class="col-sm-6">
+									<button id="shortcut_run_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_explain" class="col-sm-6 col-form-label">Run Explain</label>
+								<div class="col-sm-6">
+									<button id="shortcut_explain" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_explain_analyze" class="col-sm-6 col-form-label">Run Explain Analyze</label>
+								<div class="col-sm-6">
+									<button id="shortcut_explain_analyze" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_cancel_query" class="col-sm-6 col-form-label">Cancel Query</label>
+								<div class="col-sm-6">
+									<button id="shortcut_cancel_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_indent" class="col-sm-6 col-form-label">Indent</label>
+								<div class="col-sm-6">
+									<button id="shortcut_indent" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_autocomplete" class="col-sm-6 col-form-label">Autocomplete</label>
+								<div class="col-sm-6">
+									<button id="shortcut_autocomplete" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_new_inner_tab" class="col-sm-6 col-form-label">New Inner Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_new_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_remove_inner_tab" class="col-sm-6 col-form-label">Remove Current Inner
+									Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_remove_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_left_inner_tab" class="col-sm-6 col-form-label">Select Left Inner Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_left_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_right_inner_tab" class="col-sm-6 col-form-label">Select Right Inner Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+						</div>
+
+						<div class="omnidb__settings__pane" data-category="password">
+							<div class="omnidb__settings__pane-header">
+								<h5>Password</h5>
+							</div>
+							<div class="omnidb__settings__field">
+								<label for="txt_new_pwd">New Password</label>
+								<input id="txt_new_pwd" type="password" class="form-control">
+							</div>
+							<div class="omnidb__settings__field">
+								<label for="txt_confirm_new_pwd">Confirm</label>
+								<input id="txt_confirm_new_pwd" type="password" class="form-control">
+							</div>
 							<div style="text-align:right;">
-								<button class='btn btn-success omnidb__save-config-user'>Save</button>
+								<button id="button_change_password" class='btn btn-success' disabled>Change Password</button>
 							</div>
 						</div>
 
 						{% if not desktop_mode %}
 						{% if super_user == 1 %}
-						<div class="tab-pane fade" id="config_account" role="tabpanel" aria-labelledby="config_account-tab">
+						<div class="omnidb__settings__pane" data-category="account">
+							<div class="omnidb__settings__pane-header">
+								<h5>Account</h5>
+							</div>
 							<div class="row mb-3">
 								<div class="col-md-12">
 									<label>User Management</label>
@@ -707,9 +730,10 @@
 						</div>
 						{% endif %}
 						{% endif %}
-					</div>
 
-				</div><!-- .omnidb__modal-config -->
+					</div><!-- .omnidb__settings__detail -->
+
+				</div><!-- .omnidb__settings -->
 			</div>
 		</div>
 

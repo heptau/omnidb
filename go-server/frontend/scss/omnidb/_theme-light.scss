@@ -351,32 +351,6 @@ a {
 	background-color: #e2e2e2 !important;
 }
 
-.omnidb__modal-config .nav-tabs {
-	border-bottom: 1px solid #e5e5ea;
-	margin-bottom: 0;
-}
-
-.omnidb__modal-config .nav-link {
-	background-color: transparent;
-	border: none;
-	border-radius: 6px 6px 0 0;
-	color: #8e8e93 !important;
-	padding: 8px 16px;
-	margin-right: 4px;
-}
-
-.omnidb__modal-config .nav-link.active {
-	background-color: var(--app-bg);
-	border: none;
-	border-bottom: 2px solid var(--accent-color);
-	color: var(--accent-color) !important;
-}
-
-.omnidb__modal-config .nav-link:focus,
-.omnidb__modal-config .nav-link:hover {
-	border-bottom-color: var(--panel-bg);
-}
-
 .omnidb__monitoring-result-tabs {
 	border: 1px solid #dedede;
 }

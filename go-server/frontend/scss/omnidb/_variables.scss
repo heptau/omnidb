@@ -82,6 +82,16 @@ textarea {
 	border-radius: 6px !important;
 }
 
+// select.form-control otherwise renders a few px shorter than
+// input.form-control: both share the same padding, but a native <select>'s
+// intrinsic height ignores line-height (a long-standing Chromium/WebKit
+// quirk), so line-height: 1.5 alone doesn't close the gap -- explicit height
+// does, using the same 1.5em-line-height + 0.75em-padding + 2px-border
+// formula Bootstrap's own input.form-control resolves to.
+select.form-control {
+	height: calc(1.5em + 0.75em + 2px);
+}
+
 .nav-tabs {
 	margin: 0 !important;
 	padding: 0 !important;

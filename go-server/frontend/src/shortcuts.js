@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { autocomplete_start } from "./autocomplete.js";
 import { consoleSQL } from "./console.js";
+import { saveShortcuts } from "./header_actions.js";
 import { terminalRun } from "./terminal.js";
 import { queryEditData } from "./tree_context_functions/edit_data.js";
 import { getExplain } from "./tree_context_functions/tree_postgresql.js";
@@ -477,6 +478,7 @@ export function setShortcutEvent(p_event) {
 		if (p_event.code.toUpperCase() != "SPACE") v_shortcut_element.shortcut_key = p_event.key.toUpperCase();
 		else v_shortcut_element.shortcut_key = "SPACE";
 		buildButtonText(v_shortcut_element, v_shortcut_object.button);
+		saveShortcuts();
 	}
 
 	finishSetShortcut();

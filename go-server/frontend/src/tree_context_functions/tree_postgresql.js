@@ -3325,7 +3325,15 @@ export function checkCurrentDatabase(p_node, p_complete_check, p_callback_contin
 										(function () {
 											var v_tag = v_connTabControl.selectedTab.tag;
 											var v_img = document.createElement("img");
-											v_img.src = v_url_folder + "/static/OmniDB_app/images/" + v_tag.selectedDBMS + "_medium.png";
+											var v_icon_ext =
+												v_tag.selectedDBMS === "postgresql" ||
+												v_tag.selectedDBMS === "oracle" ||
+												v_tag.selectedDBMS === "mariadb" ||
+												v_tag.selectedDBMS === "mysql" ||
+												v_tag.selectedDBMS === "sqlite"
+													? ".svg"
+													: "_medium.png";
+											v_img.src = v_url_folder + "/static/OmniDB_app/images/" + v_tag.selectedDBMS + v_icon_ext;
 											v_tag.tabTitle.innerHTML = "";
 											v_tag.tabTitle.appendChild(v_img);
 											var v_text = v_tag.selectedTitle

@@ -7499,12 +7499,12 @@
           },
           p_clone_target: true,
           p_message: `
-				<p>If you're a superuser, this Settings section has an <strong>Account</strong> tab.</p>
+				<p>If you're a superuser, this Settings section has an <strong>Account</strong> category in the sidebar.</p>
 				<p>Click on it.</p>
 				`,
           p_next_button: false,
           p_target: function() {
-            var v_target = document.getElementById("config_account-tab");
+            var v_target = document.getElementById("settings_category_account");
             return v_target;
           },
           p_title: "Settings",
@@ -11857,7 +11857,7 @@
         }
       }
       let v_icon = '<img src="' + v_url_folder + "/static/OmniDB_app/images/" + v_conn.v_db_type;
-      if (v_conn.v_db_type === "postgresql" || v_conn.v_db_type === "oracle" || v_conn.v_db_type === "mariadb" || v_conn.v_db_type === "mysql") {
+      if (v_conn.v_db_type === "postgresql" || v_conn.v_db_type === "oracle" || v_conn.v_db_type === "mariadb" || v_conn.v_db_type === "mysql" || v_conn.v_db_type === "sqlite") {
         v_icon += '.svg"/>';
       } else {
         v_icon += '_medium.png"/>';
@@ -16904,7 +16904,8 @@
                       (function() {
                         var v_tag = v_connTabControl.selectedTab.tag;
                         var v_img = document.createElement("img");
-                        v_img.src = v_url_folder + "/static/OmniDB_app/images/" + v_tag.selectedDBMS + "_medium.png";
+                        var v_icon_ext = v_tag.selectedDBMS === "postgresql" || v_tag.selectedDBMS === "oracle" || v_tag.selectedDBMS === "mariadb" || v_tag.selectedDBMS === "mysql" || v_tag.selectedDBMS === "sqlite" ? ".svg" : "_medium.png";
+                        v_img.src = v_url_folder + "/static/OmniDB_app/images/" + v_tag.selectedDBMS + v_icon_ext;
                         v_tag.tabTitle.innerHTML = "";
                         v_tag.tabTitle.appendChild(v_img);
                         var v_text = v_tag.selectedTitle ? " " + v_tag.selectedTitle + " - " + v_tag.selectedDatabase : " " + v_tag.selectedDatabase;
@@ -22138,6 +22139,7 @@
       if (p_event.code.toUpperCase() != "SPACE") v_shortcut_element.shortcut_key = p_event.key.toUpperCase();
       else v_shortcut_element.shortcut_key = "SPACE";
       buildButtonText(v_shortcut_element, v_shortcut_object.button);
+      saveShortcuts();
     }
     finishSetShortcut();
   }
@@ -22349,8 +22351,13 @@
       ace.edit(el2).setFontSize(Number(p_option));
     });
   }
+  function updateFontSizeLabel(p_option) {
+    var v_label = document.getElementById("lbl_interface_font_size");
+    if (v_label) v_label.textContent = String(p_option);
+  }
   function changeInterfaceFontSize(p_option) {
     v_font_size = p_option;
+    updateFontSizeLabel(p_option);
     document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
     document.querySelectorAll(".ace_editor").forEach(function(el2) {
       let editor = ace.edit(el2);
@@ -22393,6 +22400,7 @@
       v_indent_unit = "";
       for (var i2 = 0; i2 < v_indent_size; i2++) v_indent_unit += " ";
     }
+    applyEditorTabSize();
   }
   function applyEditorTabSize() {
     document.querySelectorAll(".ace_editor").forEach(function(el2) {
@@ -22401,10 +22409,32 @@
       editor.session.setUseSoftTabs(v_indent_char !== "tab");
     });
   }
+  var v_settings_active_category = "appearance";
+  function selectSettingsCategory(p_category) {
+    v_settings_active_category = p_category;
+    document.querySelectorAll(".omnidb__settings__list-item").forEach(function(el2) {
+      el2.classList.toggle("omnidb__settings__list-item--selected", el2.getAttribute("data-category") === p_category);
+    });
+    document.querySelectorAll(".omnidb__settings__pane").forEach(function(el2) {
+      el2.classList.toggle("omnidb__settings__pane--active", el2.getAttribute("data-category") === p_category);
+    });
+  }
+  function debounce(p_fn, p_ms) {
+    var v_timer;
+    return function() {
+      clearTimeout(v_timer);
+      v_timer = setTimeout(p_fn, p_ms);
+    };
+  }
+  var debouncedPersistConfigUser = debounce(function() {
+    persistConfigUser();
+  }, 600);
   function showConfigUser() {
     document.getElementById("sel_interface_font_size").value = String(v_font_size);
+    updateFontSizeLabel(v_font_size);
     document.getElementById("txt_confirm_new_pwd").value = "";
     document.getElementById("txt_new_pwd").value = "";
+    updatePasswordButtonState();
     document.getElementById("sel_csv_encoding").value = v_csv_encoding;
     document.getElementById("txt_csv_delimiter").value = v_csv_delimiter;
     var charRadios = (
@@ -22455,6 +22485,7 @@
     for (var i2 = 0; i2 < typeCheckboxes.length; i2++) {
       typeCheckboxes[i2].checked = v_disabled_autocomplete_types.indexOf(typeCheckboxes[i2].value) === -1;
     }
+    selectSettingsCategory(v_settings_active_category);
     switchSection("settings");
   }
   function goToConnections() {
@@ -22486,18 +22517,10 @@
       typeCheckboxes[i2].checked = p_checked;
     }
   }
-  function saveConfigUser() {
+  function persistConfigUserInternal(p_pwd, p_callback) {
     v_font_size = Number(
       /** @type {HTMLInputElement} */
       document.getElementById("sel_interface_font_size").value
-    );
-    var v_confirm_pwd = (
-      /** @type {HTMLInputElement} */
-      document.getElementById("txt_confirm_new_pwd")
-    );
-    var v_pwd = (
-      /** @type {HTMLInputElement} */
-      document.getElementById("txt_new_pwd")
     );
     v_csv_encoding = /** @type {HTMLInputElement} */
     document.getElementById("sel_csv_encoding").value;
@@ -22512,25 +22535,65 @@
       if (!typeCheckboxes[i2].checked) v_disabled_types.push(typeCheckboxes[i2].value);
     }
     v_autocomplete_disabled_types = v_disabled_types.join(",");
-    if ((v_confirm_pwd.value != "" || v_pwd.value != "") && v_pwd.value != v_confirm_pwd.value)
+    var input = JSON.stringify({
+      // p_font_size is a string on the wire (saveConfigUserRequest.PFontSize
+      // in appdb_workspace_handlers.go, parsed server-side via strconv.Atoi)
+      // -- sending the bare number here made json.Unmarshal reject the whole
+      // request as malformed, so every save (old manual Save button and this
+      // auto-save alike) silently failed with "Invalid or missing request
+      // data." Pre-existing bug, caught while wiring up auto-save.
+      p_font_size: String(v_font_size),
+      p_pwd,
+      p_csv_encoding: v_csv_encoding,
+      p_csv_delimiter: v_csv_delimiter,
+      p_indent_char: v_indent_char,
+      p_indent_size: v_indent_size,
+      p_comma_style: v_comma_style,
+      p_keyword_case: v_keyword_case,
+      p_autocomplete_disabled_types: v_autocomplete_disabled_types
+    });
+    execAjax$1("/save_config_user/", input, function(p_return) {
+      applyEditorTabSize();
+      if (p_callback) p_callback();
+    });
+  }
+  function persistConfigUser() {
+    persistConfigUserInternal("");
+  }
+  function updatePasswordButtonState() {
+    var v_confirm_pwd = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_confirm_new_pwd")
+    );
+    var v_pwd = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_new_pwd")
+    );
+    var v_button = (
+      /** @type {HTMLButtonElement} */
+      document.getElementById("button_change_password")
+    );
+    v_button.disabled = !(v_pwd.value !== "" && v_pwd.value === v_confirm_pwd.value);
+  }
+  function changePassword() {
+    var v_confirm_pwd = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_confirm_new_pwd")
+    );
+    var v_pwd = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_new_pwd")
+    );
+    if (v_pwd.value === "" || v_pwd.value !== v_confirm_pwd.value) {
       showAlert("New Password and Confirm New Password fields do not match.");
-    else {
-      var input = JSON.stringify({
-        p_font_size: v_font_size,
-        p_pwd: v_pwd.value,
-        p_csv_encoding: v_csv_encoding,
-        p_csv_delimiter: v_csv_delimiter,
-        p_indent_char: v_indent_char,
-        p_indent_size: v_indent_size,
-        p_comma_style: v_comma_style,
-        p_keyword_case: v_keyword_case,
-        p_autocomplete_disabled_types: v_autocomplete_disabled_types
-      });
-      execAjax$1("/save_config_user/", input, function(p_return) {
-        showAlert("Configuration saved.");
-        applyEditorTabSize();
-      });
+      return;
     }
+    persistConfigUserInternal(v_pwd.value, function() {
+      v_pwd.value = "";
+      v_confirm_pwd.value = "";
+      updatePasswordButtonState();
+      showAlert("Password changed.");
+    });
   }
   function saveShortcuts() {
     var v_shortcut_list = [];
@@ -22544,7 +22607,6 @@
       p_current_os: v_current_os
     });
     execAjax$1("/save_shortcuts/", input, function(p_return) {
-      showAlert("Shortcuts saved.");
     });
   }
   function aceModeForDataType(p_data_type) {
@@ -22659,19 +22721,24 @@
     cancelEditContent,
     changeFontSize,
     changeInterfaceFontSize,
+    changePassword,
     changeTheme,
     confirmSignout,
+    debouncedPersistConfigUser,
     editCellData,
     goToConnections,
     hideEditContent,
-    saveConfigUser,
+    persistConfigUser,
     saveEditContent,
     saveShortcuts,
+    selectSettingsCategory,
     setAllAutocompleteTypeCheckboxes,
     showAbout,
     showConfigUser,
     showWebsite,
+    updateFontSizeLabel,
     updateIndentUnit,
+    updatePasswordButtonState,
     get v_current_terminal_theme() {
       return v_current_terminal_theme;
     },
@@ -36184,37 +36251,63 @@
   bind("about_link_github", "click", () => showWebsite("GitHub", "https://github.com/heptau/omnidb"));
   bind("button_new_monitor_unit", "click", () => editMonitorUnit());
   bindAll(
+    ".omnidb__settings__list-item",
+    "click",
+    (e) => selectSettingsCategory(
+      /** @type {HTMLElement} */
+      e.currentTarget.getAttribute("data-category")
+    )
+  );
+  bindAll(
     '#config_shortcuts button[id^="shortcut_"]',
     "click",
     (e) => startSetShortcut(e.currentTarget)
   );
-  bind("button_save_shortcuts", "click", () => saveShortcuts());
   bind(
     "sel_interface_font_size",
-    "change",
-    (e) => changeInterfaceFontSize(
+    "input",
+    (e) => updateFontSizeLabel(
       /** @type {HTMLInputElement} */
       e.target.value
     )
   );
+  bind("sel_interface_font_size", "change", (e) => {
+    changeInterfaceFontSize(
+      /** @type {HTMLInputElement} */
+      e.target.value
+    );
+    persistConfigUser();
+  });
+  bind("sel_csv_encoding", "change", () => persistConfigUser());
+  bind("txt_csv_delimiter", "input", () => debouncedPersistConfigUser());
   bind("link_autocomplete_all", "click", (e) => {
     e.preventDefault();
     setAllAutocompleteTypeCheckboxes(true);
+    persistConfigUser();
   });
   bind("link_autocomplete_none", "click", (e) => {
     e.preventDefault();
     setAllAutocompleteTypeCheckboxes(false);
+    persistConfigUser();
   });
-  bindAll('input[name="indent_char"], input[name="indent_size"]', "change", () => updateIndentUnit());
+  bindAll('input[name="autocomplete_type"]', "change", () => persistConfigUser());
+  bindAll('input[name="indent_char"], input[name="indent_size"]', "change", () => {
+    updateIndentUnit();
+    persistConfigUser();
+  });
   bindAll('input[name="comma_style"]', "change", (e) => {
     v_comma_style = /** @type {HTMLInputElement} */
     e.target.value;
+    persistConfigUser();
   });
   bindAll('input[name="keyword_case"]', "change", (e) => {
     v_keyword_case = /** @type {HTMLInputElement} */
     e.target.value;
+    persistConfigUser();
   });
-  bindAll(".omnidb__save-config-user", "click", () => saveConfigUser());
+  bind("button_change_password", "click", () => changePassword());
+  bind("txt_new_pwd", "input", () => updatePasswordButtonState());
+  bind("txt_confirm_new_pwd", "input", () => updatePasswordButtonState());
   exposeGlobals(
     treeSnippets,
     treePostgresql,

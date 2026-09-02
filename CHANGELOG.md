@@ -8,6 +8,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Settings rebuilt as a VS Code-style master-detail split (sidebar of categories + the selected
+  category's fields on the right), replacing the old Bootstrap tab strip whose "Options" tab mixed
+  together appearance, CSV export and autocomplete settings. New categories: Appearance, Export,
+  Autocomplete, Formatting, Shortcuts, Password, Account. Every field auto-saves on change (free-text
+  fields like CSV Delimiter debounce 600ms) instead of requiring one of three "Save" buttons —
+  Password is the one deliberate exception, keeping an explicit "Change Password" button enabled
+  only once both fields match, so a password can't change mid-keystroke. The Font Size slider now
+  shows its current numeric value next to it, live while dragging.
 - Connections view rebuilt as a macOS/iPadOS-style master-detail split (sidebar list + the
   selected connection's own form on the right) instead of a card grid with a separate edit
   modal; new/removed connections use a compact "+/-" control, group management gets a labeled
@@ -48,8 +56,30 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   launches from the rail.
 - Swept the remaining Bootstrap 4 `mr-*`/`ml-*` utility classes (unsupported by the app's
   Bootstrap 5, which only ships `me-*`/`ms-*`) to the correct classes across ~12 files.
+- Connection/tree technology icons for PostgreSQL, MySQL, Oracle, MariaDB and SQLite now render
+  from SVG artwork instead of small raster `_medium.png` icons — crisper at any zoom/DPI. Added
+  `sqlite.svg` (the others already existed in the repo but were only wired into the connection
+  tab's own icon); updated the `.node-*` rules in `_base.scss` and the two places that build the
+  icon path dynamically from the DBMS name (`outer_connection_tab.js`, `tree_postgresql.js`).
+  SQL Server, Firebird, Access, generic file-DB and SQLite CE have no supported connection type
+  since the Go migration and keep no icon at all now (see Removed).
 
 ### Fixed
+- Every Settings save (the old manual "Save" button included, not just the new auto-save) silently
+  failed with "Invalid or missing request data.": `header_actions.js` sent `p_font_size` as a JSON
+  number, but `saveConfigUserRequest.PFontSize` (`appdb_workspace_handlers.go`) is typed `string`,
+  so `json.Unmarshal` rejected the whole request. Found while wiring up Settings' auto-save; fixed
+  by sending `String(v_font_size)`.
+- `select.form-control` elements (e.g. Settings' CSV Encoding, Connections' Connection
+  Type/Environment) rendered a few px shorter than `input.form-control` siblings on the same row —
+  a native `<select>` ignores `line-height` for its own intrinsic height in Chromium/WebKit, so the
+  same padding produced a shorter box. Fixed by giving `select.form-control` an explicit `height`
+  using the same formula `input.form-control` resolves to.
+- Settings sidebar icons for the new Appearance/Export/Autocomplete/Shortcuts/Password/Account
+  categories rendered as solid colored squares instead of glyphs — those `fa-*` classes had no
+  corresponding shape in the generated icon set (`_icons.scss`/`gen-icons.mjs`'s Font-Awesome→lucide
+  mapping only covered icons already used elsewhere in the app). Added `fa-paint-brush`,
+  `fa-file-csv`, `fa-magic`, `fa-keyboard`, `fa-lock` and `fa-user-shield` to the mapping.
 - macOS-styled dialog headers (`.modal-header`) rendered at ~44px instead of the correct ~28px
   native title-bar height.
 - Welcome page logo's draw-in animation briefly flashed fully colored before animating, due to a
@@ -84,6 +114,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   narrowed the exception in `user_select_guard.css` to exclude just those two static labels.
 - macOS window's green "zoom" title-bar button was non-functional; added Wails `Mac` options
   (`wails-app/main.go`) — Wails only wires up the zoom button when `Mac` options are non-nil.
+- README's screenshot images pointed at `docs/assets/screenshot.png`/`screenshot-dark.png`, which
+  had just been replaced by `.webp` versions in the same change — broken images once pushed.
+
+### Removed
+- 185 unused image assets: ~107 orphaned `docs/assets/img/image_NNN.webp` files (leftovers from a
+  document export, never referenced by any doc page in any language), 3 unused top-level
+  `docs/assets/*.png`, and 75 dead files under `go-server/static_assets/OmniDB_app/images/` —
+  old pre-Go-migration UI icons (AG-Grid tree/status icons, `omnidb_logotype.svg`, `bdr.png`,
+  `replication_set.png`, etc.), the raster icons for DB technologies no longer supported since the
+  Go migration (SQL Server, Firebird, Access, generic file-DB, SQL Server CE), the 5 `_medium.png`
+  icons replaced by SVG above, and the entire `msdropdown/` vendored plugin's orphaned image
+  assets (43 files) — the plugin's own JS/CSS was already gone, leaving only sprite images behind.
 
 ## [4.2.2] - 2026-08-28
 
