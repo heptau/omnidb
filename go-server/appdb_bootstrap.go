@@ -165,5 +165,26 @@ func migrateAppDB(db *sql.DB) error {
 		}
 	}
 
+	// One-time data fix: until v4.4.0 added the Automatic/Light/Dark Appearance
+	// setting, the frontend never sent p_theme back on save (see
+	// persistConfigUserInternal), so every row's "theme" column still holds
+	// nothing but the old hardcoded insert default 'light' -- never a real user
+	// choice. Reset those to 'auto' (the new default, matching the
+	// system-following behavior every user actually had) exactly once, gated
+	// by this marker column so a real, explicit "Light" pick made after this
+	// migration is never touched again.
+	var hasThemeMigrated string
+	err = db.QueryRow(`select name from pragma_table_info('OmniDB_app_userdetails') where name = 'theme_default_migrated'`).Scan(&hasThemeMigrated)
+	if err == sql.ErrNoRows {
+		if _, err := db.Exec(`alter table OmniDB_app_userdetails add column "theme_default_migrated" integer NOT NULL DEFAULT 1`); err != nil {
+			return fmt.Errorf("add theme_default_migrated to OmniDB_app_userdetails: %w", err)
+		}
+		if _, err := db.Exec(`update OmniDB_app_userdetails set theme = 'auto' where theme = 'light'`); err != nil {
+			return fmt.Errorf("migrate theme default to auto: %w", err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_userdetails.theme_default_migrated: %w", err)
+	}
+
 	return nil
 }

@@ -75,12 +75,13 @@ function initHeaderActions() {
 	//setting font size of body
 	document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
 
-	// Always default to auto/OS theme
-	changeTheme("auto");
+	changeTheme(v_theme_preference);
 
-	// Listen for system theme changes
+	// Listen for system theme changes -- only matters while the preference is
+	// "auto"; changeTheme() itself is a no-op for the system in "light"/"dark"
+	// mode, but re-running it costs nothing and keeps this listener simple.
 	window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
-		changeTheme("auto");
+		changeTheme(v_theme_preference);
 	});
 }
 // changeTheme() itself guards every v_connTabControl access behind a
@@ -133,11 +134,12 @@ export function adjustGraphTheme(p_graph) {
 }
 
 export function changeTheme(p_option) {
-	// Always auto
-	v_theme = "auto";
+	v_theme_preference = p_option === "light" || p_option === "dark" ? p_option : "auto";
 	var v_actual_theme = "light";
 
-	if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+	if (v_theme_preference == "dark") {
+		v_actual_theme = "dark";
+	} else if (v_theme_preference == "auto" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
 		v_actual_theme = "dark";
 	}
 
@@ -354,7 +356,14 @@ export var debouncedPersistConfigUser = debounce(function () {
 export function showConfigUser() {
 	/** @type {HTMLInputElement} */ (document.getElementById("sel_interface_font_size")).value = String(v_font_size);
 	updateFontSizeLabel(v_font_size);
-	// document.getElementById('sel_editor_theme').value = v_theme;
+
+	var themeRadios = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("theme_preference"));
+	for (var i = 0; i < themeRadios.length; i++) {
+		if (themeRadios[i].value === v_theme_preference) {
+			themeRadios[i].checked = true;
+			break;
+		}
+	}
 
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd")).value = "";
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd")).value = "";
@@ -451,7 +460,6 @@ export function setAllAutocompleteTypeCheckboxes(p_checked) {
 /// </summary>
 function persistConfigUserInternal(p_pwd, p_callback) {
 	v_font_size = Number(/** @type {HTMLInputElement} */ (document.getElementById("sel_interface_font_size")).value);
-	// v_theme_id = document.getElementById('sel_editor_theme').value.split('/')[0];
 
 	v_csv_encoding = /** @type {HTMLInputElement} */ (document.getElementById("sel_csv_encoding")).value;
 	v_csv_delimiter = /** @type {HTMLInputElement} */ (document.getElementById("txt_csv_delimiter")).value;
@@ -471,6 +479,7 @@ function persistConfigUserInternal(p_pwd, p_callback) {
 		// auto-save alike) silently failed with "Invalid or missing request
 		// data." Pre-existing bug, caught while wiring up auto-save.
 		p_font_size: String(v_font_size),
+		p_theme: v_theme_preference,
 		p_pwd: p_pwd,
 		p_csv_encoding: v_csv_encoding,
 		p_csv_delimiter: v_csv_delimiter,

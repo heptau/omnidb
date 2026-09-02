@@ -36,6 +36,10 @@ const cfg = JSON.parse(el.textContent)
 Object.assign(window, {
   v_editor_theme: cfg.editor_theme,
   v_theme: cfg.theme,
+  // Raw user preference ("auto"/"light"/"dark"), as opposed to v_theme which
+  // changeTheme() keeps resolved to the effective "light"/"dark" for chart/
+  // graph theming.
+  v_theme_preference: cfg.theme,
   v_font_size: cfg.font_size,
   v_user_id: cfg.user_id,
   v_user_key: cfg.user_key,

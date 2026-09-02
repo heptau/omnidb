@@ -1,9 +1,16 @@
-// Dark theme color overrides, wrapped in `@media (prefers-color-scheme:
-// dark)` in the original transcription. Split out of the single omnidb.scss
-// transcription; see the note at the top of ../omnidb.scss for background.
+// Dark theme color overrides. Originally wrapped in `@media
+// (prefers-color-scheme: dark)`; regated onto `body.omnidb--theme-dark`
+// (toggled by header_actions.js's changeTheme(), which already runs this
+// same matchMedia check itself when the user's preference is "auto") so an
+// explicit Light/Dark choice in Settings > Appearance actually overrides the
+// OS preference instead of the media query still winning regardless.
 
-@media (prefers-color-scheme: dark) {
-	body {
+body.omnidb--theme-dark {
+	// `&`, not a nested `body { ... }` -- this whole block's selector already
+	// *is* `body.omnidb--theme-dark`, and a literal nested `body` would compile
+	// to the descendant selector `body.omnidb--theme-dark body`, which can
+	// never match.
+	& {
 		color: #dcddde;
 	}
 
@@ -638,7 +645,8 @@
 		color: inherit;
 	}
 
-	body {
+	// See the `&` note near the top of this file -- same reasoning.
+	& {
 		background-color: #373b41 !important;
 		color: white;
 	}

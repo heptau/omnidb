@@ -32,6 +32,7 @@ import {
 import {
   changeInterfaceFontSize,
   changePassword,
+  changeTheme,
   debouncedPersistConfigUser,
   persistConfigUser,
   selectSettingsCategory,
@@ -197,6 +198,10 @@ bindAll('#config_shortcuts button[id^="shortcut_"]', 'click', (e) =>
 )
 
 // --- settings: appearance ----------------------------------------------------
+bindAll('input[name="theme_preference"]', 'change', (e) => {
+  changeTheme(/** @type {HTMLInputElement} */ (e.target).value)
+  persistConfigUser()
+})
 // "input" keeps the "12" label live while dragging; the heavier editor-wide
 // resize + auto-save only run once the drag commits, on "change".
 bind('sel_interface_font_size', 'input', (e) =>

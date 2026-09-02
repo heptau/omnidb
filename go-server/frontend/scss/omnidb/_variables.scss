@@ -22,24 +22,13 @@
 	--tab-height: 28px;
 }
 
-@media (prefers-color-scheme: dark) {
-	:root {
-		--app-bg: #1e1e1e;
-		--panel-bg: #2c2c2e;
-		--input-bg: #3a3a3c;
-		--border-color: #38383a;
-		--accent-color: #0a84ff;
-		--text-primary: #f5f5f7;
-		--text-secondary: #98989d;
-		--sidebar-bg: #252525;
-		--tab-inactive: #3a3a3c;
-		--glass-bg: rgba(44, 44, 46, 0.95);
-		--tab-bg: #3a3a3c;
-		--hover-bg: rgba(10, 132, 255, 0.2);
-		--title-color: #f5f5f7;
-	}
-}
-
+// Deliberately no `@media (prefers-color-scheme: dark)` fallback here --
+// header_actions.js's changeTheme() always applies the resolved theme (auto
+// included, via its own matchMedia check) as this body class, so it's the
+// single source of truth. A media-query fallback that ran independently of
+// the class would still win via inheritance from :root whenever the OS was
+// dark, even with an explicit Light preference selected and this class
+// therefore absent from body.
 body.omnidb--theme-dark {
 	--app-bg: #1e1e1e;
 	--panel-bg: #2c2c2e;

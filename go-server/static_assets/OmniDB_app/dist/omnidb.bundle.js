@@ -8,6 +8,10 @@
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
+    // Raw user preference ("auto"/"light"/"dark"), as opposed to v_theme which
+    // changeTheme() keeps resolved to the effective "light"/"dark" for chart/
+    // graph theming.
+    v_theme_preference: cfg.theme,
     v_font_size: cfg.font_size,
     v_user_id: cfg.user_id,
     v_user_key: cfg.user_key,
@@ -22211,9 +22215,9 @@
   var v_current_terminal_theme;
   function initHeaderActions() {
     document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
-    changeTheme();
+    changeTheme(v_theme_preference);
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event2) => {
-      changeTheme();
+      changeTheme(v_theme_preference);
     });
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initHeaderActions);
@@ -22257,9 +22261,11 @@
     }
   }
   function changeTheme(p_option) {
-    v_theme = "auto";
+    v_theme_preference = p_option === "light" || p_option === "dark" ? p_option : "auto";
     var v_actual_theme = "light";
-    if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+    if (v_theme_preference == "dark") {
+      v_actual_theme = "dark";
+    } else if (v_theme_preference == "auto" && window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
       v_actual_theme = "dark";
     }
     if (v_actual_theme == "dark") {
@@ -22432,6 +22438,16 @@
   function showConfigUser() {
     document.getElementById("sel_interface_font_size").value = String(v_font_size);
     updateFontSizeLabel(v_font_size);
+    var themeRadios = (
+      /** @type {NodeListOf<HTMLInputElement>} */
+      document.getElementsByName("theme_preference")
+    );
+    for (var i2 = 0; i2 < themeRadios.length; i2++) {
+      if (themeRadios[i2].value === v_theme_preference) {
+        themeRadios[i2].checked = true;
+        break;
+      }
+    }
     document.getElementById("txt_confirm_new_pwd").value = "";
     document.getElementById("txt_new_pwd").value = "";
     updatePasswordButtonState();
@@ -22543,6 +22559,7 @@
       // auto-save alike) silently failed with "Invalid or missing request
       // data." Pre-existing bug, caught while wiring up auto-save.
       p_font_size: String(v_font_size),
+      p_theme: v_theme_preference,
       p_pwd,
       p_csv_encoding: v_csv_encoding,
       p_csv_delimiter: v_csv_delimiter,
@@ -36263,6 +36280,13 @@
     "click",
     (e) => startSetShortcut(e.currentTarget)
   );
+  bindAll('input[name="theme_preference"]', "change", (e) => {
+    changeTheme(
+      /** @type {HTMLInputElement} */
+      e.target.value
+    );
+    persistConfigUser();
+  });
   bind(
     "sel_interface_font_size",
     "input",

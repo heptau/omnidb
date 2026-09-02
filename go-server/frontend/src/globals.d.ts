@@ -113,6 +113,7 @@ declare let v_csrf_cookie_name: string;
 declare let v_editor_theme: string;
 declare let v_font_size: number;
 declare let v_theme: string;
+declare let v_theme_preference: string;
 declare let v_indent_char: string;
 declare let v_indent_size: number;
 declare let v_indent_unit: string;

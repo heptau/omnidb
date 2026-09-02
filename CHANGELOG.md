@@ -7,6 +7,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Settings > Appearance gains a Theme control (Automatic/Light/Dark), replacing the previous
+  OS-only behavior. `changeTheme()` (`header_actions.js`) now honors an explicit choice instead of
+  always resolving to the system preference; a new `theme_preference` radio group persists it
+  through the existing (until now unused) `p_theme`/`OmniDB_app_userdetails.theme` column. Forcing
+  Light or Dark required regating `_theme-dark.scss` and the CSS-variable dark overrides in
+  `_variables.scss` from `@media (prefers-color-scheme: dark)` onto the `body.omnidb--theme-dark`
+  class the JS already toggled, since the media query would otherwise keep winning regardless of
+  the class. New users default to "Automatic"; a one-time migration (`appdb_bootstrap.go`) resets
+  existing rows' `theme` column from `'light'` (the only value it could ever hold, since the
+  frontend never wrote it back) to `'auto'`, so upgrading doesn't force existing dark-mode users
+  into Light.
+
 ## [4.3.0] - 2026-09-02
 
 ### Added

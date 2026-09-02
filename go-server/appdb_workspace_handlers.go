@@ -445,6 +445,9 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		defer db.Close()
 
 		fontSize, _ := strconv.Atoi(req.PFontSize)
+		if req.PTheme != "light" && req.PTheme != "dark" {
+			req.PTheme = "auto"
+		}
 		if req.PIndentChar == "" {
 			req.PIndentChar = "space"
 		}

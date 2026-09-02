@@ -141,8 +141,13 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 		return "", err
 	}
 
+	// "auto" defaults to the light editor theme for this first paint --
+	// there's no reliable server-side signal for the client's OS preference,
+	// and changeTheme("auto") corrects it (along with the body class)
+	// against matchMedia within moments of the page loading, same as it
+	// always has for every "auto" user regardless of what's stored here.
 	editorTheme := "omnidb"
-	if ud.Theme != "light" {
+	if ud.Theme == "dark" {
 		editorTheme = "omnidb_dark"
 	}
 
