@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.3.0] - 2026-09-02
+
 ### Added
 - Settings rebuilt as a VS Code-style master-detail split (sidebar of categories + the selected
   category's fields on the right), replacing the old Bootstrap tab strip whose "Options" tab mixed
