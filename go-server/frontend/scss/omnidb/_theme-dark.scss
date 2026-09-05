@@ -449,6 +449,18 @@ body.omnidb--theme-dark {
 		background-image: url("../images/omnidb_loading--dark.svg");
 	}
 
+	// The full-screen "please wait" overlay (#div_loading, shown by
+	// startLoading()/execAjax) -- hardcoded light colors in _base.scss
+	// otherwise flash the whole app light gray for the duration of any
+	// AJAX call, e.g. Pause/Resume in the Notify panel's channel tree.
+	.div_loading_cover {
+		background-color: rgba(0, 0, 0, 0.5) !important;
+	}
+
+	.div_loading_content {
+		background-color: #25282c !important;
+	}
+
 	.modal-header {
 		border-color: #484a55;
 	}

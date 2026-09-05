@@ -932,25 +932,27 @@ button.close {
 	min-height: 0;
 }
 
-.omnidb__notify__tabs {
+/* #notify_panel_strip_slot hosts v_connTabControl.tabMenu -- the exact same
+   DOM node as the Database section's own strip, physically relocated here
+   while this section is active (see section_switcher.js's switchSection) so
+   both sections always show the same open connections, in the same place,
+   with the same one selected. Fixed to its own content height; the pane
+   below it (.omnidb__notify__content) takes the rest. */
+#notify_panel_strip_slot {
+	/* The base (unqualified) .omnidb__tab-menu--container--primary rule sets
+	   height: 100% for the "menu-shown" grid layout (never used here, see
+	   tabs.js's hideTabMenu) without !important -- left alone, that becomes
+	   this item's flex-basis (100% of #omnidb__section_notify's height)
+	   instead of its own ~42px content height, since flex-basis: auto uses
+	   the height property's value whenever it isn't itself auto. The ID
+	   selector here outranks that class-only rule, no !important needed. */
+	flex: 0 0 auto;
+	height: auto;
+}
+
+.omnidb__notify__content {
 	flex: 1 1 auto;
 	min-height: 0;
-}
-
-/* This tab strip is `primary` like v_connTabControl's, which is what gives it
-   the Database section's look -- but those rules assume the full viewport
-   width, and this one sits to the right of the activity bar. */
-.omnidb__notify__tabs.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) > .omnidb__tab-menu--primary {
-	width: 100% !important;
-}
-
-.omnidb__notify__tabs > .omnidb__tab-content {
-	flex: 1 1 auto;
-	min-height: 0;
-}
-
-.omnidb__notify__tabs > .omnidb__tab-content > .tab-pane.active {
-	height: 100%;
 }
 
 .omnidb__notify__tab {

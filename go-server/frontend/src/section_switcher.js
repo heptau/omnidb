@@ -43,10 +43,11 @@ SOFTWARE.
 import { startConnectionManagement } from "./connections.js";
 import { confirmSignout, showConfigUser } from "./header_actions.js";
 import { startTutorial } from "./tutorial_functions/tutorial.js";
+import { refreshNotifyPane } from "./panel_functions/outer_notify_panel.js";
 import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
-import { refreshBootstrapTooltips } from "./workspace.js";
+import { refreshBootstrapTooltips, refreshHeights } from "./workspace.js";
 
 const SECTION_NAMES = ["welcome", "connections", "database", "notify", "snippets", "settings"];
 
@@ -72,9 +73,54 @@ export function switchSection(p_name) {
 		var v_div = v_sectionDivs[v_name];
 		if (v_div) v_div.classList.toggle("omnidb__section--active", v_name === p_name);
 	}
+
+	// The horizontal strip of open DB connections is a single shared DOM
+	// node (v_connTabControl.tabMenu, see tabs.js) -- Database and Notify
+	// both show it, in the same place, always pointing at the same selected
+	// connection, by physically relocating it between their two containers
+	// rather than keeping two independently-synced strips. It lives in
+	// #notify_panel_strip_slot only while Notify is the active section;
+	// every other section (Database included) keeps it parked in its
+	// original home, #omnidb_main_tablist.
+	if (typeof v_connTabControl !== "undefined" && v_connTabControl && v_connTabControl.tabMenu) {
+		var v_strip_home =
+			p_name === "notify"
+				? document.getElementById("notify_panel_strip_slot")
+				: document.getElementById("omnidb_main_tablist");
+		if (v_strip_home && v_connTabControl.tabMenu.parentElement !== v_strip_home) {
+			v_strip_home.insertBefore(v_connTabControl.tabMenu, v_strip_home.firstChild);
+		}
+	}
+
+	if (p_name === "notify") {
+		refreshNotifyPane();
+	} else if (p_name === "database") {
+		// Forces a fresh layout pass for the now-visible connection tab --
+		// refreshHeights's own DB-specific sizing skips itself entirely
+		// while this section is not active (see isSectionActive below), so
+		// anything that changed while the user was away (switching which
+		// tab is selected via the relocated strip while on Notify, or
+		// resizing the window) needs this to catch up.
+		refreshHeights(true);
+	}
+
 	if (v_sectionNav && v_sectionNavTabs[p_name] && v_sectionNav.selectedTab !== v_sectionNavTabs[p_name]) {
 		v_sectionNav.selectTab(v_sectionNavTabs[p_name]);
 	}
+}
+
+/**
+ * Whether the given section is currently the one shown. Exported for code
+ * that runs regardless of which section is active (e.g. a connection tab's
+ * selectFunction, reachable via the relocated strip from Notify too) but
+ * that should only do section-specific work -- layout math that assumes
+ * real getBoundingClientRect() dimensions, or re-rendering a section's own
+ * content -- while that section is actually visible.
+ * @param {string} p_name
+ */
+export function isSectionActive(p_name) {
+	var v_div = v_sectionDivs[p_name];
+	return v_div != null && v_div.classList.contains("omnidb__section--active");
 }
 
 export function initSectionSwitcher() {

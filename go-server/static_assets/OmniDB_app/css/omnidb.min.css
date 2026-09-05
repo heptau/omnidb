@@ -90,6 +90,16 @@ SOFTWARE.
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M4 5h16' /%3E%3Cpath d='M4 12h16' /%3E%3Cpath d='M4 19h16' /%3E%3C/svg%3E");
 }
 
+.fa-bell {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M10.268 21a2 2 0 0 0 3.464 0' /%3E%3Cpath d='M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M10.268 21a2 2 0 0 0 3.464 0' /%3E%3Cpath d='M3.262 15.326A1 1 0 0 0 4 17h16a1 1 0 0 0 .74-1.673C19.41 13.956 18 12.499 18 8A6 6 0 0 0 6 8c0 4.499-1.411 5.956-2.738 7.326' /%3E%3C/svg%3E");
+}
+
+.fa-bell-slash {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M10.268 21a2 2 0 0 0 3.464 0' /%3E%3Cpath d='M17 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 .258-1.742' /%3E%3Cpath d='m2 2 20 20' /%3E%3Cpath d='M8.668 3.01A6 6 0 0 1 18 8c0 2.687.77 4.653 1.707 6.05' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M10.268 21a2 2 0 0 0 3.464 0' /%3E%3Cpath d='M17 17H4a1 1 0 0 1-.74-1.673C4.59 13.956 6 12.499 6 8a6 6 0 0 1 .258-1.742' /%3E%3Cpath d='m2 2 20 20' /%3E%3Cpath d='M8.668 3.01A6 6 0 0 1 18 8c0 2.687.77 4.653 1.707 6.05' /%3E%3C/svg%3E");
+}
+
 .fa-bolt {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M15.914 4a1.5 1.5 0 00-2.474-1.561l-9 9A1.5 1.5 0 005.5 14h4.002a.5.5 0 01.471.666L8.086 20a1.5 1.5 0 002.475 1.56l9-9A1.5 1.5 0 0018.5 10h-3.997a.5.5 0 01-.472-.667z' /%3E%3C/svg%3E");
@@ -208,6 +218,11 @@ SOFTWARE.
 .fa-ellipsis-h {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='1' /%3E%3Ccircle cx='19' cy='12' r='1' /%3E%3Ccircle cx='5' cy='12' r='1' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='1' /%3E%3Ccircle cx='19' cy='12' r='1' /%3E%3Ccircle cx='5' cy='12' r='1' /%3E%3C/svg%3E");
+}
+
+.fa-eraser {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21' /%3E%3Cpath d='m5.082 11.09 8.828 8.828' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M21 21H8a2 2 0 0 1-1.42-.587l-3.994-3.999a2 2 0 0 1 0-2.828l10-10a2 2 0 0 1 2.829 0l5.999 6a2 2 0 0 1 0 2.828L12.834 21' /%3E%3Cpath d='m5.082 11.09 8.828 8.828' /%3E%3C/svg%3E");
 }
 
 .fa-exchange-alt {
@@ -353,6 +368,11 @@ SOFTWARE.
 .fa-paint-brush {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='m14.622 17.897-10.68-2.913' /%3E%3Cpath d='M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z' /%3E%3Cpath d='M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='m14.622 17.897-10.68-2.913' /%3E%3Cpath d='M18.376 2.622a1 1 0 1 1 3.002 3.002L17.36 9.643a.5.5 0 0 0 0 .707l.944.944a2.41 2.41 0 0 1 0 3.408l-.944.944a.5.5 0 0 1-.707 0L8.354 7.348a.5.5 0 0 1 0-.707l.944-.944a2.41 2.41 0 0 1 3.408 0l.944.944a.5.5 0 0 0 .707 0z' /%3E%3Cpath d='M9 8c-1.804 2.71-3.97 3.46-6.583 3.948a.507.507 0 0 0-.302.819l7.32 8.883a1 1 0 0 0 1.185.204C12.735 20.405 16 16.792 16 15' /%3E%3C/svg%3E");
+}
+
+.fa-pause {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect x='14' y='3' width='5' height='18' rx='1' /%3E%3Crect x='5' y='3' width='5' height='18' rx='1' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect x='14' y='3' width='5' height='18' rx='1' /%3E%3Crect x='5' y='3' width='5' height='18' rx='1' /%3E%3C/svg%3E");
 }
 
 .fa-pause-circle {
@@ -1400,6 +1420,198 @@ button.close {
 
 .omnidb__snippets__div-right {
   padding-top: 1rem;
+}
+
+/* Notify section (panel_functions/outer_notify_panel.js): the same
+   tree-left/content-right split as the Snippets panel above, but sized purely
+   with flexbox -- unlike the snippets panel, nothing in here is an Ace editor
+   that needs a pixel height computed for it in JS. Same reason as
+   #omnidb__section_snippets (see _topbar.scss) for hiding the overflow: the
+   tree and the message list already scroll on their own. */
+#omnidb__section_notify {
+  overflow: hidden;
+}
+
+.omnidb__notify {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* #notify_panel_strip_slot hosts v_connTabControl.tabMenu -- the exact same
+   DOM node as the Database section's own strip, physically relocated here
+   while this section is active (see section_switcher.js's switchSection) so
+   both sections always show the same open connections, in the same place,
+   with the same one selected. Fixed to its own content height; the pane
+   below it (.omnidb__notify__content) takes the rest. */
+#notify_panel_strip_slot {
+  /* The base (unqualified) .omnidb__tab-menu--container--primary rule sets
+     height: 100% for the "menu-shown" grid layout (never used here, see
+     tabs.js's hideTabMenu) without !important -- left alone, that becomes
+     this item's flex-basis (100% of #omnidb__section_notify's height)
+     instead of its own ~42px content height, since flex-basis: auto uses
+     the height property's value whenever it isn't itself auto. The ID
+     selector here outranks that class-only rule, no !important needed. */
+  flex: 0 0 auto;
+  height: auto;
+}
+
+.omnidb__notify__content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.omnidb__notify__tab {
+  display: flex;
+  height: 100%;
+  min-height: 0;
+}
+
+.omnidb__notify__div-left {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  min-height: 0;
+  position: relative;
+  width: 300px;
+}
+
+.omnidb__notify__tree {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+  padding: 7px 15px 0 7px;
+}
+
+.omnidb__notify__resize-line {
+  cursor: ew-resize;
+  height: 100%;
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 10px;
+  z-index: 10;
+}
+
+.omnidb__notify__div-right {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+}
+
+.omnidb__notify__banner {
+  align-items: center;
+  background-color: rgba(255, 149, 0, 0.15);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-primary);
+  display: flex;
+  font-size: 13px;
+  padding: 8px 12px;
+}
+
+.omnidb__notify__filter {
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 8px 12px;
+}
+
+.omnidb__notify__filter-item {
+  align-items: center;
+  cursor: pointer;
+  display: inline-flex;
+  font-size: 13px;
+  gap: 4px;
+  margin: 0;
+}
+
+.omnidb__notify__filter-clear {
+  margin-left: auto;
+}
+
+.omnidb__notify__messages {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.omnidb__notify__table {
+  border-collapse: collapse;
+  font-size: 13px;
+  width: 100%;
+}
+
+.omnidb__notify__table th {
+  background-color: var(--panel-bg);
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  font-weight: 600;
+  padding: 6px 12px;
+  position: sticky;
+  text-align: left;
+  top: 0;
+  z-index: 1;
+}
+
+.omnidb__notify__table td {
+  border-bottom: 1px solid var(--border-color);
+  padding: 6px 12px;
+  vertical-align: top;
+}
+
+.omnidb__notify__table td:nth-child(3) {
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.omnidb__notify__empty {
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 24px;
+  text-align: center;
+}
+
+.omnidb__notify__unsupported {
+  align-items: center;
+  color: var(--text-secondary);
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: center;
+  padding: 24px;
+  text-align: center;
+}
+
+.omnidb__notify__unsupported-icon {
+  font-size: 32px;
+  margin-bottom: 12px;
+  opacity: 0.5;
+}
+
+.omnidb__notify__unsupported-title {
+  color: var(--text-primary);
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+
+.omnidb__notify__unsupported-text {
+  font-size: 13px;
+}
+
+/* Marks the technologies without a NOTIFY equivalent in the connection
+   picker -- they are listed on purpose, so the marker is what keeps that from
+   reading as "this will work". */
+.omnidb__notify__unsupported-tag {
+  color: var(--text-secondary);
+  font-size: 11px;
+  font-style: italic;
+  margin-left: 8px;
 }
 
 .omnidb__query-info {
@@ -4612,6 +4824,12 @@ body.omnidb--theme-dark .omnidb__query-result-tabs__content .table-resultset tbo
 body.omnidb--theme-dark .node-spin {
   background-image: url("../images/omnidb_loading--dark.svg");
 }
+body.omnidb--theme-dark .div_loading_cover {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+body.omnidb--theme-dark .div_loading_content {
+  background-color: #25282c !important;
+}
 body.omnidb--theme-dark .modal-header {
   border-color: #484a55;
 }
@@ -6061,19 +6279,25 @@ select.form-control {
   background-color: #8e8e93;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-production {
+/* .omnidb__conn-strip-host marks whichever container currently hosts
+ * v_connTabControl.tabMenu -- normally #omnidb_main_tablist, but the same
+ * node is physically relocated into #notify_panel_strip_slot while the
+ * Notify section is active (see section_switcher.js's switchSection), so
+ * anything scoped to the strip's *contents* rather than its own outer
+ * container needs to apply to both hosts, not just the original ID. */
+.omnidb__conn-strip-host .omnidb__tab--env-production {
   box-shadow: inset 3px 0 0 0 #ff3b30;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-uat {
+.omnidb__conn-strip-host .omnidb__tab--env-uat {
   box-shadow: inset 3px 0 0 0 #ff9500;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-development {
+.omnidb__conn-strip-host .omnidb__tab--env-development {
   box-shadow: inset 3px 0 0 0 #34c759;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-archive {
+.omnidb__conn-strip-host .omnidb__tab--env-archive {
   box-shadow: inset 3px 0 0 0 #8e8e93;
 }
 
@@ -6414,22 +6638,31 @@ select.form-control {
  * horizontal-strip styling above -- that used to be what "Switch menu"
  * toggled *to*. It only needs a width fix: that CSS assumed
  * #omnidb_main_tablist was a direct, full-viewport-width child of
- * #omnidb__main, and it now sits inside the (narrower) Database section. */
+ * #omnidb__main, and it now sits inside the (narrower) Database section.
+ * This one stays ID-scoped: unlike the rules below, it sizes the *outer*
+ * container that holds both the strip and #omnidb__section_database's own
+ * per-connection content, which #notify_panel_strip_slot never does -- that
+ * one only ever holds the relocated strip itself (see .omnidb__conn-strip-host
+ * below), sized instead by _base.scss's #notify_panel_strip_slot rule. */
 #omnidb_main_tablist.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) {
   flex: 1 1 auto !important;
   min-height: 0 !important;
 }
 
-#omnidb_main_tablist.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) > .omnidb__tab-menu--primary {
+/* .omnidb__conn-strip-host: same "assumed full-viewport-width child of
+ * #omnidb__main" fix as above, but for the strip's immediate tab-menu child
+ * specifically -- needed under both hosts the strip can currently be
+ * parented under (see the comment by the env-tint rules above). */
+.omnidb__conn-strip-host.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) > .omnidb__tab-menu--primary {
   width: 100% !important;
 }
 
 /* The trailing "+" Add Connection tab -- compact (icon only, no label),
  * unlike every actual connection tab beside it which keeps the shared
- * min-width so its alias text has room. Higher specificity (id + class)
+ * min-width so its alias text has room. Higher specificity (class + class)
  * than the shared min-width rule above on purpose, rather than relying on
  * source order. */
-#omnidb_main_tablist .omnidb__tab-menu__link--compact {
+.omnidb__conn-strip-host .omnidb__tab-menu__link--compact {
   min-width: 0 !important;
   width: 40px !important;
   flex: 0 0 40px !important;
@@ -6443,7 +6676,7 @@ select.form-control {
  * real label) throws off the compact tab's own justify-content: center,
  * visibly off-centering the "+" glyph. Dropping it from the layout entirely
  * fixes that; there's no text in it to lose. */
-#omnidb_main_tablist .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name {
+.omnidb__conn-strip-host .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name {
   display: none !important;
 }
 

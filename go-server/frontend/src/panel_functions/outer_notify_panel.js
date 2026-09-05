@@ -29,45 +29,63 @@ SOFTWARE.
 */
 
 /**
- * The Notify section: one outer tab per connection being listened on, each
- * with a channel tree on the left (tree_notify.js) and the messages that
- * arrived on those channels on the right.
+ * The Notify section: a channel tree on the left and the messages that
+ * arrived on those channels on the right, for whichever connection is
+ * currently selected in the Database section's own connection strip.
  *
- * Deliberately its own tabControl instance rather than v_connTabControl --
- * nothing here needs the query/console/DDL machinery an outer connection tab
- * carries, and v_connTabControl is read all over the bundle as "the currently
- * open DB connection tab", which this panel's tabs are not.
+ * Deliberately *not* its own outer tab control: the whole point of this
+ * design is that Notify shows the exact same set of open connections, in the
+ * same place, with the same one selected, as the Database section -- so
+ * v_connTabControl.tabMenu (the real strip, built by tabs.js) is physically
+ * relocated into this section's own slot while it is active (see
+ * section_switcher.js's switchSection) instead of this panel keeping a
+ * second, independently-synced strip.
+ *
+ * Listening itself still runs over its own connection, pinned per the
+ * backend's notify_session.go -- LISTEN/DBMS_ALERT cannot share a connection
+ * with whatever queries are running in that same connection's Query/Console
+ * tabs. That session's lifetime now simply mirrors the connection tab's own:
+ * started the moment a connection tab opens (see startNotifyForConnTab,
+ * called from outer_connection_tab.js), torn down when it closes (the
+ * backend already does this from the CloseTab message that tab's own close
+ * handler sends -- see longpolling.go's requestTypeCloseTab, which closes a
+ * notify session for every tab_id in that batch, and the outer connection
+ * tab's own id is always the first entry in it).
  *
  * Messages are ephemeral by design: they live in `tag.messages` and nowhere
  * else, so a reload starts from an empty list. Only the channel list itself
  * (and each channel's active/paused state) is persisted, by the backend.
  */
 
-import { customMenu } from "../custom_menu.js";
 import { createContext, createRequest } from "../long_polling.js";
-import { showAlert } from "../notification_control.js";
-import { escapeHtml, v_queryRequestCodes } from "../query.js";
-import { createTabControl } from "../tabs.js";
+import { v_queryRequestCodes } from "../query.js";
 import {
 	getTreeNotifyChannels,
 	refreshNotifyChannels,
 	renderNotifyChannelNodes,
 } from "../tree_context_functions/tree_notify.js";
 
-// Fixed ids: like the snippets panel, there is only ever one Notify panel
-// instance, so the panel's own elements do not need a unique-per-tab prefix.
-// Its inner tabs do -- those are keyed off the tab id, as everywhere else.
-var NOTIFY_PANEL_ID = "notify_panel";
+// Fixed ids: there is only ever one Notify section instance, so its own
+// elements do not need a unique-per-connection prefix -- only the per-tab
+// tree/message ids inside buildNotifyTabLayout do, keyed off tab_id as
+// everywhere else.
+var NOTIFY_STRIP_SLOT_ID = "notify_panel_strip_slot";
+var NOTIFY_CONTENT_ID = "notify_panel_content";
 
 /**
  * The two technologies with a real asynchronous notification mechanism:
- * PostgreSQL's LISTEN/NOTIFY and Oracle's DBMS_ALERT. Everything else gets a
- * tab too (deliberately -- the picker is not filtered), it just says so.
+ * PostgreSQL's LISTEN/NOTIFY and Oracle's DBMS_ALERT. Every open connection
+ * gets a pane here regardless (deliberately -- unsupported ones must say so,
+ * not just disappear), it just shows a message instead of a channel tree.
  */
 var NOTIFY_SUPPORTED_DB_TYPES = ["postgresql", "oracle"];
 
+// The notify sub-tag (see startNotifyForConnTab) currently mounted into
+// #notify_panel_content, if any -- tracked so refreshNotifyPane can detach
+// its div* references before mounting a different one, rather than leaving
+// a later NOTIFY message quietly re-rendering into a detached node.
 /** @type {any} */
-var v_notifyOuterTabControl = null;
+var v_mounted_notify_tag = null;
 
 /**
  * @param {string} p_db_type
@@ -78,179 +96,34 @@ export function notifySupportedDbType(p_db_type) {
 
 export var v_createNotifyPanelFunction = function () {
 	var v_html =
+		"<div class='omnidb__notify'>" +
 		"<div id='" +
-		NOTIFY_PANEL_ID +
-		"' class='omnidb__notify'>" +
+		NOTIFY_STRIP_SLOT_ID +
+		"' class='omnidb__tab-menu--container omnidb__tab-menu--container--primary omnidb__conn-strip-host'></div>" +
 		"<div id='" +
-		NOTIFY_PANEL_ID +
-		"_tabs' class='omnidb__notify__tabs'></div>" +
+		NOTIFY_CONTENT_ID +
+		"' class='omnidb__notify__content'></div>" +
 		"</div>";
 
 	var v_target = /** @type {HTMLElement} */ (document.getElementById("omnidb__section_notify"));
 	v_target.innerHTML = v_html;
-
-	v_notifyOuterTabControl = createTabControl({
-		p_div: NOTIFY_PANEL_ID + "_tabs",
-		p_hierarchy: "primary",
-	});
-	// Same horizontal strip the Database section's connection tabs render as
-	// -- see initWorkspace's identical call on v_connTabControl for why the
-	// "menu-shown" layout is the one being switched away from here.
-	v_notifyOuterTabControl.hideTabMenu();
-
-	var v_add_tab = v_notifyOuterTabControl.createTab({
-		p_icon: '<i class="fas fa-plus"></i>',
-		p_close: false,
-		p_selectable: false,
-		p_clickFunction: function (e) {
-			showNotifyConnectionMenu(e);
-		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Listen on Connection</h5>',
-	});
-	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
-	// Every connection tab created afterwards is inserted before this one
-	// instead of appended past it -- same reason as the outer strip's own
-	// Add tab (see create_tab_functions.js).
-	v_notifyOuterTabControl.setTrailingTab(v_add_tab);
 };
 
 /**
- * The picker behind the "+" tab. Deliberately lists *every* saved connection,
- * including the ones whose technology has no NOTIFY equivalent: those must be
- * visibly marked as unsupported (see renderNotifyUnsupported), not quietly
- * missing from the list.
+ * Starts the notify session for a newly-created Database connection tab and
+ * attaches its state as `p_conn_tab.tag.notify` -- called once, right after
+ * outer_connection_tab.js finishes building that tab (after changeDatabase,
+ * so selectedDatabaseIndex/selectedDBMS are already populated). An
+ * unsupported technology still gets the sub-tag (refreshNotifyPane needs it
+ * to know what to show), it just never starts listening.
+ * @param {any} p_conn_tab
  */
-function showNotifyConnectionMenu(p_event) {
-	var v_connections = v_connTabControl.tag.connections || [];
-
-	if (v_connections.length === 0) {
-		showAlert("Create connections first.");
-		return;
-	}
-
-	var v_option_list = [];
-	for (var i = 0; i < v_connections.length; i++)
-		(function (i) {
-			var v_conn = v_connections[i];
-			v_option_list.push({
-				text: notifyConnectionLabel(v_conn),
-				icon: "fas cm-all node-" + v_conn.v_db_type,
-				action: function () {
-					createNotifyConnTab(v_conn.v_conn_id);
-				},
-			});
-		})(i);
-
-	customMenu(
-		{
-			x: p_event.clientX + 5,
-			y: p_event.clientY + 5,
-		},
-		v_option_list,
-		null,
-	);
-}
-
-/**
- * Markup for one entry of the connection picker. Same shape workspace.js's
- * showMenuNewTabOuter builds, plus the "not supported" marker.
- */
-function notifyConnectionLabel(p_conn) {
-	var v_label = "";
-	if (p_conn.v_alias && p_conn.v_alias !== "") {
-		v_label += "(" + escapeHtml(p_conn.v_alias) + ")";
-	}
-	if (p_conn.v_conn_string && p_conn.v_conn_string !== "") {
-		v_label += " " + escapeHtml(p_conn.v_conn_string);
-	} else {
-		if (p_conn.v_details1) {
-			v_label += " " + escapeHtml(p_conn.v_details1);
-		}
-		if (p_conn.v_details2) {
-			v_label += " - " + escapeHtml(p_conn.v_details2);
-		}
-	}
-	if (!notifySupportedDbType(p_conn.v_db_type)) {
-		v_label += '<span class="omnidb__notify__unsupported-tag">not supported</span>';
-	}
-	return v_label;
-}
-
-/**
- * Opens (or re-selects) the Notify tab for one connection. Channels are
- * per-connection, so a second tab on the same connection would only ever be a
- * duplicate of the first -- re-selecting is what the user meant.
- */
-export function createNotifyConnTab(p_conn_id) {
-	if (v_notifyOuterTabControl == null) return;
-
-	for (var t = 0; t < v_notifyOuterTabControl.tabList.length; t++) {
-		var v_existing_tab = v_notifyOuterTabControl.tabList[t];
-		if (v_existing_tab.tag != null && v_existing_tab.tag.connID === p_conn_id) {
-			v_notifyOuterTabControl.selectTab(v_existing_tab);
-			return;
-		}
-	}
-
+export function startNotifyForConnTab(p_conn_tab) {
 	/** @type {any} */
-	var v_conn = null;
-	var v_connections = v_connTabControl.tag.connections || [];
-	for (var i = 0; i < v_connections.length; i++) {
-		if (v_connections[i].v_conn_id === p_conn_id) {
-			v_conn = v_connections[i];
-		}
-	}
-	if (v_conn == null) return;
-
-	// Icon lookup mirrors outer_connection_tab.js's: every supported
-	// technology ships an .svg, anything else falls back to the old _medium.png.
-	var v_icon = '<img src="' + v_url_folder + "/static/OmniDB_app/images/" + v_conn.v_db_type;
-	if (
-		v_conn.v_db_type === "postgresql" ||
-		v_conn.v_db_type === "oracle" ||
-		v_conn.v_db_type === "mariadb" ||
-		v_conn.v_db_type === "mysql" ||
-		v_conn.v_db_type === "sqlite" ||
-		v_conn.v_db_type === "mssql"
-	) {
-		v_icon += '.svg"/>';
-	} else {
-		v_icon += '_medium.png"/>';
-	}
-
-	var v_tooltip_name = "";
-	if (v_conn.v_alias) {
-		v_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
-	}
-	if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
-		v_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
-	} else {
-		if (v_conn.v_details1) {
-			v_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
-		}
-		if (v_conn.v_details2) {
-			v_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
-		}
-	}
-
-	var v_tab = v_notifyOuterTabControl.createTab({
-		p_icon: v_icon,
-		p_name: v_conn.v_alias ? escapeHtml(v_conn.v_alias) : "",
-		p_close: true,
-		p_closeFunction: function (e, p_tab) {
-			closeNotifyConnTab(p_tab);
-		},
-		p_omnidb_tooltip_name: v_tooltip_name,
-	});
-
-	v_notifyOuterTabControl.selectTab(v_tab);
-
-	/** @type {any} */
-	var v_tag = {
-		tab_id: v_tab.id,
-		connID: p_conn_id,
-		dbType: v_conn.v_db_type,
-		mode: "notify",
+	var v_notify_tag = {
+		tab_id: p_conn_tab.id,
+		connID: p_conn_tab.tag.selectedDatabaseIndex,
+		dbType: p_conn_tab.tag.selectedDBMS,
 		/** @type {any[]} */
 		messages: [],
 		/** @type {any[]} */
@@ -260,24 +133,104 @@ export function createNotifyConnTab(p_conn_id) {
 		context: null,
 		listening: false,
 		sessionStopped: false,
+		lastStopMessage: null,
 		tree: null,
 		treeRootNode: null,
-		divTab: v_tab.elementDiv,
+		divTab: null,
 		divLeft: null,
 		divTree: null,
 		divBanner: null,
 		divFilter: null,
 		divMessages: null,
 	};
-	v_tab.tag = v_tag;
+	p_conn_tab.tag.notify = v_notify_tag;
 
-	if (notifySupportedDbType(v_conn.v_db_type)) {
-		buildNotifyTabLayout(v_tag);
-		getTreeNotifyChannels(v_tag);
-		startNotifyListening(v_tag);
-	} else {
-		renderNotifyUnsupported(v_tag, v_conn.v_db_type);
+	if (notifySupportedDbType(v_notify_tag.dbType)) {
+		startNotifyListening(v_notify_tag);
 	}
+}
+
+/**
+ * Renders the Notify content pane for whichever connection tab is currently
+ * selected in the shared strip. Safe to call any time, from anywhere -- it
+ * no-ops if the section's own shell has not been built yet (v_createNotifyPanelFunction
+ * runs once at startup, before that this is unreachable regardless). Called
+ * both when the Notify section becomes active (section_switcher.js) and
+ * whenever the selected/open connection tabs change while already looking at
+ * it (outer_connection_tab.js's p_selectFunction/p_closeFunction).
+ */
+export function refreshNotifyPane() {
+	var v_content = document.getElementById(NOTIFY_CONTENT_ID);
+	if (v_content == null) return;
+
+	if (v_mounted_notify_tag != null) {
+		v_mounted_notify_tag.divTab = null;
+		v_mounted_notify_tag.divLeft = null;
+		v_mounted_notify_tag.divTree = null;
+		v_mounted_notify_tag.divBanner = null;
+		v_mounted_notify_tag.divFilter = null;
+		v_mounted_notify_tag.divMessages = null;
+		v_mounted_notify_tag = null;
+	}
+
+	v_content.innerHTML = "";
+
+	var v_conn_tab = typeof v_connTabControl !== "undefined" ? v_connTabControl.selectedTab : null;
+
+	// tabs.js's removeTab leaves selectedTab pointing at the tab just
+	// removed when nothing selectable is left to fall back to (only the
+	// trailing, non-selectable "+" tab remains) -- selectTabIndex silently
+	// no-ops for a non-selectable target instead of clearing the selection.
+	// That stale tab is always spliced out of tabList itself though, so
+	// checking membership there is a reliable way to detect it.
+	if (v_conn_tab != null && v_connTabControl.tabList.indexOf(v_conn_tab) === -1) {
+		v_conn_tab = null;
+	}
+
+	if (v_conn_tab == null || v_conn_tab.tag == null || v_conn_tab.tag.notify == null) {
+		renderNotifyEmptyState(v_content);
+		return;
+	}
+
+	var v_notify_tag = v_conn_tab.tag.notify;
+	v_notify_tag.divTab = v_content;
+	v_mounted_notify_tag = v_notify_tag;
+
+	if (notifySupportedDbType(v_notify_tag.dbType)) {
+		buildNotifyTabLayout(v_notify_tag);
+		getTreeNotifyChannels(v_notify_tag);
+		if (v_notify_tag.sessionStopped) {
+			notifySessionStopped(v_notify_tag, v_notify_tag.lastStopMessage);
+		}
+	} else {
+		renderNotifyUnsupported(v_notify_tag, v_notify_tag.dbType);
+	}
+}
+
+/**
+ * Shown when no connection is open at all -- there is nothing for the
+ * shared strip (relocated above this) to point at.
+ * @param {HTMLElement} p_content
+ */
+function renderNotifyEmptyState(p_content) {
+	var v_wrapper = document.createElement("div");
+	v_wrapper.className = "omnidb__notify__unsupported";
+
+	var v_icon = document.createElement("i");
+	v_icon.className = "fas fa-bell-slash omnidb__notify__unsupported-icon";
+	v_wrapper.appendChild(v_icon);
+
+	var v_title = document.createElement("div");
+	v_title.className = "omnidb__notify__unsupported-title";
+	v_title.textContent = "No connection open.";
+	v_wrapper.appendChild(v_title);
+
+	var v_text = document.createElement("div");
+	v_text.className = "omnidb__notify__unsupported-text";
+	v_text.textContent = "Open a connection in the Database panel to listen for its NOTIFY channels here.";
+	v_wrapper.appendChild(v_text);
+
+	p_content.appendChild(v_wrapper);
 }
 
 /**
@@ -336,7 +289,7 @@ function buildNotifyTabLayout(p_tag) {
  * Drag handler for the tree/messages splitter. Self-contained rather than
  * routed through workspace.js's resize helpers: those all resolve their
  * target through v_connTabControl (or the single snippet panel tag), neither
- * of which knows about this panel's tabs.
+ * of which knows about this panel's own content div.
  */
 function resizeNotifyHorizontal(p_event, p_tag) {
 	p_event.preventDefault();
@@ -357,7 +310,7 @@ function resizeNotifyHorizontal(p_event, p_tag) {
 }
 
 /**
- * A connection whose technology has no NOTIFY equivalent still gets a tab --
+ * A connection whose technology has no NOTIFY equivalent still gets a pane --
  * saying so out loud is the whole point, per the feature's UX decision.
  */
 export function renderNotifyUnsupported(p_tag, p_db_type) {
@@ -385,19 +338,13 @@ export function renderNotifyUnsupported(p_tag, p_db_type) {
 	v_div.appendChild(v_wrapper);
 }
 
-function closeNotifyConnTab(p_tab) {
-	if (p_tab.tag != null && p_tab.tag.listening) {
-		createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: p_tab.tag.tab_id, tab_db_id: null }]);
-	}
-	p_tab.removeTab();
-}
-
 /**
- * Starts (or restarts) the live session for one tab. Exactly one context per
- * tab, created once and never removed -- the backend pushes into it for the
- * whole lifetime of the tab, same contract as startTerminal/terminalReturn.
- * Reusing the existing context on a restart is what keeps a stopped-and-
- * restarted session from leaking a context per attempt.
+ * Starts (or restarts) the live session for one connection's notify state.
+ * Exactly one context per connection tab, created once and never removed --
+ * the backend pushes into it for the whole lifetime of the tab, same
+ * contract as startTerminal/terminalReturn. Reusing the existing context on
+ * a restart is what keeps a stopped-and-restarted session from leaking a
+ * context per attempt.
  */
 export function startNotifyListening(p_tag) {
 	if (p_tag.context == null) {
@@ -431,13 +378,17 @@ export function notifyMessageReceived(p_message, p_context) {
  * The backend gave up on this session (currently only because the client was
  * not draining the polling queue fast enough). Restarting is manual on
  * purpose: an automatic retry would walk straight back into whatever
- * overloaded the queue in the first place.
+ * overloaded the queue in the first place. The message is remembered
+ * (lastStopMessage) so the banner can be rebuilt faithfully if this tab's
+ * pane is remounted later (see refreshNotifyPane) after the stop happened
+ * while some other connection's pane was showing.
  */
 export function notifySessionStopped(p_tag, p_message) {
 	if (p_tag == null) return;
 
 	p_tag.sessionStopped = true;
 	p_tag.listening = false;
+	p_tag.lastStopMessage = p_message;
 	renderNotifyChannelNodes(p_tag);
 
 	if (p_tag.divBanner == null) return;

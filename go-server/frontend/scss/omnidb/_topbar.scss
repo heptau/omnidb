@@ -804,19 +804,25 @@
 	background-color: #8e8e93;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-production {
+/* .omnidb__conn-strip-host marks whichever container currently hosts
+ * v_connTabControl.tabMenu -- normally #omnidb_main_tablist, but the same
+ * node is physically relocated into #notify_panel_strip_slot while the
+ * Notify section is active (see section_switcher.js's switchSection), so
+ * anything scoped to the strip's *contents* rather than its own outer
+ * container needs to apply to both hosts, not just the original ID. */
+.omnidb__conn-strip-host .omnidb__tab--env-production {
 	box-shadow: inset 3px 0 0 0 #ff3b30;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-uat {
+.omnidb__conn-strip-host .omnidb__tab--env-uat {
 	box-shadow: inset 3px 0 0 0 #ff9500;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-development {
+.omnidb__conn-strip-host .omnidb__tab--env-development {
 	box-shadow: inset 3px 0 0 0 #34c759;
 }
 
-#omnidb_main_tablist .omnidb__tab--env-archive {
+.omnidb__conn-strip-host .omnidb__tab--env-archive {
 	box-shadow: inset 3px 0 0 0 #8e8e93;
 }
 
@@ -1164,22 +1170,31 @@
  * horizontal-strip styling above -- that used to be what "Switch menu"
  * toggled *to*. It only needs a width fix: that CSS assumed
  * #omnidb_main_tablist was a direct, full-viewport-width child of
- * #omnidb__main, and it now sits inside the (narrower) Database section. */
+ * #omnidb__main, and it now sits inside the (narrower) Database section.
+ * This one stays ID-scoped: unlike the rules below, it sizes the *outer*
+ * container that holds both the strip and #omnidb__section_database's own
+ * per-connection content, which #notify_panel_strip_slot never does -- that
+ * one only ever holds the relocated strip itself (see .omnidb__conn-strip-host
+ * below), sized instead by _base.scss's #notify_panel_strip_slot rule. */
 #omnidb_main_tablist.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) {
 	flex: 1 1 auto !important;
 	min-height: 0 !important;
 }
 
-#omnidb_main_tablist.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown)>.omnidb__tab-menu--primary {
+/* .omnidb__conn-strip-host: same "assumed full-viewport-width child of
+ * #omnidb__main" fix as above, but for the strip's immediate tab-menu child
+ * specifically -- needed under both hosts the strip can currently be
+ * parented under (see the comment by the env-tint rules above). */
+.omnidb__conn-strip-host.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown)>.omnidb__tab-menu--primary {
 	width: 100% !important;
 }
 
 /* The trailing "+" Add Connection tab -- compact (icon only, no label),
  * unlike every actual connection tab beside it which keeps the shared
- * min-width so its alias text has room. Higher specificity (id + class)
+ * min-width so its alias text has room. Higher specificity (class + class)
  * than the shared min-width rule above on purpose, rather than relying on
  * source order. */
-#omnidb_main_tablist .omnidb__tab-menu__link--compact {
+.omnidb__conn-strip-host .omnidb__tab-menu__link--compact {
 	min-width: 0 !important;
 	width: 40px !important;
 	flex: 0 0 40px !important;
@@ -1193,7 +1208,7 @@
  * real label) throws off the compact tab's own justify-content: center,
  * visibly off-centering the "+" glyph. Dropping it from the layout entirely
  * fixes that; there's no text in it to lose. */
-#omnidb_main_tablist .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name {
+.omnidb__conn-strip-host .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name {
 	display: none !important;
 }
 

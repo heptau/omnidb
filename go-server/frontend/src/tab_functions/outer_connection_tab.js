@@ -35,8 +35,10 @@ import { editCellData } from "../header_actions.js";
 import { createRequest } from "../long_polling.js";
 import { cancelMonitorUnits } from "../monitoring.js";
 import { showAlert } from "../notification_control.js";
+import { refreshNotifyPane, startNotifyForConnTab } from "../panel_functions/outer_notify_panel.js";
 import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { whiteHtmlRenderer } from "../renderers.js";
+import { isSectionActive, switchSection } from "../section_switcher.js";
 import { createTabControl } from "../tabs.js";
 import {
 	changeDatabase,
@@ -50,6 +52,16 @@ import {
 	toggleTreeContainer,
 	toggleTreeTabsContainer,
 } from "../workspace.js";
+
+// Refreshes the Notify section's content pane whenever the selected/open
+// connection tabs change, but only while Notify is actually the section
+// being shown -- reachable even while parked on Notify, since the shared
+// strip (v_connTabControl.tabMenu) is physically relocated there and stays
+// fully interactive. A no-op the rest of the time, same as
+// resizeSnippetPanel's own self-guard in workspace.js.
+function refreshNotifyPaneIfActive() {
+	if (isSectionActive("notify")) refreshNotifyPane();
+}
 
 
 // Local, not imported from connections.js: that module already imports from
@@ -70,6 +82,17 @@ var ENVIRONMENT_TAB_CLASS = {
  * @param {string|false} [p_tooltip_name]
  */
 export var v_createConnTabFunction = function (p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
+	// This builds real, laid-out DOM below (Ace editors, Handsontable grids,
+	// getBoundingClientRect()-based sizing), which all assume a visible
+	// container. The "+" Add Connection tab is reachable from the Notify
+	// section too now (it lives on the shared strip, relocated there per
+	// section_switcher.js), so a click there must land on Database *first* --
+	// otherwise Ace's renderer throws (RangeError: Invalid typed array
+	// length) building a Console/Query tab inside a display:none section,
+	// leaving that inner tab's .tag unset and every close attempt on this
+	// outer tab afterward throwing on the null tag.
+	switchSection("database");
+
 	// Creating the first outer tab without any connections created.
 	if (v_connTabControl.tag.connections.length == 0) {
 		v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
@@ -139,6 +162,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 					this.tag.tabControl.selectedTab.tag.editor.focus();
 				}
 				refreshBootstrapTooltips();
+				refreshNotifyPaneIfActive();
 			},
 			p_close: false, // Replacing default close icon with contextMenu.
 			p_closeFunction: function (e, p_tab) {
@@ -172,6 +196,15 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 						createRequest(v_queryRequestCodes.CloseTab, v_tabs_to_remove);
 					}
 					v_this_tab.removeTab();
+					// The CloseTab message above already tore down this
+					// connection's notify session backend-side (see
+					// longpolling.go's requestTypeCloseTab, which closes one
+					// for every tab_id in that batch -- this tab's own id is
+					// always the first entry, pushed above). removeTab()
+					// already moved v_connTabControl.selectedTab to whatever
+					// tab (or none) takes its place, so this just needs to
+					// catch the Notify pane up to that if it is being shown.
+					refreshNotifyPaneIfActive();
 				});
 			},
 			p_rightClickFunction: function (e) {
@@ -483,6 +516,12 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		}
 
 		changeDatabase(v_index);
+
+		// Starts (or shows "not supported" for) this connection's NOTIFY
+		// session immediately, mirroring the connection tab's own lifetime --
+		// see outer_notify_panel.js's module comment for why Notify no
+		// longer has an independent open/close step of its own.
+		startNotifyForConnTab(v_tab);
 
 		if (p_create_query_tab) {
 			v_connTabControl.tag.createConsoleTab();

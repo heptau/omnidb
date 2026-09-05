@@ -4228,6 +4228,549 @@
     showError,
     showMessageModal
   }, Symbol.toStringTag, { value: "Module" }));
+  var NOTIFY_ICON_ACTIVE = "fas node-all fa-bell";
+  var NOTIFY_ICON_PAUSED = "fas node-all fa-bell-slash";
+  function getTreeNotifyChannels(p_tag) {
+    var context_menu = {
+      cm_notify_root: {
+        elements: [
+          {
+            text: "Add Channel",
+            icon: "fas cm-all fa-plus",
+            action: function(node) {
+              promptAddChannel(p_tag);
+            }
+          },
+          {
+            text: "Refresh",
+            icon: "fas cm-all fa-sync-alt",
+            action: function(node) {
+              refreshNotifyChannels(p_tag);
+            }
+          }
+        ]
+      },
+      cm_notify_channel: {
+        // A function rather than a static array (Aimara.js's
+        // nodeContextMenu supports both): customMenu has no per-item
+        // "visible" predicate, so Pause/Resume has to be decided here,
+        // once per right-click, from the node's own state.
+        elements: function(p_node) {
+          var v_elements = [];
+          if (p_node.tag.active) {
+            v_elements.push({
+              text: "Pause",
+              icon: "fas cm-all fa-pause",
+              action: function(node) {
+                pauseChannel(p_tag, node);
+              }
+            });
+          } else {
+            v_elements.push({
+              text: "Resume",
+              icon: "fas cm-all fa-play",
+              action: function(node) {
+                resumeChannel(p_tag, node);
+              }
+            });
+          }
+          v_elements.push({
+            text: "Clear Messages",
+            icon: "fas cm-all fa-eraser",
+            action: function(node) {
+              clearNotifyChannelMessages(p_tag, node.tag.name);
+            }
+          });
+          v_elements.push({
+            text: "Delete",
+            icon: "fas cm-all fa-times",
+            action: function(node) {
+              deleteChannel(p_tag, node);
+            }
+          });
+          return v_elements;
+        }
+      }
+    };
+    var tree = createTree(p_tag.divTree.id, "#fcfdfd", context_menu);
+    tree.tag = {};
+    var node1 = tree.createNode(
+      "Channels",
+      true,
+      NOTIFY_ICON_ACTIVE,
+      null,
+      // locked: true stops this root from being collapsed (see Aimara.js's
+      // collapseNode) -- the panel has nothing else to show in its place.
+      { type: "notify_root", locked: true },
+      "cm_notify_root"
+    );
+    tree.drawTree();
+    document.getElementById(p_tag.divTree.id).oncontextmenu = function(e) {
+      e.preventDefault();
+      tree.nodeContextMenu(e, node1);
+    };
+    p_tag.tree = tree;
+    p_tag.treeRootNode = node1;
+    refreshNotifyChannels(p_tag);
+  }
+  function notifyChannelsFromReturn(p_return) {
+    var v_data = p_return.v_data;
+    var v_list2 = Array.isArray(v_data) ? v_data : v_data && v_data.v_channels || [];
+    var v_channels = [];
+    for (var i2 = 0; i2 < v_list2.length; i2++) {
+      var v_row = v_list2[i2];
+      v_channels.push({
+        id: v_row.v_id,
+        name: v_row.v_channel_name,
+        // The paused/active flag is the one field of this row the wire
+        // format never spelled out -- read either spelling rather than
+        // silently showing every channel as active.
+        active: v_row.v_active !== void 0 ? !!v_row.v_active : !!v_row.active
+      });
+    }
+    return v_channels;
+  }
+  function refreshNotifyChannels(p_tag) {
+    execAjax$1(
+      "/get_notify_channels/",
+      JSON.stringify({ p_conn_id: p_tag.connID }),
+      function(p_return) {
+        p_tag.channels = notifyChannelsFromReturn(p_return);
+        renderNotifyChannelNodes(p_tag);
+        renderNotifyFilter(p_tag);
+        renderNotifyMessages(p_tag);
+      },
+      null,
+      "box",
+      false
+    );
+  }
+  function renderNotifyChannelNodes(p_tag) {
+    if (p_tag == null || p_tag.treeRootNode == null) return;
+    p_tag.treeRootNode.removeChildNodes();
+    var v_channels = p_tag.channels || [];
+    for (var i2 = 0; i2 < v_channels.length; i2++) {
+      var v_active = v_channels[i2].active && !p_tag.sessionStopped;
+      p_tag.treeRootNode.createChildNode(
+        v_channels[i2].name,
+        false,
+        v_active ? NOTIFY_ICON_ACTIVE : NOTIFY_ICON_PAUSED,
+        {
+          type: "notify_channel",
+          id: v_channels[i2].id,
+          name: v_channels[i2].name,
+          active: v_channels[i2].active
+        },
+        "cm_notify_channel"
+      );
+    }
+  }
+  function promptAddChannel(p_tag) {
+    showConfirm(
+      "",
+      function() {
+        execAjax$1(
+          "/add_notify_channel/",
+          JSON.stringify({
+            p_conn_id: p_tag.connID,
+            p_channel_name: (
+              /** @type {HTMLInputElement} */
+              document.getElementById("element_name").value
+            ),
+            p_tab_id: p_tag.tab_id
+          }),
+          function(p_return) {
+            refreshNotifyChannels(p_tag);
+          },
+          null,
+          "box"
+        );
+      },
+      null,
+      function() {
+        var v_input = document.createElement("input");
+        v_input.id = "element_name";
+        v_input.className = "form-control";
+        v_input.placeholder = "Channel Name";
+        v_input.style.width = "100%";
+        document.getElementById("modal_message_content").appendChild(v_input);
+        v_input.onkeydown = function() {
+          if (
+            /** @type {any} */
+            event.keyCode == 13
+          )
+            document.getElementById("modal_message_ok").click();
+          else if (
+            /** @type {any} */
+            event.keyCode == 27
+          )
+            document.getElementById("modal_message_cancel").click();
+        };
+        v_input.focus();
+      }
+    );
+  }
+  function pauseChannel(p_tag, p_node) {
+    execAjax$1(
+      "/pause_notify_channel/",
+      JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
+      function(p_return) {
+        refreshNotifyChannels(p_tag);
+      },
+      null,
+      "box"
+    );
+  }
+  function resumeChannel(p_tag, p_node) {
+    execAjax$1(
+      "/resume_notify_channel/",
+      JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
+      function(p_return) {
+        refreshNotifyChannels(p_tag);
+      },
+      null,
+      "box"
+    );
+  }
+  function deleteChannel(p_tag, p_node) {
+    var v_channel_name = p_node.tag.name;
+    showConfirm(
+      "Are you sure you want to delete this channel?",
+      function() {
+        execAjax$1(
+          "/delete_notify_channel/",
+          JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
+          function(p_return) {
+            clearNotifyChannelMessages(p_tag, v_channel_name);
+            refreshNotifyChannels(p_tag);
+          },
+          null,
+          "box"
+        );
+      },
+      null,
+      function() {
+        var v_input = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_ok")
+        );
+        v_input.focus();
+      }
+    );
+  }
+  var NOTIFY_STRIP_SLOT_ID = "notify_panel_strip_slot";
+  var NOTIFY_CONTENT_ID = "notify_panel_content";
+  var NOTIFY_SUPPORTED_DB_TYPES = ["postgresql", "oracle"];
+  var v_mounted_notify_tag = null;
+  function notifySupportedDbType(p_db_type) {
+    return NOTIFY_SUPPORTED_DB_TYPES.indexOf(p_db_type) !== -1;
+  }
+  var v_createNotifyPanelFunction = function() {
+    var v_html = "<div class='omnidb__notify'><div id='" + NOTIFY_STRIP_SLOT_ID + "' class='omnidb__tab-menu--container omnidb__tab-menu--container--primary omnidb__conn-strip-host'></div><div id='" + NOTIFY_CONTENT_ID + "' class='omnidb__notify__content'></div></div>";
+    var v_target = (
+      /** @type {HTMLElement} */
+      document.getElementById("omnidb__section_notify")
+    );
+    v_target.innerHTML = v_html;
+  };
+  function startNotifyForConnTab(p_conn_tab) {
+    var v_notify_tag = {
+      tab_id: p_conn_tab.id,
+      connID: p_conn_tab.tag.selectedDatabaseIndex,
+      dbType: p_conn_tab.tag.selectedDBMS,
+      /** @type {any[]} */
+      messages: [],
+      /** @type {any[]} */
+      channels: [],
+      // null = every channel, otherwise a Set of the channel names to show.
+      filterChannel: null,
+      context: null,
+      listening: false,
+      sessionStopped: false,
+      lastStopMessage: null,
+      tree: null,
+      treeRootNode: null,
+      divTab: null,
+      divLeft: null,
+      divTree: null,
+      divBanner: null,
+      divFilter: null,
+      divMessages: null
+    };
+    p_conn_tab.tag.notify = v_notify_tag;
+    if (notifySupportedDbType(v_notify_tag.dbType)) {
+      startNotifyListening(v_notify_tag);
+    }
+  }
+  function refreshNotifyPane() {
+    var v_content = document.getElementById(NOTIFY_CONTENT_ID);
+    if (v_content == null) return;
+    if (v_mounted_notify_tag != null) {
+      v_mounted_notify_tag.divTab = null;
+      v_mounted_notify_tag.divLeft = null;
+      v_mounted_notify_tag.divTree = null;
+      v_mounted_notify_tag.divBanner = null;
+      v_mounted_notify_tag.divFilter = null;
+      v_mounted_notify_tag.divMessages = null;
+      v_mounted_notify_tag = null;
+    }
+    v_content.innerHTML = "";
+    var v_conn_tab = typeof v_connTabControl !== "undefined" ? v_connTabControl.selectedTab : null;
+    if (v_conn_tab != null && v_connTabControl.tabList.indexOf(v_conn_tab) === -1) {
+      v_conn_tab = null;
+    }
+    if (v_conn_tab == null || v_conn_tab.tag == null || v_conn_tab.tag.notify == null) {
+      renderNotifyEmptyState(v_content);
+      return;
+    }
+    var v_notify_tag = v_conn_tab.tag.notify;
+    v_notify_tag.divTab = v_content;
+    v_mounted_notify_tag = v_notify_tag;
+    if (notifySupportedDbType(v_notify_tag.dbType)) {
+      buildNotifyTabLayout(v_notify_tag);
+      getTreeNotifyChannels(v_notify_tag);
+      if (v_notify_tag.sessionStopped) {
+        notifySessionStopped(v_notify_tag, v_notify_tag.lastStopMessage);
+      }
+    } else {
+      renderNotifyUnsupported(v_notify_tag, v_notify_tag.dbType);
+    }
+  }
+  function renderNotifyEmptyState(p_content) {
+    var v_wrapper = document.createElement("div");
+    v_wrapper.className = "omnidb__notify__unsupported";
+    var v_icon = document.createElement("i");
+    v_icon.className = "fas fa-bell-slash omnidb__notify__unsupported-icon";
+    v_wrapper.appendChild(v_icon);
+    var v_title = document.createElement("div");
+    v_title.className = "omnidb__notify__unsupported-title";
+    v_title.textContent = "No connection open.";
+    v_wrapper.appendChild(v_title);
+    var v_text = document.createElement("div");
+    v_text.className = "omnidb__notify__unsupported-text";
+    v_text.textContent = "Open a connection in the Database panel to listen for its NOTIFY channels here.";
+    v_wrapper.appendChild(v_text);
+    p_content.appendChild(v_wrapper);
+  }
+  function buildNotifyTabLayout(p_tag) {
+    var v_id = p_tag.tab_id;
+    p_tag.divTab.innerHTML = "<div class='omnidb__notify__tab'><div id='" + v_id + "_notify_div_left' class='omnidb__notify__div-left'><div id='" + v_id + "_notify_tree' class='omnidb__notify__tree'></div><div id='" + v_id + "_notify_resize_line' class='resize_line_vertical omnidb__resize-line__container omnidb__notify__resize-line'></div></div><div id='" + v_id + "_notify_div_right' class='omnidb__notify__div-right'><div id='" + v_id + "_notify_banner' class='omnidb__notify__banner' style='display: none;'></div><div id='" + v_id + "_notify_filter' class='omnidb__notify__filter'></div><div id='" + v_id + "_notify_messages' class='omnidb__notify__messages'></div></div></div>";
+    p_tag.divLeft = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_div_left");
+    p_tag.divTree = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_tree");
+    p_tag.divBanner = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_banner");
+    p_tag.divFilter = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_filter");
+    p_tag.divMessages = /** @type {HTMLElement} */
+    document.getElementById(v_id + "_notify_messages");
+    document.getElementById(v_id + "_notify_resize_line").addEventListener(
+      "mousedown",
+      function(event2) {
+        resizeNotifyHorizontal(event2, p_tag);
+      }
+    );
+    renderNotifyFilter(p_tag);
+    renderNotifyMessages(p_tag);
+  }
+  function resizeNotifyHorizontal(p_event, p_tag) {
+    p_event.preventDefault();
+    var v_move = function(e) {
+      var v_width = e.clientX - p_tag.divLeft.getBoundingClientRect().left;
+      if (v_width < 150) v_width = 150;
+      if (v_width > 600) v_width = 600;
+      p_tag.divLeft.style.width = v_width + "px";
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
+  }
+  function renderNotifyUnsupported(p_tag, p_db_type) {
+    var v_div = p_tag.divTab;
+    v_div.innerHTML = "";
+    var v_wrapper = document.createElement("div");
+    v_wrapper.className = "omnidb__notify__unsupported";
+    var v_icon = document.createElement("i");
+    v_icon.className = "fas fa-bell-slash omnidb__notify__unsupported-icon";
+    v_wrapper.appendChild(v_icon);
+    var v_title = document.createElement("div");
+    v_title.className = "omnidb__notify__unsupported-title";
+    v_title.textContent = "NOTIFY-style channels are not supported for " + p_db_type + " connections.";
+    v_wrapper.appendChild(v_title);
+    var v_text = document.createElement("div");
+    v_text.className = "omnidb__notify__unsupported-text";
+    v_text.textContent = "Only PostgreSQL (LISTEN/NOTIFY) and Oracle (DBMS_ALERT) connections support this feature.";
+    v_wrapper.appendChild(v_text);
+    v_div.appendChild(v_wrapper);
+  }
+  function startNotifyListening(p_tag) {
+    if (p_tag.context == null) {
+      p_tag.context = createContext({ tab_tag: p_tag, acked: false });
+    }
+    p_tag.sessionStopped = false;
+    p_tag.listening = true;
+    createRequest(
+      v_queryRequestCodes.NotifyListen,
+      { v_db_index: p_tag.connID, v_tab_id: p_tag.tab_id },
+      p_tag.context.code
+    );
+  }
+  function notifyMessageReceived(p_message, p_context) {
+    var v_tag = p_context.tab_tag;
+    if (v_tag == null) return;
+    v_tag.messages.push({
+      channel: p_message.v_data.v_channel,
+      payload: p_message.v_data.v_payload,
+      ts: p_message.v_data.v_timestamp
+    });
+    renderNotifyMessages(v_tag);
+  }
+  function notifySessionStopped(p_tag, p_message) {
+    if (p_tag == null) return;
+    p_tag.sessionStopped = true;
+    p_tag.listening = false;
+    p_tag.lastStopMessage = p_message;
+    renderNotifyChannelNodes(p_tag);
+    if (p_tag.divBanner == null) return;
+    p_tag.divBanner.innerHTML = "";
+    var v_text = document.createElement("span");
+    v_text.textContent = p_message ? String(p_message) : "Listening was stopped.";
+    p_tag.divBanner.appendChild(v_text);
+    var v_button = document.createElement("button");
+    v_button.type = "button";
+    v_button.className = "btn btn-sm omnidb__theme__btn--secondary ms-2";
+    v_button.textContent = "Restart Listening";
+    v_button.addEventListener("click", function() {
+      restartNotifyListening(p_tag);
+    });
+    p_tag.divBanner.appendChild(v_button);
+    p_tag.divBanner.style.display = "";
+  }
+  function restartNotifyListening(p_tag) {
+    p_tag.divBanner.innerHTML = "";
+    p_tag.divBanner.style.display = "none";
+    startNotifyListening(p_tag);
+    refreshNotifyChannels(p_tag);
+  }
+  function renderNotifyFilter(p_tag) {
+    if (p_tag == null || p_tag.divFilter == null) return;
+    var v_div = p_tag.divFilter;
+    v_div.innerHTML = "";
+    var v_channels = p_tag.channels || [];
+    v_div.appendChild(
+      buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_all", "All channels", p_tag.filterChannel == null, function(p_checked) {
+        p_tag.filterChannel = p_checked ? null : /* @__PURE__ */ new Set();
+        renderNotifyFilter(p_tag);
+        renderNotifyMessages(p_tag);
+      })
+    );
+    for (var i2 = 0; i2 < v_channels.length; i2++)
+      (function(i3) {
+        var v_name = v_channels[i3].name;
+        var v_checked = p_tag.filterChannel == null || p_tag.filterChannel.has(v_name);
+        v_div.appendChild(
+          buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_" + i3, v_name, v_checked, function(p_checked) {
+            var v_set;
+            if (p_tag.filterChannel == null) {
+              v_set = /* @__PURE__ */ new Set();
+              for (var k = 0; k < v_channels.length; k++) v_set.add(v_channels[k].name);
+            } else {
+              v_set = new Set(p_tag.filterChannel);
+            }
+            if (p_checked) v_set.add(v_name);
+            else v_set.delete(v_name);
+            p_tag.filterChannel = v_set.size === v_channels.length ? null : v_set;
+            renderNotifyFilter(p_tag);
+            renderNotifyMessages(p_tag);
+          })
+        );
+      })(i2);
+    var v_clear_all = document.createElement("button");
+    v_clear_all.type = "button";
+    v_clear_all.className = "btn btn-sm omnidb__theme__btn--secondary omnidb__notify__filter-clear";
+    v_clear_all.textContent = "Clear All";
+    v_clear_all.addEventListener("click", function() {
+      clearAllNotifyMessages(p_tag);
+    });
+    v_div.appendChild(v_clear_all);
+  }
+  function buildNotifyFilterCheckbox(p_id, p_label, p_checked, p_change_function) {
+    var v_wrapper = document.createElement("label");
+    v_wrapper.className = "omnidb__notify__filter-item";
+    v_wrapper.htmlFor = p_id;
+    var v_input = document.createElement("input");
+    v_input.type = "checkbox";
+    v_input.id = p_id;
+    v_input.checked = p_checked;
+    v_input.addEventListener("change", function() {
+      p_change_function(v_input.checked);
+    });
+    v_wrapper.appendChild(v_input);
+    var v_text = document.createElement("span");
+    v_text.textContent = p_label;
+    v_wrapper.appendChild(v_text);
+    return v_wrapper;
+  }
+  function notifyFilteredMessages(p_tag) {
+    if (p_tag.filterChannel == null) return p_tag.messages;
+    var v_filter = p_tag.filterChannel;
+    return p_tag.messages.filter(function(p_message) {
+      return v_filter.has(p_message.channel);
+    });
+  }
+  function renderNotifyMessages(p_tag) {
+    if (p_tag == null || p_tag.divMessages == null) return;
+    var v_div = p_tag.divMessages;
+    v_div.innerHTML = "";
+    var v_messages = notifyFilteredMessages(p_tag);
+    if (v_messages.length === 0) {
+      var v_empty = document.createElement("div");
+      v_empty.className = "omnidb__notify__empty";
+      v_empty.textContent = p_tag.messages.length === 0 ? "No messages received yet." : "No messages on the selected channels.";
+      v_div.appendChild(v_empty);
+      return;
+    }
+    var v_table = document.createElement("table");
+    v_table.className = "omnidb__notify__table";
+    var v_thead = document.createElement("thead");
+    var v_header_row = document.createElement("tr");
+    var v_columns = ["Channel", "Time", "Payload"];
+    for (var c = 0; c < v_columns.length; c++) {
+      var v_th = document.createElement("th");
+      v_th.textContent = v_columns[c];
+      v_header_row.appendChild(v_th);
+    }
+    v_thead.appendChild(v_header_row);
+    v_table.appendChild(v_thead);
+    var v_tbody = document.createElement("tbody");
+    for (var i2 = 0; i2 < v_messages.length; i2++) {
+      var v_row = document.createElement("tr");
+      var v_cells = [v_messages[i2].channel, v_messages[i2].ts, v_messages[i2].payload];
+      for (var k = 0; k < v_cells.length; k++) {
+        var v_td = document.createElement("td");
+        v_td.textContent = v_cells[k] == null ? "" : String(v_cells[k]);
+        v_row.appendChild(v_td);
+      }
+      v_tbody.appendChild(v_row);
+    }
+    v_table.appendChild(v_tbody);
+    v_div.appendChild(v_table);
+    v_div.scrollTop = v_div.scrollHeight;
+  }
+  function clearNotifyChannelMessages(p_tag, p_channel_name) {
+    p_tag.messages = p_tag.messages.filter(function(p_message) {
+      return p_message.channel !== p_channel_name;
+    });
+    renderNotifyMessages(p_tag);
+  }
+  function clearAllNotifyMessages(p_tag) {
+    p_tag.messages = [];
+    renderNotifyMessages(p_tag);
+  }
   var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
   function initPasswordModal() {
     var v_modal_password = (
@@ -5253,6 +5796,16 @@
         }
         break;
       }
+      case v_queryResponseCodes.NotifyResult: {
+        if (p_context) {
+          if (v_message.v_data && v_message.v_data.v_stopped) {
+            notifySessionStopped(p_context.tab_tag, v_message.v_data.v_message);
+          } else {
+            notifyMessageReceived(v_message, p_context);
+          }
+        }
+        break;
+      }
       case v_queryResponseCodes.QueryEditDataResult: {
         if (p_context) {
           SetAcked(p_context);
@@ -5418,7 +5971,11 @@
     // so the two sides keep matching.
     Console: 10,
     Terminal: 11,
-    Ping: 12
+    Ping: 12,
+    // 12 (Ping) and 13 (Pong, below) are dead values the Go backend never
+    // sends or accepts -- the new codes below deliberately skip past both
+    // rather than reusing a number that still exists in this enum.
+    NotifyListen: 13
   };
   var v_queryResponseCodes = {
     LoginResult: 0,
@@ -5433,7 +5990,8 @@
     // 10 was AdvancedObjectSearchResult — see the request codes above.
     ConsoleResult: 11,
     TerminalResult: 12,
-    Pong: 13
+    Pong: 13,
+    NotifyResult: 14
   };
   function escapeHtml(p_str) {
     var v_div = document.createElement("div");
@@ -8108,7 +8666,7 @@
     __proto__: null,
     startTutorial
   }, Symbol.toStringTag, { value: "Module" }));
-  const SECTION_NAMES = ["welcome", "connections", "database", "snippets", "settings"];
+  const SECTION_NAMES = ["welcome", "connections", "database", "notify", "snippets", "settings"];
   var v_sectionDivs = {};
   var v_sectionNav;
   var v_sectionNavTabs = {};
@@ -8118,9 +8676,24 @@
       var v_div = v_sectionDivs[v_name];
       if (v_div) v_div.classList.toggle("omnidb__section--active", v_name === p_name);
     }
+    if (typeof v_connTabControl !== "undefined" && v_connTabControl && v_connTabControl.tabMenu) {
+      var v_strip_home = p_name === "notify" ? document.getElementById("notify_panel_strip_slot") : document.getElementById("omnidb_main_tablist");
+      if (v_strip_home && v_connTabControl.tabMenu.parentElement !== v_strip_home) {
+        v_strip_home.insertBefore(v_connTabControl.tabMenu, v_strip_home.firstChild);
+      }
+    }
+    if (p_name === "notify") {
+      refreshNotifyPane();
+    } else if (p_name === "database") {
+      refreshHeights();
+    }
     if (v_sectionNav && v_sectionNavTabs[p_name] && v_sectionNav.selectedTab !== v_sectionNavTabs[p_name]) {
       v_sectionNav.selectTab(v_sectionNavTabs[p_name]);
     }
+  }
+  function isSectionActive(p_name) {
+    var v_div = v_sectionDivs[p_name];
+    return v_div != null && v_div.classList.contains("omnidb__section--active");
   }
   function initSectionSwitcher() {
     for (let i2 = 0; i2 < SECTION_NAMES.length; i2++) {
@@ -8153,6 +8726,14 @@
         switchSection("database");
       },
       p_omnidb_tooltip_name: '<h5 class="my-1">Database</h5>'
+    });
+    v_sectionNavTabs.notify = v_sectionNav.createTab({
+      p_icon: '<i class="fas fa-bell"></i>',
+      p_close: false,
+      p_selectFunction: function() {
+        switchSection("notify");
+      },
+      p_omnidb_tooltip_name: '<h5 class="my-1">Notify</h5>'
     });
     v_sectionNavTabs.snippets = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-book"></i>',
@@ -8236,6 +8817,7 @@
   const sectionSwitcher = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     initSectionSwitcher,
+    isSectionActive,
     switchSection
   }, Symbol.toStringTag, { value: "Module" }));
   var v_autocomplete_object;
@@ -11831,6 +12413,9 @@
     __proto__: null,
     v_createSnippetTextTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
+  function refreshNotifyPaneIfActive() {
+    if (isSectionActive("notify")) refreshNotifyPane();
+  }
   var ENVIRONMENT_TAB_CLASS$1 = {
     production: "omnidb__tab--env-production",
     uat: "omnidb__tab--env-uat",
@@ -11838,6 +12423,7 @@
     archive: "omnidb__tab--env-archive"
   };
   var v_createConnTabFunction = function(p_index, p_create_query_tab = true, p_name = false, p_tooltip_name = false) {
+    switchSection("database");
     if (v_connTabControl.tag.connections.length == 0) {
       v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
       showAlert("Create connections first.");
@@ -11894,6 +12480,7 @@
             this.tag.tabControl.selectedTab.tag.editor.focus();
           }
           refreshBootstrapTooltips();
+          refreshNotifyPaneIfActive();
         },
         p_close: false,
         // Replacing default close icon with contextMenu.
@@ -11921,6 +12508,7 @@
               createRequest(v_queryRequestCodes.CloseTab, v_tabs_to_remove);
             }
             v_this_tab.removeTab();
+            refreshNotifyPaneIfActive();
           });
         },
         p_rightClickFunction: function(e) {
@@ -12123,6 +12711,7 @@
         v_index = p_index;
       }
       changeDatabase(v_index);
+      startNotifyForConnTab(v_tab);
       if (p_create_query_tab) {
         v_connTabControl.tag.createConsoleTab();
         v_connTabControl.tag.createQueryTab();
@@ -12336,6 +12925,7 @@
     };
     v_connTabControl.tag.createConnTab = v_createConnTabFunction;
     v_connTabControl.tag.createSnippetPanel = v_createSnippetPanelFunction;
+    v_connTabControl.tag.createNotifyPanel = v_createNotifyPanelFunction;
     v_connTabControl.tag.createSnippetTextTab = v_createSnippetTextTabFunction;
     v_connTabControl.tag.createQueryTab = v_createQueryTabFunction;
     v_connTabControl.tag.createConsoleTab = v_createConsoleTabFunction;
@@ -34668,6 +35258,7 @@
     initCreateTabFunctions();
     initWelcomeSection();
     v_connTabControl.tag.createSnippetPanel();
+    v_connTabControl.tag.createNotifyPanel();
     initSectionSwitcher();
     switchSection("database");
     updateExplainComponent();
@@ -35239,46 +35830,48 @@
       if (v_connections_data && v_connections_data.v_active) {
         v_connections_data.ht.render();
       }
-      if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
-        v_connTabControl.selectedTab.tag.tabControlDiv.style.height = window.innerHeight - (v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) - 1.5 * v_font_size + "px";
-      }
-      if (v_connTabControl.selectedTab.tag.mode == "connection") {
-        refreshOuterConnectionHeights();
-      } else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
-        v_connTabControl.selectedTab.tag.div_console.style.height = window.innerHeight - (v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
-        v_connTabControl.selectedTab.tag.editor_console.fit();
-      }
-      if (v_connTabControl.selectedTab.tag.tabControl != null && v_connTabControl.selectedTab.tag.tabControl.selectedTab) {
-        var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-        if (v_tab_tag2.mode == "console" || v_tab_tag2.mode == "edit" || v_tab_tag2.mode == "graph" || v_tab_tag2.mode == "monitor_dashboard" || v_tab_tag2.mode == "monitor_grid" || v_tab_tag2.mode == "monitor_unit" || v_tab_tag2.mode == "query" || v_tab_tag2.mode == "website" || v_tab_tag2.mode == "website_outer") {
-          v_tab_tag2.resize();
-        } else if (v_tab_tag2.mode == "alter") {
-          if (v_tab_tag2.alterTableObject.window == "columns") {
-            var v_height = window.innerHeight - (v_tab_tag2.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
-            v_tab_tag2.htDivColumns.style.height = v_height + "px";
-            if (v_tab_tag2.alterTableObject.htColumns != null) {
-              v_tab_tag2.alterTableObject.htColumns.render();
+      if (isSectionActive("database")) {
+        if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
+          v_connTabControl.selectedTab.tag.tabControlDiv.style.height = window.innerHeight - (v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) - 1.5 * v_font_size + "px";
+        }
+        if (v_connTabControl.selectedTab.tag.mode == "connection") {
+          refreshOuterConnectionHeights();
+        } else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
+          v_connTabControl.selectedTab.tag.div_console.style.height = window.innerHeight - (v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
+          v_connTabControl.selectedTab.tag.editor_console.fit();
+        }
+        if (v_connTabControl.selectedTab.tag.tabControl != null && v_connTabControl.selectedTab.tag.tabControl.selectedTab) {
+          var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+          if (v_tab_tag2.mode == "console" || v_tab_tag2.mode == "edit" || v_tab_tag2.mode == "graph" || v_tab_tag2.mode == "monitor_dashboard" || v_tab_tag2.mode == "monitor_grid" || v_tab_tag2.mode == "monitor_unit" || v_tab_tag2.mode == "query" || v_tab_tag2.mode == "website" || v_tab_tag2.mode == "website_outer") {
+            v_tab_tag2.resize();
+          } else if (v_tab_tag2.mode == "alter") {
+            if (v_tab_tag2.alterTableObject.window == "columns") {
+              var v_height = window.innerHeight - (v_tab_tag2.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
+              v_tab_tag2.htDivColumns.style.height = v_height + "px";
+              if (v_tab_tag2.alterTableObject.htColumns != null) {
+                v_tab_tag2.alterTableObject.htColumns.render();
+              }
+            } else if (v_tab_tag2.alterTableObject.window == "constraints") {
+              var v_height = window.innerHeight - (v_tab_tag2.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
+              v_tab_tag2.htDivConstraints.style.height = v_height + "px";
+              if (v_tab_tag2.alterTableObject.htConstraints != null) {
+                v_tab_tag2.alterTableObject.htConstraints.render();
+              }
+            } else {
+              var v_height = window.innerHeight - (v_tab_tag2.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
+              v_tab_tag2.htDivIndexes.style.height = v_height + "px";
+              if (v_tab_tag2.alterTableObject.htIndexes != null) {
+                v_tab_tag2.alterTableObject.htIndexes.render();
+              }
             }
-          } else if (v_tab_tag2.alterTableObject.window == "constraints") {
-            var v_height = window.innerHeight - (v_tab_tag2.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
-            v_tab_tag2.htDivConstraints.style.height = v_height + "px";
-            if (v_tab_tag2.alterTableObject.htConstraints != null) {
-              v_tab_tag2.alterTableObject.htConstraints.render();
+          } else if (v_tab_tag2.mode == "data_mining") {
+            if (v_tab_tag2.currQueryTab == "data") {
+              v_tab_tag2.div_result.style.height = window.innerHeight - (v_tab_tag2.div_result.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
             }
-          } else {
-            var v_height = window.innerHeight - (v_tab_tag2.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
-            v_tab_tag2.htDivIndexes.style.height = v_height + "px";
-            if (v_tab_tag2.alterTableObject.htIndexes != null) {
-              v_tab_tag2.alterTableObject.htIndexes.render();
-            }
-          }
-        } else if (v_tab_tag2.mode == "data_mining") {
-          if (v_tab_tag2.currQueryTab == "data") {
-            v_tab_tag2.div_result.style.height = window.innerHeight - (v_tab_tag2.div_result.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
           }
         }
+        refreshTreeHeight();
       }
-      refreshTreeHeight();
       if (v_connTabControl.tag.hooks.windowResize.length > 0) {
         for (var i2 = 0; i2 < v_connTabControl.tag.hooks.windowResize.length; i2++) v_connTabControl.tag.hooks.windowResize[i2]();
       }

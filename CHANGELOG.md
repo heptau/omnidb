@@ -42,6 +42,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `static_assets` via `go:embed`) needed the same media-query-to-class regating -- otherwise a
   forced Light/Dark choice left table headers, the pinned first column, and hover rows following the
   OS scheme instead.
+- **Notify panel**, a new sidebar section between Database and Snippets for PostgreSQL `LISTEN`/
+  `NOTIFY` and Oracle `DBMS_ALERT`. Channels are added/removed/paused/resumed per connection and
+  persist across app restarts (`OmniDB_app_notifychannel`); received messages are ephemeral (kept
+  only in the browser tab, cleared on reload) and can be viewed across all channels or filtered to a
+  selection, cleared per-channel or all at once — deleting a channel drops its already-loaded
+  messages too. MySQL/MariaDB/MS SQL Server/SQLite show an explicit "not supported" message instead
+  of hiding the feature. A backpressure guard auto-stops a session (with a "Restart Listening"
+  control) if the frontend falls behind draining its message queue, instead of letting it grow
+  unbounded. The panel shares the exact same horizontal strip of open connections as the Database
+  panel — one connection tab, one selection, kept in sync in both places by physically relocating
+  the shared strip's DOM node between the two sections — and a connection's Notify session now
+  starts and stops with its own Database tab instead of needing a separate open/close step. New
+  backend: `appdb_notify.go`/`appdb_notify_handlers.go` (persistence + REST endpoints),
+  `notify_session.go`/`notify_session_oracle.go` (pinned per-technology sessions, since `LISTEN`/
+  `DBMS_ALERT` can't share a connection with whatever queries are running in that connection's own
+  Query/Console tabs), wired into `longpolling.go`/`native_polling.go`/`main.go`; new frontend
+  `panel_functions/outer_notify_panel.js` and `tree_context_functions/tree_notify.js`.
 
 ## [4.3.0] - 2026-09-02
 

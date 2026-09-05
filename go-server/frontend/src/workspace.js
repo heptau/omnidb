@@ -41,7 +41,7 @@ import { startMonitorDashboard } from "./monitoring.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { checkQueryStatus, escapeHtml, v_queryRequestCodes } from "./query.js";
-import { initSectionSwitcher, switchSection } from "./section_switcher.js";
+import { initSectionSwitcher, isSectionActive, switchSection } from "./section_switcher.js";
 import { refreshOuterConnectionHeights } from "./tab_functions/outer_connection_tab.js";
 import { initWelcomeSection } from "./tab_functions/outer_welcome_tab.js";
 import { createTabControl } from "./tabs.js";
@@ -905,75 +905,85 @@ export function refreshHeights(p_all) {
 			v_connections_data.ht.render();
 		}
 
-		if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
-			v_connTabControl.selectedTab.tag.tabControlDiv.style.height =
-				window.innerHeight -
-				(v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) -
-				1.5 * v_font_size +
-				"px";
-		}
-		if (v_connTabControl.selectedTab.tag.mode == "connection") {
-			refreshOuterConnectionHeights();
-		} else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
-			v_connTabControl.selectedTab.tag.div_console.style.height =
-				window.innerHeight -
-				(v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) -
-				1.25 * v_font_size +
-				"px";
-			v_connTabControl.selectedTab.tag.editor_console.fit();
-		}
-
-		//If inner tab exists
-		if (v_connTabControl.selectedTab.tag.tabControl != null && v_connTabControl.selectedTab.tag.tabControl.selectedTab) {
-			var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-
-			if (
-				v_tab_tag.mode == "console" ||
-				v_tab_tag.mode == "edit" ||
-				v_tab_tag.mode == "graph" ||
-				v_tab_tag.mode == "monitor_dashboard" ||
-				v_tab_tag.mode == "monitor_grid" ||
-				v_tab_tag.mode == "monitor_unit" ||
-				v_tab_tag.mode == "query" ||
-				v_tab_tag.mode == "website" ||
-				v_tab_tag.mode == "website_outer"
-			) {
-				v_tab_tag.resize();
+		// Everything below reads getBoundingClientRect() on the Database
+		// section's own DOM, which is meaningless (all zeroes) while that
+		// section is hidden -- e.g. selecting a different connection tab via
+		// the shared strip while it is physically relocated into the Notify
+		// section (see section_switcher.js). Skipping it here is safe:
+		// switchSection("database") forces a fresh refreshHeights(true) the
+		// moment the user actually switches back, which is the only time
+		// this math needs to be correct again.
+		if (isSectionActive("database")) {
+			if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
+				v_connTabControl.selectedTab.tag.tabControlDiv.style.height =
+					window.innerHeight -
+					(v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) -
+					1.5 * v_font_size +
+					"px";
 			}
-			else if (v_tab_tag.mode == "alter") {
-				if (v_tab_tag.alterTableObject.window == "columns") {
-					var v_height = window.innerHeight - (v_tab_tag.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
-					v_tab_tag.htDivColumns.style.height = v_height + "px";
-					if (v_tab_tag.alterTableObject.htColumns != null) {
-						v_tab_tag.alterTableObject.htColumns.render();
+			if (v_connTabControl.selectedTab.tag.mode == "connection") {
+				refreshOuterConnectionHeights();
+			} else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
+				v_connTabControl.selectedTab.tag.div_console.style.height =
+					window.innerHeight -
+					(v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) -
+					1.25 * v_font_size +
+					"px";
+				v_connTabControl.selectedTab.tag.editor_console.fit();
+			}
+
+			//If inner tab exists
+			if (v_connTabControl.selectedTab.tag.tabControl != null && v_connTabControl.selectedTab.tag.tabControl.selectedTab) {
+				var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+
+				if (
+					v_tab_tag.mode == "console" ||
+					v_tab_tag.mode == "edit" ||
+					v_tab_tag.mode == "graph" ||
+					v_tab_tag.mode == "monitor_dashboard" ||
+					v_tab_tag.mode == "monitor_grid" ||
+					v_tab_tag.mode == "monitor_unit" ||
+					v_tab_tag.mode == "query" ||
+					v_tab_tag.mode == "website" ||
+					v_tab_tag.mode == "website_outer"
+				) {
+					v_tab_tag.resize();
+				}
+				else if (v_tab_tag.mode == "alter") {
+					if (v_tab_tag.alterTableObject.window == "columns") {
+						var v_height = window.innerHeight - (v_tab_tag.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
+						v_tab_tag.htDivColumns.style.height = v_height + "px";
+						if (v_tab_tag.alterTableObject.htColumns != null) {
+							v_tab_tag.alterTableObject.htColumns.render();
+						}
+					} else if (v_tab_tag.alterTableObject.window == "constraints") {
+						var v_height =
+							window.innerHeight - (v_tab_tag.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
+						v_tab_tag.htDivConstraints.style.height = v_height + "px";
+						if (v_tab_tag.alterTableObject.htConstraints != null) {
+							v_tab_tag.alterTableObject.htConstraints.render();
+						}
+					} else {
+						var v_height = window.innerHeight - (v_tab_tag.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
+						v_tab_tag.htDivIndexes.style.height = v_height + "px";
+						if (v_tab_tag.alterTableObject.htIndexes != null) {
+							v_tab_tag.alterTableObject.htIndexes.render();
+						}
 					}
-				} else if (v_tab_tag.alterTableObject.window == "constraints") {
-					var v_height =
-						window.innerHeight - (v_tab_tag.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
-					v_tab_tag.htDivConstraints.style.height = v_height + "px";
-					if (v_tab_tag.alterTableObject.htConstraints != null) {
-						v_tab_tag.alterTableObject.htConstraints.render();
-					}
-				} else {
-					var v_height = window.innerHeight - (v_tab_tag.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
-					v_tab_tag.htDivIndexes.style.height = v_height + "px";
-					if (v_tab_tag.alterTableObject.htIndexes != null) {
-						v_tab_tag.alterTableObject.htIndexes.render();
+				} else if (v_tab_tag.mode == "data_mining") {
+					if (v_tab_tag.currQueryTab == "data") {
+						v_tab_tag.div_result.style.height =
+							window.innerHeight -
+							(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
+							1.25 * v_font_size +
+							"px";
 					}
 				}
-			} else if (v_tab_tag.mode == "data_mining") {
-				if (v_tab_tag.currQueryTab == "data") {
-					v_tab_tag.div_result.style.height =
-						window.innerHeight -
-						(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
-						1.25 * v_font_size +
-						"px";
-				}
 			}
-		}
 
-		// Updating tree sizes
-		refreshTreeHeight();
+			// Updating tree sizes
+			refreshTreeHeight();
+		}
 
 		// Hooks
 		if (v_connTabControl.tag.hooks.windowResize.length > 0) {

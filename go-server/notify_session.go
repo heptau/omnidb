@@ -117,12 +117,25 @@ func runNotifyStart(upstream *url.URL, cookie, clientID string, q notifyRequestD
 	}
 }
 
+// queueNotifyError reports a failure to start or maintain a notify session
+// to the frontend. This deliberately does NOT use responseMessageException:
+// that code is handled frontend-side by queryError (long_polling.js), which
+// assumes a query/console tab's DOM shape (bt_commit, div_notices, ...) that
+// a notify tab's tag object doesn't have -- calling it against a notify
+// context throws and is silently swallowed by polling_response's per-row
+// try/catch, leaving the user with no feedback at all. Reusing the
+// v_stopped shape instead routes this through notifySessionStopped, the
+// same banner-plus-manual-restart handling already used for the
+// backpressure cutoff.
 func queueNotifyError(cookie string, contextCode int, err error) {
 	queueNativeResponse(cookie, map[string]any{
-		"v_code":         responseMessageException,
+		"v_code":         responseNotifyMessage,
 		"v_context_code": contextCode,
-		"v_error":        true,
-		"v_data":         err.Error(),
+		"v_data": map[string]any{
+			"v_stopped": true,
+			"v_reason":  "connection_error",
+			"v_message": err.Error(),
+		},
 	})
 }
 
@@ -254,8 +267,20 @@ func runNotifyReader(ctx context.Context, cookie, clientID, tabID string, contex
 			// Drop the session as well as the reader, the same way
 			// runTerminalReader does — leaving it in notifySessions would make
 			// openOrReuseNotifySession hand a later restart the same dead
-			// session with nothing reading from it.
+			// session with nothing reading from it. Tell the frontend too --
+			// without this the tab would just go quiet with no indication
+			// anything failed.
 			log.Printf("notify reader (%s): %v", sess.technology, err)
+			queueNativeResponse(cookie, map[string]any{
+				"v_code":         responseNotifyMessage,
+				"v_context_code": contextCode,
+				"v_error":        false,
+				"v_data": map[string]any{
+					"v_stopped": true,
+					"v_reason":  "connection_error",
+					"v_message": "Listening was stopped: " + err.Error(),
+				},
+			})
 			closeNotifySession(clientID, tabID)
 			return
 		}
