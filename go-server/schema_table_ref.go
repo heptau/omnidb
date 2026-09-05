@@ -34,6 +34,12 @@ func verifiedSchemaTable(technology string, db *sql.DB, schema, table string) (s
 		return oracleVerifiedSchemaTable(db, schema, table)
 	case "mssql":
 		return mssqlVerifiedSchemaTable(db, schema, table)
+	case "firebird":
+		name, err := firebirdVerifiedTableName(db, table)
+		if err != nil || name == "" {
+			return "", "", err
+		}
+		return "", name, nil
 	default:
 		return "", "", fmt.Errorf("unsupported technology %q", technology)
 	}
@@ -117,6 +123,31 @@ func quoteMSSQLIdent(name string) string {
 	return "[" + strings.ReplaceAll(name, "]", "]]") + "]"
 }
 
+// firebirdVerifiedTableName mirrors sqliteVerifiedTableOrViewName's role —
+// rdb$relations covers both tables and views under one catalog (see
+// firebirdTables/firebirdViews' own comment on rdb$view_blr), so there's a
+// single lookup rather than a UNION.
+func firebirdVerifiedTableName(db *sql.DB, table string) (string, error) {
+	var name string
+	err := db.QueryRow(`select trim(rdb$relation_name) from rdb$relations where trim(rdb$relation_name) = ?`, table).Scan(&name)
+	if err == sql.ErrNoRows {
+		return "", nil
+	}
+	return name, err
+}
+
+// quoteFirebirdIdent double-quotes a Firebird identifier, doubling any
+// embedded double-quote character. Firebird identifiers are traditionally
+// unquoted and stored upper-case (closer to Oracle's own convention than
+// MSSQL's bracket quoting), but unlike quoteOracleIdent this always quotes
+// rather than only when the name doesn't round-trip as plain upper-case:
+// simpler, and always valid Firebird syntax either way, at the cost of a
+// CREATE TABLE/DDL tab that quotes every identifier instead of only the ones
+// that actually need it.
+func quoteFirebirdIdent(name string) string {
+	return `"` + strings.ReplaceAll(name, `"`, `""`) + `"`
+}
+
 // quotedSchemaTableRef builds a `schema.table` (or bare `table`, for engines
 // without schemas) FROM-clause fragment out of an already-verified
 // schema/table pair, quoting each part the way that engine's DDL/DML already
@@ -137,6 +168,8 @@ func quotedSchemaTableRef(technology, schema, table string) string {
 		return quoteOracleIdent(schema) + "." + quoteOracleIdent(table)
 	case "mssql":
 		return quoteMSSQLIdent(schema) + "." + quoteMSSQLIdent(table)
+	case "firebird":
+		return quoteFirebirdIdent(table)
 	default:
 		return table
 	}

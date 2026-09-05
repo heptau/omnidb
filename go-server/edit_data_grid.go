@@ -49,6 +49,12 @@ func recordsQuery(technology, columnList, tableRef, filter string, count int) st
 			top = fmt.Sprintf("top %d ", count)
 		}
 		return fmt.Sprintf("select %s%s from %s t %s", top, columnList, tableRef, filter)
+	case "firebird":
+		first := ""
+		if count != -1 {
+			first = fmt.Sprintf("first %d ", count)
+		}
+		return fmt.Sprintf("select %s%s from %s t %s", first, columnList, tableRef, filter)
 	default: // postgresql, sqlite
 		limit := ""
 		if count != -1 {
@@ -68,7 +74,7 @@ func bindPlaceholder(technology string, position int) string {
 		return fmt.Sprintf(":%d", position)
 	case "mssql":
 		return fmt.Sprintf("@p%d", position)
-	default: // mysql, mariadb, sqlite
+	default: // mysql, mariadb, sqlite, firebird
 		return "?"
 	}
 }

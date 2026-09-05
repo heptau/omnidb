@@ -141,7 +141,8 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			v_conn.v_db_type === "mariadb" ||
 			v_conn.v_db_type === "mysql" ||
 			v_conn.v_db_type === "sqlite" ||
-			v_conn.v_db_type === "mssql"
+			v_conn.v_db_type === "mssql" ||
+			v_conn.v_db_type === "firebird"
 		) {
 			v_icon += '.svg"/>';
 		} else {

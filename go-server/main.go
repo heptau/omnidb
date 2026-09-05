@@ -355,6 +355,35 @@ func run() error {
 	mux.Handle("/template_insert_mssql/", handleTemplateInsertMSSQL(upstream, proxy))
 	mux.Handle("/template_update_mssql/", handleTemplateUpdateMSSQL(upstream, proxy))
 	mux.Handle("/kill_backend_mssql/", handleKillBackendMSSQL(upstream, proxy))
+	// Firebird: tree/introspection routes, mirroring the mssql block above —
+	// same "no tablespace/role/sequence routes" scope (see
+	// firebird_handlers.go's package comment), plus no p_schema anywhere
+	// (Firebird has no schema concept).
+	mux.Handle("/get_tree_info_firebird/", handleGetTreeInfoFirebird(upstream, proxy))
+	mux.Handle("/get_tables_firebird/", handleGetTablesFirebird(upstream, proxy))
+	mux.Handle("/get_columns_firebird/", handleGetColumnsFirebird(upstream, proxy))
+	mux.Handle("/get_pk_firebird/", handleGetPKFirebird(upstream, proxy))
+	mux.Handle("/get_pk_columns_firebird/", handleGetPKColumnsFirebird(upstream, proxy))
+	mux.Handle("/get_fks_firebird/", handleGetFKsFirebird(upstream, proxy))
+	mux.Handle("/get_fks_columns_firebird/", handleGetFKsColumnsFirebird(upstream, proxy))
+	mux.Handle("/get_uniques_firebird/", handleGetUniquesFirebird(upstream, proxy))
+	mux.Handle("/get_uniques_columns_firebird/", handleGetUniquesColumnsFirebird(upstream, proxy))
+	mux.Handle("/get_indexes_firebird/", handleGetIndexesFirebird(upstream, proxy))
+	mux.Handle("/get_indexes_columns_firebird/", handleGetIndexesColumnsFirebird(upstream, proxy))
+	mux.Handle("/get_functions_firebird/", handleGetFunctionsFirebird(upstream, proxy))
+	mux.Handle("/get_function_fields_firebird/", handleGetFunctionFieldsFirebird(upstream, proxy))
+	mux.Handle("/get_function_definition_firebird/", handleGetFunctionDefinitionFirebird(upstream, proxy))
+	mux.Handle("/get_procedures_firebird/", handleGetProceduresFirebird(upstream, proxy))
+	mux.Handle("/get_procedure_fields_firebird/", handleGetProcedureFieldsFirebird(upstream, proxy))
+	mux.Handle("/get_procedure_definition_firebird/", handleGetProcedureDefinitionFirebird(upstream, proxy))
+	mux.Handle("/get_views_firebird/", handleGetViewsFirebird(upstream, proxy))
+	mux.Handle("/get_views_columns_firebird/", handleGetViewsColumnsFirebird(upstream, proxy))
+	mux.Handle("/get_view_definition_firebird/", handleGetViewDefinitionFirebird(upstream, proxy))
+	mux.Handle("/get_properties_firebird/", handleGetPropertiesFirebird(upstream, proxy))
+	mux.Handle("/template_select_firebird/", handleTemplateSelectFirebird(upstream, proxy))
+	mux.Handle("/template_insert_firebird/", handleTemplateInsertFirebird(upstream, proxy))
+	mux.Handle("/template_update_firebird/", handleTemplateUpdateFirebird(upstream, proxy))
+	mux.Handle("/kill_backend_firebird/", handleKillBackendFirebird(upstream, proxy))
 	// DB-agnostic app-level views (migration-plan phase 6, now complete) —
 	// CRUD against the app's own SQLite database (see go-server/appdb.go),
 	// not any user's saved target connection. save_connection/

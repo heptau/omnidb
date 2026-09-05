@@ -120,6 +120,10 @@ func handleAddNotifyChannel(upstream *url.URL) http.HandlerFunc {
 			writeEnvelope(w, fmt.Sprintf("Oracle alert names are limited to %d bytes.", oracleChannelNameMaxBytes), true, -1)
 			return
 		}
+		if isFirebird(info.Technology) && len(name) > firebirdEventNameMaxBytes {
+			writeEnvelope(w, fmt.Sprintf("Firebird event names are limited to %d bytes.", firebirdEventNameMaxBytes), true, -1)
+			return
+		}
 
 		id, err := addNotifyChannel(db, int64(who.UserID), int64(reqBody.PConnID), name)
 		if err != nil {

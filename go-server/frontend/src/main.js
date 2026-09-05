@@ -18,6 +18,7 @@ import * as treeSnippets from './tree_context_functions/tree_snippets.js'
 import * as treePostgresql from './tree_context_functions/tree_postgresql.js'
 import * as treeOracle from './tree_context_functions/tree_oracle.js'
 import * as treeMssql from './tree_context_functions/tree_mssql.js'
+import * as treeFirebird from './tree_context_functions/tree_firebird.js'
 import * as treeMariadb from './tree_context_functions/tree_mariadb.js'
 import * as treeMysql from './tree_context_functions/tree_mysql.js'
 import * as treeSqlite from './tree_context_functions/tree_sqlite.js'
@@ -71,6 +72,7 @@ exposeGlobals(
   treePostgresql,
   treeOracle,
   treeMssql,
+  treeFirebird,
   treeMariadb,
   treeMysql,
   treeSqlite,

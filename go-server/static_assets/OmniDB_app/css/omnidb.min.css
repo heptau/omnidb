@@ -2697,6 +2697,10 @@ i.tab-status-idle_in_transaction_aborted {
   background-image: url("../images/mssql.svg");
 }
 
+.node-firebird {
+  background-image: url("../images/firebird.svg");
+}
+
 .aimara-expand {
   background-image: url("../images/expand.png");
 }

@@ -15,14 +15,15 @@ var appDBSchema string
 
 // appDBBootstrapTechnologies mirrors OmniDB_app/migrations/0001_3_0_0.py's
 // populate_technologies (postgresql..terminal) plus 0003_3_1_0.py's later
-// addition of sqlite, and this Go server's own later addition of mssql —
-// same names, same order for the historical ones. technologyID (appdb_
-// connections.go) looks a row up by name, not a hardcoded id, so the exact
-// autoincremented ids these get don't need to match the historical ones.
-// Only seeds a brand-new install; an existing install needs the matching
-// "insert missing technology row" step in migrateAppDB below instead.
+// addition of sqlite, and this Go server's own later additions of mssql and
+// firebird — same names, same order for the historical ones. technologyID
+// (appdb_connections.go) looks a row up by name, not a hardcoded id, so the
+// exact autoincremented ids these get don't need to match the historical
+// ones. Only seeds a brand-new install; an existing install needs the
+// matching "insert missing technology row" step in migrateAppDB below
+// instead.
 var appDBBootstrapTechnologies = []string{
-	"postgresql", "mysql", "mariadb", "oracle", "terminal", "sqlite", "mssql",
+	"postgresql", "mysql", "mariadb", "oracle", "terminal", "sqlite", "mssql", "firebird",
 }
 
 var (
@@ -204,6 +205,18 @@ func migrateAppDB(db *sql.DB) error {
 		}
 	} else if err != nil {
 		return fmt.Errorf("check OmniDB_app_technology for mssql: %w", err)
+	}
+
+	// Add the firebird technology row if missing (v4.5.0+) — same "check
+	// first, act only if missing" idiom as the mssql row just above.
+	var hasFirebird string
+	err = db.QueryRow(`select name from OmniDB_app_technology where name = 'firebird'`).Scan(&hasFirebird)
+	if err == sql.ErrNoRows {
+		if _, err := db.Exec(`insert into OmniDB_app_technology (name) values ('firebird')`); err != nil {
+			return fmt.Errorf("seed firebird technology: %w", err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_technology for firebird: %w", err)
 	}
 
 	// Create OmniDB_app_notifychannel if missing (Notify panel) -- unlike the

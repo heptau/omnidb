@@ -6,9 +6,10 @@ import (
 )
 
 // technologyHasSchema mirrors OmniDatabase's v_has_schema flag — every
-// engine except SQLite organizes tables under a schema.
+// engine except SQLite and Firebird organizes tables under a schema (see
+// firebird.go's package comment for why Firebird joins SQLite here).
 func technologyHasSchema(technology string) bool {
-	return technology != "sqlite"
+	return technology != "sqlite" && technology != "firebird"
 }
 
 // editDataColumn is the common shape start_edit_data needs out of any
@@ -74,6 +75,16 @@ func editDataColumns(technology string, db *sql.DB, schema, table string) ([]edi
 			out[i] = editDataColumn{c.Name, c.DataType}
 		}
 		return out, nil
+	case "firebird":
+		cols, err := firebirdColumns(db, table)
+		if err != nil {
+			return nil, err
+		}
+		out := make([]editDataColumn, len(cols))
+		for i, c := range cols {
+			out[i] = editDataColumn{c.Name, c.DataType}
+		}
+		return out, nil
 	default:
 		return nil, fmt.Errorf("unsupported technology %q", technology)
 	}
@@ -115,6 +126,12 @@ func editDataPrimaryKeyColumns(technology string, db *sql.DB, schema, table stri
 			return nil, err
 		}
 		return mssqlPrimaryKeyColumns(db, schema, table, pks[0])
+	case "firebird":
+		pks, err := firebirdPrimaryKeys(db, table)
+		if err != nil || len(pks) == 0 {
+			return nil, err
+		}
+		return firebirdPrimaryKeyColumns(db, table, pks[0])
 	default:
 		return nil, fmt.Errorf("unsupported technology %q", technology)
 	}
@@ -168,6 +185,16 @@ func graphTableNames(technology string, db *sql.DB, schema string) ([]string, er
 		return names, nil
 	case "mssql":
 		tables, err := mssqlTables(db, schema)
+		if err != nil {
+			return nil, err
+		}
+		names := make([]string, len(tables))
+		for i, t := range tables {
+			names[i] = t.Name
+		}
+		return names, nil
+	case "firebird":
+		tables, err := firebirdTables(db)
 		if err != nil {
 			return nil, err
 		}
@@ -232,6 +259,16 @@ func graphForeignKeyTargets(technology string, db *sql.DB, schema, table string)
 		return out, nil
 	case "mssql":
 		fks, err := mssqlForeignKeys(db, schema, table)
+		if err != nil {
+			return nil, err
+		}
+		out := make([]string, len(fks))
+		for i, fk := range fks {
+			out[i] = fk.RTableName
+		}
+		return out, nil
+	case "firebird":
+		fks, err := firebirdForeignKeys(db, table)
 		if err != nil {
 			return nil, err
 		}

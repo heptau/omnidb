@@ -14,9 +14,10 @@ import (
 
 // notifyBackend is the technology-specific half of a Notify session — it
 // differs between Postgres (a dedicated pgx.Conn with a genuine push
-// WaitForNotification) and Oracle (a pinned database/sql.Conn polled through
-// DBMS_ALERT.WAITANY). Everything above this interface (bookkeeping,
-// teardown, backpressure) is shared.
+// WaitForNotification), Oracle (a pinned database/sql.Conn polled through
+// DBMS_ALERT.WAITANY), and Firebird (a callback-based event Subscription
+// bridged to pull semantics, see notify_session_firebird.go). Everything
+// above this interface (bookkeeping, teardown, backpressure) is shared.
 type notifyBackend interface {
 	listen(ctx context.Context, channel string) error
 	unlisten(ctx context.Context, channel string) error
@@ -49,7 +50,7 @@ var notifySessions sync.Map // map[string]*notifySession, keyed by cursorKey(cli
 // Server/SQLite deliberately have none — the panel shows an explicit
 // "not supported" message for those rather than hiding them.
 func notifySupportedTechnology(technology string) bool {
-	return technology == "postgresql" || isOracle(technology)
+	return technology == "postgresql" || isOracle(technology) || isFirebird(technology)
 }
 
 // openOrReuseNotifySession returns this tab's already-live session, or opens
@@ -87,6 +88,8 @@ func runNotifyStart(upstream *url.URL, cookie, clientID string, q notifyRequestD
 	newSession := newPostgresNotifySession
 	if isOracle(info.Technology) {
 		newSession = newOracleNotifySession
+	} else if isFirebird(info.Technology) {
+		newSession = newFirebirdNotifySession
 	}
 
 	who, err := resolveIdentity(upstream, cookie)

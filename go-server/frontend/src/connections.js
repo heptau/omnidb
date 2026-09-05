@@ -705,6 +705,7 @@ var TECHNOLOGY_DISPLAY_NAMES = {
 	oracle: "Oracle",
 	mssql: "MS SQL Server",
 	sqlite: "SQLite",
+	firebird: "Firebird",
 	terminal: "Terminal",
 };
 

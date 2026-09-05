@@ -84,6 +84,8 @@ func (s *consoleSession) consoleMetaTables(ctx context.Context) (string, error) 
 		sqlText = `select s.name as "Schema", t.name as "Name"
 			from sys.tables t join sys.schemas s on s.schema_id = t.schema_id
 			where s.name = schema_name() order by t.name`
+	case "firebird":
+		sqlText = `select trim(rdb$relation_name) as "Name" from rdb$relations where rdb$system_flag = 0 and rdb$view_blr is null order by rdb$relation_name`
 	default:
 		return "", fmt.Errorf("\\dt is not implemented for %s", s.technology)
 	}
@@ -124,6 +126,10 @@ func (s *consoleSession) consoleMetaRelations(ctx context.Context) (string, erro
 			from sys.objects o join sys.schemas s on s.schema_id = o.schema_id
 			where s.name = schema_name() and o.type in ('U','V')
 			order by o.name`
+	case "firebird":
+		sqlText = `select trim(rdb$relation_name) as "Name",
+			case when rdb$view_blr is not null then 'view' else 'table' end as "Type"
+			from rdb$relations where rdb$system_flag = 0 order by rdb$relation_name`
 	default:
 		return "", fmt.Errorf("\\d is not implemented for %s", s.technology)
 	}
@@ -186,6 +192,30 @@ func (s *consoleSession) consoleMetaDescribe(ctx context.Context, arg string) (s
 			where table_schema = coalesce(@p1, schema_name()) and table_name = @p2
 			order by ordinal_position`
 		args = []any{schemaArg, name}
+	case "firebird":
+		// Firebird has no schema to qualify with, same as SQLite above — a
+		// "schema." prefix on the argument is silently ignored rather than
+		// rejected, matching how the other schema-less branch here behaves.
+		// The "Type" case expression is a deliberately coarse subset of
+		// firebirdSQLTypeName (firebird.go) — good enough for a quick \d
+		// glance, not worth threading Go-side row post-processing through
+		// consolePretty just for this one meta-command.
+		sqlText = `select trim(rf.rdb$field_name) as "Column",
+			case f.rdb$field_type
+				when 7 then 'SMALLINT' when 8 then 'INTEGER' when 16 then 'BIGINT'
+				when 10 then 'FLOAT' when 27 then 'DOUBLE PRECISION'
+				when 12 then 'DATE' when 13 then 'TIME' when 35 then 'TIMESTAMP'
+				when 14 then 'CHAR' when 37 then 'VARCHAR' when 261 then 'BLOB'
+				when 23 then 'BOOLEAN'
+				else 'TYPE ' || cast(f.rdb$field_type as varchar(10))
+			end as "Type",
+			case when f.rdb$null_flag = 1 then 'NO' else 'YES' end as "Nullable",
+			rf.rdb$default_source as "Default"
+			from rdb$relation_fields rf
+			join rdb$fields f on f.rdb$field_name = rf.rdb$field_source
+			where trim(rf.rdb$relation_name) = ?
+			order by rf.rdb$field_position`
+		args = []any{name}
 	default:
 		return "", fmt.Errorf("\\d is not implemented for %s", s.technology)
 	}
@@ -213,6 +243,15 @@ func (s *consoleSession) consoleMetaRoles(ctx context.Context) (string, error) {
 		return "SQLite has no user/role concept — a connection is just a file on disk.", nil
 	case "mssql":
 		sqlText = `select name as "Login name", type_desc as "Type", is_disabled as "Disabled" from sys.server_principals where type in ('S','U','G') order by name`
+	case "firebird":
+		// sec$users (Firebird 3+) lists logins in the current security
+		// database — older Firebird has no SQL-visible user catalog at all
+		// (users lived in a separate isc4.gdb/security2.fdb file with no
+		// table this connection could query), so this is a best-effort
+		// listing rather than a guarantee it works on every supported
+		// version, the same "not a complete answer, still the best one
+		// available" spirit as firebirdUserSuper's own comment.
+		sqlText = `select sec$user_name as "User name" from sec$users order by sec$user_name`
 	default:
 		return "", fmt.Errorf("\\du is not implemented for %s", s.technology)
 	}
@@ -240,6 +279,8 @@ func (s *consoleSession) consoleMetaDatabases(ctx context.Context) (string, erro
 		return "SQLite connections are single-database — there's nothing else to list.", nil
 	case "mssql":
 		sqlText = `select name as "Name", suser_sname(owner_sid) as "Owner", state_desc as "State" from sys.databases order by name`
+	case "firebird":
+		return "Firebird connections are single-database — there's nothing else to list.", nil
 	default:
 		return "", fmt.Errorf("\\l is not implemented for %s", s.technology)
 	}
@@ -275,6 +316,11 @@ func (s *consoleSession) consoleMetaFunctions(ctx context.Context) (string, erro
 			from sys.objects o join sys.schemas s on s.schema_id = o.schema_id
 			where s.name = schema_name() and o.type in ('P','FN','IF','TF')
 			order by o.name`
+	case "firebird":
+		sqlText = `select trim(rdb$procedure_name) as "Name", 'procedure' as "Type" from rdb$procedures where rdb$system_flag = 0
+			union all
+			select trim(rdb$function_name) as "Name", 'function' as "Type" from rdb$functions where rdb$system_flag = 0
+			order by 1`
 	default:
 		return "", fmt.Errorf("\\df is not implemented for %s", s.technology)
 	}

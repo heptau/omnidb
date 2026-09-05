@@ -42,9 +42,10 @@ SOFTWARE.
  * second, independently-synced strip.
  *
  * Listening itself still runs over its own connection, pinned per the
- * backend's notify_session.go -- LISTEN/DBMS_ALERT cannot share a connection
- * with whatever queries are running in that same connection's Query/Console
- * tabs. That session's lifetime now simply mirrors the connection tab's own:
+ * backend's notify_session.go -- LISTEN/DBMS_ALERT/the Firebird event
+ * subscription cannot share a connection with whatever queries are running
+ * in that same connection's Query/Console tabs. That session's lifetime now
+ * simply mirrors the connection tab's own:
  * started the moment a connection tab opens (see startNotifyForConnTab,
  * called from outer_connection_tab.js), torn down when it closes (the
  * backend already does this from the CloseTab message that tab's own close
@@ -73,12 +74,13 @@ var NOTIFY_STRIP_SLOT_ID = "notify_panel_strip_slot";
 var NOTIFY_CONTENT_ID = "notify_panel_content";
 
 /**
- * The two technologies with a real asynchronous notification mechanism:
- * PostgreSQL's LISTEN/NOTIFY and Oracle's DBMS_ALERT. Every open connection
- * gets a pane here regardless (deliberately -- unsupported ones must say so,
- * not just disappear), it just shows a message instead of a channel tree.
+ * The three technologies with a real asynchronous notification mechanism:
+ * PostgreSQL's LISTEN/NOTIFY, Oracle's DBMS_ALERT, and Firebird's
+ * POST_EVENT/event-alerting API. Every open connection gets a pane here
+ * regardless (deliberately -- unsupported ones must say so, not just
+ * disappear), it just shows a message instead of a channel tree.
  */
-var NOTIFY_SUPPORTED_DB_TYPES = ["postgresql", "oracle"];
+var NOTIFY_SUPPORTED_DB_TYPES = ["postgresql", "oracle", "firebird"];
 
 // The notify sub-tag (see startNotifyForConnTab) currently mounted into
 // #notify_panel_content, if any -- tracked so refreshNotifyPane can detach
@@ -332,7 +334,7 @@ export function renderNotifyUnsupported(p_tag, p_db_type) {
 	var v_text = document.createElement("div");
 	v_text.className = "omnidb__notify__unsupported-text";
 	v_text.textContent =
-		"Only PostgreSQL (LISTEN/NOTIFY) and Oracle (DBMS_ALERT) connections support this feature.";
+		"Only PostgreSQL (LISTEN/NOTIFY), Oracle (DBMS_ALERT), and Firebird (events) connections support this feature.";
 	v_wrapper.appendChild(v_text);
 
 	v_div.appendChild(v_wrapper);

@@ -48,6 +48,7 @@ import { createTabControl } from "./tabs.js";
 import { checkEditDataStatus } from "./tree_context_functions/edit_data.js";
 import { getTreeMariadb } from "./tree_context_functions/tree_mariadb.js";
 import { getTreeMssql, mssqlTerminateBackend } from "./tree_context_functions/tree_mssql.js";
+import { getTreeFirebird, firebirdTerminateBackend } from "./tree_context_functions/tree_firebird.js";
 import { getTreeMysql, mysqlTerminateBackend } from "./tree_context_functions/tree_mysql.js";
 import { getTreeOracle } from "./tree_context_functions/tree_oracle.js";
 import { getTreePostgresql, postgresqlTerminateBackend } from "./tree_context_functions/tree_postgresql.js";
@@ -316,6 +317,8 @@ export function changeDatabase(p_value) {
 		getTreeOracle(v_connTabControl.selectedTab.tag.divTree.id);
 	} else if (v_conn_object.v_db_type == "mssql") {
 		getTreeMssql(v_connTabControl.selectedTab.tag.divTree.id);
+	} else if (v_conn_object.v_db_type == "firebird") {
+		getTreeFirebird(v_connTabControl.selectedTab.tag.divTree.id);
 	} else if (v_conn_object.v_db_type == "mysql") {
 		getTreeMysql(v_connTabControl.selectedTab.tag.divTree.id);
 	} else if (v_conn_object.v_db_type == "mariadb") {
@@ -1621,6 +1624,9 @@ export var v_monitoring_action_whitelist = {
 	},
 	mssqlTerminateBackend: function (p_row) {
 		if (typeof mssqlTerminateBackend === "function") mssqlTerminateBackend(p_row);
+	},
+	firebirdTerminateBackend: function (p_row) {
+		if (typeof firebirdTerminateBackend === "function") firebirdTerminateBackend(p_row);
 	},
 };
 
