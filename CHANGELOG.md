@@ -150,6 +150,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`wails-app/main.go`) — Wails only wires up the zoom button when `Mac` options are non-nil.
 - README's screenshot images pointed at `docs/assets/screenshot.png`/`screenshot-dark.png`, which
   had just been replaced by `.webp` versions in the same change — broken images once pushed.
+- Query tab layout: the "Console | Query | +" tab strip above the SQL editor stopped ~80px short
+  of the editor's own right edge, because `.omnidb__tab-menu--secondary` (`_base.scss`) still
+  reserved `padding-right: 80px` for the old floating `.omnidb__utilities-menu`, which no longer
+  exists anywhere in the JS. And expanding a query result panel to full-screen (the "expand" button
+  on Data/Messages/Explain) forced `left: 0`/`top: 0` on `.omnidb__panel-view--full`
+  (`_topbar.scss`), which made it cover the left icon rail and slide under the top connection-tabs
+  bar, hiding the only button that un-maximizes it. Added a `--section-nav-width` custom property
+  (`_variables.scss`) as the single source of truth for the rail's width and positioned the panel
+  relative to it instead of hardcoding `left: 0`; restored the original `top: 40px` so the panel
+  (and its restore button) clears the connection-tabs bar again.
 
 ### Removed
 - 185 unused image assets: ~107 orphaned `docs/assets/img/image_NNN.webp` files (leftovers from a

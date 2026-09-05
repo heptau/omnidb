@@ -683,7 +683,6 @@ SOFTWARE.
 
 .omnidb__tab-menu--secondary {
   padding-top: 3px;
-  padding-right: 80px;
 }
 
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link-name {
@@ -5211,6 +5210,7 @@ body.omnidb--theme-dark li.welcome_release_item span {
 }
 
 :root {
+  --section-nav-width: 52px;
   --app-bg: #f5f5f7;
   --panel-bg: #ffffff;
   --input-bg: #fafafa;
@@ -5455,13 +5455,14 @@ select.form-control {
 }
 
 .omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__panel-view--full {
-  left: 0 !important;
+  left: var(--section-nav-width) !important;
   padding-left: 0 !important;
+  width: calc(100vw - var(--section-nav-width) - 20px) !important;
 }
 
 .omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__panel-view--full {
-  left: 0 !important;
-  top: 0 !important;
+  left: var(--section-nav-width) !important;
+  width: calc(100vw - var(--section-nav-width) - 20px) !important;
 }
 
 .omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link .omnidb__tab-menu__link-name {
@@ -5700,9 +5701,9 @@ select.form-control {
 #omnidb_section_nav.omnidb__tab-menu--container--sectionnav {
   display: flex !important;
   flex-direction: column !important;
-  width: 52px !important;
-  min-width: 52px !important;
-  max-width: 52px !important;
+  width: var(--section-nav-width) !important;
+  min-width: var(--section-nav-width) !important;
+  max-width: var(--section-nav-width) !important;
   height: 100vh !important;
   background-color: var(--sidebar-bg) !important;
   border-right: 1px solid var(--border-color) !important;
