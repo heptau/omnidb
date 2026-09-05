@@ -31,6 +31,7 @@ SOFTWARE.
 import { execAjax } from "./ajax_control_bridge.js";
 import { cancelConsoleTab, consoleReturn, consoleSQL } from "./console.js";
 import { showAlert, showError } from "./notification_control.js";
+import { notifyMessageReceived, notifySessionStopped } from "./panel_functions/outer_notify_panel.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { cancelSQLTab, queryError, querySQL, querySQLReturn, v_queryResponseCodes } from "./query.js";
 import { terminalReturn } from "./terminal.js";
@@ -195,6 +196,19 @@ export function polling_response(p_message) {
 		case v_queryResponseCodes.TerminalResult: {
 			if (p_context) {
 				terminalReturn(v_message, p_context);
+			}
+			break;
+		}
+		case v_queryResponseCodes.NotifyResult: {
+			if (p_context) {
+				// No removeContext, same as TerminalResult above: the tab's
+				// context is created once and stays alive for as long as the
+				// tab is open, because the backend keeps pushing into it.
+				if (v_message.v_data && v_message.v_data.v_stopped) {
+					notifySessionStopped(p_context.tab_tag, v_message.v_data.v_message);
+				} else {
+					notifyMessageReceived(v_message, p_context);
+				}
 			}
 			break;
 		}

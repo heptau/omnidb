@@ -96,6 +96,10 @@ function initWorkspace() {
 	// Creating the snippets section content.
 	v_connTabControl.tag.createSnippetPanel();
 
+	// Creating the notify section content (its connection tabs are opened by
+	// the user, so this only builds the empty panel and its "+" tab).
+	v_connTabControl.tag.createNotifyPanel();
+
 	// Creating the vertical section nav (Welcome/Connections/Snippets/
 	// Database/Settings/About).
 	initSectionSwitcher();

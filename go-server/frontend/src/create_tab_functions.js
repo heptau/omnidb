@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { customMenu } from "./custom_menu.js";
 import { showConfirm } from "./notification_control.js";
+import { v_createNotifyPanelFunction } from "./panel_functions/outer_notify_panel.js";
 import { v_createSnippetPanelFunction } from "./panel_functions/outer_snippet_panel.js";
 import { v_createConsoleTabFunction } from "./tab_functions/inner_console_tab.js";
 import { v_createEditDataTabFunction } from "./tab_functions/inner_edit_data_tab.js";
@@ -72,6 +73,9 @@ export function initCreateTabFunctions() {
 
 	// Functions to create snippet panel globally
 	v_connTabControl.tag.createSnippetPanel = v_createSnippetPanelFunction;
+
+	// Functions to create notify panel globally
+	v_connTabControl.tag.createNotifyPanel = v_createNotifyPanelFunction;
 
 	// Functions to create tabs inside snippet panel
 	v_connTabControl.tag.createSnippetTextTab = v_createSnippetTextTabFunction;

@@ -71,6 +71,10 @@ export var v_queryRequestCodes = {
 	Console: 10,
 	Terminal: 11,
 	Ping: 12,
+	// 12 (Ping) and 13 (Pong, below) are dead values the Go backend never
+	// sends or accepts -- the new codes below deliberately skip past both
+	// rather than reusing a number that still exists in this enum.
+	NotifyListen: 13,
 };
 
 /// <summary>
@@ -90,6 +94,7 @@ export var v_queryResponseCodes = {
 	ConsoleResult: 11,
 	TerminalResult: 12,
 	Pong: 13,
+	NotifyResult: 14,
 };
 
 export function escapeHtml(p_str) {

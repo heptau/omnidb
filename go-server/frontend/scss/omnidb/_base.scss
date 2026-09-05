@@ -915,6 +915,196 @@ button.close {
 	padding-top: 1rem;
 }
 
+/* Notify section (panel_functions/outer_notify_panel.js): the same
+   tree-left/content-right split as the Snippets panel above, but sized purely
+   with flexbox -- unlike the snippets panel, nothing in here is an Ace editor
+   that needs a pixel height computed for it in JS. Same reason as
+   #omnidb__section_snippets (see _topbar.scss) for hiding the overflow: the
+   tree and the message list already scroll on their own. */
+#omnidb__section_notify {
+	overflow: hidden;
+}
+
+.omnidb__notify {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.omnidb__notify__tabs {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+/* This tab strip is `primary` like v_connTabControl's, which is what gives it
+   the Database section's look -- but those rules assume the full viewport
+   width, and this one sits to the right of the activity bar. */
+.omnidb__notify__tabs.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) > .omnidb__tab-menu--primary {
+	width: 100% !important;
+}
+
+.omnidb__notify__tabs > .omnidb__tab-content {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.omnidb__notify__tabs > .omnidb__tab-content > .tab-pane.active {
+	height: 100%;
+}
+
+.omnidb__notify__tab {
+	display: flex;
+	height: 100%;
+	min-height: 0;
+}
+
+.omnidb__notify__div-left {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 auto;
+	min-height: 0;
+	position: relative;
+	width: 300px;
+}
+
+.omnidb__notify__tree {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: auto;
+	padding: 7px 15px 0 7px;
+}
+
+.omnidb__notify__resize-line {
+	cursor: ew-resize;
+	height: 100%;
+	position: absolute;
+	right: 0;
+	top: 0;
+	width: 10px;
+	z-index: 10;
+}
+
+.omnidb__notify__div-right {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+	min-width: 0;
+}
+
+.omnidb__notify__banner {
+	align-items: center;
+	background-color: rgba(255, 149, 0, 0.15);
+	border-bottom: 1px solid var(--border-color);
+	color: var(--text-primary);
+	display: flex;
+	font-size: 13px;
+	padding: 8px 12px;
+}
+
+.omnidb__notify__filter {
+	align-items: center;
+	border-bottom: 1px solid var(--border-color);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 12px;
+	padding: 8px 12px;
+}
+
+.omnidb__notify__filter-item {
+	align-items: center;
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 13px;
+	gap: 4px;
+	margin: 0;
+}
+
+.omnidb__notify__filter-clear {
+	margin-left: auto;
+}
+
+.omnidb__notify__messages {
+	flex: 1 1 auto;
+	min-height: 0;
+	overflow: auto;
+}
+
+.omnidb__notify__table {
+	border-collapse: collapse;
+	font-size: 13px;
+	width: 100%;
+}
+
+.omnidb__notify__table th {
+	background-color: var(--panel-bg);
+	border-bottom: 1px solid var(--border-color);
+	color: var(--text-secondary);
+	font-weight: 600;
+	padding: 6px 12px;
+	position: sticky;
+	text-align: left;
+	top: 0;
+	z-index: 1;
+}
+
+.omnidb__notify__table td {
+	border-bottom: 1px solid var(--border-color);
+	padding: 6px 12px;
+	vertical-align: top;
+}
+
+.omnidb__notify__table td:nth-child(3) {
+	white-space: pre-wrap;
+	word-break: break-word;
+}
+
+.omnidb__notify__empty {
+	color: var(--text-secondary);
+	font-size: 13px;
+	padding: 24px;
+	text-align: center;
+}
+
+.omnidb__notify__unsupported {
+	align-items: center;
+	color: var(--text-secondary);
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	justify-content: center;
+	padding: 24px;
+	text-align: center;
+}
+
+.omnidb__notify__unsupported-icon {
+	font-size: 32px;
+	margin-bottom: 12px;
+	opacity: 0.5;
+}
+
+.omnidb__notify__unsupported-title {
+	color: var(--text-primary);
+	font-size: 15px;
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.omnidb__notify__unsupported-text {
+	font-size: 13px;
+}
+
+/* Marks the technologies without a NOTIFY equivalent in the connection
+   picker -- they are listed on purpose, so the marker is what keeps that from
+   reading as "this will work". */
+.omnidb__notify__unsupported-tag {
+	color: var(--text-secondary);
+	font-size: 11px;
+	font-style: italic;
+	margin-left: 8px;
+}
+
 .omnidb__query-info {
 	display: inline-block;
 	line-height: 1.2;

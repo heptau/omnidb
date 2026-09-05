@@ -179,3 +179,14 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_userdetails" (
 	"autocomplete_disabled_types" varchar(255) NOT NULL DEFAULT '',
 	"user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED
 );
+
+CREATE TABLE IF NOT EXISTS "OmniDB_app_notifychannel" (
+	"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+	"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+	"connection_id" bigint NOT NULL REFERENCES "OmniDB_app_connection" ("id") DEFERRABLE INITIALLY DEFERRED,
+	"channel_name" varchar(200) NOT NULL,
+	"active" bool NOT NULL DEFAULT 1,
+	CONSTRAINT "unique_notifychannel" UNIQUE ("user_id", "connection_id", "channel_name")
+);
+CREATE INDEX IF NOT EXISTS "OmniDB_app_notifychannel_user_id" ON "OmniDB_app_notifychannel" ("user_id");
+CREATE INDEX IF NOT EXISTS "OmniDB_app_notifychannel_connection_id" ON "OmniDB_app_notifychannel" ("connection_id");

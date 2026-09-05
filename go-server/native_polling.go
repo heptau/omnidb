@@ -165,6 +165,22 @@ func queueNativeResponse(cookieHeader string, payload map[string]any) {
 	c.mu.Unlock()
 }
 
+// pollingQueueLength reports how many queued responses a client hasn't picked
+// up yet — a simple backpressure signal for producers that can emit without
+// any user action, which in this application means the notify reader alone
+// (see runNotifyReader). Same cookie-to-client-id derivation as
+// queueNativeResponse right above.
+func pollingQueueLength(cookieHeader string) int {
+	clientID := nativeClientIDFromCookieHeader(cookieHeader)
+	if clientID == "" {
+		return 0
+	}
+	c := getPollingClient(clientID)
+	c.mu.Lock()
+	defer c.mu.Unlock()
+	return len(c.returning)
+}
+
 type longPollingRequest struct {
 	PStartup bool `json:"p_startup"`
 }

@@ -380,6 +380,13 @@ func run() error {
 	mux.Handle("/delete_node_snippet/", handleDeleteNodeSnippet(upstream))
 	mux.Handle("/save_snippet_text/", handleSaveSnippetText(upstream))
 	mux.Handle("/rename_node_snippet/", handleRenameNodeSnippet(upstream))
+	// Notify panel channel CRUD — see appdb_notify_handlers.go for why these
+	// are plain REST routes rather than /create_request/ codes.
+	mux.Handle("/get_notify_channels/", handleGetNotifyChannels(upstream))
+	mux.Handle("/add_notify_channel/", handleAddNotifyChannel(upstream))
+	mux.Handle("/delete_notify_channel/", handleDeleteNotifyChannel(upstream))
+	mux.Handle("/pause_notify_channel/", handlePauseNotifyChannel(upstream))
+	mux.Handle("/resume_notify_channel/", handleResumeNotifyChannel(upstream))
 	// workspace.py's DB-agnostic slice (migration-plan phase 6.5, now
 	// complete) — shortcuts, welcome flag, query/console command history,
 	// database list, draw_graph, autocomplete, change_active_database,

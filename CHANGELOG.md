@@ -37,7 +37,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   the class. New users default to "Automatic"; a one-time migration (`appdb_bootstrap.go`) resets
   existing rows' `theme` column from `'light'` (the only value it could ever hold, since the
   frontend never wrote it back) to `'auto'`, so upgrading doesn't force existing dark-mode users
-  into Light.
+  into Light. `grid-custom.css` (VirtualGrid's header/pinned-column/hover-row chrome and the custom
+  context menu, a hand-maintained stylesheet outside the SCSS build, served straight from
+  `static_assets` via `go:embed`) needed the same media-query-to-class regating -- otherwise a
+  forced Light/Dark choice left table headers, the pinned first column, and hover rows following the
+  OS scheme instead.
 
 ## [4.3.0] - 2026-09-02
 

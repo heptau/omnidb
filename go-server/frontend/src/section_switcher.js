@@ -48,7 +48,7 @@ import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
 import { refreshBootstrapTooltips } from "./workspace.js";
 
-const SECTION_NAMES = ["welcome", "connections", "database", "snippets", "settings"];
+const SECTION_NAMES = ["welcome", "connections", "database", "notify", "snippets", "settings"];
 
 /** @type {Record<string, HTMLElement>} */
 var v_sectionDivs = {};
@@ -120,6 +120,15 @@ export function initSectionSwitcher() {
 			switchSection("database");
 		},
 		p_omnidb_tooltip_name: '<h5 class="my-1">Database</h5>',
+	});
+
+	v_sectionNavTabs.notify = v_sectionNav.createTab({
+		p_icon: '<i class="fas fa-bell"></i>',
+		p_close: false,
+		p_selectFunction: function () {
+			switchSection("notify");
+		},
+		p_omnidb_tooltip_name: '<h5 class="my-1">Notify</h5>',
 	});
 
 	v_sectionNavTabs.snippets = v_sectionNav.createTab({

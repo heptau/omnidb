@@ -32,25 +32,27 @@
 	background-color: #f8f9fa;
 }
 
-@media (prefers-color-scheme: dark) {
-	.omnidb__virtual-grid {
-		--omnidb-grid-row-bg: #282a2f;
-	}
+/* Regated from `@media (prefers-color-scheme: dark)` onto
+   body.omnidb--theme-dark (see _theme-dark.scss for the same change and
+   why) -- otherwise these kept following the OS setting even when the
+   Settings > Appearance Theme control forced Light or Dark explicitly. */
+body.omnidb--theme-dark .omnidb__virtual-grid {
+	--omnidb-grid-row-bg: #282a2f;
+}
 
-	.omnidb__virtual-grid th {
-		background-color: #2a2e33;
-		border-right-color: rgba(255, 255, 255, 0.1);
-		border-bottom-color: #3c424a;
-	}
+body.omnidb--theme-dark .omnidb__virtual-grid th {
+	background-color: #2a2e33;
+	border-right-color: rgba(255, 255, 255, 0.1);
+	border-bottom-color: #3c424a;
+}
 
-	.omnidb__virtual-grid td {
-		border-right-color: rgba(255, 255, 255, 0.08);
-		border-bottom-color: #3c424a;
-	}
+body.omnidb--theme-dark .omnidb__virtual-grid td {
+	border-right-color: rgba(255, 255, 255, 0.08);
+	border-bottom-color: #3c424a;
+}
 
-	.omnidb__virtual-grid tbody tr:hover td {
-		background-color: #262a2f;
-	}
+body.omnidb--theme-dark .omnidb__virtual-grid tbody tr:hover td {
+	background-color: #262a2f;
 }
 
 /* Custom Context Menu */
@@ -77,15 +79,13 @@
 	background-color: #f0f0f0;
 }
 
-@media (prefers-color-scheme: dark) {
-	.custom-context-menu {
-		background-color: #22262b;
-		color: #e0e0e0;
-		border: 1px solid #3c424a;
-		box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
-	}
+body.omnidb--theme-dark .custom-context-menu {
+	background-color: #22262b;
+	color: #e0e0e0;
+	border: 1px solid #3c424a;
+	box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+}
 
-	.custom-context-menu > div:hover {
-		background-color: #2c323a;
-	}
+body.omnidb--theme-dark .custom-context-menu > div:hover {
+	background-color: #2c323a;
 }

@@ -206,5 +206,33 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("check OmniDB_app_technology for mssql: %w", err)
 	}
 
+	// Create OmniDB_app_notifychannel if missing (Notify panel) -- unlike the
+	// migrations above, which add a missing *column* to an existing table,
+	// this is a whole new table, so the schema file's own statements can just
+	// be replayed verbatim (they're all IF NOT EXISTS) rather than expressed
+	// as an ALTER.
+	var hasNotifyChannel string
+	err = db.QueryRow(`select name from sqlite_master where type = 'table' and name = 'OmniDB_app_notifychannel'`).Scan(&hasNotifyChannel)
+	if err == sql.ErrNoRows {
+		for _, stmt := range []string{
+			`CREATE TABLE IF NOT EXISTS "OmniDB_app_notifychannel" (
+				"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+				"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+				"connection_id" bigint NOT NULL REFERENCES "OmniDB_app_connection" ("id") DEFERRABLE INITIALLY DEFERRED,
+				"channel_name" varchar(200) NOT NULL,
+				"active" bool NOT NULL DEFAULT 1,
+				CONSTRAINT "unique_notifychannel" UNIQUE ("user_id", "connection_id", "channel_name")
+			)`,
+			`CREATE INDEX IF NOT EXISTS "OmniDB_app_notifychannel_user_id" ON "OmniDB_app_notifychannel" ("user_id")`,
+			`CREATE INDEX IF NOT EXISTS "OmniDB_app_notifychannel_connection_id" ON "OmniDB_app_notifychannel" ("connection_id")`,
+		} {
+			if _, err := db.Exec(stmt); err != nil {
+				return fmt.Errorf("create OmniDB_app_notifychannel: %w", err)
+			}
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_notifychannel: %w", err)
+	}
+
 	return nil
 }

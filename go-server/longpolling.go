@@ -21,6 +21,12 @@ const (
 	requestTypeCloseTab      = 8
 	requestTypeConsole       = 10
 	requestTypeTerminal      = 11
+	// The JS enums (query.js's v_queryRequestCodes/v_queryResponseCodes)
+	// already spell out Ping=12/Pong=13 — dead values neither side ever
+	// sends, but the numbering still has to line up with them, so the notify
+	// codes take the first slots past those instead of the next free ones
+	// here.
+	requestTypeNotifyListen = 13
 
 	responseQueryResult         = 1
 	responseQueryEditDataResult = 2
@@ -28,6 +34,7 @@ const (
 	responseMessageException    = 7
 	responseConsoleResult       = 11
 	responseTerminalResult      = 12
+	responseNotifyMessage       = 14
 )
 
 type createRequestBody struct {
@@ -86,6 +93,21 @@ type queryRequestData struct {
 	VLogQuery   *bool       `json:"v_log_query"`
 	VSQLSave    string      `json:"v_sql_save"`
 	VTabTitle   string      `json:"v_tab_title"`
+}
+
+// notifyRequestData is the Notify panel's "start listening on this tab"
+// payload — same tab-scoped shape as every other long-lived request type.
+type notifyRequestData struct {
+	VDBIndex json.Number `json:"v_db_index"`
+	VTabID   string      `json:"v_tab_id"`
+}
+
+// databaseIndexInt is the saved connection's id, needed to look the tab's
+// persisted channels up in the app db — same "v_db_index is the connection
+// id" identity every other request type here relies on.
+func (q notifyRequestData) databaseIndexInt() int64 {
+	n, _ := q.VDBIndex.Int64()
+	return n
 }
 
 type consoleRequestData struct {
@@ -199,6 +221,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				closeCursor(clientID, tabID)
 				closeConsoleSession(clientID, tabID)
 				closeTerminalSession(clientID, tabID)
+				closeNotifySession(clientID, tabID)
 			}
 			writeEnvelope(w, "", false, -1)
 			return
@@ -213,12 +236,46 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 					closeCursor(clientID, c.TabID)
 					closeConsoleSession(clientID, c.TabID)
 					closeTerminalSession(clientID, c.TabID)
+					closeNotifySession(clientID, c.TabID)
 					if c.TabDBID != nil {
 						deleteTabRow(upstream, r.Header.Get("Cookie"), *c.TabDBID)
 					}
 				}
 			}
 			writeEnvelope(w, "", false, -1)
+			return
+		}
+
+		if body.VCode == requestTypeNotifyListen {
+			var q notifyRequestData
+			if !decodeRequestData(body.VCode, body.VData, &q) {
+				fallback.ServeHTTP(w, r)
+				return
+			}
+			cookie := r.Header.Get("Cookie")
+			info, err := resolveConnection(upstream, cookie, q.VDBIndex.String())
+			if err != nil || !info.Found {
+				fallback.ServeHTTP(w, r)
+				return
+			}
+			if notifySupportedTechnology(info.Technology) {
+				applyRememberedPassword(r, q.VDBIndex.String(), info)
+				go runNotifyStart(upstream, cookie, clientID, q, body.VContextCode, info)
+			} else {
+				// The panel already refuses to start listening for these
+				// engines (it shows an explicit "not supported" tab instead),
+				// so this is defence in depth against a stale frontend —
+				// answer on the existing error channel and never open a
+				// session at all.
+				queueNativeResponse(cookie, map[string]any{
+					"v_code":         responseMessageException,
+					"v_context_code": body.VContextCode,
+					"v_error":        true,
+					"v_data":         fmt.Sprintf("NOTIFY-style channels are not supported for %s connections.", info.Technology),
+				})
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write([]byte("{}"))
 			return
 		}
 
@@ -733,6 +790,7 @@ func handleClearClient() http.HandlerFunc {
 			closeCursorsForClient(clientID)
 			closeConsoleSessionsForClient(clientID)
 			closeTerminalSessionsForClient(clientID)
+			closeNotifySessionsForClient(clientID)
 			removePollingClient(clientID)
 		}
 		w.Header().Set("Content-Type", "application/json")
