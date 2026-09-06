@@ -159,7 +159,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'" style="width: 100%; height: 200px;"></div>' +
 		'<div id="query_resize_line_' +
 		v_tab.id +
-		'" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px; border-bottom: 1px dashed #acc4e8;"></div><div style="height:5px;"></div></div>' +
+		'" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div>' +
 		command_history_modal +
 		'<div class="row mb-1">' +
 		'<div class="tab_actions omnidb__tab-actions col-12">' +
@@ -382,7 +382,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		if (v_connTabControl.tag.globalSnippets.files.length != 0 || v_connTabControl.tag.globalSnippets.folders.length != 0)
 			v_option_list.push({
 				text: "Use snippet",
-				icon: "fas cm-all fa-book",
+				icon: "fas cm-all fa-scroll",
 				submenu: {
 					elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor),
 				},

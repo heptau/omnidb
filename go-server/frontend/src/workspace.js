@@ -66,7 +66,6 @@ import { getTreeSqlite } from "./tree_context_functions/tree_sqlite.js";
 var v_edges;
 /** @type {any[]} */
 var v_nodes;
-var v_start_height, v_start_width;
 
 function initWorkspace() {
 	// Instantiating outer tab component.
@@ -652,163 +651,162 @@ export var resizeSnippetPanel = async function (p_left_pos_x = false) {
 };
 
 /// <summary>
-/// Resize SQL editor and result div.
+/// Resize tree/Properties-DDL split. Live: the tree and Properties/DDL divs
+/// resize on every animation frame while dragging (like the Notify
+/// tree/messages splitter), instead of only committing once on mouseup.
 /// </summary>
 export function resizeTreeVertical(event) {
-	var v_verticalLine = document.createElement("div");
-	v_verticalLine.id = "vertical-resize-line";
-	v_connTabControl.selectedTab.tag.divLeft.appendChild(v_verticalLine);
-
-	document.body.addEventListener("mousemove", getVerticalLinePosition);
-
-	v_start_height = event.screenY;
-	document.body.addEventListener("mouseup", resizeTreeVerticalEnd);
-}
-
-/// <summary>
-/// Resize SQL editor and result div.
-/// </summary>
-export function resizeTreeVerticalEnd(event) {
-	document.body.removeEventListener("mouseup", resizeTreeVerticalEnd);
-	/** @type {HTMLElement} */ (document.getElementById("vertical-resize-line")).remove();
-
-	document.body.removeEventListener("mousemove", getVerticalLinePosition);
-
-	var v_height_diff = event.screenY - v_start_height;
-
 	var v_tag = v_connTabControl.selectedTab.tag;
-
 	var v_tree_div = v_tag.divTree;
-	/** @type {any} */
-	var v_result_div = null;
-
 	var v_tree_tabs_div = v_tag.divTreeTabs;
 
-	var v_tree_tabs_height = v_tag.divLeft.clientHeight - 14 - event.pageY;
-	v_tree_tabs_div.style.flexBasis = v_tree_tabs_height + "px";
+	var v_start_y = event.screenY;
+	var v_start_tree_height = parseInt(v_tree_div.clientHeight, 10);
 
-	var v_inner_height = v_tree_tabs_height - 49 + "px";
+	var v_pending = false;
+	var v_last_screen_y = v_start_y;
+	var v_last_page_y = event.pageY;
 
-	if (v_tag.currTreeTab == "properties") {
-		v_result_div = v_tag.divProperties;
-	} else if (v_tag.currTreeTab == "ddl") {
-		v_result_div = v_tag.divDDL;
-	}
+	var v_apply = function () {
+		v_pending = false;
 
-	v_tree_div.style.height = parseInt(v_tree_div.clientHeight, 10) + v_height_diff + "px";
-	v_result_div.style.height = v_inner_height;
+		/** @type {any} */
+		var v_result_div = null;
+		if (v_tag.currTreeTab == "properties") {
+			v_result_div = v_tag.divProperties;
+		} else if (v_tag.currTreeTab == "ddl") {
+			v_result_div = v_tag.divDDL;
+		}
 
-	if (v_tag.currTreeTab == "properties") {
-		v_tag.gridProperties.render();
-	} else if (v_tag.currTreeTab == "ddl") {
-		v_tag.ddlEditor.resize();
-	}
+		var v_height_diff = v_last_screen_y - v_start_y;
+		var v_tree_tabs_height = v_tag.divLeft.clientHeight - 14 - v_last_page_y;
+		v_tree_tabs_div.style.flexBasis = v_tree_tabs_height + "px";
+
+		var v_inner_height = v_tree_tabs_height - 49 + "px";
+
+		v_tree_div.style.height = v_start_tree_height + v_height_diff + "px";
+		if (v_result_div) v_result_div.style.height = v_inner_height;
+
+		if (v_tag.currTreeTab == "properties") {
+			v_tag.gridProperties.render();
+		} else if (v_tag.currTreeTab == "ddl") {
+			v_tag.ddlEditor.resize();
+		}
+	};
+	var v_move = function (e) {
+		v_last_screen_y = e.screenY;
+		v_last_page_y = e.pageY;
+		if (v_pending) return;
+		v_pending = true;
+		requestAnimationFrame(v_apply);
+	};
+	var v_up = function () {
+		document.body.removeEventListener("mousemove", v_move);
+		document.body.removeEventListener("mouseup", v_up);
+	};
+
+	document.body.addEventListener("mousemove", v_move);
+	document.body.addEventListener("mouseup", v_up);
 }
 
 /// <summary>
-/// Redefines horizontal resize line position.
-/// </summary>
-export function horizontalLinePosition(p_event) {
-	/** @type {HTMLElement} */ (document.getElementById("horizontal-resize-line")).style.left = p_event.pageX + "px";
-}
-
-/// <summary>
-/// Resize Snippet panel editor horizontally.
+/// Resize Connection tab horizontally (tree/query area split). Live,
+/// rAF-throttled: the width applies on every animation frame while
+/// dragging instead of only once on mouseup.
 /// </summary>
 export function resizeConnectionHorizontal(event) {
 	event.preventDefault();
-	var v_horizontalLine = document.createElement("div");
-	v_horizontalLine.id = "horizontal-resize-line";
-	v_connTabControl.selectedDiv.appendChild(v_horizontalLine);
-
-	document.body.addEventListener("mousemove", horizontalLinePosition);
-
-	v_start_width = event.x;
-	document.body.addEventListener("mouseup", resizeConnectionHorizontalEnd);
-}
-
-/// <summary>
-/// Resize Connection tab horizontally.
-/// </summary>
-export function resizeConnectionHorizontalEnd(event) {
-	document.body.removeEventListener("mouseup", resizeConnectionHorizontalEnd);
-	var v_horizontal_line = document.getElementById("horizontal-resize-line");
-	if (v_horizontal_line) {
-		v_horizontal_line.remove();
-	}
-
-	document.body.removeEventListener("mousemove", horizontalLinePosition);
 
 	var v_div_left = v_connTabControl.selectedTab.tag.divLeft;
-	var v_totalWidth = v_connTabControl.selectedDiv.getBoundingClientRect().width;
+	var v_start_x = event.x;
+	var v_start_width = v_div_left.getBoundingClientRect().width;
 
-	var v_paddingCompensation = 8;
-	var v_offsetLeft = v_div_left.getBoundingClientRect().left;
-	var v_mousePosX = event.x;
+	var v_pending = false;
+	var v_last_x = v_start_x;
 
-	var v_pixel_value = v_mousePosX > v_offsetLeft ? v_paddingCompensation + v_mousePosX - v_offsetLeft : 0;
+	var v_apply = function () {
+		v_pending = false;
 
-	var v_left_width_value = v_pixel_value + "px";
+		var v_pixel_value = v_start_width + (v_last_x - v_start_x);
+		if (v_pixel_value < 0) v_pixel_value = 0;
+		var v_left_width_value = v_pixel_value + "px";
 
-	v_div_left.style["max-width"] = v_left_width_value;
-	v_div_left.style["width"] = v_left_width_value;
+		v_div_left.style["max-width"] = v_left_width_value;
+		v_div_left.style["width"] = v_left_width_value;
 
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+		refreshHeights();
+	};
+	var v_move = function (e) {
+		v_last_x = e.x;
+		if (v_pending) return;
+		v_pending = true;
+		requestAnimationFrame(v_apply);
+	};
+	var v_up = function () {
+		document.body.removeEventListener("mousemove", v_move);
+		document.body.removeEventListener("mouseup", v_up);
+	};
 
-	refreshHeights();
+	document.body.addEventListener("mousemove", v_move);
+	document.body.addEventListener("mouseup", v_up);
 }
 
 /// <summary>
-/// Resize Snippet panel editor horizontally.
+/// Resize Snippet panel editor horizontally. Live, rAF-throttled.
 /// </summary>
 export function resizeSnippetHorizontal(event) {
 	event.preventDefault();
-	var v_horizontalLine = document.createElement("div");
-	v_horizontalLine.id = "horizontal-resize-line";
-	v_connTabControl.snippet_tag.divPanel.appendChild(v_horizontalLine);
 
-	document.body.addEventListener("mousemove", horizontalLinePosition);
+	var v_pending = false;
+	var v_last_x = event.x;
 
-	v_start_width = event.x;
-	document.body.addEventListener("mouseup", resizeSnippetHorizontalEnd);
+	var v_apply = function () {
+		v_pending = false;
+		resizeSnippetPanel(v_last_x);
+	};
+	var v_move = function (e) {
+		v_last_x = e.x;
+		if (v_pending) return;
+		v_pending = true;
+		requestAnimationFrame(v_apply);
+	};
+	var v_up = function () {
+		document.body.removeEventListener("mousemove", v_move);
+		document.body.removeEventListener("mouseup", v_up);
+	};
+
+	document.body.addEventListener("mousemove", v_move);
+	document.body.addEventListener("mouseup", v_up);
 }
 
 /// <summary>
-/// Resize Snippet panel editor horizontally.
-/// </summary>
-export function resizeSnippetHorizontalEnd(event) {
-	document.body.removeEventListener("mouseup", resizeSnippetHorizontalEnd);
-	/** @type {HTMLElement} */ (document.getElementById("horizontal-resize-line")).remove();
-
-	document.body.removeEventListener("mousemove", horizontalLinePosition);
-
-	var v_mousePosX = event.x;
-
-	resizeSnippetPanel(v_mousePosX);
-}
-
-/// <summary>
-/// Resize Connections management sidebar horizontally.
+/// Resize Connections management sidebar horizontally. Live: nothing here
+/// needs an editor/grid resize, so (like Notify) this applies directly on
+/// every mousemove, no rAF throttling needed.
 /// </summary>
 export function resizeConnectionsHorizontal(event) {
 	event.preventDefault();
-	var v_horizontalLine = document.createElement("div");
-	v_horizontalLine.id = "horizontal-resize-line";
-	/** @type {HTMLElement} */ (document.getElementById("omnidb__section_connections")).appendChild(v_horizontalLine);
 
-	document.body.addEventListener("mousemove", horizontalLinePosition);
+	var v_sidebar = /** @type {HTMLElement} */ (document.querySelector(".omnidb__connections__sidebar"));
+	var v_offsetLeft = v_sidebar.getBoundingClientRect().left;
+	var v_start_x = event.x;
+	var v_start_width = v_sidebar.getBoundingClientRect().width;
 
-	v_start_width = event.x;
-	document.body.addEventListener("mouseup", resizeConnectionsHorizontalEnd);
-}
+	var v_move = function (e) {
+		// resizeConnectionsPanel derives the new width as `mouse_x -
+		// offsetLeft`; feeding it offsetLeft + start width + delta (instead of
+		// the raw mouse x) keeps the width anchored to where the drag actually
+		// started, rather than snapping to wherever within the resize strip
+		// the mousedown happened to land.
+		resizeConnectionsPanel(v_offsetLeft + v_start_width + (e.x - v_start_x));
+	};
+	var v_up = function () {
+		document.body.removeEventListener("mousemove", v_move);
+		document.body.removeEventListener("mouseup", v_up);
+	};
 
-export function resizeConnectionsHorizontalEnd(event) {
-	document.body.removeEventListener("mouseup", resizeConnectionsHorizontalEnd);
-	/** @type {HTMLElement} */ (document.getElementById("horizontal-resize-line")).remove();
-
-	document.body.removeEventListener("mousemove", horizontalLinePosition);
-
-	resizeConnectionsPanel(event.x);
+	document.body.addEventListener("mousemove", v_move);
+	document.body.addEventListener("mouseup", v_up);
 }
 
 /// <summary>
@@ -836,47 +834,52 @@ export function resizeConnectionsPanel(p_mouse_x) {
 }
 
 /// <summary>
-/// Resize SQL editor and result div.
+/// Resize SQL editor and result div. Live, rAF-throttled: applies on every
+/// animation frame while dragging instead of only once on mouseup.
 /// </summary>
 export function resizeVertical(event) {
 	event.preventDefault();
-	var v_verticalLine = document.createElement("div");
-	v_verticalLine.id = "vertical-resize-line";
-	v_connTabControl.selectedTab.tag.divRight.appendChild(v_verticalLine);
-
-	document.body.addEventListener("mousemove", getVerticalLinePosition);
-
-	v_start_height = event.screenY;
-	document.body.addEventListener("mouseup", resizeVerticalEnd);
-}
-
-/// <summary>
-/// Resize SQL editor and result div.
-/// </summary>
-export function resizeVerticalEnd(event) {
-	document.body.removeEventListener("mouseup", resizeVerticalEnd);
-	/** @type {HTMLElement} */ (document.getElementById("vertical-resize-line")).remove();
-
-	document.body.removeEventListener("mousemove", getVerticalLinePosition);
-
-	var v_height_diff = event.screenY - v_start_height;
 
 	var v_editor_div = /** @type {HTMLElement} */ (
 		document.getElementById(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editorDivId)
 	);
 	var v_result_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
 
-	if (v_height_diff < 0) {
-		if (Math.abs(v_height_diff) > parseInt(v_editor_div.style.height, 10))
-			v_height_diff = parseInt(v_editor_div.style.height, 10) * -1 + 10;
-	} else {
-		if (Math.abs(v_height_diff) > parseInt(v_result_div.style.height, 10))
-			v_height_diff = parseInt(v_result_div.style.height, 10) - 10;
-	}
-	v_editor_div.style.height = parseInt(v_editor_div.style.height, 10) + v_height_diff + "px";
-	v_result_div.style.height = parseInt(v_result_div.style.height, 10) - v_height_diff + "px";
+	var v_start_y = event.screenY;
+	var v_start_editor_height = parseInt(v_editor_div.style.height, 10);
+	var v_start_result_height = parseInt(v_result_div.style.height, 10);
 
-	refreshHeights();
+	var v_pending = false;
+	var v_last_y = v_start_y;
+
+	var v_apply = function () {
+		v_pending = false;
+
+		var v_height_diff = v_last_y - v_start_y;
+
+		if (v_height_diff < 0) {
+			if (Math.abs(v_height_diff) > v_start_editor_height) v_height_diff = v_start_editor_height * -1 + 10;
+		} else {
+			if (Math.abs(v_height_diff) > v_start_result_height) v_height_diff = v_start_result_height - 10;
+		}
+		v_editor_div.style.height = v_start_editor_height + v_height_diff + "px";
+		v_result_div.style.height = v_start_result_height - v_height_diff + "px";
+
+		refreshHeights();
+	};
+	var v_move = function (e) {
+		v_last_y = e.screenY;
+		if (v_pending) return;
+		v_pending = true;
+		requestAnimationFrame(v_apply);
+	};
+	var v_up = function () {
+		document.body.removeEventListener("mousemove", v_move);
+		document.body.removeEventListener("mouseup", v_up);
+	};
+
+	document.body.addEventListener("mousemove", v_move);
+	document.body.addEventListener("mouseup", v_up);
 }
 
 export function resizeWindow() {
@@ -1476,16 +1479,6 @@ export function drop(event, grid_container, div_left, div_right) {
 		}
 		v_connTabControl.selectedTab.tag.gridProperties.render();
 	} catch (e) {}
-}
-
-/**
- * ## getVerticalLinePosition
- * @desc Gets the Y position of the pointer event.
- *
- * @param  {Object} p_event UI action pointer event.
- */
-export function getVerticalLinePosition(p_event) {
-	/** @type {HTMLElement} */ (document.getElementById("vertical-resize-line")).style.top = p_event.pageY + "px";
 }
 
 export function toggleExpandToPanelView(p_target_id) {

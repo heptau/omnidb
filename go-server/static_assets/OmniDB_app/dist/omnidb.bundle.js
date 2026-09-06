@@ -7908,7 +7908,7 @@
   }
   var SNIPPET_PANEL_ID = "snippets_panel";
   var v_createSnippetPanelFunction = function(p_index) {
-    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='container-fluid h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
+    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
     var v_target = (
       /** @type {HTMLElement} */
       document.getElementById("omnidb__section_snippets")
@@ -8001,7 +8001,7 @@
 				<ul>
 				<li><i class="fas fa-hand-spock omnidb__theme__text--primary me-2"></i>Welcome, tutorials and useful links.</li>
 				<li><i class="fas fa-plug omnidb__theme__text--primary me-2"></i>Connections management.</li>
-				<li><i class="fas fa-book omnidb__theme__text--primary me-2"></i>Snippets panel.</li>
+				<li><i class="fas fa-scroll omnidb__theme__text--primary me-2"></i>Snippets panel.</li>
 				<li><i class="fas fa-database omnidb__theme__text--primary me-2"></i>Database (your open connections).</li>
 				</ul>
 				<p>At the bottom you'll also find <i class="fas fa-lightbulb omnidb__theme__text--primary me-2"></i>Getting Started, <i class="fas fa-cog omnidb__theme__text--primary me-2"></i>Settings, and your <i class="fas fa-user omnidb__theme__text--primary me-2"></i>Account.</p>
@@ -8378,7 +8378,7 @@
           p_clone_target: true,
           p_message: `
 				<p>The snippet panel is now accessible globally, from the navigation rail.</p>
-				<p>Please, click on the <i class="fas fa-book"></i> icon.</p>
+				<p>Please, click on the <i class="fas fa-scroll"></i> icon.</p>
 				`,
           p_target: document.getElementById("omnidb_section_nav"),
           p_title: "Global Snippet Panel"
@@ -8605,7 +8605,7 @@
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
-						<i class="fas fa-book me-2"></i>Meet the snippets panel
+						<i class="fas fa-scroll me-2"></i>Meet the snippets panel
 					</button>
 				</li>
 				<li class="mb-2">
@@ -8707,7 +8707,7 @@
       p_omnidb_tooltip_name: '<h5 class="my-1">Notify</h5>'
     });
     v_sectionNavTabs.snippets = v_sectionNav.createTab({
-      p_icon: '<i class="fas fa-book"></i>',
+      p_icon: '<i class="fas fa-scroll"></i>',
       p_close: false,
       p_selectFunction: function() {
         toggleSnippetPanel();
@@ -10950,7 +10950,7 @@
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var console_history_modal = "<div class='modal fade' id='modal_console_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Console commands history</h5><button id='bt_close_console_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='console_history_div_" + v_tab.id + "' class='console_command_history'><div id='console_history_header_" + v_tab.id + "' class='console_command_history_header'></div><div id='console_history_grid_" + v_tab.id + "' class='console_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div><div id='console_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" + console_history_modal + "<div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play fa-light'></i></button><button id='bt_indent_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Indent SQL'><i class='fas fa-indent fa-light'></i></button><button id='bt_clear_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Clear Console'><i class='fas fa-broom fa-light'></i></button><button id='bt_history_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Command History'><i class='fas fa-list fa-light'></i></button><div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" + v_tab.id + "' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" + v_tab.id + "'>Autocommit</label></div><div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" + v_tab.id + "' title='Not connected' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" + v_tab.id + "' title='Not connected' class='tab-status-text query_info dbms_object postgresql_object ms-1'>Not connected</span></div><button id='bt_fetch_more_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch More' style='display: none; '>Fetch more</button><button id='bt_fetch_all_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch All' style='margin-left: 5px; display: none; '>Fetch all</button><button id='bt_skip_fetch_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Skip Fetch' style='margin-left: 5px; display: none; '>Skip Fetch</button><button id='bt_commit_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Commit</button><button id='bt_rollback_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Rollback</button><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style=' display: none;'>Cancel</button><div id='div_query_info_" + v_tab.id + "' class='omnidb__query-info'></div></div></div><div id='txt_input_" + v_tab.id + "' class='omnidb__console__text-input' style=' width: 100%; height: 150px; border: 1px solid #c3c3c3;'></div>";
+    var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div><div id='console_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div>" + console_history_modal + "<div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play fa-light'></i></button><button id='bt_indent_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Indent SQL'><i class='fas fa-indent fa-light'></i></button><button id='bt_clear_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Clear Console'><i class='fas fa-broom fa-light'></i></button><button id='bt_history_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Command History'><i class='fas fa-list fa-light'></i></button><div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" + v_tab.id + "' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" + v_tab.id + "'>Autocommit</label></div><div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" + v_tab.id + "' title='Not connected' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" + v_tab.id + "' title='Not connected' class='tab-status-text query_info dbms_object postgresql_object ms-1'>Not connected</span></div><button id='bt_fetch_more_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch More' style='display: none; '>Fetch more</button><button id='bt_fetch_all_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Fetch All' style='margin-left: 5px; display: none; '>Fetch all</button><button id='bt_skip_fetch_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Skip Fetch' style='margin-left: 5px; display: none; '>Skip Fetch</button><button id='bt_commit_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Commit</button><button id='bt_rollback_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='Run' style='margin-left: 5px; display: none; '>Rollback</button><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style=' display: none;'>Cancel</button><div id='div_query_info_" + v_tab.id + "' class='omnidb__query-info'></div></div></div><div id='txt_input_" + v_tab.id + "' class='omnidb__console__text-input' style=' width: 100%; height: 150px; border: 1px solid #c3c3c3;'></div>";
     document.getElementById("div_" + v_tab.id);
     v_tab.elementDiv.innerHTML = v_html;
     ace.require("ace/ext/language_tools");
@@ -11012,7 +11012,7 @@
       if (v_connTabControl.tag.globalSnippets.files.length != 0 || v_connTabControl.tag.globalSnippets.folders.length != 0)
         v_option_list.push({
           text: "Use snippet",
-          icon: "fas cm-all fa-book",
+          icon: "fas cm-all fa-scroll",
           submenu: {
             elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor1)
           }
@@ -11212,7 +11212,7 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div></div>";
+    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div></div>";
     v_tab.elementDiv.innerHTML = v_html;
     var v_height = window.innerHeight - /** @type {HTMLElement} */
     (document.getElementById("div_edit_data_data_" + v_tab.id).getBoundingClientRect().top + window.scrollY) - 20;
@@ -11941,7 +11941,7 @@
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
     var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>Command history</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='Close'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px; border-bottom: 1px dashed #acc4e8;"></div><div style="height:5px;"></div></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run Statement at Cursor"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Command History"><i class="fas fa-list fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">Autocommit</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="Not connected" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ms-1">Not connected</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch more</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch all</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;">Commit</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Rollback</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;">Cancel</button><div id="div_query_info_' + v_tab.id + '" class="omnidb__query-info"></div><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
+    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run Statement at Cursor"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Command History"><i class="fas fa-list fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">Autocommit</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="Not connected" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ms-1">Not connected</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch more</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch all</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;">Commit</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Rollback</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;">Cancel</button><div id="div_query_info_' + v_tab.id + '" class="omnidb__query-info"></div><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
     v_tab.elementDiv.innerHTML = v_html;
     var v_curr_tabs = createTabControl({ p_div: "query_result_tabs_" + v_tab.id });
     var v_selectDataTabFunc = function() {
@@ -12040,7 +12040,7 @@
       if (v_connTabControl.tag.globalSnippets.files.length != 0 || v_connTabControl.tag.globalSnippets.folders.length != 0)
         v_option_list.push({
           text: "Use snippet",
-          icon: "fas cm-all fa-book",
+          icon: "fas cm-all fa-scroll",
           submenu: {
             elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor)
           }
@@ -12305,7 +12305,7 @@
     }
     v_connTabControl.snippet_tag.tabControl.removeTabIndex(v_connTabControl.snippet_tag.tabControl.tabList.length - 1);
     var v_tab = v_connTabControl.snippet_tag.tabControl.createTab({
-      p_icon: '<i class="fas fa-bolt icon-tab-title"></i>',
+      p_icon: '<i class="fas fa-scroll icon-tab-title"></i>',
       p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         refreshHeights();
@@ -12336,7 +12336,7 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = '<div id="txt_snippet_' + v_tab.id + '" style="width: 100%; height: 200px; border: 1px solid #c3c3c3;"></div><div class="row mt-2"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_indent_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent me-2"></i>Indent</button><button id="bt_save_' + v_tab.id + '" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;"><i class="fas fa-save me-2"></i>Save</button></div></div>';
+    var v_html = '<div id="txt_snippet_' + v_tab.id + '" style="width: 100%; height: 200px; border-right: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3;"></div><div class="tab_actions omnidb__tab-actions omnidb__tab-actions--no-divider mt-2"><button id="bt_indent_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent me-2"></i>Indent</button><button id="bt_save_' + v_tab.id + '" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save"><i class="fas fa-save me-2"></i>Save</button></div>';
     var v_div = (
       /** @type {HTMLElement} */
       document.getElementById("div_" + v_tab.id)
@@ -12511,7 +12511,7 @@
         p_omnidb_tooltip_name: p_tooltip_name
       });
       v_connTabControl.selectTab(v_tab);
-      var v_html = `<div style="position: relative; height: 100%;"><div style="display: grid; grid-template-areas: 'left splitter right'; grid-template-columns: auto 12px minmax(0, 1fr); height: 100%;"><div id="` + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="grid-area: left; max-width: 300px; width: 300px;"><div class="omnidb__workspace__content-left"><div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div><div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div><div id="' + v_tab.id + '_left_resize_line_horizontal" style="position: relative; width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;"><button id="bt_toggle_tree_tabs_' + v_tab.id + '" type="button" class="omnidb__tree-tabs__toggler" title="Toggle Properties/DDL Panel"><i class="fas fa-arrows-alt-v"></i></button></div><div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;"><div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;"><div class="div_loading_cover"></div><div class="div_loading_content">  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">    <span class="sr-only ">Loading...</span>  </div></div></div><div id="tree_tabs_' + v_tab.id + '" class="omnidb__tree-tabs__container" style="position: relative;"></div></div></div></div><div id="connection_resize_line_' + v_tab.id + '" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;"><button id="bt_toggle_tree_container_' + v_tab.id + '" type="button" class="omnidb__tree__toggler" title="Toggle Database Tree"><i class="fas fa-arrows-alt-h"></i></button></div><div id="' + v_tab.id + '_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;"><div id="' + v_tab.id + '_tabs" class="w-100"></div></div></div></div>';
+      var v_html = `<div style="position: relative; height: 100%;"><div style="display: grid; grid-template-areas: 'left splitter right'; grid-template-columns: auto 12px minmax(0, 1fr); height: 100%;"><div id="` + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="grid-area: left; max-width: 300px; width: 300px;"><div class="omnidb__workspace__content-left"><div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div><div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div><div id="' + v_tab.id + '_left_resize_line_horizontal" class="resize_line_horizontal omnidb__resize-line__container" style="position: relative; width: 100%; height: 12px; cursor: ns-resize;"><button id="bt_toggle_tree_tabs_' + v_tab.id + '" type="button" class="omnidb__tree-tabs__toggler" title="Toggle Properties/DDL Panel"><i class="fas fa-arrows-alt-v"></i></button></div><div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;"><div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;"><div class="div_loading_cover"></div><div class="div_loading_content">  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">    <span class="sr-only ">Loading...</span>  </div></div></div><div id="tree_tabs_' + v_tab.id + '" class="omnidb__tree-tabs__container" style="position: relative;"></div></div></div></div><div id="connection_resize_line_' + v_tab.id + '" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; z-index: 10; background-color: var(--panel-bg);"><div class="resize_line_vertical omnidb__resize-line__container" style="height: 100%;"></div><button id="bt_toggle_tree_container_' + v_tab.id + '" type="button" class="omnidb__tree__toggler" title="Toggle Database Tree"><i class="fas fa-arrows-alt-h"></i></button></div><div id="' + v_tab.id + '_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;"><div id="' + v_tab.id + '_tabs" class="w-100"></div></div></div></div>';
       var v_tab_title_span = v_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
       if (v_tab_title_span) {
         v_tab_title_span.id = "tab_title_" + v_tab.id;
@@ -22808,6 +22808,10 @@
     window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event2) => {
       changeTheme(v_theme_preference);
     });
+    document.getElementById("settings_resize_line").addEventListener(
+      "mousedown",
+      (event2) => resizeSettingsHorizontal(event2)
+    );
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initHeaderActions);
   else setTimeout(initHeaderActions, 0);
@@ -23013,6 +23017,34 @@
     document.querySelectorAll(".omnidb__settings__pane").forEach(function(el2) {
       el2.classList.toggle("omnidb__settings__pane--active", el2.getAttribute("data-category") === p_category);
     });
+  }
+  function resizeSettingsHorizontal(event2) {
+    event2.preventDefault();
+    var v_sidebar = (
+      /** @type {HTMLElement} */
+      document.querySelector(".omnidb__settings__sidebar")
+    );
+    var v_container = (
+      /** @type {HTMLElement} */
+      document.querySelector(".omnidb__settings")
+    );
+    var v_start_x = event2.x;
+    var v_start_width = v_sidebar.getBoundingClientRect().width;
+    var v_move = function(e) {
+      var v_max_allowed_width = v_container.getBoundingClientRect().width - 50;
+      var v_pixel_value = v_start_width + (e.x - v_start_x);
+      if (v_pixel_value < 180) v_pixel_value = 180;
+      if (v_pixel_value > v_max_allowed_width) v_pixel_value = v_max_allowed_width;
+      var v_width_value = v_pixel_value + "px";
+      v_sidebar.style["max-width"] = v_width_value;
+      v_sidebar.style["flex"] = "0 0 " + v_width_value;
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
   }
   function debounce(p_fn, p_ms) {
     var v_timer;
@@ -37115,7 +37147,6 @@
   }, Symbol.toStringTag, { value: "Module" }));
   var v_edges;
   var v_nodes;
-  var v_start_height;
   function initWorkspace() {
     v_connTabControl = createTabControl({
       p_div: "omnidb_main_tablist",
@@ -37543,99 +37574,116 @@
     });
   };
   function resizeTreeVertical(event2) {
-    var v_verticalLine = document.createElement("div");
-    v_verticalLine.id = "vertical-resize-line";
-    v_connTabControl.selectedTab.tag.divLeft.appendChild(v_verticalLine);
-    document.body.addEventListener("mousemove", getVerticalLinePosition);
-    v_start_height = event2.screenY;
-    document.body.addEventListener("mouseup", resizeTreeVerticalEnd);
-  }
-  function resizeTreeVerticalEnd(event2) {
-    document.body.removeEventListener("mouseup", resizeTreeVerticalEnd);
-    document.getElementById("vertical-resize-line").remove();
-    document.body.removeEventListener("mousemove", getVerticalLinePosition);
-    var v_height_diff = event2.screenY - v_start_height;
     var v_tag = v_connTabControl.selectedTab.tag;
     var v_tree_div = v_tag.divTree;
-    var v_result_div = null;
     var v_tree_tabs_div = v_tag.divTreeTabs;
-    var v_tree_tabs_height = v_tag.divLeft.clientHeight - 14 - event2.pageY;
-    v_tree_tabs_div.style.flexBasis = v_tree_tabs_height + "px";
-    var v_inner_height = v_tree_tabs_height - 49 + "px";
-    if (v_tag.currTreeTab == "properties") {
-      v_result_div = v_tag.divProperties;
-    } else if (v_tag.currTreeTab == "ddl") {
-      v_result_div = v_tag.divDDL;
-    }
-    v_tree_div.style.height = parseInt(v_tree_div.clientHeight, 10) + v_height_diff + "px";
-    v_result_div.style.height = v_inner_height;
-    if (v_tag.currTreeTab == "properties") {
-      v_tag.gridProperties.render();
-    } else if (v_tag.currTreeTab == "ddl") {
-      v_tag.ddlEditor.resize();
-    }
-  }
-  function horizontalLinePosition(p_event) {
-    document.getElementById("horizontal-resize-line").style.left = p_event.pageX + "px";
+    var v_start_y = event2.screenY;
+    var v_start_tree_height = parseInt(v_tree_div.clientHeight, 10);
+    var v_pending = false;
+    var v_last_screen_y = v_start_y;
+    var v_last_page_y = event2.pageY;
+    var v_apply = function() {
+      v_pending = false;
+      var v_result_div = null;
+      if (v_tag.currTreeTab == "properties") {
+        v_result_div = v_tag.divProperties;
+      } else if (v_tag.currTreeTab == "ddl") {
+        v_result_div = v_tag.divDDL;
+      }
+      var v_height_diff = v_last_screen_y - v_start_y;
+      var v_tree_tabs_height = v_tag.divLeft.clientHeight - 14 - v_last_page_y;
+      v_tree_tabs_div.style.flexBasis = v_tree_tabs_height + "px";
+      var v_inner_height = v_tree_tabs_height - 49 + "px";
+      v_tree_div.style.height = v_start_tree_height + v_height_diff + "px";
+      if (v_result_div) v_result_div.style.height = v_inner_height;
+      if (v_tag.currTreeTab == "properties") {
+        v_tag.gridProperties.render();
+      } else if (v_tag.currTreeTab == "ddl") {
+        v_tag.ddlEditor.resize();
+      }
+    };
+    var v_move = function(e) {
+      v_last_screen_y = e.screenY;
+      v_last_page_y = e.pageY;
+      if (v_pending) return;
+      v_pending = true;
+      requestAnimationFrame(v_apply);
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
   }
   function resizeConnectionHorizontal(event2) {
     event2.preventDefault();
-    var v_horizontalLine = document.createElement("div");
-    v_horizontalLine.id = "horizontal-resize-line";
-    v_connTabControl.selectedDiv.appendChild(v_horizontalLine);
-    document.body.addEventListener("mousemove", horizontalLinePosition);
-    event2.x;
-    document.body.addEventListener("mouseup", resizeConnectionHorizontalEnd);
-  }
-  function resizeConnectionHorizontalEnd(event2) {
-    document.body.removeEventListener("mouseup", resizeConnectionHorizontalEnd);
-    var v_horizontal_line = document.getElementById("horizontal-resize-line");
-    if (v_horizontal_line) {
-      v_horizontal_line.remove();
-    }
-    document.body.removeEventListener("mousemove", horizontalLinePosition);
     var v_div_left = v_connTabControl.selectedTab.tag.divLeft;
-    v_connTabControl.selectedDiv.getBoundingClientRect().width;
-    var v_paddingCompensation = 8;
-    var v_offsetLeft = v_div_left.getBoundingClientRect().left;
-    var v_mousePosX = event2.x;
-    var v_pixel_value = v_mousePosX > v_offsetLeft ? v_paddingCompensation + v_mousePosX - v_offsetLeft : 0;
-    var v_left_width_value = v_pixel_value + "px";
-    v_div_left.style["max-width"] = v_left_width_value;
-    v_div_left.style["width"] = v_left_width_value;
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    refreshHeights();
+    var v_start_x = event2.x;
+    var v_start_width = v_div_left.getBoundingClientRect().width;
+    var v_pending = false;
+    var v_last_x = v_start_x;
+    var v_apply = function() {
+      v_pending = false;
+      var v_pixel_value = v_start_width + (v_last_x - v_start_x);
+      if (v_pixel_value < 0) v_pixel_value = 0;
+      var v_left_width_value = v_pixel_value + "px";
+      v_div_left.style["max-width"] = v_left_width_value;
+      v_div_left.style["width"] = v_left_width_value;
+      refreshHeights();
+    };
+    var v_move = function(e) {
+      v_last_x = e.x;
+      if (v_pending) return;
+      v_pending = true;
+      requestAnimationFrame(v_apply);
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
   }
   function resizeSnippetHorizontal(event2) {
     event2.preventDefault();
-    var v_horizontalLine = document.createElement("div");
-    v_horizontalLine.id = "horizontal-resize-line";
-    v_connTabControl.snippet_tag.divPanel.appendChild(v_horizontalLine);
-    document.body.addEventListener("mousemove", horizontalLinePosition);
-    event2.x;
-    document.body.addEventListener("mouseup", resizeSnippetHorizontalEnd);
-  }
-  function resizeSnippetHorizontalEnd(event2) {
-    document.body.removeEventListener("mouseup", resizeSnippetHorizontalEnd);
-    document.getElementById("horizontal-resize-line").remove();
-    document.body.removeEventListener("mousemove", horizontalLinePosition);
-    var v_mousePosX = event2.x;
-    resizeSnippetPanel(v_mousePosX);
+    var v_pending = false;
+    var v_last_x = event2.x;
+    var v_apply = function() {
+      v_pending = false;
+      resizeSnippetPanel(v_last_x);
+    };
+    var v_move = function(e) {
+      v_last_x = e.x;
+      if (v_pending) return;
+      v_pending = true;
+      requestAnimationFrame(v_apply);
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
   }
   function resizeConnectionsHorizontal(event2) {
     event2.preventDefault();
-    var v_horizontalLine = document.createElement("div");
-    v_horizontalLine.id = "horizontal-resize-line";
-    document.getElementById("omnidb__section_connections").appendChild(v_horizontalLine);
-    document.body.addEventListener("mousemove", horizontalLinePosition);
-    event2.x;
-    document.body.addEventListener("mouseup", resizeConnectionsHorizontalEnd);
-  }
-  function resizeConnectionsHorizontalEnd(event2) {
-    document.body.removeEventListener("mouseup", resizeConnectionsHorizontalEnd);
-    document.getElementById("horizontal-resize-line").remove();
-    document.body.removeEventListener("mousemove", horizontalLinePosition);
-    resizeConnectionsPanel(event2.x);
+    var v_sidebar = (
+      /** @type {HTMLElement} */
+      document.querySelector(".omnidb__connections__sidebar")
+    );
+    var v_offsetLeft = v_sidebar.getBoundingClientRect().left;
+    var v_start_x = event2.x;
+    var v_start_width = v_sidebar.getBoundingClientRect().width;
+    var v_move = function(e) {
+      resizeConnectionsPanel(v_offsetLeft + v_start_width + (e.x - v_start_x));
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
   }
   function resizeConnectionsPanel(p_mouse_x) {
     var v_sidebar = (
@@ -37659,33 +37707,40 @@
   }
   function resizeVertical(event2) {
     event2.preventDefault();
-    var v_verticalLine = document.createElement("div");
-    v_verticalLine.id = "vertical-resize-line";
-    v_connTabControl.selectedTab.tag.divRight.appendChild(v_verticalLine);
-    document.body.addEventListener("mousemove", getVerticalLinePosition);
-    v_start_height = event2.screenY;
-    document.body.addEventListener("mouseup", resizeVerticalEnd);
-  }
-  function resizeVerticalEnd(event2) {
-    document.body.removeEventListener("mouseup", resizeVerticalEnd);
-    document.getElementById("vertical-resize-line").remove();
-    document.body.removeEventListener("mousemove", getVerticalLinePosition);
-    var v_height_diff = event2.screenY - v_start_height;
     var v_editor_div = (
       /** @type {HTMLElement} */
       document.getElementById(v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editorDivId)
     );
     var v_result_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
-    if (v_height_diff < 0) {
-      if (Math.abs(v_height_diff) > parseInt(v_editor_div.style.height, 10))
-        v_height_diff = parseInt(v_editor_div.style.height, 10) * -1 + 10;
-    } else {
-      if (Math.abs(v_height_diff) > parseInt(v_result_div.style.height, 10))
-        v_height_diff = parseInt(v_result_div.style.height, 10) - 10;
-    }
-    v_editor_div.style.height = parseInt(v_editor_div.style.height, 10) + v_height_diff + "px";
-    v_result_div.style.height = parseInt(v_result_div.style.height, 10) - v_height_diff + "px";
-    refreshHeights();
+    var v_start_y = event2.screenY;
+    var v_start_editor_height = parseInt(v_editor_div.style.height, 10);
+    var v_start_result_height = parseInt(v_result_div.style.height, 10);
+    var v_pending = false;
+    var v_last_y = v_start_y;
+    var v_apply = function() {
+      v_pending = false;
+      var v_height_diff = v_last_y - v_start_y;
+      if (v_height_diff < 0) {
+        if (Math.abs(v_height_diff) > v_start_editor_height) v_height_diff = v_start_editor_height * -1 + 10;
+      } else {
+        if (Math.abs(v_height_diff) > v_start_result_height) v_height_diff = v_start_result_height - 10;
+      }
+      v_editor_div.style.height = v_start_editor_height + v_height_diff + "px";
+      v_result_div.style.height = v_start_result_height - v_height_diff + "px";
+      refreshHeights();
+    };
+    var v_move = function(e) {
+      v_last_y = e.screenY;
+      if (v_pending) return;
+      v_pending = true;
+      requestAnimationFrame(v_apply);
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
   }
   function resizeWindow() {
     refreshHeights();
@@ -38155,9 +38210,6 @@
     } catch (e) {
     }
   }
-  function getVerticalLinePosition(p_event) {
-    document.getElementById("vertical-resize-line").style.top = p_event.pageY + "px";
-  }
   function toggleExpandToPanelView(p_target_id) {
     let v_target = document.getElementById(p_target_id);
     if (v_target) {
@@ -38321,8 +38373,6 @@
     getAttributesTooltip,
     getDatabaseList,
     getStringTooltip,
-    getVerticalLinePosition,
-    horizontalLinePosition,
     indentSQL,
     monitoringAction,
     queueChangeActiveDatabaseThreadSafe,
@@ -38333,20 +38383,15 @@
     renameTab,
     renameTabConfirm,
     resizeConnectionHorizontal,
-    resizeConnectionHorizontalEnd,
     resizeConnectionsHorizontal,
-    resizeConnectionsHorizontalEnd,
     resizeConnectionsPanel,
     resizeSnippetHorizontal,
-    resizeSnippetHorizontalEnd,
     resizeSnippetPanel,
     get resizeTimeout() {
       return resizeTimeout;
     },
     resizeTreeVertical,
-    resizeTreeVerticalEnd,
     resizeVertical,
-    resizeVerticalEnd,
     resizeWindow,
     showMenuNewTab,
     showMenuNewTabOuter,
@@ -39011,8 +39056,8 @@
             }
           },
           {
-            text: "New Snippet",
-            icon: "fas cm-all fa-align-left",
+            text: "Add Snippet",
+            icon: "fas cm-all fa-plus",
             action: function(node) {
               newNodeSnippet(node, "snippet");
             }
@@ -39040,8 +39085,8 @@
             }
           },
           {
-            text: "New Snippet",
-            icon: "fas cm-all fa-align-left",
+            text: "Add Snippet",
+            icon: "fas cm-all fa-plus",
             action: function(node) {
               newNodeSnippet(node, "snippet");
             }
@@ -39148,7 +39193,7 @@
           var v_node2 = node.createChildNode(
             p_return.v_data.v_list_texts[i].v_name,
             false,
-            "fas node-all fa-align-left node-snippet-snippet",
+            "fas node-all fa-scroll node-snippet-snippet",
             {
               type: "snippet",
               id: p_return.v_data.v_list_texts[i].v_id,
@@ -39469,7 +39514,7 @@
         if (p_mode == "save")
           v_elements.push({
             text: "<b>OVERWRITE</b> " + v_file.name,
-            icon: "fas cm-all fa-align-left",
+            icon: "fas cm-all fa-scroll",
             action: function() {
               showConfirm(
                 "",
@@ -39501,7 +39546,7 @@
         else
           v_elements.push({
             text: v_file.name,
-            icon: "fas cm-all fa-align-left",
+            icon: "fas cm-all fa-scroll",
             action: function() {
               executeSnippet(v_file.id, p_editor);
             }

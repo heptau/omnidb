@@ -83,6 +83,11 @@ function initHeaderActions() {
 	window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
 		changeTheme(v_theme_preference);
 	});
+
+	/** @type {HTMLElement} */ (document.getElementById("settings_resize_line")).addEventListener(
+		"mousedown",
+		(event) => resizeSettingsHorizontal(event),
+	);
 }
 // changeTheme() itself guards every v_connTabControl access behind a
 // `typeof v_connTabControl !== "undefined"` check, so unlike plugin_hook.js's
@@ -334,6 +339,39 @@ export function selectSettingsCategory(p_category) {
 	document.querySelectorAll(".omnidb__settings__pane").forEach(function (el) {
 		el.classList.toggle("omnidb__settings__pane--active", el.getAttribute("data-category") === p_category);
 	});
+}
+
+/// <summary>
+/// Resize Settings sidebar horizontally. Self-contained, same live-drag
+/// pattern as Notify's tree/messages splitter: nothing here needs an
+/// editor/grid resize, so the width applies directly on every mousemove.
+/// </summary>
+function resizeSettingsHorizontal(event) {
+	event.preventDefault();
+
+	var v_sidebar = /** @type {HTMLElement} */ (document.querySelector(".omnidb__settings__sidebar"));
+	var v_container = /** @type {HTMLElement} */ (document.querySelector(".omnidb__settings"));
+	var v_start_x = event.x;
+	var v_start_width = v_sidebar.getBoundingClientRect().width;
+
+	var v_move = function (e) {
+		var v_max_allowed_width = v_container.getBoundingClientRect().width - 50;
+
+		var v_pixel_value = v_start_width + (e.x - v_start_x);
+		if (v_pixel_value < 180) v_pixel_value = 180;
+		if (v_pixel_value > v_max_allowed_width) v_pixel_value = v_max_allowed_width;
+
+		var v_width_value = v_pixel_value + "px";
+		v_sidebar.style["max-width"] = v_width_value;
+		v_sidebar.style["flex"] = "0 0 " + v_width_value;
+	};
+	var v_up = function () {
+		document.body.removeEventListener("mousemove", v_move);
+		document.body.removeEventListener("mouseup", v_up);
+	};
+
+	document.body.addEventListener("mousemove", v_move);
+	document.body.addEventListener("mouseup", v_up);
 }
 
 /// <summary>

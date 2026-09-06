@@ -53,7 +53,11 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"<div id='" +
 		SNIPPET_PANEL_ID +
 		"' class='omnidb__snippets__panel h-100'>" +
-		"<div class='container-fluid h-100' style='position: relative;'>" +
+		// No Bootstrap `container-fluid` here (unlike a leftover version of
+		// this markup) -- its side padding was leaving a bare strip of the
+		// section's own background between the nav rail and div_left's own
+		// (now white) background, serving no layout purpose of its own.
+		"<div class='h-100' style='position: relative;'>" +
 		"<div id='" +
 		SNIPPET_PANEL_ID +
 		"_div_layout_grid' class='d-flex h-100'>" +
@@ -70,14 +74,14 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		// This resize line is `position: absolute; right: 0` so it hugs
 		// div_left's own right edge -- which only works now that div_left
 		// itself got `position: relative` above. Without that, `right: 0`
-		// resolved against the next positioned ancestor up (the
-		// `container-fluid` a few levels up, styled `position: relative`
-		// too), pinning the drag handle to the far right edge of the whole
+		// resolved against the next positioned ancestor up (the wrapper
+		// div a few levels up, styled `position: relative` too), pinning
+		// the drag handle to the far right edge of the whole
 		// panel -- past div_right, off past the visible editor -- instead
 		// of the tree/editor boundary, which made it silently unusable.
 		"<div id='snippet_resize_line_" +
 		SNIPPET_PANEL_ID +
-		"' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;border-right: 1px dashed #acc4e8;top: 0px;right: 0px;z-index: 10;'></div>" +
+		"' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;top: 0px;right: 0px;z-index: 10;'></div>" +
 		"</div>" + //.div_left
 		"<div id='" +
 		SNIPPET_PANEL_ID +
@@ -87,7 +91,7 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"_tabs' class='w-100'></div>" +
 		"</div>" + //.div_right
 		"</div>" + //.d-flex
-		"</div>" + //.container-fluid
+		"</div>" + //.h-100 (position:relative wrapper)
 		"</div>";
 
 	var v_target = /** @type {HTMLElement} */ (document.getElementById("omnidb__section_snippets"));

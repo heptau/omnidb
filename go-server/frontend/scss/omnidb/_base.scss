@@ -683,7 +683,10 @@ button.close {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	padding: 8px 12px;
+	// No right padding: the resize-line splitter right after this panel is
+	// itself a white, several-px-wide strip, so any right padding here just
+	// stacks with it, making the edge before the splitter look doubled.
+	padding: 8px 0 8px 12px;
 	width: 100%;
 	background-color: var(--panel-bg);
 }
@@ -745,28 +748,6 @@ button.close {
 	opacity: 1;
 }
 
-#horizontal-resize-line {
-	position: absolute;
-	float: left;
-	width: 0;
-	height: 100vh;
-	border-left: 1px dashed black;
-	box-sizing: border-box;
-	top: 0;
-	z-index: 99999;
-}
-
-#vertical-resize-line {
-	position: absolute;
-	float: left;
-	width: 100%;
-	height: 0;
-	border-top: 1px dashed black;
-	box-sizing: border-box;
-	left: 0;
-	z-index: 99999;
-}
-
 .omnidb__workspace__div-right {
 	padding: 8px 12px;
 }
@@ -810,6 +791,26 @@ button.close {
 
 .tab_actions.omnidb__tab-actions {
 	padding: 4px 8px;
+}
+
+// The shared border-bottom above separates this bar from a result grid
+// underneath it (Query/Console tabs). Snippets' own bar has nothing below
+// it, so that border is just a bare edge under the buttons with no
+// matching edge above -- it reads as bottom-heavy even with symmetric
+// padding. Dropping it restores the visual balance.
+.omnidb__tab-actions--no-divider {
+	border-bottom: none;
+}
+
+// Measured perfectly centered at the box-model level (equal padding, no
+// border-bottom left to skew it) but still read as bottom-heavy on screen,
+// so this shifts 2px from the top padding to the bottom -- an empirical
+// nudge, not a geometric fix. Same specificity as .tab_actions
+// .omnidb__tab-actions's own `padding: 4px 8px` (two classes each) so it
+// actually wins instead of losing the cascade to it.
+.tab_actions.omnidb__tab-actions--no-divider {
+	padding-top: 2px;
+	padding-bottom: 6px;
 }
 
 .omnidb__tab-actions .omnidb__tab-actions__btn {
@@ -946,7 +947,11 @@ button.close {
 	display: flex;
 	flex-direction: column;
 	height: 100%;
-	padding: 7px 15px 0 7px;
+	// No right padding: the resize-line splitter overlaps this panel's own
+	// right edge (position:absolute; right:0), so any right padding here
+	// just pushes the tree content further from it, on top of the
+	// splitter's own width -- making the edge look doubled.
+	padding: 7px 0 0 0;
 	width: 100%;
 }
 
@@ -1007,13 +1012,20 @@ button.close {
 	min-height: 0;
 	position: relative;
 	width: 300px;
+	background-color: var(--panel-bg);
 }
 
 .omnidb__notify__tree {
 	flex: 1 1 auto;
 	min-height: 0;
 	overflow: auto;
-	padding: 7px 15px 0 7px;
+	// No right padding: the resize-line splitter overlaps this panel's own
+	// right edge (position:absolute; right:0), so any right padding here
+	// just pushes the tree content further from it, on top of the
+	// splitter's own width -- making the edge look doubled. No left padding
+	// either, so the tree starts flush with the panel's own left edge --
+	// matching Database/Connections/Snippets.
+	padding: 7px 0 0 0;
 }
 
 .omnidb__notify__resize-line {

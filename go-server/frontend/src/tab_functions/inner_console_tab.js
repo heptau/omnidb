@@ -126,7 +126,7 @@ export var v_createConsoleTabFunction = function () {
 		"' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div>" +
 		"<div id='console_resize_line_" +
 		v_tab.id +
-		"' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" +
+		"' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div>" +
 		console_history_modal +
 		"<div class='row mb-1'>" +
 		"<div class='tab_actions omnidb__tab-actions col-12'>" +
@@ -249,7 +249,7 @@ export var v_createConsoleTabFunction = function () {
 		if (v_connTabControl.tag.globalSnippets.files.length != 0 || v_connTabControl.tag.globalSnippets.folders.length != 0)
 			v_option_list.push({
 				text: "Use snippet",
-				icon: "fas cm-all fa-book",
+				icon: "fas cm-all fa-scroll",
 				submenu: {
 					elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor1),
 				},

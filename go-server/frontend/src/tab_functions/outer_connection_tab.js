@@ -229,7 +229,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			'_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div>' +
 			'<div id="' +
 			v_tab.id +
-			'_left_resize_line_horizontal" style="position: relative; width: 100%; height: 12px; cursor: ns-resize; border-top: 1px dashed #acc4e8; opacity: 0.6;">' +
+			'_left_resize_line_horizontal" class="resize_line_horizontal omnidb__resize-line__container" style="position: relative; width: 100%; height: 12px; cursor: ns-resize;">' +
 			'<button id="bt_toggle_tree_tabs_' +
 			v_tab.id +
 			'" type="button" class="omnidb__tree-tabs__toggler" title="Toggle Properties/DDL Panel"><i class="fas fa-arrows-alt-v"></i></button>' +
@@ -255,7 +255,8 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			"</div>" + //.div_left
 			'<div id="connection_resize_line_' +
 			v_tab.id +
-			'" class="resize_line_vertical omnidb__resize-line__container" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; border-right: 1px dashed #acc4e8; opacity: 0.6; z-index: 10;">' +
+			'" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; z-index: 10; background-color: var(--panel-bg);">' +
+			'<div class="resize_line_vertical omnidb__resize-line__container" style="height: 100%;"></div>' +
 			'<button id="bt_toggle_tree_container_' +
 			v_tab.id +
 			'" type="button" class="omnidb__tree__toggler" title="Toggle Database Tree"><i class="fas fa-arrows-alt-h"></i></button>' +

@@ -108,7 +108,7 @@ export function startTutorial(p_tutorial_name, p_anchor_el) {
 				<ul>
 				<li><i class="fas fa-hand-spock omnidb__theme__text--primary me-2"></i>Welcome, tutorials and useful links.</li>
 				<li><i class="fas fa-plug omnidb__theme__text--primary me-2"></i>Connections management.</li>
-				<li><i class="fas fa-book omnidb__theme__text--primary me-2"></i>Snippets panel.</li>
+				<li><i class="fas fa-scroll omnidb__theme__text--primary me-2"></i>Snippets panel.</li>
 				<li><i class="fas fa-database omnidb__theme__text--primary me-2"></i>Database (your open connections).</li>
 				</ul>
 				<p>At the bottom you'll also find <i class="fas fa-lightbulb omnidb__theme__text--primary me-2"></i>Getting Started, <i class="fas fa-cog omnidb__theme__text--primary me-2"></i>Settings, and your <i class="fas fa-user omnidb__theme__text--primary me-2"></i>Account.</p>
@@ -486,7 +486,7 @@ export function startTutorial(p_tutorial_name, p_anchor_el) {
 				p_clone_target: true,
 				p_message: `
 				<p>The snippet panel is now accessible globally, from the navigation rail.</p>
-				<p>Please, click on the <i class="fas fa-book"></i> icon.</p>
+				<p>Please, click on the <i class="fas fa-scroll"></i> icon.</p>
 				`,
 				p_target: document.getElementById("omnidb_section_nav"),
 				p_title: "Global Snippet Panel",
@@ -719,7 +719,7 @@ export function startTutorial(p_tutorial_name, p_anchor_el) {
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
-						<i class="fas fa-book me-2"></i>Meet the snippets panel
+						<i class="fas fa-scroll me-2"></i>Meet the snippets panel
 					</button>
 				</li>
 				<li class="mb-2">

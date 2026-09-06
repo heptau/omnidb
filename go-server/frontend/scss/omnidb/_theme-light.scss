@@ -59,8 +59,7 @@ iframe {
 
 .omnidb__workspace__div-left,
 .omnidb__snippets__div-left {
-	background-color: #fcfcfc;
-	border-right: 1px solid #e5e5ea;
+	background-color: var(--panel-bg);
 }
 
 .omnidb__workspace__div-right,
@@ -676,11 +675,11 @@ label.omnidb__switch--label span {
 }
 
 .resize_line_horizontal {
-	border-bottom: 1px dashed #a2afc1 !important;
+	border-bottom: 1px solid #a2afc1 !important;
 }
 
 .resize_line_vertical {
-	border-right: 1px dashed #a2afc1 !important;
+	border-right: 1px solid #a2afc1 !important;
 }
 
 .omnidb__workspace-resize-grid__draggable .resize_line_vertical {
@@ -742,7 +741,7 @@ label.omnidb__switch--label span {
 }
 
 .aimara_tree a.nav-link:hover {
-	background-color: #f3f3f3;
+	background-color: var(--hover-bg);
 }
 
 span.node_selected span {

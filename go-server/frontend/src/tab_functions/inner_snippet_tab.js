@@ -56,7 +56,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 
 	v_connTabControl.snippet_tag.tabControl.removeTabIndex(v_connTabControl.snippet_tag.tabControl.tabList.length - 1);
 	var v_tab = v_connTabControl.snippet_tag.tabControl.createTab({
-		p_icon: '<i class="fas fa-bolt icon-tab-title"></i>',
+		p_icon: '<i class="fas fa-scroll icon-tab-title"></i>',
 		p_name:
 			'<span id="tab_title">' +
 			v_name +
@@ -87,16 +87,26 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	var v_html =
 		'<div id="txt_snippet_' +
 		v_tab.id +
-		'" style="width: 100%; height: 200px; border: 1px solid #c3c3c3;"></div>' +
-		'<div class="row mt-2">' +
-		'<div class="tab_actions omnidb__tab-actions col-12">' +
+		'" style="width: 100%; height: 200px; border-right: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3;"></div>' +
+		// No Bootstrap row/col-12 wrapper here (unlike inner_query_tab.js's
+		// actions bar): .omnidb__tab-actions is already a self-contained,
+		// full-width flex bar with its own horizontal padding, so a .row's
+		// negative gutter margin (which doesn't exactly cancel that padding)
+		// only pushed it out of alignment with the bordered editor above.
+		//
+		// omnidb__tab-actions--no-divider: the shared .omnidb__tab-actions
+		// rule's border-bottom exists to separate the bar from a result grid
+		// underneath it (Query/Console tabs) -- there's nothing below this
+		// bar, so that border was just a hard edge sitting directly under
+		// the buttons with no matching edge above them, making the button
+		// row read as bottom-heavy even though its padding is symmetric.
+		'<div class="tab_actions omnidb__tab-actions omnidb__tab-actions--no-divider mt-2">' +
 		'<button id="bt_indent_' +
 		v_tab.id +
 		'" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent me-2"></i>Indent</button>' +
 		'<button id="bt_save_' +
 		v_tab.id +
-		'" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save" style="margin-top: 5px; margin-bottom: 5px; margin-right: 5px; display: inline-block;"><i class="fas fa-save me-2"></i>Save</button>' +
-		"</div>" +
+		'" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save"><i class="fas fa-save me-2"></i>Save</button>' +
 		"</div>";
 
 	var v_div = /** @type {HTMLElement} */ (document.getElementById("div_" + v_tab.id));

@@ -178,7 +178,7 @@ export function initSectionSwitcher() {
 	});
 
 	v_sectionNavTabs.snippets = v_sectionNav.createTab({
-		p_icon: '<i class="fas fa-book"></i>',
+		p_icon: '<i class="fas fa-scroll"></i>',
 		p_close: false,
 		p_selectFunction: function () {
 			toggleSnippetPanel();

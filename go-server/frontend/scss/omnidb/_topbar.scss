@@ -844,8 +844,7 @@
 	min-width: 220px;
 	max-width: 340px;
 	height: 100%;
-	background-color: var(--sidebar-bg);
-	border-right: 1px solid var(--border-color);
+	background-color: var(--panel-bg);
 }
 
 .omnidb__connections__sidebar-toolbar {
@@ -917,7 +916,10 @@
 	flex: 1 1 auto;
 	min-height: 0;
 	overflow-y: auto;
-	padding: 2px 8px 8px;
+	// No right padding: the resize-line splitter right after this panel is
+	// itself a white, several-px-wide strip, so any right padding here just
+	// stacks with it, making the edge before the splitter look doubled.
+	padding: 2px 0 8px 8px;
 }
 
 .omnidb__connections__list-item {
@@ -1261,15 +1263,17 @@
 	flex: 0 0 220px;
 	width: 220px;
 	min-width: 180px;
-	max-width: 260px;
+	max-width: 400px;
 	height: 100%;
-	background-color: var(--sidebar-bg);
-	border-right: 1px solid var(--border-color);
+	background-color: var(--panel-bg);
 	overflow-y: auto;
 }
 
 .omnidb__settings__list {
-	padding: 8px;
+	// No right padding: the resize-line splitter right after this panel is
+	// itself a white, several-px-wide strip, so any right padding here just
+	// stacks with it, making the edge before the splitter look doubled.
+	padding: 8px 0 8px 8px;
 }
 
 .omnidb__settings__list-item {

@@ -118,8 +118,9 @@
 						</div>
 					</div>
 
-					<div id="connections_resize_line" class="resize_line_vertical omnidb__resize-line__container"
-						style="width: 10px; flex-shrink: 0; cursor: ew-resize; border-right: 1px dashed #acc4e8; z-index: 10;">
+					<div id="connections_resize_line"
+						style="width: 10px; flex-shrink: 0; cursor: ew-resize; z-index: 10; background-color: var(--panel-bg);">
+						<div class="resize_line_vertical omnidb__resize-line__container" style="height: 100%;"></div>
 					</div>
 
 					<div class="omnidb__connections__detail">
@@ -355,6 +356,11 @@
 						</div>
 					</div>
 
+					<div id="settings_resize_line"
+						style="width: 10px; flex-shrink: 0; cursor: ew-resize; z-index: 10; background-color: var(--panel-bg);">
+						<div class="resize_line_vertical omnidb__resize-line__container" style="height: 100%;"></div>
+					</div>
+
 					<div class="omnidb__settings__detail">
 
 						<div class="omnidb__settings__pane" data-category="appearance">
@@ -401,10 +407,10 @@
 										<optgroup label="Unicode">
 										<option value="utf-8-sig" selected>UTF-8 with BOM</option>
 										<option value="utf-8">UTF-8</option>
-										<option value="utf-16">UTF-16 (with BOM)</option>
+										<option value="utf-16">UTF-16 with BOM</option>
 										<option value="utf-16-le">UTF-16 LE</option>
 										<option value="utf-16-be">UTF-16 BE</option>
-										<option value="utf-32">UTF-32 (with BOM)</option>
+										<option value="utf-32">UTF-32 with BOM</option>
 										<option value="utf-32-le">UTF-32 LE</option>
 										<option value="utf-32-be">UTF-32 BE</option>
 										<option value="utf-7">UTF-7</option>

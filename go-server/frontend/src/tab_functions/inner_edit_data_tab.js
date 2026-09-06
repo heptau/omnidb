@@ -98,7 +98,7 @@ export var v_createEditDataTabFunction = function (p_table) {
 		"' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div>" +
 		"<div id='edit_data_resize_line_" +
 		v_tab.id +
-		"' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px; border-bottom: 1px dashed #acc4e8;'></div><div style='height:5px;'></div></div>" +
+		"' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div>" +
 		"<div class='row mb-1'>" +
 		"<div class='tab_actions omnidb__tab-actions col-12'>" +
 		"<button id='bt_start_" +

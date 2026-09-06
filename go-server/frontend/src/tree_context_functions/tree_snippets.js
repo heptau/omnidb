@@ -81,8 +81,8 @@ export function getTreeSnippets(p_div) {
 					},
 				},
 				{
-					text: "New Snippet",
-					icon: "fas cm-all fa-align-left",
+					text: "Add Snippet",
+					icon: "fas cm-all fa-plus",
 					action: function (node) {
 						newNodeSnippet(node, "snippet");
 					},
@@ -110,8 +110,8 @@ export function getTreeSnippets(p_div) {
 					},
 				},
 				{
-					text: "New Snippet",
-					icon: "fas cm-all fa-align-left",
+					text: "Add Snippet",
+					icon: "fas cm-all fa-plus",
 					action: function (node) {
 						newNodeSnippet(node, "snippet");
 					},
@@ -198,7 +198,7 @@ export function getTreeSnippets(p_div) {
 	// createTree (Aimara.js) sets this same handler to just `return false`
 	// (context menus were only ever reachable via a node's own row), which
 	// is no longer good enough now that the one row with a "New
-	// Folder"/"New Snippet" menu is invisible -- right-clicking empty space
+	// Folder"/"Add Snippet" menu is invisible -- right-clicking empty space
 	// in the panel needs to reach it some other way.
 	/** @type {HTMLElement} */ (document.getElementById(p_div)).oncontextmenu = function (e) {
 		e.preventDefault();
@@ -253,7 +253,7 @@ export function getChildSnippetNodes(node) {
 				var v_node = node.createChildNode(
 					p_return.v_data.v_list_texts[i].v_name,
 					false,
-					"fas node-all fa-align-left node-snippet-snippet",
+					"fas node-all fa-scroll node-snippet-snippet",
 					{
 						type: "snippet",
 						id: p_return.v_data.v_list_texts[i].v_id,
@@ -587,7 +587,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 			if (p_mode == "save")
 				v_elements.push({
 					text: "<b>OVERWRITE</b> " + v_file.name,
-					icon: "fas cm-all fa-align-left",
+					icon: "fas cm-all fa-scroll",
 					action: function () {
 						showConfirm(
 							"",
@@ -620,7 +620,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 			else
 				v_elements.push({
 					text: v_file.name,
-					icon: "fas cm-all fa-align-left",
+					icon: "fas cm-all fa-scroll",
 					action: function () {
 						executeSnippet(v_file.id, p_editor);
 					},
