@@ -502,7 +502,7 @@ export function consoleSQL(p_check_command = true, p_mode = 0) {
 				createRequest(v_queryRequestCodes.Console, v_message_data, v_context);
 
 				v_tag.state = v_consoleState.Executing;
-				v_tag.tab_loading_span.style.visibility = "visible";
+				v_tag.tab_loading_span.style.display = "";
 				v_tag.tab_check_span.style.display = "none";
 				v_tag.bt_cancel.style.display = "";
 				v_tag.query_info.innerHTML = "<b>Start time</b>: " + dformat + "<br><b>Running...</b>";
@@ -539,7 +539,7 @@ export function cancelConsoleTab(p_tab_tag) {
 	}
 
 	v_tab_tag.state = v_consoleState.Idle;
-	v_tab_tag.tab_loading_span.style.visibility = "hidden";
+	v_tab_tag.tab_loading_span.style.display = "none";
 	v_tab_tag.tab_check_span.style.display = "none";
 	v_tab_tag.bt_cancel.style.display = "none";
 	v_tab_tag.query_info.innerHTML = "Canceled.";
@@ -570,7 +570,7 @@ export function consoleReturn(p_data, p_context) {
 			p_context.tab_tag.context = p_context;
 			p_context.tab_tag.data = p_data;
 
-			p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+			p_context.tab_tag.tab_loading_span.style.display = "none";
 			p_context.tab_tag.tab_check_span.style.display = "";
 		}
 	}
@@ -601,7 +601,7 @@ export function consoleReturnRender(p_message, p_context) {
 	v_tag.query_info.appendChild(v_qi_t1);
 	v_tag.query_info.appendChild(v_qi_b2);
 	v_tag.query_info.appendChild(v_qi_t2);
-	v_tag.tab_loading_span.style.visibility = "hidden";
+	v_tag.tab_loading_span.style.display = "none";
 	v_tag.tab_check_span.style.display = "none";
 	v_tag.bt_cancel.style.display = "none";
 	if (p_message.v_data.v_show_fetch_button) {

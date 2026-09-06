@@ -30,7 +30,7 @@ SOFTWARE.
 
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { saveSnippetText } from "../tree_context_functions/tree_snippets.js";
-import { indentSQL, refreshHeights, removeTab } from "../workspace.js";
+import { indentSQL, refreshBootstrapTooltips, refreshHeights, removeTab } from "../workspace.js";
 
 
 /** @param {{id: any, name: string, id_parent: any}|null} [p_snippet] */
@@ -56,10 +56,11 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 
 	v_connTabControl.snippet_tag.tabControl.removeTabIndex(v_connTabControl.snippet_tag.tabControl.tabList.length - 1);
 	var v_tab = v_connTabControl.snippet_tag.tabControl.createTab({
+		p_icon: '<i class="fas fa-bolt icon-tab-title"></i>',
 		p_name:
 			'<span id="tab_title">' +
 			v_name +
-			'</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+			'</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
 		p_selectFunction: function () {
 			refreshHeights();
 			if (this.tag != null && this.editor != null) {
@@ -161,7 +162,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.snippet_tag.tabControl.createTab({
-		p_name: "+",
+		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
@@ -169,9 +170,12 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 			v_connTabControl.tag.createSnippetTextTab();
 		},
 	});
+	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 	v_add_tab.tag = {
 		mode: "add",
 	};
+
+	refreshBootstrapTooltips();
 
 	v_editor.focus();
 };

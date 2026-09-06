@@ -81,36 +81,10 @@ export function terminalContextMenu(e, p_tab) {
 		},
 	});
 
-	v_option_list.push({
-		text: '<p class=\"mb-0 text-danger\">Close Terminal</p>',
-		// icon: 'fas cm-all fa-terminal text-danger',
-		action: function () {
-			customMenu(
-				{
-					x: e.clientX + 5,
-					y: e.clientY + 5,
-				},
-				[
-					{
-						text: "Confirm",
-						icon: "fas cm-all fa-check",
-						action: function () {
-							createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: v_tag.tab_id, tab_db_id: null }]);
-							if (v_tab.closeFunction != null) {
-								v_tab.closeFunction(e, v_tab);
-							}
-						},
-					},
-					{
-						text: "Cancel",
-						icon: "fas cm-all fa-times",
-						action: function () {},
-					},
-				],
-				null,
-			);
-		},
-	});
+	// "Close Terminal" used to live here as a menu item -- it's now the
+	// tab's own close-X (see outer_terminal_tab.js's p_close/p_closeFunction),
+	// which does the same backend teardown (createRequest(CloseTab, ...))
+	// behind the same beforeCloseTab confirm step.
 
 	customMenu(
 		{

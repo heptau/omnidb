@@ -30,6 +30,35 @@ SOFTWARE.
 
 import { getAttributesOmniDBTooltip, getAttributesTooltip } from "./workspace.js";
 
+// Below this rendered width a tab has no room left to show a legible label
+// -- toggling `--icon-only` (see _base.scss/_topbar.scss's
+// `.omnidb__tab-menu__link--icon-only` rule) hides the name span instead of
+// rendering a sliver of ellipsized text, leaving just the icon (the label
+// is still reachable as the tab's tooltip). This can't be done as a plain
+// CSS container query: `container-type: inline-size` on the tab itself
+// would give it layout containment, meaning its width could no longer come
+// from its own content (flex-basis: auto) -- exactly the dynamic,
+// content-driven width the whole shrink-to-fit layout depends on. A shared
+// ResizeObserver sidesteps that; every tab (across every tabControl) is
+// observed by this single instance rather than one per tab.
+const ICON_ONLY_THRESHOLD_PX = 64;
+const v_tabWidthObserver =
+	typeof ResizeObserver !== "undefined"
+		? new ResizeObserver(function (p_entries) {
+				for (const v_entry of p_entries) {
+					// Deliberately re-measuring via getBoundingClientRect()
+					// (border-box, matching the CSS min-width this is compared
+					// against) rather than trusting contentRect/contentBoxSize
+					// off the entry -- those report the CONTENT box (padding
+					// excluded), which for a ~44px-padded tab is well under
+					// this threshold even at full natural width, hiding the
+					// label on every tab rather than just genuinely narrow
+					// ones.
+					var v_width = v_entry.target.getBoundingClientRect().width;
+					v_entry.target.classList.toggle("omnidb__tab-menu__link--icon-only", v_width > 0 && v_width < ICON_ONLY_THRESHOLD_PX);
+				}
+			})
+		: null;
 
 export function composedPath(el) {
 	var path = [];
@@ -257,6 +286,9 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		removeTab: function (p_tab) {
 			var v_tab = p_tab;
 
+			if (v_tabWidthObserver) {
+				v_tabWidthObserver.unobserve(v_tab.elementA);
+			}
 			v_tab.elementDiv.parentNode.removeChild(v_tab.elementDiv);
 			v_tab.elementA.parentNode.removeChild(v_tab.elementA);
 
@@ -463,6 +495,14 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			if (p_class) {
 				v_a.className += " " + p_class;
 			}
+			// The close-icon slot (Zone A) is reserved layout space on every
+			// tab -- closable or not -- so a tab's icon/text always starts at
+			// the same x-offset regardless of tab type (see tabs-unification
+			// plan). This modifier only controls whether the glyph itself can
+			// ever become visible; the CSS hover reveal handles the rest.
+			if (!p_close) {
+				v_a.classList.add("omnidb__tab-menu__link--no-close");
+			}
 
 			var v_close = document.createElement("i");
 			v_close.className = "fas fa-times tab-icon icon-close omnidb__tab-menu__link-close";
@@ -489,21 +529,37 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				p_icon !== false ? '<span class="omnidb__menu__btn omnidb__tab-menu__link-icon">' + p_icon + "</span>" : "";
 			var v_name = p_name !== undefined && p_name !== null && p_name !== "" ? p_name : "";
 
-			if (p_tooltip_name) {
-				getAttributesTooltip(v_a, p_tooltip_name, null, "right");
-			} else if (p_omnidb_tooltip_name) {
-				getAttributesOmniDBTooltip(v_a, p_omnidb_tooltip_name, null, "right");
+			// Tooltip fallback: every tab should end up with some tooltip, so
+			// call sites that don't pass one (Query/Snippet/Console/
+			// Monitoring/EditData/Properties/DDL) get one derived from their
+			// own visible label -- stripping any nested HTML (loading
+			// spinner, dirty/check icon) down to plain text first.
+			var v_effective_tooltip_name = p_tooltip_name;
+			var v_effective_omnidb_tooltip_name = p_omnidb_tooltip_name;
+			if (!p_tooltip_name && !p_omnidb_tooltip_name && v_name) {
+				var v_tooltip_scratch = document.createElement("div");
+				v_tooltip_scratch.innerHTML = v_name;
+				var v_plain_label = (v_tooltip_scratch.textContent || "").trim();
+				if (v_plain_label) {
+					v_effective_tooltip_name = v_plain_label;
+				}
+			}
+
+			if (v_effective_tooltip_name) {
+				getAttributesTooltip(v_a, v_effective_tooltip_name, null, "right");
+			} else if (v_effective_omnidb_tooltip_name) {
+				getAttributesOmniDBTooltip(v_a, v_effective_omnidb_tooltip_name, null, "right");
 			}
 			v_a.innerHTML =
 				'<span class="omnidb__tab-menu__link-content">' +
 				v_icon +
 				'<span class="omnidb__tab-menu__link-name">' +
 				v_name +
-				"<span>" +
-				"<span>";
-			if (p_close) {
-				v_a.appendChild(v_close);
-			}
+				"</span>" +
+				"</span>";
+			// Always appended -- see the --no-close modifier above, which is
+			// what actually keeps the glyph hidden for non-closable tabs.
+			v_a.appendChild(v_close);
 
 			v_a.ondblclick = function (e) {
 				if (v_tab.dblClickFunction != null) v_tab.dblClickFunction(v_tab);
@@ -527,8 +583,10 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				if (v_tab.clickFunction != null) {
 					v_tab.clickFunction(e);
 				}
-				// Hiding the tooltip on click if the has tooltips.
-				if (p_tooltip_name) {
+				// Hiding the tooltip on click if the has tooltips. Keyed off
+				// the effective (possibly auto-derived) tooltip, not the raw
+				// param -- otherwise a fallback tooltip never gets dismissed.
+				if (v_effective_tooltip_name) {
 					bootstrap.Tooltip.getOrCreateInstance(v_a).hide();
 				}
 			};
@@ -542,6 +600,10 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				this.tabListDiv.appendChild(v_a);
 				this.tabListContentDiv.appendChild(v_div);
 				this.tabList.push(v_tab);
+			}
+
+			if (v_tabWidthObserver) {
+				v_tabWidthObserver.observe(v_a);
 			}
 
 			return v_tab;

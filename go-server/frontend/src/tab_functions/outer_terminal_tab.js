@@ -28,8 +28,10 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { beforeCloseTab } from "../create_tab_functions.js";
 import { v_current_terminal_theme } from "../header_actions.js";
-import { escapeHtml } from "../query.js";
+import { createRequest } from "../long_polling.js";
+import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { startTerminal, terminalContextMenu, terminalKey } from "../terminal.js";
 import { refreshBootstrapTooltips, refreshHeights } from "../workspace.js";
 
@@ -68,10 +70,16 @@ export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias 
 				this.tag.editor_console.focus();
 			}
 		},
-		p_close: false, // Replacing default close icon with contextMenu.
+		p_close: true,
 		p_closeFunction: function (e, p_tab) {
 			var v_this_tab = p_tab;
-			v_this_tab.removeTab();
+			beforeCloseTab(e, function () {
+				// Same backend teardown the old "Close Terminal" context-menu
+				// item used to trigger before this became reachable via the
+				// close-X instead -- see terminalContextMenu in terminal.js.
+				createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: v_this_tab.tag.tab_id, tab_db_id: null }]);
+				v_this_tab.removeTab();
+			});
 		},
 		p_rightClickFunction: function (e) {
 			terminalContextMenu(e, v_tab);

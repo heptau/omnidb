@@ -64,13 +64,14 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<span id="tab_title">' +
 		v_name +
 		"</span>" +
-		'<span id="tab_loading" style="visibility:hidden;">' +
+		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
 		"</span>" +
 		'<i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
 
 	// Creating console tab in the inner tab list.
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
+		p_icon: '<i class="fas fa-database icon-tab-title"></i>',
 		p_name: v_name_html,
 		p_selectFunction: function () {
 			if (this.tag != null) {

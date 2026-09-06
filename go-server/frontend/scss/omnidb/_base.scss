@@ -136,6 +136,13 @@
 	position: relative;
 }
 
+.omnidb__tab-menu .omnidb__tab-menu__link,
+.omnidb__tab-menu .omnidb__tab-menu__link:hover,
+.omnidb__tab-menu .omnidb__tab-menu__link:focus,
+.omnidb__tab-menu .omnidb__tab-menu__link * {
+	text-decoration: none !important;
+}
+
 .omnidb__tab-menu .omnidb__tab-menu__link-close {
 	opacity: 0;
 	position: absolute;
@@ -157,12 +164,44 @@
 	padding-top: 3px;
 }
 
-.omnidb__tab-menu--secondary .omnidb__tab-menu__link-name {
-	padding-right: 10px;
+/* Unified tab-button layout (Zones A/D): a fixed close-icon slot reserved on
+ * every secondary-tier tab (Query/Console/Snippet/Monitoring/EditData), plus
+ * a matching trailing balance space -- and dynamic width instead of a fixed
+ * min-width, shrinking gracefully (see the name-span rule below) when tabs
+ * don't fit on one row. This used to live only in _theme-light.scss (as
+ * padding-left alone, with no _theme-dark.scss equivalent -- a real dark-mode
+ * bug); moved here since it's structural, not a color. */
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link {
+	padding-left: var(--tab-zone-width) !important;
+	padding-right: var(--tab-zone-width) !important;
+	flex: 0 1 auto;
+	min-width: 60px;
+	overflow: hidden;
 }
 
+/* The tab for whatever panel is currently open never shrinks -- only the
+ * OTHER (inactive) tabs give up space when the row doesn't fit. */
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link.active {
+	flex-shrink: 0 !important;
+}
+
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link-name {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Below this width there's no room left to show anything legible -- a
+ * ResizeObserver in tabs.js toggles `--icon-only` (see _topbar.scss's
+ * `.omnidb__tab-menu__link--icon-only` rule, shared across both tiers)
+ * rather than a CSS container query, which would fight this tab's own
+ * content-driven (flex-basis:auto) width -- see that rule's comment. */
+
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link-icon {
-	margin-right: 3px;
+	margin-right: 1.5px;
+	flex-shrink: 0;
 }
 
 .omnidb__tab-menu.omnidb__tab-menu--secondary .omnidb__tab-menu__link:hover .omnidb__tab-menu__link-close {

@@ -1533,10 +1533,18 @@ export function getAttributesTooltip(p_target, p_title, p_message, p_position = 
 		v_html += p_title != undefined ? '<h4 class=\"mb-0\">' + p_title + "</h4>" : "";
 	}
 	let v_position = p_position ? p_position : "bottom";
-	p_target.setAttribute("data-html", true);
-	p_target.setAttribute("data-placement", v_position);
-	p_target.setAttribute("data-toggle", "tooltip");
-	p_target.setAttribute("title", v_html);
+	// Bootstrap 5 attributes -- matches every other working tooltip in the
+	// app (e.g. inner_query_tab.js's explain-toggle switch) and what
+	// refreshBootstrapTooltips() actually queries for
+	// ([data-bs-toggle="tooltip"]). This function previously used the
+	// Bootstrap 4-era attribute names, which refreshBootstrapTooltips()
+	// never picked up -- dead code until tabs.js's tooltip fallback became
+	// its first real caller.
+	p_target.setAttribute("data-bs-html", true);
+	p_target.setAttribute("data-bs-placement", v_position);
+	p_target.setAttribute("data-bs-toggle", "tooltip");
+	p_target.setAttribute("data-bs-original-title", v_html);
+	p_target.setAttribute("title", "");
 }
 /**
  * ## getStringTooltip

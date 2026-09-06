@@ -4905,37 +4905,6 @@
         }, 10);
       }
     });
-    v_option_list.push({
-      text: '<p class="mb-0 text-danger">Close Terminal</p>',
-      // icon: 'fas cm-all fa-terminal text-danger',
-      action: function() {
-        customMenu(
-          {
-            x: e.clientX + 5,
-            y: e.clientY + 5
-          },
-          [
-            {
-              text: "Confirm",
-              icon: "fas cm-all fa-check",
-              action: function() {
-                createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: v_tag.tab_id, tab_db_id: null }]);
-                if (v_tab.closeFunction != null) {
-                  v_tab.closeFunction(e, v_tab);
-                }
-              }
-            },
-            {
-              text: "Cancel",
-              icon: "fas cm-all fa-times",
-              action: function() {
-              }
-            }
-          ],
-          null
-        );
-      }
-    });
     customMenu(
       {
         x: e.clientX + 5,
@@ -5252,7 +5221,7 @@
     else v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     if (v_tab_tag2.state == v_editDataState.Querying) v_tab_tag2.div_result.innerHTML = "Canceled.";
     v_tab_tag2.state = v_editDataState.Idle;
-    v_tab_tag2.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag2.tab_loading_span.style.display = "none";
     v_tab_tag2.tab_check_span.style.display = "none";
     v_tab_tag2.bt_cancel.style.display = "none";
     removeContext(v_tab_tag2.context.v_context_code);
@@ -5281,7 +5250,7 @@
         v_tab_id: v_currTabTag.tab_id
       };
       (/* @__PURE__ */ new Date()).getTime();
-      v_currTabTag.tab_loading_span.style.visibility = "visible";
+      v_currTabTag.tab_loading_span.style.display = "";
       v_currTabTag.bt_cancel.style.display = "";
       var v_context = {
         tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
@@ -5320,7 +5289,7 @@
         p_context.tab_tag.state = v_editDataState.QueryReady;
         p_context.tab_tag.context = p_context;
         p_context.tab_tag.data = p_data;
-        p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+        p_context.tab_tag.tab_loading_span.style.display = "none";
         p_context.tab_tag.tab_check_span.style.display = "";
       }
     }
@@ -5511,7 +5480,7 @@
         }
       });
     }
-    p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+    p_context.tab_tag.tab_loading_span.style.display = "none";
     p_context.tab_tag.tab_check_span.style.display = "none";
     p_context.tab_tag.bt_cancel.style.display = "none";
     refreshBootstrapTooltips();
@@ -5545,7 +5514,7 @@
         v_conn_tab_id: v_connTabControl.selectedTab.id,
         v_tab_id: v_currTabTag.tab_id
       };
-      v_currTabTag.tab_loading_span.style.visibility = "visible";
+      v_currTabTag.tab_loading_span.style.display = "";
       v_currTabTag.bt_cancel.style.display = "";
       var v_context = {
         tab_tag: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag,
@@ -5565,7 +5534,7 @@
         p_context.tab_tag.state = v_editDataState.SaveReady;
         p_context.tab_tag.context = p_context;
         p_context.tab_tag.data = p_data;
-        p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+        p_context.tab_tag.tab_loading_span.style.display = "none";
         p_context.tab_tag.tab_check_span.style.display = "";
       }
     }
@@ -5644,7 +5613,7 @@
       showAlert(v_commands_log);
     }
     v_currTabTag.editDataObject.ht.render();
-    p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+    p_context.tab_tag.tab_loading_span.style.display = "none";
     p_context.tab_tag.tab_check_span.style.display = "none";
     p_context.tab_tag.bt_cancel.style.display = "none";
   }
@@ -6020,7 +5989,7 @@
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setReadOnly(false);
     }
     v_tab_tag2.state = v_queryState.Idle;
-    v_tab_tag2.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag2.tab_loading_span.style.display = "none";
     v_tab_tag2.tab_check_span.style.display = "none";
     v_tab_tag2.bt_cancel.style.display = "none";
     v_tab_tag2.query_info.innerHTML = "Canceled.";
@@ -6165,7 +6134,7 @@
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_queryState.Executing;
         (/* @__PURE__ */ new Date()).getTime();
         var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
-        v_tab_tag2.tab_loading_span.style.visibility = "visible";
+        v_tab_tag2.tab_loading_span.style.display = "";
         v_tab_tag2.bt_cancel.style.display = "inline-block";
         v_tab_tag2.bt_fetch_more.style.display = "none";
         v_tab_tag2.bt_fetch_all.style.display = "none";
@@ -6224,7 +6193,7 @@
         p_context.tab_tag.state = v_queryState.Ready;
         p_context.tab_tag.context = p_context;
         p_context.tab_tag.data = p_data;
-        p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+        p_context.tab_tag.tab_loading_span.style.display = "none";
         p_context.tab_tag.tab_check_span.style.display = "";
       }
     }
@@ -6444,7 +6413,7 @@
         }
       }
     }
-    p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+    p_context.tab_tag.tab_loading_span.style.display = "none";
     p_context.tab_tag.tab_check_span.style.display = "none";
     p_context.tab_tag.bt_cancel.style.display = "none";
   }
@@ -6466,7 +6435,7 @@
     }
     v_tab_tag2.selectMessageTabFunc();
     v_tab_tag2.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + "<br><b>Error</b>";
-    v_tab_tag2.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag2.tab_loading_span.style.display = "none";
     v_tab_tag2.tab_check_span.style.display = "none";
     v_tab_tag2.bt_cancel.style.display = "none";
   }
@@ -7953,14 +7922,15 @@
       p_div: SNIPPET_PANEL_ID + "_tabs",
       p_hierarchy: "secondary"
     });
-    v_currTabControl.createTab({
-      p_name: "+",
+    var v_add_tab = v_currTabControl.createTab({
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     var v_tag = {
       tab_id: SNIPPET_PANEL_ID,
       tabControl: v_currTabControl,
@@ -10951,7 +10921,7 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-terminal icon-tab-title"></i>',
-      p_name: '<span> Console</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i></span>',
+      p_name: '<span> Console</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i></span>',
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -11192,6 +11162,7 @@
       v_resizeFunction();
     }, 10);
     adjustQueryTabObjects(false);
+    refreshBootstrapTooltips();
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.modal.addEventListener("shown.bs.modal", function() {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.grid.render();
     });
@@ -11206,7 +11177,7 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-table icon-tab-title"></i>',
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -11356,13 +11327,14 @@
       (event2) => resizeVertical(event2)
     );
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
@@ -11380,7 +11352,7 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: `<i class="fab fa-hubspot icon-tab-title"></i>`,
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         document.title = "OmniDB";
         if (this.tag != null) {
@@ -11435,16 +11407,18 @@
     };
     v_tab.tag = v_tag;
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
+    refreshBootstrapTooltips();
     setTimeout(function() {
       v_resizeFunction();
     }, 10);
@@ -11459,7 +11433,7 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: `<i class="fas fa-desktop icon-tab-title"></i>`,
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         document.title = "OmniDB";
         if (this.tag != null) {
@@ -11528,16 +11502,18 @@
     };
     v_tab.tag = v_tag;
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
+    refreshBootstrapTooltips();
     setTimeout(function() {
       v_resizeFunction();
       refreshMonitoring(v_tag);
@@ -11910,8 +11886,9 @@
     if (p_table) {
       v_name = p_table;
     }
-    let v_name_html = '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
+    let v_name_html = '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
+      p_icon: '<i class="fas fa-database icon-tab-title"></i>',
       p_name: v_name_html,
       p_selectFunction: function() {
         if (this.tag != null) {
@@ -12311,7 +12288,8 @@
     }
     v_connTabControl.snippet_tag.tabControl.removeTabIndex(v_connTabControl.snippet_tag.tabControl.tabList.length - 1);
     var v_tab = v_connTabControl.snippet_tag.tabControl.createTab({
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_icon: '<i class="fas fa-bolt icon-tab-title"></i>',
+      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         refreshHeights();
         if (this.tag != null && this.editor != null) {
@@ -12398,16 +12376,18 @@
     );
     v_tag.bt_save.addEventListener("click", saveSnippetText);
     var v_add_tab = v_connTabControl.snippet_tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         v_connTabControl.tag.createSnippetTextTab();
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
+    refreshBootstrapTooltips();
     v_editor.focus();
   };
   const innerSnippetTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -12483,8 +12463,7 @@
           refreshBootstrapTooltips();
           refreshNotifyPaneIfActive();
         },
-        p_close: false,
-        // Replacing default close icon with contextMenu.
+        p_close: true,
         p_closeFunction: function(e, p_tab) {
           var v_this_tab = p_tab;
           beforeCloseTab(e, function() {
@@ -12511,27 +12490,6 @@
             v_this_tab.removeTab();
             refreshNotifyPaneIfActive();
           });
-        },
-        p_rightClickFunction: function(e) {
-          var v_option_list = [
-            {
-              text: '<p class="mb-0 text-danger">Close Connection Tab</p>',
-              // icon: 'fas cm-all fa-terminal text-danger',
-              action: function() {
-                if (v_tab.closeFunction != null) {
-                  v_tab.closeFunction(e, v_tab);
-                }
-              }
-            }
-          ];
-          customMenu(
-            {
-              x: e.clientX + 5,
-              y: e.clientY + 5
-            },
-            v_option_list,
-            null
-          );
         },
         p_omnidb_tooltip_name: p_tooltip_name
       });
@@ -12770,11 +12728,13 @@
           this.tag.editor_console.focus();
         }
       },
-      p_close: false,
-      // Replacing default close icon with contextMenu.
+      p_close: true,
       p_closeFunction: function(e, p_tab) {
         var v_this_tab = p_tab;
-        v_this_tab.removeTab();
+        beforeCloseTab(e, function() {
+          createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: v_this_tab.tag.tab_id, tab_db_id: null }]);
+          v_this_tab.removeTab();
+        });
       },
       p_rightClickFunction: function(e) {
         terminalContextMenu(e, v_tab);
@@ -12854,7 +12814,9 @@
     }
     v_connTabControl.removeLastTab();
     var v_tab = v_connTabControl.createTab({
-      p_name: '<i class="fas fa-globe-americas icon-tab-title"></i><span id="tab_title"> ' + p_name + "</span>",
+      p_icon: '<i class="fas fa-globe-americas"></i>',
+      p_name: '<span id="tab_title">' + p_name + "</span>",
+      p_omnidb_tooltip_name: '<h5 class="my-1">' + escapeHtml(p_name) + "</h5>",
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -12892,14 +12854,15 @@
       resize: v_resizeFunction
     };
     v_tab.tag = v_tag;
-    v_connTabControl.createTab({
-      p_name: "+",
+    var v_add_tab = v_connTabControl.createTab({
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTabOuter(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     setTimeout(function() {
       v_resizeFunction();
     }, 10);
@@ -12980,7 +12943,7 @@
   }, Symbol.toStringTag, { value: "Module" }));
   var v_createMonitorDashboardTabFunction = function() {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-    let v_name_html = '<span id="tab_title"> Monitoring</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
+    let v_name_html = '<span id="tab_title"> Monitoring</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-chart-bar icon-tab-title"></i>',
       p_name: v_name_html,
@@ -13061,23 +13024,25 @@
     };
     v_tab.tag = v_tag;
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
+    refreshBootstrapTooltips();
     setTimeout(function() {
       v_resizeFunction();
     }, 10);
   };
   var v_createNewMonitorUnitTabFunction = function() {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-    let v_name_html = '<span id="tab_title">Monitor Unit</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
+    let v_name_html = '<span id="tab_title">Monitor Unit</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-align-left icon-tab-title"></i>',
       p_name: v_name_html,
@@ -13189,16 +13154,18 @@
     toggleMonitorUnitChartType(v_tab.id);
     v_tab.tag = v_tag;
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_name: "+",
+      p_icon: '<i class="fas fa-plus"></i>',
       p_close: false,
       p_selectable: false,
       p_clickFunction: function(e) {
         showMenuNewTab(e);
       }
     });
+    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
     v_add_tab.tag = {
       mode: "add"
     };
+    refreshBootstrapTooltips();
     setTimeout(function() {
       v_resizeFunction();
     }, 10);
@@ -23679,7 +23646,7 @@
           v_context.tab_tag.context = v_context;
           createRequest(v_queryRequestCodes.Console, v_message_data, v_context);
           v_tag.state = v_consoleState.Executing;
-          v_tag.tab_loading_span.style.visibility = "visible";
+          v_tag.tab_loading_span.style.display = "";
           v_tag.tab_check_span.style.display = "none";
           v_tag.bt_cancel.style.display = "";
           v_tag.query_info.innerHTML = "<b>Start time</b>: " + dformat + "<br><b>Running...</b>";
@@ -23709,7 +23676,7 @@
       v_tab_tag2.editor_input.setReadOnly(false);
     }
     v_tab_tag2.state = v_consoleState.Idle;
-    v_tab_tag2.tab_loading_span.style.visibility = "hidden";
+    v_tab_tag2.tab_loading_span.style.display = "none";
     v_tab_tag2.tab_check_span.style.display = "none";
     v_tab_tag2.bt_cancel.style.display = "none";
     v_tab_tag2.query_info.innerHTML = "Canceled.";
@@ -23730,7 +23697,7 @@
         p_context.tab_tag.state = v_consoleState.Ready;
         p_context.tab_tag.context = p_context;
         p_context.tab_tag.data = p_data;
-        p_context.tab_tag.tab_loading_span.style.visibility = "hidden";
+        p_context.tab_tag.tab_loading_span.style.display = "none";
         p_context.tab_tag.tab_check_span.style.display = "";
       }
     }
@@ -23754,7 +23721,7 @@
     v_tag.query_info.appendChild(v_qi_t1);
     v_tag.query_info.appendChild(v_qi_b2);
     v_tag.query_info.appendChild(v_qi_t2);
-    v_tag.tab_loading_span.style.visibility = "hidden";
+    v_tag.tab_loading_span.style.display = "none";
     v_tag.tab_check_span.style.display = "none";
     v_tag.bt_cancel.style.display = "none";
     if (p_message.v_data.v_show_fetch_button) {
@@ -38207,10 +38174,11 @@
       v_html += p_title != void 0 ? '<h4 class="mb-0">' + p_title + "</h4>" : "";
     }
     let v_position = p_position ? p_position : "bottom";
-    p_target.setAttribute("data-html", true);
-    p_target.setAttribute("data-placement", v_position);
-    p_target.setAttribute("data-toggle", "tooltip");
-    p_target.setAttribute("title", v_html);
+    p_target.setAttribute("data-bs-html", true);
+    p_target.setAttribute("data-bs-placement", v_position);
+    p_target.setAttribute("data-bs-toggle", "tooltip");
+    p_target.setAttribute("data-bs-original-title", v_html);
+    p_target.setAttribute("title", "");
   }
   function getStringTooltip(p_title, p_message, p_position = false) {
     let v_html = "";
@@ -38374,6 +38342,13 @@
     updateExplainComponent,
     v_monitoring_action_whitelist
   }, Symbol.toStringTag, { value: "Module" }));
+  const ICON_ONLY_THRESHOLD_PX = 64;
+  const v_tabWidthObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(function(p_entries) {
+    for (const v_entry of p_entries) {
+      var v_width = v_entry.target.getBoundingClientRect().width;
+      v_entry.target.classList.toggle("omnidb__tab-menu__link--icon-only", v_width > 0 && v_width < ICON_ONLY_THRESHOLD_PX);
+    }
+  }) : null;
   function composedPath(el2) {
     var path = [];
     while (el2) {
@@ -38539,6 +38514,9 @@
       },
       removeTab: function(p_tab) {
         var v_tab = p_tab;
+        if (v_tabWidthObserver) {
+          v_tabWidthObserver.unobserve(v_tab.elementA);
+        }
         v_tab.elementDiv.parentNode.removeChild(v_tab.elementDiv);
         v_tab.elementA.parentNode.removeChild(v_tab.elementA);
         var v_index = this.tabList.indexOf(p_tab);
@@ -38714,6 +38692,9 @@
         if (p_class) {
           v_a.className += " " + p_class;
         }
+        if (!p_close) {
+          v_a.classList.add("omnidb__tab-menu__link--no-close");
+        }
         var v_close = document.createElement("i");
         v_close.className = "fas fa-times tab-icon icon-close omnidb__tab-menu__link-close";
         v_tab.elementClose = v_close;
@@ -38733,15 +38714,23 @@
         }
         var v_icon = p_icon !== false ? '<span class="omnidb__menu__btn omnidb__tab-menu__link-icon">' + p_icon + "</span>" : "";
         var v_name = p_name !== void 0 && p_name !== null && p_name !== "" ? p_name : "";
-        if (p_tooltip_name) {
-          getAttributesTooltip(v_a, p_tooltip_name, null, "right");
-        } else if (p_omnidb_tooltip_name) {
-          getAttributesOmniDBTooltip(v_a, p_omnidb_tooltip_name, null, "right");
+        var v_effective_tooltip_name = p_tooltip_name;
+        var v_effective_omnidb_tooltip_name = p_omnidb_tooltip_name;
+        if (!p_tooltip_name && !p_omnidb_tooltip_name && v_name) {
+          var v_tooltip_scratch = document.createElement("div");
+          v_tooltip_scratch.innerHTML = v_name;
+          var v_plain_label = (v_tooltip_scratch.textContent || "").trim();
+          if (v_plain_label) {
+            v_effective_tooltip_name = v_plain_label;
+          }
         }
-        v_a.innerHTML = '<span class="omnidb__tab-menu__link-content">' + v_icon + '<span class="omnidb__tab-menu__link-name">' + v_name + "<span><span>";
-        if (p_close) {
-          v_a.appendChild(v_close);
+        if (v_effective_tooltip_name) {
+          getAttributesTooltip(v_a, v_effective_tooltip_name, null, "right");
+        } else if (v_effective_omnidb_tooltip_name) {
+          getAttributesOmniDBTooltip(v_a, v_effective_omnidb_tooltip_name, null, "right");
         }
+        v_a.innerHTML = '<span class="omnidb__tab-menu__link-content">' + v_icon + '<span class="omnidb__tab-menu__link-name">' + v_name + "</span></span>";
+        v_a.appendChild(v_close);
         v_a.ondblclick = function(e) {
           if (v_tab.dblClickFunction != null) v_tab.dblClickFunction(v_tab);
         };
@@ -38761,7 +38750,7 @@
           if (v_tab.clickFunction != null) {
             v_tab.clickFunction(e);
           }
-          if (p_tooltip_name) {
+          if (v_effective_tooltip_name) {
             bootstrap.Tooltip.getOrCreateInstance(v_a).hide();
           }
         };
@@ -38774,6 +38763,9 @@
           this.tabListDiv.appendChild(v_a);
           this.tabListContentDiv.appendChild(v_div2);
           this.tabList.push(v_tab);
+        }
+        if (v_tabWidthObserver) {
+          v_tabWidthObserver.observe(v_a);
         }
         return v_tab;
       }

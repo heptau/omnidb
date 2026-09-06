@@ -30,7 +30,6 @@ SOFTWARE.
 
 import { endLoading } from "../ajax_control_bridge.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
-import { customMenu } from "../custom_menu.js";
 import { editCellData } from "../header_actions.js";
 import { createRequest } from "../long_polling.js";
 import { cancelMonitorUnits } from "../monitoring.js";
@@ -165,7 +164,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 				refreshBootstrapTooltips();
 				refreshNotifyPaneIfActive();
 			},
-			p_close: false, // Replacing default close icon with contextMenu.
+			p_close: true,
 			p_closeFunction: function (e, p_tab) {
 				var v_this_tab = p_tab;
 				beforeCloseTab(e, function () {
@@ -207,27 +206,6 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 					// catch the Notify pane up to that if it is being shown.
 					refreshNotifyPaneIfActive();
 				});
-			},
-			p_rightClickFunction: function (e) {
-				var v_option_list = [
-					{
-						text: '<p class=\"mb-0 text-danger\">Close Connection Tab</p>',
-						// icon: 'fas cm-all fa-terminal text-danger',
-						action: function () {
-							if (v_tab.closeFunction != null) {
-								v_tab.closeFunction(e, v_tab);
-							}
-						},
-					},
-				];
-				customMenu(
-					{
-						x: e.clientX + 5,
-						y: e.clientY + 5,
-					},
-					v_option_list,
-					null,
-				);
 			},
 			p_omnidb_tooltip_name: p_tooltip_name,
 		});

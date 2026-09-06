@@ -52,7 +52,7 @@ export var v_createEditDataTabFunction = function (p_table) {
 		p_name:
 			'<span id="tab_title">' +
 			v_name +
-			'</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+			'</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();
@@ -260,13 +260,14 @@ export var v_createEditDataTabFunction = function (p_table) {
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-		p_name: "+",
+		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
 	});
+	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 	v_add_tab.tag = {
 		mode: "add",
 	};

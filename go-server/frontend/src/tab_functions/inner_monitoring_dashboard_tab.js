@@ -38,7 +38,7 @@ import {
 	showMonitorUnitList,
 	testMonitorScript,
 } from "../monitoring.js";
-import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import { refreshBootstrapTooltips, removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 
 
 export var v_createMonitorDashboardTabFunction = function () {
@@ -50,7 +50,7 @@ export var v_createMonitorDashboardTabFunction = function () {
 		'<span id="tab_title">' +
 		" Monitoring" +
 		"</span>" +
-		'<span id="tab_loading" style="visibility:hidden;">' +
+		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
 		"</span>" +
 		'<i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
@@ -159,16 +159,19 @@ export var v_createMonitorDashboardTabFunction = function () {
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-		p_name: "+",
+		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
 	});
+	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 	v_add_tab.tag = {
 		mode: "add",
 	};
+
+	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		v_resizeFunction();
@@ -181,7 +184,7 @@ export var v_createNewMonitorUnitTabFunction = function () {
 
 	let v_name_html =
 		'<span id="tab_title">Monitor Unit</span>' +
-		'<span id="tab_loading" style="visibility:hidden;">' +
+		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
 		"</span>" +
 		'<i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
@@ -382,16 +385,19 @@ export var v_createNewMonitorUnitTabFunction = function () {
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-		p_name: "+",
+		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
 	});
+	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 	v_add_tab.tag = {
 		mode: "add",
 	};
+
+	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		v_resizeFunction();

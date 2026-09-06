@@ -46,6 +46,7 @@ SOFTWARE.
 
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { showAlert } from "../notification_control.js";
+import { escapeHtml } from "../query.js";
 import { removeTab, renameTab, showMenuNewTabOuter } from "../workspace.js";
 
 export var v_openExternalUrl = function (p_url) {
@@ -92,7 +93,9 @@ export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p
 
 	// Creating console tab in the inner tab list
 	var v_tab = v_connTabControl.createTab({
-		p_name: '<i class="fas fa-globe-americas icon-tab-title"></i><span id="tab_title"> ' + p_name + "</span>",
+		p_icon: '<i class="fas fa-globe-americas"></i>',
+		p_name: '<span id="tab_title">' + p_name + "</span>",
+		p_omnidb_tooltip_name: '<h5 class="my-1">' + escapeHtml(p_name) + "</h5>",
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();
@@ -137,14 +140,15 @@ export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p
 	v_tab.tag = v_tag;
 
 	// Creating + tab in the outer tab list
-	v_connTabControl.createTab({
-		p_name: "+",
+	var v_add_tab = v_connTabControl.createTab({
+		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTabOuter(e);
 		},
 	});
+	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 
 	setTimeout(function () {
 		v_resizeFunction();

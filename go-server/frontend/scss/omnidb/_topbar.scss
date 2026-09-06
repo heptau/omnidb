@@ -3,7 +3,17 @@
 // see the note at the top of ../omnidb.scss for background.
 
 /* Topbar */
-.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link,
+/* First alternative scoped through `.omnidb__tab-menu--primary` (the actual
+ * tab-menu strip), not just the outer container -- the container also wraps
+ * this connection's whole tab CONTENT area (nested query-result-tabs/
+ * tree-tabs strips included), so a container-only selector here would
+ * structurally match those nested tabs' links too (leaking these fixed
+ * dimensions onto them via this alternative alone, independent of their own
+ * dedicated alternatives below). Harmless while every alternative agreed on
+ * the same values, but it silently out-specifies the leaner override further
+ * down for tree-tabs specifically once that override needs a DIFFERENT
+ * value there -- see the block below this one. */
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link,
 .omnidb__panel-view--full .nav-link,
 .omnidb__query-result-tabs .nav-link,
 .omnidb__tree-tabs .nav-link,
@@ -32,6 +42,75 @@
 	opacity: 1 !important;
 }
 
+/* Unified tab-button layout: leaner, dynamic-width tabs for the outer
+ * connection/terminal/website strip and the Properties/DDL tabs -- NOT for
+ * .omnidb__panel-view--full/.omnidb__query-result-tabs/.modal-body above,
+ * which keep the original fixed min-width/padding on purpose (out of scope
+ * for this unification).
+ *
+ * Scoped through BOTH the outer container class and the inner
+ * `.omnidb__tab-menu--primary` tab-menu itself (not just the container) --
+ * the container also wraps the tab CONTENT area (where a connection's whole
+ * workspace lives, including nested query-result-tabs/tree-tabs strips), so
+ * a container-only selector like `.omnidb__tab-menu--container--primary
+ * .omnidb__tab-menu__link` structurally also matches THOSE nested tabs'
+ * links (same class, deeper in the same subtree) and would leak this
+ * shrink-to-fit styling onto out-of-scope query-result-tabs. The tab-menu
+ * element only ever contains this strip's own direct tab links (the content
+ * area is a sibling, not a descendant, of the tab-menu -- see
+ * createTabControl in tabs.js), so adding it to the chain both fixes the
+ * leak and pushes specificity to 4 classes, safely above the shared block's
+ * 3 -- this wins outright rather than relying on source order. */
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link,
+.omnidb__tree-tabs .nav-link {
+	padding-left: var(--tab-zone-width) !important;
+	padding-right: var(--tab-zone-width) !important;
+	flex: 0 1 auto !important;
+	min-width: 60px !important;
+	overflow: hidden !important;
+	/* Matches the secondary tier's (Query/Console/Snippet) gap -- the shared
+	 * block above sets 4px for every alternative including this one; halving
+	 * it just here keeps the still-in-scope primary/tree-tabs tiers visually
+	 * consistent with the secondary tier without touching the out-of-scope
+	 * query-result-tabs/panel-view-full/modal-body alternatives. */
+	margin-right: 2px !important;
+}
+
+/* The tab for whatever panel is currently open never shrinks -- only the
+ * OTHER (inactive) tabs give up space when the row doesn't fit. */
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link.active,
+.omnidb__tree-tabs .nav-link.active {
+	flex-shrink: 0 !important;
+}
+
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link-name,
+.omnidb__tree-tabs .omnidb__tab-menu__link-name {
+	flex: 1 1 auto;
+	min-width: 0;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+}
+
+/* Below this width there's no room left to show anything legible -- a
+ * ResizeObserver in tabs.js toggles this class (rather than a CSS container
+ * query: `container-type: inline-size` on the tab itself would strip its
+ * layout containment, i.e. its width could no longer come from its own
+ * content/flex-basis:auto -- exactly the dynamic, content-driven width this
+ * whole layout depends on) once a tab's rendered width drops below the same
+ * threshold as the shrink floor, hiding the label (it's still reachable as
+ * the tooltip) rather than rendering a sliver of ellipsized text. */
+.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-name {
+	display: none !important;
+}
+
+/* Zone A/B must never shrink -- only the text (Zone C) should compress when
+ * tabs don't fit on one row. */
+.omnidb__tab-menu__link-icon,
+.omnidb__tab-menu__link-close {
+	flex-shrink: 0;
+}
+
 .omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link.active,
 .omnidb__panel-view--full .nav-link.active,
 .omnidb__query-result-tabs .nav-link.active,
@@ -53,6 +132,52 @@
 	color: var(--text-primary) !important;
 }
 
+/* Secondary-tier tabs (Query/Console/Snippet/Monitoring/EditData) never had
+ * an actual border rendered -- _theme-light.scss/_theme-dark.scss only ever
+ * set border-COLOR (transparent when inactive, a real color when active),
+ * assuming some other rule had already set border-style/border-width, which
+ * none did, so the color never showed. Giving them the same bordered-box
+ * treatment as the primary/tree-tabs tiers above (border/background here,
+ * `!important` so it wins over the theme files' non-important color-only
+ * declarations regardless of those tokens) is what actually unifies their
+ * look with the rest of the tab strips, not just their sizing. */
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link {
+	background-color: var(--tab-inactive) !important;
+	border: 1px solid var(--border-color) !important;
+	border-bottom: none !important;
+	color: var(--text-secondary) !important;
+	/* Without an explicit height/flex-centering, this `<a>` sized purely off
+	 * its padding + line-height -- ~17-18px, visibly shorter than the 28px
+	 * primary/tree-tabs tiers, which is what actually read as "different"
+	 * despite matching colors/border. */
+	height: var(--tab-height) !important;
+	display: flex !important;
+	align-items: center !important;
+	justify-content: center !important;
+	/* base.scss's shared rule already gives this tier `border-radius: 6px 6px
+	 * 0 0` and `margin-right: 4px`, but non-`!important` -- the earlier
+	 * `.nav-item { margin: 0 !important; ... }` reset (every tab link also
+	 * carries the `nav-item` class) was quietly winning over it, leaving
+	 * secondary tabs square-cornered and flush against each other. Repeating
+	 * both here with `!important` restores the rounded top corners; the gap
+	 * is intentionally half of the primary tier's (2px vs 4px) per feedback
+	 * -- noticeably tighter, but never flush/zero. */
+	border-radius: var(--tab-radius) var(--tab-radius) 0 0 !important;
+	margin-right: 2px !important;
+}
+
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link.active {
+	background-color: var(--panel-bg) !important;
+	color: var(--text-primary) !important;
+	font-weight: 600 !important;
+	border-color: var(--border-color) !important;
+	border-bottom: 1px solid var(--panel-bg) !important;
+}
+
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link.active * {
+	color: var(--text-primary) !important;
+}
+
 .nav-tabs,
 .omnidb__tab-menu .nav-tabs {
 	background-color: var(--app-bg) !important;
@@ -62,6 +187,40 @@
 	align-items: flex-end !important;
 	border-bottom: 1px solid var(--border-color) !important;
 	height: auto !important;
+}
+
+/* Bootstrap's own `.nav` class (present on every tab strip alongside
+ * `.nav-tabs`) defaults to `flex-wrap: wrap`, never overridden above -- so
+ * tabs that didn't fit on one row were wrapping to a second row instead of
+ * shrinking via the flex-shrink rules added above. Force a single row here,
+ * scoped to just the tab strips that unify to this leaner/shrinkable
+ * layout (connection strip, Query/Console/Snippet tab-menu, Properties/DDL)
+ * -- not `.nav-tabs` generally, which also covers out-of-scope strips like
+ * query-result-tabs or modal dialog tabs.
+ *
+ * Even after every tab has shrunk to its floor (60px, or 40px once a tab
+ * flips to `--icon-only`), enough open panels can still add up to more than
+ * the strip has room for -- rather than letting that overflow spill out
+ * past the strip (which used to widen the strip itself, and along with it
+ * whatever else shares its row), this tier scrolls horizontally on its own.
+ * The scrollbar is hidden (still fully scrollable by wheel/trackpad/drag,
+ * just not drawn) since a visible bar here would itself eat into the same
+ * cramped space this is trying to save. */
+.omnidb__tab-menu--primary .nav-tabs,
+.omnidb__tab-menu--secondary .nav-tabs,
+.omnidb__tree-tabs .nav-tabs {
+	flex-wrap: nowrap !important;
+	overflow-x: auto !important;
+	overflow-y: hidden !important;
+	scrollbar-width: none !important;
+	-ms-overflow-style: none !important;
+}
+
+.omnidb__tab-menu--primary .nav-tabs::-webkit-scrollbar,
+.omnidb__tab-menu--secondary .nav-tabs::-webkit-scrollbar,
+.omnidb__tree-tabs .nav-tabs::-webkit-scrollbar {
+	display: none !important;
+	height: 0 !important;
 }
 
 .omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown {
@@ -191,13 +350,17 @@
 	width: calc(100vw - var(--section-nav-width) - 20px) !important;
 }
 
-.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu__link .omnidb__tab-menu__link-name {
+/* Scoped through `.omnidb__tab-menu--primary` for the same reason as the
+ * shared block above -- otherwise this (higher-specificity, 4-class) rule
+ * leaks onto tree-tabs' (Properties/DDL) name spans too and defeats their
+ * own leaner override further below. */
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link .omnidb__tab-menu__link-name {
 	width: auto !important;
 	max-width: none !important;
 	display: inline-block !important;
 	opacity: 1 !important;
 	visibility: visible !important;
-	margin-left: 8px !important;
+	margin-left: 4px !important;
 	white-space: nowrap !important;
 	font-size: 13px !important;
 	line-height: normal !important;
@@ -216,8 +379,11 @@
 .omnidb__tab-menu__link-close,
 .nav-link .close {
 	position: absolute !important;
-	left: 4px !important;
-	/* Vlevo */
+	/* left is set so the gap to the button's left edge matches the gap the
+	 * vertical centering (translateY(-50%) against a 16px glyph in a 28px
+	 * tall button) already gives above/below -- 6px each -- rather than the
+	 * two being different. */
+	left: 1px !important;
 	top: 50% !important;
 	transform: translateY(-50%) !important;
 	width: 16px !important;
@@ -236,10 +402,25 @@
 	opacity: 1 !important;
 }
 
+/* Close-icon (Zone A) visibility gating: reserved as layout space on every
+ * tab via the padding-left added above, but the glyph itself only ever
+ * appears for closable tabs (see tabs.js's --no-close modifier). Matches the
+ * ":hover" rule's specificity (class + pseudo-class + class) so this later
+ * rule wins on hover instead of the reveal rule above. */
+.omnidb__tab-menu__link--no-close .omnidb__tab-menu__link-close,
+.omnidb__tab-menu__link--no-close:hover .omnidb__tab-menu__link-close {
+	opacity: 0 !important;
+	pointer-events: none !important;
+}
+
+/* A hardcoded dark overlay here used to make the close-X look dimmer, not
+ * more prominent, once the surrounding tab was already dark (dark theme) --
+ * an accent-colored fill instead reads as a clear "about to close" highlight
+ * in either theme. */
 .omnidb__tab-menu__link-close:hover,
 .nav-link .close:hover {
-	background-color: rgba(0, 0, 0, 0.15) !important;
-	color: var(--text-primary) !important;
+	background-color: var(--accent-color) !important;
+	color: #fff !important;
 }
 
 .omnidb__tab-menu--container--menu-shown>.omnidb__tab-menu--primary .omnidb__tab-menu__link-close {
@@ -397,7 +578,20 @@
 	width: auto !important;
 }
 
-.omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link {
+/* Missing the `.omnidb__tab-menu--container--primary` qualifier that every
+ * other rule in this section has -- as written, this unqualified form
+ * matches ANY hierarchy's container once it carries `--menu-shown`, not just
+ * primary's. That class is added unconditionally by createTabControl()
+ * whenever a hierarchy is set (see tabs.js) and is only ever explicitly
+ * removed for v_connTabControl (via hideTabMenu() in workspace.js) -- every
+ * OTHER hierarchy-carrying control (the secondary Query/Console/Snippet
+ * tab-menu itself, query-result-tabs, ...) keeps `--menu-shown` for its
+ * entire lifetime, so this was quietly leaking a 36px vertical-sidebar-style
+ * left padding onto all of them, fighting the leaner tab-button styling
+ * added above. Qualifying it here matches the documented intent (dead code
+ * for primary only) without touching any of the primary-qualified rules
+ * around it. */
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link {
 	width: auto !important;
 	flex: 0 0 auto !important;
 	height: var(--tab-height) !important;
@@ -409,8 +603,8 @@
 	font-size: 13px !important;
 }
 
-.omnidb__tab-menu--container--menu-shown .nav-item:last-child .omnidb__tab-menu__link,
-.omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link:last-child {
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .nav-item:last-child .omnidb__tab-menu__link,
+.omnidb__tab-menu--container--primary.omnidb__tab-menu--container--menu-shown .omnidb__tab-menu__link:last-child {
 	padding-left: 12px !important;
 }
 
@@ -1189,12 +1383,29 @@
 	width: 100% !important;
 }
 
-/* The trailing "+" Add Connection tab -- compact (icon only, no label),
- * unlike every actual connection tab beside it which keeps the shared
- * min-width so its alias text has room. Higher specificity (class + class)
- * than the shared min-width rule above on purpose, rather than relying on
- * source order. */
-.omnidb__conn-strip-host .omnidb__tab-menu__link--compact {
+/* The trailing "+" Add-panel tab (Add Connection, Add Query, Add Snippet, ...)
+ * -- compact (icon only, no reserved close/balance space, no label), unlike
+ * every actual tab beside it. Used across both tiers (the outer connection
+ * strip and every inner query/console/snippet/monitoring/edit-data strip),
+ * so it's no longer scoped to `.omnidb__conn-strip-host`. Each qualified
+ * selector below matches (or exceeds) the specificity of the corresponding
+ * tier's own shrink-to-fit rule (primary tier's is the 4-class
+ * `...--primary .omnidb__tab-menu__link` above -- this alternative chains
+ * the same 4 classes so it ties rather than losing to it; secondary tier's
+ * 2-class rule lives in _base.scss, loaded before this file, so the 2-class
+ * alternative below still wins there on source order alone) so `--compact`
+ * reliably wins over it instead of inheriting a shrinkable min-width.
+ *
+ * `--icon-only` (the ResizeObserver-driven "too narrow to show a label"
+ * state -- see tabs.js) gets the exact same box: the user's own reference
+ * point for "what should the smallest a tab ever gets look like" was this
+ * same "+" tab, so it should render identically, not just similarly. */
+.omnidb__tab-menu__link--compact,
+.omnidb__tab-menu__link--icon-only,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--compact,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--icon-only,
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link--compact,
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link--icon-only {
 	min-width: 0 !important;
 	width: 40px !important;
 	flex: 0 0 40px !important;
@@ -1202,14 +1413,34 @@
 	justify-content: center !important;
 }
 
-/* The compact tab has no name (icon only), but createTab() always renders
- * the (then-empty) .omnidb__tab-menu__link-name span anyway -- left as a
- * phantom flex item, its `margin-left: 8px` (set above for every other tab's
- * real label) throws off the compact tab's own justify-content: center,
- * visibly off-centering the "+" glyph. Dropping it from the layout entirely
- * fixes that; there's no text in it to lose. */
-.omnidb__conn-strip-host .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name {
+/* The compact/icon-only tab has no visible name, but createTab() always
+ * renders the (then-empty, or now-hidden) .omnidb__tab-menu__link-name span
+ * anyway -- left as a phantom flex item, its `margin-left: 8px` (set above
+ * for every other tab's real label) throws off the compact tab's own
+ * justify-content: center, visibly off-centering the glyph. Dropping it from
+ * the layout entirely fixes that; there's no text in it to lose (`--compact`)
+ * or it's already `display:none` (`--icon-only`) but the margin alone would
+ * still shift things without this. */
+.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name,
+.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-name {
 	display: none !important;
+}
+
+/* With the name hidden, the icon is the only content left -- but it still
+ * carries the secondary tier's `margin-right` (spacing it from the label
+ * that's no longer there) and sits in a `.omnidb__tab-menu__link-content`
+ * row that's `justify-content: flex-start` by default, both of which push
+ * the glyph visibly left of center within the 40px box. Resetting the
+ * icon's own margin and centering its row directly is what actually
+ * centers it, regardless of tier. */
+.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-icon,
+.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-icon {
+	margin: 0 !important;
+}
+
+.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-content,
+.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-content {
+	justify-content: center !important;
 }
 
 /* Snippets section body (was the slide-in .omnidb__panel overlay). */

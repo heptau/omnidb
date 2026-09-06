@@ -42,7 +42,15 @@ import { customMenu } from "../custom_menu.js";
 import { v_current_terminal_theme } from "../header_actions.js";
 import { querySQL } from "../query.js";
 import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
-import { adjustQueryTabObjects, indentSQL, removeTab, resizeVertical, showMenuNewTab, uiCopyTextToClipboard } from "../workspace.js";
+import {
+	adjustQueryTabObjects,
+	indentSQL,
+	refreshBootstrapTooltips,
+	removeTab,
+	resizeVertical,
+	showMenuNewTab,
+	uiCopyTextToClipboard,
+} from "../workspace.js";
 
 
 export var v_createConsoleTabFunction = function () {
@@ -53,7 +61,7 @@ export var v_createConsoleTabFunction = function () {
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
 		p_icon: '<i class="fas fa-terminal icon-tab-title"></i>',
 		p_name:
-			'<span> Console</span><span id="tab_loading" style="visibility:hidden;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i></span>',
+			'<span> Console</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i></span>',
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();
@@ -430,6 +438,7 @@ export var v_createConsoleTabFunction = function () {
 	}, 10);
 
 	adjustQueryTabObjects(false);
+	refreshBootstrapTooltips();
 
 	// Sets a render refresh for the grid on the consoleHistory.modal after the modal is fully loaded
 	// (Bootstrap dispatches "shown.bs.modal" as a real DOM event, no jQuery needed to listen for it.)

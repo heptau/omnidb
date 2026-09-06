@@ -105,14 +105,15 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		p_hierarchy: "secondary",
 	});
 
-	v_currTabControl.createTab({
-		p_name: "+",
+	var v_add_tab = v_currTabControl.createTab({
+		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
 	});
+	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 
 	var v_tag = {
 		tab_id: SNIPPET_PANEL_ID,
