@@ -2090,12 +2090,20 @@ label.omnidb__switch--label span {
   color: inherit;
 }
 
+/* getAttributesTooltip's fallback (see tabs.js's auto-derived tab tooltips)
+ * wraps a title-only tooltip in a bare `<h4>`, not the `<h5>` every existing
+ * call site's own markup already used -- with no `.tooltip h4` rule, that
+ * text fell back to the browser/Bootstrap default h4 size, considerably
+ * bigger than the (already large) 1.2rem below. Both sizes are reduced
+ * here too -- 1.2rem/1rem read as oversized next to a 13px tab label. */
+.tooltip h4,
 .tooltip h5 {
-  font-size: 1.2rem;
+  font-size: 13px;
+  font-weight: 600;
 }
 
 .tooltip div {
-  font-size: 1rem;
+  font-size: 12px;
   text-align: left;
 }
 
@@ -3675,17 +3683,21 @@ label.omnidb__switch--label span {
 
 .bs-tooltip-auto[x-placement^=bottom] .arrow::before,
 .bs-tooltip-bottom .arrow::before {
-  border-bottom-color: #3a3a3c;
+  border-bottom-color: #e5e5ea;
 }
 
+/* Previously a dark bubble (#3a3a3c/white text) regardless of theme -- the
+ * same look the dark theme below uses. In light mode that read as
+ * borrowing the wrong theme's colors; light gray/dark text matches every
+ * other light-theme surface (panels, dropdowns, ...) instead. */
 .tooltip-inner {
-  color: #fff;
-  background-color: #3a3a3c;
-  border: none;
+  color: #1d1d1f;
+  background-color: #f2f2f7;
+  border: 1px solid #e5e5ea;
   border-radius: 8px;
   padding: 8px 12px;
   font-size: 12px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .omnidb__connections__btn--select svg {
@@ -5947,6 +5959,22 @@ select.form-control {
   pointer-events: none !important;
 }
 
+/* Once a tab is down to `--icon-only`/`--compact` (40px, icon centered),
+ * the close-X's own box (16px, pinned near the left edge) would land right
+ * on top of the now-centered icon -- rather than show a close-X overlapping
+ * the icon, suppress it entirely at this width; the tab still isn't
+ * "unclosable", it just needs to regain enough width for a legible label
+ * (and the X beside it) before it closes via the X again. Same specificity
+ * trick as the `--no-close` rule above (repeats `:hover` so it beats the
+ * plain `:hover` reveal rule instead of losing to it). */
+.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-close,
+.omnidb__tab-menu__link--icon-only:hover .omnidb__tab-menu__link-close,
+.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-close,
+.omnidb__tab-menu__link--compact:hover .omnidb__tab-menu__link-close {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
 /* A hardcoded dark overlay here used to make the close-X look dimmer, not
  * more prominent, once the surrounding tab was already dark (dark theme) --
  * an accent-colored fill instead reads as a clear "about to close" highlight
@@ -6951,6 +6979,28 @@ select.form-control {
 .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-content,
 .omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-content {
   justify-content: center !important;
+}
+
+/* The "+" add-panel button's icon was inconsistently colored: the outer
+ * connection strip's own "+" lives inside `.omnidb__tab-menu--primary`,
+ * whose `.omnidb__tab-menu__link-icon` rule hardcodes an accent-blue color
+ * in light theme (`_theme-light.scss`) -- meant for other primary-tier
+ * icons, but caught this one too. In dark theme that same slot uses
+ * `--icon-color` instead (not blue), and other tiers' "+" buttons (Query/
+ * Snippet/...) were never touched by that rule at all -- so depending on
+ * theme and tier, the same button read as blue in one place and dark
+ * elsewhere. Pin every "+" button to one deliberate, theme-aware state
+ * instead: the same muted color as the tab label at rest, the accent color
+ * on hover -- `!important` since it has to outrank that theme-file rule
+ * regardless of specificity. */
+.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-icon,
+.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-icon i {
+  color: var(--text-secondary) !important;
+}
+
+.omnidb__tab-menu__link--compact:hover .omnidb__tab-menu__link-icon,
+.omnidb__tab-menu__link--compact:hover .omnidb__tab-menu__link-icon i {
+  color: var(--accent-color) !important;
 }
 
 /* Snippets section body (was the slide-in .omnidb__panel overlay). */

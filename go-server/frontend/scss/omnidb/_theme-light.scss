@@ -644,17 +644,21 @@ label.omnidb__switch--label span {
 
 .bs-tooltip-auto[x-placement^="bottom"] .arrow::before,
 .bs-tooltip-bottom .arrow::before {
-	border-bottom-color: #3a3a3c;
+	border-bottom-color: #e5e5ea;
 }
 
+/* Previously a dark bubble (#3a3a3c/white text) regardless of theme -- the
+ * same look the dark theme below uses. In light mode that read as
+ * borrowing the wrong theme's colors; light gray/dark text matches every
+ * other light-theme surface (panels, dropdowns, ...) instead. */
 .tooltip-inner {
-	color: #fff;
-	background-color: #3a3a3c;
-	border: none;
+	color: #1d1d1f;
+	background-color: #f2f2f7;
+	border: 1px solid #e5e5ea;
 	border-radius: 8px;
 	padding: 8px 12px;
 	font-size: 12px;
-	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
 }
 
 .omnidb__connections__btn--select svg {

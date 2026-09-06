@@ -1599,12 +1599,20 @@ label.omnidb__switch--label span {
 	color: inherit;
 }
 
+/* getAttributesTooltip's fallback (see tabs.js's auto-derived tab tooltips)
+ * wraps a title-only tooltip in a bare `<h4>`, not the `<h5>` every existing
+ * call site's own markup already used -- with no `.tooltip h4` rule, that
+ * text fell back to the browser/Bootstrap default h4 size, considerably
+ * bigger than the (already large) 1.2rem below. Both sizes are reduced
+ * here too -- 1.2rem/1rem read as oversized next to a 13px tab label. */
+.tooltip h4,
 .tooltip h5 {
-	font-size: 1.2rem;
+	font-size: 13px;
+	font-weight: 600;
 }
 
 .tooltip div {
-	font-size: 1rem;
+	font-size: 12px;
 	text-align: left;
 }
 
