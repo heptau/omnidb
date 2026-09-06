@@ -101,12 +101,23 @@ var exportEncodingAliases = map[string]string{
 	"shift-jis": "shift_jis", "utf8": "utf-8",
 }
 
+// utf8BOM is the 3-byte UTF-8 byte-order mark some tools (notably Excel on
+// Windows) rely on to auto-detect that a CSV is UTF-8 rather than the
+// system's legacy codepage; it's optional in the UTF-8 spec itself and
+// invisible everywhere else.
+var utf8BOM = []byte{0xEF, 0xBB, 0xBF}
+
 // exportEncodingWriter wraps a file writer to transcode UTF-8 text into the
 // user's configured CSV encoding, if recognized (see exportEncodingAliases).
 func exportEncodingWriter(f *os.File, name string) *bufio.Writer {
 	name = strings.ToLower(strings.TrimSpace(name))
 	if name == "" || name == "utf-8" {
 		return bufio.NewWriter(f)
+	}
+	if name == "utf-8-sig" {
+		w := bufio.NewWriter(f)
+		w.Write(utf8BOM)
+		return w
 	}
 	if alias, ok := exportEncodingAliases[name]; ok {
 		name = alias
@@ -421,8 +432,10 @@ func (x *xlsxExportWriter) Close() error {
 
 // newExportWriter opens the right writer for the given format ("csv",
 // "tsv", "md", "json", "xml", "xlsx" — the p_cmd_type suffix after
-// "export_"). csvDelimiter/csvEncoding only affect the "csv" format (see
-// delimitedExportWriter's doc comment for why "tsv" ignores them).
+// "export_"). csvEncoding applies to both "csv" and "tsv" (the Settings UI
+// labels it "CSV/TSV Encoding" for exactly this reason); csvDelimiter only
+// affects "csv" -- "tsv" always uses an actual tab (see
+// delimitedExportWriter's doc comment).
 func newExportWriter(format, outPath, csvDelimiter, csvEncoding string) (exportWriter, error) {
 	switch format {
 	case "csv":
@@ -528,7 +541,7 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 
 	csvEncoding := who.CSVEncoding
 	if csvEncoding == "" {
-		csvEncoding = "utf-8"
+		csvEncoding = "utf-8-sig"
 	}
 	csvDelimiter := who.CSVDelimiter
 	if csvDelimiter == "" {

@@ -60,6 +60,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Query/Console tabs), wired into `longpolling.go`/`native_polling.go`/`main.go`; new frontend
   `panel_functions/outer_notify_panel.js` and `tree_context_functions/tree_notify.js`.
 
+### Changed
+- Settings > Export: **CSV Encoding** renamed to **CSV/TSV Encoding** — the setting already applied to both
+  formats in the exporter (`newExportWriter` in `export.go`; only the delimiter is CSV-only), the label was
+  just misleading. Its ~99 raw Python codec names (`cp1250`, `iso8859-2`, `utf-8-sig`, ...) are now grouped
+  into `<optgroup>`s (Unicode, Windows codepages, ISO 8859, Cyrillic, East Asian, DOS codepages, Mac legacy,
+  EBCDIC/mainframe, Other) with human-readable labels ("Windows-1250 (Central European)", "ISO 8859-2 (Latin 2
+  / Central European)", ...) — the underlying `value=` strings are untouched, so existing saved preferences
+  and the backend's `htmlindex`-based encoder resolution are unaffected. Default changed from UTF-8 to
+  **UTF-8 with BOM** (`appdb_workspace.go`'s new-user row, `export.go`'s empty-setting fallback). The CSV
+  Delimiter and CSV/TSV Encoding fields no longer stretch to the full ~680px Settings pane width
+  (`.omnidb__settings__delimiter`/`.omnidb__settings__encoding` in `_topbar.scss`) — the delimiter is sized
+  for a couple of characters, the encoding `<select>` auto-sizes to its content instead of Bootstrap's
+  `width: 100%` default.
+- SQL Editor (Query) tabs are now renamed via a right-click "Rename Tab" context menu item instead of a
+  double-click, matching the context-menu pattern used elsewhere (`inner_query_tab.js`).
+
+### Fixed
+- The **"UTF-8 with BOM"** (`utf-8-sig`) CSV/TSV export encoding was silently a no-op — nothing in
+  `export.go` recognized that codec name, so choosing it produced plain UTF-8 with no byte-order mark.
+  `exportEncodingWriter` now writes the 3-byte UTF-8 BOM when this encoding is selected.
+
 ## [4.3.0] - 2026-09-02
 
 ### Added

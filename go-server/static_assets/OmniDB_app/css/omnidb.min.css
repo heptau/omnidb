@@ -6897,6 +6897,31 @@ select.form-control {
   font-variant-numeric: tabular-nums;
 }
 
+/* The delimiter is almost always a single character (`;`, `,`, `|`, tab) --
+ * Bootstrap's `.form-control` default of `width: 100%` stretched it across
+ * the whole ~680px settings pane, which read as if a much longer value was
+ * expected. A handful of characters of room (rather than exactly 1ch) keeps
+ * the caret and a 2-3 char delimiter comfortably visible without reviving
+ * that oversized field. */
+.omnidb__settings__delimiter {
+  width: 5ch !important;
+  max-width: 5ch !important;
+  text-align: center;
+}
+
+/* Same over-stretching as the delimiter above -- Bootstrap's `.form-control`
+ * default of `width: 100%` sized this to the whole ~680px settings pane,
+ * even though the longest option label ("ISO 8859-15 (Latin 9 / Western
+ * European with €)") only needs a fraction of that. `width: auto` lets the
+ * browser size the box to its content (every native <select> already does
+ * this natively once nothing forces it to 100%); `max-width` just keeps it
+ * from ever reading as "wider than the field is worth" on a very wide
+ * window, and from overflowing the pane on a narrow one. */
+.omnidb__settings__encoding {
+  width: auto !important;
+  max-width: min(100%, 420px) !important;
+}
+
 /* #omnidb_main_tablist (v_connTabControl) lives inside
  * #omnidb__section_database and reuses the ":not(container--menu-shown)"
  * horizontal-strip styling above -- that used to be what "Switch menu"
@@ -6962,6 +6987,36 @@ select.form-control {
 .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name,
 .omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-name {
   display: none !important;
+}
+
+/* A tab that shrank to --icon-only and is then (re)selected must expand
+ * back to show its label -- not stay pinned at the "+" button's fixed
+ * 40px just because the ResizeObserver hasn't fired again yet (it won't:
+ * a rigid `flex: 0 0 40px` never changes size on its own, so nothing would
+ * ever tell the observer this tab could show its label again). Restoring
+ * the tier's normal (shrinkable-but-not-currently-shrunk) sizing here,
+ * keyed off `.active`, is what makes the expansion immediate on selection
+ * instead of requiring some unrelated resize to shake the class loose
+ * later. `--compact` is excluded on purpose: the "+" add-panel tab is
+ * never selectable (p_selectable: false), so it can never carry `.active`.
+ * Specificity mirrors the rule being overridden above. */
+.omnidb__tab-menu__link--icon-only.active,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--icon-only.active,
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link--icon-only.active {
+  min-width: 60px !important;
+  width: auto !important;
+  flex: 0 0 auto !important;
+  padding-left: var(--tab-zone-width) !important;
+  padding-right: var(--tab-zone-width) !important;
+  justify-content: center !important;
+}
+
+.omnidb__tab-menu__link--icon-only.active .omnidb__tab-menu__link-name {
+  display: inline-block !important;
+}
+
+.omnidb__tab-menu__link--icon-only.active .omnidb__tab-menu__link-content {
+  justify-content: flex-start !important;
 }
 
 /* With the name hidden, the icon is the only content left -- but it still

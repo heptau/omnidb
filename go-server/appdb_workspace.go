@@ -79,12 +79,12 @@ func fetchUserDetails(db *sql.DB, userID int64) (userDetailsRow, error) {
 	).Scan(&row.Theme, &row.FontSize, &row.CSVEncoding, &row.CSVDelimiter, &row.WelcomeClosed, &row.IndentUnit, &row.IndentChar, &row.IndentSize, &row.CommaStyle, &row.KeywordCase, &row.AutocompleteDisabledTypes)
 	if err == sql.ErrNoRows {
 		if _, insertErr := db.Exec(
-			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case) values (?, 'auto', 12, 'utf-8', ';', 0, '    ', 'space', 4, 'leading', 'preserve')`,
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case) values (?, 'auto', 12, 'utf-8-sig', ';', 0, '    ', 'space', 4, 'leading', 'preserve')`,
 			userID,
 		); insertErr != nil {
 			return userDetailsRow{}, insertErr
 		}
-		return userDetailsRow{Theme: "auto", FontSize: 12, CSVEncoding: "utf-8", CSVDelimiter: ";", WelcomeClosed: false, IndentUnit: "    ", IndentChar: "space", IndentSize: 4, CommaStyle: "leading", KeywordCase: "preserve", AutocompleteDisabledTypes: ""}, nil
+		return userDetailsRow{Theme: "auto", FontSize: 12, CSVEncoding: "utf-8-sig", CSVDelimiter: ";", WelcomeClosed: false, IndentUnit: "    ", IndentChar: "space", IndentSize: 4, CommaStyle: "leading", KeywordCase: "preserve", AutocompleteDisabledTypes: ""}, nil
 	}
 	if err != nil {
 		return userDetailsRow{}, err

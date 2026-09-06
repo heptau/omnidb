@@ -11905,7 +11905,24 @@
           removeTab(v_current_tab);
         });
       },
-      p_dblClickFunction: renameTab
+      p_rightClickFunction: function(e) {
+        customMenu(
+          {
+            x: e.clientX + 5,
+            y: e.clientY + 5
+          },
+          [
+            {
+              text: "Rename Tab",
+              icon: "fas cm-all fa-edit",
+              action: function() {
+                renameTab(v_tab);
+              }
+            }
+          ],
+          null
+        );
+      }
     });
     v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
     var v_tab_title_span = (

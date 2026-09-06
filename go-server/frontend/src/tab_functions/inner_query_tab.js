@@ -88,7 +88,24 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 				removeTab(v_current_tab);
 			});
 		},
-		p_dblClickFunction: renameTab,
+		p_rightClickFunction: function (e) {
+			customMenu(
+				{
+					x: e.clientX + 5,
+					y: e.clientY + 5,
+				},
+				[
+					{
+						text: "Rename Tab",
+						icon: "fas cm-all fa-edit",
+						action: function () {
+							renameTab(v_tab);
+						},
+					},
+				],
+				null,
+			);
+		},
 	});
 
 	// Selecting newly created tab.
