@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  App Sandbox entitlements for the main OmniDB executable and the outer
+  .app bundle (see Makefile's _build_mac target) — used whether it's
+  currently ad-hoc-signed for direct/Homebrew distribution or, later,
+  signed with a real Apple Distribution identity for the Mac App Store.
+  Same binary, same sandbox either way; only the signing identity
+  (MAC_SIGN_IDENTITY) and the extra App Store submission step (a
+  productbuild .pkg, not part of this Makefile yet) change later.
+
+  NOT used for omnidb-server, the second executable bundled in the same
+  Contents/MacOS/ — that one is signed with entitlements-helper.plist
+  instead. Giving it this same full entitlement set crashes it instantly on
+  launch (see that file's comment for the full story); it doesn't need its
+  own copy of any of these anyway, since com.apple.security.inherit already
+  gives it everything the sandbox this file establishes already allows.
+
+  Why each entitlement is needed:
+   - app-sandbox: mandatory for every Mac App Store submission.
+   - cs.allow-jit: without this, the window renders and nothing else —
+     confirmed by hand: WKWebView's WebContent helper process fails to
+     initialize (Console showed repeated "sandbox does not allow access to
+     RunningBoard" / XPC bootstrap failures to launchservicesd,
+     coreservicesd, etc.) and the whole window just stays blank forever,
+     with no error and no console output anywhere. JavaScriptCore needs to
+     JIT-compile, and Hardened Runtime blocks that without this entitlement
+     — every other symptom traced back to this one missing key.
+   - network.client: every database engine OmniDB connects to (Postgres,
+     MySQL, Oracle, MSSQL, Firebird, SQLite is local-file-only) and its SSH
+     tunnel/terminal feature (ssh_tunnel.go, terminal.go) are outbound TCP
+     connections to hosts the user configures — made from omnidb-server,
+     which needs this via inheritance (see above), not its own declaration.
+   - network.server: omnidb-server (go-server/listen_addr.go) and this
+     executable's own save-dialog/open-url relay (wails-app/savedialog.go)
+     each bind a 127.0.0.1-only TCP listener. Sandbox requires this
+     entitlement even for loopback-only listeners.
+   - files.user-selected.read-write: the native Save/Open panels
+     (wails-app/savedialog.go, wails-app/legacydata.go) need write access to
+     wherever the user picks, and read access to whatever legacy data
+     folder they pick during the one-time import flow.
+   - files.bookmarks.app-scope: lets a security-scoped bookmark to a
+     user-picked folder be persisted across launches, in case a future
+     feature needs to remember a chosen location instead of re-prompting
+     every time (not relied on today, but cheap to declare up front).
+-->
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.app-sandbox</key>
+	<true/>
+	<key>com.apple.security.network.client</key>
+	<true/>
+	<key>com.apple.security.network.server</key>
+	<true/>
+	<key>com.apple.security.files.user-selected.read-write</key>
+	<true/>
+	<key>com.apple.security.files.bookmarks.app-scope</key>
+	<true/>
+	<key>com.apple.security.cs.allow-jit</key>
+	<true/>
+</dict>
+</plist>

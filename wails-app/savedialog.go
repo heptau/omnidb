@@ -132,14 +132,15 @@ func validateSaveDialogSrcPath(srcPath string) (*os.Root, string, error) {
 	return root, rel, nil
 }
 
-// exportTempDir mirrors go-server/homedir.go's resolveHomeDir + appdb.go's
-// resolveTempDir for the one mode this process ever launches go-server in:
-// startBackend always appends "-A" (see backend.go), so the "app mode"
-// branch (~/.omnidb/omnidb-app, or an explicit -d/--homedir override) is the
-// only case that can ever apply here — go-server's own home-dir resolution
-// isn't reachable from this separate module, so this recomputes the same
-// path from the same os.Args instead of importing it.
-func exportTempDir() (string, error) {
+// appHomeDir mirrors go-server/homedir.go's resolveHomeDir for the one mode
+// this process ever launches go-server in: startBackend always appends "-A"
+// (see backend.go), so the "app mode" branch (~/.omnidb/omnidb-app, or an
+// explicit -d/--homedir override) is the only case that can ever apply here
+// — go-server's own home-dir resolution isn't reachable from this separate
+// module, so this recomputes the same path from the same os.Args instead of
+// importing it. Shared by exportTempDir below and legacydata.go's migration
+// flow, both of which need to agree with go-server on exactly this path.
+func appHomeDir() (string, error) {
 	dir := homeDirFlag(os.Args[1:])
 	if dir == "" {
 		base, err := os.UserHomeDir()
@@ -147,6 +148,16 @@ func exportTempDir() (string, error) {
 			return "", err
 		}
 		dir = filepath.Join(base, ".omnidb", "omnidb-app")
+	}
+	return dir, nil
+}
+
+// exportTempDir mirrors appdb.go's resolveTempDir — see appHomeDir's comment
+// for why this is recomputed rather than imported.
+func exportTempDir() (string, error) {
+	dir, err := appHomeDir()
+	if err != nil {
+		return "", err
 	}
 	return filepath.Join(dir, "temp"), nil
 }

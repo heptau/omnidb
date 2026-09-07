@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Entitlements for omnidb-server specifically — NOT the same file as
+  entitlements.plist (used for the main OmniDB executable and the outer
+  .app bundle). Learned the hard way: signing omnidb-server with its own
+  full app-sandbox entitlement (like entitlements.plist declares) crashes
+  it instantly with SIGTRAP ("Trace/BPT trap: 5"), inside
+  libsecinit_appsandbox, before main() ever runs — confirmed via
+  ~/Library/Logs/DiagnosticReports/omnidb-server-*.ips. Root cause: App
+  Sandbox's own initialization expects the sandboxing process to BE the
+  bundle's declared CFBundleExecutable (Info.plist says "OmniDB", not
+  "omnidb-server") — a second executable living in the same Contents/MacOS/
+  cannot independently establish its own sandbox that way, even though nothing
+  stops it from being codesigned with that entitlement in the first place.
+
+  com.apple.security.inherit is the correct entitlement for exactly this
+  shape of helper binary: a child process (see wails-app/backend.go's
+  startBackend, which os/exec.Command()s this binary) that should run
+  within whatever sandbox its parent (the main, properly-bundled OmniDB
+  executable) already has, rather than trying to establish an independent
+  one of its own. It needs no explicit network.client/network.server/etc of
+  its own — those are already granted to the sandbox it inherits.
+-->
+<plist version="1.0">
+<dict>
+	<key>com.apple.security.inherit</key>
+	<true/>
+</dict>
+</plist>

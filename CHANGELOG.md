@@ -7,6 +7,51 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- macOS builds are now App Sandboxed — one single build (`make build-mac-arm64`/`build-mac-intel`)
+  covers both today's direct/Homebrew distribution and a future Mac App Store submission; only the
+  signing identity changes between them. `entitlements.plist` (main executable/.app) and
+  `entitlements-helper.plist` (`omnidb-server`, which inherits the parent's sandbox instead of
+  establishing its own — see below) declare the sandbox plus network client/server and
+  user-selected-file entitlements. `PrivacyInfo.xcprivacy` and the `LSApplicationCategoryType`/
+  `ITSAppUsesNonExemptEncryption` Info.plist keys are now part of the build too, ahead of ever
+  actually needing them. `_ensure_local_signing_cert` auto-generates a free, local, self-signed
+  code-signing certificate ("OmniDB Local Signing") the first time it's needed — plain ad-hoc
+  signing looks fine but silently never enables the sandbox at all — and `MAC_SIGN_IDENTITY` can
+  point at a personal or, eventually, a real Apple Distribution/Developer ID identity instead.
+- One-time data-import flow for the newly-sandboxed build: App Sandbox redirects `$HOME` to a
+  per-app container, so a sandboxed launch can't see an existing `~/.omnidb` on its own. On first
+  launch with no data yet, OmniDB now offers to import it; "Import Data from Previous
+  Installation…" in the `OmniDB` menu repeats the same flow any time afterward
+  (`wails-app/legacydata.go`).
+
+### Fixed
+- `omnidb-server`, bundled as a second executable alongside the main `OmniDB` binary, crashed
+  instantly (`SIGTRAP` inside `libsecinit_appsandbox`, confirmed via a diagnostic report) the
+  moment the sandboxed build's entitlements were signed onto it directly — App Sandbox
+  initialization expects the sandboxing process to be the bundle's own declared
+  `CFBundleExecutable`, which it isn't. Fixed by signing it with `com.apple.security.inherit`
+  instead, so it runs within its parent's already-established sandbox rather than trying to open
+  its own.
+- The sandboxed build's window stayed permanently blank (WebKit's `WebContent` helper process
+  logged repeated sandbox/XPC bootstrap failures) until `com.apple.security.cs.allow-jit` was added
+  — JavaScriptCore needs to JIT-compile, and Hardened Runtime blocks that without this entitlement.
+- The desktop app's one-time auto-login link (`handleSignInAutomatic`) never set the CSRF cookie —
+  only the plain (non-auto) login page branch did. Every POST in the workspace then failed with
+  "Invalid or missing request data." on any browser/webview profile without an already-present
+  cookie from an earlier, different login path — which a sandboxed build's fresh, empty cookie jar
+  never has. `finishLogin` now sets it for both paths.
+- Importing previous data while the backend was already running (the menu-triggered path) could
+  silently import nothing: `omnidb-server` still had the old database file open, and went on to
+  checkpoint its own stale state right back over the freshly-copied bytes before the app was next
+  restarted. The backend is now stopped before the copy and restarted after, closing the race
+  instead of just warning about it.
+- Importing previous data could also silently import nothing for a different reason: a stray,
+  unrelated `omnidb.db` sometimes sits directly in `~/.omnidb` (left over from an old install)
+  alongside the real one in `~/.omnidb/omnidb-app` — the import matched whichever the picked folder
+  contained *directly* before ever checking that subfolder, so it could grab the wrong file first.
+  The `omnidb-app`/`omnidb-server` subfolders are now checked first.
+
 ## [4.4.0] - 2026-09-07
 
 ### Added

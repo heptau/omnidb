@@ -30,6 +30,12 @@ func (a *App) startup(ctx context.Context) {
 	if err := a.startSaveDialogServer(); err != nil {
 		println("Failed to start save-dialog listener:", err.Error())
 	}
+
+	// Only ever does anything on a sandboxed (Mac App Store) build — see
+	// legacydata.go's sandboxed(). Runs before FrontendReady triggers
+	// startBackend below, so a completed import is already in place by the
+	// time go-server opens omnidb.db for the first time; no restart needed.
+	a.maybeOfferLegacyDataImport()
 }
 
 // FrontendReady is called by main.js once it has registered its

@@ -184,6 +184,18 @@ func authenticateAppUser(db *sql.DB, username, password string) (*appUser, bool)
 // finishLogin mirrors login.py's shared post-authenticate() tail (login.py's
 // own django.contrib.auth.login() plus the Session()-object bootstrap
 // check_session does) — creates the native session and sets its cookie.
+//
+// Also ensures the CSRF cookie is set here, not just from handleLoginPage's
+// plain-GET branch: handleSignInAutomatic (the desktop app's one-time
+// auto-login link) goes straight from the login URL to here, never through
+// that branch, so without this call a brand-new browser/webview profile
+// (no leftover omnidb_csrftoken cookie from an earlier visit) would get a
+// session cookie but no CSRF cookie — every POST in the workspace afterward
+// then fails requireCSRF's double-submit check with "Invalid or missing
+// request data.", forever. Confirmed by hand: reproduces reliably in a
+// fresh sandboxed container (empty cookie jar); masked on an existing
+// install only because its webview profile already had a valid CSRF
+// cookie left over from some earlier, non-auto-login visit.
 func finishLogin(w http.ResponseWriter, r *http.Request, db *sql.DB, user *appUser) error {
 	csvEncoding, csvDelimiter, err := userCSVPrefs(db, user.ID)
 	if err != nil {
@@ -194,6 +206,7 @@ func finishLogin(w http.ResponseWriter, r *http.Request, db *sql.DB, user *appUs
 		return err
 	}
 	setNativeSessionCookie(w, r, sessionKey, nativeSessionTTL)
+	ensureCSRFCookie(w, r)
 	return nil
 }
 

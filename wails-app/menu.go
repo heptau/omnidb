@@ -39,6 +39,16 @@ func (a *App) buildMenu() *menu.Menu {
 	appMenu := menu.NewMenu()
 	appMenu.AddText("About OmniDB", nil, a.execJS("showAbout()"))
 	appMenu.AddText("Settings...", keys.CmdOrCtrl(","), a.execJS("showConfigUser()"))
+	if sandboxed() {
+		// Only meaningful when actually sandboxed (see legacydata.go's
+		// sandboxed()/maybeOfferLegacyDataImport) — an unsandboxed dev run
+		// never loses sight of its own ~/.omnidb, so the item would just be
+		// dead weight there.
+		appMenu.AddSeparator()
+		appMenu.AddText("Import Data from Previous Installation...", nil, func(_ *menu.CallbackData) {
+			a.importLegacyDataFromMenu()
+		})
+	}
 	appMenu.AddSeparator()
 	appMenu.AddText("Quit OmniDB", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
 		wailsruntime.Quit(a.ctx)

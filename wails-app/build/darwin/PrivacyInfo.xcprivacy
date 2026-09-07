@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Apple's Privacy Manifest requirement is currently enforced for iOS/iPadOS/
+  tvOS App Store submissions only — macOS apps are exempt as of this writing
+  (see https://developer.apple.com/support/third-party-SDK-requirements/).
+  Shipped anyway, ahead of that requirement, because it's free to be honest
+  here and Apple has been widening manifest enforcement over time.
+
+  OmniDB itself collects nothing and tracks nothing — every network
+  connection it makes (database engines, SSH) is one the user explicitly
+  configured, not telemetry back to us. NSPrivacyAccessedAPITypes is left
+  empty rather than guessed: attributing a "required reason" API declaration
+  to a specific call inside the Go runtime or WKWebView (rather than this
+  app's own code) isn't something this file's author could verify from the
+  Go/Wails source alone. Revisit before ever shipping to a platform where
+  the requirement is enforced (iOS/iPadOS/tvOS) or if Apple extends
+  enforcement to macOS — `xcrun` will flag any real gap at submission time.
+-->
+<plist version="1.0">
+<dict>
+	<key>NSPrivacyTracking</key>
+	<false/>
+	<key>NSPrivacyTrackingDomains</key>
+	<array/>
+	<key>NSPrivacyCollectedDataTypes</key>
+	<array/>
+	<key>NSPrivacyAccessedAPITypes</key>
+	<array/>
+</dict>
+</plist>
