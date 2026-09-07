@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.1] - 2026-09-07
+
 ### Added
 - Windows now gets a real NSIS installer (`make build-win-installer`), not just the existing bare
   `.exe`/`.zip` (which stays exactly as it was, unaffected, for anyone who'd rather download that
