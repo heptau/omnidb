@@ -88,6 +88,16 @@ Section
 
     !insertmacro wails.files
 
+    # omnidb-server.exe is a second executable (see go-server/) that
+    # OmniDB.exe spawns as a child process (wails-app/backend.go) -- it
+    # isn't part of the Wails-built binary above, so wails.files (which
+    # only knows about ARG_WAILS_*_BINARY) never installs it on its own.
+    # Path is relative to this .nsi's own location (matching
+    # ARG_WAILS_AMD64_BINARY's "..\..\bin\app.exe" convention in this same
+    # file's header comment), populated by the Makefile's _build_win target
+    # copying it there right before invoking makensis.
+    File "/oname=omnidb-server.exe" "..\..\bin\omnidb-server.exe"
+
     CreateShortcut "$SMPROGRAMS\${INFO_PRODUCTNAME}.lnk" "$INSTDIR\${PRODUCT_EXECUTABLE}"
     CreateShortCut "$DESKTOP\${INFO_PRODUCTNAME}.lnk" "$INSTDIR\${PRODUCT_EXECUTABLE}"
 

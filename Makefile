@@ -45,10 +45,11 @@ endif
 
 # --- Phony Targets ---
 .PHONY: help all clean _sync_version \
-        build-mac-arm64 build-mac-intel build-linux build-linux-docker build-win \
+        build-mac-arm64 build-mac-intel build-linux build-linux-docker build-win build-win-installer \
         prepare-release release \
-        _prepare_dirs _ensure_wails _ensure_local_signing_cert _build_frontend_release _restore_frontend \
-        _build_mac _build_linux _build_win \
+        _prepare_dirs _ensure_wails _ensure_local_signing_cert _ensure_nsis_docker_image \
+        _build_frontend_release _restore_frontend \
+        _build_mac _build_linux _build_win _build_win_installer \
         docs-typo docs-typo-dry _ensure_typolima
 
 # --- Default Target: Help ---
@@ -77,7 +78,12 @@ help:
 	@echo "                          own Linux webview (GTK/CGO) cannot cross-compile"
 	@echo "  make build-linux-docker - Build for Linux (x64) from macOS/Windows, via Docker"
 	@echo "  make build-win        - Build for Windows (x64) — fully cross-compiles from"
-	@echo "                          macOS/Linux (Wails' pure-Go WebView2 loader)"
+	@echo "                          macOS/Linux (Wails' pure-Go WebView2 loader), plain"
+	@echo "                          .exe + .zip, no installer"
+	@echo "  make build-win-installer - Same, plus a real NSIS .exe installer (needs"
+	@echo "                          Docker — see _ensure_nsis_docker_image's comment"
+	@echo "                          for why the compile step can't run natively on"
+	@echo "                          Apple Silicon)"
 	@echo ""
 	@echo "Release targets:"
 	@echo "  make release VERSION=X.Y.Z - Bump VERSION+CHANGELOG, build every platform"
@@ -386,6 +392,54 @@ _build_win: _prepare_dirs _ensure_wails _build_frontend_release
 	mkdir -p $(BUILD_DIR)/dist
 	cd $(BUILD_DIR) && $(ZIP_CMD) dist/OmniDB-win-x64.zip $(APP_NAME)-win
 	@echo "Done: $(BUILD_DIR)/dist/OmniDB-win-x64.zip"
+
+# --- WINDOWS NSIS INSTALLER (winget/Chocolatey want a real installer, not ---
+# --- just the bare .zip above, which stays around unchanged as a fallback) -
+# wails-app/build/windows/installer/project.nsi already existed (Wails
+# scaffolds it for every project) but was never wired into any build target
+# until now. The compile step specifically needs Linux: Homebrew's makensis
+# 3.12 arm64 bottle crashes (std::bad_alloc, while writing output) on ANY
+# Unicode-mode installer, confirmed by hand with a trivial two-line repro —
+# nothing to do with this project's own .nsi script, a real bug in that one
+# binary. Debian's `nsis` apt package doesn't share it, so a tiny Docker
+# image (scripts/docker/nsis-build.Dockerfile) runs just the `makensis`
+# step; everything else (the Go/Wails binaries, wails_tools.nsh's own
+# version-string templating, done by wails build's own `-nsis` flag) still
+# happens natively, same as the plain _build_win above.
+_ensure_nsis_docker_image:
+	docker build -q -t omnidb-nsis-builder -f scripts/docker/nsis-build.Dockerfile scripts/docker >/dev/null
+
+build-win-installer:
+	$(MAKE) _build_win_installer WAILS_GOARCH=amd64
+
+_build_win_installer: _prepare_dirs _ensure_wails _ensure_nsis_docker_image _build_frontend_release
+	@echo "Building Wails desktop shell + NSIS sources (windows/$(WAILS_GOARCH))..."
+	-cd wails-app && $(WAILS) build -clean -platform windows/$(WAILS_GOARCH) -webview2 embed -nsis
+	@# ^ Tolerant of failure ("-" prefix): this call's only job here is
+	@# producing wails-app/build/bin/$(APP_NAME).exe, downloading the
+	@# WebView2 bootstrapper into build/windows/installer/tmp/, and
+	@# refreshing wails_tools.nsh with this version's info substituted in —
+	@# its own internal attempt to invoke makensis right afterward reliably
+	@# fails on Apple Silicon (see the comment above); the real compile
+	@# happens in Docker, below.
+
+	@echo "Building Go server (windows/$(WAILS_GOARCH))..."
+	cd go-server && GOOS=windows GOARCH=$(WAILS_GOARCH) go build -o "../wails-app/build/bin/omnidb-server.exe" .
+	$(MAKE) _restore_frontend
+
+	@echo "Patching wails_tools.nsh (non-ASCII copyright breaks NSIS's own parser, independent of the makensis crash above)..."
+	$(SED_CMD) 's/^\( *!define INFO_COPYRIGHT \).*/\1"Copyright (c) 2015-2026 The OmniDB Team and contributors"/' \
+		wails-app/build/windows/installer/wails_tools.nsh
+
+	@echo "Compiling NSIS installer (Docker)..."
+	docker run --rm \
+		-v "$(CURDIR)/wails-app/build":/work/build \
+		omnidb-nsis-builder \
+		makensis -DARG_WAILS_AMD64_BINARY=/work/build/bin/OmniDB.exe /work/build/windows/installer/project.nsi
+
+	mkdir -p $(BUILD_DIR)/dist
+	mv "wails-app/build/bin/$(APP_NAME)-amd64-installer.exe" "$(BUILD_DIR)/dist/OmniDB-win-x64-setup.exe"
+	@echo "Done: $(BUILD_DIR)/dist/OmniDB-win-x64-setup.exe"
 
 # --- DOCS TYPOGRAPHY (TypoLima, https://typolima.80.cz) ---
 # Install the TypoLima CLI (pip --user) if it isn't already available, so

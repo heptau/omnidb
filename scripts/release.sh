@@ -13,6 +13,10 @@ set -euo pipefail
 #   GITHUB_REPO         GitHub repo (default: heptau/omnidb)
 #   HOMEBREW_TAP_REPO   GitHub repo of the Homebrew tap (default: heptau/homebrew-tap)
 #   HOMEBREW_TAP_CASK   Path to cask inside the tap (default: Casks/omnidb.rb)
+#   WINGET_PKGS_FORK    Your fork of microsoft/winget-pkgs, e.g. "heptau/winget-pkgs"
+#                       (`gh repo fork microsoft/winget-pkgs --clone=false` once,
+#                       ahead of time). Unset skips the winget PR step entirely —
+#                       the manifest still gets generated either way.
 #
 # Prerequisites: Docker running locally, `gh auth login` with push access to
 # both GITHUB_REPO and HOMEBREW_TAP_REPO, a clean tree up to date with origin.
@@ -50,6 +54,9 @@ make build-mac-intel
 echo "==> Building Windows (x64)..."
 make build-win
 
+echo "==> Building Windows installer (x64, via Docker)..."
+make build-win-installer
+
 echo "==> Building Linux (x64, via Docker)..."
 make build-linux-docker
 
@@ -58,6 +65,7 @@ ARCHIVES=(
   "$DIST/OmniDB-macOS-osx-arm64.zip"
   "$DIST/OmniDB-macOS-osx-x64.zip"
   "$DIST/OmniDB-win-x64.zip"
+  "$DIST/OmniDB-win-x64-setup.exe"
   "$DIST/OmniDB-linux-x64.tar.gz"
 )
 for f in "${ARCHIVES[@]}"; do
@@ -78,6 +86,9 @@ echo "==> Computing checksums..."
 
 echo "==> Generating Homebrew Cask..."
 scripts/gen_cask.sh
+
+echo "==> Generating winget manifest..."
+scripts/gen_winget_manifest.sh
 
 echo "==> Tagging v${VERSION}..."
 if git tag -l "v${VERSION}" | grep -q .; then
@@ -119,9 +130,55 @@ else
     -f content="${CONTENT}"
 fi
 
+WINGET_STATUS="skipped (WINGET_PKGS_FORK not set)"
+if [[ -n "${WINGET_PKGS_FORK:-}" ]]; then
+  echo "==> Submitting winget-pkgs PR..."
+  # winget-pkgs' commit history has tens of thousands of package manifests
+  # in it — a plain clone (even --filter=blob:none, which only skips file
+  # *content*) still has to build a full working-tree index across that
+  # whole history and runs to several hundred MB / minutes. --depth 1 keeps
+  # it to ~40MB / ~20s by only ever looking at the current tip — confirmed
+  # by hand, both numbers measured directly. sparse-checkout has to be set
+  # up BEFORE the checkout below (not after) for the "only this package's
+  # manifests" part to actually avoid materializing everything else — doing
+  # it the other way around still fetches every blob once, just to throw
+  # most of them away a moment later.
+  #
+  # Cloning upstream directly (not the fork) and pushing the result to the
+  # fork's URL at the end, rather than cloning the fork and adding upstream
+  # as a second remote, sidesteps combining two independently-shallow
+  # histories — simpler, and this is the one shape actually tested by hand.
+  WINGET_BRANCH="omnidb-v${VERSION}"
+  WINGET_MANIFEST_SRC="$(pwd)/${DIST}/winget/manifests/h/heptau/OmniDB/${VERSION}"
+  WINGET_DIR="$(mktemp -d)"
+  git clone --quiet --filter=blob:none --no-checkout --depth 1 \
+    https://github.com/microsoft/winget-pkgs.git "$WINGET_DIR"
+  (
+    cd "$WINGET_DIR"
+    git sparse-checkout set --no-cone "manifests/h/heptau/OmniDB"
+    git checkout -B "$WINGET_BRANCH" origin/master
+    mkdir -p "manifests/h/heptau/OmniDB"
+    cp -r "${WINGET_MANIFEST_SRC}" "manifests/h/heptau/OmniDB/"
+    git add "manifests/h/heptau/OmniDB/${VERSION}"
+    git -c user.name="omnidb-release" -c user.email="noreply@omnidb.net" \
+      commit --quiet -m "New version: heptau.OmniDB version ${VERSION}"
+    git push --quiet --force "https://github.com/${WINGET_PKGS_FORK}.git" "$WINGET_BRANCH"
+  )
+  rm -rf "$WINGET_DIR"
+
+  gh pr create \
+    --repo microsoft/winget-pkgs \
+    --head "${WINGET_PKGS_FORK%%/*}:${WINGET_BRANCH}" \
+    --base master \
+    --title "New version: heptau.OmniDB version ${VERSION}" \
+    --body "Automated submission from heptau/omnidb's release process (scripts/release.sh)." \
+    && WINGET_STATUS="PR opened against microsoft/winget-pkgs"
+fi
+
 echo ""
 echo "======================================================================"
 echo "  Released: v${VERSION}"
 echo "  GitHub release: https://github.com/${GITHUB_REPO}/releases/tag/v${VERSION}"
 echo "  Homebrew:       brew upgrade heptau/tap/omnidb"
+echo "  winget:         ${WINGET_STATUS}"
 echo "======================================================================"

@@ -8,6 +8,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Windows now gets a real NSIS installer (`make build-win-installer`), not just the existing bare
+  `.exe`/`.zip` (which stays exactly as it was, unaffected, for anyone who'd rather download that
+  instead). The actual `makensis` compile step runs in a small Docker image
+  (`scripts/docker/nsis-build.Dockerfile`, Debian's `nsis` package) — confirmed by hand that
+  Homebrew's own `makensis` 3.12 arm64 bottle crashes (`std::bad_alloc`, while writing output) on
+  any Unicode-mode installer at all, even a trivial two-line one, unrelated to this project's own
+  `.nsi` script. `wails-app/build/windows/installer/project.nsi` now also bundles
+  `omnidb-server.exe` (previously only `OmniDB.exe` itself was installed — the second executable
+  the shell spawns as a child process, see `wails-app/backend.go`, was silently missing from the
+  installer entirely).
+- `make release`/`scripts/release.sh` now also generates a
+  [winget](https://learn.microsoft.com/en-us/windows/package-manager/) manifest
+  (`scripts/gen_winget_manifest.sh`, package id `heptau.OmniDB`) from the new installer, and — only
+  when `WINGET_PKGS_FORK` is set to your own fork of `microsoft/winget-pkgs` — opens the version-bump
+  PR there automatically, the same way the release process already updates the Homebrew tap.
 - macOS builds are now App Sandboxed — one single build (`make build-mac-arm64`/`build-mac-intel`)
   covers both today's direct/Homebrew distribution and a future Mac App Store submission; only the
   signing identity changes between them. `entitlements.plist` (main executable/.app) and
