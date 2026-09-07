@@ -98,6 +98,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   own Alt-based scheme used elsewhere, configurable under a new Settings > Shortcuts > **Snippets**
   subsection (the pane's pre-existing shortcuts are now grouped under a **Database** subsection
   header above it) (`shortcuts.js`, `static/workspace.html`, `_topbar.scss`).
+- Toolbar tab-switcher buttons (Connection/Terminal/Website, Query/Console/Snippet,
+  Monitoring/Edit Data, Properties/DDL — everything funneling through `tabs.js`'s `createTab()`)
+  were unified around one 4-zone layout (close-X, icon, label, balancing space) instead of the
+  inconsistent close/icon/tooltip/sizing treatment each tier had drifted into: the close-X is
+  always reserved as layout space and only shown on hover for closable tabs (connection/terminal
+  tabs now close via this X instead of a right-click "Close Connection/Terminal Tab" menu, same
+  backend teardown); every tab gets a tooltip, falling back to its own visible label when none is
+  set explicitly; tabs shrink to fit one row instead of wrapping or overflowing, with a
+  `ResizeObserver` collapsing very narrow tabs to icon-only (matching the "+" add-panel button's
+  compact size) and a hidden-but-functional horizontal scrollbar as the last resort once every tab
+  is already at its floor; and border/background/height/border-radius/spacing is now consistent
+  between the primary (connection) and secondary (query/console/snippet) tiers, with new icons for
+  Query (`fa-database`) and Snippet (`fa-bolt`, later replaced by a scroll icon — see below) tabs
+  so icon-only mode never renders an empty box.
+- Settings sidebar gains its own resize splitter (previously fixed-width), matching the
+  Connections/Database/Snippets/Notify panels.
 
 ### Changed
 - Settings > Export: **CSV Encoding** renamed to **CSV/TSV Encoding** — the setting already applied to both
@@ -114,6 +130,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `width: 100%` default.
 - SQL Editor (Query) tabs are now renamed via a right-click "Rename Tab" context menu item instead of a
   double-click, matching the context-menu pattern used elsewhere (`inner_query_tab.js`).
+- Resize splitters (Connections/Database/Snippets/Notify/Settings) now live-resize during drag
+  instead of only committing on mouseup, use a solid line instead of dashed, and share one
+  background/opacity treatment so they read as a single thin divider instead of a
+  double-bordered gray strip. Left-panel backgrounds (white in light theme) and hover color
+  (accent-blue, matching Settings/Connections) are now consistent across Database, Snippets,
+  Notify, and Connections trees/lists.
+- Snippets' book/lightning-bolt icon was replaced by a scroll icon everywhere it appears (nav
+  rail, tab, tree rows, context menus), and its "New Snippet" tree action was renamed "Add
+  Snippet" with a "+" icon.
+- Settings > Export's inconsistent "UTF-16/UTF-32 (with BOM)" labels were unified to match
+  "UTF-8 with BOM".
 
 ### Fixed
 - The **"UTF-8 with BOM"** (`utf-8-sig`) CSV/TSV export encoding was silently a no-op — nothing in
@@ -129,6 +156,32 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   a tab actually has room to show that label (icon-only tabs still get the tooltip), and never for
   the connection-switcher strip, whose tooltip carries host/connection-string detail the tab itself
   never shows (`tabs.js`).
+- Tab-switcher polish following the 4-zone layout unification above: the close-X is now suppressed
+  entirely (instead of overlapping the icon) once a tab collapses to icon-only/compact width
+  (40px) — it can't be closed via the X at that width until it regains room for a label again.
+  Auto-derived tab tooltips wrapped text in a bare `<h4>` with no matching CSS rule, falling back
+  to Bootstrap's much larger default heading size instead of the existing 1.2rem `<h5>` rule every
+  other tooltip used — unified and shrunk (13px title / 12px body). Light-theme tooltips always
+  rendered with the dark theme's colors (`#3a3a3c` bg / white text) instead of a light bg with dark
+  text. And the connection strip's own "+" inherited a primary-tier icon rule that hardcoded
+  accent-blue in light theme (a different color in dark theme), while "+" buttons on other strips
+  (Query/Snippet/...) were never touched by that rule at all — every "+" button now explicitly
+  matches its tab label's own color at rest and turns accent-colored on hover, in both themes.
+- A start-of-drag jump in the Database splitter, caused by its width math not being a delta from
+  the drag's start position.
+- Doubled-looking left/right panel edges (Settings, Database, Snippets, Notify, Connections),
+  caused by padding that stacked with the adjacent splitter's own width/background.
+- Misaligned/off-center Indent-Save action bar under the Snippets editor (Bootstrap row/col-12
+  offset, stray button margin, and a now-pointless divider border all contributed).
+
+### Security
+- The docs site's download-links script (`docs/assets/download-links.js`) validated a download
+  URL's scheme through a separate `isSafeUrl()` helper before writing it to an anchor's `href` —
+  safe at runtime, but CodeQL (`js/xss-through-dom`, [alert #354](https://github.com/heptau/omnidb/security/code-scanning/354))
+  couldn't see through the indirection to recognize it as a sanitizer. Moved the `http:`/`https:`
+  protocol check inline immediately before the `setAttribute('href', ...)` call, and write back
+  the parsed `URL` object's own `.href` rather than the original string, so the guard sits
+  structurally where static analysis can verify it.
 
 ## [4.3.0] - 2026-09-02
 
