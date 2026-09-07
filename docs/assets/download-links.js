@@ -17,18 +17,6 @@
 
 	var os = detectOS();
 
-	// Only allow http(s) URLs through to `href` — guards against a
-	// javascript:/data: URI ending up in a data-dl-* attribute and running
-	// on click.
-	function isSafeUrl(url) {
-		try {
-			var parsed = new URL(url, window.location.href);
-			return parsed.protocol === 'https:' || parsed.protocol === 'http:';
-		} catch (e) {
-			return false;
-		}
-	}
-
 	document.querySelectorAll('[data-dl-mac-arm]').forEach(function (el) {
 		var url = el.getAttribute('data-dl-mac-arm');
 		var label = el.getAttribute('data-label-mac');
@@ -39,7 +27,20 @@
 			url = el.getAttribute('data-dl-win');
 			label = el.getAttribute('data-label-win');
 		}
-		if (url && isSafeUrl(url)) el.setAttribute('href', url);
+		// Only allow http(s) URLs through to `href`, checked inline right
+		// before the write — guards against a javascript:/data: URI ending
+		// up in a data-dl-* attribute and running on click.
+		if (url) {
+			var parsed = null;
+			try {
+				parsed = new URL(url, window.location.href);
+			} catch (e) {
+				parsed = null;
+			}
+			if (parsed && (parsed.protocol === 'https:' || parsed.protocol === 'http:')) {
+				el.setAttribute('href', parsed.href);
+			}
+		}
 		if (label) el.textContent = label;
 	});
 
