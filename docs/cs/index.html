@@ -106,6 +106,12 @@
 			</nav>
 			<div class="site-topbar-spacer"></div>
 			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
 				<div class="dropdown" data-dropdown="lang">
 					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
@@ -253,6 +259,17 @@
 					</div>
 				</div>
 				<div class="install-card">
+					<span class="install-icon" aria-hidden="true">🪟</span>
+					<h3>winget <span class="install-tag">Windows</span></h3>
+					<p>Doporučeno pro Windows — instaluje a aktualizuje appku přes vestavěný Windows Package Manager.</p>
+					<div class="install-command-row">
+						<pre><code class="install-command" id="wingetCmd">winget install heptau.OmniDB</code></pre>
+						<button class="copy-btn" type="button" data-copy-target="wingetCmd" aria-label="Kopírovat příkaz">
+							<span class="copy-btn-icon">⧉</span>
+						</button>
+					</div>
+				</div>
+				<div class="install-card">
 					<span class="install-icon" aria-hidden="true">⬇️</span>
 					<h3>GitHub Releases <span class="install-tag">macOS · Linux · Windows</span></h3>
 					<p>Stáhněte si samostatný archiv pro vaši platformu — bez instalátoru, bez samostatného runtime.</p>
@@ -310,14 +327,14 @@
 	<script src="../assets/download-links.js"></script>
 	<script>
 		(function () {
-			var copyBtn = document.querySelector('.copy-btn');
-			if (!copyBtn) return;
-			copyBtn.addEventListener('click', function () {
-				var target = document.getElementById(copyBtn.getAttribute('data-copy-target'));
-				if (!target) return;
-				navigator.clipboard.writeText(target.textContent.trim()).then(function () {
-					copyBtn.classList.add('copied');
-					setTimeout(function () { copyBtn.classList.remove('copied'); }, 1500);
+			document.querySelectorAll('.copy-btn').forEach(function (copyBtn) {
+				copyBtn.addEventListener('click', function () {
+					var target = document.getElementById(copyBtn.getAttribute('data-copy-target'));
+					if (!target) return;
+					navigator.clipboard.writeText(target.textContent.trim()).then(function () {
+						copyBtn.classList.add('copied');
+						setTimeout(function () { copyBtn.classList.remove('copied'); }, 1500);
+					});
 				});
 			});
 		})();

@@ -74,6 +74,18 @@ Homebrew will automatically download the correct ZIP for your architecture (Appl
 
 The cask definition is maintained here: heptau/homebrew-tap – omnidb.rb (https://github.com/heptau/homebrew-tap/blob/main/Casks/omnidb.rb)
 
+**Installation via winget (Windows only)**
+
+For Windows users who prefer using a package manager, OmniDB is available through the Windows Package Manager (https://learn.microsoft.com/en-us/windows/package-manager/winget/), built into Windows 10 and 11:
+
+    # Install the latest version:
+    winget install heptau.OmniDB
+
+    # To upgrade later:
+    winget upgrade heptau.OmniDB
+
+The manifest is maintained here: microsoft/winget-pkgs (https://github.com/microsoft/winget-pkgs/tree/master/manifests/h/heptau/OmniDB)
+
 **Direct download (all platforms)**
 
 Open the latest release (https://github.com/heptau/omnidb/releases/latest) and download the archive matching your OS/architecture from the list above, from its Assets section. Release asset filenames include the version number, so there's no fixed "always latest" URL to link to directly — always go through the releases page itself.
