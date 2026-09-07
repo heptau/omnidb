@@ -69,12 +69,32 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		},
 		p_closeFunction: function (e, p_tab) {
 			var v_current_tab = p_tab;
-			beforeCloseTab(e, function () {
+			// Only prompt when the tab actually has unsaved changes (the same
+			// dot shown next to its title, see the dirty-dot block below) --
+			// closing an already-saved snippet, whether via the X or the
+			// keyboard shortcut (shortcuts.js's shortcut_close_snippet_tab),
+			// shouldn't need a confirmation nobody asked for.
+			if (v_current_tab.tag.tab_dirty_dot.style.display !== "none") {
+				beforeCloseTab(e, function () {
+					removeTab(v_current_tab);
+				});
+			} else {
 				removeTab(v_current_tab);
-			});
+			}
 		},
 	});
 	v_connTabControl.snippet_tag.tabControl.selectTab(v_tab);
+
+	// Unsaved-changes dot: appended straight onto the tab's <a> (elementA)
+	// rather than into the p_name/tab_title flow above, so it lands in the
+	// fixed-width "Zone D" balance space reserved on every secondary-tier tab
+	// (see _base.scss) instead of drifting around next to a title whose
+	// length varies and gets ellipsized.
+	var v_tab_dirty_dot = document.createElement("span");
+	v_tab_dirty_dot.className = "omnidb__tab-dirty-dot";
+	v_tab_dirty_dot.title = "Unsaved changes";
+	v_tab_dirty_dot.style.display = "none";
+	v_tab.elementA.appendChild(v_tab_dirty_dot);
 
 	//Adding unique names to spans
 	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
@@ -85,9 +105,13 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	v_tab_check_span.id = "tab_check_" + v_tab.id;
 
 	var v_html =
+		// omnidb__snippets__editor-host: sizes via flex (see #snippets_panel_tabs
+		// in _base.scss) instead of a JS-computed pixel height -- no inline
+		// height here, the flex column gives it whatever's left after the
+		// action bar below takes its own (fixed) height.
 		'<div id="txt_snippet_' +
 		v_tab.id +
-		'" style="width: 100%; height: 200px; border-right: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3;"></div>' +
+		'" class="omnidb__snippets__editor-host" style="border-right: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3;"></div>' +
 		// No Bootstrap row/col-12 wrapper here (unlike inner_query_tab.js's
 		// actions bar): .omnidb__tab-actions is already a self-contained,
 		// full-width flex bar with its own horizontal padding, so a .row's
@@ -100,13 +124,20 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		// bar, so that border was just a hard edge sitting directly under
 		// the buttons with no matching edge above them, making the button
 		// row read as bottom-heavy even though its padding is symmetric.
+		//
+		// btn-sm on both buttons: matches every other action bar in the app
+		// (Query/Console/EditData) -- a plain (non -sm) `btn` here used to
+		// render at a regular Bootstrap button's full spec height, which
+		// this bar's own min-height floor couldn't override since it was
+		// already the taller of the two, breaking this bar's height match
+		// with the addremove footer next to it.
 		'<div class="tab_actions omnidb__tab-actions omnidb__tab-actions--no-divider mt-2">' +
 		'<button id="bt_indent_' +
 		v_tab.id +
-		'" class="btn omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent me-2"></i>Indent</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent me-2"></i>Indent</button>' +
 		'<button id="bt_save_' +
 		v_tab.id +
-		'" class="btn omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save"><i class="fas fa-save me-2"></i>Save</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save"><i class="fas fa-save me-2"></i>Save</button>' +
 		"</div>";
 
 	var v_div = /** @type {HTMLElement} */ (document.getElementById("div_" + v_tab.id));
@@ -114,8 +145,11 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 
 	var v_txt_snippet = /** @type {HTMLElement} */ (document.getElementById("txt_snippet_" + v_tab.id));
 
-	v_txt_snippet.style.height =
-		window.innerHeight - (v_txt_snippet.getBoundingClientRect().top + window.scrollY) - 70 + "px";
+	// Height comes from .omnidb__snippets__editor-host's flex rule (see
+	// _base.scss) now, not a JS calculation -- by this point v_div already
+	// carries the tab-pane's "active" class (selectTab above ran before
+	// v_html was assigned), so the flex column has already resolved a real
+	// height for this element.
 
 	var langTools = ace.require("ace/ext/language_tools");
 	var v_editor = ace.edit("txt_snippet_" + v_tab.id);
@@ -126,6 +160,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	v_editor.setFontSize(Number(v_font_size));
 	v_editor.session.setTabSize(v_indent_size || 4);
 	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
+	v_editor.setOption("printMarginColumn", v_ruler_column || 128);
 
 	v_editor.commands.bindKey("ctrl-space", null);
 
@@ -151,6 +186,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		div_result: document.getElementById("div_result_" + v_tab.id),
 		sel_export_type: document.getElementById("sel_export_type_" + v_tab.id),
 		tab_title_span: v_tab_title_span,
+		tab_dirty_dot: v_tab_dirty_dot,
 		tab_loading_span: v_tab_loading_span,
 		tab_check_span: v_tab_check_span,
 		bt_start: document.getElementById("bt_start_" + v_tab.id),
@@ -158,6 +194,10 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		tabControl: v_connTabControl.snippet_tag.tabControl,
 		snippetTab: v_connTabControl.selectedTab,
 		snippetObject: v_details,
+		// Set around programmatic editor.setValue() calls (loading a snippet's
+		// saved text, or clearing a brand new tab) so that isn't mistaken for a
+		// user edit -- see tree_snippets.js's startEditSnippetText.
+		suppressDirtyTracking: false,
 	};
 
 	v_tab.tag = v_tag;
@@ -169,6 +209,14 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		indentSQL("snippet"),
 	);
 	v_tag.bt_save.addEventListener("click", saveSnippetText);
+
+	// Unsaved-changes dot: any real edit shows it, Save (see saveSnippetText's
+	// callback) clears it. Loading content programmatically doesn't count --
+	// see suppressDirtyTracking above.
+	v_editor.session.on("change", function () {
+		if (v_tag.suppressDirtyTracking) return;
+		v_tab_dirty_dot.style.display = "";
+	});
 
 	// Creating + tab in the outer tab list
 	var v_add_tab = v_connTabControl.snippet_tag.tabControl.createTab({

@@ -30,7 +30,7 @@ SOFTWARE.
 
 import { execAjax } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
-import { showAlert, showConfirm } from "../notification_control.js";
+import { showConfirm } from "../notification_control.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -205,6 +205,18 @@ export function getTreeSnippets(p_div) {
 		tree.nodeContextMenu(e, node1);
 	};
 
+	// Mirrors the oncontextmenu handling above: clicking a row also counts as
+	// selecting it (Aimara calls this before its own selectNode), which is
+	// what drives the footer's "-" button (see outer_snippet_panel.js) --
+	// the invisible root itself can't be deleted, so its id: null keeps the
+	// button disabled while it's the one selected.
+	tree.clickNodeEvent = function (p_node) {
+		var v_delete_button = document.getElementById("button_delete_snippet");
+		if (v_delete_button == null) return;
+		if (p_node.tag && p_node.tag.id != null) v_delete_button.removeAttribute("disabled");
+		else v_delete_button.setAttribute("disabled", "disabled");
+	};
+
 	v_connTabControl.snippet_tree = tree;
 }
 
@@ -224,6 +236,12 @@ export function refreshTreeSnippets(node) {
 /// </summary>
 /// <param name="node">Node object.</param>
 export function getChildSnippetNodes(node) {
+	// Every child gets torn down and rebuilt below -- whatever selection the
+	// footer's "-" button (see outer_snippet_panel.js) was pointing at may no
+	// longer exist, so don't leave it enabled against a stale node.
+	var v_delete_button = document.getElementById("button_delete_snippet");
+	if (v_delete_button != null) v_delete_button.setAttribute("disabled", "disabled");
+
 	node.removeChildNodes();
 	node.createChildNode("", false, "node-spin", null, null);
 
@@ -289,8 +307,10 @@ export function closeSnippetTab(p_tab) {
 
 export function saveSnippetText(event) {
 	var v_callback = function (p_return_object) {
-		v_connTabControl.snippet_tag.tabControl.selectedTab.tag.snippetObject = p_return_object;
-		v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_title_span.textContent = p_return_object.name;
+		var v_tab_tag = v_connTabControl.snippet_tag.tabControl.selectedTab.tag;
+		v_tab_tag.snippetObject = p_return_object;
+		v_tab_tag.tab_title_span.textContent = p_return_object.name;
+		v_tab_tag.tab_dirty_dot.style.display = "none";
 	};
 
 	//var v_snippet_tab_list = v_connTabControl.snippet_tag.tabControl.tabList;
@@ -364,8 +384,10 @@ export function saveSnippetTextConfirm(p_save_object, p_text, p_callback) {
 
 			if (p_callback != null) p_callback(p_return.v_data);
 
-			showAlert("Snippet saved.");
-
+			// No more "Snippet saved." confirmation dialog here -- the tab's own
+			// unsaved-changes dot (see p_callback above, and
+			// inner_snippet_tab.js) already gives that feedback inline, without
+			// an extra click to dismiss.
 			getAllSnippets();
 		},
 		null,
@@ -510,9 +532,13 @@ export function startEditSnippetText(p_node) {
 		"/get_snippet_text/",
 		JSON.stringify({ p_st_id: p_node.tag.id }),
 		function (p_return) {
-			v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.setValue(p_return.v_data);
-			v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
-			v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+			var v_tab_tag = v_connTabControl.snippet_tag.tabControl.selectedTab.tag;
+			v_tab_tag.suppressDirtyTracking = true;
+			v_tab_tag.editor.setValue(p_return.v_data);
+			v_tab_tag.editor.clearSelection();
+			v_tab_tag.editor.gotoLine(0, 0, true);
+			v_tab_tag.suppressDirtyTracking = false;
+			v_tab_tag.tab_dirty_dot.style.display = "none";
 		},
 		null,
 		"box",

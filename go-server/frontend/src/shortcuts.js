@@ -31,6 +31,7 @@ SOFTWARE.
 import { autocomplete_start } from "./autocomplete.js";
 import { consoleSQL } from "./console.js";
 import { saveShortcuts } from "./header_actions.js";
+import { isSectionActive } from "./section_switcher.js";
 import { terminalRun } from "./terminal.js";
 import { queryEditData } from "./tree_context_functions/edit_data.js";
 import { getExplain } from "./tree_context_functions/tree_postgresql.js";
@@ -267,6 +268,79 @@ export var v_default_shortcuts = {
 			shortcut_key: "E",
 		},
 	},
+	// Save/New/Close follow the platform's own convention (Ctrl on
+	// Windows/Linux, Cmd on macOS) rather than the Alt-based scheme above,
+	// since these three mirror a muscle-memory shortcut every other app on
+	// the platform already uses.
+	shortcut_save_snippet: {
+		windows: {
+			ctrl_pressed: true,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: false,
+			shortcut_key: "S",
+		},
+		linux: {
+			ctrl_pressed: true,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: false,
+			shortcut_key: "S",
+		},
+		macos: {
+			ctrl_pressed: false,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: true,
+			shortcut_key: "S",
+		},
+	},
+	shortcut_new_snippet: {
+		windows: {
+			ctrl_pressed: true,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: false,
+			shortcut_key: "N",
+		},
+		linux: {
+			ctrl_pressed: true,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: false,
+			shortcut_key: "N",
+		},
+		macos: {
+			ctrl_pressed: false,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: true,
+			shortcut_key: "N",
+		},
+	},
+	shortcut_close_snippet_tab: {
+		windows: {
+			ctrl_pressed: true,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: false,
+			shortcut_key: "W",
+		},
+		linux: {
+			ctrl_pressed: true,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: false,
+			shortcut_key: "W",
+		},
+		macos: {
+			ctrl_pressed: false,
+			shift_pressed: false,
+			alt_pressed: false,
+			meta_pressed: true,
+			shortcut_key: "W",
+		},
+	},
 };
 
 /**
@@ -368,6 +442,30 @@ function initShortcuts() {
 					//avoid triggering click on '+' tab
 					v_tabControl.tabList[0].elementA.click();
 				else v_tabControl.tabList[v_actualIndex + 1].elementA.click();
+			}
+		},
+		shortcut_save_snippet: function () {
+			if (isSectionActive("snippets") && v_connTabControl.snippet_tag) {
+				var v_tab = v_connTabControl.snippet_tag.tabControl.selectedTab;
+				if (v_tab && v_tab.tag && v_tab.tag.bt_save) v_tab.tag.bt_save.click();
+			}
+		},
+		shortcut_new_snippet: function () {
+			if (isSectionActive("snippets") && v_connTabControl.snippet_tag) {
+				v_connTabControl.tag.createSnippetTextTab();
+			}
+		},
+		shortcut_close_snippet_tab: function () {
+			if (isSectionActive("snippets") && v_connTabControl.snippet_tag) {
+				var v_tab = v_connTabControl.snippet_tag.tabControl.selectedTab;
+				// {clientX: 0, clientY: 0} rather than null: inner_snippet_tab.js's
+				// closeFunction only asks beforeCloseTab for a confirmation at all
+				// when the tab is actually unsaved, and beforeCloseTab reads these
+				// as "no real click position" and shows its plain Yes/No warning
+				// dialog instead of a position-anchored menu -- appropriate for a
+				// keyboard-triggered close, which has no click coordinates of its
+				// own to anchor a menu to.
+				if (v_tab && v_tab.closeFunction) v_tab.closeFunction({ clientX: 0, clientY: 0 }, v_tab);
 			}
 		},
 		shortcut_autocomplete: function (e) {

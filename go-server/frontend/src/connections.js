@@ -33,6 +33,7 @@ SOFTWARE.
 /// </summary>
 
 import { execAjax } from "./ajax_control_bridge.js";
+import { customMenu } from "./custom_menu.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
 import { switchSection } from "./section_switcher.js";
@@ -140,6 +141,35 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 				manageGroup(),
 			);
 
+			// Right-clicking empty space below/between the list items -- item
+			// rows stop this from firing for their own row (see the per-item
+			// "contextmenu" listener below) via stopPropagation, same
+			// reasoning as tree_notify.js's root-vs-node context menu split.
+			v_target_div.oncontextmenu = function (e) {
+				if (v_target_div.classList.contains("omnidb__connections__list--connection-management")) return;
+				e.preventDefault();
+				customMenu(
+					{ x: e.clientX + 5, y: e.clientY + 5 },
+					[
+						{
+							text: "New Connection",
+							icon: "fas cm-all fa-plus",
+							action: function () {
+								newConnection();
+							},
+						},
+						{
+							text: "Refresh",
+							icon: "fas cm-all fa-sync-alt",
+							action: function () {
+								showConnectionList(false, true);
+							},
+						},
+					],
+					null,
+				);
+			};
+
 			for (var i = 0; i < p_return.v_data.v_conn_list.length; i++) {
 				var v_conn_obj = p_return.v_data.v_conn_list[i];
 
@@ -160,7 +190,7 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					v_icon_html = '<i class="technology-icon node-' + escapeHtml(v_conn_obj.technology) + '"></i>';
 					v_title = v_conn_obj.alias;
 					if (v_conn_obj.conn_string && v_conn_obj.conn_string != "") {
-						v_subtitle = v_conn_obj.conn_string;
+						v_subtitle = v_conn_obj.conn_string.replace(/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//, "");
 					} else {
 						v_subtitle = (v_conn_obj.user ? v_conn_obj.user + "@" : "") + v_conn_obj.server + ":" + v_conn_obj.port;
 					}
@@ -213,6 +243,65 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 							// connection in the detail pane.
 							if (v_target_div.classList.contains("omnidb__connections__list--connection-management")) return;
 							editConnection(p_conn_obj);
+						};
+					})(v_conn_obj),
+				);
+
+				// Double-clicking a row connects straight away instead of just
+				// loading it into the detail form -- same "open it" meaning a
+				// double-click carries everywhere else in the app (tree nodes,
+				// tabs, etc.).
+				v_item_div.addEventListener(
+					"dblclick",
+					(function (p_conn_obj) {
+						return function () {
+							if (v_target_div.classList.contains("omnidb__connections__list--connection-management")) return;
+							selectConnection(p_conn_obj);
+						};
+					})(v_conn_obj),
+				);
+
+				v_item_div.addEventListener(
+					"contextmenu",
+					(function (p_conn_obj) {
+						return function (e) {
+							if (v_target_div.classList.contains("omnidb__connections__list--connection-management")) return;
+							e.preventDefault();
+							// Stops the list container's own "empty space" menu
+							// (see its oncontextmenu above) from also opening.
+							e.stopPropagation();
+
+							var v_options = [
+								{
+									text: "Connect",
+									icon: "fas cm-all fa-plug",
+									action: function () {
+										selectConnection(p_conn_obj);
+									},
+								},
+								{
+									text: "Edit",
+									icon: "fas cm-all fa-pen",
+									action: function () {
+										editConnection(p_conn_obj);
+									},
+								},
+							];
+
+							// Locked connections (see updateDeleteButtonState) can't
+							// be deleted at all -- same restriction the detail
+							// pane's own Delete button already enforces.
+							if (p_conn_obj.locked !== true) {
+								v_options.push({
+									text: "Delete",
+									icon: "fas cm-all fa-times",
+									action: function () {
+										deleteConnection(p_conn_obj);
+									},
+								});
+							}
+
+							customMenu({ x: e.clientX + 5, y: e.clientY + 5 }, v_options, null);
 						};
 					})(v_conn_obj),
 				);

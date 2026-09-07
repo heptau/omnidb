@@ -547,6 +547,22 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 
 			if (v_effective_tooltip_name) {
 				getAttributesTooltip(v_a, v_effective_tooltip_name, null, "right");
+				// Toolbar tab-switcher buttons (Query/Console/Snippet/
+				// Monitoring/EditData/Properties/DDL, ...) show this tooltip's
+				// text as their own visible label already once they have room
+				// for it -- keeping it would just repeat what is already on
+				// screen. Only suppressed once the label is actually showing
+				// (icon-only tabs still need it), and never for the
+				// connection-switching strip itself (p_hierarchy === "primary"),
+				// whose tooltip carries the connection string/host details that
+				// never fit on the tab.
+				if (p_hierarchy !== "primary") {
+					v_a.addEventListener("show.bs.tooltip", function (e) {
+						if (!v_a.classList.contains("omnidb__tab-menu__link--icon-only")) {
+							e.preventDefault();
+						}
+					});
+				}
 			} else if (v_effective_omnidb_tooltip_name) {
 				getAttributesOmniDBTooltip(v_a, v_effective_omnidb_tooltip_name, null, "right");
 			}

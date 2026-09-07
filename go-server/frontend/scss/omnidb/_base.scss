@@ -804,13 +804,67 @@ button.close {
 
 // Measured perfectly centered at the box-model level (equal padding, no
 // border-bottom left to skew it) but still read as bottom-heavy on screen,
-// so this shifts 2px from the top padding to the bottom -- an empirical
-// nudge, not a geometric fix. Same specificity as .tab_actions
+// so this shifts the top padding towards the bottom -- an empirical nudge,
+// not a geometric fix. Same specificity as .tab_actions
 // .omnidb__tab-actions's own `padding: 4px 8px` (two classes each) so it
 // actually wins instead of losing the cascade to it.
+//
+// height (not min-height) is pinned to 43px to match Snippets' own
+// div_left addremove footer (.omnidb__list-footer, right next to this bar
+// in the same panel), which always resolves to that same 43px (16px
+// padding + 1px border-top + a 26px button row, all fixed pixel values
+// immune to font-metric rounding). A min-height floor isn't enough here:
+// even with `btn-sm` (see inner_snippet_tab.js) instead of the old plain
+// `btn`, an icon glyph (fa-indent/fa-save) inside the button can still
+// make some engines compute a taller line box for that inline content than
+// others do for the same font-size -- a few px of slack a *floor* can't
+// claw back once content is already past it. A fixed height (with
+// `overflow: hidden` as a backstop, and `align-items: center` on the
+// shared .omnidb__tab-actions rule keeping the button centered) pins the
+// box itself instead of hoping the content stays under some threshold.
+//
+// flex: 0 0 auto -- this bar is a flex item of the tab-pane's own column
+// layout (see #snippets_panel_tabs below); without it, a flex child
+// defaults to flex-shrink: 1 and could get squeezed under height pressure
+// instead of keeping its own height fixed. Pairing that with a fixed
+// `height` (rather than `min-height`) also means flex-basis: auto
+// resolves to exactly 43px, so flex can't stretch it back out either.
 .tab_actions.omnidb__tab-actions--no-divider {
-	padding-top: 2px;
-	padding-bottom: 6px;
+	// min-height: 0 overrides the base .omnidb__tab-actions rule's own
+	// `min-height: 38px` above -- that's a *different* property than the
+	// `height` below, so specificity never made this one win on its own;
+	// both applied simultaneously, and the used height is always
+	// max(min-height, height) per the box height algorithm. That silently
+	// floored every attempt at a height below 38px to exactly 38px
+	// regardless (37px and 35px likely rendered identically, both clamped
+	// to 38 -- which is probably why the difference stopped being visible
+	// around there). This 0 removes that floor so `height` actually governs
+	// on its own.
+	//
+	// height itself is tuned empirically against the real WKWebView build
+	// rather than derived from the box model -- 43px (this bar's
+	// addremove-footer target) rendered ~4px taller than intended, and
+	// 39px still ~2px taller on top of that, both confirmed against the
+	// real app, not this repo's own Chrome-based dev preview (which shows
+	// this rule's literal px value with no offset at all -- whatever's
+	// adding the gap is WKWebView-specific and isn't reproducible here).
+	// No other rule in the codebase touches
+	// .tab_actions/.omnidb__tab-actions (grepped the whole scss/ tree),
+	// box-sizing is border-box everywhere (Bootstrap reboot), and
+	// overflow: hidden already rules out content pushing the box open.
+	min-height: 0;
+	height: 36px;
+	overflow: hidden;
+	// align-items: center (from the shared .omnidb__tab-actions rule)
+	// centers the button within the content box (height minus this
+	// padding), not the border box -- so this asymmetry is what actually
+	// moves the button up/down within the fixed 36px height, not just a
+	// cosmetic top/bottom balance. Moving 1px from top to bottom (was
+	// 2px/4px) shifts the button's own center 1px higher, to match the
+	// addremove +/- buttons next to it.
+	padding-top: 1px;
+	padding-bottom: 5px;
+	flex: 0 0 auto;
 }
 
 .omnidb__tab-actions .omnidb__tab-actions__btn {
@@ -957,6 +1011,39 @@ button.close {
 
 .omnidb__snippets__div-right {
 	padding-top: 1rem;
+}
+
+// Editor + action-bar split for each open snippet tab, expressed purely in
+// flexbox instead of resizeSnippetPanel's old JS pixel math (workspace.js),
+// which hard-coded the editor's height as "panel height minus 7 * font
+// size" -- a stand-in for "however tall the action bar happens to render"
+// that could drift a px or two off the bar's real (font-metric-dependent)
+// height, and visibly lagged a frame behind on every window resize since
+// it only reapplied on the next tick. Scoped to #snippets_panel_tabs (this
+// panel's own tab control) so it can't reach Query/Console's div_<tab_id>
+// panes, which live under a different tab control entirely and still size
+// themselves through refreshHeights().
+#snippets_panel_tabs {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+#snippets_panel_tabs > .tab-content {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+#snippets_panel_tabs .tab-pane.active {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.omnidb__snippets__editor-host {
+	flex: 1 1 auto;
+	min-height: 0;
+	width: 100%;
 }
 
 /* Notify section (panel_functions/outer_notify_panel.js): the same

@@ -54,6 +54,7 @@ type workspaceBootstrap struct {
 	IndentSize                int                          `json:"indent_size"`
 	CommaStyle                string                       `json:"comma_style"`
 	KeywordCase               string                       `json:"keyword_case"`
+	RulerColumn               int                          `json:"ruler_column"`
 	AutocompleteDisabledTypes string                       `json:"autocomplete_disabled_types"`
 	WelcomeClosed             bool                         `json:"welcome_closed"`
 	DesktopMode               bool                         `json:"desktop_mode"`
@@ -171,6 +172,7 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 		IndentSize:                ud.IndentSize,
 		CommaStyle:                ud.CommaStyle,
 		KeywordCase:               ud.KeywordCase,
+		RulerColumn:               ud.RulerColumn,
 		AutocompleteDisabledTypes: ud.AutocompleteDisabledTypes,
 		WelcomeClosed:             ud.WelcomeClosed,
 		DesktopMode:               desktopMode,

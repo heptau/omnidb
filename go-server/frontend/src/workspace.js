@@ -644,7 +644,10 @@ export var resizeSnippetPanel = async function (p_left_pos_x = false) {
 	await updateOuterSnippetLayout.then(function (v_panel_height) {
 		if (v_inner_snippet_tag.editor !== undefined) {
 			v_snippet_tag.divTree.style.height = v_panel_height + "px";
-			v_inner_snippet_tag.editorDiv.style.height = v_panel_height - 7 * v_font_size + "px";
+			// editorDiv's own height is CSS flex now (see
+			// .omnidb__snippets__editor-host in _base.scss), not a pixel
+			// value computed here -- ace still needs telling its container
+			// changed size, though, hence the resize() call below.
 			v_inner_snippet_tag.editor.resize();
 		}
 	});

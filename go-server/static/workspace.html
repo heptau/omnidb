@@ -95,12 +95,12 @@
 
 						<div id="connection_card_list" class="omnidb__connections__list"></div>
 
-						<div class="omnidb__connections__sidebar-footer">
-							<div class="omnidb__connections__addremove">
+						<div class="omnidb__list-footer">
+							<div class="omnidb__addremove">
 								<button id="button_new_connection" type="button" title="New Connection">
 									<i class="fas fa-plus"></i>
 								</button>
-								<span class="omnidb__connections__addremove-divider"></span>
+								<span class="omnidb__addremove-divider"></span>
 								<button id="button_delete_connection" type="button" title="Delete Connection" disabled>
 									<i class="fas fa-minus"></i>
 								</button>
@@ -664,6 +664,12 @@
 									</div>
 								</div>
 							</div>
+
+							<div class="omnidb__settings__field">
+								<label for="txt_ruler_column">Ruler Column</label>
+								<input type="number" class="form-control omnidb__settings__ruler-column" id="txt_ruler_column" min="24" max="999" step="1" placeholder="128">
+								<span class="omnidb__settings__hint">Column where the editor shows a vertical guide line. Not yet used by SQL formatting.</span>
+							</div>
 						</div>
 
 						<div class="omnidb__settings__pane" id="config_shortcuts" data-category="shortcuts">
@@ -673,6 +679,7 @@
 							<div id="div_shortcut_background_dark">
 								<div style="position: absolute; top: 50%; width: 100%;">Press key combination... (ESC to cancel)</div>
 							</div>
+							<h6 class="omnidb__settings__subsection-header">Database</h6>
 							<div class="form-group row">
 								<label for="shortcut_run_query" class="col-sm-6 col-form-label">Run Query</label>
 								<div class="col-sm-6">
@@ -743,6 +750,29 @@
 									<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
+
+							<h6 class="omnidb__settings__subsection-header">Snippets</h6>
+							<div class="form-group row">
+								<label for="shortcut_save_snippet" class="col-sm-6 col-form-label">Save Snippet</label>
+								<div class="col-sm-6">
+									<button id="shortcut_save_snippet" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_new_snippet" class="col-sm-6 col-form-label">New Snippet</label>
+								<div class="col-sm-6">
+									<button id="shortcut_new_snippet" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
+							<div class="form-group row">
+								<label for="shortcut_close_snippet_tab" class="col-sm-6 col-form-label">Close Snippet Tab</label>
+								<div class="col-sm-6">
+									<button id="shortcut_close_snippet_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
+								</div>
+							</div>
+
 						</div>
 
 						<div class="omnidb__settings__pane" data-category="password">

@@ -244,6 +244,7 @@ bindAll('input[name="keyword_case"]', 'change', (e) => {
   v_keyword_case = /** @type {HTMLInputElement} */ (e.target).value
   persistConfigUser()
 })
+bind('txt_ruler_column', 'input', () => debouncedPersistConfigUser())
 
 // --- settings: password -- the one field that keeps an explicit action ------
 bind('button_change_password', 'click', () => changePassword())

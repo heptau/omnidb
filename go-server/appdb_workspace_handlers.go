@@ -379,6 +379,7 @@ type saveConfigUserRequest struct {
 	PIndentSize                int    `json:"p_indent_size"`
 	PCommaStyle                string `json:"p_comma_style"`
 	PKeywordCase               string `json:"p_keyword_case"`
+	PRulerColumn               int    `json:"p_ruler_column"`
 	PAutocompleteDisabledTypes string `json:"p_autocomplete_disabled_types"`
 }
 
@@ -461,8 +462,11 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		if req.PKeywordCase == "" {
 			req.PKeywordCase = "preserve"
 		}
+		if req.PRulerColumn < 24 || req.PRulerColumn > 999 {
+			req.PRulerColumn = 128
+		}
 		autocompleteDisabledTypes := sanitizeAutocompleteDisabledTypes(req.PAutocompleteDisabledTypes)
-		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase, autocompleteDisabledTypes); err != nil {
+		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase, req.PRulerColumn, autocompleteDisabledTypes); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

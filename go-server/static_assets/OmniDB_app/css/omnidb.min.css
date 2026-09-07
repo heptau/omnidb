@@ -1301,8 +1301,12 @@ button.close {
 }
 
 .tab_actions.omnidb__tab-actions--no-divider {
-  padding-top: 2px;
-  padding-bottom: 6px;
+  min-height: 0;
+  height: 36px;
+  overflow: hidden;
+  padding-top: 1px;
+  padding-bottom: 5px;
+  flex: 0 0 auto;
 }
 
 .omnidb__tab-actions .omnidb__tab-actions__btn {
@@ -1445,6 +1449,29 @@ button.close {
 
 .omnidb__snippets__div-right {
   padding-top: 1rem;
+}
+
+#snippets_panel_tabs {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#snippets_panel_tabs > .tab-content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#snippets_panel_tabs .tab-pane.active {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.omnidb__snippets__editor-host {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
 }
 
 /* Notify section (panel_functions/outer_notify_panel.js): the same
@@ -3886,10 +3913,13 @@ span.node_selected span {
   text-decoration: none;
   display: inline-block;
   padding: 8px;
+  pointer-events: none;
 }
 
 .aimara_menu span {
   position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
 }
@@ -3899,6 +3929,7 @@ span.node_selected span {
   right: 4px;
   top: 0;
   padding: 8px;
+  pointer-events: none;
 }
 
 .aimara_menu .menu_img {
@@ -3910,6 +3941,7 @@ span.node_selected span {
   vertical-align: middle;
   font-size: 16px;
   width: 16px;
+  pointer-events: none;
 }
 
 .aimara_menu li {
@@ -6516,6 +6548,27 @@ select.form-control {
   background-color: #8e8e93;
 }
 
+/* Unsaved-changes indicator on a Snippet tab -- a small blue dot shown while
+ * the editor differs from what's on disk, cleared once Save succeeds (see
+ * inner_snippet_tab.js / tree_snippets.js). Appended directly onto the tab's
+ * <a> (.omnidb__tab-menu__link, itself `position: relative`) rather than
+ * into the title text's own flow, so it sits fixed in "Zone D" -- the
+ * trailing balance padding reserved on every secondary-tier tab (see
+ * _base.scss) that mirrors the close-icon zone on the left and is otherwise
+ * always empty -- instead of drifting around depending on how long/ellipsized
+ * the title is. */
+.omnidb__tab-dirty-dot {
+  position: absolute;
+  right: calc((var(--tab-zone-width) - 6px) / 2);
+  top: 50%;
+  transform: translateY(-50%);
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: #0d6efd;
+  pointer-events: none;
+}
+
 /* .omnidb__conn-strip-host marks whichever container currently hosts
  * v_connTabControl.tabMenu -- normally #omnidb_main_tablist, but the same
  * node is physically relocated into #notify_panel_strip_slot while the
@@ -6555,7 +6608,11 @@ select.form-control {
   margin-bottom: 10px;
 }
 
-.omnidb__connections__sidebar-footer {
+/* Generic sidebar-list footer: a top divider plus whatever controls sit
+ * below a list (Connections' addremove+public-toggle, Notify/Snippets' own
+ * addremove) -- shared across every panel that puts a scrollable list above
+ * one of these rather than each re-declaring the same border/padding. */
+.omnidb__list-footer {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -6580,11 +6637,12 @@ select.form-control {
   text-overflow: ellipsis;
 }
 
-/* Add/remove connection -- a macOS-style two-way segmented control (as seen
- * in e.g. System Settings' account lists): "+" always creates a new
- * connection, "-" deletes whichever one is currently loaded in the detail
- * pane and is disabled while nothing is selected. */
-.omnidb__connections__addremove {
+/* Add/remove -- a macOS-style two-way segmented control (as seen in e.g.
+ * System Settings' account lists): "+" always creates a new item, "-" acts
+ * on whichever one is currently selected/loaded and is disabled while
+ * nothing is. Shared by Connections (the loaded connection), Notify (the
+ * selected channel) and Snippets (the selected folder/snippet). */
+.omnidb__addremove {
   display: flex;
   align-items: stretch;
   flex: 0 0 auto;
@@ -6593,7 +6651,7 @@ select.form-control {
   overflow: hidden;
 }
 
-.omnidb__connections__addremove button {
+.omnidb__addremove button {
   width: 26px;
   height: 24px;
   border: none;
@@ -6605,16 +6663,16 @@ select.form-control {
   font-size: 11px;
 }
 
-.omnidb__connections__addremove button:hover:not(:disabled) {
+.omnidb__addremove button:hover:not(:disabled) {
   background-color: var(--hover-bg);
   color: var(--text-primary);
 }
 
-.omnidb__connections__addremove button:disabled {
+.omnidb__addremove button:disabled {
   color: var(--border-color);
 }
 
-.omnidb__connections__addremove-divider {
+.omnidb__addremove-divider {
   width: 1px;
   flex: 0 0 auto;
   background-color: var(--border-color);
@@ -6828,6 +6886,22 @@ select.form-control {
   color: var(--text-primary);
 }
 
+/* Groups rows within a single settings pane (e.g. Shortcuts' Database vs.
+ * Snippets shortcuts) without needing a separate sidebar category per
+ * group. */
+.omnidb__settings__subsection-header {
+  margin: 24px 0 12px;
+  font-size: 13px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--text-secondary);
+}
+
+.omnidb__settings__subsection-header:first-child {
+  margin-top: 0;
+}
+
 /* One setting per row, label above its control -- VS Code's Settings list
  * shape, replacing the old side-by-side Bootstrap col-md-6 pairs (CSV
  * Encoding next to CSV Delimiter, New Password next to Confirm, ...). */
@@ -6879,6 +6953,23 @@ select.form-control {
   width: 5ch !important;
   max-width: 5ch !important;
   text-align: center;
+}
+
+/* The ruler column is a small number, same over-stretching concern as the
+ * delimiter above -- wider than the character count alone would suggest
+ * because the number input's native up/down spinner eats into the same
+ * box, and at 8ch was crowding a 3-digit value (up to 999) against it. */
+.omnidb__settings__ruler-column {
+  width: 11ch !important;
+  max-width: 11ch !important;
+  text-align: center;
+}
+
+.omnidb__settings__hint {
+  display: block;
+  margin-top: 6px;
+  color: var(--text-secondary);
+  font-size: 13px;
 }
 
 /* Same over-stretching as the delimiter above -- Bootstrap's `.form-control`

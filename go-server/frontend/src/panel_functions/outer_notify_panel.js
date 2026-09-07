@@ -61,7 +61,9 @@ SOFTWARE.
 import { createContext, createRequest } from "../long_polling.js";
 import { v_queryRequestCodes } from "../query.js";
 import {
+	deleteChannel,
 	getTreeNotifyChannels,
+	promptAddChannel,
 	refreshNotifyChannels,
 	renderNotifyChannelNodes,
 } from "../tree_context_functions/tree_notify.js";
@@ -253,6 +255,19 @@ function buildNotifyTabLayout(p_tag) {
 		"_notify_tree' class='omnidb__notify__tree'></div>" +
 		"<div id='" +
 		v_id +
+		"_notify_footer' class='omnidb__list-footer'>" +
+		"<div class='omnidb__addremove'>" +
+		"<button id='" +
+		v_id +
+		"_notify_add_channel' type='button' title='Add Channel'><i class='fas fa-plus'></i></button>" +
+		"<span class='omnidb__addremove-divider'></span>" +
+		"<button id='" +
+		v_id +
+		"_notify_delete_channel' type='button' title='Delete Channel' disabled><i class='fas fa-minus'></i></button>" +
+		"</div>" +
+		"</div>" +
+		"<div id='" +
+		v_id +
 		"_notify_resize_line' class='resize_line_vertical omnidb__resize-line__container omnidb__notify__resize-line'></div>" +
 		"</div>" +
 		"<div id='" +
@@ -275,6 +290,11 @@ function buildNotifyTabLayout(p_tag) {
 	p_tag.divBanner = /** @type {HTMLElement} */ (document.getElementById(v_id + "_notify_banner"));
 	p_tag.divFilter = /** @type {HTMLElement} */ (document.getElementById(v_id + "_notify_filter"));
 	p_tag.divMessages = /** @type {HTMLElement} */ (document.getElementById(v_id + "_notify_messages"));
+	// Tracks whichever channel row was last clicked (see tree_notify.js's
+	// clickNodeEvent hook) so the footer's "-" button knows what to delete --
+	// same "act on the selected item" meaning as Connections' own addremove.
+	p_tag.selectedChannelNode = null;
+	p_tag.divDeleteChannelBtn = /** @type {HTMLElement} */ (document.getElementById(v_id + "_notify_delete_channel"));
 
 	/** @type {HTMLElement} */ (document.getElementById(v_id + "_notify_resize_line")).addEventListener(
 		"mousedown",
@@ -282,6 +302,13 @@ function buildNotifyTabLayout(p_tag) {
 			resizeNotifyHorizontal(event, p_tag);
 		},
 	);
+
+	/** @type {HTMLElement} */ (document.getElementById(v_id + "_notify_add_channel")).addEventListener("click", function () {
+		promptAddChannel(p_tag);
+	});
+	/** @type {HTMLElement} */ (document.getElementById(v_id + "_notify_delete_channel")).addEventListener("click", function () {
+		if (p_tag.selectedChannelNode) deleteChannel(p_tag, p_tag.selectedChannelNode);
+	});
 
 	renderNotifyFilter(p_tag);
 	renderNotifyMessages(p_tag);

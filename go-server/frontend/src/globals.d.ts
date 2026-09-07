@@ -121,6 +121,7 @@ declare let v_csv_encoding: string;
 declare let v_csv_delimiter: string;
 declare let v_comma_style: string;
 declare let v_keyword_case: string;
+declare let v_ruler_column: number;
 declare let v_autocomplete_disabled_types: string;
 declare let v_show_terminal_option: boolean;
 declare let gv_desktopMode: boolean;

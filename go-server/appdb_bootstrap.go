@@ -156,6 +156,7 @@ func migrateAppDB(db *sql.DB) error {
 		{"indent_size", "integer", "4"},
 		{"comma_style", "varchar(10)", "'leading'"},
 		{"keyword_case", "varchar(10)", "'preserve'"},
+		{"ruler_column", "integer", "128"},
 		{"autocomplete_disabled_types", "varchar(255)", "''"},
 	} {
 		var found string

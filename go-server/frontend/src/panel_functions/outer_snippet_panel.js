@@ -29,7 +29,7 @@ SOFTWARE.
 */
 
 import { createTabControl } from "../tabs.js";
-import { getTreeSnippets } from "../tree_context_functions/tree_snippets.js";
+import { deleteNodeSnippet, getTreeSnippets, newNodeSnippet } from "../tree_context_functions/tree_snippets.js";
 import { switchSection } from "../section_switcher.js";
 import { resizeSnippetHorizontal, resizeSnippetPanel, showMenuNewTab } from "../workspace.js";
 
@@ -69,6 +69,13 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"<div id='" +
 		SNIPPET_PANEL_ID +
 		"_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
+		"<div class='omnidb__list-footer'>" +
+		"<div class='omnidb__addremove'>" +
+		"<button id='button_new_snippet' type='button' title='Add Snippet'><i class='fas fa-plus'></i></button>" +
+		"<span class='omnidb__addremove-divider'></span>" +
+		"<button id='button_delete_snippet' type='button' title='Delete' disabled><i class='fas fa-minus'></i></button>" +
+		"</div>" +
+		"</div>" +
 		"</div>" +
 		"</div>" +
 		// This resize line is `position: absolute; right: 0` so it hugs
@@ -103,6 +110,22 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"mousedown",
 		(event) => resizeSnippetHorizontal(event),
 	);
+
+	// "+" adds a snippet under whichever folder is currently selected (see
+	// tree_snippets.js's clickNodeEvent hook), falling back to the tree root
+	// when nothing/a snippet itself is selected. "-" deletes whatever's
+	// selected -- disabled by that same hook while nothing is, same
+	// "act on the selected item" meaning as Connections' own addremove.
+	/** @type {HTMLElement} */ (document.getElementById("button_new_snippet")).addEventListener("click", function () {
+		var v_tree = v_connTabControl.snippet_tree;
+		var v_selected = v_tree.selectedNode;
+		var v_target_node = v_selected && v_selected.tag && v_selected.tag.type === "node" ? v_selected : v_tree.childNodes[0];
+		newNodeSnippet(v_target_node, "snippet");
+	});
+	/** @type {HTMLElement} */ (document.getElementById("button_delete_snippet")).addEventListener("click", function () {
+		var v_selected = v_connTabControl.snippet_tree.selectedNode;
+		if (v_selected) deleteNodeSnippet(v_selected);
+	});
 
 	var v_currTabControl = createTabControl({
 		p_div: SNIPPET_PANEL_ID + "_tabs",
@@ -141,9 +164,12 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		v_connTabControl.snippet_tag.tabControl.selectTab(v_connTabControl.snippet_tag.tabControl.tabList[0]);
 	}
 	v_connTabControl.tag.createSnippetTextTab();
-	v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.setValue("");
-	v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.clearSelection();
-	v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+	var v_initial_tab_tag = v_connTabControl.snippet_tag.tabControl.selectedTab.tag;
+	v_initial_tab_tag.suppressDirtyTracking = true;
+	v_initial_tab_tag.editor.setValue("");
+	v_initial_tab_tag.editor.clearSelection();
+	v_initial_tab_tag.editor.gotoLine(0, 0, true);
+	v_initial_tab_tag.suppressDirtyTracking = false;
 
 	// Creating `Add` tab in the outer tab list
 	// v_connTabControl.createAddTab();

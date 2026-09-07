@@ -51,6 +51,7 @@ Object.assign(window, {
   v_indent_size: cfg.indent_size,
   v_comma_style: cfg.comma_style,
   v_keyword_case: cfg.keyword_case,
+  v_ruler_column: cfg.ruler_column,
   v_autocomplete_disabled_types: cfg.autocomplete_disabled_types,
   v_version: cfg.omnidb_version,
   v_short_version: cfg.omnidb_short_version,

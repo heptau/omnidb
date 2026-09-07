@@ -859,10 +859,13 @@ span.node_selected span {
 	text-decoration: none;
 	display: inline-block;
 	padding: 8px;
+	pointer-events: none;
 }
 
 .aimara_menu span {
 	position: absolute;
+	top: 0;
+	left: 0;
 	width: 100%;
 	height: 100%;
 }
@@ -872,6 +875,7 @@ span.node_selected span {
 	right: 4px;
 	top: 0;
 	padding: 8px;
+	pointer-events: none;
 }
 
 .aimara_menu .menu_img {
@@ -883,6 +887,7 @@ span.node_selected span {
 	vertical-align: middle;
 	font-size: 16px;
 	width: 16px;
+	pointer-events: none;
 }
 
 .aimara_menu li {

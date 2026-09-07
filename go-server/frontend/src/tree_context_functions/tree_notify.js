@@ -144,10 +144,30 @@ export function getTreeNotifyChannels(p_tag) {
 		tree.nodeContextMenu(e, node1);
 	};
 
+	// Mirrors the per-node oncontextmenu handling above: clicking a row also
+	// counts as selecting it (Aimara calls this before its own selectNode),
+	// which is what drives the footer's "-" button (see
+	// outer_notify_panel.js's buildNotifyTabLayout) -- only an actual channel
+	// row is something that button can act on.
+	tree.clickNodeEvent = function (p_node) {
+		updateNotifySelectedChannel(p_tag, p_node.tag && p_node.tag.type === "notify_channel" ? p_node : null);
+	};
+
 	p_tag.tree = tree;
 	p_tag.treeRootNode = node1;
 
 	refreshNotifyChannels(p_tag);
+}
+
+/// <summary>
+/// Tracks the channel row the footer's "-" button would act on, enabling it
+/// only while that's an actual channel (not the root, not nothing).
+/// </summary>
+function updateNotifySelectedChannel(p_tag, p_node) {
+	p_tag.selectedChannelNode = p_node;
+	if (p_tag.divDeleteChannelBtn == null) return;
+	if (p_node != null) p_tag.divDeleteChannelBtn.removeAttribute("disabled");
+	else p_tag.divDeleteChannelBtn.setAttribute("disabled", "disabled");
 }
 
 /// <summary>
@@ -201,6 +221,11 @@ export function refreshNotifyChannels(p_tag) {
 /// <param name="p_tag">Notify tab tag.</param>
 export function renderNotifyChannelNodes(p_tag) {
 	if (p_tag == null || p_tag.treeRootNode == null) return;
+
+	// Every child node gets torn down and rebuilt below -- whatever was
+	// selected (see updateNotifySelectedChannel) no longer exists, so the
+	// footer's "-" button must not be left pointing at a stale node.
+	updateNotifySelectedChannel(p_tag, null);
 
 	p_tag.treeRootNode.removeChildNodes();
 

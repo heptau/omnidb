@@ -374,6 +374,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		v_editor.setFontSize(Number(v_font_size));
 		v_editor.session.setTabSize(v_indent_size || 4);
 		v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
+		v_editor.setOption("printMarginColumn", v_ruler_column || 128);
 
 		v_editor.commands.bindKey("ctrl-space", null);
 

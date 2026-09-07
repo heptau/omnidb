@@ -320,6 +320,7 @@ export function applyEditorTabSize() {
 		let editor = ace.edit(el);
 		editor.session.setTabSize(v_indent_size || 4);
 		editor.session.setUseSoftTabs(v_indent_char !== 'tab');
+		editor.setOption("printMarginColumn", v_ruler_column || 128);
 	});
 }
 
@@ -439,6 +440,7 @@ export function showConfigUser() {
 			break;
 		}
 	}
+	/** @type {HTMLInputElement} */ (document.getElementById("txt_ruler_column")).value = String(v_ruler_column || 128);
 
 	var v_disabled_autocomplete_types = v_autocomplete_disabled_types.split(",");
 	var typeCheckboxes = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("autocomplete_type"));
@@ -502,6 +504,9 @@ function persistConfigUserInternal(p_pwd, p_callback) {
 	v_csv_encoding = /** @type {HTMLInputElement} */ (document.getElementById("sel_csv_encoding")).value;
 	v_csv_delimiter = /** @type {HTMLInputElement} */ (document.getElementById("txt_csv_delimiter")).value;
 
+	v_ruler_column = Number(/** @type {HTMLInputElement} */ (document.getElementById("txt_ruler_column")).value) || 128;
+	if (v_ruler_column < 24 || v_ruler_column > 999) v_ruler_column = 128;
+
 	var v_disabled_types = [];
 	var typeCheckboxes = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("autocomplete_type"));
 	for (var i = 0; i < typeCheckboxes.length; i++) {
@@ -525,6 +530,7 @@ function persistConfigUserInternal(p_pwd, p_callback) {
 		p_indent_size: v_indent_size,
 		p_comma_style: v_comma_style,
 		p_keyword_case: v_keyword_case,
+		p_ruler_column: v_ruler_column,
 		p_autocomplete_disabled_types: v_autocomplete_disabled_types,
 	});
 
@@ -688,6 +694,7 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_
 	v_editor.setFontSize(Number(v_font_size));
 	v_editor.session.setTabSize(v_indent_size || 4);
 	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
+	v_editor.setOption("printMarginColumn", v_ruler_column || 128);
 
 	v_editor.setOptions({ enableBasicAutocompletion: true });
 

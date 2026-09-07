@@ -59,6 +59,45 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `DBMS_ALERT` can't share a connection with whatever queries are running in that connection's own
   Query/Console tabs), wired into `longpolling.go`/`native_polling.go`/`main.go`; new frontend
   `panel_functions/outer_notify_panel.js` and `tree_context_functions/tree_notify.js`.
+- Settings > Formatting gains a **Ruler Column** field controlling the vertical guide line Ace
+  draws in every SQL editor — previously stuck at Ace's own factory default of column 80, with no
+  way to change it. New default is **128**; the field accepts 24-999 and auto-saves like the rest
+  of Formatting, applying live to every open editor (`applyEditorTabSize()` plus the same
+  `editor.setOption("printMarginColumn", ...)` call added at each place a new Ace instance is
+  created — `header_actions.js`, `inner_query_tab.js`, `inner_snippet_tab.js`,
+  `outer_connection_tab.js`). Persisted per-user as a new `ruler_column` column on
+  `OmniDB_app_userdetails` (`appdb_schema.sql` for fresh installs, migrated in for existing ones via
+  `appdb_bootstrap.go`), round-tripped through `/save_config_user/`
+  (`appdb_workspace_handlers.go`/`appdb_workspace.go`/`workspace_page.go`) the same way
+  Indent/Comma/Keyword-Case already were. Not yet consulted by SQL formatting/reindent itself —
+  purely a visual guide for now, wired up ahead of using it there.
+- Connections panel: right-clicking a connection row now shows a context menu (Connect / Edit /
+  Delete — Delete omitted for locked connections, matching the detail pane's own restriction),
+  right-clicking empty list space shows New Connection / Refresh, and double-clicking a row
+  connects directly instead of just loading it into the detail form (`connections.js`). Connection
+  string subtitles now hide the `scheme://` prefix (e.g. `postgresql://`) since it added nothing
+  the technology icon didn't already say.
+- Snippets and Notify panels each gain an add/remove footer below their tree, matching Connections'
+  existing +/- control: Snippets' "+" adds a snippet under the currently selected folder (falling
+  back to the tree root), "-" deletes whatever's selected; Notify's "+"/"-" add/delete a channel the
+  same way. Both "-" buttons stay disabled until something deletable is actually selected. The
+  underlying CSS was generalized from Connections-specific `.omnidb__connections__addremove`/
+  `.omnidb__connections__sidebar-footer` to shared `.omnidb__addremove`/`.omnidb__list-footer`
+  classes reused by all three panels (`outer_snippet_panel.js`, `tree_snippets.js`,
+  `outer_notify_panel.js`, `tree_notify.js`, `_topbar.scss`, `static/workspace.html`).
+- Snippet tabs show a small unsaved-changes dot next to their title once the editor diverges from
+  what's saved, cleared on Save — replacing the old "Snippet saved." confirmation dialog, which
+  needed an extra click to dismiss for feedback the dot now gives inline (`.omnidb__tab-dirty-dot`
+  in `_topbar.scss`). Closing a tab only prompts to confirm when it actually has unsaved changes.
+  The editor pane's own height is now pure flexbox (`_base.scss`) instead of `resizeSnippetPanel`'s
+  old JS pixel calculation, which could drift a frame behind on window resize; its action bar's
+  buttons were also shrunk to `btn-sm`, matching every other action bar in the app
+  (`inner_snippet_tab.js`, `tree_snippets.js`, `workspace.js`).
+- New keyboard shortcuts for Snippets — Save Snippet, New Snippet, Close Snippet Tab — following the
+  platform's native Ctrl/Cmd convention (like every other app on the platform) rather than the app's
+  own Alt-based scheme used elsewhere, configurable under a new Settings > Shortcuts > **Snippets**
+  subsection (the pane's pre-existing shortcuts are now grouped under a **Database** subsection
+  header above it) (`shortcuts.js`, `static/workspace.html`, `_topbar.scss`).
 
 ### Changed
 - Settings > Export: **CSV Encoding** renamed to **CSV/TSV Encoding** — the setting already applied to both
@@ -80,6 +119,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The **"UTF-8 with BOM"** (`utf-8-sig`) CSV/TSV export encoding was silently a no-op — nothing in
   `export.go` recognized that codec name, so choosing it produced plain UTF-8 with no byte-order mark.
   `exportEncodingWriter` now writes the 3-byte UTF-8 BOM when this encoding is selected.
+- Clicking directly on a context menu item's leading icon (Refresh, Edit, Delete, ...) silently did
+  nothing — the icon glyph visually sat on top of the invisible full-row `<span>` that actually
+  catches the click, with no handler of its own to hand the click off to. Fixed by making the icon,
+  label and submenu-arrow elements `pointer-events: none` and pinning the click-catching span's
+  position explicitly (`top`/`left: 0`) so it isn't affected by sibling order (`_theme-light.scss`).
+- Toolbar tab-switcher buttons (Query/Console/Snippet/Monitoring/Edit Data/Properties/DDL, ...) no
+  longer show a tooltip repeating the same text as their own visible label — only suppressed once
+  a tab actually has room to show that label (icon-only tabs still get the tooltip), and never for
+  the connection-switcher strip, whose tooltip carries host/connection-string detail the tab itself
+  never shows (`tabs.js`).
 
 ## [4.3.0] - 2026-09-02
 

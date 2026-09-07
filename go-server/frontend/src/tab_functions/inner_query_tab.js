@@ -335,6 +335,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_editor.setFontSize(Number(v_font_size));
 	v_editor.session.setTabSize(v_indent_size || 4);
 	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
+	v_editor.setOption("printMarginColumn", v_ruler_column || 128);
 
 	// Setting custom keyboard shortcuts callbacks.
 	var v_ace_text_input = /** @type {HTMLElement} */ (document.getElementById("txt_query_" + v_tab.id)).querySelector(
