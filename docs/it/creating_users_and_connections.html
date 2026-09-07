@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Creazione di utenti e connessioni – Documentazione OmniDB</title>
-	<meta name="description" content="Accedi come utente admin predefinito, crea altri utenti OmniDB e configura connessioni PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server e SQLite, inclusi i tunnel SSH.">
+	<meta name="description" content="Accedi come utente admin predefinito, crea altri utenti OmniDB e configura connessioni PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, inclusi i tunnel SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/it/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/creating_users_and_connections.html">
@@ -18,7 +18,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/it/creating_users_and_connections.html">
 	<meta property="og:title" content="Creazione di utenti e connessioni - Documentazione OmniDB">
-	<meta property="og:description" content="Accedi come utente admin predefinito, crea altri utenti OmniDB e configura connessioni PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server e SQLite, inclusi i tunnel SSH.">
+	<meta property="og:description" content="Accedi come utente admin predefinito, crea altri utenti OmniDB e configura connessioni PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, inclusi i tunnel SSH.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -151,7 +151,7 @@ l’utente <em>test</em> non è un super user. Vai avanti e fai clic su <strong
 in alto a sinistra. Vedrai un popup come questo:</p>
 <p><img alt="" src="../assets/img/image_009.webp" /></p>
 <h4>Creazione delle connessioni</h4>
-<p>OmniDB supporta PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server e SQLite.</p>
+<p>OmniDB supporta PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite.</p>
 <p>Creeremo ora una connessione a un database PostgreSQL, una connessione a un
 database Oracle e una connessione a un database MariaDB. Per creare le
 connessioni devi fare clic sul pulsante <em>New Connection</em> e poi scegliere il
@@ -188,7 +188,11 @@ fornita:</p>
 <p><img alt="" src="../assets/img/image_185.webp" /></p>
 <p>Infine, nella griglia delle connessioni, se fai clic sull’azione <em>Select Connection</em>,
 OmniDB la aprirà in una nuova <strong>Connection Outer Tab</strong>, come vedremo nel
-prossimo capitolo.</p>
+prossimo capitolo. Facendo doppio clic su una riga di connessione si ottiene lo stesso
+risultato direttamente. Facendo clic con il tasto destro su una riga si apre inoltre un
+menu contestuale (<em>Connect</em>/<em>Edit</em>/<em>Delete</em> — <em>Delete</em> viene omesso per le
+connessioni bloccate), mentre facendo clic con il tasto destro su uno spazio vuoto
+dell’elenco vengono offerte le opzioni <em>New Connection</em>/<em>Refresh</em>.</p>
 <h4>Uso dei tunnel SSH</h4>
 <p>OmniDB permette all’utente di connettersi a qualsiasi database remoto
 tramite tunnel SSH. L’utente deve compilare le informazioni del tunnel SSH in ogni

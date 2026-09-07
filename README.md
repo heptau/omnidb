@@ -14,11 +14,12 @@ A user-friendly, lightweight, cross-platform database management tool with stron
 
 ## Features
 
-- **Multi-Database Support**: PostgreSQL, MySQL, MariaDB, SQLite, Oracle, MS SQL Server
+- **Multi-Database Support**: PostgreSQL, MySQL, MariaDB, SQLite, Oracle, MS SQL Server, Firebird
 - **Cross-Platform**: Runs on Windows, macOS, and Linux
-- **Modern UI**: Dark/Light theme with automatic OS preference detection
+- **Modern UI**: Dark/Light theme, either following the OS preference or set manually
 - **Advanced SQL Editor**: Syntax highlighting, auto-completion, code formatting
 - **Visual Explain**: Graphical display of query execution plans
+- **Notify Panel**: Live `LISTEN`/`NOTIFY` (PostgreSQL), `DBMS_ALERT` (Oracle) and `POST_EVENT` (Firebird) message streaming
 - **SSH Tunneling**: Secure database connections via SSH
 - **User Management**: Built-in user system with optional LDAP/Active Directory authentication
 
@@ -49,7 +50,7 @@ the Makefile installs the Wails CLI itself if it's missing.
 - **Backend**: Go — see `go-server/` and `AGENTS.md` for details
 - **Frontend**: HTML, CSS, JavaScript (server-rendered, no SPA framework)
 - **Desktop shell**: Wails/Go — see `wails-app/` and `AGENTS.md` for details
-- **Database**: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, SQLite
+- **Database**: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird, SQLite
 - **Libraries**: ACE Editor, Chart.js, Bootstrap
 
 ## Requirements

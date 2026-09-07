@@ -56,10 +56,9 @@
 		"name": "OmniDB",
 		"applicationCategory": "DeveloperApplication",
 		"operatingSystem": "macOS, Linux, Windows",
-		"description": "Wiederbelebte Open-Source-Datenbankverwaltung. Leichte, PostgreSQL-fokussierte Desktop-Anwendung mit Unterstützung für MySQL, Oracle, MariaDB, MS SQL Server und SQLite. Das Backend wurde von Python nach Go neu geschrieben und die Desktop-Shell läuft auf Wails mit dem nativen Webview des Betriebssystems.",
+		"description": "Wiederbelebte Open-Source-Datenbankverwaltung. Leichte, PostgreSQL-fokussierte Desktop-Anwendung mit Unterstützung für MySQL, Oracle, MariaDB, MS SQL Server, Firebird und SQLite. Das Backend wurde von Python nach Go neu geschrieben und die Desktop-Shell läuft auf Wails mit dem nativen Webview des Betriebssystems.",
 		"url": "https://www.omnidb.net",
 		"downloadUrl": "https://github.com/heptau/omnidb/releases",
-		"softwareVersion": "3.9.0",
 		"license": "https://opensource.org/licenses/MIT",
 		"screenshot": "https://www.omnidb.net/assets/dashboard.png",
 		"featureList": [
@@ -67,6 +66,7 @@
 			"MySQL / MariaDB support",
 			"Oracle support",
 			"MS SQL Server support",
+			"Firebird support",
 			"SQLite support",
 			"SQL editor with autocomplete",
 			"Query plan visualization",
@@ -202,6 +202,44 @@
 			</div>
 		</section>
 
+		<section id="why-omnidb">
+			<h2>Warum OmniDB?</h2>
+			<div class="features-grid">
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">⚡</span>
+					<h3>Neu geschrieben für mehr Geschwindigkeit</h3>
+					<p>Python → Go. Abfragen werden ausgeführt und die Oberfläche reagiert, ohne dass ein Interpreter im Weg steht.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📦</span>
+					<h3>Federleichte Binärdatei</h3>
+					<p>Die alte Electron/NW.js-Hülle ist verschwunden. Wails steuert die App nun über die native
+						Webview des Betriebssystems.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🖥️</span>
+					<h3>Jede Plattform, ein Release</h3>
+					<p>macOS (Apple Silicon &amp; Intel), Linux und Windows werden aus demselben Release gebaut und ausgeliefert.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🗄️</span>
+					<h3>Sieben Engines, ein Arbeitsbereich</h3>
+					<p>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird und SQLite in einem einzigen Arbeitsbereich mit Tabs.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🔒</span>
+					<h3>Aktiv gehärtet</h3>
+					<p>Echte Fixes — SQL-Injection, XSS, IDOR — kommen laufend hinzu. Siehe das
+						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📤</span>
+					<h3>Export überallhin</h3>
+					<p>Direkt nach CSV, XLSX, TSV, Markdown, JSON oder XML.</p>
+				</article>
+			</div>
+		</section>
+
 		<section class="get-started">
 			<h2>OmniDB installieren</h2>
 			<div class="install-grid">
@@ -237,44 +275,6 @@
 					aber noch nicht auf echter Hardware getestet. Ältere Versionen (bis ca. 2020) aus dem ursprünglichen
 					Repository werden nicht mehr gepflegt.</small>
 			</p>
-		</section>
-
-		<section id="why-omnidb">
-			<h2>Warum OmniDB?</h2>
-			<div class="features-grid">
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">⚡</span>
-					<h3>Neu geschrieben für mehr Geschwindigkeit</h3>
-					<p>Python → Go. Abfragen werden ausgeführt und die Oberfläche reagiert, ohne dass ein Interpreter im Weg steht.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">📦</span>
-					<h3>Federleichte Binärdatei</h3>
-					<p>Die alte Electron/NW.js-Hülle ist verschwunden. Wails steuert die App nun über die native
-						Webview des Betriebssystems.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">🖥️</span>
-					<h3>Jede Plattform, ein Release</h3>
-					<p>macOS (Apple Silicon &amp; Intel), Linux und Windows werden aus demselben Release gebaut und ausgeliefert.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">🗄️</span>
-					<h3>Sechs Engines, ein Arbeitsbereich</h3>
-					<p>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server und SQLite in einem einzigen Arbeitsbereich mit Tabs.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">🔒</span>
-					<h3>Aktiv gehärtet</h3>
-					<p>Echte Fixes — SQL-Injection, XSS, IDOR — kommen laufend hinzu. Siehe das
-						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">Changelog</a>.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">📤</span>
-					<h3>Export überallhin</h3>
-					<p>Direkt nach CSV, XLSX, TSV, Markdown, JSON oder XML.</p>
-				</article>
-			</div>
 		</section>
 
 		<div class="button-group">

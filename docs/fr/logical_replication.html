@@ -125,8 +125,8 @@
 <p>PostgreSQL 10 introduit la réplication logique native, qui repose sur un modèle de publication/abonnement :
 il est ainsi possible de créer des publications en amont (ou côté éditeur) et des abonnements en aval (ou côté
 abonné). Pour plus de détails à ce sujet, veuillez consulter la
-<a href="https://www.postgresql.org/do../static/sql-createpublication.html">documentation</a>
-<a href="https://www.postgresql.org/do../static/sql-createsubscription.html">PostgreSQL</a>.</p>
+<a href="https://www.postgresql.org/docs/10/static/sql-createpublication.html">documentation</a>
+<a href="https://www.postgresql.org/docs/10/static/sql-createsubscription.html">PostgreSQL</a>.</p>
 <p>Dans ce chapitre, nous utiliserons un cluster à 2 nœuds pour démontrer la réplication logique native de
 PostgreSQL 10. Notez que sur chaque instance PostgreSQL, vous devez configurer <code>wal_level = logical</code>
 et également vous assurer d’ajuster le fichier <code>pg_hba.conf</code> pour accorder l’accès en

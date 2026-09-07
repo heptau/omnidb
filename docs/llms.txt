@@ -2,7 +2,7 @@
 
 ## Overview
 
-OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle, MySQL and MS SQL Server. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. The backend was fully rewritten from Python/Django to Go in 3.6.x, and the desktop shell is migrating from NW.js to Wails; the old Python-based plugin system (pglogical/BDR/Postgres-XL support) was removed in that rewrite and is not coming back — see the Legacy Features & History page.
+OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle, MySQL, MS SQL Server and Firebird. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. The backend was fully rewritten from Python/Django to Go in 3.6.x, and the desktop shell has migrated from NW.js to Wails; the old Python-based plugin system (pglogical/BDR/Postgres-XL support) was removed in that rewrite and is not coming back — see the Legacy Features & History page.
 
 ---
 
@@ -10,7 +10,7 @@ OmniDB is an open source browser-based app designed to access and manage many di
 
 URL: https://www.omnidb.net/en/introduction.html
 
-**Description:** Introduction to OmniDB - a browser-based database management tool supporting PostgreSQL, Oracle, MySQL, MS SQL Server, and more. Features a unified workspace, background execution of queries and procedures across multiple databases, and encrypted data storage.
+**Description:** Introduction to OmniDB - a browser-based database management tool supporting PostgreSQL, Oracle, MySQL, MS SQL Server, Firebird, and more. Features a unified workspace, background execution of queries and procedures across multiple databases, and encrypted data storage.
 
 **Key Topics:**
 - History and origins of OmniDB
@@ -150,6 +150,7 @@ URL: https://www.omnidb.net/en/additional_features.html
 **Key Topics:**
 - SSH tunnels
 - Code snippets
+- Notify panel (LISTEN/NOTIFY, DBMS_ALERT, POST_EVENT)
 - Export tools
 
 ---

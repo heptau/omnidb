@@ -202,7 +202,10 @@ omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_log
 			Oracle zu verbinden — anders als bei früheren Releases ist keine separate
 			Installation des Oracle Instant Client erforderlich. Die Oracle-Konnektivität ist
 			nativ implementiert (ein reiner Go-Treiber), sodass sie von Haus aus genauso
-			funktioniert wie bei jeder anderen unterstützten Datenbank.</p>
+			funktioniert wie bei jeder anderen unterstützten Datenbank. Das Gleiche gilt für
+			MS SQL Server und Firebird: Beide verwenden ebenfalls reine Go-Treiber, sodass auch
+			hier kein ODBC-Treiber, keine native Client-Bibliothek und kein weiterer
+			Installationsschritt nötig ist.</p>
 		<h3>OmniDB-Benutzerdatenbank</h3>
 		<p>Beim ersten Start legen sowohl Server als auch App im Home-Verzeichnis des Benutzers
 			die Datei <code>~/.omnidb/omnidb-app/omnidb.db</code> (für die OmniDB-App) bzw.

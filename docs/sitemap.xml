@@ -3,7 +3,7 @@
 
   <url>
     <loc>https://www.omnidb.net/en/</loc>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.00</priority>
   </url>
@@ -17,14 +17,14 @@
 
   <url>
     <loc>https://www.omnidb.net/en/installation.html</loc>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
 
   <url>
     <loc>https://www.omnidb.net/en/creating_users_and_connections.html</loc>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -52,7 +52,7 @@
 
   <url>
     <loc>https://www.omnidb.net/en/writing_sql_queries.html</loc>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -80,7 +80,7 @@
 
   <url>
     <loc>https://www.omnidb.net/en/additional_features.html</loc>
-    <lastmod>2026-07-24</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
@@ -143,7 +143,7 @@
 
   <url>
     <loc>https://www.omnidb.net/cs/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.00</priority>
   </url>
@@ -157,14 +157,14 @@
 
   <url>
     <loc>https://www.omnidb.net/cs/installation.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
 
   <url>
     <loc>https://www.omnidb.net/cs/creating_users_and_connections.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -192,7 +192,7 @@
 
   <url>
     <loc>https://www.omnidb.net/cs/writing_sql_queries.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -220,7 +220,7 @@
 
   <url>
     <loc>https://www.omnidb.net/cs/additional_features.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
@@ -284,7 +284,7 @@
   <!-- German -->
   <url>
     <loc>https://www.omnidb.net/de/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.00</priority>
   </url>
@@ -296,13 +296,13 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/de/installation.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.omnidb.net/de/creating_users_and_connections.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -326,7 +326,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/de/writing_sql_queries.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -350,7 +350,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/de/additional_features.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
@@ -406,7 +406,7 @@
   <!-- Spanish -->
   <url>
     <loc>https://www.omnidb.net/es/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.00</priority>
   </url>
@@ -418,13 +418,13 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/es/installation.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.omnidb.net/es/creating_users_and_connections.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -448,7 +448,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/es/writing_sql_queries.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -472,7 +472,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/es/additional_features.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
@@ -528,7 +528,7 @@
   <!-- French -->
   <url>
     <loc>https://www.omnidb.net/fr/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.00</priority>
   </url>
@@ -540,13 +540,13 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/fr/installation.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.omnidb.net/fr/creating_users_and_connections.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -570,7 +570,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/fr/writing_sql_queries.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -594,7 +594,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/fr/additional_features.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
@@ -650,7 +650,7 @@
   <!-- Italian -->
   <url>
     <loc>https://www.omnidb.net/it/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.00</priority>
   </url>
@@ -662,13 +662,13 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/it/installation.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.omnidb.net/it/creating_users_and_connections.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -692,7 +692,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/it/writing_sql_queries.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -716,7 +716,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/it/additional_features.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>
@@ -772,7 +772,7 @@
   <!-- Portuguese -->
   <url>
     <loc>https://www.omnidb.net/pt/</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.00</priority>
   </url>
@@ -784,13 +784,13 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/pt/installation.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.80</priority>
   </url>
   <url>
     <loc>https://www.omnidb.net/pt/creating_users_and_connections.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -814,7 +814,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/pt/writing_sql_queries.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.70</priority>
   </url>
@@ -838,7 +838,7 @@
   </url>
   <url>
     <loc>https://www.omnidb.net/pt/additional_features.html</loc>
-    <lastmod>2026-07-26</lastmod>
+    <lastmod>2026-09-07</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.60</priority>
   </url>

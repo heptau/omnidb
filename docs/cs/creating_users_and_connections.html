@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Vytváření uživatelů a připojení – Dokumentace OmniDB</title>
-	<meta name="description" content="Přihlaste se jako výchozí uživatel admin, vytvořte další uživatele OmniDB a nastavte připojení k PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server a SQLite, včetně SSH tunelů.">
+	<meta name="description" content="Přihlaste se jako výchozí uživatel admin, vytvořte další uživatele OmniDB a nastavte připojení k PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird a SQLite, včetně SSH tunelů.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
@@ -17,7 +17,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/cs/creating_users_and_connections.html">
 	<meta property="og:title" content="Vytváření uživatelů a připojení - Dokumentace OmniDB">
-	<meta property="og:description" content="Přihlaste se jako výchozí uživatel admin, vytvořte další uživatele OmniDB a nastavte připojení k PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server a SQLite, včetně SSH tunelů.">
+	<meta property="og:description" content="Přihlaste se jako výchozí uživatel admin, vytvořte další uživatele OmniDB a nastavte připojení k PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird a SQLite, včetně SSH tunelů.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -152,7 +152,7 @@ uživatel <em>test</em> není superuživatel. Nyní klikněte na <strong>Connect
 levém horním rohu. Zobrazí se vám vyskakovací okno jako toto:</p>
 <p><img alt="" src="../assets/img/image_009.webp" /></p>
 <h4>Vytváření připojení</h4>
-<p>OmniDB podporuje PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server a SQLite.</p>
+<p>OmniDB podporuje PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird a SQLite.</p>
 <p>Nyní vytvoříme jedno připojení k databázi PostgreSQL, jedno připojení k
 databázi Oracle a jedno připojení k databázi MariaDB. Pro vytvoření
 připojení musíte kliknout na tlačítko <em>New Connection</em> (Nové připojení) a poté zvolit
@@ -189,7 +189,11 @@ vyskakovacím okně se zobrazí chyba, kterou OmniDB obdržela:</p>
 <p><img alt="" src="../assets/img/image_185.webp" /></p>
 <p>Nakonec, pokud v mřížce připojení kliknete na akci <em>Select Connection</em>
 (Vybrat připojení), OmniDB ho otevře v nové <strong>vnější kartě připojení</strong> (Connection
-Outer Tab), jak uvidíme v příští kapitole.</p>
+Outer Tab), jak uvidíme v příští kapitole. Stejného výsledku dosáhnete přímo
+dvojitým kliknutím na řádek připojení. Kliknutím pravým tlačítkem na řádek se
+otevře kontextová nabídka (<em>Connect</em>/<em>Edit</em>/<em>Delete</em> — u zamčených
+připojení se položka <em>Delete</em> nezobrazuje) a kliknutím pravým tlačítkem do
+prázdného místa v seznamu se nabídne <em>New Connection</em>/<em>Refresh</em>.</p>
 <h4>Použití SSH tunelů</h4>
 <p>OmniDB umožňuje uživateli připojit se k libovolné vzdálené databázi
 prostřednictvím SSH tunelů. Uživatel musí vyplnit informace o SSH tunelu u

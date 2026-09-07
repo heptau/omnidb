@@ -7,7 +7,7 @@ URL: https://www.omnidb.net/en/introduction.html
 
 **Full Content:**
 
-OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle, MySQL and MS SQL Server. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. OmniDB is actively developed, automatically tested on a variety of databases and browsers and comes with full documentation.
+OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle, MySQL, MS SQL Server and Firebird. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. OmniDB is actively developed, automatically tested on a variety of databases and browsers and comes with full documentation.
 
 Since early development, OmniDB was designed as a browser-based app. Consequently, it runs in any browser, from any operational system. It can be accessed by several computers and multiple users, each one of them with his/her own group of connections. It also can be hosted in any operational system, without the need of install any dependencies. We will see further details on installation in the next chapters.
 
@@ -96,7 +96,7 @@ See Deploying omnidb-server for the full set of options and recommended deployme
 
 **OmniDB with Oracle**
 
-Neither OmniDB app nor server require any additional software to connect to Oracle — unlike previous releases, no separate Oracle Instant Client installation is needed. Oracle connectivity is implemented natively (a pure Go driver), so it works the same way out of the box as every other supported database.
+Neither OmniDB app nor server require any additional software to connect to Oracle — unlike previous releases, no separate Oracle Instant Client installation is needed. Oracle connectivity is implemented natively (a pure Go driver), so it works the same way out of the box as every other supported database. The same is true for MS SQL Server and Firebird: both also use pure Go drivers, so no ODBC driver, native client library, or other extra install step is required for either of them.
 
 **OmniDB User Database**
 
@@ -139,7 +139,7 @@ And we can see the window again. Note that now there is no Users icon, because t
 
 **Creating connections**
 
-OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server and SQLite.
+OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite.
 
 We will now create one connection to a PostgreSQL database, one connection to an Oracle database and one connection to a MariaDB database. To create the connections you have to click on the button New Connection and then choose the connection and fill the other fields. After filling all the fields for both connections, click on the Save button.
 
@@ -155,11 +155,11 @@ For Oracle, the behavior is similar. When OmniDB first tries to connect to an Or
 
 If you have any trouble connection to your Oracle database, the same popup will remain showing the error OmniDB got:
 
-MariaDB and MySQL databases also works in the same way. First time, no password was given:
+MariaDB and MySQL databases also work in the same way. First time, no password was given:
 
 But if you have any problems, such as database server down:
 
-Finally, in the connections grid, if you click on the Select Connection action, OmniDB will open it in a new Connection Outer Tab as we can see in the next chapter.
+Finally, in the connections grid, if you click on the Select Connection action, OmniDB will open it in a new Connection Outer Tab as we can see in the next chapter. Double-clicking a connection row does the same thing directly. Right-clicking a row also opens a context menu (Connect/Edit/Delete — Delete is omitted for locked connections), and right-clicking empty space in the list offers New Connection/Refresh.
 
 **Using SSH tunnels**
 
@@ -346,7 +346,7 @@ URL: https://www.omnidb.net/en/writing_sql_queries.html
 
 The most common kind of inner tab is the Query Tab, containing the following elements:
 
-- 1) Tab Header: You can see the name of the tab and an icon to close it. If there is a query running in the tab, you will see an indicator. If the tab finishes running and you are working on a different tab, a green indicator you be shown. By double-clicking on the tab name, you will be able to rename the tab.
+- 1) Tab Header: You can see the name of the tab and an icon to close it. If there is a query running in the tab, you will see an indicator. If the tab finishes running and you are working on a different tab, a green indicator you be shown. Right-clicking the tab and choosing Rename Tab lets you rename it.
 - 2) Add Tab: You can quickly add another inner tab by clicking on the plus icon.
 - 3) SQL Editor: Full-featured SQL editor with SQL syntax highlighting, Find & Replace (`Ctrl-F` and `Ctrl-H`) and an autocomplete component, explained below. See Editor Keyboard Shortcuts for the full list of editor shortcuts (selection, multicursor, navigation, folding, etc.).
 - 4) Execute: The text contained in the SQL Editor will be executed against the current active database when you click on this button (or hit the shortcut, `Alt-Q` by default). If there is some selected text in the SQL Editor, it will execute only the selected text. Once the command is running, a red Cancel button will be shown, allowing you to cancel the execution (or using the shortcut, `Alt-C` by default).
@@ -446,9 +446,9 @@ Also in the upper right corner, by clicking in the gear-like icon, OmniDB will o
 
 - Shortcuts: Allows the user to change its shortcuts in OmniDB.
 
-- Options: Allows the user to change the font size of the interface and configure CSV related options (encoding, delimiter). The OmniDB theme (Light/Dark) is automatically determined by your operating system's color scheme preference.
+- Options: Allows the user to change the font size of the interface and configure CSV/TSV related options (encoding, delimiter). The OmniDB theme can be set to Automatic (follows your operating system's color scheme preference), Light, or Dark.
 
-- Formatting: Configures how the SQL formatter (the Indent SQL action) rewrites your query — indent character (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and keyword case (preserve/UPPERCASE/lowercase).
+- Formatting: Configures how the SQL formatter (the Indent SQL action) rewrites your query — indent character (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and keyword case (preserve/UPPERCASE/lowercase). Also sets the Ruler Column — the vertical guide line the SQL editor draws (24-999, default 128) — applied live to every open editor.
 
 - Password: Allows the user to change its password.
 
@@ -460,9 +460,15 @@ Most of tree nodes (generally grouping ones like Schemas or Tables) offer contex
 
 Workspace Window has a fixed outer tab with an useful feature called Snippets. With this feature you can store queries, command instructions and any other kinds of text you want. You can also structure the snippets in a directory tree the way you want. All directories and snippets you create are stored inside of `omnidb.db` user database and persist when you upgrade OmniDB.
 
+A "+"/"-" footer below the snippets tree adds a snippet under the currently selected folder (or the tree root) and deletes whatever is selected; "-" stays disabled until something deletable is selected. An open snippet tab shows a small dot next to its title once the editor diverges from what is saved, cleared on Save; closing a tab only prompts for confirmation when it actually has unsaved changes.
+
+**Notify**
+
+The Notify panel sits in the sidebar between Database and Snippets and streams PostgreSQL `LISTEN`/`NOTIFY`, Oracle `DBMS_ALERT`, and Firebird `POST_EVENT` messages. Channels are added, removed, paused, and resumed per connection and persist across app restarts; received messages are ephemeral, kept only in the browser tab and cleared on reload. Messages can be viewed across all channels or filtered to a selection, and cleared per-channel or all at once. MySQL/MariaDB/MS SQL Server/SQLite show a "not supported" message instead of hiding the feature. A connection's Notify session starts and stops together with its Database tab, and the panel shares the same horizontal strip of open connections as the Database panel, so selecting a connection in one keeps the other in sync.
+
 **Backend Management**
 
-By right-clicking in the tree root node, then moving mouse pointer to Monitoring and then clicking on Backends, the user can see all activities going on in the database. Some information are hidden for normal users, only database superusers are allowed to see.
+By right-clicking in the tree root node, then moving mouse pointer to Monitoring and then clicking on Backends, the user can see all activities going on in the database. Some information is hidden for normal users, only database superusers are allowed to see.
 
 By clicking in the X in the Actions column, you can terminate the backend. A confirmation popup will appear.
 

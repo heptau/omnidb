@@ -55,10 +55,9 @@
 		"name": "OmniDB",
 		"applicationCategory": "DeveloperApplication",
 		"operatingSystem": "macOS, Linux, Windows",
-		"description": "Obnovený open source nástroj pro správu databází. Odlehčená desktopová aplikace zaměřená na PostgreSQL s podporou MySQL, Oracle, MariaDB, MS SQL Server a SQLite. Backend byl přepsán z Pythonu do Go a desktopový shell běží na Wails s nativním webview operačního systému.",
+		"description": "Obnovený open source nástroj pro správu databází. Odlehčená desktopová aplikace zaměřená na PostgreSQL s podporou MySQL, Oracle, MariaDB, MS SQL Server, Firebird a SQLite. Backend byl přepsán z Pythonu do Go a desktopový shell běží na Wails s nativním webview operačního systému.",
 		"url": "https://www.omnidb.net",
 		"downloadUrl": "https://github.com/heptau/omnidb/releases",
-		"softwareVersion": "3.9.0",
 		"license": "https://opensource.org/licenses/MIT",
 		"screenshot": "https://www.omnidb.net/assets/dashboard.png",
 		"featureList": [
@@ -66,6 +65,7 @@
 			"MySQL / MariaDB support",
 			"Oracle support",
 			"MS SQL Server support",
+			"Firebird support",
 			"SQLite support",
 			"SQL editor with autocomplete",
 			"Query plan visualization",
@@ -200,6 +200,44 @@
 			</div>
 		</section>
 
+		<section id="why-omnidb">
+			<h2>Proč OmniDB?</h2>
+			<div class="features-grid">
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">⚡</span>
+					<h3>Přepsáno pro rychlost</h3>
+					<p>Python → Go. Dotazy se vykonávají a rozhraní reaguje bez interpretu, který by stál v cestě.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📦</span>
+					<h3>Odlehčený binární soubor</h3>
+					<p>Starý shell Electron/NW.js je pryč. Aplikaci nyní pohání Wails prostřednictvím nativního
+						webview operačního systému.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🖥️</span>
+					<h3>Všechny platformy, jedno vydání</h3>
+					<p>macOS (Apple Silicon i Intel), Linux a Windows vznikají a jsou vydávány společně, v rámci jednoho vydání.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🗄️</span>
+					<h3>Sedm databázových enginů, jeden pracovní prostor</h3>
+					<p>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird a SQLite v jednom pracovním prostoru s kartami.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🔒</span>
+					<h3>Aktivně zabezpečováno</h3>
+					<p>Skutečné opravy — SQL injection, XSS, IDOR — přibývají průběžně. Podívejte se do
+						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelogu</a>.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📤</span>
+					<h3>Export kamkoli</h3>
+					<p>Přímo do CSV, XLSX, TSV, Markdown, JSON nebo XML.</p>
+				</article>
+			</div>
+		</section>
+
 		<section class="get-started">
 			<h2>Instalace OmniDB</h2>
 			<div class="install-grid">
@@ -231,48 +269,10 @@
 				Úplné instrukce k instalaci: <a href="installation.html">→ Podrobný průvodce instalací</a>
 			</p>
 			<p class="small-note">
-				<small>macOS je ověřen end-to-end; sestavení pro Linux a Windows vznikají ve stejném CI pipeline, ale
+				<small>macOS je ověřen end-to-end; sestavení pro Linux a Windows vznikají ve stejné CI pipeline, ale
 					zatím nebyla ověřena na reálném hardwaru. Starší verze (přibližně do roku 2020) z původního
 					repozitáře již nejsou udržovány.</small>
 			</p>
-		</section>
-
-		<section id="why-omnidb">
-			<h2>Proč OmniDB?</h2>
-			<div class="features-grid">
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">⚡</span>
-					<h3>Přepsáno kvůli rychlosti</h3>
-					<p>Python → Go. Dotazy se vykonávají a rozhraní reaguje bez interpretu, který by stál v cestě.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">📦</span>
-					<h3>Odlehčený binární soubor</h3>
-					<p>Starý shell Electron/NW.js je pryč. Aplikaci nyní pohání Wails prostřednictvím nativního
-						webview operačního systému.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">🖥️</span>
-					<h3>Všechny platformy, jedno vydání</h3>
-					<p>macOS (Apple Silicon i Intel), Linux a Windows se sestavují a vydávají ze stejného vydání.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">🗄️</span>
-					<h3>Šest databázových enginů, jeden pracovní prostor</h3>
-					<p>PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server a SQLite v jednom pracovním prostoru s kartami.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">🔒</span>
-					<h3>Aktivně zabezpečováno</h3>
-					<p>Skutečné opravy — SQL injection, XSS, IDOR — přibývají průběžně. Podívejte se do
-						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelogu</a>.</p>
-				</article>
-				<article class="feature-card">
-					<span class="feature-icon" aria-hidden="true">📤</span>
-					<h3>Export kamkoli</h3>
-					<p>Přímo do CSV, XLSX, TSV, Markdown, JSON nebo XML.</p>
-				</article>
-			</div>
 		</section>
 
 		<div class="button-group">

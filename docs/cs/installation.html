@@ -201,7 +201,9 @@ omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_log
 			software — na rozdíl od předchozích vydání není potřeba samostatná instalace
 			Oracle Instant Client. Konektivita k Oracle je implementována nativně (čistě
 			v Go), takže funguje po vybalení stejným způsobem jako u každé jiné podporované
-			databáze.</p>
+			databáze. Totéž platí pro MS SQL Server a Firebird: oba rovněž používají čisté
+			ovladače v Go, takže ani u jednoho z nich není potřeba žádný ODBC ovladač, nativní
+			klientská knihovna ani jiný instalační krok navíc.</p>
 		<h3>Uživatelská databáze OmniDB</h3>
 		<p>Při prvním spuštění server i aplikace vytvoří soubor
 			<code>~/.omnidb/omnidb-app/omnidb.db</code> (pro aplikaci OmniDB) nebo

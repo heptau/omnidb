@@ -20,8 +20,9 @@ maintainer before it's merged or released.
 
 ## OmniDB Database Support
 
-Currently OmniDB supports `PostgreSQL`, `Oracle`, `MySQL`, `MariaDB` and `MS SQL Server`.
-Suggestions and even pull requests for other databases are welcome.
+Currently OmniDB supports `PostgreSQL`, `Oracle`, `MySQL`, `MariaDB`, `MS SQL Server`,
+`Firebird` and `SQLite`. Suggestions and even pull requests for other databases are
+welcome.
 
 
 ## OmniDB Operating System Support

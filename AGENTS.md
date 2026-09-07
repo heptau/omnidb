@@ -5,7 +5,7 @@
 **Project Name:** OmniDB
 **Repository:** https://github.com/heptau/omnidb
 **Official Website:** https://www.omnidb.net (downloads, docs, news — deployed from `docs/`)
-**What it is:** A desktop database management tool (SQL editor, schema browser, data grid, user/connection management) with strong PostgreSQL support and compatibility with MySQL, MariaDB, Oracle, MS SQL Server, SQLite and others.
+**What it is:** A desktop database management tool (SQL editor, schema browser, data grid, user/connection management) with strong PostgreSQL support and compatibility with MySQL, MariaDB, Oracle, MS SQL Server, Firebird, SQLite and others.
 
 The app is a **Go backend** (`go-server/`) serving a jQuery-era JS/CSS frontend, wrapped in a native desktop **shell** (`wails-app/`, Go/Wails) that spawns the Go server as a local subprocess and points a window at `http://localhost:<port>`. There is no Django, Python, or CherryPy anywhere in the shipped app, its build, or its source tree — the original Django implementation was migrated to Go via a strangler-fig approach and then deleted outright once every route had a native Go equivalent (or a deliberate no-op stub) and the migration was validated end-to-end (real packaged build, fresh-install schema bootstrap, existing-install compatibility all live-tested). See `git log` for the full history, or `git show <commit>:OmniDB/...` against a commit before the deletion if you ever need to read the old Python source — it is gone from the working tree, not merely moved or ignored.
 
@@ -19,7 +19,7 @@ omnidb/
 │   │                           # implementations of every route, a reverse-proxy
 │   │                           # fallback for dev-mode comparison only (see below),
 │   │                           # and the OmniDatabase-equivalent drivers for each
-│   │                           # supported engine (PostgreSQL/MySQL/MariaDB/Oracle/MS SQL Server/SQLite).
+│   │                           # supported engine (PostgreSQL/MySQL/MariaDB/Oracle/MS SQL Server/Firebird/SQLite).
 │   ├── main.go                 # Entry point: HTTP server, route table, process lifecycle
 │   ├── static_assets/          # Frontend JS/CSS/images, embedded into the binary
 │   └── *_test.go               # Go tests (run `go test ./...` from here)
@@ -40,7 +40,8 @@ No Python anywhere in the tree — no `OmniDB/`, `requirements.txt`, `pyproject.
 - **Backend:** Go (`go-server/`), plain `net/http` + a router built on `http.ServeMux`.
 - **DB drivers:** `pgx/v5` (PostgreSQL), `go-sql-driver/mysql` (MySQL/MariaDB),
   `sijms/go-ora` (Oracle, pure Go — no Instant Client needed), `microsoft/go-mssqldb`
-  (MS SQL Server, pure Go — registered under driver name `sqlserver`), `modernc.org/sqlite`
+  (MS SQL Server, pure Go — registered under driver name `sqlserver`), `nakagami/firebirdsql`
+  (Firebird, pure Go), `modernc.org/sqlite`
   (SQLite, pure Go — no cgo). `golang.org/x/crypto/ssh` for SSH tunneling/terminal.
 - **App database:** SQLite, storing users, saved connections (with credentials),
   snippets, query history etc. Lives in a per-install home dir — see "Desktop app

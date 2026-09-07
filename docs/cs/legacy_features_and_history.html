@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>Zastaralé funkce a historie – Dokumentace OmniDB</title>
+	<title>Starší funkce a historie – Dokumentace OmniDB</title>
 	<meta name="description" content="Historie verzí OmniDB a osud jejího starého systému pluginů — pglogical, podpora Postgres-BDR, Postgres-XL a krokovací debugger PL/pgSQL — po přepisu 3.6.x z Pythonu/Django do Go.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/legacy_features_and_history.html">
@@ -16,7 +16,7 @@
 
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/cs/legacy_features_and_history.html">
-	<meta property="og:title" content="Zastaralé funkce a historie - Dokumentace OmniDB">
+	<meta property="og:title" content="Starší funkce a historie - Dokumentace OmniDB">
 	<meta property="og:description" content="Historie verzí OmniDB a osud jejího starého systému pluginů — pglogical, podpora Postgres-BDR, Postgres-XL a krokovací debugger PL/pgSQL — po přepisu 3.6.x z Pythonu/Django do Go.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
@@ -34,7 +34,7 @@
 		"itemListElement": [
 			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
 			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
-			{ "@type": "ListItem", "position": 3, "name": "Zastaralé funkce a historie", "item": "https://www.omnidb.net/cs/legacy_features_and_history.html" }
+			{ "@type": "ListItem", "position": 3, "name": "Starší funkce a historie", "item": "https://www.omnidb.net/cs/legacy_features_and_history.html" }
 		]
 	}
 	</script>
@@ -116,11 +116,11 @@
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Reference</span>
-			<a href="legacy_features_and_history.html" class="active">Zastaralé funkce a historie</a>
+			<a href="legacy_features_and_history.html" class="active">Starší funkce a historie</a>
 		</div>
 		</nav>
 		<main>
-			<h1>Zastaralé funkce a historie</h1>
+			<h1>Starší funkce a historie</h1>
 			<p>OmniDB si prošla několika velmi odlišnými životy — univerzitním projektem,
 				webovou aplikací v Pythonu/Django s ekosystémem pluginů a nyní jednosouborovou
 				aplikací v Go. Tato stránka je místem pro vše, co dříve existovalo, ale dnes
@@ -138,7 +138,7 @@
 				</thead>
 				<tbody>
 					<tr>
-						<td>Původní verze (ASP. NET/C#)</td>
+						<td>Původní verze (ASP.NET/C#)</td>
 						<td>Bakalářská závěrečná práce na Federální univerzitě v Paraná — první
 							nástroj, který propojil společnou linii mezi metadaty PostgreSQL, MySQL/MariaDB,
 							Oracle, SQLite, Firebird a SQL Server.</td>
@@ -236,7 +236,7 @@
 				<a href="writing_sql_queries.html">Psaní SQL dotazů</a>.</p>
 
 			<h2 id="pglogical">pglogical (odstraněno)</h2>
-			<p><a href="https://www.2ndquadrant.c../resources/pglogical/" target="_blank" rel="noopener">pglogical</a>
+			<p><a href="https://www.2ndquadrant.com/en/resources/pglogical/" target="_blank" rel="noopener">pglogical</a>
 				bylo rozšíření PostgreSQL poskytující efektivní systém logické replikace.
 				Starý plugin <code>omnidb-pglogical</code> přidával uzly do stromového
 				pohledu a akce založené na SQL šablonách (vytvoření uzlu, správa replikačních
@@ -244,14 +244,14 @@
 				odstraněném systému pluginů, takže se už nenačte.</p>
 
 			<h2 id="postgres-bdr">Postgres-BDR (odstraněno)</h2>
-			<p><a href="https://www.2ndquadrant.c../resources/bdr/" target="_blank" rel="noopener">Postgres-BDR</a>
+			<p><a href="https://www.2ndquadrant.com/en/resources/bdr/" target="_blank" rel="noopener">Postgres-BDR</a>
 				(“Bi-Directional Replication“) bylo multi-masterové rozšíření pro PostgreSQL
 				od společnosti 2ndQuadrant. Starý plugin <code>omnidb-bdr</code> mu poskytoval
 				stejný typ integrace do stromového pohledu jako pglogical. Stejný příběh: byl
 				to plugin a systém pluginů, na kterém závisel, je pryč.</p>
 
 			<h2 id="postgres-xl">Postgres-XL (odstraněno)</h2>
-			<p><a href="https://www.2ndquadrant.c../resources/postgres-xl/" target="_blank" rel="noopener">Postgres-XL</a>
+			<p><a href="https://www.2ndquadrant.com/en/resources/postgres-xl/" target="_blank" rel="noopener">Postgres-XL</a>
 				byl masivně paralelní, horizontálně škálovatelný fork PostgreSQL (GTM +
 				koordinátor + datové uzly). Starý plugin <code>omnidb-xl</code> pro něj
 				přidával uzly ve stromovém pohledu s podporou clusteru. Také plugin, také

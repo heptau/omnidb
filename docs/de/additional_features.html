@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Zusätzliche Funktionen – OmniDB-Dokumentation</title>
-	<meta name="description" content="Die Zusatzwerkzeuge von OmniDB: Benutzereinstellungen, kontextbezogene PostgreSQL-Dokumentation, Snippets, Backend-Verwaltung, Eigenschaften-/DDL-Panels, Datenexport und SSH-Konsole.">
+	<meta name="description" content="Die Zusatzwerkzeuge von OmniDB: Benutzereinstellungen, kontextbezogene PostgreSQL-Dokumentation, Snippets, das Notify-Panel, Backend-Verwaltung, Eigenschaften-/DDL-Panels, Datenexport und SSH-Konsole.">
 	<link rel="canonical" href="https://www.omnidb.net/de/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/additional_features.html">
@@ -18,7 +18,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/de/additional_features.html">
 	<meta property="og:title" content="Zusätzliche Funktionen - OmniDB-Dokumentation">
-	<meta property="og:description" content="Die Zusatzwerkzeuge von OmniDB: Benutzereinstellungen, kontextbezogene PostgreSQL-Dokumentation, Snippets, Backend-Verwaltung, Eigenschaften-/DDL-Panels, Datenexport und SSH-Konsole.">
+	<meta property="og:description" content="Die Zusatzwerkzeuge von OmniDB: Benutzereinstellungen, kontextbezogene PostgreSQL-Dokumentation, Snippets, das Notify-Panel, Backend-Verwaltung, Eigenschaften-/DDL-Panels, Datenexport und SSH-Konsole.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -130,11 +130,14 @@
 			<li><strong>Shortcuts</strong> (Tastenkürzel): Ermöglicht dem Benutzer, seine Tastenkürzel in OmniDB zu ändern.</li>
 			<li><strong>Options</strong> (Optionen): Ermöglicht dem Benutzer, die Schriftgröße der Oberfläche zu ändern
 				und CSV-bezogene Optionen zu konfigurieren (Zeichenkodierung, Trennzeichen). Das OmniDB-Design
-				(Hell/Dunkel) wird automatisch anhand der Farbschema-Einstellung Ihres Betriebssystems bestimmt.</li>
+				kann auf Automatisch (folgt der Farbschema-Einstellung Ihres Betriebssystems), Hell oder Dunkel
+				gesetzt werden.</li>
 			<li><strong>Formatting</strong> (Formatierung): Legt fest, wie der SQL-Formatierer (die Aktion <em>Indent SQL</em>,
 				SQL einrücken) Ihre Abfrage umschreibt — Einrückungszeichen (Leerzeichen oder Tab), Einrückungsgröße
 				(2/3/4), Kommastil (führend/nachgestellt) und Groß-/Kleinschreibung der Schlüsselwörter
-				(beibehalten/GROSSSCHREIBUNG/Kleinschreibung).</li>
+				(beibehalten/GROSSSCHREIBUNG/Kleinschreibung). Legt außerdem die <strong>Ruler Column</strong>
+				(Lineal-Spalte) fest — die vertikale Führungslinie, die der SQL-Editor zeichnet (24-999,
+				Standardwert 128) — die live auf jeden geöffneten Editor angewendet wird.</li>
 			<li><strong>Password</strong> (Passwort): Ermöglicht dem Benutzer, sein Passwort zu ändern.</li>
 		</ul>
 		<h4>Kontexthilfe</h4>
@@ -155,7 +158,27 @@
 			Verzeichnisse und Snippets werden in der Benutzerdatenbank <code>omnidb.db</code> gespeichert
 			und bleiben auch bei einem Upgrade von OmniDB erhalten.
 		</p>
+		<p>Eine "+"/"-"-Fußleiste unterhalb des Snippet-Baums fügt ein Snippet unterhalb des
+			gerade ausgewählten Ordners (oder der Baumwurzel) hinzu und löscht das jeweils
+			ausgewählte Element; "-" bleibt deaktiviert, bis etwas Löschbares ausgewählt ist. Ein
+			geöffneter Snippet-Tab zeigt einen kleinen Punkt neben seinem Titel, sobald der Editor
+			vom gespeicherten Stand abweicht; dieser wird beim Speichern wieder entfernt. Beim
+			Schließen eines Tabs wird nur dann eine Bestätigung abgefragt, wenn tatsächlich
+			ungespeicherte Änderungen vorliegen.</p>
 		<p><img alt="" src="../assets/img/image_127.webp" /></p>
+		<h4>Notify</h4>
+		<p>Das <em>Notify</em>-Panel befindet sich in der Seitenleiste zwischen Database und
+			Snippets und zeigt fortlaufend PostgreSQL-<code>LISTEN</code>/<code>NOTIFY</code>-,
+			Oracle-<code>DBMS_ALERT</code>- und Firebird-<code>POST_EVENT</code>-Meldungen an. Kanäle
+			werden pro Verbindung hinzugefügt, entfernt, pausiert und fortgesetzt und bleiben auch
+			über einen Neustart der App hinweg erhalten; empfangene Nachrichten sind dagegen
+			flüchtig — sie werden nur im Browser-Tab vorgehalten und beim Neuladen gelöscht.
+			Nachrichten können kanalübergreifend oder gefiltert auf eine Auswahl angezeigt und
+			pro Kanal oder insgesamt geleert werden. MySQL/MariaDB/MS SQL Server/SQLite zeigen
+			anstelle des Features eine Meldung "nicht unterstützt" an. Die Notify-Sitzung einer
+			Verbindung startet und stoppt zusammen mit ihrem Database-Tab, und das Panel teilt sich
+			denselben horizontalen Streifen offener Verbindungen mit dem Database-Panel, sodass die
+			Auswahl einer Verbindung in einem der beiden Panels das andere synchron hält.</p>
 		<h4>Backend-Verwaltung</h4>
 		<p>Durch Rechtsklick auf den Wurzelknoten des Baums, anschließendes Bewegen des Mauszeigers
 			auf <em>Monitoring</em> (Überwachung) und Klicken auf <em>Backends</em> kann der Benutzer alle
@@ -176,11 +199,13 @@
 			wo immer er möchte.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
 		<h4>Daten exportieren</h4>
-		<p>Der <em>Query Tab</em> (Abfrage-Tab) bietet die Möglichkeit, Daten aus Abfrageergebnissen in
-			einer CSV- oder XLSX-Datei zu speichern. Sobald Sie auf die Schaltfläche <em>Export Data</em>
-			(Daten exportieren) klicken, startet ein abbrechbarer Hintergrundprozess, der die Daten in
-			die Datei schreibt. Ist er abgeschlossen, stellt OmniDB einen Link namens <em>Save</em>
-			(Speichern) bereit, über den der Benutzer die Datei herunterladen kann.
+		<p>Der <em>Query Tab</em> (Abfrage-Tab) bietet die Möglichkeit, Daten aus Abfrageergebnissen als
+			CSV, TSV, XLSX, Markdown, JSON oder XML zu speichern. Sobald Sie auf die Schaltfläche
+			<em>Export Data</em> (Daten exportieren) klicken, startet ein abbrechbarer Hintergrundprozess,
+			der die Daten in die Datei schreibt. Ist er abgeschlossen, stellt OmniDB einen Link namens
+			<em>Save</em> (Speichern) bereit, über den der Benutzer die Datei herunterladen kann. Die
+			CSV/TSV-Zeichenkodierung (Settings &gt; Options) verwendet standardmäßig UTF-8 mit einem BOM,
+			und ihre Codec-Liste ist in übersichtliche Kategorien gruppiert.
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Alle Dateien werden in einem temporären Ordner innerhalb des OmniDB-Ordners gespeichert.

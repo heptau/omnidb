@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Additional Features – OmniDB Documentation</title>
-	<meta name="description" content="OmniDB's extra tools: user settings, contextual PostgreSQL documentation, snippets, backend management, properties/DDL panels, data export and SSH console.">
+	<meta name="description" content="OmniDB's extra tools: user settings, contextual PostgreSQL documentation, snippets, the Notify panel, backend management, properties/DDL panels, data export and SSH console.">
 	<link rel="canonical" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/additional_features.html">
@@ -17,7 +17,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/en/additional_features.html">
 	<meta property="og:title" content="Additional Features - OmniDB Documentation">
-	<meta property="og:description" content="OmniDB's extra tools: user settings, contextual PostgreSQL documentation, snippets, backend management, properties/DDL panels, data export and SSH console.">
+	<meta property="og:description" content="OmniDB's extra tools: user settings, contextual PostgreSQL documentation, snippets, the Notify panel, backend management, properties/DDL panels, data export and SSH console.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -128,11 +128,12 @@
 		<ul>
 			<li><strong>Shortcuts</strong>: Allows the user to change its shortcuts in OmniDB.</li>
 			<li><strong>Options</strong>: Allows the user to change the font size of the interface and configure
-				CSV related options (encoding, delimiter). The OmniDB theme (Light/Dark) is automatically determined by
-				your operating system’s color scheme preference.</li>
+				CSV related options (encoding, delimiter). The OmniDB theme can be set to Automatic (follows your
+				operating system’s color scheme preference), Light, or Dark.</li>
 			<li><strong>Formatting</strong>: Configures how the SQL formatter (the <em>Indent SQL</em> action) rewrites
 				your query — indent character (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and
-				keyword case (preserve/UPPERCASE/lowercase).</li>
+				keyword case (preserve/UPPERCASE/lowercase). Also sets the <strong>Ruler Column</strong> — the vertical
+				guide line the SQL editor draws (24-999, default 128) — applied live to every open editor.</li>
 			<li><strong>Password</strong>: Allows the user to change its password.</li>
 		</ul>
 		<h4>Contextual Help</h4>
@@ -152,11 +153,26 @@
 			directory tree the way you want. All directories and snippets you create are
 			stored inside of <code>omnidb.db</code> user database and persist when you upgrade OmniDB.
 		</p>
+		<p>A "+"/"-" footer below the snippets tree adds a snippet under the currently selected
+			folder (or the tree root) and deletes whatever is selected; "-" stays disabled until something
+			deletable is selected. An open snippet tab shows a small dot next to its title once the editor
+			diverges from what is saved, cleared on Save; closing a tab only prompts for confirmation when
+			it actually has unsaved changes.</p>
 		<p><img alt="" src="../assets/img/image_127.webp"/></p>
+		<h4>Notify</h4>
+		<p>The <em>Notify</em> panel sits in the sidebar between Database and Snippets and streams
+			PostgreSQL <code>LISTEN</code>/<code>NOTIFY</code>, Oracle <code>DBMS_ALERT</code>, and Firebird
+			<code>POST_EVENT</code> messages. Channels are added, removed, paused, and resumed per connection
+			and persist across app restarts; received messages are ephemeral, kept only in the browser tab
+			and cleared on reload. Messages can be viewed across all channels or filtered to a selection, and
+			cleared per-channel or all at once. MySQL/MariaDB/MS SQL Server/SQLite show a "not supported"
+			message instead of hiding the feature. A connection's Notify session starts and stops together
+			with its Database tab, and the panel shares the same horizontal strip of open connections as the
+			Database panel, so selecting a connection in one keeps the other in sync.</p>
 		<h4>Backend Management</h4>
 		<p>By right-clicking in the tree root node, then moving mouse pointer to
 			<em>Monitoring</em> and then clicking on <em>Backends</em>, the user can see all activities
-			going on in the database. Some information are hidden for normal users, only
+			going on in the database. Some information is hidden for normal users, only
 			database superusers are allowed to see.
 		</p>
 		<p><img alt="" src="../assets/img/image_174.webp"/></p>
@@ -173,10 +189,11 @@
 			paste it wherever he/she wants.</p>
 		<p><img alt="" src="../assets/img/image_177.webp"/></p>
 		<h4>Export Data</h4>
-		<p>The <em>Query Tab</em> provides a way to save data from query results into a CSV or
-			XLSX file. Once you click the <em>Export Data</em> button, a cancellable backend starts
-			to save data into the file. Once it is done, OmniDB provides a link called
-			<em>Save</em>, so the user can download the file.
+		<p>The <em>Query Tab</em> provides a way to save data from query results into
+			CSV, TSV, XLSX, Markdown, JSON, or XML. Once you click the <em>Export Data</em> button, a cancellable
+			backend starts to save data into the file. Once it is done, OmniDB provides a link called
+			<em>Save</em>, so the user can download the file. CSV/TSV Encoding (Settings &gt; Options) defaults
+			to UTF-8 with a BOM, and its codec list is grouped into readable categories.
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp"/></p>
 		<p>All files are stored in a temporary folder inside OmniDB folder. OmniDB

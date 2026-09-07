@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Fonctionnalités supplémentaires — Documentation OmniDB</title>
-	<meta name="description" content="Les outils supplémentaires d'OmniDB : paramètres utilisateur, documentation PostgreSQL contextuelle, extraits de code, gestion des processus serveur, panneaux de propriétés/DDL, export de données et console SSH.">
+	<meta name="description" content="Les outils supplémentaires d'OmniDB : paramètres utilisateur, documentation PostgreSQL contextuelle, extraits de code, le panneau Notify, gestion des processus serveur, panneaux de propriétés/DDL, export de données et console SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/additional_features.html">
@@ -18,7 +18,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/fr/additional_features.html">
 	<meta property="og:title" content="Fonctionnalités supplémentaires - Documentation OmniDB">
-	<meta property="og:description" content="Les outils supplémentaires d'OmniDB : paramètres utilisateur, documentation PostgreSQL contextuelle, extraits de code, gestion des processus serveur, panneaux de propriétés/DDL, export de données et console SSH.">
+	<meta property="og:description" content="Les outils supplémentaires d'OmniDB : paramètres utilisateur, documentation PostgreSQL contextuelle, extraits de code, le panneau Notify, gestion des processus serveur, panneaux de propriétés/DDL, export de données et console SSH.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -128,11 +128,13 @@
 		<ul>
 			<li><strong>Shortcuts</strong> (Raccourcis) : permet à l’utilisateur de modifier ses raccourcis dans OmniDB.</li>
 			<li><strong>Options</strong> : permet à l’utilisateur de modifier la taille de police de l’interface et de configurer
-				les options liées au CSV (encodage, délimiteur). Le thème d’OmniDB (Clair/Sombre) est déterminé automatiquement
-				selon la préférence de thème de couleur de votre système d’exploitation.</li>
+				les options liées au CSV (encodage, délimiteur). Le thème d’OmniDB peut être réglé sur Automatique (suit la
+				préférence de thème de couleur de votre système d’exploitation), Clair ou Sombre.</li>
 			<li><strong>Formatting</strong> (Formatage) : configure la façon dont le formateur SQL (l’action <em>Indent SQL</em>)
 				réécrit votre requête — caractère d’indentation (espaces ou tabulation), taille d’indentation (2/3/4), style de
-				virgule (en début ou en fin de ligne) et casse des mots-clés (conserver/MAJUSCULES/minuscules).</li>
+				virgule (en début ou en fin de ligne) et casse des mots-clés (conserver/MAJUSCULES/minuscules). Définit également
+				la <strong>Ruler Column</strong> (Colonne de règle) — la ligne de repère verticale que l’éditeur SQL affiche
+				(24-999, valeur par défaut 128) — appliquée en direct à tous les éditeurs ouverts.</li>
 			<li><strong>Password</strong> (Mot de passe) : permet à l’utilisateur de changer son mot de passe.</li>
 		</ul>
 		<h4>Aide contextuelle</h4>
@@ -151,7 +153,24 @@
 			répertoires selon vos préférences. Tous les répertoires et extraits que vous créez sont stockés dans la base de
 			données utilisateur <code>omnidb.db</code> et persistent lors des mises à jour d’OmniDB.
 		</p>
+		<p>Une barre « + »/« - » sous l’arborescence des extraits permet d’ajouter un extrait dans le dossier
+			actuellement sélectionné (ou à la racine de l’arborescence) et de supprimer l’élément sélectionné ; le bouton
+			« - » reste désactivé tant qu’aucun élément supprimable n’est sélectionné. Un onglet d’extrait ouvert affiche
+			un petit point à côté de son titre dès que l’éditeur diverge de la version enregistrée, effacé lors de
+			l’enregistrement ; la fermeture d’un onglet ne demande une confirmation que lorsqu’il contient réellement des
+			modifications non enregistrées.</p>
 		<p><img alt="" src="../assets/img/image_127.webp" /></p>
+		<h4>Notify</h4>
+		<p>Le panneau <em>Notify</em> se trouve dans la barre latérale entre Database et Snippets, et diffuse en continu
+			les messages PostgreSQL <code>LISTEN</code>/<code>NOTIFY</code>, Oracle <code>DBMS_ALERT</code> et Firebird
+			<code>POST_EVENT</code>. Les canaux sont ajoutés, supprimés, mis en pause et repris par connexion, et persistent
+			après le redémarrage de l’application ; les messages reçus sont éphémères, conservés uniquement dans l’onglet
+			du navigateur et effacés au rechargement de la page. Les messages peuvent être consultés sur tous les canaux
+			ou filtrés sur une sélection, et effacés canal par canal ou tous à la fois. MySQL/MariaDB/MS SQL Server/SQLite
+			affichent un message « non pris en charge » plutôt que de masquer la fonctionnalité. La session Notify d’une
+			connexion démarre et s’arrête avec son onglet Database, et le panneau partage la même bande horizontale de
+			connexions ouvertes que le panneau Database, de sorte que sélectionner une connexion dans l’un maintient
+			l’autre synchronisé.</p>
 		<h4>Gestion des processus serveur</h4>
 		<p>En faisant un clic droit sur le nœud racine de l’arborescence, puis en déplaçant le pointeur de la souris vers
 			<em>Monitoring</em> (Supervision) et en cliquant sur <em>Backends</em> (Processus serveur), l’utilisateur peut voir
@@ -170,10 +189,12 @@
 			l’objet. L’utilisateur peut copier ce texte et le coller où il le souhaite.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
 		<h4>Export de données</h4>
-		<p>L’<em>onglet Requête</em> (Query Tab) permet d’enregistrer les données des résultats de requête dans un fichier
-			CSV ou XLSX. Une fois que vous cliquez sur le bouton <em>Export Data</em> (Exporter les données), un traitement
-			annulable démarre en arrière-plan pour enregistrer les données dans le fichier. Une fois terminé, OmniDB fournit
-			un lien nommé <em>Save</em> (Enregistrer), permettant à l’utilisateur de télécharger le fichier.
+		<p>L’<em>onglet Requête</em> (Query Tab) permet d’enregistrer les données des résultats de requête au format
+			CSV, TSV, XLSX, Markdown, JSON ou XML. Une fois que vous cliquez sur le bouton <em>Export Data</em> (Exporter les données),
+			un traitement annulable démarre en arrière-plan pour enregistrer les données dans le fichier. Une fois terminé,
+			OmniDB fournit un lien nommé <em>Save</em> (Enregistrer), permettant à l’utilisateur de télécharger le fichier.
+			L’encodage CSV/TSV (dans <em>Paramètres utilisateur</em> &gt; <em>Options</em>) est désormais défini par défaut sur
+			UTF-8 avec BOM, et sa liste de codecs est regroupée en catégories lisibles.
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Tous les fichiers sont stockés dans un dossier temporaire situé dans le dossier d’OmniDB. OmniDB nettoie

@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Funcionalidades Adicionais – Documentação OmniDB</title>
-	<meta name="description" content="As ferramentas extra do OmniDB: definições de utilizador, documentação contextual do PostgreSQL, snippets, gestão de backends, painéis de propriedades/DDL, exportação de dados e consola SSH.">
+	<meta name="description" content="As ferramentas extra do OmniDB: definições de utilizador, documentação contextual do PostgreSQL, snippets, o painel Notify, gestão de backends, painéis de propriedades/DDL, exportação de dados e consola SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/additional_features.html">
@@ -18,7 +18,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/pt/additional_features.html">
 	<meta property="og:title" content="Funcionalidades Adicionais - Documentação OmniDB">
-	<meta property="og:description" content="As ferramentas extra do OmniDB: definições de utilizador, documentação contextual do PostgreSQL, snippets, gestão de backends, painéis de propriedades/DDL, exportação de dados e consola SSH.">
+	<meta property="og:description" content="As ferramentas extra do OmniDB: definições de utilizador, documentação contextual do PostgreSQL, snippets, o painel Notify, gestão de backends, painéis de propriedades/DDL, exportação de dados e consola SSH.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -128,11 +128,13 @@
 		<ul>
 			<li><strong>Shortcuts</strong> (Atalhos): Permite ao utilizador alterar os seus atalhos no OmniDB.</li>
 			<li><strong>Options</strong> (Opções): Permite ao utilizador alterar o tamanho da fonte da interface e configurar
-				opções relacionadas com CSV (codificação, delimitador). O tema do OmniDB (Claro/Escuro) é determinado automaticamente pela
-				preferência de esquema de cores do sistema operativo.</li>
+				opções relacionadas com CSV (codificação, delimitador). O tema do OmniDB pode ser definido como Automático (segue a preferência de esquema de
+				cores do sistema operativo), Claro ou Escuro.</li>
 			<li><strong>Formatting</strong> (Formatação): Configura como o formatador SQL (a ação <em>Indent SQL</em>) reescreve
 				a sua consulta — carácter de indentação (espaços ou tabulação), tamanho da indentação (2/3/4), estilo das vírgulas (no início/no fim), e
-				capitalização das palavras-chave (preservar/MAIÚSCULAS/minúsculas).</li>
+				capitalização das palavras-chave (preservar/MAIÚSCULAS/minúsculas). Também define a <strong>Ruler Column</strong>
+				(Coluna de Régua) — a linha vertical de guia que o editor SQL desenha (24-999, predefinição 128) —
+				aplicada em tempo real a todos os editores abertos.</li>
 			<li><strong>Password</strong> (Palavra-passe): Permite ao utilizador alterar a sua palavra-passe.</li>
 		</ul>
 		<h4>Ajuda Contextual</h4>
@@ -152,7 +154,24 @@
 			árvore de pastas da forma que preferir. Todas as pastas e snippets que criar são
 			armazenados dentro da base de dados de utilizador <code>omnidb.db</code> e persistem quando atualiza o OmniDB.
 		</p>
+		<p>Um rodapé com "+"/"-" por baixo da árvore de snippets permite adicionar um snippet dentro da pasta
+			atualmente selecionada (ou na raiz da árvore) e eliminar o que estiver selecionado; o "-" permanece
+			desativado até algo eliminável estar selecionado. Um separador de snippet aberto mostra um pequeno
+			ponto junto ao título assim que o editor diverge do que está guardado, que desaparece ao clicar em
+			<em>Save</em> (Guardar); fechar um separador só pede confirmação quando existem, de facto, alterações
+			não guardadas.</p>
 		<p><img alt="" src="../assets/img/image_127.webp" /></p>
+		<h4>Notify</h4>
+		<p>O painel <em>Notify</em> situa-se na barra lateral entre <em>Database</em> (Base de Dados) e <em>Snippets</em> e
+			transmite mensagens <code>LISTEN</code>/<code>NOTIFY</code> do PostgreSQL, <code>DBMS_ALERT</code> do Oracle e
+			<code>POST_EVENT</code> do Firebird. Os canais são adicionados, removidos, pausados e retomados por ligação
+			e persistem entre reinícios da aplicação; as mensagens recebidas são efémeras, mantidas apenas no
+			separador do browser e limpas ao recarregar a página. As mensagens podem ser vistas em todos os canais
+			ou filtradas para uma seleção, e limpas por canal ou todas de uma vez. MySQL/MariaDB/MS SQL Server/SQLite
+			mostram uma mensagem de "não suportado" em vez de ocultar a funcionalidade. A sessão Notify de uma ligação
+			inicia e termina junto com o seu separador Database, e o painel partilha a mesma faixa horizontal de
+			ligações abertas que o painel Database, pelo que selecionar uma ligação num deles mantém o outro
+			sincronizado.</p>
 		<h4>Gestão de Backends</h4>
 		<p>Ao clicar com o botão direito no nó raiz da árvore, depois mover o ponteiro do rato para
 			<em>Monitoring</em> (Monitorização) e depois clicar em <em>Backends</em>, o utilizador pode ver todas as atividades
@@ -173,10 +192,12 @@
 			colá-lo onde quiser.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
 		<h4>Exportar Dados</h4>
-		<p>O <em>Separador de Consulta</em> disponibiliza uma forma de guardar dados dos resultados de consultas num ficheiro CSV ou
-			XLSX. Depois de clicar no botão <em>Export Data</em> (Exportar Dados), inicia-se um backend cancelável que
-			começa a guardar dados no ficheiro. Quando terminar, o OmniDB disponibiliza uma ligação chamada
-			<em>Save</em> (Guardar), para que o utilizador possa transferir o ficheiro.
+		<p>O <em>Separador de Consulta</em> disponibiliza uma forma de guardar dados dos resultados de consultas em
+			CSV, TSV, XLSX, Markdown, JSON ou XML. Depois de clicar no botão <em>Export Data</em> (Exportar Dados), inicia-se
+			um backend cancelável que começa a guardar dados no ficheiro. Quando terminar, o OmniDB disponibiliza uma
+			ligação chamada <em>Save</em> (Guardar), para que o utilizador possa transferir o ficheiro. A codificação
+			CSV/TSV (em <em>Options</em> (Opções), nas Definições de Utilizador) passa agora a usar UTF-8 com BOM por
+			predefinição, e a sua lista de codecs está agrupada em categorias legíveis.
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Todos os ficheiros são armazenados numa pasta temporária dentro da pasta do OmniDB. O OmniDB

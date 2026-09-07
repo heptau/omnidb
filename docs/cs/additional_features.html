@@ -4,7 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Další funkce – Dokumentace OmniDB</title>
-	<meta name="description" content="Doplňkové nástroje OmniDB: uživatelská nastavení, kontextová dokumentace PostgreSQL, úryvky, správa backendů, panely vlastností/DDL, export dat a SSH konzole.">
+	<meta name="description" content="Doplňkové nástroje OmniDB: uživatelská nastavení, kontextová dokumentace PostgreSQL, úryvky, panel Notify, správa backendů, panely vlastností/DDL, export dat a SSH konzole.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/additional_features.html">
@@ -17,7 +17,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/cs/additional_features.html">
 	<meta property="og:title" content="Další funkce - Dokumentace OmniDB">
-	<meta property="og:description" content="Doplňkové nástroje OmniDB: uživatelská nastavení, kontextová dokumentace PostgreSQL, úryvky, správa backendů, panely vlastností/DDL, export dat a SSH konzole.">
+	<meta property="og:description" content="Doplňkové nástroje OmniDB: uživatelská nastavení, kontextová dokumentace PostgreSQL, úryvky, panel Notify, správa backendů, panely vlastností/DDL, export dat a SSH konzole.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -129,13 +129,14 @@
 		<ul>
 			<li><strong>Shortcuts</strong> (Zkratky): Umožňuje uživateli měnit klávesové zkratky v OmniDB.</li>
 			<li><strong>Options</strong> (Možnosti): Umožňuje uživateli měnit velikost písma rozhraní a
-				konfigurovat volby týkající se CSV (kódování, oddělovač). Motiv OmniDB
-				(světlý/tmavý) se automaticky určuje podle preference barevného schématu
-				vašeho operačního systému.</li>
+				konfigurovat volby týkající se CSV (kódování, oddělovač). Motiv OmniDB lze nastavit na Automaticky (řídí se podle preference
+				barevného schématu vašeho operačního systému), Světlý nebo Tmavý.</li>
 			<li><strong>Formatting</strong> (Formátování): Nastavuje, jak SQL formátovač (akce <em>Indent SQL</em>,
 				Formátovat SQL) přepisuje váš dotaz — znak odsazení (mezery nebo tabulátor),
 				velikost odsazení (2/3/4), styl čárek (na začátku/na konci řádku) a velikost
-				písmen klíčových slov (zachovat/VELKÁ PÍSMENA/malá písmena).</li>
+				písmen klíčových slov (zachovat/VELKÁ PÍSMENA/malá písmena). Nastavuje také <strong>Ruler Column</strong> (Vodicí sloupec) —
+				svislou vodicí čáru, kterou SQL editor vykresluje (24-999, výchozí 128) — okamžitě
+				uplatněnou na všechny otevřené editory.</li>
 			<li><strong>Password</strong> (Heslo): Umožňuje uživateli změnit si heslo.</li>
 		</ul>
 		<h4>Kontextová nápověda</h4>
@@ -156,7 +157,27 @@
 			Všechny adresáře a úryvky, které vytvoříte, se ukládají do uživatelské
 			databáze <code>omnidb.db</code> a zůstanou zachovány i po aktualizaci OmniDB.
 		</p>
+		<p>Pod stromem úryvků se nachází lišta s tlačítky „+“/„-“: „+“ přidá nový úryvek
+			do aktuálně vybrané složky (nebo do kořene stromu), „-“ smaže vybranou položku
+			a zůstává neaktivní, dokud není vybráno nic, co lze smazat. Otevřená karta
+			úryvku zobrazuje u svého názvu malou tečku, jakmile se obsah editoru odchýlí
+			od uloženého stavu; tečka po uložení zmizí. Zavření karty se na potvrzení ptá
+			pouze tehdy, pokud opravdu obsahuje neuložené změny.</p>
 		<p><img alt="" src="../assets/img/image_127.webp" /></p>
+		<h4>Oznámení (Notify)</h4>
+		<p>Panel <em>Notify</em> se nachází v postranním panelu mezi Database a Snippets
+			a zobrazuje zprávy z PostgreSQL <code>LISTEN</code>/<code>NOTIFY</code>, Oracle
+			<code>DBMS_ALERT</code> a Firebird <code>POST_EVENT</code>. Kanály se pro každé
+			připojení přidávají, odebírají, pozastavují a obnovují a zůstávají zachovány
+			i po restartu aplikace; přijaté zprávy jsou pouze dočasné — uchovávají se jen
+			v rámci karty prohlížeče a při obnovení stránky se vymažou. Zprávy lze zobrazit
+			napříč všemi kanály nebo je omezit na vybrané kanály a lze je vymazat po
+			jednotlivých kanálech nebo všechny najednou. U MySQL/MariaDB/MS SQL Server/SQLite
+			se místo skrytí funkce zobrazí zpráva „not supported“ (nepodporováno). Relace
+			<em>Notify</em> daného připojení se spouští a ukončuje společně s jeho kartou
+			<em>Database</em> a panel sdílí stejný vodorovný pruh otevřených připojení jako
+			panel <em>Database</em>, takže výběr připojení v jednom z nich udržuje v souladu
+			i ten druhý.</p>
 		<h4>Správa backendů</h4>
 		<p>Kliknutím pravým tlačítkem na kořenový uzel stromu, přesunutím kurzoru na
 			<em>Monitoring</em> a kliknutím na <em>Backends</em> může uživatel vidět veškerou
@@ -177,11 +198,13 @@
 			tento text zkopírovat a vložit, kam potřebuje.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
 		<h4>Export dat</h4>
-		<p>Karta <em>Query Tab</em> (Dotaz) nabízí možnost uložit data z výsledků dotazu do
-			souboru CSV nebo XLSX. Jakmile kliknete na tlačítko <em>Export Data</em>, spustí
+		<p>Karta <em>Query Tab</em> (Dotaz) nabízí možnost uložit data z výsledků dotazu ve formátu
+			CSV, TSV, XLSX, Markdown, JSON nebo XML. Jakmile kliknete na tlačítko <em>Export Data</em>, spustí
 			se zrušitelný backend, který začne ukládat data do souboru. Jakmile je
 			hotovo, OmniDB nabídne odkaz <em>Save</em> (Uložit), pomocí kterého si uživatel
-			může soubor stáhnout.
+			může soubor stáhnout. Kódování CSV/TSV (Nastavení &gt; Možnosti) je nyní ve
+			výchozím stavu UTF-8 se značkou BOM a seznam kodeků je přehledně rozdělen do
+			kategorií.
 		</p>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Všechny soubory se ukládají do dočasné složky uvnitř složky OmniDB. OmniDB
