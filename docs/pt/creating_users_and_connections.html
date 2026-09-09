@@ -129,109 +129,140 @@
 		<main>
 		<h1>Criar Utilizadores e Ligações</h1>
 <h4>Iniciar sessão como o utilizador <em>admin</em></h4>
-<p>O OmniDB vem apenas com o utilizador <em>admin</em>. Se estiver a usar a versão servidor,
-a primeira coisa a fazer é iniciar sessão como <em>admin</em>, cuja palavra-passe predefinida é <em>admin</em>.
-Na versão aplicação não precisa de iniciar sessão.</p>
-<p><img alt="" src="../assets/img/image_003.webp" /></p>
-<p>A janela seguinte é a janela inicial.</p>
-<p><img alt="" src="../assets/img/image_004.webp" /></p>
+<p>O OmniDB vem apenas com o utilizador <em>admin</em>. Se estiver a usar a versão servidor, a
+primeira coisa a fazer é iniciar sessão como <em>admin</em>, cuja palavra-passe predefinida é
+<em>admin</em>. A aplicação de ambiente de trabalho não tem qualquer início de sessão: funciona como
+um único utilizador local, pelo que tudo o que diz respeito à gestão de utilizadores descrita
+abaixo simplesmente não existe lá.</p>
+<h4>Orientar-se na interface</h4>
+<p>Toda a área de trabalho é comandada a partir da barra vertical de ícones na margem esquerda da
+janela: <em>Welcome</em> (Boas-vindas), <em>Connections</em> (Ligações, o ícone da ficha),
+<em>Database</em> (Base de dados), <em>Notify</em> (Notificações) e <em>Snippets</em> (Excertos) no
+topo, e <em>Getting Started</em> (Primeiros passos), <em>Account</em> (Conta, apenas na versão
+servidor) e <em>Settings</em> (Definições, a roda dentada) em baixo.</p>
 <h4>Criar outro utilizador</h4>
-<p>Clique no ícone <em>Users</em> (Utilizadores) no canto superior direito. Abrirá uma janela pop-up
-que permite ao superutilizador atual do OmniDB criar um novo utilizador do OmniDB.</p>
-<p><img alt="" src="../assets/img/image_005.webp" /></p>
-<p>Clique no botão <em>Add new user</em> (Adicionar novo utilizador) (o ícone de pessoa com um mais) dentro da janela pop-up.
-Insere uma nova linha de utilizador em branco, mostrada como <em>(pending info)</em> (informação pendente) até que a preencha.</p>
-<p><img alt="" src="../assets/img/image_006.webp" /></p>
-<p>Preencha o <em>nome de utilizador</em> e a <em>palavra-passe</em>. Assinale se pretende que este novo utilizador seja
-<em>superutilizador</em>. Esta janela de gestão de utilizadores só é visível para superutilizadores. Quando
-terminar, clique no botão <em>Save</em> (Guardar) dentro da janela pop-up.</p>
-<p><img alt="" src="../assets/img/image_007.webp" /></p>
-<p>Pode criar quantos utilizadores quiser, editar utilizadores existentes e também eliminar
-utilizadores clicando na cruz vermelha na coluna de ações. Agora pode terminar sessão
-clicando no botão <em>Sign Out</em> (Terminar Sessão) no canto superior direito.</p>
-<h4>Iniciar sessão como o novo utilizador</h4>
-<p>Vamos iniciar sessão como o utilizador que acabámos de criar.</p>
-<p><img alt="" src="../assets/img/image_008.webp" /></p>
-<p>E podemos ver a janela novamente. Repare que agora não existe o ícone <em>Users</em>, porque
-o utilizador <em>test</em> não é superutilizador. Vá em frente e clique em <strong>Connections</strong> (Ligações) no
-canto superior esquerdo. Verá uma janela pop-up como esta:</p>
-<p><img alt="" src="../assets/img/image_009.webp" /></p>
+<p>Abra <em>Settings</em> (Definições) no fundo da barra, escolha a categoria <em>Account</em>
+(Conta) e clique em <em>Manage Users</em> (Gerir utilizadores). Só um super-utilizador tem esse
+botão: nas definições de um utilizador normal a secção <em>Account</em> nem sequer aparece.</p>
+<p>A janela <em>User management</em> (Gestão de utilizadores) lista os utilizadores existentes.
+Clique em <em>Add new user</em> (Adicionar novo utilizador, o ícone da pessoa com um mais) para
+inserir uma nova linha de utilizador vazia, mostrada como <em>(pending info)</em> até a preencher.
+Preencha o <em>nome de utilizador</em> e a <em>palavra-passe</em>, assinale <em>Super User</em> se o
+novo utilizador o deve ser e clique em <em>Save</em> (Guardar). Pode criar tantos utilizadores
+quantos quiser, editar os existentes e eliminar um clicando na cruz vermelha na coluna de
+ações.</p>
+<p>Para terminar a sessão, clique no ícone <em>Account</em> (Conta, a pessoa no fundo da barra) e
+depois em <em>Sign out</em> (Terminar sessão).</p>
+<h4>A secção Connections</h4>
+<p>Clique no ícone da ficha na barra. As ligações são uma secção completa da área de trabalho e não
+uma janela emergente: uma vista dividida com a lista de ligações guardadas na barra lateral
+esquerda e, à direita, o formulário e os botões da ligação selecionada.</p>
+<p>Cada linha da lista mostra o ícone do motor de base de dados, o nome da ligação e, por baixo, o
+<code>utilizador@servidor:porta</code> para onde aponta (ou a cadeia de ligação, ou o destino SSH no
+caso de uma ligação de terminal). Um pequeno ponto colorido indica o ambiente da ligação e um ícone
+de chave assinala uma ligação que passa por um túnel SSH.</p>
 <h4>Criar ligações</h4>
-<p>O OmniDB suporta PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite.</p>
-<p>Vamos agora criar uma ligação a uma base de dados PostgreSQL, uma ligação a uma base de dados
-Oracle e uma ligação a uma base de dados MariaDB. Para criar as
-ligações tem de clicar no botão <em>New Connection</em> (Nova Ligação) e depois escolher o
-tipo de ligação e preencher os restantes campos. Depois de preencher todos os campos de ambas as
-ligações, clique no botão <em>Save</em> (Guardar).</p>
-<p><img alt="" src="../assets/img/image_010.webp" /></p>
-<p>Para cada ligação existe uma coluna <em>Actions</em> (Ações) onde pode eliminar, testar e
-selecionar essa ligação. Vá em frente e teste a ligação PostgreSQL.</p>
-<p><img alt="" src="../assets/img/image_011.webp" /></p>
-<p>Repare que aparece uma janela pop-up com a mensagem <em>fe_sendauth: no password supplied</em>.
-Isto acontece porque o OmniDB não armazena a palavra-passe do utilizador da base de dados em
-disco. Não tendo nenhuma palavra-passe disponível, o OmniDB tentará ligar-se sem uma,
-tentando assim tirar partido de métodos de autenticação automática que possam estar
-em vigor: o método <code>trust</code>, o ficheiro <code>.pgpass</code>, e assim por diante. Como o servidor de base de dados
-responde com um erro que não permite a ligação do utilizador, o OmniDB entende que
-é necessária uma palavra-passe e pede-a ao utilizador. Quando o utilizador escreve uma palavra-passe
-nesta janela pop-up, a palavra-passe é encriptada e armazenada em memória.</p>
-<p>Depois de escrever a palavra-passe e premir <em>Enter</em>, se a ligação à base de dados
-for bem-sucedida, verá uma janela pop-up de confirmação.</p>
-<p><img alt="" src="../assets/img/image_012.webp" /></p>
-<p>Mas, se tiver algum tipo de problema ao ligar-se à sua base de dados PostgreSQL,
-a mesma janela pop-up continuará a mostrar o erro obtido pelo OmniDB.</p>
-<p><img alt="" src="../assets/img/image_013.webp" /></p>
-<p>Para o Oracle, o comportamento é semelhante. Quando o OmniDB tenta pela primeira vez ligar-se a uma
-base de dados Oracle sem palavra-passe, verá uma mensagem como esta:</p>
-<p><img alt="" src="../assets/img/image_115.webp" /></p>
-<p>Se tiver algum problema ao ligar-se à sua base de dados Oracle, a mesma janela pop-up
-continuará a mostrar o erro obtido pelo OmniDB:</p>
-<p><img alt="" src="../assets/img/image_116.webp" /></p>
-<p>As bases de dados MariaDB e MySQL também funcionam da mesma forma. Na primeira vez, sem
-palavra-passe fornecida:</p>
-<p><img alt="" src="../assets/img/image_184.webp" /></p>
-<p>Mas se tiver algum problema, como o servidor de base de dados estar em baixo:</p>
-<p><img alt="" src="../assets/img/image_185.webp" /></p>
-<p>Por fim, na grelha de ligações, se clicar na ação <em>Select Connection</em>
-(Selecionar Ligação), o OmniDB abri-la-á num novo <strong>Separador Exterior de Ligação</strong>, como veremos
-no próximo capítulo. Fazer duplo clique numa linha de ligação faz o mesmo diretamente.
-Clicar com o botão direito numa linha também abre um menu de contexto (<em>Connect</em>
-(Ligar)/<em>Edit</em> (Editar)/<em>Delete</em> (Eliminar) — <em>Delete</em> (Eliminar) é omitido para ligações
-bloqueadas), e clicar com o botão direito em espaço vazio da lista oferece <em>New Connection</em>
-(Nova Ligação)/<em>Refresh</em> (Atualizar).</p>
-<h4>Usar túneis SSH</h4>
-<p>O OmniDB permite ao utilizador ligar-se a qualquer base de dados remota
-através de túneis SSH. O utilizador precisa de preencher a informação do túnel SSH em cada
-ligação na <em>Grelha de Ligações</em>.</p>
-<p><img alt="" src="../assets/img/image_186.webp" /></p>
+<p>O OmniDB suporta PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, além de um
+tipo de ligação <em>Terminal</em> que abre uma shell SSH em vez de uma base de dados.</p>
+<p>O botão <em>+</em> por baixo da lista cria uma ligação. Escreva o nome no cabeçalho do formulário
+à direita, escolha o <em>Connection Type</em> (tipo de ligação) e preencha o cartão
+<em>Host Connection Info</em> (dados do servidor): <em>Server</em>, <em>Port</em>,
+<em>Database</em>, <em>User</em> e, opcionalmente, <em>User Password</em>. Em vez desses campos
+individuais pode preencher uma única <em>Connection string</em> (cadeia de ligação, por exemplo
+<code>postgresql://postgres@localhost:5432/postgres</code>) e deixar o resto em branco. No fim,
+clique em <em>Save</em> (Guardar) no canto superior direito do formulário.</p>
+<p>O <em>Test Connection</em> (Testar ligação), ao lado, experimenta a ligação sem a abrir e comunica
+<em>Connection successful.</em> ou o erro exato devolvido pela base de dados. O botão <em>−</em> por
+baixo da lista elimina a ligação selecionada; fica desativado para uma ligação que esteja aberta
+num separador.</p>
+<h4>Palavras-passe</h4>
+<p>O campo <em>User Password</em> (palavra-passe do utilizador) é opcional e as duas hipóteses
+comportam-se de forma diferente:</p>
 <ul>
-<li><em>SSH Server</em> (Servidor SSH): O servidor ao qual se está a ligar via SSH;</li>
-<li><em>SSH Port</em> (Porta SSH): A porta do servidor SSH (a predefinição é 22, mas pode ser qualquer
-número de porta);</li>
-<li><em>SSH User</em> (Utilizador SSH): O nome de utilizador do sistema operativo que usa para se ligar ao
-servidor SSH;</li>
-<li><em>Password/Passphrase</em> (Palavra-passe/Frase-passe): A palavra-passe do utilizador do sistema operativo (ou a
-frase-passe da chave abaixo). Se preencher o campo <em>SSH Key Text File</em> (Ficheiro de Texto da Chave SSH), a
-palavra-passe é opcional;</li>
-<li><em>SSH Key Text File</em> (Ficheiro de Texto da Chave SSH): O conteúdo da chave privada SSH local que pode usar para se ligar ao
-servidor SSH. Se preencher este campo, também pode preencher o campo
-<em>Password/Passphrase</em>, mas neste caso será a frase-passe da
-chave privada SSH.</li>
+<li><strong>Preenchido</strong>: a palavra-passe é guardada na própria base de dados de configuração
+do OmniDB e usada automaticamente sempre que abrir a ligação. Fica guardada em texto simples nesse
+ficheiro local, por isso trate-o como um segredo: quem o conseguir ler, lê também as palavras-passe
+que contém.</li>
+<li><strong>Deixado em branco</strong>: não é guardado nada e o OmniDB pede a palavra-passe ao abrir
+a ligação. O que escrever fica apenas na memória de sessão do servidor para essa ligação e
+desaparece quando a sessão termina.</li>
 </ul>
-<p>Note que toda a informação é armazenada encriptada na <em>Base de Dados de Utilizador</em>
-local do OmniDB.</p>
-<p>Ao usar túneis SSH, também precisa de preencher todos os campos da base de dados em conformidade.
-Mas em vez de serem relativos ao servidor OmniDB, serão relativos ao
-Servidor SSH. Isto pode ser feito em 2 cenários, explicados abaixo.</p>
-<p>Se a base de dados estiver dentro do mesmo servidor ao qual se está a ligar via SSH, então
-terá uma situação como esta:</p>
-<p><img alt="" src="../assets/ssh_tunnels_1.pn../p>
-<p>Neste cenário, o <em>Server</em> (Servidor) da base de dados será <code>127.0.0.1</code>, uma vez que a base de dados está
-na mesma máquina que o <em>SSH Server</em> (Servidor SSH).</p>
+<p>No caso do PostgreSQL, o OmniDB procura ainda a palavra-passe no seu ficheiro
+<code>.pgpass</code> no momento da ligação, escolhendo a mesma entrada que a libpq escolheria — uma
+ligação sem palavra-passe guardada pode assim abrir-se sem qualquer pergunta. Na aplicação macOS em
+sandbox, a caixa da palavra-passe oferece <em>Grant access to .pgpass…</em> (Conceder acesso ao
+.pgpass): indica o ficheiro uma vez e, a partir daí, cada ligação obtém dele a sua própria
+palavra-passe.</p>
+<p>Se a base de dados recusar a tentativa, a caixa permanece no ecrã com o erro que o OmniDB recebeu
+(<em>fe_sendauth: no password supplied</em>, uma falha de autenticação, um servidor em baixo, etc.),
+para que possa corrigir a palavra-passe e tentar de novo.</p>
+<h4>Importar ligações a partir do <code>.pgpass</code></h4>
+<p>O ícone de importação de ficheiro, junto aos botões <em>+</em> e <em>−</em>, lê um ficheiro
+<code>.pgpass</code> e cria uma ligação PostgreSQL por cada linha concreta que ele contenha, como
+uma simples cadeia <code>postgresql://utilizador@host:porta/bd</code> sem palavra-passe guardada: a
+ideia é continuar a autenticar-se a partir desse ficheiro em vez de copiar palavras-passe para
+dentro do OmniDB. As linhas com caracteres universais (<code>*</code>) são ignoradas, tal como
+qualquer linha que já corresponda a uma ligação existente.</p>
+<h4>Organizar a lista</h4>
+<ul>
+<li><strong>Ordem</strong>: arraste uma linha para qualquer posição da lista. A disposição é
+guardada por utilizador e sobrevive tanto a um recarregamento como a um reinício. As ligações
+criadas depois são acrescentadas no fim.</li>
+<li><strong>Grupos</strong>: o seletor no topo da barra lateral limita a lista a um único grupo.
+<em>+ Group</em> cria um grupo e o botão <em>…</em> ao lado oferece <em>Rename</em> (Mudar o nome),
+<em>Manage Connections</em> (Gerir ligações: transforma as linhas em caixas de seleção para escolher
+que ligações pertencem ao grupo, confirmando com <em>Save changes</em>) e <em>Delete</em>
+(Eliminar).</li>
+<li><strong>Ligações públicas</strong>: o interruptor <em>Public connection?</em> (Ligação pública?)
+do formulário torna a ligação utilizável por todos os outros utilizadores do OmniDB. O interruptor
+<em>Public (n)</em> no fundo da barra lateral mostra ou esconde na sua lista as ligações públicas de
+outros utilizadores.</li>
+<li><strong>Ambiente</strong>: marcar uma ligação como <em>Production</em>, <em>UAT</em>,
+<em>Development</em> ou <em>Archive</em> colore o seu ponto na lista e a margem do seu separador
+aberto — é sobretudo um aviso de segurança, para que pegar no separador errado seja imediatamente
+visível.</li>
+</ul>
+<h4>Abrir uma ligação</h4>
+<p>Clique em <em>Connect</em> (Ligar) no formulário, ou faça simplesmente duplo clique numa linha da
+lista, e o OmniDB abre-a num novo <strong>separador exterior de ligação</strong>
+(<em>Connection Outer Tab</em>), como veremos no capítulo seguinte. Clicar com o botão direito numa
+linha abre um menu de contexto (<em>Connect</em>/<em>Edit</em>/<em>Delete</em> — <em>Delete</em> não
+aparece numa ligação já aberta) e clicar com o botão direito num espaço vazio da lista oferece
+<em>New Connection</em>/<em>Refresh</em>.</p>
+<h4>Utilizar túneis SSH</h4>
+<p>O OmniDB permite ligar-se a qualquer base de dados remota através de túneis SSH. Assinale
+<em>Use SSH tunnel</em> (Usar túnel SSH) no formulário da ligação: isso ativa os campos por
+baixo:</p>
+<ul>
+<li><em>SSH Server</em>: o servidor a que se liga por SSH;</li>
+<li><em>SSH Port</em>: a porta do servidor SSH (a predefinição é 22, mas pode ser qualquer
+porta);</li>
+<li><em>SSH User</em>: o nome de utilizador do sistema operativo com que se liga ao servidor
+SSH;</li>
+<li><em>Password/Passphrase</em> (Palavra-passe / frase-passe): a palavra-passe do utilizador do
+sistema operativo (ou a frase-passe da chave abaixo). Se a deixar em branco, o OmniDB pede-a sempre
+que o túnel é aberto, sem a guardar. Se preencher o campo <em>SSH Key Text File</em>, a
+palavra-passe é opcional;</li>
+<li><em>SSH Key Text File</em> (Ficheiro da chave SSH): o conteúdo da chave SSH privada local com que
+se pode ligar ao servidor SSH. O OmniDB lê o ficheiro que escolher e guarda o seu texto, não o
+ficheiro. Se preencher este campo, também pode preencher <em>Password/Passphrase</em>, mas nesse
+caso será a frase-passe da chave privada SSH.</li>
+</ul>
+<p>Tudo o que aqui guardar — palavra-passe SSH, frase-passe e texto da chave — vai parar à mesma
+base de dados de configuração local do OmniDB onde ficam as palavras-passe das bases de dados, e na
+mesma forma não cifrada.</p>
+<p>Ao usar túneis SSH também tem de preencher todos os campos da base de dados em conformidade. Mas,
+em vez de serem relativos ao servidor OmniDB, serão relativos ao servidor SSH. Isto pode acontecer
+em 2 cenários, explicados a seguir.</p>
+<p>Se a base de dados estiver dentro do mesmo servidor a que se liga por SSH, terá uma situação como
+esta:</p>
+<p><img alt="" src="../assets/ssh_tunnels_1.png" /></p>
+<p>Neste cenário, o <em>Server</em> da base de dados será <code>127.0.0.1</code>, pois a base de
+dados está na mesma máquina que o <em>SSH Server</em>.</p>
 <p>Mas a base de dados pode estar fora do servidor SSH, assim:</p>
-<p><img alt="" src="../assets/ssh_tunnels_2.pn../p>
-<p>Aqui o <em>Server</em> (Servidor) da base de dados precisa de ser <code>192.168.0.10</code>, pois é o
-endereço relativo para o servidor SSH se ligar ao servidor da base de dados.</p>
+<p><img alt="" src="../assets/ssh_tunnels_2.png" /></p>
+<p>Aqui o <em>Server</em> da base de dados tem de ser <code>192.168.0.10</code>, pois é o endereço
+com que o servidor SSH alcança o servidor de base de dados.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

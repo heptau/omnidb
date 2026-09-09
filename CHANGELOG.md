@@ -45,6 +45,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   skipped, including duplicates within the file itself.
 
 ### Fixed
+- Docs site's "Creating Users and Connections" chapter still described the pre-4.x UI: a
+  *Connections* popup with a grid and an *Actions* column, a *Users* icon in the top right corner,
+  and passwords "stored encrypted" in the user database. Rewritten against the current app in all
+  seven languages (`docs/{en,cs,de,es,fr,it,pt}/creating_users_and_connections.html`) — the icon
+  rail, the master–detail Connections section, Settings → Account → *Manage Users*, the real
+  connection form (Connection Type, Environment, Public, Host Connection Info vs. connection
+  string), Test Connection/Connect/delete, the stored-vs-prompted password split (stored ones are
+  plain text in the local configuration database, which the page now says outright), `.pgpass`
+  lookup and import, groups, public connections and the new drag-and-drop ordering. The 2018-era
+  screenshots that showed the old grid were dropped, the way the same audit dropped the ones for
+  the fictional table designer, and the 16 now-unreferenced `.webp` files deleted with them; the
+  two SSH tunnel diagrams stay. Stale references to that grid in
+  `managing_databases.html` and `logical_replication.html` (plus the *Options* menu's
+  no-longer-existing "installed plugins"/"query history" links) were fixed in all seven languages
+  too, and `docs/llms-full.txt` re-synced with the new prose.
 - PostgreSQL queries failing with a wrong or expired password (`SQLSTATE 28P01`) never triggered
   the app's own password-retry prompt — only a generic, dead-end error alert with no way to retry.
   `queueQueryError` (`go-server/longpolling.go`) now routes this specific failure to the same

@@ -129,61 +129,71 @@ URL: https://www.omnidb.net/en/creating_users_and_connections.html
 
 **Logging in as user admin**
 
-OmniDB comes only with the user admin. If you are using the server version, the first thing to do is sign in as admin, the default password is admin. You don't need to login in the app version.
+OmniDB comes only with the user admin. If you are using the server version, the first thing to do is sign in as admin; the default password is admin. The desktop app has no sign-in at all — it runs as a single local user, so everything about user management below simply does not appear there.
 
-The next window is the initial window.
+**Finding your way around**
+
+The whole workspace is reached from the vertical icon rail on the left edge of the window: Welcome, Connections (the plug), Database, Notify and Snippets at the top, and Getting Started, Account (server version only) and Settings (the cog) at the bottom.
 
 **Creating another user**
 
-Click on the Users icon on the upper right corner. It will open a popup that allows the current OmniDB super user to create a new OmniDB user.
+Open Settings at the bottom of the rail and pick the Account category, then click Manage Users. Only a super user has that button — a regular user's Settings has no Account section at all.
 
-Click the Add new user button (the person-with-plus icon) inside the popup. It inserts a new, blank user row, shown as (pending info) until you fill it in.
+The User management window lists the existing users. Click Add new user (the person-with-plus icon) to insert a new, blank user row, shown as (pending info) until you fill it in. Fill in the username and password, check Super User if the new user should be one, and click Save. You can create as many users as you want, edit existing ones, and delete a user by clicking the red cross in the actions column.
 
-Fill in the username and password. Check if you want this new user to be a super user. This user management window is only seen by super users. When you are done, click on the Save button inside the popup.
+To sign out, click the Account icon (the person, near the bottom of the rail) and then Sign out.
 
-You can create as many users as you want, edit existing users and also delete users by clicking on the red cross at the actions column. Now you can logout by clicking in the Sign Out button in the top right corner.
+**The Connections section**
 
-**Signing in as the new user**
+Click the plug icon in the rail. Connections are a full section of the workspace, not a popup: a master–detail split view with the list of saved connections in the sidebar on the left and the selected connection's own form and buttons on the right.
 
-Let us sign in as the user we just created.
-
-And we can see the window again. Note that now there is no Users icon, because the test user is not a super user. Go ahead and click on Connections on the upper left corner. You will see a popup like this:
+Each row in the list shows the database engine's icon, the connection's name, and below it the `user@server:port` it points at (or the connection string, or the SSH target for a terminal connection). A small colored dot marks the connection's environment, and a key icon marks one that goes through an SSH tunnel.
 
 **Creating connections**
 
-OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite.
+OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite, plus a Terminal connection type that opens an SSH shell instead of a database.
 
-We will now create one connection to a PostgreSQL database, one connection to an Oracle database and one connection to a MariaDB database. To create the connections you have to click on the button New Connection and then choose the connection and fill the other fields. After filling all the fields for both connections, click on the Save button.
+Click the + button under the list to create a connection. Type its name into the heading of the form on the right, choose the Connection Type, and fill in the Host Connection Info card: Server, Port, Database, User and, optionally, User Password. Instead of those individual fields you can fill in a single Connection string (for example `postgresql://postgres@localhost:5432/postgres`) and leave the rest blank. When you are done, click Save in the top right corner of the form.
 
-For each connection there is an Actions column where you can delete, test and select them. Go ahead and test the PostgreSQL connection.
+Test Connection next to it tries the connection without opening it and reports either Connection successful. or the exact error the database returned. The − button under the list deletes the selected connection; it stays disabled for a connection that is currently open in a tab.
 
-Notice a pop-up appears with the message fe_sendauth: no password supplied. This is happening because OmniDB does not store the database user password on disk. Not having any password at hand, OmniDB will try to connect without one, thus trying to take advantage of automatic authentication methods that might be in place: `trust` method, `.pgpass` file, and so on. As the database server replies with an error not allowing the user to connect, then OmniDB understands a password is required and asks it to the user. When the user types a password in this popup, the password is encrypted and stored in memory.
+**Passwords**
 
-After you type the password and hit Enter, if the connection to the database is successful you will see a confirmation pop-up.
+The User Password field is optional, and the two choices behave differently:
 
-But, if you have trouble of any kind connecting to your PostgreSQL database, the same popup will remain showing the error OmniDB got.
+- Filled in: the password is saved into OmniDB's own configuration database and used automatically every time you open the connection. It is stored as plain text in that local database file, so treat the file as a secret — anyone who can read it can read the passwords in it.
+- Left blank: nothing is stored, and OmniDB asks for the password when you open the connection. What you type is kept only in the server's session memory for that connection, and is gone when the session ends.
 
-For Oracle, the behavior is similar. When OmniDB first tries to connect to an Oracle database without a password, you will see a message like this:
+For PostgreSQL, OmniDB also looks the password up in your `.pgpass` file at connect time, matching the same entry libpq would, so a connection with no stored password can still open without a prompt. In the sandboxed macOS app the password prompt offers Grant access to .pgpass…: you point at the file once and every later connection resolves its own password from it.
 
-If you have any trouble connection to your Oracle database, the same popup will remain showing the error OmniDB got:
+If the database refuses the attempt, the prompt stays on screen showing the error OmniDB got (fe_sendauth: no password supplied, an authentication failure, a server that is down, and so on), so you can correct the password and try again.
 
-MariaDB and MySQL databases also work in the same way. First time, no password was given:
+**Importing connections from .pgpass**
 
-But if you have any problems, such as database server down:
+The file-import icon next to the + and − buttons reads a `.pgpass` file and creates one PostgreSQL connection per concrete line in it, as a bare `postgresql://user@host:port/db` connection string with no password stored — the point being to keep authenticating from that file rather than copying passwords into OmniDB. Wildcard (`*`) lines are skipped, and so is any line that already matches an existing connection.
 
-Finally, in the connections grid, if you click on the Select Connection action, OmniDB will open it in a new Connection Outer Tab as we can see in the next chapter. Double-clicking a connection row does the same thing directly. Right-clicking a row also opens a context menu (Connect/Edit/Delete — Delete is omitted for locked connections), and right-clicking empty space in the list offers New Connection/Refresh.
+**Organizing the list**
+
+- Order: drag a row to any slot in the list. The arrangement is stored per user and survives a reload and a restart. Connections you create later are added at the bottom.
+- Groups: the selector at the top of the sidebar filters the list down to one group. + Group creates a group, and the … button next to it offers Rename, Manage Connections (turns the rows into checkboxes so you can pick which connections belong to the group, then Save changes) and Delete.
+- Public connections: the Public connection? switch in the form makes a connection usable by every other OmniDB user. The Public (n) switch at the bottom of the sidebar shows or hides other users' public connections in your own list.
+- Environment: tagging a connection Production, UAT, Development or Archive colors its dot in the list and the edge of its open tab — mainly a safety cue, so reaching for the wrong tab is visibly obvious.
+
+**Opening a connection**
+
+Click Connect in the form, or simply double-click a row in the list, and OmniDB opens it in a new Connection Outer Tab as we can see in the next chapter. Right-clicking a row opens a context menu (Connect/Edit/Delete — Delete is omitted for a connection that is already open), and right-clicking empty space in the list offers New Connection/Refresh.
 
 **Using SSH tunnels**
 
-OmniDB allows the user to connect to any remote database through SSH tunnels. The user needs to fill SSH tunnel information in each connection in the Connections Grid.
+OmniDB allows the user to connect to any remote database through SSH tunnels. Tick Use SSH tunnel in the connection's own form — that enables the fields below it:
 
 - SSH Server: The server you are connecting to via SSH;
 - SSH Port: The port of the SSH server (default is 22, but it can be any port number);
 - SSH User: The operating system user name you use to connect to the SSH server;
-- Password / Passphrase: The password of the operating system user (or the passphrase for the key below). If you fill the field SSH Key Text File, a password is optional;
-- SSH Key Text File: The contents of the local private SSH key you can use to connect to the SSH server. If you fill this field, then you can also fill the field Password / Passphrase, but in this case it will be the passphrase for the SSH private key.
+- Password / Passphrase: The password of the operating system user (or the passphrase for the key below). Leave it blank and OmniDB asks for it each time the tunnel is opened, without storing it. If you fill the field SSH Key Text File, a password is optional;
+- SSH Key Text File: The contents of the local private SSH key you can use to connect to the SSH server. OmniDB reads the file you pick and stores its text, not the file itself. If you fill this field, then you can also fill the field Password / Passphrase, but in this case it will be the passphrase for the SSH private key.
 
-Please note that all information is stored encrypted in your local OmniDB User Database.
+Everything you do store here — the SSH password, the passphrase and the key text — is kept in the same local OmniDB configuration database as the database passwords, and in the same plain form.
 
 While using SSH tunnels, you also need to fill all database fields accordingly. But instead of being relative to the OmniDB server, they will be relative to the SSH Server. This can be done in 2 scenarios as explained below.
 
@@ -202,21 +212,21 @@ URL: https://www.omnidb.net/en/managing_databases.html
 
 **Full Content:**
 
-After creating a connection you can select it by clicking in the Select Connection action in the connections grid. You will see that the connection will be represented by a kind of outer tab called a Connection Tab. And this whole area is called the Workspace Window.
+After creating a connection you can open it by clicking Connect in the Connections section, or by double-clicking it in the connection list. You will see that the connection will be represented by a kind of outer tab called a Connection Tab. And this whole area is called the Workspace Window.
 
 **Sections of the Workspace window**
 
 This interface has several elements:
 
-- 1) Connections: Opens a popup with the Connections grid
+- 1) Connections: Opens the Connections section, where connections are created, arranged and opened
 - 2) Outer Tabs: OmniDB lets you work with several databases at the same time. Each database will be accessible through an outer tab. Outer tabs also can host miscellaneous connection-independent features, like the Snippets feature
-- 3) Options: Shows the current user logged in, and if user is a superuser, also shows a link for user management. Also shows links for user settings, installed plugins, query history, information and logout.
+- 3) Options: At the bottom of the icon rail. Account shows the current user, the version and Sign out (server version only), and Settings holds the user preferences plus, for a super user, Manage Users.
 
 **Connection Outer Tab**
 
 The outer table named PostgreSQL - testdb has this name because of the alias (PostgreSQL) we put in the connection to the `testdb` database. This tab is a Connection Outer Tab. Notice the little tab with a cross besides the PostgreSQL - testdb outer tab. This allows you to create a new outer tab that will automatically be a Connection Outer Tab. However, the Snippet Outer Tab is fixed and will always be the first.
 
-A new Connection Outer Tab will always automatically point to the first connection on your list of database connections. Or, if you clicked on the Select Connection action, it will point to the selected connection. Observe the elements inside of this tab:
+A new Connection Outer Tab will always automatically point to the first connection on your list of database connections. Or, if you opened one from the Connections section, it will point to that connection. Observe the elements inside of this tab:
 
 - 1) Connection Selector: Shows all connections and lets the user select the current one
 - 2) Tree of Structures: Displays a hierarchical tree where you can navigate through the database elements
@@ -685,7 +695,7 @@ Set up two PostgreSQL 10+ instances however you prefer (Docker, Vagrant, local V
 
 **Connecting to both nodes**
 
-Let's use OmniDB to connect to both PostgreSQL nodes. First of all, fill out connection info in the connection grid:
+Let's use OmniDB to connect to both PostgreSQL nodes. First of all, fill out connection info in the Connections section:
 
 Then select both connections. Note how OmniDB understands it is connected to PostgreSQL 10 and enables a new node in the current connection tree view: it is called Logical Replication. Inside of it, we can see Publications and Subscriptions.
 
