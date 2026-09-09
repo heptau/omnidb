@@ -50,6 +50,53 @@ func TestPostgresqlDSNIgnoresConnStringWhenServerSet(t *testing.T) {
 	}
 }
 
+// TestPostgresqlDSNMergesPasswordIntoConnString covers a real bug: a
+// ConnString-only connection (Server left blank, the common shape for
+// "postgresql://user@host:port/db" saved via the connection-string field
+// rather than discrete Server/Port/Database/User) never embeds a password
+// -- it's expected to rely on ~/.pgpass, exactly what passwords.js's "Use
+// .pgpass" button and the manual password prompt both exist for. Before
+// this fix, postgresqlDSN's ConnString branch never looked at info.Password
+// at all, so every retry (a typed password, or one filled in from
+// .pgpass) silently reopened the exact same passwordless ConnString and
+// failed identically every time -- indistinguishable, from the user's
+// side, from the password never having been used at all.
+func TestPostgresqlDSNMergesPasswordIntoConnString(t *testing.T) {
+	info := &ConnectionInfo{
+		ConnString: "postgres://app_deployment@10.32.20.2:5432/retail?application_name=ZbynekVanzura",
+		Password:   "correcthorsebatterystaple",
+	}
+	got := postgresqlDSN(info)
+	if !strings.Contains(got, "app_deployment:correcthorsebatterystaple@") {
+		t.Fatalf("expected password merged into connstring credentials, got %q", got)
+	}
+	if !strings.Contains(got, "10.32.20.2:5432/retail") {
+		t.Fatalf("expected host/database preserved, got %q", got)
+	}
+	if !strings.Contains(got, "application_name=ZbynekVanzura") {
+		t.Fatalf("expected other connstring params preserved, got %q", got)
+	}
+}
+
+// TestPostgresqlDSNMergesPasswordAndDatabaseTogether covers the same bug
+// alongside an active-database override (see active_database.go) landing
+// in the same request -- both substitutions need to survive one
+// url.Parse/rebuild round trip.
+func TestPostgresqlDSNMergesPasswordAndDatabaseTogether(t *testing.T) {
+	info := &ConnectionInfo{
+		ConnString: "postgres://app_deployment@10.32.20.2:5432/retail",
+		Database:   "siblingdb",
+		Password:   "correcthorsebatterystaple",
+	}
+	got := postgresqlDSN(info)
+	if !strings.Contains(got, "app_deployment:correcthorsebatterystaple@") {
+		t.Fatalf("expected password merged into connstring credentials, got %q", got)
+	}
+	if !strings.HasSuffix(strings.Split(got, "?")[0], "/siblingdb") {
+		t.Fatalf("expected database override path /siblingdb, got %q", got)
+	}
+}
+
 func TestPostgresqlDSNBuildsFromPartsWhenNoConnString(t *testing.T) {
 	info := &ConnectionInfo{
 		Server:   "localhost",

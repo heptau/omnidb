@@ -88,15 +88,22 @@ func recalledPassword(sessionKey, connID string) (string, bool) {
 	return mem.password, true
 }
 
-// applyRememberedPassword mirrors Python's `prompt_password = conn.password
-// == ”` gate — only a connection saved with NO stored password ever
-// consults the remembered-password cache; a connection with a real stored
-// password always uses it unconditionally, matching every already-ported
-// route's existing behavior exactly.
+// applyRememberedPassword prefers a password this session already verified
+// via renew_password over whatever is in info.Password, when one is
+// remembered. This used to mirror Python's `prompt_password = conn.password
+// == ''` gate (only ever consulting the cache for a connection with no
+// stored password at all), but that left a connection with a real but
+// wrong/expired stored password stuck retrying that same bad password
+// forever: queueQueryError's SQLSTATE 28P01 handling sends the frontend to
+// the password prompt, renew_password verifies the new one and remembers
+// it, but the very next query would still call resolveConnection, get back
+// the old stored password, and fail the same way again — the remembered
+// password was never given a chance to override it. Checking the cache
+// first fixes that for both cases; it's still scoped to one session's
+// verified-working memory (password_prompt.go's 30-minute TTL, reaped with
+// the session), so this doesn't change what a *different* session or a
+// fresh renew_password would fall back to.
 func applyRememberedPassword(r *http.Request, connID string, info *ConnectionInfo) {
-	if info.Password != "" {
-		return
-	}
 	if pw, ok := recalledPassword(nativeSessionCookieValue(r), connID); ok {
 		info.Password = pw
 	}

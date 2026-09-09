@@ -547,6 +547,16 @@ func handleGetDatabaseList(upstream *url.URL) http.HandlerFunc {
 				"v_details2":     d.Details2,
 				"v_public":       d.Public,
 				"v_environment":  d.Environment,
+				// Discrete (not display-formatted) fields, used only by
+				// passwords.js's client-side .pgpass matching -- deliberately
+				// separate from v_database above (see
+				// resolvePgpassMatchFields's comment on why a ConnString-only
+				// connection's real database name can't just be read off
+				// that field).
+				"v_server":          d.Server,
+				"v_port":            d.Port,
+				"v_username":        d.Username,
+				"v_pgpass_database": d.PgpassDatabase,
 			})
 		}
 		terminalList := make([]map[string]any, 0, len(terminals))

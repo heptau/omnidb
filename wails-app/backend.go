@@ -59,9 +59,10 @@ func (a *App) startBackend() {
 	args := append([]string{"-A"}, os.Args[1:]...)
 	cmd := exec.Command(serverPath, args...)
 
-	// Tells go-server/export_save_dialog.go and go-server/open_external_url.go
-	// where to relay a native save-dialog / open-URL request — see
-	// savedialog.go's comment on why that hop exists. saveDialogAddr is
+	// Tells go-server/export_save_dialog.go, go-server/open_external_url.go,
+	// go-server/pgpass_lookup.go and go-server/pgpass_import.go where to
+	// relay a native save-dialog / open-URL / pgpass-file-picker request —
+	// see savedialog.go's comment on why that hop exists. saveDialogAddr is
 	// already set by the time this runs: startup (an OnStartup hook, always
 	// first) starts that listener synchronously, well before FrontendReady
 	// (triggered later, by JS) calls this.
@@ -69,6 +70,8 @@ func (a *App) startBackend() {
 		cmd.Env = append(os.Environ(),
 			"OMNIDB_SAVE_DIALOG_URL=http://"+a.saveDialogAddr+"/save-file",
 			"OMNIDB_OPEN_URL=http://"+a.saveDialogAddr+"/open-url",
+			"OMNIDB_PGPASS_LOOKUP_URL=http://"+a.saveDialogAddr+"/pgpass-lookup",
+			"OMNIDB_PGPASS_IMPORT_URL=http://"+a.saveDialogAddr+"/pgpass-import",
 		)
 	}
 

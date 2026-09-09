@@ -260,6 +260,11 @@ SOFTWARE.
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M6 22a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h8a2.4 2.4 0 0 1 1.704.706l3.588 3.588A2.4 2.4 0 0 1 20 8v12a2 2 0 0 1-2 2z' /%3E%3Cpath d='M14 2v5a1 1 0 0 0 1 1h5' /%3E%3Cpath d='M8 13h2' /%3E%3Cpath d='M14 13h2' /%3E%3Cpath d='M8 17h2' /%3E%3Cpath d='M14 17h2' /%3E%3C/svg%3E");
 }
 
+.fa-file-import {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M12 3v12' /%3E%3Cpath d='m8 11 4 4 4-4' /%3E%3Cpath d='M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M12 3v12' /%3E%3Cpath d='m8 11 4 4 4-4' /%3E%3Cpath d='M8 5H4a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-4' /%3E%3C/svg%3E");
+}
+
 .fa-folder {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z' /%3E%3C/svg%3E");
@@ -2300,6 +2305,14 @@ body {
   border-right: 1px solid lightgray;
   border-radius: 2px;
   z-index: 9999;
+}
+
+.modal {
+  --bs-modal-zindex: 10050;
+}
+
+.modal-backdrop {
+  --bs-backdrop-zindex: 10040;
 }
 
 #div_autocomplete_scroll {
@@ -6676,6 +6689,40 @@ select.form-control {
   width: 1px;
   flex: 0 0 auto;
   background-color: var(--border-color);
+}
+
+/* Groups .omnidb__addremove with any standalone icon button that sits next
+ * to it (e.g. Connections' "Import from .pgpass") without fusing them into
+ * one control -- the add/remove pair above is deliberately a single
+ * segmented widget (see its own comment), and a bulk-import action isn't a
+ * third segment of "add one / remove selected", so it gets its own bordered
+ * box instead of a spot inside that pill. */
+.omnidb__list-footer-actions {
+  display: flex;
+  align-items: stretch;
+  gap: 6px;
+}
+
+.omnidb__icon-button {
+  width: 28px;
+  height: 26px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 14px;
+}
+
+.omnidb__icon-button:hover:not(:disabled) {
+  background-color: var(--hover-bg);
+  color: var(--text-primary);
+}
+
+.omnidb__icon-button:disabled {
+  color: var(--border-color);
 }
 
 /* Detail pane: the selected connection's own form, right where the old

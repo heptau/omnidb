@@ -132,6 +132,7 @@ const MAPPING = {
 	"fa-keyboard": ["lucide", "keyboard"],
 	"fa-lock": ["lucide", "lock"],
 	"fa-user-shield": ["lucide", "user-shield"],
+	"fa-file-import": ["lucide", "import"],
 };
 
 function loadSvg(kind, name) {

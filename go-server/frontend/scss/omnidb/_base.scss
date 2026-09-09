@@ -1895,6 +1895,31 @@ body {
 	z-index: 9999;
 }
 
+// Bootstrap 5's own z-index (1055 for .modal, 1050 for .modal-backdrop, both
+// set via the --bs-modal-zindex/--bs-backdrop-zindex custom properties on
+// those two rules themselves -- see bootstrap.css) sits well below
+// #div_autocomplete's 9999 above. That was never a problem until a modal
+// (passwords.js's showPasswordPrompt, used here so a query that fails with
+// a wrong/expired password can be retried) started being shown while the
+// autocomplete popup can still be open -- get_autocomplete_results itself
+// can fail the same way (see autocomplete.js's own p_return.v_data.password_timeout
+// branch), and every prior use of these modals happened with no open
+// popup to lose to. Re-declaring the same custom properties here, later in
+// the cascade than bootstrap.min.css at equal specificity (source order is
+// the only tiebreaker Sass needs, since both rules target .modal /
+// .modal-backdrop directly), is enough to win without touching Bootstrap's
+// own rule or hand-waving a bare z-index onto every individual modal
+// element -- this applies to every modal in the app, not just
+// modal_password, since any of them showing while the popup is open would
+// hit the same problem.
+.modal {
+	--bs-modal-zindex: 10050;
+}
+
+.modal-backdrop {
+	--bs-backdrop-zindex: 10040;
+}
+
 #div_autocomplete_scroll {
 	overflow: auto;
 	position: relative;

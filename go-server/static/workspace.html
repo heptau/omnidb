@@ -96,14 +96,21 @@
 						<div id="connection_card_list" class="omnidb__connections__list"></div>
 
 						<div class="omnidb__list-footer">
-							<div class="omnidb__addremove">
-								<button id="button_new_connection" type="button" title="New Connection">
-									<i class="fas fa-plus"></i>
+							<div class="omnidb__list-footer-actions">
+								<div class="omnidb__addremove">
+									<button id="button_new_connection" type="button" title="New Connection">
+										<i class="fas fa-plus"></i>
+									</button>
+									<span class="omnidb__addremove-divider"></span>
+									<button id="button_delete_connection" type="button" title="Delete Connection" disabled>
+										<i class="fas fa-minus"></i>
+									</button>
+								</div>
+								<button id="button_import_pgpass_connections" type="button" class="omnidb__icon-button"
+									title="Import connections from .pgpass&hellip;">
+									<i class="fas fa-file-import"></i>
 								</button>
-								<span class="omnidb__addremove-divider"></span>
-								<button id="button_delete_connection" type="button" title="Delete Connection" disabled>
-									<i class="fas fa-minus"></i>
-								</button>
+								<input type="file" id="connections_pgpass_import_input" style="display:none;" />
 							</div>
 							<div class="omnidb__connections__public-toggle" data-bs-toggle="tooltip" data-bs-placement="left"
 								data-bs-html="true"
@@ -1007,6 +1014,12 @@
 					</div>
 					<input id="txt_password_prompt" class="form-control" type="password" placeholder="Password"
 						style="margin-top: 20px; margin-bottom:20px; text-align: center;" />
+					<div id="modal_password_pgpass_row" class="text-center" style="display:none;">
+						<button id="modal_password_pgpass_button" type="button"
+							class="btn omnidb__theme__btn--secondary btn-sm">Use .pgpass file&hellip;</button>
+						<input type="file" id="modal_password_pgpass_input" style="display:none;" />
+						<div id="modal_password_pgpass_error" class="text-danger small mt-2" style="display:none;"></div>
+					</div>
 				</div>
 				<div class="modal-footer">
 					<button id="modal_password_ok" type="button" class="btn omnidb__theme__btn--primary"

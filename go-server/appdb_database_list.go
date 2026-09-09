@@ -75,16 +75,70 @@ func printDatabaseDetails(c appConnection) string {
 }
 
 type databaseListEntry struct {
-	DBType      string
-	Alias       string
-	ConnID      int64
-	ConsoleHelp string
-	Database    string
-	ConnString  string
-	Details1    string
-	Details2    string
-	Public      bool
-	Environment string
+	DBType         string
+	Alias          string
+	ConnID         int64
+	ConsoleHelp    string
+	Database       string
+	ConnString     string
+	Details1       string
+	Details2       string
+	Public         bool
+	Environment    string
+	Server         string
+	Port           string
+	Username       string
+	PgpassDatabase string
+}
+
+// resolvePgpassMatchFields returns the discrete host/port/user/database
+// OmniDB actually connects with for c, falling back to parsing ConnString
+// when the discrete fields are empty (connections configured solely via
+// URL) — same fallback printDatabaseDetails/printDatabaseInfo apply to
+// their combined display strings, kept separate here rather than shared
+// with them so a change to this (used only for client-side .pgpass
+// matching, see passwords.js) can't accidentally shift what those two
+// already-relied-on display strings render, or what the general Database
+// field (databaseListEntry.Database, straight from c.Database) means to
+// its other consumers — workspace.js's own active-database-override
+// mechanism in particular sends that field's value on to
+// applyActiveDatabaseOverride, where a blank value specifically means "no
+// override, use ConnString's own embedded database untouched" (see
+// postgresqlDSN's comment on that same distinction); resolving it here
+// instead would turn every ConnString-only connection into an explicit
+// (if equivalent) override, an unrelated behavior change this had no
+// reason to risk. Returned as PgpassDatabase, a field with no other
+// consumer.
+//
+// Port defaults to 5432 when blank, mirroring postgresqlDSN's own default
+// (postgresql.go) exactly — a connection saved with Port left empty (very
+// common: the form's own placeholder already suggests 5432, and leaving it
+// blank "just works" the same way) still actually connects on 5432, so a
+// .pgpass entry written with the real, explicit port "5432" needs the same
+// default here or every such connection reports a false "no matching
+// entry" against an otherwise-correct passfile.
+func resolvePgpassMatchFields(c appConnection) (server, port, username, database string) {
+	// Mirrors postgresqlDSN's own two branches exactly: a connstring-only
+	// connection (Server left blank) never looks at the discrete
+	// Port/Database fields at all, so defaulting/using them before this
+	// check would wrongly skip parsing ConnString's own embedded host/path
+	// below.
+	if c.Server == "" && c.ConnString != "" {
+		if u, err := url.Parse(c.ConnString); err == nil {
+			server = u.Hostname()
+			port = u.Port()
+			if u.User != nil {
+				username = u.User.Username()
+			}
+			database = strings.TrimPrefix(u.Path, "/")
+		}
+	} else {
+		server, port, username, database = c.Server, c.Port, c.Username, c.Database
+	}
+	if port == "" {
+		port = "5432"
+	}
+	return server, port, username, database
 }
 
 type remoteTerminalEntry struct {
@@ -121,17 +175,22 @@ func buildDatabaseList(conns []appConnection) (databases []databaseListEntry, te
 		if c.UseTunnel {
 			details2 += " <b>(" + c.SSHServer + ":" + c.SSHPort + ")</b>"
 		}
+		server, port, username, pgpassDatabase := resolvePgpassMatchFields(c)
 		databases = append(databases, databaseListEntry{
-			DBType:      c.Technology,
-			Alias:       c.Alias,
-			ConnID:      c.ID,
-			ConsoleHelp: consoleHelpForTechnology(c.Technology),
-			Database:    c.Database,
-			ConnString:  c.ConnString,
-			Details1:    printDatabaseInfo(c),
-			Details2:    details2,
-			Public:      c.Public,
-			Environment: c.Environment,
+			DBType:         c.Technology,
+			Alias:          c.Alias,
+			ConnID:         c.ID,
+			ConsoleHelp:    consoleHelpForTechnology(c.Technology),
+			Database:       c.Database,
+			ConnString:     c.ConnString,
+			Details1:       printDatabaseInfo(c),
+			Details2:       details2,
+			Public:         c.Public,
+			Environment:    c.Environment,
+			Server:         server,
+			Port:           port,
+			Username:       username,
+			PgpassDatabase: pgpassDatabase,
 		})
 	}
 	return databases, terminals

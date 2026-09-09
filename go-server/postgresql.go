@@ -41,15 +41,37 @@ func postgresqlDSN(info *ConnectionInfo) string {
 		// info.Database is blank unless applyActiveDatabaseOverride (see
 		// active_database.go) put a sibling database name there for this
 		// tab — the connstring's own embedded database name is otherwise
-		// authoritative. Substituting it in-place (rather than rebuilding
-		// the DSN from discrete fields) preserves everything else about
-		// the original string: extra query params, a Unix-socket host,
-		// options no Server/Port/Database round-trip could reconstruct.
-		if info.Database == "" {
+		// authoritative. info.Password is blank unless a password prompt
+		// (renew_password, or applyRememberedPassword on a later query —
+		// see password_prompt.go) collected one for this connection: a
+		// ConnString-only connection typically carries no password at all
+		// (relying on ~/.pgpass, same as this password prompt's own "Use
+		// .pgpass" button, see passwords.js), so whatever the user just
+		// typed or picked has to make it into the DSN too — this used to
+		// silently drop it, always reopening the exact same passwordless
+		// ConnString no matter what was entered, which made every retry
+		// here indistinguishable from the very first failed attempt
+		// (confirmed the hard way: pgx's own SQLSTATE 28P01 kept coming
+		// back unchanged regardless of the password submitted, because
+		// this function never looked at it for this branch at all).
+		// Substituting these in-place (rather than rebuilding the DSN from
+		// discrete fields) preserves everything else about the original
+		// string: extra query params, a Unix-socket host, options no
+		// Server/Port/Database round-trip could reconstruct.
+		if info.Database == "" && info.Password == "" {
 			return info.ConnString
 		}
 		if u, err := url.Parse(info.ConnString); err == nil {
-			u.Path = "/" + info.Database
+			if info.Database != "" {
+				u.Path = "/" + info.Database
+			}
+			if info.Password != "" {
+				username := info.Username
+				if username == "" && u.User != nil {
+					username = u.User.Username()
+				}
+				u.User = url.UserPassword(username, info.Password)
+			}
 			return u.String()
 		}
 		return info.ConnString

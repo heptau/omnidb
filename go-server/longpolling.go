@@ -3,12 +3,15 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"log"
 	"net/http"
 	"net/url"
 	"strings"
 	"time"
+
+	"github.com/jackc/pgx/v5/pgconn"
 )
 
 // requestType/response mirror the IntEnum values in polling.py — only the
@@ -31,11 +34,21 @@ const (
 	responseQueryResult         = 1
 	responseQueryEditDataResult = 2
 	responseSaveEditDataResult  = 3
+	responsePasswordRequired    = 5
 	responseMessageException    = 7
 	responseConsoleResult       = 11
 	responseTerminalResult      = 12
 	responseNotifyMessage       = 14
 )
+
+// pgAuthFailedSQLState is Postgres's SQLSTATE for "password authentication
+// failed" — covers both a wrong/expired stored password and an empty one
+// (which is what a sandboxed build sends when its own attempt to fall back
+// to ~/.pgpass silently found nothing, see pgconn/config.go's ParseConfig:
+// a passfile read error there is swallowed, not surfaced, so the connection
+// just proceeds with a blank password and the server rejects it the same
+// way it would any other wrong password).
+const pgAuthFailedSQLState = "28P01"
 
 type createRequestBody struct {
 	VCode        int             `json:"v_code"`
@@ -752,9 +765,21 @@ func handleCommitOrRollback(upstream *url.URL, cookie, clientID string, q queryR
 	return true
 }
 
+// queueQueryError reports a failed query/cursor operation back to the
+// frontend. A Postgres auth failure (SQLSTATE 28P01) is reported as
+// responsePasswordRequired instead of the generic responseMessageException
+// so it lands on the same "type the password again" modal the frontend
+// already has wired up for it (see passwords.js's showPasswordPrompt) —
+// previously nothing in this Go port ever sent that code, so every auth
+// failure dead-ended in a plain error alert with no way to retry.
 func queueQueryError(upstream *url.URL, cookie string, contextCode int, err error) {
+	code := responseMessageException
+	var pgErr *pgconn.PgError
+	if errors.As(err, &pgErr) && pgErr.Code == pgAuthFailedSQLState {
+		code = responsePasswordRequired
+	}
 	queueNativeResponse(cookie, map[string]any{
-		"v_code":         responseMessageException,
+		"v_code":         code,
 		"v_context_code": contextCode,
 		"v_error":        true,
 		"v_data":         err.Error(),

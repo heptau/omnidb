@@ -35,6 +35,7 @@ SOFTWARE.
 import { execAjax } from "./ajax_control_bridge.js";
 import { customMenu } from "./custom_menu.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
+import { parsePgpassText } from "./passwords.js";
 import { escapeHtml } from "./query.js";
 import { switchSection } from "./section_switcher.js";
 import { getDatabaseList, resizeConnectionsHorizontal } from "./workspace.js";
@@ -778,6 +779,173 @@ export function deleteConnection(p_conn_obj) {
 		null,
 		null,
 		"Delete",
+	);
+}
+
+// --- Import connections from .pgpass ----------------------------------
+//
+// Each concrete (non-wildcard) line in a .pgpass file becomes a saved
+// PostgreSQL connection with a bare `postgresql://user@host:port/db`
+// connection string and no stored password -- the whole point of
+// importing from .pgpass is to keep relying on that file for
+// authentication (the password prompt's own "Use .pgpass" button, see
+// passwords.js) rather than copying passwords into OmniDB's own database,
+// multiplying where a password lives. A line whose resolved
+// host/port/database/username already matches an existing connection
+// (compared the same way passwords.js's own .pgpass matching does, via
+// each connection's v_server/v_port/v_pgpass_database/v_username -- see
+// go-server/appdb_database_list.go's resolvePgpassMatchFields for why
+// v_pgpass_database and not the general v_database) is skipped rather than
+// creating a duplicate.
+export function importConnectionsFromPgpass() {
+	if (gv_desktopMode) {
+		fetch("/pgpass_import/", { method: "POST", headers: { "Content-Type": "application/json" } })
+			.then(function (p_response) {
+				return p_response.json();
+			})
+			.then(function (p_result) {
+				if (p_result.cancelled) return;
+				if (p_result.error) {
+					showAlert(p_result.error);
+					return;
+				}
+				finishPgpassImport(p_result.entries || []);
+			})
+			.catch(function (p_err) {
+				showAlert("Could not reach the desktop app's file picker: " + p_err);
+			});
+	} else {
+		el("connections_pgpass_import_input").click();
+	}
+}
+
+export function handlePgpassImportFileChosen(e) {
+	var v_file = e.target.files ? e.target.files[0] : null;
+	// Reset so picking the exact same file again still fires "change".
+	e.target.value = "";
+	if (!v_file) return;
+
+	var v_reader = new FileReader();
+	v_reader.onload = function (p_event) {
+		var v_text = /** @type {string} */ (/** @type {FileReader} */ (p_event.target).result);
+		var v_entries = parsePgpassText(v_text).filter(function (p_entry) {
+			return p_entry.hostname !== "*" && p_entry.port !== "*" && p_entry.database !== "*" && p_entry.username !== "*";
+		});
+		finishPgpassImport(v_entries);
+	};
+	v_reader.readAsText(v_file);
+}
+
+/**
+ * @param {{hostname: string, port: string, database: string, username: string}[]} p_entries
+ */
+function finishPgpassImport(p_entries) {
+	if (p_entries.length === 0) {
+		showAlert("That .pgpass file has no usable entries to import (only wildcard lines, or none at all).");
+		return;
+	}
+
+	var v_existing = (v_connTabControl.tag.connections || []).filter(function (c) {
+		return c.v_db_type === "postgresql";
+	});
+
+	/**
+	 * @param {{hostname: string, port: string, database: string, username: string}} p_entry
+	 * @param {{hostname: string, port: string, database: string, username: string}[]} p_already_queued
+	 */
+	function matchesExisting(p_entry, p_already_queued) {
+		function isSameConnection(p_server, p_port, p_database, p_username) {
+			return (
+				p_server === p_entry.hostname &&
+				p_port === p_entry.port &&
+				p_database === p_entry.database &&
+				p_username === p_entry.username
+			);
+		}
+		for (var i = 0; i < v_existing.length; i++) {
+			var v_conn = v_existing[i];
+			if (isSameConnection(v_conn.v_server, v_conn.v_port, v_conn.v_pgpass_database, v_conn.v_username)) return true;
+		}
+		for (var j = 0; j < p_already_queued.length; j++) {
+			var v_queued = p_already_queued[j];
+			if (isSameConnection(v_queued.hostname, v_queued.port, v_queued.database, v_queued.username)) return true;
+		}
+		return false;
+	}
+
+	/** @type {{hostname: string, port: string, database: string, username: string}[]} */
+	var v_to_import = [];
+	for (var i = 0; i < p_entries.length; i++) {
+		if (!matchesExisting(p_entries[i], v_to_import)) v_to_import.push(p_entries[i]);
+	}
+
+	var v_skipped = p_entries.length - v_to_import.length;
+	if (v_to_import.length === 0) {
+		showAlert("No new connections to import -- every entry in that file already matches an existing connection.");
+		return;
+	}
+
+	importPgpassEntriesSequentially(v_to_import, 0, 0, v_skipped);
+}
+
+// Saved one at a time rather than in parallel -- concurrent /save_connection/
+// calls have been observed to trip SQLITE_BUSY against OmniDB's own app
+// database, which a bulk import (every line of a real .pgpass file, all at
+// once) would hit far more reliably than the occasional double-click a
+// single save button risks.
+/**
+ * @param {{hostname: string, port: string, database: string, username: string}[]} p_entries
+ * @param {number} p_index
+ * @param {number} p_failed
+ * @param {number} p_skipped
+ */
+function importPgpassEntriesSequentially(p_entries, p_index, p_failed, p_skipped) {
+	if (p_index >= p_entries.length) {
+		getDatabaseList();
+		showConnectionList(false, true);
+		var v_imported = p_entries.length - p_failed;
+		var v_message = "Imported " + v_imported + " connection" + (v_imported === 1 ? "" : "s") + " from .pgpass.";
+		if (p_skipped > 0) v_message += " Skipped " + p_skipped + " already in the list.";
+		if (p_failed > 0) v_message += " " + p_failed + " failed to save.";
+		showAlert(v_message);
+		return;
+	}
+
+	var v_entry = p_entries[p_index];
+	var v_connstring =
+		"postgresql://" +
+		encodeURIComponent(v_entry.username) +
+		"@" +
+		v_entry.hostname +
+		":" +
+		v_entry.port +
+		"/" +
+		encodeURIComponent(v_entry.database);
+
+	execAjax(
+		"/save_connection/",
+		JSON.stringify({
+			id: -1,
+			type: "postgresql",
+			public: false,
+			environment: "",
+			connstring: v_connstring,
+			server: "",
+			port: "",
+			database: "",
+			user: "",
+			password: "",
+			title: v_entry.username + "@" + v_entry.hostname + "/" + v_entry.database,
+			tunnel: { enabled: false, server: "", port: "", user: "", password: "", key: "" },
+		}),
+		function () {
+			importPgpassEntriesSequentially(p_entries, p_index + 1, p_failed, p_skipped);
+		},
+		function () {
+			importPgpassEntriesSequentially(p_entries, p_index + 1, p_failed + 1, p_skipped);
+		},
+		"box",
+		false,
 	);
 }
 

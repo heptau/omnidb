@@ -147,6 +147,8 @@ func run() error {
 		mux.Handle("/internal/shutdown/", handleShutdown(shutdownCh))
 		mux.Handle("/export_save_dialog/", http.HandlerFunc(handleExportSaveDialog))
 		mux.Handle("/open_external_url/", http.HandlerFunc(handleOpenExternalURL))
+		mux.Handle("/pgpass_lookup/", http.HandlerFunc(handlePgpassLookup))
+		mux.Handle("/pgpass_import/", http.HandlerFunc(handlePgpassImport))
 	}
 	mux.Handle("/get_properties_sqlite/", handleGetPropertiesSQLite(upstream, proxy))
 	mux.Handle("/get_tables_sqlite/", handleGetTablesSQLite(upstream, proxy))

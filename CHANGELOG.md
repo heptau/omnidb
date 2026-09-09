@@ -7,6 +7,49 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- "Use .pgpass file…" button in the password-retry prompt shown when a PostgreSQL query fails on
+  a wrong or missing password. In the desktop app this opens a native file picker with hidden
+  files shown (`.pgpass` is a dotfile every OS panel hides by default; a plain HTML file input has
+  no attribute that can override that) and remembers the picked file across app restarts via a
+  macOS security-scoped bookmark (`wails-app/pgpass_bookmark_darwin.go`/`.m`,
+  `wails-app/pgpassdialog.go`), so it only needs to be picked once even under App Sandbox. Outside
+  the desktop app (self-hosted/browser use) it falls back to a plain `<input type="file">`
+  (`passwords.js`). Only the single password entry matching the failing connection ever leaves the
+  picked file — nothing is copied into OmniDB's own database.
+- "Import connections from .pgpass" button in the Connections panel (`connections.js`,
+  `wails-app/pgpassimport.go`) — reads a `.pgpass` file (the same picker as above) and creates a
+  new saved connection for each concrete host/port/database/user line, as a bare `connection
+  string` with no password stored, relying on the same `.pgpass` lookup at connect time. Wildcard
+  lines and entries that already match an existing connection (by host/port/database/user) are
+  skipped, including duplicates within the file itself.
+
+### Fixed
+- PostgreSQL queries failing with a wrong or expired password (`SQLSTATE 28P01`) never triggered
+  the app's own password-retry prompt — only a generic, dead-end error alert with no way to retry.
+  `queueQueryError` (`go-server/longpolling.go`) now routes this specific failure to the same
+  prompt already used for a missing password.
+- A password verified once via that prompt was only ever reused automatically on a later query for
+  a connection saved with *no* password at all; a connection saved with a real but wrong/expired
+  password kept retrying that same bad password forever. `applyRememberedPassword`
+  (`go-server/password_prompt.go`) now prefers the remembered, session-verified password
+  unconditionally.
+- A connection defined via "Connection string" (`postgresql://user@host:port/db`, discrete
+  Server/Port/Database/User fields left blank) silently ignored any password typed into the
+  connection form or the password-retry prompt — `postgresqlDSN` (`go-server/postgresql.go`) never
+  merged it into the DSN for that class of connection, so every retry re-opened the exact same
+  passwordless connection string no matter what password was entered.
+- `.pgpass` lookups (both the password-retry prompt's button and the new connection import)
+  reported a false "no matching entry" for a connection with the Port field left blank (not
+  defaulted to 5432 the way the real connection already is) or one defined via connection string
+  (its database name lives in the URL path, not the discrete Database field) —
+  `resolvePgpassMatchFields` (`go-server/appdb_database_list.go`) now mirrors both.
+- A modal shown while the SQL editor's autocomplete popup was open rendered invisible behind it —
+  the popup's z-index (9999) was higher than Bootstrap's own modal z-index (1050/1055). Could
+  happen for the password-retry prompt specifically, since a failed autocomplete lookup can
+  trigger the same prompt. Bootstrap's `--bs-modal-zindex`/`--bs-backdrop-zindex` are now raised
+  above it (`frontend/scss/omnidb/_base.scss`).
+
 ## [4.4.1] - 2026-09-07
 
 ### Added

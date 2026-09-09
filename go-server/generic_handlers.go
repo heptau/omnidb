@@ -280,13 +280,12 @@ type renewPasswordRequest struct {
 // handleRenewPassword mirrors workspace.py's renew_password — tests a
 // candidate password the frontend collected via a prompt dialog (shown
 // after some other native route's connection open failed with the
-// password_timeout envelope shape) and, on success, remembers it for this
-// browser session so subsequent native-route requests for the same
-// connection stop trying the blank stored password. Unlike Python, this
-// doesn't need to distinguish "has no stored password" — any connection
-// can call this, but it's only useful for password-less ones, since
-// applyRememberedPassword only ever consults the memory when
-// info.Password is already empty.
+// password_timeout envelope shape, or after a query failed with SQLSTATE
+// 28P01, see longpolling.go's queueQueryError) and, on success, remembers
+// it for this browser session so subsequent native-route requests for the
+// same connection use it instead of whatever is stored — see
+// applyRememberedPassword, which now prefers this memory over a stored
+// password unconditionally rather than only for password-less connections.
 func handleRenewPassword(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)

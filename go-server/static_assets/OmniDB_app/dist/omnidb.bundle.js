@@ -1,10 +1,10 @@
 (function() {
   "use strict";
-  const el$2 = document.getElementById("omnidb_bootstrap");
-  if (!el$2) {
+  const el$3 = document.getElementById("omnidb_bootstrap");
+  if (!el$3) {
     throw new Error("omnidb_bootstrap: the page config script tag is missing");
   }
-  const cfg = JSON.parse(el$2.textContent);
+  const cfg = JSON.parse(el$3.textContent);
   Object.assign(window, {
     v_editor_theme: cfg.editor_theme,
     v_theme: cfg.theme,
@@ -4050,7 +4050,7 @@
     // <input type="month" />
   };
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
-  function el$1(id) {
+  function el$2(id) {
     return (
       /** @type {HTMLElement} */
       document.getElementById(id)
@@ -4072,7 +4072,7 @@
     v_message_modal_queued = false;
     v_message_modal_queued_function = null;
     v_shown_callback = null;
-    var v_modal_message = el$1("modal_message");
+    var v_modal_message = el$2("modal_message");
     v_modal_message.addEventListener("hide.bs.modal", function(e) {
       v_message_modal_animating = true;
     });
@@ -4080,7 +4080,7 @@
       v_message_modal_animating = true;
     });
     v_modal_message.addEventListener("hidden.bs.modal", function(e) {
-      el$1("modal_message_content").innerHTML = "";
+      el$2("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
         if (v_message_modal_queued_function != null) v_message_modal_queued_function();
@@ -4100,7 +4100,7 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initMessageModal);
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
-    var v_dialog = el$1("modal_message_dialog");
+    var v_dialog = el$2("modal_message_dialog");
     if (p_large == null || p_large == false) {
       v_dialog.classList.remove("modal-xl");
     } else {
@@ -4108,18 +4108,18 @@
     }
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
-      bootstrap.Modal.getOrCreateInstance(el$1("modal_message")).show();
+      bootstrap.Modal.getOrCreateInstance(el$2("modal_message")).show();
     } else {
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
   }
   function showError(p_message) {
-    var v_content_div = el$1("modal_message_content");
-    var v_button_yes = el$1("modal_message_yes");
-    var v_button_ok = el$1("modal_message_ok");
-    var v_button_no = el$1("modal_message_no");
-    var v_button_cancel = el$1("modal_message_cancel");
+    var v_content_div = el$2("modal_message_content");
+    var v_button_yes = el$2("modal_message_yes");
+    var v_button_ok = el$2("modal_message_ok");
+    var v_button_no = el$2("modal_message_no");
+    var v_button_cancel = el$2("modal_message_cancel");
     v_content_div.textContent = p_message;
     v_button_yes.style.display = "none";
     v_button_ok.style.display = "";
@@ -4132,11 +4132,11 @@
   }
   function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
-      var v_content_div = el$1("modal_message_content");
-      var v_button_yes = el$1("modal_message_yes");
-      var v_button_ok = el$1("modal_message_ok");
-      var v_button_no = el$1("modal_message_no");
-      var v_button_cancel = el$1("modal_message_cancel");
+      var v_content_div = el$2("modal_message_content");
+      var v_button_yes = el$2("modal_message_yes");
+      var v_button_ok = el$2("modal_message_ok");
+      var v_button_no = el$2("modal_message_no");
+      var v_button_cancel = el$2("modal_message_cancel");
       if (p_is_html) {
         v_content_div.innerHTML = p_info;
       } else {
@@ -4155,11 +4155,11 @@
   function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {
     var v_create_content_function = function() {
       if (p_shownCallback != null) v_shown_callback = p_shownCallback;
-      var v_content_div = el$1("modal_message_content");
-      var v_button_yes = el$1("modal_message_yes");
-      var v_button_ok = el$1("modal_message_ok");
-      var v_button_no = el$1("modal_message_no");
-      var v_button_cancel = el$1("modal_message_cancel");
+      var v_content_div = el$2("modal_message_content");
+      var v_button_yes = el$2("modal_message_yes");
+      var v_button_ok = el$2("modal_message_ok");
+      var v_button_no = el$2("modal_message_no");
+      var v_button_cancel = el$2("modal_message_cancel");
       v_content_div.textContent = p_info;
       v_button_ok.textContent = p_yes_label || "Ok";
       v_button_ok.onclick = function() {
@@ -4176,11 +4176,11 @@
     showMessageModal(v_create_content_function, p_large);
   }
   function showConfirm2(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$1("modal_message_content");
-    var v_button_yes = el$1("modal_message_yes");
-    var v_button_ok = el$1("modal_message_ok");
-    var v_button_no = el$1("modal_message_no");
-    var v_button_cancel = el$1("modal_message_cancel");
+    var v_content_div = el$2("modal_message_content");
+    var v_button_yes = el$2("modal_message_yes");
+    var v_button_ok = el$2("modal_message_ok");
+    var v_button_no = el$2("modal_message_no");
+    var v_button_cancel = el$2("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -4199,11 +4199,11 @@
     showMessageModal();
   }
   function showConfirm3(p_info, p_funcYes, p_funcNo) {
-    var v_content_div = el$1("modal_message_content");
-    var v_button_yes = el$1("modal_message_yes");
-    var v_button_ok = el$1("modal_message_ok");
-    var v_button_no = el$1("modal_message_no");
-    var v_button_cancel = el$1("modal_message_cancel");
+    var v_content_div = el$2("modal_message_content");
+    var v_button_yes = el$2("modal_message_yes");
+    var v_button_ok = el$2("modal_message_ok");
+    var v_button_no = el$2("modal_message_no");
+    var v_button_cancel = el$2("modal_message_cancel");
     v_content_div.textContent = p_info;
     v_button_yes.onclick = function() {
       p_funcYes();
@@ -4228,6 +4228,238 @@
     showConfirm3,
     showError,
     showMessageModal
+  }, Symbol.toStringTag, { value: "Module" }));
+  var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
+  var v_pgpass_lookup_info = null;
+  function el$1(id) {
+    return document.getElementById(id);
+  }
+  function initPasswordModal() {
+    var v_modal_password = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password")
+    );
+    v_modal_password.addEventListener("hidden.bs.modal", function(e) {
+      if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {
+        v_modal_password_cancel_callback();
+      } else if (v_modal_password_ok_clicked == true && v_modal_password_ok_after_hide_function != null) {
+        v_modal_password_ok_after_hide_function();
+      }
+    });
+    v_modal_password.addEventListener("shown.bs.modal", function(e) {
+      if (v_modal_password_input != null) {
+        v_modal_password_input.focus();
+        v_modal_password_input.onkeydown = function(event2) {
+          if (event2.keyCode == 13) {
+            v_modal_password_ok_function();
+            bootstrap.Modal.getOrCreateInstance(v_modal_password).hide();
+          }
+        };
+      }
+    });
+    v_modal_password_ok_clicked = false;
+    v_modal_password_ok_function = null;
+    v_modal_password_ok_after_hide_function = null;
+    v_modal_password_cancel_callback = null;
+    v_modal_password_input = null;
+    el$1("modal_password_pgpass_button").addEventListener("click", function() {
+      if (gv_desktopMode && v_pgpass_lookup_info) {
+        readPgpassFileNatively(v_pgpass_lookup_info);
+      } else {
+        el$1("modal_password_pgpass_input").click();
+      }
+    });
+    el$1("modal_password_pgpass_input").addEventListener("change", function(e) {
+      var v_file = e.target.files ? e.target.files[0] : null;
+      e.target.value = "";
+      if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
+    });
+  }
+  function parsePgpassText(text) {
+    var v_entries = [];
+    text.split(/\r?\n/).forEach(function(p_raw_line) {
+      var v_line = p_raw_line.trim();
+      if (v_line === "" || v_line[0] === "#") return;
+      var v_parts = [];
+      var v_current = "";
+      for (var i2 = 0; i2 < v_line.length; i2++) {
+        if (v_line[i2] === "\\" && (v_line[i2 + 1] === ":" || v_line[i2 + 1] === "\\")) {
+          v_current += v_line[i2 + 1];
+          i2++;
+        } else if (v_line[i2] === ":") {
+          v_parts.push(v_current);
+          v_current = "";
+        } else {
+          v_current += v_line[i2];
+        }
+      }
+      v_parts.push(v_current);
+      if (v_parts.length === 5) {
+        v_entries.push({ hostname: v_parts[0], port: v_parts[1], database: v_parts[2], username: v_parts[3], password: v_parts[4] });
+      }
+    });
+    return v_entries;
+  }
+  function findPgpassPassword(p_entries, p_hostname, p_port, p_database, p_username) {
+    for (var i2 = 0; i2 < p_entries.length; i2++) {
+      var v_entry = p_entries[i2];
+      if ((v_entry.hostname === "*" || v_entry.hostname === p_hostname) && (v_entry.port === "*" || v_entry.port === p_port) && (v_entry.database === "*" || v_entry.database === p_database) && (v_entry.username === "*" || v_entry.username === p_username)) {
+        return v_entry.password;
+      }
+    }
+    return null;
+  }
+  function showPgpassError(p_message) {
+    var v_error_div = el$1("modal_password_pgpass_error");
+    v_error_div.textContent = p_message;
+    v_error_div.style.display = "block";
+  }
+  function hidePgpassError() {
+    el$1("modal_password_pgpass_error").style.display = "none";
+  }
+  function readPgpassFileViaInput(p_file, p_lookup_info) {
+    var v_reader = new FileReader();
+    v_reader.onload = function(e) {
+      var v_text = (
+        /** @type {string} */
+        /** @type {FileReader} */
+        e.target.result
+      );
+      var v_password = findPgpassPassword(
+        parsePgpassText(v_text),
+        p_lookup_info.server,
+        p_lookup_info.port,
+        p_lookup_info.database,
+        p_lookup_info.username
+      );
+      if (v_password === null) {
+        showPgpassError(
+          "No matching entry found in that .pgpass file for " + p_lookup_info.server + ":" + p_lookup_info.port + ":" + p_lookup_info.database + ":" + p_lookup_info.username
+        );
+        return;
+      }
+      hidePgpassError();
+      v_modal_password_input.value = v_password;
+    };
+    v_reader.readAsText(p_file);
+  }
+  function readPgpassFileNatively(p_lookup_info) {
+    fetch("/pgpass_lookup/", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        hostname: p_lookup_info.server,
+        port: p_lookup_info.port,
+        database: p_lookup_info.database,
+        username: p_lookup_info.username
+      })
+    }).then(function(p_response) {
+      return p_response.json();
+    }).then(function(p_result) {
+      if (p_result.cancelled) return;
+      if (p_result.error) {
+        showPgpassError(p_result.error);
+        return;
+      }
+      hidePgpassError();
+      v_modal_password_input.value = p_result.password;
+    }).catch(function(p_err) {
+      showPgpassError("Could not reach the desktop app's file picker: " + p_err);
+    });
+  }
+  function resolvePgpassLookupInfo(p_database_index) {
+    var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;
+    if (!v_connections) return null;
+    for (var i2 = 0; i2 < v_connections.length; i2++) {
+      var v_conn = v_connections[i2];
+      if (v_conn.v_conn_id == p_database_index) {
+        if (v_conn.v_db_type !== "postgresql") return null;
+        return {
+          server: v_conn.v_server || "",
+          port: v_conn.v_port || "",
+          // v_pgpass_database, not v_database -- a connection defined
+          // via a connection string (rather than the discrete
+          // Server/Port/Database/User fields) leaves v_database blank
+          // (see go-server/appdb_database_list.go's
+          // resolvePgpassMatchFields), so matching against it would
+          // always report "no matching entry", even correctly, for
+          // exactly that class of connection.
+          database: v_conn.v_pgpass_database || "",
+          username: v_conn.v_username || ""
+        };
+      }
+    }
+    return null;
+  }
+  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initPasswordModal);
+  else setTimeout(initPasswordModal, 0);
+  function showPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_message, p_send_tab_id = true) {
+    v_modal_password_ok_clicked = false;
+    v_modal_password_cancel_callback = p_cancel_callback_function;
+    var v_content_div = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password_content")
+    );
+    var v_button_ok = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password_ok")
+    );
+    var v_button_cancel = (
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password_cancel")
+    );
+    v_modal_password_input = /** @type {HTMLInputElement} */
+    document.getElementById("txt_password_prompt");
+    v_pgpass_lookup_info = resolvePgpassLookupInfo(p_database_index);
+    el$1("modal_password_pgpass_row").style.display = v_pgpass_lookup_info ? "block" : "none";
+    hidePgpassError();
+    if (p_message) v_content_div.textContent = p_message;
+    bootstrap.Modal.getOrCreateInstance(
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password")
+    ).show();
+    v_modal_password_ok_function = function() {
+      v_modal_password_ok_clicked = true;
+      checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id);
+    };
+    v_button_ok.onclick = v_modal_password_ok_function;
+    v_button_cancel.onclick = function() {
+      v_modal_password_ok_clicked = false;
+      if (p_cancel_callback_function) p_cancel_callback_function();
+    };
+  }
+  function checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id) {
+    var v_password = (
+      /** @type {HTMLInputElement} */
+      document.getElementById("txt_password_prompt").value
+    );
+    var v_tab_id = "";
+    if (p_send_tab_id) v_tab_id = v_connTabControl.selectedTab.id;
+    v_modal_password_ok_after_hide_function = function() {
+      execAjax$1(
+        "/renew_password/",
+        JSON.stringify({ p_database_index, p_tab_id: v_tab_id, p_password: v_password }),
+        function(p_return) {
+          if (p_callback_function) p_callback_function();
+        },
+        function(p_return) {
+          showPasswordPrompt(
+            p_database_index,
+            p_callback_function,
+            p_cancel_callback_function,
+            p_return.v_data,
+            p_send_tab_id
+          );
+        },
+        "box"
+      );
+    };
+  }
+  const passwords = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
+    __proto__: null,
+    checkPasswordPrompt,
+    parsePgpassText,
+    showPasswordPrompt
   }, Symbol.toStringTag, { value: "Module" }));
   var NOTIFY_ICON_ACTIVE = "fas node-all fa-bell";
   var NOTIFY_ICON_PAUSED = "fas node-all fa-bell-slash";
@@ -4791,102 +5023,6 @@
     p_tag.messages = [];
     renderNotifyMessages(p_tag);
   }
-  var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_ok_after_hide_function, v_modal_password_ok_clicked, v_modal_password_ok_function;
-  function initPasswordModal() {
-    var v_modal_password = (
-      /** @type {HTMLElement} */
-      document.getElementById("modal_password")
-    );
-    v_modal_password.addEventListener("hidden.bs.modal", function(e) {
-      if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {
-        v_modal_password_cancel_callback();
-      } else if (v_modal_password_ok_clicked == true && v_modal_password_ok_after_hide_function != null) {
-        v_modal_password_ok_after_hide_function();
-      }
-    });
-    v_modal_password.addEventListener("shown.bs.modal", function(e) {
-      if (v_modal_password_input != null) {
-        v_modal_password_input.focus();
-        v_modal_password_input.onkeydown = function(event2) {
-          if (event2.keyCode == 13) {
-            v_modal_password_ok_function();
-            bootstrap.Modal.getOrCreateInstance(v_modal_password).hide();
-          }
-        };
-      }
-    });
-    v_modal_password_ok_clicked = false;
-    v_modal_password_ok_function = null;
-    v_modal_password_ok_after_hide_function = null;
-    v_modal_password_cancel_callback = null;
-    v_modal_password_input = null;
-  }
-  if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initPasswordModal);
-  else setTimeout(initPasswordModal, 0);
-  function showPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_message, p_send_tab_id = true) {
-    v_modal_password_ok_clicked = false;
-    v_modal_password_cancel_callback = p_cancel_callback_function;
-    var v_content_div = (
-      /** @type {HTMLElement} */
-      document.getElementById("modal_password_content")
-    );
-    var v_button_ok = (
-      /** @type {HTMLElement} */
-      document.getElementById("modal_password_ok")
-    );
-    var v_button_cancel = (
-      /** @type {HTMLElement} */
-      document.getElementById("modal_password_cancel")
-    );
-    v_modal_password_input = /** @type {HTMLInputElement} */
-    document.getElementById("txt_password_prompt");
-    if (p_message) v_content_div.textContent = p_message;
-    bootstrap.Modal.getOrCreateInstance(
-      /** @type {HTMLElement} */
-      document.getElementById("modal_password")
-    ).show();
-    v_modal_password_ok_function = function() {
-      v_modal_password_ok_clicked = true;
-      checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id);
-    };
-    v_button_ok.onclick = v_modal_password_ok_function;
-    v_button_cancel.onclick = function() {
-      v_modal_password_ok_clicked = false;
-      if (p_cancel_callback_function) p_cancel_callback_function();
-    };
-  }
-  function checkPasswordPrompt(p_database_index, p_callback_function, p_cancel_callback_function, p_send_tab_id) {
-    var v_password = (
-      /** @type {HTMLInputElement} */
-      document.getElementById("txt_password_prompt").value
-    );
-    var v_tab_id = "";
-    if (p_send_tab_id) v_tab_id = v_connTabControl.selectedTab.id;
-    v_modal_password_ok_after_hide_function = function() {
-      execAjax$1(
-        "/renew_password/",
-        JSON.stringify({ p_database_index, p_tab_id: v_tab_id, p_password: v_password }),
-        function(p_return) {
-          if (p_callback_function) p_callback_function();
-        },
-        function(p_return) {
-          showPasswordPrompt(
-            p_database_index,
-            p_callback_function,
-            p_cancel_callback_function,
-            p_return.v_data,
-            p_send_tab_id
-          );
-        },
-        "box"
-      );
-    };
-  }
-  const passwords = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    checkPasswordPrompt,
-    showPasswordPrompt
-  }, Symbol.toStringTag, { value: "Module" }));
   var v_terminalState = {
     Idle: 0,
     Executing: 1,
@@ -7050,6 +7186,114 @@
       "Delete"
     );
   }
+  function importConnectionsFromPgpass() {
+    if (gv_desktopMode) {
+      fetch("/pgpass_import/", { method: "POST", headers: { "Content-Type": "application/json" } }).then(function(p_response) {
+        return p_response.json();
+      }).then(function(p_result) {
+        if (p_result.cancelled) return;
+        if (p_result.error) {
+          showAlert(p_result.error);
+          return;
+        }
+        finishPgpassImport(p_result.entries || []);
+      }).catch(function(p_err) {
+        showAlert("Could not reach the desktop app's file picker: " + p_err);
+      });
+    } else {
+      el("connections_pgpass_import_input").click();
+    }
+  }
+  function handlePgpassImportFileChosen(e) {
+    var v_file = e.target.files ? e.target.files[0] : null;
+    e.target.value = "";
+    if (!v_file) return;
+    var v_reader = new FileReader();
+    v_reader.onload = function(p_event) {
+      var v_text = (
+        /** @type {string} */
+        /** @type {FileReader} */
+        p_event.target.result
+      );
+      var v_entries = parsePgpassText(v_text).filter(function(p_entry) {
+        return p_entry.hostname !== "*" && p_entry.port !== "*" && p_entry.database !== "*" && p_entry.username !== "*";
+      });
+      finishPgpassImport(v_entries);
+    };
+    v_reader.readAsText(v_file);
+  }
+  function finishPgpassImport(p_entries) {
+    if (p_entries.length === 0) {
+      showAlert("That .pgpass file has no usable entries to import (only wildcard lines, or none at all).");
+      return;
+    }
+    var v_existing = (v_connTabControl.tag.connections || []).filter(function(c) {
+      return c.v_db_type === "postgresql";
+    });
+    function matchesExisting(p_entry, p_already_queued) {
+      function isSameConnection(p_server, p_port, p_database, p_username) {
+        return p_server === p_entry.hostname && p_port === p_entry.port && p_database === p_entry.database && p_username === p_entry.username;
+      }
+      for (var i3 = 0; i3 < v_existing.length; i3++) {
+        var v_conn = v_existing[i3];
+        if (isSameConnection(v_conn.v_server, v_conn.v_port, v_conn.v_pgpass_database, v_conn.v_username)) return true;
+      }
+      for (var j2 = 0; j2 < p_already_queued.length; j2++) {
+        var v_queued = p_already_queued[j2];
+        if (isSameConnection(v_queued.hostname, v_queued.port, v_queued.database, v_queued.username)) return true;
+      }
+      return false;
+    }
+    var v_to_import = [];
+    for (var i2 = 0; i2 < p_entries.length; i2++) {
+      if (!matchesExisting(p_entries[i2], v_to_import)) v_to_import.push(p_entries[i2]);
+    }
+    var v_skipped = p_entries.length - v_to_import.length;
+    if (v_to_import.length === 0) {
+      showAlert("No new connections to import -- every entry in that file already matches an existing connection.");
+      return;
+    }
+    importPgpassEntriesSequentially(v_to_import, 0, 0, v_skipped);
+  }
+  function importPgpassEntriesSequentially(p_entries, p_index, p_failed, p_skipped) {
+    if (p_index >= p_entries.length) {
+      getDatabaseList();
+      showConnectionList(false, true);
+      var v_imported = p_entries.length - p_failed;
+      var v_message = "Imported " + v_imported + " connection" + (v_imported === 1 ? "" : "s") + " from .pgpass.";
+      if (p_skipped > 0) v_message += " Skipped " + p_skipped + " already in the list.";
+      if (p_failed > 0) v_message += " " + p_failed + " failed to save.";
+      showAlert(v_message);
+      return;
+    }
+    var v_entry = p_entries[p_index];
+    var v_connstring = "postgresql://" + encodeURIComponent(v_entry.username) + "@" + v_entry.hostname + ":" + v_entry.port + "/" + encodeURIComponent(v_entry.database);
+    execAjax$1(
+      "/save_connection/",
+      JSON.stringify({
+        id: -1,
+        type: "postgresql",
+        public: false,
+        environment: "",
+        connstring: v_connstring,
+        server: "",
+        port: "",
+        database: "",
+        user: "",
+        password: "",
+        title: v_entry.username + "@" + v_entry.hostname + "/" + v_entry.database,
+        tunnel: { enabled: false, server: "", port: "", user: "", password: "", key: "" }
+      }),
+      function() {
+        importPgpassEntriesSequentially(p_entries, p_index + 1, p_failed, p_skipped);
+      },
+      function() {
+        importPgpassEntriesSequentially(p_entries, p_index + 1, p_failed + 1, p_skipped);
+      },
+      "box",
+      false
+    );
+  }
   var TECHNOLOGY_DISPLAY_NAMES = {
     postgresql: "PostgreSQL",
     mysql: "MySQL",
@@ -7563,6 +7807,8 @@
     editConnection,
     getGroups,
     groupChange,
+    handlePgpassImportFileChosen,
+    importConnectionsFromPgpass,
     manageGroup,
     manageGroupSave,
     newConnection,
@@ -40981,6 +41227,8 @@
   bind("button_open_users", "click", () => listUsers());
   bind("button_new_connection", "click", () => newConnection());
   bind("button_delete_connection", "click", () => deleteSelectedConnection());
+  bind("button_import_pgpass_connections", "click", () => importConnectionsFromPgpass());
+  bind("connections_pgpass_import_input", "change", handlePgpassImportFileChosen);
   bind("group_selector", "change", (e) => groupChange(
     /** @type {HTMLSelectElement} */
     e.target.value

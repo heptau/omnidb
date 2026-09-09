@@ -18,6 +18,8 @@ import {
   deleteGroup,
   deleteSelectedConnection,
   groupChange,
+  handlePgpassImportFileChosen,
+  importConnectionsFromPgpass,
   manageGroup,
   manageGroupSave,
   newConnection,
@@ -144,6 +146,8 @@ bind('button_open_users', 'click', () => listUsers())
 // --- connections section (sidebar + group toolbar) --------------------------
 bind('button_new_connection', 'click', () => newConnection())
 bind('button_delete_connection', 'click', () => deleteSelectedConnection())
+bind('button_import_pgpass_connections', 'click', () => importConnectionsFromPgpass())
+bind('connections_pgpass_import_input', 'change', handlePgpassImportFileChosen)
 bind('group_selector', 'change', (e) => groupChange(/** @type {HTMLSelectElement} */ (e.target).value))
 bind('button_new_group', 'click', () => newGroup())
 bind('button_group_rename', 'click', () => renameGroup())

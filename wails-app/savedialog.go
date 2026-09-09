@@ -29,10 +29,14 @@ type saveDialogResponse struct {
 // startSaveDialogServer runs a tiny loopback-only HTTP server that lets
 // go-server ask this process to do things only the Wails shell process can:
 // show a native "Save As" dialog and copy a file there on its behalf
-// (/save-file), or open a URL in the system's default browser
-// (/open-url, see openurl.go). This exists only because of a Wails
-// limitation: window.go/window.runtime are injected exclusively into pages
-// served by Wails' own asset server (see pkg/assetserver/assetserver.go);
+// (/save-file), open a URL in the system's default browser (/open-url, see
+// openurl.go), show a native "Open" dialog for a .pgpass file and resolve
+// one password entry from it (/pgpass-lookup, see pgpassdialog.go), or show
+// that same dialog and list every entry in the picked file for bulk import
+// (/pgpass-import, see pgpassimport.go). This exists only because of a
+// Wails limitation:
+// window.go/window.runtime are injected exclusively into pages served by
+// Wails' own asset server (see pkg/assetserver/assetserver.go);
 // workspace.html is served entirely by go-server via a full top-level
 // navigation (see AGENTS.md's "Wails migration" notes and menu.go's execJS
 // switch, which hit the exact same limitation from the other direction),
@@ -50,6 +54,8 @@ func (a *App) startSaveDialogServer() error {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/save-file", a.handleSaveDialogRequest)
 	mux.HandleFunc("/open-url", a.handleOpenURLRequest)
+	mux.HandleFunc("/pgpass-lookup", a.handlePgpassLookupRequest)
+	mux.HandleFunc("/pgpass-import", a.handlePgpassImportRequest)
 
 	server := &http.Server{Handler: mux}
 	a.saveDialogAddr = listener.Addr().String()

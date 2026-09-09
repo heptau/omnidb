@@ -1146,6 +1146,46 @@
 	background-color: var(--border-color);
 }
 
+/* Groups .omnidb__addremove with any standalone icon button that sits next
+ * to it (e.g. Connections' "Import from .pgpass") without fusing them into
+ * one control -- the add/remove pair above is deliberately a single
+ * segmented widget (see its own comment), and a bulk-import action isn't a
+ * third segment of "add one / remove selected", so it gets its own bordered
+ * box instead of a spot inside that pill. */
+.omnidb__list-footer-actions {
+	display: flex;
+	align-items: stretch;
+	gap: 6px;
+}
+
+.omnidb__icon-button {
+	// .omnidb__addremove's own buttons are 24px tall with no border of their
+	// own -- the 1px+1px border sits on the *container* instead, so the
+	// pill's actual rendered height is 26px. box-sizing is border-box
+	// everywhere here (Bootstrap reboot), so this button's own 1px border
+	// has to be included in that same 26px, not added on top of a 24px
+	// box, or it renders 2px short of the pill next to it.
+	width: 28px;
+	height: 26px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	border: 1px solid var(--border-color);
+	border-radius: 6px;
+	background: transparent;
+	color: var(--text-secondary);
+	font-size: 14px;
+}
+
+.omnidb__icon-button:hover:not(:disabled) {
+	background-color: var(--hover-bg);
+	color: var(--text-primary);
+}
+
+.omnidb__icon-button:disabled {
+	color: var(--border-color);
+}
+
 /* Detail pane: the selected connection's own form, right where the old
  * edit-connection modal's fields used to live -- just no longer in a modal. */
 .omnidb__connections__detail {
