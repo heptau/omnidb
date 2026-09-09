@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.2] - 2026-09-09
+
 ### Added
 - Drag and drop reordering of the Connections sidebar list (`connections.js`,
   `go-server/appdb_connections.go`). Until now the list was stuck in the order the connections
