@@ -134,6 +134,7 @@ func deleteUserCascade(db *sql.DB, userID int64) error {
 			`delete from OmniDB_app_consolehistory where connection_id = ?`,
 			`delete from OmniDB_app_monunitsconnections where connection_id = ?`,
 			`delete from OmniDB_app_groupconnection where connection_id = ?`,
+			`delete from OmniDB_app_connectionorder where connection_id = ?`,
 		} {
 			if _, err := tx.Exec(stmt, connID); err != nil {
 				return err
@@ -150,6 +151,7 @@ func deleteUserCascade(db *sql.DB, userID int64) error {
 		`delete from OmniDB_app_shortcut where user_id = ?`,
 		`delete from OmniDB_app_monunits where user_id = ?`,
 		`delete from OmniDB_app_userdetails where user_id = ?`,
+		`delete from OmniDB_app_connectionorder where user_id = ?`,
 	} {
 		if _, err := tx.Exec(stmt, userID); err != nil {
 			return err

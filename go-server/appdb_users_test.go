@@ -23,6 +23,7 @@ var cascadeSchema = []string{
 	`create table OmniDB_app_shortcut (id integer primary key, user_id integer)`,
 	`create table OmniDB_app_monunits (id integer primary key, user_id integer)`,
 	`create table OmniDB_app_userdetails (id integer primary key, user_id integer)`,
+	`create table OmniDB_app_connectionorder (id integer primary key, user_id integer, connection_id integer, position integer)`,
 }
 
 // The four Django framework tables bootstrapAppDB deliberately never creates.

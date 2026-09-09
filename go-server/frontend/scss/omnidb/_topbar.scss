@@ -937,6 +937,13 @@
 	background-color: var(--hover-bg);
 }
 
+/* The row being dragged to a new slot (see bindConnectionDrag) -- it is
+ * moved through the list live, so it needs to read as "in transit" rather
+ * than as just another row sitting where it now is. */
+.omnidb__connections__list-item--dragging {
+	opacity: 0.45;
+}
+
 .omnidb__connections__list-item--selected,
 .omnidb__connections__list-item--selected:hover {
 	background-color: var(--accent-color);

@@ -6644,6 +6644,7 @@
       "mousedown",
       (event2) => resizeConnectionsHorizontal(event2)
     );
+    bindConnectionListDrop(el("connection_card_list"));
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
   else setTimeout(initConnections, 0);
@@ -6793,6 +6794,7 @@
               };
             })(v_conn_obj2)
           );
+          bindConnectionDrag(v_item_div, v_target_div);
           if (v_conn_obj2.public) {
             v_total_public_conn += 1;
             v_item_div.classList.add("omnidb__connections__list-item--public");
@@ -6824,6 +6826,111 @@
       "box",
       true
     );
+  }
+  var v_conn_drag_item = null;
+  var v_conn_drag_start_order = [];
+  function getConnectionDragTarget(p_list_div, p_y) {
+    var v_closest = null;
+    var v_closest_offset = Number.NEGATIVE_INFINITY;
+    var v_rows = p_list_div.querySelectorAll(".omnidb__connections__list-item");
+    for (var i2 = 0; i2 < v_rows.length; i2++) {
+      var v_row = (
+        /** @type {HTMLElement} */
+        v_rows[i2]
+      );
+      if (v_row === v_conn_drag_item || v_row.offsetParent === null) continue;
+      var v_box = v_row.getBoundingClientRect();
+      var v_offset = p_y - v_box.top - v_box.height / 2;
+      if (v_offset < 0 && v_offset > v_closest_offset) {
+        v_closest_offset = v_offset;
+        v_closest = v_row;
+      }
+    }
+    return v_closest;
+  }
+  function currentConnectionOrder() {
+    var v_order = [];
+    var v_items = v_connections_data.list_items || [];
+    var v_rows = el("connection_card_list").querySelectorAll(".omnidb__connections__list-item");
+    for (var i2 = 0; i2 < v_rows.length; i2++) {
+      for (var j2 = 0; j2 < v_items.length; j2++) {
+        if (v_items[j2].item_div === v_rows[i2]) {
+          v_order.push(v_items[j2].data.id);
+          break;
+        }
+      }
+    }
+    return v_order;
+  }
+  function persistConnectionOrder() {
+    var v_order = currentConnectionOrder();
+    var v_items = v_connections_data.list_items || [];
+    if (v_order.length !== v_items.length) return;
+    var v_sorted = [];
+    for (var i2 = 0; i2 < v_order.length; i2++) {
+      for (var j2 = 0; j2 < v_items.length; j2++) {
+        if (v_items[j2].data.id === v_order[i2]) {
+          v_sorted.push(v_items[j2]);
+          break;
+        }
+      }
+    }
+    v_connections_data.list_items = v_sorted;
+    execAjax$1(
+      "/save_connection_order/",
+      JSON.stringify({ p_conn_id_list: v_order }),
+      function() {
+      },
+      null,
+      "box",
+      // No loading overlay: reordering is a background detail of a gesture
+      // the user already sees the result of.
+      false
+    );
+  }
+  function bindConnectionDrag(p_item_div, p_list_div) {
+    p_item_div.setAttribute("draggable", "true");
+    p_item_div.addEventListener("dragstart", function(e) {
+      if (p_list_div.classList.contains("omnidb__connections__list--connection-management")) {
+        e.preventDefault();
+        return;
+      }
+      v_conn_drag_item = p_item_div;
+      v_conn_drag_start_order = currentConnectionOrder();
+      if (e.dataTransfer) {
+        e.dataTransfer.effectAllowed = "move";
+        e.dataTransfer.setData("text/plain", "");
+      }
+      setTimeout(function() {
+        p_item_div.classList.add("omnidb__connections__list-item--dragging");
+      }, 0);
+    });
+    p_item_div.addEventListener("dragend", function() {
+      p_item_div.classList.remove("omnidb__connections__list-item--dragging");
+      if (v_conn_drag_item !== p_item_div) return;
+      v_conn_drag_item = null;
+      var v_order = currentConnectionOrder();
+      if (v_order.join(",") !== v_conn_drag_start_order.join(",")) {
+        persistConnectionOrder();
+      }
+    });
+  }
+  function bindConnectionListDrop(p_list_div) {
+    p_list_div.addEventListener("dragover", function(e) {
+      if (v_conn_drag_item === null) return;
+      e.preventDefault();
+      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      var v_target = getConnectionDragTarget(p_list_div, e.clientY);
+      if (v_target === null) {
+        if (p_list_div.lastElementChild !== v_conn_drag_item) p_list_div.appendChild(v_conn_drag_item);
+      } else if (v_target.previousElementSibling !== v_conn_drag_item) {
+        p_list_div.insertBefore(v_conn_drag_item, v_target);
+      }
+    });
+    p_list_div.addEventListener("drop", function(e) {
+      if (v_conn_drag_item === null) return;
+      e.preventDefault();
+    });
   }
   function groupChange(p_value) {
     var v_empty_group_div = el("connections_management_empty_group");

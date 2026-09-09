@@ -248,5 +248,35 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("check OmniDB_app_notifychannel: %w", err)
 	}
 
+	// Create OmniDB_app_connectionorder if missing (v4.5.0+) -- the per-user
+	// manual ordering of the Connections sidebar list, written by
+	// save_connection_order when a row is dragged to a new slot. Same "replay
+	// the schema file's own statements" shape as the notifychannel block
+	// above. Deliberately a separate table rather than a column on
+	// OmniDB_app_connection: the list also shows other users' public
+	// connections, and each user must be able to place those wherever they
+	// like without moving them for everyone else.
+	var hasConnectionOrder string
+	err = db.QueryRow(`select name from sqlite_master where type = 'table' and name = 'OmniDB_app_connectionorder'`).Scan(&hasConnectionOrder)
+	if err == sql.ErrNoRows {
+		for _, stmt := range []string{
+			`CREATE TABLE IF NOT EXISTS "OmniDB_app_connectionorder" (
+				"id" integer NOT NULL PRIMARY KEY AUTOINCREMENT,
+				"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+				"connection_id" bigint NOT NULL REFERENCES "OmniDB_app_connection" ("id") DEFERRABLE INITIALLY DEFERRED,
+				"position" integer NOT NULL,
+				CONSTRAINT "unique_connectionorder" UNIQUE ("user_id", "connection_id")
+			)`,
+			`CREATE INDEX IF NOT EXISTS "OmniDB_app_connectionorder_user_id" ON "OmniDB_app_connectionorder" ("user_id")`,
+			`CREATE INDEX IF NOT EXISTS "OmniDB_app_connectionorder_connection_id" ON "OmniDB_app_connectionorder" ("connection_id")`,
+		} {
+			if _, err := db.Exec(stmt); err != nil {
+				return fmt.Errorf("create OmniDB_app_connectionorder: %w", err)
+			}
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_connectionorder: %w", err)
+	}
+
 	return nil
 }

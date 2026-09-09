@@ -8,6 +8,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
+- Drag and drop reordering of the Connections sidebar list (`connections.js`,
+  `go-server/appdb_connections.go`). Until now the list was stuck in the order the connections
+  happened to be created in; a row can now be dragged to any slot, and the arrangement is stored
+  per user in the new `OmniDB_app_connectionorder` table, so it survives a reload and an app
+  restart. The order is per user rather than a column on the connection itself: a public
+  connection shared by another user can be placed anywhere in your own list without moving in
+  anybody else's. Connections created after a reorder are appended at the bottom instead of
+  landing somewhere arbitrary, and rows currently hidden by the group filter or the public toggle
+  keep their slot instead of dropping out of the saved order. Dragging is disabled while
+  connections are being assigned to a group, where the rows are checkboxes rather than a list to
+  arrange.
 - `.pgpass` support for PostgreSQL connections in the sandboxed macOS app. Under App Sandbox the
   app's `$HOME` is redirected into its container, so the usual libpq lookup of `~/.pgpass` finds
   nothing and the connection fails with `SQLSTATE 28P01`. The password-retry prompt now offers

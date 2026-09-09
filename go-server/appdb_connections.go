@@ -71,7 +71,12 @@ func fetchTechnologies(db *sql.DB) ([]string, error) {
 }
 
 // fetchConnectionsForUser mirrors get_connections' Connection.objects.filter
-// (Q(user=request.user) | Q(public=True)).
+// (Q(user=request.user) | Q(public=True)), ordered by this user's own manual
+// arrangement of the sidebar list (OmniDB_app_connectionorder, written by
+// saveConnectionOrder when a row is dragged). Connections with no row there --
+// every connection until the user drags something for the first time, plus any
+// created afterwards -- keep sorting by id after the arranged ones, so a brand
+// new connection lands at the bottom of the list instead of somewhere random.
 func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) {
 	rows, err := db.Query(`
 		select c.id, c.user_id, c.public, t.name, c.alias, c.conn_string,
@@ -79,8 +84,10 @@ func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) 
 			   c.use_tunnel, c.ssh_server, c.ssh_port, c.ssh_user, c.ssh_password, c.ssh_key, c.environment
 		from OmniDB_app_connection c
 		join OmniDB_app_technology t on t.id = c.technology_id
+		left join OmniDB_app_connectionorder o on o.connection_id = c.id and o.user_id = ?
 		where c.user_id = ? or c.public = 1
-	`, userID)
+		order by case when o.position is null then 1 else 0 end, o.position, c.id
+	`, userID, userID)
 	if err != nil {
 		return nil, err
 	}
@@ -352,6 +359,7 @@ func cascadeDeleteConnection(db *sql.DB, connID int64) error {
 		`delete from OmniDB_app_consolehistory where connection_id = ?`,
 		`delete from OmniDB_app_monunitsconnections where connection_id = ?`,
 		`delete from OmniDB_app_groupconnection where connection_id = ?`,
+		`delete from OmniDB_app_connectionorder where connection_id = ?`,
 	} {
 		if _, err := db.Exec(stmt, connID); err != nil {
 			return err
@@ -359,4 +367,58 @@ func cascadeDeleteConnection(db *sql.DB, connID int64) error {
 	}
 	_, err := db.Exec(`delete from OmniDB_app_connection where id = ?`, connID)
 	return err
+}
+
+// saveConnectionOrder replaces userID's manual arrangement of the Connections
+// sidebar with connIDs, in the given order (see fetchConnectionsForUser).
+// Ordering is per user, so a public connection owned by somebody else can be
+// placed anywhere in this user's list without moving in anybody else's --
+// which is also why ids the user cannot even see are dropped instead of
+// stored: the list this comes from is the one get_connections produced, so
+// anything outside it is either a stale row from another session or a forged
+// id, and neither belongs in the table.
+func saveConnectionOrder(db *sql.DB, userID int64, connIDs []int64) error {
+	visible := make(map[int64]bool)
+	rows, err := db.Query(`select id from OmniDB_app_connection where user_id = ? or public = 1`, userID)
+	if err != nil {
+		return err
+	}
+	for rows.Next() {
+		var id int64
+		if err := rows.Scan(&id); err != nil {
+			rows.Close()
+			return err
+		}
+		visible[id] = true
+	}
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return err
+	}
+
+	tx, err := db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	if _, err := tx.Exec(`delete from OmniDB_app_connectionorder where user_id = ?`, userID); err != nil {
+		return err
+	}
+	position := 0
+	seen := make(map[int64]bool, len(connIDs))
+	for _, connID := range connIDs {
+		if !visible[connID] || seen[connID] {
+			continue
+		}
+		seen[connID] = true
+		if _, err := tx.Exec(
+			`insert into OmniDB_app_connectionorder (user_id, connection_id, position) values (?, ?, ?)`,
+			userID, connID, position,
+		); err != nil {
+			return err
+		}
+		position++
+	}
+	return tx.Commit()
 }

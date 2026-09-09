@@ -397,6 +397,7 @@ func run() error {
 	// still proxying to Django removed, they haven't since Fáze 7/8a.
 	mux.Handle("/get_connections/", handleGetConnections(upstream))
 	mux.Handle("/save_connection/", handleSaveConnection(upstream))
+	mux.Handle("/save_connection_order/", handleSaveConnectionOrder(upstream))
 	mux.Handle("/test_connection/", handleTestConnection(upstream))
 	mux.Handle("/delete_connection/", handleDeleteConnection(upstream))
 	mux.Handle("/get_groups/", handleGetGroups(upstream))

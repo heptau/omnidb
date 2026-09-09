@@ -113,6 +113,45 @@ func handleGetConnections(upstream *url.URL) http.HandlerFunc {
 	}
 }
 
+type saveConnectionOrderRequest struct {
+	PConnIDList []flexInt `json:"p_conn_id_list"`
+}
+
+// handleSaveConnectionOrder persists the order the Connections sidebar rows
+// were dragged into. The list is always the complete one get_connections
+// returned (hidden rows included -- a group filter or the public toggle only
+// hides items client-side, it must not drop them out of the saved order), so
+// it can simply replace this user's arrangement wholesale.
+func handleSaveConnectionOrder(upstream *url.URL) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var reqBody saveConnectionOrderRequest
+		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		db, who, ok := resolveAppDBRequest(w, r, upstream)
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		connIDs := make([]int64, 0, len(reqBody.PConnIDList))
+		for _, id := range reqBody.PConnIDList {
+			connIDs = append(connIDs, int64(id))
+		}
+		if err := saveConnectionOrder(db, int64(who.UserID), connIDs); err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		writeEnvelope(w, "", false, -1)
+	}
+}
+
 func handleGetGroups(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		db, who, ok := resolveAppDBRequest(w, r, upstream)

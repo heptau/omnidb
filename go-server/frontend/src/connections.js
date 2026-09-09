@@ -73,6 +73,11 @@ function initConnections() {
 		"mousedown",
 		(event) => resizeConnectionsHorizontal(event),
 	);
+
+	// Bound once on the container -- which workspace.html ships and
+	// showConnectionList only ever refills -- instead of on every rebuild,
+	// which would stack a fresh listener per refresh.
+	bindConnectionListDrop(el("connection_card_list"));
 }
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initConnections);
 else setTimeout(initConnections, 0);
@@ -307,6 +312,8 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					})(v_conn_obj),
 				);
 
+				bindConnectionDrag(v_item_div, v_target_div);
+
 				// Adding public visuals. Mirrors the old card grid's fade
 				// in/out toggle (see toggleConnectionsPublic) -- a public
 				// connection starts hidden unless it's already shown, or it's
@@ -349,6 +356,171 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 		"box",
 		true,
 	);
+}
+
+// --- Manual ordering of the sidebar list (drag & drop) ----------------
+//
+// The list arrives from get_connections already in this user's own order
+// (OmniDB_app_connectionorder, see fetchConnectionsForUser), so all the
+// frontend has to do is let a row be dragged to a new slot and post the
+// resulting order back -- which is what makes it survive a restart.
+//
+// Plain HTML5 drag and drop, no library: the dragged row itself is moved
+// through the DOM live on dragover (there is no separate placeholder), and
+// dragend persists the result.
+
+/** The row currently being dragged, or null. @type {HTMLElement|null} */
+var v_conn_drag_item = null;
+/** Connection ids in list order when the current drag started. @type {number[]} */
+var v_conn_drag_start_order = [];
+
+/**
+ * The row the dragged one should be inserted before for a pointer at p_y, or
+ * null to drop at the end. Hidden rows -- filtered out by the group selector
+ * (display: none) or by the public toggle (d-none) -- are skipped: they have
+ * no box on screen to compare against, so they would always look "closest".
+ *
+ * @param {HTMLElement} p_list_div
+ * @param {number} p_y
+ * @returns {HTMLElement|null}
+ */
+function getConnectionDragTarget(p_list_div, p_y) {
+	/** @type {HTMLElement|null} */
+	var v_closest = null;
+	var v_closest_offset = Number.NEGATIVE_INFINITY;
+	var v_rows = p_list_div.querySelectorAll(".omnidb__connections__list-item");
+	for (var i = 0; i < v_rows.length; i++) {
+		var v_row = /** @type {HTMLElement} */ (v_rows[i]);
+		if (v_row === v_conn_drag_item || v_row.offsetParent === null) continue;
+		var v_box = v_row.getBoundingClientRect();
+		var v_offset = p_y - v_box.top - v_box.height / 2;
+		if (v_offset < 0 && v_offset > v_closest_offset) {
+			v_closest_offset = v_offset;
+			v_closest = v_row;
+		}
+	}
+	return v_closest;
+}
+
+/** Connection ids in current DOM order. @returns {number[]} */
+function currentConnectionOrder() {
+	var v_order = [];
+	var v_items = v_connections_data.list_items || [];
+	var v_rows = el("connection_card_list").querySelectorAll(".omnidb__connections__list-item");
+	for (var i = 0; i < v_rows.length; i++) {
+		for (var j = 0; j < v_items.length; j++) {
+			if (v_items[j].item_div === v_rows[i]) {
+				v_order.push(v_items[j].data.id);
+				break;
+			}
+		}
+	}
+	return v_order;
+}
+
+/**
+ * Posts the order the rows ended up in, and re-sorts list_items to match so
+ * everything else reading it (groupChange, saveGroupConnections, ...) sees the
+ * same order as the screen. The whole list is always sent, hidden rows
+ * included -- a group filter or the public toggle only hides rows, it must not
+ * drop them out of the saved order.
+ */
+function persistConnectionOrder() {
+	var v_order = currentConnectionOrder();
+	var v_items = v_connections_data.list_items || [];
+	if (v_order.length !== v_items.length) return;
+
+	var v_sorted = [];
+	for (var i = 0; i < v_order.length; i++) {
+		for (var j = 0; j < v_items.length; j++) {
+			if (v_items[j].data.id === v_order[i]) {
+				v_sorted.push(v_items[j]);
+				break;
+			}
+		}
+	}
+	v_connections_data.list_items = v_sorted;
+
+	execAjax(
+		"/save_connection_order/",
+		JSON.stringify({ p_conn_id_list: v_order }),
+		function () {},
+		null,
+		"box",
+		// No loading overlay: reordering is a background detail of a gesture
+		// the user already sees the result of.
+		false,
+	);
+}
+
+/**
+ * @param {HTMLElement} p_item_div
+ * @param {HTMLElement} p_list_div
+ */
+function bindConnectionDrag(p_item_div, p_list_div) {
+	p_item_div.setAttribute("draggable", "true");
+
+	p_item_div.addEventListener("dragstart", function (e) {
+		// While assigning connections to a group (see manageGroup) the rows
+		// are checkboxes, not a list to arrange -- same guard the click,
+		// dblclick and contextmenu handlers use.
+		if (p_list_div.classList.contains("omnidb__connections__list--connection-management")) {
+			e.preventDefault();
+			return;
+		}
+		v_conn_drag_item = p_item_div;
+		v_conn_drag_start_order = currentConnectionOrder();
+		if (e.dataTransfer) {
+			e.dataTransfer.effectAllowed = "move";
+			// Firefox starts no drag at all unless some data is set.
+			e.dataTransfer.setData("text/plain", "");
+		}
+		// Deferred: applying the class synchronously would bake the faded
+		// look into the drag image the browser snapshots right after this
+		// handler returns.
+		setTimeout(function () {
+			p_item_div.classList.add("omnidb__connections__list-item--dragging");
+		}, 0);
+	});
+
+	p_item_div.addEventListener("dragend", function () {
+		p_item_div.classList.remove("omnidb__connections__list-item--dragging");
+		if (v_conn_drag_item !== p_item_div) return;
+		v_conn_drag_item = null;
+		var v_order = currentConnectionOrder();
+		if (v_order.join(",") !== v_conn_drag_start_order.join(",")) {
+			persistConnectionOrder();
+		}
+	});
+}
+
+/**
+ * The dragover/drop half of the reordering, bound once per rebuild on the
+ * list container itself rather than per row, so the gap between rows and the
+ * empty space below the last one are drop targets too.
+ *
+ * @param {HTMLElement} p_list_div
+ */
+function bindConnectionListDrop(p_list_div) {
+	p_list_div.addEventListener("dragover", function (e) {
+		if (v_conn_drag_item === null) return;
+		// Without this the drop is refused and dragend reverts the row.
+		e.preventDefault();
+		if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+		var v_target = getConnectionDragTarget(p_list_div, e.clientY);
+		if (v_target === null) {
+			if (p_list_div.lastElementChild !== v_conn_drag_item) p_list_div.appendChild(v_conn_drag_item);
+		} else if (v_target.previousElementSibling !== v_conn_drag_item) {
+			p_list_div.insertBefore(v_conn_drag_item, v_target);
+		}
+	});
+
+	p_list_div.addEventListener("drop", function (e) {
+		if (v_conn_drag_item === null) return;
+		// The row is already where dragover put it -- this only stops the
+		// browser from treating the drop as a navigation.
+		e.preventDefault();
+	});
 }
 
 export function groupChange(p_value) {
