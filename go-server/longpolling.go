@@ -43,11 +43,14 @@ const (
 
 // pgAuthFailedSQLState is Postgres's SQLSTATE for "password authentication
 // failed" — covers both a wrong/expired stored password and an empty one
-// (which is what a sandboxed build sends when its own attempt to fall back
-// to ~/.pgpass silently found nothing, see pgconn/config.go's ParseConfig:
-// a passfile read error there is swallowed, not surfaced, so the connection
-// just proceeds with a blank password and the server rejects it the same
-// way it would any other wrong password).
+// (which is what gets sent when every .pgpass lookup came up empty: pgx's
+// own, plus applyPgpassPassword's relay for the sandboxed macOS build, see
+// pgpass_resolve.go. pgconn/config.go swallows a passfile read error rather
+// than surfacing it, so the connection just proceeds with a blank password
+// and the server rejects it the same way it would any other wrong one).
+// Routing it to the frontend's password prompt is what gives the user
+// somewhere to act on it — including that prompt's "grant access to
+// .pgpass" button, which is the whole recovery path on a sandboxed build.
 const pgAuthFailedSQLState = "28P01"
 
 type createRequestBody struct {

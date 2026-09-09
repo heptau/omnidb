@@ -283,7 +283,7 @@ func checkCSRF(r *http.Request) bool {
 // fetch()/http.Error-based handler instead of going through the shared
 // {v_data, v_error, v_error_id} envelope contract, and each already carries
 // its own equivalent protection: /internal/shutdown/, /export_save_dialog/,
-// /open_external_url/, /pgpass_lookup/ and /pgpass_import/ are only ever
+// /open_external_url/, /pgpass_grant/ and /pgpass_import/ are only ever
 // registered on a loopback listener (see main.go's isLoopbackHost gate) and
 // independently check resolveIdentity(); /sign_in/ already calls checkCSRF
 // itself (and, unlike these five, is in fact sent with the header by
@@ -294,7 +294,7 @@ var csrfExemptPrefixes = []string{
 	"/internal/shutdown/",
 	"/export_save_dialog/",
 	"/open_external_url/",
-	"/pgpass_lookup/",
+	"/pgpass_grant/",
 	"/pgpass_import/",
 	"/sign_in/",
 }

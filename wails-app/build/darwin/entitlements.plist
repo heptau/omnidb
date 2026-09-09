@@ -40,9 +40,12 @@
      wherever the user picks, and read access to whatever legacy data
      folder they pick during the one-time import flow.
    - files.bookmarks.app-scope: lets a security-scoped bookmark to a
-     user-picked folder be persisted across launches, in case a future
-     feature needs to remember a chosen location instead of re-prompting
-     every time (not relied on today, but cheap to declare up front).
+     user-picked file be persisted across launches, so a location the user
+     chose once keeps working instead of being re-prompted for on every
+     relaunch. Relied on by the .pgpass grant (wails-app/pgpassdialog.go):
+     without it, the bookmark this app saves would still encode and resolve
+     fine but carry no working sandbox grant, and every launch would ask
+     the user to point at their .pgpass file again.
 -->
 <plist version="1.0">
 <dict>

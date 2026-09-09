@@ -30,7 +30,11 @@
 // startAccessingSecurityScopedResource — only resolving a *bookmark*
 // does, see pgpass_resolve_bookmark below), and
 // *outBookmark/*outBookmarkLen is malloc'd bookmark data to persist for
-// next launch. Both must be freed by the caller.
+// next launch. Both must be freed by the caller. *outBookmark is left
+// NULL (with *outBookmarkLen 0) when no security-scoped bookmark could be
+// created because the process isn't sandboxed — still a success, since
+// such a build keeps its access to the picked path anyway and the caller
+// just remembers the path instead.
 // Returns 0 with *outCancelled=1 if the user cancelled (no error, nothing
 // else set).
 // Returns 0 with a malloc'd UTF-8 *outErr (caller frees) on any real

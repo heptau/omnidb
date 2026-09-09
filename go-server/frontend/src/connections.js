@@ -788,9 +788,12 @@ export function deleteConnection(p_conn_obj) {
 // PostgreSQL connection with a bare `postgresql://user@host:port/db`
 // connection string and no stored password -- the whole point of
 // importing from .pgpass is to keep relying on that file for
-// authentication (the password prompt's own "Use .pgpass" button, see
-// passwords.js) rather than copying passwords into OmniDB's own database,
-// multiplying where a password lives. A line whose resolved
+// authentication (resolved at connect time, see passwords.js's .pgpass
+// block comment) rather than copying passwords into OmniDB's own database,
+// multiplying where a password lives. In the desktop app, importing also
+// grants standing access to the picked file (see
+// wails-app/pgpassimport.go), so the imported connections authenticate
+// from it straight away with no further prompt. A line whose resolved
 // host/port/database/username already matches an existing connection
 // (compared the same way passwords.js's own .pgpass matching does, via
 // each connection's v_server/v_port/v_pgpass_database/v_username -- see

@@ -41,6 +41,12 @@ func pickPgpassFile(ctx context.Context) (path string, bookmark []byte, cancelle
 		return "", nil, false, errors.New(C.GoString(outErr))
 	}
 	defer C.free(unsafe.Pointer(outPath))
+	if outBookmark == nil {
+		// Not sandboxed, so there was no security-scoped bookmark to
+		// create — see pgpass_bookmark_darwin.h. A nil bookmark tells
+		// pgpassdialog.go to remember the plain path instead.
+		return C.GoString(outPath), nil, false, nil
+	}
 	defer C.free(unsafe.Pointer(outBookmark))
 	return C.GoString(outPath), C.GoBytes(unsafe.Pointer(outBookmark), outBookmarkLen), false, nil
 }

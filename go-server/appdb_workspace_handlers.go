@@ -548,7 +548,9 @@ func handleGetDatabaseList(upstream *url.URL) http.HandlerFunc {
 				"v_public":       d.Public,
 				"v_environment":  d.Environment,
 				// Discrete (not display-formatted) fields, used only by
-				// passwords.js's client-side .pgpass matching -- deliberately
+				// passwords.js's own .pgpass matching (the browser
+				// fallback's, and the desktop grant's "does this file even
+				// have an entry for this connection" check) -- deliberately
 				// separate from v_database above (see
 				// resolvePgpassMatchFields's comment on why a ConnString-only
 				// connection's real database name can't just be read off

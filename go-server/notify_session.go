@@ -321,8 +321,9 @@ func runNotifyReader(ctx context.Context, cookie, clientID, tabID string, contex
 // notifyPostgresBackend holds a dedicated native pgx connection rather than a
 // database/sql one: WaitForNotification is a pgx-only API with no
 // database/sql equivalent, and it's designed for exactly this — one connection
-// held open for the lifetime of the subscription. postgresqlDSN already
-// produces a "postgres://" URL that pgx.Connect accepts unchanged.
+// held open for the lifetime of the subscription. It opens through
+// postgresqlConnConfig like every other PostgreSQL connection here, so a
+// password resolved from .pgpass applies to a LISTEN subscription too.
 //
 // Unlike database/sql's *sql.Conn (which serializes concurrent use itself —
 // see the Oracle backend, which relies on that), a *pgx.Conn is NOT safe for
@@ -348,7 +349,11 @@ type notifyPostgresBackend struct {
 const notifyPostgresWaitWindow = 2 * time.Second
 
 func newPostgresNotifySession(info *ConnectionInfo) (*notifySession, error) {
-	conn, err := pgx.Connect(context.Background(), postgresqlDSN(info))
+	cfg, err := postgresqlConnConfig(info)
+	if err != nil {
+		return nil, err
+	}
+	conn, err := pgx.ConnectConfig(context.Background(), cfg)
 	if err != nil {
 		return nil, err
 	}

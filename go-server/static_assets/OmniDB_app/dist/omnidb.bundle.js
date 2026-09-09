@@ -4262,9 +4262,10 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
+    if (gv_desktopMode) el$1("modal_password_pgpass_button").textContent = "Grant access to .pgpass…";
     el$1("modal_password_pgpass_button").addEventListener("click", function() {
-      if (gv_desktopMode && v_pgpass_lookup_info) {
-        readPgpassFileNatively(v_pgpass_lookup_info);
+      if (gv_desktopMode) {
+        grantPgpassAccess(v_pgpass_lookup_info);
       } else {
         el$1("modal_password_pgpass_input").click();
       }
@@ -4343,15 +4344,15 @@
     };
     v_reader.readAsText(p_file);
   }
-  function readPgpassFileNatively(p_lookup_info) {
-    fetch("/pgpass_lookup/", {
+  function grantPgpassAccess(p_lookup_info) {
+    fetch("/pgpass_grant/", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        hostname: p_lookup_info.server,
-        port: p_lookup_info.port,
-        database: p_lookup_info.database,
-        username: p_lookup_info.username
+        hostname: p_lookup_info ? p_lookup_info.server : "",
+        port: p_lookup_info ? p_lookup_info.port : "",
+        database: p_lookup_info ? p_lookup_info.database : "",
+        username: p_lookup_info ? p_lookup_info.username : ""
       })
     }).then(function(p_response) {
       return p_response.json();
@@ -4361,11 +4362,25 @@
         showPgpassError(p_result.error);
         return;
       }
+      if (!p_result.matched && p_lookup_info) {
+        showPgpassError(
+          "OmniDB can use that file now, but it has no entry for " + p_lookup_info.server + ":" + p_lookup_info.port + ":" + p_lookup_info.database + ":" + p_lookup_info.username + " -- pick another file, or type the password above."
+        );
+        return;
+      }
       hidePgpassError();
-      v_modal_password_input.value = p_result.password;
+      retryWithPgpassPassword();
     }).catch(function(p_err) {
       showPgpassError("Could not reach the desktop app's file picker: " + p_err);
     });
+  }
+  function retryWithPgpassPassword() {
+    v_modal_password_input.value = "";
+    v_modal_password_ok_function();
+    bootstrap.Modal.getOrCreateInstance(
+      /** @type {HTMLElement} */
+      document.getElementById("modal_password")
+    ).hide();
   }
   function resolvePgpassLookupInfo(p_database_index) {
     var v_connections = v_connTabControl && v_connTabControl.tag ? v_connTabControl.tag.connections : null;

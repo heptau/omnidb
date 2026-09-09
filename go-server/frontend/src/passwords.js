@@ -47,7 +47,7 @@ var v_modal_password_cancel_callback, v_modal_password_input, v_modal_password_o
  * Set by showPasswordPrompt for the connection currently being
  * (re)authenticated -- null whenever that connection isn't postgresql, or
  * isn't in the currently-loaded connection list at all, in which case the
- * "Use .pgpass" row stays hidden.
+ * .pgpass row stays hidden.
  * @type {{server: string, port: string, database: string, username: string}|null}
  */
 var v_pgpass_lookup_info = null;
@@ -86,15 +86,16 @@ function initPasswordModal() {
 	v_modal_password_cancel_callback = null;
 	v_modal_password_input = null;
 
+	// Two quite different things behind one button, so it says what it
+	// actually does in each mode (see the block comment below): in the
+	// desktop app it grants standing access to the file and the connection
+	// then authenticates from it on its own, everywhere else it reads a
+	// password out of a file the user picks for this one prompt.
+	if (gv_desktopMode) el("modal_password_pgpass_button").textContent = "Grant access to .pgpass\u2026";
+
 	el("modal_password_pgpass_button").addEventListener("click", function () {
-		// The desktop app can show a *native* Open dialog with hidden files
-		// visible (see readPgpassFileNatively's comment) -- outside it,
-		// there's no such relay to ask, so fall back to the plain HTML file
-		// input (its own OS panel still works, just with .pgpass hidden by
-		// default; the user can still show hidden files there themselves,
-		// e.g. Cmd+Shift+. in macOS's panel).
-		if (gv_desktopMode && v_pgpass_lookup_info) {
-			readPgpassFileNatively(v_pgpass_lookup_info);
+		if (gv_desktopMode) {
+			grantPgpassAccess(v_pgpass_lookup_info);
 		} else {
 			el("modal_password_pgpass_input").click();
 		}
@@ -121,27 +122,34 @@ function initPasswordModal() {
 // same modal (previously it just dead-ended in a plain error alert).
 //
 // Rather than requesting broad filesystem entitlements (Mac App Store
-// review rejects blanket home-directory access) or copying the resolved
-// password into OmniDB's own database (multiplying where a password
-// lives), the password is resolved from a file the user picks each time --
-// the OS grants that one read through its own Open panel, no standing
-// app-level entitlement involved -- and only the single matching password
-// ever leaves this feature; the rest of a file's content (every other
-// host's credentials) is discarded once parsed.
+// review rejects blanket home-directory access) or copying passwords into
+// OmniDB's own database (multiplying where a password lives), the user
+// points at their .pgpass file once and macOS keeps that one file readable
+// from then on -- a security-scoped bookmark, saved and re-resolved on
+// every later launch (see wails-app/pgpassdialog.go).
 //
-// Two ways to pick that file, tried in this order (see the click handler
-// in initPasswordModal):
-//   1. readPgpassFileNatively -- inside the desktop app only, relays
-//      through wails-app to a real NSOpenPanel/GtkFileChooser/Win32
-//      dialog with ShowHiddenFiles: true. Needed because .pgpass is a
-//      dotfile every OS file panel hides by default, and a bare HTML file
-//      input has no attribute that can override that (confirmed against
-//      Chromium/WebKit -- there isn't one).
-//   2. readPgpassFileViaInput -- everywhere else (self-hosted/browser
-//      deployments, or a desktop build too old to have the relay), via a
-//      plain `<input type="file">`. Its native panel still opens; .pgpass
-//      just won't be visible by default there (the user can still toggle
-//      hidden files in the panel itself, e.g. Cmd+Shift+. on macOS).
+// What that means for this modal, in the desktop app (grantPgpassAccess):
+// the button grants that access and nothing else. It never puts a password
+// in the input above it -- once access is in place, the *server* resolves
+// the matching entry itself while opening the connection (see
+// go-server/pgpass_resolve.go), exactly the way libpq does it for a client
+// that was never sandboxed to begin with, so every later connect just
+// works with nothing to click. Which is also why this prompt should only
+// ever appear once per .pgpass file: the retry that follows the grant is
+// the last time the file needs a human in the loop.
+//
+// Outside the desktop app (readPgpassFileViaInput) there is no sandbox to
+// route around -- a self-hosted server reads its own ~/.pgpass directly --
+// so the button keeps its older, narrower meaning there: read one password
+// out of a file the user picks, for this one prompt, and fill it into the
+// input. Only the single matching password is ever used; the rest of the
+// file's content (every other host's credentials) is discarded once
+// parsed. It goes through a plain `<input type="file">`, whose OS panel
+// hides .pgpass by default (a dotfile; no HTML attribute can override
+// that, confirmed against Chromium/WebKit) -- the user can still toggle
+// hidden files in the panel itself, e.g. Cmd+Shift+. on macOS. The desktop
+// app has no such limitation: its native panel is opened with
+// ShowHiddenFiles: true.
 
 /**
  * @typedef {{hostname: string, port: string, database: string, username: string, password: string}} PgpassEntry
@@ -268,23 +276,32 @@ function readPgpassFileViaInput(p_file, p_lookup_info) {
 }
 
 /**
- * Desktop-app counterpart to readPgpassFileViaInput -- relays through
- * go-server/pgpass_lookup.go to wails-app's native Open dialog (see
- * wails-app/pgpassdialog.go), which does its own matching server-side and
- * hands back just the one resolved password rather than the file's
- * contents (there's no File object to read here; the file never reaches
- * this page's JS at all).
- * @param {{server: string, port: string, database: string, username: string}} p_lookup_info
+ * Desktop-app counterpart to readPgpassFileViaInput, and deliberately not
+ * the same kind of operation: this asks the shell process (through
+ * go-server/pgpass_grant.go) to show its native Open dialog and *keep*
+ * access to whatever file the user picks, then retries the operation that
+ * raised this prompt. No password crosses back -- the server resolves it
+ * from the granted file on the retry's own connect, see this file's
+ * .pgpass block comment above.
+ *
+ * p_lookup_info is only sent so the picked file can be checked for a
+ * matching entry right away: without that check, picking a .pgpass that
+ * has nothing for this connection would look like it worked, and the only
+ * feedback would be the same password prompt reappearing a moment later
+ * after another 28P01. It can be null (a connection that isn't in the
+ * loaded list), in which case the grant is still fine -- it just retries
+ * without that check.
+ * @param {{server: string, port: string, database: string, username: string}|null} p_lookup_info
  */
-function readPgpassFileNatively(p_lookup_info) {
-	fetch("/pgpass_lookup/", {
+function grantPgpassAccess(p_lookup_info) {
+	fetch("/pgpass_grant/", {
 		method: "POST",
 		headers: { "Content-Type": "application/json" },
 		body: JSON.stringify({
-			hostname: p_lookup_info.server,
-			port: p_lookup_info.port,
-			database: p_lookup_info.database,
-			username: p_lookup_info.username,
+			hostname: p_lookup_info ? p_lookup_info.server : "",
+			port: p_lookup_info ? p_lookup_info.port : "",
+			database: p_lookup_info ? p_lookup_info.database : "",
+			username: p_lookup_info ? p_lookup_info.username : "",
 		}),
 	})
 		.then(function (p_response) {
@@ -296,8 +313,22 @@ function readPgpassFileNatively(p_lookup_info) {
 				showPgpassError(p_result.error);
 				return;
 			}
+			if (!p_result.matched && p_lookup_info) {
+				showPgpassError(
+					"OmniDB can use that file now, but it has no entry for " +
+						p_lookup_info.server +
+						":" +
+						p_lookup_info.port +
+						":" +
+						p_lookup_info.database +
+						":" +
+						p_lookup_info.username +
+						" -- pick another file, or type the password above.",
+				);
+				return;
+			}
 			hidePgpassError();
-			v_modal_password_input.value = p_result.password;
+			retryWithPgpassPassword();
 		})
 		.catch(function (p_err) {
 			showPgpassError("Could not reach the desktop app's file picker: " + p_err);
@@ -305,11 +336,30 @@ function readPgpassFileNatively(p_lookup_info) {
 }
 
 /**
+ * Submits the prompt with an empty password, which is what makes the
+ * server fall back to the just-granted .pgpass file (an empty password is
+ * precisely the case pgx and applyPgpassPassword resolve from a passfile,
+ * see go-server/pgpass_resolve.go) and, on success, remember for this
+ * session that this connection needs no typed password at all.
+ *
+ * Goes through the modal's own OK path rather than calling
+ * checkPasswordPrompt directly, so the retry behaves exactly like a
+ * hand-typed password being submitted: same renew_password round-trip,
+ * same "reopen the prompt with the server's error" branch if it still
+ * fails, same after-hide callback that resumes whatever the user was
+ * doing when the prompt appeared.
+ */
+function retryWithPgpassPassword() {
+	v_modal_password_input.value = "";
+	v_modal_password_ok_function();
+	bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_password"))).hide();
+}
+
+/**
  * Resolves the postgresql connection details for p_database_index (a
  * connection id, matching v_connTabControl.tag.connections[i].v_conn_id --
  * see connections.js's showConnectionList for the same lookup) into what
- * readPgpassFileViaInput/readPgpassFileNatively need to match a .pgpass
- * entry. Returns null for any
+ * readPgpassFileViaInput/grantPgpassAccess need to match a .pgpass entry. Returns null for any
  * non-postgresql connection (mysql/oracle/etc. have no passfile
  * convention) or one not found in the currently-loaded list, which is what
  * keeps the "Use .pgpass" row hidden for those.

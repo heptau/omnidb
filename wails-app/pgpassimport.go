@@ -31,19 +31,16 @@ type pgpassImportResponse struct {
 // saved connection with a bare `postgresql://user@host:port/db` connection
 // string and no stored password — the whole point of importing from
 // .pgpass in the first place is to keep relying on that file for
-// authentication (via the password prompt's own "Use .pgpass" button, see
-// passwords.js) rather than copying passwords into OmniDB's own database,
-// so this relay never sends one across in the first place.
+// authentication (resolved at connect time, see pgpassdialog.go's
+// handlePgpassResolveRequest) rather than copying passwords into OmniDB's
+// own database, so this relay never sends one across in the first place.
 //
-// Unlike handlePgpassLookupRequest, this always shows the picker rather
-// than preferring a previously-saved bookmark first: importing is a
-// deliberate, one-off action reached for specifically to point at a
-// .pgpass file, not a "silently retry with whatever's already remembered"
-// convenience — always asking keeps the picked file under the user's
-// explicit control even when a different file happens to be bookmarked
-// already. The picked file's bookmark is still saved afterward, exactly as
-// handlePgpassLookupRequest does, so a later password-prompt "Use
-// .pgpass" click can reuse it without prompting again.
+// Picking a file here also grants access to it for good, exactly as
+// handlePgpassGrantRequest does (same saved location, see
+// writePgpassLocationFile): importing connections out of a .pgpass file and
+// then having every one of them authenticate from that same file is the
+// whole point, so there is no reason to make the user pick it a second time
+// from the password prompt.
 func (a *App) handlePgpassImportRequest(w http.ResponseWriter, r *http.Request) {
 	path, bookmark, cancelled, err := pickPgpassFile(a.ctx)
 	if err != nil {
@@ -54,14 +51,16 @@ func (a *App) handlePgpassImportRequest(w http.ResponseWriter, r *http.Request) 
 		writePgpassImportJSON(w, pgpassImportResponse{Cancelled: true})
 		return
 	}
-	if bookmark != nil {
-		_ = writePgpassBookmarkFile(bookmark)
-	}
-
 	passfile, err := pgpassfile.ReadPassfile(path)
 	if err != nil {
 		writePgpassImportError(w, "Could not read that file: "+err.Error())
 		return
+	}
+	// Best-effort: a location that can't be persisted only costs the user
+	// one Open panel later, from the password prompt's own grant button —
+	// it must not fail an import that otherwise succeeded.
+	if err := writePgpassLocationFile(encodePgpassLocation(path, bookmark)); err == nil {
+		releasePgpassAccess()
 	}
 	writePgpassImportJSON(w, pgpassImportResponse{Entries: pgpassEntriesToDTOs(passfile.Entries)})
 }

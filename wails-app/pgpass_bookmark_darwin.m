@@ -47,11 +47,15 @@ int pgpass_pick_file_and_bookmark(char **outPath, unsigned char **outBookmark, i
 									  includingResourceValuesForKeys:nil
 													   relativeToURL:nil
 															   error:&error];
-			if (bookmark == nil) {
-				resultErr = [error localizedDescription] ?: @"failed to create bookmark";
-				return;
-			}
 			resultPath = url.path;
+			// A build running outside the App Sandbox (wails dev, or a
+			// direct-download build signed without the app-sandbox
+			// entitlement) cannot create a security-scoped bookmark at
+			// all — and has no use for one: its access to the picked path
+			// never goes away, so the path alone is enough to remember.
+			// Hand back the pick with no bookmark rather than failing it
+			// outright, which is what used to make this whole feature
+			// unusable in a dev build.
 			resultBookmark = bookmark;
 			ok = 1;
 		}

@@ -96,7 +96,7 @@ type databaseListEntry struct {
 // when the discrete fields are empty (connections configured solely via
 // URL) — same fallback printDatabaseDetails/printDatabaseInfo apply to
 // their combined display strings, kept separate here rather than shared
-// with them so a change to this (used only for client-side .pgpass
+// with them so a change to this (used only for the frontend's own .pgpass
 // matching, see passwords.js) can't accidentally shift what those two
 // already-relied-on display strings render, or what the general Database
 // field (databaseListEntry.Database, straight from c.Database) means to

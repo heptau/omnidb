@@ -4,7 +4,8 @@ import (
 	"database/sql"
 	"net/url"
 
-	_ "github.com/jackc/pgx/v5/stdlib"
+	"github.com/jackc/pgx/v5"
+	"github.com/jackc/pgx/v5/stdlib"
 )
 
 // openPostgreSQLTarget opens a connection to the user's saved PostgreSQL
@@ -15,15 +16,33 @@ import (
 // schema-qualify what they touch, so there's no session state (search_path,
 // temp objects, etc.) that needs to carry across requests.
 func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
-	db, err := sql.Open("pgx", postgresqlDSN(info))
+	cfg, err := postgresqlConnConfig(info)
 	if err != nil {
 		return nil, err
 	}
+	db := stdlib.OpenDB(*cfg)
 	if err := db.Ping(); err != nil {
 		db.Close()
 		return nil, err
 	}
 	return db, nil
+}
+
+// postgresqlConnConfig parses the DSN below into the config every
+// PostgreSQL connection in this process is actually opened with — both the
+// database/sql ones above and notify_session.go's dedicated native pgx one.
+// Parsing it here rather than handing pgx the DSN string directly is what
+// makes room for applyPgpassPassword (see its comment) to supply a password
+// the sandboxed macOS build can't read for itself; everything else about
+// the connection is exactly what pgx would have derived from that same DSN
+// on its own.
+func postgresqlConnConfig(info *ConnectionInfo) (*pgx.ConnConfig, error) {
+	cfg, err := pgx.ParseConfig(postgresqlDSN(info))
+	if err != nil {
+		return nil, err
+	}
+	applyPgpassPassword(cfg)
+	return cfg, nil
 }
 
 // postgresqlDSN builds the connection string opened above. A saved
@@ -45,9 +64,9 @@ func postgresqlDSN(info *ConnectionInfo) string {
 		// (renew_password, or applyRememberedPassword on a later query —
 		// see password_prompt.go) collected one for this connection: a
 		// ConnString-only connection typically carries no password at all
-		// (relying on ~/.pgpass, same as this password prompt's own "Use
-		// .pgpass" button, see passwords.js), so whatever the user just
-		// typed or picked has to make it into the DSN too — this used to
+		// (relying on ~/.pgpass, resolved by pgx itself or, in the
+		// sandboxed macOS app, by applyPgpassPassword), so whatever the
+		// user just typed has to make it into the DSN too — this used to
 		// silently drop it, always reopening the exact same passwordless
 		// ConnString no matter what was entered, which made every retry
 		// here indistinguishable from the very first failed attempt

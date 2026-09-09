@@ -8,19 +8,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- "Use .pgpass file…" button in the password-retry prompt shown when a PostgreSQL query fails on
-  a wrong or missing password. In the desktop app this opens a native file picker with hidden
-  files shown (`.pgpass` is a dotfile every OS panel hides by default; a plain HTML file input has
-  no attribute that can override that) and remembers the picked file across app restarts via a
-  macOS security-scoped bookmark (`wails-app/pgpass_bookmark_darwin.go`/`.m`,
-  `wails-app/pgpassdialog.go`), so it only needs to be picked once even under App Sandbox. Outside
-  the desktop app (self-hosted/browser use) it falls back to a plain `<input type="file">`
-  (`passwords.js`). Only the single password entry matching the failing connection ever leaves the
-  picked file — nothing is copied into OmniDB's own database.
+- `.pgpass` support for PostgreSQL connections in the sandboxed macOS app. Under App Sandbox the
+  app's `$HOME` is redirected into its container, so the usual libpq lookup of `~/.pgpass` finds
+  nothing and the connection fails with `SQLSTATE 28P01`. The password-retry prompt now offers
+  "Grant access to .pgpass…", which opens a native file picker with hidden files shown (`.pgpass`
+  is a dotfile every OS panel hides by default; a plain HTML file input has no attribute that can
+  override that) and remembers the picked file for good via a macOS security-scoped bookmark
+  (`wails-app/pgpass_bookmark_darwin.go`/`.m`, `wails-app/pgpassdialog.go`). It grants access and
+  nothing else: from then on every connection resolves its own password from that file while
+  opening, the way an unsandboxed client would, with no prompt and no password ever put into the
+  input (`go-server/pgpass_resolve.go`, `go-server/postgresql.go`). The lookup runs against the
+  parsed connection config, so it matches the same entry libpq would, defaults included. Outside
+  the desktop app (self-hosted/browser use) nothing changes: the server reads its own `~/.pgpass`
+  directly, and the button keeps its older meaning there — read one password out of a file picked
+  through a plain `<input type="file">`, for that one prompt (`passwords.js`). Only the single
+  password entry matching the connection being opened ever leaves the file — nothing is copied
+  into OmniDB's own database.
 - "Import connections from .pgpass" button in the Connections panel (`connections.js`,
   `wails-app/pgpassimport.go`) — reads a `.pgpass` file (the same picker as above) and creates a
   new saved connection for each concrete host/port/database/user line, as a bare `connection
-  string` with no password stored, relying on the same `.pgpass` lookup at connect time. Wildcard
+  string` with no password stored, relying on the same `.pgpass` lookup at connect time (in the
+  desktop app, importing also grants standing access to the picked file, so the imported
+  connections authenticate from it straight away). Wildcard
   lines and entries that already match an existing connection (by host/port/database/user) are
   skipped, including duplicates within the file itself.
 
