@@ -90,8 +90,8 @@ func recalledPassword(sessionKey, connID string) (string, bool) {
 
 // applyRememberedPassword prefers a password this session already verified
 // via renew_password over whatever is in info.Password, when one is
-// remembered. This used to mirror Python's `prompt_password = conn.password
-// == ''` gate (only ever consulting the cache for a connection with no
+// remembered. This used to mirror Python's prompt_password = conn.password
+// == "" gate (only ever consulting the cache for a connection with no
 // stored password at all), but that left a connection with a real but
 // wrong/expired stored password stuck retrying that same bad password
 // forever: queueQueryError's SQLSTATE 28P01 handling sends the frontend to
