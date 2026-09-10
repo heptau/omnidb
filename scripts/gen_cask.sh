@@ -52,12 +52,11 @@ cask "omnidb" do
 
   app "OmniDB.app"
 
-  postflight do
-    set_permissions "#{appdir}/OmniDB.app", "755"
+  postflight_steps do
+    set_permissions "OmniDB.app", "755", base: :appdir
 
-    system_command "/usr/bin/xattr",
-                   args: ["-r", "-d", "com.apple.quarantine", "#{appdir}/OmniDB.app"],
-                   sudo: false
+    run "/usr/bin/xattr",
+        args: ["-r", "-d", "com.apple.quarantine", "{{appdir}}/OmniDB.app"]
   end
 
   uninstall quit: "net.omnidb"
