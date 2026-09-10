@@ -53,10 +53,11 @@ export function initCreateTabFunctions() {
 			p_icon: '<i class="fas fa-plus"></i>',
 			p_close: false,
 			p_selectable: false,
+			p_isDraggable: false,
 			p_clickFunction: function (e) {
 				showMenuNewTabOuter(e);
 			},
-			p_omnidb_tooltip_name: '<h5 class="my-1">Add Connection</h5>',
+			p_tooltip_name: '<h5 class="my-1">Add Connection</h5>',
 		});
 		v_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
 		// Every connection/terminal/website tab created afterwards gets

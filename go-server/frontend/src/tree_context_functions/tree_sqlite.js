@@ -479,7 +479,7 @@ export function getTreeSqlite(p_div) {
 		"<b>" +
 		escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) +
 		"</b>" +
-		'<div class="omnidb__switch omnidb__switch--sm float-end" data-bs-toggle="tooltip" data-bs-placement="bottom" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle autocomplete.</h5><div>Switch OFF <b>disables the autocomplete</b> on the inner tabs for this connection.</div>">' +
+		'<div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection.">' +
 		'    <input type="checkbox" ' +
 		v_autocomplete_switch_status +
 		' id="autocomplete_toggler_' +

@@ -35,7 +35,7 @@ import { showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
 import { escapeHtmlAttribute } from "../query.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "../renderers.js";
-import { refreshBootstrapTooltips, removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 
 
 export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions) {
@@ -140,6 +140,7 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
@@ -149,7 +150,6 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		mode: "add",
 	};
 
-	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		v_resizeFunction();

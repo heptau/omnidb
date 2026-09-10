@@ -19,6 +19,19 @@
 	</style>
 </head>
 <body class="omnidb--theme-light">
+<script>
+	// No signed-in user yet, so there's no stored theme preference to read
+	// (see header_actions.js's changeTheme(), which resolves that from the
+	// user's own DB row) -- fall back to following the OS, same as the
+	// workspace's "auto" option. This has to run as the very first thing in
+	// <body>, before anything else parses: the stylesheets above key off
+	// this same body.omnidb--theme-dark class (see _variables.scss's
+	// --app-bg), so setting it late would paint light first and flash.
+	if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+		document.body.classList.remove("omnidb--theme-light");
+		document.body.classList.add("omnidb--theme-dark");
+	}
+</script>
 
 	<div class="omnidb__login" autofill="false">
 		<div class="omnidb__login__wrapper">

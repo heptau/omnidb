@@ -40,7 +40,6 @@ import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_s
 import {
 	adjustQueryTabObjects,
 	indentSQL,
-	refreshBootstrapTooltips,
 	removeTab,
 	renameTab,
 	resizeVertical,
@@ -221,7 +220,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		v_tab.id +
 		'" class="omnidb__query-result-tabs">' +
 		'<div style="position:absolute;top:0.25rem;right:2.75rem;">' +
-		'<div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" data-bs-toggle="tooltip" data-bs-placement="left" data-bs-html="true" title="" data-bs-original-title="<h5>Toggle explain component.</h5><div>Switch between old and new explain visualizer (experimental).</div>">' +
+		'<div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="Toggle explain component.\nSwitch between old and new explain visualizer (experimental).">' +
 		'<input id="explainContextToggler' +
 		v_tab.id +
 		'" type="checkbox" class="omnidb__switch--explain--input">' +
@@ -267,8 +266,6 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		v_curr_tabs.selectTabIndex(2);
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currQueryTab = "explain";
 		v_tab.tag.resize();
-		// Loads or Updates all tooltips.
-		refreshBootstrapTooltips();
 	};
 
 	// Creating the `data` tab.
@@ -480,22 +477,39 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		querySQL(0, true, v_exp_query, v_exp_callback, true, v_exp_query, "export_" + v_exp_type, true);
 	};
 
-	var v_resizeFunction = function () {
+	// p_skip_height: the vertical resize-line drag (resizeVertical in
+	// workspace.js) already sets div_result's height itself, straight from
+	// the drag delta -- calling getBoundingClientRect() here right
+	// afterwards to recompute the exact same height a different way forces
+	// the browser to synchronously flush that pending style write (and
+	// everything else queued this frame) just to answer the read, i.e. a
+	// forced layout ("layout thrashing") on every single animation frame of
+	// the drag. That's expensive enough to visibly stall unrelated parts of
+	// the page repainting too, not just this editor -- passing true from a
+	// live drag skips the redundant recompute; every other caller (tab
+	// select, sub-tab switch, window resize) has no drag delta to go on and
+	// still needs it.
+	var v_resizeFunction = function (p_skip_height) {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.currQueryTab == "data") {
-			v_tab_tag.div_result.style.height =
-				window.innerHeight -
-				(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
-				1.25 * v_font_size +
-				"px";
-			setTimeout(function () {
-				if (v_tab_tag.ht != null) {
-					v_tab_tag.ht.render();
-				}
-				if (v_tab_tag.editor != null) {
-					v_tab_tag.editor.resize();
-				}
-			}, 400);
+			if (!p_skip_height) {
+				v_tab_tag.div_result.style.height =
+					window.innerHeight -
+					(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
+					1.25 * v_font_size +
+					"px";
+			}
+			// Synchronous -- this used to be deferred behind a flat, un-cleared
+			// setTimeout(fn, 400), which (stacked on top of refreshHeights'
+			// own setTimeout(fn, 351) in workspace.js) is what made the query
+			// editor look like it only resized after the mouse button was
+			// released instead of live during a drag.
+			if (v_tab_tag.ht != null) {
+				v_tab_tag.ht.render();
+			}
+			if (v_tab_tag.editor != null) {
+				v_tab_tag.editor.resize();
+			}
 		} else if (v_tab_tag.currQueryTab == "message") {
 			v_tab_tag.div_notices.style.height =
 				window.innerHeight -
@@ -513,11 +527,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 				(v_tab_tag.div_explain.getBoundingClientRect().top + window.scrollY) -
 				1.25 * v_font_size +
 				"px";
-			setTimeout(function () {
-				if (v_tab_tag.explainControl) {
-					v_tab_tag.explainControl.resize();
-				}
-			}, 400);
+			if (v_tab_tag.explainControl) {
+				v_tab_tag.explainControl.resize();
+			}
 		}
 	};
 
@@ -637,6 +649,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
@@ -646,8 +659,6 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		mode: "add",
 	};
 
-	// Loads or Updates all tooltips.
-	refreshBootstrapTooltips();
 
 	// Requesting an update on the workspace layout and sizes.
 	setTimeout(function () {

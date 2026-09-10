@@ -136,6 +136,7 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},

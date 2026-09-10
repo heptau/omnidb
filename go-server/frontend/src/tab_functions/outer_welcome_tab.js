@@ -29,7 +29,6 @@ SOFTWARE.
 */
 
 import { endLoading } from "../ajax_control_bridge.js";
-import { refreshBootstrapTooltips } from "../workspace.js";
 
 
 /**
@@ -272,7 +271,6 @@ export function initWelcomeSection() {
 
 	v_target.innerHTML = v_html;
 
-	refreshBootstrapTooltips();
 
 	endLoading();
 }

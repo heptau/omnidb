@@ -35,7 +35,6 @@ SOFTWARE.
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
 import { showConfirm } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
-import { refreshBootstrapTooltips } from "./workspace.js";
 
 export function newUserConfirm() {
 	execAjax(
@@ -401,7 +400,6 @@ export function getUsers(p_options = false) {
 				}
 				if (v_usersObject.v_cellChanges.length > 0 || window.newUsersObject.newUsers.length > 0)
 					/** @type {HTMLElement} */ (document.getElementById("div_save_users")).style.visibility = "visible";
-				refreshBootstrapTooltips(); // Loads or Updates all tooltips
 				endLoading();
 			},
 			null,
@@ -477,7 +475,7 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<span class='ms-2'>Superuser?</span>" +
 					"<div class='ms-2 mb-2'>" +
-					"<div class='omnidb__switch me-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'>" +
+					"<div class='omnidb__switch me-2' title='Toggle superuser status. To enable again, simply turn the switch on.'>" +
 					"<input type='checkbox' id='user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +
@@ -568,7 +566,7 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<span class='ms-2'>Superuser?</span>" +
 					"<div class='ms-2 mb-2'>" +
-					"<div class='omnidb__switch me-2' data-toggle='tooltip' data-placement='bottom' data-html='true' title='<h5>Toggle superuser status. To enable again, simply turn the switch on.</h5>'>" +
+					"<div class='omnidb__switch me-2' title='Toggle superuser status. To enable again, simply turn the switch on.'>" +
 					"<input type='checkbox' id='new_user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +

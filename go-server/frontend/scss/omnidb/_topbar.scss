@@ -1654,4 +1654,11 @@
 	min-height: 0;
 }
 
+/* Applied by tabs.js's dragstart handler (deferred via setTimeout so it
+ * doesn't get baked into the browser's drag-image snapshot) for the
+ * duration of a native HTML5 tab drag, removed again on dragend. */
+.omnidb__tab-menu__link--dragging {
+	opacity: 0.45;
+}
+
 /*# sourceMappingURL=../css/omnidb.min.css.map */

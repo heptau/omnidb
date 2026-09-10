@@ -28,7 +28,6 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
-import { getAttributesOmniDBTooltip, getAttributesTooltip } from "./workspace.js";
 
 // Below this rendered width a tab has no room left to show a legible label
 // -- toggling `--icon-only` (see _base.scss/_topbar.scss's
@@ -322,45 +321,49 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 
 			p_tab.text = p_name;
 		},
-		dragEndFunction: function (e, p_tab) {
-			let el = e.target;
-			let el_pos = el.getBoundingClientRect();
-			let el_index = Array.prototype.indexOf.call(el.parentNode.children, el);
-
-			let drop_pos_x = e.x;
-			let drop_pos_y = e.y;
-
-			let old_index = el_index;
-			let new_index;
-
-			let siblings = Array.prototype.filter.call(el.parentNode.children, (sibling) => sibling !== el);
-			let total = siblings.length;
-			for (let i = 0; i < total; i++) {
-				let sibling = siblings[i];
-				let sibling_pos = sibling.getBoundingClientRect();
-				let sibling_pos_x = sibling_pos.x;
-				let sibling_pos_x_center = sibling_pos_x + sibling_pos.width / 2;
-				let sibling_pos_x_end = sibling_pos_x + sibling_pos.width;
-				let sibling_pos_y = sibling_pos.y;
-				let sibling_pos_y_end = sibling_pos.y + sibling_pos.height;
-				if (
-					sibling_pos_y < drop_pos_y &&
-					drop_pos_y < sibling_pos_y_end &&
-					sibling_pos_x < drop_pos_x &&
-					drop_pos_x < sibling_pos_x_end
-				) {
-					var removedEl = p_tab.tabList.splice(old_index, 1)[0];
-					if (drop_pos_x < sibling_pos_x_center) {
-						new_index = i;
-						p_tab.tabList.splice(new_index, 0, removedEl);
-						sibling.before(el);
-					} else {
-						new_index = i + 1;
-						p_tab.tabList.splice(new_index, 0, removedEl);
-						sibling.after(el);
-					}
+		// The currently HTML5-dragged tab's elementA, or null -- mirrors
+		// connections.js's v_conn_drag_item (module-level there because that
+		// list is a singleton; here it has to live per tabControl instance,
+		// since a page can have several tab strips at once).
+		/** @type {HTMLElement|null} */
+		dragItem: null,
+		// The tab (elementA) the dragged one should land before for a
+		// pointer at viewport-x p_x, or null to drop at the very end.
+		// Horizontal counterpart of connections.js's getConnectionDragTarget
+		// (that list is vertical, this strip is horizontal, hence x/width
+		// here instead of y/height there) -- same "closest box whose center
+		// is still ahead of the pointer" approach.
+		getTabDragTarget: function (p_x) {
+			/** @type {Element|null} */
+			var v_closest = null;
+			var v_closest_offset = Number.NEGATIVE_INFINITY;
+			var v_items = this.tabListDiv.children;
+			for (var i = 0; i < v_items.length; i++) {
+				var v_item = v_items[i];
+				if (v_item === this.dragItem) continue;
+				var v_box = v_item.getBoundingClientRect();
+				var v_offset = p_x - v_box.left - v_box.width / 2;
+				if (v_offset < 0 && v_offset > v_closest_offset) {
+					v_closest_offset = v_offset;
+					v_closest = v_item;
 				}
 			}
+			return v_closest;
+		},
+		// The live dragover reordering above only moves DOM nodes around
+		// (cheap, and it's what the proven-working connections.js sidebar
+		// drag does too) -- this is the one point that syncs the tabList
+		// array everything else (selectTabIndex, removeTabIndex, ...) relies
+		// on back to the DOM order a finished drag left behind.
+		resyncTabListFromDOM: function () {
+			var v_by_element = new Map(this.tabList.map((t) => [t.elementA, t]));
+			var v_new_list = [];
+			var v_children = this.tabListDiv.children;
+			for (var i = 0; i < v_children.length; i++) {
+				var v_tab = v_by_element.get(v_children[i]);
+				if (v_tab) v_new_list.push(v_tab);
+			}
+			this.tabList = v_new_list;
 		},
 		hideTabMenu: function () {
 			/** @type {HTMLElement} */ (document.getElementById(p_div)).classList.remove(
@@ -400,8 +403,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		 * @param {Function|false} [config.p_rightClickFunction] Callback for oncontextmenu.
 		 * @param {Function|null} [config.p_selectFunction]  Callback for after the tab-content is rendered.
 		 * @param {boolean} [config.p_selectable]  Defines if the the tab-content is controlled by default bootstrap tab system selection. Used together with p_clickFunction to override the selecting tab behaviour, like the snippets panel.
-		 * @param {string|false} [config.p_tooltip_name]  HTML string is accepted as an optional tooltip. This is bootstrap's default tooltip.
-		 * @param {string|false} [config.p_omnidb_tooltip_name]  HTML string is accepted as an optional tooltip. This is OmniDB custom tooltip, used in the outer menu to avoid overflow bugs from bootstrap.
+		 * @param {string|false} [config.p_tooltip_name]  HTML string is accepted as an optional tooltip.
 		 * @return {any} Creates the tab object in this tabControl.
 		 */
 		createTab: function ({
@@ -418,7 +420,6 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			p_selectFunction = null,
 			p_selectable = true,
 			p_tooltip_name = false,
-			p_omnidb_tooltip_name = false,
 		}) {
 			var v_control = this;
 			var v_index = this.tabCounter;
@@ -456,9 +457,6 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				enableClose: function () {
 					v_control.enableClose(this);
 				},
-				dragEndFunction: function (e, p_tab, p_index) {
-					v_control.dragEndFunction(e, p_tab);
-				},
 				isDraggable: p_isDraggable,
 			};
 
@@ -478,13 +476,38 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 
 			if (v_tab.isDraggable) {
 				v_a.setAttribute("draggable", "true");
-				/** @this {any} */
-				function v_onDragEnd(e) {
-					e.stopPropagation();
-					e.preventDefault();
-					v_tab.dragEndFunction(e, this);
-				}
-				v_a.ondragend = v_onDragEnd.bind(this);
+				// Native HTML5 drag-and-drop, same shape as connections.js's
+				// proven-working sidebar-list drag (bindConnectionDrag +
+				// bindConnectionListDrop) -- an earlier version of this used
+				// only a dragend handler and no dataTransfer payload, which
+				// looked fine in a plain Chromium browser but silently no-op'd
+				// in the packaged desktop app's WKWebView. The two things that
+				// were missing, both present below: a dragover handler on the
+				// strip itself that calls preventDefault() (without it the
+				// drop is refused and dragend reverts the tab), and
+				// dataTransfer.setData() on dragstart (some engines, at least
+				// Firefox, refuse to start a drag at all without it).
+				v_a.addEventListener("dragstart", function (e) {
+					v_control.dragItem = v_a;
+					if (e.dataTransfer) {
+						e.dataTransfer.effectAllowed = "move";
+						e.dataTransfer.setData("text/plain", "");
+					}
+					// Deferred: applying the class synchronously would bake the
+					// faded look into the drag image the browser snapshots
+					// right after this handler returns.
+					setTimeout(function () {
+						v_a.classList.add("omnidb__tab-menu__link--dragging");
+					}, 0);
+				});
+				v_a.addEventListener("dragend", function () {
+					v_a.classList.remove("omnidb__tab-menu__link--dragging");
+					if (v_control.dragItem !== v_a) return;
+					v_control.dragItem = null;
+					// The strip's dragover handler already moved the DOM node
+					// live; this just syncs tabList to match where it ended up.
+					v_control.resyncTabListFromDOM();
+				});
 			}
 
 			if (p_disabled) {
@@ -535,8 +558,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			// own visible label -- stripping any nested HTML (loading
 			// spinner, dirty/check icon) down to plain text first.
 			var v_effective_tooltip_name = p_tooltip_name;
-			var v_effective_omnidb_tooltip_name = p_omnidb_tooltip_name;
-			if (!p_tooltip_name && !p_omnidb_tooltip_name && v_name) {
+			if (!p_tooltip_name && v_name) {
 				var v_tooltip_scratch = document.createElement("div");
 				v_tooltip_scratch.innerHTML = v_name;
 				var v_plain_label = (v_tooltip_scratch.textContent || "").trim();
@@ -546,25 +568,46 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			}
 
 			if (v_effective_tooltip_name) {
-				getAttributesTooltip(v_a, v_effective_tooltip_name, null, "right");
+				// Native `title` tooltip -- flattens any HTML (e.g. the
+				// connection strip's "<h5>alias</h5><div>host:port</div>") to
+				// plain text, one line per top-level block, since `title`
+				// doesn't render markup. Simpler and more reliable than a
+				// Bootstrap Tooltip instance: no show/hide/dispose lifecycle
+				// to manage, no clipping against a scrolling ancestor, and no
+				// risk of an orphaned popup surviving a closed tab.
+				var v_tooltip_html_scratch = document.createElement("div");
+				v_tooltip_html_scratch.innerHTML = v_effective_tooltip_name;
+				var v_tooltip_lines = [];
+				v_tooltip_html_scratch.childNodes.forEach(function (node) {
+					var v_line = (node.textContent || "").trim();
+					if (v_line) v_tooltip_lines.push(v_line);
+				});
+				var v_tooltip_text = v_tooltip_lines.length
+					? v_tooltip_lines.join("\n")
+					: v_tooltip_html_scratch.textContent.trim();
+
 				// Toolbar tab-switcher buttons (Query/Console/Snippet/
 				// Monitoring/EditData/Properties/DDL, ...) show this tooltip's
 				// text as their own visible label already once they have room
-				// for it -- keeping it would just repeat what is already on
-				// screen. Only suppressed once the label is actually showing
-				// (icon-only tabs still need it), and never for the
-				// connection-switching strip itself (p_hierarchy === "primary"),
-				// whose tooltip carries the connection string/host details that
-				// never fit on the tab.
-				if (p_hierarchy !== "primary") {
-					v_a.addEventListener("show.bs.tooltip", function (e) {
-						if (!v_a.classList.contains("omnidb__tab-menu__link--icon-only")) {
-							e.preventDefault();
+				// for it -- setting `title` there too would just repeat what's
+				// already on screen. Checked live on hover (via the icon-only
+				// class the ResizeObserver toggles), since a tab's width --
+				// and so whether its label is actually showing -- can change
+				// after creation. Never suppressed on the connection-switching
+				// strip itself (p_hierarchy === "primary"), whose tooltip
+				// carries the connection string/host details that never fit
+				// on the tab regardless of width.
+				if (p_hierarchy === "primary") {
+					v_a.setAttribute("title", v_tooltip_text);
+				} else {
+					v_a.addEventListener("mouseenter", function () {
+						if (v_a.classList.contains("omnidb__tab-menu__link--icon-only")) {
+							v_a.setAttribute("title", v_tooltip_text);
+						} else {
+							v_a.removeAttribute("title");
 						}
 					});
 				}
-			} else if (v_effective_omnidb_tooltip_name) {
-				getAttributesOmniDBTooltip(v_a, v_effective_omnidb_tooltip_name, null, "right");
 			}
 			v_a.innerHTML =
 				'<span class="omnidb__tab-menu__link-content">' +
@@ -599,12 +642,6 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				if (v_tab.clickFunction != null) {
 					v_tab.clickFunction(e);
 				}
-				// Hiding the tooltip on click if the has tooltips. Keyed off
-				// the effective (possibly auto-derived) tooltip, not the raw
-				// param -- otherwise a fallback tooltip never gets dismissed.
-				if (v_effective_tooltip_name) {
-					bootstrap.Tooltip.getOrCreateInstance(v_a).hide();
-				}
 			};
 
 			if (this.trailingTab && this.trailingTab !== v_tab) {
@@ -625,6 +662,47 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			return v_tab;
 		},
 	};
+
+	// The dragover/drop half of native HTML5 tab reordering, bound once on
+	// the strip itself rather than per tab -- mirrors connections.js's
+	// bindConnectionListDrop for its sidebar list (same reasoning: the gaps
+	// between tabs, not just the tabs themselves, need to be valid drop
+	// targets). createTab's dragstart/dragend (per tab, since each tab is
+	// its own drag source) set/clear v_tabControl.dragItem.
+	v_div_tab_list.addEventListener("dragover", function (e) {
+		if (v_tabControl.dragItem === null) return;
+		// Without this the drop is refused and dragend reverts the tab (same
+		// HTML5 DnD requirement connections.js's identical comment notes --
+		// this exact line was missing before, which is why a WKWebView drop
+		// used to silently no-op here).
+		e.preventDefault();
+		if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+
+		var v_drag_item = v_tabControl.dragItem;
+		var v_target = v_tabControl.getTabDragTarget(e.clientX);
+		if (v_target === null) {
+			// Never place anything after a pinned tab (the trailing "+"
+			// add-tab) -- it must always stay last.
+			var v_last = v_div_tab_list.lastElementChild;
+			var v_last_tab = v_last != null ? v_tabControl.tabList.find((t) => t.elementA === v_last) : null;
+			if (v_last && v_last_tab && v_last_tab.isDraggable === false) {
+				if (v_last !== v_drag_item && v_last.previousElementSibling !== v_drag_item) {
+					v_div_tab_list.insertBefore(v_drag_item, v_last);
+				}
+			} else if (v_div_tab_list.lastElementChild !== v_drag_item) {
+				v_div_tab_list.appendChild(v_drag_item);
+			}
+		} else if (v_target.previousElementSibling !== v_drag_item) {
+			v_div_tab_list.insertBefore(v_drag_item, v_target);
+		}
+	});
+
+	v_div_tab_list.addEventListener("drop", function (e) {
+		if (v_tabControl.dragItem === null) return;
+		// The tab is already where dragover put it -- this only stops the
+		// browser from treating the drop as a navigation.
+		e.preventDefault();
+	});
 
 	return v_tabControl;
 }

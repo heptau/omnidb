@@ -45,7 +45,6 @@ import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_s
 import {
 	adjustQueryTabObjects,
 	indentSQL,
-	refreshBootstrapTooltips,
 	removeTab,
 	resizeVertical,
 	showMenuNewTab,
@@ -312,16 +311,24 @@ export var v_createConsoleTabFunction = function () {
 		consoleSQL();
 	});*/
 
-	var v_resizeFunction = function () {
+	// p_skip_height: see inner_query_tab.js's identical parameter on its own
+	// v_resizeFunction -- the vertical resize-line drag (resizeVertical in
+	// workspace.js) already sets div_console's height itself from the drag
+	// delta, so recomputing the same height here via getBoundingClientRect()
+	// would force a synchronous layout on every animation frame of the drag
+	// for no benefit.
+	var v_resizeFunction = function (p_skip_height) {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		if (v_tab_tag.div_console) {
-			v_tab_tag.div_console.style.height =
-				window.innerHeight -
-				(v_tab_tag.div_console.getBoundingClientRect().top + window.scrollY) -
-				parseInt(v_tab_tag.div_result.style.height, 10) -
-				1.25 * v_font_size -
-				38 +
-				"px";
+			if (!p_skip_height) {
+				v_tab_tag.div_console.style.height =
+					window.innerHeight -
+					(v_tab_tag.div_console.getBoundingClientRect().top + window.scrollY) -
+					parseInt(v_tab_tag.div_result.style.height, 10) -
+					1.25 * v_font_size -
+					38 +
+					"px";
+			}
 			v_tab_tag.editor_console.resize();
 			v_tab_tag.editor_input.resize();
 			v_tab_tag.editor_console.fit();
@@ -424,6 +431,7 @@ export var v_createConsoleTabFunction = function () {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
@@ -438,7 +446,6 @@ export var v_createConsoleTabFunction = function () {
 	}, 10);
 
 	adjustQueryTabObjects(false);
-	refreshBootstrapTooltips();
 
 	// Sets a render refresh for the grid on the consoleHistory.modal after the modal is fully loaded
 	// (Bootstrap dispatches "shown.bs.modal" as a real DOM event, no jQuery needed to listen for it.)

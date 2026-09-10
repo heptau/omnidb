@@ -47,7 +47,7 @@ import { refreshNotifyPane } from "./panel_functions/outer_notify_panel.js";
 import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
-import { refreshBootstrapTooltips, refreshHeights } from "./workspace.js";
+import { refreshHeights } from "./workspace.js";
 
 const SECTION_NAMES = ["welcome", "connections", "database", "notify", "snippets", "settings"];
 
@@ -142,9 +142,8 @@ export function initSectionSwitcher() {
 		p_selectFunction: function () {
 			switchSection("welcome");
 			document.title = "Welcome to OmniDB";
-			refreshBootstrapTooltips();
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Welcome</h5>',
+		p_tooltip_name: '<h5 class="my-1">Welcome</h5>',
 	});
 
 	v_sectionNavTabs.connections = v_sectionNav.createTab({
@@ -156,7 +155,7 @@ export function initSectionSwitcher() {
 			// modal as its last step.
 			startConnectionManagement();
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Connections</h5>',
+		p_tooltip_name: '<h5 class="my-1">Connections</h5>',
 	});
 
 	v_sectionNavTabs.database = v_sectionNav.createTab({
@@ -165,7 +164,7 @@ export function initSectionSwitcher() {
 		p_selectFunction: function () {
 			switchSection("database");
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Database</h5>',
+		p_tooltip_name: '<h5 class="my-1">Database</h5>',
 	});
 
 	v_sectionNavTabs.notify = v_sectionNav.createTab({
@@ -174,7 +173,7 @@ export function initSectionSwitcher() {
 		p_selectFunction: function () {
 			switchSection("notify");
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Notify</h5>',
+		p_tooltip_name: '<h5 class="my-1">Notify</h5>',
 	});
 
 	v_sectionNavTabs.snippets = v_sectionNav.createTab({
@@ -183,7 +182,7 @@ export function initSectionSwitcher() {
 		p_selectFunction: function () {
 			toggleSnippetPanel();
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Snippets</h5>',
+		p_tooltip_name: '<h5 class="my-1">Snippets</h5>',
 	});
 
 	// Pushes About/Account/Settings to the bottom of the rail, VSCode-style.
@@ -204,7 +203,7 @@ export function initSectionSwitcher() {
 		p_clickFunction: function (e) {
 			startTutorial("getting_started", e.currentTarget);
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Getting Started</h5>',
+		p_tooltip_name: '<h5 class="my-1">Getting Started</h5>',
 	});
 
 	// The account icon (username/version/sign-out) only has anything to show
@@ -221,7 +220,7 @@ export function initSectionSwitcher() {
 		p_selectFunction: function () {
 			showConfigUser();
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Settings</h5>',
+		p_tooltip_name: '<h5 class="my-1">Settings</h5>',
 	});
 
 	// No default switchSection() call here -- workspace.js's initWorkspace()
@@ -247,7 +246,7 @@ function initAccountMenu() {
 			e.stopPropagation();
 			toggleAccountMenu();
 		},
-		p_omnidb_tooltip_name: '<h5 class="my-1">Account</h5>',
+		p_tooltip_name: '<h5 class="my-1">Account</h5>',
 	});
 
 	var v_menu = document.createElement("div");

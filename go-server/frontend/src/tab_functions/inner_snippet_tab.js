@@ -30,7 +30,7 @@ SOFTWARE.
 
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { saveSnippetText } from "../tree_context_functions/tree_snippets.js";
-import { indentSQL, refreshBootstrapTooltips, refreshHeights, removeTab } from "../workspace.js";
+import { indentSQL, refreshHeights, removeTab } from "../workspace.js";
 
 
 /** @param {{id: any, name: string, id_parent: any}|null} [p_snippet] */
@@ -223,6 +223,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			// showMenuNewTab(e);
 			v_connTabControl.tag.createSnippetTextTab();
@@ -233,7 +234,6 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		mode: "add",
 	};
 
-	refreshBootstrapTooltips();
 
 	v_editor.focus();
 };

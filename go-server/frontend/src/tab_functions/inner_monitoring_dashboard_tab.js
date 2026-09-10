@@ -38,7 +38,7 @@ import {
 	showMonitorUnitList,
 	testMonitorScript,
 } from "../monitoring.js";
-import { refreshBootstrapTooltips, removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 
 
 export var v_createMonitorDashboardTabFunction = function () {
@@ -162,6 +162,7 @@ export var v_createMonitorDashboardTabFunction = function () {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
@@ -171,7 +172,6 @@ export var v_createMonitorDashboardTabFunction = function () {
 		mode: "add",
 	};
 
-	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		v_resizeFunction();
@@ -388,6 +388,7 @@ export var v_createNewMonitorUnitTabFunction = function () {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
@@ -397,7 +398,6 @@ export var v_createNewMonitorUnitTabFunction = function () {
 		mode: "add",
 	};
 
-	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		v_resizeFunction();

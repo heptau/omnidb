@@ -33,7 +33,7 @@ import { v_current_terminal_theme } from "../header_actions.js";
 import { createRequest } from "../long_polling.js";
 import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { startTerminal, terminalContextMenu, terminalKey } from "../terminal.js";
-import { refreshBootstrapTooltips, refreshHeights } from "../workspace.js";
+import { refreshHeights } from "../workspace.js";
 
 
 // Local, not imported from connections.js -- see the identical comment in
@@ -84,7 +84,7 @@ export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias 
 		p_rightClickFunction: function (e) {
 			terminalContextMenu(e, v_tab);
 		},
-		p_omnidb_tooltip_name: v_tooltip_name,
+		p_tooltip_name: v_tooltip_name,
 	});
 
 	v_connTabControl.selectTab(v_tab);
@@ -142,7 +142,6 @@ export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias 
 	// Creating `Add` tab in the outer tab list
 	// v_connTabControl.createAddTab();
 
-	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		refreshHeights();

@@ -39,7 +39,6 @@ import { showAlert, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
 import { escapeHtml, escapeHtmlAttribute, v_queryRequestCodes } from "../query.js";
 import { editDataActionRenderer, grayEmptyRenderer, grayRenderer, greenRenderer, newRowRenderer, redRenderer, whiteRenderer, yellowRenderer } from "../renderers.js";
-import { refreshBootstrapTooltips } from "../workspace.js";
 
 export var v_editDataState = {
 	Idle: 0,
@@ -327,15 +326,9 @@ export function queryEditDataReturnRender(p_message, p_context) {
 			// quoted attribute, the column name into element text, so they
 			// need the attribute-safe and text-safe escapes respectively —
 			// an identifier is allowed to contain a quote.
-			var v_tooltip_attr =
-				" data-toggle=tooltip " +
-				"data-placement=bottom " +
-				"data-html=true " +
-				'title="&lt;div&gt;&lt;b&gt;Type&lt;/b&gt; ' +
-				escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i].v_type) +
-				'&lt;/div&gt;" ';
+			var v_tooltip_attr = 'title="Type ' + escapeHtmlAttribute(v_currTabTag.editDataObject.columns[i].v_type) + '"';
 
-			var v_tooltip_html = '<i class="ms-1 omnidb__theme-text--primary fas fa-info-circle"' + v_tooltip_attr + '"></i>';
+			var v_tooltip_html = '<i class="ms-1 omnidb__theme-text--primary fas fa-info-circle" ' + v_tooltip_attr + "></i>";
 
 			var v_column_html = "<span>" + escapeHtml(v_currTabTag.editDataObject.columns[i].v_column) + "</span>";
 
@@ -500,7 +493,6 @@ export function queryEditDataReturnRender(p_message, p_context) {
 	p_context.tab_tag.tab_check_span.style.display = "none";
 	p_context.tab_tag.bt_cancel.style.display = "none";
 
-	refreshBootstrapTooltips();
 }
 
 export function saveEditData() {

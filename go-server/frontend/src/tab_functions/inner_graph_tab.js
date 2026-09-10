@@ -29,7 +29,7 @@ SOFTWARE.
 */
 
 import { beforeCloseTab } from "../create_tab_functions.js";
-import { refreshBootstrapTooltips, removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 
 
 export var v_createGraphTabFunction = function (p_name) {
@@ -114,6 +114,7 @@ export var v_createGraphTabFunction = function (p_name) {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},
@@ -123,7 +124,6 @@ export var v_createGraphTabFunction = function (p_name) {
 		mode: "add",
 	};
 
-	refreshBootstrapTooltips();
 
 	setTimeout(function () {
 		v_resizeFunction();

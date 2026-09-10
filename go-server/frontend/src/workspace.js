@@ -151,7 +151,6 @@ function initWorkspace() {
 	v_omnis.div.innerHTML = v_omnis.template;
 	document.body.appendChild(v_omnis.div);
 
-	refreshBootstrapTooltips();
 }
 // This creates v_connTabControl itself, so unlike plugin_hook.js's
 // initHookRegistry it has nothing to poll for -- every other file's
@@ -159,15 +158,6 @@ function initWorkspace() {
 // `typeof v_connTabControl !== "undefined"` check for exactly this reason.
 if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initWorkspace);
 else setTimeout(initWorkspace, 0);
-
-// getOrCreateInstance is idempotent -- calling this again on an already-
-// tooltip'd element just returns its existing instance instead of stacking
-// a duplicate, so it's safe to re-run every time a tab is (re)selected.
-export function refreshBootstrapTooltips() {
-	document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach((el) => {
-		bootstrap.Tooltip.getOrCreateInstance(el, { animation: true, html: true });
-	});
-}
 
 /// <summary>
 /// Retrieves database list.
@@ -737,7 +727,23 @@ export function resizeConnectionHorizontal(event) {
 		v_div_left.style["max-width"] = v_left_width_value;
 		v_div_left.style["width"] = v_left_width_value;
 
-		refreshHeights();
+		// Direct calls instead of refreshHeights() -- see resizeVertical's
+		// comment for why that function's flat, un-cleared setTimeout makes a
+		// live rAF drag look like it only redraws on mouseup. This splitter
+		// changes width, not height, so heights don't need recomputing here
+		// -- just the two things whose own internal canvas/gutters need to
+		// know their container got wider or narrower: whichever of the
+		// tree's own Properties/DDL panes is showing, and the currently
+		// selected inner (query/console/...) tab.
+		var v_tag = v_connTabControl.selectedTab.tag;
+		if (v_tag.currTreeTab == "properties" && v_tag.gridProperties != null) {
+			v_tag.gridProperties.render();
+		} else if (v_tag.currTreeTab == "ddl" && v_tag.ddlEditor != null) {
+			v_tag.ddlEditor.resize();
+		}
+		if (v_tag.tabControl != null && v_tag.tabControl.selectedTab != null && v_tag.tabControl.selectedTab.tag.resize != null) {
+			v_tag.tabControl.selectedTab.tag.resize();
+		}
 	};
 	var v_move = function (e) {
 		v_last_x = e.x;
@@ -868,7 +874,20 @@ export function resizeVertical(event) {
 		v_editor_div.style.height = v_start_editor_height + v_height_diff + "px";
 		v_result_div.style.height = v_start_result_height - v_height_diff + "px";
 
-		refreshHeights();
+		// Direct call instead of refreshHeights() -- that function wraps
+		// everything (including this same v_tab_tag.resize()) in a flat,
+		// un-cleared setTimeout(fn, 351), so a rAF-per-frame drag queued
+		// dozens of stacked timers that all fired late, well after the
+		// mouse had stopped moving -- indistinguishable from "only redraws
+		// on mouseup". This tab's editor/grid is the only thing this
+		// particular splitter actually needs to keep live. `true` skips the
+		// tab's own redundant div_result/div_console height recompute --
+		// the two lines just above already set that same height directly
+		// from the drag delta, so asking resize() to recompute it again a
+		// different way (via getBoundingClientRect(), which forces a
+		// synchronous layout flush of the write just made) would still cost
+		// a forced reflow on every single animation frame of the drag.
+		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.resize(true);
 	};
 	var v_move = function (e) {
 		v_last_y = e.screenY;
@@ -885,14 +904,27 @@ export function resizeVertical(event) {
 	document.body.addEventListener("mouseup", v_up);
 }
 
-export function resizeWindow() {
-	refreshHeights(true);
-}
-
-export var resizeTimeout;
+// rAF-throttled (applies on every animation frame while the OS window is
+// actively being dragged) rather than debounced -- a debounce (clearTimeout
+// + setTimeout on every event, as this used to do) never actually fires
+// until resize events stop arriving, and the browser keeps firing them
+// continuously for the whole duration of a live window-resize drag, not
+// just at the end. That combination is what made everything -- not just
+// the SQL editor, plain buttons and selects included, since it's the exact
+// same layout that isn't recomputed until the drag ends -- appear frozen
+// until the window edge was released. Calls v_doRefreshHeights directly,
+// bypassing refreshHeights' own separate setTimeout(fn, 351): that extra,
+// fixed delay is fine for refreshHeights' other (one-shot, non-drag)
+// callers, but stacked on top of a live per-frame call it would reintroduce
+// the same lag this is fixing.
+var v_window_resize_pending = false;
 window.addEventListener("resize", function () {
-	clearTimeout(resizeTimeout);
-	resizeTimeout = setTimeout(resizeWindow, 200);
+	if (v_window_resize_pending) return;
+	v_window_resize_pending = true;
+	requestAnimationFrame(function () {
+		v_window_resize_pending = false;
+		v_doRefreshHeights(true);
+	});
 });
 
 /// <summary>
@@ -900,118 +932,125 @@ window.addEventListener("resize", function () {
 /// </summary>
 export function refreshHeights(p_all) {
 	setTimeout(function () {
-		//Adjusting tree height
-		// if (p_all) {
-		//   refreshTreeHeight();
-		// }
-
-		// No open connection/terminal tab (e.g. the Database section is
-		// empty, or another section is active) -- nothing below this point
-		// applies.
-		if (!v_connTabControl.selectedTab) return;
-
-		if (v_connections_data && v_connections_data.v_active) {
-			v_connections_data.ht.render();
-		}
-
-		// Everything below reads getBoundingClientRect() on the Database
-		// section's own DOM, which is meaningless (all zeroes) while that
-		// section is hidden -- e.g. selecting a different connection tab via
-		// the shared strip while it is physically relocated into the Notify
-		// section (see section_switcher.js). Skipping it here is safe:
-		// switchSection("database") forces a fresh refreshHeights(true) the
-		// moment the user actually switches back, which is the only time
-		// this math needs to be correct again.
-		if (isSectionActive("database")) {
-			if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
-				v_connTabControl.selectedTab.tag.tabControlDiv.style.height =
-					window.innerHeight -
-					(v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) -
-					1.5 * v_font_size +
-					"px";
-			}
-			if (v_connTabControl.selectedTab.tag.mode == "connection") {
-				refreshOuterConnectionHeights();
-			} else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
-				v_connTabControl.selectedTab.tag.div_console.style.height =
-					window.innerHeight -
-					(v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) -
-					1.25 * v_font_size +
-					"px";
-				v_connTabControl.selectedTab.tag.editor_console.fit();
-			}
-
-			//If inner tab exists
-			if (v_connTabControl.selectedTab.tag.tabControl != null && v_connTabControl.selectedTab.tag.tabControl.selectedTab) {
-				var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-
-				if (
-					v_tab_tag.mode == "console" ||
-					v_tab_tag.mode == "edit" ||
-					v_tab_tag.mode == "graph" ||
-					v_tab_tag.mode == "monitor_dashboard" ||
-					v_tab_tag.mode == "monitor_grid" ||
-					v_tab_tag.mode == "monitor_unit" ||
-					v_tab_tag.mode == "query" ||
-					v_tab_tag.mode == "website" ||
-					v_tab_tag.mode == "website_outer"
-				) {
-					v_tab_tag.resize();
-				}
-				else if (v_tab_tag.mode == "alter") {
-					if (v_tab_tag.alterTableObject.window == "columns") {
-						var v_height = window.innerHeight - (v_tab_tag.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
-						v_tab_tag.htDivColumns.style.height = v_height + "px";
-						if (v_tab_tag.alterTableObject.htColumns != null) {
-							v_tab_tag.alterTableObject.htColumns.render();
-						}
-					} else if (v_tab_tag.alterTableObject.window == "constraints") {
-						var v_height =
-							window.innerHeight - (v_tab_tag.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
-						v_tab_tag.htDivConstraints.style.height = v_height + "px";
-						if (v_tab_tag.alterTableObject.htConstraints != null) {
-							v_tab_tag.alterTableObject.htConstraints.render();
-						}
-					} else {
-						var v_height = window.innerHeight - (v_tab_tag.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
-						v_tab_tag.htDivIndexes.style.height = v_height + "px";
-						if (v_tab_tag.alterTableObject.htIndexes != null) {
-							v_tab_tag.alterTableObject.htIndexes.render();
-						}
-					}
-				} else if (v_tab_tag.mode == "data_mining") {
-					if (v_tab_tag.currQueryTab == "data") {
-						v_tab_tag.div_result.style.height =
-							window.innerHeight -
-							(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
-							1.25 * v_font_size +
-							"px";
-					}
-				}
-			}
-
-			// Updating tree sizes
-			refreshTreeHeight();
-		}
-
-		// Hooks
-		if (v_connTabControl.tag.hooks.windowResize.length > 0) {
-			for (var i = 0; i < v_connTabControl.tag.hooks.windowResize.length; i++) v_connTabControl.tag.hooks.windowResize[i]();
-		}
-
-		// Snippet panel
-		resizeSnippetPanel();
-
-		// Updating position of omnis.
-		if (v_omnis) {
-			if (v_omnis.omnis_ui_assistant) {
-				v_omnis.omnis_ui_assistant.goToStep(v_omnis.omnis_ui_assistant.stepSelected);
-			} else if (v_omnis.div) {
-				v_omnis.div.style.top = v_omnis.root.getBoundingClientRect().height - 45 + "px";
-				v_omnis.div.style.left = v_omnis.root.getBoundingClientRect().width - 45 + "px";
-			}
-		}
+		v_doRefreshHeights(p_all);
 	}, 351);
+}
+
+// The actual body of refreshHeights, callable directly (no delay) by the
+// window resize listener below -- see that listener's own comment for why
+// it needs to bypass refreshHeights' own setTimeout(fn, 351) entirely.
+function v_doRefreshHeights(p_all) {
+	//Adjusting tree height
+	// if (p_all) {
+	//   refreshTreeHeight();
+	// }
+
+	// No open connection/terminal tab (e.g. the Database section is
+	// empty, or another section is active) -- nothing below this point
+	// applies.
+	if (!v_connTabControl.selectedTab) return;
+
+	if (v_connections_data && v_connections_data.v_active) {
+		v_connections_data.ht.render();
+	}
+
+	// Everything below reads getBoundingClientRect() on the Database
+	// section's own DOM, which is meaningless (all zeroes) while that
+	// section is hidden -- e.g. selecting a different connection tab via
+	// the shared strip while it is physically relocated into the Notify
+	// section (see section_switcher.js). Skipping it here is safe:
+	// switchSection("database") forces a fresh refreshHeights(true) the
+	// moment the user actually switches back, which is the only time
+	// this math needs to be correct again.
+	if (isSectionActive("database")) {
+		if (v_connTabControl.selectedTab.tag.mode == "monitor_all") {
+			v_connTabControl.selectedTab.tag.tabControlDiv.style.height =
+				window.innerHeight -
+				(v_connTabControl.selectedTab.tag.tabControlDiv.getBoundingClientRect().top + window.scrollY) -
+				1.5 * v_font_size +
+				"px";
+		}
+		if (v_connTabControl.selectedTab.tag.mode == "connection") {
+			refreshOuterConnectionHeights();
+		} else if (v_connTabControl.selectedTab.tag.mode == "outer_terminal") {
+			v_connTabControl.selectedTab.tag.div_console.style.height =
+				window.innerHeight -
+				(v_connTabControl.selectedTab.tag.div_console.getBoundingClientRect().top + window.scrollY) -
+				1.25 * v_font_size +
+				"px";
+			v_connTabControl.selectedTab.tag.editor_console.fit();
+		}
+
+		//If inner tab exists
+		if (v_connTabControl.selectedTab.tag.tabControl != null && v_connTabControl.selectedTab.tag.tabControl.selectedTab) {
+			var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+
+			if (
+				v_tab_tag.mode == "console" ||
+				v_tab_tag.mode == "edit" ||
+				v_tab_tag.mode == "graph" ||
+				v_tab_tag.mode == "monitor_dashboard" ||
+				v_tab_tag.mode == "monitor_grid" ||
+				v_tab_tag.mode == "monitor_unit" ||
+				v_tab_tag.mode == "query" ||
+				v_tab_tag.mode == "website" ||
+				v_tab_tag.mode == "website_outer"
+			) {
+				v_tab_tag.resize();
+			}
+			else if (v_tab_tag.mode == "alter") {
+				if (v_tab_tag.alterTableObject.window == "columns") {
+					var v_height = window.innerHeight - (v_tab_tag.htDivColumns.getBoundingClientRect().top + window.scrollY) - 45;
+					v_tab_tag.htDivColumns.style.height = v_height + "px";
+					if (v_tab_tag.alterTableObject.htColumns != null) {
+						v_tab_tag.alterTableObject.htColumns.render();
+					}
+				} else if (v_tab_tag.alterTableObject.window == "constraints") {
+					var v_height =
+						window.innerHeight - (v_tab_tag.htDivConstraints.getBoundingClientRect().top + window.scrollY) - 45;
+					v_tab_tag.htDivConstraints.style.height = v_height + "px";
+					if (v_tab_tag.alterTableObject.htConstraints != null) {
+						v_tab_tag.alterTableObject.htConstraints.render();
+					}
+				} else {
+					var v_height = window.innerHeight - (v_tab_tag.htDivIndexes.getBoundingClientRect().top + window.scrollY) - 45;
+					v_tab_tag.htDivIndexes.style.height = v_height + "px";
+					if (v_tab_tag.alterTableObject.htIndexes != null) {
+						v_tab_tag.alterTableObject.htIndexes.render();
+					}
+				}
+			} else if (v_tab_tag.mode == "data_mining") {
+				if (v_tab_tag.currQueryTab == "data") {
+					v_tab_tag.div_result.style.height =
+						window.innerHeight -
+						(v_tab_tag.div_result.getBoundingClientRect().top + window.scrollY) -
+						1.25 * v_font_size +
+						"px";
+				}
+			}
+		}
+
+		// Updating tree sizes
+		refreshTreeHeight();
+	}
+
+	// Hooks
+	if (v_connTabControl.tag.hooks.windowResize.length > 0) {
+		for (var i = 0; i < v_connTabControl.tag.hooks.windowResize.length; i++) v_connTabControl.tag.hooks.windowResize[i]();
+	}
+
+	// Snippet panel
+	resizeSnippetPanel();
+
+	// Updating position of omnis.
+	if (v_omnis) {
+		if (v_omnis.omnis_ui_assistant) {
+			v_omnis.omnis_ui_assistant.goToStep(v_omnis.omnis_ui_assistant.stepSelected);
+		} else if (v_omnis.div) {
+			v_omnis.div.style.top = v_omnis.root.getBoundingClientRect().height - 45 + "px";
+			v_omnis.div.style.left = v_omnis.root.getBoundingClientRect().width - 45 + "px";
+		}
+	}
 }
 
 export function refreshTreeHeight() {
@@ -1510,113 +1549,6 @@ export function updateExplainComponent() {
 	} else {
 		/** @type {HTMLElement} */ (document.getElementById("omnidb__main")).classList.remove("omnidb__explain--default");
 	}
-}
-
-/**
- * ## getAttributesTooltip
- * @desc Creates and applies tooltip attributes to the target.
- *
- * @param  {string|null} [p_title]   Title string.
- * @param  {string|null} [p_message] Message string, accepts html.
- * @param {string|false} [p_position]
- */
-export function getAttributesTooltip(p_target, p_title, p_message, p_position = false) {
-	let v_html = "";
-	if (p_message) {
-		v_html += p_title != undefined ? "<div>" + p_title + "</div>" : "";
-		v_html += p_message != undefined ? "<div>" + p_message + "</div>" : "";
-	} else {
-		v_html += p_title != undefined ? '<h4 class=\"mb-0\">' + p_title + "</h4>" : "";
-	}
-	let v_position = p_position ? p_position : "bottom";
-	// Bootstrap 5 attributes -- matches every other working tooltip in the
-	// app (e.g. inner_query_tab.js's explain-toggle switch) and what
-	// refreshBootstrapTooltips() actually queries for
-	// ([data-bs-toggle="tooltip"]). This function previously used the
-	// Bootstrap 4-era attribute names, which refreshBootstrapTooltips()
-	// never picked up -- dead code until tabs.js's tooltip fallback became
-	// its first real caller.
-	p_target.setAttribute("data-bs-html", true);
-	p_target.setAttribute("data-bs-placement", v_position);
-	p_target.setAttribute("data-bs-toggle", "tooltip");
-	p_target.setAttribute("data-bs-original-title", v_html);
-	p_target.setAttribute("title", "");
-}
-/**
- * ## getStringTooltip
- * @desc Creates html string that renders as a tooltip.
- *
- * @param  {string|null} [p_title]   Title string.
- * @param  {string|null} [p_message] Message string, accepts html.
- * @return {string}         HTML string.
- */
-export function getStringTooltip(p_title, p_message, p_position = false) {
-	let v_html = "";
-	if (p_message) {
-		v_html += p_title != undefined ? "<div>" + p_title + "</div>" : "";
-		v_html += p_message != undefined ? "<div>" + p_message + "</div>" : "";
-	} else {
-		v_html += p_title != undefined ? '<div class=\"mb-0\">' + p_title + "</div>" : "";
-	}
-	let v_tooltipAttr = "data-toggle=tooltip " + "data-html=true " + 'title="' + v_html + '" ';
-	if (p_position) {
-		v_tooltipAttr += "data-placement=" + p_position + " ";
-	} else {
-		v_tooltipAttr += "data-placement=bottom ";
-	}
-	return v_tooltipAttr;
-}
-
-/**
- * ## getAttributesOmniDBTooltip
- * @desc Creates and applies tooltip attributes to the target.
- *
- * @param  {string|null} [p_title]   Title string.
- * @param  {string|null} [p_message] Message string, accepts html.
- * @param {string|false} [p_position]
- */
-export function getAttributesOmniDBTooltip(p_target, p_title, p_message, p_position = false) {
-	let v_html = '<div class="omnidb__tooltip__inner tooltip-inner"><div class="arrow"></div>';
-	if (p_message) {
-		v_html += p_title != undefined ? "<div>" + p_title + "</div>" : "";
-		v_html += p_message != undefined ? "<div>" + p_message + "</div>" : "";
-	} else {
-		v_html += p_title != undefined ? '<h4 class=\"mb-0\">' + p_title + "</h4>" : "";
-	}
-	v_html += "</div>";
-	let v_position = p_position ? p_position : "bottom";
-	p_target.setAttribute("data-html", true);
-	p_target.setAttribute("data-placement", v_position);
-	p_target.setAttribute("data-omnidb-toggle", "tooltip");
-	p_target.setAttribute("data-title", v_html);
-	let v_tooltip_element;
-	p_target.addEventListener("mouseenter", function (e) {
-		v_tooltip_element = document.createElement("div");
-		v_tooltip_element.innerHTML = v_html;
-		v_tooltip_element.style.position = "fixed";
-		v_tooltip_element.classList = "omnidb__tooltip tooltip bs-tooltip-right fade show";
-		let v_pos_diff = window.innerHeight - e.target.getBoundingClientRect().y;
-		if (v_pos_diff > 150) {
-			v_tooltip_element.style.top = e.target.getBoundingClientRect().y + "px";
-		} else {
-			v_tooltip_element.style.bottom = v_pos_diff - 27 + "px";
-			v_tooltip_element.classList.add("omnidb__tooltip--bottom");
-		}
-		// The target's own on-screen right edge, not just its width -- this
-		// tooltip is `position: fixed`, so `left` needs viewport coordinates.
-		// Using offsetWidth alone happened to work for the vertical
-		// section-nav rail (whose icons sit flush against the left edge of
-		// the screen, so right edge == width), but put the tooltip at the
-		// literal left edge of the viewport for anything positioned further
-		// right, e.g. the outer tab strip's "Add Connection" "+" tab.
-		v_tooltip_element.style.left = e.target.getBoundingClientRect().right + 5 + "px";
-		document.body.appendChild(v_tooltip_element);
-	});
-	p_target.addEventListener("mouseleave", function (e) {
-		if (v_tooltip_element) {
-			document.body.removeChild(v_tooltip_element);
-		}
-	});
 }
 
 export var v_monitoring_action_whitelist = {

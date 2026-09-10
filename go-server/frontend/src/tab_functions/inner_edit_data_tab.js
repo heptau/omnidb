@@ -37,7 +37,7 @@ import {
 	queryEditData,
 	saveEditData,
 } from "../tree_context_functions/edit_data.js";
-import { refreshBootstrapTooltips, removeTab, renameTab, resizeVertical, showMenuNewTab } from "../workspace.js";
+import { removeTab, renameTab, resizeVertical, showMenuNewTab } from "../workspace.js";
 
 
 export var v_createEditDataTabFunction = function (p_table) {
@@ -56,7 +56,6 @@ export var v_createEditDataTabFunction = function (p_table) {
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();
-				refreshBootstrapTooltips();
 			}
 			if (this.tag != null && this.tag.editor != null) {
 				this.tag.editor.focus();
@@ -263,6 +262,7 @@ export var v_createEditDataTabFunction = function (p_table) {
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTab(e);
 		},

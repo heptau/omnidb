@@ -42,7 +42,6 @@ import { createTabControl } from "../tabs.js";
 import {
 	changeDatabase,
 	checkTabStatus,
-	refreshBootstrapTooltips,
 	refreshHeights,
 	refreshTreeHeight,
 	resizeConnectionHorizontal,
@@ -161,7 +160,6 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 				if (this.tag != null && this.tag.tabControl != null && this.tag.tabControl.selectedTab.tag.editor != null) {
 					this.tag.tabControl.selectedTab.tag.editor.focus();
 				}
-				refreshBootstrapTooltips();
 				refreshNotifyPaneIfActive();
 			},
 			p_close: true,
@@ -207,7 +205,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 					refreshNotifyPaneIfActive();
 				});
 			},
-			p_omnidb_tooltip_name: p_tooltip_name,
+			p_tooltip_name: p_tooltip_name,
 		});
 
 		v_connTabControl.selectTab(v_tab);
@@ -356,6 +354,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			p_icon: '<i class="fas fa-plus"></i>',
 			p_close: false,
 			p_selectable: false,
+			p_isDraggable: false,
 			p_clickFunction: function (e) {
 				showMenuNewTab(e);
 			},
@@ -512,7 +511,6 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		// Creating `Add` tab in the outer tab list
 		// v_connTabControl.createAddTab();
 
-		refreshBootstrapTooltips();
 
 		setTimeout(function () {
 			v_selectPropertiesTabFunc();

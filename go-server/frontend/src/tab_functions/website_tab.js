@@ -95,7 +95,7 @@ export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p
 	var v_tab = v_connTabControl.createTab({
 		p_icon: '<i class="fas fa-globe-americas"></i>',
 		p_name: '<span id="tab_title">' + p_name + "</span>",
-		p_omnidb_tooltip_name: '<h5 class="my-1">' + escapeHtml(p_name) + "</h5>",
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(p_name) + "</h5>",
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();
@@ -144,6 +144,7 @@ export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p
 		p_icon: '<i class="fas fa-plus"></i>',
 		p_close: false,
 		p_selectable: false,
+		p_isDraggable: false,
 		p_clickFunction: function (e) {
 			showMenuNewTabOuter(e);
 		},
