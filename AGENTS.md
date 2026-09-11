@@ -78,16 +78,18 @@ No Python anywhere in the tree — no `OmniDB/`, `requirements.txt`, `pyproject.
 
 ## Internationalization (i18n)
 
-The UI supports English, Czech (Čeština) and Spanish (Español), with an "Automatic" setting that
-resolves the browser/OS `Accept-Language` header server-side, falling back to English for anything
-unsupported. This works identically in desktop and web-server mode — no Wails-specific code, the same
-way the existing auto-theme feature needs none (both modes go through the same Go HTTP server).
+The UI supports English, Czech (Čeština), Spanish (Español), Portuguese (Português), German
+(Deutsch), French (Français) and Italian (Italiano), with an "Automatic" setting that resolves the
+browser/OS `Accept-Language` header server-side, falling back to English for anything unsupported.
+This works identically in desktop and web-server mode — no Wails-specific code, the same way the
+existing auto-theme feature needs none (both modes go through the same Go HTTP server).
 
-- **Go side:** `go-server/i18n/` — flat dot-key JSON catalogs (`locales/{en,cs,es}.json`), loaded via
-  `//go:embed`. `i18n.T(lang, key, ...)` renders a single string with `{name}`-style interpolation;
-  `i18n.Tn(lang, key, n, ...)` picks a `key.one`/`.few`/`.other` plural form (Czech needs all three,
-  English/Spanish only `.one`/`.other`). `i18n.ResolveLanguage(storedPref, acceptLanguageHeader)` is
-  the one place `"auto"` actually gets resolved to a concrete language.
+- **Go side:** `go-server/i18n/` — flat dot-key JSON catalogs (`locales/{en,cs,es,pt,de,fr,it}.json`),
+  loaded via `//go:embed`. `i18n.T(lang, key, ...)` renders a single string with `{name}`-style
+  interpolation; `i18n.Tn(lang, key, n, ...)` picks a `key.one`/`.few`/`.other` plural form (Czech
+  needs all three, every other supported language only `.one`/`.other`).
+  `i18n.ResolveLanguage(storedPref, acceptLanguageHeader)` is the one place `"auto"` actually gets
+  resolved to a concrete language.
 - **JS side:** `go-server/frontend/src/i18n.js` — `t(key, vars)`/`tn(key, n, vars)` mirror the Go
   functions, reading from `window.v_i18n` (the resolved catalog, sent down in the page's JSON
   bootstrap next to `window.v_language`/`v_language_preference`). Static HTML uses a
@@ -99,12 +101,13 @@ way the existing auto-theme feature needs none (both modes go through the same G
   top-level side effects on purpose, because some frontend source files (e.g. `ajax_control.js`) get
   bundled into more than one independent Vite entry point, and a top-level side effect would then run
   once per bundle, against a `window.v_i18n` that isn't populated yet in the earlier one.
-- **Adding a new user-facing string:** add the key to **all three**
-  `go-server/i18n/locales/{en,cs,es}.json` files in the same change. A key missing from `cs.json` or
-  `es.json` doesn't error — it silently falls back to the English value (`CatalogFor`/`T`'s fallback
-  chain) — so it's easy to ship a string that's secretly English-only in two of the three languages
-  without anything flagging it. `npm run build` in `go-server/frontend` plus a glance at the browser
-  console (`i18n.js` warns on a genuinely missing key, not a same-as-English one) is the only check.
+- **Adding a new user-facing string:** add the key to **all seven**
+  `go-server/i18n/locales/{en,cs,es,pt,de,fr,it}.json` files in the same change. A key missing from one
+  of the non-English catalogs doesn't error — it silently falls back to the English value
+  (`CatalogFor`/`T`'s fallback chain) — so it's easy to ship a string that's secretly English-only in
+  some languages without anything flagging it. `npm run build` in `go-server/frontend` plus a glance at
+  the browser console (`i18n.js` warns on a genuinely missing key, not a same-as-English one) is the
+  only check.
 - Language preference is a per-user column (`OmniDB_app_userdetails.language`, `'auto'` by default),
   threaded through `WhoAmI`/`resolveIdentity` the same way `CSVEncoding`/`CSVDelimiter` already were.
 - Changing the language reloads the page rather than re-rendering live — a deliberate choice, since

@@ -8,9 +8,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Added
-- Multi-language UI support: English, Czech (Čeština) and Spanish (Español), selectable in
-  Settings > Appearance > Language (Automatic/English/Čeština/Español), working identically in
-  desktop (Wails) and web-server mode. "Automatic" resolves the browser/OS locale via the
+- Multi-language UI support: English, Czech (Čeština), Spanish (Español), Portuguese (Português),
+  German (Deutsch), French (Français) and Italian (Italiano), selectable in Settings > Appearance >
+  Language (Automatic first, then the seven languages sorted alphabetically by native name:
+  Čeština/Deutsch/English/Español/Français/Italiano/Português), working identically in desktop
+  (Wails) and web-server mode. "Automatic" resolves the browser/OS locale via the
   `Accept-Language` header, falling back to English for any unsupported language — both for the
   authenticated workspace and the pre-login page. New `go-server/i18n` package (flat-key JSON
   catalogs per language, `{name}` placeholder interpolation, Czech-aware plural forms via `Tn`),
@@ -32,7 +34,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Settings > Appearance now lists Language first, then Theme, then Font Size (previously Theme/Font
   Size/Language), and the Language dropdown sizes to its content instead of stretching across the
-  whole settings pane.
+  whole settings pane. The language options themselves are sorted alphabetically by native name
+  (Automatic stays first as it isn't a language).
 - The left navigation rail's icons (Welcome/Connections/Database/Notify/Snippets/Getting
   Started/Account/Settings) can no longer be drag-reordered — their order is now fixed, matching how
   every other part of the rail already behaves.

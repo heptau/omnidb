@@ -69,7 +69,8 @@ type userDetailsRow struct {
 	RulerColumn               int
 	AutocompleteDisabledTypes string
 	// Language is the user's raw stored preference ("auto", "en", "cs",
-	// "es") — see WhoAmI.Language's comment on why this is unresolved.
+	// "es", "pt", "de", "fr", "it") — see WhoAmI.Language's comment on why
+	// this is unresolved.
 	Language string
 }
 
