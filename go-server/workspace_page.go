@@ -160,6 +160,7 @@ func renderWorkspacePage(r *http.Request, who *WhoAmI, ud userDetailsRow, shortc
 	}
 
 	lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
+	notifyDesktopShellLanguage(lang)
 
 	// "auto" defaults to the light editor theme for this first paint --
 	// there's no reliable server-side signal for the client's OS preference,

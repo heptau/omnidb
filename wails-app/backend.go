@@ -74,6 +74,7 @@ func (a *App) startBackend() {
 			"OMNIDB_PGPASS_RESOLVE_URL=http://"+a.saveDialogAddr+"/pgpass-resolve",
 			"OMNIDB_PGPASS_GRANT_URL=http://"+a.saveDialogAddr+"/pgpass-grant",
 			"OMNIDB_PGPASS_IMPORT_URL=http://"+a.saveDialogAddr+"/pgpass-import",
+			"OMNIDB_NOTIFY_LANGUAGE_URL=http://"+a.saveDialogAddr+"/notify-language",
 		)
 	}
 

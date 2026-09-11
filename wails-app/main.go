@@ -25,7 +25,7 @@ func main() {
 			Assets: assets,
 		},
 		BackgroundColour: &options.RGBA{R: 242, G: 242, B: 242, A: 255},
-		Menu:             app.buildMenu(),
+		Menu:             app.buildMenu(app.currentLang()),
 		OnStartup:        app.startup,
 		OnShutdown:       app.shutdown,
 		OnBeforeClose:    app.saveWindowState,

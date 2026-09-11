@@ -156,9 +156,6 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<div id="txt_query_' +
 		v_tab.id +
 		'" style="width: 100%; height: 200px;"></div>' +
-		'<div id="query_resize_line_' +
-		v_tab.id +
-		'" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div>' +
 		command_history_modal +
 		'<div class="row mb-1">' +
 		'<div class="tab_actions omnidb__tab-actions col-12">' +
@@ -216,6 +213,9 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select>' +
 		"</div>" +
 		"</div>" +
+		'<div id="query_resize_line_' +
+		v_tab.id +
+		'" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div>' +
 		'<div id="query_result_tabs_container' +
 		v_tab.id +
 		'" class="omnidb__query-result-tabs">' +

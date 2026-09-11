@@ -13,11 +13,32 @@ type App struct {
 	backendURL     string // "scheme://host:port" of omnidb-server, set once ready — see backend.go
 	backendMu      sync.Mutex
 	saveDialogAddr string // "127.0.0.1:port" of this process's own save-dialog listener — see savedialog.go
+	lang           string // native menu bar language — see menu_i18n.go and savedialog.go's /notify-language
+	langMu         sync.RWMutex
 }
 
-// NewApp creates a new App application struct
+// NewApp creates a new App application struct. lang starts as a best-effort
+// guess from the OS locale (see menu_i18n.go's detectOSLanguage) — the
+// actual signed-in user's stored preference isn't known this early (it lives
+// in a DB only go-server's process can read, and go-server hasn't even
+// started yet at this point — see main.go), and arrives later via
+// savedialog.go's /notify-language relay once a workspace page is served.
 func NewApp() *App {
-	return &App{}
+	return &App{lang: detectOSLanguage()}
+}
+
+// currentLang returns the native menu bar's current language.
+func (a *App) currentLang() string {
+	a.langMu.RLock()
+	defer a.langMu.RUnlock()
+	return a.lang
+}
+
+// setLang updates the native menu bar's current language.
+func (a *App) setLang(lang string) {
+	a.langMu.Lock()
+	defer a.langMu.Unlock()
+	a.lang = lang
 }
 
 // startup is called when the app starts. The context is saved

@@ -33,9 +33,11 @@ type saveDialogResponse struct {
 // openurl.go), read one password entry out of the .pgpass file the user has
 // granted access to (/pgpass-resolve) or show a native "Open" dialog to
 // grant that access in the first place (/pgpass-grant, both in
-// pgpassdialog.go), or show that same dialog and list every entry in the
-// picked file for bulk import (/pgpass-import, see pgpassimport.go). This exists only because of a
-// Wails limitation:
+// pgpassdialog.go), show that same dialog and list every entry in the
+// picked file for bulk import (/pgpass-import, see pgpassimport.go), or
+// report the signed-in user's UI language so the native menu bar can be
+// rebuilt in it (/notify-language, see menu_i18n.go). This exists only
+// because of a Wails limitation:
 // window.go/window.runtime are injected exclusively into pages served by
 // Wails' own asset server (see pkg/assetserver/assetserver.go);
 // workspace.html is served entirely by go-server via a full top-level
@@ -58,6 +60,7 @@ func (a *App) startSaveDialogServer() error {
 	mux.HandleFunc("/pgpass-resolve", a.handlePgpassResolveRequest)
 	mux.HandleFunc("/pgpass-grant", a.handlePgpassGrantRequest)
 	mux.HandleFunc("/pgpass-import", a.handlePgpassImportRequest)
+	mux.HandleFunc("/notify-language", a.handleNotifyLanguageRequest)
 
 	server := &http.Server{Handler: mux}
 	a.saveDialogAddr = listener.Addr().String()
@@ -209,4 +212,35 @@ func writeSaveDialogError(w http.ResponseWriter, msg string) {
 func writeSaveDialogJSON(w http.ResponseWriter, resp saveDialogResponse) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(resp)
+}
+
+// notifyLanguageRequest mirrors go-server/notify_language.go's relay
+// payload — kept as its own type here since nothing else needs it.
+type notifyLanguageRequest struct {
+	Lang string `json:"lang"`
+}
+
+// handleNotifyLanguageRequest rebuilds and live-swaps the native menu bar
+// whenever go-server reports the signed-in user's resolved UI language —
+// called once per workspace page render (see go-server/workspace_page.go),
+// which covers both the very first page load after sign-in and the
+// window.location.reload() that follows a language change in Settings (see
+// go-server/frontend/src/header_actions.js's changeLanguagePreference).
+// Skips the rebuild entirely when the language hasn't actually changed,
+// since this fires on every workspace page load, not just language changes.
+func (a *App) handleNotifyLanguageRequest(w http.ResponseWriter, r *http.Request) {
+	var req notifyLanguageRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	lang := normalizeMenuLang(req.Lang)
+	if lang == a.currentLang() {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+	a.setLang(lang)
+	wailsruntime.MenuSetApplicationMenu(a.ctx, a.buildMenu(lang))
+	w.WriteHeader(http.StatusOK)
 }

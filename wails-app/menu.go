@@ -35,22 +35,33 @@ import (
 // way to put a "Settings" entry next to it. Trade-off: no native Hide/Services
 // entries on macOS. Edit/Window still use their native roles below, since
 // those don't have that conflict.
-func (a *App) buildMenu() *menu.Menu {
+//
+// Edit/Window aren't localized: menu.EditMenu()/menu.WindowMenu() below are
+// whole native-role menus who's title and every item (Undo, Cut, Copy,
+// Minimize, Zoom, ...) are hardcoded English strings inside Wails' own
+// vendored Objective-C (internal/frontend/desktop/darwin/WailsMenu.m) — this
+// package exposes no per-item roles (see pkg/menu/menuroles.go: every
+// individual role like CutRole/CopyRole is commented out, only the
+// whole-menu AppMenuRole/EditMenuRole/WindowMenuRole actually work), so
+// there's no supported way to relabel them short of forking Wails itself.
+func (a *App) buildMenu(lang string) *menu.Menu {
+	t := func(key string) string { return menuText(lang, key) }
+
 	appMenu := menu.NewMenu()
-	appMenu.AddText("About OmniDB", nil, a.execJS("showAbout()"))
-	appMenu.AddText("Settings...", keys.CmdOrCtrl(","), a.execJS("showConfigUser()"))
+	appMenu.AddText(t("about"), nil, a.execJS("showAbout()"))
+	appMenu.AddText(t("settings"), keys.CmdOrCtrl(","), a.execJS("showConfigUser()"))
 	if sandboxed() {
 		// Only meaningful when actually sandboxed (see legacydata.go's
 		// sandboxed()/maybeOfferLegacyDataImport) — an unsandboxed dev run
 		// never loses sight of its own ~/.omnidb, so the item would just be
 		// dead weight there.
 		appMenu.AddSeparator()
-		appMenu.AddText("Import Data from Previous Installation...", nil, func(_ *menu.CallbackData) {
+		appMenu.AddText(t("import_legacy"), nil, func(_ *menu.CallbackData) {
 			a.importLegacyDataFromMenu()
 		})
 	}
 	appMenu.AddSeparator()
-	appMenu.AddText("Quit OmniDB", keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
+	appMenu.AddText(t("quit"), keys.CmdOrCtrl("q"), func(_ *menu.CallbackData) {
 		wailsruntime.Quit(a.ctx)
 	})
 
@@ -63,13 +74,13 @@ func (a *App) buildMenu() *menu.Menu {
 	// Same order as the vertical section-nav rail (section_switcher.js):
 	// Welcome, Connections, Database, Snippets.
 	viewMenu := menu.NewMenu()
-	viewMenu.AddText("Welcome", keys.Combo("w", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('welcome')"))
-	viewMenu.AddText("Connections", keys.Combo("c", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("startConnectionManagement()"))
-	viewMenu.AddText("Database", keys.Combo("d", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('database')"))
-	viewMenu.AddText("Snippets", keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("toggleSnippetPanel()"))
+	viewMenu.AddText(t("welcome"), keys.Combo("w", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('welcome')"))
+	viewMenu.AddText(t("connections"), keys.Combo("c", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("startConnectionManagement()"))
+	viewMenu.AddText(t("database"), keys.Combo("d", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('database')"))
+	viewMenu.AddText(t("snippets"), keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("toggleSnippetPanel()"))
 	viewMenu.AddSeparator()
-	viewMenu.AddText("Toggle Database Tree", keys.CmdOrCtrl("b"), a.execJS("toggleTreeContainer()"))
-	viewMenu.AddText("Toggle Properties/DDL Panel", keys.Combo("b", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS(
+	viewMenu.AddText(t("toggle_tree"), keys.CmdOrCtrl("b"), a.execJS("toggleTreeContainer()"))
+	viewMenu.AddText(t("toggle_props"), keys.Combo("b", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS(
 		`if (v_connTabControl.selectedTab) {`+
 			`var id = v_connTabControl.selectedTab.id;`+
 			`toggleTreeTabsContainer('tree_tabs_parent_' + id);`+
@@ -77,24 +88,24 @@ func (a *App) buildMenu() *menu.Menu {
 	))
 
 	helpMenu := menu.NewMenu()
-	helpMenu.AddText("Getting Started", nil, a.execJS(`startTutorial('getting_started')`))
-	helpMenu.AddText("Keyboard Shortcuts", nil, a.execJS(
-		`showConfigUser(); $('a[href="#config_shortcuts"]').trigger('click');`,
+	helpMenu.AddText(t("getting_started"), nil, a.execJS(`startTutorial('getting_started')`))
+	helpMenu.AddText(t("shortcuts"), nil, a.execJS(
+		`showConfigUser(); selectSettingsCategory('shortcuts');`,
 	))
 	helpMenu.AddSeparator()
-	helpMenu.AddText("Visit omnidb.net", nil, func(_ *menu.CallbackData) {
+	helpMenu.AddText(t("visit_website"), nil, func(_ *menu.CallbackData) {
 		wailsruntime.BrowserOpenURL(a.ctx, "https://www.omnidb.net")
 	})
-	helpMenu.AddText("GitHub Repository", nil, func(_ *menu.CallbackData) {
+	helpMenu.AddText(t("github_repo"), nil, func(_ *menu.CallbackData) {
 		wailsruntime.BrowserOpenURL(a.ctx, "https://github.com/heptau/omnidb")
 	})
 
 	m := menu.NewMenu()
 	m.Append(menu.SubMenu("OmniDB", appMenu))
 	m.Append(menu.EditMenu())
-	m.Append(menu.SubMenu("View", viewMenu))
+	m.Append(menu.SubMenu(t("view_menu"), viewMenu))
 	m.Append(menu.WindowMenu())
-	m.Append(menu.SubMenu("Help", helpMenu))
+	m.Append(menu.SubMenu(t("help_menu"), helpMenu))
 	return m
 }
 

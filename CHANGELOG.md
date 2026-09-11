@@ -31,7 +31,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   untranslated. Changing the language reloads the page rather than re-rendering live, matching how
   much of the static shell is server-rendered.
 
+### Added
+- Desktop (Wails) app: the native macOS menu bar (the OmniDB/View/Help menus — About/Settings/Quit,
+  Welcome/Connections/Database/Snippets/Toggle Database Tree/Toggle Properties-DDL Panel, Getting
+  Started/Keyboard Shortcuts/Visit omnidb.net/GitHub Repository) is now localized into the same
+  seven languages as the web UI, using the signed-in user's stored language preference and
+  switching live (no restart needed) when it's changed in Settings. The native menu keeps its own
+  small translation catalog in `wails-app/menu_i18n.go` — `wails-app` and `go-server` are separate
+  Go processes/modules, so it can't import `go-server/i18n` directly. The very first menu (built
+  before login, while go-server is still starting) falls back to a best-effort guess from the OS
+  locale (`LC_ALL`/`LC_MESSAGES`/`LANG`), then gets corrected once a workspace page is served, via a
+  new loopback relay (`go-server/notify_language.go` → `wails-app/savedialog.go`'s new
+  `/notify-language` endpoint) that mirrors the existing save-dialog/.pgpass-picker relay pattern.
+  The native Edit and Window menus (Undo/Cut/Copy/Paste, Minimize/Zoom/Full Screen, ...) stay in
+  English — they're whole native OS-role menus whose item labels are hardcoded inside Wails' own
+  vendored Objective-C, with no supported way to override them per-item.
+
 ### Changed
+- Database panel's Query tab: the draggable splitter between the SQL editor and the query results
+  now sits below the action toolbar (Run/Run Statement at Cursor/Indent SQL/...) instead of directly
+  under the editor, so dragging it no longer drags the toolbar along with it. Matches the Console
+  tab's layout, which already had the splitter in this position.
 - Settings > Appearance now lists Language first, then Theme, then Font Size (previously Theme/Font
   Size/Language), and the Language dropdown sizes to its content instead of stretching across the
   whole settings pane. The language options themselves are sorted alphabetically by native name
@@ -53,6 +73,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   show their tooltip.
 - The autocomplete popup's Functions row had a leftover copy-paste tooltip reading "Indexes" instead
   of "Functions" — found and corrected while adding translations to that row.
+- Desktop (Wails) app: the native menu bar's Help > Keyboard Shortcuts item opened Settings but
+  always landed on the Appearance category instead of Shortcuts — it tried to trigger a click on an
+  `<a href="#config_shortcuts">` link that doesn't exist (the settings panel switches categories via
+  a custom `data-category` click handler, not Bootstrap tabs/anchors). It now calls
+  `selectSettingsCategory('shortcuts')` directly, the same function the sidebar's own click handler
+  uses.
 
 ### Known follow-ups (not yet localized)
 - A handful of very low-level, rarely-user-visible backend error paths shared by hundreds of call
