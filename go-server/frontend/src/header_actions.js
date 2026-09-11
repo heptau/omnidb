@@ -68,6 +68,9 @@ export var v_dark_terminal_theme = {
 
 export var v_current_terminal_theme;
 
+/** @type {MediaQueryList} */
+var v_dark_scheme_mq;
+
 /// <summary>
 /// Startup function.
 /// </summary>
@@ -80,7 +83,13 @@ function initHeaderActions() {
 	// Listen for system theme changes -- only matters while the preference is
 	// "auto"; changeTheme() itself is a no-op for the system in "light"/"dark"
 	// mode, but re-running it costs nothing and keeps this listener simple.
-	window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event) => {
+	// The MediaQueryList is kept in a module-level var rather than a throwaway
+	// expression -- some WebKit builds (incl. the WKWebView Wails hosts this
+	// app in on macOS) can garbage-collect an unreferenced MediaQueryList and
+	// silently drop its listener, which is exactly what stopped "auto" from
+	// reacting to a live OS appearance switch.
+	v_dark_scheme_mq = window.matchMedia("(prefers-color-scheme: dark)");
+	v_dark_scheme_mq.addEventListener("change", (event) => {
 		changeTheme(v_theme_preference);
 	});
 
@@ -231,7 +240,16 @@ export function changeTheme(p_option) {
 		}
 
 		//Hooks
-		if (v_connTabControl.tag.hooks.changeTheme.length > 0) {
+		// initHookRegistry() (plugin_hook.js) populates v_connTabControl.tag.hooks
+		// asynchronously (it polls until v_connTabControl.tag exists, then sets
+		// it), so there's a window right after login where v_connTabControl.tag
+		// exists but .hooks doesn't yet -- changeTheme() runs in that window on
+		// startup (initHeaderActions() calls it immediately), and reading
+		// .hooks.changeTheme on undefined .hooks used to throw here, which
+		// aborted initHeaderActions() before it reached the matchMedia "change"
+		// listener registration below it -- silently breaking "auto" theme's
+		// reaction to OS appearance changes for the rest of the session.
+		if (v_connTabControl.tag.hooks && v_connTabControl.tag.hooks.changeTheme.length > 0) {
 			for (var i = 0; i < v_connTabControl.tag.hooks.changeTheme.length; i++)
 				v_connTabControl.tag.hooks.changeTheme[i](null, v_theme);
 		}

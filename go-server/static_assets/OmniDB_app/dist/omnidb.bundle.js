@@ -27481,12 +27481,14 @@
             v_title = v_conn_obj2.alias;
             if (v_conn_obj2.conn_string && v_conn_obj2.conn_string != "") {
               v_subtitle = v_conn_obj2.conn_string.replace(/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//, "");
+            } else if (v_conn_obj2.technology === "sqlite") {
+              v_subtitle = v_conn_obj2.service;
             } else {
               v_subtitle = (v_conn_obj2.user ? v_conn_obj2.user + "@" : "") + v_conn_obj2.server + ":" + v_conn_obj2.port;
             }
           }
           var v_env_meta = ENVIRONMENT_META[v_conn_obj2.environment];
-          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + "</span>" + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + escapeHtml(v_title) + '</span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>' : "");
+          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + '</span><span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-title-text">' + escapeHtml(v_title) + '</span></span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>' : "");
           var v_checkbox = document.createElement("input");
           v_checkbox.className = "connection-card-checkbox";
           v_checkbox.id = "connection_item_input_" + i3;
@@ -30495,10 +30497,12 @@
     background: "#1a1a1d"
   };
   var v_current_terminal_theme;
+  var v_dark_scheme_mq;
   function initHeaderActions() {
     document.getElementsByTagName("html")[0].style["font-size"] = v_font_size + "px";
     changeTheme(v_theme_preference);
-    window.matchMedia("(prefers-color-scheme: dark)").addEventListener("change", (event2) => {
+    v_dark_scheme_mq = window.matchMedia("(prefers-color-scheme: dark)");
+    v_dark_scheme_mq.addEventListener("change", (event2) => {
       changeTheme(v_theme_preference);
     });
     document.getElementById("settings_resize_line").addEventListener(
@@ -30621,7 +30625,7 @@
           }
         }
       }
-      if (v_connTabControl.tag.hooks.changeTheme.length > 0) {
+      if (v_connTabControl.tag.hooks && v_connTabControl.tag.hooks.changeTheme.length > 0) {
         for (var i2 = 0; i2 < v_connTabControl.tag.hooks.changeTheme.length; i2++)
           v_connTabControl.tag.hooks.changeTheme[i2](null, v_theme);
       }

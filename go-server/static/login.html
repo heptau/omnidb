@@ -27,10 +27,24 @@
 	// <body>, before anything else parses: the stylesheets above key off
 	// this same body.omnidb--theme-dark class (see _variables.scss's
 	// --app-bg), so setting it late would paint light first and flash.
-	if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-		document.body.classList.remove("omnidb--theme-light");
-		document.body.classList.add("omnidb--theme-dark");
+	function applyOSTheme() {
+		if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+			document.body.classList.remove("omnidb--theme-light");
+			document.body.classList.add("omnidb--theme-dark");
+		} else {
+			document.body.classList.remove("omnidb--theme-dark");
+			document.body.classList.add("omnidb--theme-light");
+		}
 	}
+	applyOSTheme();
+
+	// Keep following the OS if it changes while this page is still open --
+	// same reasoning and same "keep the MediaQueryList referenced" fix as
+	// header_actions.js's initHeaderActions(): some WebKit builds (incl. the
+	// WKWebView Wails hosts this app in on macOS) can garbage-collect an
+	// unreferenced MediaQueryList and silently drop its listener.
+	window.v_dark_scheme_mq = window.matchMedia("(prefers-color-scheme: dark)");
+	window.v_dark_scheme_mq.addEventListener("change", applyOSTheme);
 </script>
 
 	<div class="omnidb__login" autofill="false">

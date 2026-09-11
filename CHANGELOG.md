@@ -7,6 +7,47 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+- Tab strip drag-and-drop reordering didn't work in the packaged desktop app's WKWebView.
+  `dataTransfer.setData()` is now set on `dragstart`, with live `dragover` reordering on the strip
+  itself, mirroring the sidebar connection list's existing drag implementation (`tabs.js`). The
+  trailing "+" tab is now pinned — non-draggable, and nothing can be dropped after it.
+- Bootstrap tooltips across tabs, the DB-tree "toggle autocomplete"/"explain" switches, and the Edit
+  Data column headers got stuck on screen after their tab closed, leaked raw HTML in a few
+  connection-form tooltips (dead Bootstrap-4-era attributes no longer picked up), and clipped
+  against the tab strip's own scrollable overflow. Replaced with native `title` attributes
+  throughout.
+- The query/console editor split, the DB-tree width splitter, and a whole-window resize lagged
+  until the mouse was released instead of redrawing live during the drag — removed several
+  un-cleared `setTimeout` chains and a redundant per-frame height recompute that forced a
+  synchronous layout reflow on every animation frame.
+- The login screen always rendered light regardless of the OS appearance, and even after picking it
+  up at launch it didn't react to the OS theme changing while the dialog stayed open
+  (`static/login.html`). Dark-mode rules in `omnidb.min.css` key off a `body.omnidb--theme-dark`
+  class rather than `prefers-color-scheme` directly (needed so an explicit Light/Dark choice in
+  Settings > Appearance can override the OS), and that class was only ever set once, at page load.
+  The login page now applies it on load and keeps it in sync via a
+  `matchMedia("(prefers-color-scheme: dark)")` "change" listener, the same pattern the main app
+  already uses.
+- "Auto" theme could silently stop reacting to the OS appearance changing partway through a
+  session. `changeTheme()`'s hook-notification step read `v_connTabControl.tag.hooks.changeTheme`
+  unconditionally, which threw on its very first call — right after login, before
+  `initHookRegistry()` has populated `.hooks` yet — and aborted `initHeaderActions()` before it ever
+  reached the `matchMedia` "change" listener registration below it. Separately, that `MediaQueryList`
+  is now kept in a module-level variable rather than a throwaway expression, since some WebKit
+  builds (including the WKWebView Wails hosts this app in on macOS) can garbage-collect an
+  unreferenced one and silently drop its listener (`header_actions.js`).
+- The Connections sidebar showed a bare, truncated "user@:port"-style subtitle for SQLite
+  connections instead of the file path — there's no server/port for a file-based connection, and
+  `get_connections` echoes the path back as `service`, not `database`/`server`/`port`
+  (`connections.js`).
+- A connection's environment dot and title shared one truncating block, so a long alias could push
+  the environment indicator off-screen instead of only the title itself eliding with "…"
+  (`connections.js`, `_topbar.scss`).
+- Homebrew's cask formula generator (`scripts/gen_cask.sh`) still used the deprecated free-form
+  `postflight do...end` block, printing a deprecation warning on every `brew upgrade`/`install`;
+  migrated to the structured `postflight_steps` DSL.
+
 ## [4.4.2] - 2026-09-09
 
 ### Added

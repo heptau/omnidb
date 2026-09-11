@@ -197,6 +197,15 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					v_title = v_conn_obj.alias;
 					if (v_conn_obj.conn_string && v_conn_obj.conn_string != "") {
 						v_subtitle = v_conn_obj.conn_string.replace(/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//, "");
+					} else if (v_conn_obj.technology === "sqlite") {
+						// No server/port for a file-based connection -- the
+						// form only ever collects the file path itself, into
+						// conn_form_database (see manageConnection's per-
+						// technology enable/disable lists). get_connections
+						// (appdb_handlers.go) echoes that column back as
+						// "service", not "database" -- falling through to the
+						// server:port format below would show a bare ":".
+						v_subtitle = v_conn_obj.service;
 					} else {
 						v_subtitle = (v_conn_obj.user ? v_conn_obj.user + "@" : "") + v_conn_obj.server + ":" + v_conn_obj.port;
 					}
@@ -208,12 +217,14 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					'<span class="omnidb__connections__list-item-icon">' +
 					v_icon_html +
 					"</span>" +
+					'<span class="omnidb__connections__list-item-text">' +
+					'<span class="omnidb__connections__list-item-title">' +
 					(v_env_meta
 						? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>'
 						: "") +
-					'<span class="omnidb__connections__list-item-text">' +
-					'<span class="omnidb__connections__list-item-title">' +
+					'<span class="omnidb__connections__list-item-title-text">' +
 					escapeHtml(v_title) +
+					"</span>" +
 					"</span>" +
 					'<span class="omnidb__connections__list-item-subtitle">' +
 					escapeHtml(v_subtitle) +

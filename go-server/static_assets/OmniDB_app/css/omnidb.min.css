@@ -6503,6 +6503,14 @@ select.form-control {
 .omnidb__connections__list-item-title {
   color: var(--text-primary);
   font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  min-width: 0;
+}
+
+.omnidb__connections__list-item-title-text {
+  min-width: 0;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
