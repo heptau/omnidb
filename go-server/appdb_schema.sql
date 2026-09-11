@@ -178,6 +178,7 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_userdetails" (
 	"keyword_case" varchar(10) NOT NULL DEFAULT 'preserve',
 	"ruler_column" integer NOT NULL DEFAULT 128,
 	"autocomplete_disabled_types" varchar(255) NOT NULL DEFAULT '',
+	"language" varchar(10) NOT NULL DEFAULT 'auto',
 	"user_id" integer NOT NULL UNIQUE REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED
 );
 

@@ -35,6 +35,8 @@
  * measured heights.
  */
 
+import { t } from "./i18n.js";
+
 const ROW_HEIGHT = 28;
 const HEADER_HEIGHT = 28;
 const MIN_COL_WIDTH = 120;
@@ -174,7 +176,7 @@ export class VirtualGrid {
 		return columns.map((col, index) => {
 			const pinned = !!col.pinned || index < fixedLeft;
 			return {
-				title: col.title || "Column " + (index + 1),
+				title: col.title || t("editor.default_column_title", { number: index + 1 }),
 				width: col.width || MIN_COL_WIDTH,
 				tooltip: col.tooltip,
 				align: col.align,

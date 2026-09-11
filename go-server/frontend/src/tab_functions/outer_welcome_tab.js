@@ -29,6 +29,7 @@ SOFTWARE.
 */
 
 import { endLoading } from "../ajax_control_bridge.js";
+import { t } from "../i18n.js";
 
 
 /**
@@ -203,29 +204,26 @@ export function initWelcomeSection() {
 	// Intro html string
 	let v_html_intro =
 		'<div class="card p-3 omnidb__welcome__intro-card">' +
-		'<p class="text-center">OmniDB puts you directly in the driver\'s seat of your databases &mdash; that\'s what makes it so useful. While you\'re getting comfortable with it, we recommend practicing on a <strong>test environment rather than production</strong>.</p>' +
+		'<p class="text-center">' + t("welcome.intro") + '</p>' +
 		'<button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started">' +
 		'<i class="fas fa-list me-2"></i>' +
-		"Getting started" +
+		t("welcome.getting_started_button") +
 		"</button>" +
 		'<div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: \'icon text\';">' +
 		'<i class="fas fa-info-circle p-4" style="grid-area: icon;"></i>' +
 		'<div style="grid-area: text;">' +
-		`
-				We aim to keep OmniDB flexible, secure and work-effective across multiple DBMS.<br>
-				Just keep in mind that many actions here <strong>talk directly to the database you're connected to</strong>.
-				` +
+		t("welcome.callout") +
 		"</div>" +
 		"</div>" +
 		"</div>";
 	// Usel links html string
 	let v_html_useful_links =
 		'<div class="alert alert-success p-3 omnidb__welcome__useful-card">' +
-		'<h2 class="text-center mb-4">Useful stuff</h2>' +
+		'<h2 class="text-center mb-4">' + t("welcome.useful_stuff") + '</h2>' +
 		"<ul>" +
-		'<li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net"><i class="fas fa-globe-americas"></i> <span>OmniDB web</span></a></li>' +
-		'<li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>GitHub repo</span></a></li>' +
-		'<li><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net/en/introduction.html"><i class="fas fa-list"></i> <span>Read the docs</span></a></li>' +
+		'<li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net"><i class="fas fa-globe-americas"></i> <span>' + t("welcome.omnidb_web") + '</span></a></li>' +
+		'<li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>' + t("welcome.github_repo") + '</span></a></li>' +
+		'<li><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net/en/introduction.html"><i class="fas fa-list"></i> <span>' + t("welcome.read_the_docs") + '</span></a></li>' +
 		"</ul>" +
 		"</div>";
 	// About html string -- same version/license info as the header's About
@@ -234,11 +232,11 @@ export function initWelcomeSection() {
 	let v_html_about =
 		'<div class="card p-3 mt-3 text-center">' +
 		'<span class="badge bg-light text-dark border p-2 mb-2">' +
-		'<i class="fas fa-code-branch me-1"></i> Version ' +
-		v_short_version +
+		'<i class="fas fa-code-branch me-1"></i> ' +
+		t("modals.about.version_line", { version: v_short_version }) +
 		"</span>" +
 		'<span class="badge bg-light text-dark border p-2">' +
-		'<i class="fas fa-balance-scale me-1"></i> License: MIT' +
+		'<i class="fas fa-balance-scale me-1"></i> ' + t("modals.about.license") +
 		"</span>" +
 		"</div>";
 	// Template html string

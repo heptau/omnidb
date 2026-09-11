@@ -12,6 +12,13 @@
  */
 import { exposeGlobals } from './legacy-globals.js'
 
+// Fills in login.html's own data-i18n[-*] elements from its
+// "#omnidb_login_i18n" JSON blob (see i18n.js's readLoginBootstrap) -- there's
+// no bootstrap-globals.js on this page, so this is also what sets
+// window.v_language/v_i18n here in the first place.
+import { initI18n } from './i18n.js'
+initI18n()
+
 import * as notificationControl from './notification_control.js'
 import * as ajaxControl from './ajax_control.js'
 import './context_menu_guard.js'

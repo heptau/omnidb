@@ -13,6 +13,7 @@
  */
 import { cancelAjax, execAjax, v_cancel_button } from './ajax_control.js'
 import { checkSessionMessage, showAlert } from './notification_control.js'
+import { t } from './i18n.js'
 
 /**
  * Marks the field's wrapper empty or not, which is what the label animation and
@@ -68,9 +69,9 @@ export function signIn() {
       if (p_return.v_data >= 0) {
         window.open(v_url_folder + '/workspace', '_self')
       } else if (p_return.v_data == -2) {
-        showAlert('Invalid authentication token, use omnidb-server to support multiple users.')
+        showAlert(t('login.invalid_token'))
       } else {
-        showAlert('Invalid username or password.')
+        showAlert(t('login.invalid_credentials'))
       }
     },
     null,

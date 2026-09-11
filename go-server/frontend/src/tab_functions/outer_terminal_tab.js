@@ -34,6 +34,7 @@ import { createRequest } from "../long_polling.js";
 import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { startTerminal, terminalContextMenu, terminalKey } from "../terminal.js";
 import { refreshHeights } from "../workspace.js";
+import { t } from "../i18n.js";
 
 
 // Local, not imported from connections.js -- see the identical comment in
@@ -46,7 +47,7 @@ var ENVIRONMENT_TAB_CLASS = {
 	archive: "omnidb__tab--env-archive",
 };
 
-export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = "Terminal", p_details = false, p_environment = "") {
+export var v_createOuterTerminalTabFunction = function (p_conn_id = -1, p_alias = t("connections.terminal"), p_details = false, p_environment = "") {
 	// v_connTabControl.removeLastTab();
 
 	let v_tooltip_name = "";

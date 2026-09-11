@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { execAjax } from "./ajax_control_bridge.js";
 import { cancelConsoleTab, consoleReturn, consoleSQL } from "./console.js";
+import { t } from "./i18n.js";
 import { showAlert, showError } from "./notification_control.js";
 import { notifyMessageReceived, notifySessionStopped } from "./panel_functions/outer_notify_panel.js";
 import { showPasswordPrompt } from "./passwords.js";
@@ -138,7 +139,7 @@ export function polling_response(p_message) {
 			break;
 		}
 		case v_queryResponseCodes.SessionMissing: {
-			showAlert("Session not found please reload the page.");
+			showAlert(t("errors.session_not_found_reload"));
 			break;
 		}
 		case v_queryResponseCodes.MessageException: {

@@ -64,6 +64,14 @@ Object.assign(window, {
   v_super_user: cfg.super_user,
   v_csrf_cookie_name: cfg.csrf_cookie_name,
   v_shortcuts: cfg.shortcuts,
+  // v_language is the effective, already-resolved language ("cs"), used by
+  // t()/tn() and never "auto" -- v_language_preference is the user's raw
+  // stored Settings choice (possibly "auto"), same v_theme/v_theme_preference
+  // split as above. v_i18n is the complete resolved translation dictionary
+  // for v_language (see i18n.js's t()/tn()).
+  v_language: cfg.language,
+  v_language_preference: cfg.language_preference,
+  v_i18n: cfg.i18n,
 
   // Aliases the old inline block derived from the values above. Kept because
   // plenty of code reads them by these names.

@@ -34,6 +34,7 @@ SOFTWARE.
 
 import { v_consoleState } from "./console.js";
 import { customMenu } from "./custom_menu.js";
+import { t } from "./i18n.js";
 import { createContext, createRequest } from "./long_polling.js";
 import { v_queryRequestCodes } from "./query.js";
 
@@ -56,7 +57,7 @@ export function startTerminal(p_conn_id) {
 	};
 	v_tag.context = createContext(v_context);
 	v_tag.editor_console.focus();
-	v_tag.editor_console.write("Starting terminal...");
+	v_tag.editor_console.write(t("terminal.starting"));
 	v_tag.clear_terminal = true;
 	terminalRun(true, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
 }
@@ -71,7 +72,7 @@ export function terminalContextMenu(e, p_tab) {
 	var v_option_list = [];
 
 	v_option_list.push({
-		text: "Adjust Terminal Dimensions",
+		text: t("terminal.adjust_dimensions"),
 		icon: "fas cm-all fa-window-maximize",
 		action: function () {
 			terminalRun(false, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");

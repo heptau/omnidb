@@ -30,10 +30,11 @@ SOFTWARE.
 
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import { t } from "../i18n.js";
 
 
 export var v_createGraphTabFunction = function (p_name) {
-	var v_name = "Graph";
+	var v_name = t("workspace.graph_tab");
 	if (p_name) v_name = p_name;
 
 	// Removing last tab of the inner tab list

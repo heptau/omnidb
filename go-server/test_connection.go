@@ -7,6 +7,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+
+	"omnidb-server/i18n"
 )
 
 // testConnectionRequest mirrors connections.py's test_connection body —
@@ -83,24 +85,24 @@ func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest, who *W
 	return password, sshPassword, sshKey, nil
 }
 
-func testConnectionMessage(technology string, info *ConnectionInfo) string {
+func testConnectionMessage(lang, technology string, info *ConnectionInfo) string {
 	switch technology {
 	case "sqlite":
-		return testSQLiteConnectionMessage(info.Database)
+		return testSQLiteConnectionMessage(lang, info.Database)
 	case "postgresql":
-		return testPostgreSQLConnectionMessage(info)
+		return testPostgreSQLConnectionMessage(lang, info)
 	default: // mysql, mariadb, oracle, mssql, firebird
-		return testGenericPingMessage(info)
+		return testGenericPingMessage(lang, info)
 	}
 }
 
 // testSQLiteConnectionMessage mirrors SQLite.py's TestConnection — a plain
 // file-existence check, no actual sqlite Open() at all.
-func testSQLiteConnectionMessage(path string) string {
+func testSQLiteConnectionMessage(lang, path string) string {
 	if _, err := os.Stat(path); err == nil {
-		return "Connection successful."
+		return i18n.T(lang, "test_connection.successful")
 	} else if os.IsNotExist(err) {
-		return "File does not exist, if you try to manage this connection a database file will be created."
+		return i18n.T(lang, "test_connection.sqlite_file_missing")
 	} else {
 		return err.Error()
 	}
@@ -109,7 +111,7 @@ func testSQLiteConnectionMessage(path string) string {
 // testPostgreSQLConnectionMessage mirrors PostgreSQL.py's TestConnection —
 // unlike every other engine, success requires actually finding at least one
 // schema, not just a bare connect.
-func testPostgreSQLConnectionMessage(info *ConnectionInfo) string {
+func testPostgreSQLConnectionMessage(lang string, info *ConnectionInfo) string {
 	db, err := openPostgreSQLTarget(info)
 	if err != nil {
 		return err.Error()
@@ -120,7 +122,7 @@ func testPostgreSQLConnectionMessage(info *ConnectionInfo) string {
 		return err.Error()
 	}
 	if len(schemas) > 0 {
-		return "Connection successful."
+		return i18n.T(lang, "test_connection.successful")
 	}
 	return ""
 }
@@ -128,7 +130,7 @@ func testPostgreSQLConnectionMessage(info *ConnectionInfo) string {
 // testGenericPingMessage mirrors MySQL/MariaDB/Oracle's TestConnection —
 // just Open()+Close(); database/sql's Open() is lazy, so Ping() is what
 // actually forces the connection attempt here.
-func testGenericPingMessage(info *ConnectionInfo) string {
+func testGenericPingMessage(lang string, info *ConnectionInfo) string {
 	db, err := openNativeQueryTarget(info)
 	if err != nil {
 		return err.Error()
@@ -137,7 +139,7 @@ func testGenericPingMessage(info *ConnectionInfo) string {
 	if err := db.Ping(); err != nil {
 		return err.Error()
 	}
-	return "Connection successful."
+	return i18n.T(lang, "test_connection.successful")
 }
 
 // runTestConnection mirrors test_connection's full branch: a "terminal"
@@ -145,14 +147,14 @@ func testGenericPingMessage(info *ConnectionInfo) string {
 // technology optionally tunnels through SSH first (openSSHForward),
 // pointing the driver at the local forwarded port instead of the real
 // remote address — same trick Python's sshtunnel-based version uses.
-func runTestConnection(req *testConnectionRequest, password, sshPassword, sshKey string) (message string, isError bool) {
+func runTestConnection(lang string, req *testConnectionRequest, password, sshPassword, sshKey string) (message string, isError bool) {
 	if req.Type == "terminal" {
 		client, err := dialSSH(req.Tunnel.User, req.Tunnel.Server, req.Tunnel.Port, sshPassword, sshKey)
 		if err != nil {
 			return err.Error(), true
 		}
 		client.Close()
-		return "Connection successful.", false
+		return i18n.T(lang, "test_connection.successful"), false
 	}
 
 	info := &ConnectionInfo{
@@ -187,8 +189,8 @@ func runTestConnection(req *testConnectionRequest, password, sshPassword, sshKey
 		info.Port = port
 	}
 
-	message = testConnectionMessage(req.Type, info)
-	return message, message != "Connection successful."
+	message = testConnectionMessage(lang, req.Type, info)
+	return message, message != i18n.T(lang, "test_connection.successful")
 }
 
 func splitHostPort(addr string) (host, port string, err error) {
@@ -220,6 +222,7 @@ func handleTestConnection(upstream *url.URL) http.HandlerFunc {
 			writeUnauthenticated(w)
 			return
 		}
+		lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
 
 		appDB, err := openAppDB(upstream)
 		if err != nil {
@@ -233,7 +236,7 @@ func handleTestConnection(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 
-		message, isError := runTestConnection(&req, password, sshPassword, sshKey)
+		message, isError := runTestConnection(lang, &req, password, sshPassword, sshKey)
 		writeEnvelope(w, message, isError, -1)
 	}
 }

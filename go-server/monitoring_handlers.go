@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"strconv"
 	"strings"
+
+	"omnidb-server/i18n"
 )
 
 // htmlAttr escapes s for use inside a single-quoted HTML attribute value.
@@ -67,9 +69,10 @@ func handleGetMonitorUnitList(upstream *url.URL) http.HandlerFunc {
 			writeUnauthenticated(w)
 			return
 		}
+		lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
 		info, err := resolveConnection(upstream, cookie, req.databaseIndex())
 		if err != nil || !info.Found {
-			writeEnvelope(w, "Connection matching query does not exist.", true, -1)
+			writeEnvelope(w, i18n.T(lang, "errors.connection_not_found"), true, -1)
 			return
 		}
 
@@ -370,9 +373,10 @@ func handleSaveMonitorUnit(upstream *url.URL) http.HandlerFunc {
 			writeUnauthenticated(w)
 			return
 		}
+		lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
 		info, err := resolveConnection(upstream, cookie, req.databaseIndex())
 		if err != nil || !info.Found {
-			writeEnvelope(w, "Connection matching query does not exist.", true, -1)
+			writeEnvelope(w, i18n.T(lang, "errors.connection_not_found"), true, -1)
 			return
 		}
 
@@ -563,6 +567,7 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 			writeUnauthenticated(w)
 			return
 		}
+		lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
 
 		db, _, ok := resolveNativeRequest(w, r, upstream, fallback, req.databaseIndex())
 		if !ok {
@@ -609,7 +614,7 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 				unit, lookupErr := fetchOwnCustomMonitorUnit(appDB, item.ID, userID)
 				if lookupErr != nil {
 					result["v_error"] = true
-					result["v_message"] = "Unknown monitoring unit."
+					result["v_message"] = i18n.T(lang, "errors.unknown_monitoring_unit")
 					results = append(results, result)
 					continue
 				}
@@ -632,7 +637,7 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 			def, found := lookupBuiltinUnit(item.PluginName, int(item.ID))
 			if !found {
 				result["v_error"] = true
-				result["v_message"] = "Unknown monitoring unit."
+				result["v_message"] = i18n.T(lang, "errors.unknown_monitoring_unit")
 				results = append(results, result)
 				continue
 			}

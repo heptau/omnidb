@@ -5,3 +5,7 @@
 export function FrontendReady() {
   return window['go']['main']['App']['FrontendReady']();
 }
+
+export function RestoreWindowState() {
+  return window['go']['main']['App']['RestoreWindowState']();
+}

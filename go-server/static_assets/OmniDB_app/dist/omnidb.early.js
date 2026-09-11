@@ -5,6 +5,18 @@
       Object.assign(window, ns);
     }
   }
+  function interpolate(s, vars) {
+    return s;
+  }
+  function t(key, vars) {
+    var dict = typeof v_i18n !== "undefined" ? v_i18n : null;
+    var template = dict && Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : void 0;
+    if (template === void 0) {
+      console.warn('i18n: missing translation key "' + key + '"');
+      template = key;
+    }
+    return interpolate(template);
+  }
   var v_calls_count = 0;
   var v_is_loading = false;
   function startLoading() {
@@ -77,7 +89,7 @@
         }
         if (p_return.v_error) {
           if (p_return.v_error_id == 1) {
-            showAlert("User not authenticated, please reload the page.");
+            showAlert(t("errors.not_authenticated"));
           } else if (p_errorFunc) {
             p_errorFunc(p_return);
           } else {
@@ -97,7 +109,7 @@
           p_onAjaxErrorCallBack(msg);
         } else {
           if (msg.readyState != 0) {
-            showAlert("Request error.");
+            showAlert(t("errors.request_error"));
           } else {
             if (msg.statusText != "abort") {
               reportOffline();
@@ -109,7 +121,7 @@
     return v_ajax_call;
   }
   function reportOffline() {
-    showAlert("Webserver was shutdown, please restart it and reload the application.");
+    showAlert(t("errors.webserver_shutdown"));
     document.getElementById("ajax_status");
   }
   const ajaxControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({

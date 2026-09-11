@@ -7,6 +7,60 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- Multi-language UI support: English, Czech (Čeština) and Spanish (Español), selectable in
+  Settings > Appearance > Language (Automatic/English/Čeština/Español), working identically in
+  desktop (Wails) and web-server mode. "Automatic" resolves the browser/OS locale via the
+  `Accept-Language` header, falling back to English for any unsupported language — both for the
+  authenticated workspace and the pre-login page. New `go-server/i18n` package (flat-key JSON
+  catalogs per language, `{name}` placeholder interpolation, Czech-aware plural forms via `Tn`),
+  a new `language` column on `OmniDB_app_userdetails`, and a matching client-side `frontend/src/
+  i18n.js` (`t()`/`tn()` plus a `data-i18n[-title|-placeholder|-aria-label|-alt|-label]` attribute
+  convention for static markup). Covers the full login page, workspace shell, Settings, Connections
+  management, the SQL console (including `\?`/`\dt`/`\d`/`\du`/`\l`/`\df` help/output text and test-
+  connection results), Query/Console/Edit Data/Monitoring tabs, the Notify and Snippets panels, the
+  Welcome screen, and all seven database-engine tree context menus (PostgreSQL/MySQL/MariaDB/Oracle/
+  MSSQL/Firebird/SQLite share one common translation key set for their ~200 identical DDL actions),
+  the onboarding tutorial walkthrough (including fixing several longstanding copy typos — "conntion",
+  "priviledges", "managemnet", "identation" — found while translating it), the Manage Users dialog,
+  the monitoring units grid and its Play/Pause/Refresh controls, the terminal tab, the autocomplete
+  popup's result counter, and the remaining .pgpass/password-prompt dialogs. DBMS/format/technology
+  proper nouns (PostgreSQL, MySQL, CSV, JSON, ...) and CSV codepage identifiers are deliberately left
+  untranslated. Changing the language reloads the page rather than re-rendering live, matching how
+  much of the static shell is server-rendered.
+
+### Changed
+- Settings > Appearance now lists Language first, then Theme, then Font Size (previously Theme/Font
+  Size/Language), and the Language dropdown sizes to its content instead of stretching across the
+  whole settings pane.
+- The left navigation rail's icons (Welcome/Connections/Database/Notify/Snippets/Getting
+  Started/Account/Settings) can no longer be drag-reordered — their order is now fixed, matching how
+  every other part of the rail already behaves.
+- Desktop (Wails) app: the window now reopens at the size, position and maximised/restored state it
+  had when last closed, instead of always maximising on launch. The geometry is saved to
+  `~/.omnidb/omnidb-app/window_state.json` (or the `-d`/`--homedir` override's equivalent path) when
+  the window closes; a first launch (nothing saved yet) still maximises, as before.
+
+### Fixed
+- Left navigation rail icons (Welcome/Connections/Database/Notify/Snippets/Getting
+  Started/Account/Settings) were missing their hover tooltips. The tab-strip component's tooltip
+  logic only shows a tooltip once a tab has shrunk down to an icon-only width (to avoid repeating a
+  label that's already visible) — the vertical rail's tabs never carry a label at all, so that
+  shrink-triggered class was never set and the tooltip never appeared. Tabs with no label now always
+  show their tooltip.
+- The autocomplete popup's Functions row had a leftover copy-paste tooltip reading "Indexes" instead
+  of "Functions" — found and corrected while adding translations to that row.
+
+### Known follow-ups (not yet localized)
+- A handful of very low-level, rarely-user-visible backend error paths shared by hundreds of call
+  sites (`writeBadRequest`'s "Invalid or missing request data.", and the "object does not exist
+  anymore, please refresh the tree view" family in the per-engine DDL/properties files) — threading
+  a resolved language into those would require touching an impractically large number of unrelated
+  call sites for very low practical benefit, since they're internal/defensive paths rather than
+  everyday UI text.
+- The `docs/` marketing website is a separate, already independently multi-language concern and was
+  not touched by this change.
+
 ## [4.4.3] - 2026-09-11
 
 ### Changed

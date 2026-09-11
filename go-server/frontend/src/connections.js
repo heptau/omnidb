@@ -34,11 +34,12 @@ SOFTWARE.
 
 import { execAjax } from "./ajax_control_bridge.js";
 import { customMenu } from "./custom_menu.js";
-import { showAlert, showConfirm, showError } from "./notification_control.js";
+import { showAlert, showConfirm } from "./notification_control.js";
 import { parsePgpassText } from "./passwords.js";
 import { escapeHtml } from "./query.js";
 import { switchSection } from "./section_switcher.js";
 import { getDatabaseList, resizeConnectionsHorizontal } from "./workspace.js";
+import { t, tn } from "./i18n.js";
 
 // The connection-management markup is always present in workspace.html, so
 // these ids are guaranteed to resolve -- this just gets that past tsc
@@ -121,17 +122,17 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 			v_target_div.innerHTML =
 				'<div id="connections_management_empty_all" class="omnidb__connections__empty" style="display:none;">' +
 				"<i class=\"fas fa-plug\"></i>" +
-				'<h6>No connections available.</h6>' +
-				'<button id="bt_empty_all_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">New Connection</button>' +
+				"<h6>" + escapeHtml(t("connections.no_connections")) + "</h6>" +
+				'<button id="bt_empty_all_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t("connections.new_connection")) + "</button>" +
 				"</div>" +
 				'<div id="connections_management_empty_with_public" class="omnidb__connections__empty" style="display:none;">' +
 				'<i class="fas fa-arrow-up text-info"></i>' +
-				'<h6>No connections yet, but public connections are available.</h6>' +
-				'<button id="bt_empty_public_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">New Connection</button>' +
+				"<h6>" + escapeHtml(t("connections.no_connections_public_available")) + "</h6>" +
+				'<button id="bt_empty_public_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t("connections.new_connection")) + "</button>" +
 				"</div>" +
 				'<div id="connections_management_empty_group" class="omnidb__connections__empty" style="display:none;">' +
-				'<h6>No connections assigned to this group yet.</h6>' +
-				'<button id="bt_empty_group_manage_groups" type="button" class="btn btn-sm omnidb__theme__btn--primary">Manage Groups</button>' +
+				"<h6>" + escapeHtml(t("connections.no_connections_in_group")) + "</h6>" +
+				'<button id="bt_empty_group_manage_groups" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t("connections.manage_groups")) + "</button>" +
 				"</div>";
 
 			// Bindings for the three empty-state buttons just built above,
@@ -158,14 +159,14 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					{ x: e.clientX + 5, y: e.clientY + 5 },
 					[
 						{
-							text: "New Connection",
+							text: t("connections.new_connection"),
 							icon: "fas cm-all fa-plus",
 							action: function () {
 								newConnection();
 							},
 						},
 						{
-							text: "Refresh",
+							text: t("common.refresh"),
 							icon: "fas cm-all fa-sync-alt",
 							action: function () {
 								showConnectionList(false, true);
@@ -189,7 +190,7 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 
 				if (v_conn_obj.technology == "terminal") {
 					v_icon_html = '<i class="fas fa-terminal"></i>';
-					v_title = v_conn_obj.alias && v_conn_obj.alias !== "" ? v_conn_obj.alias : "Terminal";
+					v_title = v_conn_obj.alias && v_conn_obj.alias !== "" ? v_conn_obj.alias : t("connections.terminal");
 					v_subtitle =
 						v_conn_obj.tunnel.user + "@" + v_conn_obj.tunnel.server + ":" + v_conn_obj.tunnel.port;
 				} else {
@@ -231,7 +232,7 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					"</span>" +
 					"</span>" +
 					(v_conn_obj.tunnel && v_conn_obj.tunnel.enabled
-						? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="Uses a SSH tunnel"></i>'
+						? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="' + escapeHtml(t("connections.uses_ssh_tunnel")) + '"></i>'
 						: "");
 
 				var v_checkbox = document.createElement("input");
@@ -290,14 +291,14 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 
 							var v_options = [
 								{
-									text: "Connect",
+									text: t("common.connect"),
 									icon: "fas cm-all fa-plug",
 									action: function () {
 										selectConnection(p_conn_obj);
 									},
 								},
 								{
-									text: "Edit",
+									text: t("common.edit"),
 									icon: "fas cm-all fa-pen",
 									action: function () {
 										editConnection(p_conn_obj);
@@ -310,7 +311,7 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 							// pane's own Delete button already enforces.
 							if (p_conn_obj.locked !== true) {
 								v_options.push({
-									text: "Delete",
+									text: t("common.delete"),
 									icon: "fas cm-all fa-times",
 									action: function () {
 										deleteConnection(p_conn_obj);
@@ -709,7 +710,7 @@ export function deleteGroup() {
 	// parseInt: see the comment in manageGroupSave.
 	var v_group_id = parseInt(el("group_selector").value, 10);
 
-	showConfirm("Are you sure you want to delete the current group?", function () {
+	showConfirm(t("connections.confirm_delete_group"), function () {
 		deleteGroupConfirm(v_group_id);
 	});
 }
@@ -738,7 +739,7 @@ export function newGroup() {
 	var v_input = document.createElement("input");
 	v_input.id = "group_name_input";
 	v_input.className = "form-control";
-	v_input.placeholder = "Group Name";
+	v_input.placeholder = t("connections.group_name");
 	v_input.style.width = "100%";
 	el("modal_message_content").appendChild(v_input);
 
@@ -766,7 +767,7 @@ export function renameGroup() {
 	var v_input = document.createElement("input");
 	v_input.id = "group_name_input";
 	v_input.className = "form-control";
-	v_input.placeholder = "Group Name";
+	v_input.placeholder = t("connections.group_name");
 	v_input.style.width = "100%";
 	v_input.value = v_select.options[v_select.selectedIndex].text;
 	el("modal_message_content").appendChild(v_input);
@@ -795,7 +796,7 @@ export function getGroups() {
 			select.innerHTML = "";
 			var option = document.createElement("option");
 			option.value = "-1";
-			option.textContent = "All Connections";
+			option.textContent = t("connections.all_connections");
 			select.appendChild(option);
 			var found = false;
 			for (var i = 0; i < p_return.v_data.length; i++) {
@@ -847,8 +848,15 @@ export function testConnection(p_password = null) {
 		"/test_connection/",
 		input,
 		function (p_return) {
-			if (p_return.v_data == "Connection successful.") showAlert(p_return.v_data);
-			else showError(p_return.v_data);
+			// This callback only ever runs on the non-error path (see
+			// runTestConnection/handleTestConnection in test_connection.go --
+			// isError is false exactly when the message is the success
+			// message), so there is nothing left to branch on here. Comparing
+			// against the literal English success string used to live here;
+			// that broke the instant the message became translatable, since a
+			// non-English server response would never match it (see
+			// go-server/i18n's introduction).
+			showAlert(p_return.v_data);
 		},
 		function (p_return) {
 			showConfirm(
@@ -867,7 +875,7 @@ export function testConnection(p_password = null) {
 					v_input.id = "txt_test_password_prompt";
 					v_input.className = "form-control";
 					v_input.type = "password";
-					v_input.placeholder = "Password";
+					v_input.placeholder = t("common.password");
 					v_input.style.marginBottom = "20px";
 					v_input.style.marginTop = "20px";
 					v_input.style.textAlign = "center";
@@ -936,9 +944,9 @@ export function saveConnection() {
 }
 
 export function deleteConnection(p_conn_obj) {
-	var v_name = p_conn_obj.alias && p_conn_obj.alias !== "" ? p_conn_obj.alias : "Terminal";
+	var v_name = p_conn_obj.alias && p_conn_obj.alias !== "" ? p_conn_obj.alias : t("connections.terminal");
 	showConfirm(
-		'Are you sure you want to delete the connection "' + v_name + '"?',
+		t("connections.confirm_delete_connection", { name: v_name }),
 		function () {
 			var input = JSON.stringify({
 				id: p_conn_obj.id,
@@ -961,7 +969,7 @@ export function deleteConnection(p_conn_obj) {
 		null,
 		null,
 		null,
-		"Delete",
+		t("common.delete"),
 	);
 }
 
@@ -998,7 +1006,7 @@ export function importConnectionsFromPgpass() {
 				finishPgpassImport(p_result.entries || []);
 			})
 			.catch(function (p_err) {
-				showAlert("Could not reach the desktop app's file picker: " + p_err);
+				showAlert(t("connections.pgpass_picker_unreachable", { error: p_err }));
 			});
 	} else {
 		el("connections_pgpass_import_input").click();
@@ -1027,7 +1035,7 @@ export function handlePgpassImportFileChosen(e) {
  */
 function finishPgpassImport(p_entries) {
 	if (p_entries.length === 0) {
-		showAlert("That .pgpass file has no usable entries to import (only wildcard lines, or none at all).");
+		showAlert(t("connections.pgpass_no_usable_entries"));
 		return;
 	}
 
@@ -1067,7 +1075,7 @@ function finishPgpassImport(p_entries) {
 
 	var v_skipped = p_entries.length - v_to_import.length;
 	if (v_to_import.length === 0) {
-		showAlert("No new connections to import -- every entry in that file already matches an existing connection.");
+		showAlert(t("connections.pgpass_no_new_connections"));
 		return;
 	}
 
@@ -1090,9 +1098,9 @@ function importPgpassEntriesSequentially(p_entries, p_index, p_failed, p_skipped
 		getDatabaseList();
 		showConnectionList(false, true);
 		var v_imported = p_entries.length - p_failed;
-		var v_message = "Imported " + v_imported + " connection" + (v_imported === 1 ? "" : "s") + " from .pgpass.";
-		if (p_skipped > 0) v_message += " Skipped " + p_skipped + " already in the list.";
-		if (p_failed > 0) v_message += " " + p_failed + " failed to save.";
+		var v_message = tn("connections.pgpass_imported", v_imported);
+		if (p_skipped > 0) v_message += " " + tn("connections.pgpass_skipped", p_skipped);
+		if (p_failed > 0) v_message += " " + tn("connections.pgpass_failed", p_failed);
 		showAlert(v_message);
 		return;
 	}
@@ -1149,7 +1157,9 @@ var TECHNOLOGY_DISPLAY_NAMES = {
 	mssql: "MS SQL Server",
 	sqlite: "SQLite",
 	firebird: "Firebird",
-	terminal: "Terminal",
+	get terminal() {
+		return t("connections.terminal");
+	},
 };
 
 // Purely a client-side presentation tag -- the server stores and returns
@@ -1161,10 +1171,22 @@ var TECHNOLOGY_DISPLAY_NAMES = {
 // outer_terminal_tab.js) can look up the same tabClass without duplicating
 // the color choices.
 export var ENVIRONMENT_META = {
-	production: { label: "Production", dotClass: "omnidb__env-dot--production", tabClass: "omnidb__tab--env-production" },
-	uat: { label: "UAT", dotClass: "omnidb__env-dot--uat", tabClass: "omnidb__tab--env-uat" },
-	development: { label: "Development", dotClass: "omnidb__env-dot--development", tabClass: "omnidb__tab--env-development" },
-	archive: { label: "Archive", dotClass: "omnidb__env-dot--archive", tabClass: "omnidb__tab--env-archive" },
+	production: {
+		get label() { return t("connections.environment_production"); },
+		dotClass: "omnidb__env-dot--production", tabClass: "omnidb__tab--env-production",
+	},
+	uat: {
+		get label() { return t("connections.environment_uat"); },
+		dotClass: "omnidb__env-dot--uat", tabClass: "omnidb__tab--env-uat",
+	},
+	development: {
+		get label() { return t("connections.environment_development"); },
+		dotClass: "omnidb__env-dot--development", tabClass: "omnidb__tab--env-development",
+	},
+	archive: {
+		get label() { return t("connections.environment_archive"); },
+		dotClass: "omnidb__env-dot--archive", tabClass: "omnidb__tab--env-archive",
+	},
 };
 
 // No "Select Type" placeholder option: newConnection() always preselects
@@ -1430,7 +1452,7 @@ export function newConnection() {
 	el("conn_form_ssh_password").value = "";
 	el("conn_form_ssh_key").value = "";
 	el("conn_form_ssh_key_input").value = null;
-	el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+	el("conn_form_ssh_key_input_label").textContent = t("connections.click_to_select");
 
 	el("conn_form_user_pass_check_icon")?.remove();
 	el("conn_form_ssh_password_check_icon")?.remove();
@@ -1723,7 +1745,7 @@ export function updateConnectionKey(e) {
 	var v_input = el("conn_form_ssh_key");
 	if (!file) {
 		v_input.value = null;
-		el("conn_form_ssh_key_input_label").innerHTML = "Click to select";
+		el("conn_form_ssh_key_input_label").textContent = t("connections.click_to_select");
 		updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
 		return;
 	}
@@ -1731,7 +1753,7 @@ export function updateConnectionKey(e) {
 	reader.onload = function (e) {
 		var v_contents = /** @type {FileReader} */ (e.target).result;
 		v_input.value = v_contents;
-		el("conn_form_ssh_key_input_label").innerHTML = "Key text loaded";
+		el("conn_form_ssh_key_input_label").textContent = t("connections.key_text_loaded");
 		updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
 	};
 	reader.readAsText(file);

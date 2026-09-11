@@ -38,10 +38,11 @@ import {
 	saveEditData,
 } from "../tree_context_functions/edit_data.js";
 import { removeTab, renameTab, resizeVertical, showMenuNewTab } from "../workspace.js";
+import { t } from "../i18n.js";
 
 
 export var v_createEditDataTabFunction = function (p_table) {
-	var v_name = "Query";
+	var v_name = t("common.query");
 	if (p_table) v_name = p_table;
 
 	// Removing last tab of the inner tab list
@@ -101,19 +102,19 @@ export var v_createEditDataTabFunction = function (p_table) {
 		"<div class='tab_actions omnidb__tab-actions col-12'>" +
 		"<button id='bt_start_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='Run'><i class='fas fa-play'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + t("editor.run") + "'><i class='fas fa-play'></i></button>" +
 		"<select id='sel_filtered_data_" +
 		v_tab.id +
-		"' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >Query 10 rows</option><option value='100'>Query 100 rows</option><option value='1000'>Query 1000 rows</option></select>" +
+		"' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >" + t("editor.query_n_rows", { n: 10 }) + "</option><option value='100'>" + t("editor.query_n_rows", { n: 100 }) + "</option><option value='1000'>" + t("editor.query_n_rows", { n: 1000 }) + "</option></select>" +
 		"<button id='bt_cancel_" +
 		v_tab.id +
-		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='Cancel' style='display: none;'>Cancel</button>" +
+		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='" + t("common.cancel") + "' style='display: none;'>" + t("common.cancel") + "</button>" +
 		"<div id='div_edit_data_query_info_" +
 		v_tab.id +
 		"' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div>" +
 		"<button id='bt_saveEditData_" +
 		v_tab.id +
-		"' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>Save Changes</button>" +
+		"' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>" + t("editor.save_changes") + "</button>" +
 		"</div>" +
 		"</div>" +
 		"<div class='p-2 omnidb__theme-border--primary'>" +

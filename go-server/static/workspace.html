@@ -71,25 +71,25 @@
 					<div class="omnidb__connections__sidebar">
 						<div class="omnidb__connections__sidebar-toolbar">
 							<select id="group_selector" class="form-control form-control-sm">
-								<option value=-1 selected>Select Group</option>
+								<option value=-1 selected data-i18n="connections.select_group">Select Group</option>
 							</select>
 							<span id="group_actions_1" class="omnidb__connections__sidebar-toolbar-actions">
-								<button id="button_new_group" type="button" class="omnidb__connections__pill-btn" title="New group">
-									<i class="fas fa-plus"></i> Group
+								<button id="button_new_group" type="button" class="omnidb__connections__pill-btn" title="New group" data-i18n-title="connections.new_group">
+									<i class="fas fa-plus"></i> <span data-i18n="connections.group">Group</span>
 								</button>
 								<button id="button_group_actions" type="button"
 									class="omnidb__connections__icon-btn dropdown-toggle" style='display: none;'
-									data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Group actions">
+									data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" title="Group actions" data-i18n-title="connections.group_actions">
 									<i class="fas fa-ellipsis-h"></i>
 								</button>
 								<div class="dropdown-menu dropdown-menu-end">
-									<button id="button_group_rename" class="dropdown-item" type="button">Rename</button>
-									<button id="button_group_manage" class="dropdown-item" type="button">Manage Connections</button>
-									<button id="button_group_delete" class="dropdown-item" type="button">Delete</button>
+									<button id="button_group_rename" class="dropdown-item" type="button" data-i18n="common.rename">Rename</button>
+									<button id="button_group_manage" class="dropdown-item" type="button" data-i18n="connections.manage_connections">Manage Connections</button>
+									<button id="button_group_delete" class="dropdown-item" type="button" data-i18n="common.delete">Delete</button>
 								</div>
 							</span>
 							<span id="group_actions_2" class="omnidb__connections__sidebar-toolbar-actions" style='display: none;'>
-								<button id="button_manage_group_save" type="button" class="btn btn-success btn-sm">Save changes</button>
+								<button id="button_manage_group_save" type="button" class="btn btn-success btn-sm" data-i18n="connections.save_changes">Save changes</button>
 							</span>
 						</div>
 
@@ -98,28 +98,28 @@
 						<div class="omnidb__list-footer">
 							<div class="omnidb__list-footer-actions">
 								<div class="omnidb__addremove">
-									<button id="button_new_connection" type="button" title="New Connection">
+									<button id="button_new_connection" type="button" title="New Connection" data-i18n-title="connections.new_connection">
 										<i class="fas fa-plus"></i>
 									</button>
 									<span class="omnidb__addremove-divider"></span>
-									<button id="button_delete_connection" type="button" title="Delete Connection" disabled>
+									<button id="button_delete_connection" type="button" title="Delete Connection" data-i18n-title="connections.delete_connection" disabled>
 										<i class="fas fa-minus"></i>
 									</button>
 								</div>
 								<button id="button_import_pgpass_connections" type="button" class="omnidb__icon-button"
-									title="Import connections from .pgpass&hellip;">
+									title="Import connections from .pgpass&hellip;" data-i18n-title="connections.import_pgpass">
 									<i class="fas fa-file-import"></i>
 								</button>
 								<input type="file" id="connections_pgpass_import_input" style="display:none;" />
 							</div>
 							<div class="omnidb__connections__public-toggle"
-								title="Show Public Connections.&#10;Switch ON shows all public connections.">
+								title="Show Public Connections.&#10;Switch ON shows all public connections." data-i18n-title="connections.public_toggle_tooltip">
 								<div class="omnidb__switch omnidb__switch--sm">
 									<input type="checkbox" id="conn_list_public" class="omnidb__switch--input">
 									<label for="conn_list_public" class="omnidb__switch--label"><span><i
 												class="fas fa-users"></i></span></label>
 								</div>
-								<span class="omnidb__connections__public-toggle-label">Public (<span id="conn_list_public_counter">0</span>)</span>
+								<span class="omnidb__connections__public-toggle-label" id="conn_list_public_label">Public (<span id="conn_list_public_counter">0</span>)</span>
 							</div>
 						</div>
 					</div>
@@ -132,7 +132,7 @@
 					<div class="omnidb__connections__detail">
 						<div id="omnidb__connections__detail_empty" class="omnidb__connections__detail-empty">
 							<i class="fas fa-plug"></i>
-							<p>Select a connection on the left, or create a new one.</p>
+							<p data-i18n="connections.detail_empty">Select a connection on the left, or create a new one.</p>
 						</div>
 
 						<div id="omnidb__connections__detail_form" class="omnidb__connections__detail-form">
@@ -140,41 +140,41 @@
 								<div id="conn_detail_icon" class="omnidb__connections__detail-icon"></div>
 								<div class="omnidb__connections__detail-heading">
 									<input type="text" id="conn_form_title" class="omnidb__connections__detail-title-input"
-										placeholder="Connection name">
+										placeholder="Connection name" data-i18n-placeholder="connections.connection_name">
 								</div>
 								<div class="omnidb__connections__detail-actions">
 									<button id="conn_form_button_connect" type="button" class="btn omnidb__theme__btn--primary">
-										<i class="fas fa-plug"></i> Connect
+										<i class="fas fa-plug"></i> <span data-i18n="common.connect">Connect</span>
 									</button>
 									<button id="conn_form_button_test_connection" type="button" class="btn omnidb__theme__btn--secondary"
-										disabled>Test Connection</button>
-									<button id="conn_form_button_save_connection" type="button" class="btn btn-success" disabled>Save</button>
+										disabled data-i18n="connections.test_connection">Test Connection</button>
+									<button id="conn_form_button_save_connection" type="button" class="btn btn-success" disabled data-i18n="common.save">Save</button>
 								</div>
 							</div>
 
 							<div class="omnidb__connections__detail-body">
 								<div class="row">
 									<div class="col-md-4 mb-3 required">
-										<label for="conn_form_type">Connection Type</label>
+										<label for="conn_form_type" data-i18n="connections.connection_type">Connection Type</label>
 										<select id="conn_form_type" class="form-control">
-											<option value=-1 selected>Select Type</option>
+											<option value=-1 selected data-i18n="connections.select_type">Select Type</option>
 										</select>
 									</div>
 									<div class="col-md-4 mb-3">
-										<label for="conn_form_environment">Environment</label>
+										<label for="conn_form_environment" data-i18n="connections.environment">Environment</label>
 										<select id="conn_form_environment" class="form-control">
-											<option value="">None</option>
-											<option value="production">Production</option>
-											<option value="uat">UAT</option>
-											<option value="development">Development</option>
-											<option value="archive">Archive</option>
+											<option value="" data-i18n="connections.environment_none">None</option>
+											<option value="production" data-i18n="connections.environment_production">Production</option>
+											<option value="uat" data-i18n="connections.environment_uat">UAT</option>
+											<option value="development" data-i18n="connections.environment_development">Development</option>
+											<option value="archive" data-i18n="connections.environment_archive">Archive</option>
 										</select>
 									</div>
 									<div class="col-md-4 mt-auto mb-3">
-										<span class="ms-2">Public connection?</span>
+										<span class="ms-2" data-i18n="connections.public_connection">Public connection?</span>
 										<div class="d-inline-block ms-2">
 											<div class="omnidb__switch me-2"
-												title="Toggle public status.&#10;Switch ON sets connection as usable for all other omnidb users.">
+												title="Toggle public status.&#10;Switch ON sets connection as usable for all other omnidb users." data-i18n-title="connections.public_status_tooltip">
 												<input type="checkbox" id="conn_form_public" class="omnidb__switch--input">
 												<label for="conn_form_public" class="omnidb__switch--label"><span><i
 															class="fas fa-users"></i></span></label>
@@ -185,47 +185,47 @@
 
 								<div class="card">
 									<div class="card-header">
-										<h6 class="mb-0">Host Connection Info</h6>
+										<h6 class="mb-0" data-i18n="connections.host_connection_info">Host Connection Info</h6>
 									</div>
 									<div class="card-body">
 										<div class="row">
 											<div class="col-md mb-3">
-												<label for="conn_form_server">Server</label>
+												<label for="conn_form_server" data-i18n="connections.server">Server</label>
 												<input type="text" class="form-control" id="conn_form_server" placeholder="ex: 127.0.0.1">
 											</div>
 											<div class="col-md-3 mb-3">
-												<label for="conn_form_port">Port</label>
+												<label for="conn_form_port" data-i18n="connections.port">Port</label>
 												<input type="text" class="form-control" id="conn_form_port" placeholder="ex: 5432">
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-md mb-3">
-												<label for="conn_form_database">Database</label>
+												<label for="conn_form_database" data-i18n="connections.database">Database</label>
 												<input type="text" class="form-control" id="conn_form_database" placeholder="ex: postgres">
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-md mb-3">
-												<label for="conn_form_user">User</label>
+												<label for="conn_form_user" data-i18n="connections.user">User</label>
 												<input type="text" class="form-control" id="conn_form_user" placeholder="ex: postgres">
 											</div>
 											<div class="col-md-5 mb-3">
-												<label for="conn_form_user_pass">User Password <i class="fas fa-question-circle text-info"
-														title="Optional user password&#10;If provided: password will be stored to omnidb configuration's database and used when connecting to this connection.&#10;Leaving blank: No password will be saved and it will be requested to be manually type everytime the user tries to use this connection. If it's a PostgreSQL connection, OmniDB will try to retrieve password from .pgpass."></i></label>
-												<input type="password" class="form-control" id="conn_form_user_pass" placeholder="User Password">
+												<label for="conn_form_user_pass"><span data-i18n="connections.user_password">User Password</span> <i class="fas fa-question-circle text-info"
+														title="Optional user password&#10;If provided: password will be stored to omnidb configuration's database and used when connecting to this connection.&#10;Leaving blank: No password will be saved and it will be requested to be manually type everytime the user tries to use this connection. If it's a PostgreSQL connection, OmniDB will try to retrieve password from .pgpass." data-i18n-title="connections.user_password_tooltip"></i></label>
+												<input type="password" class="form-control" id="conn_form_user_pass" placeholder="User Password" data-i18n-placeholder="connections.user_password">
 											</div>
 										</div>
 
 										<div class="position-relative">
 											<div style="position: absolute; top: -1rem; left: 2rem; padding: 0.25rem;"
-												class="omnidb__theme-bg--light"><b>OR</b></div>
+												class="omnidb__theme-bg--light"><b data-i18n="connections.or">OR</b></div>
 											<hr />
 										</div>
 
 										<div class="row">
 											<div class="col-md mb-3">
-												<label for="conn_form_connstring">Connection string <i class="fas fa-question-circle text-info"
-														title="Optional connection string&#10;If provided: OmniDB will use this as the default config, and single inputs for server should not be filled.&#10;If blank: In this case, if this is not a terminal connection, you should instead fill the required single inputs for server above."></i></label>
+												<label for="conn_form_connstring"><span data-i18n="connections.connection_string">Connection string</span> <i class="fas fa-question-circle text-info"
+														title="Optional connection string&#10;If provided: OmniDB will use this as the default config, and single inputs for server should not be filled.&#10;If blank: In this case, if this is not a terminal connection, you should instead fill the required single inputs for server above." data-i18n-title="connections.connection_string_tooltip"></i></label>
 												<input type="text" class="form-control" id="conn_form_connstring"
 													placeholder="ex: postgresql://postgres@localhost:5432/postgres">
 											</div>
@@ -239,7 +239,7 @@
 											<div class="omnidb__form-check form-check form-check-inline">
 												<input class="form-check-input" type="checkbox" value="" id="conn_form_use_tunnel">
 												<label class="form-check-label" for="conn_form_use_tunnel">
-													<b style="vertical-align: middle;">Use SSH tunnel</b>
+													<b style="vertical-align: middle;" data-i18n="connections.use_ssh_tunnel">Use SSH tunnel</b>
 												</label>
 											</div>
 										</div>
@@ -247,35 +247,35 @@
 									<div class="card-body">
 										<div class="row">
 											<div class="col-md mb-3">
-												<label for="conn_form_ssh_server">SSH Server</label>
-												<input type="text" class="form-control" id="conn_form_ssh_server" placeholder="SSH server" readonly>
+												<label for="conn_form_ssh_server" data-i18n="connections.ssh_server">SSH Server</label>
+												<input type="text" class="form-control" id="conn_form_ssh_server" placeholder="SSH server" data-i18n-placeholder="connections.ssh_server" readonly>
 											</div>
 											<div class="col-md-3 mb-3">
-												<label for="conn_form_ssh_port">SSH Port</label>
-												<input type="text" class="form-control" id="conn_form_ssh_port" placeholder="SSH port" readonly>
+												<label for="conn_form_ssh_port" data-i18n="connections.ssh_port">SSH Port</label>
+												<input type="text" class="form-control" id="conn_form_ssh_port" placeholder="SSH port" data-i18n-placeholder="connections.ssh_port" readonly>
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-md mb-3">
-												<label for="conn_form_ssh_user">SSH User</label>
-												<input type="text" class="form-control" id="conn_form_ssh_user" placeholder="SSH user" readonly>
+												<label for="conn_form_ssh_user" data-i18n="connections.ssh_user">SSH User</label>
+												<input type="text" class="form-control" id="conn_form_ssh_user" placeholder="SSH user" data-i18n-placeholder="connections.ssh_user" readonly>
 											</div>
 											<div class="col-md-5 mb-3">
 												<label for="conn_form_ssh_password">
-													Password / Passphrase
+													<span data-i18n="connections.ssh_password_label">Password / Passphrase</span>
 													<i class="fas fa-question-circle text-info ms-2"
-														title="Optional ssh password / passphrase&#10;Leave this blank if you dont want the password to be stored.&#10;If provided: OmniDB will use this password when opening a SSH tunnel.&#10;Leaving blank: When the SSH tunnel is requested, OmniDB will prompt an input requesting for this password to be used exclusively to open the connection, but it wont be stored."></i>
+														title="Optional ssh password / passphrase&#10;Leave this blank if you dont want the password to be stored.&#10;If provided: OmniDB will use this password when opening a SSH tunnel.&#10;Leaving blank: When the SSH tunnel is requested, OmniDB will prompt an input requesting for this password to be used exclusively to open the connection, but it wont be stored." data-i18n-title="connections.ssh_password_tooltip"></i>
 												</label>
 												<input type="password" class="form-control" id="conn_form_ssh_password"
-													placeholder="SSH password / passphrase" readonly>
+													placeholder="SSH password / passphrase" data-i18n-placeholder="connections.ssh_password_placeholder" readonly>
 											</div>
 										</div>
 										<div class="row">
 											<div class="col-md mb-3">
 												<label for="conn_form_ssh_key">
-													SSH Key Text File
+													<span data-i18n="connections.ssh_key_file">SSH Key Text File</span>
 													<i class="fas fa-question-circle text-info ms-2"
-														title="Optional ssh key&#10;Leave this blank if you dont want the key to be stored.&#10;If provided: When saving this SSH tunnel, OmniDB will read the content of this file and store just the text, but not the file."></i>
+														title="Optional ssh key&#10;Leave this blank if you dont want the key to be stored.&#10;If provided: When saving this SSH tunnel, OmniDB will read the content of this file and store just the text, but not the file." data-i18n-title="connections.ssh_key_tooltip"></i>
 												</label>
 												<textarea style="display:none;" class="form-control" id="conn_form_ssh_key" rows="4"
 													readonly></textarea>
@@ -283,7 +283,7 @@
 													<input type="file" id="conn_form_ssh_key_input"
 														style="width: 200px;height: 100%;" disabled />
 													<label id="conn_form_ssh_key_input_label" class="custom-file-label"
-														for="conn_form_ssh_key_input">Click to select</label>
+														for="conn_form_ssh_key_input" data-i18n="connections.click_to_select">Click to select</label>
 												</div>
 											</div>
 										</div>
@@ -325,33 +325,33 @@
 						<div class="omnidb__settings__list" id="settings_category_list">
 							<div class="omnidb__settings__list-item" data-category="appearance">
 								<i class="fas fa-paint-brush omnidb__settings__list-item-icon"></i>
-								<span class="omnidb__settings__list-item-title">Appearance</span>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.appearance">Appearance</span>
 							</div>
 							<div class="omnidb__settings__list-item" data-category="export">
 								<i class="fas fa-file-csv omnidb__settings__list-item-icon"></i>
-								<span class="omnidb__settings__list-item-title">Export</span>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.export">Export</span>
 							</div>
 							<div class="omnidb__settings__list-item" data-category="autocomplete">
 								<i class="fas fa-magic omnidb__settings__list-item-icon"></i>
-								<span class="omnidb__settings__list-item-title">Autocomplete</span>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.autocomplete">Autocomplete</span>
 							</div>
 							<div class="omnidb__settings__list-item" data-category="formatting">
 								<i class="fas fa-align-left omnidb__settings__list-item-icon"></i>
-								<span class="omnidb__settings__list-item-title">Formatting</span>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.formatting">Formatting</span>
 							</div>
 							<div class="omnidb__settings__list-item" data-category="shortcuts">
 								<i class="fas fa-keyboard omnidb__settings__list-item-icon"></i>
-								<span class="omnidb__settings__list-item-title">Shortcuts</span>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.shortcuts">Shortcuts</span>
 							</div>
 							<div class="omnidb__settings__list-item" data-category="password">
 								<i class="fas fa-lock omnidb__settings__list-item-icon"></i>
-								<span class="omnidb__settings__list-item-title">Password</span>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.password">Password</span>
 							</div>
 							{% if not desktop_mode %}
 							{% if super_user == 1 %}
 							<div class="omnidb__settings__list-item" id="settings_category_account" data-category="account">
 								<i class="fas fa-user-shield omnidb__settings__list-item-icon"></i>
-								<span class="omnidb__settings__list-item-title">Account</span>
+								<span class="omnidb__settings__list-item-title" data-i18n="settings.category.account">Account</span>
 							</div>
 							{% endif %}
 							{% endif %}
@@ -367,29 +367,38 @@
 
 						<div class="omnidb__settings__pane" data-category="appearance">
 							<div class="omnidb__settings__pane-header">
-								<h5>Appearance</h5>
+								<h5 data-i18n="settings.category.appearance">Appearance</h5>
+							</div>
+							<div class="omnidb__settings__field">
+								<label for="sel_language" data-i18n="settings.appearance.language">Language</label>
+								<select id="sel_language" class="form-control omnidb__settings__language">
+									<option value="auto" data-i18n="settings.appearance.language_auto">Automatic</option>
+									<option value="en">English</option>
+									<option value="cs">Čeština</option>
+									<option value="es">Español</option>
+								</select>
 							</div>
 							<div class="row mb-3">
 								<div class="col-md-12">
-									<label>Theme</label>
+									<label data-i18n="settings.appearance.theme">Theme</label>
 									<div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="theme_preference" id="theme_preference_auto" value="auto">
-											<label class="form-check-label" for="theme_preference_auto">Automatic</label>
+											<label class="form-check-label" for="theme_preference_auto" data-i18n="settings.appearance.language_auto">Automatic</label>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="theme_preference" id="theme_preference_light" value="light">
-											<label class="form-check-label" for="theme_preference_light">Light</label>
+											<label class="form-check-label" for="theme_preference_light" data-i18n="settings.appearance.theme_light">Light</label>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="theme_preference" id="theme_preference_dark" value="dark">
-											<label class="form-check-label" for="theme_preference_dark">Dark</label>
+											<label class="form-check-label" for="theme_preference_dark" data-i18n="settings.appearance.theme_dark">Dark</label>
 										</div>
 									</div>
 								</div>
 							</div>
 							<div class="omnidb__settings__field">
-								<label for="sel_interface_font_size">Font Size</label>
+								<label for="sel_interface_font_size" data-i18n="settings.appearance.font_size">Font Size</label>
 								<div class="omnidb__settings__range-row">
 									<input type="range" min="10" max="20" step="1" value="12"
 										class="omnidb__settings__range"
@@ -401,12 +410,12 @@
 
 						<div class="omnidb__settings__pane" data-category="export">
 							<div class="omnidb__settings__pane-header">
-								<h5>Export</h5>
+								<h5 data-i18n="settings.category.export">Export</h5>
 							</div>
 							<div class="omnidb__settings__field">
-								<label for="sel_csv_encoding">CSV/TSV Encoding</label>
+								<label for="sel_csv_encoding" data-i18n="settings.export.csv_encoding">CSV/TSV Encoding</label>
 									<select id="sel_csv_encoding" class="form-control omnidb__settings__encoding">
-										<optgroup label="Unicode">
+										<optgroup label="Unicode" data-i18n-label="settings.export.encoding_group_unicode">
 										<option value="utf-8-sig" selected>UTF-8 with BOM</option>
 										<option value="utf-8">UTF-8</option>
 										<option value="utf-16">UTF-16 with BOM</option>
@@ -417,7 +426,7 @@
 										<option value="utf-32-be">UTF-32 BE</option>
 										<option value="utf-7">UTF-7</option>
 										</optgroup>
-										<optgroup label="Windows codepages">
+										<optgroup label="Windows codepages" data-i18n-label="settings.export.encoding_group_windows">
 										<option value="cp1250">Windows-1250 (Central European)</option>
 										<option value="cp1251">Windows-1251 (Cyrillic)</option>
 										<option value="cp1252">Windows-1252 (Western European)</option>
@@ -431,7 +440,7 @@
 										<option value="cp874">Windows-874 (Thai)</option>
 										<option value="cp65001">CP65001 (UTF-8 alias, Windows)</option>
 										</optgroup>
-										<optgroup label="ISO 8859 (Latin)">
+										<optgroup label="ISO 8859 (Latin)" data-i18n-label="settings.export.encoding_group_iso8859">
 										<option value="latin-1">ISO 8859-1 (Latin 1 / Western European)</option>
 										<option value="iso8859-2">ISO 8859-2 (Latin 2 / Central European)</option>
 										<option value="iso8859-3">ISO 8859-3 (Latin 3 / South European)</option>
@@ -448,7 +457,7 @@
 										<option value="iso8859-15">ISO 8859-15 (Latin 9 / Western European with €)</option>
 										<option value="iso8859-16">ISO 8859-16 (Latin 10 / South-Eastern European)</option>
 										</optgroup>
-										<optgroup label="Cyrillic">
+										<optgroup label="Cyrillic" data-i18n-label="settings.export.encoding_group_cyrillic">
 										<option value="koi8-r">KOI8-R (Russian)</option>
 										<option value="koi8-t">KOI8-T (Tajik)</option>
 										<option value="koi8-u">KOI8-U (Ukrainian)</option>
@@ -456,7 +465,7 @@
 										<option value="cp1125">CP1125 (DOS Ukrainian)</option>
 										<option value="mac-cyrillic">Mac Cyrillic</option>
 										</optgroup>
-										<optgroup label="East Asian">
+										<optgroup label="East Asian" data-i18n-label="settings.export.encoding_group_east_asian">
 										<option value="big5">Big5 (Traditional Chinese)</option>
 										<option value="big5hkscs">Big5-HKSCS (Hong Kong)</option>
 										<option value="gb2312">GB2312 (Simplified Chinese)</option>
@@ -482,7 +491,7 @@
 										<option value="iso2022-kr">ISO-2022-KR (Korean, 7-bit)</option>
 										<option value="johab">Johab (Korean)</option>
 										</optgroup>
-										<optgroup label="DOS codepages">
+										<optgroup label="DOS codepages" data-i18n-label="settings.export.encoding_group_dos">
 										<option value="cp437">CP437 (DOS US / Western European)</option>
 										<option value="cp720">CP720 (DOS Arabic)</option>
 										<option value="cp737">CP737 (DOS Greek)</option>
@@ -503,14 +512,14 @@
 										<option value="kz1048">KZ-1048 (Kazakh)</option>
 										<option value="ptcp154">PTCP154 (Kazakh)</option>
 										</optgroup>
-										<optgroup label="Mac legacy">
+										<optgroup label="Mac legacy" data-i18n-label="settings.export.encoding_group_mac">
 										<option value="mac-greek">Mac Greek</option>
 										<option value="mac-iceland">Mac Icelandic</option>
 										<option value="mac-latin2">Mac Latin 2 (Central European)</option>
 										<option value="mac-roman">Mac Roman (Western European)</option>
 										<option value="mac-turkish">Mac Turkish</option>
 										</optgroup>
-										<optgroup label="EBCDIC / mainframe (rare)">
+										<optgroup label="EBCDIC / mainframe (rare)" data-i18n-label="settings.export.encoding_group_ebcdic">
 										<option value="cp037">CP037 (EBCDIC US/Canada)</option>
 										<option value="cp273">CP273 (EBCDIC German)</option>
 										<option value="cp424">CP424 (EBCDIC Hebrew)</option>
@@ -520,72 +529,72 @@
 										<option value="cp1026">CP1026 (EBCDIC Turkish)</option>
 										<option value="cp1140">CP1140 (EBCDIC US/Canada with €)</option>
 										</optgroup>
-										<optgroup label="Other">
+										<optgroup label="Other" data-i18n-label="settings.export.encoding_group_other">
 										<option value="ascii">ASCII (7-bit US)</option>
 										</optgroup>
 									</select>
 							</div>
 							<div class="omnidb__settings__field">
-								<label for="txt_csv_delimiter">CSV Delimiter</label>
+								<label for="txt_csv_delimiter" data-i18n="settings.export.csv_delimiter">CSV Delimiter</label>
 								<input type="text" class="form-control omnidb__settings__delimiter" id="txt_csv_delimiter" placeholder=";" maxlength="4">
 							</div>
 						</div>
 
 						<div class="omnidb__settings__pane" data-category="autocomplete">
 							<div class="omnidb__settings__pane-header">
-								<h5>Autocomplete</h5>
+								<h5 data-i18n="settings.category.autocomplete">Autocomplete</h5>
 							</div>
 							<div class="omnidb__settings__field">
-								<label>Autocomplete Suggestions</label>
+								<label data-i18n="settings.autocomplete.suggestions">Autocomplete Suggestions</label>
 								<div class="mb-2">
-									<a id="link_autocomplete_all" href="#">All</a>
+									<a id="link_autocomplete_all" href="#" data-i18n="common.all">All</a>
 									&nbsp;/&nbsp;
-									<a id="link_autocomplete_none" href="#">None</a>
+									<a id="link_autocomplete_none" href="#" data-i18n="common.none">None</a>
 								</div>
 								<div class="omnidb__settings__checkbox-list">
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_keyword" value="keyword">
-										<label class="form-check-label" for="autocomplete_type_keyword">Keywords</label>
+										<label class="form-check-label" for="autocomplete_type_keyword" data-i18n="tree.keywords">Keywords</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_database" value="database">
-										<label class="form-check-label" for="autocomplete_type_database">Databases</label>
+										<label class="form-check-label" for="autocomplete_type_database" data-i18n="tree.databases">Databases</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_role" value="role">
-										<label class="form-check-label" for="autocomplete_type_role">Roles</label>
+										<label class="form-check-label" for="autocomplete_type_role" data-i18n="tree.roles">Roles</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_tablespace" value="tablespace">
-										<label class="form-check-label" for="autocomplete_type_tablespace">Tablespaces</label>
+										<label class="form-check-label" for="autocomplete_type_tablespace" data-i18n="tree.tablespaces">Tablespaces</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_schema" value="schema">
-										<label class="form-check-label" for="autocomplete_type_schema">Schemas</label>
+										<label class="form-check-label" for="autocomplete_type_schema" data-i18n="tree.schemas">Schemas</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_extension" value="extension">
-										<label class="form-check-label" for="autocomplete_type_extension">Extensions</label>
+										<label class="form-check-label" for="autocomplete_type_extension" data-i18n="tree.extensions">Extensions</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_table" value="table">
-										<label class="form-check-label" for="autocomplete_type_table">Tables</label>
+										<label class="form-check-label" for="autocomplete_type_table" data-i18n="tree.tables">Tables</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_view" value="view">
-										<label class="form-check-label" for="autocomplete_type_view">Views</label>
+										<label class="form-check-label" for="autocomplete_type_view" data-i18n="tree.views">Views</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_column" value="column">
-										<label class="form-check-label" for="autocomplete_type_column">Columns</label>
+										<label class="form-check-label" for="autocomplete_type_column" data-i18n="tree.columns">Columns</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_function" value="function">
-										<label class="form-check-label" for="autocomplete_type_function">Functions</label>
+										<label class="form-check-label" for="autocomplete_type_function" data-i18n="tree.functions">Functions</label>
 									</div>
 									<div class="form-check">
 										<input class="form-check-input" type="checkbox" name="autocomplete_type" id="autocomplete_type_index" value="index">
-										<label class="form-check-label" for="autocomplete_type_index">Indexes</label>
+										<label class="form-check-label" for="autocomplete_type_index" data-i18n="tree.indexes">Indexes</label>
 									</div>
 								</div>
 							</div>
@@ -593,27 +602,27 @@
 
 						<div class="omnidb__settings__pane" data-category="formatting">
 							<div class="omnidb__settings__pane-header">
-								<h5>Formatting</h5>
+								<h5 data-i18n="settings.category.formatting">Formatting</h5>
 							</div>
 
 							<div class="row mb-3">
 								<div class="col-md-12">
-									<label>Indent Character</label>
+									<label data-i18n="settings.formatting.indent_character">Indent Character</label>
 									<div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="indent_char" id="indent_char_space" value="space">
-											<label class="form-check-label" for="indent_char_space">Spaces</label>
+											<label class="form-check-label" for="indent_char_space" data-i18n="settings.formatting.spaces">Spaces</label>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="indent_char" id="indent_char_tab" value="tab">
-											<label class="form-check-label" for="indent_char_tab">Tab</label>
+											<label class="form-check-label" for="indent_char_tab" data-i18n="settings.formatting.tab">Tab</label>
 										</div>
 									</div>
 								</div>
 							</div>
 							<div class="row mb-3">
 								<div class="col-md-12">
-									<label>Indent Size</label>
+									<label data-i18n="settings.formatting.indent_size">Indent Size</label>
 									<div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="indent_size" id="indent_size_2" value="2">
@@ -633,15 +642,15 @@
 
 							<div class="row mb-3">
 								<div class="col-md-12">
-									<label>Comma Style</label>
+									<label data-i18n="settings.formatting.comma_style">Comma Style</label>
 									<div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="comma_style" id="comma_style_leading" value="leading">
-											<label class="form-check-label" for="comma_style_leading">Leading (, at line start)</label>
+											<label class="form-check-label" for="comma_style_leading" data-i18n="settings.formatting.comma_leading">Leading (, at line start)</label>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="comma_style" id="comma_style_trailing" value="trailing">
-											<label class="form-check-label" for="comma_style_trailing">Trailing (, at line end)</label>
+											<label class="form-check-label" for="comma_style_trailing" data-i18n="settings.formatting.comma_trailing">Trailing (, at line end)</label>
 										</div>
 									</div>
 								</div>
@@ -649,90 +658,90 @@
 
 							<div class="row mb-3">
 								<div class="col-md-12">
-									<label>Keyword Case</label>
+									<label data-i18n="settings.formatting.keyword_case">Keyword Case</label>
 									<div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_preserve" value="preserve">
-											<label class="form-check-label" for="keyword_case_preserve">Preserve</label>
+											<label class="form-check-label" for="keyword_case_preserve" data-i18n="settings.formatting.case_preserve">Preserve</label>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_upper" value="upper">
-											<label class="form-check-label" for="keyword_case_upper">UPPERCASE</label>
+											<label class="form-check-label" for="keyword_case_upper" data-i18n="settings.formatting.case_upper">UPPERCASE</label>
 										</div>
 										<div class="form-check form-check-inline">
 											<input class="form-check-input" type="radio" name="keyword_case" id="keyword_case_lower" value="lower">
-											<label class="form-check-label" for="keyword_case_lower">lowercase</label>
+											<label class="form-check-label" for="keyword_case_lower" data-i18n="settings.formatting.case_lower">lowercase</label>
 										</div>
 									</div>
 								</div>
 							</div>
 
 							<div class="omnidb__settings__field">
-								<label for="txt_ruler_column">Ruler Column</label>
+								<label for="txt_ruler_column" data-i18n="settings.formatting.ruler_column">Ruler Column</label>
 								<input type="number" class="form-control omnidb__settings__ruler-column" id="txt_ruler_column" min="24" max="999" step="1" placeholder="128">
-								<span class="omnidb__settings__hint">Column where the editor shows a vertical guide line. Not yet used by SQL formatting.</span>
+								<span class="omnidb__settings__hint" data-i18n="settings.formatting.ruler_column_hint">Column where the editor shows a vertical guide line. Not yet used by SQL formatting.</span>
 							</div>
 						</div>
 
 						<div class="omnidb__settings__pane" id="config_shortcuts" data-category="shortcuts">
 							<div class="omnidb__settings__pane-header">
-								<h5>Shortcuts</h5>
+								<h5 data-i18n="settings.category.shortcuts">Shortcuts</h5>
 							</div>
 							<div id="div_shortcut_background_dark">
-								<div style="position: absolute; top: 50%; width: 100%;">Press key combination... (ESC to cancel)</div>
+								<div style="position: absolute; top: 50%; width: 100%;" data-i18n="settings.shortcuts.press_combination">Press key combination... (ESC to cancel)</div>
 							</div>
-							<h6 class="omnidb__settings__subsection-header">Database</h6>
+							<h6 class="omnidb__settings__subsection-header" data-i18n="tree.databases_section">Database</h6>
 							<div class="form-group row">
-								<label for="shortcut_run_query" class="col-sm-6 col-form-label">Run Query</label>
+								<label for="shortcut_run_query" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.run_query">Run Query</label>
 								<div class="col-sm-6">
 									<button id="shortcut_run_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_explain" class="col-sm-6 col-form-label">Run Explain</label>
+								<label for="shortcut_explain" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.run_explain">Run Explain</label>
 								<div class="col-sm-6">
 									<button id="shortcut_explain" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_explain_analyze" class="col-sm-6 col-form-label">Run Explain Analyze</label>
+								<label for="shortcut_explain_analyze" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.run_explain_analyze">Run Explain Analyze</label>
 								<div class="col-sm-6">
 									<button id="shortcut_explain_analyze" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_cancel_query" class="col-sm-6 col-form-label">Cancel Query</label>
+								<label for="shortcut_cancel_query" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.cancel_query">Cancel Query</label>
 								<div class="col-sm-6">
 									<button id="shortcut_cancel_query" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_indent" class="col-sm-6 col-form-label">Indent</label>
+								<label for="shortcut_indent" class="col-sm-6 col-form-label" data-i18n="common.indent">Indent</label>
 								<div class="col-sm-6">
 									<button id="shortcut_indent" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_autocomplete" class="col-sm-6 col-form-label">Autocomplete</label>
+								<label for="shortcut_autocomplete" class="col-sm-6 col-form-label" data-i18n="settings.category.autocomplete">Autocomplete</label>
 								<div class="col-sm-6">
 									<button id="shortcut_autocomplete" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_new_inner_tab" class="col-sm-6 col-form-label">New Inner Tab</label>
+								<label for="shortcut_new_inner_tab" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.new_inner_tab">New Inner Tab</label>
 								<div class="col-sm-6">
 									<button id="shortcut_new_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_remove_inner_tab" class="col-sm-6 col-form-label">Remove Current Inner
+								<label for="shortcut_remove_inner_tab" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.remove_inner_tab">Remove Current Inner
 									Tab</label>
 								<div class="col-sm-6">
 									<button id="shortcut_remove_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
@@ -740,36 +749,36 @@
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_left_inner_tab" class="col-sm-6 col-form-label">Select Left Inner Tab</label>
+								<label for="shortcut_left_inner_tab" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.left_inner_tab">Select Left Inner Tab</label>
 								<div class="col-sm-6">
 									<button id="shortcut_left_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_right_inner_tab" class="col-sm-6 col-form-label">Select Right Inner Tab</label>
+								<label for="shortcut_right_inner_tab" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.right_inner_tab">Select Right Inner Tab</label>
 								<div class="col-sm-6">
 									<button id="shortcut_right_inner_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
-							<h6 class="omnidb__settings__subsection-header">Snippets</h6>
+							<h6 class="omnidb__settings__subsection-header" data-i18n="tree.snippets_section">Snippets</h6>
 							<div class="form-group row">
-								<label for="shortcut_save_snippet" class="col-sm-6 col-form-label">Save Snippet</label>
+								<label for="shortcut_save_snippet" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.save_snippet">Save Snippet</label>
 								<div class="col-sm-6">
 									<button id="shortcut_save_snippet" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_new_snippet" class="col-sm-6 col-form-label">New Snippet</label>
+								<label for="shortcut_new_snippet" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.new_snippet">New Snippet</label>
 								<div class="col-sm-6">
 									<button id="shortcut_new_snippet" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
 							</div>
 
 							<div class="form-group row">
-								<label for="shortcut_close_snippet_tab" class="col-sm-6 col-form-label">Close Snippet Tab</label>
+								<label for="shortcut_close_snippet_tab" class="col-sm-6 col-form-label" data-i18n="settings.shortcuts.close_snippet_tab">Close Snippet Tab</label>
 								<div class="col-sm-6">
 									<button id="shortcut_close_snippet_tab" class='btn omnidb__theme__btn--secondary btn-sm btn-block'></button>
 								</div>
@@ -779,18 +788,18 @@
 
 						<div class="omnidb__settings__pane" data-category="password">
 							<div class="omnidb__settings__pane-header">
-								<h5>Password</h5>
+								<h5 data-i18n="settings.category.password">Password</h5>
 							</div>
 							<div class="omnidb__settings__field">
-								<label for="txt_new_pwd">New Password</label>
+								<label for="txt_new_pwd" data-i18n="settings.password.new_password">New Password</label>
 								<input id="txt_new_pwd" type="password" class="form-control">
 							</div>
 							<div class="omnidb__settings__field">
-								<label for="txt_confirm_new_pwd">Confirm</label>
+								<label for="txt_confirm_new_pwd" data-i18n="settings.password.confirm">Confirm</label>
 								<input id="txt_confirm_new_pwd" type="password" class="form-control">
 							</div>
 							<div style="text-align:right;">
-								<button id="button_change_password" class='btn btn-success' disabled>Change Password</button>
+								<button id="button_change_password" class='btn btn-success' disabled data-i18n="settings.password.change_password">Change Password</button>
 							</div>
 						</div>
 
@@ -798,13 +807,13 @@
 						{% if super_user == 1 %}
 						<div class="omnidb__settings__pane" data-category="account">
 							<div class="omnidb__settings__pane-header">
-								<h5>Account</h5>
+								<h5 data-i18n="settings.category.account">Account</h5>
 							</div>
 							<div class="row mb-3">
 								<div class="col-md-12">
-									<label>User Management</label>
+									<label data-i18n="settings.account.user_management">User Management</label>
 									<div>
-										<button id="button_open_users" type="button" class="btn omnidb__theme__btn--primary"><i class="fas fa-user me-1"></i> Manage Users</button>
+										<button id="button_open_users" type="button" class="btn omnidb__theme__btn--primary"><i class="fas fa-user me-1"></i> <span data-i18n="settings.account.manage_users">Manage Users</span></button>
 									</div>
 								</div>
 							</div>
@@ -824,10 +833,10 @@
 		<div class="div_loading_cover"></div>
 		<div class="div_loading_content">
 			<div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">
-				<span class="sr-only ">Loading...</span>
+				<span class="sr-only " data-i18n="common.loading">Loading...</span>
 			</div>
 			<div>
-				<button id="bt_cancel_ajax" style='display: none; margin-top: 10px;' class='btn btn-light'>Cancel</button>
+				<button id="bt_cancel_ajax" style='display: none; margin-top: 10px;' class='btn btn-light' data-i18n="common.cancel">Cancel</button>
 			</div>
 		</div>
 	</div>
@@ -838,19 +847,19 @@
 			<div class="modal-content">
 				<div class="modal-header">
 					<h5 class="modal-title">{{ omnidb_version }}</h5>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body text-center pt-0">
 					<div class="mb-4">
-						<img src="{{url_folder}}/static/OmniDB_app/images/omnidb_icon.svg" style="width: 80px; height: 80px;" alt="OmniDB Logo">
+						<img src="{{url_folder}}/static/OmniDB_app/images/omnidb_icon.svg" style="width: 80px; height: 80px;" alt="OmniDB Logo" data-i18n-alt="modals.about.logo_alt">
 						<h3 class="mt-3 fw-bold">OmniDB</h3>
-						<p class="text-secondary">Version {{ omnidb_version }}</p>
+						<p class="text-secondary" id="about_version_line">Version {{ omnidb_version }}</p>
 					</div>
 
 					<div class="my-4 px-3">
-						<p>OmniDB is a user-friendly, lightweight, cross-platform database management tool with strong support for PostgreSQL and compatibility with other databases.</p>
+						<p data-i18n="modals.about.description">OmniDB is a user-friendly, lightweight, cross-platform database management tool with strong support for PostgreSQL and compatibility with other databases.</p>
 					</div>
 
 					<div class="my-4">
@@ -866,7 +875,7 @@
 
 					<div class="mt-4 mb-2">
 						<span class="badge bg-light text-dark border p-2">
-							<i class="fas fa-balance-scale me-1"></i> License: MIT
+							<i class="fas fa-balance-scale me-1"></i> <span data-i18n="modals.about.license">License: MIT</span>
 						</span>
 					</div>
 				</div>
@@ -879,8 +888,8 @@
 		<div class="modal-dialog modal-xl" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button class="btn btn-danger">Delete History</button>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<button class="btn btn-danger" data-i18n="modals.query_history.delete_history">Delete History</button>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -888,25 +897,25 @@
 
 					<div class="row">
 						<div class="col-md-3 mb-3">
-							<label for="query_history_from">From</label>
-							<input type="text" class="form-control" id="query_history_from" placeholder="From Date">
+							<label for="query_history_from" data-i18n="common.from">From</label>
+							<input type="text" class="form-control" id="query_history_from" placeholder="From Date" data-i18n-placeholder="modals.query_history.from_date">
 						</div>
 						<div class="col-md-3 mb-3">
-							<label for="query_history_to">To</label>
-							<input type="text" class="form-control" id="query_history_to" placeholder="To Date">
+							<label for="query_history_to" data-i18n="common.to">To</label>
+							<input type="text" class="form-control" id="query_history_to" placeholder="To Date" data-i18n-placeholder="modals.query_history.to_date">
 						</div>
 						<div class="col-md-6 mb-3">
-							<label for="query_history_contains">Query Contains</label>
-							<input type="text" class="form-control" id="query_history_contains" placeholder="Filter">
+							<label for="query_history_contains" data-i18n="modals.query_history.query_contains">Query Contains</label>
+							<input type="text" class="form-control" id="query_history_contains" placeholder="Filter" data-i18n-placeholder="common.filter">
 						</div>
 					</div>
 
 					<div class="text-center">
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">First</button>
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Previous</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1" data-i18n="common.first">First</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1" data-i18n="common.previous">Previous</button>
 						<span class="me-1"> 1 / 217 </span>
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Next</button>
-						<button class="btn omnidb__theme__btn--secondary btn-sm me-1">Last</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1" data-i18n="common.next">Next</button>
+						<button class="btn omnidb__theme__btn--secondary btn-sm me-1" data-i18n="common.last">Last</button>
 					</div>
 
 					<div id="query_history_grid" style="width: 100%; height: 300px; overflow: hidden;"></div>
@@ -921,8 +930,8 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button id="button_new_monitor_unit" class='btn omnidb__theme__btn--primary btn-sm mb-2'>New Unit</button>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<button id="button_new_monitor_unit" class='btn omnidb__theme__btn--primary btn-sm mb-2' data-i18n="modals.monitoring.new_unit">New Unit</button>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -938,8 +947,8 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h4>User management</h4>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<h4 data-i18n="modals.users.title">User management</h4>
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -955,7 +964,7 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -976,7 +985,7 @@
 		<div id="modal_message_dialog" class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
@@ -984,12 +993,12 @@
 				</div>
 				<div class="modal-footer">
 					<button id="modal_message_yes" type="button" class="btn omnidb__theme__btn--primary"
-						data-bs-dismiss="modal">Yes</button>
+						data-bs-dismiss="modal" data-i18n="common.yes">Yes</button>
 					<button id="modal_message_ok" type="button" class="btn omnidb__theme__btn--primary"
-						data-bs-dismiss="modal">Ok</button>
-					<button id="modal_message_no" type="button" class="btn btn-danger" data-bs-dismiss="modal">No</button>
+						data-bs-dismiss="modal" data-i18n="common.ok">Ok</button>
+					<button id="modal_message_no" type="button" class="btn btn-danger" data-bs-dismiss="modal" data-i18n="common.no">No</button>
 					<button id="modal_message_cancel" type="button" class="btn omnidb__theme__btn--secondary"
-						data-bs-dismiss="modal">Cancel</button>
+						data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
 				</div>
 			</div>
 		</div>
@@ -1000,27 +1009,27 @@
 		<div class="modal-dialog" role="document">
 			<div class="modal-content">
 				<div class="modal-header">
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
 						<span aria-hidden="true">&times;</span>
 					</button>
 				</div>
 				<div class="modal-body">
 					<div id="modal_password_content" style='white-space: pre-line;'>
 					</div>
-					<input id="txt_password_prompt" class="form-control" type="password" placeholder="Password"
+					<input id="txt_password_prompt" class="form-control" type="password" placeholder="Password" data-i18n-placeholder="common.password"
 						style="margin-top: 20px; margin-bottom:20px; text-align: center;" />
 					<div id="modal_password_pgpass_row" class="text-center" style="display:none;">
 						<button id="modal_password_pgpass_button" type="button"
-							class="btn omnidb__theme__btn--secondary btn-sm">Use .pgpass file&hellip;</button>
+							class="btn omnidb__theme__btn--secondary btn-sm" data-i18n="modals.password.use_pgpass_file">Use .pgpass file&hellip;</button>
 						<input type="file" id="modal_password_pgpass_input" style="display:none;" />
 						<div id="modal_password_pgpass_error" class="text-danger small mt-2" style="display:none;"></div>
 					</div>
 				</div>
 				<div class="modal-footer">
 					<button id="modal_password_ok" type="button" class="btn omnidb__theme__btn--primary"
-						data-bs-dismiss="modal">Ok</button>
+						data-bs-dismiss="modal" data-i18n="common.ok">Ok</button>
 					<button id="modal_password_cancel" type="button" class="btn omnidb__theme__btn--secondary"
-						data-bs-dismiss="modal">Cancel</button>
+						data-bs-dismiss="modal" data-i18n="common.cancel">Cancel</button>
 				</div>
 			</div>
 		</div>
@@ -1030,12 +1039,12 @@
 		<div id='div_autocomplete_loading' class='div_loading_local' style='z-index: 1000;'></div>
 		<div id="div_test_length"></div>
 		<!--<div id="div_autocomplete_label"></div>-->
-		<div id="div_autocomplete_noresults">No results</div>
+		<div id="div_autocomplete_noresults" data-i18n="common.no_results">No results</div>
 		<div id="div_autocomplete_scroll">
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Keywords</div>
-					<i class="fas fa-font node-all node-keyword" title="Keywords"></i>
+					<div data-i18n="tree.keywords">Keywords</div>
+					<i class="fas fa-font node-all node-keyword" title="Keywords" data-i18n-title="tree.keywords"></i>
 					<div id="autocomplete_count_keyword">0 results</div>
 				</div>
 				<div id="autocomplete_grid_keyword" class="omnidb__autocomplete__data">
@@ -1043,8 +1052,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Databases</div>
-					<i class="fas fa-database node-all node-database-list" title="Databases"></i>
+					<div data-i18n="tree.databases">Databases</div>
+					<i class="fas fa-database node-all node-database-list" title="Databases" data-i18n-title="tree.databases"></i>
 					<div id="autocomplete_count_database">0 results</div>
 				</div>
 				<div id="autocomplete_grid_database" class="omnidb__autocomplete__data">
@@ -1052,8 +1061,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Roles</div>
-					<i class="fas fa-users node-all node-user-list" title="Roles"></i>
+					<div data-i18n="tree.roles">Roles</div>
+					<i class="fas fa-users node-all node-user-list" title="Roles" data-i18n-title="tree.roles"></i>
 					<div id="autocomplete_count_role">0 results</div>
 				</div>
 				<div id="autocomplete_grid_role" class="omnidb__autocomplete__data">
@@ -1061,8 +1070,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Tablespaces</div>
-					<i class="fas fa-folder-open node-all node-tablespace-list" title="Tablespaces"></i>
+					<div data-i18n="tree.tablespaces">Tablespaces</div>
+					<i class="fas fa-folder-open node-all node-tablespace-list" title="Tablespaces" data-i18n-title="tree.tablespaces"></i>
 					<div id="autocomplete_count_tablespace">0 results</div>
 				</div>
 				<div id="autocomplete_grid_tablespace" class="omnidb__autocomplete__data">
@@ -1070,8 +1079,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Schemas</div>
-					<i class="fas fa-layer-group node-all node-schema-list" title="Schemas"></i>
+					<div data-i18n="tree.schemas">Schemas</div>
+					<i class="fas fa-layer-group node-all node-schema-list" title="Schemas" data-i18n-title="tree.schemas"></i>
 					<div id="autocomplete_count_schema">0 results</div>
 				</div>
 				<div id="autocomplete_grid_schema" class="omnidb__autocomplete__data">
@@ -1079,8 +1088,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Extensions</div>
-					<i class="fas fa-cubes node-all node-extension-list" title="Extensions"></i>
+					<div data-i18n="tree.extensions">Extensions</div>
+					<i class="fas fa-cubes node-all node-extension-list" title="Extensions" data-i18n-title="tree.extensions"></i>
 					<div id="autocomplete_count_extension">0 results</div>
 				</div>
 				<div id="autocomplete_grid_extension" class="omnidb__autocomplete__data">
@@ -1088,8 +1097,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Tables</div>
-					<i class="fas fa-table node-all node-table-list" title="Tables"></i>
+					<div data-i18n="tree.tables">Tables</div>
+					<i class="fas fa-table node-all node-table-list" title="Tables" data-i18n-title="tree.tables"></i>
 					<div id="autocomplete_count_table">0 results</div>
 				</div>
 				<div id="autocomplete_grid_table" class="omnidb__autocomplete__data">
@@ -1097,8 +1106,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Views</div>
-					<i class="fas fa-eye node-all node-view-list" title="Views"></i>
+					<div data-i18n="tree.views">Views</div>
+					<i class="fas fa-eye node-all node-view-list" title="Views" data-i18n-title="tree.views"></i>
 					<div id="autocomplete_count_view">0 results</div>
 				</div>
 				<div id="autocomplete_grid_view" class="omnidb__autocomplete__data">
@@ -1106,8 +1115,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Columns</div>
-					<i class="fas fa-columns node-all node-column" title="Columns"></i>
+					<div data-i18n="tree.columns">Columns</div>
+					<i class="fas fa-columns node-all node-column" title="Columns" data-i18n-title="tree.columns"></i>
 					<div id="autocomplete_count_column">0 results</div>
 				</div>
 				<div id="autocomplete_grid_column" class="omnidb__autocomplete__data">
@@ -1115,8 +1124,8 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Functions</div>
-					<i class="fas fa-cog node-all node-function-list" title="Indexes"></i>
+					<div data-i18n="tree.functions">Functions</div>
+					<i class="fas fa-cog node-all node-function-list" title="Functions" data-i18n-title="tree.functions"></i>
 					<div id="autocomplete_count_function">0 results</div>
 				</div>
 				<div id="autocomplete_grid_function" class="omnidb__autocomplete__data">
@@ -1124,15 +1133,15 @@
 			</div>
 			<div class="omnidb__autocomplete__row">
 				<div class="omnidb__autocomplete__type">
-					<div>Indexes</div>
-					<i class="fas fa-thumbtack node-all node-index" title="Indexes"></i>
+					<div data-i18n="tree.indexes">Indexes</div>
+					<i class="fas fa-thumbtack node-all node-index" title="Indexes" data-i18n-title="tree.indexes"></i>
 					<div id="autocomplete_count_index">0 results</div>
 				</div>
 				<div id="autocomplete_grid_index" class="omnidb__autocomplete__data">
 				</div>
 			</div>
 		</div>
-		<div id="div_autocomplete_searching">Searching...</div>
+		<div id="div_autocomplete_searching" data-i18n="common.searching">Searching...</div>
 
 	</div>
 

@@ -32,6 +32,7 @@ SOFTWARE.
 /// Retrieving tree.
 /// </summary>
 
+import { t } from "../i18n.js";
 import { execAjax } from "../ajax_control_bridge.js";
 import { showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
@@ -55,7 +56,7 @@ export function getTreeSqlite(p_div) {
 		cm_server: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -71,7 +72,7 @@ export function getTreeSqlite(p_div) {
 		cm_tables: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -83,10 +84,10 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Create Table",
+					text: t("tree.create_table"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Table", node.tree.tag.create_table);
+						tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table);
 					},
 				},
 			],
@@ -94,7 +95,7 @@ export function getTreeSqlite(p_div) {
 		cm_table: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -106,65 +107,65 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Data Actions",
+					text: t("tree.data_actions"),
 					icon: "fas cm-all fa-list",
 					submenu: {
 						elements: [
 							{
-								text: "Query Data",
+								text: t("tree.query_data"),
 								icon: "fas cm-all fa-search",
 								action: function (node) {
 									TemplateSelectSqlite(node.text, "t");
 								},
 							},
 							{
-								text: "Edit Data",
+								text: t("tree.edit_data"),
 								icon: "fas cm-all fa-table",
 								action: function (node) {
 									v_startEditData(node.text);
 								},
 							},
 							{
-								text: "Insert Record",
+								text: t("tree.insert_record"),
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
 									TemplateInsertSqlite(node.text);
 								},
 							},
 							{
-								text: "Update Records",
+								text: t("tree.update_records"),
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
 									TemplateUpdateSqlite(node.text);
 								},
 							},
 							{
-								text: "Delete Records",
+								text: t("tree.delete_records"),
 								icon: "fas cm-all fa-times",
 								action: function (node) {
-									tabSQLTemplate("Delete Records", node.tree.tag.delete.replace("#table_name#", node.text));
+									tabSQLTemplate(t("tree.delete_records"), node.tree.tag.delete.replace("#table_name#", node.text));
 								},
 							},
 						],
 					},
 				},
 				{
-					text: "Table Actions",
+					text: t("tree.table_actions"),
 					icon: "fas cm-all fa-list",
 					submenu: {
 						elements: [
 							{
-								text: "Alter Table",
+								text: t("tree.alter_table"),
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
-									tabSQLTemplate("Alter Table", node.tree.tag.alter_table.replace("#table_name#", node.text));
+									tabSQLTemplate(t("tree.alter_table"), node.tree.tag.alter_table.replace("#table_name#", node.text));
 								},
 							},
 							{
-								text: "Drop Table",
+								text: t("tree.drop_table"),
 								icon: "fas cm-all fa-times",
 								action: function (node) {
-									tabSQLTemplate("Drop Table", node.tree.tag.drop_table.replace("#table_name#", node.text));
+									tabSQLTemplate(t("tree.drop_table"), node.tree.tag.drop_table.replace("#table_name#", node.text));
 								},
 							},
 						],
@@ -175,10 +176,10 @@ export function getTreeSqlite(p_div) {
 		cm_columns: {
 			elements: [
 				{
-					text: "Create Column",
+					text: t("tree.create_column"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Column", node.tree.tag.create_column.replace("#table_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_column"), node.tree.tag.create_column.replace("#table_name#", node.parent.text));
 					},
 				},
 			],
@@ -189,7 +190,7 @@ export function getTreeSqlite(p_div) {
 		cm_pks: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -205,7 +206,7 @@ export function getTreeSqlite(p_div) {
 		cm_pk: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -221,7 +222,7 @@ export function getTreeSqlite(p_div) {
 		cm_fks: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -237,7 +238,7 @@ export function getTreeSqlite(p_div) {
 		cm_fk: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -253,7 +254,7 @@ export function getTreeSqlite(p_div) {
 		cm_uniques: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -269,7 +270,7 @@ export function getTreeSqlite(p_div) {
 		cm_unique: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -285,7 +286,7 @@ export function getTreeSqlite(p_div) {
 		cm_indexes: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -297,10 +298,10 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Create Index",
+					text: t("tree.create_index"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Index", node.tree.tag.create_index.replace("#table_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_index"), node.tree.tag.create_index.replace("#table_name#", node.parent.text));
 					},
 				},
 			],
@@ -308,7 +309,7 @@ export function getTreeSqlite(p_div) {
 		cm_index: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -320,11 +321,10 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Reindex",
+					text: t("tree.reindex"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Reindex",
+						tabSQLTemplate(t("tree.reindex"),
 							node.tree.tag.reindex.replace(
 								"#index_name#",
 								node.text.replace(" (Unique)", "").replace(" (Non Unique)", ""),
@@ -333,11 +333,10 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Drop Index",
+					text: t("tree.drop_index"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Index",
+						tabSQLTemplate(t("tree.drop_index"),
 							node.tree.tag.drop_index.replace(
 								"#index_name#",
 								node.text.replace(" (Unique)", "").replace(" (Non Unique)", ""),
@@ -350,7 +349,7 @@ export function getTreeSqlite(p_div) {
 		cm_triggers: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -362,10 +361,10 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Create Trigger",
+					text: t("tree.create_trigger"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Trigger", node.tree.tag.create_trigger.replace("#table_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_trigger"), node.tree.tag.create_trigger.replace("#table_name#", node.parent.text));
 					},
 				},
 			],
@@ -373,11 +372,10 @@ export function getTreeSqlite(p_div) {
 		cm_trigger: {
 			elements: [
 				{
-					text: "Alter Trigger",
+					text: t("tree.alter_trigger"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Alter Trigger",
+						tabSQLTemplate(t("tree.alter_trigger"),
 							node.tree.tag.alter_trigger
 								.replace("#table_name#", node.parent.parent.text)
 								.replace("#trigger_name#", node.text),
@@ -385,11 +383,10 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Drop Trigger",
+					text: t("tree.drop_trigger"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Trigger",
+						tabSQLTemplate(t("tree.drop_trigger"),
 							node.tree.tag.drop_trigger
 								.replace("#table_name#", node.parent.parent.text)
 								.replace("#trigger_name#", node.text),
@@ -401,7 +398,7 @@ export function getTreeSqlite(p_div) {
 		cm_views: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -413,10 +410,10 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Create View",
+					text: t("tree.create_view"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create View", node.tree.tag.create_view);
+						tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view);
 					},
 				},
 			],
@@ -424,7 +421,7 @@ export function getTreeSqlite(p_div) {
 		cm_view: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -436,17 +433,17 @@ export function getTreeSqlite(p_div) {
 					},
 				},
 				{
-					text: "Query Data",
+					text: t("tree.query_data"),
 					icon: "fas cm-all fa-search",
 					action: function (node) {
 						TemplateSelectSqlite(node.text, "v");
 					},
 				},
 				{
-					text: "Drop View",
+					text: t("tree.drop_view"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate("Drop View", node.tree.tag.drop_view.replace("#view_name#", node.text));
+						tabSQLTemplate(t("tree.drop_view"), node.tree.tag.drop_view.replace("#view_name#", node.text));
 					},
 				},
 			],
@@ -454,7 +451,7 @@ export function getTreeSqlite(p_div) {
 		cm_refresh: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) {
@@ -616,7 +613,7 @@ export function getTreeDetailsSqlite(node) {
 			node.tree.contextMenu.cm_server.elements = [];
 
 			node.tree.contextMenu.cm_server.elements.push({
-				text: "Refresh",
+				text: t("tree.refresh"),
 				icon: "fas cm-all fa-sync-alt",
 				action: function (node) {
 					if (node.childNodes == 0) {
@@ -650,8 +647,7 @@ export function getTreeDetailsSqlite(node) {
 				drop_trigger: p_return.v_data.v_database_return.drop_trigger,
 			};
 
-			var node_tables = node.createChildNode(
-				"Tables",
+			var node_tables = node.createChildNode(t("tree.tables"),
 				false,
 				"fas node-all fa-th node-table-list",
 				{
@@ -665,8 +661,7 @@ export function getTreeDetailsSqlite(node) {
 
 			node_tables.createChildNode("", true, "node-spin", null, null, null, false);
 
-			var node_views = node.createChildNode(
-				"Views",
+			var node_views = node.createChildNode(t("tree.views"),
 				false,
 				"fas node-all fa-eye node-view-list",
 				{
@@ -727,7 +722,7 @@ export function getTablesSqlite(node) {
 				node.removeChildNodes();
 			}
 
-			node.setText("Tables (" + p_return.v_data.length + ")");
+			node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
@@ -802,7 +797,7 @@ export function getColumnsSqlite(node) {
 			}
 
 			v_list = node.createChildNode(
-				"Columns (" + p_return.v_data.length + ")",
+				t("tree.columns_count", { n: p_return.v_data.length }),
 				false,
 				"fas node-all fa-columns node-column",
 				{
@@ -828,8 +823,7 @@ export function getColumnsSqlite(node) {
 					false,
 				);
 
-				v_node.createChildNode(
-					"Type: " + p_return.v_data[i].v_data_type,
+				v_node.createChildNode(t("tree.prop_type") + p_return.v_data[i].v_data_type,
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					{
@@ -840,8 +834,7 @@ export function getColumnsSqlite(node) {
 					false,
 				);
 
-				v_node.createChildNode(
-					"Nullable: " + p_return.v_data[i].v_nullable,
+				v_node.createChildNode(t("tree.prop_nullable") + p_return.v_data[i].v_nullable,
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					{
@@ -854,8 +847,7 @@ export function getColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_primary_keys) {
-				v_node = node.createChildNode(
-					"Primary Key",
+				v_node = node.createChildNode(t("tree.primary_key"),
 					false,
 					"fas node-all fa-key node-pkey",
 					{
@@ -871,8 +863,7 @@ export function getColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_foreign_keys) {
-				v_node = node.createChildNode(
-					"Foreign Keys",
+				v_node = node.createChildNode(t("tree.foreign_keys"),
 					false,
 					"fas node-all fa-key node-fkey",
 					{
@@ -888,8 +879,7 @@ export function getColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_uniques) {
-				v_node = node.createChildNode(
-					"Uniques",
+				v_node = node.createChildNode(t("tree.uniques"),
 					false,
 					"fas node-all fa-key node-unique",
 					{
@@ -905,8 +895,7 @@ export function getColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_checks) {
-				v_node = node.createChildNode(
-					"Checks",
+				v_node = node.createChildNode(t("tree.checks"),
 					false,
 					"fas node-all fa-check-square node-check",
 					{
@@ -922,8 +911,7 @@ export function getColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_indexes) {
-				v_node = node.createChildNode(
-					"Indexes",
+				v_node = node.createChildNode(t("tree.indexes"),
 					false,
 					"fas node-all fa-thumbtack node-index",
 					{
@@ -939,8 +927,7 @@ export function getColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_triggers) {
-				v_node = node.createChildNode(
-					"Triggers",
+				v_node = node.createChildNode(t("tree.topic_triggers"),
 					false,
 					"fas node-all fa-bolt node-trigger",
 					{
@@ -984,7 +971,7 @@ export function getPKSqlite(node) {
 			p_table: node.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Primary Key (" + p_return.v_data.length + ")");
+			node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) {
 				node.removeChildNodes();
@@ -1087,7 +1074,7 @@ export function getFKsSqlite(node) {
 			p_table: node.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Foreign Keys (" + p_return.v_data.length + ")");
+			node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) {
 				node.removeChildNodes();
@@ -1107,8 +1094,7 @@ export function getFKsSqlite(node) {
 					false,
 				);
 
-				v_node.createChildNode(
-					"Referenced Table: " + p_return.v_data[i][1],
+				v_node.createChildNode(t("tree.prop_referenced_table") + p_return.v_data[i][1],
 					false,
 					"fas node-all fa-table node-table",
 					{
@@ -1119,8 +1105,7 @@ export function getFKsSqlite(node) {
 					false,
 				);
 
-				v_node.createChildNode(
-					"Delete Rule: " + p_return.v_data[i][2],
+				v_node.createChildNode(t("tree.prop_delete_rule") + p_return.v_data[i][2],
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					{
@@ -1131,8 +1116,7 @@ export function getFKsSqlite(node) {
 					false,
 				);
 
-				v_node.createChildNode(
-					"Update Rule: " + p_return.v_data[i][3],
+				v_node.createChildNode(t("tree.prop_update_rule") + p_return.v_data[i][3],
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					{
@@ -1179,8 +1163,7 @@ export function getFKsColumnsSqlite(node) {
 				node.removeChildNodes();
 			}
 
-			node.createChildNode(
-				"Referenced Table: " + p_return.v_data[0][0],
+			node.createChildNode(t("tree.prop_referenced_table") + p_return.v_data[0][0],
 				false,
 				"fas node-all fa-table node-table",
 				{
@@ -1191,8 +1174,7 @@ export function getFKsColumnsSqlite(node) {
 				false,
 			);
 
-			node.createChildNode(
-				"Delete Rule: " + p_return.v_data[0][1],
+			node.createChildNode(t("tree.prop_delete_rule") + p_return.v_data[0][1],
 				false,
 				"fas node-all fa-ellipsis-h node-bullet",
 				{
@@ -1203,8 +1185,7 @@ export function getFKsColumnsSqlite(node) {
 				false,
 			);
 
-			node.createChildNode(
-				"Update Rule: " + p_return.v_data[0][2],
+			node.createChildNode(t("tree.prop_update_rule") + p_return.v_data[0][2],
 				false,
 				"fas node-all fa-ellipsis-h node-bullet",
 				{
@@ -1258,7 +1239,7 @@ export function getUniquesSqlite(node) {
 			p_table: node.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Uniques (" + p_return.v_data.length + ")");
+			node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) {
 				node.removeChildNodes();
@@ -1368,7 +1349,7 @@ export function getIndexesSqlite(node) {
 			p_table: node.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Indexes (" + p_return.v_data.length + ")");
+			node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) {
 				node.removeChildNodes();
@@ -1482,7 +1463,7 @@ export function getViewsSqlite(node) {
 				node.removeChildNodes();
 			}
 
-			node.setText("Views (" + p_return.v_data.length + ")");
+			node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
@@ -1547,7 +1528,7 @@ export function getViewsColumnsSqlite(node) {
 			}
 
 			var v_list = node.createChildNode(
-				"Columns (" + p_return.v_data.length + ")",
+				t("tree.columns_count", { n: p_return.v_data.length }),
 				false,
 				"fas node-all fa-columns node-column",
 				{
@@ -1572,8 +1553,7 @@ export function getViewsColumnsSqlite(node) {
 					false,
 				);
 
-				v_node.createChildNode(
-					"Type: " + p_return.v_data[i].v_data_type,
+				v_node.createChildNode(t("tree.prop_type") + p_return.v_data[i].v_data_type,
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					{
@@ -1586,8 +1566,7 @@ export function getViewsColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_rules) {
-				var v_node = node.createChildNode(
-					"Rules",
+				var v_node = node.createChildNode(t("tree.topic_rules"),
 					false,
 					"fas node-all fa-lightbulb node-rule",
 					{
@@ -1603,8 +1582,7 @@ export function getViewsColumnsSqlite(node) {
 			}
 
 			if (node.tag.has_triggers) {
-				var v_node = node.createChildNode(
-					"Triggers",
+				var v_node = node.createChildNode(t("tree.topic_triggers"),
 					false,
 					"fas node-all fa-bolt node-trigger",
 					{
@@ -1684,7 +1662,7 @@ export function getTriggersSqlite(node) {
 			p_table: node.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Triggers (" + p_return.v_data.length + ")");
+			node.setText(t("tree.topic_triggers") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) {
 				node.removeChildNodes();
@@ -1764,7 +1742,7 @@ export function TemplateInsertSqlite(p_table) {
 			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
-			tabSQLTemplate("Insert " + p_table, p_return.v_data.v_template);
+			tabSQLTemplate(t("tree.tab_insert_prefix") + p_table, p_return.v_data.v_template);
 		},
 		function (p_return) {
 			showError(p_return.v_data);
@@ -1789,7 +1767,7 @@ export function TemplateUpdateSqlite(p_table) {
 			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
-			tabSQLTemplate("Update " + p_table, p_return.v_data.v_template);
+			tabSQLTemplate(t("tree.tab_update_prefix") + p_table, p_return.v_data.v_template);
 		},
 		function (p_return) {
 			showError(p_return.v_data);

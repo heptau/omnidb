@@ -33,10 +33,10 @@ func deleteTab(db *sql.DB, userID, tabDBID int64) error {
 // raises UserDetails.DoesNotExist if the row is somehow missing), a 0-row
 // update here is surfaced explicitly rather than silently ignored, since a
 // missing row would otherwise look like a silent no-op success.
-func saveConfigUser(db *sql.DB, userID int64, theme string, fontSize int, csvEncoding, csvDelimiter, indentUnit, indentChar string, indentSize int, commaStyle, keywordCase string, rulerColumn int, autocompleteDisabledTypes string) error {
+func saveConfigUser(db *sql.DB, userID int64, theme string, fontSize int, csvEncoding, csvDelimiter, indentUnit, indentChar string, indentSize int, commaStyle, keywordCase string, rulerColumn int, autocompleteDisabledTypes, language string) error {
 	res, err := db.Exec(
-		`update OmniDB_app_userdetails set theme = ?, font_size = ?, csv_encoding = ?, csv_delimiter = ?, indent_unit = ?, indent_char = ?, indent_size = ?, comma_style = ?, keyword_case = ?, ruler_column = ?, autocomplete_disabled_types = ? where user_id = ?`,
-		theme, fontSize, csvEncoding, csvDelimiter, indentUnit, indentChar, indentSize, commaStyle, keywordCase, rulerColumn, autocompleteDisabledTypes, userID,
+		`update OmniDB_app_userdetails set theme = ?, font_size = ?, csv_encoding = ?, csv_delimiter = ?, indent_unit = ?, indent_char = ?, indent_size = ?, comma_style = ?, keyword_case = ?, ruler_column = ?, autocomplete_disabled_types = ?, language = ? where user_id = ?`,
+		theme, fontSize, csvEncoding, csvDelimiter, indentUnit, indentChar, indentSize, commaStyle, keywordCase, rulerColumn, autocompleteDisabledTypes, language, userID,
 	)
 	if err != nil {
 		return err
@@ -68,6 +68,9 @@ type userDetailsRow struct {
 	KeywordCase               string
 	RulerColumn               int
 	AutocompleteDisabledTypes string
+	// Language is the user's raw stored preference ("auto", "en", "cs",
+	// "es") — see WhoAmI.Language's comment on why this is unresolved.
+	Language string
 }
 
 // fetchUserDetails mirrors workspace.py's "UserDetails.objects.get(user=...)
@@ -75,17 +78,17 @@ type userDetailsRow struct {
 func fetchUserDetails(db *sql.DB, userID int64) (userDetailsRow, error) {
 	var row userDetailsRow
 	err := db.QueryRow(
-		`select theme, font_size, csv_encoding, csv_delimiter, welcome_closed, coalesce(indent_unit, '    '), coalesce(indent_char, 'space'), coalesce(indent_size, 4), coalesce(comma_style, 'leading'), coalesce(keyword_case, 'preserve'), coalesce(ruler_column, 128), coalesce(autocomplete_disabled_types, '') from OmniDB_app_userdetails where user_id = ?`,
+		`select theme, font_size, csv_encoding, csv_delimiter, welcome_closed, coalesce(indent_unit, '    '), coalesce(indent_char, 'space'), coalesce(indent_size, 4), coalesce(comma_style, 'leading'), coalesce(keyword_case, 'preserve'), coalesce(ruler_column, 128), coalesce(autocomplete_disabled_types, ''), coalesce(language, 'auto') from OmniDB_app_userdetails where user_id = ?`,
 		userID,
-	).Scan(&row.Theme, &row.FontSize, &row.CSVEncoding, &row.CSVDelimiter, &row.WelcomeClosed, &row.IndentUnit, &row.IndentChar, &row.IndentSize, &row.CommaStyle, &row.KeywordCase, &row.RulerColumn, &row.AutocompleteDisabledTypes)
+	).Scan(&row.Theme, &row.FontSize, &row.CSVEncoding, &row.CSVDelimiter, &row.WelcomeClosed, &row.IndentUnit, &row.IndentChar, &row.IndentSize, &row.CommaStyle, &row.KeywordCase, &row.RulerColumn, &row.AutocompleteDisabledTypes, &row.Language)
 	if err == sql.ErrNoRows {
 		if _, insertErr := db.Exec(
-			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case, ruler_column) values (?, 'auto', 12, 'utf-8-sig', ';', 0, '    ', 'space', 4, 'leading', 'preserve', 128)`,
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case, ruler_column, language) values (?, 'auto', 12, 'utf-8-sig', ';', 0, '    ', 'space', 4, 'leading', 'preserve', 128, 'auto')`,
 			userID,
 		); insertErr != nil {
 			return userDetailsRow{}, insertErr
 		}
-		return userDetailsRow{Theme: "auto", FontSize: 12, CSVEncoding: "utf-8-sig", CSVDelimiter: ";", WelcomeClosed: false, IndentUnit: "    ", IndentChar: "space", IndentSize: 4, CommaStyle: "leading", KeywordCase: "preserve", RulerColumn: 128, AutocompleteDisabledTypes: ""}, nil
+		return userDetailsRow{Theme: "auto", FontSize: 12, CSVEncoding: "utf-8-sig", CSVDelimiter: ";", WelcomeClosed: false, IndentUnit: "    ", IndentChar: "space", IndentSize: 4, CommaStyle: "leading", KeywordCase: "preserve", RulerColumn: 128, AutocompleteDisabledTypes: "", Language: "auto"}, nil
 	}
 	if err != nil {
 		return userDetailsRow{}, err

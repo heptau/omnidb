@@ -17,6 +17,11 @@ type WhoAmI struct {
 	SuperUser     bool
 	CSVEncoding   string
 	CSVDelimiter  string
+	// Language is the user's raw stored preference ("auto", "en", "cs",
+	// "es") — not yet resolved against any request's Accept-Language header.
+	// Callers that need the *effective* language for a response call
+	// i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language")).
+	Language string
 }
 
 // resolveIdentity resolves who owns a given "Cookie" header value against
@@ -53,5 +58,6 @@ func resolveIdentity(upstream *url.URL, cookieHeader string) (*WhoAmI, error) {
 		SuperUser:     sess.SuperUser,
 		CSVEncoding:   sess.CSVEncoding,
 		CSVDelimiter:  sess.CSVDelimiter,
+		Language:      sess.Language,
 	}, nil
 }

@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"regexp"
 	"strings"
+
+	"omnidb-server/i18n"
 )
 
 //go:embed static/workspace.html
@@ -63,6 +65,21 @@ type workspaceBootstrap struct {
 	MenuItem                  string                       `json:"menu_item"`
 	SuperUser                 bool                         `json:"super_user"`
 	Shortcuts                 map[string]workspaceShortcut `json:"shortcuts"`
+	// Language is the effective, already-resolved language for this request
+	// (never "auto" — see i18n.ResolveLanguage), used by t()/tn() and every
+	// data-i18n lookup. LanguagePreference is the user's raw stored choice
+	// ("auto", or a concrete language picked explicitly) — mirrors Theme vs.
+	// ThemeDefault... no, mirrors the Theme/ThemePreference split that would
+	// exist if workspace.html's radio buttons needed one (see
+	// header_actions.js's v_theme vs. v_theme_preference): the Settings
+	// Language <select> must show what the user actually picked, which is
+	// "Automatic" even while Language itself has already resolved that to a
+	// concrete "cs" for rendering this exact page. Translations is the
+	// complete key -> string dictionary for Language (English-filled for any
+	// key its own catalog doesn't have — see i18n.CatalogFor).
+	Language           string            `json:"language"`
+	LanguagePreference string            `json:"language_preference"`
+	Translations       map[string]string `json:"i18n"`
 }
 
 // workspaceVarPatterns matches both spaced ("{{ user_name }}") and unspaced
@@ -136,11 +153,13 @@ func stripWorkspaceConditionals(html string, desktopMode, superUser bool) string
 // template.render(), minus the Django-session bookkeeping (handled
 // separately by ensureDjangoSession, since it's a side effect on Django's
 // own session store, not something the rendered HTML needs).
-func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]workspaceShortcut) (string, error) {
+func renderWorkspacePage(r *http.Request, who *WhoAmI, ud userDetailsRow, shortcuts map[string]workspaceShortcut) (string, error) {
 	tabToken, err := randomLowerAlnum(20)
 	if err != nil {
 		return "", err
 	}
+
+	lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
 
 	// "auto" defaults to the light editor theme for this first paint --
 	// there's no reliable server-side signal for the client's OS preference,
@@ -181,6 +200,9 @@ func renderWorkspacePage(who *WhoAmI, ud userDetailsRow, shortcuts map[string]wo
 		MenuItem:                  "workspace",
 		SuperUser:                 who.SuperUser,
 		Shortcuts:                 shortcuts,
+		Language:                  lang,
+		LanguagePreference:        who.Language,
+		Translations:              i18n.CatalogFor(lang),
 	})
 	if err != nil {
 		return "", err
@@ -250,7 +272,7 @@ func handleWorkspacePage(upstream *url.URL) http.HandlerFunc {
 			shortcuts = map[string]workspaceShortcut{}
 		}
 
-		html, err := renderWorkspacePage(who, ud, shortcuts)
+		html, err := renderWorkspacePage(r, who, ud, shortcuts)
 		if err != nil {
 			http.Error(w, "internal error", http.StatusInternalServerError)
 			return

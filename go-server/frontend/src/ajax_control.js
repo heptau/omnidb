@@ -28,6 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { t } from "./i18n.js";
+
 //Number of active AJAX calls
 export var v_calls_count = 0;
 export var v_is_loading = false;
@@ -170,7 +172,7 @@ export function execAjax(
 			// Intercepting the workflow when the request returns with evaluated server errors.
 			if (p_return.v_error) {
 				if (p_return.v_error_id == 1) {
-					showAlert("User not authenticated, please reload the page.");
+					showAlert(t("errors.not_authenticated"));
 				} else if (p_errorFunc) {
 					p_errorFunc(p_return);
 				} else {
@@ -196,7 +198,7 @@ export function execAjax(
 			} else {
 				// Prompting error messages related to ajax error.
 				if (msg.readyState != 0) {
-					showAlert("Request error.");
+					showAlert(t("errors.request_error"));
 				} else {
 					if (msg.statusText != "abort") {
 						reportOffline();
@@ -213,6 +215,6 @@ export function execAjax(
  * Reporting that webserver is off.
  */
 export function reportOffline() {
-	showAlert("Webserver was shutdown, please restart it and reload the application.");
+	showAlert(t("errors.webserver_shutdown"));
 	var v_status_img = document.getElementById("ajax_status");
 }

@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { execAjax } from "./ajax_control_bridge.js";
 import { consoleSQL } from "./console.js";
+import { tn } from "./i18n.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { whiteHtmlRenderer, whiteRightHtmlRenderer } from "./renderers.js";
 
@@ -932,7 +933,8 @@ export function build_autocomplete_elements(p_data, p_value) {
 
 		v_global_group.container.parentNode.style.display = "block";
 		v_global_group.num_visible = v_local_group.elements.length;
-		v_global_group.count_div.innerHTML = v_local_group.elements.length + " results";
+		v_global_group.count_div.innerHTML =
+			v_local_group.elements.length + " " + tn("autocomplete.results_word", v_local_group.elements.length);
 
 		var v_list = [];
 		var v_list_render = [];

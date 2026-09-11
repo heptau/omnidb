@@ -1,5 +1,5 @@
-import { WindowMaximise, EventsOn } from '../wailsjs/runtime/runtime';
-import { FrontendReady } from '../wailsjs/go/main/App';
+import { EventsOn } from '../wailsjs/runtime/runtime';
+import { FrontendReady, RestoreWindowState } from '../wailsjs/go/main/App';
 
 const loadingContainer = document.getElementById('loading_interface');
 const loadingLog = document.getElementById('loading');
@@ -19,7 +19,11 @@ EventsOn('backend:log', (line) => {
 // entirely, at the cost of the custom frameless titlebar the NW.js shell
 // had — see main.go, which uses the native window frame instead.
 EventsOn('backend:ready', (url) => {
-	WindowMaximise();
+	// Reapplies the window size/position/maximised-state saved the last time
+	// the app was closed (see windowstate.go) instead of always maximising --
+	// falls back to maximising on a first launch, where nothing has been
+	// saved yet.
+	RestoreWindowState();
 	// location.replace(), not .href =: a plain assignment pushes a new
 	// history entry, leaving this loading page one "back" navigation away.
 	// WKWebView treats an unhandled Backspace/Delete keypress (e.g. the

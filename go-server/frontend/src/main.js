@@ -12,6 +12,13 @@
 // very bottom of workspace.html.
 import './bootstrap-globals.js'
 
+// Fills in every static data-i18n[-*] element from window.v_i18n -- needs
+// bootstrap-globals.js's globals above, and needs to run before anything below
+// reads the page's rendered text (nothing does today, but keeping it this
+// early avoids ever having to think about that).
+import { initI18n } from './i18n.js'
+initI18n()
+
 import { exposeGlobals } from './legacy-globals.js'
 
 import * as treeSnippets from './tree_context_functions/tree_snippets.js'

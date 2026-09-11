@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+
+	"omnidb-server/i18n"
 )
 
 // This file implements the psql-style catalog-browsing backslash commands
@@ -69,7 +71,7 @@ func (s *consoleSession) consoleQueryRows(ctx context.Context, sqlText string, a
 
 // consoleMetaTables implements \dt — list tables in the connection's
 // current schema/database.
-func (s *consoleSession) consoleMetaTables(ctx context.Context) (string, error) {
+func (s *consoleSession) consoleMetaTables(ctx context.Context, lang string) (string, error) {
 	var sqlText string
 	switch s.technology {
 	case "postgresql":
@@ -87,21 +89,21 @@ func (s *consoleSession) consoleMetaTables(ctx context.Context) (string, error) 
 	case "firebird":
 		sqlText = `select trim(rdb$relation_name) as "Name" from rdb$relations where rdb$system_flag = 0 and rdb$view_blr is null order by rdb$relation_name`
 	default:
-		return "", fmt.Errorf("\\dt is not implemented for %s", s.technology)
+		return "", fmt.Errorf("%s", i18n.T(lang, "console.dt_not_implemented", "technology", s.technology))
 	}
 	cols, rows, err := s.consoleQueryRows(ctx, sqlText)
 	if err != nil {
 		return "", err
 	}
 	if len(rows) == 0 {
-		return "No tables found.", nil
+		return i18n.T(lang, "console.no_tables_found"), nil
 	}
 	return consolePretty(cols, rows, s.expanded), nil
 }
 
 // consoleMetaRelations implements bare \d/\d+ — list tables, views,
 // sequences (whichever of those concepts the engine has).
-func (s *consoleSession) consoleMetaRelations(ctx context.Context) (string, error) {
+func (s *consoleSession) consoleMetaRelations(ctx context.Context, lang string) (string, error) {
 	var sqlText string
 	switch s.technology {
 	case "postgresql":
@@ -131,14 +133,14 @@ func (s *consoleSession) consoleMetaRelations(ctx context.Context) (string, erro
 			case when rdb$view_blr is not null then 'view' else 'table' end as "Type"
 			from rdb$relations where rdb$system_flag = 0 order by rdb$relation_name`
 	default:
-		return "", fmt.Errorf("\\d is not implemented for %s", s.technology)
+		return "", fmt.Errorf("%s", i18n.T(lang, "console.d_not_implemented", "technology", s.technology))
 	}
 	cols, rows, err := s.consoleQueryRows(ctx, sqlText)
 	if err != nil {
 		return "", err
 	}
 	if len(rows) == 0 {
-		return "No relations found.", nil
+		return i18n.T(lang, "console.no_relations_found"), nil
 	}
 	return consolePretty(cols, rows, s.expanded), nil
 }
@@ -151,9 +153,9 @@ func (s *consoleSession) consoleMetaRelations(ctx context.Context) (string, erro
 // identifier characters) — a static analyzer has no way to know that check
 // closes off every metacharacter the sink could act on, and a real bound
 // parameter removes the question entirely rather than resting on the regex.
-func (s *consoleSession) consoleMetaDescribe(ctx context.Context, arg string) (string, error) {
+func (s *consoleSession) consoleMetaDescribe(ctx context.Context, lang, arg string) (string, error) {
 	if !consoleRelationArgPattern.MatchString(arg) {
-		return "", fmt.Errorf("invalid relation name %q", arg)
+		return "", fmt.Errorf("%s", i18n.T(lang, "console.invalid_relation_name", "name", arg))
 	}
 	schema, name := "", arg
 	if i := strings.IndexByte(arg, '.'); i >= 0 {
@@ -217,20 +219,20 @@ func (s *consoleSession) consoleMetaDescribe(ctx context.Context, arg string) (s
 			order by rf.rdb$field_position`
 		args = []any{name}
 	default:
-		return "", fmt.Errorf("\\d is not implemented for %s", s.technology)
+		return "", fmt.Errorf("%s", i18n.T(lang, "console.d_not_implemented", "technology", s.technology))
 	}
 	cols, rows, err := s.consoleQueryRows(ctx, sqlText, args...)
 	if err != nil {
 		return "", err
 	}
 	if len(rows) == 0 {
-		return fmt.Sprintf("Did not find any relation named %q.", arg), nil
+		return i18n.T(lang, "console.relation_not_found", "name", arg), nil
 	}
 	return consolePretty(cols, rows, s.expanded), nil
 }
 
 // consoleMetaRoles implements \du — list roles/users.
-func (s *consoleSession) consoleMetaRoles(ctx context.Context) (string, error) {
+func (s *consoleSession) consoleMetaRoles(ctx context.Context, lang string) (string, error) {
 	var sqlText string
 	switch s.technology {
 	case "postgresql":
@@ -240,7 +242,7 @@ func (s *consoleSession) consoleMetaRoles(ctx context.Context) (string, error) {
 	case "oracle":
 		sqlText = `select username as "Username", account_status as "Status" from all_users order by username`
 	case "sqlite":
-		return "SQLite has no user/role concept — a connection is just a file on disk.", nil
+		return i18n.T(lang, "console.sqlite_no_roles"), nil
 	case "mssql":
 		sqlText = `select name as "Login name", type_desc as "Type", is_disabled as "Disabled" from sys.server_principals where type in ('S','U','G') order by name`
 	case "firebird":
@@ -253,20 +255,20 @@ func (s *consoleSession) consoleMetaRoles(ctx context.Context) (string, error) {
 		// available" spirit as firebirdUserSuper's own comment.
 		sqlText = `select sec$user_name as "User name" from sec$users order by sec$user_name`
 	default:
-		return "", fmt.Errorf("\\du is not implemented for %s", s.technology)
+		return "", fmt.Errorf("%s", i18n.T(lang, "console.du_not_implemented", "technology", s.technology))
 	}
 	cols, rows, err := s.consoleQueryRows(ctx, sqlText)
 	if err != nil {
 		return "", err
 	}
 	if len(rows) == 0 {
-		return "No roles found.", nil
+		return i18n.T(lang, "console.no_roles_found"), nil
 	}
 	return consolePretty(cols, rows, s.expanded), nil
 }
 
 // consoleMetaDatabases implements \l — list databases.
-func (s *consoleSession) consoleMetaDatabases(ctx context.Context) (string, error) {
+func (s *consoleSession) consoleMetaDatabases(ctx context.Context, lang string) (string, error) {
 	var sqlText string
 	switch s.technology {
 	case "postgresql":
@@ -274,28 +276,28 @@ func (s *consoleSession) consoleMetaDatabases(ctx context.Context) (string, erro
 	case "mysql", "mariadb":
 		sqlText = "select schema_name as `Database` from information_schema.schemata order by schema_name"
 	case "oracle":
-		return "Oracle has one database per instance; use \\d to list objects, or \\du to list schemas/users.", nil
+		return i18n.T(lang, "console.oracle_one_database"), nil
 	case "sqlite":
-		return "SQLite connections are single-database — there's nothing else to list.", nil
+		return i18n.T(lang, "console.sqlite_single_database"), nil
 	case "mssql":
 		sqlText = `select name as "Name", suser_sname(owner_sid) as "Owner", state_desc as "State" from sys.databases order by name`
 	case "firebird":
-		return "Firebird connections are single-database — there's nothing else to list.", nil
+		return i18n.T(lang, "console.firebird_single_database"), nil
 	default:
-		return "", fmt.Errorf("\\l is not implemented for %s", s.technology)
+		return "", fmt.Errorf("%s", i18n.T(lang, "console.l_not_implemented", "technology", s.technology))
 	}
 	cols, rows, err := s.consoleQueryRows(ctx, sqlText)
 	if err != nil {
 		return "", err
 	}
 	if len(rows) == 0 {
-		return "No databases found.", nil
+		return i18n.T(lang, "console.no_databases_found"), nil
 	}
 	return consolePretty(cols, rows, s.expanded), nil
 }
 
 // consoleMetaFunctions implements \df — list functions/procedures.
-func (s *consoleSession) consoleMetaFunctions(ctx context.Context) (string, error) {
+func (s *consoleSession) consoleMetaFunctions(ctx context.Context, lang string) (string, error) {
 	var sqlText string
 	switch s.technology {
 	case "postgresql":
@@ -309,7 +311,7 @@ func (s *consoleSession) consoleMetaFunctions(ctx context.Context) (string, erro
 	case "oracle":
 		sqlText = `select object_name as "Name", object_type as "Type" from user_objects where object_type in ('FUNCTION','PROCEDURE') order by object_name`
 	case "sqlite":
-		return "SQLite has no catalog of user-defined functions to list.", nil
+		return i18n.T(lang, "console.sqlite_no_functions"), nil
 	case "mssql":
 		sqlText = `select s.name as "Schema", o.name as "Name",
 			case o.type when 'P' then 'procedure' when 'FN' then 'function' when 'IF' then 'function' when 'TF' then 'function' else o.type end as "Type"
@@ -322,14 +324,14 @@ func (s *consoleSession) consoleMetaFunctions(ctx context.Context) (string, erro
 			select trim(rdb$function_name) as "Name", 'function' as "Type" from rdb$functions where rdb$system_flag = 0
 			order by 1`
 	default:
-		return "", fmt.Errorf("\\df is not implemented for %s", s.technology)
+		return "", fmt.Errorf("%s", i18n.T(lang, "console.df_not_implemented", "technology", s.technology))
 	}
 	cols, rows, err := s.consoleQueryRows(ctx, sqlText)
 	if err != nil {
 		return "", err
 	}
 	if len(rows) == 0 {
-		return "No functions found.", nil
+		return i18n.T(lang, "console.no_functions_found"), nil
 	}
 	return consolePretty(cols, rows, s.expanded), nil
 }

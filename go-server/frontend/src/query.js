@@ -37,6 +37,7 @@ import { SetAcked, createRequest, removeContext } from "./long_polling.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { whiteRenderer } from "./renderers.js";
 import { uiCopyTextToClipboard } from "./workspace.js";
+import { t, tn } from "./i18n.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -147,7 +148,7 @@ export function cancelSQLTab(p_tab_tag) {
 	v_tab_tag.tab_loading_span.style.display = "none";
 	v_tab_tag.tab_check_span.style.display = "none";
 	v_tab_tag.bt_cancel.style.display = "none";
-	v_tab_tag.query_info.innerHTML = "Canceled.";
+	v_tab_tag.query_info.innerHTML = t("common.canceled");
 	setTabStatus(v_tab_tag, 0);
 
 	removeContext(v_tab_tag.context.v_context_code);
@@ -277,10 +278,10 @@ export function destructiveSQLWarning(p_sql) {
 
 	var v_upper = v_stripped.toUpperCase();
 	if (/^(DROP|TRUNCATE)\b/.test(v_upper)) {
-		return "This statement is destructive and cannot be undone. Run it anyway?";
+		return t("query.destructive_warning");
 	}
 	if (/^(DELETE|UPDATE)\b/.test(v_upper) && !/\bWHERE\b/.test(v_upper)) {
-		return "This statement has no WHERE clause and will affect ALL rows. Run it anyway?";
+		return t("query.no_where_clause_warning");
 	}
 	return null;
 }
@@ -318,7 +319,7 @@ export function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_q
 	var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
 
 	if (v_state != v_queryState.Idle) {
-		showAlert("Tab with activity in progress.");
+		showAlert(t("common.tab_activity_in_progress"));
 	} else {
 		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 		v_tab_tag.tempData = [];
@@ -328,7 +329,7 @@ export function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_q
 		var v_tab_close_span = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_close_span;
 
 		if (v_sql_value.trim() == "") {
-			showAlert("Please provide a string.");
+			showAlert(t("common.provide_a_string"));
 		} else {
 			//Change to run mode if database index changed
 			if (
@@ -410,7 +411,7 @@ export function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_q
 
 				v_context.tab_tag.div_result.innerHTML = "";
 			}
-			v_context.tab_tag.query_info.innerHTML = "<b>Start time</b>: " + escapeHtml(String(dformat)) + "<br><b>Running...</b>";
+			v_context.tab_tag.query_info.innerHTML = t("query.start_time_running", { start: escapeHtml(String(dformat)) });
 
 			//sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.Query, v_message_data, false, v_context);
 			createRequest(v_queryRequestCodes.Query, v_message_data, v_context);
@@ -418,7 +419,7 @@ export function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_q
 			/*setTimeout(function() {
 				if (!v_context.acked) {
 					cancelSQLTab(v_context.tab_tag);
-					showAlert('No response from query server.');
+					showAlert(t("query.no_response_from_server"));
 				}
 			},10000);*/
 		}
@@ -461,14 +462,14 @@ export function querySQLReturn(p_data, p_context) {
 
 export function setTabStatus(p_tab_tag, p_con_status) {
 	if (p_con_status == 0) {
-		p_tab_tag.query_tab_status_text.innerHTML = "Not connected";
+		p_tab_tag.query_tab_status_text.innerHTML = t("query.status_not_connected");
 		p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-closed";
-		p_tab_tag.query_tab_status.title = "Not connected";
+		p_tab_tag.query_tab_status.title = t("query.status_not_connected");
 		p_tab_tag.query_tab_status.innerHTML = "";
 	} else if (p_con_status == 1) {
-		p_tab_tag.query_tab_status_text.innerHTML = "Idle";
+		p_tab_tag.query_tab_status_text.innerHTML = t("query.status_idle");
 		p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle position-relative";
-		p_tab_tag.query_tab_status.title = "Idle";
+		p_tab_tag.query_tab_status.title = t("query.status_idle");
 		p_tab_tag.query_tab_status.innerHTML =
 			'<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;">' +
 			'<span class="omnis__circle-waves omnis__circle-waves--idle">' +
@@ -479,9 +480,9 @@ export function setTabStatus(p_tab_tag, p_con_status) {
 			"</span>" +
 			"</div>";
 	} else if (p_con_status == 2) {
-		p_tab_tag.query_tab_status_text.innerHTML = "Running";
+		p_tab_tag.query_tab_status_text.innerHTML = t("query.status_running");
 		p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-running position-relative";
-		p_tab_tag.query_tab_status.title = "Running";
+		p_tab_tag.query_tab_status.title = t("query.status_running");
 		p_tab_tag.query_tab_status.innerHTML =
 			'<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;">' +
 			'<span class="omnis__circle-waves omnis__circle-waves--running">' +
@@ -492,14 +493,14 @@ export function setTabStatus(p_tab_tag, p_con_status) {
 			"</span>" +
 			"</div>";
 	} else if (p_con_status == 3) {
-		p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction";
+		p_tab_tag.query_tab_status_text.innerHTML = t("query.status_idle_in_transaction");
 		p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction";
-		p_tab_tag.query_tab_status.title = "Idle in transaction";
+		p_tab_tag.query_tab_status.title = t("query.status_idle_in_transaction");
 		p_tab_tag.query_tab_status.innerHTML = "";
 	} else if (p_con_status == 4) {
-		p_tab_tag.query_tab_status_text.innerHTML = "Idle in transaction (aborted)";
+		p_tab_tag.query_tab_status_text.innerHTML = t("query.status_idle_in_transaction_aborted");
 		p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction_aborted";
-		p_tab_tag.query_tab_status.title = "Idle in transaction (aborted)";
+		p_tab_tag.query_tab_status.title = t("query.status_idle_in_transaction_aborted");
 		p_tab_tag.query_tab_status.innerHTML = "";
 	}
 }
@@ -533,15 +534,15 @@ export function querySQLReturnRender(p_message, p_context) {
 		if (p_message.v_error) {
 			v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
 			v_query_info.innerHTML =
-				"<b>Start time</b>: " +
+				"<b>" + t("common.start_time") + "</b>: " +
 				escapeHtml(String(p_context.start_datetime)) +
-				" <b>Duration</b>: " +
+				" <b>" + t("common.duration") + "</b>: " +
 				escapeHtml(String(p_message.v_data.v_duration));
 		} else {
 			v_query_info.innerHTML =
-				"<b>Start time</b>: " +
+				"<b>" + t("common.start_time") + "</b>: " +
 				escapeHtml(String(p_context.start_datetime)) +
-				" <b>Duration</b>: " +
+				" <b>" + t("common.duration") + "</b>: " +
 				escapeHtml(String(p_message.v_data.v_duration));
 			p_context.callback(p_message);
 		}
@@ -563,9 +564,9 @@ export function querySQLReturnRender(p_message, p_context) {
 		if (p_message.v_error) {
 			v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
 			v_query_info.innerHTML =
-				"<b>Start time</b>: " +
+				"<b>" + t("common.start_time") + "</b>: " +
 				escapeHtml(String(p_context.start_datetime)) +
-				" <b>Duration</b>: " +
+				" <b>" + t("common.duration") + "</b>: " +
 				escapeHtml(String(p_message.v_data.v_duration));
 			if (p_message.v_data.position != null) {
 				if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor && !p_context.has_selected_text) {
@@ -580,9 +581,9 @@ export function querySQLReturnRender(p_message, p_context) {
 			//Script
 			if (p_context.sel_value == 0) {
 				v_query_info.innerHTML =
-					"<b>Start time</b>: " +
+					"<b>" + t("common.start_time") + "</b>: " +
 					escapeHtml(String(p_context.start_datetime)) +
-					" <b>Duration</b>: " +
+					" <b>" + t("common.duration") + "</b>: " +
 					escapeHtml(String(p_message.v_data.v_duration));
 
 				v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_data) + "</div>";
@@ -614,21 +615,21 @@ export function querySQLReturnRender(p_message, p_context) {
 					window.scrollTo(0, 0);
 					if (v_data.v_data.length == 0 && v_data.v_col_names.length == 0) {
 						v_query_info.innerHTML =
-							"<b>Start time</b>: " +
+							"<b>" + t("common.start_time") + "</b>: " +
 							escapeHtml(String(p_context.start_datetime)) +
-							" <b>Duration</b>: " +
+							" <b>" + t("common.duration") + "</b>: " +
 							escapeHtml(String(p_message.v_data.v_duration));
 						if (typeof p_message.v_data.v_status == "string")
 							v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
-						else v_div_result.innerHTML = '<div class="query_info">Done</div>';
+						else v_div_result.innerHTML = '<div class="query_info">' + t("query.done") + '</div>';
 					} else {
 						v_query_info.innerHTML =
 							"<span class='omnidb__query-info__value' style='font-weight: 900;'>" +
 							v_data.v_data.length +
-							"</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" +
+							"</span><span> " + tn("query.rows_word", v_data.v_data.length) + "</span><span> " + t("query.in_word") + " </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" +
 							escapeHtml(String(p_message.v_data.v_duration)) +
 							"</span>" +
-							"<br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" +
+							"<br/><span>" + t("common.start_time") + "</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" +
 							escapeHtml(String(p_context.start_datetime)) +
 							"</span>";
 
@@ -715,10 +716,10 @@ export function querySQLReturnRender(p_message, p_context) {
 								},
 								items: {
 									copy: {
-										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Copy</div>',
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("common.copy") + '</div>',
 									},
 									view_data: {
-										name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">View Content</div>',
+										name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("common.view_content") + '</div>',
 									},
 								},
 							},
@@ -736,10 +737,10 @@ export function querySQLReturnRender(p_message, p_context) {
 					v_query_info.innerHTML =
 						"<span class='omnidb__query-info__value' style='font-weight: 900;'>" +
 						(v_new_data.length + v_data.v_data.length) +
-						"</span><span> rows</span><span> in </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" +
+						"</span><span> " + tn("query.rows_word", v_new_data.length + v_data.v_data.length) + "</span><span> " + t("query.in_word") + " </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" +
 						escapeHtml(String(p_message.v_data.v_duration)) +
 						"</span>" +
-						"<br/><span>Start time</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" +
+						"<br/><span>" + t("common.start_time") + "</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" +
 						escapeHtml(String(p_context.start_datetime)) +
 						"</span>";
 					for (var i = 0; i < v_data.v_data.length; i++) {
@@ -753,17 +754,17 @@ export function querySQLReturnRender(p_message, p_context) {
 				else {
 					if (p_context.tab_tag.ht != null)
 						v_query_info.innerHTML =
-							"<b>Start time</b>: " +
+							"<b>" + t("common.start_time") + "</b>: " +
 							escapeHtml(String(p_context.start_datetime)) +
-							" <b>Duration</b>: " +
+							" <b>" + t("common.duration") + "</b>: " +
 							escapeHtml(String(p_message.v_data.v_duration)) +
-							"<br/>Status: " +
+							"<br/>" + t("common.status") + ": " +
 							escapeHtml(p_message.v_data.v_status);
 					else {
 						v_query_info.innerHTML =
-							"<b>Start time</b>: " +
+							"<b>" + t("common.start_time") + "</b>: " +
 							escapeHtml(String(p_context.start_datetime)) +
-							" <b>Duration</b>: " +
+							" <b>" + t("common.duration") + "</b>: " +
 							escapeHtml(String(p_message.v_data.v_duration));
 						v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
 					}
@@ -801,7 +802,7 @@ export function queryError(p_message, p_context) {
 	v_tab_tag.selectMessageTabFunc();
 
 	v_tab_tag.query_info.innerHTML =
-		"<b>Start time</b>: " + escapeHtml(String(p_context.start_datetime)) + "<br><b>Error</b>";
+		t("query.start_time_error", { start: escapeHtml(String(p_context.start_datetime)) });
 
 	v_tab_tag.tab_loading_span.style.display = "none";
 	v_tab_tag.tab_check_span.style.display = "none";

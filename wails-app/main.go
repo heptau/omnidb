@@ -28,6 +28,7 @@ func main() {
 		Menu:             app.buildMenu(),
 		OnStartup:        app.startup,
 		OnShutdown:       app.shutdown,
+		OnBeforeClose:    app.saveWindowState,
 		// Wails only wires up the green traffic-light zoom button (and its
 		// hover menu for tiling left/right) when Mac options are non-nil --
 		// window.go's CreateWindow leaves `zoomable` at its C.int zero value

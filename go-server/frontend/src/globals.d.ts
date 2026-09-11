@@ -81,6 +81,13 @@ interface Window {
 	newUsersObject: any;
 	/** workspace.js's drawGraph() stashes the active cytoscape instance here for console debugging. */
 	cy: any;
+	/**
+	 * i18n.js's readLoginBootstrap() sets these two directly on `window` for
+	 * login.html, which has no bootstrap-globals.js of its own -- see that
+	 * function's comment.
+	 */
+	v_language: string;
+	v_i18n: Record<string, string>;
 }
 
 /** Installed by VirtualGrid.js — see its bottom. */
@@ -127,6 +134,10 @@ declare let v_show_terminal_option: boolean;
 declare let gv_desktopMode: boolean;
 declare let v_user_name: string;
 declare let v_short_version: string;
+declare let v_version: string;
+declare let v_language: string;
+declare let v_language_preference: string;
+declare let v_i18n: Record<string, string>;
 
 // --- reachable across a bundle boundary ------------------------------------
 //

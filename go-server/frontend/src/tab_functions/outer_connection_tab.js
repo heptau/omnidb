@@ -38,6 +38,7 @@ import { refreshNotifyPane, startNotifyForConnTab } from "../panel_functions/out
 import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { whiteHtmlRenderer } from "../renderers.js";
 import { isSectionActive, switchSection } from "../section_switcher.js";
+import { t } from "../i18n.js";
 import { createTabControl } from "../tabs.js";
 import {
 	changeDatabase,
@@ -94,7 +95,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 	// Creating the first outer tab without any connections created.
 	if (v_connTabControl.tag.connections.length == 0) {
 		v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
-		showAlert("Create connections first.");
+		showAlert(t("connections.create_connections_first"));
 	} else {
 		// v_connTabControl.removeLastTab();
 
@@ -230,7 +231,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			'_left_resize_line_horizontal" class="resize_line_horizontal omnidb__resize-line__container" style="position: relative; width: 100%; height: 12px; cursor: ns-resize;">' +
 			'<button id="bt_toggle_tree_tabs_' +
 			v_tab.id +
-			'" type="button" class="omnidb__tree-tabs__toggler" title="Toggle Properties/DDL Panel"><i class="fas fa-arrows-alt-v"></i></button>' +
+			'" type="button" class="omnidb__tree-tabs__toggler" title="' + t("workspace.toggle_properties_ddl_panel") + '"><i class="fas fa-arrows-alt-v"></i></button>' +
 			"</div>" +
 			'<div id="tree_tabs_parent_' +
 			v_tab.id +
@@ -241,7 +242,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			'<div class="div_loading_cover"></div>' +
 			'<div class="div_loading_content">' +
 			'  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">' +
-			'    <span class="sr-only ">Loading...</span>' +
+			'    <span class="sr-only ">' + t("common.loading") + '</span>' +
 			"  </div>" +
 			"</div>" +
 			"</div>" +
@@ -257,7 +258,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			'<div class="resize_line_vertical omnidb__resize-line__container" style="height: 100%;"></div>' +
 			'<button id="bt_toggle_tree_container_' +
 			v_tab.id +
-			'" type="button" class="omnidb__tree__toggler" title="Toggle Database Tree"><i class="fas fa-arrows-alt-h"></i></button>' +
+			'" type="button" class="omnidb__tree__toggler" title="' + t("workspace.toggle_database_tree") + '"><i class="fas fa-arrows-alt-h"></i></button>' +
 			"</div>" +
 			'<div id="' +
 			v_tab.id +
@@ -329,14 +330,14 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		};
 
 		var v_properties_tab = v_treeTabs.createTab({
-			p_name: "Properties",
+			p_name: t("workspace.properties_tab"),
 			p_close: false,
 			p_clickFunction: function (e) {
 				v_selectPropertiesTabFunc();
 			},
 		});
 		var v_ddl_tab = v_treeTabs.createTab({
-			p_name: "DDL",
+			p_name: t("workspace.ddl_tab"),
 			p_close: false,
 			p_clickFunction: function (e) {
 				v_selectDDLTabFunc();
@@ -406,13 +407,13 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 
 		/** @type {any} */
 		var col = {};
-		col.title = "Property";
+		col.title = t("workspace.property_column");
 		col.readOnly = true;
 		columnProperties.push(col);
 
 		/** @type {any} */
 		var col = {};
-		col.title = "Value";
+		col.title = t("workspace.value_column");
 		col.readOnly = true;
 		columnProperties.push(col);
 

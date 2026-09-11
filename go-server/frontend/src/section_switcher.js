@@ -48,6 +48,7 @@ import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
 import { refreshHeights } from "./workspace.js";
+import { t } from "./i18n.js";
 
 const SECTION_NAMES = ["welcome", "connections", "database", "notify", "snippets", "settings"];
 
@@ -139,50 +140,55 @@ export function initSectionSwitcher() {
 	v_sectionNavTabs.welcome = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-hand-spock"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectFunction: function () {
 			switchSection("welcome");
-			document.title = "Welcome to OmniDB";
+			document.title = t("nav.welcome_title");
 		},
-		p_tooltip_name: '<h5 class="my-1">Welcome</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.welcome")) + "</h5>",
 	});
 
 	v_sectionNavTabs.connections = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-plug"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectFunction: function () {
 			// Also refreshes the connection list from the server -- see
 			// connections.js, which now shows this section instead of a
 			// modal as its last step.
 			startConnectionManagement();
 		},
-		p_tooltip_name: '<h5 class="my-1">Connections</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connections")) + "</h5>",
 	});
 
 	v_sectionNavTabs.database = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-database"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectFunction: function () {
 			switchSection("database");
 		},
-		p_tooltip_name: '<h5 class="my-1">Database</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("tree.databases_section")) + "</h5>",
 	});
 
 	v_sectionNavTabs.notify = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-bell"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectFunction: function () {
 			switchSection("notify");
 		},
-		p_tooltip_name: '<h5 class="my-1">Notify</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.notify")) + "</h5>",
 	});
 
 	v_sectionNavTabs.snippets = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-scroll"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectFunction: function () {
 			toggleSnippetPanel();
 		},
-		p_tooltip_name: '<h5 class="my-1">Snippets</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("tree.snippets_section")) + "</h5>",
 	});
 
 	// Pushes About/Account/Settings to the bottom of the rail, VSCode-style.
@@ -199,11 +205,12 @@ export function initSectionSwitcher() {
 	v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-lightbulb"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			startTutorial("getting_started", e.currentTarget);
 		},
-		p_tooltip_name: '<h5 class="my-1">Getting Started</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.getting_started")) + "</h5>",
 	});
 
 	// The account icon (username/version/sign-out) only has anything to show
@@ -217,10 +224,11 @@ export function initSectionSwitcher() {
 	v_sectionNavTabs.settings = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-cog"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectFunction: function () {
 			showConfigUser();
 		},
-		p_tooltip_name: '<h5 class="my-1">Settings</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.settings")) + "</h5>",
 	});
 
 	// No default switchSection() call here -- workspace.js's initWorkspace()
@@ -241,12 +249,13 @@ function initAccountMenu() {
 	var v_tab = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-user"></i>',
 		p_close: false,
+		p_isDraggable: false,
 		p_selectable: false,
 		p_clickFunction: function (e) {
 			e.stopPropagation();
 			toggleAccountMenu();
 		},
-		p_tooltip_name: '<h5 class="my-1">Account</h5>',
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.account")) + "</h5>",
 	});
 
 	var v_menu = document.createElement("div");
@@ -258,7 +267,7 @@ function initAccountMenu() {
 		v_html += '<div class="omnidb__account-menu__username">' + escapeHtml(String(v_user_name)) + "</div>";
 		v_html +=
 			'<button id="omnidb_section_nav__link-signout" type="button" class="btn btn-sm omnidb__theme__btn--secondary w-100 mt-2">' +
-			'<i class="fas fa-sign-out-alt me-1"></i>Sign out</button>';
+			'<i class="fas fa-sign-out-alt me-1"></i>' + escapeHtml(t("nav.sign_out")) + "</button>";
 	}
 	v_menu.innerHTML = v_html;
 	document.body.appendChild(v_menu);

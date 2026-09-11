@@ -37,8 +37,9 @@ import { execAjax } from "./ajax_control_bridge.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";
 import { showAlert, showConfirm } from "./notification_control.js";
-import { setTabStatus, v_queryRequestCodes } from "./query.js";
+import { escapeHtml, setTabStatus, v_queryRequestCodes } from "./query.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";
+import { t } from "./i18n.js";
 
 export var v_consoleState = {
 	Idle: 0,
@@ -50,7 +51,7 @@ export var v_consoleState = {
 /// Wipes command history.
 /// </summary>
 export function deleteConsoleHistoryList() {
-	showConfirm("Are you sure you want to clear console history corresponding to applied filters?", function () {
+	showConfirm(t("console.confirm_clear_history"), function () {
 		execAjax(
 			"/clear_console_list/",
 			JSON.stringify({
@@ -79,21 +80,27 @@ export function showConsoleHistory() {
 	v_tab_tag.consoleHistory.headerDiv.innerHTML =
 		"<div class='mb-2 form-inline justify-content-center'>" +
 		"<div class='input-group w-auto me-2'>" +
-		"<span class='my-auto'>Select a daterange:</span>&nbsp;" +
-		"<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" +
+		"<span class='my-auto'>" + escapeHtml(t("console.select_daterange")) + "</span>&nbsp;" +
+		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtml(t("common.start_time")) + "' id='cl_input_from_" +
 		v_tab_tag.tab_id +
 		"'>" +
-		"<input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" +
+		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtml(t("common.end_time")) + "' id='cl_input_to_" +
 		v_tab_tag.tab_id +
 		"'>" +
 		"<button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" +
 		v_tab_tag.tab_id +
 		"'>" +
 		"<i class='far fa-calendar-alt'></i>&nbsp;" +
+		// Deliberately not translated -- this label (and the "ranges" keys/
+		// label comparisons in the daterangepicker call below) doubles as a
+		// control-flow discriminant against what the plugin itself passes
+		// back to its onChange callback ("Custom Range", "Yesterday", "Last
+		// Month"), so translating just the display text would desync it from
+		// the comparisons and break range detection.
 		"<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i>" +
 		"</button>" +
 		"</div>" +
-		"<label class='me-1'>Command contains:</label>" +
+		"<label class='me-1'>" + escapeHtml(t("console.command_contains")) + "</label>" +
 		"<input type='text' id='cl_input_contains_" +
 		v_tab_tag.tab_id +
 		"' class='me-2 form-control' />" +
@@ -104,10 +111,10 @@ export function showConsoleHistory() {
 		"<div class='mb-2 d-flex justify-content-center align-items-center'>" +
 		"<button id='bt_first_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.first")) + "'>" + escapeHtml(t("common.first")) + "</button>" +
 		"<button id='bt_previous_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.previous")) + "'>" + escapeHtml(t("common.previous")) + "</button>" +
 		"<span id='cl_curr_page_" +
 		v_tab_tag.tab_id +
 		"'></span> / <span id='cl_num_pages_" +
@@ -115,16 +122,16 @@ export function showConsoleHistory() {
 		"'></span>" +
 		"<button id='bt_next_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.next")) + "'>" + escapeHtml(t("common.next")) + "</button>" +
 		"<button id='bt_last_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.last")) + "'>" + escapeHtml(t("common.last")) + "</button>" +
 		"<button id='bt_refresh_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt me-1'></i>Refresh</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='" + escapeHtml(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button>" +
 		"<button id='bt_clear_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom me-1'></i>Clear List</button>" +
+		"' class='bt_execute btn btn-sm btn-danger mx-1' title='" + escapeHtml(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button>" +
 		"</div>";
 
 	var v_grid_div = v_tab_tag.consoleHistory.gridDiv;
@@ -145,14 +152,14 @@ export function showConsoleHistory() {
 	/** @type {any} */
 	var col = {};
 	col.readOnly = true;
-	col.title = "Date";
+	col.title = t("console.column_date");
 	col.width = "141px";
 	columnProperties.push(col);
 
 	/** @type {any} */
 	var col2 = {};
 	col2.readOnly = true;
-	col2.title = "Command";
+	col2.title = t("console.column_command");
 	col2.width = "435px";
 	columnProperties.push(col2);
 
@@ -193,13 +200,13 @@ export function showConsoleHistory() {
 			},
 			items: {
 				copy: {
-					name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Copy</div>',
+					name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + escapeHtml(t("common.copy")) + '</div>',
 				},
 				copy_to_console: {
-					name: '<div style="position: absolute;"><i class=\"fas fa-bolt cm-all\" style=\"vertical-align: middle;\"></i></div><div style="padding-left: 30px;">Copy Content To Console Tab</div>',
+					name: '<div style="position: absolute;"><i class=\"fas fa-bolt cm-all\" style=\"vertical-align: middle;\"></i></div><div style="padding-left: 30px;">' + escapeHtml(t("console.copy_to_console_tab")) + '</div>',
 				},
 				view_data: {
-					name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">View Content</div>',
+					name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + escapeHtml(t("common.view_content")) + '</div>',
 				},
 			},
 		},
@@ -454,10 +461,10 @@ export function consoleSQL(p_check_command = true, p_mode = 0) {
 	//if (!p_check_command || (v_content[v_content.length-1]==';' || v_content[0]=='\\') {
 	if (!p_check_command || v_content[0] == "\\") {
 		if (v_tag.state != v_consoleState.Idle) {
-			showAlert("Tab with activity in progress.");
+			showAlert(t("common.tab_activity_in_progress"));
 		} else {
 			if (v_content == "" && p_mode == 0) {
-				showAlert("Please provide a string.");
+				showAlert(t("common.provide_a_string"));
 			} else {
 				//append to command history list
 				if (v_connTabControl.selectedTab.tag.consoleHistoryList)
@@ -505,7 +512,7 @@ export function consoleSQL(p_check_command = true, p_mode = 0) {
 				v_tag.tab_loading_span.style.display = "";
 				v_tag.tab_check_span.style.display = "none";
 				v_tag.bt_cancel.style.display = "";
-				v_tag.query_info.innerHTML = "<b>Start time</b>: " + dformat + "<br><b>Running...</b>";
+				v_tag.query_info.innerHTML = "<b>" + escapeHtml(t("common.start_time")) + "</b>: " + dformat + "<br><b>" + escapeHtml(t("common.running")) + "</b>";
 				v_tag.bt_fetch_more.style.display = "none";
 				v_tag.bt_fetch_all.style.display = "none";
 				v_tag.bt_skip_fetch.style.display = "none";
@@ -542,7 +549,7 @@ export function cancelConsoleTab(p_tab_tag) {
 	v_tab_tag.tab_loading_span.style.display = "none";
 	v_tab_tag.tab_check_span.style.display = "none";
 	v_tab_tag.bt_cancel.style.display = "none";
-	v_tab_tag.query_info.innerHTML = "Canceled.";
+	v_tab_tag.query_info.innerHTML = escapeHtml(t("common.canceled"));
 
 	setTabStatus(v_tab_tag, 0);
 
@@ -592,9 +599,9 @@ export function consoleReturnRender(p_message, p_context) {
 
 	v_tag.query_info.innerHTML = "";
 	var v_qi_b1 = document.createElement("b");
-	v_qi_b1.textContent = "Start time";
+	v_qi_b1.textContent = t("common.start_time");
 	var v_qi_b2 = document.createElement("b");
-	v_qi_b2.textContent = "Duration";
+	v_qi_b2.textContent = t("common.duration");
 	var v_qi_t1 = document.createTextNode(": " + p_context.start_datetime + " ");
 	var v_qi_t2 = document.createTextNode(": " + p_message.v_data.v_duration);
 	v_tag.query_info.appendChild(v_qi_b1);

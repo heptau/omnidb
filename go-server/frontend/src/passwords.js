@@ -33,6 +33,7 @@ SOFTWARE.
 /// </summary>
 
 import { execAjax } from "./ajax_control_bridge.js";
+import { t } from "./i18n.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -91,7 +92,7 @@ function initPasswordModal() {
 	// desktop app it grants standing access to the file and the connection
 	// then authenticates from it on its own, everywhere else it reads a
 	// password out of a file the user picks for this one prompt.
-	if (gv_desktopMode) el("modal_password_pgpass_button").textContent = "Grant access to .pgpass\u2026";
+	if (gv_desktopMode) el("modal_password_pgpass_button").textContent = t("passwords.grant_pgpass_access");
 
 	el("modal_password_pgpass_button").addEventListener("click", function () {
 		if (gv_desktopMode) {
@@ -258,14 +259,10 @@ function readPgpassFileViaInput(p_file, p_lookup_info) {
 		);
 		if (v_password === null) {
 			showPgpassError(
-				"No matching entry found in that .pgpass file for " +
-					p_lookup_info.server +
-					":" +
-					p_lookup_info.port +
-					":" +
-					p_lookup_info.database +
-					":" +
-					p_lookup_info.username,
+				t("passwords.no_matching_entry", {
+					conn:
+						p_lookup_info.server + ":" + p_lookup_info.port + ":" + p_lookup_info.database + ":" + p_lookup_info.username,
+				}),
 			);
 			return;
 		}
@@ -315,15 +312,10 @@ function grantPgpassAccess(p_lookup_info) {
 			}
 			if (!p_result.matched && p_lookup_info) {
 				showPgpassError(
-					"OmniDB can use that file now, but it has no entry for " +
-						p_lookup_info.server +
-						":" +
-						p_lookup_info.port +
-						":" +
-						p_lookup_info.database +
-						":" +
-						p_lookup_info.username +
-						" -- pick another file, or type the password above.",
+					t("passwords.file_has_no_entry", {
+						conn:
+							p_lookup_info.server + ":" + p_lookup_info.port + ":" + p_lookup_info.database + ":" + p_lookup_info.username,
+					}),
 				);
 				return;
 			}
@@ -331,7 +323,7 @@ function grantPgpassAccess(p_lookup_info) {
 			retryWithPgpassPassword();
 		})
 		.catch(function (p_err) {
-			showPgpassError("Could not reach the desktop app's file picker: " + p_err);
+			showPgpassError(t("connections.pgpass_picker_unreachable", { error: p_err }));
 		});
 }
 

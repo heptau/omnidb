@@ -29,6 +29,8 @@ SOFTWARE.
 */
 
 
+import { t } from "./i18n.js";
+
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
 // shared with every other file in the bundle. They are scratch values
@@ -201,7 +203,7 @@ export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCa
 		var v_button_cancel = el("modal_message_cancel");
 
 		v_content_div.textContent = p_info;
-		v_button_ok.textContent = p_yes_label || "Ok";
+		v_button_ok.textContent = p_yes_label || t("common.ok");
 
 		v_button_ok.onclick = function () {
 			if (p_funcYes != null) p_funcYes();

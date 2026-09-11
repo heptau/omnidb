@@ -33,6 +33,7 @@ SOFTWARE.
 /// </summary>
 
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
+import { t } from "./i18n.js";
 import { showConfirm } from "./notification_control.js";
 import { escapeHtml } from "./query.js";
 
@@ -93,7 +94,7 @@ export function removeUserConfirm(p_id) {
 /// </summary>
 /// <param name="p_id">User ID.</param>
 export function removeUser(p_id) {
-	showConfirm("Are you sure you want to remove this user?", function () {
+	showConfirm(t("users.confirm_remove"), function () {
 		removeUserConfirm(p_id);
 	});
 }
@@ -115,7 +116,7 @@ export function removeNewUserConfirm(p_index) {
 /// </summary>
 /// <param name="p_id">User ID.</param>
 export function removeNewUser(p_index) {
-	showConfirm("Are you sure you want to undo adding this user?", function () {
+	showConfirm(t("users.confirm_undo_add"), function () {
 		removeNewUserConfirm(p_index);
 	});
 }
@@ -292,7 +293,7 @@ export function getUsers(p_options = false) {
 						}
 						if (p_options.users_update.new.length > 0) {
 							v_users_update_html +=
-								'<div class="card p-4 mx-auto">' + "<div><h5>New Users:</h5></div>" + '<ul class="pl-4">';
+								'<div class="card p-4 mx-auto">' + `<div><h5>${t("users.new_users_heading")}</h5></div>` + '<ul class="pl-4">';
 							for (let i = 0; i < p_options.users_update.new.length; i++) {
 								v_users_update_html += '<li class="mt-2"> - ' + p_options.users_update.new[i][0] + "</li>";
 							}
@@ -319,25 +320,25 @@ export function getUsers(p_options = false) {
 					"<input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''>" +
 					"<input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''>" +
 					"<div class='form-inline mb-4'>" +
-					"<h5 class='me-2'>Select an user</h5>" +
+					`<h5 class='me-2'>${t("users.select_user_heading")}</h5>` +
 					"<select id='omnidb_user_select' class='form-control'>";
 				if (p_options && p_options.focus_last) v_user_list_html += "<option value=''> </option>";
 				else v_user_list_html += "<option value='' selected> </option>";
 				for (var i = 0; i < v_user_list_data.length; i++) {
 					var v_user_item = v_user_list_data[i];
-					var v_user_is_superuser = v_user_item[2] === 1 ? " (superuser)" : "";
+					var v_user_is_superuser = v_user_item[2] === 1 ? " " + t("users.superuser_suffix") : "";
 					v_user_list_html +=
 						"<option value='" + i + "'>" + escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + "</option>";
 					v_user_count++;
 				}
 				for (var i = 0; i < window.newUsersObject.newUsers.length; i++) {
 					var v_user_item = window.newUsersObject.newUsers[i];
-					var v_user_is_superuser = v_user_item[2] === 1 ? " (superuser)" : "";
+					var v_user_is_superuser = v_user_item[2] === 1 ? " " + t("users.superuser_suffix") : "";
 					var v_user_item_index = v_user_count + i;
 					var v_user_item_name =
 						v_user_item[0] === ""
-							? "(pending info)"
-							: escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + " (pending save)";
+							? t("users.pending_info")
+							: escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + " " + t("users.pending_save");
 					var v_user_is_selected =
 						p_options && p_options.focus_last && i + 1 == window.newUsersObject.newUsers.length ? " selected " : "";
 					v_user_list_html +=
@@ -351,13 +352,17 @@ export function getUsers(p_options = false) {
 				}
 				v_user_list_html +=
 					"</select>" +
-					"<button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ms-2'><i class='fas fa-user-plus'></i><span class='ms-2'>Add new user</span></button>" +
+					"<button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ms-2'><i class='fas fa-user-plus'></i><span class='ms-2'>" +
+					t("users.add_new_user") +
+					"</span></button>" +
 					"</div>" +
 					"<div id='omnidb_user_content' class='row'>" +
 					v_users_update_html +
 					"</div>" +
 					"<div class='text-center'>" +
-					"<button type='button' id='div_save_users' class='btn btn-success ms-1' style='visibility: hidden;'>Save</button>" +
+					"<button type='button' id='div_save_users' class='btn btn-success ms-1' style='visibility: hidden;'>" +
+					t("common.save") +
+					"</button>" +
 					"</div>" +
 					"<button type='submit' disabled style='display: none' aria-hidden='true'></button>" +
 					"</div>";
@@ -446,7 +451,7 @@ export function renderSelectedUser(event) {
 	var v_user_div_content = /** @type {HTMLElement} */ (document.getElementById("omnidb_user_content"));
 	if (v_index == "") {
 		v_user_div_content.innerHTML =
-			"<div class='col-12 text-center'><h5 class='my-4'>No users selected, select an user or click add new user.</h5></div>";
+			`<div class='col-12 text-center'><h5 class='my-4'>${t("users.no_user_selected")}</h5></div>`;
 	} else {
 		var v_user_count = 0;
 		for (var i = 0; i < v_usersObject.list.length; i++) {
@@ -469,13 +474,13 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" +
 					i +
-					"' type='text' class='form-control my-0' placeholder='User name' value='" +
+					"' type='text' class='form-control my-0' placeholder='" + t("users.username_placeholder") + "' value='" +
 					escapeHtml(v_user_item[0]) +
 					"'>" +
 					"</div>" +
-					"<span class='ms-2'>Superuser?</span>" +
+					`<span class='ms-2'>${t("users.superuser_label")}</span>` +
 					"<div class='ms-2 mb-2'>" +
-					"<div class='omnidb__switch me-2' title='Toggle superuser status. To enable again, simply turn the switch on.'>" +
+					`<div class='omnidb__switch me-2' title='${t("users.superuser_toggle_tooltip")}'>` +
 					"<input type='checkbox' id='user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +
@@ -497,7 +502,7 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" +
 					i +
-					"' type='password' class='form-control my-0' placeholder='New password' value='" +
+					"' type='password' class='form-control my-0' placeholder='" + t("users.new_password_placeholder") + "' value='" +
 					escapeHtml(v_user_item[1]) +
 					"'>" +
 					"</div>" +
@@ -512,7 +517,7 @@ export function renderSelectedUser(event) {
 					// same response already carries.
 					"<i id='bt_remove_user_" +
 					i +
-					"' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i>" +
+					"' title='" + t("users.remove_user_tooltip") + "' class='fas fa-times action-grid action-close text-danger'></i>" +
 					"</span>" +
 					"</div>" +
 					"</div>";
@@ -560,13 +565,13 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" +
 					i +
-					"' type='text' class='form-control my-0' placeholder='User name' value='" +
+					"' type='text' class='form-control my-0' placeholder='" + t("users.username_placeholder") + "' value='" +
 					escapeHtml(v_user_item[0]) +
 					"'>" +
 					"</div>" +
-					"<span class='ms-2'>Superuser?</span>" +
+					`<span class='ms-2'>${t("users.superuser_label")}</span>` +
 					"<div class='ms-2 mb-2'>" +
-					"<div class='omnidb__switch me-2' title='Toggle superuser status. To enable again, simply turn the switch on.'>" +
+					`<div class='omnidb__switch me-2' title='${t("users.superuser_toggle_tooltip")}'>` +
 					"<input type='checkbox' id='new_user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +
@@ -588,14 +593,14 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" +
 					i +
-					"' type='password' class='form-control my-0' placeholder='New password' value='" +
+					"' type='password' class='form-control my-0' placeholder='" + t("users.new_password_placeholder") + "' value='" +
 					escapeHtml(v_user_item[1]) +
 					"'>" +
 					"</div>" +
 					"<span class='me-2 text-danger omnidb__user-list__close'>" +
 					"<i id='bt_remove_new_user_" +
 					i +
-					"' title='Remove User' class='fas fa-times action-grid action-close text-danger'></i>" +
+					"' title='" + t("users.remove_user_tooltip") + "' class='fas fa-times action-grid action-close text-danger'></i>" +
 					"</span>" +
 					"</div>" +
 					"</div>";

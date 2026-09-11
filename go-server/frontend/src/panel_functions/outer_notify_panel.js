@@ -67,6 +67,7 @@ import {
 	refreshNotifyChannels,
 	renderNotifyChannelNodes,
 } from "../tree_context_functions/tree_notify.js";
+import { t } from "../i18n.js";
 
 // Fixed ids: there is only ever one Notify section instance, so its own
 // elements do not need a unique-per-connection prefix -- only the per-tab
@@ -226,12 +227,12 @@ function renderNotifyEmptyState(p_content) {
 
 	var v_title = document.createElement("div");
 	v_title.className = "omnidb__notify__unsupported-title";
-	v_title.textContent = "No connection open.";
+	v_title.textContent = t("notify.no_connection_open");
 	v_wrapper.appendChild(v_title);
 
 	var v_text = document.createElement("div");
 	v_text.className = "omnidb__notify__unsupported-text";
-	v_text.textContent = "Open a connection in the Database panel to listen for its NOTIFY channels here.";
+	v_text.textContent = t("notify.open_connection_hint");
 	v_wrapper.appendChild(v_text);
 
 	p_content.appendChild(v_wrapper);
@@ -259,11 +260,11 @@ function buildNotifyTabLayout(p_tag) {
 		"<div class='omnidb__addremove'>" +
 		"<button id='" +
 		v_id +
-		"_notify_add_channel' type='button' title='Add Channel'><i class='fas fa-plus'></i></button>" +
+		"_notify_add_channel' type='button' title='" + t("notify.add_channel") + "'><i class='fas fa-plus'></i></button>" +
 		"<span class='omnidb__addremove-divider'></span>" +
 		"<button id='" +
 		v_id +
-		"_notify_delete_channel' type='button' title='Delete Channel' disabled><i class='fas fa-minus'></i></button>" +
+		"_notify_delete_channel' type='button' title='" + t("notify.delete_channel") + "' disabled><i class='fas fa-minus'></i></button>" +
 		"</div>" +
 		"</div>" +
 		"<div id='" +
@@ -355,13 +356,12 @@ export function renderNotifyUnsupported(p_tag, p_db_type) {
 
 	var v_title = document.createElement("div");
 	v_title.className = "omnidb__notify__unsupported-title";
-	v_title.textContent = "NOTIFY-style channels are not supported for " + p_db_type + " connections.";
+	v_title.textContent = t("notify.channels_not_supported", { technology: p_db_type });
 	v_wrapper.appendChild(v_title);
 
 	var v_text = document.createElement("div");
 	v_text.className = "omnidb__notify__unsupported-text";
-	v_text.textContent =
-		"Only PostgreSQL (LISTEN/NOTIFY), Oracle (DBMS_ALERT), and Firebird (events) connections support this feature.";
+	v_text.textContent = t("notify.supported_technologies_hint");
 	v_wrapper.appendChild(v_text);
 
 	v_div.appendChild(v_wrapper);
@@ -425,13 +425,13 @@ export function notifySessionStopped(p_tag, p_message) {
 	p_tag.divBanner.innerHTML = "";
 
 	var v_text = document.createElement("span");
-	v_text.textContent = p_message ? String(p_message) : "Listening was stopped.";
+	v_text.textContent = p_message ? String(p_message) : t("notify.listening_stopped");
 	p_tag.divBanner.appendChild(v_text);
 
 	var v_button = document.createElement("button");
 	v_button.type = "button";
 	v_button.className = "btn btn-sm omnidb__theme__btn--secondary ms-2";
-	v_button.textContent = "Restart Listening";
+	v_button.textContent = t("notify.restart_listening");
 	v_button.addEventListener("click", function () {
 		restartNotifyListening(p_tag);
 	});
@@ -462,7 +462,7 @@ export function renderNotifyFilter(p_tag) {
 	var v_channels = p_tag.channels || [];
 
 	v_div.appendChild(
-		buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_all", "All channels", p_tag.filterChannel == null, function (p_checked) {
+		buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_all", t("notify.all_channels"), p_tag.filterChannel == null, function (p_checked) {
 			p_tag.filterChannel = p_checked ? null : new Set();
 			renderNotifyFilter(p_tag);
 			renderNotifyMessages(p_tag);
@@ -502,7 +502,7 @@ export function renderNotifyFilter(p_tag) {
 	var v_clear_all = document.createElement("button");
 	v_clear_all.type = "button";
 	v_clear_all.className = "btn btn-sm omnidb__theme__btn--secondary omnidb__notify__filter-clear";
-	v_clear_all.textContent = "Clear All";
+	v_clear_all.textContent = t("notify.clear_all");
 	v_clear_all.addEventListener("click", function () {
 		clearAllNotifyMessages(p_tag);
 	});
@@ -563,7 +563,7 @@ export function renderNotifyMessages(p_tag) {
 		var v_empty = document.createElement("div");
 		v_empty.className = "omnidb__notify__empty";
 		v_empty.textContent =
-			p_tag.messages.length === 0 ? "No messages received yet." : "No messages on the selected channels.";
+			p_tag.messages.length === 0 ? t("notify.no_messages_yet") : t("notify.no_messages_selected_channels");
 		v_div.appendChild(v_empty);
 		return;
 	}
@@ -573,7 +573,7 @@ export function renderNotifyMessages(p_tag) {
 
 	var v_thead = document.createElement("thead");
 	var v_header_row = document.createElement("tr");
-	var v_columns = ["Channel", "Time", "Payload"];
+	var v_columns = [t("notify.column_channel"), t("notify.column_time"), t("notify.column_payload")];
 	for (var c = 0; c < v_columns.length; c++) {
 		var v_th = document.createElement("th");
 		v_th.textContent = v_columns[c];

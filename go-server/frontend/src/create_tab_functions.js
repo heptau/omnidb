@@ -29,6 +29,7 @@ SOFTWARE.
 */
 
 import { customMenu } from "./custom_menu.js";
+import { t } from "./i18n.js";
 import { showConfirm } from "./notification_control.js";
 import { v_createNotifyPanelFunction } from "./panel_functions/outer_notify_panel.js";
 import { v_createSnippetPanelFunction } from "./panel_functions/outer_snippet_panel.js";
@@ -101,7 +102,7 @@ export function initCreateTabFunctions() {
 export function beforeCloseTab(e, p_confirm_function) {
 	if (e) {
 		if (e.clientX == 0 && e.clientY == 0)
-			showConfirm("Are you sure you want to remove this tab?", function () {
+			showConfirm(t("confirm.remove_tab"), function () {
 				p_confirm_function();
 			});
 		else {

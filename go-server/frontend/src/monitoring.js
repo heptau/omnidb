@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
 import { adjustChartTheme, adjustGraphTheme, editCellData } from "./header_actions.js";
+import { t } from "./i18n.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { whiteHtmlRenderer } from "./renderers.js";
@@ -243,7 +244,7 @@ export function buildMonitorUnit(p_unit, p_first) {
 	})(div);
 	button_refresh.innerHTML = "<i class='fas fa-sync-alt fa-light'></i>";
 	button_refresh.className = "btn omnidb__theme__btn--secondary btn-sm";
-	button_refresh.title = "Refresh";
+	button_refresh.title = t("common.refresh");
 	var button_pause = document.createElement("button");
 	button_pause.onclick = (function (div) {
 		return function () {
@@ -252,7 +253,7 @@ export function buildMonitorUnit(p_unit, p_first) {
 	})(div);
 	button_pause.innerHTML = "<i class='fas fa-pause-circle fa-light'></i>";
 	button_pause.className = "btn omnidb__theme__btn--secondary btn-sm";
-	button_pause.title = "Pause";
+	button_pause.title = t("notify.pause");
 	var button_play = document.createElement("button");
 	button_play.onclick = (function (div) {
 		return function () {
@@ -261,7 +262,7 @@ export function buildMonitorUnit(p_unit, p_first) {
 	})(div);
 	button_play.innerHTML = "<i class='fas fa-play-circle fa-light'></i>";
 	button_play.className = "btn omnidb__theme__btn--secondary btn-sm";
-	button_play.title = "Play";
+	button_play.title = t("monitoring.play");
 	button_play.style.display = "none";
 	var interval = document.createElement("input");
 	interval.value = v_return_unit.v_interval;
@@ -384,7 +385,7 @@ export function includeMonitorUnit(p_id, p_plugin_name) {
 }
 
 export function deleteMonitorUnit(p_unit_id) {
-	showConfirm("Are you sure you want to delete this monitor unit?", function () {
+	showConfirm(t("monitoring.confirm_delete_unit"), function () {
 		var input = JSON.stringify({ p_unit_id: p_unit_id });
 
 		execAjax(
@@ -472,7 +473,7 @@ export function saveMonitorScript() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	if (v_tab_tag.input_unit_name.value.trim() == "") {
-		showAlert("Please provide name for this monitor.");
+		showAlert(t("monitoring.name_required"));
 	} else {
 		// parseInt: see the comment in updateUnitSavedInterval. Here an
 		// unparseable value goes as null, which the backend replaces with its
@@ -495,7 +496,7 @@ export function saveMonitorScript() {
 			function (p_return) {
 				v_tab_tag.unit_id = p_return.v_data;
 
-				showAlert("Monitor unit saved.");
+				showAlert(t("monitoring.unit_saved"));
 			},
 			function (p_return) {
 				if (p_return.v_data.password_timeout) {
@@ -734,7 +735,7 @@ export function refreshMonitorUnitsList() {
 			/** @type {any} */
 			var col = {};
 			col.readOnly = true;
-			col.title = "Actions";
+			col.title = t("monitoring.actions_column");
 			col.renderer = "html";
 			col.width = 80;
 
@@ -743,19 +744,19 @@ export function refreshMonitorUnitsList() {
 			/** @type {any} */
 			var col2 = {};
 			col2.readOnly = true;
-			col2.title = "Title";
+			col2.title = t("monitoring.title");
 			columnProperties.push(col2);
 
 			/** @type {any} */
 			var col3 = {};
 			col3.readOnly = true;
-			col3.title = "Type";
+			col3.title = t("monitoring.type");
 			columnProperties.push(col3);
 
 			/** @type {any} */
 			var col4 = {};
 			col4.readOnly = true;
-			col4.title = "Interval(s)";
+			col4.title = t("monitoring.interval_seconds_column");
 			columnProperties.push(col4);
 
 			if (v_unit_list_grid) v_unit_list_grid.destroy();

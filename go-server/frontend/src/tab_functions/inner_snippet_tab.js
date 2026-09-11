@@ -31,11 +31,12 @@ SOFTWARE.
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { saveSnippetText } from "../tree_context_functions/tree_snippets.js";
 import { indentSQL, refreshHeights, removeTab } from "../workspace.js";
+import { t } from "../i18n.js";
 
 
 /** @param {{id: any, name: string, id_parent: any}|null} [p_snippet] */
 export var v_createSnippetTextTabFunction = function (p_snippet = null) {
-	var v_name = "New Snippet";
+	var v_name = t("settings.shortcuts.new_snippet");
 	/** @type {{id: any, name: string|null, parent: any, type: string}} */
 	var v_details = {
 		id: null,
@@ -91,7 +92,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	// length varies and gets ellipsized.
 	var v_tab_dirty_dot = document.createElement("span");
 	v_tab_dirty_dot.className = "omnidb__tab-dirty-dot";
-	v_tab_dirty_dot.title = "Unsaved changes";
+	v_tab_dirty_dot.title = t("editor.unsaved_changes");
 	v_tab_dirty_dot.style.display = "none";
 	v_tab.elementA.appendChild(v_tab_dirty_dot);
 
@@ -133,10 +134,10 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		'<div class="tab_actions omnidb__tab-actions omnidb__tab-actions--no-divider mt-2">' +
 		'<button id="bt_indent_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent me-2"></i>Indent</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + t("editor.indent_sql") + '"><i class="fas fa-indent me-2"></i>' + t("common.indent") + '</button>' +
 		'<button id="bt_save_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Save"><i class="fas fa-save me-2"></i>Save</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + t("common.save") + '"><i class="fas fa-save me-2"></i>' + t("common.save") + '</button>' +
 		"</div>";
 
 	var v_div = /** @type {HTMLElement} */ (document.getElementById("div_" + v_tab.id));

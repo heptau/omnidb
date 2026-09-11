@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"strings"
 	"sync"
+
+	"omnidb-server/i18n"
 )
 
 //go:embed static/login.html static/animated_logo_omnidb.svg
@@ -109,9 +111,42 @@ func renderedLoginPage() string {
 		html = strings.ReplaceAll(html, "{{static_cache_bust}}", staticCacheBust)
 		html = strings.ReplaceAll(html, "{{omnidb_short_version}}", omnidbShortVersion)
 		html = strings.ReplaceAll(html, "{{csrf_cookie_name}}", csrfCookieName)
+		// "{{ i18n_bootstrap_json }}" is deliberately NOT substituted here --
+		// unlike every other placeholder above, it varies per request (see
+		// renderLoginPageForRequest), so it has to survive this one-time,
+		// whole-process-lifetime cache untouched.
 		loginHTML = html
 	})
 	return loginHTML
+}
+
+// loginBootstrap is login.html's equivalent of workspace.html's
+// workspaceBootstrap -- much smaller, since there's no signed-in user yet to
+// carry a stored language preference: Language is resolved purely from this
+// request's Accept-Language header (see i18n.ResolveLanguage's "auto"/empty
+// branch), and Translations is the same whole-catalog-with-English-fallback
+// shape as workspace's (see i18n.CatalogFor).
+type loginBootstrap struct {
+	Language     string            `json:"language"`
+	Translations map[string]string `json:"i18n"`
+}
+
+// renderLoginPageForRequest fills in the one remaining per-request
+// placeholder that renderedLoginPage's cached HTML deliberately leaves
+// untouched -- the resolved UI language for this request's Accept-Language
+// header. Everything else about the page really is static across every
+// visitor, which is exactly why renderedLoginPage can still cache the rest
+// with sync.Once.
+func renderLoginPageForRequest(r *http.Request) string {
+	lang := i18n.ResolveLanguage("auto", r.Header.Get("Accept-Language"))
+	bootstrapJSON, err := json.Marshal(loginBootstrap{
+		Language:     lang,
+		Translations: i18n.CatalogFor(lang),
+	})
+	if err != nil {
+		bootstrapJSON = []byte(`{"language":"en","i18n":{}}`)
+	}
+	return strings.Replace(renderedLoginPage(), "{{ i18n_bootstrap_json }}", string(bootstrapJSON), 1)
 }
 
 // appUser mirrors the columns native login needs from Django's own
@@ -146,22 +181,27 @@ func lookupAppUser(db *sql.DB, username string) (*appUser, error) {
 // defaults if missing, matching check_session's own
 // "except: user_details = UserDetails(user=request.user); user_details.
 // save()" fallback (UserDetails.csv_encoding/csv_delimiter default to
-// 'utf-8'/';' per models/main.py).
-func userCSVPrefs(db *sql.DB, userID int64) (encoding, delimiter string, err error) {
-	err = db.QueryRow(`select csv_encoding, csv_delimiter from OmniDB_app_userdetails where user_id = ?`, userID).Scan(&encoding, &delimiter)
+// 'utf-8'/';' per models/main.py). Also returns the user's raw stored
+// language preference ("auto" for a freshly-created row — see
+// WhoAmI.Language's comment on why this is the unresolved preference, not
+// yet reconciled against any request's Accept-Language header), so
+// finishLogin can seed the new native session's Language field without a
+// second query.
+func userCSVPrefs(db *sql.DB, userID int64) (encoding, delimiter, language string, err error) {
+	err = db.QueryRow(`select csv_encoding, csv_delimiter, coalesce(language, 'auto') from OmniDB_app_userdetails where user_id = ?`, userID).Scan(&encoding, &delimiter, &language)
 	if err == sql.ErrNoRows {
 		if _, insertErr := db.Exec(
-			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case) values (?, 'auto', 12, 'utf-8', ';', 0, '    ', 'space', 4, 'leading', 'preserve')`,
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case, language) values (?, 'auto', 12, 'utf-8', ';', 0, '    ', 'space', 4, 'leading', 'preserve', 'auto')`,
 			userID,
 		); insertErr != nil {
-			return "", "", insertErr
+			return "", "", "", insertErr
 		}
-		return "utf-8", ";", nil
+		return "utf-8", ";", "auto", nil
 	}
 	if err != nil {
-		return "", "", err
+		return "", "", "", err
 	}
-	return encoding, delimiter, nil
+	return encoding, delimiter, language, nil
 }
 
 // authenticateAppUser mirrors django.contrib.auth.authenticate() +
@@ -197,11 +237,11 @@ func authenticateAppUser(db *sql.DB, username, password string) (*appUser, bool)
 // install only because its webview profile already had a valid CSRF
 // cookie left over from some earlier, non-auto-login visit.
 func finishLogin(w http.ResponseWriter, r *http.Request, db *sql.DB, user *appUser) error {
-	csvEncoding, csvDelimiter, err := userCSVPrefs(db, user.ID)
+	csvEncoding, csvDelimiter, language, err := userCSVPrefs(db, user.ID)
 	if err != nil {
 		return err
 	}
-	sessionKey, err := createNativeSession(int(user.ID), user.Username, user.IsSuperuser, csvEncoding, csvDelimiter)
+	sessionKey, err := createNativeSession(int(user.ID), user.Username, user.IsSuperuser, csvEncoding, csvDelimiter, language)
 	if err != nil {
 		return err
 	}
@@ -225,7 +265,7 @@ func handleLoginPage(upstream *url.URL) http.HandlerFunc {
 
 		ensureCSRFCookie(w, r)
 		w.Header().Set("Content-Type", "text/html; charset=utf-8")
-		w.Write([]byte(renderedLoginPage()))
+		w.Write([]byte(renderLoginPageForRequest(r)))
 	}
 }
 

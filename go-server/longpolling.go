@@ -12,6 +12,8 @@ import (
 	"time"
 
 	"github.com/jackc/pgx/v5/pgconn"
+
+	"omnidb-server/i18n"
 )
 
 // requestType/response mirror the IntEnum values in polling.py — only the
@@ -315,7 +317,8 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
 			applyActiveDatabaseOverride(r, q.VTabID, info)
 
-			go runConsole(upstream, cookie, clientID, q, body.VContextCode, info, who.UserID)
+			lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
+			go runConsole(lang, upstream, cookie, clientID, q, body.VContextCode, info, who.UserID)
 			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("{}"))
 			return

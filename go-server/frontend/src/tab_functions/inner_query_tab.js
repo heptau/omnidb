@@ -33,7 +33,8 @@ import { closeCommandHistory, showCommandList } from "../command_history.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { customMenu } from "../custom_menu.js";
 import { showAlert } from "../notification_control.js";
-import { cancelSQL, checkQueryStatus, getStatementAtCursor, querySQL } from "../query.js";
+import { t } from "../i18n.js";
+import { cancelSQL, checkQueryStatus, escapeHtml, getStatementAtCursor, querySQL } from "../query.js";
 import { createTabControl } from "../tabs.js";
 import { getExplain } from "../tree_context_functions/tree_postgresql.js";
 import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
@@ -55,7 +56,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
 	// Updating inner tab_name.
-	var v_name = "Query";
+	var v_name = t("common.query");
 	if (p_table) {
 		v_name = p_table;
 	}
@@ -94,7 +95,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 				},
 				[
 					{
-						text: "Rename Tab",
+						text: t("workspace.rename_tab"),
 						icon: "fas cm-all fa-edit",
 						action: function () {
 							renameTab(v_tab);
@@ -126,11 +127,11 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		"<div class='modal-content'>" +
 		"<div class='modal-header'>" +
 		"<h5 class='modal-title'>" +
-		"Command history" +
+		escapeHtml(t("query.command_history_title")) +
 		"</h5>" +
 		"<button id='bt_close_command_history_" +
 		v_tab.id +
-		"' type='button' class='close' data-dismiss='modal' aria-label='Close'>" +
+		"' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtml(t("common.close")) + "'>" +
 		"<span aria-hidden='true'>&times;</span>" +
 		"</button>" +
 		"</div>" +
@@ -163,53 +164,53 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<div class="tab_actions omnidb__tab-actions col-12">' +
 		'<button id="bt_start_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run"><i class="fas fa-play fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.run")) + '"><i class="fas fa-play fa-light"></i></button>' +
 		'<button id="bt_start_stmt_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run Statement at Cursor"><i class="fas fa-play-circle fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button>' +
 		'<button id="bt_indent_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Indent SQL"><i class="fas fa-indent fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.indent_sql")) + '"><i class="fas fa-indent fa-light"></i></button>' +
 		'<button id="bt_history_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Command History"><i class="fas fa-list fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("query.command_history_title")) + '"><i class="fas fa-list fa-light"></i></button>' +
 		'<button id="bt_explain_' +
 		v_tab.id +
-		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain" style="display: none;"><i class="fas fa-search fa-light"></i></button>' +
+		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button>' +
 		'<button id="bt_analyze_' +
 		v_tab.id +
-		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Explain Analyze" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button>' +
+		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button>' +
 		'<div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' +
 		v_tab.id +
 		'" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' +
 		v_tab.id +
-		'">Autocommit</label></div>' +
+		'">' + escapeHtml(t("editor.autocommit")) + '</label></div>' +
 		'<div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' +
 		v_tab.id +
-		'" title="Not connected" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' +
+		'" title="' + escapeHtml(t("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' +
 		v_tab.id +
-		'" title="Not connected" class="tab-status-text query_info dbms_object postgresql_object ms-1">Not connected</span></div>' +
+		'" title="' + escapeHtml(t("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t("query.status_not_connected")) + '</span></div>' +
 		'<button id="bt_fetch_more_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch more</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.fetch_more")) + '</button>' +
 		'<button id="bt_fetch_all_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Fetch all</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.fetch_all")) + '</button>' +
 		'<button id="bt_commit_' +
 		v_tab.id +
-		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="Run" style="display: none;">Commit</button>' +
+		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.commit")) + '</button>' +
 		'<button id="bt_rollback_' +
 		v_tab.id +
-		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="Run" style="display: none;">Rollback</button>' +
+		'" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtml(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.rollback")) + '</button>' +
 		'<button id="bt_cancel_' +
 		v_tab.id +
-		'" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="Cancel" style="display: none;">Cancel</button>' +
+		'" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtml(t("common.cancel")) + '" style="display: none;">' + escapeHtml(t("common.cancel")) + '</button>' +
 		'<div id="div_query_info_' +
 		v_tab.id +
 		'" class="omnidb__query-info"></div>' +
 		'<button id="bt_export_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="Export Data"><i class="far fa-file fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="' + escapeHtml(t("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button>' +
 		'<select id="sel_export_type_' +
 		v_tab.id +
 		'" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select>' +
@@ -219,7 +220,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		v_tab.id +
 		'" class="omnidb__query-result-tabs">' +
 		'<div style="position:absolute;top:0.25rem;right:2.75rem;">' +
-		'<div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="Toggle explain component.\nSwitch between old and new explain visualizer (experimental).">' +
+		'<div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtml(t("editor.toggle_explain_tooltip")) + '">' +
 		'<input id="explainContextToggler' +
 		v_tab.id +
 		'" type="checkbox" class="omnidb__switch--explain--input">' +
@@ -269,7 +270,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 
 	// Creating the `data` tab.
 	var v_data_tab = v_curr_tabs.createTab({
-		p_name: "Data",
+		p_name: t("editor.data_tab"),
 		p_close: false,
 		p_clickFunction: function (e) {
 			v_selectDataTabFunc();
@@ -285,7 +286,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	// Creating the `message` tab.
 	var v_messages_tab = v_curr_tabs.createTab({
 		p_name:
-			"Messages <div id='query_result_tabs_count_notices_" +
+			escapeHtml(t("editor.messages_tab")) + " <div id='query_result_tabs_count_notices_" +
 			v_tab.id +
 			"' class='count_notices' style='display: none;'></div>",
 		p_close: false,
@@ -304,7 +305,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 
 	// Creating the `explain` tab.
 	var v_explain_tab = v_curr_tabs.createTab({
-		p_name: "Explain",
+		p_name: t("editor.explain"),
 		p_close: false,
 		p_clickFunction: function (e) {
 			v_selectExplainTabFunc();
@@ -358,7 +359,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 
 		var v_option_list = [
 			{
-				text: "Copy",
+				text: t("common.copy"),
 				icon: "fas cm-all fa-terminal",
 				action: function () {
 					// Getting the value
@@ -368,7 +369,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 				},
 			},
 			{
-				text: "Save as snippet",
+				text: t("editor.save_as_snippet"),
 				icon: "fas cm-all fa-save",
 				submenu: {
 					elements: buildSnippetContextMenuObjects("save", v_connTabControl.tag.globalSnippets, v_editor),
@@ -378,7 +379,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 
 		if (v_connTabControl.tag.globalSnippets.files.length != 0 || v_connTabControl.tag.globalSnippets.folders.length != 0)
 			v_option_list.push({
-				text: "Use snippet",
+				text: t("editor.use_snippet"),
 				icon: "fas cm-all fa-scroll",
 				submenu: {
 					elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor),
@@ -439,11 +440,11 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 			if (!gv_desktopMode) {
 				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.selectDataTabFunc();
 				var v_text =
-					'<div style="font-size: 14px;">The file is ready. <a class="link_text" href="' +
+					'<div style="font-size: 14px;">' + escapeHtml(t("editor.file_ready")) + ' <a class="link_text" href="' +
 					p_data.v_data.v_filename +
 					'" download="' +
 					p_data.v_data.v_downloadname +
-					'">Save</a></div>';
+					'">' + escapeHtml(t("common.save")) + '</a></div>';
 				v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.innerHTML = v_text;
 				return;
 			}
@@ -461,13 +462,13 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 				})
 				.then(function (p_result) {
 					if (p_result.error) {
-						showAlert("Error saving file: " + p_result.error);
+						showAlert(t("editor.error_saving_file", { error: p_result.error }));
 					} else if (p_result.path) {
-						showAlert("File exported to: " + p_result.path);
+						showAlert(t("editor.file_exported_to", { path: p_result.path }));
 					}
 				})
 				.catch(function (p_error) {
-					showAlert("Error saving file: " + p_error);
+					showAlert(t("editor.error_saving_file", { error: p_error }));
 				});
 		};
 

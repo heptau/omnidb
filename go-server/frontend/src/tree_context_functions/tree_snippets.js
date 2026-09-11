@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { execAjax } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
+import { t } from "../i18n.js";
 import { showConfirm } from "../notification_control.js";
 
 // Declared here because these were implicit globals: assigned without
@@ -63,7 +64,7 @@ export function getTreeSnippets(p_div) {
 		cm_node_root: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("common.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeSnippets(node);
@@ -74,14 +75,14 @@ export function getTreeSnippets(p_div) {
 					},
 				},
 				{
-					text: "New Folder",
+					text: t("tree.new_folder"),
 					icon: "fas cm-all fa-folder",
 					action: function (node) {
 						newNodeSnippet(node, "node");
 					},
 				},
 				{
-					text: "Add Snippet",
+					text: t("snippets.add_snippet"),
 					icon: "fas cm-all fa-plus",
 					action: function (node) {
 						newNodeSnippet(node, "snippet");
@@ -92,7 +93,7 @@ export function getTreeSnippets(p_div) {
 		cm_node: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("common.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeSnippets(node);
@@ -103,28 +104,28 @@ export function getTreeSnippets(p_div) {
 					},
 				},
 				{
-					text: "New Folder",
+					text: t("tree.new_folder"),
 					icon: "fas cm-all fa-folder",
 					action: function (node) {
 						newNodeSnippet(node, "node");
 					},
 				},
 				{
-					text: "Add Snippet",
+					text: t("snippets.add_snippet"),
 					icon: "fas cm-all fa-plus",
 					action: function (node) {
 						newNodeSnippet(node, "snippet");
 					},
 				},
 				{
-					text: "Rename Folder",
+					text: t("tree.rename_folder"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						renameNodeSnippet(node);
 					},
 				},
 				{
-					text: "Delete Folder",
+					text: t("tree.delete_folder"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
 						deleteNodeSnippet(node);
@@ -135,21 +136,21 @@ export function getTreeSnippets(p_div) {
 		cm_snippet: {
 			elements: [
 				{
-					text: "Edit",
+					text: t("common.edit"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						startEditSnippetText(node);
 					},
 				},
 				{
-					text: "Rename",
+					text: t("common.rename"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						renameNodeSnippet(node);
 					},
 				},
 				{
-					text: "Delete",
+					text: t("common.delete"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
 						deleteNodeSnippet(node);
@@ -167,7 +168,7 @@ export function getTreeSnippets(p_div) {
 	};
 
 	var node1 = tree.createNode(
-		"Snippets",
+		t("tree.snippets_section"),
 		false,
 		"fas node-all fa-list-alt node-snippet-list",
 		null,
@@ -396,8 +397,8 @@ export function saveSnippetTextConfirm(p_save_object, p_text, p_callback) {
 }
 
 export function newNodeSnippet(p_node, p_mode) {
-	var v_placeholder = "Snippet Name";
-	if (p_mode == "node") v_placeholder = "Node Name";
+	var v_placeholder = t("snippets.snippet_name_placeholder");
+	if (p_mode == "node") v_placeholder = t("tree.node_name_placeholder");
 
 	showConfirm(
 		"",
@@ -487,7 +488,7 @@ export function renameNodeSnippet(p_node) {
 
 export function deleteNodeSnippet(p_node) {
 	showConfirm(
-		"Are you sure you want to delete this " + p_node.tag.type + "?",
+		t("tree.confirm_delete_node", { type: p_node.tag.type }),
 		function () {
 			execAjax(
 				"/delete_node_snippet/",
@@ -563,7 +564,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 
 	if (p_mode == "save") {
 		v_elements.push({
-			text: "New Snippet",
+			text: t("snippets.new_snippet"),
 			icon: "fas cm-all fa-save",
 			action: function () {
 				showConfirm(
@@ -587,7 +588,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 						var v_input = document.createElement("input");
 						v_input.id = "element_name";
 						v_input.className = "form-control";
-						v_input.placeholder = "Snippet Name";
+						v_input.placeholder = t("snippets.snippet_name_placeholder");
 						v_input.style.width = "100%";
 						/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_input);
 
@@ -612,7 +613,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 
 			if (p_mode == "save")
 				v_elements.push({
-					text: "<b>OVERWRITE</b> " + v_file.name,
+					text: `<b>${t("snippets.overwrite")}</b> ` + v_file.name,
 					icon: "fas cm-all fa-scroll",
 					action: function () {
 						showConfirm(
@@ -636,9 +637,9 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 								// rendered as markup regardless of its content.
 								var v_content_div = /** @type {HTMLElement} */ (document.getElementById("modal_message_content"));
 								var v_bold = document.createElement("b");
-								v_bold.textContent = "WARNING";
+								v_bold.textContent = t("common.warning");
 								v_content_div.appendChild(v_bold);
-								v_content_div.appendChild(document.createTextNode(", are you sure you want to overwrite file '" + v_file.name + "'?"));
+								v_content_div.appendChild(document.createTextNode(t("snippets.confirm_overwrite_file_suffix", { name: v_file.name })));
 							},
 						);
 					},

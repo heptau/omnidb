@@ -32,6 +32,7 @@ SOFTWARE.
 /// Retrieving tree.
 /// </summary>
 
+import { t } from "../i18n.js";
 import { execAjax } from "../ajax_control_bridge.js";
 import { showConfirm, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
@@ -57,7 +58,7 @@ export function getTreeMariadb(p_div) {
 		cm_server: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -72,7 +73,7 @@ export function getTreeMariadb(p_div) {
 		cm_databases: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -83,13 +84,13 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Database",
+					text: t("tree.create_database"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Database", node.tree.tag.create_database);
+						tabSQLTemplate(t("tree.create_database"), node.tree.tag.create_database);
 					},
 				} /*, {
-				text: 'Doc: Databases',
+				text: t('tree.doc_databases'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -104,13 +105,13 @@ export function getTreeMariadb(p_div) {
 		cm_database: {
 			elements: [
 				{
-					text: "Render Graph",
+					text: t("tree.render_graph"),
 					icon: "fab cm-all fa-hubspot",
 					action: function (node) {},
 					submenu: {
 						elements: [
 							{
-								text: "Simple Graph",
+								text: t("tree.simple_graph"),
 								icon: "fab cm-all fa-hubspot",
 								action: function (node) {
 									v_connTabControl.tag.createGraphTab(node.text);
@@ -118,7 +119,7 @@ export function getTreeMariadb(p_div) {
 								},
 							},
 							{
-								text: "Complete Graph",
+								text: t("tree.complete_graph"),
 								icon: "fab cm-all fa-hubspot",
 								action: function (node) {
 									v_connTabControl.tag.createGraphTab(node.text);
@@ -129,17 +130,17 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Alter Database",
+					text: t("tree.alter_database"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Alter Database", node.tree.tag.alter_database.replace("#database_name#", node.text));
+						tabSQLTemplate(t("tree.alter_database"), node.tree.tag.alter_database.replace("#database_name#", node.text));
 					},
 				},
 				{
-					text: "Drop Database",
+					text: t("tree.drop_database"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate("Drop Database", node.tree.tag.drop_database.replace("#database_name#", node.text));
+						tabSQLTemplate(t("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
 					},
 				},
 			],
@@ -147,7 +148,7 @@ export function getTreeMariadb(p_div) {
 		cm_roles: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -158,13 +159,13 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Role",
+					text: t("tree.create_role"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Role", node.tree.tag.create_role);
+						tabSQLTemplate(t("tree.create_role"), node.tree.tag.create_role);
 					},
 				} /*, {
-				text: 'Doc: Roles',
+				text: t('tree.doc_roles'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -179,17 +180,17 @@ export function getTreeMariadb(p_div) {
 		cm_role: {
 			elements: [
 				{
-					text: "Alter Role",
+					text: t("tree.alter_role"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Alter Role", node.tree.tag.alter_role.replace("#role_name#", node.text));
+						tabSQLTemplate(t("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
 					},
 				},
 				{
-					text: "Drop Role",
+					text: t("tree.drop_role"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate("Drop Role", node.tree.tag.drop_role.replace("#role_name#", node.text));
+						tabSQLTemplate(t("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
 					},
 				},
 			],
@@ -197,7 +198,7 @@ export function getTreeMariadb(p_div) {
 		cm_tables: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -208,13 +209,13 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Table",
+					text: t("tree.create_table"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Table", node.tree.tag.create_table.replace("#schema_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.parent.text));
 					},
 				} /*, {
-				text: 'Doc: Basics',
+				text: t('tree.doc_basics'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -224,7 +225,7 @@ export function getTreeMariadb(p_div) {
 						'/static/ddl-basics.html');
 				}
 			}, {
-				text: 'Doc: Constraints',
+				text: t('tree.doc_constraints'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -234,7 +235,7 @@ export function getTreeMariadb(p_div) {
 						'/static/ddl-constraints.html');
 				}
 			}, {
-				text: 'Doc: Modifying',
+				text: t('tree.doc_modifying'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -249,7 +250,7 @@ export function getTreeMariadb(p_div) {
 		cm_table: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -260,44 +261,43 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Data Actions",
+					text: t("tree.data_actions"),
 					icon: "fas cm-all fa-list",
 					submenu: {
 						elements: [
 							{
-								text: "Query Data",
+								text: t("tree.query_data"),
 								icon: "fas cm-all fa-search",
 								action: function (node) {
 									TemplateSelectMariadb(node.parent.parent.text, node.text);
 								},
 							},
 							{
-								text: "Edit Data",
+								text: t("tree.edit_data"),
 								icon: "fas cm-all fa-table",
 								action: function (node) {
 									v_startEditData(node.text, node.parent.parent.text);
 								},
 							},
 							{
-								text: "Insert Record",
+								text: t("tree.insert_record"),
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
 									TemplateInsertMariadb(node.parent.parent.text, node.text);
 								},
 							},
 							{
-								text: "Update Records",
+								text: t("tree.update_records"),
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
 									TemplateUpdateMariadb(node.parent.parent.text, node.text);
 								},
 							},
 							{
-								text: "Delete Records",
+								text: t("tree.delete_records"),
 								icon: "fas cm-all fa-times",
 								action: function (node) {
-									tabSQLTemplate(
-										"Delete Records",
+									tabSQLTemplate(t("tree.delete_records"),
 										node.tree.tag.delete.replace("#table_name#", node.parent.parent.text + "." + node.text),
 									);
 								},
@@ -306,26 +306,24 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Table Actions",
+					text: t("tree.table_actions"),
 					icon: "fas cm-all fa-list",
 					submenu: {
 						elements: [
 							{
-								text: "Alter Table (SQL)",
+								text: t("tree.alter_table_sql"),
 								icon: "fas cm-all fa-edit",
 								action: function (node) {
-									tabSQLTemplate(
-										"Alter Table",
+									tabSQLTemplate(t("tree.alter_table"),
 										node.tree.tag.alter_table.replace("#table_name#", node.parent.parent.text + "." + node.text),
 									);
 								},
 							},
 							{
-								text: "Drop Table",
+								text: t("tree.drop_table"),
 								icon: "fas cm-all fa-times",
 								action: function (node) {
-									tabSQLTemplate(
-										"Drop Table",
+									tabSQLTemplate(t("tree.drop_table"),
 										node.tree.tag.drop_table.replace("#table_name#", node.parent.parent.text + "." + node.text),
 									);
 								},
@@ -338,11 +336,11 @@ export function getTreeMariadb(p_div) {
 		cm_columns: {
 			elements: [
 				{
-					text: "Create Column",
+					text: t("tree.create_column"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						tabSQLTemplate(
-							"Create Field",
+							t("tree.create_field"),
 							node.tree.tag.create_column.replace(
 								"#table_name#",
 								node.parent.parent.parent.text + "." + node.parent.text,
@@ -355,11 +353,10 @@ export function getTreeMariadb(p_div) {
 		cm_column: {
 			elements: [
 				{
-					text: "Alter Column",
+					text: t("tree.alter_column"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Alter Column",
+						tabSQLTemplate(t("tree.alter_column"),
 							node.tree.tag.alter_column
 								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
 								.replace(/#column_name#/g, node.text),
@@ -367,11 +364,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop Column",
+					text: t("tree.drop_column"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Column",
+						tabSQLTemplate(t("tree.drop_column"),
 							node.tree.tag.drop_column
 								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
 								.replace(/#column_name#/g, node.text),
@@ -383,7 +379,7 @@ export function getTreeMariadb(p_div) {
 		cm_pks: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -394,11 +390,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Primary Key",
+					text: t("tree.create_primary_key"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Create Primary Key",
+						tabSQLTemplate(t("tree.create_primary_key"),
 							node.tree.tag.create_primarykey.replace(
 								"#table_name#",
 								node.parent.parent.parent.text + "." + node.parent.text,
@@ -411,7 +406,7 @@ export function getTreeMariadb(p_div) {
 		cm_pk: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -422,11 +417,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop Primary Key",
+					text: t("tree.drop_primary_key"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Primary Key",
+						tabSQLTemplate(t("tree.drop_primary_key"),
 							node.tree.tag.drop_primarykey
 								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
 								.replace("#constraint_name#", node.text),
@@ -438,7 +432,7 @@ export function getTreeMariadb(p_div) {
 		cm_fks: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -449,11 +443,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Foreign Key",
+					text: t("tree.create_foreign_key"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Create Foreign Key",
+						tabSQLTemplate(t("tree.create_foreign_key"),
 							node.tree.tag.create_foreignkey.replace(
 								"#table_name#",
 								node.parent.parent.parent.text + "." + node.parent.text,
@@ -466,7 +459,7 @@ export function getTreeMariadb(p_div) {
 		cm_fk: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -477,11 +470,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop Foreign Key",
+					text: t("tree.drop_foreign_key"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Foreign Key",
+						tabSQLTemplate(t("tree.drop_foreign_key"),
 							node.tree.tag.drop_foreignkey
 								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
 								.replace("#constraint_name#", node.text),
@@ -493,7 +485,7 @@ export function getTreeMariadb(p_div) {
 		cm_uniques: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -504,11 +496,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Unique",
+					text: t("tree.create_unique"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Create Unique",
+						tabSQLTemplate(t("tree.create_unique"),
 							node.tree.tag.create_unique.replace(
 								"#table_name#",
 								node.parent.parent.parent.text + "." + node.parent.text,
@@ -521,7 +512,7 @@ export function getTreeMariadb(p_div) {
 		cm_unique: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -532,11 +523,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop Unique",
+					text: t("tree.drop_unique"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Unique",
+						tabSQLTemplate(t("tree.drop_unique"),
 							node.tree.tag.drop_unique
 								.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text)
 								.replace("#constraint_name#", node.text),
@@ -548,7 +538,7 @@ export function getTreeMariadb(p_div) {
 		cm_indexes: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -559,11 +549,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Index",
+					text: t("tree.create_index"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Create Index",
+						tabSQLTemplate(t("tree.create_index"),
 							node.tree.tag.create_index.replace(
 								"#table_name#",
 								node.parent.parent.parent.text + "." + node.parent.text,
@@ -571,7 +560,7 @@ export function getTreeMariadb(p_div) {
 						);
 					},
 				} /*, {
-				text: 'Doc: Indexes',
+				text: t('tree.doc_indexes'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -586,7 +575,7 @@ export function getTreeMariadb(p_div) {
 		cm_index: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -597,11 +586,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop Index",
+					text: t("tree.drop_index"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Index",
+						tabSQLTemplate(t("tree.drop_index"),
 							node.tree.tag.drop_index.replace(
 								"#index_name#",
 								node.parent.parent.parent.parent.text +
@@ -616,7 +604,7 @@ export function getTreeMariadb(p_div) {
 		cm_sequences: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeOracle(node);
@@ -627,13 +615,13 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Sequence",
+					text: t("tree.create_sequence"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Sequence", node.tree.tag.create_sequence.replace("#schema_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_sequence"), node.tree.tag.create_sequence.replace("#schema_name#", node.parent.text));
 					},
 				} /*, {
-				text: 'Doc: Sequences',
+				text: t('tree.doc_sequences'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -648,21 +636,19 @@ export function getTreeMariadb(p_div) {
 		cm_sequence: {
 			elements: [
 				{
-					text: "Alter Sequence",
+					text: t("tree.alter_sequence"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate(
-							"Alter Sequence",
+						tabSQLTemplate(t("tree.alter_sequence"),
 							node.tree.tag.alter_sequence.replace("#sequence_name#", node.parent.parent.text + "." + node.text),
 						);
 					},
 				},
 				{
-					text: "Drop Sequence",
+					text: t("tree.drop_sequence"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop Sequence",
+						tabSQLTemplate(t("tree.drop_sequence"),
 							node.tree.tag.drop_sequence.replace("#sequence_name#", node.parent.parent.text + "." + node.text),
 						);
 					},
@@ -672,7 +658,7 @@ export function getTreeMariadb(p_div) {
 		cm_views: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -683,13 +669,13 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create View",
+					text: t("tree.create_view"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create View", node.tree.tag.create_view.replace("#schema_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.parent.text));
 					},
 				} /*, {
-				text: 'Doc: Views',
+				text: t('tree.doc_views'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -704,7 +690,7 @@ export function getTreeMariadb(p_div) {
 		cm_view: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -715,7 +701,7 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Query Data",
+					text: t("tree.query_data"),
 					icon: "fas cm-all fa-search",
 					action: function (node) {
 						var v_table_name = "";
@@ -735,7 +721,7 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Edit View",
+					text: t("tree.edit_view"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						v_connTabControl.tag.createQueryTab(node.text);
@@ -743,11 +729,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop View",
+					text: t("tree.drop_view"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate(
-							"Drop View",
+						tabSQLTemplate(t("tree.drop_view"),
 							node.tree.tag.drop_view.replace("#view_name#", node.parent.parent.text + "." + node.text),
 						);
 					},
@@ -756,7 +741,7 @@ export function getTreeMariadb(p_div) {
 		},
 		/*'cm_triggers': {
 			elements: [{
-				text: 'Refresh',
+				text: t('tree.refresh'),
 				icon: 'fas cm-all fa-sync-alt',
 				action: function(node) {
 					if (node.childNodes == 0)
@@ -767,16 +752,16 @@ export function getTreeMariadb(p_div) {
 					}
 				},
 			}, {
-				text: 'Create Trigger',
+				text: t('tree.create_trigger'),
 				icon: 'fas cm-all fa-edit',
 				action: function(node) {
-					tabSQLTemplate('Create Trigger', node.tree.tag
+					tabSQLTemplate(t('tree.create_trigger'), node.tree.tag
 						.create_trigger.replace(
 							'#table_name#', node.tree.tag.v_database + '.' + node.parent
 							.text));
 				}
 			}, {
-				text: 'Doc: Triggers',
+				text: t('tree.doc_triggers'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -789,7 +774,7 @@ export function getTreeMariadb(p_div) {
 		},
 		'cm_view_triggers': {
 			elements: [{
-				text: 'Refresh',
+				text: t('tree.refresh'),
 				icon: 'fas cm-all fa-sync-alt',
 				action: function(node) {
 					if (node.childNodes == 0)
@@ -800,16 +785,16 @@ export function getTreeMariadb(p_div) {
 					}
 				},
 			}, {
-				text: 'Create Trigger',
+				text: t('tree.create_trigger'),
 				icon: 'fas cm-all fa-edit',
 				action: function(node) {
-					tabSQLTemplate('Create Trigger', node.tree.tag
+					tabSQLTemplate(t('tree.create_trigger'), node.tree.tag
 						.create_view_trigger.replace(
 							'#table_name#', node.tree.tag.v_database + '.' + node.parent
 							.text));
 				}
 			}, {
-				text: 'Doc: Triggers',
+				text: t('tree.doc_triggers'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -822,40 +807,40 @@ export function getTreeMariadb(p_div) {
 		},
 		'cm_trigger': {
 			elements: [{
-				text: 'Alter Trigger',
+				text: t('tree.alter_trigger'),
 				icon: 'fas cm-all fa-edit',
 				action: function(node) {
-					tabSQLTemplate('Alter Trigger', node.tree.tag
+					tabSQLTemplate(t('tree.alter_trigger'), node.tree.tag
 						.alter_trigger.replace(
 							'#table_name#', node.tree.tag.v_database + '.' +
 							node.parent.parent.text).replace(
 							'#trigger_name#', node.text));
 				}
 			}, {
-				text: 'Enable Trigger',
+				text: t('tree.enable_trigger'),
 				icon: 'fas cm-all fa-edit',
 				action: function(node) {
-					tabSQLTemplate('Enable Trigger', node.tree.tag
+					tabSQLTemplate(t('tree.enable_trigger'), node.tree.tag
 						.enable_trigger.replace(
 							'#table_name#', node.tree.tag.v_database + '.' +
 							node.parent.parent.text).replace(
 							'#trigger_name#', node.text));
 				}
 			}, {
-				text: 'Disable Trigger',
+				text: t('tree.disable_trigger'),
 				icon: 'fas cm-all fa-edit',
 				action: function(node) {
-					tabSQLTemplate('Disable Trigger', node.tree
+					tabSQLTemplate(t('tree.disable_trigger'), node.tree
 						.tag.disable_trigger.replace(
 							'#table_name#', node.tree.tag.v_database + '.' +
 							node.parent.parent.text).replace(
 							'#trigger_name#', node.text));
 				}
 			}, {
-				text: 'Drop Trigger',
+				text: t('tree.drop_trigger'),
 				icon: 'fas cm-all fa-times',
 				action: function(node) {
-					tabSQLTemplate('Drop Trigger', node.tree.tag
+					tabSQLTemplate(t('tree.drop_trigger'), node.tree.tag
 						.drop_trigger.replace(
 							'#table_name#', node.tree.tag.v_database + '.' +
 							node.parent.parent.text).replace(
@@ -865,7 +850,7 @@ export function getTreeMariadb(p_div) {
 		},
 		'cm_partitions': {
 			elements: [{
-				text: 'Refresh',
+				text: t('tree.refresh'),
 				icon: 'fas cm-all fa-sync-alt',
 				action: function(node) {
 					if (node.childNodes == 0)
@@ -876,16 +861,16 @@ export function getTreeMariadb(p_div) {
 					}
 				}
 			}, {
-				text: 'Create Partition',
+				text: t('tree.create_partition'),
 				icon: 'fas cm-all fa-edit',
 				action: function(node) {
-					tabSQLTemplate('Create Partition', node.tree
+					tabSQLTemplate(t('tree.create_partition'), node.tree
 						.tag.create_partition.replace(
 							'#table_name#', node.tree.tag.v_database + '.' + node.parent
 							.text));
 				}
 			}, {
-				text: 'Doc: Partitions',
+				text: t('tree.doc_partitions'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -898,20 +883,20 @@ export function getTreeMariadb(p_div) {
 		},
 		'cm_partition': {
 			elements: [{
-				text: 'No Inherit Partition',
+				text: t('tree.no_inherit_partition'),
 				icon: 'fas cm-all fa-edit',
 				action: function(node) {
-					tabSQLTemplate('No Inherit Partition', node
+					tabSQLTemplate(t('tree.no_inherit_partition'), node
 						.tree.tag.noinherit_partition.replace(
 							'#table_name#', node.tree.tag.v_database + '.' +
 							node.parent.parent.text).replace(
 							'#partition_name#', node.text));
 				}
 			}, {
-				text: 'Drop Partition',
+				text: t('tree.drop_partition'),
 				icon: 'fas cm-all fa-times',
 				action: function(node) {
-					tabSQLTemplate('Drop Partition', node.tree.tag
+					tabSQLTemplate(t('tree.drop_partition'), node.tree.tag
 						.drop_partition.replace(
 							'#partition_name#', node.text));
 				}
@@ -920,7 +905,7 @@ export function getTreeMariadb(p_div) {
 		cm_functions: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -931,13 +916,13 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Function",
+					text: t("tree.create_function"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Function", node.tree.tag.create_function.replace("#schema_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_function"), node.tree.tag.create_function.replace("#schema_name#", node.parent.text));
 					},
 				} /*, {
-				text: 'Doc: Functions',
+				text: t('tree.doc_functions'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -952,7 +937,7 @@ export function getTreeMariadb(p_div) {
 		cm_function: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -963,7 +948,7 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Edit Function",
+					text: t("tree.edit_function"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						v_connTabControl.tag.createQueryTab(node.text);
@@ -971,10 +956,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop Function",
+					text: t("tree.drop_function"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate("Drop Function", node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+						tabSQLTemplate(t("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
 					},
 				},
 			],
@@ -982,7 +967,7 @@ export function getTreeMariadb(p_div) {
 		cm_procedures: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -993,13 +978,13 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Create Procedure",
+					text: t("tree.create_procedure"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
-						tabSQLTemplate("Create Procedure", node.tree.tag.create_procedure.replace("#schema_name#", node.parent.text));
+						tabSQLTemplate(t("tree.create_procedure"), node.tree.tag.create_procedure.replace("#schema_name#", node.parent.text));
 					},
 				} /*, {
-				text: 'Doc: Procedures',
+				text: t('tree.doc_procedures'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -1014,7 +999,7 @@ export function getTreeMariadb(p_div) {
 		cm_procedure: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -1025,7 +1010,7 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Edit Procedure",
+					text: t("tree.edit_procedure"),
 					icon: "fas cm-all fa-edit",
 					action: function (node) {
 						v_connTabControl.tag.createQueryTab(node.text);
@@ -1033,10 +1018,10 @@ export function getTreeMariadb(p_div) {
 					},
 				},
 				{
-					text: "Drop Procedure",
+					text: t("tree.drop_procedure"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
-						tabSQLTemplate("Drop Procedure", node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+						tabSQLTemplate(t("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
 					},
 				},
 			],
@@ -1044,7 +1029,7 @@ export function getTreeMariadb(p_div) {
 		cm_refresh: {
 			elements: [
 				{
-					text: "Refresh",
+					text: t("tree.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -1266,7 +1251,7 @@ export function getTreeDetailsMariadb(node) {
 		function (p_return) {
 			node.tree.contextMenu.cm_server.elements = [];
 			node.tree.contextMenu.cm_server.elements.push({
-				text: "Refresh",
+				text: t("tree.refresh"),
 				icon: "fas cm-all fa-sync-alt",
 				action: function (node) {
 					if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -1278,7 +1263,7 @@ export function getTreeDetailsMariadb(node) {
 			});
 
 			/*node.tree.contextMenu.cm_server.elements.push({
-				text: 'Doc: PostgreSQL',
+				text: t('tree.doc_postgresql'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -1289,7 +1274,7 @@ export function getTreeDetailsMariadb(node) {
 				}
 			});
 			node.tree.contextMenu.cm_server.elements.push({
-				text: 'Doc: SQL Language',
+				text: t('tree.doc_sql_language'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -1300,7 +1285,7 @@ export function getTreeDetailsMariadb(node) {
 				}
 			});
 			node.tree.contextMenu.cm_server.elements.push({
-				text: 'Doc: SQL Commands',
+				text: t('tree.doc_sql_commands'),
 				icon: 'fas cm-all fa-globe-americas',
 				action: function(node) {
 					v_connTabControl.tag.createWebsiteTab(
@@ -1364,29 +1349,29 @@ export function getTreeDetailsMariadb(node) {
 			};
 
 			node.tree.contextMenu.cm_server.elements.push({
-				text: "Monitoring",
+				text: t("tree.monitoring"),
 				icon: "fas cm-all fa-chart-line",
 				action: function (node) {},
 				submenu: {
 					elements: [
 						/*{
-						text: 'Dashboard',
+						text: t('tree.dashboard'),
 						icon: 'fas cm-all fa-chart-line',
 						action: function(node) {
 							v_connTabControl.tag.createMonitorDashboardTab();
 							startMonitorDashboard();
 						}
 					}, */ {
-							text: "Process List",
+							text: t("tree.process_list"),
 							icon: "fas cm-all fa-chart-line",
 							action: function (node) {
 								v_connTabControl.tag.createMonitoringTab(
-									"Process List",
+									t("workspace.process_list"),
 									"select * from information_schema.processlist",
 									[
 										{
 											icon: "fas cm-all fa-times",
-											title: "Terminate",
+											title: t("common.terminate"),
 											action: "mariadbTerminateBackend",
 										},
 									],
@@ -1399,8 +1384,7 @@ export function getTreeDetailsMariadb(node) {
 
 			node.setText(p_return.v_data.v_database_return.version);
 
-			var node_databases = node.createChildNode(
-				"Databases",
+			var node_databases = node.createChildNode(t("tree.databases"),
 				false,
 				"fas node-all fa-database node-database-list",
 				{
@@ -1412,8 +1396,7 @@ export function getTreeDetailsMariadb(node) {
 			node_databases.createChildNode("", true, "node-spin", null, null);
 
 			if (node.tree.tag.superuser) {
-				var node_roles = node.createChildNode(
-					"Roles",
+				var node_roles = node.createChildNode(t("tree.roles"),
 					false,
 					"fas node-all fa-users node-user-list",
 					{
@@ -1448,8 +1431,7 @@ export function getTreeDetailsMariadb(node) {
 export function getDatabaseObjectsMariadb(node) {
 	node.removeChildNodes();
 
-	var node_tables = node.createChildNode(
-		"Tables",
+	var node_tables = node.createChildNode(t("tree.tables"),
 		false,
 		"fas node-all fa-th node-table-list",
 		{
@@ -1462,8 +1444,7 @@ export function getDatabaseObjectsMariadb(node) {
 	node_tables.createChildNode("", true, "node-spin", null, null);
 
 	if (parseFloat(getMajorVersionMariadb(node.tree.tag.version)) >= 10.3) {
-		var node_sequences = node.createChildNode(
-			"Sequences",
+		var node_sequences = node.createChildNode(t("tree.topic_sequences"),
 			false,
 			"fas node-all fa-sort-numeric-down node-sequence-list",
 			{
@@ -1476,8 +1457,7 @@ export function getDatabaseObjectsMariadb(node) {
 		node_sequences.createChildNode("", true, "node-spin", null, null);
 	}
 
-	var node_views = node.createChildNode(
-		"Views",
+	var node_views = node.createChildNode(t("tree.views"),
 		false,
 		"fas node-all fa-eye node-view-list",
 		{
@@ -1489,8 +1469,7 @@ export function getDatabaseObjectsMariadb(node) {
 	);
 	node_views.createChildNode("", true, "node-spin", null, null);
 
-	var node_functions = node.createChildNode(
-		"Functions",
+	var node_functions = node.createChildNode(t("tree.functions"),
 		false,
 		"fas node-all fa-cog node-function-list",
 		{
@@ -1502,8 +1481,7 @@ export function getDatabaseObjectsMariadb(node) {
 	);
 	node_functions.createChildNode("", true, "node-spin", null, null);
 
-	var node_functions = node.createChildNode(
-		"Procedures",
+	var node_functions = node.createChildNode(t("tree.topic_procedures"),
 		false,
 		"fas node-all fa-cog node-procedure-list",
 		{
@@ -1535,7 +1513,7 @@ export function getDatabasesMariadb(node) {
 		function (p_return) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			node.setText("Databases (" + p_return.v_data.length + ")");
+			node.setText(t("tree.databases") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_databases = p_return.v_data.length;
 
@@ -1590,7 +1568,7 @@ export function getRolesMariadb(node) {
 		function (p_return) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			node.setText("Roles (" + p_return.v_data.length + ")");
+			node.setText(t("tree.roles") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tablespaces = p_return.v_data.length;
 
@@ -1639,7 +1617,7 @@ export function getTablesMariadb(node) {
 		function (p_return) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			node.setText("Tables (" + p_return.v_data.length + ")");
+			node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
@@ -1707,7 +1685,7 @@ export function getSequencesMariadb(node) {
 			p_schema: null,
 		}),
 		function (p_return) {
-			node.setText("Sequences (" + p_return.v_data.length + ")");
+			node.setText(t("tree.topic_sequences") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
@@ -1757,7 +1735,7 @@ export function getViewsMariadb(node) {
 		function (p_return) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			node.setText("Views (" + p_return.v_data.length + ")");
+			node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
@@ -1821,7 +1799,7 @@ export function getViewsColumnsMariadb(node) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			v_list = node.createChildNode(
-				"Columns (" + p_return.v_data.length + ")",
+				t("tree.columns_count", { n: p_return.v_data.length }),
 				false,
 				"fas node-all fa-columns node-column",
 				null,
@@ -1843,8 +1821,7 @@ export function getViewsColumnsMariadb(node) {
 					null,
 					false,
 				);
-				v_node.createChildNode(
-					"Type: " + p_return.v_data[i].v_data_type,
+				v_node.createChildNode(t("tree.prop_type") + p_return.v_data[i].v_data_type,
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					null,
@@ -1855,8 +1832,7 @@ export function getViewsColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_rules) {
-				v_node = node.createChildNode(
-					"Rules",
+				v_node = node.createChildNode(t("tree.topic_rules"),
 					false,
 					"fas node-all fa-lightbulb node-rule",
 					{
@@ -1871,8 +1847,7 @@ export function getViewsColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_triggers) {
-				v_node = node.createChildNode(
-					"Triggers",
+				v_node = node.createChildNode(t("tree.topic_triggers"),
 					false,
 					"fas node-all fa-bolt node-trigger",
 					{
@@ -1956,7 +1931,7 @@ export function getColumnsMariadb(node) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
 			v_list = node.createChildNode(
-				"Columns (" + p_return.v_data.length + ")",
+				t("tree.columns_count", { n: p_return.v_data.length }),
 				false,
 				"fas node-all fa-columns node-column",
 				{
@@ -1981,8 +1956,7 @@ export function getColumnsMariadb(node) {
 					null,
 					false,
 				);
-				v_node.createChildNode(
-					"Type: " + p_return.v_data[i].v_data_type,
+				v_node.createChildNode(t("tree.prop_type") + p_return.v_data[i].v_data_type,
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					null,
@@ -1990,8 +1964,7 @@ export function getColumnsMariadb(node) {
 					null,
 					false,
 				);
-				v_node.createChildNode(
-					"Nullable: " + p_return.v_data[i].v_nullable,
+				v_node.createChildNode(t("tree.prop_nullable") + p_return.v_data[i].v_nullable,
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					null,
@@ -2002,8 +1975,7 @@ export function getColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_primary_keys) {
-				v_node = node.createChildNode(
-					"Primary Key",
+				v_node = node.createChildNode(t("tree.primary_key"),
 					false,
 					"fas node-all fa-key node-pkey",
 					{
@@ -2018,8 +1990,7 @@ export function getColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_foreign_keys) {
-				v_node = node.createChildNode(
-					"Foreign Keys",
+				v_node = node.createChildNode(t("tree.foreign_keys"),
 					false,
 					"fas node-all fa-key node-fkey",
 					{
@@ -2034,8 +2005,7 @@ export function getColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_uniques) {
-				v_node = node.createChildNode(
-					"Uniques",
+				v_node = node.createChildNode(t("tree.uniques"),
 					false,
 					"fas node-all fa-key node-unique",
 					{
@@ -2050,8 +2020,7 @@ export function getColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_indexes) {
-				v_node = node.createChildNode(
-					"Indexes",
+				v_node = node.createChildNode(t("tree.indexes"),
 					false,
 					"fas node-all fa-thumbtack node-index",
 					{
@@ -2066,8 +2035,7 @@ export function getColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_triggers) {
-				v_node = node.createChildNode(
-					"Triggers",
+				v_node = node.createChildNode(t("tree.topic_triggers"),
 					false,
 					"fas node-all fa-bolt node-trigger",
 					{
@@ -2082,8 +2050,7 @@ export function getColumnsMariadb(node) {
 			}
 
 			if (node.tag.has_partitions) {
-				v_node = node.createChildNode(
-					"Partitions",
+				v_node = node.createChildNode(t("tree.partitions"),
 					false,
 					"fas node-all fa-table node-partition",
 					{
@@ -2126,7 +2093,7 @@ export function getPKMariadb(node) {
 			p_schema: node.parent.parent.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Primary Key (" + p_return.v_data.length + ")");
+			node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) {
 				node.removeChildNodes();
@@ -2229,7 +2196,7 @@ export function getUniquesMariadb(node) {
 			p_schema: node.parent.parent.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Uniques (" + p_return.v_data.length + ")");
+			node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
@@ -2338,7 +2305,7 @@ export function getIndexesMariadb(node) {
 			p_schema: node.parent.parent.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Indexes (" + p_return.v_data.length + ")");
+			node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
@@ -2448,7 +2415,7 @@ export function getFKsMariadb(node) {
 			p_schema: node.parent.parent.parent.text,
 		}),
 		function (p_return) {
-			node.setText("Foreign Keys (" + p_return.v_data.length + ")");
+			node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
 
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
@@ -2465,8 +2432,7 @@ export function getFKsMariadb(node) {
 					null,
 					false,
 				);
-				v_node.createChildNode(
-					"Referenced Table: " + p_return.v_data[i][1],
+				v_node.createChildNode(t("tree.prop_referenced_table") + p_return.v_data[i][1],
 					false,
 					"fas node-all fa-table node-table",
 					null,
@@ -2474,8 +2440,7 @@ export function getFKsMariadb(node) {
 					null,
 					false,
 				);
-				v_node.createChildNode(
-					"Delete Rule: " + p_return.v_data[i][2],
+				v_node.createChildNode(t("tree.prop_delete_rule") + p_return.v_data[i][2],
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					null,
@@ -2483,8 +2448,7 @@ export function getFKsMariadb(node) {
 					null,
 					false,
 				);
-				v_node.createChildNode(
-					"Update Rule: " + p_return.v_data[i][3],
+				v_node.createChildNode(t("tree.prop_update_rule") + p_return.v_data[i][3],
 					false,
 					"fas node-all fa-ellipsis-h node-bullet",
 					null,
@@ -2527,8 +2491,7 @@ export function getFKsColumnsMariadb(node) {
 		function (p_return) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			node.createChildNode(
-				"Referenced Table: " + p_return.v_data[0][0],
+			node.createChildNode(t("tree.prop_referenced_table") + p_return.v_data[0][0],
 				false,
 				"fas node-all fa-table node-table",
 				null,
@@ -2536,8 +2499,7 @@ export function getFKsColumnsMariadb(node) {
 				null,
 				false,
 			);
-			node.createChildNode(
-				"Delete Rule: " + p_return.v_data[0][1],
+			node.createChildNode(t("tree.prop_delete_rule") + p_return.v_data[0][1],
 				false,
 				"fas node-all fa-ellipsis-h node-bullet",
 				null,
@@ -2545,8 +2507,7 @@ export function getFKsColumnsMariadb(node) {
 				null,
 				false,
 			);
-			node.createChildNode(
-				"Update Rule: " + p_return.v_data[0][2],
+			node.createChildNode(t("tree.prop_update_rule") + p_return.v_data[0][2],
 				false,
 				"fas node-all fa-ellipsis-h node-bullet",
 				null,
@@ -2615,11 +2576,11 @@ export function getTriggersMariadb(node) {
 							type: 'trigger',
 							database: v_connTabControl.selectedTab.tag.selectedDatabase
 						}, 'cm_trigger');
-					v_node.createChildNode('Enabled: ' + p_return.v_data[i]
+					v_node.createChildNode(t('tree.prop_enabled') + p_return.v_data[i]
 						[1], false,
 						'fas node-all fa-ellipsis-h node-bullet',
 						null, null);
-					v_node.createChildNode('Function: ' + p_return.v_data[i]
+					v_node.createChildNode(t('tree.prop_function') + p_return.v_data[i]
 						[2], false,
 						'fas node-all fa-ellipsis-h node-bullet',
 						null, null);
@@ -2704,7 +2665,7 @@ export function getFunctionsMariadb(node) {
 		function (p_return) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			node.setText("Functions (" + p_return.v_data.length + ")");
+			node.setText(t("tree.functions") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
@@ -2900,7 +2861,7 @@ export function getProceduresMariadb(node) {
 		function (p_return) {
 			if (node.childNodes.length > 0) node.removeChildNodes();
 
-			node.setText("Procedures (" + p_return.v_data.length + ")");
+			node.setText(t("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
 
 			node.tag.num_tables = p_return.v_data.length;
 
@@ -3224,7 +3185,7 @@ export function TemplateInsertMariadb(p_schema, p_table) {
 			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
-			tabSQLTemplate("Insert " + p_schema + "." + p_table, p_return.v_data.v_template);
+			tabSQLTemplate(t("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
 		},
 		function (p_return) {
 			showError(p_return.v_data);
@@ -3250,7 +3211,7 @@ export function TemplateUpdateMariadb(p_schema, p_table) {
 			p_indent_size: v_indent_size,
 		}),
 		function (p_return) {
-			tabSQLTemplate("Update " + p_schema + "." + p_table, p_return.v_data.v_template);
+			tabSQLTemplate(t("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
 		},
 		function (p_return) {
 			showError(p_return.v_data);
@@ -3336,7 +3297,7 @@ export function mariadbTerminateBackend(p_row) {
 	// parseInt: query results cross the wire as [][]string, so the process id
 	// arrives quoted, and the backend unmarshals it into an integer. See
 	// flexInt in go-server/flex_int.go.
-	showConfirm("Are you sure you want to terminate process " + p_row[0] + "?", function () {
+	showConfirm(t("tree.confirm_terminate_process", { pid: p_row[0] }), function () {
 		mariadbTerminateBackendConfirm(parseInt(p_row[0], 10));
 	});
 }

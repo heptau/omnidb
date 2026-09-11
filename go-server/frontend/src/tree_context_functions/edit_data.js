@@ -34,6 +34,7 @@ SOFTWARE.
 
 import { execAjax } from "../ajax_control_bridge.js";
 import { editCellData } from "../header_actions.js";
+import { t } from "../i18n.js";
 import { SetAcked, createRequest, removeContext } from "../long_polling.js";
 import { showAlert, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
@@ -152,7 +153,7 @@ export function cancelEditDataTab(p_tab_tag) {
 	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	//Displays canceled if is querying data (not saving)
-	if (v_tab_tag.state == v_editDataState.Querying) v_tab_tag.div_result.innerHTML = "Canceled.";
+	if (v_tab_tag.state == v_editDataState.Querying) v_tab_tag.div_result.innerHTML = t("common.canceled");
 
 	v_tab_tag.state = v_editDataState.Idle;
 	v_tab_tag.tab_loading_span.style.display = "none";
@@ -170,7 +171,7 @@ export function queryEditData() {
 	var v_state = v_currTabTag.state;
 
 	if (v_state != 0) {
-		showAlert("Tab with activity in progress.");
+		showAlert(t("common.tab_activity_in_progress"));
 	} else {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Querying;
 		v_currTabTag.button_save.style.visibility = "hidden";
@@ -206,7 +207,7 @@ export function queryEditData() {
 			v_context.tab_tag.editDataObject.ht.destroy();
 			v_context.tab_tag.editDataObject.ht = null;
 		}
-		v_context.tab_tag.div_result.innerHTML = "Running...";
+		v_context.tab_tag.div_result.innerHTML = t("common.running");
 		v_context.tab_tag.query_info.innerHTML = "";
 
 		//sendWebSocketMessage(v_queryWebSocket, v_queryRequestCodes.QueryEditData, v_message_data, false, v_context);
@@ -215,7 +216,7 @@ export function queryEditData() {
 		setTimeout(function () {
 			if (!v_context.acked) {
 				cancelEditDataTab(v_context.tab_tag);
-				showAlert("No response from query server.");
+				showAlert(t("query.no_response_from_server"));
 			}
 		}, 10000);
 	}
@@ -279,10 +280,10 @@ export function queryEditDataReturnRender(p_message, p_context) {
 		v_err_div.className = "error_text";
 		v_err_div.textContent = p_message.v_data;
 		v_div_result.appendChild(v_err_div);
-		v_query_info.innerHTML = "Response time: " + request_time / 1000 + " seconds";
+		v_query_info.innerHTML = t("edit_data.response_time", { seconds: request_time / 1000 });
 	} else {
 		if (v_currTabTag.editDataObject.pk.length == 0) {
-			if (v_currTabTag.editDataObject.firstRender) showAlert("Table has no primary key, existing rows will be read only.");
+			if (v_currTabTag.editDataObject.firstRender) showAlert(t("edit_data.no_pk_readonly_warning"));
 
 			v_currTabTag.editDataObject.firstRender = false;
 			v_currTabTag.editDataObject.hasPK = false;
@@ -501,7 +502,7 @@ export function saveEditData() {
 	var v_state = v_currTabTag.state;
 
 	if (v_state != v_editDataState.Idle) {
-		showAlert("Tab with activity in progress.");
+		showAlert(t("common.tab_activity_in_progress"));
 	} else {
 		v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Saving;
 		v_currTabTag.button_save.style.visibility = "hidden";
@@ -581,7 +582,7 @@ export function saveEditDataReturnRender(p_message, p_context) {
 	var v_query_info = v_currTabTag.query_info;
 
 	var request_time = p_context.duration;
-	v_query_info.innerHTML = "Save time: " + request_time / 1000 + " seconds";
+	v_query_info.innerHTML = t("edit_data.save_time", { seconds: request_time / 1000 });
 
 	//var v_div_commands_log = document.getElementById('div_commands_log_list');
 	//v_div_commands_log.innerHTML = '';

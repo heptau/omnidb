@@ -52,6 +52,7 @@ type nativeSession struct {
 	SuperUser    bool
 	CSVEncoding  string
 	CSVDelimiter string
+	Language     string
 	ExpiresAt    time.Time
 }
 
@@ -112,7 +113,7 @@ func randomToken() (string, error) {
 // createNativeSession mirrors login.py's Session(...) construction — but
 // only the fields anything actually still reads (see nativeSession's
 // comment). Returns the opaque session key to set as the cookie value.
-func createNativeSession(userID int, username string, superuser bool, csvEncoding, csvDelimiter string) (string, error) {
+func createNativeSession(userID int, username string, superuser bool, csvEncoding, csvDelimiter, language string) (string, error) {
 	startSessionReaper()
 	key, err := randomToken()
 	if err != nil {
@@ -125,6 +126,7 @@ func createNativeSession(userID int, username string, superuser bool, csvEncodin
 		SuperUser:    superuser,
 		CSVEncoding:  csvEncoding,
 		CSVDelimiter: csvDelimiter,
+		Language:     language,
 		ExpiresAt:    time.Now().Add(nativeSessionTTL),
 	}
 	nativeSessionsMu.Unlock()
@@ -177,6 +179,22 @@ func updateNativeSessionCSVPrefs(key, csvEncoding, csvDelimiter string) {
 	if sess, ok := nativeSessions[key]; ok {
 		sess.CSVEncoding = csvEncoding
 		sess.CSVDelimiter = csvDelimiter
+	}
+}
+
+// updateNativeSessionLanguage mirrors updateNativeSessionCSVPrefs — keeps the
+// in-memory session's Language field (see WhoAmI.Language) in sync the
+// moment Settings saves a new preference, so a subsequent request in the
+// same session (e.g. the reload triggered by the language switcher itself)
+// already sees it without needing a fresh login.
+func updateNativeSessionLanguage(key, language string) {
+	if key == "" {
+		return
+	}
+	nativeSessionsMu.Lock()
+	defer nativeSessionsMu.Unlock()
+	if sess, ok := nativeSessions[key]; ok {
+		sess.Language = language
 	}
 }
 

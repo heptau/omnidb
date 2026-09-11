@@ -36,6 +36,7 @@ SOFTWARE.
 /// </summary>
 
 import { execAjax } from "../ajax_control_bridge.js";
+import { t } from "../i18n.js";
 import { showConfirm } from "../notification_control.js";
 import {
 	clearNotifyChannelMessages,
@@ -55,14 +56,14 @@ export function getTreeNotifyChannels(p_tag) {
 		cm_notify_root: {
 			elements: [
 				{
-					text: "Add Channel",
+					text: t("notify.add_channel"),
 					icon: "fas cm-all fa-plus",
 					action: function (node) {
 						promptAddChannel(p_tag);
 					},
 				},
 				{
-					text: "Refresh",
+					text: t("common.refresh"),
 					icon: "fas cm-all fa-sync-alt",
 					action: function (node) {
 						refreshNotifyChannels(p_tag);
@@ -80,7 +81,7 @@ export function getTreeNotifyChannels(p_tag) {
 
 				if (p_node.tag.active) {
 					v_elements.push({
-						text: "Pause",
+						text: t("notify.pause"),
 						icon: "fas cm-all fa-pause",
 						action: function (node) {
 							pauseChannel(p_tag, node);
@@ -88,7 +89,7 @@ export function getTreeNotifyChannels(p_tag) {
 					});
 				} else {
 					v_elements.push({
-						text: "Resume",
+						text: t("notify.resume"),
 						icon: "fas cm-all fa-play",
 						action: function (node) {
 							resumeChannel(p_tag, node);
@@ -97,7 +98,7 @@ export function getTreeNotifyChannels(p_tag) {
 				}
 
 				v_elements.push({
-					text: "Clear Messages",
+					text: t("notify.clear_messages"),
 					icon: "fas cm-all fa-eraser",
 					action: function (node) {
 						clearNotifyChannelMessages(p_tag, node.tag.name);
@@ -105,7 +106,7 @@ export function getTreeNotifyChannels(p_tag) {
 				});
 
 				v_elements.push({
-					text: "Delete",
+					text: t("common.delete"),
 					icon: "fas cm-all fa-times",
 					action: function (node) {
 						deleteChannel(p_tag, node);
@@ -121,7 +122,7 @@ export function getTreeNotifyChannels(p_tag) {
 	tree.tag = {};
 
 	var node1 = tree.createNode(
-		"Channels",
+		t("notify.channels_section"),
 		true,
 		NOTIFY_ICON_ACTIVE,
 		null,
@@ -272,7 +273,7 @@ export function promptAddChannel(p_tag) {
 			var v_input = document.createElement("input");
 			v_input.id = "element_name";
 			v_input.className = "form-control";
-			v_input.placeholder = "Channel Name";
+			v_input.placeholder = t("notify.channel_name_placeholder");
 			v_input.style.width = "100%";
 			/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_input);
 
@@ -315,7 +316,7 @@ export function deleteChannel(p_tag, p_node) {
 	var v_channel_name = p_node.tag.name;
 
 	showConfirm(
-		"Are you sure you want to delete this channel?",
+		t("notify.confirm_delete_channel"),
 		function () {
 			execAjax(
 				"/delete_notify_channel/",

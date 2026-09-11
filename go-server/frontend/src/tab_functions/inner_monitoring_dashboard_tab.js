@@ -39,6 +39,7 @@ import {
 	testMonitorScript,
 } from "../monitoring.js";
 import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import { t } from "../i18n.js";
 
 
 export var v_createMonitorDashboardTabFunction = function () {
@@ -46,7 +47,7 @@ export var v_createMonitorDashboardTabFunction = function () {
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
 	// Creating tab name pattern.
-	let v_name_html = '<span id="tab_title">' + " Monitoring" + "</span>";
+	let v_name_html = '<span id="tab_title">' + " " + t("tree.monitoring") + "</span>";
 	let v_status_html =
 		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
@@ -93,10 +94,10 @@ export var v_createMonitorDashboardTabFunction = function () {
 		"<div class='container-fluid'>" +
 		"<button id='bt_refresh_dashboard_" +
 		v_tab.id +
-		"' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>Refresh All</button>" +
+		"' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>" + t("monitoring.refresh_all") + "</button>" +
 		"<button id='bt_manage_units_" +
 		v_tab.id +
-		"' class='btn omnidb__theme__btn--primary btn-sm my-2'>Manage Units</button>" +
+		"' class='btn omnidb__theme__btn--primary btn-sm my-2'>" + t("monitoring.manage_units") + "</button>" +
 		"<div id='dashboard_" +
 		v_tab.id +
 		"' class='dashboard_all row'></div>" +
@@ -181,7 +182,7 @@ export var v_createNewMonitorUnitTabFunction = function () {
 	// Removing last tab of the inner tab list
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
-	let v_name_html = '<span id="tab_title">Monitor Unit</span>';
+	let v_name_html = '<span id="tab_title">' + t("monitoring.monitor_unit_tab") + '</span>';
 	let v_status_html =
 		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
@@ -222,39 +223,39 @@ export var v_createNewMonitorUnitTabFunction = function () {
 	var v_html =
 		'<button id="bt_test_unit_' +
 		v_tab.id +
-		'" class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1">Test</button>' +
+		'" class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1">' + t("monitoring.test") + '</button>' +
 		'<button id="bt_save_unit_' +
 		v_tab.id +
-		'" class="btn omnidb__theme__btn--secondary btn-sm my-1">Save</button>' +
+		'" class="btn omnidb__theme__btn--secondary btn-sm my-1">' + t("common.save") + '</button>' +
 		'<div class="row">' +
 		'  <div class="col-md-3 mb-3">' +
-		'    <label for="conn_form_title">Name</label>' +
+		'    <label for="conn_form_title">' + t("monitoring.name") + '</label>' +
 		'    <input type="text" class="form-control" id="txt_unit_name_' +
 		v_tab.id +
-		'" placeholder="Name">' +
+		'" placeholder="' + t("monitoring.name") + '">' +
 		"  </div>" +
 		'  <div class="col-md-3 mb-3">' +
-		'    <label for="conn_form_type">Type</label>' +
+		'    <label for="conn_form_type">' + t("monitoring.type") + '</label>' +
 		'    <select id="select_type_' +
 		v_tab.id +
 		'" class="form-control">' +
-		'      <option value="timeseries">Timeseries</option>' +
-		'      <option value="chart">Chart (No Append)</option>' +
-		'      <option value="grid">Grid</option>' +
+		'      <option value="timeseries">' + t("monitoring.timeseries") + '</option>' +
+		'      <option value="chart">' + t("monitoring.chart_no_append") + '</option>' +
+		'      <option value="grid">' + t("monitoring.grid") + '</option>' +
 		"    </select>" +
 		"  </div>" +
 		'  <div class="col-md-3 mb-3">' +
-		'    <label for="conn_form_title">Refresh Interval</label>' +
+		'    <label for="conn_form_title">' + t("monitoring.refresh_interval") + '</label>' +
 		'    <input type="text" class="form-control" id="txt_interval_' +
 		v_tab.id +
-		'" placeholder="Title">' +
+		'" placeholder="' + t("monitoring.title") + '">' +
 		"  </div>" +
 		'  <div class="col-md-3 mb-3">' +
-		'    <label for="conn_form_type">Template</label>' +
+		'    <label for="conn_form_type">' + t("monitoring.template") + '</label>' +
 		'    <select id="select_template_' +
 		v_tab.id +
 		'" class="form-control">' +
-		"      <option value=-1>Select Template</option>" +
+		"      <option value=-1>" + t("monitoring.select_template") + "</option>" +
 		"    </select>" +
 		"  </div>" +
 		"</div>" +
@@ -262,20 +263,20 @@ export var v_createNewMonitorUnitTabFunction = function () {
 		v_tab.id +
 		'" style="display:none;">' +
 		'  <div class="col-md-3 mb-3">' +
-		'    <label for="conn_form_type">Chart Type</label>' +
+		'    <label for="conn_form_type">' + t("monitoring.chart_type") + '</label>' +
 		'    <select id="select_chart_type_' +
 		v_tab.id +
 		'" class="form-control">' +
-		'      <option value="bar">Bar</option>' +
-		'      <option value="pie">Pie</option>' +
-		'      <option value="doughnut">Doughnut</option>' +
-		'      <option value="line">Line</option>' +
+		'      <option value="bar">' + t("monitoring.chart_bar") + '</option>' +
+		'      <option value="pie">' + t("monitoring.chart_pie") + '</option>' +
+		'      <option value="doughnut">' + t("monitoring.chart_doughnut") + '</option>' +
+		'      <option value="line">' + t("monitoring.chart_line") + '</option>' +
 		"    </select>" +
 		"  </div>" +
 		"</div>" +
 		'<div class="row">' +
 		'  <div class="col-md-12 mb-1">' +
-		'    <label for="conn_form_title">SQL Query</label>' +
+		'    <label for="conn_form_title">' + t("monitoring.sql_query") + '</label>' +
 		"  </div>" +
 		'  <div class="col-md-12">' +
 		'    <div id="txt_data_' +

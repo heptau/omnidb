@@ -61,7 +61,7 @@ func TestConsoleMetaSQLite(t *testing.T) {
 	}
 
 	t.Run(`\dt lists the table`, func(t *testing.T) {
-		out, err := s.consoleMetaTables(ctx)
+		out, err := s.consoleMetaTables(ctx, "en")
 		if err != nil {
 			t.Fatalf("consoleMetaTables: %v", err)
 		}
@@ -71,7 +71,7 @@ func TestConsoleMetaSQLite(t *testing.T) {
 	})
 
 	t.Run(`\d lists table and view`, func(t *testing.T) {
-		out, err := s.consoleMetaRelations(ctx)
+		out, err := s.consoleMetaRelations(ctx, "en")
 		if err != nil {
 			t.Fatalf("consoleMetaRelations: %v", err)
 		}
@@ -81,7 +81,7 @@ func TestConsoleMetaSQLite(t *testing.T) {
 	})
 
 	t.Run(`\d NAME describes columns`, func(t *testing.T) {
-		out, err := s.consoleMetaDescribe(ctx, "customers")
+		out, err := s.consoleMetaDescribe(ctx, "en", "customers")
 		if err != nil {
 			t.Fatalf("consoleMetaDescribe: %v", err)
 		}
@@ -91,13 +91,13 @@ func TestConsoleMetaSQLite(t *testing.T) {
 	})
 
 	t.Run(`\d NAME rejects a malformed name`, func(t *testing.T) {
-		if _, err := s.consoleMetaDescribe(ctx, "customers; drop table customers"); err == nil {
+		if _, err := s.consoleMetaDescribe(ctx, "en", "customers; drop table customers"); err == nil {
 			t.Error("expected an error for a malformed relation name, got nil")
 		}
 	})
 
 	t.Run(`\du has no roles to show`, func(t *testing.T) {
-		out, err := s.consoleMetaRoles(ctx)
+		out, err := s.consoleMetaRoles(ctx, "en")
 		if err != nil {
 			t.Fatalf("consoleMetaRoles: %v", err)
 		}
@@ -107,7 +107,7 @@ func TestConsoleMetaSQLite(t *testing.T) {
 	})
 
 	t.Run(`\l has nothing else to list`, func(t *testing.T) {
-		out, err := s.consoleMetaDatabases(ctx)
+		out, err := s.consoleMetaDatabases(ctx, "en")
 		if err != nil {
 			t.Fatalf("consoleMetaDatabases: %v", err)
 		}
@@ -117,7 +117,7 @@ func TestConsoleMetaSQLite(t *testing.T) {
 	})
 
 	t.Run(`\df has no function catalog`, func(t *testing.T) {
-		out, err := s.consoleMetaFunctions(ctx)
+		out, err := s.consoleMetaFunctions(ctx, "en")
 		if err != nil {
 			t.Fatalf("consoleMetaFunctions: %v", err)
 		}
@@ -134,7 +134,7 @@ func TestConsoleMetaDispatchViaRunStatement(t *testing.T) {
 		t.Fatalf("create table: %v", err)
 	}
 
-	out, err := s.runStatement(ctx, `\dt`)
+	out, err := s.runStatement(ctx, "en", `\dt`)
 	if err != nil {
 		t.Fatalf(`runStatement("\\dt"): %v`, err)
 	}
@@ -142,7 +142,7 @@ func TestConsoleMetaDispatchViaRunStatement(t *testing.T) {
 		t.Errorf("expected \\dt dispatched through runStatement to list widgets, got:\n%s", out)
 	}
 
-	out, err = s.runStatement(ctx, `\d widgets`)
+	out, err = s.runStatement(ctx, "en", `\d widgets`)
 	if err != nil {
 		t.Fatalf(`runStatement("\\d widgets"): %v`, err)
 	}

@@ -48,6 +48,7 @@ import { beforeCloseTab } from "../create_tab_functions.js";
 import { showAlert } from "../notification_control.js";
 import { escapeHtml } from "../query.js";
 import { removeTab, renameTab, showMenuNewTabOuter } from "../workspace.js";
+import { t } from "../i18n.js";
 
 export var v_openExternalUrl = function (p_url) {
 	if (!gv_desktopMode) {
@@ -65,11 +66,11 @@ export var v_openExternalUrl = function (p_url) {
 		})
 		.then(function (p_result) {
 			if (p_result && p_result.error) {
-				showAlert("Error opening link: " + p_result.error);
+				showAlert(t("workspace.error_opening_link_detail", { error: p_result.error }));
 			}
 		})
 		.catch(function () {
-			showAlert("Error opening link.");
+			showAlert(t("workspace.error_opening_link"));
 		});
 };
 

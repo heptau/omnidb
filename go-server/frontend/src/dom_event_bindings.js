@@ -33,6 +33,7 @@ import {
 } from './connections.js'
 import {
   changeInterfaceFontSize,
+  changeLanguagePreference,
   changePassword,
   changeTheme,
   debouncedPersistConfigUser,
@@ -215,6 +216,7 @@ bind('sel_interface_font_size', 'change', (e) => {
   changeInterfaceFontSize(/** @type {HTMLInputElement} */ (e.target).value)
   persistConfigUser()
 })
+bind('sel_language', 'change', (e) => changeLanguagePreference(/** @type {HTMLInputElement} */ (e.target).value))
 
 // --- settings: export --------------------------------------------------------
 bind('sel_csv_encoding', 'change', () => persistConfigUser())

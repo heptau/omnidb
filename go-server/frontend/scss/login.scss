@@ -109,7 +109,11 @@ body {
 }
 
 .omnidb__login .omnidb__login__input-wrapper.isEmpty label::after {
-	content: " (empty)";
+	/* Translated via a CSS custom property i18n.js sets at load time (see its
+	   applyStaticI18n) -- a plain data-i18n attribute can't reach a
+	   ::after pseudo-element's own generated content. Falls back to English
+	   if that JS hasn't run yet (bare CSS/no-JS paint). */
+	content: var(--i18n-empty-suffix, " (empty)");
 	display: inline-block
 }
 

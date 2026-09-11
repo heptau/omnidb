@@ -736,8 +736,15 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				// after creation. Never suppressed on the connection-switching
 				// strip itself (p_hierarchy === "primary"), whose tooltip
 				// carries the connection string/host details that never fit
-				// on the tab regardless of width.
-				if (p_hierarchy === "primary") {
+				// on the tab regardless of width -- nor on a tab with no name
+				// at all (the vertical section-nav rail's icons): the
+				// icon-only class above is only ever toggled by
+				// recomputeTabShrinkStages reacting to a row that doesn't fit
+				// its tabs at natural width, which never applies to a
+				// vertical, always-icon-only rail (its scrollWidth never
+				// exceeds its clientWidth), so that class would never end up
+				// set there and the tooltip would never show.
+				if (p_hierarchy === "primary" || !v_name) {
 					v_a.setAttribute("title", v_tooltip_text);
 				} else {
 					v_a.addEventListener("mouseenter", function () {

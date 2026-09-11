@@ -37,8 +37,12 @@ import { showAlert, showConfirm } from "./notification_control.js";
 import { switchSection } from "./section_switcher.js";
 import { v_current_os } from "./shortcuts.js";
 import { refreshHeights } from "./workspace.js";
+import { escapeHtml } from "./query.js";
+import { t } from "./i18n.js";
 
 export function showAbout() {
+	var v_version_line = document.getElementById("about_version_line");
+	if (v_version_line) v_version_line.textContent = t("modals.about.version_line", { version: v_version });
 	bootstrap.Modal.getOrCreateInstance(/** @type {HTMLElement} */ (document.getElementById("modal_about"))).show();
 }
 /*
@@ -422,6 +426,8 @@ export function showConfigUser() {
 		}
 	}
 
+	/** @type {HTMLInputElement} */ (document.getElementById("sel_language")).value = v_language_preference;
+
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_confirm_new_pwd")).value = "";
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd")).value = "";
 	updatePasswordButtonState();
@@ -474,7 +480,7 @@ export function showConfigUser() {
 /// Go to connections.
 /// </summary>
 export function goToConnections() {
-	showConfirm("You will lose existing changes. Would you like to continue?", function () {
+	showConfirm(t("confirm.lose_changes"), function () {
 		window.open("../connections", "_self");
 	});
 }
@@ -483,7 +489,7 @@ export function goToConnections() {
 /// Go to connections.
 /// </summary>
 export function confirmSignout() {
-	showConfirm("Are you sure you want to sign out?", function () {
+	showConfirm(t("confirm.sign_out"), function () {
 		window.open("../logout", "_self");
 	});
 }
@@ -550,6 +556,7 @@ function persistConfigUserInternal(p_pwd, p_callback) {
 		p_keyword_case: v_keyword_case,
 		p_ruler_column: v_ruler_column,
 		p_autocomplete_disabled_types: v_autocomplete_disabled_types,
+		p_language: v_language_preference,
 	});
 
 	execAjax("/save_config_user/", input, function (p_return) {
@@ -565,6 +572,22 @@ function persistConfigUserInternal(p_pwd, p_callback) {
 /// </summary>
 export function persistConfigUser() {
 	persistConfigUserInternal("");
+}
+
+/// <summary>
+/// Saves a newly picked Settings > Appearance > Language preference, then
+/// reloads the page. Unlike every other Settings field, language can't be
+/// re-rendered live: workspace.html's static text was baked in server-side
+/// for the *previous* language (see i18n.js's applyStaticI18n, which only
+/// ever runs once at page load), so the only correct way to show the new
+/// language everywhere -- menus, tooltips, tree context menus, dialogs -- is
+/// to let the server render the page again from scratch.
+/// </summary>
+export function changeLanguagePreference(p_language) {
+	v_language_preference = p_language;
+	persistConfigUserInternal("", function () {
+		window.location.reload();
+	});
 }
 
 /// <summary>
@@ -587,7 +610,7 @@ export function changePassword() {
 	var v_pwd = /** @type {HTMLInputElement} */ (document.getElementById("txt_new_pwd"));
 
 	if (v_pwd.value === "" || v_pwd.value !== v_confirm_pwd.value) {
-		showAlert("New Password and Confirm New Password fields do not match.");
+		showAlert(t("settings.password.mismatch"));
 		return;
 	}
 
@@ -595,7 +618,7 @@ export function changePassword() {
 		v_pwd.value = "";
 		v_confirm_pwd.value = "";
 		updatePasswordButtonState();
-		showAlert("Password changed.");
+		showAlert(t("settings.password.changed"));
 	});
 }
 
@@ -659,14 +682,14 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_
 	v_canEditContent = p_can_alter;
 	var v_save_btn_attr = "";
 	if (!v_canEditContent) {
-		v_save_btn_attr = ' disabled title="Unable to manually edit data without primary key" ';
+		v_save_btn_attr = ' disabled title="' + escapeHtml(t("edit_data.no_primary_key")) + '" ';
 	}
 	v_edit_modal.innerHTML =
 		'<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;">' +
 		'<div class="modal-content">' +
 		'<div class="modal-header">' +
-		'<h4 class="mb-0">Edit Data</h4>' +
-		'<button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="Close">' +
+		'<h4 class="mb-0">' + escapeHtml(t("connections.edit_data")) + "</h4>" +
+		'<button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="' + escapeHtml(t("common.close")) + '">' +
 		'<span aria-hidden="true">&times;</span>' +
 		"</button>" +
 		"</div>" +
@@ -677,8 +700,8 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_
 		'<div class="modal-footer">' +
 		"<button " +
 		v_save_btn_attr +
-		' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">Save</button>' +
-		'<button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">Cancel</button>' +
+		' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">' + escapeHtml(t("common.save")) + "</button>" +
+		'<button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">' + escapeHtml(t("common.cancel")) + "</button>" +
 		"</div>" +
 		"</div>" +
 		"</div>";
@@ -761,7 +784,7 @@ export function saveEditContent() {
 			v_editContentObject.editor.getValue(),
 		);
 	} else {
-		alert("No permissions.");
+		alert(t("edit_data.no_permissions"));
 	}
 
 	v_editContentObject.editor.setValue("");

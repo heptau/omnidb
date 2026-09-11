@@ -32,6 +32,7 @@ import { createTabControl } from "../tabs.js";
 import { deleteNodeSnippet, getTreeSnippets, newNodeSnippet } from "../tree_context_functions/tree_snippets.js";
 import { switchSection } from "../section_switcher.js";
 import { resizeSnippetHorizontal, resizeSnippetPanel, showMenuNewTab } from "../workspace.js";
+import { t } from "../i18n.js";
 
 /**
  * Snippets is a full-screen section now (see section_switcher.js), not a
@@ -71,9 +72,9 @@ export var v_createSnippetPanelFunction = function (p_index) {
 		"_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div>" +
 		"<div class='omnidb__list-footer'>" +
 		"<div class='omnidb__addremove'>" +
-		"<button id='button_new_snippet' type='button' title='Add Snippet'><i class='fas fa-plus'></i></button>" +
+		"<button id='button_new_snippet' type='button' title='" + t("snippets.add_snippet") + "'><i class='fas fa-plus'></i></button>" +
 		"<span class='omnidb__addremove-divider'></span>" +
-		"<button id='button_delete_snippet' type='button' title='Delete' disabled><i class='fas fa-minus'></i></button>" +
+		"<button id='button_delete_snippet' type='button' title='" + t("common.delete") + "' disabled><i class='fas fa-minus'></i></button>" +
 		"</div>" +
 		"</div>" +
 		"</div>" +

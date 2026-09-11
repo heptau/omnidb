@@ -1598,6 +1598,14 @@
 	max-width: min(100%, 420px) !important;
 }
 
+/* Same over-stretching as the encoding select above -- the longest option
+ * ("Automaticky"/"Čeština"/"Español"/"English") is short, so let it size to
+ * content instead of the whole settings pane. */
+.omnidb__settings__language {
+	width: auto !important;
+	max-width: min(100%, 220px) !important;
+}
+
 /* #omnidb_main_tablist (v_connTabControl) lives inside
  * #omnidb__section_database and reuses the ":not(container--menu-shown)"
  * horizontal-strip styling above -- that used to be what "Switch menu"

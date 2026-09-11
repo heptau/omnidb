@@ -3,13 +3,14 @@ package main
 import (
 	"context"
 	"database/sql"
-	"fmt"
 	"log"
 	"net/url"
 	"strings"
 	"sync"
 	"time"
 	"unicode"
+
+	"omnidb-server/i18n"
 )
 
 // consoleSession holds one console tab's persistent, single connection
@@ -185,33 +186,29 @@ func consoleReturnsRows(stmt string) bool {
 // comment on the Postgres server-cursor simplification): "N rows in set"
 // for a row-returning statement, "N rows affected" otherwise, singular for
 // exactly one row.
-func consoleStatusLine(count int, returnsRows bool) string {
-	noun := "rows"
-	if count == 1 {
-		noun = "row"
-	}
-	verb := "affected"
+func consoleStatusLine(lang string, count int, returnsRows bool) string {
+	key := "console.status_affected"
 	if returnsRows {
-		verb = "in set"
+		key = "console.status_in_set"
 	}
-	return fmt.Sprintf("%d %s %s", count, noun, verb)
+	return i18n.Tn(lang, key, count)
 }
 
 // consoleHelpTable mirrors v_help, extended with the catalog-browsing
 // commands console_meta.go implements. \h (per-SQL-command syntax help,
 // unlike these a large static text blob rather than a catalog query) is
 // deliberately still not listed — see console_meta.go's package comment.
-func consoleHelpTable() (cols []string, rows [][]string) {
-	cols = []string{"Command", "Syntax", "Description"}
+func consoleHelpTable(lang string) (cols []string, rows [][]string) {
+	cols = []string{i18n.T(lang, "console.help_col_command"), i18n.T(lang, "console.help_col_syntax"), i18n.T(lang, "console.help_col_description")}
 	rows = [][]string{
-		{`\?`, `\?`, "Show Commands."},
-		{`\x`, `\x`, "Toggle expanded output."},
-		{`\timing`, `\timing`, "Toggle timing of commands."},
-		{`\dt`, `\dt`, "List tables."},
-		{`\d`, `\d [NAME]`, "List or describe tables, views and sequences."},
-		{`\du`, `\du`, "List roles/users."},
-		{`\l`, `\l`, "List databases."},
-		{`\df`, `\df`, "List functions."},
+		{`\?`, `\?`, i18n.T(lang, "console.help_show_commands")},
+		{`\x`, `\x`, i18n.T(lang, "console.help_toggle_expanded")},
+		{`\timing`, `\timing`, i18n.T(lang, "console.help_toggle_timing")},
+		{`\dt`, `\dt`, i18n.T(lang, "console.help_list_tables")},
+		{`\d`, `\d [NAME]`, i18n.T(lang, "console.help_list_describe")},
+		{`\du`, `\du`, i18n.T(lang, "console.help_list_roles")},
+		{`\l`, `\l`, i18n.T(lang, "console.help_list_databases")},
+		{`\df`, `\df`, i18n.T(lang, "console.help_list_functions")},
 	}
 	return cols, rows
 }
@@ -221,40 +218,40 @@ func consoleHelpTable() (cols []string, rows [][]string) {
 // text — the Go equivalent of Spartacus.Database.<Engine>.Special(), unified
 // across all 4 engines (see this file's package-level comments for why that
 // unification is possible/deliberate here, unlike Python's original).
-func (s *consoleSession) runStatement(ctx context.Context, stmt string) (string, error) {
+func (s *consoleSession) runStatement(ctx context.Context, lang, stmt string) (string, error) {
 	s.mu.Lock()
 	defer s.mu.Unlock()
 
 	command := consoleFirstWord(stmt)
 	switch command {
 	case `\?`:
-		cols, rows := consoleHelpTable()
+		cols, rows := consoleHelpTable(lang)
 		return consolePretty(cols, rows, s.expanded), nil
 	case `\x`:
 		s.expanded = !s.expanded
 		if s.expanded {
-			return "Expanded display is on.", nil
+			return i18n.T(lang, "console.expanded_on"), nil
 		}
-		return "Expanded display is off.", nil
+		return i18n.T(lang, "console.expanded_off"), nil
 	case `\timing`:
 		s.timing = !s.timing
 		if s.timing {
-			return "Timing is on.", nil
+			return i18n.T(lang, "console.timing_on"), nil
 		}
-		return "Timing is off.", nil
+		return i18n.T(lang, "console.timing_off"), nil
 	case `\dt`:
-		return s.consoleMetaTables(ctx)
+		return s.consoleMetaTables(ctx, lang)
 	case `\d`:
 		if arg := consoleArg(stmt); arg != "" {
-			return s.consoleMetaDescribe(ctx, arg)
+			return s.consoleMetaDescribe(ctx, lang, arg)
 		}
-		return s.consoleMetaRelations(ctx)
+		return s.consoleMetaRelations(ctx, lang)
 	case `\du`:
-		return s.consoleMetaRoles(ctx)
+		return s.consoleMetaRoles(ctx, lang)
 	case `\l`:
-		return s.consoleMetaDatabases(ctx)
+		return s.consoleMetaDatabases(ctx, lang)
 	case `\df`:
-		return s.consoleMetaFunctions(ctx)
+		return s.consoleMetaFunctions(ctx, lang)
 	}
 
 	var timeStart time.Time
@@ -262,7 +259,7 @@ func (s *consoleSession) runStatement(ctx context.Context, stmt string) (string,
 		timeStart = time.Now()
 	}
 
-	text, err := s.runSQLLocked(ctx, stmt, command)
+	text, err := s.runSQLLocked(ctx, lang, stmt, command)
 	if err != nil {
 		if s.autocommitOff {
 			s.txErrored = true
@@ -277,7 +274,7 @@ func (s *consoleSession) runStatement(ctx context.Context, stmt string) (string,
 }
 
 // runSQLLocked runs a real (non-backslash) SQL statement. Caller holds s.mu.
-func (s *consoleSession) runSQLLocked(ctx context.Context, stmt, command string) (string, error) {
+func (s *consoleSession) runSQLLocked(ctx context.Context, lang, stmt, command string) (string, error) {
 	// Mirrors psycopg2/pymysql/sqlite3's classic DB-API behavior: with
 	// autocommit off, an implicit transaction opens before the first
 	// statement of each work unit, without the user needing to type BEGIN
@@ -324,7 +321,7 @@ func (s *consoleSession) runSQLLocked(ctx context.Context, stmt, command string)
 			return "", err
 		}
 
-		status := consoleStatusLine(len(data), true)
+		status := consoleStatusLine(lang, len(data), true)
 		if len(data) > 0 {
 			text = consolePretty(cols, data, s.expanded) + "\n" + status
 		} else {
@@ -338,7 +335,7 @@ func (s *consoleSession) runSQLLocked(ctx context.Context, stmt, command string)
 			return "", err
 		}
 		n, _ := result.RowsAffected()
-		text = consoleStatusLine(int(n), false)
+		text = consoleStatusLine(lang, int(n), false)
 	}
 
 	if upperCmd == "COMMIT" || upperCmd == "ROLLBACK" || upperCmd == "END" {
@@ -564,7 +561,7 @@ func logQueryHistory(upstream *url.URL, userID int, connID int64, snippet, statu
 // rows behind a "fetch more" button; the query grid tab remains the right
 // tool for browsing genuinely large result sets. This was a deliberate
 // scope decision (see go-backend-migration memory), not an oversight.
-func runConsole(upstream *url.URL, cookie string, clientID string, q consoleRequestData, contextCode int, info *ConnectionInfo, userID int) {
+func runConsole(lang string, upstream *url.URL, cookie string, clientID string, q consoleRequestData, contextCode int, info *ConnectionInfo, userID int) {
 	start := time.Now()
 
 	sqlText := q.VSQLCmd
@@ -596,7 +593,7 @@ func runConsole(upstream *url.URL, cookie string, clientID string, q consoleRequ
 		out.WriteString(stmt)
 		out.WriteString("\n")
 
-		text, err := sess.runStatement(ctx, stmt)
+		text, err := sess.runStatement(ctx, lang, stmt)
 		if err != nil {
 			out.WriteString(err.Error())
 		} else {

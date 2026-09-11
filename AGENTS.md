@@ -76,6 +76,43 @@ No Python anywhere in the tree — no `OmniDB/`, `requirements.txt`, `pyproject.
   different account — see `handleSignIn`'s comment for the security reasoning
   (this was a real fix over the original Django behavior, not just a port).
 
+## Internationalization (i18n)
+
+The UI supports English, Czech (Čeština) and Spanish (Español), with an "Automatic" setting that
+resolves the browser/OS `Accept-Language` header server-side, falling back to English for anything
+unsupported. This works identically in desktop and web-server mode — no Wails-specific code, the same
+way the existing auto-theme feature needs none (both modes go through the same Go HTTP server).
+
+- **Go side:** `go-server/i18n/` — flat dot-key JSON catalogs (`locales/{en,cs,es}.json`), loaded via
+  `//go:embed`. `i18n.T(lang, key, ...)` renders a single string with `{name}`-style interpolation;
+  `i18n.Tn(lang, key, n, ...)` picks a `key.one`/`.few`/`.other` plural form (Czech needs all three,
+  English/Spanish only `.one`/`.other`). `i18n.ResolveLanguage(storedPref, acceptLanguageHeader)` is
+  the one place `"auto"` actually gets resolved to a concrete language.
+- **JS side:** `go-server/frontend/src/i18n.js` — `t(key, vars)`/`tn(key, n, vars)` mirror the Go
+  functions, reading from `window.v_i18n` (the resolved catalog, sent down in the page's JSON
+  bootstrap next to `window.v_language`/`v_language_preference`). Static HTML uses a
+  `data-i18n`/`data-i18n-title`/`data-i18n-placeholder`/`data-i18n-aria-label`/`data-i18n-alt`/
+  `data-i18n-label` attribute convention instead of new `{{ var }}` template substitutions — the
+  hand-rolled Go template engine (`workspace_page.go`/`native_login.go`) has no auto-escaping, so this
+  avoids adding hundreds of substitution points that would each need a manual `html.EscapeString`.
+  `initI18n()` is called exactly once, from `main.js`/`login.js` only — `i18n.js` itself has zero
+  top-level side effects on purpose, because some frontend source files (e.g. `ajax_control.js`) get
+  bundled into more than one independent Vite entry point, and a top-level side effect would then run
+  once per bundle, against a `window.v_i18n` that isn't populated yet in the earlier one.
+- **Adding a new user-facing string:** add the key to **all three**
+  `go-server/i18n/locales/{en,cs,es}.json` files in the same change. A key missing from `cs.json` or
+  `es.json` doesn't error — it silently falls back to the English value (`CatalogFor`/`T`'s fallback
+  chain) — so it's easy to ship a string that's secretly English-only in two of the three languages
+  without anything flagging it. `npm run build` in `go-server/frontend` plus a glance at the browser
+  console (`i18n.js` warns on a genuinely missing key, not a same-as-English one) is the only check.
+- Language preference is a per-user column (`OmniDB_app_userdetails.language`, `'auto'` by default),
+  threaded through `WhoAmI`/`resolveIdentity` the same way `CSVEncoding`/`CSVDelimiter` already were.
+- Changing the language reloads the page rather than re-rendering live — a deliberate choice, since
+  most of the shell is server-rendered once per request rather than client-templated.
+- Not everything is localized: a handful of very low-level backend error paths shared by hundreds of
+  call sites (`writeBadRequest`, the per-engine "object does not exist anymore" family) and the
+  `docs/` marketing site are deliberately out of scope — see `CHANGELOG.md`'s "Known follow-ups".
+
 ## Building
 
 ```bash
@@ -166,6 +203,17 @@ context if something about window/login behavior looks odd):**
   browser HTTP cache from *before* this mechanism existed. Don't touch the
   short-version string for this purpose; it's the real version string, shown to
   users and used for update checks.
+- **An icon-only tab/rail entry needs its tooltip special-cased, or it never gets one.**
+  `tabs.js`'s shared tab-strip component only sets a tab's `title` tooltip once that tab has shrunk
+  down to its `--icon-only` CSS class — deliberately, so a tab with room to show its label doesn't
+  also repeat it as a tooltip. That class, though, is only ever toggled by
+  `recomputeTabShrinkStages`, a *horizontal*-row, width-based calculation (`scrollWidth` vs
+  `clientWidth`). A vertical, icon-only-by-design list — the left section-nav rail is the one
+  example today — never triggers that shrink logic at all (a column's `scrollWidth` doesn't exceed
+  its `clientWidth` the way an overflowing row's does), so the class, and the tooltip gated on it,
+  never appeared. Fixed by always showing the tooltip on a tab that has no name to begin with (see
+  `createTab`'s tooltip block) — keep this in mind before adding another icon-only, non-shrinking tab
+  strip elsewhere.
 
 ## Instructions for AI assistants
 

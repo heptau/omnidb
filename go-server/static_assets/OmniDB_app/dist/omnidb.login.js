@@ -5,6 +5,46 @@
       Object.assign(window, ns);
     }
   }
+  function readLoginBootstrap() {
+    if (typeof v_i18n !== "undefined" && v_i18n) return;
+    var el2 = document.getElementById("omnidb_login_i18n");
+    if (!el2 || !el2.textContent) return;
+    var cfg = JSON.parse(el2.textContent);
+    window.v_language = cfg.language;
+    window.v_i18n = cfg.i18n;
+  }
+  function interpolate(s, vars) {
+    return s;
+  }
+  function t(key, vars) {
+    var dict = typeof v_i18n !== "undefined" ? v_i18n : null;
+    var template = dict && Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : void 0;
+    if (template === void 0) {
+      console.warn('i18n: missing translation key "' + key + '"');
+      template = key;
+    }
+    return interpolate(template);
+  }
+  function applyStaticI18n() {
+    if (typeof v_language !== "undefined" && v_language) {
+      document.documentElement.setAttribute("lang", v_language);
+    }
+    document.documentElement.style.setProperty("--i18n-empty-suffix", JSON.stringify(" (" + t("login.empty_suffix") + ")"));
+    document.querySelectorAll("[data-i18n]").forEach(function(el2) {
+      var key = el2.getAttribute("data-i18n");
+      if (key) el2.textContent = t(key);
+    });
+    ["title", "placeholder", "aria-label", "alt", "label"].forEach(function(attr) {
+      document.querySelectorAll("[data-i18n-" + attr + "]").forEach(function(el2) {
+        var key = el2.getAttribute("data-i18n-" + attr);
+        if (key) el2.setAttribute(attr, t(key));
+      });
+    });
+  }
+  function initI18n() {
+    readLoginBootstrap();
+    applyStaticI18n();
+  }
   var v_message_modal_animating, v_message_modal_queued, v_message_modal_queued_function, v_shown_callback;
   function el(id) {
     return (
@@ -117,7 +157,7 @@
       var v_button_no = el("modal_message_no");
       var v_button_cancel = el("modal_message_cancel");
       v_content_div.textContent = p_info;
-      v_button_ok.textContent = p_yes_label || "Ok";
+      v_button_ok.textContent = p_yes_label || t("common.ok");
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
       };
@@ -257,7 +297,7 @@
         }
         if (p_return.v_error) {
           if (p_return.v_error_id == 1) {
-            showAlert("User not authenticated, please reload the page.");
+            showAlert(t("errors.not_authenticated"));
           } else if (p_errorFunc) {
             p_errorFunc(p_return);
           } else {
@@ -277,7 +317,7 @@
           p_onAjaxErrorCallBack(msg);
         } else {
           if (msg.readyState != 0) {
-            showAlert("Request error.");
+            showAlert(t("errors.request_error"));
           } else {
             if (msg.statusText != "abort") {
               reportOffline();
@@ -289,7 +329,7 @@
     return v_ajax_call;
   }
   function reportOffline() {
-    showAlert("Webserver was shutdown, please restart it and reload the application.");
+    showAlert(t("errors.webserver_shutdown"));
     document.getElementById("ajax_status");
   }
   const ajaxControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
@@ -358,9 +398,9 @@
         if (p_return.v_data >= 0) {
           window.open(v_url_folder + "/workspace", "_self");
         } else if (p_return.v_data == -2) {
-          showAlert$1("Invalid authentication token, use omnidb-server to support multiple users.");
+          showAlert$1(t("login.invalid_token"));
         } else {
-          showAlert$1("Invalid username or password.");
+          showAlert$1(t("login.invalid_credentials"));
         }
       },
       null
@@ -382,6 +422,7 @@
       v_cancel_button.addEventListener("click", cancelAjax);
     }
   }
+  initI18n();
   exposeGlobals(
     notificationControl,
     ajaxControl

@@ -36,9 +36,11 @@ import moment from "moment";
 import { execAjax } from "./ajax_control_bridge.js";
 import { showConfirm } from "./notification_control.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";
+import { escapeHtml } from "./query.js";
+import { t } from "./i18n.js";
 
 export function deleteCommandList() {
-	showConfirm("Are you sure you want to clear command history corresponding to applied filters?", function () {
+	showConfirm(t("console.confirm_clear_command_history"), function () {
 		execAjax(
 			"/clear_command_list/",
 			JSON.stringify({
@@ -66,21 +68,22 @@ export function showCommandList() {
 	v_tabTag.commandHistory.headerDiv.innerHTML =
 		"<div class='mb-2 form-inline justify-content-center'>" +
 		"<div class='input-group w-auto me-2'>" +
-		"<span class='my-auto'>Select a daterange:</span>&nbsp;" +
-		"<input type='text' class='form-control form-control-sm d-none' placeholder='Start Time' id='cl_input_from_" +
+		"<span class='my-auto'>" + escapeHtml(t("console.select_daterange")) + "</span>&nbsp;" +
+		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtml(t("common.start_time")) + "' id='cl_input_from_" +
 		v_tabTag.tab_id +
 		"'>" +
-		"<input type='text' class='form-control form-control-sm d-none' placeholder='End Time' id='cl_input_to_" +
+		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtml(t("common.end_time")) + "' id='cl_input_to_" +
 		v_tabTag.tab_id +
 		"'>" +
 		"<button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" +
 		v_tabTag.tab_id +
 		"'>" +
 		"<i class='far fa-calendar-alt'></i>&nbsp;" +
+		// See console.js's showConsoleHistory for why this stays untranslated.
 		"<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i>" +
 		"</button>" +
 		"</div>" +
-		"<label class='me-1'>Command contains:</label>" +
+		"<label class='me-1'>" + escapeHtml(t("console.command_contains")) + "</label>" +
 		"<input type='text' id='cl_input_contains_" +
 		v_tabTag.tab_id +
 		"' class='me-2 form-control' />" +
@@ -91,10 +94,10 @@ export function showCommandList() {
 		"<div class='mb-2 d-flex justify-content-center align-items-center'>" +
 		"<button id='bt_first_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='First'>First</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.first")) + "'>" + escapeHtml(t("common.first")) + "</button>" +
 		"<button id='bt_previous_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Previous'>Previous</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.previous")) + "'>" + escapeHtml(t("common.previous")) + "</button>" +
 		"<span id='cl_curr_page_" +
 		v_tabTag.tab_id +
 		"'></span> / <span id='cl_num_pages_" +
@@ -102,16 +105,16 @@ export function showCommandList() {
 		"'></span>" +
 		"<button id='bt_next_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Next'>Next</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.next")) + "'>" + escapeHtml(t("common.next")) + "</button>" +
 		"<button id='bt_last_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='Last'>Last</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.last")) + "'>" + escapeHtml(t("common.last")) + "</button>" +
 		"<button id='bt_refresh_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='Refresh'><i class='fas fa-sync-alt me-1'></i>Refresh</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='" + escapeHtml(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button>" +
 		"<button id='bt_clear_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm btn-danger mx-1' title='Clear List'><i class='fas fa-broom me-1'></i>Clear List</button>" +
+		"' class='bt_execute btn btn-sm btn-danger mx-1' title='" + escapeHtml(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button>" +
 		"</div>";
 
 	var v_gridDiv = v_tabTag.commandHistory.gridDiv;
@@ -125,28 +128,28 @@ export function showCommandList() {
 
 	/** @type {any} */
 	var v_column = {};
-	v_column.title = "Start";
+	v_column.title = t("common.start_time");
 	v_column.readOnly = true;
 	// v_column.width = 120;
 	v_columnProperties.push(v_column);
 
 	/** @type {any} */
 	var v_column = {};
-	v_column.title = "End";
+	v_column.title = t("common.end_time");
 	v_column.readOnly = true;
 	// v_column.width = 120;
 	v_columnProperties.push(v_column);
 
 	/** @type {any} */
 	var v_column = {};
-	v_column.title = "Duration";
+	v_column.title = t("common.duration");
 	v_column.readOnly = true;
 	v_column.width = 100;
 	v_columnProperties.push(v_column);
 
 	/** @type {any} */
 	var v_column = {};
-	v_column.title = "Status";
+	v_column.title = t("common.status");
 	v_column.readOnly = true;
 	v_column.width = 50;
 	v_column.renderer = "html";
@@ -160,7 +163,7 @@ export function showCommandList() {
 
 	/** @type {any} */
 	var v_column = {};
-	v_column.title = "Command";
+	v_column.title = t("console.column_command");
 	v_column.readOnly = true;
 	// v_column.width = 330;
 	v_columnProperties.push(v_column);
@@ -194,7 +197,7 @@ export function showCommandList() {
 			},
 			items: {
 				view_data: {
-					name: '<div style="position: absolute;"><i class=\"fas fa-bolt cm-all\" style=\"vertical-align: middle;\"></i></div><div style="padding-left: 30px;">Copy Content To Query Tab</div>',
+					name: '<div style="position: absolute;"><i class=\"fas fa-bolt cm-all\" style=\"vertical-align: middle;\"></i></div><div style="padding-left: 30px;">' + escapeHtml(t("console.copy_to_query_tab")) + '</div>',
 				},
 			},
 		},

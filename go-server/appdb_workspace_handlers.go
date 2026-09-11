@@ -7,6 +7,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"omnidb-server/i18n"
 )
 
 type indentSQLRequest struct {
@@ -381,6 +383,7 @@ type saveConfigUserRequest struct {
 	PKeywordCase               string `json:"p_keyword_case"`
 	PRulerColumn               int    `json:"p_ruler_column"`
 	PAutocompleteDisabledTypes string `json:"p_autocomplete_disabled_types"`
+	PLanguage                  string `json:"p_language"`
 }
 
 // autocompleteGroupTypes are every group "type" the autocomplete popup can
@@ -465,8 +468,11 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		if req.PRulerColumn < 24 || req.PRulerColumn > 999 {
 			req.PRulerColumn = 128
 		}
+		if req.PLanguage != "auto" && !i18n.IsSupported(req.PLanguage) {
+			req.PLanguage = "auto"
+		}
 		autocompleteDisabledTypes := sanitizeAutocompleteDisabledTypes(req.PAutocompleteDisabledTypes)
-		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase, req.PRulerColumn, autocompleteDisabledTypes); err != nil {
+		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase, req.PRulerColumn, autocompleteDisabledTypes, req.PLanguage); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}
@@ -480,6 +486,7 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 		// live (not just the UserDetails row) — see native_session.go's
 		// updateNativeSessionCSVPrefs comment.
 		updateNativeSessionCSVPrefs(nativeSessionCookieValue(r), req.PCSVEncoding, req.PCSVDelimiter)
+		updateNativeSessionLanguage(nativeSessionCookieValue(r), req.PLanguage)
 		writeEnvelope(w, "", false, -1)
 	}
 }

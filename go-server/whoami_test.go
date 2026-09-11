@@ -5,7 +5,7 @@ import (
 )
 
 func TestResolveIdentityWithValidNativeSession(t *testing.T) {
-	key, err := createNativeSession(1, "admin", true, "utf-8", ";")
+	key, err := createNativeSession(1, "admin", true, "utf-8", ";", "cs")
 	if err != nil {
 		t.Fatalf("createNativeSession: %v", err)
 	}
@@ -15,7 +15,7 @@ func TestResolveIdentityWithValidNativeSession(t *testing.T) {
 	if err != nil {
 		t.Fatalf("resolveIdentity: %v", err)
 	}
-	if !who.Authenticated || who.Username != "admin" || !who.SuperUser || who.CSVEncoding != "utf-8" || who.CSVDelimiter != ";" {
+	if !who.Authenticated || who.Username != "admin" || !who.SuperUser || who.CSVEncoding != "utf-8" || who.CSVDelimiter != ";" || who.Language != "cs" {
 		t.Errorf("unexpected result: %+v", who)
 	}
 }

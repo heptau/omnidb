@@ -36,10 +36,11 @@ import { showPasswordPrompt } from "../passwords.js";
 import { escapeHtmlAttribute } from "../query.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "../renderers.js";
 import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
+import { t } from "../i18n.js";
 
 
 export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions) {
-	var v_name = "Backends";
+	var v_name = t("workspace.backends");
 	if (p_name) v_name = p_name;
 
 	// Removing last tab of the inner tab list
@@ -81,7 +82,7 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 		"<div class='p-2 omnidb__theme-border--primary'>" +
 		"<button id='bt_refresh_" +
 		v_tab.id +
-		"' class='btn omnidb__theme__btn--primary btn-sm my-2 me-1' title='Refresh'><i class='fas fa-sync-alt me-2'></i>Refresh</button>" +
+		"' class='btn omnidb__theme__btn--primary btn-sm my-2 me-1' title='" + t("common.refresh") + "'><i class='fas fa-sync-alt me-2'></i>" + t("common.refresh") + "</button>" +
 		"<span id='div_query_info_" +
 		v_tab.id +
 		"' class='query_info'></span>" +
@@ -214,7 +215,7 @@ export function refreshMonitoring(p_tab_tag) {
 				/** @type {any} */
 				var col = {};
 				col.readOnly = true;
-				col.title = "Actions";
+				col.title = t("monitoring.actions_column");
 				col.renderer = "html";
 				columnProperties.push(col);
 			}
@@ -256,10 +257,10 @@ export function refreshMonitoring(p_tab_tag) {
 					},
 					items: {
 						copy: {
-							name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Copy</div>',
+							name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("common.copy") + '</div>',
 						},
 						view_data: {
-							name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">View Content</div>',
+							name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">' + t("common.view_content") + '</div>',
 						},
 					},
 				},

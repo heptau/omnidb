@@ -54,6 +54,7 @@ import { getTreeOracle } from "./tree_context_functions/tree_oracle.js";
 import { getTreePostgresql, postgresqlTerminateBackend } from "./tree_context_functions/tree_postgresql.js";
 import { getAllSnippets } from "./tree_context_functions/tree_snippets.js";
 import { getTreeSqlite } from "./tree_context_functions/tree_sqlite.js";
+import { t } from "./i18n.js";
 
 // Declared here because these were implicit globals: assigned without
 // `var` anywhere in this file, so they leaked onto `window` and were
@@ -333,7 +334,12 @@ export function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
 				v_tab.tag.mode == "data_mining"
 			) {
 				showAlert(
-					"Before changing connection please close any tab that belongs to the following types: <br/><br/><b>Edit Data<br/><br/>Alter Table<br/><br/>Monitoring Dashboard<br/><br/>Advanced Object Search",
+					t("workspace.close_tabs_warning", {
+						edit_data: t("connections.edit_data"),
+						alter_table: t("tree.alter_table"),
+						monitoring_dashboard: t("workspace.monitoring_dashboard"),
+						advanced_search: t("workspace.advanced_object_search"),
+					}),
 					null,
 					null,
 					true,
@@ -1129,7 +1135,7 @@ export function indentSQL(p_mode = false) {
 		var v_sql_value = v_editor.getValue();
 
 		if (v_sql_value.trim() == "") {
-			showAlert("Please provide a string.");
+			showAlert(t("common.provide_a_string"));
 		} else {
 			execAjax(
 				"/indent_sql/",
@@ -1167,7 +1173,7 @@ export function showMenuNewTabOuter(e) {
 
 		if (v_show_terminal_option) {
 			v_option_list.push({
-				text: "Local Terminal",
+				text: t("workspace.local_terminal"),
 				icon: "fas cm-all fa-terminal",
 				action: function () {
 					v_connTabControl.tag.createOuterTerminalTab();
@@ -1361,7 +1367,7 @@ export function showMenuNewTabOuter(e) {
 				})(i);
 
 			v_option_list.push({
-				text: "SSH Consoles",
+				text: t("workspace.ssh_consoles"),
 				icon: "fas cm-all fa-terminal",
 				submenu: {
 					elements: v_submenu_terminal_list,
@@ -1390,14 +1396,14 @@ export function showMenuNewTabOuter(e) {
 export function showMenuNewTab(e) {
 	var v_option_list = [
 		{
-			text: "Query Tab",
+			text: t("workspace.query_tab"),
 			icon: "fas cm-all fa-search",
 			action: function () {
 				v_connTabControl.tag.createQueryTab();
 			},
 		},
 		{
-			text: "Console Tab",
+			text: t("workspace.console_tab"),
 			icon: "fas cm-all fa-terminal",
 			action: function () {
 				v_connTabControl.tag.createConsoleTab();
@@ -1411,7 +1417,7 @@ export function showMenuNewTab(e) {
 		v_connTabControl.selectedTab.tag.selectedDBMS == "mariadb"
 	) {
 		v_option_list.push({
-			text: "Monitoring Dashboard",
+			text: t("workspace.monitoring_dashboard"),
 			icon: "fas cm-all fa-chart-line",
 			action: function () {
 				v_connTabControl.tag.createMonitorDashboardTab();
@@ -1422,13 +1428,13 @@ export function showMenuNewTab(e) {
 
 	if (v_connTabControl.selectedTab.tag.selectedDBMS == "postgresql") {
 		v_option_list.push({
-			text: "Backends",
+			text: t("workspace.backends"),
 			icon: "fas cm-all fa-tasks",
 			action: function () {
-				v_connTabControl.tag.createMonitoringTab("Backends", "select * from pg_stat_activity", [
+				v_connTabControl.tag.createMonitoringTab(t("workspace.backends"), "select * from pg_stat_activity", [
 					{
 						icon: "fas fa-times action-grid action-close text-danger",
-						title: "Terminate",
+						title: t("common.terminate"),
 						action: "postgresqlTerminateBackend",
 					},
 				]);
@@ -1439,13 +1445,13 @@ export function showMenuNewTab(e) {
 		v_connTabControl.selectedTab.tag.selectedDBMS == "mariadb"
 	) {
 		v_option_list.push({
-			text: "Process List",
+			text: t("workspace.process_list"),
 			icon: "fas cm-all fa-tasks",
 			action: function () {
-				v_connTabControl.tag.createMonitoringTab("Process List", "select * from information_schema.processlist", [
+				v_connTabControl.tag.createMonitoringTab(t("workspace.process_list"), "select * from information_schema.processlist", [
 					{
 						icon: "fas fa-times action-grid action-close text-danger",
-						title: "Terminate",
+						title: t("common.terminate"),
 						action: "mysqlTerminateBackend",
 					},
 				]);
@@ -1604,7 +1610,7 @@ export function uiCopyTextToClipboard(p_value) {
 	var v_escaped = document.createElement("span");
 	v_escaped.textContent = p_value;
 	var v_safe_html =
-		'<b>Text copied:</b><div class="mt-2 p-2 border-1 omnidb__theme-bg--light"><code>' +
+		"<b>" + escapeHtml(t("common.text_copied")) + '</b><div class="mt-2 p-2 border-1 omnidb__theme-bg--light"><code>' +
 		v_escaped.innerHTML +
 		"</code></div>";
 

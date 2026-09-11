@@ -629,7 +629,7 @@ func TestFirebirdIntegrationConsoleMeta(t *testing.T) {
 	defer conn.Close()
 	s := &consoleSession{conn: conn, technology: "firebird"}
 
-	out, err := s.consoleMetaTables(ctx)
+	out, err := s.consoleMetaTables(ctx, "en")
 	if err != nil {
 		t.Fatalf("\\dt: %v", err)
 	}
@@ -637,7 +637,7 @@ func TestFirebirdIntegrationConsoleMeta(t *testing.T) {
 		t.Errorf("expected \\dt output to list IT_EMPLOYEES, got:\n%s", out)
 	}
 
-	out, err = s.consoleMetaRelations(ctx)
+	out, err = s.consoleMetaRelations(ctx, "en")
 	if err != nil {
 		t.Fatalf("\\d: %v", err)
 	}
@@ -645,7 +645,7 @@ func TestFirebirdIntegrationConsoleMeta(t *testing.T) {
 		t.Errorf("expected \\d output to list the view with type 'view', got:\n%s", out)
 	}
 
-	out, err = s.consoleMetaDescribe(ctx, "IT_EMPLOYEES")
+	out, err = s.consoleMetaDescribe(ctx, "en", "IT_EMPLOYEES")
 	if err != nil {
 		t.Fatalf("\\d IT_EMPLOYEES: %v", err)
 	}
@@ -653,7 +653,7 @@ func TestFirebirdIntegrationConsoleMeta(t *testing.T) {
 		t.Errorf("expected \\d IT_EMPLOYEES to show FIRST_NAME/VARCHAR, got:\n%s", out)
 	}
 
-	out, err = s.consoleMetaFunctions(ctx)
+	out, err = s.consoleMetaFunctions(ctx, "en")
 	if err != nil {
 		t.Fatalf("\\df: %v", err)
 	}
@@ -663,7 +663,7 @@ func TestFirebirdIntegrationConsoleMeta(t *testing.T) {
 
 	// \du against sec$users (Firebird 3+) — best effort per its own comment,
 	// just confirm it doesn't error and returns something.
-	out, err = s.consoleMetaRoles(ctx)
+	out, err = s.consoleMetaRoles(ctx, "en")
 	if err != nil {
 		t.Fatalf("\\du: %v", err)
 	}
@@ -671,7 +671,7 @@ func TestFirebirdIntegrationConsoleMeta(t *testing.T) {
 		t.Errorf("expected non-empty \\du output")
 	}
 
-	out, err = s.consoleMetaDatabases(ctx)
+	out, err = s.consoleMetaDatabases(ctx, "en")
 	if err != nil {
 		t.Fatalf("\\l: %v", err)
 	}
@@ -857,7 +857,7 @@ func TestFirebirdIntegrationTestConnectionHandler(t *testing.T) {
 		Database: info.Database,
 		User:     info.Username,
 	}
-	message, isError := runTestConnection(req, info.Password, "", "")
+	message, isError := runTestConnection("en", req, info.Password, "", "")
 	if isError {
 		t.Fatalf("expected successful test_connection, got error message %q", message)
 	}
@@ -865,7 +865,7 @@ func TestFirebirdIntegrationTestConnectionHandler(t *testing.T) {
 		t.Errorf("expected \"Connection successful.\", got %q", message)
 	}
 
-	message, isError = runTestConnection(req, "definitely-wrong-password", "", "")
+	message, isError = runTestConnection("en", req, "definitely-wrong-password", "", "")
 	if !isError {
 		t.Errorf("expected test_connection to report an error with a wrong password, got success message %q", message)
 	}

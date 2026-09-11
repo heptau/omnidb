@@ -28,6 +28,8 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { t } from "../../i18n.js";
+
 export function createOmnis() {
 	return {
 		id: "omnis",
@@ -349,7 +351,7 @@ export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_step
 				var v_step_btn_next = "";
 				if (this.stepList[this.stepSelected].next_button && this.stepSelected < this.stepCounter - 1) {
 					v_step_btn_next +=
-						'<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ms-2">Next</button>';
+						`<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ms-2">${t("common.next")}</button>`;
 				}
 
 				// Temporarily disabling previous button.
@@ -360,7 +362,7 @@ export function createOmnisUiAssistant({ p_callback_end = false, p_omnis, p_step
 				// }
 
 				var v_step_btn_close =
-					'<button id="omnis_step_btn_close" type="button" class="btn btn-sm btn-danger ml-auto">End walkthrough</button>';
+					`<button id="omnis_step_btn_close" type="button" class="btn btn-sm btn-danger ml-auto">${t("tutorial.end_walkthrough")}</button>`;
 
 				var v_step_title =
 					'<div class="mb-4 text-center" style="position: relative;">' +
