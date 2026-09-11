@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.4.3] - 2026-09-11
+
 ### Changed
 - Tab shrinking is now progressive instead of a single icon-only cutoff: as a row of tabs runs out
   of room, each tab first drops its close-button's reserved zone (Zone A), then its trailing
