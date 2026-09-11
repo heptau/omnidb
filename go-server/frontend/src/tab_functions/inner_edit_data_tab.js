@@ -49,10 +49,9 @@ export var v_createEditDataTabFunction = function (p_table) {
 
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
 		p_icon: '<i class="fas fa-table icon-tab-title"></i>',
-		p_name:
-			'<span id="tab_title">' +
-			v_name +
-			'</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+		p_name: '<span id="tab_title">' + v_name + "</span>",
+		p_status:
+			'<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();

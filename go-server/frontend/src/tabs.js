@@ -29,32 +29,135 @@ SOFTWARE.
 */
 
 
-// Below this rendered width a tab has no room left to show a legible label
-// -- toggling `--icon-only` (see _base.scss/_topbar.scss's
+// Three progressive shrink stages -- widest to narrowest: hide the
+// close-button's reserved zone first (Zone A, least useful while the tab
+// isn't hovered/focused), then the trailing status-icon zone (Zone D --
+// loading spinner/checkmark, or a snippet's unsaved-changes dot), and
+// finally -- below this width a tab has no room left to show a legible
+// label -- `--icon-only` (see _base.scss/_topbar.scss's
 // `.omnidb__tab-menu__link--icon-only` rule) hides the name span instead of
 // rendering a sliver of ellipsized text, leaving just the icon (the label
-// is still reachable as the tab's tooltip). This can't be done as a plain
-// CSS container query: `container-type: inline-size` on the tab itself
-// would give it layout containment, meaning its width could no longer come
-// from its own content (flex-basis: auto) -- exactly the dynamic,
-// content-driven width the whole shrink-to-fit layout depends on. A shared
-// ResizeObserver sidesteps that; every tab (across every tabControl) is
-// observed by this single instance rather than one per tab.
-const ICON_ONLY_THRESHOLD_PX = 64;
-const v_tabWidthObserver =
+// is still reachable as the tab's tooltip). Each threshold is spaced
+// roughly one zone-width (--tab-zone-width, 20px) apart, matching the room
+// each stage reclaims.
+const CLOSE_ZONE_THRESHOLD_PX = 108;
+const STATUS_ZONE_THRESHOLD_PX = 84;
+const ICON_ONLY_THRESHOLD_PX = 60;
+// Floor for the explicit equal width recomputeTabShrinkStages assigns once
+// the row is cramped -- matches --icon-only's own fixed box, so a tab
+// hitting this floor lands exactly on the width its --icon-only CSS would
+// give it anyway.
+const MIN_SHRINK_WIDTH_PX = 40;
+
+// Recomputes every INACTIVE tab's shrink-stage classes (and, if the row
+// doesn't fit them all at their natural size, an explicit equal width) in
+// one row -- always starting from a clean, unpinned slate rather than
+// trusting whatever a tab last carried. Two things this has to work around,
+// both of which rule out leaving this to plain CSS flex-shrink:
+//
+// 1. Once a tab is down to `--icon-only` its box is pinned to a fixed
+//    `flex: 0 0 40px` (flex-grow:0) -- so its own rendered size can NEVER
+//    change again on its own, even once the row gains room back (a wider
+//    window, a closed sibling tab, a different tab becoming active, ...),
+//    since flex-grow:0 means it never claims any of the freed-up space.
+//    Stripping every tab's inline width/shrink classes first and measuring
+//    fresh (below) is what lets a shrunk tab grow back at all.
+// 2. flex-shrink distributes shrinkage proportionally to each item's own
+//    basis, so tabs with different label lengths -- and so different
+//    natural (content-driven) widths -- end up at DIFFERENT widths after
+//    shrinking, each crossing the shrink-stage thresholds at a different
+//    moment, unless something pins them all to the same explicit value.
+//    That's what the equal-width branch below does, but ONLY once they
+//    don't already fit naturally -- tabs.js's tabs stay their own natural,
+//    content-driven width the rest of the time (see the CSS's plain
+//    `flex: 0 1 auto`), so a short label like "DDL" doesn't carry visibly
+//    wasted space around it just because some OTHER open tab has a long one.
+//
+// Container queries can't replace this either: `container-type:
+// inline-size` on the tab itself would give it layout containment, meaning
+// its width could no longer come from flex distribution/content at all --
+// exactly the dynamic, available-space-driven width this whole layout
+// depends on.
+function recomputeTabShrinkStages(p_tabListDiv) {
+	var v_children = p_tabListDiv.children;
+	var v_shrinkable = [];
+	var v_fixed = [];
+	for (var i = 0; i < v_children.length; i++) {
+		var v_link = v_children[i];
+		if (v_link.classList.contains("active") || v_link.classList.contains("omnidb__tab-menu__link--compact")) {
+			v_fixed.push(v_link);
+		} else {
+			v_shrinkable.push(v_link);
+		}
+	}
+	// Revert every shrinkable tab to its natural, content-driven width (and
+	// clear its shrink-stage classes) before measuring anything below --
+	// otherwise a tab still pinned to a previous state's explicit width, or
+	// still carrying --icon-only, would misreport what the row actually
+	// needs/has room for now.
+	for (var j = 0; j < v_shrinkable.length; j++) {
+		v_shrinkable[j].style.flex = "";
+		v_shrinkable[j].classList.remove(
+			"omnidb__tab-menu__link--hide-close-zone",
+			"omnidb__tab-menu__link--hide-status-zone",
+			"omnidb__tab-menu__link--icon-only",
+		);
+	}
+	if (v_shrinkable.length === 0) return;
+
+	// Do the tabs already fit at their natural width? (scrollWidth/
+	// clientWidth force the browser to actually apply the reset above and
+	// lay the row out fresh before this reads either.) If so, there's
+	// nothing left to do -- natural sizing IS the desired resting state.
+	if (p_tabListDiv.scrollWidth <= p_tabListDiv.clientWidth + 1) {
+		return;
+	}
+
+	// They don't -- give every shrinkable tab the identical, explicit width
+	// so they shrink (and cross the shrink-stage thresholds) in lockstep,
+	// instead of by however long each one's own label happens to be.
+	var v_fixedWidth = 0;
+	for (var f = 0; f < v_fixed.length; f++) {
+		var v_fixedStyle = getComputedStyle(v_fixed[f]);
+		v_fixedWidth += v_fixed[f].getBoundingClientRect().width + parseFloat(v_fixedStyle.marginLeft) + parseFloat(v_fixedStyle.marginRight);
+	}
+	var v_shrinkableMargin = parseFloat(getComputedStyle(v_shrinkable[0]).marginRight) || 0;
+	// clientWidth is the PADDING box (padding included, border excluded) --
+	// children lay out within the CONTENT box only, so the row's own
+	// padding has to come off too, or every tab ends up overestimated by
+	// however wide that padding is.
+	var v_containerStyle = getComputedStyle(p_tabListDiv);
+	var v_innerWidth = p_tabListDiv.clientWidth - parseFloat(v_containerStyle.paddingLeft) - parseFloat(v_containerStyle.paddingRight);
+	var v_available = v_innerWidth - v_fixedWidth - v_shrinkableMargin * v_shrinkable.length;
+	var v_each = Math.max(MIN_SHRINK_WIDTH_PX, Math.floor(v_available / v_shrinkable.length));
+	for (var k = 0; k < v_shrinkable.length; k++) {
+		v_shrinkable[k].style.flex = "0 0 " + v_each + "px";
+	}
+
+	// Every shrinkable tab now shares the identical explicit width, so one
+	// measurement is enough to classify the whole row.
+	var v_width = v_shrinkable[0].getBoundingClientRect().width;
+	var v_hideClose = v_width > 0 && v_width < CLOSE_ZONE_THRESHOLD_PX;
+	var v_hideStatus = v_width > 0 && v_width < STATUS_ZONE_THRESHOLD_PX;
+	var v_iconOnly = v_width > 0 && v_width < ICON_ONLY_THRESHOLD_PX;
+	for (var m = 0; m < v_shrinkable.length; m++) {
+		v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--hide-close-zone", v_hideClose);
+		v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--hide-status-zone", v_hideStatus);
+		v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--icon-only", v_iconOnly);
+	}
+}
+
+// One shared observer, watching every tabControl's tab-LIST row (not the
+// individual tabs -- see recomputeTabShrinkStages' comment for why that
+// distinction matters) for width changes, e.g. the window resizing.
+// Adding/removing a tab or changing which one is active doesn't resize the
+// row itself (it's sized by its parent, not its children), so those paths
+// call recomputeTabShrinkStages directly instead of relying on this.
+const v_tabListObserver =
 	typeof ResizeObserver !== "undefined"
 		? new ResizeObserver(function (p_entries) {
 				for (const v_entry of p_entries) {
-					// Deliberately re-measuring via getBoundingClientRect()
-					// (border-box, matching the CSS min-width this is compared
-					// against) rather than trusting contentRect/contentBoxSize
-					// off the entry -- those report the CONTENT box (padding
-					// excluded), which for a ~44px-padded tab is well under
-					// this threshold even at full natural width, hiding the
-					// label on every tab rather than just genuinely narrow
-					// ones.
-					var v_width = v_entry.target.getBoundingClientRect().width;
-					v_entry.target.classList.toggle("omnidb__tab-menu__link--icon-only", v_width > 0 && v_width < ICON_ONLY_THRESHOLD_PX);
+					recomputeTabShrinkStages(v_entry.target);
 				}
 			})
 		: null;
@@ -143,6 +246,10 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 	v_div.appendChild(v_tab_menu);
 	v_div.appendChild(v_div_tab_content_list);
 
+	if (v_tabListObserver) {
+		v_tabListObserver.observe(v_div_tab_list);
+	}
+
 	if (p_layout === "card") {
 		v_div.classList.add("card");
 		v_tab_menu.classList.add("card-header");
@@ -211,6 +318,25 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 
 					p_tab.elementA.classList.add("active");
 					p_tab.elementDiv.classList.add("active");
+					// The tab becoming active never shrinks (see its own CSS
+					// rule), so any explicit width/shrink-stage classes it's
+					// still carrying from when it WAS inactive are stale --
+					// recomputeTabShrinkStages only ever resets SHRINKABLE
+					// (i.e. inactive) tabs, skipping whichever one is active,
+					// so this one has to be cleared explicitly here instead
+					// or it stays pinned to its last inactive width forever
+					// (the exact same "stuck" problem recomputeTabShrinkStages
+					// itself exists to solve). The sibling that just lost
+					// .active needs its own shrink stage freshly (re)computed
+					// for its now-different width too, since it's rejoining
+					// the shrinkable pool -- that's what the call below does.
+					p_tab.elementA.style.flex = "";
+					p_tab.elementA.classList.remove(
+						"omnidb__tab-menu__link--hide-close-zone",
+						"omnidb__tab-menu__link--hide-status-zone",
+						"omnidb__tab-menu__link--icon-only",
+					);
+					recomputeTabShrinkStages(this.tabListDiv);
 
 					this.selectedA = p_tab.elementA;
 					this.selectedDiv = p_tab.elementDiv;
@@ -236,6 +362,14 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 
 				this.tabList[p_index].elementA.classList.add("active");
 				this.tabList[p_index].elementDiv.classList.add("active");
+				// See the identical comment in selectTab above.
+				this.tabList[p_index].elementA.style.flex = "";
+				this.tabList[p_index].elementA.classList.remove(
+					"omnidb__tab-menu__link--hide-close-zone",
+					"omnidb__tab-menu__link--hide-status-zone",
+					"omnidb__tab-menu__link--icon-only",
+				);
+				recomputeTabShrinkStages(this.tabListDiv);
 
 				this.selectedA = this.tabList[p_index].elementA;
 				this.selectedDiv = this.tabList[p_index].elementDiv;
@@ -285,9 +419,6 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		removeTab: function (p_tab) {
 			var v_tab = p_tab;
 
-			if (v_tabWidthObserver) {
-				v_tabWidthObserver.unobserve(v_tab.elementA);
-			}
 			v_tab.elementDiv.parentNode.removeChild(v_tab.elementDiv);
 			v_tab.elementA.parentNode.removeChild(v_tab.elementA);
 
@@ -312,6 +443,11 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			}
 
 			this.tabList.splice(this.tabList.indexOf(p_tab), 1);
+			// One less tab competing for the row -- the remaining ones may
+			// now have room to grow back, which (see recomputeTabShrinkStages'
+			// comment) can't happen on its own for any of them already down
+			// to --icon-only.
+			recomputeTabShrinkStages(this.tabListDiv);
 		},
 		renameTab: function (p_tab, p_name) {
 			var v_tab_title_span = p_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
@@ -403,6 +539,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		 * @param {Function|false} [config.p_rightClickFunction] Callback for oncontextmenu.
 		 * @param {Function|null} [config.p_selectFunction]  Callback for after the tab-content is rendered.
 		 * @param {boolean} [config.p_selectable]  Defines if the the tab-content is controlled by default bootstrap tab system selection. Used together with p_clickFunction to override the selecting tab behaviour, like the snippets panel.
+		 * @param {string|false} [config.p_status] HTML string for a trailing status indicator (e.g. the loading spinner / success checkmark on Query/Console/... tabs). Rendered in its own reserved zone (Zone D, mirroring the close button's Zone A) instead of inline after the name, so it can't be clipped by the name's own ellipsis and can be hidden -- together with its reserved space -- as a discrete shrink stage.
 		 * @param {string|false} [config.p_tooltip_name]  HTML string is accepted as an optional tooltip.
 		 * @return {any} Creates the tab object in this tabControl.
 		 */
@@ -419,6 +556,7 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			p_rightClickFunction = false,
 			p_selectFunction = null,
 			p_selectable = true,
+			p_status = false,
 			p_tooltip_name = false,
 		}) {
 			var v_control = this;
@@ -437,6 +575,8 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				elementDiv: null,
 				/** @type {any} */
 				elementClose: null,
+				/** @type {any} */
+				elementStatus: null,
 				/** @type {any} */
 				tag: null,
 				clickFunction: p_clickFunction,
@@ -620,6 +760,20 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			// what actually keeps the glyph hidden for non-closable tabs.
 			v_a.appendChild(v_close);
 
+			if (p_status !== false) {
+				// Sibling of .link-content rather than nested inside the name
+				// span -- Zone D, absolutely positioned same as the close
+				// button's Zone A (see _topbar.scss) -- so a long, ellipsized
+				// title can never clip this out from under it, and so the
+				// --hide-status-zone shrink stage can hide it (and reclaim its
+				// space) independently of the name text.
+				var v_status = document.createElement("span");
+				v_status.className = "omnidb__tab-menu__link-status";
+				v_status.innerHTML = p_status;
+				v_tab.elementStatus = v_status;
+				v_a.appendChild(v_status);
+			}
+
 			v_a.ondblclick = function (e) {
 				if (v_tab.dblClickFunction != null) v_tab.dblClickFunction(v_tab);
 			};
@@ -655,9 +809,10 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				this.tabList.push(v_tab);
 			}
 
-			if (v_tabWidthObserver) {
-				v_tabWidthObserver.observe(v_a);
-			}
+			// A new tab means one more competitor for the row's space --
+			// every existing inactive tab needs its shrink stage
+			// recomputed for its own now-smaller equal share.
+			recomputeTabShrinkStages(this.tabListDiv);
 
 			return v_tab;
 		},

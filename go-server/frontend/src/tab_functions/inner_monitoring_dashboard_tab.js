@@ -46,10 +46,8 @@ export var v_createMonitorDashboardTabFunction = function () {
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
 	// Creating tab name pattern.
-	let v_name_html =
-		'<span id="tab_title">' +
-		" Monitoring" +
-		"</span>" +
+	let v_name_html = '<span id="tab_title">' + " Monitoring" + "</span>";
+	let v_status_html =
 		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
 		"</span>" +
@@ -59,6 +57,7 @@ export var v_createMonitorDashboardTabFunction = function () {
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
 		p_icon: '<i class="fas fa-chart-bar icon-tab-title"></i>',
 		p_name: v_name_html,
+		p_status: v_status_html,
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();
@@ -182,8 +181,8 @@ export var v_createNewMonitorUnitTabFunction = function () {
 	// Removing last tab of the inner tab list
 	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
 
-	let v_name_html =
-		'<span id="tab_title">Monitor Unit</span>' +
+	let v_name_html = '<span id="tab_title">Monitor Unit</span>';
+	let v_status_html =
 		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
 		"</span>" +
@@ -193,6 +192,7 @@ export var v_createNewMonitorUnitTabFunction = function () {
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
 		p_icon: '<i class="fas fa-align-left icon-tab-title"></i>',
 		p_name: v_name_html,
+		p_status: v_status_html,
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();

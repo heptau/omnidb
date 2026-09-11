@@ -57,10 +57,9 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	v_connTabControl.snippet_tag.tabControl.removeTabIndex(v_connTabControl.snippet_tag.tabControl.tabList.length - 1);
 	var v_tab = v_connTabControl.snippet_tag.tabControl.createTab({
 		p_icon: '<i class="fas fa-scroll icon-tab-title"></i>',
-		p_name:
-			'<span id="tab_title">' +
-			v_name +
-			'</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+		p_name: '<span id="tab_title">' + v_name + "</span>",
+		p_status:
+			'<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
 		p_selectFunction: function () {
 			refreshHeights();
 			if (this.tag != null && this.editor != null) {

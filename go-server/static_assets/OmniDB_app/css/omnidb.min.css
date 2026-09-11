@@ -711,6 +711,15 @@ SOFTWARE.
   flex-direction: row;
   height: 100%;
   justify-content: flex-start;
+  /* Fills the tab's own available width instead of shrinking to its own
+   * content -- without this, a label with no room to fully fit could
+   * render at its full, unclipped natural width (overflowing the tab
+   * rather than being caught by the name span's own ellipsis, which only
+   * engages once ITS container is actually constrained), and the tab's
+   * `justify-content` would then be centering (or left-aligning against)
+   * a block that doesn't actually match the tab's real width. */
+  flex: 1 1 auto;
+  min-width: 0;
 }
 
 .omnidb__tab-menu--secondary {
@@ -727,13 +736,29 @@ SOFTWARE.
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link {
   padding-left: var(--tab-zone-width) !important;
   padding-right: var(--tab-zone-width) !important;
-  flex: 0 1 auto;
-  min-width: 60px;
+  /* Natural, content-driven width by default (no wasted space around a
+   * short label), and -- deliberately -- NO shrinking of its own
+   * (flex-shrink:0): tabs.js's recomputeTabShrinkStages is what forces
+   * every inactive tab to an identical EXPLICIT width (overriding this
+   * `flex` via inline style) once the row doesn't fit them all at their
+   * natural size, so they shrink in lockstep instead of by however long
+   * each one's own label happens to be. Plain CSS flex-shrink can't do
+   * both "natural size when there's room" and "exactly equal when
+   * cramped" at once -- it distributes shrinkage proportionally to each
+   * item's own basis, so differently-sized tabs still end up different
+   * widths after shrinking -- and worse, left enabled here it can absorb
+   * an overflow ALL BY ITSELF (unevenly) before recomputeTabShrinkStages
+   * ever gets a chance to step in, since that only measures for overflow
+   * in the first place. min-width stays as a floor for the one moment
+   * before recomputeTabShrinkStages' own inline override lands (or if
+   * ResizeObserver is unavailable), not as a mechanism this relies on. */
+  flex: 0 0 auto;
+  min-width: 40px;
   overflow: hidden;
 }
 
-/* The tab for whatever panel is currently open never shrinks -- only the
- * OTHER (inactive) tabs give up space when the row doesn't fit. */
+/* The tab for whatever panel is currently open is never touched by the
+ * above -- it keeps its own natural content width and never shrinks. */
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link.active {
   flex-shrink: 0 !important;
 }
@@ -754,6 +779,26 @@ SOFTWARE.
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link-icon {
   margin-right: 1.5px;
   flex-shrink: 0;
+}
+
+/* Progressive shrink stage 2 (see tabs.js's ResizeObserver, and
+ * _topbar.scss's --hide-close-zone for stage 1): reclaim the status-icon's
+ * Zone D, giving the still-visible label more room before the tab falls all
+ * the way to --icon-only. Secondary tier only -- the other tiers never
+ * render a status icon. Specificity (3 classes) already outranks this
+ * tier's own base padding rule above (2 classes) regardless of source
+ * order, unlike the close-zone rule (which also has to outrank the primary
+ * tier's 4-class rule and so lives in _topbar.scss instead -- see there).
+ * Guarded off `.active` so the selected tab -- which never shrinks -- is
+ * never affected, even for the one frame before the ResizeObserver would
+ * otherwise clear the class after a selection changes a tab's width. */
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link--hide-status-zone:not(.active) {
+  padding-right: 6px !important;
+}
+
+.omnidb__tab-menu__link--hide-status-zone:not(.active) .omnidb__tab-menu__link-status,
+.omnidb__tab-menu__link--hide-status-zone:not(.active) .omnidb__tab-dirty-dot {
+  display: none !important;
 }
 
 .omnidb__tab-menu.omnidb__tab-menu--secondary .omnidb__tab-menu__link:hover .omnidb__tab-menu__link-close {
@@ -5499,7 +5544,7 @@ body.omnidb--theme-dark li.welcome_release_item span {
   --title-color: #1c1c1e;
   --tab-radius: 6px;
   --tab-height: 28px;
-  --tab-zone-width: 24px;
+  --tab-zone-width: 20px;
 }
 
 body.omnidb--theme-dark {
@@ -5618,9 +5663,23 @@ select.form-control {
 .omnidb__tree-tabs .nav-link {
   padding-left: var(--tab-zone-width) !important;
   padding-right: var(--tab-zone-width) !important;
-  flex: 0 1 auto !important;
-  min-width: 60px !important;
+  /* Natural, content-driven width by default (no wasted space around a
+   * short label), and -- deliberately -- NO shrinking of its own. Mirrors
+   * the secondary tier's identical fix in _base.scss; see that rule's
+   * comment for why flex-shrink has to stay off here rather than just
+   * being made equal (tabs.js's recomputeTabShrinkStages is what forces
+   * every inactive tab to an identical EXPLICIT width via inline style,
+   * but only once it detects the row doesn't fit them all -- which
+   * flex-shrink left enabled here could otherwise mask by quietly, and
+   * unevenly, absorbing the overflow itself first). */
+  flex: 0 0 auto !important;
+  min-width: 40px !important;
   overflow: hidden !important;
+  /* Horizontal alignment, not vertical (align-items handles that) -- see
+   * the identical fix/comment on the secondary tier's own rule in this
+   * file for why `center` here could push a long label's leading icon
+   * out past the tab's own left edge. */
+  justify-content: flex-start !important;
   /* Matches the secondary tier's (Query/Console/Snippet) gap -- the shared
    * block above sets 4px for every alternative including this one; halving
    * it just here keeps the still-in-scope primary/tree-tabs tiers visually
@@ -5629,11 +5688,35 @@ select.form-control {
   margin-right: 2px !important;
 }
 
-/* The tab for whatever panel is currently open never shrinks -- only the
- * OTHER (inactive) tabs give up space when the row doesn't fit. */
+/* The tab for whatever panel is currently open is never touched by the
+ * above -- it keeps its own natural content width and never shrinks. */
 .omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link.active,
 .omnidb__tree-tabs .nav-link.active {
   flex-shrink: 0 !important;
+}
+
+/* Progressive shrink stage 1 (see tabs.js's ResizeObserver, and
+ * _base.scss's --hide-status-zone for stage 2): reclaim the close-button's
+ * Zone A across every tier, giving the still-visible label more room before
+ * the tab falls all the way to --icon-only. Applies to every tier (not just
+ * secondary, unlike --hide-status-zone) since every closable tab has a
+ * close button regardless of tier -- so this needs a primary-tier
+ * alternative chaining the same 4 classes as that tier's own shrink-to-fit
+ * rule above, otherwise a bare 1-class selector loses to it outright
+ * regardless of source order. Guarded off `.active` so the selected tab --
+ * which never shrinks -- is never affected, even for the one frame before
+ * the ResizeObserver would otherwise clear the class after a selection
+ * changes a tab's width. */
+.omnidb__tab-menu__link--hide-close-zone:not(.active),
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--hide-close-zone:not(.active),
+.omnidb__tree-tabs .nav-link.omnidb__tab-menu__link--hide-close-zone:not(.active) {
+  padding-left: 6px !important;
+}
+
+.omnidb__tab-menu__link--hide-close-zone:not(.active) .omnidb__tab-menu__link-close,
+.omnidb__tab-menu__link--hide-close-zone:not(.active):hover .omnidb__tab-menu__link-close {
+  opacity: 0 !important;
+  pointer-events: none !important;
 }
 
 .omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link-name,
@@ -5705,7 +5788,15 @@ select.form-control {
   height: var(--tab-height) !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
+  /* Horizontal, not vertical (align-items above already handles that) --
+   * icon+label must start flush at the left edge (after the close-icon
+   * zone), not centered: with `.omnidb__tab-menu__link-content` sized to
+   * its own content rather than stretched to fill this `<a>`, `center`
+   * here used to center that (possibly narrower, or -- for a long,
+   * unclipped label -- WIDER) block instead of pinning it to the left,
+   * which could push the leading icon out past the tab's own left edge
+   * entirely for a long enough label. */
+  justify-content: flex-start !important;
   /* base.scss's shared rule already gives this tier `border-radius: 6px 6px
    * 0 0` and `margin-right: 4px`, but non-`!important` -- the earlier
    * `.nav-item { margin: 0 !important; ... }` reset (every tab link also
@@ -5948,6 +6039,27 @@ select.form-control {
 .nav-link:hover .close,
 .omnidb__tab-menu__link:hover .omnidb__tab-menu__link-close {
   opacity: 1 !important;
+}
+
+/* Zone D: the trailing status indicator (Query/Console/.../MonitoringDashboard
+ * tabs' loading spinner / success checkmark) -- mirrors the close button's
+ * Zone A positioning above, just anchored to the right edge instead of the
+ * left. Rendered as its own element (see tabs.js's createTab p_status) rather
+ * than inline after the title, so a long, ellipsized name can never clip it,
+ * and unlike the close button it's purely informational (no hover reveal,
+ * never interactive). A snippet tab's unsaved-changes dot
+ * (.omnidb__tab-dirty-dot) shares this same reserved zone. */
+.omnidb__tab-menu__link-status {
+  position: absolute;
+  right: 1px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  pointer-events: none;
 }
 
 /* Close-icon (Zone A) visibility gating: reserved as layout space on every
@@ -6259,6 +6371,19 @@ select.form-control {
 
 #omnidb_section_nav .omnidb__tab-menu__link-name {
   display: none !important;
+}
+
+/* _base.scss's shared `.omnidb__tab-menu .omnidb__tab-menu__link-content`
+ * rule left-aligns icon+label (flex-start) so a long, unclipped label can't
+ * get centered against a mismatched width -- see that rule's comment. This
+ * bar's name span is always empty and hidden (immediately above), so
+ * there's no label to protect from that; left unfixed, its "content" is
+ * just the icon, and flex-start leaves it flush against the button's own
+ * left edge instead of centered in the 40x40 square, unlike every other
+ * icon-only rendering in the app (--compact/--icon-only in this same file,
+ * both explicitly centered). */
+#omnidb_section_nav .omnidb__tab-menu__link-content {
+  justify-content: center !important;
 }
 
 #omnidb_section_nav .omnidb__menu__btn.omnidb__tab-menu__link-icon {
@@ -7068,9 +7193,10 @@ select.form-control {
  * reliably wins over it instead of inheriting a shrinkable min-width.
  *
  * `--icon-only` (the ResizeObserver-driven "too narrow to show a label"
- * state -- see tabs.js) gets the exact same box: the user's own reference
- * point for "what should the smallest a tab ever gets look like" was this
- * same "+" tab, so it should render identically, not just similarly. */
+ * state -- see tabs.js) gets the same fixed-width box, just left-aligned
+ * instead of centered (see the two alignment-specific rules below) -- a real
+ * tab's icon should stay exactly where it always sat while its label fades
+ * away, not jump to the middle the way the iconless "+" button's does. */
 .omnidb__tab-menu__link--compact,
 .omnidb__tab-menu__link--icon-only,
 .omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--compact,
@@ -7081,7 +7207,25 @@ select.form-control {
   width: 40px !important;
   flex: 0 0 40px !important;
   padding: 0 !important;
+}
+
+/* --compact (the trailing "+" add-panel tab, which has no title to
+ * left-align against) stays centered. */
+.omnidb__tab-menu__link--compact,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--compact,
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link--compact {
   justify-content: center !important;
+}
+
+/* --icon-only (a real tab that shrank down to just its icon) is
+ * left-aligned instead, with a small inset matching the close/status
+ * zones' own left edge, so shrinking reads as "the label faded away" from
+ * a fixed icon, not "the tab's content jumped to the middle". */
+.omnidb__tab-menu__link--icon-only,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--icon-only,
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link--icon-only {
+  justify-content: flex-start !important;
+  padding-left: 10px !important;
 }
 
 /* The compact/icon-only tab has no visible name, but createTab() always
@@ -7139,9 +7283,12 @@ select.form-control {
   margin: 0 !important;
 }
 
-.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-content,
-.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-content {
+.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-content {
   justify-content: center !important;
+}
+
+.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-content {
+  justify-content: flex-start !important;
 }
 
 /* The "+" add-panel button's icon was inconsistently colored: the outer

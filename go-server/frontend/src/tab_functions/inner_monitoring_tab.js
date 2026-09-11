@@ -48,10 +48,9 @@ export var v_createMonitoringTabFunction = function (p_name, p_query, p_actions)
 	// Creating console tab in the inner tab list
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
 		p_icon: `<i class="fas fa-desktop icon-tab-title"></i>`,
-		p_name:
-			'<span id="tab_title">' +
-			v_name +
-			'</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+		p_name: '<span id="tab_title">' + v_name + "</span>",
+		p_status:
+			'<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
 		p_selectFunction: function () {
 			document.title = "OmniDB";
 			if (this.tag != null) {

@@ -21,12 +21,15 @@
 
 	--tab-radius: 6px;
 	--tab-height: 28px;
-	// Shared reserved width for a tab button's leading close-icon slot and
-	// its trailing balancing space (Zones A/D of the unified tab-button
-	// layout) -- same value at every tier, primary and secondary. +2px over
-	// the close-icon's own right edge (see .omnidb__tab-menu__link-close's
-	// `left`) so the icon that follows doesn't sit flush against it.
-	--tab-zone-width: 24px;
+	// Shared reserved width for a tab button's leading close-icon zone
+	// (Zone A) and trailing status-icon zone (Zone D) -- same value at
+	// every tier, primary and secondary. Sized to the icon itself (16px,
+	// positioned 1px in from the edge -- see .omnidb__tab-menu__link-close's
+	// `left` / .omnidb__tab-menu__link-status's `right`) plus a few px so
+	// the icon/label that follows doesn't sit flush against it -- not
+	// padding for padding's sake, so the tab's resting (unshrunk) state
+	// doesn't carry visibly wasted space around a short label.
+	--tab-zone-width: 20px;
 }
 
 // Deliberately no `@media (prefers-color-scheme: dark)` fallback here --

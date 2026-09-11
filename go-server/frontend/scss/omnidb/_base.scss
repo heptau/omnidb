@@ -158,6 +158,15 @@
 	flex-direction: row;
 	height: 100%;
 	justify-content: flex-start;
+	/* Fills the tab's own available width instead of shrinking to its own
+	 * content -- without this, a label with no room to fully fit could
+	 * render at its full, unclipped natural width (overflowing the tab
+	 * rather than being caught by the name span's own ellipsis, which only
+	 * engages once ITS container is actually constrained), and the tab's
+	 * `justify-content` would then be centering (or left-aligning against)
+	 * a block that doesn't actually match the tab's real width. */
+	flex: 1 1 auto;
+	min-width: 0;
 }
 
 .omnidb__tab-menu--secondary {
@@ -174,13 +183,29 @@
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link {
 	padding-left: var(--tab-zone-width) !important;
 	padding-right: var(--tab-zone-width) !important;
-	flex: 0 1 auto;
-	min-width: 60px;
+	/* Natural, content-driven width by default (no wasted space around a
+	 * short label), and -- deliberately -- NO shrinking of its own
+	 * (flex-shrink:0): tabs.js's recomputeTabShrinkStages is what forces
+	 * every inactive tab to an identical EXPLICIT width (overriding this
+	 * `flex` via inline style) once the row doesn't fit them all at their
+	 * natural size, so they shrink in lockstep instead of by however long
+	 * each one's own label happens to be. Plain CSS flex-shrink can't do
+	 * both "natural size when there's room" and "exactly equal when
+	 * cramped" at once -- it distributes shrinkage proportionally to each
+	 * item's own basis, so differently-sized tabs still end up different
+	 * widths after shrinking -- and worse, left enabled here it can absorb
+	 * an overflow ALL BY ITSELF (unevenly) before recomputeTabShrinkStages
+	 * ever gets a chance to step in, since that only measures for overflow
+	 * in the first place. min-width stays as a floor for the one moment
+	 * before recomputeTabShrinkStages' own inline override lands (or if
+	 * ResizeObserver is unavailable), not as a mechanism this relies on. */
+	flex: 0 0 auto;
+	min-width: 40px;
 	overflow: hidden;
 }
 
-/* The tab for whatever panel is currently open never shrinks -- only the
- * OTHER (inactive) tabs give up space when the row doesn't fit. */
+/* The tab for whatever panel is currently open is never touched by the
+ * above -- it keeps its own natural content width and never shrinks. */
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link.active {
 	flex-shrink: 0 !important;
 }
@@ -202,6 +227,26 @@
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link-icon {
 	margin-right: 1.5px;
 	flex-shrink: 0;
+}
+
+/* Progressive shrink stage 2 (see tabs.js's ResizeObserver, and
+ * _topbar.scss's --hide-close-zone for stage 1): reclaim the status-icon's
+ * Zone D, giving the still-visible label more room before the tab falls all
+ * the way to --icon-only. Secondary tier only -- the other tiers never
+ * render a status icon. Specificity (3 classes) already outranks this
+ * tier's own base padding rule above (2 classes) regardless of source
+ * order, unlike the close-zone rule (which also has to outrank the primary
+ * tier's 4-class rule and so lives in _topbar.scss instead -- see there).
+ * Guarded off `.active` so the selected tab -- which never shrinks -- is
+ * never affected, even for the one frame before the ResizeObserver would
+ * otherwise clear the class after a selection changes a tab's width. */
+.omnidb__tab-menu--secondary .omnidb__tab-menu__link--hide-status-zone:not(.active) {
+	padding-right: 6px !important;
+}
+
+.omnidb__tab-menu__link--hide-status-zone:not(.active) .omnidb__tab-menu__link-status,
+.omnidb__tab-menu__link--hide-status-zone:not(.active) .omnidb__tab-dirty-dot {
+	display: none !important;
 }
 
 .omnidb__tab-menu.omnidb__tab-menu--secondary .omnidb__tab-menu__link:hover .omnidb__tab-menu__link-close {

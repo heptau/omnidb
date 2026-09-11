@@ -717,15 +717,40 @@ export function resizeConnectionHorizontal(event) {
 	var v_pending = false;
 	var v_last_x = v_start_x;
 
+	// Below this, div_right would be squeezed to (or past) zero, which -- like
+	// resizeConnectionsPanel's own v_max_allowed_width clamp -- is what leaves
+	// a horizontal scrollbar stuck: an unclamped drag lets v_pixel_value run
+	// past v_total_width - 12, so the "px" written to div_right goes negative,
+	// the browser silently ignores that write and leaves its previous
+	// (too-wide) size in place, and div_left + splitter + stale div_right no
+	// longer fit the row.
+	var MIN_RIGHT_WIDTH = 200;
+
 	var v_apply = function () {
 		v_pending = false;
 
+		var v_total_width = v_connTabControl.selectedDiv.getBoundingClientRect().width;
+		var v_max_pixel_value = v_total_width - 12 - MIN_RIGHT_WIDTH;
+
 		var v_pixel_value = v_start_width + (v_last_x - v_start_x);
 		if (v_pixel_value < 0) v_pixel_value = 0;
+		if (v_pixel_value > v_max_pixel_value) v_pixel_value = v_max_pixel_value;
 		var v_left_width_value = v_pixel_value + "px";
 
 		v_div_left.style["max-width"] = v_left_width_value;
 		v_div_left.style["width"] = v_left_width_value;
+
+		// div_right carries its own explicit width (see
+		// refreshOuterConnectionHeights), so growing/shrinking div_left alone
+		// leaves it stale -- the query area then overflows into a scrollbar
+		// instead of shrinking, only picking up the correct width later on a
+		// window resize. Keep it in lockstep with div_left on every frame.
+		var v_div_right = v_connTabControl.selectedTab.tag.divRight;
+		if (v_div_right) {
+			var v_right_width_value = v_total_width - v_pixel_value - 12 + "px";
+			v_div_right.style["max-width"] = v_right_width_value;
+			v_div_right.style["width"] = v_right_width_value;
+		}
 
 		// Direct calls instead of refreshHeights() -- see resizeVertical's
 		// comment for why that function's flat, un-cleared setTimeout makes a

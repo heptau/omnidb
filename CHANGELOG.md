@@ -7,7 +7,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+- Tab shrinking is now progressive instead of a single icon-only cutoff: as a row of tabs runs out
+  of room, each tab first drops its close-button's reserved zone (Zone A), then its trailing
+  status-icon zone (Zone D — the loading spinner/checkmark, or a snippet's unsaved-changes dot),
+  and only then collapses to icon-only, instead of jumping straight from full width to icon-only.
+  Tabs also default to their natural, content-driven width (no more fixed `min-width`/padding
+  wasting space around a short label) and only get pinned to an identical explicit width once the
+  row actually overflows, so they shrink in lockstep instead of unevenly; a tab regains its
+  natural width immediately once it's reselected or the row has room again, instead of staying
+  stuck at whatever width it last shrank to (`tabs.js`'s new `recomputeTabShrinkStages`, replacing
+  the old single-threshold `ResizeObserver`; `_base.scss`, `_topbar.scss`, `_variables.scss`). The
+  status indicator itself is now rendered in its own reserved zone via a new tab `p_status` option
+  instead of being crammed inline after the title, so a long, ellipsized name can no longer clip it
+  (`tabs.js`, every `tab_functions/inner_*_tab.js`).
+
 ### Fixed
+- The vertical section-nav icon bar (the Connections/Database/Notifications/... icons along the far
+  left edge) had its icons sitting flush against the button's left edge instead of centered — a
+  side effect of the tab content-width rework above's `justify-content: flex-start`, which makes
+  sense for a text label but not for this bar's icon-only, label-less buttons (`_topbar.scss`).
+- Dragging a connection's horizontal splitter (between the DB tree and the query/console panel)
+  only resized the left panel; the right side kept its previous explicit width, so it either got
+  squeezed into a scrollbar or only picked up the correct size on the next window resize. The right
+  panel now resizes in lockstep with the drag, clamped so it can never be squeezed past a 200px
+  minimum width (`workspace.js`).
 - Tab strip drag-and-drop reordering didn't work in the packaged desktop app's WKWebView.
   `dataTransfer.setData()` is now set on `dragstart`, with live `dragover` reordering on the strip
   itself, mirroring the sidebar connection list's existing drag implementation (`tabs.js`). The

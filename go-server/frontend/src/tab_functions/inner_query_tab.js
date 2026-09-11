@@ -59,10 +59,8 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	if (p_table) {
 		v_name = p_table;
 	}
-	let v_name_html =
-		'<span id="tab_title">' +
-		v_name +
-		"</span>" +
+	let v_name_html = '<span id="tab_title">' + v_name + "</span>";
+	let v_status_html =
 		'<span id="tab_loading" style="display:none;">' +
 		'<i class="tab-icon node-spin"></i>' +
 		"</span>" +
@@ -72,6 +70,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
 		p_icon: '<i class="fas fa-database icon-tab-title"></i>',
 		p_name: v_name_html,
+		p_status: v_status_html,
 		p_selectFunction: function () {
 			if (this.tag != null) {
 				this.tag.resize();

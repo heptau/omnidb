@@ -55,11 +55,60 @@
   function endLoading(...args) {
     return window.endLoading(...args);
   }
-  const ICON_ONLY_THRESHOLD_PX = 64;
-  const v_tabWidthObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(function(p_entries) {
+  const CLOSE_ZONE_THRESHOLD_PX = 108;
+  const STATUS_ZONE_THRESHOLD_PX = 84;
+  const ICON_ONLY_THRESHOLD_PX = 60;
+  const MIN_SHRINK_WIDTH_PX = 40;
+  function recomputeTabShrinkStages(p_tabListDiv) {
+    var v_children = p_tabListDiv.children;
+    var v_shrinkable = [];
+    var v_fixed = [];
+    for (var i2 = 0; i2 < v_children.length; i2++) {
+      var v_link = v_children[i2];
+      if (v_link.classList.contains("active") || v_link.classList.contains("omnidb__tab-menu__link--compact")) {
+        v_fixed.push(v_link);
+      } else {
+        v_shrinkable.push(v_link);
+      }
+    }
+    for (var j2 = 0; j2 < v_shrinkable.length; j2++) {
+      v_shrinkable[j2].style.flex = "";
+      v_shrinkable[j2].classList.remove(
+        "omnidb__tab-menu__link--hide-close-zone",
+        "omnidb__tab-menu__link--hide-status-zone",
+        "omnidb__tab-menu__link--icon-only"
+      );
+    }
+    if (v_shrinkable.length === 0) return;
+    if (p_tabListDiv.scrollWidth <= p_tabListDiv.clientWidth + 1) {
+      return;
+    }
+    var v_fixedWidth = 0;
+    for (var f = 0; f < v_fixed.length; f++) {
+      var v_fixedStyle = getComputedStyle(v_fixed[f]);
+      v_fixedWidth += v_fixed[f].getBoundingClientRect().width + parseFloat(v_fixedStyle.marginLeft) + parseFloat(v_fixedStyle.marginRight);
+    }
+    var v_shrinkableMargin = parseFloat(getComputedStyle(v_shrinkable[0]).marginRight) || 0;
+    var v_containerStyle = getComputedStyle(p_tabListDiv);
+    var v_innerWidth = p_tabListDiv.clientWidth - parseFloat(v_containerStyle.paddingLeft) - parseFloat(v_containerStyle.paddingRight);
+    var v_available = v_innerWidth - v_fixedWidth - v_shrinkableMargin * v_shrinkable.length;
+    var v_each = Math.max(MIN_SHRINK_WIDTH_PX, Math.floor(v_available / v_shrinkable.length));
+    for (var k = 0; k < v_shrinkable.length; k++) {
+      v_shrinkable[k].style.flex = "0 0 " + v_each + "px";
+    }
+    var v_width = v_shrinkable[0].getBoundingClientRect().width;
+    var v_hideClose = v_width > 0 && v_width < CLOSE_ZONE_THRESHOLD_PX;
+    var v_hideStatus = v_width > 0 && v_width < STATUS_ZONE_THRESHOLD_PX;
+    var v_iconOnly = v_width > 0 && v_width < ICON_ONLY_THRESHOLD_PX;
+    for (var m = 0; m < v_shrinkable.length; m++) {
+      v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--hide-close-zone", v_hideClose);
+      v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--hide-status-zone", v_hideStatus);
+      v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--icon-only", v_iconOnly);
+    }
+  }
+  const v_tabListObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(function(p_entries) {
     for (const v_entry of p_entries) {
-      var v_width = v_entry.target.getBoundingClientRect().width;
-      v_entry.target.classList.toggle("omnidb__tab-menu__link--icon-only", v_width > 0 && v_width < ICON_ONLY_THRESHOLD_PX);
+      recomputeTabShrinkStages(v_entry.target);
     }
   }) : null;
   function composedPath(el2) {
@@ -101,6 +150,9 @@
     v_tab_menu.appendChild(v_nav);
     v_div.appendChild(v_tab_menu);
     v_div.appendChild(v_div_tab_content_list);
+    if (v_tabListObserver) {
+      v_tabListObserver.observe(v_div_tab_list);
+    }
     if (p_layout === "card") {
       v_div.classList.add("card");
       v_tab_menu.classList.add("card-header");
@@ -164,6 +216,13 @@
             }
             p_tab.elementA.classList.add("active");
             p_tab.elementDiv.classList.add("active");
+            p_tab.elementA.style.flex = "";
+            p_tab.elementA.classList.remove(
+              "omnidb__tab-menu__link--hide-close-zone",
+              "omnidb__tab-menu__link--hide-status-zone",
+              "omnidb__tab-menu__link--icon-only"
+            );
+            recomputeTabShrinkStages(this.tabListDiv);
             this.selectedA = p_tab.elementA;
             this.selectedDiv = p_tab.elementDiv;
             if (p_tab.selectFunction != null) {
@@ -183,6 +242,13 @@
           }
           this.tabList[p_index].elementA.classList.add("active");
           this.tabList[p_index].elementDiv.classList.add("active");
+          this.tabList[p_index].elementA.style.flex = "";
+          this.tabList[p_index].elementA.classList.remove(
+            "omnidb__tab-menu__link--hide-close-zone",
+            "omnidb__tab-menu__link--hide-status-zone",
+            "omnidb__tab-menu__link--icon-only"
+          );
+          recomputeTabShrinkStages(this.tabListDiv);
           this.selectedA = this.tabList[p_index].elementA;
           this.selectedDiv = this.tabList[p_index].elementDiv;
           if (this.tabList[p_index].selectFunction != null) {
@@ -227,9 +293,6 @@
       },
       removeTab: function(p_tab) {
         var v_tab = p_tab;
-        if (v_tabWidthObserver) {
-          v_tabWidthObserver.unobserve(v_tab.elementA);
-        }
         v_tab.elementDiv.parentNode.removeChild(v_tab.elementDiv);
         v_tab.elementA.parentNode.removeChild(v_tab.elementA);
         var v_index = this.tabList.indexOf(p_tab);
@@ -244,6 +307,7 @@
           }
         }
         this.tabList.splice(this.tabList.indexOf(p_tab), 1);
+        recomputeTabShrinkStages(this.tabListDiv);
       },
       renameTab: function(p_tab, p_name) {
         var v_tab_title_span = p_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
@@ -332,6 +396,7 @@
        * @param {Function|false} [config.p_rightClickFunction] Callback for oncontextmenu.
        * @param {Function|null} [config.p_selectFunction]  Callback for after the tab-content is rendered.
        * @param {boolean} [config.p_selectable]  Defines if the the tab-content is controlled by default bootstrap tab system selection. Used together with p_clickFunction to override the selecting tab behaviour, like the snippets panel.
+       * @param {string|false} [config.p_status] HTML string for a trailing status indicator (e.g. the loading spinner / success checkmark on Query/Console/... tabs). Rendered in its own reserved zone (Zone D, mirroring the close button's Zone A) instead of inline after the name, so it can't be clipped by the name's own ellipsis and can be hidden -- together with its reserved space -- as a discrete shrink stage.
        * @param {string|false} [config.p_tooltip_name]  HTML string is accepted as an optional tooltip.
        * @return {any} Creates the tab object in this tabControl.
        */
@@ -348,6 +413,7 @@
         p_rightClickFunction = false,
         p_selectFunction = null,
         p_selectable = true,
+        p_status = false,
         p_tooltip_name = false
       }) {
         var v_control = this;
@@ -364,6 +430,8 @@
           elementDiv: null,
           /** @type {any} */
           elementClose: null,
+          /** @type {any} */
+          elementStatus: null,
           /** @type {any} */
           tag: null,
           clickFunction: p_clickFunction,
@@ -475,6 +543,13 @@
         }
         v_a.innerHTML = '<span class="omnidb__tab-menu__link-content">' + v_icon + '<span class="omnidb__tab-menu__link-name">' + v_name + "</span></span>";
         v_a.appendChild(v_close);
+        if (p_status !== false) {
+          var v_status = document.createElement("span");
+          v_status.className = "omnidb__tab-menu__link-status";
+          v_status.innerHTML = p_status;
+          v_tab.elementStatus = v_status;
+          v_a.appendChild(v_status);
+        }
         v_a.ondblclick = function(e) {
           if (v_tab.dblClickFunction != null) v_tab.dblClickFunction(v_tab);
         };
@@ -505,9 +580,7 @@
           this.tabListContentDiv.appendChild(v_div2);
           this.tabList.push(v_tab);
         }
-        if (v_tabWidthObserver) {
-          v_tabWidthObserver.observe(v_a);
-        }
+        recomputeTabShrinkStages(this.tabListDiv);
         return v_tab;
       }
     };
@@ -9955,7 +10028,8 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-terminal icon-tab-title"></i>',
-      p_name: '<span> Console</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i></span>',
+      p_name: "Console",
+      p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -10213,7 +10287,8 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-table icon-tab-title"></i>',
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_name: '<span id="tab_title">' + v_name + "</span>",
+      p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -10388,7 +10463,8 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: `<i class="fab fa-hubspot icon-tab-title"></i>`,
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_name: '<span id="tab_title">' + v_name + "</span>",
+      p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         document.title = "OmniDB";
         if (this.tag != null) {
@@ -10465,10 +10541,12 @@
   }, Symbol.toStringTag, { value: "Module" }));
   var v_createMonitorDashboardTabFunction = function() {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-    let v_name_html = '<span id="tab_title"> Monitoring</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
+    let v_name_html = '<span id="tab_title"> Monitoring</span>';
+    let v_status_html = '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-chart-bar icon-tab-title"></i>',
       p_name: v_name_html,
+      p_status: v_status_html,
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -10564,10 +10642,12 @@
   };
   var v_createNewMonitorUnitTabFunction = function() {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-    let v_name_html = '<span id="tab_title">Monitor Unit</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
+    let v_name_html = '<span id="tab_title">Monitor Unit</span>';
+    let v_status_html = '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-align-left icon-tab-title"></i>',
       p_name: v_name_html,
+      p_status: v_status_html,
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -10716,7 +10796,8 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: `<i class="fas fa-desktop icon-tab-title"></i>`,
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_name: '<span id="tab_title">' + v_name + "</span>",
+      p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         document.title = "OmniDB";
         if (this.tag != null) {
@@ -11169,10 +11250,12 @@
     if (p_table) {
       v_name = p_table;
     }
-    let v_name_html = '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
+    let v_name_html = '<span id="tab_title">' + v_name + "</span>";
+    let v_status_html = '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-database icon-tab-title"></i>',
       p_name: v_name_html,
+      p_status: v_status_html,
       p_selectFunction: function() {
         if (this.tag != null) {
           this.tag.resize();
@@ -11587,7 +11670,8 @@
     v_connTabControl.snippet_tag.tabControl.removeTabIndex(v_connTabControl.snippet_tag.tabControl.tabList.length - 1);
     var v_tab = v_connTabControl.snippet_tag.tabControl.createTab({
       p_icon: '<i class="fas fa-scroll icon-tab-title"></i>',
-      p_name: '<span id="tab_title">' + v_name + '</span><span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
+      p_name: '<span id="tab_title">' + v_name + "</span>",
+      p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         refreshHeights();
         if (this.tag != null && this.editor != null) {
@@ -26130,13 +26214,23 @@
     var v_start_width = v_div_left.getBoundingClientRect().width;
     var v_pending = false;
     var v_last_x = v_start_x;
+    var MIN_RIGHT_WIDTH = 200;
     var v_apply = function() {
       v_pending = false;
+      var v_total_width = v_connTabControl.selectedDiv.getBoundingClientRect().width;
+      var v_max_pixel_value = v_total_width - 12 - MIN_RIGHT_WIDTH;
       var v_pixel_value = v_start_width + (v_last_x - v_start_x);
       if (v_pixel_value < 0) v_pixel_value = 0;
+      if (v_pixel_value > v_max_pixel_value) v_pixel_value = v_max_pixel_value;
       var v_left_width_value = v_pixel_value + "px";
       v_div_left.style["max-width"] = v_left_width_value;
       v_div_left.style["width"] = v_left_width_value;
+      var v_div_right = v_connTabControl.selectedTab.tag.divRight;
+      if (v_div_right) {
+        var v_right_width_value = v_total_width - v_pixel_value - 12 + "px";
+        v_div_right.style["max-width"] = v_right_width_value;
+        v_div_right.style["width"] = v_right_width_value;
+      }
       var v_tag = v_connTabControl.selectedTab.tag;
       if (v_tag.currTreeTab == "properties" && v_tag.gridProperties != null) {
         v_tag.gridProperties.render();
