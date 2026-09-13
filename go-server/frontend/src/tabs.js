@@ -698,12 +698,18 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			// own visible label -- stripping any nested HTML (loading
 			// spinner, dirty/check icon) down to plain text first.
 			var v_effective_tooltip_name = p_tooltip_name;
+			var v_effective_tooltip_is_plain = false;
 			if (!p_tooltip_name && v_name) {
 				var v_tooltip_scratch = document.createElement("div");
 				v_tooltip_scratch.innerHTML = v_name;
 				var v_plain_label = (v_tooltip_scratch.textContent || "").trim();
 				if (v_plain_label) {
 					v_effective_tooltip_name = v_plain_label;
+					// Already flattened to plain text above -- must NOT be
+					// fed back into innerHTML below, or literal "<"/">"
+					// characters it contains (e.g. from a decoded HTML
+					// entity in v_name) would be re-parsed as real markup.
+					v_effective_tooltip_is_plain = true;
 				}
 			}
 
@@ -715,16 +721,21 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				// Bootstrap Tooltip instance: no show/hide/dispose lifecycle
 				// to manage, no clipping against a scrolling ancestor, and no
 				// risk of an orphaned popup surviving a closed tab.
-				var v_tooltip_html_scratch = document.createElement("div");
-				v_tooltip_html_scratch.innerHTML = v_effective_tooltip_name;
-				var v_tooltip_lines = [];
-				v_tooltip_html_scratch.childNodes.forEach(function (node) {
-					var v_line = (node.textContent || "").trim();
-					if (v_line) v_tooltip_lines.push(v_line);
-				});
-				var v_tooltip_text = v_tooltip_lines.length
-					? v_tooltip_lines.join("\n")
-					: v_tooltip_html_scratch.textContent.trim();
+				var v_tooltip_text;
+				if (v_effective_tooltip_is_plain) {
+					v_tooltip_text = v_effective_tooltip_name;
+				} else {
+					var v_tooltip_html_scratch = document.createElement("div");
+					v_tooltip_html_scratch.innerHTML = v_effective_tooltip_name;
+					var v_tooltip_lines = [];
+					v_tooltip_html_scratch.childNodes.forEach(function (node) {
+						var v_line = (node.textContent || "").trim();
+						if (v_line) v_tooltip_lines.push(v_line);
+					});
+					v_tooltip_text = v_tooltip_lines.length
+						? v_tooltip_lines.join("\n")
+						: v_tooltip_html_scratch.textContent.trim();
+				}
 
 				// Toolbar tab-switcher buttons (Query/Console/Snippet/
 				// Monitoring/EditData/Properties/DDL, ...) show this tooltip's

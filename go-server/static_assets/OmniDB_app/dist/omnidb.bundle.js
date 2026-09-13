@@ -581,23 +581,30 @@
         var v_icon = p_icon !== false ? '<span class="omnidb__menu__btn omnidb__tab-menu__link-icon">' + p_icon + "</span>" : "";
         var v_name = p_name !== void 0 && p_name !== null && p_name !== "" ? p_name : "";
         var v_effective_tooltip_name = p_tooltip_name;
+        var v_effective_tooltip_is_plain = false;
         if (!p_tooltip_name && v_name) {
           var v_tooltip_scratch = document.createElement("div");
           v_tooltip_scratch.innerHTML = v_name;
           var v_plain_label = (v_tooltip_scratch.textContent || "").trim();
           if (v_plain_label) {
             v_effective_tooltip_name = v_plain_label;
+            v_effective_tooltip_is_plain = true;
           }
         }
         if (v_effective_tooltip_name) {
-          var v_tooltip_html_scratch = document.createElement("div");
-          v_tooltip_html_scratch.innerHTML = v_effective_tooltip_name;
-          var v_tooltip_lines = [];
-          v_tooltip_html_scratch.childNodes.forEach(function(node) {
-            var v_line = (node.textContent || "").trim();
-            if (v_line) v_tooltip_lines.push(v_line);
-          });
-          var v_tooltip_text = v_tooltip_lines.length ? v_tooltip_lines.join("\n") : v_tooltip_html_scratch.textContent.trim();
+          var v_tooltip_text;
+          if (v_effective_tooltip_is_plain) {
+            v_tooltip_text = v_effective_tooltip_name;
+          } else {
+            var v_tooltip_html_scratch = document.createElement("div");
+            v_tooltip_html_scratch.innerHTML = v_effective_tooltip_name;
+            var v_tooltip_lines = [];
+            v_tooltip_html_scratch.childNodes.forEach(function(node) {
+              var v_line = (node.textContent || "").trim();
+              if (v_line) v_tooltip_lines.push(v_line);
+            });
+            v_tooltip_text = v_tooltip_lines.length ? v_tooltip_lines.join("\n") : v_tooltip_html_scratch.textContent.trim();
+          }
           if (p_hierarchy === "primary" || !v_name) {
             v_a.setAttribute("title", v_tooltip_text);
           } else {
