@@ -101,6 +101,16 @@ export class VirtualGrid {
 		this._editable = !!this.options.omnidbEditable;
 		this._minSpareRows = this._editable ? this.options.minSpareRows || 0 : 0;
 		this._suppressCellFocus = !!this.options.suppressCellFocus;
+		// Every row is assumed to be exactly this tall -- it's what turns
+		// "which rows are visible" into a single division instead of a
+		// binary search over measured heights (see the module doc comment).
+		// That assumption only holds for single-line cells, which is all any
+		// other grid in the app renders; a grid whose cells are genuinely
+		// taller (e.g. Connected Users' two-line composite columns) must pass
+		// the real height here, or actual layout drifts from what this
+		// class's own scroll-position math expects -- the visible symptom
+		// being a scrollbar that overshoots the real content and snaps back.
+		this._rowHeight = this.options.rowHeight || ROW_HEIGHT;
 
 		/** @type {any[]} */
 		this._rows = [];
@@ -180,6 +190,7 @@ export class VirtualGrid {
 				width: col.width || MIN_COL_WIDTH,
 				tooltip: col.tooltip,
 				align: col.align,
+				verticalAlign: col.verticalAlign,
 				pinned: pinned,
 				renderer: col.renderer,
 				readOnly: !!col.readOnly,
@@ -294,7 +305,10 @@ export class VirtualGrid {
 			th.innerHTML = col.title;
 			const tooltipText = htmlToText(col.tooltip) || htmlToText(col.title);
 			if (tooltipText) th.title = tooltipText;
-			if (col.align) th.style.textAlign = col.align;
+			// col.align is a *data*-cell alignment (see _renderRow below) --
+			// deliberately not mirrored onto the header, so a right-aligned
+			// numeric column still reads its name left-to-right like every
+			// other header, only the values under it shift right.
 
 			if (!this._editable) {
 				th.style.cursor = "pointer";
@@ -428,8 +442,8 @@ export class VirtualGrid {
 		const scrollTop = this._scrollEl.scrollTop;
 		const viewportHeight = this._scrollEl.clientHeight || 400;
 
-		let start = Math.floor(scrollTop / ROW_HEIGHT) - RENDER_BUFFER_ROWS;
-		let end = Math.ceil((scrollTop + viewportHeight) / ROW_HEIGHT) + RENDER_BUFFER_ROWS;
+		let start = Math.floor(scrollTop / this._rowHeight) - RENDER_BUFFER_ROWS;
+		let end = Math.ceil((scrollTop + viewportHeight) / this._rowHeight) + RENDER_BUFFER_ROWS;
 		start = Math.max(0, start);
 		end = Math.min(total, end);
 
@@ -453,8 +467,8 @@ export class VirtualGrid {
 		}
 		this._tbody.insertBefore(frag, this._bottomSpacer);
 
-		this._topSpacerCell.parentElement.style.height = start * ROW_HEIGHT + "px";
-		this._bottomSpacerCell.parentElement.style.height = Math.max(0, total - end) * ROW_HEIGHT + "px";
+		this._topSpacerCell.parentElement.style.height = start * this._rowHeight + "px";
+		this._bottomSpacerCell.parentElement.style.height = Math.max(0, total - end) * this._rowHeight + "px";
 	}
 
 	_cellProperties(displayRow, col) {
@@ -467,7 +481,7 @@ export class VirtualGrid {
 		const row = this._rows[rowIndex];
 		const tr = document.createElement("tr");
 		tr.dataset.omnidbRow = "1";
-		tr.style.height = ROW_HEIGHT + "px";
+		tr.style.height = this._rowHeight + "px";
 		if (display === this._selectedDisplay) tr.style.backgroundColor = "var(--omnidb-grid-selected-bg, #c7d6ff)";
 
 		tr.addEventListener("mousedown", () => {
@@ -499,6 +513,7 @@ export class VirtualGrid {
 				cum += col.width;
 			}
 			if (col.align) td.style.textAlign = col.align;
+			if (col.verticalAlign) td.style.verticalAlign = col.verticalAlign;
 
 			this._renderCellInto(td, display, colIndex, row[colIndex]);
 			tr.appendChild(td);

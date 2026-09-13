@@ -51,7 +51,7 @@ import { v_openExternalUrl } from './tab_functions/website_tab.js'
 import { deleteRowEditData } from './tree_context_functions/edit_data.js'
 import { startTutorial } from './tutorial_functions/tutorial.js'
 import { listUsers } from './users.js'
-import { monitoringAction } from './workspace.js'
+import { connectedUsersAction } from './workspace.js'
 
 // --- delegated actions, for markup this file cannot reach -------------------
 //
@@ -65,7 +65,7 @@ import { monitoringAction } from './workspace.js'
 // instead of an `on*=` attribute, and the one listener below resolves the action
 // name against the table. A name that is not in the table does nothing, so this
 // is an allowlist and not an eval -- the same shape workspace.js's
-// v_monitoring_action_whitelist already uses for monitoring row actions.
+// v_connected_users_action_whitelist already uses for its own row actions.
 //
 // One listener on `document`, installed once, so it also catches markup
 // injected long after this module ran.
@@ -84,10 +84,11 @@ const DELEGATED_CLICK = {
   // the cell has already selected it by the time this click lands.
   'edit-data-delete-row': () => deleteRowEditData(),
 
-  // A monitoring grid's row action (Terminate backend and friends). The row
-  // index is baked in at render time, exactly as the attribute did it;
-  // monitoringAction resolves the function name against its own allowlist.
-  'monitoring-action': (el) => monitoringAction(numArg(el), arg(el)),
+  // The Connected Users grid's row action (Terminate backend and friends).
+  // The row index is baked in at render time, exactly as the attribute did
+  // it; connectedUsersAction resolves the function name against its own
+  // allowlist.
+  'connected-users-action': (el) => connectedUsersAction(numArg(el), arg(el)),
 
   // The monitoring units dialog. These three come from markup the *server*
   // builds (monitoring_handlers.go) -- it emits the data attributes now instead

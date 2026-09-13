@@ -42,15 +42,16 @@ import { showAlert, showConfirm } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { checkQueryStatus, escapeHtml, v_queryRequestCodes } from "./query.js";
 import { initSectionSwitcher, isSectionActive, switchSection } from "./section_switcher.js";
+import { getConnectedUsersRowData } from "./panel_functions/outer_connected_users_panel.js";
 import { refreshOuterConnectionHeights } from "./tab_functions/outer_connection_tab.js";
 import { initWelcomeSection } from "./tab_functions/outer_welcome_tab.js";
 import { createTabControl } from "./tabs.js";
 import { checkEditDataStatus } from "./tree_context_functions/edit_data.js";
-import { getTreeMariadb } from "./tree_context_functions/tree_mariadb.js";
+import { getTreeMariadb, mariadbTerminateBackend } from "./tree_context_functions/tree_mariadb.js";
 import { getTreeMssql, mssqlTerminateBackend } from "./tree_context_functions/tree_mssql.js";
 import { getTreeFirebird, firebirdTerminateBackend } from "./tree_context_functions/tree_firebird.js";
 import { getTreeMysql, mysqlTerminateBackend } from "./tree_context_functions/tree_mysql.js";
-import { getTreeOracle } from "./tree_context_functions/tree_oracle.js";
+import { getTreeOracle, oracleTerminateBackend } from "./tree_context_functions/tree_oracle.js";
 import { getTreePostgresql, postgresqlTerminateBackend } from "./tree_context_functions/tree_postgresql.js";
 import { getAllSnippets } from "./tree_context_functions/tree_snippets.js";
 import { getTreeSqlite } from "./tree_context_functions/tree_sqlite.js";
@@ -100,6 +101,10 @@ function initWorkspace() {
 	// Creating the notify section content (its connection tabs are opened by
 	// the user, so this only builds the empty panel and its "+" tab).
 	v_connTabControl.tag.createNotifyPanel();
+
+	// Creating the connected users section content (same lifetime as Notify's
+	// -- an empty shell now, populated per selected connection on demand).
+	v_connTabControl.tag.createConnectedUsersPanel();
 
 	// Creating the vertical section nav (Welcome/Connections/Snippets/
 	// Database/Settings/About).
@@ -1426,38 +1431,10 @@ export function showMenuNewTab(e) {
 		});
 	}
 
-	if (v_connTabControl.selectedTab.tag.selectedDBMS == "postgresql") {
-		v_option_list.push({
-			text: t("workspace.backends"),
-			icon: "fas cm-all fa-tasks",
-			action: function () {
-				v_connTabControl.tag.createMonitoringTab(t("workspace.backends"), "select * from pg_stat_activity", [
-					{
-						icon: "fas fa-times action-grid action-close text-danger",
-						title: t("common.terminate"),
-						action: "postgresqlTerminateBackend",
-					},
-				]);
-			},
-		});
-	} else if (
-		v_connTabControl.selectedTab.tag.selectedDBMS == "mysql" ||
-		v_connTabControl.selectedTab.tag.selectedDBMS == "mariadb"
-	) {
-		v_option_list.push({
-			text: t("workspace.process_list"),
-			icon: "fas cm-all fa-tasks",
-			action: function () {
-				v_connTabControl.tag.createMonitoringTab(t("workspace.process_list"), "select * from information_schema.processlist", [
-					{
-						icon: "fas fa-times action-grid action-close text-danger",
-						title: t("common.terminate"),
-						action: "mysqlTerminateBackend",
-					},
-				]);
-			},
-		});
-	}
+	// Backends/Process List/Sessions moved to their own Connected Users
+	// section (see panel_functions/outer_connected_users_panel.js) -- always
+	// reachable from the rail, for whichever connection is selected, rather
+	// than needing to be created per-connection from this menu.
 
 	//Hooks
 	if (v_connTabControl.tag.hooks.innerTabMenu.length > 0) {
@@ -1582,12 +1559,18 @@ export function updateExplainComponent() {
 	}
 }
 
-export var v_monitoring_action_whitelist = {
+export var v_connected_users_action_whitelist = {
 	postgresqlTerminateBackend: function (p_row) {
 		if (typeof postgresqlTerminateBackend === "function") postgresqlTerminateBackend(p_row);
 	},
 	mysqlTerminateBackend: function (p_row) {
 		if (typeof mysqlTerminateBackend === "function") mysqlTerminateBackend(p_row);
+	},
+	mariadbTerminateBackend: function (p_row) {
+		if (typeof mariadbTerminateBackend === "function") mariadbTerminateBackend(p_row);
+	},
+	oracleTerminateBackend: function (p_row) {
+		if (typeof oracleTerminateBackend === "function") oracleTerminateBackend(p_row);
 	},
 	mssqlTerminateBackend: function (p_row) {
 		if (typeof mssqlTerminateBackend === "function") mssqlTerminateBackend(p_row);
@@ -1597,11 +1580,10 @@ export var v_monitoring_action_whitelist = {
 	},
 };
 
-export function monitoringAction(p_row_index, p_function) {
-	var v_fn = v_monitoring_action_whitelist[p_function];
-	var v_row_data = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.getDataAtRow(p_row_index);
-	v_row_data.shift();
-	if (typeof v_fn === "function") {
+export function connectedUsersAction(p_row_index, p_function) {
+	var v_fn = v_connected_users_action_whitelist[p_function];
+	var v_row_data = getConnectedUsersRowData(p_row_index);
+	if (typeof v_fn === "function" && v_row_data != null) {
 		v_fn(v_row_data);
 	}
 }

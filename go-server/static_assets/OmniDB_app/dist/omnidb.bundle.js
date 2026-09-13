@@ -8594,6 +8594,574 @@
     },
     v_polling_started
   }, Symbol.toStringTag, { value: "Module" }));
+  var CONNECTED_USERS_STRIP_SLOT_ID = "connected_users_panel_strip_slot";
+  var CONNECTED_USERS_CONTENT_ID = "connected_users_panel_content";
+  function isBlank(p_value) {
+    return p_value === null || p_value === void 0 || p_value === "";
+  }
+  function twoLine(p_line1, p_line2) {
+    if (isBlank(p_line1) && isBlank(p_line2)) return "–";
+    var v_html = "<div>" + escapeHtml(isBlank(p_line1) ? "–" : String(p_line1)) + "</div>";
+    if (!isBlank(p_line2)) {
+      v_html += "<div class='text-muted' style='font-size:0.85em;'>" + escapeHtml(String(p_line2)) + "</div>";
+    }
+    return v_html;
+  }
+  function timeTwoLine(p_line1, p_line2) {
+    var v_line1 = isBlank(p_line1) ? "–" : String(p_line1);
+    var v_line2 = isBlank(p_line2) ? "–" : String(p_line2);
+    return "<div>" + escapeHtml(v_line1) + "</div><div class='text-muted' style='font-size:0.85em;'>" + escapeHtml(v_line2) + "</div>";
+  }
+  function addrPort(p_addr, p_port) {
+    if (isBlank(p_addr) && isBlank(p_port)) return null;
+    if (!isBlank(p_addr) && !isBlank(p_port)) return p_addr + ":" + p_port;
+    return isBlank(p_addr) ? ":" + p_port : String(p_addr);
+  }
+  function headerTwoLine(p_line1, p_line2) {
+    return "<div>" + p_line1 + "</div><div class='text-muted' style='font-size:0.85em;'>" + p_line2 + "</div>";
+  }
+  function waitLine(p_type, p_event) {
+    if (isBlank(p_type) && isBlank(p_event)) return "–";
+    if (!isBlank(p_type) && !isBlank(p_event)) return escapeHtml(p_type + ": " + p_event);
+    return escapeHtml(String(isBlank(p_type) ? p_event : p_type));
+  }
+  function waitDuration(p_event, p_seconds) {
+    if (isBlank(p_event)) return "–";
+    if (isBlank(p_seconds)) return escapeHtml(String(p_event));
+    return escapeHtml(p_event + " (" + p_seconds + "s)");
+  }
+  var MYSQL_PROCESSLIST_LAYOUT = [
+    {
+      labelKey: "connected_users.col_myproc_user_label",
+      tooltipKey: "connected_users.col_myproc_user_tooltip",
+      width: 150,
+      html: true,
+      value: function(v) {
+        return twoLine(v.user, isBlank(v.id) ? null : "ID: " + v.id);
+      }
+    },
+    { labelKey: "connected_users.col_myproc_host_label", tooltipKey: "connected_users.col_myproc_host_tooltip", raw: "host", width: 150 },
+    { labelKey: "connected_users.col_myproc_db_label", tooltipKey: "connected_users.col_myproc_db_tooltip", raw: "db", width: 130 },
+    { labelKey: "connected_users.col_myproc_command_label", tooltipKey: "connected_users.col_myproc_command_tooltip", raw: "command", width: 100 },
+    { labelKey: "connected_users.col_myproc_time_label", tooltipKey: "connected_users.col_myproc_time_tooltip", raw: "time", width: 80, align: "right" },
+    { labelKey: "connected_users.col_myproc_state_label", tooltipKey: "connected_users.col_myproc_state_tooltip", raw: "state", width: 150 }
+  ];
+  var CONNECTED_USERS_CONFIG = {
+    postgresql: {
+      query: "select * from pg_stat_activity",
+      terminateAction: "postgresqlTerminateBackend",
+      queryColumnKey: "query",
+      isSystemRow: function(v) {
+        return isBlank(v.datname) && isBlank(v.usename);
+      },
+      layout: [
+        { labelKey: "connected_users.col_pg_pid_label", tooltipKey: "connected_users.col_pg_pid_tooltip", raw: "pid", width: 90, align: "right" },
+        {
+          labelKey: "connected_users.col_pg_database_label",
+          tooltipKey: "connected_users.col_pg_database_tooltip",
+          width: 150,
+          html: true,
+          value: function(v) {
+            return twoLine(v.datname, isBlank(v.datid) ? null : "ID: " + v.datid);
+          }
+        },
+        {
+          labelKey: "connected_users.col_pg_user_label",
+          tooltipKey: "connected_users.col_pg_user_tooltip",
+          width: 140,
+          html: true,
+          value: function(v) {
+            return twoLine(v.usename, isBlank(v.usesysid) ? null : "ID: " + v.usesysid);
+          }
+        },
+        {
+          labelKey: "connected_users.col_pg_client_label",
+          tooltipKey: "connected_users.col_pg_client_tooltip",
+          width: 170,
+          html: true,
+          value: function(v) {
+            return twoLine(addrPort(v.client_addr, v.client_port), v.client_hostname);
+          }
+        },
+        { labelKey: "connected_users.col_pg_application_label", tooltipKey: "connected_users.col_pg_application_tooltip", raw: "application_name", width: 140 },
+        {
+          // Header carries which time is which (two lines, matching the
+          // data below it line for line) instead of repeating it on every
+          // row -- a per-row "Proces: .../Transakce: ..." label made the
+          // timestamps themselves start at a different column on every
+          // row, depending on that row's label lengths. verticalAlign
+          // "top" plus timeTwoLine's own always-both-lines behaviour is
+          // what keeps line 1 always meaning the same thing even when
+          // line 2 is missing (or vice versa).
+          labelKey1: "connected_users.col_pg_time_start_label1",
+          labelKey2: "connected_users.col_pg_time_start_label2",
+          tooltipKey: "connected_users.col_pg_time_start_tooltip",
+          width: 170,
+          html: true,
+          verticalAlign: "top",
+          value: function(v) {
+            return timeTwoLine(v.backend_start, v.xact_start);
+          }
+        },
+        {
+          labelKey1: "connected_users.col_pg_time_activity_label1",
+          labelKey2: "connected_users.col_pg_time_activity_label2",
+          tooltipKey: "connected_users.col_pg_time_activity_tooltip",
+          width: 170,
+          html: true,
+          verticalAlign: "top",
+          value: function(v) {
+            return timeTwoLine(v.query_start, v.state_change);
+          }
+        },
+        {
+          labelKey: "connected_users.col_pg_wait_label",
+          tooltipKey: "connected_users.col_pg_wait_tooltip",
+          width: 150,
+          html: true,
+          value: function(v) {
+            return waitLine(v.wait_event_type, v.wait_event);
+          }
+        },
+        { labelKey: "connected_users.col_pg_state_label", tooltipKey: "connected_users.col_pg_state_tooltip", raw: "state", width: 90 },
+        {
+          labelKey: "connected_users.col_pg_xact_label",
+          tooltipKey: "connected_users.col_pg_xact_tooltip",
+          width: 130,
+          html: true,
+          value: function(v) {
+            return twoLine(
+              isBlank(v.backend_xid) ? null : "XID: " + v.backend_xid,
+              isBlank(v.backend_xmin) ? null : "Xmin: " + v.backend_xmin
+            );
+          }
+        },
+        { labelKey: "connected_users.col_pg_query_id_label", tooltipKey: "connected_users.col_pg_query_id_tooltip", raw: "query_id", width: 100 },
+        { labelKey: "connected_users.col_pg_backend_type_label", tooltipKey: "connected_users.col_pg_backend_type_tooltip", raw: "backend_type", width: 130 }
+      ]
+    },
+    mysql: {
+      query: "select * from information_schema.processlist",
+      terminateAction: "mysqlTerminateBackend",
+      queryColumnKey: "info",
+      layout: MYSQL_PROCESSLIST_LAYOUT
+    },
+    mariadb: {
+      query: "select * from information_schema.processlist",
+      terminateAction: "mariadbTerminateBackend",
+      queryColumnKey: "info",
+      layout: MYSQL_PROCESSLIST_LAYOUT
+    },
+    oracle: {
+      query: "select * from v$session",
+      terminateAction: "oracleTerminateBackend",
+      queryColumnKey: null,
+      isSystemRow: function(v) {
+        return isBlank(v.username);
+      },
+      layout: [
+        {
+          labelKey: "connected_users.col_oracle_sid_label",
+          tooltipKey: "connected_users.col_oracle_sid_tooltip",
+          width: 110,
+          html: true,
+          value: function(v) {
+            return twoLine(
+              isBlank(v.sid) ? null : "SID: " + v.sid,
+              isBlank(v["serial#"]) ? null : "Serial#: " + v["serial#"]
+            );
+          }
+        },
+        { labelKey: "connected_users.col_oracle_user_label", tooltipKey: "connected_users.col_oracle_user_tooltip", raw: "username", width: 120 },
+        { labelKey: "connected_users.col_oracle_status_label", tooltipKey: "connected_users.col_oracle_status_tooltip", raw: "status", width: 90 },
+        { labelKey: "connected_users.col_oracle_schema_label", tooltipKey: "connected_users.col_oracle_schema_tooltip", raw: "schemaname", width: 110 },
+        {
+          labelKey: "connected_users.col_oracle_client_label",
+          tooltipKey: "connected_users.col_oracle_client_tooltip",
+          width: 170,
+          html: true,
+          value: function(v) {
+            return twoLine(v.machine, isBlank(v.osuser) ? null : "OS: " + v.osuser);
+          }
+        },
+        { labelKey: "connected_users.col_oracle_program_label", tooltipKey: "connected_users.col_oracle_program_tooltip", raw: "program", width: 150 },
+        {
+          labelKey: "connected_users.col_oracle_module_label",
+          tooltipKey: "connected_users.col_oracle_module_tooltip",
+          width: 160,
+          html: true,
+          value: function(v) {
+            return twoLine(v.module, v.action);
+          }
+        },
+        { labelKey: "connected_users.col_oracle_client_info_label", tooltipKey: "connected_users.col_oracle_client_info_tooltip", raw: "client_info", width: 180 },
+        { labelKey: "connected_users.col_oracle_logon_label", tooltipKey: "connected_users.col_oracle_logon_tooltip", raw: "logon_time", width: 150 },
+        { labelKey: "connected_users.col_oracle_idle_label", tooltipKey: "connected_users.col_oracle_idle_tooltip", raw: "last_call_et", width: 100, align: "right" },
+        { labelKey: "connected_users.col_oracle_sql_id_label", tooltipKey: "connected_users.col_oracle_sql_id_tooltip", raw: "sql_id", width: 100 },
+        {
+          labelKey: "connected_users.col_oracle_wait_label",
+          tooltipKey: "connected_users.col_oracle_wait_tooltip",
+          width: 170,
+          html: true,
+          value: function(v) {
+            return waitDuration(v.event, v.seconds_in_wait);
+          }
+        },
+        { labelKey: "connected_users.col_oracle_blocking_label", tooltipKey: "connected_users.col_oracle_blocking_tooltip", raw: "blocking_session", width: 100, align: "right" }
+      ]
+    },
+    mssql: {
+      query: "select session_id, login_name, host_name, program_name, status from sys.dm_exec_sessions where is_user_process = 1",
+      terminateAction: "mssqlTerminateBackend",
+      queryColumnKey: null,
+      layout: [
+        { labelKey: "connected_users.col_mssql_session_id_label", tooltipKey: "connected_users.col_mssql_session_id_tooltip", raw: "session_id", width: 90, align: "right" },
+        { labelKey: "connected_users.col_mssql_login_label", tooltipKey: "connected_users.col_mssql_login_tooltip", raw: "login_name", width: 160 },
+        { labelKey: "connected_users.col_mssql_host_label", tooltipKey: "connected_users.col_mssql_host_tooltip", raw: "host_name", width: 140 },
+        { labelKey: "connected_users.col_mssql_program_label", tooltipKey: "connected_users.col_mssql_program_tooltip", raw: "program_name", width: 160 },
+        { labelKey: "connected_users.col_mssql_status_label", tooltipKey: "connected_users.col_mssql_status_tooltip", raw: "status", width: 100 }
+      ]
+    },
+    firebird: {
+      query: "select a.mon$attachment_id, a.mon$user, a.mon$remote_address, case a.mon$state when 1 then 'active' else 'idle' end as state from mon$attachments a where a.mon$attachment_id <> current_connection",
+      terminateAction: "firebirdTerminateBackend",
+      queryColumnKey: null,
+      layout: [
+        { labelKey: "connected_users.col_firebird_id_label", tooltipKey: "connected_users.col_firebird_id_tooltip", raw: "mon$attachment_id", width: 100, align: "right" },
+        { labelKey: "connected_users.col_firebird_user_label", tooltipKey: "connected_users.col_firebird_user_tooltip", raw: "mon$user", width: 130 },
+        { labelKey: "connected_users.col_firebird_address_label", tooltipKey: "connected_users.col_firebird_address_tooltip", raw: "mon$remote_address", width: 160 },
+        { labelKey: "connected_users.col_firebird_state_label", tooltipKey: "connected_users.col_firebird_state_tooltip", raw: "state", width: 90 }
+      ]
+    }
+  };
+  var v_render_token = 0;
+  var v_mounted = null;
+  var v_createConnectedUsersPanelFunction = function() {
+    var v_html = "<div class='omnidb__connected-users'><div id='" + CONNECTED_USERS_STRIP_SLOT_ID + "' class='omnidb__tab-menu--container omnidb__tab-menu--container--primary omnidb__conn-strip-host'></div><div id='" + CONNECTED_USERS_CONTENT_ID + "' class='omnidb__connected-users__content'></div></div>";
+    var v_target = (
+      /** @type {HTMLElement} */
+      document.getElementById("omnidb__section_connected_users")
+    );
+    v_target.innerHTML = v_html;
+  };
+  function refreshConnectedUsersPane() {
+    var v_content = document.getElementById(CONNECTED_USERS_CONTENT_ID);
+    if (v_content == null) return;
+    v_render_token++;
+    v_mounted = null;
+    v_content.innerHTML = "";
+    var v_conn_tab = typeof v_connTabControl !== "undefined" ? v_connTabControl.selectedTab : null;
+    if (v_conn_tab != null && v_connTabControl.tabList.indexOf(v_conn_tab) === -1) {
+      v_conn_tab = null;
+    }
+    if (v_conn_tab == null || v_conn_tab.tag == null) {
+      renderConnectedUsersEmptyState(v_content);
+      return;
+    }
+    var v_db_type = v_conn_tab.tag.selectedDBMS;
+    var v_config = CONNECTED_USERS_CONFIG[v_db_type];
+    if (v_config == null) {
+      renderConnectedUsersUnsupported(v_content, v_db_type);
+      return;
+    }
+    buildConnectedUsersLayout(v_content, v_conn_tab, v_config, v_render_token);
+  }
+  function renderConnectedUsersEmptyState(p_content) {
+    var v_wrapper = document.createElement("div");
+    v_wrapper.className = "omnidb__notify__unsupported";
+    var v_icon = document.createElement("i");
+    v_icon.className = "fas fa-times-circle omnidb__notify__unsupported-icon";
+    v_wrapper.appendChild(v_icon);
+    var v_title = document.createElement("div");
+    v_title.className = "omnidb__notify__unsupported-title";
+    v_title.textContent = t("connected_users.no_connection_open");
+    v_wrapper.appendChild(v_title);
+    var v_text = document.createElement("div");
+    v_text.className = "omnidb__notify__unsupported-text";
+    v_text.textContent = t("connected_users.open_connection_hint");
+    v_wrapper.appendChild(v_text);
+    p_content.appendChild(v_wrapper);
+  }
+  function renderConnectedUsersUnsupported(p_content, p_db_type) {
+    var v_wrapper = document.createElement("div");
+    v_wrapper.className = "omnidb__notify__unsupported";
+    var v_icon = document.createElement("i");
+    v_icon.className = "fas fa-times-circle omnidb__notify__unsupported-icon";
+    v_wrapper.appendChild(v_icon);
+    var v_title = document.createElement("div");
+    v_title.className = "omnidb__notify__unsupported-title";
+    v_title.textContent = t("connected_users.not_supported", { technology: p_db_type });
+    v_wrapper.appendChild(v_title);
+    var v_text = document.createElement("div");
+    v_text.className = "omnidb__notify__unsupported-text";
+    v_text.textContent = t("connected_users.supported_technologies_hint");
+    v_wrapper.appendChild(v_text);
+    p_content.appendChild(v_wrapper);
+  }
+  function buildConnectedUsersLayout(p_content, p_conn_tab, p_config, p_token) {
+    var v_id = p_conn_tab.id;
+    p_content.innerHTML = "<div class='omnidb__connected-users__pane'><div class='omnidb__connected-users__info-bar'><span id='connected_users_query_info_" + v_id + "' class='query_info'></span><label id='connected_users_system_toggle_" + v_id + "' class='omnidb__connected-users__system-toggle' style='display:none;'><input type='checkbox' id='connected_users_system_checkbox_" + v_id + "' />" + escapeHtml(t("connected_users.show_system_rows")) + "</label></div><div id='connected_users_grid_" + v_id + "' class='omnidb__connected-users__grid'></div><div id='connected_users_resize_" + v_id + "' class='omnidb__resize-line__container' style='display:none;'><div class='resize_line_horizontal'></div></div><div id='connected_users_detail_" + v_id + "' class='omnidb__connected-users__detail' style='display:none;'><div class='omnidb__connected-users__detail-toolbar'><span>" + escapeHtml(t("connected_users.query_detail_title")) + "</span><div><button id='connected_users_detail_copy_" + v_id + "' type='button' class='btn btn-sm omnidb__theme__btn--secondary me-1' title='" + escapeHtml(t("common.copy")) + "'><i class='fas fa-copy'></i></button><button id='connected_users_detail_send_" + v_id + "' type='button' class='btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtml(t("connected_users.open_in_query_tab")) + "'><i class='fas fa-file-import'></i></button></div></div><div id='connected_users_detail_editor_" + v_id + "' class='omnidb__connected-users__detail-editor'></div></div></div>";
+    var v_tag = {
+      token: p_token,
+      connID: p_conn_tab.tag.selectedDatabaseIndex,
+      tab_id: v_id,
+      query: p_config.query,
+      layout: p_config.layout,
+      terminateAction: p_config.terminateAction,
+      queryColumnKey: p_config.queryColumnKey,
+      queryColRawIndex: -1,
+      isSystemRow: p_config.isSystemRow || null,
+      showSystemRows: false,
+      /** @type {any} */
+      lastData: null,
+      query_info: document.getElementById("connected_users_query_info_" + v_id),
+      systemToggle: document.getElementById("connected_users_system_toggle_" + v_id),
+      systemCheckbox: (
+        /** @type {HTMLInputElement} */
+        document.getElementById("connected_users_system_checkbox_" + v_id)
+      ),
+      divGrid: document.getElementById("connected_users_grid_" + v_id),
+      divResize: document.getElementById("connected_users_resize_" + v_id),
+      divDetail: document.getElementById("connected_users_detail_" + v_id),
+      divDetailEditor: document.getElementById("connected_users_detail_editor_" + v_id),
+      detailVisible: false,
+      /** @type {any} */
+      detailEditor: null,
+      currentSql: "",
+      ht: null
+    };
+    v_mounted = v_tag;
+    v_tag.systemCheckbox.addEventListener("change", function() {
+      v_tag.showSystemRows = v_tag.systemCheckbox.checked;
+      if (v_tag.lastData) renderConnectedUsersGrid(v_tag, v_tag.lastData);
+    });
+    document.getElementById("connected_users_resize_" + v_id).addEventListener(
+      "mousedown",
+      function(e) {
+        resizeConnectedUsersVertical(e, v_tag);
+      }
+    );
+    document.getElementById("connected_users_detail_copy_" + v_id).addEventListener(
+      "click",
+      function() {
+        uiCopyTextToClipboard(v_tag.currentSql);
+      }
+    );
+    document.getElementById("connected_users_detail_send_" + v_id).addEventListener(
+      "click",
+      function() {
+        sendConnectedUsersQueryToNewTab(v_tag.currentSql);
+      }
+    );
+    fetchConnectedUsers(v_tag);
+  }
+  function refreshConnectedUsers() {
+    if (v_mounted != null) fetchConnectedUsers(v_mounted);
+  }
+  function resizeConnectedUsersVertical(p_event, p_tag) {
+    p_event.preventDefault();
+    var v_move = function(e) {
+      var v_container = p_tag.divDetail.parentElement;
+      var v_rect = v_container.getBoundingClientRect();
+      var v_height = v_rect.bottom - e.clientY;
+      if (v_height < 80) v_height = 80;
+      if (v_height > v_rect.height - 120) v_height = v_rect.height - 120;
+      p_tag.divDetail.style.flex = "0 0 " + v_height + "px";
+      if (p_tag.detailEditor) p_tag.detailEditor.resize();
+    };
+    var v_up = function() {
+      document.body.removeEventListener("mousemove", v_move);
+      document.body.removeEventListener("mouseup", v_up);
+    };
+    document.body.addEventListener("mousemove", v_move);
+    document.body.addEventListener("mouseup", v_up);
+  }
+  function showConnectedUsersDetail(p_tag, p_raw_row) {
+    if (p_tag.queryColRawIndex < 0) return;
+    var v_sql = p_raw_row[p_tag.queryColRawIndex];
+    if (v_sql == null) v_sql = "";
+    p_tag.currentSql = String(v_sql);
+    if (!p_tag.detailVisible) {
+      p_tag.detailVisible = true;
+      p_tag.divResize.style.display = "";
+      p_tag.divDetail.style.display = "";
+    }
+    if (p_tag.detailEditor == null) {
+      p_tag.detailEditor = ace.edit(p_tag.divDetailEditor);
+      p_tag.detailEditor.$blockScrolling = Infinity;
+      p_tag.detailEditor.setTheme("ace/theme/" + v_editor_theme);
+      p_tag.detailEditor.session.setMode("ace/mode/sql");
+      p_tag.detailEditor.setFontSize(Number(v_font_size));
+      p_tag.detailEditor.setReadOnly(true);
+      p_tag.detailEditor.setHighlightActiveLine(false);
+      p_tag.detailEditor.setHighlightGutterLine(false);
+    }
+    p_tag.detailEditor.setValue(p_tag.currentSql);
+    p_tag.detailEditor.clearSelection();
+    p_tag.detailEditor.gotoLine(0, 0, true);
+    p_tag.detailEditor.resize();
+  }
+  function sendConnectedUsersQueryToNewTab(p_sql) {
+    switchSection("database");
+    v_connTabControl.tag.createQueryTab();
+    var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
+    v_editor.setValue(p_sql);
+    v_editor.clearSelection();
+    v_editor.gotoLine(0, 0, true);
+    v_editor.focus();
+  }
+  function namedRow(p_col_names, p_row) {
+    var v_named = {};
+    for (var i2 = 0; i2 < p_col_names.length; i2++) {
+      v_named[String(p_col_names[i2]).toLowerCase()] = p_row[i2];
+    }
+    return v_named;
+  }
+  function fetchConnectedUsers(p_tag) {
+    execAjax$1(
+      "/refresh_monitoring/",
+      JSON.stringify({
+        p_database_index: p_tag.connID,
+        p_tab_id: p_tag.tab_id,
+        p_query: p_tag.query
+      }),
+      function(p_return) {
+        if (p_tag.token !== v_render_token || v_mounted !== p_tag) return;
+        p_tag.lastData = p_return.v_data;
+        renderConnectedUsersGrid(p_tag, p_return.v_data);
+      },
+      function(p_return) {
+        if (p_tag.token !== v_render_token || v_mounted !== p_tag) return;
+        if (p_return.v_data.password_timeout) {
+          showPasswordPrompt(
+            p_tag.connID,
+            function() {
+              fetchConnectedUsers(p_tag);
+            },
+            null,
+            p_return.v_data.message
+          );
+        } else {
+          showError(p_return.v_data);
+        }
+      },
+      "box",
+      true
+    );
+  }
+  function renderConnectedUsersGrid(p_tag, p_data, p_reset_detail) {
+    {
+      p_tag.detailVisible = false;
+      p_tag.divResize.style.display = "none";
+      p_tag.divDetail.style.display = "none";
+      p_tag.currentSql = "";
+    }
+    if (p_tag.ht != null) {
+      p_tag.ht.destroy();
+      p_tag.ht = null;
+    }
+    p_tag.query_info.textContent = t("connected_users.record_count", { count: p_data.v_data.length });
+    var v_lower_names = p_data.v_col_names.map(function(n) {
+      return String(n).toLowerCase();
+    });
+    p_tag.queryColRawIndex = p_tag.queryColumnKey ? v_lower_names.indexOf(p_tag.queryColumnKey) : -1;
+    var v_column_properties = p_tag.layout.map(function(col) {
+      var v_col = {
+        title: col.labelKey1 ? headerTwoLine(t(col.labelKey1), t(col.labelKey2)) : t(col.labelKey),
+        width: col.width,
+        align: col.align,
+        verticalAlign: col.verticalAlign,
+        tooltip: col.raw ? t(col.labelKey) + " (" + col.raw + ") -- " + t(col.tooltipKey) : t(col.tooltipKey)
+      };
+      if (col.html) v_col.renderer = "html";
+      return v_col;
+    });
+    var v_all_rows = [];
+    var v_system_count = 0;
+    for (var i2 = 0; i2 < p_data.v_data.length; i2++) {
+      var v_named = namedRow(p_data.v_col_names, p_data.v_data[i2]);
+      var v_is_system = !!(p_tag.isSystemRow && p_tag.isSystemRow(v_named));
+      if (v_is_system) v_system_count++;
+      if (v_is_system && !p_tag.showSystemRows) continue;
+      var v_row = p_tag.layout.map(function(col) {
+        return col.value ? col.value(v_named) : v_named[col.raw];
+      });
+      v_row.push(JSON.stringify(p_data.v_data[i2]));
+      v_all_rows.push(v_row);
+    }
+    p_tag.systemToggle.style.display = p_tag.isSystemRow && v_system_count > 0 ? "" : "none";
+    p_tag.ht = new Handsontable(p_tag.divGrid, {
+      licenseKey: "non-commercial-and-evaluation",
+      data: v_all_rows,
+      columns: v_column_properties,
+      colHeaders: true,
+      rowHeaders: true,
+      // Every row here has (at least) a two-line composite cell, genuinely
+      // taller than the single-line rows every other grid in the app
+      // renders -- VirtualGrid.js's scroll-position math assumes whatever
+      // height it's told rows are, so this must match the real rendered
+      // height or the scrollbar overshoots the actual content and snaps
+      // back at the bottom.
+      rowHeight: 58,
+      fillHandle: false,
+      copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
+      manualColumnResize: true,
+      contextMenu: {
+        callback: function(key, options) {
+          if (key === "refresh") {
+            fetchConnectedUsers(p_tag);
+          } else if (key === "view_data") {
+            editCellData(
+              this,
+              options[0].start.row,
+              options[0].start.col,
+              this.getDataAtCell(options[0].start.row, options[0].start.col),
+              false
+            );
+          } else if (key === "copy") {
+            this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
+            document.execCommand("copy");
+          } else if (key === "terminate") {
+            connectedUsersAction(options[0].start.row, p_tag.terminateAction);
+          }
+        },
+        items: {
+          refresh: {
+            name: '<div style="position: absolute;"><i class="fas fa-sync-alt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.refresh") + "</div>"
+          },
+          copy: {
+            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.copy") + "</div>"
+          },
+          view_data: {
+            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.view_content") + "</div>"
+          },
+          terminate: {
+            name: '<div style="position: absolute;"><i class="fas fa-times cm-all text-danger" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.terminate") + "</div>"
+          }
+        }
+      }
+    });
+    p_tag.ht.getGridDiv().addEventListener("click", function() {
+      var v_selected = p_tag.ht.getSelected();
+      if (!v_selected || v_selected.length === 0) return;
+      var v_row2 = p_tag.ht.getDataAtRow(v_selected[0][0]);
+      if (!v_row2 || v_row2.length === 0) return;
+      try {
+        showConnectedUsersDetail(p_tag, JSON.parse(v_row2[v_row2.length - 1]));
+      } catch (e) {
+      }
+    });
+  }
+  function getConnectedUsersRowData(p_row_index) {
+    if (v_mounted == null || v_mounted.ht == null) return null;
+    var v_row = v_mounted.ht.getDataAtRow(p_row_index);
+    if (v_row == null || v_row.length === 0) return null;
+    try {
+      return JSON.parse(v_row[v_row.length - 1]);
+    } catch (e) {
+      return null;
+    }
+  }
   function toggleSnippetPanel() {
     switchSection("snippets");
     resizeSnippetPanel();
@@ -10870,210 +11438,6 @@
     v_createMonitorDashboardTabFunction,
     v_createNewMonitorUnitTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
-  var v_createMonitoringTabFunction = function(p_name, p_query, p_actions) {
-    var v_name = t("workspace.backends");
-    if (p_name) v_name = p_name;
-    v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-    var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_icon: `<i class="fas fa-desktop icon-tab-title"></i>`,
-      p_name: '<span id="tab_title">' + v_name + "</span>",
-      p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
-      p_selectFunction: function() {
-        document.title = "OmniDB";
-        if (this.tag != null) {
-          this.tag.resize();
-        }
-      },
-      p_closeFunction: function(e, p_tab) {
-        var v_current_tab = p_tab;
-        beforeCloseTab(e, function() {
-          removeTab(v_current_tab);
-        });
-      },
-      p_dblClickFunction: renameTab
-    });
-    v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-    var v_tab_title_span = (
-      /** @type {HTMLElement} */
-      document.getElementById("tab_title")
-    );
-    v_tab_title_span.id = "tab_title_" + v_tab.id;
-    var v_tab_loading_span = (
-      /** @type {HTMLElement} */
-      document.getElementById("tab_loading")
-    );
-    v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-    var v_tab_check_span = (
-      /** @type {HTMLElement} */
-      document.getElementById("tab_check")
-    );
-    v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = "<div class='p-2 omnidb__theme-border--primary'><button id='bt_refresh_" + v_tab.id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 me-1' title='" + t("common.refresh") + "'><i class='fas fa-sync-alt me-2'></i>" + t("common.refresh") + "</button><span id='div_query_info_" + v_tab.id + "' class='query_info'></span><div id='div_result_" + v_tab.id + "' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: auto;'></div></div>";
-    v_tab.elementDiv.innerHTML = v_html;
-    var v_bt_refresh = (
-      /** @type {HTMLElement} */
-      document.getElementById("bt_refresh_" + v_tab.id)
-    );
-    var v_resizeFunction = function() {
-      var v_tab_tag2 = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-      if (v_tab_tag2.div_result) {
-        v_tab_tag2.div_result.style.height = window.innerHeight - (v_tab_tag2.div_result.getBoundingClientRect().top + window.scrollY) - 1.25 * v_font_size + "px";
-        setTimeout(function() {
-          if (v_tab_tag2.ht != null) {
-            v_tab_tag2.ht.render();
-          }
-        }, 400);
-      }
-    };
-    var v_tag = {
-      tab_id: v_tab.id,
-      tabTitle: "teste",
-      divTree: document.getElementById(v_tab.id + "_tree"),
-      divLeft: document.getElementById(v_tab.id + "_div_left"),
-      divRight: document.getElementById(v_tab.id + "_div_right"),
-      query_info: document.getElementById("div_query_info_" + v_tab.id),
-      div_result: document.getElementById("div_result_" + v_tab.id),
-      bt_refresh: v_bt_refresh,
-      tabControl: v_connTabControl.selectedTab.tag.tabControl,
-      ht: null,
-      query: p_query,
-      actions: p_actions,
-      mode: "monitor_grid",
-      resize: v_resizeFunction
-    };
-    v_bt_refresh.onclick = function() {
-      refreshMonitoring(v_tag);
-    };
-    v_tab.tag = v_tag;
-    var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-      p_icon: '<i class="fas fa-plus"></i>',
-      p_close: false,
-      p_selectable: false,
-      p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
-      }
-    });
-    v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
-    v_add_tab.tag = {
-      mode: "add"
-    };
-    setTimeout(function() {
-      v_resizeFunction();
-      refreshMonitoring(v_tag);
-    }, 10);
-  };
-  function refreshMonitoring(p_tab_tag) {
-    if (!p_tab_tag) var p_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    execAjax$1(
-      "/refresh_monitoring/",
-      JSON.stringify({
-        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-        p_tab_id: v_connTabControl.selectedTab.id,
-        p_query: p_tab_tag.query
-      }),
-      function(p_return) {
-        var v_data = p_return.v_data;
-        if (p_tab_tag.ht != null) {
-          p_tab_tag.ht.destroy();
-          p_tab_tag.ht = null;
-        }
-        p_tab_tag.query_info.innerHTML = v_data.v_query_info;
-        var columnProperties = [];
-        var v_fixedColumnsLeft = 0;
-        if (p_tab_tag.actions != null) {
-          v_fixedColumnsLeft = 1;
-          for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
-            var v_actions_html = "";
-            for (var j2 = 0; j2 < p_tab_tag.actions.length; j2++) {
-              if (p_tab_tag.actions[j2].icon.includes("fa-times")) {
-                p_tab_tag.actions[j2].icon += " text-danger";
-              } else {
-                p_tab_tag.actions[j2].icon += " omnidb__theme-text--primary";
-              }
-              v_actions_html += '<div class="text-center"><i class="' + p_tab_tag.actions[j2].icon + '" data-omnidb-action="monitoring-action" data-omnidb-id="' + i2 + '" data-omnidb-arg="' + escapeHtmlAttribute(p_tab_tag.actions[j2].action) + '"></i></div>';
-            }
-            v_data.v_data[i2].unshift(v_actions_html);
-          }
-          var col = {};
-          col.readOnly = true;
-          col.title = t("monitoring.actions_column");
-          col.renderer = "html";
-          columnProperties.push(col);
-        }
-        for (var i2 = 0; i2 < v_data.v_col_names.length; i2++) {
-          var col2 = {};
-          col2.readOnly = true;
-          col2.title = v_data.v_col_names[i2];
-          columnProperties.push(col2);
-        }
-        p_tab_tag.ht = new Handsontable(p_tab_tag.div_result, {
-          licenseKey: "non-commercial-and-evaluation",
-          data: v_data.v_data,
-          columns: columnProperties,
-          colHeaders: true,
-          rowHeaders: true,
-          fixedColumnsLeft: v_fixedColumnsLeft,
-          fillHandle: false,
-          //copyRowsLimit : 1000000000,
-          //copyColsLimit : 1000000000,
-          copyPaste: { pasteMode: "", rowsLimit: 1e9, columnsLimit: 1e9 },
-          manualColumnResize: true,
-          contextMenu: {
-            callback: function(key, options) {
-              if (key === "view_data") {
-                editCellData(
-                  this,
-                  options[0].start.row,
-                  options[0].start.col,
-                  this.getDataAtCell(options[0].start.row, options[0].start.col),
-                  false
-                );
-              } else if (key === "copy") {
-                this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-                document.execCommand("copy");
-              }
-            },
-            items: {
-              copy: {
-                name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.copy") + "</div>"
-              },
-              view_data: {
-                name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.view_content") + "</div>"
-              }
-            }
-          },
-          cells: function(row, col3, prop) {
-            var cellProperties = {};
-            if (row % 2 == 0) cellProperties.renderer = blueHtmlRenderer;
-            else cellProperties.renderer = whiteHtmlRenderer;
-            return cellProperties;
-          }
-        });
-      },
-      function(p_return) {
-        if (p_return.v_data.password_timeout) {
-          showPasswordPrompt(
-            v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-            function() {
-              refreshMonitoring(p_tab_tag);
-            },
-            null,
-            p_return.v_data.message
-          );
-        } else {
-          showError(p_return.v_data);
-        }
-      },
-      "box",
-      true
-    );
-  }
-  const innerMonitoringTab = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
-    __proto__: null,
-    refreshMonitoring,
-    v_createMonitoringTabFunction
-  }, Symbol.toStringTag, { value: "Module" }));
   function deleteCommandList() {
     showConfirm(t("console.confirm_clear_command_history"), function() {
       execAjax$1(
@@ -11883,6 +12247,9 @@
   function refreshNotifyPaneIfActive() {
     if (isSectionActive("notify")) refreshNotifyPane();
   }
+  function refreshConnectedUsersPaneIfActive() {
+    if (isSectionActive("connected_users")) refreshConnectedUsersPane();
+  }
   var ENVIRONMENT_TAB_CLASS$1 = {
     production: "omnidb__tab--env-production",
     uat: "omnidb__tab--env-uat",
@@ -11947,6 +12314,7 @@
             this.tag.tabControl.selectedTab.tag.editor.focus();
           }
           refreshNotifyPaneIfActive();
+          refreshConnectedUsersPaneIfActive();
         },
         p_close: true,
         p_closeFunction: function(e, p_tab) {
@@ -11974,6 +12342,7 @@
             }
             v_this_tab.removeTab();
             refreshNotifyPaneIfActive();
+            refreshConnectedUsersPaneIfActive();
           });
         },
         p_tooltip_name
@@ -12377,6 +12746,7 @@
     v_connTabControl.tag.createConnTab = v_createConnTabFunction;
     v_connTabControl.tag.createSnippetPanel = v_createSnippetPanelFunction;
     v_connTabControl.tag.createNotifyPanel = v_createNotifyPanelFunction;
+    v_connTabControl.tag.createConnectedUsersPanel = v_createConnectedUsersPanelFunction;
     v_connTabControl.tag.createSnippetTextTab = v_createSnippetTextTabFunction;
     v_connTabControl.tag.createQueryTab = v_createQueryTabFunction;
     v_connTabControl.tag.createConsoleTab = v_createConsoleTabFunction;
@@ -12386,7 +12756,6 @@
     v_connTabControl.tag.createMonitorDashboardTab = v_createMonitorDashboardTabFunction;
     v_connTabControl.tag.createEditDataTab = v_createEditDataTabFunction;
     v_connTabControl.tag.createGraphTab = v_createGraphTabFunction;
-    v_connTabControl.tag.createMonitoringTab = v_createMonitoringTabFunction;
     v_connTabControl.tag.createOuterTerminalTab = v_createOuterTerminalTabFunction;
   }
   function beforeCloseTab(e, p_confirm_function) {
@@ -13952,39 +14321,6 @@
           //drop_partition: p_return.v_data.v_database_return.drop_partition
           delete: p_return.v_data.v_database_return.delete
         };
-        if (node.tree.tag.superuser) {
-          node.tree.contextMenu.cm_server.elements.push({
-            text: t("tree.monitoring"),
-            icon: "fas cm-all fa-chart-line",
-            action: function(node2) {
-            },
-            submenu: {
-              elements: [
-                /*{
-                	text: t('tree.dashboard'),
-                	icon: 'fas cm-all fa-chart-line',
-                	action: function(node) {
-                		v_connTabControl.tag.createMonitorDashboardTab();
-                		startMonitorDashboard();
-                	}
-                }, */
-                {
-                  text: t("tree.sessions"),
-                  icon: "fas cm-all fa-chart-line",
-                  action: function(node2) {
-                    v_connTabControl.tag.createMonitoringTab("Sessions", "select * from v$session", [
-                      {
-                        icon: "fas cm-all fa-times",
-                        title: t("common.terminate"),
-                        action: "oracleTerminateBackend"
-                      }
-                    ]);
-                  }
-                }
-              ]
-            }
-          });
-        }
         node.setText(p_return.v_data.v_database_return.version);
         var node_connection = node.createChildNode(
           p_return.v_data.v_database_return.v_database,
@@ -15321,7 +15657,7 @@
         p_pid
       }),
       function(p_return) {
-        refreshMonitoring();
+        refreshConnectedUsers();
       },
       function(p_return) {
         if (p_return.v_data.password_timeout) {
@@ -16488,41 +16824,6 @@
           //drop_partition: p_return.v_data.v_database_return.drop_partition
           delete: p_return.v_data.v_database_return.delete
         };
-        node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.monitoring"),
-          icon: "fas cm-all fa-chart-line",
-          action: function(node2) {
-          },
-          submenu: {
-            elements: [
-              /*{
-              	text: t('tree.dashboard'),
-              	icon: 'fas cm-all fa-chart-line',
-              	action: function(node) {
-              		v_connTabControl.tag.createMonitorDashboardTab();
-              		startMonitorDashboard();
-              	}
-              }, */
-              {
-                text: t("tree.process_list"),
-                icon: "fas cm-all fa-chart-line",
-                action: function(node2) {
-                  v_connTabControl.tag.createMonitoringTab(
-                    t("workspace.process_list"),
-                    "select * from information_schema.processlist",
-                    [
-                      {
-                        icon: "fas cm-all fa-times",
-                        title: t("common.terminate"),
-                        action: "mariadbTerminateBackend"
-                      }
-                    ]
-                  );
-                }
-              }
-            ]
-          }
-        });
         node.setText(p_return.v_data.v_database_return.version);
         var node_databases = node.createChildNode(
           t("tree.databases"),
@@ -17897,7 +18198,7 @@
         p_pid
       }),
       function(p_return) {
-        refreshMonitoring();
+        refreshConnectedUsers();
       },
       function(p_return) {
         if (p_return.v_data.password_timeout) {
@@ -18718,35 +19019,6 @@
           drop_index: p_return.v_data.v_database_return.drop_index,
           delete: p_return.v_data.v_database_return.delete
         };
-        if (node.tree.tag.superuser) {
-          node.tree.contextMenu.cm_server.elements.push({
-            text: t("tree.monitoring"),
-            icon: "fas cm-all fa-chart-line",
-            action: function(node2) {
-            },
-            submenu: {
-              elements: [
-                {
-                  text: t("tree.sessions"),
-                  icon: "fas cm-all fa-chart-line",
-                  action: function(node2) {
-                    v_connTabControl.tag.createMonitoringTab(
-                      t("tree.sessions"),
-                      "select session_id, login_name, host_name, program_name, status from sys.dm_exec_sessions where is_user_process = 1",
-                      [
-                        {
-                          icon: "fas cm-all fa-times",
-                          title: t("common.terminate"),
-                          action: "mssqlTerminateBackend"
-                        }
-                      ]
-                    );
-                  }
-                }
-              ]
-            }
-          });
-        }
         node.setText(p_return.v_data.v_database_return.version);
         var node_tables = node.createChildNode(
           t("tree.tables"),
@@ -19839,7 +20111,7 @@
         p_pid
       }),
       function(p_return) {
-        refreshMonitoring();
+        refreshConnectedUsers();
       },
       function(p_return) {
         if (p_return.v_data.password_timeout) {
@@ -20624,35 +20896,6 @@
           drop_index: p_return.v_data.v_database_return.drop_index,
           delete: p_return.v_data.v_database_return.delete
         };
-        if (node.tree.tag.superuser) {
-          node.tree.contextMenu.cm_server.elements.push({
-            text: t("tree.monitoring"),
-            icon: "fas cm-all fa-chart-line",
-            action: function(node2) {
-            },
-            submenu: {
-              elements: [
-                {
-                  text: t("tree.sessions"),
-                  icon: "fas cm-all fa-chart-line",
-                  action: function(node2) {
-                    v_connTabControl.tag.createMonitoringTab(
-                      t("tree.sessions"),
-                      "select a.mon$attachment_id, a.mon$user, a.mon$remote_address, case a.mon$state when 1 then 'active' else 'idle' end as state from mon$attachments a where a.mon$attachment_id <> current_connection",
-                      [
-                        {
-                          icon: "fas cm-all fa-times",
-                          title: t("common.terminate"),
-                          action: "firebirdTerminateBackend"
-                        }
-                      ]
-                    );
-                  }
-                }
-              ]
-            }
-          });
-        }
         node.setText(p_return.v_data.v_database_return.version);
         var node_tables = node.createChildNode(
           t("tree.tables"),
@@ -21723,7 +21966,7 @@
         p_pid
       }),
       function(p_return) {
-        refreshMonitoring();
+        refreshConnectedUsers();
       },
       function(p_return) {
         if (p_return.v_data.password_timeout) {
@@ -22829,41 +23072,6 @@
           //drop_partition: p_return.v_data.v_database_return.drop_partition
           delete: p_return.v_data.v_database_return.delete
         };
-        node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.monitoring"),
-          icon: "fas cm-all fa-chart-line",
-          action: function(node2) {
-          },
-          submenu: {
-            elements: [
-              /*{
-              	text: t('tree.dashboard'),
-              	icon: 'fas cm-all fa-chart-line',
-              	action: function(node) {
-              		v_connTabControl.tag.createMonitorDashboardTab();
-              		startMonitorDashboard();
-              	}
-              }, */
-              {
-                text: t("tree.process_list"),
-                icon: "fas cm-all fa-chart-line",
-                action: function(node2) {
-                  v_connTabControl.tag.createMonitoringTab(
-                    t("workspace.process_list"),
-                    "select * from information_schema.processlist",
-                    [
-                      {
-                        icon: "fas cm-all fa-times",
-                        title: t("common.terminate"),
-                        action: "mysqlTerminateBackend"
-                      }
-                    ]
-                  );
-                }
-              }
-            ]
-          }
-        });
         node.setText(p_return.v_data.v_database_return.version);
         var node_databases = node.createChildNode(
           t("tree.databases"),
@@ -24182,7 +24390,7 @@
         p_pid
       }),
       function(p_return) {
-        refreshMonitoring();
+        refreshConnectedUsers();
       },
       function(p_return) {
         if (p_return.v_data.password_timeout) {
@@ -25834,6 +26042,7 @@
     initWelcomeSection();
     v_connTabControl.tag.createSnippetPanel();
     v_connTabControl.tag.createNotifyPanel();
+    v_connTabControl.tag.createConnectedUsersPanel();
     initSectionSwitcher();
     switchSection("database");
     updateExplainComponent();
@@ -26798,35 +27007,6 @@
         }
       });
     }
-    if (v_connTabControl.selectedTab.tag.selectedDBMS == "postgresql") {
-      v_option_list.push({
-        text: t("workspace.backends"),
-        icon: "fas cm-all fa-tasks",
-        action: function() {
-          v_connTabControl.tag.createMonitoringTab(t("workspace.backends"), "select * from pg_stat_activity", [
-            {
-              icon: "fas fa-times action-grid action-close text-danger",
-              title: t("common.terminate"),
-              action: "postgresqlTerminateBackend"
-            }
-          ]);
-        }
-      });
-    } else if (v_connTabControl.selectedTab.tag.selectedDBMS == "mysql" || v_connTabControl.selectedTab.tag.selectedDBMS == "mariadb") {
-      v_option_list.push({
-        text: t("workspace.process_list"),
-        icon: "fas cm-all fa-tasks",
-        action: function() {
-          v_connTabControl.tag.createMonitoringTab(t("workspace.process_list"), "select * from information_schema.processlist", [
-            {
-              icon: "fas fa-times action-grid action-close text-danger",
-              title: t("common.terminate"),
-              action: "mysqlTerminateBackend"
-            }
-          ]);
-        }
-      });
-    }
     if (v_connTabControl.tag.hooks.innerTabMenu.length > 0) {
       for (var i2 = 0; i2 < v_connTabControl.tag.hooks.innerTabMenu.length; i2++) {
         v_option_list = v_option_list.concat(v_connTabControl.tag.hooks.innerTabMenu[i2]());
@@ -26929,12 +27109,18 @@
       document.getElementById("omnidb__main").classList.remove("omnidb__explain--default");
     }
   }
-  var v_monitoring_action_whitelist = {
+  var v_connected_users_action_whitelist = {
     postgresqlTerminateBackend: function(p_row) {
       if (typeof postgresqlTerminateBackend === "function") postgresqlTerminateBackend(p_row);
     },
     mysqlTerminateBackend: function(p_row) {
       if (typeof mysqlTerminateBackend === "function") mysqlTerminateBackend(p_row);
+    },
+    mariadbTerminateBackend: function(p_row) {
+      if (typeof mariadbTerminateBackend === "function") mariadbTerminateBackend(p_row);
+    },
+    oracleTerminateBackend: function(p_row) {
+      if (typeof oracleTerminateBackend === "function") oracleTerminateBackend(p_row);
     },
     mssqlTerminateBackend: function(p_row) {
       if (typeof mssqlTerminateBackend === "function") mssqlTerminateBackend(p_row);
@@ -26943,11 +27129,10 @@
       if (typeof firebirdTerminateBackend === "function") firebirdTerminateBackend(p_row);
     }
   };
-  function monitoringAction(p_row_index, p_function) {
-    var v_fn = v_monitoring_action_whitelist[p_function];
-    var v_row_data = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.ht.getDataAtRow(p_row_index);
-    v_row_data.shift();
-    if (typeof v_fn === "function") {
+  function connectedUsersAction(p_row_index, p_function) {
+    var v_fn = v_connected_users_action_whitelist[p_function];
+    var v_row_data = getConnectedUsersRowData(p_row_index);
+    if (typeof v_fn === "function" && v_row_data != null) {
       v_fn(v_row_data);
     }
   }
@@ -26991,6 +27176,7 @@
     changeDatabase,
     checkBeforeChangeDatabase,
     checkTabStatus,
+    connectedUsersAction,
     dragEnd,
     dragEnter,
     dragLeave,
@@ -26999,7 +27185,6 @@
     drop,
     getDatabaseList,
     indentSQL,
-    monitoringAction,
     queueChangeActiveDatabaseThreadSafe,
     refreshHeights,
     refreshTreeHeight,
@@ -27022,7 +27207,7 @@
     toggleTreeTabsContainer,
     uiCopyTextToClipboard,
     updateExplainComponent,
-    v_monitoring_action_whitelist
+    v_connected_users_action_whitelist
   }, Symbol.toStringTag, { value: "Module" }));
   var v_new_data;
   var v_queryState = {
@@ -29814,7 +29999,7 @@
     __proto__: null,
     startTutorial
   }, Symbol.toStringTag, { value: "Module" }));
-  const SECTION_NAMES = ["welcome", "connections", "database", "notify", "snippets", "settings"];
+  const SECTION_NAMES = ["welcome", "connections", "database", "notify", "connected_users", "snippets", "settings"];
   var v_sectionDivs = {};
   var v_sectionNav;
   var v_sectionNavTabs = {};
@@ -29825,13 +30010,18 @@
       if (v_div) v_div.classList.toggle("omnidb__section--active", v_name === p_name);
     }
     if (typeof v_connTabControl !== "undefined" && v_connTabControl && v_connTabControl.tabMenu) {
-      var v_strip_home = p_name === "notify" ? document.getElementById("notify_panel_strip_slot") : document.getElementById("omnidb_main_tablist");
+      var v_strip_home_id = "omnidb_main_tablist";
+      if (p_name === "notify") v_strip_home_id = "notify_panel_strip_slot";
+      else if (p_name === "connected_users") v_strip_home_id = "connected_users_panel_strip_slot";
+      var v_strip_home = document.getElementById(v_strip_home_id);
       if (v_strip_home && v_connTabControl.tabMenu.parentElement !== v_strip_home) {
         v_strip_home.insertBefore(v_connTabControl.tabMenu, v_strip_home.firstChild);
       }
     }
     if (p_name === "notify") {
       refreshNotifyPane();
+    } else if (p_name === "connected_users") {
+      refreshConnectedUsersPane();
     } else if (p_name === "database") {
       refreshHeights();
     }
@@ -29885,6 +30075,18 @@
         switchSection("notify");
       },
       p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.notify")) + "</h5>"
+    });
+    v_sectionNavTabs.connected_users = v_sectionNav.createTab({
+      // fa-server, not fa-users: represents the server-side connections/
+      // processes this section shows, and keeps fa-users free for a future
+      // Roles/permissions section, which is the more natural home for it.
+      p_icon: '<i class="fas fa-server"></i>',
+      p_close: false,
+      p_isDraggable: false,
+      p_selectFunction: function() {
+        switchSection("connected_users");
+      },
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connected_users")) + "</h5>"
     });
     v_sectionNavTabs.snippets = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-scroll"></i>',
@@ -35890,19 +36092,6 @@
                   v_connTabControl.tag.createMonitorDashboardTab();
                   startMonitorDashboard();
                 }
-              },
-              {
-                text: t("tree.backends"),
-                icon: "fas cm-all fa-tasks",
-                action: function(node2) {
-                  v_connTabControl.tag.createMonitoringTab("Backends", "SELECT * FROM pg_stat_activity", [
-                    {
-                      icon: "fas cm-all fa-times",
-                      title: t("common.terminate"),
-                      action: "postgresqlTerminateBackend"
-                    }
-                  ]);
-                }
               }
             ]
           }
@@ -40012,7 +40201,7 @@
         p_pid
       }),
       function(p_return) {
-        refreshMonitoring();
+        refreshConnectedUsers();
       },
       function(p_return) {
         if (p_return.v_data.password_timeout) {
@@ -40730,6 +40919,7 @@
       this._editable = !!this.options.omnidbEditable;
       this._minSpareRows = this._editable ? this.options.minSpareRows || 0 : 0;
       this._suppressCellFocus = !!this.options.suppressCellFocus;
+      this._rowHeight = this.options.rowHeight || ROW_HEIGHT;
       this._rows = [];
       this._displayOrder = [];
       this._sortColIndex = -1;
@@ -40773,6 +40963,7 @@
           width: col.width || MIN_COL_WIDTH,
           tooltip: col.tooltip,
           align: col.align,
+          verticalAlign: col.verticalAlign,
           pinned,
           renderer: col.renderer,
           readOnly: !!col.readOnly
@@ -40854,7 +41045,6 @@
         th.innerHTML = col.title;
         const tooltipText = htmlToText(col.tooltip) || htmlToText(col.title);
         if (tooltipText) th.title = tooltipText;
-        if (col.align) th.style.textAlign = col.align;
         if (!this._editable) {
           th.style.cursor = "pointer";
           th.addEventListener("click", (e) => {
@@ -40968,8 +41158,8 @@
       const total = this._displayOrder.length;
       const scrollTop = this._scrollEl.scrollTop;
       const viewportHeight = this._scrollEl.clientHeight || 400;
-      let start = Math.floor(scrollTop / ROW_HEIGHT) - RENDER_BUFFER_ROWS;
-      let end = Math.ceil((scrollTop + viewportHeight) / ROW_HEIGHT) + RENDER_BUFFER_ROWS;
+      let start = Math.floor(scrollTop / this._rowHeight) - RENDER_BUFFER_ROWS;
+      let end = Math.ceil((scrollTop + viewportHeight) / this._rowHeight) + RENDER_BUFFER_ROWS;
       start = Math.max(0, start);
       end = Math.min(total, end);
       if (start === this._renderedStart && end === this._renderedEnd) return;
@@ -40984,8 +41174,8 @@
         this._rowEls.set(display, tr);
       }
       this._tbody.insertBefore(frag, this._bottomSpacer);
-      this._topSpacerCell.parentElement.style.height = start * ROW_HEIGHT + "px";
-      this._bottomSpacerCell.parentElement.style.height = Math.max(0, total - end) * ROW_HEIGHT + "px";
+      this._topSpacerCell.parentElement.style.height = start * this._rowHeight + "px";
+      this._bottomSpacerCell.parentElement.style.height = Math.max(0, total - end) * this._rowHeight + "px";
     }
     _cellProperties(displayRow, col) {
       if (typeof this.options.cells !== "function") return {};
@@ -40996,7 +41186,7 @@
       const row = this._rows[rowIndex];
       const tr = document.createElement("tr");
       tr.dataset.omnidbRow = "1";
-      tr.style.height = ROW_HEIGHT + "px";
+      tr.style.height = this._rowHeight + "px";
       if (display === this._selectedDisplay) tr.style.backgroundColor = "var(--omnidb-grid-selected-bg, #c7d6ff)";
       tr.addEventListener("mousedown", () => {
         this._selectDisplayRow(display);
@@ -41024,6 +41214,7 @@
           cum += col.width;
         }
         if (col.align) td.style.textAlign = col.align;
+        if (col.verticalAlign) td.style.verticalAlign = col.verticalAlign;
         this._renderCellInto(td, display, colIndex, row[colIndex]);
         tr.appendChild(td);
       });
@@ -41329,10 +41520,11 @@
     // reads the grid's selected row, and VirtualGrid's own mousedown handler on
     // the cell has already selected it by the time this click lands.
     "edit-data-delete-row": () => deleteRowEditData(),
-    // A monitoring grid's row action (Terminate backend and friends). The row
-    // index is baked in at render time, exactly as the attribute did it;
-    // monitoringAction resolves the function name against its own allowlist.
-    "monitoring-action": (el2) => monitoringAction(numArg(el2), arg(el2)),
+    // The Connected Users grid's row action (Terminate backend and friends).
+    // The row index is baked in at render time, exactly as the attribute did
+    // it; connectedUsersAction resolves the function name against its own
+    // allowlist.
+    "connected-users-action": (el2) => connectedUsersAction(numArg(el2), arg(el2)),
     // The monitoring units dialog. These three come from markup the *server*
     // builds (monitoring_handlers.go) -- it emits the data attributes now instead
     // of an onclick, so the last inline handlers on the Go side are gone too.
@@ -41497,7 +41689,6 @@
     innerQueryTab,
     innerConsoleTab,
     innerMonitoringDashboardTab,
-    innerMonitoringTab,
     websiteTab,
     editData,
     createTabFunctions,

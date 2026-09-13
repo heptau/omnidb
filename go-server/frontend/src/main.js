@@ -47,7 +47,6 @@ import * as innerSnippetTab from './tab_functions/inner_snippet_tab.js'
 import * as innerQueryTab from './tab_functions/inner_query_tab.js'
 import * as innerConsoleTab from './tab_functions/inner_console_tab.js'
 import * as innerMonitoringDashboardTab from './tab_functions/inner_monitoring_dashboard_tab.js'
-import * as innerMonitoringTab from './tab_functions/inner_monitoring_tab.js'
 import * as websiteTab from './tab_functions/website_tab.js'
 import * as editData from './tree_context_functions/edit_data.js'
 import * as createTabFunctions from './create_tab_functions.js'
@@ -101,7 +100,6 @@ exposeGlobals(
   innerQueryTab,
   innerConsoleTab,
   innerMonitoringDashboardTab,
-  innerMonitoringTab,
   websiteTab,
   editData,
   createTabFunctions,

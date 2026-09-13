@@ -44,13 +44,14 @@ import { startConnectionManagement } from "./connections.js";
 import { confirmSignout, showConfigUser } from "./header_actions.js";
 import { startTutorial } from "./tutorial_functions/tutorial.js";
 import { refreshNotifyPane } from "./panel_functions/outer_notify_panel.js";
+import { refreshConnectedUsersPane } from "./panel_functions/outer_connected_users_panel.js";
 import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
 import { refreshHeights } from "./workspace.js";
 import { t } from "./i18n.js";
 
-const SECTION_NAMES = ["welcome", "connections", "database", "notify", "snippets", "settings"];
+const SECTION_NAMES = ["welcome", "connections", "database", "notify", "connected_users", "snippets", "settings"];
 
 /** @type {Record<string, HTMLElement>} */
 var v_sectionDivs = {};
@@ -76,18 +77,18 @@ export function switchSection(p_name) {
 	}
 
 	// The horizontal strip of open DB connections is a single shared DOM
-	// node (v_connTabControl.tabMenu, see tabs.js) -- Database and Notify
-	// both show it, in the same place, always pointing at the same selected
-	// connection, by physically relocating it between their two containers
-	// rather than keeping two independently-synced strips. It lives in
-	// #notify_panel_strip_slot only while Notify is the active section;
-	// every other section (Database included) keeps it parked in its
-	// original home, #omnidb_main_tablist.
+	// node (v_connTabControl.tabMenu, see tabs.js) -- Database, Notify and
+	// Connected Users all show it, in the same place, always pointing at the
+	// same selected connection, by physically relocating it between their
+	// containers rather than keeping independently-synced strips. It lives in
+	// #notify_panel_strip_slot / #connected_users_panel_strip_slot only while
+	// that section is active; every other section (Database included) keeps
+	// it parked in its original home, #omnidb_main_tablist.
 	if (typeof v_connTabControl !== "undefined" && v_connTabControl && v_connTabControl.tabMenu) {
-		var v_strip_home =
-			p_name === "notify"
-				? document.getElementById("notify_panel_strip_slot")
-				: document.getElementById("omnidb_main_tablist");
+		var v_strip_home_id = "omnidb_main_tablist";
+		if (p_name === "notify") v_strip_home_id = "notify_panel_strip_slot";
+		else if (p_name === "connected_users") v_strip_home_id = "connected_users_panel_strip_slot";
+		var v_strip_home = document.getElementById(v_strip_home_id);
 		if (v_strip_home && v_connTabControl.tabMenu.parentElement !== v_strip_home) {
 			v_strip_home.insertBefore(v_connTabControl.tabMenu, v_strip_home.firstChild);
 		}
@@ -95,6 +96,8 @@ export function switchSection(p_name) {
 
 	if (p_name === "notify") {
 		refreshNotifyPane();
+	} else if (p_name === "connected_users") {
+		refreshConnectedUsersPane();
 	} else if (p_name === "database") {
 		// Forces a fresh layout pass for the now-visible connection tab --
 		// refreshHeights's own DB-specific sizing skips itself entirely
@@ -179,6 +182,19 @@ export function initSectionSwitcher() {
 			switchSection("notify");
 		},
 		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.notify")) + "</h5>",
+	});
+
+	v_sectionNavTabs.connected_users = v_sectionNav.createTab({
+		// fa-server, not fa-users: represents the server-side connections/
+		// processes this section shows, and keeps fa-users free for a future
+		// Roles/permissions section, which is the more natural home for it.
+		p_icon: '<i class="fas fa-server"></i>',
+		p_close: false,
+		p_isDraggable: false,
+		p_selectFunction: function () {
+			switchSection("connected_users");
+		},
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connected_users")) + "</h5>",
 	});
 
 	v_sectionNavTabs.snippets = v_sectionNav.createTab({

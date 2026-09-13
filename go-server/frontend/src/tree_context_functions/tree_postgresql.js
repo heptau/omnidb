@@ -37,7 +37,7 @@ import { showAlert, showConfirm, showConfirm3, showError } from "../notification
 import { showPasswordPrompt } from "../passwords.js";
 import { clearProperties, getProperties } from "../properties.js";
 import { escapeHtml, querySQL, v_queryState } from "../query.js";
-import { refreshMonitoring } from "../tab_functions/inner_monitoring_tab.js";
+import { refreshConnectedUsers } from "../panel_functions/outer_connected_users_panel.js";
 import { createTabControl } from "../tabs.js";
 import {
 	checkBeforeChangeDatabase,
@@ -3842,19 +3842,6 @@ export function getTreeDetailsPostgresql(node) {
 							action: function (node) {
 								v_connTabControl.tag.createMonitorDashboardTab();
 								startMonitorDashboard();
-							},
-						},
-						{
-							text: t("tree.backends"),
-							icon: "fas cm-all fa-tasks",
-							action: function (node) {
-								v_connTabControl.tag.createMonitoringTab("Backends", "SELECT * FROM pg_stat_activity", [
-									{
-										icon: "fas cm-all fa-times",
-										title: t("common.terminate"),
-										action: "postgresqlTerminateBackend",
-									},
-								]);
 							},
 						},
 					],
@@ -8626,7 +8613,7 @@ export function postgresqlTerminateBackendConfirm(p_pid) {
 			p_pid: p_pid,
 		}),
 		function (p_return) {
-			refreshMonitoring();
+			refreshConnectedUsers();
 		},
 		function (p_return) {
 			if (p_return.v_data.password_timeout) {

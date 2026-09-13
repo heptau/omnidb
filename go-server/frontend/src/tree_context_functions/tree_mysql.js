@@ -38,7 +38,7 @@ import { showConfirm, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
 import { clearProperties, getProperties } from "../properties.js";
 import { escapeHtml, querySQL } from "../query.js";
-import { refreshMonitoring } from "../tab_functions/inner_monitoring_tab.js";
+import { refreshConnectedUsers } from "../panel_functions/outer_connected_users_panel.js";
 import { drawGraph, renameTabConfirm, toggleConnectionAutocomplete } from "../workspace.js";
 import { v_startEditData } from "./edit_data.js";
 import { tabSQLTemplate } from "./tree_postgresql.js";
@@ -1281,39 +1281,10 @@ export function getTreeDetailsMysql(node) {
 				delete: p_return.v_data.v_database_return.delete,
 			};
 
-			node.tree.contextMenu.cm_server.elements.push({
-				text: t("tree.monitoring"),
-				icon: "fas cm-all fa-chart-line",
-				action: function (node) {},
-				submenu: {
-					elements: [
-						/*{
-						text: t('tree.dashboard'),
-						icon: 'fas cm-all fa-chart-line',
-						action: function(node) {
-							v_connTabControl.tag.createMonitorDashboardTab();
-							startMonitorDashboard();
-						}
-					}, */ {
-							text: t("tree.process_list"),
-							icon: "fas cm-all fa-chart-line",
-							action: function (node) {
-								v_connTabControl.tag.createMonitoringTab(
-									t("workspace.process_list"),
-									"select * from information_schema.processlist",
-									[
-										{
-											icon: "fas cm-all fa-times",
-											title: t("common.terminate"),
-											action: "mysqlTerminateBackend",
-										},
-									],
-								);
-							},
-						},
-					],
-				},
-			});
+			// Process List moved to the Connected Users section (see
+			// panel_functions/outer_connected_users_panel.js) -- this tree menu
+			// used to exist solely to hold that one entry (Dashboard is
+			// unreachable from here, only from the "+" new tab menu).
 
 			node.setText(p_return.v_data.v_database_return.version);
 
@@ -3145,7 +3116,7 @@ export function mysqlTerminateBackendConfirm(p_pid) {
 			p_pid: p_pid,
 		}),
 		function (p_return) {
-			refreshMonitoring();
+			refreshConnectedUsers();
 		},
 		function (p_return) {
 			if (p_return.v_data.password_timeout) {

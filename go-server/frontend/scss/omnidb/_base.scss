@@ -1280,6 +1280,93 @@ button.close {
 	font-size: 13px;
 }
 
+/* Connected Users section: strip + a grid/detail split, for whichever
+   connection is selected -- same flex-column/relocated-strip shape as
+   #omnidb__section_notify above, just without its tree/messages split. */
+#omnidb__section_connected_users {
+	overflow: hidden;
+}
+
+.omnidb__connected-users {
+	display: flex;
+	flex-direction: column;
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+#connected_users_panel_strip_slot {
+	flex: 0 0 auto;
+	height: auto;
+}
+
+/* No overflow of its own: VirtualGrid.js's own scroll container
+   (.omnidb__virtual-grid__scroll) is the only element that should ever
+   scroll here. A second scrolling ancestor above it would break the grid
+   header's position:sticky -- sticky only pins against the *nearest*
+   scrolling ancestor, so if this div scrolled too, the header would scroll
+   away with everything else instead of staying put. */
+.omnidb__connected-users__content {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.omnidb__connected-users__pane {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	min-height: 0;
+}
+
+.omnidb__connected-users__grid {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
+.omnidb__connected-users__info-bar {
+	align-items: center;
+	display: flex;
+	flex: 0 0 auto;
+	gap: 12px;
+	padding: 4px 8px;
+}
+
+.omnidb__connected-users__system-toggle {
+	align-items: center;
+	color: var(--text-secondary);
+	cursor: pointer;
+	display: inline-flex;
+	font-size: 13px;
+	gap: 6px;
+	margin: 0;
+}
+
+/* Hidden (display:none) until the first row click -- see
+   outer_connected_users_panel.js's showConnectedUsersDetail. Fixed initial
+   height, resizable via #connected_users_resize_* (the same
+   .omnidb__resize-line__container/.resize_line_horizontal pair the
+   query/console/edit-data panes already use for their own grid/editor
+   split, see inner_query_tab.js). */
+.omnidb__connected-users__detail {
+	display: flex;
+	flex-direction: column;
+	flex: 0 0 240px;
+	min-height: 80px;
+	border-top: 1px solid var(--border-color);
+}
+
+.omnidb__connected-users__detail-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	flex: 0 0 auto;
+	padding: 4px 8px;
+}
+
+.omnidb__connected-users__detail-editor {
+	flex: 1 1 auto;
+	min-height: 0;
+}
+
 /* Marks the technologies without a NOTIFY equivalent in the connection
    picker -- they are listed on purpose, so the marker is what keeps that from
    reading as "this will work". */

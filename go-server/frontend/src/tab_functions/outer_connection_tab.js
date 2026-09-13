@@ -35,6 +35,7 @@ import { createRequest } from "../long_polling.js";
 import { cancelMonitorUnits } from "../monitoring.js";
 import { showAlert } from "../notification_control.js";
 import { refreshNotifyPane, startNotifyForConnTab } from "../panel_functions/outer_notify_panel.js";
+import { refreshConnectedUsersPane } from "../panel_functions/outer_connected_users_panel.js";
 import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { whiteHtmlRenderer } from "../renderers.js";
 import { isSectionActive, switchSection } from "../section_switcher.js";
@@ -60,6 +61,11 @@ import {
 // resizeSnippetPanel's own self-guard in workspace.js.
 function refreshNotifyPaneIfActive() {
 	if (isSectionActive("notify")) refreshNotifyPane();
+}
+
+// Same idea, for the Connected Users section (see outer_connected_users_panel.js).
+function refreshConnectedUsersPaneIfActive() {
+	if (isSectionActive("connected_users")) refreshConnectedUsersPane();
 }
 
 
@@ -162,6 +168,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 					this.tag.tabControl.selectedTab.tag.editor.focus();
 				}
 				refreshNotifyPaneIfActive();
+				refreshConnectedUsersPaneIfActive();
 			},
 			p_close: true,
 			p_closeFunction: function (e, p_tab) {
@@ -204,6 +211,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 					// tab (or none) takes its place, so this just needs to
 					// catch the Notify pane up to that if it is being shown.
 					refreshNotifyPaneIfActive();
+					refreshConnectedUsersPaneIfActive();
 				});
 			},
 			p_tooltip_name: p_tooltip_name,
