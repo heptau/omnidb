@@ -11114,7 +11114,6 @@
       p_name: '<span id="tab_title">' + v_name + "</span>",
       p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
-        document.title = "OmniDB";
         if (this.tag != null) {
           this.tag.resize();
         }
@@ -12305,7 +12304,6 @@
         p_class: ENVIRONMENT_TAB_CLASS$1[v_conn.v_environment] || false,
         p_name: v_conn_name,
         p_selectFunction: function() {
-          document.title = "OmniDB";
           if (this.tag != null) {
             checkTabStatus(this);
             refreshHeights();
@@ -30000,6 +29998,28 @@
     startTutorial
   }, Symbol.toStringTag, { value: "Module" }));
   const SECTION_NAMES = ["welcome", "connections", "database", "notify", "connected_users", "snippets", "settings"];
+  const SECTION_TITLE_KEYS = {
+    welcome: "nav.welcome",
+    connections: "nav.connections",
+    database: "tree.databases_section",
+    notify: "nav.notify",
+    connected_users: "nav.connected_users",
+    snippets: "tree.snippets_section",
+    settings: "nav.settings"
+  };
+  function applyWindowTitle(p_name) {
+    var v_key = SECTION_TITLE_KEYS[p_name];
+    var v_title = v_key ? "OmniDB - " + t(v_key) : "OmniDB";
+    document.title = v_title;
+    if (gv_desktopMode) {
+      fetch("/notify_title/", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: v_title })
+      }).catch(function() {
+      });
+    }
+  }
   var v_sectionDivs = {};
   var v_sectionNav;
   var v_sectionNavTabs = {};
@@ -30009,6 +30029,7 @@
       var v_div = v_sectionDivs[v_name];
       if (v_div) v_div.classList.toggle("omnidb__section--active", v_name === p_name);
     }
+    applyWindowTitle(p_name);
     if (typeof v_connTabControl !== "undefined" && v_connTabControl && v_connTabControl.tabMenu) {
       var v_strip_home_id = "omnidb_main_tablist";
       if (p_name === "notify") v_strip_home_id = "notify_panel_strip_slot";
@@ -30045,7 +30066,6 @@
       p_isDraggable: false,
       p_selectFunction: function() {
         switchSection("welcome");
-        document.title = t("nav.welcome_title");
       },
       p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.welcome")) + "</h5>"
     });

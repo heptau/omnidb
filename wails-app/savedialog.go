@@ -36,8 +36,11 @@ type saveDialogResponse struct {
 // pgpassdialog.go), show that same dialog and list every entry in the
 // picked file for bulk import (/pgpass-import, see pgpassimport.go), or
 // report the signed-in user's UI language so the native menu bar can be
-// rebuilt in it (/notify-language, see menu_i18n.go). This exists only
-// because of a Wails limitation:
+// rebuilt in it (/notify-language, see menu_i18n.go), or retitle the native
+// window to match whichever section the left rail currently has active
+// (/notify-title, see go-server/notify_title.go — unlike the language,
+// fired on every client-side section switch, not just once per page
+// render). This exists only because of a Wails limitation:
 // window.go/window.runtime are injected exclusively into pages served by
 // Wails' own asset server (see pkg/assetserver/assetserver.go);
 // workspace.html is served entirely by go-server via a full top-level
@@ -61,6 +64,7 @@ func (a *App) startSaveDialogServer() error {
 	mux.HandleFunc("/pgpass-grant", a.handlePgpassGrantRequest)
 	mux.HandleFunc("/pgpass-import", a.handlePgpassImportRequest)
 	mux.HandleFunc("/notify-language", a.handleNotifyLanguageRequest)
+	mux.HandleFunc("/notify-title", a.handleNotifyTitleRequest)
 
 	server := &http.Server{Handler: mux}
 	a.saveDialogAddr = listener.Addr().String()
@@ -242,5 +246,25 @@ func (a *App) handleNotifyLanguageRequest(w http.ResponseWriter, r *http.Request
 	}
 	a.setLang(lang)
 	wailsruntime.MenuSetApplicationMenu(a.ctx, a.buildMenu(lang))
+	w.WriteHeader(http.StatusOK)
+}
+
+// notifyTitleRequest mirrors go-server/notify_title.go's relay payload —
+// kept as its own type here since nothing else needs it.
+type notifyTitleRequest struct {
+	Title string `json:"title"`
+}
+
+// handleNotifyTitleRequest sets the native window title to whatever
+// go-server's JS last reported — this is the one Wails runtime call that
+// section_switcher.js can never reach directly (see startSaveDialogServer's
+// comment), so every section switch relays through here instead.
+func (a *App) handleNotifyTitleRequest(w http.ResponseWriter, r *http.Request) {
+	var req notifyTitleRequest
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	wailsruntime.WindowSetTitle(a.ctx, req.Title)
 	w.WriteHeader(http.StatusOK)
 }

@@ -18,7 +18,7 @@ type WhoAmI struct {
 	CSVEncoding   string
 	CSVDelimiter  string
 	// Language is the user's raw stored preference ("auto", "en", "cs",
-	// "es", "pt", "de", "fr", "it") — not yet resolved against any request's
+	// "es", "pt", "de", "fr", "it", "ja", "ko") — not yet resolved against any request's
 	// Accept-Language header.
 	// Callers that need the *effective* language for a response call
 	// i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language")).

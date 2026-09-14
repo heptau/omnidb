@@ -55,7 +55,6 @@
   "login.invalid_credentials": "Neplatné uživatelské jméno nebo heslo.",
   "login.empty_suffix": "prázdné",
   "nav.welcome": "Vítejte",
-  "nav.welcome_title": "Vítejte v OmniDB",
   "nav.connections": "Připojení",
   "nav.notify": "Oznámení",
   "nav.connected_users": "Připojení uživatelé",

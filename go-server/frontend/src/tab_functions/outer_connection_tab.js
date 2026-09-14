@@ -159,7 +159,6 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 			p_class: ENVIRONMENT_TAB_CLASS[v_conn.v_environment] || false,
 			p_name: v_conn_name,
 			p_selectFunction: function () {
-				document.title = "OmniDB";
 				if (this.tag != null) {
 					checkTabStatus(this);
 					refreshHeights(true);

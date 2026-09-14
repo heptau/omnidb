@@ -55,7 +55,6 @@
   "login.invalid_credentials": "Invalid username or password.",
   "login.empty_suffix": "empty",
   "nav.welcome": "Welcome",
-  "nav.welcome_title": "Welcome to OmniDB",
   "nav.connections": "Connections",
   "nav.notify": "Notify",
   "nav.connected_users": "Connected Users",

@@ -46,7 +46,6 @@ export var v_createGraphTabFunction = function (p_name) {
 		p_status:
 			'<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
 		p_selectFunction: function () {
-			document.title = "OmniDB";
 			if (this.tag != null) {
 				this.tag.resize();
 			}

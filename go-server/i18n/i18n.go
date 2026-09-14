@@ -1,9 +1,9 @@
 // Package i18n loads OmniDB's UI translation catalogs and resolves which
-// language a given request/user should see. There are seven supported
-// languages (English, Czech, Spanish, Portuguese, German, French, Italian)
-// plus a virtual "auto" preference that each caller resolves against an
-// Accept-Language header via ResolveLanguage — never stored as a catalog
-// itself.
+// language a given request/user should see. There are nine supported
+// languages (English, Czech, Spanish, Portuguese, German, French, Italian,
+// Japanese, Korean) plus a virtual "auto" preference that each caller
+// resolves against an Accept-Language header via ResolveLanguage — never
+// stored as a catalog itself.
 package i18n
 
 import (
@@ -28,7 +28,7 @@ type Catalog map[string]string
 // user can pick in Settings or a request can resolve to. English is always
 // first: it's both the fallback language and the catalog every other
 // language's missing keys fall back to.
-var SupportedLanguages = []string{"en", "cs", "es", "pt", "de", "fr", "it"}
+var SupportedLanguages = []string{"en", "cs", "es", "pt", "de", "fr", "it", "ja", "ko"}
 
 // DefaultLanguage is returned whenever a preference or Accept-Language
 // header can't be resolved to a supported language.
@@ -176,7 +176,7 @@ func pluralSuffix(lang string, n int) string {
 		default:
 			return "other"
 		}
-	default: // en, es, pt, de, fr, it, and any future language default to the common one/other split.
+	default: // en, es, pt, de, fr, it, ja, ko, and any future language default to the common one/other split.
 		if n == 1 {
 			return "one"
 		}

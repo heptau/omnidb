@@ -1634,14 +1634,22 @@
  * -- compact (icon only, no reserved close/balance space, no label), unlike
  * every actual tab beside it. Used across both tiers (the outer connection
  * strip and every inner query/console/snippet/monitoring/edit-data strip),
- * so it's no longer scoped to `.omnidb__conn-strip-host`. Each qualified
- * selector below matches (or exceeds) the specificity of the corresponding
- * tier's own shrink-to-fit rule (primary tier's is the 4-class
- * `...--primary .omnidb__tab-menu__link` above -- this alternative chains
- * the same 4 classes so it ties rather than losing to it; secondary tier's
+ * so it's no longer scoped to `.omnidb__conn-strip-host`. The primary-tier
+ * alternative below chains `.omnidb__tab-menu__link.omnidb__tab-menu__link--compact`
+ * (both classes the "+" tab actually carries -- see create_tab_functions.js/
+ * outer_connection_tab.js, which add `--compact` on top of the base
+ * `omnidb__tab-menu__link` class tabs.js's createTab() always sets) rather
+ * than swapping in `--compact` alone: that used to leave this selector at
+ * the SAME 4-class specificity as the tier's own shrink-to-fit rule above,
+ * a tie broken only by source order -- fragile, and observed to lose in at
+ * least one real-world case (the compact-fix's `flex: 0 0 40px` never
+ * applying, leaving the "+" tab stretched to the shrink-to-fit rule's
+ * `min-width: 100px`/`flex: 0 0 auto` and its icon flush left under
+ * `justify-content: flex-start`, exactly matching the reported bug).
+ * Compounding both classes adds a full specificity level, so `--compact`
+ * wins outright instead of gambling on cascade order; secondary tier's
  * 2-class rule lives in _base.scss, loaded before this file, so the 2-class
- * alternative below still wins there on source order alone) so `--compact`
- * reliably wins over it instead of inheriting a shrinkable min-width.
+ * alternative below still wins there on source order alone.
  *
  * `--icon-only` (the ResizeObserver-driven "too narrow to show a label"
  * state -- see tabs.js) gets the same fixed-width box, just left-aligned
@@ -1650,8 +1658,8 @@
  * away, not jump to the middle the way the iconless "+" button's does. */
 .omnidb__tab-menu__link--compact,
 .omnidb__tab-menu__link--icon-only,
-.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--compact,
-.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--icon-only,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link.omnidb__tab-menu__link--compact,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link.omnidb__tab-menu__link--icon-only,
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link--compact,
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link--icon-only {
 	min-width: 0 !important;
@@ -1663,7 +1671,7 @@
 /* --compact (the trailing "+" add-panel tab, which has no title to
  * left-align against) stays centered. */
 .omnidb__tab-menu__link--compact,
-.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link--compact,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link.omnidb__tab-menu__link--compact,
 .omnidb__tab-menu--secondary .omnidb__tab-menu__link--compact {
 	justify-content: center !important;
 }
@@ -1686,9 +1694,27 @@
  * justify-content: center, visibly off-centering the glyph. Dropping it from
  * the layout entirely fixes that; there's no text in it to lose (`--compact`)
  * or it's already `display:none` (`--icon-only`) but the margin alone would
- * still shift things without this. */
+ * still shift things without this.
+ *
+ * The primary-tier alternatives below are NOT redundant with the bare
+ * 2-class selectors: the primary tier has its own, deliberately even more
+ * specific (6-class-equivalent) rule above --
+ * `...--container--primary:not(...) .omnidb__tab-menu--primary
+ * .omnidb__tab-menu__link .omnidb__tab-menu__link-name` -- that forces every
+ * real tab's name back to `display: inline-block !important` (undoing a
+ * DIFFERENT collapsed-nav state elsewhere). That rule doesn't know about
+ * `--compact`/`--icon-only` at all, but at 5 classes it outranks the bare
+ * 2-class `display: none !important` here outright (tied `!important`,
+ * unequal specificity always wins over cascade order) -- so on the primary
+ * tier specifically, this NEVER actually hid the name span: it stayed
+ * `inline-block` with its 4px margin-left, silently eating the compact
+ * tab's trailing space and pushing the icon off-center exactly as this
+ * comment describes, just not fixed by the rule below it. Chaining the same
+ * ancestor context (6 classes total) is what actually outranks it. */
 .omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name,
-.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-name {
+.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-name,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link.omnidb__tab-menu__link--compact .omnidb__tab-menu__link-name,
+.omnidb__tab-menu--container--primary:not(.omnidb__tab-menu--container--menu-shown) .omnidb__tab-menu--primary .omnidb__tab-menu__link.omnidb__tab-menu__link--icon-only .omnidb__tab-menu__link-name {
 	display: none !important;
 }
 

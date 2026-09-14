@@ -53,6 +53,51 @@ import { t } from "./i18n.js";
 
 const SECTION_NAMES = ["welcome", "connections", "database", "notify", "connected_users", "snippets", "settings"];
 
+// The i18n key for each section's display name -- reused from the rail's own
+// tooltips (see initSectionSwitcher below) so the window title and the
+// tooltip never drift apart. Keyed by SECTION_NAMES entries.
+const SECTION_TITLE_KEYS = {
+	welcome: "nav.welcome",
+	connections: "nav.connections",
+	database: "tree.databases_section",
+	notify: "nav.notify",
+	connected_users: "nav.connected_users",
+	snippets: "tree.snippets_section",
+	settings: "nav.settings",
+};
+
+// Sets both the page's own title (document.title -- read by the browser tab
+// in server/web mode) and, in the desktop shell, the native OS window title.
+// Wails does NOT sync those two automatically, and worse: window.runtime
+// (the JS binding that would otherwise reach WindowSetTitle directly) is
+// only injected into pages served through Wails' own asset server --
+// workspace.html is served entirely by go-server via a full top-level
+// navigation instead, so it's never there (confirmed live: gv_desktopMode
+// true, window.runtime still undefined -- see export_save_dialog.go's
+// comment for the fuller story, and go-server/notify_title.go for this
+// same relay pattern applied to the window title specifically). The
+// /notify_title/ HTTP hop to go-server -> wails-app's loopback server is
+// the only way to reach the native title bar from here.
+//
+// "OmniDB - <section>" is deliberately NOT run through t() with a template
+// key: unlike the section name itself, the "Brand - Page" window title
+// convention this mirrors (VS Code, GitHub Desktop, ...) is not really a
+// sentence to localize, just fixed chrome around an already-translated name.
+function applyWindowTitle(p_name) {
+	var v_key = SECTION_TITLE_KEYS[p_name];
+	var v_title = v_key ? "OmniDB - " + t(v_key) : "OmniDB";
+	document.title = v_title;
+	if (gv_desktopMode) {
+		fetch("/notify_title/", {
+			method: "POST",
+			headers: { "Content-Type": "application/json" },
+			body: JSON.stringify({ title: v_title }),
+		}).catch(function () {
+			// Best-effort -- a missed native title-bar update is cosmetic.
+		});
+	}
+}
+
 /** @type {Record<string, HTMLElement>} */
 var v_sectionDivs = {};
 /** @type {any} */
@@ -75,6 +120,8 @@ export function switchSection(p_name) {
 		var v_div = v_sectionDivs[v_name];
 		if (v_div) v_div.classList.toggle("omnidb__section--active", v_name === p_name);
 	}
+
+	applyWindowTitle(p_name);
 
 	// The horizontal strip of open DB connections is a single shared DOM
 	// node (v_connTabControl.tabMenu, see tabs.js) -- Database, Notify and
@@ -146,7 +193,6 @@ export function initSectionSwitcher() {
 		p_isDraggable: false,
 		p_selectFunction: function () {
 			switchSection("welcome");
-			document.title = t("nav.welcome_title");
 		},
 		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.welcome")) + "</h5>",
 	});

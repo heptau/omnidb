@@ -55,7 +55,6 @@
   "login.invalid_credentials": "Ungültiger Benutzername oder ungültiges Passwort.",
   "login.empty_suffix": "leer",
   "nav.welcome": "Willkommen",
-  "nav.welcome_title": "Willkommen bei OmniDB",
   "nav.connections": "Verbindungen",
   "nav.notify": "Benachrichtigungen",
   "nav.connected_users": "Verbundene Benutzer",
