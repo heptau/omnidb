@@ -174,9 +174,12 @@ v záložce, zůstává neaktivní.</p>
 <h4>Hesla</h4>
 <p>Pole <em>User Password</em> (Heslo uživatele) je volitelné a obě možnosti se chovají jinak:</p>
 <ul>
-<li><strong>Vyplněné</strong>: heslo se uloží do vlastní konfigurační databáze OmniDB a použije se
-automaticky při každém otevření připojení. Ukládá se do tohoto místního souboru v otevřené podobě,
-takže s ním zacházejte jako s tajemstvím — kdo si ho může přečíst, přečte si i hesla v něm.</li>
+<li><strong>Vyplněné</strong>: heslo se uloží do vlastní konfigurační databáze OmniDB a použije se
+automaticky při každém otevření připojení. Před uložením se šifruje (AES-256-GCM) klíčem, který je
+uložený v systémovém úložišti hesel (Keychain na macOS, Credential Manager na Windows, Secret
+Service na Linuxu), ne v samotném souboru databáze — pouhý přístup k souboru databáze tak k přečtení
+hesel nestačí. Pokud takové systémové úložiště není k dispozici, OmniDB použije záložní klíčový
+soubor uložený vedle databáze.</li>
 <li><strong>Prázdné</strong>: neuloží se nic a OmniDB se na heslo zeptá při otevření připojení. To,
 co napíšete, zůstane jen v paměti serverové session pro dané připojení a s koncem session
 zmizí.</li>
@@ -235,8 +238,8 @@ lze k SSH serveru připojit. OmniDB vybraný soubor přečte a uloží jeho te
 Pokud toto pole vyplníte, můžete vyplnit i <em>Password/Passphrase</em>, ale v tom případě půjde
 o přístupovou frázi k soukromému SSH klíči.</li>
 </ul>
-<p>Vše, co zde uložíte — SSH heslo, přístupová fráze i text klíče — se ukládá do téže místní
-konfigurační databáze OmniDB jako hesla k databázím, a ve stejné otevřené podobě.</p>
+<p>Vše, co zde uložíte — SSH heslo, přístupová fráze i text klíče — se ukládá do téže místní
+konfigurační databáze OmniDB jako hesla k databázím, a stejným způsobem zašifrované.</p>
 <p>Při použití SSH tunelů musíte odpovídajícím způsobem vyplnit i všechna databázová pole. Nebudou
 se ale vztahovat k serveru OmniDB, nýbrž k SSH serveru. To může nastat ve dvou scénářích popsaných
 níže.</p>

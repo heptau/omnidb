@@ -174,10 +174,12 @@ currently open in a tab.</p>
 <h4>Passwords</h4>
 <p>The <em>User Password</em> field is optional, and the two choices behave differently:</p>
 <ul>
-<li><strong>Filled in</strong>: the password is saved into OmniDB's own configuration database and
-used automatically every time you open the connection. It is stored as plain text in that local
-database file, so treat the file as a secret — anyone who can read it can read the passwords in
-it.</li>
+<li><strong>Filled in</strong>: the password is saved into OmniDB's own configuration database and
+used automatically every time you open the connection. It is encrypted (AES-256-GCM) before being
+written to that database file, using a key kept in your operating system's own secret store
+(Keychain on macOS, Credential Manager on Windows, Secret Service on Linux) rather than inside the
+file itself — so the database file alone is no longer enough to read the passwords in it. If no
+such secret store is available, OmniDB falls back to a key file kept alongside the database.</li>
 <li><strong>Left blank</strong>: nothing is stored, and OmniDB asks for the password when you open
 the connection. What you type is kept only in the server's session memory for that connection, and
 is gone when the session ends.</li>
@@ -236,9 +238,9 @@ the SSH server. OmniDB reads the file you pick and stores its text, not the f
 fill this field, then you can also fill the field <em>Password/Passphrase</em>, but in this case it
 will be the passphrase for the SSH private key.</li>
 </ul>
-<p>Everything you do store here — the SSH password, the passphrase and the key text — is kept in
-the same local OmniDB configuration database as the database passwords, and in the same plain
-form.</p>
+<p>Everything you do store here — the SSH password, the passphrase and the key text — is kept in
+the same local OmniDB configuration database as the database passwords, encrypted the same
+way.</p>
 <p>While using SSH tunnels, you also need to fill all database fields accordingly.
 But instead of being relative to the OmniDB server, they will be relative to the
 SSH Server. This can be done in 2 scenarios as explained below.</p>

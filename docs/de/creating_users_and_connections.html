@@ -184,9 +184,12 @@ bei einer Verbindung, die gerade in einem Tab geöffnet ist, bleibt sie deaktivi
 verhalten sich unterschiedlich:</p>
 <ul>
 <li><strong>Ausgefüllt</strong>: Das Passwort wird in OmniDBs eigener Konfigurationsdatenbank
-gespeichert und bei jedem Öffnen der Verbindung automatisch verwendet. Es liegt dort im Klartext,
-behandeln Sie diese lokale Datei also als Geheimnis — wer sie lesen kann, liest auch die Passwörter
-darin.</li>
+gespeichert und bei jedem Öffnen der Verbindung automatisch verwendet. Vor dem Speichern wird es
+(AES-256-GCM) verschlüsselt, mit einem Schlüssel, der im geheimen Speicher des Betriebssystems liegt
+(Keychain unter macOS, Credential Manager unter Windows, Secret Service unter Linux) statt in der
+Datei selbst — allein die Datenbankdatei reicht damit nicht mehr aus, um die darin enthaltenen
+Passwörter zu lesen. Ist kein solcher geheimer Speicher verfügbar, weicht OmniDB auf eine
+Schlüsseldatei neben der Datenbank aus.</li>
 <li><strong>Leer gelassen</strong>: Es wird nichts gespeichert, und OmniDB fragt beim Öffnen der
 Verbindung nach dem Passwort. Das Eingetippte bleibt nur im Sitzungsspeicher des Servers für diese
 Verbindung und ist mit dem Ende der Sitzung weg.</li>
@@ -254,8 +257,8 @@ ihren Text, nicht die Datei selbst. Wenn Sie dieses Feld ausfüllen, können Sie
 ist.</li>
 </ul>
 <p>Alles, was Sie hier speichern — SSH-Passwort, Passphrase und Schlüsseltext — landet in derselben
-lokalen OmniDB-Konfigurationsdatenbank wie die Datenbankpasswörter und in derselben ungeschützten
-Form.</p>
+lokalen OmniDB-Konfigurationsdatenbank wie die Datenbankpasswörter, und wird genauso
+verschlüsselt.</p>
 <p>Bei der Verwendung von SSH-Tunneln müssen Sie auch alle Datenbankfelder entsprechend ausfüllen.
 Sie beziehen sich dann aber nicht auf den OmniDB-Server, sondern auf den SSH-Server. Dafür gibt es
 die beiden folgenden Szenarien.</p>

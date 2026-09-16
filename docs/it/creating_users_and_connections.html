@@ -179,9 +179,12 @@ attualmente aperta in una scheda.</p>
 <p>Il campo <em>User Password</em> (password utente) è facoltativo e le due possibilità si
 comportano in modo diverso:</p>
 <ul>
-<li><strong>Compilato</strong>: la password viene salvata nel database di configurazione di OmniDB e
-riutilizzata automaticamente ogni volta che apri la connessione. È conservata in chiaro in quel file
-locale, quindi trattalo come un segreto: chi può leggerlo legge anche le password che contiene.</li>
+<li><strong>Compilato</strong>: la password viene salvata nel database di configurazione di OmniDB e
+riutilizzata automaticamente ogni volta che apri la connessione. Prima di essere scritta viene
+cifrata (AES-256-GCM) con una chiave conservata nell'archivio segreti del sistema operativo
+(Keychain su macOS, Credential Manager su Windows, Secret Service su Linux) e non nel file stesso:
+il solo file del database non basta più a leggere le password che contiene. Se un archivio del
+genere non è disponibile, OmniDB ricorre a un file di chiave conservato accanto al database.</li>
 <li><strong>Lasciato vuoto</strong>: non viene salvato nulla e OmniDB chiede la password quando apri
 la connessione. Quello che digiti resta solo nella memoria di sessione del server per quella
 connessione e sparisce alla fine della sessione.</li>
@@ -245,9 +248,9 @@ con cui puoi connetterti al server SSH. OmniDB legge il file che scegli e ne s
 file. Se compili questo campo puoi compilare anche <em>Password/Passphrase</em>, che però in questo
 caso sarà la frase di accesso della chiave privata SSH.</li>
 </ul>
-<p>Tutto ciò che salvi qui — password SSH, frase di accesso e testo della chiave — finisce nello
-stesso database di configurazione locale di OmniDB delle password dei database, e nella stessa forma
-non cifrata.</p>
+<p>Tutto ciò che salvi qui — password SSH, frase di accesso e testo della chiave — finisce nello
+stesso database di configurazione locale di OmniDB delle password dei database, cifrato allo stesso
+modo.</p>
 <p>Quando usi i tunnel SSH devi compilare di conseguenza anche tutti i campi del database. Ma invece
 di essere relativi al server OmniDB, saranno relativi al server SSH. Questo può avvenire in 2
 scenari, spiegati di seguito.</p>

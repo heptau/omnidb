@@ -90,6 +90,22 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - The `docs/` marketing website is a separate, already independently multi-language concern and was
   not touched by this change.
 
+### Security
+- Saved connection passwords (`OmniDB_app_connection.password`), SSH tunnel passwords
+  (`ssh_password`) and SSH private key text (`ssh_key`) were stored in plain text in the app's own
+  SQLite database (`omnidb.db`) — readable by anyone who could read that file. Now encrypted at
+  rest with AES-256-GCM before being written, using a per-install key held in the operating
+  system's own secret store (macOS Keychain, Windows Credential Manager, Linux Secret Service via
+  `github.com/zalando/go-keyring`) rather than alongside the database file itself, so the database
+  file alone is no longer sufficient to recover them. On a host with no such secret store reachable
+  (e.g. a headless Linux server with no D-Bus Secret Service), falls back to a key file
+  (`.connection_secret_key`, mode 0600) under `HOME_DIR`. New `go-server/credential_crypto.go`;
+  `fetchConnectionsForUser`/`fetchConnectionByID` decrypt and `saveConnection` encrypts at the same
+  choke point every other consumer of these fields already goes through
+  (`go-server/appdb_connections.go`). Existing installs are migrated automatically and idempotently
+  on first startup after upgrading (`migrateAppDB`'s new `encryptExistingConnectionSecrets`
+  backfill) — no user action required, no change to how connections are created, edited or opened.
+
 ## [4.4.3] - 2026-09-11
 
 ### Changed

@@ -101,6 +101,9 @@ func fetchConnectionsForUser(db *sql.DB, userID int64) ([]appConnection, error) 
 			&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment); err != nil {
 			return nil, err
 		}
+		if c.Password, c.SSHPassword, c.SSHKey, err = decryptConnectionSecrets(c.Password, c.SSHPassword, c.SSHKey); err != nil {
+			return nil, err
+		}
 		out = append(out, c)
 	}
 	return out, rows.Err()
@@ -129,6 +132,9 @@ func fetchConnectionByID(db *sql.DB, connID int64) (*appConnection, error) {
 		&c.Server, &c.Port, &c.Database, &c.Username, &c.Password,
 		&c.UseTunnel, &c.SSHServer, &c.SSHPort, &c.SSHUser, &c.SSHPassword, &c.SSHKey, &c.Environment)
 	if err != nil {
+		return nil, err
+	}
+	if c.Password, c.SSHPassword, c.SSHKey, err = decryptConnectionSecrets(c.Password, c.SSHPassword, c.SSHKey); err != nil {
 		return nil, err
 	}
 	return &c, nil
@@ -283,13 +289,17 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 	}
 
 	if in.ID == -1 {
+		encPassword, encSSHPassword, encSSHKey, err := encryptConnectionSecrets(in.Password, in.SSHPassword, in.SSHKey)
+		if err != nil {
+			return 0, err
+		}
 		res, err := db.Exec(`
 			insert into OmniDB_app_connection
 				(user_id, technology_id, server, port, database, username, password, alias,
 				 ssh_server, ssh_port, ssh_user, ssh_password, ssh_key, use_tunnel, conn_string, public, environment)
 			values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-		`, userID, techID, in.Server, in.Port, in.Database, in.Username, in.Password, in.Alias,
-			in.SSHServer, in.SSHPort, in.SSHUser, in.SSHPassword, in.SSHKey, in.UseTunnel, in.ConnString, in.Public, in.Environment)
+		`, userID, techID, in.Server, in.Port, in.Database, in.Username, encPassword, in.Alias,
+			in.SSHServer, in.SSHPort, in.SSHUser, encSSHPassword, encSSHKey, in.UseTunnel, in.ConnString, in.Public, in.Environment)
 		if err != nil {
 			return 0, err
 		}
@@ -313,16 +323,28 @@ func saveConnection(db *sql.DB, userID int64, in saveConnectionInput) (connID in
 		in.SSHServer, in.SSHPort, in.SSHUser, in.UseTunnel, in.ConnString, in.Public, in.Environment,
 	}
 	if in.Password != "" {
+		enc, err := encryptSecret(in.Password)
+		if err != nil {
+			return 0, err
+		}
 		setParts = append(setParts, "password = ?")
-		args = append(args, in.Password)
+		args = append(args, enc)
 	}
 	if in.SSHPassword != "" {
+		enc, err := encryptSecret(in.SSHPassword)
+		if err != nil {
+			return 0, err
+		}
 		setParts = append(setParts, "ssh_password = ?")
-		args = append(args, in.SSHPassword)
+		args = append(args, enc)
 	}
 	if in.SSHKey != "" {
+		enc, err := encryptSecret(in.SSHKey)
+		if err != nil {
+			return 0, err
+		}
 		setParts = append(setParts, "ssh_key = ?")
-		args = append(args, in.SSHKey)
+		args = append(args, enc)
 	}
 	args = append(args, in.ID)
 	_, err = db.Exec(`update OmniDB_app_connection set `+strings.Join(setParts, ", ")+` where id = ?`, args...)

@@ -184,10 +184,13 @@ pour une connexion actuellement ouverte dans un onglet.</p>
 <p>Le champ <em>User Password</em> (mot de passe utilisateur) est facultatif, et les deux
 possibilités ne se comportent pas de la même façon :</p>
 <ul>
-<li><strong>Rempli</strong> : le mot de passe est enregistré dans la base de configuration propre à
-OmniDB et réutilisé automatiquement à chaque ouverture de la connexion. Il y est stocké en clair :
-traitez donc ce fichier local comme un secret, car quiconque peut le lire peut lire les mots de
-passe qu’il contient.</li>
+<li><strong>Rempli</strong> : le mot de passe est enregistré dans la base de configuration propre à
+OmniDB et réutilisé automatiquement à chaque ouverture de la connexion. Il est chiffré (AES-256-GCM)
+avant d’être écrit dans ce fichier, avec une clé conservée dans le trousseau de secrets propre au
+système d’exploitation (Keychain sur macOS, Gestionnaire d’identification sur Windows, Secret
+Service sur Linux) plutôt que dans le fichier lui-même — le fichier de la base de données seul ne
+suffit donc plus à lire les mots de passe qu’il contient. En l’absence d’un tel trousseau, OmniDB se
+rabat sur un fichier de clé conservé à côté de la base de données.</li>
 <li><strong>Laissé vide</strong> : rien n’est enregistré et OmniDB demande le mot de passe à
 l’ouverture de la connexion. Ce que vous saisissez ne vit que dans la mémoire de session du serveur
 pour cette connexion et disparaît à la fin de la session.</li>
@@ -253,9 +256,9 @@ enregistre le texte, pas le fichier lui-même. Si vous remplissez ce champ, vo
 remplir <em>Password/Passphrase</em>, mais il s’agira alors de la phrase secrète de la clé privée
 SSH.</li>
 </ul>
-<p>Tout ce que vous enregistrez ici — mot de passe SSH, phrase secrète et texte de la clé — atterrit
-dans la même base de configuration locale d’OmniDB que les mots de passe de base de données, et
-sous la même forme non chiffrée.</p>
+<p>Tout ce que vous enregistrez ici — mot de passe SSH, phrase secrète et texte de la clé — atterrit
+dans la même base de configuration locale d’OmniDB que les mots de passe de base de données, et
+chiffré de la même façon.</p>
 <p>Lorsque vous utilisez des tunnels SSH, vous devez également remplir tous les champs de la base de
 données en conséquence. Mais au lieu d’être relatifs au serveur OmniDB, ils le seront au serveur
 SSH. Cela peut se présenter selon 2 scénarios, expliqués ci-dessous.</p>

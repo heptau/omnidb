@@ -185,9 +185,12 @@
 		comportan de forma distinta:</p>
 		<ul>
 		<li><strong>Rellenado</strong>: la contraseña se guarda en la propia base de datos de configuración
-		de OmniDB y se usa automáticamente cada vez que abre la conexión. Se almacena en texto plano en ese
-		archivo local, así que trátelo como un secreto: quien pueda leerlo, leerá también las contraseñas
-		que contiene.</li>
+			de OmniDB y se usa automáticamente cada vez que abre la conexión. Se cifra (AES-256-GCM) antes de
+			guardarse, con una clave que se conserva en el almacén de secretos propio del sistema operativo
+			(Keychain en macOS, Credential Manager en Windows, Secret Service en Linux) y no en el propio
+			archivo, de modo que el archivo de la base de datos por sí solo ya no basta para leer las
+			contraseñas que contiene. Si ese almacén no está disponible, OmniDB recurre a un archivo de clave
+			guardado junto a la base de datos.</li>
 		<li><strong>En blanco</strong>: no se guarda nada y OmniDB pide la contraseña al abrir la conexión.
 		Lo que escriba permanece únicamente en la memoria de sesión del servidor para esa conexión y
 		desaparece cuando la sesión termina.</li>
@@ -252,9 +255,9 @@
 		archivo. Si rellena este campo, también puede rellenar <em>Password/Passphrase</em>, pero en ese
 		caso será la frase de contraseña de la clave privada SSH.</li>
 		</ul>
-		<p>Todo lo que guarde aquí —la contraseña SSH, la frase de contraseña y el texto de la clave— acaba
-		en la misma base de datos de configuración local de OmniDB que las contraseñas de base de datos, y
-		en la misma forma sin cifrar.</p>
+		<p>Todo lo que guarde aquí —la contraseña SSH, la frase de contraseña y el texto de la clave— acaba
+			en la misma base de datos de configuración local de OmniDB que las contraseñas de base de datos, y
+			cifrado de la misma forma.</p>
 		<p>Al usar túneles SSH también debe rellenar todos los campos de la base de datos según
 		corresponda. Pero, en lugar de ser relativos al servidor OmniDB, lo serán al servidor SSH. Esto
 		puede darse en 2 escenarios, como se explica a continuación.</p>

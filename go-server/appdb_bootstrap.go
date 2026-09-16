@@ -279,5 +279,14 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("check OmniDB_app_connectionorder: %w", err)
 	}
 
+	// One-time backfill: encrypt any password/ssh_password/ssh_key column
+	// still holding pre-encryption plaintext (v4.6.0+ — see
+	// credential_crypto.go). Every column saveConnection writes from here on
+	// is already encrypted; this only catches rows written by an older
+	// build.
+	if err := encryptExistingConnectionSecrets(db); err != nil {
+		return fmt.Errorf("encrypt existing connection secrets: %w", err)
+	}
+
 	return nil
 }

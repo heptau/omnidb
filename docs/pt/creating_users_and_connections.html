@@ -179,10 +179,13 @@ num separador.</p>
 <p>O campo <em>User Password</em> (palavra-passe do utilizador) é opcional e as duas hipóteses
 comportam-se de forma diferente:</p>
 <ul>
-<li><strong>Preenchido</strong>: a palavra-passe é guardada na própria base de dados de configuração
-do OmniDB e usada automaticamente sempre que abrir a ligação. Fica guardada em texto simples nesse
-ficheiro local, por isso trate-o como um segredo: quem o conseguir ler, lê também as palavras-passe
-que contém.</li>
+<li><strong>Preenchido</strong>: a palavra-passe é guardada na própria base de dados de configuração
+do OmniDB e usada automaticamente sempre que abrir a ligação. É cifrada (AES-256-GCM) antes de ser
+gravada nesse ficheiro, com uma chave guardada no cofre de segredos do próprio sistema operativo
+(Keychain no macOS, Credential Manager no Windows, Secret Service no Linux) e não no ficheiro em si
+— pelo que o ficheiro da base de dados sozinho já não chega para ler as palavras-passe que contém.
+Se não existir esse cofre, o OmniDB recorre a um ficheiro de chave guardado ao lado da base de
+dados.</li>
 <li><strong>Deixado em branco</strong>: não é guardado nada e o OmniDB pede a palavra-passe ao abrir
 a ligação. O que escrever fica apenas na memória de sessão do servidor para essa ligação e
 desaparece quando a sessão termina.</li>
@@ -248,9 +251,9 @@ se pode ligar ao servidor SSH. O OmniDB lê o ficheiro que escolher e guarda 
 ficheiro. Se preencher este campo, também pode preencher <em>Password/Passphrase</em>, mas nesse
 caso será a frase-passe da chave privada SSH.</li>
 </ul>
-<p>Tudo o que aqui guardar — palavra-passe SSH, frase-passe e texto da chave — vai parar à mesma
-base de dados de configuração local do OmniDB onde ficam as palavras-passe das bases de dados, e na
-mesma forma não cifrada.</p>
+<p>Tudo o que aqui guardar — palavra-passe SSH, frase-passe e texto da chave — vai parar à mesma
+base de dados de configuração local do OmniDB onde ficam as palavras-passe das bases de dados,
+cifrado da mesma forma.</p>
 <p>Ao usar túneis SSH também tem de preencher todos os campos da base de dados em conformidade. Mas,
 em vez de serem relativos ao servidor OmniDB, serão relativos ao servidor SSH. Isto pode acontecer
 em 2 cenários, explicados a seguir.</p>
