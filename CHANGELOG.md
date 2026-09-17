@@ -30,8 +30,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   proper nouns (PostgreSQL, MySQL, CSV, JSON, ...) and CSV codepage identifiers are deliberately left
   untranslated. Changing the language reloads the page rather than re-rendering live, matching how
   much of the static shell is server-rendered.
-
-### Added
 - Desktop (Wails) app: the native macOS menu bar (the OmniDB/View/Help menus — About/Settings/Quit,
   Welcome/Connections/Database/Snippets/Toggle Database Tree/Toggle Properties-DDL Panel, Getting
   Started/Keyboard Shortcuts/Visit omnidb.net/GitHub Repository) is now localized into the same
@@ -46,6 +44,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   The native Edit and Window menus (Undo/Cut/Copy/Paste, Minimize/Zoom/Full Screen, ...) stay in
   English — they're whole native OS-role menus whose item labels are hardcoded inside Wails' own
   vendored Objective-C, with no supported way to override them per-item.
+- PostgreSQL database tree node: a new "Export as DBML" context-menu action generates a full DBML
+  (Database Markup Language) document for the database — every table, column, data type, PK/unique/
+  foreign-key constraint, index and comment — via a single pure-SQL introspection query adapted from
+  the [pg_dbml](https://pg_dbml.80.cz) project, then saves it as `<database>.dbml`: through the same
+  native Save dialog the Query tab's Export feature already uses in the desktop app, or a
+  Download/Cancel prompt in the browser (Cancel discards the generated file immediately rather than
+  leaving it for the temp-folder's 24h cleanup sweep).
 
 ### Changed
 - Database panel's Query tab: the draggable splitter between the SQL editor and the query results

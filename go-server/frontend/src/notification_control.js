@@ -131,6 +131,7 @@ export function showError(p_message) {
 	var v_button_cancel = el("modal_message_cancel");
 
 	v_content_div.textContent = p_message;
+	v_button_ok.textContent = t("common.ok");
 
 	v_button_yes.style.display = "none";
 	v_button_ok.style.display = "";
@@ -168,6 +169,13 @@ export function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = 
 		} else {
 			v_content_div.textContent = p_info;
 		}
+		// modal_message_ok is a single shared DOM element reused by every
+		// dialog (showAlert/showError/showConfirm all pull it via the same
+		// id) -- showConfirm can leave a custom label on it (e.g. "Download",
+		// see exportDBMLPostgresql), which would otherwise leak into the very
+		// next unrelated showAlert (e.g. errors.webserver_shutdown) since
+		// neither this function nor showError ever reset it themselves.
+		v_button_ok.textContent = t("common.ok");
 
 		v_button_ok.onclick = function () {
 			if (p_funcYes != null) p_funcYes();
@@ -189,7 +197,7 @@ export function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = 
  * @param {(() => void)|null} [p_shownCallback]
  * @param {boolean|null} [p_large]
  * @param {string|null} [p_yes_label] Overrides the affirmative button's label
- * (default "Ok") -- e.g. "Delete", so a destructive confirmation names the
+ * (default "OK") -- e.g. "Delete", so a destructive confirmation names the
  * actual action instead of a generic acknowledgement.
  */
 export function showConfirm(p_info, p_funcYes = null, p_funcNo = null, p_shownCallback = null, p_large = null, p_yes_label = null) {

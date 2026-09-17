@@ -197,6 +197,12 @@ func run() error {
 	mux.Handle("/get_view_definition_postgresql/", handleGetViewDefinitionPostgreSQL(upstream, proxy))
 	mux.Handle("/get_triggers_postgresql/", handleGetTriggersPostgreSQL(upstream, proxy))
 	mux.Handle("/get_properties_postgresql/", handleGetPropertiesPostgreSQL(upstream, proxy))
+	mux.Handle("/export_dbml_postgresql/", handleExportDBMLPostgreSQL(upstream, proxy))
+	// Not loopback-only unlike /export_save_dialog/ above: this is the
+	// counterpart used by the *browser-mode* export dialog (no native Save
+	// dialog to relay to), which also has to work on a network-exposed -H
+	// deployment, not just the desktop app.
+	mux.Handle("/discard_export_file/", http.HandlerFunc(handleDiscardExportFile))
 	mux.Handle("/template_select_postgresql/", handleTemplateSelectPostgreSQL(upstream, proxy))
 	mux.Handle("/template_insert_postgresql/", handleTemplateInsertPostgreSQL(upstream, proxy))
 	mux.Handle("/template_update_postgresql/", handleTemplateUpdatePostgreSQL(upstream, proxy))

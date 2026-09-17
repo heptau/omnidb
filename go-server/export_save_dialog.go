@@ -59,15 +59,8 @@ func handleExportSaveDialog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	tempDir, err := resolveTempDir(nil)
-	if err != nil {
-		writeExportSaveDialogError(w, err.Error())
-		return
-	}
-
-	cleanPath := filepath.Clean(req.VFilepath)
-	rel, err := filepath.Rel(tempDir.TempDir, cleanPath)
-	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+	cleanPath, ok := resolveExportFilePath(req.VFilepath)
+	if !ok {
 		writeExportSaveDialogError(w, "invalid export path")
 		return
 	}
@@ -107,4 +100,66 @@ func handleExportSaveDialog(w http.ResponseWriter, r *http.Request) {
 func writeExportSaveDialogError(w http.ResponseWriter, msg string) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(exportSaveDialogResponse{Error: msg})
+}
+
+// resolveExportFilePath cleans p_filepath and checks it stays inside the
+// resolved temp dir — shared by handleExportSaveDialog and
+// handleDiscardExportFile, both of which only ever accept a path an export
+// handler (export.go, postgresql_export_dbml.go, ...) just wrote there.
+func resolveExportFilePath(rawPath string) (string, bool) {
+	tempDir, err := resolveTempDir(nil)
+	if err != nil {
+		return "", false
+	}
+	cleanPath := filepath.Clean(rawPath)
+	rel, err := filepath.Rel(tempDir.TempDir, cleanPath)
+	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return "", false
+	}
+	return cleanPath, true
+}
+
+// discardExportFileRequest is the wire shape for handleDiscardExportFile.
+type discardExportFileRequest struct {
+	VFilepath string `json:"v_filepath"`
+}
+
+// handleDiscardExportFile deletes a temp export file the user chose not to
+// keep after all -- the browser-mode export dialog's Cancel button (see
+// exportDBMLPostgresql in tree_postgresql.js), so a generated-but-unwanted
+// file doesn't sit around wasting space until cleanTempFolder's 24h sweep
+// gets to it. Best-effort: a missing/already-gone file isn't an error.
+//
+// Unlike handleExportSaveDialog above, this isn't loopback-only (the
+// browser-mode dialog it backs also has to work on a network-exposed -H
+// deployment), so it goes through the ordinary execAjax/{v_data,v_error}
+// envelope contract -- readFormData's "data" field, CSRF-checked by
+// requireCSRF like every other authenticated route -- rather than a raw
+// fetch() body needing its own exemption.
+func handleDiscardExportFile(w http.ResponseWriter, r *http.Request) {
+	who, err := resolveIdentity(nil, r.Header.Get("Cookie"))
+	if err != nil || !who.Authenticated {
+		writeUnauthenticated(w)
+		return
+	}
+
+	raw, err := readFormData(r)
+	if err != nil || raw == "" {
+		writeBadRequest(w)
+		return
+	}
+	var req discardExportFileRequest
+	if err := json.Unmarshal([]byte(raw), &req); err != nil {
+		writeBadRequest(w)
+		return
+	}
+
+	cleanPath, ok := resolveExportFilePath(req.VFilepath)
+	if !ok {
+		writeBadRequest(w)
+		return
+	}
+
+	_ = os.Remove(cleanPath)
+	writeEnvelope(w, "", false, -1)
 }

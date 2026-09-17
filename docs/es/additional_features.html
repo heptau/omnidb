@@ -191,6 +191,24 @@
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Todos los archivos se almacenan en una carpeta temporal dentro de la carpeta de OmniDB. OmniDB
 			limpia esta carpeta regularmente, conservando solo los archivos de menos de 24 horas de antigüedad.</p>
+		<h4>Exportar como DBML</h4>
+		<p>Haga clic con el botón derecho en un nodo de base de datos del árbol de PostgreSQL y elija
+			<em>Export as DBML</em> (Exportar como DBML) para generar el esquema completo de la base de
+			datos como un documento <a href="https://dbml.dbdiagram.io/home/" target="_blank"
+			rel="noopener">DBML</a> (Database Markup Language) — todas las tablas, columnas, tipos de datos,
+			claves primarias, restricciones únicas y de clave foránea, índices y comentarios — mediante una
+			única consulta de introspección en SQL puro adaptada del proyecto
+			<a href="https://pg_dbml.80.cz" target="_blank" rel="noopener">pg_dbml</a>.</p>
+		<p>DBML es un formato de esquema compacto y en texto plano, lo que lo hace muy adecuado para dar
+			contexto sobre su base de datos a un asistente LLM/IA: pegar un archivo <code>.dbml</code> en un
+			chat consume muchos menos tokens que pegar un volcado SQL completo o dejar que el modelo ejecute
+			sus propias consultas de introspección tabla por tabla, mientras sigue describiendo con
+			precisión cada tabla, columna, tipo y relación.</p>
+		<p>El archivo generado usa por defecto el nombre <code>&lt;base_de_datos&gt;.dbml</code>. En la
+			aplicación de escritorio esto abre el diálogo nativo de Guardar, igual que <em>Export Data</em>;
+			en el navegador (servidor) muestra en su lugar un aviso <em>Download</em>/<em>Cancel</em>
+			(Descargar/Cancelar) — <em>Cancel</em> descarta el archivo generado de inmediato, en vez de
+			esperar a la limpieza de 24 horas de la carpeta temporal. Por ahora, solo PostgreSQL.</p>
 		<h4>Historial de consultas</h4>
 		<p>Desde la <em>Query Tab</em> puede hacer clic en el botón <em>Command History</em> (Historial de comandos) para ver un
 			historial de consultas completo, navegable y con función de búsqueda.</p>

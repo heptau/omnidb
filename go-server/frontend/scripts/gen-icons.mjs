@@ -133,6 +133,7 @@ const MAPPING = {
 	"fa-lock": ["lucide", "lock"],
 	"fa-user-shield": ["lucide", "user-shield"],
 	"fa-file-import": ["lucide", "import"],
+	"fa-file-export": ["lucide", "file-output"],
 };
 
 function loadSvg(kind, name) {

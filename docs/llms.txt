@@ -152,6 +152,7 @@ URL: https://www.omnidb.net/en/additional_features.html
 - Code snippets
 - Notify panel (LISTEN/NOTIFY, DBMS_ALERT, POST_EVENT)
 - Export tools
+- Export as DBML: PostgreSQL database schema export in the token-efficient DBML format, well suited for giving an LLM/AI assistant schema context
 
 ---
 

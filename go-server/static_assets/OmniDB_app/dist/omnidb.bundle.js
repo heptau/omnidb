@@ -944,6 +944,7 @@
     var v_button_no = el$2("modal_message_no");
     var v_button_cancel = el$2("modal_message_cancel");
     v_content_div.textContent = p_message;
+    v_button_ok.textContent = t("common.ok");
     v_button_yes.style.display = "none";
     v_button_ok.style.display = "";
     v_button_no.style.display = "none";
@@ -965,6 +966,7 @@
       } else {
         v_content_div.textContent = p_info;
       }
+      v_button_ok.textContent = t("common.ok");
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
       };
@@ -32572,6 +32574,13 @@
             action: function(node) {
               tabSQLTemplate(t("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
             }
+          },
+          {
+            text: t("tree.export_dbml"),
+            icon: "fas cm-all fa-file-export",
+            action: function(node) {
+              exportDBMLPostgresql(node);
+            }
           }
         ]
       },
@@ -35670,6 +35679,65 @@
         v_editor.clearSelection();
         v_editor.gotoLine(0, 0, true);
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.innerHTML = "";
+      },
+      function(p_return) {
+        nodeOpenErrorPostgresql(p_return, p_node);
+      },
+      "box",
+      true
+    );
+  }
+  function exportDBMLPostgresql(p_node) {
+    execAjax$1(
+      "/export_dbml_postgresql/",
+      JSON.stringify({
+        p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+        p_tab_id: v_connTabControl.selectedTab.id,
+        p_database: p_node.tag.database
+      }),
+      function(p_return) {
+        if (!gv_desktopMode) {
+          showConfirm(
+            t("editor.file_ready"),
+            function() {
+              var v_a = document.createElement("a");
+              v_a.href = p_return.v_data.v_filename;
+              v_a.download = p_return.v_data.v_downloadname;
+              document.body.appendChild(v_a);
+              v_a.click();
+              v_a.remove();
+            },
+            function() {
+              execAjax$1(
+                "/discard_export_file/",
+                JSON.stringify({ v_filepath: p_return.v_data.v_filepath }),
+                null,
+                null,
+                "box",
+                false
+              );
+            },
+            null,
+            null,
+            t("common.download")
+          );
+          return;
+        }
+        fetch("/export_save_dialog/", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            v_filepath: p_return.v_data.v_filepath,
+            v_downloadname: p_return.v_data.v_downloadname
+          })
+        }).then(function(p_response) {
+          return p_response.json();
+        }).then(function(p_result) {
+          if (p_result.error) showAlert(t("editor.error_saving_file", { error: p_result.error }));
+          else if (p_result.path) showAlert(t("editor.file_exported_to", { path: p_result.path }));
+        }).catch(function(p_error) {
+          showAlert(t("editor.error_saving_file", { error: p_error }));
+        });
       },
       function(p_return) {
         nodeOpenErrorPostgresql(p_return, p_node);
@@ -40346,6 +40414,7 @@
     TemplateUpdatePostgresql,
     afterNodeOpenedCallbackPostgreSQL,
     checkCurrentDatabase,
+    exportDBMLPostgresql,
     getAggregatesPostgresql,
     getChecksPostgresql,
     getColumnsPostgresql,

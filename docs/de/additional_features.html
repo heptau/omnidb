@@ -217,6 +217,24 @@
 		<p>Alle Dateien werden in einem temporären Ordner innerhalb des OmniDB-Ordners gespeichert.
 			OmniDB bereinigt diesen Ordner regelmäßig und behält dabei nur Dateien, die jünger als
 			24 Stunden sind.</p>
+		<h4>Als DBML exportieren</h4>
+		<p>Klicken Sie im PostgreSQL-Baum mit der rechten Maustaste auf einen Datenbank-Knoten und wählen
+			Sie <em>Export as DBML</em> (Als DBML exportieren), um das gesamte Datenbankschema als
+			<a href="https://dbml.dbdiagram.io/home/" target="_blank" rel="noopener">DBML</a>-Dokument
+			(Database Markup Language) zu erzeugen — jede Tabelle, Spalte, jeden Datentyp, Primär-, Unique-
+			und Fremdschlüssel, Index und Kommentar — über eine einzige reine SQL-Introspektionsabfrage, die
+			vom Projekt <a href="https://pg_dbml.80.cz" target="_blank" rel="noopener">pg_dbml</a>
+			übernommen wurde.</p>
+		<p>DBML ist ein kompaktes, reines Textformat für Schemata, das sich gut eignet, um einem
+			LLM/KI-Assistenten Kontext über Ihre Datenbank zu geben: Eine <code>.dbml</code>-Datei in einen
+			Chat einzufügen verbraucht deutlich weniger Tokens als einen vollständigen SQL-Dump einzufügen
+			oder das Modell Tabelle für Tabelle eigene Introspektionsabfragen ausführen zu lassen — und
+			beschreibt dabei trotzdem jede Tabelle, Spalte, jeden Typ und jede Beziehung präzise.</p>
+		<p>Die erzeugte Datei heißt standardmäßig <code>&lt;datenbank&gt;.dbml</code>. In der
+			Desktop-App öffnet sich dabei der native Speichern-Dialog, genau wie bei <em>Export Data</em>; im
+			Browser (Server) erscheint stattdessen eine <em>Download</em>/<em>Cancel</em>-Abfrage —
+			<em>Cancel</em> verwirft die erzeugte Datei sofort, statt auf die 24-Stunden-Bereinigung des
+			temporären Ordners zu warten. Derzeit nur für PostgreSQL.</p>
 		<h4>Abfrageverlauf</h4>
 		<p>Über den <em>Query Tab</em> können Sie auf die Schaltfläche <em>Command History</em>
 			(Befehlsverlauf) klicken, um einen vollständigen, durchsuch- und durchblätterbaren

@@ -215,6 +215,22 @@
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Všechny soubory se ukládají do dočasné složky uvnitř složky OmniDB. OmniDB
 			tuto složku pravidelně čistí a ponechává pouze soubory novější než 24 hodin.</p>
+		<h4>Export do DBML</h4>
+		<p>Klepnutím pravým tlačítkem na uzel databáze ve stromu PostgreSQL a volbou <em>Exportovat jako
+			DBML</em> vygenerujete schéma celé databáze jako dokument <a href="https://dbml.dbdiagram.io/home/"
+			target="_blank" rel="noopener">DBML</a> (Database Markup Language) — všechny tabulky, sloupce,
+			datové typy, primární klíče, unikátní a cizí klíče, indexy i komentáře — pomocí jediného čistě SQL
+			introspekčního dotazu převzatého z projektu <a href="https://pg_dbml.80.cz" target="_blank"
+			rel="noopener">pg_dbml</a>.</p>
+		<p>DBML je kompaktní textový formát schématu, díky čemuž se skvěle hodí jako kontext o databázi pro
+			LLM/AI asistenta: vložení souboru <code>.dbml</code> do konverzace stojí mnohem méně tokenů než
+			vkládání celého SQL dumpu nebo nechání modelu spouštět vlastní introspekční dotazy tabulku po
+			tabulce, a přitom přesně popisuje každou tabulku, sloupec, typ i vztah.</p>
+		<p>Vygenerovaný soubor má výchozí název <code>&lt;databáze&gt;.dbml</code>. V desktopové aplikaci se
+			otevře nativní dialog Uložit, stejně jako u <em>Export dat</em>; v prohlížeči (server) se místo
+			toho zobrazí výzva <em>Stáhnout</em>/<em>Zrušit</em> — <em>Zrušit</em> vygenerovaný soubor rovnou
+			zahodí, místo aby čekal na pravidelné čištění dočasné složky po 24 hodinách. Zatím pouze pro
+			PostgreSQL.</p>
 		<h4>Historie dotazů</h4>
 		<p>Na kartě <em>Query Tab</em> (Dotaz) můžete kliknout na tlačítko <em>Command History</em>
 			(Historie příkazů) a zobrazit si úplnou, procházitelnou a prohledávatelnou

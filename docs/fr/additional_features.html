@@ -205,6 +205,25 @@
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Tous les fichiers sont stockés dans un dossier temporaire situé dans le dossier d’OmniDB. OmniDB nettoie
 			régulièrement ce dossier, en ne conservant que les fichiers datant de moins de 24 heures.</p>
+		<h4>Exporter en DBML</h4>
+		<p>Faites un clic droit sur un nœud de base de données dans l’arborescence PostgreSQL et choisissez
+			<em>Export as DBML</em> (Exporter en DBML) pour générer le schéma complet de la base de données
+			sous forme de document <a href="https://dbml.dbdiagram.io/home/" target="_blank"
+			rel="noopener">DBML</a> (Database Markup Language) — chaque table, colonne, type de donnée, clé
+			primaire, contrainte unique et clé étrangère, index et commentaire — via une seule requête
+			d’introspection en SQL pur adaptée du projet <a href="https://pg_dbml.80.cz" target="_blank"
+			rel="noopener">pg_dbml</a>.</p>
+		<p>Le DBML est un format de schéma compact en texte brut, ce qui en fait un bon moyen de donner du
+			contexte sur votre base de données à un assistant LLM/IA : coller un fichier <code>.dbml</code>
+			dans une conversation coûte bien moins de tokens que de coller un export SQL complet ou de laisser
+			le modèle exécuter ses propres requêtes d’introspection table par table, tout en décrivant
+			précisément chaque table, colonne, type et relation.</p>
+		<p>Le fichier généré porte par défaut le nom <code>&lt;base_de_données&gt;.dbml</code>. Dans
+			l’application de bureau, cela ouvre la boîte de dialogue native Enregistrer, comme pour
+			<em>Export Data</em> ; dans le navigateur (serveur), une invite <em>Download</em>/<em>Cancel</em>
+			(Télécharger/Annuler) s’affiche à la place — <em>Cancel</em> supprime immédiatement le fichier
+			généré au lieu d’attendre le nettoyage du dossier temporaire après 24 heures. Pour l’instant,
+			PostgreSQL uniquement.</p>
 		<h4>Historique des requêtes</h4>
 		<p>Depuis l’<em>onglet Requête</em>, vous pouvez cliquer sur le bouton <em>Command History</em> (Historique des
 			commandes) pour afficher un onglet de requête complet, consultable et permettant la recherche.</p>

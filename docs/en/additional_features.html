@@ -204,6 +204,23 @@
 		<p><img alt="" src="../assets/img/image_178.webp"/></p>
 		<p>All files are stored in a temporary folder inside OmniDB folder. OmniDB
 			regularly cleans this folder, keeping only files newer than 24 hours.</p>
+		<h4>Export as DBML</h4>
+		<p>Right-click a database node in the PostgreSQL tree and choose <em>Export as DBML</em> to generate
+			the whole database's schema as a <a href="https://dbml.dbdiagram.io/home/" target="_blank"
+			rel="noopener">DBML</a> (Database Markup Language) document — every table, column, data type,
+			primary key, unique and foreign-key constraint, index and comment — via a single pure-SQL
+			introspection query adapted from the <a href="https://pg_dbml.80.cz" target="_blank"
+			rel="noopener">pg_dbml</a> project.</p>
+		<p>DBML is a compact, plain-text schema format, which makes it a good fit for giving an LLM/AI
+			assistant context about your database: pasting a <code>.dbml</code> file into a chat is far
+			cheaper in tokens than pasting a full SQL dump or having the model run its own introspection
+			queries table by table, while still precisely describing every table, column, type and
+			relationship.</p>
+		<p>The generated file defaults to <code>&lt;database&gt;.dbml</code>. In the desktop app this opens
+			the native Save dialog, just like <em>Export Data</em>; in the browser (server) it shows a
+			<em>Download</em>/<em>Cancel</em> prompt instead — <em>Cancel</em> discards the generated file
+			right away rather than waiting for the temp folder's 24-hour cleanup. Currently PostgreSQL
+			only.</p>
 		<h4>Query History</h4>
 		<p>From the <em>Query Tab</em> you can click on the <em>Command History</em> button to see a
 			full, browsable and searchable query tab.</p>

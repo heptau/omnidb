@@ -208,6 +208,23 @@
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Todos os ficheiros são armazenados numa pasta temporária dentro da pasta do OmniDB. O OmniDB
 			limpa regularmente esta pasta, mantendo apenas ficheiros com menos de 24 horas.</p>
+		<h4>Exportar como DBML</h4>
+		<p>Clique com o botão direito num nó de base de dados na árvore do PostgreSQL e escolha <em>Export as
+			DBML</em> (Exportar como DBML) para gerar o esquema completo da base de dados como um documento
+			<a href="https://dbml.dbdiagram.io/home/" target="_blank" rel="noopener">DBML</a> (Database Markup
+			Language) — todas as tabelas, colunas, tipos de dados, chaves primárias, restrições exclusivas e de
+			chave estrangeira, índices e comentários — através de uma única consulta de introspeção em SQL puro
+			adaptada do projeto <a href="https://pg_dbml.80.cz" target="_blank" rel="noopener">pg_dbml</a>.</p>
+		<p>O DBML é um formato de esquema compacto, em texto simples, o que o torna adequado para dar contexto
+			sobre a sua base de dados a um assistente LLM/IA: colar um ficheiro <code>.dbml</code> numa conversa
+			custa muito menos tokens do que colar um dump SQL completo ou deixar o modelo executar as suas
+			próprias consultas de introspeção tabela a tabela, descrevendo ainda assim com precisão cada tabela,
+			coluna, tipo e relação.</p>
+		<p>O ficheiro gerado usa por predefinição o nome <code>&lt;base_de_dados&gt;.dbml</code>. Na aplicação
+			de ambiente de trabalho, isto abre a caixa de diálogo nativa Guardar, tal como em <em>Export
+			Data</em>; no navegador (servidor), é mostrado em alternativa um pedido <em>Download</em>/<em>Cancel</em>
+			(Transferir/Cancelar) — <em>Cancel</em> descarta imediatamente o ficheiro gerado, em vez de aguardar
+			pela limpeza da pasta temporária ao fim de 24 horas. Por agora, apenas PostgreSQL.</p>
 		<h4>Histórico de Consultas</h4>
 		<p>No <em>Separador de Consulta</em> pode clicar no botão <em>Command History</em> (Histórico de Comandos) para ver um
 			separador de consultas completo, navegável e pesquisável.</p>

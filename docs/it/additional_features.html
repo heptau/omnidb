@@ -208,6 +208,23 @@
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
 		<p>Tutti i file vengono memorizzati in una cartella temporanea all’interno della cartella di OmniDB. OmniDB
 			pulisce regolarmente questa cartella, mantenendo solo i file più recenti di 24 ore.</p>
+		<h4>Esportazione come DBML</h4>
+		<p>Fai clic con il tasto destro su un nodo database nell’albero PostgreSQL e scegli <em>Export as
+			DBML</em> (Esporta come DBML) per generare l’intero schema del database come documento
+			<a href="https://dbml.dbdiagram.io/home/" target="_blank" rel="noopener">DBML</a> (Database Markup
+			Language) — ogni tabella, colonna, tipo di dato, chiave primaria, vincolo univoco e di chiave
+			esterna, indice e commento — tramite un’unica query di introspezione in SQL puro adattata dal
+			progetto <a href="https://pg_dbml.80.cz" target="_blank" rel="noopener">pg_dbml</a>.</p>
+		<p>DBML è un formato di schema compatto e in puro testo, il che lo rende adatto a dare contesto sul
+			database a un assistente LLM/IA: incollare un file <code>.dbml</code> in una chat costa molti meno
+			token rispetto a incollare un dump SQL completo o far eseguire al modello le proprie query di
+			introspezione tabella per tabella, pur descrivendo con precisione ogni tabella, colonna, tipo e
+			relazione.</p>
+		<p>Il file generato usa per impostazione predefinita il nome <code>&lt;database&gt;.dbml</code>.
+			Nell’app desktop si apre la finestra di dialogo nativa Salva, come per <em>Export Data</em>; nel
+			browser (server) viene invece mostrata una richiesta <em>Download</em>/<em>Cancel</em> — <em>Cancel</em>
+			scarta subito il file generato invece di attendere la pulizia della cartella temporanea dopo 24 ore.
+			Per ora, solo PostgreSQL.</p>
 		<h4>Cronologia delle query</h4>
 		<p>Dalla <em>Query Tab</em> è possibile fare clic sul pulsante <em>Command History</em> per visualizzare una
 			scheda query completa, sfogliabile e ricercabile.</p>

@@ -117,6 +117,7 @@
     var v_button_no = el("modal_message_no");
     var v_button_cancel = el("modal_message_cancel");
     v_content_div.textContent = p_message;
+    v_button_ok.textContent = t("common.ok");
     v_button_yes.style.display = "none";
     v_button_ok.style.display = "";
     v_button_no.style.display = "none";
@@ -138,6 +139,7 @@
       } else {
         v_content_div.textContent = p_info;
       }
+      v_button_ok.textContent = t("common.ok");
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
       };
