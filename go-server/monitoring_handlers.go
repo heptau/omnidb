@@ -2,31 +2,12 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"net/url"
 	"strconv"
-	"strings"
 
 	"omnidb-server/i18n"
 )
-
-// htmlAttr escapes s for use inside a single-quoted HTML attribute value.
-//
-// It replaces jsString, which escaped for a JavaScript string literal inside an
-// onclick attribute — this file no longer emits any executable markup. The
-// grid's action icons carry data-omnidb-action attributes instead, which
-// dom_event_bindings.js resolves against an allowlist; see the comment there.
-// That was the last inline handler the Go side produced.
-func htmlAttr(s string) string {
-	return strings.NewReplacer(
-		"&", "&amp;",
-		"'", "&#39;",
-		`"`, "&quot;",
-		"<", "&lt;",
-		">", "&gt;",
-	).Replace(s)
-}
 
 // This file mirrors OmniDB_app/views/monitor_dashboard.py's routes. Custom
 // user-authored monitor unit CRUD (save/edit/delete) is ported in full, and
@@ -83,40 +64,86 @@ func handleGetMonitorUnitList(upstream *url.URL) http.HandlerFunc {
 		}
 		defer appDB.Close()
 
-		rows := make([][]any, 0)
-		ids := make([]int64, 0)
+		// PMode 1 (the unit editor's "start from this template" dropdown)
+		// keeps its original flat shape — untouched by show/hide/reorder.
+		if req.PMode != 0 {
+			rows := make([][]any, 0)
+			ids := make([]int64, 0)
+			for _, unit := range builtinUnitsForDBMS(info.Technology) {
+				rows = append(rows, []any{unit.PluginName, unit.Title, unit.Type})
+				ids = append(ids, int64(unit.ID))
+			}
+			customUnits, err := fetchAllCustomMonitorUnits(appDB)
+			if err == nil {
+				for _, unit := range customUnits {
+					rows = append(rows, []any{"", unit.Title, unit.Type})
+					ids = append(ids, unit.ID)
+				}
+			}
+			writeEnvelope(w, map[string]any{"id_list": ids, "data": rows}, false, -1)
+			return
+		}
+
+		// PMode 0: "Manage Units" — every row also carries whether it's
+		// currently shown on this connection's dashboard and, if it has ever
+		// been shown (even if hidden right now), its saved_id/position — a
+		// hidden unit keeps the position it had, precisely so the frontend
+		// can slot it back into the same spot on re-check instead of
+		// appending it at the end (see buildMonitorUnitList's sort and
+		// handleMonitorUnitCheckboxChange).
+		byRef := map[monitorUnitRef]monUnitConnection{}
+		if connID, err := strconv.ParseInt(req.databaseIndex(), 10, 64); err == nil {
+			if connRows, err := fetchAllMonUnitConnections(appDB, int64(who.UserID), connID); err == nil {
+				for _, c := range connRows {
+					byRef[monitorUnitRef{c.PluginName, c.Unit}] = c
+				}
+			}
+		}
+
+		items := make([]map[string]any, 0)
 
 		for _, unit := range builtinUnitsForDBMS(info.Technology) {
-			actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' data-omnidb-action='include-monitor-unit' data-omnidb-id='%d' data-omnidb-arg='%s'></i>`, unit.ID, htmlAttr(unit.PluginName))
-			if req.PMode == 0 {
-				rows = append(rows, []any{actions, unit.Title, unit.Type, unit.Interval})
-			} else {
-				rows = append(rows, []any{unit.PluginName, unit.Title, unit.Type})
-			}
-			ids = append(ids, int64(unit.ID))
+			items = append(items, monitorUnitListItem(monitorUnitRef{unit.PluginName, int64(unit.ID)}, unit.Title, unit.Type, unit.Interval, false, byRef))
 		}
 
 		customUnits, err := fetchAllCustomMonitorUnits(appDB)
 		if err == nil {
 			for _, unit := range customUnits {
-				actions := fmt.Sprintf(`<i title='Edit' class='fas fa-check-circle action-grid action-check' data-omnidb-action='include-monitor-unit' data-omnidb-id='%d'></i>`, unit.ID)
-				if unit.UserID.Valid {
-					actions += fmt.Sprintf(`
-					<i title='Edit' class='fas fa-edit action-grid action-edit-monitor' data-omnidb-action='edit-monitor-unit' data-omnidb-id='%d'></i>
-					<i title='Delete' class='fas fa-times action-grid action-close text-danger' data-omnidb-action='delete-monitor-unit' data-omnidb-id='%d'></i>
-					`, unit.ID, unit.ID)
-				}
-				if req.PMode == 0 {
-					rows = append(rows, []any{actions, unit.Title, unit.Type, unit.Interval})
-				} else {
-					rows = append(rows, []any{"", unit.Title, unit.Type})
-				}
-				ids = append(ids, unit.ID)
+				items = append(items, monitorUnitListItem(monitorUnitRef{"", unit.ID}, unit.Title, unit.Type, unit.Interval, unit.UserID.Valid, byRef))
 			}
 		}
 
-		writeEnvelope(w, map[string]any{"id_list": ids, "data": rows}, false, -1)
+		writeEnvelope(w, map[string]any{"items": items}, false, -1)
 	}
+}
+
+// monitorUnitListItem builds one "Manage Units" list row — see
+// handleGetMonitorUnitList's PMode 0 branch. owned gates the edit/delete
+// icons the frontend renders for a custom unit; it mirrors the original
+// (loose) `unit.UserID.Valid` check, not a real ownership comparison — the
+// actual ownership enforcement is server-side, in saveCustomMonitorUnit/
+// deleteCustomMonitorUnit's own `where user_id = ?`. saved_id > 0 is how the
+// frontend tells "has a real, persisted position" (shown or merely hidden)
+// apart from "never shown at all" — shown alone can't do that, since a
+// hidden row still has shown = false.
+func monitorUnitListItem(ref monitorUnitRef, title, unitType string, defaultInterval int, owned bool, byRef map[monitorUnitRef]monUnitConnection) map[string]any {
+	item := map[string]any{
+		"plugin_name": ref.PluginName,
+		"unit_id":     ref.Unit,
+		"title":       title,
+		"type":        unitType,
+		"interval":    defaultInterval,
+		"owned":       owned,
+		"shown":       false,
+		"position":    0,
+		"saved_id":    int64(0),
+	}
+	if c, found := byRef[ref]; found {
+		item["shown"] = !c.Hidden
+		item["position"] = c.Position
+		item["saved_id"] = c.ID
+	}
+	return item
 }
 
 type getMonitorUnitDetailsRequest struct {
@@ -224,14 +251,16 @@ func handleGetMonitorUnits(upstream *url.URL) http.HandlerFunc {
 		}
 
 		if len(userUnits) == 0 {
+			position := 0
 			for _, unit := range builtinUnitsForDBMS(info.Technology) {
 				if !unit.Default {
 					continue
 				}
-				if _, err := insertMonUnitConnection(appDB, userID, connID, int64(unit.ID), unit.PluginName, unit.Interval); err != nil {
+				if _, err := insertMonUnitConnection(appDB, userID, connID, int64(unit.ID), unit.PluginName, unit.Interval, position); err != nil {
 					writeEnvelope(w, []any{}, false, -1)
 					return
 				}
+				position++
 			}
 			userUnits, err = fetchMonUnitConnections(appDB, userID, connID)
 			if err != nil {
@@ -447,8 +476,10 @@ type savedIDRequest struct {
 	PSavedID int64 `json:"p_saved_id"`
 }
 
-// handleRemoveSavedMonitorUnit mirrors remove_saved_monitor_unit.
-func handleRemoveSavedMonitorUnit(upstream *url.URL) http.HandlerFunc {
+// handleHideMonitorUnit mirrors what remove_saved_monitor_unit used to do
+// (a dashboard card's own "×") — renamed because it now hides rather than
+// deletes, see hideMonitorUnit's own comment.
+func handleHideMonitorUnit(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
 		if err != nil || raw == "" {
@@ -461,10 +492,57 @@ func handleRemoveSavedMonitorUnit(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 
+		db, who, ok := resolveAppDBRequest(w, r, upstream)
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		if err := hideMonitorUnit(db, req.PSavedID, int64(who.UserID)); err != nil {
+			writeEnvelope(w, err.Error(), true, -1)
+			return
+		}
+
+		writeEnvelope(w, "", false, -1)
+	}
+}
+
+type saveMonitorUnitOrderRequest struct {
+	baseRequest
+	PUnits []struct {
+		PPluginName string `json:"p_plugin_name"`
+		PUnit       int64  `json:"p_unit"`
+	} `json:"p_units"`
+}
+
+// handleSaveMonitorUnitOrder replaces this user's entire shown-and-ordered
+// set of monitor units for one connection — see saveMonitorUnitOrder's own
+// comment. "Manage Units" calls this on every checkbox toggle and every
+// drag-end, same "recompute the whole list, resend it" shape
+// persistConnectionOrder (connections.js) already uses for the Connections
+// sidebar.
+func handleSaveMonitorUnitOrder(upstream *url.URL) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var req saveMonitorUnitOrderRequest
+		if err := json.Unmarshal([]byte(raw), &req); err != nil {
+			writeBadRequest(w)
+			return
+		}
+
 		cookie := r.Header.Get("Cookie")
 		who, err := resolveIdentity(upstream, cookie)
 		if err != nil || !who.Authenticated {
 			writeUnauthenticated(w)
+			return
+		}
+		info, err := resolveConnection(upstream, cookie, req.databaseIndex())
+		if err != nil || !info.Found {
+			writeBadRequest(w)
 			return
 		}
 
@@ -475,8 +553,19 @@ func handleRemoveSavedMonitorUnit(upstream *url.URL) http.HandlerFunc {
 		}
 		defer appDB.Close()
 
-		if err := removeSavedMonitorUnit(appDB, req.PSavedID, int64(who.UserID)); err != nil {
-			writeEnvelope(w, err.Error(), true, -1)
+		connID, err := strconv.ParseInt(req.databaseIndex(), 10, 64)
+		if err != nil {
+			writeBadRequest(w)
+			return
+		}
+
+		units := make([]monitorUnitRef, 0, len(req.PUnits))
+		for _, u := range req.PUnits {
+			units = append(units, monitorUnitRef{u.PPluginName, u.PUnit})
+		}
+
+		if err := saveMonitorUnitOrder(appDB, int64(who.UserID), connID, info.Technology, units); err != nil {
+			writeDatabaseError(w, err.Error())
 			return
 		}
 
@@ -582,25 +671,15 @@ func handleRefreshMonitorUnits(upstream *url.URL, fallback http.Handler) http.Ha
 		}
 		defer appDB.Close()
 
-		connID, err := strconv.ParseInt(req.databaseIndex(), 10, 64)
-		if err != nil {
-			writeBadRequest(w)
-			return
-		}
 		userID := int64(who.UserID)
 
 		results := make([]map[string]any, 0, len(req.PIDs))
 		for _, item := range req.PIDs {
+			// A unit only ever reaches the dashboard (and so, this refresh
+			// loop) after get_monitor_units has already returned it with a
+			// real saved_id — showing a unit is save_monitor_unit_order's job
+			// now, not something this endpoint creates on the fly.
 			savedID := item.SavedID
-			if savedID == -1 {
-				interval, _ := strconv.Atoi(item.Interval.String())
-				newID, err := insertMonUnitConnection(appDB, userID, connID, item.ID, item.PluginName, interval)
-				if err != nil {
-					writeEnvelope(w, err.Error(), true, -1)
-					return
-				}
-				savedID = newID
-			}
 
 			result := map[string]any{
 				"v_saved_id": savedID,

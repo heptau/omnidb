@@ -203,6 +203,14 @@ func handleGetSubscriptionTablesPostgreSQL(upstream *url.URL, fallback http.Hand
 	}
 }
 
+// pgGetForeignDataWrappersRequest: PDatabase is optional and empty for
+// every caller except the Permissions panel's column 4 object picker — see
+// pgSchemaRequest's comment (postgresql_handlers.go).
+type pgGetForeignDataWrappersRequest struct {
+	baseRequest
+	PDatabase string `json:"p_database"`
+}
+
 func handleGetForeignDataWrappersPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
@@ -210,18 +218,55 @@ func handleGetForeignDataWrappersPostgreSQL(upstream *url.URL, fallback http.Han
 			writeBadRequest(w)
 			return
 		}
-		var reqBody baseRequest
+		var reqBody pgGetForeignDataWrappersRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody)
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
 		if !ok {
 			return
 		}
 		defer db.Close()
 
 		items, err := postgresqlForeignDataWrappers(db)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		writeEnvelope(w, namedOIDEnvelope(items), false, -1)
+	}
+}
+
+// handleGetAllForeignServersPostgreSQL backs the Permissions panel's column
+// 4 object picker's "Foreign Server" type (postgresqlAllForeignServers) —
+// unlike handleGetForeignServersPostgreSQL below (the tree's own per-FDW
+// listing), it's not scoped to one FDW, and supports the same optional
+// p_database override every other column-4 picker endpoint does.
+type pgGetAllForeignServersRequest struct {
+	baseRequest
+	PDatabase string `json:"p_database"`
+}
+
+func handleGetAllForeignServersPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var reqBody pgGetAllForeignServersRequest
+		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		items, err := postgresqlAllForeignServers(db)
 		if err != nil {
 			writeDatabaseError(w, err.Error())
 			return

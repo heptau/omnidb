@@ -33,11 +33,13 @@ import { t } from "./i18n.js";
 import { showConfirm } from "./notification_control.js";
 import { v_createNotifyPanelFunction } from "./panel_functions/outer_notify_panel.js";
 import { v_createConnectedUsersPanelFunction } from "./panel_functions/outer_connected_users_panel.js";
+import { v_createPermissionsPanelFunction } from "./panel_functions/outer_permissions_panel.js";
+import { v_createMonitoringPanelFunction } from "./panel_functions/outer_monitoring_panel.js";
 import { v_createSnippetPanelFunction } from "./panel_functions/outer_snippet_panel.js";
 import { v_createConsoleTabFunction } from "./tab_functions/inner_console_tab.js";
 import { v_createEditDataTabFunction } from "./tab_functions/inner_edit_data_tab.js";
 import { v_createGraphTabFunction } from "./tab_functions/inner_graph_tab.js";
-import { v_createMonitorDashboardTabFunction, v_createNewMonitorUnitTabFunction } from "./tab_functions/inner_monitoring_dashboard_tab.js";
+import { v_createNewMonitorUnitTabFunction } from "./tab_functions/inner_monitoring_dashboard_tab.js";
 import { v_createQueryTabFunction } from "./tab_functions/inner_query_tab.js";
 import { v_createSnippetTextTabFunction } from "./tab_functions/inner_snippet_tab.js";
 import { v_createConnTabFunction } from "./tab_functions/outer_connection_tab.js";
@@ -82,6 +84,12 @@ export function initCreateTabFunctions() {
 	// Functions to create connected users panel globally
 	v_connTabControl.tag.createConnectedUsersPanel = v_createConnectedUsersPanelFunction;
 
+	// Functions to create permissions panel globally
+	v_connTabControl.tag.createPermissionsPanel = v_createPermissionsPanelFunction;
+
+	// Functions to create monitoring panel globally
+	v_connTabControl.tag.createMonitoringPanel = v_createMonitoringPanelFunction;
+
 	// Functions to create tabs inside snippet panel
 	v_connTabControl.tag.createSnippetTextTab = v_createSnippetTextTabFunction;
 
@@ -91,7 +99,6 @@ export function initCreateTabFunctions() {
 	v_connTabControl.tag.createWebsiteTab = v_createWebsiteTabFunction;
 	v_connTabControl.tag.createWebsiteOuterTab = v_createWebsiteOuterTabFunction;
 	v_connTabControl.tag.createNewMonitorUnitTab = v_createNewMonitorUnitTabFunction;
-	v_connTabControl.tag.createMonitorDashboardTab = v_createMonitorDashboardTabFunction;
 
 	v_connTabControl.tag.createEditDataTab = v_createEditDataTabFunction;
 	v_connTabControl.tag.createGraphTab = v_createGraphTabFunction;

@@ -300,6 +300,11 @@ SOFTWARE.
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='12' cy='12' r='10' /%3E%3Cpath d='M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20' /%3E%3Cpath d='M2 12h20' /%3E%3C/svg%3E");
 }
 
+.fa-grip-vertical {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='9' cy='12' r='1' /%3E%3Ccircle cx='9' cy='5' r='1' /%3E%3Ccircle cx='9' cy='19' r='1' /%3E%3Ccircle cx='15' cy='12' r='1' /%3E%3Ccircle cx='15' cy='5' r='1' /%3E%3Ccircle cx='15' cy='19' r='1' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Ccircle cx='9' cy='12' r='1' /%3E%3Ccircle cx='9' cy='5' r='1' /%3E%3Ccircle cx='9' cy='19' r='1' /%3E%3Ccircle cx='15' cy='12' r='1' /%3E%3Ccircle cx='15' cy='5' r='1' /%3E%3Ccircle cx='15' cy='19' r='1' /%3E%3C/svg%3E");
+}
+
 .fa-hand-spock {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2' /%3E%3Cpath d='M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2' /%3E%3Cpath d='M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8' /%3E%3Cpath d='M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Cpath d='M18 11V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2' /%3E%3Cpath d='M14 10V4a2 2 0 0 0-2-2a2 2 0 0 0-2 2v2' /%3E%3Cpath d='M10 10.5V6a2 2 0 0 0-2-2a2 2 0 0 0-2 2v8' /%3E%3Cpath d='M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15' /%3E%3C/svg%3E");
@@ -448,6 +453,11 @@ SOFTWARE.
 .fa-server {
   -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect width='20' height='8' x='2' y='2' rx='2' ry='2' /%3E%3Crect width='20' height='8' x='2' y='14' rx='2' ry='2' /%3E%3Cline x1='6' x2='6.01' y1='6' y2='6' /%3E%3Cline x1='6' x2='6.01' y1='18' y2='18' /%3E%3C/svg%3E");
   mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect width='20' height='8' x='2' y='2' rx='2' ry='2' /%3E%3Crect width='20' height='8' x='2' y='14' rx='2' ry='2' /%3E%3Cline x1='6' x2='6.01' y1='6' y2='6' /%3E%3Cline x1='6' x2='6.01' y1='18' y2='18' /%3E%3C/svg%3E");
+}
+
+.fa-sidebar {
+  -webkit-mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect width='18' height='18' x='3' y='3' rx='2' /%3E%3Cpath d='M9 3v18' /%3E%3C/svg%3E");
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23000' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' %3E%3Crect width='18' height='18' x='3' y='3' rx='2' /%3E%3Cpath d='M9 3v18' /%3E%3C/svg%3E");
 }
 
 .fa-sign-out-alt {
@@ -1535,6 +1545,37 @@ button.close {
    that needs a pixel height computed for it in JS. Same reason as
    #omnidb__section_snippets (see _topbar.scss) for hiding the overflow: the
    tree and the message list already scroll on their own. */
+#omnidb__section_monitoring {
+  overflow: hidden;
+}
+
+.omnidb__monitoring {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* #monitoring_panel_strip_slot hosts v_connTabControl.tabMenu, physically
+   relocated here while this section is active -- same shape as
+   #notify_panel_strip_slot below. */
+#monitoring_panel_strip_slot {
+  flex: 0 0 auto;
+  height: auto;
+}
+
+/* No overflow of its own -- the mounted rootDiv (.omnidb__monitoring-result-tabs)
+   manages its own internal scrolling now (its dashboard half scrolls, its
+   side panel half doesn't), so this must just pass its full height through
+   rather than becoming a second scrolling ancestor. display:flex is what
+   lets that child stretch to 100% height instead of shrinking to its
+   content. */
+.omnidb__monitoring__content {
+  display: flex;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
 #omnidb__section_notify {
   overflow: hidden;
 }
@@ -1710,6 +1751,167 @@ button.close {
 
 .omnidb__notify__unsupported-text {
   font-size: 13px;
+}
+
+/* Permissions section (panel_functions/outer_permissions_panel.js): a
+   Finder/Miller-columns role & privilege browser -- fixed-width columns in a
+   horizontally-scrolling row, each its own tree/list-pane shape (Snippets'
+   div_left conventions: .omnidb__list-footer/.omnidb__addremove for the
+   "+"/"-" row below the list). Same relocated-strip shape as Notify/
+   Connected Users above. */
+#omnidb__section_permissions {
+  overflow: hidden;
+}
+
+.omnidb__permissions {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+#permissions_panel_strip_slot {
+  flex: 0 0 auto;
+  height: auto;
+}
+
+.omnidb__permissions__content {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+.omnidb__permissions__columns {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+}
+
+.omnidb__permissions__column {
+  background-color: var(--panel-bg);
+  border-right: 1px solid var(--border-color);
+  display: flex;
+  flex: 0 0 300px;
+  flex-direction: column;
+  min-height: 0;
+  width: 300px;
+}
+
+.omnidb__permissions__column-header {
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  color: var(--text-secondary);
+  display: flex;
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 600;
+  gap: 8px;
+  justify-content: space-between;
+  padding: 8px 12px;
+  text-transform: uppercase;
+}
+
+.omnidb__permissions__column-header-text {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.omnidb__permissions__list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow: auto;
+}
+
+.omnidb__permissions__role-row {
+  align-items: center;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  display: flex;
+  gap: 8px;
+  padding: 6px 12px 6px 9px;
+}
+
+.omnidb__permissions__role-row:hover {
+  background-color: var(--hover-bg);
+}
+
+.omnidb__permissions__role-row--selected {
+  background-color: var(--hover-bg);
+  border-left-color: var(--accent-color);
+}
+
+/* Column 2's flattened "member of" list (renderAncestorsList) -- an
+   indirect ancestor (reachable only through another role, not a direct
+   pg_auth_members row) is muted rather than removed altogether, so it's
+   still clear the role's privileges cover it. */
+.omnidb__permissions__role-row--inherited {
+  color: var(--text-secondary);
+}
+
+/* PUBLIC's synthesized column 1 entry (PERMISSIONS_PUBLIC_ROLE) -- bold plus
+   a rule below it sets it apart from the real roles listed underneath. */
+.omnidb__permissions__role-row--public {
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+}
+
+.omnidb__permissions__row-suffix {
+  color: var(--text-secondary);
+  font-size: 12px;
+  margin-left: auto;
+}
+
+.omnidb__permissions__list-empty {
+  color: var(--text-secondary);
+  font-size: 13px;
+  padding: 12px;
+  text-align: center;
+}
+
+/* buildRolePickerList's role-with-icon picker, used inside modal dialogs in
+   place of a native <select> (which can't render an icon per option). Not a
+   flex child of a column here, so unlike .omnidb__permissions__list it needs
+   its own explicit height rather than flex:1 1 auto. */
+.omnidb__permissions__role-picker {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  max-height: 220px;
+  overflow-y: auto;
+}
+
+/* buildColumnSection's own wrapper -- the objects column holds exactly one
+   of these, filling the column's full height; column 2 now stacks two
+   (Members on top, Member of on the bottom -- see this file's Phase 10b
+   module comment), each getting half via flex: 1 1 0, with a rule between
+   them so the split reads as two sections rather than one merged list. */
+.omnidb__permissions__column-section {
+  display: flex;
+  flex: 1 1 0;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.omnidb__permissions__column-section + .omnidb__permissions__column-section {
+  border-top: 1px solid var(--border-color);
+}
+
+.omnidb__permissions__grant-row {
+  align-items: flex-start;
+}
+
+.omnidb__permissions__grant-main {
+  min-width: 0;
+}
+
+.omnidb__permissions__grant-identifier {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.omnidb__permissions__grant-privileges {
+  color: var(--text-secondary);
+  font-size: 12px;
 }
 
 /* Connected Users section: strip + a grid/detail split, for whichever
@@ -2374,8 +2576,219 @@ body {
   border-bottom-width: 1px;
 }
 
+/* startMonitoringForConnTab's per-connection root: a Connections-sidebar-style
+   "Manage Units" panel (collapsed by default) to the left of the dashboard
+   itself, side by side -- see that function's own comment for why this
+   replaced the old "Manage Units" modal. Fills the full height
+   .omnidb__monitoring__content hands it. */
+.omnidb__monitoring-result-tabs {
+  display: flex;
+  flex-direction: row;
+  height: 100%;
+  min-height: 0;
+  width: 100%;
+}
+
+/* Collapsed by default (see startMonitoringForConnTab), toggled by the
+   dashboard toolbar's first button. width: 0 + hidden overflow, not
+   display:none, is the same "instant snap, DOM (and its drag/selection
+   state) stays alive underneath" technique the Database tree sidebar's own
+   toggle already uses (.omnidb__workspace__div-left--shrink) -- no
+   transition here either, matching that precedent.
+   flex-basis is deliberately left at its "auto" default (only flex-grow/
+   shrink are pinned to 0) instead of being folded into a `flex: 0 0 260px`
+   shorthand: with an explicit non-auto flex-basis, that basis -- not the
+   `width` property -- would govern this item's size in the row, and the
+   drag-resize handler below only ever writes inline `width`/`max-width`
+   (same split as the tree sidebar's own resizeConnectionHorizontal +
+   .omnidb__workspace__div-left--shrink). Auto flex-basis is what makes
+   `width` (inline from a drag, or the `!important` 0 below once collapsed)
+   the actual deciding property either way. */
+.omnidb__monitor-unit-panel {
+  display: flex;
+  flex-direction: column;
+  flex: 0 0 auto;
+  width: 260px;
+  max-width: 260px;
+  min-height: 0;
+  overflow: hidden;
+  background-color: var(--panel-bg);
+}
+
+.omnidb__monitor-unit-panel--collapsed {
+  width: 0 !important;
+}
+
+/* The drag handle between the unit list and the dashboard, same shape as
+   #connections_resize_line (workspace.html): a narrow strip hosting the
+   shared hover-fade splitter graphic (.omnidb__resize-line__container).
+   Hidden while the panel is collapsed -- nothing to drag against a
+   zero-width panel, and a stray 10px strip sitting flush against the
+   toolbar's first button would look like a layout bug. */
+.omnidb__monitor-unit-panel-resize {
+  width: 10px;
+  flex: 0 0 auto;
+  cursor: ew-resize;
+  background-color: var(--panel-bg);
+}
+
+.omnidb__monitor-unit-panel--collapsed + .omnidb__monitor-unit-panel-resize {
+  display: none;
+}
+
+.omnidb__monitor-unit-list {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 2px 0 8px 8px;
+}
+
+.omnidb__monitor-unit-dashboard {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-width: 0;
+  min-height: 0;
+}
+
+/* flex: 0 0 auto (via the shared .container-fluid-less button row below)
+   keeps this from ever scrolling away with the cards -- only .dashboard_all
+   itself scrolls. */
+.omnidb__monitor-unit-toolbar {
+  flex: 0 0 auto;
+  padding: 0 12px;
+}
+
+/* Monitor unit cards used to be a Bootstrap .row of fixed .col-md-6 children
+   (always exactly 2 per row from the md breakpoint up, however wide the
+   window actually is). A CSS grid with auto-fit/minmax instead fits as many
+   columns as actually have room -- 1 on a narrow window, 4 or 5 on an
+   ultra-wide monitor -- with the minimum card width itself adjustable via
+   --monitor-unit-min-width (see outer_monitoring_panel.js's size picker),
+   so "just one wide" or "several, narrower" are both just a smaller/larger
+   minimum, not a fixed column count that can't use the space it has. */
 .dashboard_all {
+  flex: 1 1 auto;
+  min-height: 0;
   overflow: auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(var(--monitor-unit-min-width, 420px), 1fr));
+  gap: 1rem;
+  align-content: start;
+  padding: 0 12px 12px;
+}
+
+.omnidb__monitor-unit__col {
+  min-width: 0;
+}
+
+/* Monitor unit card's close/edit buttons: a plain icon, no background/circle,
+   shown only while the cursor is over that specific card -- not
+   always-visible chrome. Scoped to .omnidb__monitor-unit__card rather than
+   the generic .card class it sits alongside, since .card is reused all over
+   the app for unrelated Bootstrap-style cards that shouldn't gain this
+   hover behavior. */
+.omnidb__monitor-unit__header-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease-in-out;
+  flex-shrink: 0;
+}
+
+.omnidb__monitor-unit__card:hover .omnidb__monitor-unit__header-btn {
+  opacity: 1;
+}
+
+/* "Manage Units" list (refreshMonitorUnitsList/buildMonitorUnitList) --
+   plain draggable rows, same shape as .omnidb__connections__list-item
+   (_topbar.scss), since Handsontable has no row-drag support anywhere in
+   this codebase to build on instead. */
+.omnidb__monitor-unit-list__item {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 8px;
+  margin-bottom: 1px;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.omnidb__monitor-unit-list__item:hover {
+  background-color: var(--hover-bg);
+}
+
+/* The row being dragged to a new slot -- see bindMonitorUnitDrag. */
+.omnidb__monitor-unit-list__item--dragging {
+  opacity: 0.45;
+}
+
+/* Selected via a plain click (not the checkbox) -- what the footer's "-"
+   button acts on, same meaning as .omnidb__connections__list-item--selected. */
+.omnidb__monitor-unit-list__item--selected,
+.omnidb__monitor-unit-list__item--selected:hover {
+  background-color: var(--accent-color);
+  color: #fff;
+}
+
+.omnidb__monitor-unit-list__item--selected .omnidb__monitor-unit-list__type,
+.omnidb__monitor-unit-list__item--selected .omnidb__monitor-unit-list__interval {
+  color: #fff !important;
+}
+
+.omnidb__monitor-unit-list__title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.omnidb__monitor-unit-list__type,
+.omnidb__monitor-unit-list__interval {
+  flex: 0 0 auto;
+  color: var(--text-secondary);
+  font-size: 0.9em;
+}
+
+/* Bootstrap's .form-select is block-level, width: 100% by default -- fine
+   sitting alone in a form, wrong wedged inline among the dashboard toolbar's
+   buttons (it would stretch to fill whatever space is left in the row).
+   Getting its rendered height to actually match those buttons took a few
+   tries: matching their padding/font-size (4px/13px, same as this app's own
+   `.btn` override in _theme-light.scss) got close but not exact, because a
+   <select>'s `line-height` turns out not to be just "different" here -- per
+   getComputedStyle it's flatly ignored on this element, coming back as the
+   UA default `normal` no matter how high the declaration's specificity is
+   pushed (a real, engine-level <select> quirk, not a cascade bug in this
+   stylesheet). `.btn`'s own line-height (from Bootstrap's own `.btn` rule,
+   1.5 -> 19.5px at this font-size) IS honored, so the two boxes' content
+   heights diverged by exactly that difference. An explicit `height` sidesteps
+   this entirely -- unlike `line-height`, it's a hard box-size constraint a
+   <select> does respect -- so the fix pins it directly to the buttons' own
+   computed height (27.5px = 4px+4px padding + 19.5px line-height + 0 border)
+   instead of trying to reproduce that number indirectly through padding and
+   line-height and hoping the engine honors both. Re-measure both elements'
+   getComputedStyle if the buttons' own padding/font-size ever change.
+   The selector is `select.omnidb__monitor-unit-width-select` rather than
+   just the class, on purpose: this app's own `.form-control, .form-select`
+   rule (_theme-light.scss) sets its own shorthand `padding`, and it's
+   @use'd after this partial -- same specificity (one class) plus later
+   source order would otherwise let that rule's padding win instead of
+   this one's. Adding the element type bumps specificity just enough to
+   win regardless of @use order. */
+select.omnidb__monitor-unit-width-select {
+  display: inline-block;
+  box-sizing: border-box;
+  width: auto;
+  height: 27.5px;
+  line-height: 27.5px;
+  padding: 0 28px 0 12px;
+  font-size: 13px;
+  border-radius: 6px;
 }
 
 .dashboard_unit_grid {
@@ -2385,9 +2798,14 @@ body {
   overflow: auto;
 }
 
+/* No fixed height/overflow here on purpose: a unit's chart canvas is always
+   exactly 250px tall (set inline, see monitoring.js), but its legend below
+   grows with however many series it has and can wrap across more than one
+   line -- a 300px cap plus overflow:auto turned that overflow into a
+   scrollbar inside the card instead of just letting the card grow to fit
+   its own content, which is what it does now. */
 .dashboard_unit_content_group {
-  overflow: auto;
-  height: 300px;
+  min-height: 250px;
 }
 
 .dashboard_unit_legend_box {

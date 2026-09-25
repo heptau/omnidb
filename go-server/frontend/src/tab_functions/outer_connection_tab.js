@@ -36,6 +36,7 @@ import { cancelMonitorUnits } from "../monitoring.js";
 import { showAlert } from "../notification_control.js";
 import { refreshNotifyPane, startNotifyForConnTab } from "../panel_functions/outer_notify_panel.js";
 import { refreshConnectedUsersPane } from "../panel_functions/outer_connected_users_panel.js";
+import { refreshMonitoringPane, startMonitoringForConnTab } from "../panel_functions/outer_monitoring_panel.js";
 import { escapeHtml, v_queryRequestCodes } from "../query.js";
 import { whiteHtmlRenderer } from "../renderers.js";
 import { isSectionActive, switchSection } from "../section_switcher.js";
@@ -66,6 +67,11 @@ function refreshNotifyPaneIfActive() {
 // Same idea, for the Connected Users section (see outer_connected_users_panel.js).
 function refreshConnectedUsersPaneIfActive() {
 	if (isSectionActive("connected_users")) refreshConnectedUsersPane();
+}
+
+// Same idea, for the Monitoring section (see outer_monitoring_panel.js).
+function refreshMonitoringPaneIfActive() {
+	if (isSectionActive("monitoring")) refreshMonitoringPane();
 }
 
 
@@ -168,6 +174,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 				}
 				refreshNotifyPaneIfActive();
 				refreshConnectedUsersPaneIfActive();
+				refreshMonitoringPaneIfActive();
 			},
 			p_close: true,
 			p_closeFunction: function (e, p_tab) {
@@ -177,6 +184,15 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 
 					var v_message_data = { tab_id: p_tab.tag.tab_id, tab_db_id: null };
 					v_tabs_to_remove.push(v_message_data);
+
+					// Monitoring's polling loop is client-driven (setTimeout per
+					// unit, unlike Notify's server-pushed session), so it needs an
+					// explicit stop here -- this connection tab closing is the one
+					// place its dashboard's lifetime ends.
+					if (p_tab.tag.monitoring) {
+						p_tab.tag.monitoring.tab_active = false;
+						cancelMonitorUnits(p_tab.tag.monitoring);
+					}
 
 					for (var i = 0; i < p_tab.tag.tabControl.tabList.length; i++) {
 						var v_tab = p_tab.tag.tabControl.tabList[i];
@@ -189,9 +205,6 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 								var v_message_data = { tab_id: v_tab.tag.tab_id, tab_db_id: null };
 								if (v_tab.tag.mode == "query") v_message_data.tab_db_id = v_tab.tag.tab_db_id;
 								v_tabs_to_remove.push(v_message_data);
-							} else if (v_tab.tag.mode == "monitor_dashboard") {
-								v_tab.tag.tab_active = false;
-								cancelMonitorUnits(v_tab.tag);
 							}
 						}
 
@@ -211,6 +224,7 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 					// catch the Notify pane up to that if it is being shown.
 					refreshNotifyPaneIfActive();
 					refreshConnectedUsersPaneIfActive();
+					refreshMonitoringPaneIfActive();
 				});
 			},
 			p_tooltip_name: p_tooltip_name,
@@ -510,6 +524,10 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		// see outer_notify_panel.js's module comment for why Notify no
 		// longer has an independent open/close step of its own.
 		startNotifyForConnTab(v_tab);
+
+		// Same idea for the Monitoring dashboard -- see
+		// outer_monitoring_panel.js's module comment.
+		startMonitoringForConnTab(v_tab);
 
 		if (p_create_query_tab) {
 			v_connTabControl.tag.createConsoleTab();

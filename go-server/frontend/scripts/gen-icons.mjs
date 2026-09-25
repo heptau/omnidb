@@ -134,6 +134,8 @@ const MAPPING = {
 	"fa-user-shield": ["lucide", "user-shield"],
 	"fa-file-import": ["lucide", "import"],
 	"fa-file-export": ["lucide", "file-output"],
+	"fa-grip-vertical": ["lucide", "grip-vertical"],
+	"fa-sidebar": ["lucide", "panel-left"],
 };
 
 function loadSvg(kind, name) {

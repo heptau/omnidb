@@ -296,11 +296,22 @@
 			</div>
 		</div>
 
+		<!-- Monitoring section: the dashboard of monitor units (charts/grids
+		     polled on a timer) for whichever connection is selected. Content
+		     is built by panel_functions/outer_monitoring_panel.js. -->
+		<div id="omnidb__section_monitoring" class="omnidb__section"></div>
+
 		<!-- Notify section: one outer tab per connection being listened on,
 		     each with a channel tree on the left and the received LISTEN/
 		     NOTIFY (or DBMS_ALERT) messages on the right. Content is built by
 		     panel_functions/outer_notify_panel.js. -->
 		<div id="omnidb__section_notify" class="omnidb__section"></div>
+
+		<!-- Permissions section: PostgreSQL role/user management and
+		     Finder-style column browser of role membership and object
+		     privileges. Content is built by
+		     panel_functions/outer_permissions_panel.js. -->
+		<div id="omnidb__section_permissions" class="omnidb__section"></div>
 
 		<!-- Connected Users section: live backends/sessions/process list for
 		     whichever connection is selected, with a per-technology terminate
@@ -932,23 +943,6 @@
 
 					<div id="query_history_grid" style="width: 100%; height: 300px; overflow: hidden;"></div>
 
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<!-- Modal Monitoring Units -->
-	<div class="modal fade" id="modal_monitoring_units" tabindex="-1" role="dialog" aria-hidden="true">
-		<div class="modal-dialog" role="document">
-			<div class="modal-content">
-				<div class="modal-header">
-					<button id="button_new_monitor_unit" class='btn omnidb__theme__btn--primary btn-sm mb-2' data-i18n="modals.monitoring.new_unit">New Unit</button>
-					<button type="button" class="close" data-bs-dismiss="modal" aria-label="Close" data-i18n-aria-label="common.close">
-						<span aria-hidden="true">&times;</span>
-					</button>
-				</div>
-				<div class="modal-body">
-					<div id="monitoring_units_grid" style="width: 100%; height: 300px; overflow: hidden;"></div>
 				</div>
 			</div>
 		</div>

@@ -45,13 +45,15 @@ import { confirmSignout, showConfigUser } from "./header_actions.js";
 import { startTutorial } from "./tutorial_functions/tutorial.js";
 import { refreshNotifyPane } from "./panel_functions/outer_notify_panel.js";
 import { refreshConnectedUsersPane } from "./panel_functions/outer_connected_users_panel.js";
+import { refreshPermissionsPane } from "./panel_functions/outer_permissions_panel.js";
+import { refreshMonitoringPane } from "./panel_functions/outer_monitoring_panel.js";
 import { toggleSnippetPanel } from "./panel_functions/outer_snippet_panel.js";
 import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
 import { refreshHeights } from "./workspace.js";
 import { t } from "./i18n.js";
 
-const SECTION_NAMES = ["welcome", "connections", "database", "notify", "connected_users", "snippets", "settings"];
+const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "snippets", "settings"];
 
 // The i18n key for each section's display name -- reused from the rail's own
 // tooltips (see initSectionSwitcher below) so the window title and the
@@ -60,7 +62,9 @@ const SECTION_TITLE_KEYS = {
 	welcome: "nav.welcome",
 	connections: "nav.connections",
 	database: "tree.databases_section",
+	monitoring: "nav.monitoring",
 	notify: "nav.notify",
+	permissions: "nav.permissions",
 	connected_users: "nav.connected_users",
 	snippets: "tree.snippets_section",
 	settings: "nav.settings",
@@ -133,7 +137,9 @@ export function switchSection(p_name) {
 	// it parked in its original home, #omnidb_main_tablist.
 	if (typeof v_connTabControl !== "undefined" && v_connTabControl && v_connTabControl.tabMenu) {
 		var v_strip_home_id = "omnidb_main_tablist";
-		if (p_name === "notify") v_strip_home_id = "notify_panel_strip_slot";
+		if (p_name === "monitoring") v_strip_home_id = "monitoring_panel_strip_slot";
+		else if (p_name === "notify") v_strip_home_id = "notify_panel_strip_slot";
+		else if (p_name === "permissions") v_strip_home_id = "permissions_panel_strip_slot";
 		else if (p_name === "connected_users") v_strip_home_id = "connected_users_panel_strip_slot";
 		var v_strip_home = document.getElementById(v_strip_home_id);
 		if (v_strip_home && v_connTabControl.tabMenu.parentElement !== v_strip_home) {
@@ -141,8 +147,12 @@ export function switchSection(p_name) {
 		}
 	}
 
-	if (p_name === "notify") {
+	if (p_name === "monitoring") {
+		refreshMonitoringPane();
+	} else if (p_name === "notify") {
 		refreshNotifyPane();
+	} else if (p_name === "permissions") {
+		refreshPermissionsPane();
 	} else if (p_name === "connected_users") {
 		refreshConnectedUsersPane();
 	} else if (p_name === "database") {
@@ -220,6 +230,16 @@ export function initSectionSwitcher() {
 		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("tree.databases_section")) + "</h5>",
 	});
 
+	v_sectionNavTabs.monitoring = v_sectionNav.createTab({
+		p_icon: '<i class="fas fa-chart-line"></i>',
+		p_close: false,
+		p_isDraggable: false,
+		p_selectFunction: function () {
+			switchSection("monitoring");
+		},
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.monitoring")) + "</h5>",
+	});
+
 	v_sectionNavTabs.notify = v_sectionNav.createTab({
 		p_icon: '<i class="fas fa-bell"></i>',
 		p_close: false,
@@ -230,10 +250,20 @@ export function initSectionSwitcher() {
 		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.notify")) + "</h5>",
 	});
 
+	v_sectionNavTabs.permissions = v_sectionNav.createTab({
+		p_icon: '<i class="fas fa-users"></i>',
+		p_close: false,
+		p_isDraggable: false,
+		p_selectFunction: function () {
+			switchSection("permissions");
+		},
+		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.permissions")) + "</h5>",
+	});
+
 	v_sectionNavTabs.connected_users = v_sectionNav.createTab({
 		// fa-server, not fa-users: represents the server-side connections/
-		// processes this section shows, and keeps fa-users free for a future
-		// Roles/permissions section, which is the more natural home for it.
+		// processes this section shows -- fa-users went to the Permissions
+		// section right above, once that was actually built.
 		p_icon: '<i class="fas fa-server"></i>',
 		p_close: false,
 		p_isDraggable: false,

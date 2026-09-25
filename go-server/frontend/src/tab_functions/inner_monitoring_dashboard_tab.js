@@ -29,154 +29,9 @@ SOFTWARE.
 */
 
 import { beforeCloseTab } from "../create_tab_functions.js";
-import {
-	closeMonitorDashboardTab,
-	refreshMonitorDashboard,
-	refreshMonitorUnitsObjects,
-	saveMonitorScript,
-	selectUnitTemplate,
-	showMonitorUnitList,
-	testMonitorScript,
-} from "../monitoring.js";
+import { saveMonitorScript, selectUnitTemplate, testMonitorScript } from "../monitoring.js";
 import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 import { t } from "../i18n.js";
-
-
-export var v_createMonitorDashboardTabFunction = function () {
-	// Removing last tab of the inner tab list
-	v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-
-	// Creating tab name pattern.
-	let v_name_html = '<span id="tab_title">' + " " + t("tree.monitoring") + "</span>";
-	let v_status_html =
-		'<span id="tab_loading" style="display:none;">' +
-		'<i class="tab-icon node-spin"></i>' +
-		"</span>" +
-		'<i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
-
-	// Creating monitoring tab in the inner tab list
-	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-		p_icon: '<i class="fas fa-chart-bar icon-tab-title"></i>',
-		p_name: v_name_html,
-		p_status: v_status_html,
-		p_selectFunction: function () {
-			if (this.tag != null) {
-				this.tag.resize();
-				refreshMonitorUnitsObjects();
-				if (this.tag.unit_list_grid != null) {
-					showMonitorUnitList();
-				}
-			}
-		},
-		p_closeFunction: function (e, p_tab) {
-			var v_current_tab = p_tab;
-			beforeCloseTab(e, function () {
-				closeMonitorDashboardTab(v_tab);
-				if (v_tab.tag.tabCloseFunction) v_tab.tag.tabCloseFunction(v_tab.tag);
-			});
-		},
-		p_dblClickFunction: renameTab,
-	});
-
-	// Selecting newly created tab.
-	v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-
-	// Adding unique names to spans.
-	var v_tab_title_span = /** @type {HTMLElement} */ (document.getElementById("tab_title"));
-	v_tab_title_span.id = "tab_title_" + v_tab.id;
-	var v_tab_loading_span = /** @type {HTMLElement} */ (document.getElementById("tab_loading"));
-	v_tab_loading_span.id = "tab_loading_" + v_tab.id;
-	var v_tab_check_span = /** @type {HTMLElement} */ (document.getElementById("tab_check"));
-	v_tab_check_span.id = "tab_check_" + v_tab.id;
-
-	var v_html =
-		"<div class='omnidb__monitoring-result-tabs'>" +
-		"<div class='container-fluid'>" +
-		"<button id='bt_refresh_dashboard_" +
-		v_tab.id +
-		"' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>" + t("monitoring.refresh_all") + "</button>" +
-		"<button id='bt_manage_units_" +
-		v_tab.id +
-		"' class='btn omnidb__theme__btn--primary btn-sm my-2'>" + t("monitoring.manage_units") + "</button>" +
-		"<div id='dashboard_" +
-		v_tab.id +
-		"' class='dashboard_all row'></div>" +
-		"</div>" +
-		"</div>";
-
-	// Updating the html.
-	v_tab.elementDiv.innerHTML = v_html;
-
-	// Bindings for the two toolbar buttons, replacing the on*= attributes they
-	// used to carry -- see dom_event_bindings.js and README.md.
-	/** @type {HTMLElement} */ (document.getElementById("bt_refresh_dashboard_" + v_tab.id)).addEventListener(
-		"click",
-		() => refreshMonitorDashboard(true),
-	);
-	/** @type {HTMLElement} */ (document.getElementById("bt_manage_units_" + v_tab.id)).addEventListener("click", () =>
-		showMonitorUnitList(),
-	);
-
-	var v_resizeFunction = function () {
-		var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-		if (v_tab_tag.dashboard_div) {
-			v_tab_tag.dashboard_div.style.height =
-				window.innerHeight -
-				(v_tab_tag.dashboard_div.getBoundingClientRect().top + window.scrollY) -
-				v_tab_tag.dashboard_div.parentElement.scrollTop -
-				0.833 * v_font_size +
-				"px";
-		}
-	};
-
-	var v_tag = {
-		tab_id: v_tab.id,
-		mode: "monitor_dashboard",
-		dashboard_div: document.getElementById("dashboard_" + v_tab.id),
-		unit_list_div: document.getElementById("unit_list_div_" + v_tab.id),
-		unit_list_grid_div: document.getElementById("unit_list_grid_" + v_tab.id),
-		unit_list_grid: null,
-		unit_list_id_list: [],
-		tab_title_span: v_tab_title_span,
-		tab_loading_span: v_tab_loading_span,
-		tab_check_span: v_tab_check_span,
-		tabControl: v_connTabControl.selectedTab.tag.tabControl,
-		units: [],
-		unit_sequence: 0,
-		tab_active: true,
-		connTabTag: v_connTabControl.selectedTab.tag,
-		resize: v_resizeFunction,
-		tabCloseFunction: function (p_tag) {
-			for (var i = 0; i < p_tag.units.length; i++) {
-				try {
-					p_tag.units[i].object.destroy();
-				} catch (err) {}
-			}
-		},
-	};
-
-	v_tab.tag = v_tag;
-
-	// Creating + tab in the outer tab list
-	var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
-		p_icon: '<i class="fas fa-plus"></i>',
-		p_close: false,
-		p_selectable: false,
-		p_isDraggable: false,
-		p_clickFunction: function (e) {
-			showMenuNewTab(e);
-		},
-	});
-	v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
-	v_add_tab.tag = {
-		mode: "add",
-	};
-
-
-	setTimeout(function () {
-		v_resizeFunction();
-	}, 10);
-};
 
 export var v_createNewMonitorUnitTabFunction = function () {
 	// Removing last tab of the inner tab list
@@ -313,9 +168,14 @@ export var v_createNewMonitorUnitTabFunction = function () {
 
 	var v_select_chart_type = /** @type {HTMLSelectElement} */ (document.getElementById("select_chart_type_" + v_tab.id));
 	// Adapter so save/load/test code can keep calling .editor.getValue()/
-	// .setValue()/.clearSelection()/.gotoLine()/.resize() unchanged, whether
-	// "editor" is really an Ace instance (script_chart, historically) or —
-	// now — this plain chart-type <select>.
+	// .setValue()/.clearSelection()/.gotoLine()/.resize()/.destroy()
+	// unchanged, whether "editor" is really an Ace instance (script_chart,
+	// historically) or -- now -- this plain chart-type <select>. destroy()
+	// matters even though there's nothing to tear down: workspace.js's
+	// removeTab() calls it unconditionally whenever tag.editor != null, with
+	// no guard for it being missing -- omitting it here threw a TypeError
+	// that aborted removeTab() before it reached p_tab.removeTab(), so
+	// closing this tab silently did nothing at all.
 	var v_editor = {
 		getValue: function () {
 			return v_select_chart_type.value;
@@ -326,6 +186,7 @@ export var v_createNewMonitorUnitTabFunction = function () {
 		clearSelection: function () {},
 		gotoLine: function () {},
 		resize: function () {},
+		destroy: function () {},
 	};
 
 	var v_txt_data = document.getElementById("txt_data_" + v_tab.id);

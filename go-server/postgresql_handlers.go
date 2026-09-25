@@ -12,9 +12,19 @@ import (
 // Request shapes for the PostgreSQL routes — same baseRequest as SQLite's,
 // plus p_schema, which every PostgreSQL tree_postgresql.py view requires
 // (PostgreSQL, unlike SQLite, has schemas/namespaces).
+//
+// PDatabase is optional and empty for every caller except the Permissions
+// panel's column 4 object picker (openAddDatabaseObjectPrivilegeDialog,
+// outer_permissions_panel.js) -- when set, the handlers below connect to it
+// explicitly via resolvePostgreSQLRequestForDatabase (postgresql_handlers.go)
+// instead of the tab's own remembered active database, since column 4 lets
+// the user pick a database independent of whatever the tab is pointed at
+// (see handleGetRoleDatabaseGrantsPostgreSQL's comment for why that picker
+// needs its own connection at all).
 type pgSchemaRequest struct {
 	baseRequest
-	PSchema string `json:"p_schema"`
+	PSchema   string `json:"p_schema"`
+	PDatabase string `json:"p_database"`
 }
 
 type pgTableRequest struct {
@@ -172,6 +182,58 @@ func decodePostgreSQLRequest(w http.ResponseWriter, r *http.Request, upstream *u
 	return db, ok
 }
 
+// resolvePostgreSQLRequestForDatabase is resolvePostgreSQLRequest's variant
+// for a caller that lets the user pick a database independent of whatever
+// the tab happens to be pointed at (the Permissions panel's column 4 -- see
+// postgresql_permissions_effective.go's module comment) -- pg_namespace/
+// pg_class/pg_proc are per-database catalogs (unlike pg_roles/pg_database/
+// pg_tablespace, which are shared across the whole cluster and visible the
+// same from any connection to it), so introspecting a *different* database
+// than the tab's own means actually connecting to it. When database is
+// empty this is exactly resolvePostgreSQLRequest (the tab's own remembered
+// active database, via applyActiveDatabaseOverride) -- every existing
+// caller keeps its old behavior unchanged. When it isn't, this instead
+// mirrors handleExportDBMLPostgreSQL's (postgresql_export_dbml.go) manual
+// resolveConnection -> info.Database = database -> openPostgreSQLTarget
+// pattern, deliberately skipping applyActiveDatabaseOverride so the tab's
+// own remembered active database is never touched by the pick.
+func resolvePostgreSQLRequestForDatabase(w http.ResponseWriter, r *http.Request, upstream *url.URL, fallback http.Handler, databaseIndex, tabID, database string) (*sql.DB, bool) {
+	if database == "" {
+		db, _, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, databaseIndex, tabID)
+		return db, ok
+	}
+
+	cookie := r.Header.Get("Cookie")
+	who, err := resolveIdentity(upstream, cookie)
+	if err != nil || !who.Authenticated {
+		writeUnauthenticated(w)
+		return nil, false
+	}
+
+	info, err := resolveConnection(upstream, cookie, databaseIndex)
+	if err != nil || !info.Found || info.Technology != "postgresql" {
+		fallback.ServeHTTP(w, r)
+		return nil, false
+	}
+	applyRememberedPassword(r, databaseIndex, info)
+	info.Database = database
+
+	db, err := openPostgreSQLTarget(info)
+	if err != nil {
+		writeDatabaseError(w, err.Error())
+		return nil, false
+	}
+	return db, true
+}
+
+// pgGetSchemasRequest: PDatabase is optional and empty for every caller
+// except the Permissions panel's column 4 object picker — see
+// pgSchemaRequest's comment.
+type pgGetSchemasRequest struct {
+	baseRequest
+	PDatabase string `json:"p_database"`
+}
+
 func handleGetSchemasPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
@@ -179,12 +241,12 @@ func handleGetSchemasPostgreSQL(upstream *url.URL, fallback http.Handler) http.H
 			writeBadRequest(w)
 			return
 		}
-		var reqBody baseRequest
+		var reqBody pgGetSchemasRequest
 		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody)
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
 		if !ok {
 			return
 		}
@@ -215,7 +277,7 @@ func handleGetTablesPostgreSQL(upstream *url.URL, fallback http.Handler) http.Ha
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
 		if !ok {
 			return
 		}
@@ -545,7 +607,7 @@ func handleGetViewsPostgreSQL(upstream *url.URL, fallback http.Handler) http.Han
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
 		if !ok {
 			return
 		}

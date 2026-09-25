@@ -34,7 +34,7 @@ func handleGetFunctionsPostgreSQL(upstream *url.URL, fallback http.Handler) http
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
 		if !ok {
 			return
 		}
@@ -61,7 +61,7 @@ func handleGetProceduresPostgreSQL(upstream *url.URL, fallback http.Handler) htt
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
 		if !ok {
 			return
 		}

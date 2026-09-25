@@ -29,25 +29,14 @@ SOFTWARE.
 */
 
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
+import { customMenu } from "./custom_menu.js";
 import { adjustChartTheme, adjustGraphTheme, editCellData } from "./header_actions.js";
 import { t } from "./i18n.js";
 import { showAlert, showConfirm, showError } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
-import { whiteHtmlRenderer } from "./renderers.js";
+import { escapeHtml } from "./query.js";
 import { toggleMonitorUnitChartType } from "./tab_functions/inner_monitoring_dashboard_tab.js";
-
-// Declared here because these were implicit globals: assigned without
-// `var` anywhere in this file, so they leaked onto `window` and were
-// shared with every other file in the bundle. They are scratch values
-// used and re-read inside a single function each, so a file-level
-// declaration keeps the behaviour identical while taking them off the
-// global object -- which is what still forces the bundle out of strict
-// mode.
-var v_tab_tag;
-
-
-/** @type {any} */
-export var v_unit_list_grid = null;
+import { switchSection } from "./section_switcher.js";
 
 export function sanitizeLegend(p_html) {
 	var v_tmp = document.createElement("div");
@@ -94,24 +83,37 @@ function buildChartLegendHtml(p_chart) {
 	return v_text.join("");
 }
 
+/**
+ * Stops a unit's timer, destroys its chart/graph object if any, and removes
+ * its card from the DOM -- the client-side half of "this unit is no longer
+ * shown", shared by closeMonitorUnit (the card's own "×") and
+ * saveMonitorUnitOrder's removal diff (unchecking it in "Manage Units").
+ * Does not touch v_tab_tag.units itself -- callers splice/filter that
+ * however suits their own loop.
+ * @param {any} p_unit
+ */
+function teardownMonitorUnit(p_unit) {
+	clearTimeout(p_unit.timeout_object);
+	if (p_unit.type == "graph" && p_unit.object != null) {
+		p_unit.object.destroy();
+	}
+	if (p_unit.div.parentElement) p_unit.div.parentElement.removeChild(p_unit.div);
+}
+
 export function closeMonitorUnit(p_div) {
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.monitoring;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
 		if (v_unit.div == p_div) {
-			//Clear timeout
-			clearTimeout(v_unit.timeout_object);
-
-			if (v_unit.type == "graph" && v_unit.object != null) {
-				v_unit.object.destroy();
-			}
-
-			v_unit.div.parentElement.removeChild(v_unit.div);
+			teardownMonitorUnit(v_unit);
 			v_tab_tag.units.splice(i, 1);
 
-			//Removing saved unit
+			// Hides the unit server-side (soft: the row and its interval
+			// override survive, see hideMonitorUnit's own comment) --
+			// re-showing it from "Manage Units" finds it again instead of
+			// recreating it from scratch.
 			execAjax(
-				"/remove_saved_monitor_unit/",
+				"/hide_monitor_unit/",
 				JSON.stringify({ p_saved_id: v_unit.saved_id }),
 				function (p_return) {},
 				null,
@@ -125,7 +127,7 @@ export function closeMonitorUnit(p_div) {
 }
 
 export function updateUnitSavedInterval(p_div) {
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.monitoring;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
 		var v_unit = v_tab_tag.units[i];
 		if (v_unit.div == p_div) {
@@ -151,40 +153,71 @@ export function updateUnitSavedInterval(p_div) {
 	}
 }
 
+function pauseUnit(p_unit) {
+	clearTimeout(p_unit.timeout_object);
+	p_unit.active = false;
+	p_unit.button_play.style.display = "inline-block";
+	p_unit.button_pause.style.display = "none";
+}
+
+function playUnit(p_unit, p_tab_tag) {
+	clearTimeout(p_unit.timeout_object);
+	p_unit.active = true;
+	p_unit.button_play.style.display = "none";
+	p_unit.button_pause.style.display = "inline-block";
+	refreshMonitorDashboard(true, p_tab_tag, p_unit.div);
+}
+
 export function pauseMonitorUnit(p_div) {
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.monitoring;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
-		var v_unit = v_tab_tag.units[i];
-		if (v_unit.div == p_div) {
-			//Clear timeout
-			clearTimeout(v_unit.timeout_object);
-			v_unit.active = false;
-			v_unit.button_play.style.display = "inline-block";
-			v_unit.button_pause.style.display = "none";
+		if (v_tab_tag.units[i].div == p_div) {
+			pauseUnit(v_tab_tag.units[i]);
 			break;
 		}
 	}
 }
 
 export function playMonitorUnit(p_div) {
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	var v_tab_tag = v_connTabControl.selectedTab.tag.monitoring;
 	for (var i = 0; i < v_tab_tag.units.length; i++) {
-		var v_unit = v_tab_tag.units[i];
-		if (v_unit.div == p_div) {
-			//Clear timeout
-			clearTimeout(v_unit.timeout_object);
-			v_unit.active = true;
-			v_unit.button_play.style.display = "none";
-			v_unit.button_pause.style.display = "inline-block";
-			refreshMonitorDashboard(true, v_tab_tag, v_unit.div);
+		if (v_tab_tag.units[i].div == p_div) {
+			playUnit(v_tab_tag.units[i], v_tab_tag);
 			break;
 		}
 	}
 }
 
-export function buildMonitorUnit(p_unit, p_first) {
-	var v_dashboard_div = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.dashboard_div;
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+/**
+ * Bulk "Enable All"/"Pause All" toolbar actions -- iterates every unit for
+ * the given (or currently selected) connection's dashboard. Only units not
+ * already in the target state are touched, so this is also safe to call
+ * repeatedly (e.g. re-clicking "Enable All" doesn't restart already-running
+ * timers).
+ * @param {any} [p_tag]
+ */
+export function enableAllMonitorUnits(p_tag) {
+	var v_tab_tag = p_tag || v_connTabControl.selectedTab.tag.monitoring;
+	if (!v_tab_tag) return;
+	for (var i = 0; i < v_tab_tag.units.length; i++) {
+		if (!v_tab_tag.units[i].active) playUnit(v_tab_tag.units[i], v_tab_tag);
+	}
+}
+
+/**
+ * @param {any} [p_tag]
+ */
+export function pauseAllMonitorUnits(p_tag) {
+	var v_tab_tag = p_tag || v_connTabControl.selectedTab.tag.monitoring;
+	if (!v_tab_tag) return;
+	for (var i = 0; i < v_tab_tag.units.length; i++) {
+		if (v_tab_tag.units[i].active) pauseUnit(v_tab_tag.units[i]);
+	}
+}
+
+export function buildMonitorUnit(p_unit, p_first, p_tag) {
+	var v_tab_tag = p_tag || v_connTabControl.selectedTab.tag.monitoring;
+	var v_dashboard_div = v_tab_tag.dashboard_div;
 
 	var v_return_unit = p_unit;
 
@@ -192,9 +225,9 @@ export function buildMonitorUnit(p_unit, p_first) {
 	var v_unit = null;
 
 	var div = document.createElement("div");
-	div.className = "col-md-6 my-2";
+	div.className = "omnidb__monitor-unit__col my-2";
 	var div_card = document.createElement("div");
-	div_card.className = "card";
+	div_card.className = "card omnidb__monitor-unit__card";
 	var div_card_body = document.createElement("div");
 	div_card_body.className = "card-body";
 	var div_loading = document.createElement("div");
@@ -214,16 +247,14 @@ export function buildMonitorUnit(p_unit, p_first) {
 	div_header_row1.className = "d-flex justify-content-between align-items-center";
 
 	var button_close = document.createElement("button");
-	button_close.className = "omnidb__macos-close-btn";
-	button_close.style.cssText =
-		"width: 12px; height: 12px; border-radius: 50%; border: none; background: #ff5f56; display: flex; align-items: center; justify-content: center; cursor: pointer; padding: 0; flex-shrink: 0;";
+	button_close.className = "omnidb__monitor-unit__header-btn text-muted";
+	button_close.title = t("common.close");
 	button_close.onclick = (function (div) {
 		return function () {
 			closeMonitorUnit(div);
 		};
 	})(div);
-	button_close.innerHTML =
-		'<svg width="8" height="8" viewBox="0 0 8 8"><path d="M1 1L7 7M7 1L1 7" stroke="black" stroke-width="1.2" stroke-linecap="round"/></svg>';
+	button_close.innerHTML = "<i class='fas fa-times'></i>";
 
 	var title = document.createElement("span");
 	title.className = "flex-grow-1 text-center fw-bold";
@@ -231,7 +262,24 @@ export function buildMonitorUnit(p_unit, p_first) {
 
 	div_header_row1.appendChild(button_close);
 	div_header_row1.appendChild(title);
-	div_header_row1.appendChild(document.createElement("div"));
+
+	// Custom units only (v_plugin_name == "" -- built-ins are native Go code
+	// with no SQL/settings to edit, see monitoring_units.go). Balances the
+	// close button on the other side of the title, same "×" reveal-on-hover
+	// treatment, so an editable card reads as such without adding permanent
+	// chrome to every card.
+	if (!v_return_unit.v_plugin_name) {
+		var button_edit = document.createElement("button");
+		button_edit.className = "omnidb__monitor-unit__header-btn text-muted";
+		button_edit.title = t("common.edit");
+		button_edit.onclick = function () {
+			editMonitorUnit(v_return_unit.v_id);
+		};
+		button_edit.innerHTML = "<i class='fas fa-edit'></i>";
+		div_header_row1.appendChild(button_edit);
+	} else {
+		div_header_row1.appendChild(document.createElement("div"));
+	}
 
 	var div_header_row2 = document.createElement("div");
 	div_header_row2.className = "d-flex align-items-center gap-2";
@@ -254,6 +302,9 @@ export function buildMonitorUnit(p_unit, p_first) {
 	button_pause.innerHTML = "<i class='fas fa-pause-circle fa-light'></i>";
 	button_pause.className = "btn omnidb__theme__btn--secondary btn-sm";
 	button_pause.title = t("notify.pause");
+	// Units start paused (see the `active: false` default below) -- Pause
+	// starts hidden, Play visible, until the unit is actually running.
+	button_pause.style.display = "none";
 	var button_play = document.createElement("button");
 	button_play.onclick = (function (div) {
 		return function () {
@@ -263,7 +314,6 @@ export function buildMonitorUnit(p_unit, p_first) {
 	button_play.innerHTML = "<i class='fas fa-play-circle fa-light'></i>";
 	button_play.className = "btn omnidb__theme__btn--secondary btn-sm";
 	button_play.title = t("monitoring.play");
-	button_play.style.display = "none";
 	var interval = document.createElement("input");
 	interval.value = v_return_unit.v_interval;
 	interval.className = "form-control form-control-sm";
@@ -319,7 +369,7 @@ export function buildMonitorUnit(p_unit, p_first) {
 	else v_dashboard_div.appendChild(div);
 
 	//Increment unit sequence
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_sequence += 1;
+	v_tab_tag.unit_sequence += 1;
 
 	v_unit = {
 		type: "",
@@ -339,49 +389,15 @@ export function buildMonitorUnit(p_unit, p_first) {
 		input_interval: interval,
 		error: false,
 		timeout_object: null,
-		unit_sequence: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_sequence,
-		active: true,
+		unit_sequence: v_tab_tag.unit_sequence,
+		// Paused by default: a freshly (re)loaded dashboard must not start
+		// polling the database on its own -- the user opts in per-unit (Play)
+		// or all at once ("Enable All", see enableAllMonitorUnits).
+		active: false,
 	};
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.units.push(v_unit);
+	v_tab_tag.units.push(v_unit);
 
 	return div;
-}
-
-export function startMonitorDashboard() {
-	var input = JSON.stringify({
-		p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-		p_tab_id: v_connTabControl.selectedTab.id,
-	});
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-
-	execAjax(
-		"/get_monitor_units/",
-		input,
-		function (p_return) {
-			for (var i = 0; i < p_return.v_data.length; i++) {
-				buildMonitorUnit(p_return.v_data[i]);
-			}
-			refreshMonitorDashboard(true, v_tab_tag);
-		},
-		null,
-		"box",
-	);
-}
-
-export function includeMonitorUnit(p_id, p_plugin_name) {
-	var v_grid = v_unit_list_grid;
-	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-	var v_selected = v_grid.getSelected();
-	if (!v_selected || v_selected.length === 0) return;
-	var v_row_data = v_grid.getDataAtRow(v_selected[0][0]);
-	var v_plugin_name = "";
-	if (p_plugin_name != null) v_plugin_name = p_plugin_name;
-
-	var div = buildMonitorUnit(
-		{ v_saved_id: -1, v_id: p_id, v_title: v_row_data[1], v_interval: v_row_data[3], v_plugin_name: v_plugin_name },
-		true,
-	);
-	refreshMonitorDashboard(true, v_tab_tag, div);
 }
 
 export function deleteMonitorUnit(p_unit_id) {
@@ -392,7 +408,7 @@ export function deleteMonitorUnit(p_unit_id) {
 			"/delete_monitor_unit/",
 			input,
 			function (p_return) {
-				refreshMonitorUnitsList();
+				refreshMonitorUnitsList(v_connTabControl.selectedTab.tag.monitoring);
 			},
 			null,
 			"box",
@@ -400,18 +416,27 @@ export function deleteMonitorUnit(p_unit_id) {
 	});
 }
 
-export function closeMonitorUnitList() {
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_grid_div.innerHTML = "";
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_div.style.display = "none";
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_grid.destroy();
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_grid = null;
+/**
+ * The footer's "-" button: deletes whichever row the user last clicked in
+ * this connection's own "Manage Units" list (see buildMonitorUnitList's row
+ * click handler), if any and if it's actually a deletable custom unit -- the
+ * button itself is only enabled in that case (see updateDeleteUnitButtonState),
+ * but this is the single source of truth deleteMonitorUnit's own confirm
+ * dialog runs against, not the button's disabled attribute.
+ * @param {any} p_tag
+ */
+export function deleteSelectedMonitorUnit(p_tag) {
+	if (!p_tag || !p_tag.selectedUnitRef || !p_tag.selectedUnitRef.owned) return;
+	deleteMonitorUnit(p_tag.selectedUnitRef.unit_id);
 }
 
 export function editMonitorUnit(p_unit_id) {
-	bootstrap.Modal.getOrCreateInstance(
-		/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_units")),
-	).hide();
-
+	// The unit editor is an inner tab of the Database section's own
+	// connection strip -- Ace cannot lay itself out inside a display:none
+	// container, and "Manage Units" is opened from the Monitoring section, so
+	// Database must be made visible first (same reasoning as
+	// outer_connected_users_panel.js's sendConnectedUsersQueryToNewTab).
+	switchSection("database");
 	v_connTabControl.tag.createNewMonitorUnitTab();
 
 	var input1 = JSON.stringify({
@@ -715,97 +740,43 @@ export function testMonitorScript() {
 	).show();
 }
 
-export function refreshMonitorUnitsList() {
+// --- "Manage Units" list: show/hide + drag-to-reorder --------------------
+//
+// Plain HTML5 drag and drop, no library -- same shape as connections.js's
+// Connections sidebar reordering (bindConnectionDrag/bindConnectionListDrop/
+// persistConnectionOrder there). Handsontable has no row-drag support
+// anywhere else in this codebase, so this list is built as plain DOM rows
+// instead of a grid.
+//
+// A row's checkbox is the single show/hide toggle (replacing the old
+// one-way "include" checkmark, which had no way to hide a unit again short
+// of deleting its custom definition, and no guard against including the
+// same unit twice). Every checkbox change or drag-end recomputes the full
+// set of currently-checked rows, in DOM order, and posts it as this
+// connection's whole shown-and-ordered set (see saveMonitorUnitOrder).
+
+/** The row currently being dragged, or null. @type {HTMLElement|null} */
+var v_monunit_drag_item = null;
+
+/**
+ * Refreshes this connection's own "Manage Units" list -- called when its
+ * panel is expanded (see outer_monitoring_panel.js's toggle button) and
+ * after a delete, same "reload whenever the list becomes relevant again"
+ * timing the old modal's shown.bs.modal listener used to provide.
+ * @param {any} p_tag
+ */
+export function refreshMonitorUnitsList(p_tag) {
 	var input = JSON.stringify({
-		p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
-		p_tab_id: v_connTabControl.selectedTab.id,
+		p_database_index: p_tag.connTabTag.selectedDatabaseIndex,
+		p_tab_id: p_tag.tab_id,
 		p_mode: 0,
 	});
-
-	var v_grid_div = document.getElementById("monitoring_units_grid");
 
 	execAjax(
 		"/get_monitor_unit_list/",
 		input,
 		function (p_return) {
-			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.unit_list_id_list = p_return.v_data.id_list;
-
-			var columnProperties = [];
-
-			/** @type {any} */
-			var col = {};
-			col.readOnly = true;
-			col.title = t("monitoring.actions_column");
-			col.renderer = "html";
-			col.width = 80;
-
-			columnProperties.push(col);
-
-			/** @type {any} */
-			var col2 = {};
-			col2.readOnly = true;
-			col2.title = t("monitoring.title");
-			columnProperties.push(col2);
-
-			/** @type {any} */
-			var col3 = {};
-			col3.readOnly = true;
-			col3.title = t("monitoring.type");
-			columnProperties.push(col3);
-
-			/** @type {any} */
-			var col4 = {};
-			col4.readOnly = true;
-			col4.title = t("monitoring.interval_seconds_column");
-			columnProperties.push(col4);
-
-			if (v_unit_list_grid) v_unit_list_grid.destroy();
-
-			v_unit_list_grid = new Handsontable(v_grid_div, {
-				licenseKey: "non-commercial-and-evaluation",
-				data: p_return.v_data.data,
-				columns: columnProperties,
-				colHeaders: true,
-				stretchH: "all",
-				tableClassName: "omnidb__ht__first-col-actions",
-				//copyRowsLimit : 1000000000,
-				//copyColsLimit : 1000000000,
-				copyPaste: { pasteMode: "", rowsLimit: 1000000000, columnsLimit: 1000000000 },
-				manualColumnResize: true,
-				fillHandle: false,
-				disableVisualSelection: true,
-				fixedColumnsLeft: 1,
-				contextMenu: {
-					callback: function (key, options) {
-						if (key === "view_data") {
-							editCellData(
-								this,
-								options[0].start.row,
-								options[0].start.col,
-								this.getDataAtCell(options[0].start.row, options[0].start.col),
-								false,
-							);
-						} else if (key === "copy") {
-							this.selectCell(options[0].start.row, options[0].start.col, options[0].end.row, options[0].end.col);
-							document.execCommand("copy");
-						}
-					},
-					items: {
-						copy: {
-							name: '<div style=\"position: absolute;\"><i class=\"fas fa-copy cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">Copy</div>',
-						},
-						view_data: {
-							name: '<div style=\"position: absolute;\"><i class=\"fas fa-edit cm-all\" style=\"vertical-align: middle;\"></i></div><div style=\"padding-left: 30px;\">View Content</div>',
-						},
-					},
-				},
-				cells: function (row, col, prop) {
-					var cellProperties = {};
-					cellProperties.renderer = whiteHtmlRenderer;
-					return cellProperties;
-				},
-			});
-
+			buildMonitorUnitList(p_tag, p_return.v_data.items);
 			endLoading();
 		},
 		null,
@@ -813,34 +784,372 @@ export function refreshMonitorUnitsList() {
 	);
 }
 
-export function refreshMonitorUnitsObjects() {
-	v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-	for (var i = 0; i < v_tab_tag.units.length; i++) {
-		if (v_tab_tag.units[i].type == "grid") {
-			if (v_tab_tag.units[i].object) {
-				v_tab_tag.units[i].object.render();
+/**
+ * @param {any} p_tag
+ * @param {any[]} p_items
+ */
+function buildMonitorUnitList(p_tag, p_items) {
+	var p_list_div = p_tag.unitListDiv;
+
+	// Units that have ever been shown -- currently shown, or hidden but
+	// still holding the position they had -- come first, sorted by that
+	// position; units never shown at all come after, alphabetically (there
+	// is no meaningful order among them yet). Grouping by "has a saved_id"
+	// rather than by "shown" is what lets a hidden unit keep sitting in its
+	// old spot instead of falling to the alphabetical tail -- re-checking it
+	// then finds it already in the right place, no row-moving needed at all
+	// (see the checkbox's own "change" listener below).
+	var v_sorted = p_items.slice().sort(function (a, b) {
+		var v_a_has_position = a.saved_id > 0;
+		var v_b_has_position = b.saved_id > 0;
+		if (v_a_has_position !== v_b_has_position) return v_a_has_position ? -1 : 1;
+		if (v_a_has_position) return a.position - b.position;
+		return a.title.localeCompare(b.title);
+	});
+
+	p_list_div.innerHTML = "";
+	// A fresh render has nothing selected -- the row it used to point at may
+	// not even exist at the same DOM node any more.
+	p_tag.selectedUnitRef = null;
+	updateDeleteUnitButtonState(p_tag);
+
+	for (var i = 0; i < v_sorted.length; i++) {
+		var v_item = v_sorted[i];
+
+		var v_row = document.createElement("div");
+		v_row.className = "omnidb__monitor-unit-list__item";
+		v_row.setAttribute("data-plugin-name", v_item.plugin_name);
+		v_row.setAttribute("data-unit-id", String(v_item.unit_id));
+
+		v_row.innerHTML =
+			"<input type='checkbox' class='omnidb__monitor-unit-list__checkbox'" +
+			(v_item.shown ? " checked" : "") +
+			" />" +
+			"<span class='omnidb__monitor-unit-list__title'>" +
+			escapeHtml(v_item.title) +
+			"</span>" +
+			"<span class='omnidb__monitor-unit-list__type'>" +
+			escapeHtml(v_item.type) +
+			"</span>" +
+			"<span class='omnidb__monitor-unit-list__interval'>" +
+			escapeHtml(String(v_item.interval)) +
+			"s</span>";
+
+		p_list_div.appendChild(v_row);
+		bindMonitorUnitDrag(v_row, p_list_div);
+
+		var v_checkbox = /** @type {HTMLInputElement} */ (v_row.querySelector(".omnidb__monitor-unit-list__checkbox"));
+		bindMonitorUnitRowInteractions(p_tag, v_row, v_item, v_checkbox);
+	}
+
+	bindMonitorUnitListDrop(p_list_div);
+}
+
+/**
+ * Wires one row's non-drag interactions: the checkbox (show/hide, unchanged
+ * from before), a plain click to select the row (for the footer's "-"
+ * button), and -- for custom units only, same "owned" gate the old inline
+ * icons used -- a double-click and a right-click context menu to edit/delete
+ * it, mirroring how connections.js's own list rows work (double-click
+ * connects, right-click opens Edit/Delete) instead of always-visible icon
+ * buttons. Takes the row/item/checkbox as real parameters (not closed over
+ * from the caller's loop variable) so each row's handlers close over its own
+ * values, not whichever happened to be last by the time a listener fires.
+ * @param {any} p_tag
+ * @param {HTMLElement} p_row
+ * @param {any} p_item
+ * @param {HTMLInputElement} p_checkbox
+ */
+function bindMonitorUnitRowInteractions(p_tag, p_row, p_item, p_checkbox) {
+	// A row is never moved just for being checked/unchecked -- the sort in
+	// buildMonitorUnitList already placed it exactly where it belongs (a unit
+	// that was shown before, even if hidden right now, sits at its old
+	// position; a genuinely new one sits in the alphabetical tail, after
+	// every positioned row). Moving it here would be exactly the bug this
+	// doesn't have: re-checking a hidden unit must land it back where it was,
+	// not at the end. saveMonitorUnitOrder simply reads off whichever rows
+	// are checked, in their current (unchanged) DOM order.
+	p_checkbox.addEventListener("change", function () {
+		saveMonitorUnitOrder();
+	});
+
+	p_row.addEventListener("click", function (e) {
+		if (e.target === p_checkbox) return;
+		selectMonitorUnitRow(p_tag, p_row, p_item);
+	});
+
+	if (p_item.owned) {
+		p_row.addEventListener("dblclick", function () {
+			editMonitorUnit(p_item.unit_id);
+		});
+		p_row.addEventListener("contextmenu", function (e) {
+			e.preventDefault();
+			selectMonitorUnitRow(p_tag, p_row, p_item);
+			customMenu(
+				{ x: e.clientX + 5, y: e.clientY + 5 },
+				[
+					{
+						text: t("common.edit"),
+						icon: "fas cm-all fa-edit",
+						action: function () {
+							editMonitorUnit(p_item.unit_id);
+						},
+					},
+					{
+						text: t("common.delete"),
+						icon: "fas cm-all fa-times",
+						action: function () {
+							deleteMonitorUnit(p_item.unit_id);
+						},
+					},
+				],
+				null,
+			);
+		});
+	} else {
+		// A built-in unit has nothing to edit/delete -- still swallow the
+		// right-click so the browser's own context menu doesn't appear where
+		// every other row shows a real one.
+		p_row.addEventListener("contextmenu", function (e) {
+			e.preventDefault();
+		});
+	}
+}
+
+/**
+ * @param {any} p_tag
+ * @param {HTMLElement} p_row
+ * @param {any} p_item
+ */
+function selectMonitorUnitRow(p_tag, p_row, p_item) {
+	var v_rows = p_tag.unitListDiv.querySelectorAll(".omnidb__monitor-unit-list__item--selected");
+	for (var i = 0; i < v_rows.length; i++) {
+		v_rows[i].classList.remove("omnidb__monitor-unit-list__item--selected");
+	}
+	p_row.classList.add("omnidb__monitor-unit-list__item--selected");
+	p_tag.selectedUnitRef = { plugin_name: p_item.plugin_name, unit_id: p_item.unit_id, owned: p_item.owned };
+	updateDeleteUnitButtonState(p_tag);
+}
+
+/**
+ * @param {any} p_tag
+ */
+function updateDeleteUnitButtonState(p_tag) {
+	if (!p_tag.deleteUnitBtn) return;
+	p_tag.deleteUnitBtn.disabled = !(p_tag.selectedUnitRef && p_tag.selectedUnitRef.owned);
+}
+
+/**
+ * @param {HTMLElement} p_row
+ * @param {HTMLElement} p_list_div
+ */
+function bindMonitorUnitDrag(p_row, p_list_div) {
+	p_row.setAttribute("draggable", "true");
+
+	p_row.addEventListener("dragstart", function (e) {
+		v_monunit_drag_item = p_row;
+		if (e.dataTransfer) {
+			e.dataTransfer.effectAllowed = "move";
+			// Firefox starts no drag at all unless some data is set.
+			e.dataTransfer.setData("text/plain", "");
+		}
+		setTimeout(function () {
+			p_row.classList.add("omnidb__monitor-unit-list__item--dragging");
+		}, 0);
+	});
+
+	p_row.addEventListener("dragend", function () {
+		p_row.classList.remove("omnidb__monitor-unit-list__item--dragging");
+		if (v_monunit_drag_item !== p_row) return;
+		v_monunit_drag_item = null;
+		saveMonitorUnitOrder();
+	});
+}
+
+/**
+ * @param {HTMLElement} p_list_div
+ * @param {number} p_y
+ * @returns {HTMLElement|null}
+ */
+function getMonitorUnitDragTarget(p_list_div, p_y) {
+	/** @type {HTMLElement|null} */
+	var v_closest = null;
+	var v_closest_offset = Number.NEGATIVE_INFINITY;
+	var v_rows = p_list_div.querySelectorAll(".omnidb__monitor-unit-list__item");
+	for (var i = 0; i < v_rows.length; i++) {
+		var v_row = /** @type {HTMLElement} */ (v_rows[i]);
+		if (v_row === v_monunit_drag_item) continue;
+		var v_box = v_row.getBoundingClientRect();
+		var v_offset = p_y - v_box.top - v_box.height / 2;
+		if (v_offset < 0 && v_offset > v_closest_offset) {
+			v_closest_offset = v_offset;
+			v_closest = v_row;
+		}
+	}
+	return v_closest;
+}
+
+/**
+ * @param {HTMLElement} p_list_div
+ */
+function bindMonitorUnitListDrop(p_list_div) {
+	p_list_div.addEventListener("dragover", function (e) {
+		if (v_monunit_drag_item === null) return;
+		e.preventDefault();
+		if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+		var v_target = getMonitorUnitDragTarget(p_list_div, e.clientY);
+		if (v_target === null) {
+			if (p_list_div.lastElementChild !== v_monunit_drag_item) p_list_div.appendChild(v_monunit_drag_item);
+		} else if (v_target.previousElementSibling !== v_monunit_drag_item) {
+			p_list_div.insertBefore(v_monunit_drag_item, v_target);
+		}
+	});
+
+	p_list_div.addEventListener("drop", function (e) {
+		if (v_monunit_drag_item === null) return;
+		e.preventDefault();
+	});
+}
+
+/**
+ * Persists the full set of currently-checked rows, in DOM order, as this
+ * connection's shown-and-ordered set (see go-server/monitoring_handlers.go's
+ * handleSaveMonitorUnitOrder), then reconciles the live dashboard against
+ * it.
+ */
+function saveMonitorUnitOrder() {
+	var v_tab_tag = v_connTabControl.selectedTab.tag.monitoring;
+	var v_list_div = v_tab_tag && v_tab_tag.unitListDiv;
+	if (!v_list_div || !v_tab_tag) return;
+
+	var v_rows = v_list_div.querySelectorAll(".omnidb__monitor-unit-list__item");
+	/** @type {any[]} */
+	var v_units = [];
+	for (var i = 0; i < v_rows.length; i++) {
+		var v_row = /** @type {HTMLElement} */ (v_rows[i]);
+		var v_checkbox = /** @type {HTMLInputElement} */ (v_row.querySelector(".omnidb__monitor-unit-list__checkbox"));
+		if (v_checkbox.checked) {
+			v_units.push({
+				p_plugin_name: v_row.getAttribute("data-plugin-name") || "",
+				p_unit: parseInt(v_row.getAttribute("data-unit-id") || "0", 10),
+			});
+		}
+	}
+
+	execAjax(
+		"/save_monitor_unit_order/",
+		JSON.stringify({
+			p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
+			p_units: v_units,
+		}),
+		function () {
+			reconcileMonitorDashboard(v_tab_tag);
+		},
+		null,
+		"box",
+		// No loading overlay: this is a background detail of a gesture
+		// (a checkbox click, a drag) the user already sees the result of --
+		// same reasoning as connections.js's persistConnectionOrder.
+		false,
+	);
+}
+
+/**
+ * Re-fetches this connection's now-saved shown units and reconciles the
+ * live dashboard against them: units no longer shown are torn down, newly
+ * shown ones are built (paused, like any fresh unit), and units that stay
+ * shown are only ever moved to their new DOM position -- their timer/chart
+ * object is left running untouched, so reordering or hiding one unit never
+ * resets another that's already polling.
+ * @param {any} p_tab_tag
+ */
+function reconcileMonitorDashboard(p_tab_tag) {
+	var input = JSON.stringify({
+		p_database_index: p_tab_tag.connTabTag.selectedDatabaseIndex,
+		p_tab_id: p_tab_tag.tab_id,
+	});
+
+	execAjax(
+		"/get_monitor_units/",
+		input,
+		function (p_return) {
+			var v_desired = p_return.v_data;
+
+			for (var i = p_tab_tag.units.length - 1; i >= 0; i--) {
+				var v_unit = p_tab_tag.units[i];
+				var v_still_shown = v_desired.some(function (d) {
+					return d.v_plugin_name === v_unit.plugin_name && d.v_id === v_unit.id;
+				});
+				if (!v_still_shown) {
+					teardownMonitorUnit(v_unit);
+					p_tab_tag.units.splice(i, 1);
+				}
 			}
+
+			var v_new_divs = [];
+			// Rebuilt from scratch in v_desired's order, replacing
+			// p_tab_tag.units at the end -- otherwise the DOM ends up
+			// correctly reordered (every card is appendChild'd in v_desired
+			// order below) while this array silently keeps whatever order
+			// units were originally built/pushed in, which is exactly the
+			// kind of mismatch that made this function's own behavior hard
+			// to verify from the console while fixing this.
+			var v_reordered_units = [];
+			for (var j = 0; j < v_desired.length; j++) {
+				var v_d = v_desired[j];
+				/** @type {any} */
+				var v_existing = null;
+				for (var k = 0; k < p_tab_tag.units.length; k++) {
+					if (p_tab_tag.units[k].plugin_name === v_d.v_plugin_name && p_tab_tag.units[k].id === v_d.v_id) {
+						v_existing = p_tab_tag.units[k];
+						break;
+					}
+				}
+				if (v_existing) {
+					p_tab_tag.dashboard_div.appendChild(v_existing.div);
+					v_reordered_units.push(v_existing);
+				} else {
+					v_new_divs.push(buildMonitorUnit(v_d, false, p_tab_tag));
+					// buildMonitorUnit just pushed the new unit onto
+					// p_tab_tag.units itself, always as the last element --
+					// grab it here, at v_desired's own position for it,
+					// rather than after this loop (where every new unit
+					// would land bunched at the very end regardless of
+					// where each one actually belongs).
+					v_reordered_units.push(p_tab_tag.units[p_tab_tag.units.length - 1]);
+				}
+			}
+			p_tab_tag.units = v_reordered_units;
+
+			for (var m = 0; m < v_new_divs.length; m++) {
+				refreshMonitorDashboard(true, p_tab_tag, v_new_divs[m]);
+			}
+
+			refreshMonitorUnitsObjects(p_tab_tag);
+		},
+		null,
+		"box",
+		false,
+	);
+}
+
+/**
+ * Re-renders every grid-type unit's Handsontable instance -- needed after the
+ * dashboard div is relocated into view (see outer_monitoring_panel.js's
+ * refreshMonitoringPane), since Handsontable can miscalculate its layout
+ * while its container was hidden/detached.
+ * @param {any} [p_tag]
+ */
+export function refreshMonitorUnitsObjects(p_tag) {
+	var v_tab_tag = p_tag || v_connTabControl.selectedTab.tag.monitoring;
+	if (!v_tab_tag) return;
+	for (var i = 0; i < v_tab_tag.units.length; i++) {
+		if (v_tab_tag.units[i].type == "grid" && v_tab_tag.units[i].object) {
+			v_tab_tag.units[i].object.render();
 		}
 	}
 }
 
-// Bootstrap dispatches this as a real DOM event, no jQuery needed to listen for it.
-/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_units")).addEventListener(
-	"shown.bs.modal",
-	function (e) {
-		refreshMonitorUnitsList();
-	},
-);
-
-export function showMonitorUnitList() {
-	startLoading();
-
-	var v_grid_div = /** @type {HTMLElement} */ (document.getElementById("monitoring_units_grid"));
-	v_grid_div.innerHTML = "";
-	bootstrap.Modal.getOrCreateInstance(
-		/** @type {HTMLElement} */ (document.getElementById("modal_monitoring_units")),
-	).show();
-}
 
 export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 	/** @type {any[]} */
@@ -848,7 +1157,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 	/** @type {any} */
 	var v_tab_tag = null;
 	if (p_tab_tag) v_tab_tag = p_tab_tag;
-	else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+	else v_tab_tag = v_connTabControl.selectedTab.tag.monitoring;
 
 	if (v_tab_tag.units.length > 0) {
 		for (var i = 0; i < v_tab_tag.units.length; i++) {
@@ -1388,14 +1697,4 @@ export function cancelMonitorUnits(p_tab_tag) {
 			v_unit.object.destroy();
 		}
 	}
-}
-
-/// <summary>
-/// Removes tab.
-/// </summary>
-/// <param name="p_tab">Tab object.</param>
-export function closeMonitorDashboardTab(p_tab) {
-	p_tab.removeTab();
-	p_tab.tag.tab_active = false;
-	cancelMonitorUnits(p_tab.tag);
 }

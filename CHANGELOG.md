@@ -51,6 +51,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   native Save dialog the Query tab's Export feature already uses in the desktop app, or a
   Download/Cancel prompt in the browser (Cancel discards the generated file immediately rather than
   leaving it for the temp-folder's 24h cleanup sweep).
+- A new "Permissions" section (PostgreSQL only for now) — a Finder/Miller-columns style role and
+  privilege browser, reachable from its own left-rail icon. Column 1 lists every server role
+  (PUBLIC included, as a synthesized pseudo-role) with direct-execute Create/Alter Attributes/Drop
+  Role forms and the existing Change Password action; column 2 shows the focused role's full set of
+  memberships — every ancestor it has, direct or indirect, in one flat list (direct rows in normal
+  text, inherited ones greyed out) — editable via grant/revoke, plus that role's own direct
+  object-level privileges. Columns 3 and 4 show the focused role's *effective* privileges — its own
+  direct grants plus everything inherited through its memberships and PUBLIC — for, respectively,
+  the two object types with no per-database scope (databases, tablespaces) and every type that is
+  scoped to one database (schemas, tables, views, materialized views, sequences, functions,
+  procedures, types, domains, foreign data wrappers, foreign servers; column 4 has its own database
+  picker, independent of whichever database the connection tab itself is on). A row's detail dialog
+  shows each valid privilege as a checkbox — checked+enabled means held directly (uncheck to revoke),
+  checked+disabled+"inherited from: ..." means held only through inheritance (not revocable there,
+  only by making the source role active and revoking it), unchecked means not held at all (check to
+  grant it directly) — and a "+" button adds a new object to grant on. Other database engines show
+  the section's existing "not yet supported" messaging, matching Notify/Connected Users.
 
 ### Changed
 - Database panel's Query tab: the draggable splitter between the SQL editor and the query results
@@ -68,8 +85,83 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   had when last closed, instead of always maximising on launch. The geometry is saved to
   `~/.omnidb/omnidb-app/window_state.json` (or the `-d`/`--homedir` override's equivalent path) when
   the window closes; a first launch (nothing saved yet) still maximises, as before.
+- App icon regenerated as a proper multi-resolution set instead of a single low-resolution image:
+  `deploy/macosx/mac-icon.icns` was one 256×256 icon (13KB) and is now a full icon family covering
+  every size macOS actually renders it at, from the Dock down to a tiny Finder list row; the
+  derived `wails-app/build/appicon.png`/`appicon-appstore.png`, the Windows `icon.ico` and the
+  browser/tab `favicon.ico` were all regenerated from it to match.
+- Monitoring Dashboard moved out of the Database connection's own tab strip into its own left rail
+  section (between Database and Notify), so it no longer competes for space with Query/Console tabs
+  and is reachable without a connection tab needing to be open on the right inner tab first. Every
+  monitor unit now starts paused when the dashboard loads instead of polling the database
+  immediately, and the dashboard toolbar gained "Enable All"/"Pause All" buttons to start or stop
+  every unit for the selected connection at once, on top of each unit's own Play/Pause button.
+  "Manage Units" is no longer a modal dialog: it's now a persistent, toggleable side panel that
+  slides in between the left section rail and the dashboard itself, matching how the Connections
+  sidebar looks and behaves — a plain drag-to-reorder list with add/remove ("+"/"−") buttons in its
+  own footer, instead of a modal grid with a one-way "include" action. Each unit has a single
+  checkbox that shows or hides it (hiding stops it and removes its card, same as the card's own "×",
+  but keeps its custom refresh interval for next time), dragging a row persists a new display order
+  the dashboard itself now follows, and a unit can no longer end up shown twice. A custom unit is now
+  worked with via a right-click context menu (Edit/Delete) or a double-click to jump straight to its
+  SQL editor, instead of separate inline icons on each row; the "+" footer button opens the same "New
+  Unit" editor. Each row also used to have its own drag-handle icon; removed, since no other
+  draggable list in the app (Connections included) has one either, and the whole row was always
+  draggable regardless. The side panel's width is now also drag-resizable, via the same kind of
+  splitter strip the Connections sidebar already uses, instead of being stuck at a fixed 260px, and
+  has the same white-in-light/dark-panel-in-dark background as that sidebar instead of sitting
+  transparent over the dashboard's own background, with no border of its own either (it briefly had
+  one right next to the splitter's own line, doubling it up) -- matching both Connections and Notify's
+  side panels. The dashboard's
+  own toolbar (Refresh All/Enable All/Pause All/card-size picker) stays fixed in place while only the
+  chart grid scrolls beneath it, and gained a new icon-only first button that toggles the side panel
+  open or closed — "Manage Units" now only exists as that button's tooltip, not as visible label text,
+  and the icon itself is the same sidebar-toggle glyph macOS apps like Mail and Safari use for their
+  own collapsible sidebar. The card-size picker's `<select>` was also shorter than the buttons beside
+  it, through three rounds of fixes: a CSS specificity fix (`select.omnidb__monitor-unit-width-select`
+  instead of the bare class, so this app's own `.form-control, .form-select` theme rule could no
+  longer win the cascade and silently reapply its own padding) got the padding to genuinely match, but
+  a visible gap remained -- `<select>`'s `line-height` turns out to be flatly ignored by this rendering
+  engine regardless of any declaration's specificity, computing back as the browser default (`normal`)
+  no matter what, while the buttons' own `line-height` (from Bootstrap's `.btn` rule) is honored, so
+  the two boxes' content heights diverged by exactly that difference. Padding and line-height can
+  therefore never fully equalize a `<select>` and a `<button>` on this engine; the select now gets an
+  explicit `height` (which, unlike `line-height`, a `<select>` does respect) pinned directly to the
+  buttons' own computed height instead. The dashboard's unit cards now lay out on a responsive grid
+  instead of a fixed two-per-row Bootstrap layout, fitting as many cards as actually have room — one
+  per row on a narrow window, four or five side by side on an ultra-wide monitor — and a new card-size
+  picker (Small/Medium/Large/Full width) in the toolbar controls the minimum width a card is allowed
+  before the grid wraps to fewer columns, so "just one big chart" or "several narrow ones" are both
+  just a picker choice away instead of a fixed column count that can't use extra screen space. The
+  choice is remembered (per browser) for next time. A card's chart no longer scrolls internally
+  either — its legend area had a fixed height too short for a legend that wrapped onto more than one
+  line, which only showed up as a stray inner scrollbar on some units rather than the card simply
+  growing to fit. A custom unit's own dashboard card also gained an edit button (revealed on hover,
+  next to the existing "×", built-in units don't get one since they have no SQL to edit) that jumps
+  straight to its SQL editor, instead of having to find it again in "Manage Units" first.
 
 ### Fixed
+- "Manage Units"' drag handle icon (an unmapped `fa-grip-vertical`) rendered as a solid filled square
+  instead of a glyph — this app replaced the Font Awesome webfont with per-icon CSS mask rules
+  generated from a curated list (`frontend/scripts/gen-icons.mjs`), and the base `.fas` rule still
+  applies `width/height: 1em; background-color: currentColor` even when no per-icon mask rule exists
+  for the class, painting a plain box instead of doing nothing. Added `fa-grip-vertical` to the icon
+  generator's mapping.
+- Checking or unchecking a *custom* monitor unit in "Manage Units" hung, then eventually failed with
+  an unhelpful "[object Object]" alert (a raw error object stringified by the default `execAjax`
+  error path, meant for developers, reaching the user). `saveMonitorUnitOrder`'s per-unit interval
+  lookup queried the custom unit's own table through the plain `*sql.DB` handle while the surrounding
+  transaction was still open on the same SQLite connection pool — a self-deadlock, since the query
+  and the transaction end up waiting on each other for a connection. It now queries through the
+  transaction itself, like everything else in that function already does. Built-in units were
+  unaffected (their interval lookup never touches the database).
+- Hiding a monitor unit and then re-showing it moved it to the end of the dashboard instead of
+  leaving it where it was. `get_monitor_unit_list` only reported a unit's saved position while it was
+  currently shown, so a hidden unit's slot was indistinguishable from "never shown at all" the moment
+  it was hidden — "Manage Units"' list sorted it into the alphabetical tail of never-shown units, and
+  re-checking it there persisted that end-of-list position. Hidden units now keep reporting their real
+  position (their `OmniDB_app_monunitsconnections` row was never touched, only its `hidden` flag), so
+  the list keeps them sitting in their old spot and re-checking finds them already there.
 - Left navigation rail icons (Welcome/Connections/Database/Notify/Snippets/Getting
   Started/Account/Settings) were missing their hover tooltips. The tab-strip component's tooltip
   logic only shows a tooltip once a tab has shrunk down to an icon-only width (to avoid repeating a
@@ -84,6 +176,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   a custom `data-category` click handler, not Bootstrap tabs/anchors). It now calls
   `selectSettingsCategory('shortcuts')` directly, the same function the sidebar's own click handler
   uses.
+- The "New Monitor Unit" editor tab (Monitoring section > Manage Units > New/Edit Unit) could not be
+  closed — clicking its close icon and confirming did nothing. Its fake "editor" object (a stand-in
+  for the chart-type `<select>`, since custom units are a plain SQL query now instead of an Ace
+  script) had no `destroy()` method, and `removeTab()` in workspace.js calls `tag.editor.destroy()`
+  unconditionally whenever an editor is present, with no guard for it being missing — the resulting
+  TypeError aborted `removeTab()` before it ever removed the tab. Added a no-op `destroy()` to the
+  adapter.
 
 ### Known follow-ups (not yet localized)
 - A handful of very low-level, rarely-user-visible backend error paths shared by hundreds of call

@@ -19,6 +19,22 @@ func postgresqlForeignDataWrappers(db *sql.DB) ([]postgresqlNamedOID, error) {
 	return scanNamedOIDs(rows)
 }
 
+// postgresqlAllForeignServers lists every foreign server in the current
+// database regardless of which FDW owns it -- unlike postgresqlForeignServers
+// (the tree's own per-FDW listing, one FDW node's children), the
+// Permissions panel's column 4 object picker treats "foreign server" as one
+// flat object type (same as "schema" or "foreign data wrapper" -- no
+// FDW-selection step), since GRANT/REVOKE ON FOREIGN SERVER only ever names
+// the server itself, never its owning FDW.
+func postgresqlAllForeignServers(db *sql.DB) ([]postgresqlNamedOID, error) {
+	rows, err := db.Query(`select srvname as name, oid from pg_foreign_server order by 1`)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	return scanNamedOIDs(rows)
+}
+
 type postgresqlForeignServer struct {
 	Name    string
 	Type    sql.NullString

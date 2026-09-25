@@ -45,7 +45,6 @@ import {
   updateIndentUnit,
   updatePasswordButtonState,
 } from './header_actions.js'
-import { deleteMonitorUnit, editMonitorUnit, includeMonitorUnit } from './monitoring.js'
 import { startSetShortcut } from './shortcuts.js'
 import { v_openExternalUrl } from './tab_functions/website_tab.js'
 import { deleteRowEditData } from './tree_context_functions/edit_data.js'
@@ -89,13 +88,6 @@ const DELEGATED_CLICK = {
   // it; connectedUsersAction resolves the function name against its own
   // allowlist.
   'connected-users-action': (el) => connectedUsersAction(numArg(el), arg(el)),
-
-  // The monitoring units dialog. These three come from markup the *server*
-  // builds (monitoring_handlers.go) -- it emits the data attributes now instead
-  // of an onclick, so the last inline handlers on the Go side are gone too.
-  'include-monitor-unit': (el) => includeMonitorUnit(numArg(el), arg(el) || undefined),
-  'edit-monitor-unit': (el) => editMonitorUnit(numArg(el)),
-  'delete-monitor-unit': (el) => deleteMonitorUnit(numArg(el)),
 
   // Welcome section's "Useful stuff" links (outer_welcome_tab.js). A plain
   // `<a target="_blank">` is a silent no-op inside the Wails desktop webview,
@@ -185,9 +177,6 @@ bind('conn_form_button_save_connection', 'click', () => saveConnection())
 // --- about modal -----------------------------------------------------------
 bind('about_link_website', 'click', () => showWebsite('OmniDB', 'https://www.omnidb.net'))
 bind('about_link_github', 'click', () => showWebsite('GitHub', 'https://github.com/heptau/omnidb'))
-
-// --- monitoring units modal ------------------------------------------------
-bind('button_new_monitor_unit', 'click', () => editMonitorUnit())
 
 // --- settings: sidebar category switcher ------------------------------------
 bindAll('.omnidb__settings__list-item', 'click', (e) =>

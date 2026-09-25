@@ -506,7 +506,7 @@ func handleGetMaterializedViewsPostgreSQL(upstream *url.URL, fallback http.Handl
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		db, ok := resolvePostgreSQLRequestForDatabase(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID(), reqBody.PDatabase)
 		if !ok {
 			return
 		}

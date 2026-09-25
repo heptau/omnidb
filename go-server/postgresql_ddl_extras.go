@@ -313,36 +313,21 @@ func postgresqlDDLRoleExtras(db *sql.DB, name string) (string, error) {
 		statements = append(statements, "COMMENT ON ROLE "+ident+"\nIS "+comment.String+";")
 	}
 
-	// Grouped by granted role rather than listed per pg_auth_members row:
+	// postgresqlRoleMemberships (postgresql_permissions.go) is the same
+	// pg_auth_members query, shared with the Permissions panel's membership
+	// column — grouped by granted role rather than listed per row, since
 	// PostgreSQL 16 made a membership recordable once per grantor, so the same
 	// "GRANT parent TO role" can have several rows behind it.
-	rows, err := db.Query(`
-		select quote_ident(g.rolname), bool_or(am.admin_option)
-		from pg_auth_members am
-		inner join pg_roles g on g.oid = am.roleid
-		inner join pg_roles m on m.oid = am.member
-		where quote_ident(m.rolname) = $1
-		group by 1
-		order by 1
-	`, name)
+	memberships, err := postgresqlRoleMemberships(db, name)
 	if err != nil {
 		return "", err
 	}
-	defer rows.Close()
-	for rows.Next() {
-		var parent string
-		var adminOption bool
-		if err := rows.Scan(&parent, &adminOption); err != nil {
-			return "", err
-		}
-		statement := "GRANT " + parent + " TO " + ident
-		if adminOption {
+	for _, m := range memberships {
+		statement := "GRANT " + m.Name + " TO " + ident
+		if m.AdminOption {
 			statement += " WITH ADMIN OPTION"
 		}
 		statements = append(statements, statement+";")
-	}
-	if err := rows.Err(); err != nil {
-		return "", err
 	}
 	return pgJoinDDLExtras(statements), nil
 }

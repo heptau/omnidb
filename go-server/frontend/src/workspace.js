@@ -37,7 +37,6 @@ import { checkConsoleStatus } from "./console.js";
 import { initCreateTabFunctions } from "./create_tab_functions.js";
 import { customMenu } from "./custom_menu.js";
 import { createRequest } from "./long_polling.js";
-import { startMonitorDashboard } from "./monitoring.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { checkQueryStatus, escapeHtml, v_queryRequestCodes } from "./query.js";
@@ -105,6 +104,16 @@ function initWorkspace() {
 	// Creating the connected users section content (same lifetime as Notify's
 	// -- an empty shell now, populated per selected connection on demand).
 	v_connTabControl.tag.createConnectedUsersPanel();
+
+	// Creating the permissions section content (same lifetime as Connected
+	// Users' -- an empty shell now, populated per selected connection on
+	// demand).
+	v_connTabControl.tag.createPermissionsPanel();
+
+	// Creating the monitoring section content (same lifetime as the others --
+	// an empty shell now, populated per selected connection as each connection
+	// tab opens).
+	v_connTabControl.tag.createMonitoringPanel();
 
 	// Creating the vertical section nav (Welcome/Connections/Snippets/
 	// Database/Settings/About).
@@ -335,7 +344,6 @@ export function checkBeforeChangeDatabase(p_cancel_function, p_ok_function) {
 			if (
 				v_tab.tag.mode == "edit" ||
 				v_tab.tag.mode == "alter" ||
-				v_tab.tag.mode == "monitor_dashboard" ||
 				v_tab.tag.mode == "data_mining"
 			) {
 				showAlert(
@@ -1025,7 +1033,6 @@ function v_doRefreshHeights(p_all) {
 				v_tab_tag.mode == "console" ||
 				v_tab_tag.mode == "edit" ||
 				v_tab_tag.mode == "graph" ||
-				v_tab_tag.mode == "monitor_dashboard" ||
 				v_tab_tag.mode == "monitor_grid" ||
 				v_tab_tag.mode == "monitor_unit" ||
 				v_tab_tag.mode == "query" ||
@@ -1416,20 +1423,11 @@ export function showMenuNewTab(e) {
 		},
 	];
 
-	if (
-		v_connTabControl.selectedTab.tag.selectedDBMS == "postgresql" ||
-		v_connTabControl.selectedTab.tag.selectedDBMS == "mysql" ||
-		v_connTabControl.selectedTab.tag.selectedDBMS == "mariadb"
-	) {
-		v_option_list.push({
-			text: t("workspace.monitoring_dashboard"),
-			icon: "fas cm-all fa-chart-line",
-			action: function () {
-				v_connTabControl.tag.createMonitorDashboardTab();
-				startMonitorDashboard();
-			},
-		});
-	}
+	// Monitoring Dashboard moved to its own rail section (see
+	// panel_functions/outer_monitoring_panel.js), same reasoning as Backends/
+	// Process List/Sessions below -- always reachable from the rail, for
+	// whichever connection is selected, rather than needing to be created
+	// per-connection from this menu.
 
 	// Backends/Process List/Sessions moved to their own Connected Users
 	// section (see panel_functions/outer_connected_users_panel.js) -- always

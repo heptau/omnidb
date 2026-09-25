@@ -279,6 +279,31 @@ func migrateAppDB(db *sql.DB) error {
 		return fmt.Errorf("check OmniDB_app_connectionorder: %w", err)
 	}
 
+	// Add position/hidden columns to OmniDB_app_monunitsconnections if
+	// missing (v4.7.0+) -- persisted drag-to-reorder and show/hide for
+	// monitoring dashboard units. "hidden" replaces row-deletion as the way
+	// a unit stops being shown, so its position and interval survive being
+	// hidden and re-shown; "position" is only meaningful among the rows for
+	// a given (user_id, connection_id) that currently have hidden = 0.
+	for _, c := range []struct {
+		name string
+		typ  string
+		dflt string
+	}{
+		{"position", "integer", "0"},
+		{"hidden", "bool", "0"},
+	} {
+		var found string
+		err := db.QueryRow(`select name from pragma_table_info('OmniDB_app_monunitsconnections') where name = ?`, c.name).Scan(&found)
+		if err == sql.ErrNoRows {
+			if _, err := db.Exec(fmt.Sprintf(`alter table OmniDB_app_monunitsconnections add column "%s" %s NOT NULL DEFAULT %s`, c.name, c.typ, c.dflt)); err != nil {
+				return fmt.Errorf("add %s to OmniDB_app_monunitsconnections: %w", c.name, err)
+			}
+		} else if err != nil {
+			return fmt.Errorf("check OmniDB_app_monunitsconnections.%s: %w", c.name, err)
+		}
+	}
+
 	// One-time backfill: encrypt any password/ssh_password/ssh_key column
 	// still holding pre-encryption plaintext (v4.6.0+ — see
 	// credential_crypto.go). Every column saveConnection writes from here on

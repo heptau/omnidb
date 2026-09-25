@@ -159,7 +159,9 @@ CREATE TABLE IF NOT EXISTS "OmniDB_app_monunitsconnections" (
 	"plugin_name" text NOT NULL,
 	"connection_id" bigint NOT NULL REFERENCES "OmniDB_app_connection" ("id") DEFERRABLE INITIALLY DEFERRED,
 	"unit" integer NOT NULL,
-	"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED
+	"user_id" integer NOT NULL REFERENCES "auth_user" ("id") DEFERRABLE INITIALLY DEFERRED,
+	"position" integer NOT NULL DEFAULT 0,
+	"hidden" bool NOT NULL DEFAULT 0
 );
 CREATE INDEX IF NOT EXISTS "OmniDB_app_monunitsconnections_connection_id_f67cb3f0" ON "OmniDB_app_monunitsconnections" ("connection_id");
 CREATE INDEX IF NOT EXISTS "OmniDB_app_monunitsconnections_user_id_2c3aa020" ON "OmniDB_app_monunitsconnections" ("user_id");

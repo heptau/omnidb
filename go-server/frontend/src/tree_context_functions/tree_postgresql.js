@@ -32,12 +32,12 @@ import { t } from "../i18n.js";
 import { execAjax } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
 import { createLegere } from "../lib/omnis_legere/omnis-legere.js";
-import { startMonitorDashboard } from "../monitoring.js";
 import { showAlert, showConfirm, showConfirm3, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
 import { clearProperties, getProperties } from "../properties.js";
 import { escapeHtml, querySQL, v_queryState } from "../query.js";
 import { refreshConnectedUsers } from "../panel_functions/outer_connected_users_panel.js";
+import { switchSection } from "../section_switcher.js";
 import { createTabControl } from "../tabs.js";
 import {
 	checkBeforeChangeDatabase,
@@ -3931,8 +3931,7 @@ export function getTreeDetailsPostgresql(node) {
 							text: t("tree.dashboard"),
 							icon: "fas cm-all fa-chart-line",
 							action: function (node) {
-								v_connTabControl.tag.createMonitorDashboardTab();
-								startMonitorDashboard();
+								switchSection("monitoring");
 							},
 						},
 					],
