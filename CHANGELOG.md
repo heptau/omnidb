@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [4.5.0] - 2026-09-29
+
 ### Added
 - Multi-language UI support: English, Czech (Čeština), Spanish (Español), Portuguese (Português),
   German (Deutsch), French (Français), Italian (Italiano), Japanese (日本語) and Korean (한국어), selectable in Settings > Appearance >
