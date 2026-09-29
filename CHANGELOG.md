@@ -236,6 +236,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   not touched by this change.
 
 ### Security
+
+- Hardened code paths flagged by CodeQL: export-file discard/save now builds its path from the server-side export registry instead of the request string; GRANT/REVOKE privilege keywords come from the allow-list itself; `CREATE ROLE` quotes the role name server-side with `quote_ident()`.
 - Saved connection passwords (`OmniDB_app_connection.password`), SSH tunnel passwords
   (`ssh_password`) and SSH private key text (`ssh_key`) were stored in plain text in the app's own
   SQLite database (`omnidb.db`) — readable by anyone who could read that file. Now encrypted at

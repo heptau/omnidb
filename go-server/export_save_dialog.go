@@ -118,10 +118,14 @@ func resolveExportFilePath(rawPath string, userID int) (string, bool) {
 	}
 	// Only a file directly in the temp dir that this user generated — the
 	// temp dir is shared by every user of a server-mode instance.
-	if rel != filepath.Base(rel) || !exportFileOwnedBy(rel, userID) {
+	if rel != filepath.Base(rel) {
 		return "", false
 	}
-	return cleanPath, true
+	name, ok := exportFileTrustedName(rel, userID)
+	if !ok {
+		return "", false
+	}
+	return filepath.Join(tempDir.TempDir, name), true
 }
 
 // discardExportFileRequest is the wire shape for handleDiscardExportFile.

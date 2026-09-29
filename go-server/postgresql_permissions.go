@@ -103,7 +103,12 @@ func postgresqlCreateRole(db *sql.DB, name string, attrs postgresqlRoleAttribute
 	if rawName == "" {
 		return fmt.Errorf("role name must not be empty")
 	}
-	quoted := quotePostgresIdentifierDoubleQuoted(rawName)
+	// Let the server quote the name so the DDL text only ever contains
+	// server-produced identifier text.
+	var quoted string
+	if err := db.QueryRow(`select quote_ident($1)`, rawName).Scan(&quoted); err != nil {
+		return err
+	}
 
 	stmt := "CREATE ROLE " + quoted + " WITH" + roleAttributeClauses(attrs)
 

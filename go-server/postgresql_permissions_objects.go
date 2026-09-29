@@ -72,9 +72,12 @@ func validatePrivilegesForObjectType(objectType string, privileges []string) ([]
 		if !allowed[up] {
 			return nil, fmt.Errorf("invalid privilege %q for object type %q", p, objectType)
 		}
-		if !seen[up] {
-			seen[up] = true
-			out = append(out, up)
+		// Emit the allow-list's own keyword, not the request-supplied text.
+		for keyword := range allowed {
+			if keyword == up && !seen[keyword] {
+				seen[keyword] = true
+				out = append(out, keyword)
+			}
 		}
 	}
 	return out, nil
