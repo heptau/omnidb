@@ -22,13 +22,13 @@ func oracleTemplateSelect(db *sql.DB, schema, table, indentUnit string) (string,
 	}
 	names := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("oracle", c.Name)
 	}
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
 	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
-	sb.WriteString(fmt.Sprintf("\nFROM %s.%s t", schema, table))
+	sb.WriteString(fmt.Sprintf("\nFROM %s t", quotedSchemaTableRef("oracle", schema, table)))
 
 	pkCols, err := oracleFirstPrimaryKeyColumns(db, schema, table)
 	if err != nil {
@@ -36,7 +36,7 @@ func oracleTemplateSelect(db *sql.DB, schema, table, indentUnit string) (string,
 	}
 	if len(pkCols) > 0 {
 		sb.WriteString("\nORDER BY t.")
-		sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
+		sb.WriteString(strings.Join(quoteTemplateColumns("oracle", pkCols), ",\n"+indentUnit+"t."))
 	}
 	return sb.String(), nil
 }
@@ -71,13 +71,13 @@ func oracleTemplateInsert(db *sql.DB, schema, table, indentUnit string) (string,
 	values := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("oracle", c.Name)
 		values[i] = "?"
 		comments[i] = oracleColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("INSERT INTO %s.%s (\n", schema, table))
+	sb.WriteString(fmt.Sprintf("INSERT INTO %s (\n", quotedSchemaTableRef("oracle", schema, table)))
 	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
 	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
@@ -103,10 +103,10 @@ func oracleTemplateUpdate(db *sql.DB, schema, table, indentUnit string) (string,
 	cores := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		cores[i] = c.Name + " = ?"
+		cores[i] = quoteEditDataColumn("oracle", c.Name) + " = ?"
 		comments[i] = oracleTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
 	}
-	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, formatTemplateColumnList(cores, comments, indentUnit)), nil
+	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", quotedSchemaTableRef("oracle", schema, table), formatTemplateColumnList(cores, comments, indentUnit)), nil
 }
 
 func oraclePKColumnSet(db *sql.DB, schema, table string) (map[string]bool, error) {

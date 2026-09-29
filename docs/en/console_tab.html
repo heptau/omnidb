@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/en/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/console_tab.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/console_tab.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/console_tab.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/console_tab.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/console_tab.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/console_tab.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html" class="active">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -152,10 +164,10 @@ show, the command says so directly instead of returning an empty or
 misleading result. <code>\h</code> (per-SQL-command syntax help, like a PostgreSQL
 manual page) is not implemented.</p>
 <p>The editor on the bottom of the tab area is full-featured just like the <em>Query
-Tab</em> editor (it provides syntax highlight and autocomplete with <em>Ctrl-Space</em>).
+Tab</em> editor (it provides syntax highlight and autocomplete with <em>Ctrl-Space</em>, <em>Option-Space</em> on macOS, and its right-click menu offers <em>Save as snippet</em> and <em>Use snippet</em>).
 To execute a command, just type it in this editor. If the command is a backslash
 (starts with <code>\</code>), just type <code>Enter</code> and it will be executed. If it is a regular
-SQL command, then it can be multi-lined, and you will need to type <em>Alt-Q</em> to
+SQL command, then it can be multi-lined, and you will need to press <em>Alt-Q</em> (<em>Ctrl-Q</em> on macOS) to
 execute it.</p>
 <p>All commands and its output will be logged into the display area, which is
 textual and read-only, so you can copy and paste its contents somewhere else.

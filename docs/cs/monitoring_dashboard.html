@@ -4,10 +4,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Monitorovací panel – Dokumentace OmniDB</title>
-	<meta name="description" content="Sestavte si v OmniDB živý monitorovací panel databáze z jednotek typu tabulka, graf a časová řada, včetně psaní vlastních jednotek založených na SQL.">
+	<meta name="description" content="Sekce Monitorování v OmniDB: živý panel vestavěných i vlastních jednotek typu tabulka, graf a časová řada pro každé připojení, panel Spravovat jednotky a psaní vlastních jednotek jako jediného SQL dotazu.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/monitoring_dashboard.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -17,7 +22,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/cs/monitoring_dashboard.html">
 	<meta property="og:title" content="Monitorovací panel - Dokumentace OmniDB">
-	<meta property="og:description" content="Sestavte si v OmniDB živý monitorovací panel databáze z jednotek typu tabulka, graf a časová řada, včetně psaní vlastních jednotek založených na SQL.">
+	<meta property="og:description" content="Sekce Monitorování v OmniDB: živý panel vestavěných i vlastních jednotek typu tabulka, graf a časová řada pro každé připojení, panel Spravovat jednotky a psaní vlastních jednotek jako jediného SQL dotazu.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -94,7 +99,9 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
 			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Práce s daty</span>
@@ -102,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
 			<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -112,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Nástroj OmniDB Config</a>
 			<a href="writing_plpgsql_functions.html">Psaní PL/pgSQL funkcí</a>
 			<a href="monitoring_dashboard.html" class="active">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
 			<a href="console_tab.html">Konzole</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
@@ -127,115 +139,110 @@
 		</nav>
 		<main>
 		<h1>Monitorovací panel</h1>
-<p>OmniDB má skvělou funkci nazvanou <em>Monitorovací panel</em>. Jeden obrázek
-vydá za tisíc slov, takže se podívejte sami:</p>
-<p><img alt="" src="../assets/img/image_091.webp" /></p>
-<p>Jak vidíte, jde o nový druh vnitřní záložky zobrazující grafy a tabulky.
-Tato vnitřní záložka <em>Monitoring</em> se automaticky otevře po rozbalení kořenového
-uzlu stromu (uzel <em>PostgreSQL</em>). Můžete ji nechat otevřenou nebo ji kdykoli
-zavřít. Znovu ji otevřete kliknutím pravým tlačítkem na kořenový uzel a volbou
-<em>Dashboard</em>.</p>
-<p><img alt="" src="../assets/img/image_092.webp" /></p>
-<p>Panel se skládá z praktických informačních obdélníků nazvaných <em>Monitorovací
-jednotky</em>. Zde je příklad monitorovací jednotky a jejích prvků rozhraní:</p>
-<p><img alt="" src="../assets/img/image_093.webp" /></p>
+<p>Sekce <em>Monitorování</em> je živý panel grafů a tabulek pro server za daným připojením — míra
+transakcí, backendy, produkce WAL, velikost databáze, poměry úspěšnosti cache a další — sestavený
+z malých, na sobě nezávislých karet nazývaných <em>monitorovací jednotky</em>. Kromě jednotek, které
+jsou součástí OmniDB, si můžete napsat vlastní, každou jako jediný SQL dotaz.</p>
+<p>Vestavěné jednotky existují pro PostgreSQL (16 jednotek) a MySQL (1 jednotka, <em>Thread
+Count</em>). Připojení MariaDB a Oracle panel také mají, pro vaše vlastní jednotky. U ostatních
+strojů sekce zobrazí <em>Monitorování není pro připojení … podporováno.</em></p>
+<h4>Otevření panelu</h4>
+<p>Klikněte na ikonu <em>Monitorování</em> na levé liště (mezi <em>Databáze</em> a
+<em>Oznámení</em>). Panel patří k připojení, které je otevřené v sekci <em>Databáze</em>: nahoře
+v sekci se zobrazuje pruh záložek otevřených připojení a výběrem záložky zobrazíte panel daného
+připojení. Není-li otevřeno žádné připojení, zobrazí se <em>Není otevřeno žádné připojení.</em></p>
+<p><strong>Všechny jednotky jsou po načtení panelu pozastavené</strong>, takže samotné otevření
+panelu nezačne dotazovat server. Požadované jednotky spusťte jejich vlastním tlačítkem přehrávání,
+nebo všechny najednou tlačítkem <em>Zapnout vše</em>.</p>
+<h4>Panel nástrojů</h4>
+<p>Panel nástrojů nahoře zůstává na místě, zatímco se karty pod ním posouvají:</p>
 <ul>
-<li><strong>1</strong>: Název monitorovací jednotky;</li>
-<li><strong>2</strong>: Obnovení monitorovací jednotky. V závislosti na typu kliknutí na toto
-tlačítko obnoví celou vykreslovací plochu, nebo jen nechá graf načíst novou
-sadu hodnot;</li>
-<li><strong>3</strong>: Pozastavení monitorovací jednotky;</li>
-<li><strong>4</strong>: Interval automatického obnovování v sekundách;</li>
-<li><strong>5</strong>: Odstranění monitorovací jednotky z monitorovacího panelu;</li>
-<li><strong>6</strong>: Vykreslovací plocha, která se liší podle typu monitorovací
-jednotky.</li>
+<li>první tlačítko, jen s ikonou (popisek <em>Spravovat jednotky</em>), otevře nebo zavře boční
+panel se seznamem jednotek, popsaný níže;</li>
+<li><em>Obnovit vše</em> jednou obnoví všechny zobrazené jednotky;</li>
+<li><em>Zapnout vše</em> / <em>Pozastavit vše</em> spustí nebo zastaví automatické obnovování všech
+jednotek tohoto připojení;</li>
+<li><em>Velikost karet</em> — <em>Malé</em>, <em>Střední</em>, <em>Velké</em> nebo <em>Na celou
+šířku</em> — určuje, jak široká může karta být, než se mřížka zalomí do menšího počtu sloupců: úzké
+okno zobrazí jednu kartu na řádek, široký monitor několik vedle sebe. Volba se ukládá ve vašem
+prohlížeči.</li>
 </ul>
-<h4>Typy monitorovacích jednotek</h4>
-<p>Existují 3 typy monitorovacích jednotek:</p>
+<h4>Karta monitorovací jednotky</h4>
+<p>Každá karta má nahoře svůj název, <em>×</em>, které jednotku z panelu odstraní (skryje), a — u
+vašich vlastních jednotek — tlačítko úprav, které otevře její editor (obojí se objeví po najetí myší
+na kartu). Pod názvem jsou ovládací prvky jednotky: okamžité obnovení, pozastavení / přehrávání
+a interval obnovování v sekundách. Zbytek karty zabírá graf nebo tabulka jednotky.</p>
+<p>Jednotka je jednoho ze tří typů:</p>
 <ul>
-<li><strong>Tabulka (Grid)</strong>: nejjednodušší druh — čas od času spustí dotaz a
-zobrazí výsledky v datové tabulce.</li>
+<li><strong>Tabulka</strong> (Grid): při každém obnovení spustí svůj dotaz a zobrazí výsledek
+v datové tabulce.</li>
+<li><strong>Graf (bez přidávání)</strong> (Chart (No Append)): při každém obnovení vykreslí nový
+kompletní graf; předchozí hodnoty se nahradí. Nejvíce se hodí pro koláčové nebo prstencové grafy
+aktuálního stavu.</li>
+<li><strong>Časová řada</strong> (Timeseries): při každém obnovení připojí ke svému grafu novou sadu
+hodnot a uchovává nejnovější body, takže můžete sledovat, jak se hodnota vyvíjí v čase. Všechny
+vestavěné jednotky jsou časové řady.</li>
 </ul>
-<p><img alt="" src="../assets/img/image_094.webp" /></p>
+<h4>Správa jednotek</h4>
+<p>Boční panel <em>Spravovat jednotky</em> (přepíná se prvním tlačítkem panelu nástrojů a jeho
+šířku lze měnit tažením okraje) obsahuje všechny jednotky dostupné pro dané připojení:</p>
 <ul>
-<li><strong>Graf (Chart)</strong>: při každém obnovení vykreslí nový kompletní graf. Stará
-sada hodnot se ztrácí. Nejvíce se hodí pro koláčové grafy, ale dají se použít
-i jiné typy grafů.</li>
+<li>zaškrtávací políčko před jednotkou ji na panelu zobrazí nebo skryje (skrytí ji zastaví, stejně
+jako <em>×</em> na její kartě, ale ponechá její interval obnovování pro příště);</li>
+<li>přetažením řádku nahoru nebo dolů změníte pořadí karet na panelu;</li>
+<li><strong>+</strong> pod seznamem otevře editor nové jednotky;</li>
+<li>u vlastní jednotky pravým tlačítkem → <em>Upravit</em> nebo <em>Smazat</em>, případně dvojklikem
+otevřete její editor. Vestavěné jednotky nelze upravovat ani mazat, jen zobrazovat nebo
+skrývat.</li>
 </ul>
-<p><img alt="" src="../assets/img/image_095.webp" /></p>
-<ul>
-<li><strong>Časová řada (Timeseries)</strong>: to je asi nejužitečnější typ monitorovací
-jednotky. Jde o graf, který při každém obnovení připojí novou sadu hodnot.
-Pro tento typ se nejlépe hodí spojnicové nebo sloupcové grafy. Posledních
-100 sad hodnot uchovává komponenta na straně klienta, aby si je uživatel
-mohl prohlédnout.</li>
-</ul>
-<p><img alt="" src="../assets/img/image_096.webp" /></p>
-<h4>Zobrazování a skrývání jednotek na panelu</h4>
-<p>Kliknutím na tlačítko <em>Refresh All</em> se obnoví všechny monitorovací jednotky
-najednou. Nechtěné monitorovací jednotky můžete odstranit také kliknutím na
-tlačítko <em>Remove</em>. Pojďme nyní odstranit všechny jednotky z panelu, aby
-zůstal prázdný:</p>
-<p><img alt="" src="../assets/img/image_097.webp" /></p>
-<p>17 jednotek, které jsou v OmniDB vestavěné (metriky serveru PostgreSQL a MySQL —
-míra transakcí, backendy, produkce WAL, velikost databáze/tabulky a podobně) běží
-jako nativní kód a nevyžadují nic navíc instalovat v databázi.</p>
-<p><img alt="" src="../assets/img/image_098.webp" /></p>
-<p>Nyní, když je náš panel prázdný, přidejme nějaké jednotky. Klikněte na
-tlačítko <em>Manage Units</em>.</p>
-<p><img alt="" src="../assets/img/image_099.webp" /></p>
-<p>Kliknutím na zelenou akci přidáte kteroukoli z vestavěných jednotek — např.
-<em>Backends</em> a <em>Database Size</em>. Po pár sekundách budete mít panel vypadající
-takto:</p>
-<p><img alt="" src="../assets/img/image_100.webp" /></p>
-<p>Podobným způsobem můžete přidávat a odebírat libovolné jednotky a přizpůsobit
-si panel přesně podle svých potřeb.</p>
+<p>Vaše vlastní jednotky jsou soukromé pro vašeho uživatele OmniDB.</p>
+<h4>Vestavěné jednotky</h4>
+<p>PostgreSQL: <em>Transaction Rate</em>, <em>Backends</em>, <em>Autovacuum Workers Usage</em>,
+<em>WAL Production Rate</em>, <em>Temp Files Creation Rate</em>, <em>Autovacuum Freeze</em>,
+<em>Blocked Locks</em>, <em>Database Size</em>, <em>Database Growth Rate</em>, <em>Heap Cache Miss
+Ratio</em>, <em>Index Cache Miss Ratio</em>, <em>Seq Scan Ratio</em>, <em>Long Transaction</em>,
+<em>Long Query</em>, <em>Long Autovacuum</em> a <em>Checkpoints</em>. MySQL: <em>Thread
+Count</em>. Nevyžadují v databázi instalovat nic navíc.</p>
 <h4>Psaní vlastních monitorovacích jednotek</h4>
-<p>OmniDB umožňuje napsat si vlastní jednotky, nebo upravit ty stávající, pomocí
-jediného SQL dotazu — se stejným připojením a oprávněními, jaké už má váš SQL
-editor, jen běžícím podle časovače místo na vyžádání. Není potřeba se učit
-žádný zvláštní skriptovací jazyk ani sandbox.</p>
-<p><strong>Poznámka:</strong> jelikož se dotaz bez dohledu opakovaně spouští podle
-intervalu obnovování, jsou povoleny pouze dotazy <code>SELECT</code> (nebo
-<code>WITH ... SELECT</code>) — destruktivní příkaz vložený omylem je rovnou odmítnut,
-místo aby tiše vypálil podle časovače.</p>
-<p>Novou monitorovací jednotku vytvoříte kliknutím na tlačítko <em>Manage Units</em>
-na panelu a následně na tlačítko <em>New Unit</em>. Otevře se nový druh vnitřní
-záložky s polem Name, rozbalovacím seznamem Type, polem Refresh Interval a
-jediným editorem SQL Query (plus rozbalovacím seznamem Chart Type, který se
-zobrazuje jen pro jednotky typu <em>Chart</em>).</p>
+<p>Vlastní jednotka je jediný SQL dotaz, který se spouští podle časovače — se stejným připojením
+a oprávněními, jaké má váš SQL editor. Není potřeba se učit žádný zvláštní skriptovací jazyk.</p>
+<p><strong>Poznámka:</strong> jelikož se dotaz bez dohledu opakovaně spouští, jsou povoleny pouze
+dotazy <code>SELECT</code> (nebo <code>WITH ... SELECT</code>) — destruktivní příkaz vložený omylem
+je rovnou odmítnut, místo aby se tiše spouštěl podle časovače.</p>
+<p>Klikněte na <strong>+</strong> v panelu <em>Spravovat jednotky</em>. Otevře se záložka editoru
+<em>Monitorovací jednotka</em> s poli <em>Název</em>, <em>Typ</em> (<em>Časová řada</em>, <em>Graf
+(bez přidávání)</em> nebo <em>Tabulka</em>), <em>Interval obnovování</em> (v sekundách),
+<em>Šablona</em> (volitelně můžete začít z existující jednotky), <em>Typ grafu</em>
+(<em>Sloupcový</em>, <em>Koláčový</em>, <em>Prstencový</em> nebo <em>Čárový</em>; zobrazuje se jen
+u typu <em>Graf (bez přidávání)</em>) a editorem <em>SQL dotaz</em>.</p>
 <p>Podoba dotazu závisí na typu jednotky:</p>
 <ul>
 <li>
-<p><strong>Grid</strong>: bez zvláštního tvaru — ať už dotaz vrátí jakékoli sloupce a
-řádky, staly se přímo obsahem tabulky. Například:</p>
+<p><strong>Tabulka</strong>: bez zvláštního tvaru — jakékoli sloupce a řádky, které dotaz vrátí,
+se stanou obsahem tabulky. Například:</p>
 <pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
 </li>
 <li>
-<p><strong>Chart</strong>: jeden řádek na kategorii — první sloupec je popisek, zbývající
-sloupec(-ce) je vždy jedna řada (název sloupce se stává názvem řady). Typ grafu
-(sloupcový, koláčový, prstencový nebo spojnicový) vyberte z rozbalovacího
-seznamu vedle výběru Type. Například koláčový graf velikostí databází:</p>
+<p><strong>Graf (bez přidávání)</strong>: jeden řádek na kategorii — první sloupec je popisek,
+zbývající sloupec(-ce) je vždy jedna řada (název sloupce se stává názvem řady). Například koláčový
+graf velikostí databází:</p>
 <pre><code class="language-sql">SELECT datname,
        round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
 FROM pg_catalog.pg_database
 WHERE datname NOT IN ('template0', 'template1')</code></pre>
 </li>
 <li>
-<p><strong>Timeseries</strong>: přesně jeden řádek — každý číselný sloupec se stává
-jednou průběžně doplňovanou spojnicovou řadou, obnovovanou podle nastaveného
-intervalu. Například sledování velikosti databáze v čase:</p>
+<p><strong>Časová řada</strong>: přesně jeden řádek — každý číselný sloupec se stává jednou
+průběžně doplňovanou řadou. Například sledování celkové velikosti databází v čase:</p>
 <pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
 FROM pg_catalog.pg_database
 WHERE NOT datistemplate</code></pre>
 </li>
 </ul>
-<p>Dotaz napište (nebo vložte) do editoru SQL Query a poté klikněte na tlačítko
-<em>Test</em>, abyste jej viděli vykreslený v náhledové vykreslovací ploše — testovat
-můžete tolikrát, kolikrát chcete. Jakmile budete spokojeni, pojmenujte jednotku,
-nastavte interval obnovování a klikněte na <em>Save</em>. Zavřete editační záložku a
-nová jednotka se objeví v seznamu jednotek, připravená přidat na panel (zelená
-akce) stejně jako kterákoli vestavěná.</p>
+<p>Kliknutím na <em>Otestovat</em> dotaz jednou spustíte a výsledek uvidíte vykreslený pod editorem
+— tolikrát, kolikrát chcete. Jakmile budete spokojeni, pojmenujte jednotku, nastavte interval
+obnovování a klikněte na <em>Uložit</em>. Jednotka se pak objeví v seznamu <em>Spravovat
+jednotky</em>; zaškrtněte ji, aby se zobrazila na panelu.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

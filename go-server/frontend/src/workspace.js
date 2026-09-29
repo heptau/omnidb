@@ -232,7 +232,7 @@ export function getDatabaseList(p_init, p_callback) {
 
 						v_current_parent = p_return.v_data.v_existing_tabs[i].index;
 						v_connTabControl.tag.createQueryTab(
-							p_return.v_data.v_existing_tabs[i].title,
+							storedTabTitleToText(p_return.v_data.v_existing_tabs[i].title),
 							p_return.v_data.v_existing_tabs[i].tab_db_id,
 						);
 						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(
@@ -531,6 +531,22 @@ export function drawGraph(p_all, p_schema) {
 		},
 		"box",
 	);
+}
+
+/// <summary>
+/// A saved query tab's title, as plain text. Titles used to be saved as the
+/// title span's innerHTML, so older rows hold an HTML serialization (entity-
+/// encoded text such as "a &amp; b", or even live markup if a database object
+/// name contained some); newer ones are saved as textContent. Decoding through
+/// an inert DOMParser document turns either into plain text without anything
+/// in it loading or running, and createQueryTab then escapes that text itself.
+/// </summary>
+/** @param {any} p_title */
+function storedTabTitleToText(p_title) {
+	if (p_title === null || p_title === undefined || p_title === "") return p_title;
+	var v_text = String(p_title);
+	if (!/[<&]/.test(v_text)) return v_text;
+	return new DOMParser().parseFromString(v_text, "text/html").body.textContent || "";
 }
 
 /// <summary>
@@ -1338,7 +1354,8 @@ export function showMenuNewTabOuter(e) {
 						}
 
 						var v_group_data = {
-							text: v_current_group.v_name,
+							// customMenu renders `text` as markup.
+							text: escapeHtml(v_current_group.v_name),
 							icon: "fas cm-all fa-plug",
 							submenu: {
 								elements: v_group_connections,
@@ -1362,12 +1379,14 @@ export function showMenuNewTabOuter(e) {
 				(function (i) {
 					var v_term = v_connTabControl.tag.remote_terminals[i];
 					var v_name = v_term.v_alias;
+					// customMenu renders `text` as markup; alias/details are
+					// user-entered connection fields.
 					var v_term_name = "";
 					if (v_term.v_alias && v_term.v_alias !== "") {
-						v_term_name = "(" + v_term.v_alias + ") ";
+						v_term_name = "(" + escapeHtml(v_term.v_alias) + ") ";
 					}
 					if (v_term.v_details) {
-						v_term_name += v_term.v_details;
+						v_term_name += escapeHtml(v_term.v_details);
 					}
 					v_submenu_terminal_list.push({
 						text: v_term_name,

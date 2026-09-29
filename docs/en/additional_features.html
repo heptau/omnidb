@@ -4,10 +4,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Additional Features – OmniDB Documentation</title>
-	<meta name="description" content="OmniDB's extra tools: user settings, contextual PostgreSQL documentation, snippets, the Notify panel, backend management, properties/DDL panels, data export and SSH console.">
+	<meta name="description" content="OmniDB's extra tools: the Welcome page and Getting Started tutorial, contextual PostgreSQL documentation, properties/DDL panels, data export, Export as DBML, query history and the SSH console.">
 	<link rel="canonical" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/additional_features.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/additional_features.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/additional_features.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/additional_features.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/additional_features.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/additional_features.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/additional_features.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -17,7 +22,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/en/additional_features.html">
 	<meta property="og:title" content="Additional Features - OmniDB Documentation">
-	<meta property="og:description" content="OmniDB's extra tools: user settings, contextual PostgreSQL documentation, snippets, the Notify panel, backend management, properties/DDL panels, data export and SSH console.">
+	<meta property="og:description" content="OmniDB's extra tools: the Welcome page and Getting Started tutorial, contextual PostgreSQL documentation, properties/DDL panels, data export, Export as DBML, query history and the SSH console.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -128,82 +140,66 @@
 		</nav>
 		<main>
 		<h1>Additional Features</h1>
-		<h4>User Settings</h4>
-		<p>Also in the upper right corner, by clicking in the gear-like icon, OmniDB will
-			open the <em>User Settings</em> pop-up. It is composed of four tabs:</p>
-		<ul>
-			<li><strong>Shortcuts</strong>: Allows the user to change its shortcuts in OmniDB.</li>
-			<li><strong>Options</strong>: Allows the user to change the font size of the interface and configure
-				CSV related options (encoding, delimiter). The OmniDB theme can be set to Automatic (follows your
-				operating system’s color scheme preference), Light, or Dark.</li>
-			<li><strong>Formatting</strong>: Configures how the SQL formatter (the <em>Indent SQL</em> action) rewrites
-				your query — indent character (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and
-				keyword case (preserve/UPPERCASE/lowercase). Also sets the <strong>Ruler Column</strong> — the vertical
-				guide line the SQL editor draws (24-999, default 128) — applied live to every open editor.</li>
-			<li><strong>Password</strong>: Allows the user to change its password.</li>
-		</ul>
+		<p>This chapter collects smaller features that don't need a chapter of their own. Several
+			features that used to be described here now have their own chapters:
+			<a href="settings_and_languages.html">Settings and Languages</a>,
+			<a href="snippets.html">Snippets</a>, <a href="notify.html">Notify</a>,
+			<a href="connected_users.html">Connected Users</a> (which replaces the former
+			<em>Backends</em> tree menu) and <a href="permissions.html">Roles and Permissions</a>.</p>
+		<h4>The Welcome page</h4>
+		<p>The <em>Welcome</em> icon at the top of the left rail opens a start page with the
+			<em>Getting started</em> button, a reminder that most actions talk directly to the database
+			you are connected to (so practice on a test environment rather than production), links to
+			the OmniDB website, the GitHub repository and this documentation, and the version you are
+			running.</p>
+		<h4>Getting Started tutorial</h4>
+		<p>The lightbulb icon near the bottom of the rail (<em>Getting Started</em>; in the desktop
+			app also <em>Help &gt; Getting Started</em>) opens a list of interactive walkthroughs that
+			highlight the relevant parts of the screen step by step: creating an OmniDB user (server
+			version only), creating a database connection, creating a terminal connection, meeting the
+			snippets panel, using a connection and the connection tab (available once a connection is
+			open). <em>End walkthrough</em> leaves a walkthrough at any time.</p>
 		<h4>Contextual Help</h4>
-		<p>Most of tree nodes (generally grouping ones like <em>Schemas</em> or <em>Tables</em>) offer
-			contextual help. This feature can be accessed by right-clicking the tree node.
-			When you click the <em>Doc: …</em> option, OmniDB opens the specific page of the
-			online <strong>PostgreSQL Documentation</strong> in your web browser (the
-			system’s default browser in the desktop app, or a new tab when running as a
+		<p>Most of tree nodes (generally grouping ones like <em>Schemas</em> or <em>Tables</em>) offer
+			contextual help. This feature can be accessed by right-clicking the tree node.
+			When you click the <em>Doc: …</em> option, OmniDB opens the specific page of the
+			online <strong>PostgreSQL Documentation</strong> in your web browser (the
+			system’s default browser in the desktop app, or a new tab when running as a
 			browser-based <a href="deploying_omnidb-server.html">OmniDB Server</a>). It
-			also picks the right documentation version for the PostgreSQL server you are
+			also picks the right documentation version for the PostgreSQL server you are
 			connected to.</p>
 		<p><img alt="" src="../assets/img/image_071.webp"/></p>
-		<h4>Snippets</h4>
-		<p><em>Workspace Window</em> has a fixed outer tab with an useful feature called
-			<em>Snippets</em>. With this feature you can store queries, command instructions and
-			any other kinds of text you want. You can also structure the snippets in a
-			directory tree the way you want. All directories and snippets you create are
-			stored inside of <code>omnidb.db</code> user database and persist when you upgrade OmniDB.
-		</p>
-		<p>A "+"/"-" footer below the snippets tree adds a snippet under the currently selected
-			folder (or the tree root) and deletes whatever is selected; "-" stays disabled until something
-			deletable is selected. An open snippet tab shows a small dot next to its title once the editor
-			diverges from what is saved, cleared on Save; closing a tab only prompts for confirmation when
-			it actually has unsaved changes.</p>
-		<p><img alt="" src="../assets/img/image_127.webp"/></p>
-		<h4>Notify</h4>
-		<p>The <em>Notify</em> panel sits in the sidebar between Database and Snippets and streams
-			PostgreSQL <code>LISTEN</code>/<code>NOTIFY</code>, Oracle <code>DBMS_ALERT</code>, and Firebird
-			<code>POST_EVENT</code> messages. Channels are added, removed, paused, and resumed per connection
-			and persist across app restarts; received messages are ephemeral, kept only in the browser tab
-			and cleared on reload. Messages can be viewed across all channels or filtered to a selection, and
-			cleared per-channel or all at once. MySQL/MariaDB/MS SQL Server/SQLite show a "not supported"
-			message instead of hiding the feature. A connection's Notify session starts and stops together
-			with its Database tab, and the panel shares the same horizontal strip of open connections as the
-			Database panel, so selecting a connection in one keeps the other in sync.</p>
-		<h4>Backend Management</h4>
-		<p>By right-clicking in the tree root node, then moving mouse pointer to
-			<em>Monitoring</em> and then clicking on <em>Backends</em>, the user can see all activities
-			going on in the database. Some information is hidden for normal users, only
-			database superusers are allowed to see.
-		</p>
-		<p><img alt="" src="../assets/img/image_174.webp"/></p>
-		<p>By clicking in the <em>X</em> in the <em>Actions</em> column, you can terminate the
-			backend. A confirmation popup will appear.</p>
-		<p><img alt="" src="../assets/img/image_175.webp"/></p>
 		<h4>Properties and DDL</h4>
-		<p>By clicking on most of objects in the tree view (tables, sequences, views,
-			roles, databases, etc), the user will be able to see a very comprehensive list
-			of properties of the object.</p>
+		<p>By clicking on most of objects in the tree view (tables, sequences, views,
+			roles, databases, etc), the user will be able to see a very comprehensive list
+			of properties of the object.</p>
 		<p><img alt="" src="../assets/img/image_176.webp"/></p>
-		<p>In the other panel called <em>DDL</em>, the user will be able to see the SQL DDL source
-			code that can be used to re-create the object. The user can copy this text and
-			paste it wherever he/she wants.</p>
+		<p>In the other panel called <em>DDL</em>, the user will be able to see the SQL DDL source
+			code that can be used to re-create the object — including its comment
+			(<code>COMMENT ON …</code>) and privileges (<code>GRANT …</code>) where the database has
+			them. The user can copy this text and paste it wherever he/she wants.</p>
 		<p><img alt="" src="../assets/img/image_177.webp"/></p>
+		<p>The divider above the Properties/DDL panel can be dragged, and the panel (as well as the
+			database tree itself) can be collapsed with the small toggle button on its divider — in the
+			desktop app also with <em>View &gt; Toggle Properties/DDL Panel</em> and <em>View &gt;
+			Toggle Database Tree</em>.</p>
 		<h4>Export Data</h4>
-		<p>The <em>Query Tab</em> provides a way to save data from query results into
-			CSV, TSV, XLSX, Markdown, JSON, or XML. Once you click the <em>Export Data</em> button, a cancellable
-			backend starts to save data into the file. Once it is done, OmniDB provides a link called
-			<em>Save</em>, so the user can download the file. CSV/TSV Encoding (Settings &gt; Options) defaults
-			to UTF-8 with a BOM, and its codec list is grouped into readable categories.
-		</p>
+		<p>The <em>Query Tab</em> can save the results of its query to a CSV, TSV, XLSX, JSON, XML or
+			Markdown file. Pick the format in the drop-down next to the <em>Export Data</em> button and
+			click the button: OmniDB runs the query again in the background and writes the whole result
+			to the file (the export can be cancelled while it runs).</p>
+		<ul>
+			<li>In the <strong>desktop app</strong>, a native <em>Save As</em> dialog opens so you can
+				choose where to save the file, and OmniDB confirms with <em>File exported to: …</em>.</li>
+			<li>In the <strong>browser</strong> (server version), the result area shows <em>The file is
+				ready.</em> with a <em>Save</em> link that downloads it.</li>
+		</ul>
 		<p><img alt="" src="../assets/img/image_178.webp"/></p>
-		<p>All files are stored in a temporary folder inside OmniDB folder. OmniDB
-			regularly cleans this folder, keeping only files newer than 24 hours.</p>
+		<p>CSV and TSV files use the encoding set in <em>Settings &gt; Export &gt; CSV/TSV
+			Encoding</em> (default: UTF-8 with BOM), and CSV files the <em>CSV Delimiter</em> set there
+			(default <code>;</code>). Export files are kept in a temporary folder inside OmniDB’s home
+			directory, can only be downloaded by the user who created them, and are removed
+			automatically after 24 hours.</p>
 		<h4>Export as DBML</h4>
 		<p>Right-click a database node in the PostgreSQL tree and choose <em>Export as DBML</em> to generate
 			the whole database's schema as a <a href="https://dbml.dbdiagram.io/home/" target="_blank"
@@ -222,11 +218,19 @@
 			right away rather than waiting for the temp folder's 24-hour cleanup. Currently PostgreSQL
 			only.</p>
 		<h4>Query History</h4>
-		<p>From the <em>Query Tab</em> you can click on the <em>Command History</em> button to see a
-			full, browsable and searchable query tab.</p>
+		<p>From the <em>Query Tab</em> you can click on the <em>Command history</em> button to see a
+			full, browsable and searchable list of the commands run on this connection, filterable by
+			date range and text. See <a href="writing_sql_queries.html">Writing SQL Queries</a>.</p>
 		<p><img alt="" src="../assets/img/image_203.webp"/></p>
 		<h4>SSH Console</h4>
-		<p>OmniDB also provides a full-featured SSH Console.</p>
+		<p>Besides database connections, OmniDB can open a full-featured SSH terminal to a server. Create
+			a connection of type <em>Terminal</em> in the Connections section, filling in the SSH
+			server, port, user and password or private key (see
+			<a href="creating_users_and_connections.html">Creating Users and Connections</a>). Open it
+			from the <em>+</em> at the end of the connection tab strip → <em>SSH Consoles</em>, or with
+			<em>Connect</em> in its form. The terminal opens as its own connection tab; the server's host
+			key must already be known — see <a href="security.html">Security and Multi-user
+			Server</a>.</p>
 		<p><img alt="" src="../assets/img/image_204.webp"/></p>
 		</main>
 	</div>

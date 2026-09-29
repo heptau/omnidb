@@ -7,8 +7,12 @@
 	<meta name="description" content="Das OmniDB-Konfigurationstool und Wartungsaufgaben: Home-Verzeichnis, Benutzer erstellen, Vakuumieren, Datenbank zurücksetzen und temporäre Dateien löschen.">
 	<link rel="canonical" href="https://www.omnidb.net/de/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/omnidb_config_tool.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Erste Schritte</span>
 			<a href="introduction.html">Einführung</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop-App</a>
 			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+			<a href="settings_and_languages.html">Einstellungen und Sprachen</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Arbeiten mit Daten</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
 			<a href="managing_table_data.html">Tabellendaten verwalten</a>
 			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
 			<a href="visualizing_data.html">Daten visualisieren</a>
 			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
@@ -111,14 +118,18 @@
 		<div class="nav-group">
 			<span class="nav-group-label">Erweitert</span>
 			<a href="additional_features.html">Zusätzliche Funktionen</a>
-			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
+			<a href="omnidb_config_tool.html" class="active">OmniDB-Konfigurationstool</a>
 			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
 			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="notify.html">Benachrichtigungen</a>
+			<a href="connected_users.html">Verbundene Benutzer</a>
+			<a href="permissions.html">Rollen und Berechtigungen</a>
 			<a href="logical_replication.html">Logische Replikation</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tools</span>
 			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>
 			<a href="console_tab.html">Konsolen-Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
 		</div>
@@ -129,17 +140,26 @@
 		</nav>
 		<main>
 		<h1>OmniDB-Konfigurationstool</h1>
-<p><strong>Hinweis:</strong> Das eigenständige CLI-Dienstprogramm <code>omnidb-config</code>/<code>omnidb-config-app</code>/<code>omnidb-config-server</code>, das auf dieser Seite beschrieben wird, gehörte zum vorherigen Python/Django-basierten Build und ist nicht Teil der aktuellen Veröffentlichung. Die einzelne <code>omnidb-server</code>-Binärdatei akzeptiert nur <code>-A</code>/<code>--app</code> (Desktop-App-Modus) und <code>-d</code>/<code>--homedir</code> (Home-Verzeichnis wählen), dokumentiert im Kapitel <a href="installation.html">Installation</a>. Die Wartungsaufgaben, die das alte Tool bot, können weiterhin manuell erledigt werden, wie unten beschrieben.</p>
+<p><strong>Hinweis:</strong> Das eigenständige CLI-Dienstprogramm <code>omnidb-config</code>/<code>omnidb-config-app</code>/<code>omnidb-config-server</code>, das auf dieser Seite beschrieben wird, gehörte zum vorherigen Python/Django-basierten Build und ist nicht Teil der aktuellen Veröffentlichung. Die einzelne <code>omnidb-server</code>-Binärdatei akzeptiert nur eine Handvoll Kommandozeilenoptionen: <code>-A</code>/<code>--app</code> (Desktop-App-Modus), <code>-H</code>/<code>--host</code> (Lauschadresse), <code>-p</code>/<code>--port</code> (Lauschport), <code>-d</code>/<code>--homedir</code> (Home-Verzeichnis wählen) und <code>--set-password</code> (Passwort eines Benutzers setzen, siehe unten) — alle beschrieben im Abschnitt <em>Kommandozeilenoptionen</em> von <a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>. Eine Konfigurationsdatei gibt es nicht. Die Wartungsaufgaben, die das alte Tool bot, können weiterhin manuell erledigt werden, wie unten beschrieben.</p>
 <h4>Home-Verzeichnis</h4>
-<p>OmniDB speichert alles — die <code>omnidb.db</code>-Datenbank (Benutzer, Verbindungen und andere App-Daten) und einen <code>temp</code>-Ordner für exportierte Dateien — in einem einzigen Home-Verzeichnis. Standardmäßig ist dies <code>~/.omnidb/omnidb-app</code> (Desktop-Modus) oder <code>~/.omnidb/omnidb-server</code> (Server-Modus); verwenden Sie <code>-d /irgendein/pfad</code>, um ein anderes zu wählen.</p>
+<p>OmniDB speichert alles — die <code>omnidb.db</code>-Datenbank (Benutzer, Verbindungen und andere App-Daten) und einen <code>temp</code>-Ordner für exportierte Dateien — in einem einzigen Home-Verzeichnis. Standardmäßig ist dies <code>~/.omnidb/omnidb-app</code> (Desktop-Modus) oder <code>~/.omnidb/omnidb-server</code> (Server-Modus); verwenden Sie <code>-d /irgendein/pfad</code>, um ein anderes zu wählen (das Verzeichnis muss bereits existieren). Bietet das Betriebssystem keinen Geheimnisspeicher für den Verschlüsselungsschlüssel gespeicherter Passwörter, enthält dasselbe Verzeichnis auch diesen Schlüssel, in der Datei <code>.connection_secret_key</code> — siehe <a href="security.html">Sicherheit und Mehrbenutzer-Server</a>. Wenn Sie <code>omnidb.db</code> sichern oder verschieben, nehmen Sie diese Datei mit.</p>
 <h4>Benutzer erstellen</h4>
-<p>Derzeit gibt es keine CLI-Option, um einen Benutzer ohne Öffnen von OmniDB zu erstellen. Beim ersten Start mit einem leeren Home-Verzeichnis erstellt OmniDB automatisch einen Standard-Superuser <code>admin</code>/<code>admin</code> — melden Sie sich damit an und erstellen Sie weitere Benutzer über den Bildschirm <em>Users</em> (Benutzer) oder ändern Sie das Standard-Passwort.</p>
+<p>Derzeit gibt es keine CLI-Option, um einen Benutzer ohne Öffnen von OmniDB zu erstellen. Beim ersten Start mit einem leeren Home-Verzeichnis erstellt OmniDB automatisch einen Standard-Superuser <code>admin</code> — im Server-Modus mit einem Zufallspasswort, das einmalig in die Log-Ausgabe des Servers geschrieben wird (die Zeile mit <code>initial login: admin / …</code>). Melden Sie sich damit an und erstellen Sie weitere Benutzer unter <em>Einstellungen &gt; Konto &gt; Benutzer verwalten</em>, oder ändern Sie das Passwort unter <em>Einstellungen &gt; Passwort</em>.</p>
+<h4>Passwort setzen oder zurücksetzen</h4>
+<p>Wenn das einmalige anfängliche <code>admin</code>-Passwort verloren gegangen ist (oder Sie vor der ersten Anmeldung ein eigenes festlegen möchten), können Sie das Passwort jedes vorhandenen Benutzers direkt in der App-Datenbank setzen, ohne den Server zu starten:</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-server --set-password admin
+user@machine:~$ omnidb-server --set-password admin -d /path/to/homedir
+</code></pre>
+<p>Ohne <code>-d</code> wird das Standard-Home-Verzeichnis des Servers (<code>~/.omnidb/omnidb-server</code>) verwendet. In einem Terminal wird das neue Passwort zweimal ohne Anzeige abgefragt; andernfalls wird es aus der ersten Zeile der Standardeingabe gelesen, was sich für Skripte eignet:</p>
+<pre><code class="language-bash">user@machine:~$ printf '%s\n' "$PW" | omnidb-server --set-password admin
+</code></pre>
+<p>Das Passwort wird nie als Kommandozeilenargument übergeben, sodass es weder in der Ausgabe von <code>ps</code> noch im Shell-Verlauf auftaucht. Es muss mindestens 8 Zeichen lang sein, und der Benutzer muss bereits existieren. Zusammen mit <code>-A</code> wird die Option abgelehnt — die Desktop-App meldet sich automatisch an und hat kein Passwort, das verwaltet werden müsste. Sie kann auch bei laufendem Server ausgeführt werden: Das neue Passwort gilt sofort für neue Anmeldungen, bereits angemeldete Benutzer bleiben angemeldet, bis ihre Sitzung abläuft oder der Server neu gestartet wird.</p>
 <h4>Vakuumieren</h4>
 <p>OmniDB hat eine einzige SQLite-Datenbank, <code>omnidb.db</code>, die alle Benutzer, Verbindungen und andere OmniDB-bezogene Daten speichert. Da es sich um eine einfache SQLite-Datei handelt, können Sie sie mit jedem SQLite-Client vakuumieren, während OmniDB nicht läuft, z. B.:</p>
 <pre><code class="language-bash">user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
 </code></pre>
 <h4>Datenbank zurücksetzen</h4>
-<p>Wenn Sie alle OmniDB-Informationen löschen und eine saubere Datenbank wie bei der Neuinstallation erhalten möchten, beenden Sie OmniDB und löschen Sie die Datei <code>omnidb.db</code> im Home-Verzeichnis (oder verschieben Sie sie zur Seite). Eine neue, leere Datenbank — mit einem frischen Standard-Benutzer <code>admin</code>/<code>admin</code> — wird automatisch beim nächsten Start von OmniDB erstellt. Gehen Sie dabei vorsichtig vor: Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
+<p>Wenn Sie alle OmniDB-Informationen löschen und eine saubere Datenbank wie bei der Neuinstallation erhalten möchten, beenden Sie OmniDB und löschen Sie die Datei <code>omnidb.db</code> im Home-Verzeichnis (oder verschieben Sie sie zur Seite). Eine neue, leere Datenbank — mit einem frischen Standard-Benutzer <code>admin</code> (im Server-Modus mit einem neu erzeugten, einmalig ins Log geschriebenen Passwort) — wird automatisch beim nächsten Start von OmniDB erstellt. Gehen Sie dabei vorsichtig vor: Dieser Vorgang kann nicht rückgängig gemacht werden.</p>
 <h4>Temporäre Dateien löschen</h4>
 <p>Exportierte Abfrageergebnisse (CSV/XLSX/usw.) werden in den <code>temp</code>-Ordner innerhalb des Home-Verzeichnisses geschrieben. Es ist sicher, dessen Inhalt jederzeit manuell zu löschen, während OmniDB nicht läuft; OmniDB erstellt ihn bei Bedarf neu.</p>
 		</main>

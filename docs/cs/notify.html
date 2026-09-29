@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Oznámení – Dokumentace OmniDB</title>
+	<meta name="description" content="Naslouchání kanálům PostgreSQL LISTEN/NOTIFY, alertům Oracle DBMS_ALERT a událostem Firebirdu v sekci Oznámení v OmniDB.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/notify.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/notify.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/notify.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/notify.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/notify.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/notify.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/notify.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/notify.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/notify.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/notify.html">
+	<meta property="og:title" content="Oznámení - Dokumentace OmniDB">
+	<meta property="og:description" content="Naslouchání kanálům PostgreSQL LISTEN/NOTIFY, alertům Oracle DBMS_ALERT a událostem Firebirdu v sekci Oznámení v OmniDB.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Oznámení", "item": "https://www.omnidb.net/cs/notify.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html" class="active">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Oznámení</h1>
+<p>Sekce <em>Oznámení</em> naslouchá asynchronním notifikacím, které relace posílají prostřednictvím
+samotné databáze, a zobrazuje je hned, jak dorazí:</p>
+<ul>
+<li><strong>PostgreSQL</strong>: <code>LISTEN</code>/<code>NOTIFY</code>;</li>
+<li><strong>Oracle</strong>: <code>DBMS_ALERT</code>;</li>
+<li><strong>Firebird</strong>: události (<code>POST_EVENT</code>).</li>
+</ul>
+<p>MySQL, MariaDB, SQL Server a SQLite žádný ekvivalent nemají; u nich sekce místo skrytí funkce
+zobrazí <em>Kanály typu NOTIFY nejsou pro připojení … podporovány.</em></p>
+<h4>Otevření sekce</h4>
+<p>Klikněte na ikonu <em>Oznámení</em> na levé liště. Sekce sdílí pruh záložek otevřených připojení
+se sekcí <em>Databáze</em> — vyberte záložku a uvidíte kanály a zprávy daného připojení. Není-li
+otevřeno žádné připojení, zobrazí se <em>Není otevřeno žádné připojení.</em> s výzvou, abyste nejprve
+nějaké otevřeli v panelu Databáze.</p>
+<p>Naslouchání nezávisí na tom, zda je sekce Oznámení zobrazena: jakmile se připojení otevře v sekci
+Databáze, OmniDB začne naslouchat na jeho uložených kanálech (přes samostatné, vyhrazené připojení,
+takže nikdy neovlivňuje vaše karty dotazu ani konzole) a přestane, když se záložka tohoto připojení
+zavře.</p>
+<h4>Kanály</h4>
+<p>Levá část sekce je strom s kořenem <em>Kanály</em>. Kanál přidáte kliknutím na
+<strong>+</strong> pod stromem (nebo pravým tlačítkem na strom → <em>Přidat kanál</em>), zadáním
+<em>Názvu kanálu</em> a stiskem Enter. OmniDB na něm okamžitě začne naslouchat. Názvy alertů
+v Oracle jsou omezeny na 30 bajtů, názvy událostí ve Firebirdu na 255.</p>
+<p>Po kliknutí pravým tlačítkem na kanál máte k dispozici:</p>
+<ul>
+<li><em>Pozastavit</em> / <em>Obnovit</em> — zastaví nebo znovu spustí naslouchání na daném kanálu
+(pozastavený kanál má přeškrtnutý zvoneček);</li>
+<li><em>Vymazat zprávy</em> — odstraní zprávy daného kanálu ze seznamu;</li>
+<li><em>Smazat</em> — po potvrzení odstraní kanál (dostupné také jako <strong>−</strong> pod
+stromem). Odstraní se i jeho zprávy.</li>
+</ul>
+<p>Kanály a jejich stav (pozastavený/aktivní) se ukládají pro každého uživatele OmniDB a každé
+připojení zvlášť, takže se po restartu obnoví. Názvy kanálů PostgreSQL se používají jako
+identifikátory v uvozovkách, s rozlišováním velikosti písmen.</p>
+<h4>Zprávy</h4>
+<p>Přijaté zprávy se zobrazují vpravo v tabulce se sloupci <em>Kanál</em>, <em>Čas</em> (kdy je
+OmniDB přijala) a <em>Obsah</em>. Události Firebirdu nenesou žádný obsah, proto u nich sloupec
+<em>Obsah</em> ukazuje, kolikrát byla událost vyvolána.</p>
+<p>Řada zaškrtávacích políček nad tabulkou filtruje seznam: <em>Všechny kanály</em>, nebo jen kanály,
+které zaškrtnete. <em>Vymazat vše</em> vyprázdní celý seznam.</p>
+<p>Zprávy se uchovávají pouze v prohlížeči (nebo okně desktopové aplikace), který je přijal: nikam
+se neukládají a po opětovném načtení stránky zmizí.</p>
+<p>Pokud zprávy přicházejí rychleji, než je stránka stíhá zpracovávat, OmniDB naslouchání raději
+zastaví, než aby se hromadily bez omezení; zastaví ho také při selhání naslouchajícího připojení.
+V obou případech se zobrazí pruh s vysvětlením a tlačítkem <em>Restartovat naslouchání</em>.</p>
+<h4>Odeslání testovací notifikace</h4>
+<p>Notifikace se posílají obyčejným SQL, například z <a href="writing_sql_queries.html">karty
+dotazu</a> nad stejnou databází:</p>
+<pre><code class="language-sql">-- PostgreSQL (delivered when the transaction commits)
+NOTIFY my_channel, 'hello';
+SELECT pg_notify('my_channel', 'hello');
+
+-- PostgreSQL, channel name with upper-case letters: quote it
+NOTIFY "MyChannel", 'hello';
+
+-- Oracle
+BEGIN
+  DBMS_ALERT.SIGNAL('my_alert', 'hello');
+  COMMIT;
+END;
+
+-- Firebird (the event is posted on commit)
+EXECUTE BLOCK AS BEGIN POST_EVENT 'my_event'; END</code></pre>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

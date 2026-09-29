@@ -2,6 +2,7 @@ package main
 
 import (
 	"crypto/rand"
+	"crypto/subtle"
 	"database/sql"
 	"embed"
 	"encoding/json"
@@ -210,15 +211,31 @@ func userCSVPrefs(db *sql.DB, userID int64) (encoding, delimiter, language strin
 func authenticateAppUser(db *sql.DB, username, password string) (*appUser, bool) {
 	user, err := lookupAppUser(db, username)
 	if err != nil {
+		// Still pay for one full hash verify, so response time doesn't
+		// reveal which usernames exist.
+		verifyDjangoPassword(password, dummyPasswordHash())
 		return nil, false
 	}
-	if !user.IsActive {
-		return nil, false
-	}
-	if !verifyDjangoPassword(password, user.PasswordHash) {
+	if !verifyDjangoPassword(password, user.PasswordHash) || !user.IsActive {
 		return nil, false
 	}
 	return user, true
+}
+
+var (
+	dummyPasswordHashOnce sync.Once
+	dummyPasswordHashVal  string
+)
+
+// dummyPasswordHash is a real PBKDF2 hash of a random password (same
+// iteration count as real ones), for authenticateAppUser's unknown-user
+// path.
+func dummyPasswordHash() string {
+	dummyPasswordHashOnce.Do(func() {
+		pw, _ := randomToken()
+		dummyPasswordHashVal, _ = hashDjangoPassword(pw)
+	})
+	return dummyPasswordHashVal
 }
 
 // finishLogin mirrors login.py's shared post-authenticate() tail (login.py's
@@ -288,7 +305,7 @@ func handleSignInAutomatic(w http.ResponseWriter, r *http.Request, upstream *url
 	}
 
 	token := r.URL.Query().Get("token")
-	if token != appToken {
+	if subtle.ConstantTimeCompare([]byte(token), []byte(appToken)) != 1 {
 		w.Write([]byte("INVALID APP TOKEN"))
 		return
 	}
@@ -357,8 +374,13 @@ func handleSignIn(upstream *url.URL) http.HandlerFunc {
 		}
 		defer db.Close()
 
+		if loginThrottled(r, req.PUsername) {
+			writeEnvelope(w, i18n.T(i18n.ResolveLanguage("auto", r.Header.Get("Accept-Language")), "login.too_many_attempts"), true, -1)
+			return
+		}
 		user, ok := authenticateAppUser(db, req.PUsername, req.PPwd)
 		if !ok {
+			recordLoginFailure(r, req.PUsername)
 			// Matches Python precisely: v_data stays at its -1 default and
 			// v_error is NOT set true for bad credentials — only for
 			// malformed request bodies (handled above).
@@ -366,6 +388,7 @@ func handleSignIn(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 
+		clearLoginFailures(r, req.PUsername)
 		if err := finishLogin(w, r, db, user); err != nil {
 			writeEnvelope(w, -1, false, -1)
 			return

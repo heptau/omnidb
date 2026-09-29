@@ -7,8 +7,12 @@
 	<meta name="description" content="Configurez la réplication logique native de PostgreSQL 10+ dans OmniDB : créez des publications et des abonnements entre deux nœuds et vérifiez que les données se répliquent correctement.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/logical_replication.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/logical_replication.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/logical_replication.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/logical_replication.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/logical_replication.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/logical_replication.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/logical_replication.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/logical_replication.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/logical_replication.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/logical_replication.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html" class="active">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -142,12 +154,10 @@ et également vous assurer d’ajuster le fichier <code>pg_hba.conf</code> pou
 même deux bases de données sur la même machine) et configurez les paramètres ci-dessus sur chacune d’elles.</p>
 <h4>Se connecter aux deux nœuds</h4>
 <p>Utilisons OmniDB pour nous connecter aux deux nœuds PostgreSQL. Tout d’abord, renseignez les informations de
-connexion dans la section <em>Connections</em> :</p>
+connexion dans la section <em>Connexions</em> :</p>
 <p><img alt="" src="../assets/img/image_117.webp" /></p>
 <p>Sélectionnez ensuite les deux connexions. Remarquez comment OmniDB comprend qu’il est connecté à PostgreSQL
-10 et active un nouveau nœud dans l’arborescence de la connexion en cours : il s’appelle <em>Logical
-Replication</em> (Réplication logique). À l’intérieur, on trouve <em>Publications</em> et <em>Subscriptions</em>
-(Abonnements).</p>
+10 et active un nouveau nœud dans l’arborescence de la connexion en cours : il s’appelle <em>Réplication logique</em>. À l’intérieur, on trouve <em>Publications</em> et <em>Abonnements</em>.</p>
 <p><img alt="" src="../assets/img/image_118.webp" /></p>
 <h4>Créer une table de test sur les deux nœuds</h4>
 <p>Sur les deux nœuds, créez une table comme celle-ci :</p>
@@ -159,24 +169,24 @@ Replication</em> (Réplication logique). À l’intérieur, on trouve <em>Publi
 </code></pre>
 <p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Créer une publication sur la première machine</h4>
-<p>Dans le nœud de connexion, développez le nœud <em>Logical Replication</em>, puis faites un clic droit sur le
-nœud <em>Publications</em>, et choisissez l’action <em>Create Publication</em> (Créer une publication). OmniDB
+<p>Dans le nœud de connexion, développez le nœud <em>Réplication logique</em>, puis faites un clic droit sur le
+nœud <em>Publications</em>, et choisissez l’action <em>Créer une publication</em>. OmniDB
 ouvre un onglet avec un modèle SQL contenant la commande <code>CREATE PUBLICATION</code>, prêt à être ajusté et
 exécuté :</p>
 <p><img alt="" src="../assets/img/image_120.webp" /></p>
 <p>Après avoir ajusté et exécuté la commande, vous pouvez faire un clic droit sur le nœud <em>Publications</em>
-et cliquer à nouveau sur l’action <em>Refresh</em> (Actualiser). Vous verrez qu’un nouveau nœud portant le même
+et cliquer à nouveau sur l’action <em>Actualiser</em>. Vous verrez qu’un nouveau nœud portant le même
 nom que celui donné à la publication a été créé. En développant ce nœud, vous verrez les détails et les tables
 de la publication :</p>
 <p><img alt="" src="../assets/img/image_121.webp" /></p>
 <h4>Créer un abonnement sur la seconde machine</h4>
-<p>Dans le nœud de connexion, développez le nœud <em>Logical Replication</em>, puis faites un clic droit sur le
-nœud <em>Subscriptions</em>, et choisissez l’action <em>Create Subscription</em> (Créer un abonnement). OmniDB
+<p>Dans le nœud de connexion, développez le nœud <em>Réplication logique</em>, puis faites un clic droit sur le
+nœud <em>Abonnements</em>, et choisissez l’action <em>Créer un abonnement</em>. OmniDB
 ouvre un onglet avec un modèle SQL contenant la commande <code>CREATE SUBSCRIPTION</code>, prêt à être ajusté et
 exécuté :</p>
 <p><img alt="" src="../assets/img/image_122.webp" /></p>
-<p>Après avoir ajusté et exécuté la commande, vous pouvez faire un clic droit sur le nœud <em>Subscriptions</em>
-et cliquer à nouveau sur l’action <em>Refresh</em>. Vous verrez qu’un nouveau nœud portant le même nom que celui
+<p>Après avoir ajusté et exécuté la commande, vous pouvez faire un clic droit sur le nœud <em>Abonnements</em>
+et cliquer à nouveau sur l’action <em>Actualiser</em>. Vous verrez qu’un nouveau nœud portant le même nom que celui
 donné à l’abonnement a été créé. En développant ce nœud, vous verrez les détails, les publications référencées
 et les tables de l’abonnement :</p>
 <p><img alt="" src="../assets/img/image_123.webp" /></p>
@@ -185,13 +195,13 @@ et les tables de l’abonnement :</p>
 <p><img alt="" src="../assets/img/image_124.webp" /></p>
 <h4>Tester la réplication logique</h4>
 <p>Pour vérifier que la réplication fonctionne, créons quelques données sur le nœud 1. Faites un clic droit sur
-la table <code>public.customers</code>, pointez vers <em>Data Actions</em> (Actions sur les données), puis
-cliquez sur l’action <em>Edit Data</em> (Modifier les données). Dans cette grille, vous pouvez ajouter, modifier
+la table <code>public.customers</code>, pointez vers <em>Actions sur les données</em>, puis
+cliquez sur l’action <em>Modifier les données</em>. Dans cette grille, vous pouvez ajouter, modifier
 et supprimer des données de la table. Ajoutez 2 lignes d’exemple, comme ceci :</p>
 <p><img alt="" src="../assets/img/image_125.webp" /></p>
 <p>Ensuite, sur l’autre nœud, vérifiez si la table <code>public.customers</code> a été peuplée automatiquement.
-Faites un clic droit sur la table <code>public.customers</code>, pointez vers <em>Data Actions</em>, puis
-cliquez sur l’action <em>Query Data</em> (Interroger les données) :</p>
+Faites un clic droit sur la table <code>public.customers</code>, pointez vers <em>Actions sur les données</em>, puis
+cliquez sur l’action <em>Interroger les données</em> :</p>
 <p><img alt="" src="../assets/img/image_126.webp" /></p>
 <p>Comme on peut le voir, les deux lignes créées sur la première machine ont été répliquées sur la seconde
 machine. Cela indique que la réplication logique fonctionne.</p>

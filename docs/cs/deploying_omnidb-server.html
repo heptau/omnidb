@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/cs/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -94,7 +99,9 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
 			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Práce s daty</span>
@@ -102,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
 			<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -112,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Nástroj OmniDB Config</a>
 			<a href="writing_plpgsql_functions.html">Psaní PL/pgSQL funkcí</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html" class="active">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
 			<a href="console_tab.html">Konzole</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
@@ -145,6 +157,9 @@ Options:
   -d HOMEDIR, --homedir=HOMEDIR
                          home directory containing the omnidb.db database and
                          the temp folder used for exported files
+      --set-password=USER
+                         set USER's password in the app database and exit
+                         (prompts for it; does not start the server)
 </code></pre>
 <ul>
 <li>
@@ -155,14 +170,21 @@ připojení z jiných počítačů, nebo konkrétní adresu rozhraní.</p>
 <li>
 <p><code>-p</code> určuje port, na kterém se má naslouchat, použitý v URL prohlížeče
 při přímém přístupu k OmniDB. Pokud jej vynecháte, operační systém vybere
-volný port a při spuštění jej vypíše na stderr.</p>
+volný port a při spuštění jej vypíše na stderr. Protože se tento port při každém spuštění mění,
+u serveru, ke kterému se připojují další lidé (nebo reverzní proxy), vždy zadávejte <code>-p</code>.</p>
 </li>
 <li>
 <p><code>-d</code> umožňuje zvolit složku, do které se ukládá <code>omnidb.db</code> (databáze
-aplikace) a složka <code>temp</code> používaná pro exportované soubory. Díky této volbě
+aplikace) a složka <code>temp</code> používaná pro exportované soubory. Složka už musí
+existovat; bez <code>-d</code> se použije <code>~/.omnidb/omnidb-server</code> (vytvoří se
+automaticky). Díky této volbě
 je možné spustit více instancí <code>omnidb-server</code>, každou směřující do jiného
 adresáře — hodí se to při nasazení v Dockeru, kde do dané složky připojíte
 svazek (volume).</p>
+</li>
+<li>
+<p><code>--set-password USER</code> nastaví heslo existujícího uživatele přímo v databázi
+aplikace a skončí, aniž by spustil server — viz <a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>.</p>
 </li>
 </ul>
 <p><strong>Bezpečnostní poznámka:</strong> server spuštěný s <code>-H</code> nastaveným na
@@ -171,6 +193,12 @@ cokoli jiného než loopback by nikdy neměl být zároveň spuštěn s <code>-A
 generuje, má být dostupný pouze lokálně, takže <code>-A</code> vždy vynutí navázání
 pouze na loopback bez ohledu na <code>-H</code>, které v takovém případě zcela
 ignoruje, aby se předešlo riziku této kombinace.</p>
+<p>Při spuštění server vypíše adresu, kterou máte otevřít, například
+<code>omnidb-server: listening on 127.0.0.1:9000 — open http://127.0.0.1:9000/omnidb_login/ in your browser</code>.
+Úplně první spuštění nad prázdným domovským adresářem navíc vypíše jednorázové heslo počátečního
+uživatele <code>admin</code> — viz <a href="security.html">Zabezpečení a víceuživatelský server</a>,
+kde je popsáno i to, co víceuživatelský server omezuje a chrání. Server zastavíte klávesami Ctrl-C
+(nebo signálem <code>SIGTERM</code>); ukončí se korektně.</p>
 <p>Podívejme se, jak nasadit <code>omnidb-server</code> v různých scénářích:</p>
 <h4>Přímé nasazení OmniDB</h4>
 <p>Spuštění <code>omnidb-server</code> s <code>-H 0.0.0.0</code> (nebo konkrétním veřejným
@@ -204,11 +232,18 @@ TLS a předávání obyčejného HTTP lokálně obstarat reverzní proxy, např
         proxy_set_header   X-Forwarded-Ssl https;
         proxy_set_header   X-Forwarded-Proto https;
         proxy_set_header   X-Forwarded-Port 443;
-        proxy_set_header   Host $host;
+        proxy_set_header   Host localhost:9000;
         proxy_http_version 1.1;
     }
 }
 </code></pre>
+<p><strong>Všimněte si hlavičky <code>Host</code>:</strong> dokud <code>omnidb-server</code> naslouchá
+na loopbacku, odpovídá jen na požadavky adresované na <code>127.0.0.1:&lt;port&gt;</code>,
+<code>localhost:&lt;port&gt;</code> nebo <code>[::1]:&lt;port&gt;</code> (na cokoli jiného odpoví
+<code>421 Misdirected Request</code>) — jde o ochranu před útoky DNS rebinding. Proxy proto musí
+požadavek přeposlat s hlavičkou <code>Host</code> nastavenou na místní adresu, jako výše, a nesmí
+předávat veřejný název hostitele. Ponechte <code>X-Forwarded-Proto https</code>: podle ní OmniDB
+označí své cookies relace jako <code>Secure</code>.</p>
 <p>Protože je vše (včetně aktualizací dotazů/konzole na pozadí) obsluhováno
 přes obyčejný HTTP long-polling namísto websocketů, stačí jediný blok
 <code>location /</code> pokrývající celou aplikaci — už neexistuje samostatná cesta

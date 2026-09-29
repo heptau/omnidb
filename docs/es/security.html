@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Seguridad y servidor multiusuario — Documentación de OmniDB</title>
+	<meta name="description" content="Cómo protege OmniDB las contraseñas guardadas y un servidor multiusuario: cifrado en reposo, contraseña inicial de admin, bloqueo del inicio de sesión, restricciones del modo servidor, conexiones públicas y claves de host SSH.">
+	<link rel="canonical" href="https://www.omnidb.net/es/security.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/security.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/security.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/security.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/security.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/security.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/security.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/security.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/security.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/security.html">
+	<meta property="og:title" content="Seguridad y servidor multiusuario - Documentación de OmniDB">
+	<meta property="og:description" content="Cómo protege OmniDB las contraseñas guardadas y un servidor multiusuario: cifrado en reposo, contraseña inicial de admin, bloqueo del inicio de sesión, restricciones del modo servidor, conexiones públicas y claves de host SSH.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Seguridad y servidor multiusuario", "item": "https://www.omnidb.net/es/security.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Patrocinar" title="Patrocinar">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Estrella en GitHub" title="Estrella en GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="desktop_app.html">Aplicación de escritorio</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="settings_and_languages.html">Configuración e idiomas</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="notify.html">Notificaciones</a>
+			<a href="connected_users.html">Usuarios conectados</a>
+			<a href="permissions.html">Roles y permisos</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="security.html" class="active">Seguridad y servidor multiusuario</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Seguridad y servidor multiusuario</h1>
+<p>Este capítulo reúne lo que hace OmniDB para proteger las credenciales guardadas y un servidor compartido y
+multiusuario, y lo que eso significa para usted como administrador o usuario. Para instalar y exponer el servidor,
+consulte <a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>; para la gestión de contraseñas
+desde la línea de comandos, consulte <a href="omnidb_config_tool.html">Herramienta de configuración de
+OmniDB</a>.</p>
+<p>En lo sucesivo, «modo servidor» significa <code>omnidb-server</code> iniciado sin <code>-A</code>: una instancia
+multiusuario en la que las personas inician sesión desde un navegador, tanto si escucha solo en loopback como en una
+dirección de red (<code>-H</code>). La aplicación de escritorio es siempre monousuario.</p>
+<h4>Las contraseñas guardadas están cifradas</h4>
+<p>Las contraseñas de base de datos guardadas en una conexión, las contraseñas/frases de contraseña SSH y las claves
+privadas SSH se cifran (AES-256-GCM) antes de escribirse en la base de datos de usuario de OmniDB,
+<code>omnidb.db</code>. La clave de cifrado no se guarda en ese archivo: se conserva en el almacén de secretos del
+sistema operativo (el llavero de macOS, el Administrador de credenciales de Windows o Secret Service en Linux), de
+modo que una copia de <code>omnidb.db</code> por sí sola no las revela.</p>
+<p>Cuando no hay ningún almacén de secretos accesible (normalmente, un servidor Linux sin entorno gráfico), OmniDB
+guarda en su lugar la clave en un archivo llamado <code>.connection_secret_key</code> (legible solo por su
+propietario) en el directorio home de OmniDB; una vez que ese archivo existe, se usa siempre. En ese caso:</p>
+<ul>
+<li>haga una copia de seguridad del archivo de clave junto con <code>omnidb.db</code> y proteja ambos por igual;</li>
+<li>si se pierde la clave, los secretos almacenados no se pueden recuperar: las conexiones siguen existiendo, pero
+hay que volver a introducir sus contraseñas y claves SSH.</li>
+</ul>
+<p>Las entradas sin cifrar existentes de versiones anteriores se cifran automáticamente la primera vez que se inicia
+una versión más reciente. Si prefiere no guardar ninguna contraseña, déjela vacía en el formulario de la conexión:
+OmniDB se la pide cuando la necesita y la mantiene solo en memoria, durante 30 minutos, para su sesión (consulte
+<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>).</p>
+<h4>La cuenta inicial <code>admin</code></h4>
+<p>Una instalación nueva en modo servidor crea un superusuario, <code>admin</code>, con una contraseña aleatoria que
+se muestra una sola vez en la salida de registro del servidor:</p>
+<pre><code class="language-bash">omnidb-server: initialized a new app database — initial login: admin / &lt;password&gt; (shown only once; change it under Settings, or run: omnidb-server --set-password admin)</code></pre>
+<p>Inicie sesión con ella y cámbiela en <em>Configuración &gt; Contraseña</em>, o establezca de antemano la
+contraseña que prefiera desde la línea de comandos:</p>
+<pre><code class="language-bash">omnidb-server --set-password admin [-d /path/to/homedir]</code></pre>
+<p>La aplicación de escritorio nunca muestra una página de inicio de sesión; inicia sesión automáticamente en su
+propio servidor local, que solo escucha en loopback.</p>
+<h4>Protección del inicio de sesión y sesiones</h4>
+<ul>
+<li>Tras 10 intentos fallidos de inicio de sesión para el mismo nombre de usuario, o desde la misma dirección de
+cliente, en 15 minutos, los intentos siguientes se rechazan con <em>Demasiados intentos fallidos de inicio de
+sesión. Inténtelo de nuevo en 15 minutos.</em> Los contadores se mantienen en memoria y se restablecen al reiniciar
+el servidor. Detrás de un proxy inverso, la dirección del cliente es la dirección del proxy.</li>
+<li>Eliminar un usuario finaliza de inmediato todas sus sesiones, y retirar la condición de superusuario surte
+efecto de inmediato. Cambiar una contraseña (en Configuración o con <code>--set-password</code>) se aplica al
+instante a los nuevos inicios de sesión; una contraseña cambiada en Configuración cierra además las demás sesiones de
+ese usuario.</li>
+</ul>
+<h4>Restricciones en modo servidor</h4>
+<p>Como todas las conexiones de un servidor multiusuario las abre el proceso del servidor, en la máquina del
+servidor, se restringen algunas opciones de conexión que leerían archivos del propio servidor:</p>
+<ul>
+<li>Las conexiones <strong>SQLite</strong> (una base de datos SQLite es un archivo en el servidor) solo pueden
+crearlas y usarlas los superusuarios de OmniDB. No pueden apuntar al interior del propio directorio home de OmniDB, y
+se rechazan las URI <code>file:</code>.</li>
+<li>Las <strong>cadenas de conexión de PostgreSQL</strong> no pueden usar los parámetros
+<code>passfile</code>, <code>servicefile</code>, <code>service</code>, <code>sslkey</code>,
+<code>sslcert</code>, <code>sslrootcert</code>, <code>sslcrl</code> ni <code>sslcrldir</code>.</li>
+</ul>
+<p>Estas restricciones no se aplican a la aplicación de escritorio, donde los archivos son suyos.</p>
+<h4>Conexiones públicas</h4>
+<p>Una conexión marcada como <em>¿Conexión pública?</em> puede usarla cualquier usuario de OmniDB del servidor, pero
+solo su propietario puede editarla. Para todos los demás:</p>
+<ul>
+<li>la contraseña guardada nunca se envía a su navegador, y una contraseña incluida en la cadena de conexión se
+muestra enmascarada;</li>
+<li><em>Probar conexión</em> siempre prueba el servidor, el puerto y la base de datos almacenados: cambiar antes
+esos campos en el formulario no redirige la contraseña almacenada a otro lugar.</li>
+</ul>
+<h4>Archivos exportados</h4>
+<p>Las exportaciones de consultas y de DBML se escriben en la carpeta <code>temp</code> del servidor con nombres
+aleatorios, y solo puede descargarlas el usuario que las creó. Se eliminan automáticamente pasadas 24 horas.</p>
+<h4>Claves de host SSH</h4>
+<p>Los túneles SSH y las conexiones de terminal SSH verifican la clave de host del servidor con el archivo
+<code>~/.ssh/known_hosts</code> del usuario del sistema operativo que ejecuta <code>omnidb-server</code>. Una clave
+de host desconocida o modificada se rechaza: OmniDB no confía en silencio en un host en el primer uso. Añada el host
+una vez desde esa cuenta, por ejemplo:</p>
+<pre><code class="language-bash">ssh user@ssh-server.example.com        # accept the key once
+# or
+ssh-keyscan ssh-server.example.com &gt;&gt; ~/.ssh/known_hosts</code></pre>
+<h4>Exposición en la red</h4>
+<p>No hay TLS integrado. Mantenga <code>omnidb-server</code> en <code>127.0.0.1</code> (el valor predeterminado)
+detrás de un proxy inverso con terminación TLS, en lugar de exponer HTTP sin cifrar con <code>-H 0.0.0.0</code>;
+consulte <a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>. Mientras está vinculado a
+loopback, el servidor solo responde a solicitudes dirigidas a <code>127.0.0.1</code>, <code>localhost</code> o
+<code>[::1]</code> con su propio puerto, lo que lo protege frente a ataques de DNS rebinding desde páginas web. Las
+cookies de sesión se marcan como <code>Secure</code> cuando la solicitud llega por TLS o con
+<code>X-Forwarded-Proto: https</code>, y todas las solicitudes que modifican el estado están protegidas contra la
+falsificación de solicitudes entre sitios (CSRF).</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

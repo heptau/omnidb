@@ -128,6 +128,10 @@ main {
 	padding: 40px 60px;
 	width: 100%;
 	max-width: 1200px;
+	/* A flex item defaults to min-width: auto, so one long unbreakable line
+	   in a <pre> would widen the whole column past the viewport instead of
+	   scrolling inside the code block (overflow-x: auto below). */
+	min-width: 0;
 }
 
 /* --- TYPOGRAPHY & ELEMENTS --- */

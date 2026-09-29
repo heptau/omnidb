@@ -36,7 +36,7 @@ import moment from "moment";
 import { execAjax } from "./ajax_control_bridge.js";
 import { showConfirm } from "./notification_control.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";
-import { escapeHtml } from "./query.js";
+import { escapeHtml, escapeHtmlAttribute } from "./query.js";
 import { t } from "./i18n.js";
 
 export function deleteCommandList() {
@@ -69,10 +69,10 @@ export function showCommandList() {
 		"<div class='mb-2 form-inline justify-content-center'>" +
 		"<div class='input-group w-auto me-2'>" +
 		"<span class='my-auto'>" + escapeHtml(t("console.select_daterange")) + "</span>&nbsp;" +
-		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtml(t("common.start_time")) + "' id='cl_input_from_" +
+		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t("common.start_time")) + "' id='cl_input_from_" +
 		v_tabTag.tab_id +
 		"'>" +
-		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtml(t("common.end_time")) + "' id='cl_input_to_" +
+		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t("common.end_time")) + "' id='cl_input_to_" +
 		v_tabTag.tab_id +
 		"'>" +
 		"<button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" +
@@ -94,10 +94,10 @@ export function showCommandList() {
 		"<div class='mb-2 d-flex justify-content-center align-items-center'>" +
 		"<button id='bt_first_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.first")) + "'>" + escapeHtml(t("common.first")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.first")) + "'>" + escapeHtml(t("common.first")) + "</button>" +
 		"<button id='bt_previous_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.previous")) + "'>" + escapeHtml(t("common.previous")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.previous")) + "'>" + escapeHtml(t("common.previous")) + "</button>" +
 		"<span id='cl_curr_page_" +
 		v_tabTag.tab_id +
 		"'></span> / <span id='cl_num_pages_" +
@@ -105,16 +105,16 @@ export function showCommandList() {
 		"'></span>" +
 		"<button id='bt_next_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.next")) + "'>" + escapeHtml(t("common.next")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.next")) + "'>" + escapeHtml(t("common.next")) + "</button>" +
 		"<button id='bt_last_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtml(t("common.last")) + "'>" + escapeHtml(t("common.last")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.last")) + "'>" + escapeHtml(t("common.last")) + "</button>" +
 		"<button id='bt_refresh_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='" + escapeHtml(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='" + escapeHtmlAttribute(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button>" +
 		"<button id='bt_clear_" +
 		v_tabTag.tab_id +
-		"' class='bt_execute btn btn-sm btn-danger mx-1' title='" + escapeHtml(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button>" +
+		"' class='bt_execute btn btn-sm btn-danger mx-1' title='" + escapeHtmlAttribute(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button>" +
 		"</div>";
 
 	var v_gridDiv = v_tabTag.commandHistory.gridDiv;

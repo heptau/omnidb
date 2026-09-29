@@ -19,16 +19,23 @@ type customMonUnit struct {
 	ScriptData  string
 }
 
-// fetchAllCustomMonitorUnits mirrors get_units_data()'s
-// "for mon_unit in MonUnits.objects.all()" loop — deliberately ALL users'
-// custom units, not just the caller's own (matches Python's existing
-// behavior/quirk exactly: monitoring_units_database is a single global
-// cache with no per-user filtering at listing time; only the actual
-// edit/delete mutations are ownership-checked, in get_monitor_unit_details/
-// delete_monitor_unit). Not narrowing this to request.user is a deliberate
-// choice to preserve existing behavior, not an oversight.
-func fetchAllCustomMonitorUnits(db *sql.DB) ([]customMonUnit, error) {
-	rows, err := db.Query(`select id, title, type, interval, user_id, script_chart, script_data from OmniDB_app_monunits`)
+// fetchAllCustomMonitorUnits lists the custom monitoring units offered on a
+// connection's "Manage Units" dialog. Python's get_units_data listed every
+// user's units; that leaked other users' unit titles and showed edit/delete
+// icons that the (ownership-checked) mutations then refused, while
+// refreshing only ever runs the caller's own scripts
+// (fetchOwnCustomMonitorUnit) — so the listing is scoped to what the caller
+// can actually use.
+func fetchAllCustomMonitorUnits(db *sql.DB, userID int64, technology string) ([]customMonUnit, error) {
+	// Only the caller's own units (plus ownerless shared ones) for this
+	// connection's technology — the unfiltered listing used to show every
+	// user's unit titles (and their edit/delete icons) to everyone, although
+	// only the owner can ever run or edit them.
+	rows, err := db.Query(`
+		select u.id, u.title, u.type, u.interval, u.user_id, u.script_chart, u.script_data
+		from OmniDB_app_monunits u
+		join OmniDB_app_technology t on t.id = u.technology_id
+		where (u.user_id = ? or u.user_id is null) and t.name = ?`, userID, technology)
 	if err != nil {
 		return nil, err
 	}
@@ -73,10 +80,8 @@ type sqlQuerier interface {
 }
 
 // fetchAnyCustomMonitorUnit looks up a custom unit by id alone, no ownership
-// check — same "list/lookup ignores ownership, only edit/delete enforce it"
-// policy as fetchAllCustomMonitorUnits (see its comment), needed here since
-// a unit shown via saveMonitorUnitOrder may belong to a different user than
-// the one currently viewing the dashboard.
+// check — only ever used to read a unit's default interval (see
+// defaultMonitorUnitInterval), never its script.
 func fetchAnyCustomMonitorUnit(db sqlQuerier, unitID int64) (*customMonUnit, error) {
 	var u customMonUnit
 	err := db.QueryRow(

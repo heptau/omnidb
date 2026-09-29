@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/cs/managing_databases.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_databases.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_databases.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_databases.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_databases.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_databases.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_databases.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
 			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Práce s daty</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
 			<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
@@ -128,104 +140,81 @@
 		</nav>
 		<main>
 		<h1>Správa databází</h1>
-<p>Po vytvoření připojení ho můžete otevřít kliknutím na <em>Connect</em> (Připojit)
-v sekci <em>Connections</em>, nebo dvojklikem na řádek v seznamu připojení. Uvidíte, že připojení
-bude reprezentováno druhem vnější karty nazývané <em>karta připojení</em> (Connection Tab). A celá
-tato oblast se nazývá <em>pracovní okno</em> (Workspace Window).</p>
-<p><img alt="" src="../assets/img/image_014.webp" /></p>
-<h4>Sekce okna <em>Workspace</em></h4>
-<p>Toto rozhraní má několik prvků:</p>
-<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<p>Po vytvoření připojení ho můžete otevřít kliknutím na <em>Připojit</em> v sekci
+<em>Připojení</em>, nebo dvojklikem na řádek v seznamu připojení. OmniDB se pak přepne do sekce
+<em>Databáze</em> a otevře připojení v nové <em>záložce připojení</em>.</p>
+<h4>Sekce pracovního prostředí</h4>
+<p>Lišta ikon u levého okraje okna přepíná mezi sekcemi pracovního prostředí:</p>
 <ul>
-<li><strong>1) Connections</strong> (Připojení): Otevře sekci <em>Connections</em>, kde se
-připojení vytvářejí, uspořádávají a otevírají</li>
-<li><strong>2) Outer Tabs</strong> (Vnější karty): OmniDB umožňuje pracovat s několika databázemi
-současně. Každá databáze bude dostupná prostřednictvím <em>vnější karty</em>. Vnější karty
-mohou také obsahovat různé funkce nezávislé na připojení, jako je funkce
-<em>Snippets</em></li>
-<li><strong>3) Options</strong> (Možnosti): Dole na liště ikon. <em>Account</em> (Účet) ukazuje
-přihlášeného uživatele, verzi a <em>Sign out</em> (Odhlásit se – jen v serverové verzi),
-<em>Settings</em> (Nastavení) obsahuje uživatelské předvolby a pro superuživatele navíc
-<em>Manage Users</em> (Správa uživatelů).</li>
+<li><strong>Vítejte</strong>: úvodní stránka s odkazy na dokumentaci a na průvodce
+<em>Začínáme</em> (viz <a href="additional_features.html">Další funkce</a>);</li>
+<li><strong>Připojení</strong>: zde se připojení vytvářejí, uspořádávají a otevírají (viz
+<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>);</li>
+<li><strong>Databáze</strong>: otevřené záložky připojení, každá se svým stromem databáze a svými
+kartami dotazu a konzole — popsáno v této kapitole;</li>
+<li><strong>Monitorování</strong>, <strong>Oznámení</strong>, <strong>Oprávnění</strong> a
+<strong>Připojení uživatelé</strong>: nástroje, které pracují s připojeními otevřenými v sekci
+Databáze (viz <a href="monitoring_dashboard.html">Monitorovací panel</a>,
+<a href="notify.html">Oznámení</a>, <a href="permissions.html">Role a oprávnění</a> a
+<a href="connected_users.html">Připojení uživatelé</a>);</li>
+<li><strong>Snippety</strong>: vaše uložené kusy SQL (viz <a href="snippets.html">Snippety</a>);</li>
+<li>dole <strong>Začínáme</strong> (interaktivní průvodce), <strong>Účet</strong> (jen v serverové
+verzi: přihlášený uživatel, verze a <em>Odhlásit se</em>) a <strong>Nastavení</strong> (viz
+<a href="settings_and_languages.html">Nastavení a jazyky</a>; superuživatelé zde najdou také
+<em>Spravovat uživatele</em>).</li>
 </ul>
-<h4>Vnější karta připojení</h4>
-<p>Vnější karta s názvem <em>PostgreSQL – testdb</em> se tak jmenuje kvůli aliasu
-(<em>PostgreSQL</em>), který jsme zadali v připojení k databázi <code>testdb</code>. Tato karta je
-<em>vnější kartou připojení</em> (Connection Outer Tab). Všimněte si malé karty s křížkem vedle
-vnější karty <em>PostgreSQL – testdb</em>. Ta umožňuje vytvořit novou vnější kartu, která
-bude automaticky <em>vnější kartou připojení</em>. Vnější karta <em>Snippet</em> je však
-pevně daná a bude vždy první.</p>
-<p>Nová <em>vnější karta připojení</em> bude vždy automaticky odkazovat na první
-připojení v seznamu vašich databázových připojení. Nebo, pokud jste některé otevřeli ze sekce
-<em>Connections</em>, bude odkazovat na ně. Podívejme se
-na prvky uvnitř této karty:</p>
-<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<p>Sekce Databáze, Monitorování, Oznámení, Oprávnění a Připojení uživatelé zobrazují nahoře stejný
+pruh záložek otevřených připojení se stejným výběrem: vyberete-li připojení v jedné z nich, ostatní
+se přizpůsobí. Přepnutí sekce nikdy žádné připojení nezavře.</p>
+<h4>Záložky připojení</h4>
+<p>Každé otevřené připojení je v tomto pruhu záložkou pojmenovanou podle připojení. Připojení
+označené prostředím (Produkce, UAT, Vývoj, Archiv) má na své záložce barvu tohoto prostředí, takže
+produkční připojení snadno rozeznáte. Po najetí myší na záložku se zobrazí její podrobnosti (server,
+nebo připojovací řetězec) a objeví se tlačítko pro zavření (×). Pořadí záložek lze měnit
+přetažením.</p>
+<p><em>+</em> na konci pruhu otevře další připojení: nabídne vaše uložená připojení (seskupená,
+pokud skupiny používáte) a pod položkou <em>SSH konzole</em> vaše terminálová připojení. Zavřením
+záložky připojení se ukončí její databázové relace.</p>
+<p>Uvnitř záložky připojení najdete:</p>
 <ul>
-<li><strong>1) Connection Selector</strong> (Výběr připojení): Zobrazuje všechna připojení a umožňuje
-uživateli vybrat aktuální</li>
-<li><strong>2) Tree of Structures</strong> (Strom struktur): Zobrazuje hierarchický strom, ve kterém lze
-procházet databázové prvky</li>
-<li><strong>3) Properties and DDL Panels</strong> (Panely Vlastnosti a DDL): Zobrazují vlastnosti a DDL
-aktuálně vybraného uzlu ve stromovém zobrazení</li>
-<li><strong>4) Inner Tabs</strong> (Vnitřní karty): Umožňují uživateli provádět akce v aktuální databázi.
-Existuje několik druhů vnitřních karet pro aktuální databázi. Kliknutím na
-poslední malou kartu s křížkem lze přidat novou kartu. Nová karta může být
-<em>karta dotazu</em> (Query Tab), <em>karta konzole</em> (Console Tab), <em>monitorovací panel</em> (Monitoring
-Dashboard) nebo <em>Backends</em></li>
+<li><strong>Strom databáze</strong> vlevo, ve kterém procházíte databázové objekty. Po kliknutí
+pravým tlačítkem na uzel se zobrazí, co s ním můžete dělat.</li>
+<li><strong>Panely Vlastnosti a DDL</strong> pod stromem, které ukazují vlastnosti a příkaz
+<code>CREATE</code> uzlu vybraného ve stromu. Velikost stromu i tohoto panelu lze měnit tažením
+jejich dělicích čar a malými přepínacími tlačítky na nich je lze sbalit.</li>
+<li><strong>Vnitřní karty</strong> vpravo. <em>+</em> na konci pruhu vnitřních karet přidá
+<em>Záložku dotazu</em> nebo <em>Záložku konzole</em>; další akce (například <em>Upravit data</em>
+u tabulky) otevírají své vlastní vnitřní karty.</li>
 </ul>
-<p><img alt="" src="../assets/img/image_187.webp" /></p>
-<ul>
-<li><strong>5) Inner Tab Content</strong> (Obsah vnitřní karty): Může se lišit podle druhu vnitřní karty.
-Obrázek zobrazuje <em>kartu dotazu</em> a v tomto případě bude obsahem <em>SQL editor</em>
-se zvýrazněním syntaxe, automatickým doplňováním a funkcí najít a nahradit</li>
-<li><strong>6) Inner Tab Actions</strong> (Akce vnitřní karty): Mohou se lišit podle druhu vnitřní karty.
-U <em>karty dotazu</em> jsou to <em>Run</em> (Spustit), <em>Indent SQL</em> (Odsadit SQL), <em>Command History</em>
-(Historie příkazů), <em>Explain</em>, <em>Explain Analyze</em>, <em>Autocommit</em> a <em>Export Data</em> (Exportovat data)</li>
-<li><strong>7) Inner Tab Results</strong> (Výsledky vnitřní karty): U <em>karty dotazu</em> se po kliknutí na
-<em>tlačítko Execute</em> nebo po stisknutí klávesové zkratky pro spuštění (<code>Alt-Q</code>) zobrazí
-mřížka s výsledky dotazu na podkartě <em>Data</em>. Pokud dotaz volá funkci, která vyvolává
-zprávy, zobrazí se na podkartě <em>Messages</em>. Pokud jste místo <em>Run</em> klikli
-na <em>Explain</em> nebo <em>Explain Analyze</em>, plán dotazu se zobrazí na podkartě
-<em>Explain</em>.</li>
-</ul>
+<p><em>Karta dotazu</em> obsahuje <em>SQL editor</em> se zvýrazňováním syntaxe, automatickým
+doplňováním a funkcí najít a nahradit, panel nástrojů (<em>Spustit</em>, <em>Spustit příkaz na
+pozici kurzoru</em>, <em>Odsadit SQL</em>, <em>Historie příkazů</em>, <em>Explain</em>,
+<em>Explain Analyze</em>, <em>Automatické potvrzování</em>, <em>Exportovat data</em>, …) a pod ním
+oblast výsledků s podkartami <em>Data</em>, <em>Zprávy</em> a <em>Explain</em>. Podrobnosti najdete
+v kapitole <a href="writing_sql_queries.html">Psaní SQL dotazů</a>.</p>
 <h4>Práce s databázemi</h4>
-<p>Podívejte se na výběr připojení. OmniDB vždy ukazuje na první
-dostupné připojení, ale můžete ho změnit kliknutím na výběr.</p>
-<p><img alt="" src="../assets/img/image_017.webp" /></p>
-<p>Vyberte připojení <em>PostgreSQL</em>. Nyní přejděte ke stromu hned pod výběrem
-a kliknutím rozbalte kořenový uzel <em>PostgreSQL</em>.</p>
-<p><img alt="" src="../assets/img/image_018.webp" /></p>
-<p>Mějte na paměti, že každých 30 minut, kdy neprovedete žádnou akci na
-databázi, se zobrazí vyskakovací okno <em>Authentication</em> (Ověření), což znamená, že heslo,
-které OmniDB zašifrovala a uložila do paměti, nyní vypršelo. Jak bylo vysvětleno dříve,
-je to důležité pro bezpečnost vaší databáze. Po zadání správného
-hesla uvidíte, že uzel PostgreSQL nyní zobrazuje verzi PostgreSQL a
-byl také rozbalen, přičemž zobrazuje aktuální připojení k databázi a také prvky
-platné pro celou instanci: <em>Databases</em> (Databáze), <em>Tablespaces</em> (Tabulkové prostory),
-<em>Roles</em> (Role) a <em>Replication Slots</em> (Replikační sloty).</p>
-<p>Můžete se připojit k jedné databázi PostgreSQL a pomocí stejného připojení
-se připojit k dalším databázím ve stejné instanci PostgreSQL. Aktuálně
-aktivní databáze bude zobrazena pod výběrem připojení.</p>
-<p><img alt="" src="../assets/img/image_188.webp" /></p>
-<p>Pro připojení k jiné databázi rozbalte uzel odpovídající dané
-databázi. Zobrazí se vyskakovací okno s dotazem, zda opravdu chcete změnit aktivní
-databázi.</p>
-<p><img alt="" src="../assets/img/image_189.webp" /></p>
-<p>Klikněte na <em>Yes</em> (Ano) a OmniDB změní aktivní databázi na databázi, kterou
-jste zvolili. Projeví se to na indikátoru <em>Active database</em> (Aktivní databáze) a také
-na názvu vnější karty.</p>
-<p><img alt="" src="../assets/img/image_190.webp" /></p>
-<p>Nyní rozbalte uzel <em>Schemas</em> (Schémata). Uvidíte všechna schémata v aktuální
+<p>Rozbalte kořenový uzel stromu (pojmenovaný podle databázového stroje). Při prvním použití
+připojení, jehož heslo není uložené, se na něj OmniDB zeptá. Heslo zadané do tohoto dialogu si
+zapamatuje na 30 minut vaší relace; poté se dialog zobrazí znovu. Po zadání správného hesla
+kořenový uzel zobrazí verzi serveru a rozbalí se, přičemž ukáže aktuální připojení k databázi
+a také prvky platné pro celou instanci — u PostgreSQL: <em>Databáze</em>,
+<em>Tablespace</em>, <em>Role</em> a <em>Replikační sloty</em>.</p>
+<p>Můžete se připojit k jedné databázi PostgreSQL a pomocí stejného připojení se připojit
+k dalším databázím ve stejné instanci PostgreSQL. Pro přepnutí rozbalte uzel jiné databáze:
+OmniDB se zeptá, zda opravdu chcete změnit aktivní databázi, a po kliknutí na <em>Ano</em> z ní
+udělá aktivní databázi dané záložky připojení.</p>
+<p>Nyní rozbalte uzel <em>Schémata</em>. Uvidíte všechna schémata v aktuální
 databázi (v případě PostgreSQL nejsou zobrazena schémata <code>TOAST</code> a dočasná schémata).</p>
 <p><img alt="" src="../assets/img/image_019.webp" /></p>
 <p>Nyní klikněte na rozbalení schématu <code>public</code>. Uvidíte různé druhy
 prvků obsažených v tomto schématu.</p>
 <p><img alt="" src="../assets/img/image_020.webp" /></p>
-<p>Nyní klikněte na rozbalení uzlu <em>Tables</em> (Tabulky) a uvidíte všechny tabulky obsažené
+<p>Nyní klikněte na rozbalení uzlu <em>Tabulky</em> a uvidíte všechny tabulky obsažené
 ve schématu <code>public</code>. Rozbalte libovolnou tabulku a uvidíte její sloupce, primární klíč,
 cizí klíče, omezení, indexy, pravidla, triggery a partice.</p>
 <p><img alt="" src="../assets/img/image_021.webp" /></p>
-<p>Chcete-li zobrazit záznamy uvnitř tabulky, klikněte na ni pravým tlačítkem a zvolte <em>Data Actions &gt; Query Data</em>.</p>
+<p>Chcete-li zobrazit záznamy uvnitř tabulky, klikněte na ni pravým tlačítkem a zvolte <em>Akce
+s daty &gt; Zobrazit data</em>.</p>
 <p><img alt="" src="../assets/img/image_022.webp" /></p>
 <p>Všimněte si, že OmniDB otevře nový SQL editor s jednoduchým dotazem pro výpis
 záznamů tabulky. Záznamy se zobrazují v mřížce přímo pod editorem. Tuto mřížku
@@ -234,43 +223,38 @@ z jednotlivých buněk nebo bloku buněk (které lze vybrat klávesnicí nebo m
 lze také kopírovat a vložit do libovolného tabulkového procesoru.</p>
 <p><img alt="" src="../assets/img/image_023.webp" /></p>
 <p>Dotaz v SQL editoru můžete upravovat a psát jednoduché i složitější
-dotazy. Pro spuštění klikněte na tlačítko akce nebo stiskněte klávesovou zkratku <code>Alt-Q</code>.
-Pokud výsledky přesáhnou 100 záznamů, zobrazí se další tlačítka <em>Fetch More</em>
-(Načíst další) a <em>Fetch All</em> (Načíst vše). Více podrobností v dalších kapitolách.</p>
+dotazy. Pro spuštění klikněte na tlačítko <em>Spustit</em> nebo stiskněte <code>Alt-Q</code>
+(<code>Ctrl-Q</code> na macOS). Pokud má výsledek více řádků, než kolik jich bylo načteno v první
+dávce, zobrazí se tlačítka <em>Načíst více</em> a <em>Načíst vše</em>. Více podrobností
+v dalších kapitolách.</p>
 <h4>Práce s více kartami v rámci stejného připojení</h4>
-<p>V rámci jednoho připojení můžete vytvořit několik vnitřních karet dotazu kliknutím
-na poslední malou kartu s křížkem a následným výběrem <em>Query Tab</em> (Karta dotazu).</p>
-<p><img alt="" src="../assets/img/image_024.webp" /></p>
-<p>V OmniDB můžete provádět několik SQL příkazů a procedur paralelně.
-Během jejich vykonávání se na kartě zobrazí ikona indikující jejich aktuální
-stav. Pokud je nějaký proces dokončen a nejste zrovna na jeho kartě, tato karta
-zobrazí zelenou ikonu indikující, že rutina, která se na ní vykonávala, je nyní
-dokončena.</p>
-<p><img alt="" src="../assets/img/image_025.webp" /></p>
-<p>Kliknutím na <em>tlačítko Cancel</em> (Zrušit) můžete zrušit proces běžící uvnitř
-databáze.</p>
-<p><img alt="" src="../assets/img/image_026.webp" /></p>
+<p>V rámci jednoho připojení můžete vytvořit několik vnitřních karet kliknutím na <em>+</em> na
+konci pruhu vnitřních karet a následným výběrem <em>Záložka dotazu</em> (nebo <em>Záložka
+konzole</em>).</p>
+<p>V OmniDB můžete provádět několik SQL příkazů a procedur paralelně. Každá karta dotazu má vlastní
+databázovou relaci. Během vykonávání se na kartě zobrazuje točící se indikátor; když skončí karta,
+na kterou se zrovna nedíváte, zobrazí místo něj zatržítko. Červené tlačítko <em>Zrušit</em> zruší
+příkaz běžící v aktuální kartě.</p>
 <p>Kartu také můžete přetáhnout myší (drag and drop) a změnit tak její pořadí. To funguje
-u vnitřních i vnějších karet.</p>
-<p><img alt="" src="../assets/img/image_027.webp" /></p>
-<p>Kromě toho můžete pro správu vnitřních karet (SQL dotaz) použít klávesové zkratky.
-Toto jsou výchozí zkratky na Windows/Linuxu (macOS nahrazuje Alt klávesou Ctrl); všechny
-lze přenastavit na kartě Zkratky v dialogu Nastavení:</p>
+u vnitřních karet i u záložek připojení. Když v řadě karet dojde místo, karty se postupně zmenšují
+až na samotné ikony; po najetí myší na kartu zobrazenou jen ikonou se ukáže její název.</p>
+<p>Kromě toho můžete pro správu vnitřních karet použít klávesové zkratky. Toto jsou výchozí
+zkratky na Windows/Linuxu (macOS používá místo Alt klávesu Ctrl); všechny lze změnit v
+<a href="settings_and_languages.html">Nastavení &gt; Klávesové zkratky</a>:</p>
 <ul>
 <li><strong>Alt-I</strong>: Vloží novou vnitřní kartu</li>
 <li><strong>Alt-Shift-Q</strong>: Odstraní aktuální vnitřní kartu</li>
 <li><strong>Alt-O</strong>: Přepne fokus na vnitřní kartu vlevo</li>
 <li><strong>Alt-P</strong>: Přepne fokus na vnitřní kartu vpravo</li>
 </ul>
-<p>Pro vnější karty (Připojení) v současné době neexistují žádné klávesové zkratky —
-pro ně použijte přetažení myší (drag-and-drop) nebo myš.</p>
-<p>Všechny karty SQL dotazu se automaticky ukládají
-při každém spuštění. I když zavřete okno OmniDB nebo kartu prohlížeče, jsou
-již uloženy v <em>uživatelské databázi</em> OmniDB. Automaticky se obnoví
-při dalším spuštění OmniDB (pokud používáte aplikaci), při otevření v jiném
-okně prohlížeče (pokud používáte server), nebo i pokud jste klikli na okno
-<em>Connections</em> (Připojení) nebo se odhlásili. Odstranění vnější nebo vnitřní karty
-přes rozhraní ji trvale smaže, takže se již neobnoví.</p>
+<p>Pro záložky připojení neexistují žádné klávesové zkratky — použijte pro ně myš nebo přetažení.
+(Nabídka <em>Zobrazit</em> desktopové aplikace má zkratky pro přepínání sekcí; viz
+<a href="desktop_app.html">Desktopová aplikace</a>.)</p>
+<p>Všechny karty dotazu se automaticky ukládají při každém spuštění. I když zavřete okno OmniDB
+nebo kartu prohlížeče, jsou uloženy v <em>uživatelské databázi</em> OmniDB a obnoví se při dalším
+otevření OmniDB (v desktopové aplikaci) nebo při dalším přihlášení (v serverové verzi) — OmniDB pak
+začne v sekci Databáze s těmito připojeními otevřenými. Pokud záložku připojení nebo vnitřní kartu
+sami zavřete, trvale se smaže, takže se již neobnoví.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

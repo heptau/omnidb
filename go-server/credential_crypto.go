@@ -55,6 +55,14 @@ func secretKey() ([]byte, error) {
 		return secretKeyVal, secretKeyErr
 	}
 
+	// An existing key file always wins: once any row has been encrypted
+	// under it, switching to the keyring later (a Secret Service that
+	// wasn't reachable at first boot, a keychain that was locked for one
+	// launch) would mint a second key and leave those rows undecryptable.
+	if key, ok, err := readFileKey(); ok || err != nil {
+		secretKeyVal, secretKeyErr = key, err
+		return secretKeyVal, secretKeyErr
+	}
 	key, err := loadOrCreateKeyringKey()
 	if err != nil {
 		key, err = loadOrCreateFileKey()
@@ -88,6 +96,31 @@ func loadOrCreateKeyringKey() ([]byte, error) {
 // HOME_DIR resolveAppDBPath uses, so app-mode and server-mode installs
 // (different HOME_DIRs, see homedir.go) each get their own key file rather
 // than fighting over one OS keyring entry.
+func fileKeyPath() (string, error) {
+	dir, _, err := homeDirPath(os.Args[1:])
+	if err != nil {
+		return "", err
+	}
+	return filepath.Join(dir, ".connection_secret_key"), nil
+}
+
+// readFileKey returns the key file's key if the file exists (ok=true).
+func readFileKey() (key []byte, ok bool, err error) {
+	path, err := fileKeyPath()
+	if err != nil {
+		return nil, false, err
+	}
+	data, err := os.ReadFile(path)
+	if os.IsNotExist(err) {
+		return nil, false, nil
+	}
+	if err != nil {
+		return nil, true, err
+	}
+	key, err = base64.StdEncoding.DecodeString(strings.TrimSpace(string(data)))
+	return key, true, err
+}
+
 func loadOrCreateFileKey() ([]byte, error) {
 	dir, err := resolveHomeDir(os.Args[1:])
 	if err != nil {

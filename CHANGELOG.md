@@ -9,9 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 - Multi-language UI support: English, Czech (Čeština), Spanish (Español), Portuguese (Português),
-  German (Deutsch), French (Français) and Italian (Italiano), selectable in Settings > Appearance >
-  Language (Automatic first, then the seven languages sorted alphabetically by native name:
-  Čeština/Deutsch/English/Español/Français/Italiano/Português), working identically in desktop
+  German (Deutsch), French (Français), Italian (Italiano), Japanese (日本語) and Korean (한국어), selectable in Settings > Appearance >
+  Language (Automatic first, then the Latin-script languages sorted alphabetically by native name:
+  Čeština/Deutsch/English/Español/Français/Italiano/Português, then 日本語/한국어), working identically in desktop
   (Wails) and web-server mode. "Automatic" resolves the browser/OS locale via the
   `Accept-Language` header, falling back to English for any unsupported language — both for the
   authenticated workspace and the pre-login page. New `go-server/i18n` package (flat-key JSON
@@ -33,7 +33,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Desktop (Wails) app: the native macOS menu bar (the OmniDB/View/Help menus — About/Settings/Quit,
   Welcome/Connections/Database/Snippets/Toggle Database Tree/Toggle Properties-DDL Panel, Getting
   Started/Keyboard Shortcuts/Visit omnidb.net/GitHub Repository) is now localized into the same
-  seven languages as the web UI, using the signed-in user's stored language preference and
+  nine languages as the web UI, using the signed-in user's stored language preference and
   switching live (no restart needed) when it's changed in Settings. The native menu keeps its own
   small translation catalog in `wails-app/menu_i18n.go` — `wails-app` and `go-server` are separate
   Go processes/modules, so it can't import `go-server/i18n` directly. The very first menu (built
@@ -57,17 +57,38 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   Role forms and the existing Change Password action; column 2 shows the focused role's full set of
   memberships — every ancestor it has, direct or indirect, in one flat list (direct rows in normal
   text, inherited ones greyed out) — editable via grant/revoke, plus that role's own direct
-  object-level privileges. Columns 3 and 4 show the focused role's *effective* privileges — its own
-  direct grants plus everything inherited through its memberships and PUBLIC — for, respectively,
-  the two object types with no per-database scope (databases, tablespaces) and every type that is
-  scoped to one database (schemas, tables, views, materialized views, sequences, functions,
-  procedures, types, domains, foreign data wrappers, foreign servers; column 4 has its own database
-  picker, independent of whichever database the connection tab itself is on). A row's detail dialog
+  object-level privileges. Column 3 is a tree of the focused role's *effective* privileges — its own
+  direct grants plus everything inherited through its memberships and PUBLIC: every database and
+  tablespace on the server (greyed out where the role holds nothing), and, expanded lazily per
+  database over its own connection (independent of whichever database the connection tab itself is
+  on), that database's schemas, tables, views, materialized views, sequences, functions,
+  procedures, types, domains, foreign data wrappers and foreign servers. A row's detail dialog
   shows each valid privilege as a checkbox — checked+enabled means held directly (uncheck to revoke),
   checked+disabled+"inherited from: ..." means held only through inheritance (not revocable there,
   only by making the source role active and revoking it), unchecked means not held at all (check to
   grant it directly) — and a "+" button adds a new object to grant on. Other database engines show
-  the section's existing "not yet supported" messaging, matching Notify/Connected Users.
+  the section's existing "not yet supported" messaging, matching Notify/Connected Users. Its UI
+  strings (and the rail tooltip) are translated in all nine UI languages — they initially shipped
+  in English and Czech only, so every other language showed the whole section in English.
+
+- `omnidb-server --set-password <user> [-d <homedir>]` sets an OmniDB user's password directly in
+  the app database and exits, without starting the server — the simple way to set a real admin
+  password before first sign-in, or to recover a server-mode install whose one-time initial admin
+  password was lost. The password is prompted for twice with echo off (or read from the first line
+  of stdin when piped, for scripts), never taken from the command line where `ps`/shell history
+  would expose it; minimum 8 characters; refused together with `-A` (the desktop app signs in
+  automatically). The first-start log line now points to it.
+
+- A new "Connected Users" section (own left-rail icon, sharing the connection tab strip with
+  Database/Monitoring/Notify/Permissions) lists the live sessions of the selected connection —
+  PostgreSQL (`pg_stat_activity`), MySQL/MariaDB (process list), Oracle (`v$session`), SQL Server
+  and Firebird (`mon$attachments`) — with engine-specific columns, an optional "Show system
+  processes" toggle (PostgreSQL/Oracle), a query-text pane with "Open in a new Query tab"
+  (PostgreSQL/MySQL/MariaDB) and a right-click Terminate action. Replaces the old per-engine
+  "Backends"/"Process List"/"Sessions" tree items and their inner tab.
+- The window title (and, in the desktop app, the native title bar) now reads "OmniDB - <section>",
+  following the active left-rail section; the desktop View menu gained the missing Notify and
+  Connected Users entries.
 
 ### Changed
 - Database panel's Query tab: the draggable splitter between the SQL editor and the query results
@@ -139,8 +160,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   growing to fit. A custom unit's own dashboard card also gained an edit button (revealed on hover,
   next to the existing "×", built-in units don't get one since they have no SQL to edit) that jumps
   straight to its SQL editor, instead of having to find it again in "Manage Units" first.
+- Documentation website (all seven languages — en, cs, de, es, fr, it, pt — plus `docs/llms.txt`,
+  `docs/llms-full.txt`, `docs/sitemap.xml`) brought up to date with what ships: new chapters
+  Desktop App, Settings and Languages, Snippets, Notify, Connected Users, Roles and Permissions, and
+  Security and Multi-user Server (added to every page's sidebar and to the sitemap); the Monitoring
+  Dashboard chapter rewritten for the Monitoring section; Managing Databases, Writing SQL Queries,
+  Managing Table Data, Additional Features, Creating Users and Connections, Installation (Windows
+  installer), Introduction and the landing page updated; the OmniDB Config Tool note now lists every
+  real `omnidb-server` option; the reverse-proxy example forwards a loopback `Host` header (a
+  loopback-bound server answers anything else with 421). `llms-full.txt` is now regenerated from the
+  HTML pages. Other languages still to be translated from it.
 
 ### Fixed
+- Documentation website: pages with a long line in a code block (Deploying omnidb-server,
+  Installation, Monitoring, Config Tool, ...) scrolled the whole page sideways instead of just the
+  code block (the content column is a flex item and needed `min-width: 0`); every translated page's
+  `hreflang` alternates now point at the right language (non-English pages pointed their `cs`
+  alternate at themselves, and only en/cs were listed).
+- Every Ace editor created before the theme switch ran requested a nonexistent
+  `lib/ace/theme-omnidb.js` (404 in the console on every workspace load): the server-rendered
+  bootstrap still named the long-gone `omnidb`/`omnidb_dark` editor themes instead of the shipped
+  `sqlserver`/`sqlserver_dark`. The explain-plan viewer's dark-background check compared against the
+  same stale name and never matched; it now checks the UI theme.
 - "Manage Units"' drag handle icon (an unmapped `fa-grip-vertical`) rendered as a solid filled square
   instead of a glyph — this app replaced the Font Awesome webfont with per-icon CSS mask rules
   generated from a curated list (`frontend/scripts/gen-icons.mjs`), and the base `.fas` rule still
@@ -209,6 +250,79 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   (`go-server/appdb_connections.go`). Existing installs are migrated automatically and idempotently
   on first startup after upgrading (`migrateAppDB`'s new `encryptExistingConnectionSecrets`
   backfill) — no user action required, no change to how connections are created, edited or opened.
+  Once a key file exists it is always preferred over the keyring, so a Secret Service or keychain
+  that is unreachable on one launch and reachable on the next can no longer mint a second key and
+  leave rows encrypted under the first one undecryptable.
+- Security audit (2026-09-26) — fixes, most severe first:
+  - **SQL injection through database object names in Edit Data / Query Data** (MySQL/MariaDB, MS
+    SQL Server, Oracle, Firebird, SQLite): catalog column names were verified to exist but then
+    spliced into the auto-executed `SELECT`/`UPDATE`/`INSERT`/`DELETE` and `ORDER BY` text
+    unquoted, so a lower-privileged database user could create a column whose *name* was SQL (e.g.
+    a stacked `ALTER SERVER ROLE sysadmin ADD MEMBER ...` on MS SQL Server) and have it run with the
+    privileges of whoever opened Edit Data or "Query Data" on that table. Every identifier is now
+    quoted per engine (`quoteEditDataColumn`), in the tree's SELECT/INSERT/UPDATE templates too, and
+    Oracle's already-quoted display names are no longer double-quoted. Out-of-range row/column
+    indexes in an Edit Data save no longer panic the whole server process (bounds checks, plus panic
+    recovery on every long-polling worker goroutine).
+  - **Desktop shell relay had no authentication**: the Wails process's loopback helper server
+    (`/pgpass-resolve`, `/save-file`, `/open-url`, ...) accepted requests from any local process or
+    OS user — `/pgpass-resolve` returned plaintext `.pgpass` passwords — and web pages could fire
+    blind POSTs at it. It now requires a per-launch random secret passed only to go-server
+    (`OMNIDB_RELAY_TOKEN`), a matching `Host` header and `POST`; go-server's `/internal/shutdown/`
+    requires the same secret instead of accepting any request (a web page could kill the backend).
+    The shell also accepts only the first, `127.0.0.1`-bound ready line and renders startup log
+    lines as text, not HTML.
+  - **XSS from database-controlled text**: query-result and monitoring column headers, autocomplete
+    entries, tab titles (including titles restored from saved tabs), SSH terminal entries of other
+    users' public connections in the "+" menu, snippet/group names in menus and the user-management
+    form rendered names as HTML. All now render as text or are escaped for their context; the chart
+    legend is built from DOM nodes instead of a sanitized HTML string.
+  - **Other users' exports were downloadable**: `/static/temp/` served a directory listing of every
+    user's export files, and exports had guessable timestamp names. Exports now get random names,
+    are tied to the user who created them (download, native save dialog and discard all check it),
+    are written `0600`, and only regular files are served.
+  - **Public connections leaked their owner's secrets**: a non-owner could `test_connection` a public
+    connection with their own host/port and have the stored password sent there (a rogue PostgreSQL
+    server can ask for it in cleartext) — non-owners are now always tested against the stored
+    target; and connection strings with embedded passwords are now masked for non-owners.
+  - **MySQL/MariaDB DSN injection**: the connection was opened from a `fmt.Sprintf` DSN, so a database
+    name like `x?allowAllFiles=true` enabled driver options — letting a rogue server read any local
+    file via `LOAD DATA LOCAL INFILE`. Now built from `mysql.Config`, `AllowAllFiles` forced off.
+  - **Server mode (`-H`/multi-user)**: SQLite connections (files on the *server*) are
+    superuser-only and can't point into OmniDB's own data directory (which held every user's
+    password hash and connection rows) or use `file:` URIs; PostgreSQL connection strings can't use
+    file-reading parameters (`passfile`, `sslkey`, `sslrootcert`, `service`, ...); a new install gets a
+    random initial `admin` password printed once to the log instead of `admin`/`admin` (desktop mode
+    unchanged); sign-in is locked for 15 minutes after 10 failures per username or client address,
+    and unknown usernames take as long to reject as known ones.
+  - **Sessions outlived user changes**: deleting a user, demoting a superuser or changing a password
+    had no effect on already-open sessions for up to 14 days. Deletion now ends all the user's
+    sessions, demotion applies immediately, and a password change ends every other session.
+  - **HTTP hardening**: `Host` allowlist while bound to loopback (DNS-rebinding protection); CSRF
+    now enforced on every non-GET method and no longer skipped for the desktop-only fetch() routes;
+    64 MB request body limit and header read timeout; `X-Content-Type-Options`, `X-Frame-Options`/
+    `frame-ancestors` and `Referrer-Policy: no-referrer` on every response; app token compared in
+    constant time.
+  - **Authorization gaps**: snippet files could be created inside another user's folder (and were
+    then deleted with it); the monitoring "Manage Units" list showed every user's custom units —
+    both now scoped to the owner.
+  - **PostgreSQL templates**: generated `COMMENT ON` (comment text and constraint/trigger/column
+    names), `CREATE AGGREGATE` (`INITCOND`, function names), `CREATE TYPE ... ENUM/RANGE`, FDW/server/
+    user-mapping `OPTIONS`, event trigger, subscription, tablespace, extension and database DDL now
+    take literals and identifiers from `quote_literal`/`quote_ident`/`regproc` instead of splicing
+    raw catalog text, so a crafted comment or option value can't smuggle a second statement into a
+    template; object-name newlines can no longer escape a `--` hint comment in any engine's
+    templates. Type/domain `GRANT`/`REVOKE` in the Permissions section is schema-qualified (a same-named
+    type earlier on `search_path` could receive it instead).
+  - MS SQL Server connections no longer disable TLS entirely (`encrypt=disable` sent the login
+    password in SQL Server's reversible login-packet obfuscation); the driver default now encrypts at
+    least the login.
+  - File permissions: HOME_DIR and the export temp folder are created `0700`, `omnidb.db` (and
+    WAL/journal files) is chmodded `0600`, and the Wails legacy-data copy writes `0600`.
+  - Dependencies/build: `golang.org/x/crypto` 0.55.0 → 0.56.0 (GO-2026-6354/6355, SSH DoS reachable
+    via the SSH terminal/tunnel), Go directive 1.26; the Linux release Docker image moves from the
+    unsupported Go 1.25 to 1.27 and is always pulled fresh; CI runs `govulncheck` on both modules;
+    Wails' frontend install uses `npm ci`.
 
 ## [4.4.3] - 2026-09-11
 

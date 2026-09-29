@@ -13,6 +13,7 @@ type App struct {
 	backendURL     string // "scheme://host:port" of omnidb-server, set once ready — see backend.go
 	backendMu      sync.Mutex
 	saveDialogAddr string // "127.0.0.1:port" of this process's own save-dialog listener — see savedialog.go
+	relayToken     string // shared secret for the savedialog.go relay and go-server's /internal/shutdown/ — see requireRelayAuth
 	lang           string // native menu bar language — see menu_i18n.go and savedialog.go's /notify-language
 	langMu         sync.RWMutex
 }

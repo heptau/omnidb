@@ -7,8 +7,12 @@
 	<meta name="description" content="Accedi come utente admin predefinito, crea altri utenti OmniDB e configura connessioni PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, inclusi i tunnel SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/it/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html">App desktop</a>
 			<a href="creating_users_and_connections.html" class="active">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html">Impostazioni e lingue</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Lavorare con i dati</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
 			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="snippets.html">Snippet</a>
 			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
 			<a href="managing_other_elements.html">Gestione di altri elementi</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server e strumenti</span>
 			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
@@ -130,123 +141,142 @@
 		<h1>Creazione di utenti e connessioni</h1>
 <h4>Accesso come utente <em>admin</em></h4>
 <p>OmniDB viene fornito solo con l’utente <em>admin</em>. Se stai usando la versione server, la
-prima cosa da fare è accedere come <em>admin</em>, la password predefinita è <em>admin</em>.
+prima cosa da fare è accedere come <em>admin</em> con la password casuale monouso che
+<code>omnidb-server</code> ha stampato nel suo output di log alla creazione di un nuovo database
+dell’applicazione (la riga che contiene <code>initial login: admin / …</code>), e poi cambiarla in
+<em>Impostazioni</em>. Se la password va persa, puoi reimpostarla con <code>omnidb-server --set-password admin</code>. Dopo 10 tentativi di accesso falliti per lo stesso nome utente o lo stesso indirizzo IP
+del client, l’accesso viene bloccato per 15 minuti.
 L’applicazione desktop non prevede alcun accesso: gira come unico utente locale, quindi tutto ciò
 che riguarda la gestione degli utenti descritta qui sotto lì semplicemente non c’è.</p>
 <h4>Orientarsi nell’interfaccia</h4>
-<p>L’intero spazio di lavoro si comanda dalla barra verticale di icone sul bordo sinistro della
-finestra: <em>Welcome</em> (Benvenuto), <em>Connections</em> (Connessioni, l’icona della spina),
-<em>Database</em>, <em>Notify</em> (Notifiche) e <em>Snippets</em> (Frammenti) in alto, e
-<em>Getting Started</em> (Per iniziare), <em>Account</em> (solo nella versione server) e
-<em>Settings</em> (Impostazioni, l’ingranaggio) in basso.</p>
-<h4>Creazione di un altro utente</h4>
-<p>Apri <em>Settings</em> (Impostazioni) in fondo alla barra, scegli la categoria <em>Account</em> e
-fai clic su <em>Manage Users</em> (Gestisci utenti). Quel pulsante lo vede solo un superutente:
-nelle impostazioni di un utente normale la sezione <em>Account</em> non compare affatto.</p>
-<p>La finestra <em>User management</em> (Gestione utenti) elenca gli utenti esistenti. Fai clic su
-<em>Add new user</em> (Aggiungi nuovo utente, l’icona della persona con il più) per inserire una
-nuova riga utente vuota, mostrata come <em>(pending info)</em> finché non la compili. Inserisci
-<em>nome utente</em> e <em>password</em>, spunta <em>Super User</em> se il nuovo utente deve
-esserlo, quindi fai clic su <em>Save</em> (Salva). Puoi creare tutti gli utenti che vuoi,
-modificare quelli esistenti ed eliminarne uno facendo clic sulla croce rossa nella colonna delle
-azioni.</p>
-<p>Per disconnetterti fai clic sull’icona <em>Account</em> (la persona in fondo alla barra) e poi su
-<em>Sign out</em> (Esci).</p>
-<h4>La sezione Connections</h4>
-<p>Fai clic sull’icona della spina nella barra. Le connessioni sono una sezione a tutti gli effetti
-dello spazio di lavoro, non una finestra a comparsa: una vista divisa con l’elenco delle connessioni
-salvate nella barra laterale a sinistra e, a destra, il modulo e i pulsanti della connessione
+<p>L’intero spazio di lavoro si comanda dalla barra verticale di icone sul bordo sinistro della
+finestra: <em>Benvenuto</em>, <em>Connessioni</em> (l’icona della spina), <em>Database</em>,
+<em>Monitoraggio</em>, <em>Notifiche</em>, <em>Permessi</em>, <em>Utenti connessi</em> e
+<em>Snippet</em> in alto, e <em>Per iniziare</em>, <em>Account</em> (solo nella versione server) e
+<em>Impostazioni</em> (l’ingranaggio) in basso. Passando il mouse su un’icona ne compare il nome.
+Vedi <a href="managing_databases.html">Gestione dei database</a> per come le sezioni lavorano
+insieme, e <a href="settings_and_languages.html">Impostazioni e lingue</a> per la lingua
+dell’interfaccia e le altre preferenze.</p>
+<h4>Creazione di un altro utente</h4>
+<p>Apri <em>Impostazioni</em> in fondo alla barra, scegli la categoria <em>Account</em> e fai clic
+su <em>Gestisci utenti</em>. Quel pulsante lo vede solo un superutente: nelle impostazioni di un
+utente normale la sezione <em>Account</em> non compare affatto.</p>
+<p>La finestra <em>Gestione utenti</em> elenca gli utenti esistenti. Fai clic su <em>Aggiungi nuovo
+utente</em> (l’icona della persona con il più) per inserire una nuova riga utente vuota, mostrata
+come <em>(informazioni in sospeso)</em> finché non la compili. Inserisci <em>Nome utente</em> e
+<em>Nuova password</em>, attiva <em>Superutente?</em> se il nuovo utente deve esserlo, quindi fai
+clic su <em>Salva</em>. Puoi creare tutti gli utenti che vuoi, modificare quelli esistenti ed
+eliminarne uno facendo clic sulla croce rossa nella colonna delle azioni.</p>
+<p>Per disconnetterti fai clic sull’icona <em>Account</em> (la persona in fondo alla barra) e poi su
+<em>Disconnetti</em>.</p>
+<p>L’eliminazione di un utente, o la revoca dello stato di superutente, ha effetto immediato, anche
+per le sessioni di quell’utente già aperte.</p>
+<h4>La sezione Connessioni</h4>
+<p>Fai clic sull’icona della spina nella barra. Le connessioni sono una sezione a tutti gli effetti
+dello spazio di lavoro, non una finestra a comparsa: una vista divisa con l’elenco delle connessioni
+salvate nella barra laterale a sinistra e, a destra, il modulo e i pulsanti della connessione
 selezionata.</p>
-<p>Ogni riga dell’elenco mostra l’icona del motore di database, il nome della connessione e sotto
-l’<code>utente@server:porta</code> a cui punta (oppure la stringa di connessione, o la destinazione
-SSH per una connessione di tipo terminale). Un pallino colorato indica l’ambiente della connessione
-e un’icona a forma di chiave segnala una connessione che passa da un tunnel SSH.</p>
-<h4>Creazione di connessioni</h4>
-<p>OmniDB supporta PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, oltre a un
-tipo di connessione <em>Terminal</em> che apre una shell SSH invece di un database.</p>
+<p>Ogni riga dell’elenco mostra l’icona del motore di database, il nome della connessione e sotto
+l’<code>utente@server:porta</code> a cui punta (oppure la stringa di connessione, o la destinazione
+SSH per una connessione di tipo terminale). Un pallino colorato indica l’ambiente della connessione
+e un’icona a forma di chiave segnala una connessione che passa da un tunnel SSH.</p>
+<h4>Creazione di connessioni</h4>
+<p>OmniDB supporta PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, oltre a un
+tipo di connessione <em>Terminale</em> che apre una shell SSH invece di un database. L’elenco
+<em>Tipo di connessione</em> mostra prima PostgreSQL, poi gli altri in ordine alfabetico e infine
+<em>Terminale</em>.</p>
+<p>Per <em>SQLite</em>, la connessione punta a un file di database (sulla macchina su cui gira
+<code>omnidb-server</code>); se il file non esiste ancora, <em>Prova connessione</em> lo segnala e
+il file viene creato al primo utilizzo della connessione. Su un server multiutente le connessioni
+SQLite sono riservate ai superutenti, e alcuni parametri della stringa di connessione PostgreSQL che
+leggono file sul server vengono rifiutati — vedi <a href="security.html">Sicurezza e server
+multiutente</a>.</p>
 <p>Il pulsante <em>+</em> sotto l’elenco crea una connessione. Scrivi il nome nell’intestazione del
-modulo a destra, scegli il <em>Connection Type</em> (tipo di connessione) e compila la scheda
-<em>Host Connection Info</em> (dati del server): <em>Server</em>, <em>Port</em>, <em>Database</em>,
-<em>User</em> e, facoltativamente, <em>User Password</em>. Al posto dei singoli campi puoi compilare
-una sola <em>Connection string</em> (stringa di connessione, ad esempio
-<code>postgresql://postgres@localhost:5432/postgres</code>) e lasciare vuoto il resto. Al termine
-fai clic su <em>Save</em> (Salva) in alto a destra nel modulo.</p>
-<p><em>Test Connection</em> (Prova connessione), accanto, prova la connessione senza aprirla e
-riporta <em>Connection successful.</em> oppure l’errore esatto restituito dal database. Il pulsante
-<em>−</em> sotto l’elenco elimina la connessione selezionata; resta disattivato per una connessione
-attualmente aperta in una scheda.</p>
+modulo a destra, scegli il <em>Tipo di connessione</em> e compila la scheda <em>Informazioni di
+connessione al server</em>: <em>Server</em>, <em>Porta</em>, <em>Database</em>, <em>Utente</em> e,
+facoltativamente, <em>Password utente</em>. Al posto dei singoli campi puoi compilare una sola
+<em>Stringa di connessione</em> (ad esempio <code>postgresql://postgres@localhost:5432/postgres</code>)
+e lasciare vuoto il resto. Al termine fai clic su <em>Salva</em> in alto a destra nel modulo.</p>
+<p><em>Prova connessione</em>, accanto, prova la connessione senza aprirla e riporta
+<em>Connessione riuscita.</em> oppure l’errore esatto restituito dal database. Il pulsante
+<em>−</em> sotto l’elenco elimina la connessione selezionata; resta disattivato per una connessione
+attualmente aperta in una scheda.</p>
 <h4>Password</h4>
-<p>Il campo <em>User Password</em> (password utente) è facoltativo e le due possibilità si
-comportano in modo diverso:</p>
+<p>Il campo <em>Password utente</em> è facoltativo e le due possibilità si comportano in modo
+diverso:</p>
 <ul>
 <li><strong>Compilato</strong>: la password viene salvata nel database di configurazione di OmniDB e
 riutilizzata automaticamente ogni volta che apri la connessione. Prima di essere scritta viene
-cifrata (AES-256-GCM) con una chiave conservata nell'archivio segreti del sistema operativo
-(Keychain su macOS, Credential Manager su Windows, Secret Service su Linux) e non nel file stesso:
-il solo file del database non basta più a leggere le password che contiene. Se un archivio del
-genere non è disponibile, OmniDB ricorre a un file di chiave conservato accanto al database.</li>
-<li><strong>Lasciato vuoto</strong>: non viene salvato nulla e OmniDB chiede la password quando apri
-la connessione. Quello che digiti resta solo nella memoria di sessione del server per quella
-connessione e sparisce alla fine della sessione.</li>
+cifrata (AES-256-GCM) con una chiave conservata nell’archivio dei segreti del sistema operativo
+(Portachiavi su macOS, Gestione credenziali su Windows, Secret Service su Linux) e non nel file
+stesso: il solo file del database non basta più a leggere le password che contiene. Se un archivio
+del genere non è disponibile, OmniDB ricorre a un file di chiave conservato accanto al database.</li>
+<li><strong>Lasciato vuoto</strong>: non viene salvato nulla e OmniDB chiede la password quando apri
+la connessione. Quello che digiti resta solo nella memoria del server, per la tua sessione e quella
+connessione, per 30 minuti — trascorsi i quali OmniDB la chiede di nuovo.</li>
 </ul>
-<p>Per PostgreSQL, al momento della connessione OmniDB cerca inoltre la password nel tuo file
+<p>Per PostgreSQL, al momento della connessione OmniDB cerca inoltre la password nel tuo file
 <code>.pgpass</code>, scegliendo la stessa voce che userebbe libpq: una connessione senza password
-salvata può quindi aprirsi senza alcuna richiesta. Nell’applicazione macOS in sandbox la finestra
-della password offre <em>Grant access to .pgpass…</em> (Concedi accesso a .pgpass): indichi il file
-una volta e da lì in poi ogni connessione ricava da sé la propria password.</p>
-<p>Se il database rifiuta il tentativo, la finestra resta a schermo mostrando l’errore ricevuto da
-OmniDB (<em>fe_sendauth: no password supplied</em>, un errore di autenticazione, un server non
-raggiungibile e così via), così puoi correggere la password e riprovare.</p>
+salvata può quindi aprirsi senza alcuna richiesta. Nell’applicazione macOS in sandbox la finestra
+della password offre <em>Concedi accesso a .pgpass…</em>: indichi il file una volta e da lì in poi
+ogni connessione ricava da sé la propria password.</p>
+<p>Se il database rifiuta il tentativo, la finestra resta a schermo mostrando l’errore ricevuto da
+OmniDB (<em>fe_sendauth: no password supplied</em>, un errore di autenticazione, un server non
+raggiungibile e così via), così puoi correggere la password e riprovare.</p>
 <h4>Importare connessioni da <code>.pgpass</code></h4>
-<p>L’icona di importazione file, accanto ai pulsanti <em>+</em> e <em>−</em>, legge un file
-<code>.pgpass</code> e crea una connessione PostgreSQL per ogni riga concreta che contiene, come
+<p>L’icona di importazione file, accanto ai pulsanti <em>+</em> e <em>−</em>, legge un file
+<code>.pgpass</code> e crea una connessione PostgreSQL per ogni riga concreta che contiene, come
 semplice stringa <code>postgresql://utente@host:porta/db</code> senza password salvata: l’idea è
-continuare ad autenticarsi da quel file invece di copiare password dentro OmniDB. Le righe con
-caratteri jolly (<code>*</code>) vengono saltate, così come quelle che corrispondono già a una
+continuare ad autenticarsi da quel file invece di copiare password dentro OmniDB. Le righe con
+caratteri jolly (<code>*</code>) vengono saltate, così come quelle che corrispondono già a una
 connessione esistente.</p>
 <h4>Organizzare l’elenco</h4>
 <ul>
-<li><strong>Ordine</strong>: trascina una riga in qualsiasi posizione dell’elenco. La disposizione
-viene salvata per ciascun utente e sopravvive sia a un ricaricamento sia a un riavvio. Le
-connessioni create in seguito si aggiungono in fondo.</li>
-<li><strong>Gruppi</strong>: il selettore in cima alla barra laterale limita l’elenco a un solo
-gruppo. <em>+ Group</em> crea un gruppo e il pulsante <em>…</em> accanto offre <em>Rename</em>
-(Rinomina), <em>Manage Connections</em> (Gestisci connessioni: trasforma le righe in caselle di
-spunta con cui scegliere quali connessioni appartengono al gruppo, da confermare con
-<em>Save changes</em>) ed <em>Delete</em> (Elimina).</li>
-<li><strong>Connessioni pubbliche</strong>: l’interruttore <em>Public connection?</em> (Connessione
-pubblica?) nel modulo rende la connessione utilizzabile da tutti gli altri utenti di OmniDB.
-L’interruttore <em>Public (n)</em> in fondo alla barra laterale mostra o nasconde nel tuo elenco le
-connessioni pubbliche di altri utenti.</li>
-<li><strong>Ambiente</strong>: contrassegnare una connessione come <em>Production</em>,
-<em>UAT</em>, <em>Development</em> o <em>Archive</em> colora il suo pallino nell’elenco e il bordo
-della sua scheda aperta: è soprattutto un accorgimento di sicurezza, perché prendere la scheda
+<li><strong>Ordine</strong>: trascina una riga in qualsiasi posizione dell’elenco. La disposizione
+viene salvata per ciascun utente e sopravvive sia a un ricaricamento sia a un riavvio. Le
+connessioni create in seguito si aggiungono in fondo.</li>
+<li><strong>Gruppi</strong>: il selettore in cima alla barra laterale limita l’elenco a un solo
+gruppo. <em>+ Group</em> crea un gruppo e il pulsante <em>…</em> accanto offre <em>Rinomina</em>,
+<em>Gestisci connessioni</em> (trasforma le righe in caselle di spunta con cui scegliere quali
+connessioni appartengono al gruppo, da confermare con <em>Salva modifiche</em>) ed
+<em>Elimina</em>.</li>
+<li><strong>Connessioni pubbliche</strong>: l’interruttore <em>Connessione pubblica?</em> nel modulo
+rende la connessione utilizzabile da tutti gli altri utenti di OmniDB. Solo il proprietario può
+modificarla; gli altri utenti non vedono mai la password salvata (una password contenuta nella
+stringa di connessione viene mostrata loro mascherata) e il loro <em>Prova connessione</em> verifica
+sempre il server memorizzato. L’interruttore <em>Public (n)</em> in fondo alla barra laterale mostra
+o nasconde nel tuo elenco le connessioni pubbliche di altri utenti.</li>
+<li><strong>Ambiente</strong>: contrassegnare una connessione come <em>Produzione</em>,
+<em>UAT</em>, <em>Sviluppo</em> o <em>Archivio</em> colora il suo pallino nell’elenco e il bordo
+della sua scheda aperta: è soprattutto un accorgimento di sicurezza, perché prendere la scheda
 sbagliata si veda subito.</li>
 </ul>
 <h4>Aprire una connessione</h4>
-<p>Fai clic su <em>Connect</em> (Connetti) nel modulo, oppure semplicemente doppio clic su una riga
-dell’elenco, e OmniDB la apre in una nuova <strong>scheda esterna di connessione</strong>
-(<em>Connection Outer Tab</em>), come vedremo nel prossimo capitolo. Il clic destro su una riga apre
-un menu contestuale (<em>Connect</em>/<em>Edit</em>/<em>Delete</em> — <em>Delete</em> non compare per
-una connessione già aperta), mentre il clic destro su uno spazio vuoto dell’elenco propone
-<em>New Connection</em>/<em>Refresh</em>.</p>
+<p>Fai clic su <em>Connetti</em> nel modulo, oppure semplicemente doppio clic su una riga
+dell’elenco, e OmniDB la apre in una nuova <strong>scheda esterna di connessione</strong>
+(<em>Connection Outer Tab</em>), come vedremo nel prossimo capitolo. Il clic destro su una riga apre
+un menu contestuale (<em>Connetti</em>/<em>Modifica</em>/<em>Elimina</em> — <em>Elimina</em> non
+compare per una connessione già aperta), mentre il clic destro su uno spazio vuoto dell’elenco
+propone <em>Nuova connessione</em>/<em>Aggiorna</em>.</p>
 <h4>Uso dei tunnel SSH</h4>
-<p>OmniDB consente di connettersi a qualsiasi database remoto attraverso tunnel SSH. Spunta
-<em>Use SSH tunnel</em> (Usa tunnel SSH) nel modulo della connessione: questo abilita i campi
-sottostanti:</p>
+<p>OmniDB consente di connettersi a qualsiasi database remoto attraverso tunnel SSH. Spunta
+<em>Usa tunnel SSH</em> nel modulo della connessione: questo abilita i campi sottostanti:</p>
 <ul>
-<li><em>SSH Server</em>: il server a cui ti connetti via SSH;</li>
-<li><em>SSH Port</em>: la porta del server SSH (l’impostazione predefinita è 22, ma può essere una
+<li><em>Server SSH</em>: il server a cui ti connetti via SSH. La sua chiave host deve essere già
+presente nel file <code>~/.ssh/known_hosts</code> dell’utente del sistema operativo che esegue
+OmniDB, altrimenti il tunnel viene rifiutato — vedi <a href="security.html">Sicurezza e server
+multiutente</a>;</li>
+<li><em>Porta SSH</em>: la porta del server SSH (l’impostazione predefinita è 22, ma può essere una
 porta qualsiasi);</li>
-<li><em>SSH User</em>: il nome utente del sistema operativo con cui ti connetti al server SSH;</li>
-<li><em>Password/Passphrase</em> (Password / frase di accesso): la password dell’utente del sistema
-operativo (o la frase di accesso della chiave qui sotto). Se lo lasci vuoto, OmniDB la chiede a ogni
-apertura del tunnel senza memorizzarla. Se compili il campo <em>SSH Key Text File</em>, la password
-è facoltativa;</li>
-<li><em>SSH Key Text File</em> (File della chiave SSH): il contenuto della chiave SSH privata locale
-con cui puoi connetterti al server SSH. OmniDB legge il file che scegli e ne salva il testo, non il
-file. Se compili questo campo puoi compilare anche <em>Password/Passphrase</em>, che però in questo
-caso sarà la frase di accesso della chiave privata SSH.</li>
+<li><em>Utente SSH</em>: il nome utente del sistema operativo con cui ti connetti al server SSH;</li>
+<li><em>Password / passphrase</em>: la password dell’utente del sistema operativo (o la passphrase
+della chiave qui sotto). Se lo lasci vuoto, OmniDB la chiede a ogni apertura del tunnel senza
+memorizzarla. Se compili il campo <em>File di testo chiave SSH</em>, la password è
+facoltativa;</li>
+<li><em>File di testo chiave SSH</em>: il contenuto della chiave SSH privata locale con cui puoi
+connetterti al server SSH. OmniDB legge il file che scegli e ne salva il testo, non il file. Se
+compili questo campo puoi compilare anche <em>Password / passphrase</em>, che però in questo caso
+sarà la passphrase della chiave privata SSH.</li>
 </ul>
 <p>Tutto ciò che salvi qui — password SSH, frase di accesso e testo della chiave — finisce nello
 stesso database di configurazione locale di OmniDB delle password dei database, cifrato allo stesso
@@ -258,7 +288,7 @@ scenari, spiegati di seguito.</p>
 questa:</p>
 <p><img alt="" src="../assets/ssh_tunnels_1.png" /></p>
 <p>In questo scenario il <em>Server</em> del database sarà <code>127.0.0.1</code>, perché il database
-è sulla stessa macchina del <em>SSH Server</em>.</p>
+è sulla stessa macchina del <em>Server SSH</em>.</p>
 <p>Ma il database può trovarsi fuori dal server SSH, così:</p>
 <p><img alt="" src="../assets/ssh_tunnels_2.png" /></p>
 <p>Qui il <em>Server</em> del database deve essere <code>192.168.0.10</code>, perché è l’indirizzo

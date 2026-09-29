@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/en/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/omnidb_config_tool.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html" class="active">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -128,24 +140,51 @@
 		</nav>
 		<main>
 		<h1>OmniDB Config Tool</h1>
-<p><strong>Note:</strong> the standalone <code>omnidb-config</code>/<code>omnidb-config-app</code>/
+<p><strong>Note:</strong> the standalone <code>omnidb-config</code>/<code>omnidb-config-app</code>/
 <code>omnidb-config-server</code> CLI utility described on this page belonged to the
-previous Python/Django-based build and is not part of the current release. The
-single <code>omnidb-server</code> binary only accepts <code>-A</code>/<code>--app</code> (desktop app
-mode) and <code>-d</code>/<code>--homedir</code> (choose the home directory), documented in the
-<a href="installation.html">Installation</a> chapter. The maintenance tasks the
-old tool offered can still be done manually, described below.</p>
+previous Python/Django-based build and is not part of the current release. The
+single <code>omnidb-server</code> binary accepts only a handful of command-line options:
+<code>-A</code>/<code>--app</code> (desktop app mode), <code>-H</code>/<code>--host</code> (listening
+address), <code>-p</code>/<code>--port</code> (listening port), <code>-d</code>/<code>--homedir</code>
+(choose the home directory) and <code>--set-password</code> (set a user’s password, see below) —
+all described in the <em>Command options</em> section of
+<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>. There is no configuration file.
+The maintenance tasks the old tool offered can still be done manually, described below.</p>
 <h4>Home directory</h4>
 <p>OmniDB stores everything — the <code>omnidb.db</code> database (users, connections, and
 other app data) and a <code>temp</code> folder for exported files — in a single home
 directory. By default this is <code>~/.omnidb/omnidb-app</code> (desktop mode) or
 <code>~/.omnidb/omnidb-server</code> (server mode); pass <code>-d /some/path</code> to use a
-different one.</p>
+different one (the directory must already exist). If the operating system offers no secret store
+for the encryption key of saved passwords, the same directory also holds that key, in the file
+<code>.connection_secret_key</code> — see <a href="security.html">Security and Multi-user Server</a>.
+When you back up or move <code>omnidb.db</code>, take that file along too.</p>
 <h4>Create a user</h4>
 <p>There is currently no CLI option to create a user without opening OmniDB.
-On first run against an empty home directory, OmniDB creates a default
-<code>admin</code>/<code>admin</code> superuser automatically — sign in with it and create
-further users from the <em>Users</em> screen, or change the default password.</p>
+On first run against an empty home directory, OmniDB creates a default
+<code>admin</code> superuser automatically — in server mode with a random password printed
+once to the server’s log output (the line containing <code>initial login: admin / …</code>). Sign in with it and create
+further users under <em>Settings &gt; Account &gt; Manage Users</em>, or change the password under
+<em>Settings &gt; Password</em>.</p>
+<h4>Set or reset a password</h4>
+<p>If the one-time initial <code>admin</code> password was lost (or you want to set your own
+before the first sign-in), set the password of any existing user directly in the app
+database, without starting the server:</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-server --set-password admin
+user@machine:~$ omnidb-server --set-password admin -d /path/to/homedir
+</code></pre>
+<p>Without <code>-d</code> it uses the default server home directory
+(<code>~/.omnidb/omnidb-server</code>). In a terminal it asks for the new password twice,
+without echoing it; otherwise it reads the password from the first line of standard
+input, which is handy in scripts:</p>
+<pre><code class="language-bash">user@machine:~$ printf '%s\n' "$PW" | omnidb-server --set-password admin
+</code></pre>
+<p>The password is never passed as a command-line argument, so it doesn’t end up in
+<code>ps</code> output or the shell history. It must be at least 8 characters long, and the
+user must already exist. The option is refused together with <code>-A</code> — the desktop app
+signs in automatically and has no password to manage. It can also be run while the server
+is running: the new password works immediately for new sign-ins, while users who are already
+signed in stay signed in until their session expires or the server restarts.</p>
 <h4>Vacuum</h4>
 <p>OmniDB has a single SQLite database, <code>omnidb.db</code>, storing all users,
 connections, and other OmniDB-related data. Since it’s a plain SQLite file, you
@@ -155,8 +194,8 @@ can vacuum it with any SQLite client while OmniDB isn’t running, e.g.:</p>
 <h4>Reset database</h4>
 <p>If you wish to wipe out all OmniDB information and get a clean database as it
 was just installed, quit OmniDB and delete (or move aside) the home directory’s
-<code>omnidb.db</code> file. A new, empty one — with a fresh default <code>admin</code>/<code>admin</code>
-user — is created automatically the next time OmniDB starts. Use this with
+<code>omnidb.db</code> file. A new, empty one — with a fresh default <code>admin</code>
+user (in server mode with a newly generated one-time password printed to the log) — is created automatically the next time OmniDB starts. Use this with
 caution: it cannot be undone.</p>
 <h4>Delete temporary files</h4>
 <p>Exported query results (CSV/XLSX/etc.) are written to the <code>temp</code> folder

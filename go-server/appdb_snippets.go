@@ -178,14 +178,8 @@ func snippetGetText(db *sql.DB, userID, fileID int64) (string, error) {
 // folder owned by the same user, same ownership check Django's
 // SnippetFolder.objects.get(id=..., user=request.user) performs.
 func snippetNewNode(db *sql.DB, userID int64, parentID *int64, mode, name string) error {
-	if parentID != nil {
-		var owner int64
-		if err := db.QueryRow(`select user_id from OmniDB_app_snippetfolder where id = ?`, *parentID).Scan(&owner); err != nil {
-			return err
-		}
-		if owner != userID {
-			return sql.ErrNoRows
-		}
+	if err := checkSnippetParentOwner(db, userID, parentID); err != nil {
+		return err
 	}
 
 	now := time.Now().UTC()
@@ -222,7 +216,7 @@ func snippetDeleteNode(db *sql.DB, userID, id int64, mode string) error {
 		if owner != userID {
 			return sql.ErrNoRows
 		}
-		return deleteSnippetFolderRecursive(db, id)
+		return deleteSnippetFolderRecursive(db, userID, id)
 	}
 
 	var owner int64
@@ -236,8 +230,8 @@ func snippetDeleteNode(db *sql.DB, userID, id int64, mode string) error {
 	return err
 }
 
-func deleteSnippetFolderRecursive(db *sql.DB, folderID int64) error {
-	childRows, err := db.Query(`select id from OmniDB_app_snippetfolder where parent_id = ?`, folderID)
+func deleteSnippetFolderRecursive(db *sql.DB, userID, folderID int64) error {
+	childRows, err := db.Query(`select id from OmniDB_app_snippetfolder where parent_id = ? and user_id = ?`, folderID, userID)
 	if err != nil {
 		return err
 	}
@@ -257,15 +251,15 @@ func deleteSnippetFolderRecursive(db *sql.DB, folderID int64) error {
 	childRows.Close()
 
 	for _, childID := range childIDs {
-		if err := deleteSnippetFolderRecursive(db, childID); err != nil {
+		if err := deleteSnippetFolderRecursive(db, userID, childID); err != nil {
 			return err
 		}
 	}
 
-	if _, err := db.Exec(`delete from OmniDB_app_snippetfile where parent_id = ?`, folderID); err != nil {
+	if _, err := db.Exec(`delete from OmniDB_app_snippetfile where parent_id = ? and user_id = ?`, folderID, userID); err != nil {
 		return err
 	}
-	_, err = db.Exec(`delete from OmniDB_app_snippetfolder where id = ?`, folderID)
+	_, err = db.Exec(`delete from OmniDB_app_snippetfolder where id = ? and user_id = ?`, folderID, userID)
 	return err
 }
 
@@ -280,6 +274,9 @@ func deleteSnippetFolderRecursive(db *sql.DB, folderID int64) error {
 func snippetSaveText(db *sql.DB, userID int64, id *int64, parentID *int64, name, text string) (int64, error) {
 	now := time.Now().UTC()
 	if id == nil {
+		if err := checkSnippetParentOwner(db, userID, parentID); err != nil {
+			return 0, err
+		}
 		res, err := db.Exec(`insert into OmniDB_app_snippetfile (user_id, parent_id, name, create_date, modify_date, text) values (?, ?, ?, ?, ?, ?)`,
 			userID, nullableInt64(parentID), name, now, now, text)
 		if err != nil {
@@ -311,6 +308,23 @@ func snippetRenameNode(db *sql.DB, userID, id int64, mode, name string) error {
 		return err
 	}
 	if n, _ := res.RowsAffected(); n == 0 {
+		return sql.ErrNoRows
+	}
+	return nil
+}
+
+// checkSnippetParentOwner rejects a parent folder the user doesn't own —
+// otherwise a user could plant snippet files inside another user's folder
+// tree.
+func checkSnippetParentOwner(db *sql.DB, userID int64, parentID *int64) error {
+	if parentID == nil {
+		return nil
+	}
+	var owner int64
+	if err := db.QueryRow(`select user_id from OmniDB_app_snippetfolder where id = ?`, *parentID).Scan(&owner); err != nil {
+		return err
+	}
+	if owner != userID {
 		return sql.ErrNoRows
 	}
 	return nil

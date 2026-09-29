@@ -1,0 +1,207 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Utenti connessi – Documentazione OmniDB</title>
+	<meta name="description" content="Scopri chi è connesso a un server PostgreSQL, MySQL, MariaDB, Oracle, SQL Server o Firebird, esamina la query corrente e termina le sessioni in OmniDB.">
+	<link rel="canonical" href="https://www.omnidb.net/it/connected_users.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/connected_users.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/connected_users.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/connected_users.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/connected_users.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/connected_users.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/connected_users.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/connected_users.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/connected_users.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/it/connected_users.html">
+	<meta property="og:title" content="Utenti connessi - Documentazione OmniDB">
+	<meta property="og:description" content="Scopri chi è connesso a un server PostgreSQL, MySQL, MariaDB, Oracle, SQL Server o Firebird, esamina la query corrente e termina le sessioni in OmniDB.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/it/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentazione", "item": "https://www.omnidb.net/it/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Utenti connessi", "item": "https://www.omnidb.net/it/connected_users.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Attiva/disattiva navigazione">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentazione</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Sponsorizza" title="Sponsorizza">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Stella su GitHub" title="Stella su GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambia lingua" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambia tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatico</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Chiaro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Scuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Per iniziare</span>
+			<a href="introduction.html">Introduzione</a>
+			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html">App desktop</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html">Impostazioni e lingue</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Lavorare con i dati</span>
+			<a href="managing_databases.html">Gestione dei database</a>
+			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
+			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="snippets.html">Snippet</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="visualizing_data.html">Visualizzazione dei dati</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzate</span>
+			<a href="additional_features.html">Funzionalità aggiuntive</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html" class="active">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
+			<a href="logical_replication.html">Replica logica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
+			<a href="console_tab.html">Scheda Console</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Riferimento</span>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Utenti connessi</h1>
+<p>La sezione <em>Utenti connessi</em> mostra chi è connesso in questo momento a un server di
+database — i backend PostgreSQL, i thread MySQL/MariaDB, le sessioni Oracle e SQL Server, le
+connessioni (attachment) Firebird — che cosa sta facendo ciascuno e permette di terminarne uno.
+Sostituisce le precedenti voci specifiche per motore <em>Backend</em>/<em>Elenco
+processi</em>/<em>Sessioni</em> del menu contestuale dell’albero del database.</p>
+<p>Supportati: PostgreSQL, MySQL, MariaDB, Oracle, SQL Server e Firebird. SQLite non ha un
+concetto simile e mostra <em>La visualizzazione degli utenti connessi non è supportata per le
+connessioni ….</em></p>
+<h4>Aprire la sezione</h4>
+<p>Fai clic sull’icona <em>Utenti connessi</em> nella barra laterale sinistra. Come Monitoraggio,
+Notifiche e Permessi, lavora su una connessione già aperta nella sezione <em>Database</em>: in
+alto viene mostrata la striscia delle schede di connessione aperte e l’elenco si riferisce alla
+scheda selezionata. Se non c’è alcuna connessione aperta mostra <em>Nessuna connessione
+aperta.</em></p>
+<p>L’elenco viene caricato quando entri nella sezione e ogni volta che passi a un’altra scheda di
+connessione; non si aggiorna da solo. Per ricaricarlo, fai clic con il tasto destro sulla griglia
+e scegli <em>Aggiorna</em>. Il numero di righe è mostrato sopra la griglia (<em>Numero di record:
+…</em>).</p>
+<h4>Colonne</h4>
+<p>Le colonne sono raggruppate in modo compatto (ad esempio un ID sotto un nome, oppure indirizzo
+e porta su un’unica riga); passando il mouse sull’intestazione di una colonna viene spiegato che
+cosa mostra e da quale colonna del catalogo proviene.</p>
+<ul>
+<li><strong>PostgreSQL</strong> (<code>pg_stat_activity</code>): <em>PID</em>, <em>Database</em>,
+<em>Utente</em>, <em>Client</em>, <em>Applicazione</em>, <em>Avvio del processo</em> /
+<em>Avvio della transazione</em>, <em>Avvio della query</em> / <em>Ultimo cambio di stato</em>,
+<em>In attesa di</em>, <em>Stato</em>, <em>ID transazione</em>, <em>ID query</em>, <em>Tipo di
+processo</em>.</li>
+<li><strong>MySQL/MariaDB</strong> (elenco dei processi): <em>Utente</em> (con l’ID della
+connessione), <em>Host</em>, <em>Database</em>, <em>Comando</em>, <em>Tempo (s)</em>,
+<em>Stato</em>.</li>
+<li><strong>Oracle</strong> (<code>v$session</code>): <em>SID</em> (con Serial#),
+<em>Utente</em>, <em>Stato</em>, <em>Schema</em>, <em>Client</em>, <em>Programma</em>,
+<em>Modulo / azione</em>, <em>Info client</em>, <em>Ora di accesso</em>, <em>Inattivo (s)</em>,
+<em>ID SQL</em>, <em>In attesa di</em>, <em>SID bloccante</em>.</li>
+<li><strong>SQL Server</strong> (sessioni utente): <em>ID sessione</em>, <em>Nome di
+accesso</em>, <em>Host</em>, <em>Programma</em>, <em>Stato</em>.</li>
+<li><strong>Firebird</strong> (<code>mon$attachments</code>, esclusa la connessione di OmniDB
+stesso): <em>ID di connessione</em>, <em>Utente</em>, <em>Indirizzo remoto</em>,
+<em>Stato</em>.</li>
+</ul>
+<p>Per PostgreSQL e Oracle i processi di background/di sistema sono nascosti per impostazione
+predefinita; seleziona <em>Mostra i processi di sistema</em> sopra la griglia per includerli (la
+casella di controllo compare solo quando esistono righe di questo tipo).</p>
+<h4>Visualizzare la query di una sessione</h4>
+<p>Per PostgreSQL, MySQL e MariaDB, un clic su una riga apre sotto la griglia il pannello
+<em>Testo della query</em> con l’istruzione che quella sessione sta eseguendo (o ha eseguito per
+ultima), con evidenziazione della sintassi e in sola lettura. Da lì puoi copiarla, oppure usare
+<em>Apri in una nuova scheda query</em> per continuare a lavorarci in una normale
+<a href="writing_sql_queries.html">scheda Query</a>, ad esempio per eseguirne
+l’<em>Explain</em>.</p>
+<h4>Terminare una sessione</h4>
+<p>Fai clic con il tasto destro su una riga e scegli <em>Termina</em>. Dopo la conferma, OmniDB
+chiude quella sessione nel modo proprio del motore — <code>pg_terminate_backend()</code> su
+PostgreSQL, <code>KILL</code> su MySQL/MariaDB e SQL Server, <code>ALTER SYSTEM KILL SESSION …
+IMMEDIATE</code> su Oracle, l’eliminazione della riga da <code>mon$attachments</code> su
+Firebird — e ricarica l’elenco. Serve il privilegio corrispondente sul server di database. Lo
+stesso menu contestuale offre anche <em>Copia</em> e <em>Visualizza contenuto</em> per la cella
+su cui hai fatto clic.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

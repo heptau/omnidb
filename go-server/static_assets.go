@@ -5,6 +5,7 @@ import (
 	"io/fs"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 	"strings"
 )
@@ -80,6 +81,13 @@ func handleTempFiles(dir string) http.Handler {
 		}
 		fileName := strings.TrimPrefix(r.URL.Path, prefix)
 		fileName = strings.TrimLeft(fileName, "/")
+		// A bare file name this user generated, nothing else: an empty name
+		// used to resolve to the directory itself and serve a listing of
+		// every user's exports, and names alone aren't tied to a user.
+		if fileName == "" || fileName != filepath.Base(fileName) || !exportFileOwnedBy(fileName, who.UserID) {
+			http.NotFound(w, r)
+			return
+		}
 		filePath := filepath.Join(dir, fileName)
 		// filepath.Rel + explicit ".."-prefix rejection, not
 		// strings.HasPrefix(filePath, dir) — a bare prefix check without a
@@ -89,6 +97,10 @@ func handleTempFiles(dir string) http.Handler {
 		// correctly next door in export_save_dialog.go.
 		rel, err := filepath.Rel(dir, filePath)
 		if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+			http.NotFound(w, r)
+			return
+		}
+		if st, err := os.Lstat(filePath); err != nil || !st.Mode().IsRegular() {
 			http.NotFound(w, r)
 			return
 		}

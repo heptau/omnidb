@@ -42,12 +42,15 @@ const HEADER_HEIGHT = 28;
 const MIN_COL_WIDTH = 120;
 const RENDER_BUFFER_ROWS = 8;
 
+// Parsed with DOMParser, not a detached element's innerHTML: a detached
+// <div> still belongs to the live document, so `<img src=x onerror=...>`
+// assigned to it fires its handler even though it is never attached.
+// A DOMParser document has no browsing context — nothing in it loads or runs.
 function htmlToText(html) {
 	if (typeof html !== "string" || html === "") return "";
 	if (!/[<&]/.test(html)) return html;
-	const el = document.createElement("div");
-	el.innerHTML = html;
-	return (el.textContent || "").trim();
+	const doc = new DOMParser().parseFromString(html, "text/html");
+	return (doc.body.textContent || "").trim();
 }
 
 function parseNumeric(value) {
@@ -188,6 +191,7 @@ export class VirtualGrid {
 			return {
 				title: col.title || t("editor.default_column_title", { number: index + 1 }),
 				width: col.width || MIN_COL_WIDTH,
+				titleHtml: !!col.titleHtml,
 				tooltip: col.tooltip,
 				align: col.align,
 				verticalAlign: col.verticalAlign,
@@ -302,8 +306,22 @@ export class VirtualGrid {
 			const th = document.createElement("th");
 			th.style.cssText =
 				"position:relative;height:" + HEADER_HEIGHT + "px;box-sizing:border-box;user-select:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;";
-			th.innerHTML = col.title;
-			const tooltipText = htmlToText(col.tooltip) || htmlToText(col.title);
+			// A header is plain text by default — query-result and monitoring
+			// grids pass database column names straight through as titles, and
+			// a column can be named anything (`select 1 as "<img ...>"`).
+			// Callers that deliberately build markup (edit_data.js's escaped
+			// name + icons, the connected-users two-line headers) opt in with
+			// `titleHtml: true` and are responsible for escaping what they
+			// interpolate. The tooltip is always plain text (set via the
+			// `title` property, never parsed).
+			let tooltipText;
+			if (col.titleHtml) {
+				th.innerHTML = col.title;
+				tooltipText = col.tooltip || htmlToText(col.title);
+			} else {
+				th.textContent = col.title;
+				tooltipText = col.tooltip || col.title;
+			}
 			if (tooltipText) th.title = tooltipText;
 			// col.align is a *data*-cell alignment (see _renderRow below) --
 			// deliberately not mirrored onto the header, so a right-aligned

@@ -40,7 +40,7 @@ import {
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { customMenu } from "../custom_menu.js";
 import { v_current_terminal_theme } from "../header_actions.js";
-import { escapeHtml, querySQL } from "../query.js";
+import { escapeHtml, escapeHtmlAttribute, querySQL } from "../query.js";
 import { t } from "../i18n.js";
 import { buildSnippetContextMenuObjects } from "../tree_context_functions/tree_snippets.js";
 import {
@@ -101,7 +101,7 @@ export var v_createConsoleTabFunction = function () {
 		"</h5>" +
 		"<button id='bt_close_console_history_" +
 		v_tab.id +
-		"' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtml(t("common.close")) + "'>" +
+		"' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t("common.close")) + "'>" +
 		"<span aria-hidden='true'>&times;</span>" +
 		"</button>" +
 		"</div>" +
@@ -133,16 +133,16 @@ export var v_createConsoleTabFunction = function () {
 		"<div class='tab_actions omnidb__tab-actions col-12'>" +
 		"<button id='bt_start_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtml(t("editor.run")) + "'><i class='fas fa-play fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.run")) + "'><i class='fas fa-play fa-light'></i></button>" +
 		"<button id='bt_indent_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtml(t("editor.indent_sql")) + "'><i class='fas fa-indent fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.indent_sql")) + "'><i class='fas fa-indent fa-light'></i></button>" +
 		"<button id='bt_clear_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtml(t("console.clear_console")) + "'><i class='fas fa-broom fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.clear_console")) + "'><i class='fas fa-broom fa-light'></i></button>" +
 		"<button id='bt_history_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtml(t("console.commands_history_title")) + "'><i class='fas fa-list fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.commands_history_title")) + "'><i class='fas fa-list fa-light'></i></button>" +
 		"<div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" +
 		v_tab.id +
 		"' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" +
@@ -150,27 +150,27 @@ export var v_createConsoleTabFunction = function () {
 		"'>" + escapeHtml(t("editor.autocommit")) + "</label></div>" +
 		"<div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" +
 		v_tab.id +
-		"' title='" + escapeHtml(t("query.status_not_connected")) + "' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" +
+		"' title='" + escapeHtmlAttribute(t("query.status_not_connected")) + "' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" +
 		v_tab.id +
-		"' title='" + escapeHtml(t("query.status_not_connected")) + "' class='tab-status-text query_info dbms_object postgresql_object ms-1'>" + escapeHtml(t("query.status_not_connected")) + "</span></div>" +
+		"' title='" + escapeHtmlAttribute(t("query.status_not_connected")) + "' class='tab-status-text query_info dbms_object postgresql_object ms-1'>" + escapeHtml(t("query.status_not_connected")) + "</span></div>" +
 		"<button id='bt_fetch_more_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtml(t("console.fetch_more_tooltip")) + "' style='display: none; '>" + escapeHtml(t("editor.fetch_more")) + "</button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.fetch_more_tooltip")) + "' style='display: none; '>" + escapeHtml(t("editor.fetch_more")) + "</button>" +
 		"<button id='bt_fetch_all_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtml(t("console.fetch_all_tooltip")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.fetch_all")) + "</button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.fetch_all_tooltip")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.fetch_all")) + "</button>" +
 		"<button id='bt_skip_fetch_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtml(t("console.skip_fetch")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("console.skip_fetch")) + "</button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.skip_fetch")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("console.skip_fetch")) + "</button>" +
 		"<button id='bt_commit_" +
 		v_tab.id +
-		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtml(t("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.commit")) + "</button>" +
+		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.commit")) + "</button>" +
 		"<button id='bt_rollback_" +
 		v_tab.id +
-		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtml(t("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.rollback")) + "</button>" +
+		"' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.rollback")) + "</button>" +
 		"<button id='bt_cancel_" +
 		v_tab.id +
-		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='" + escapeHtml(t("common.cancel")) + "' style=' display: none;'>" + escapeHtml(t("common.cancel")) + "</button>" +
+		"' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("common.cancel")) + "' style=' display: none;'>" + escapeHtml(t("common.cancel")) + "</button>" +
 		"<div id='div_query_info_" +
 		v_tab.id +
 		"' class='omnidb__query-info'></div>" +

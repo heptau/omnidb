@@ -52,6 +52,7 @@ import { createTabControl } from "./tabs.js";
 import { escapeHtml } from "./query.js";
 import { refreshHeights } from "./workspace.js";
 import { t } from "./i18n.js";
+import { jsonPostHeaders } from "./ajax_control_bridge.js";
 
 const SECTION_NAMES = ["welcome", "connections", "database", "monitoring", "notify", "permissions", "connected_users", "snippets", "settings"];
 
@@ -94,7 +95,7 @@ function applyWindowTitle(p_name) {
 	if (gv_desktopMode) {
 		fetch("/notify_title/", {
 			method: "POST",
-			headers: { "Content-Type": "application/json" },
+			headers: jsonPostHeaders(),
 			body: JSON.stringify({ title: v_title }),
 		}).catch(function () {
 			// Best-effort -- a missed native title-bar update is cosmetic.

@@ -32,11 +32,11 @@ SOFTWARE.
 /// Startup function.
 /// </summary>
 
-import { execAjax } from "./ajax_control_bridge.js";
+import { execAjax, jsonPostHeaders } from "./ajax_control_bridge.js";
 import { customMenu } from "./custom_menu.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { parsePgpassText } from "./passwords.js";
-import { escapeHtml } from "./query.js";
+import { escapeHtml, escapeHtmlAttribute } from "./query.js";
 import { switchSection } from "./section_switcher.js";
 import { getDatabaseList, resizeConnectionsHorizontal } from "./workspace.js";
 import { t, tn } from "./i18n.js";
@@ -232,7 +232,7 @@ export function showConnectionList(p_show_section, p_change_group, p_callback) {
 					"</span>" +
 					"</span>" +
 					(v_conn_obj.tunnel && v_conn_obj.tunnel.enabled
-						? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="' + escapeHtml(t("connections.uses_ssh_tunnel")) + '"></i>'
+						? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="' + escapeHtmlAttribute(t("connections.uses_ssh_tunnel")) + '"></i>'
 						: "");
 
 				var v_checkbox = document.createElement("input");
@@ -993,7 +993,7 @@ export function deleteConnection(p_conn_obj) {
 // creating a duplicate.
 export function importConnectionsFromPgpass() {
 	if (gv_desktopMode) {
-		fetch("/pgpass_import/", { method: "POST", headers: { "Content-Type": "application/json" } })
+		fetch("/pgpass_import/", { method: "POST", headers: jsonPostHeaders() })
 			.then(function (p_response) {
 				return p_response.json();
 			})

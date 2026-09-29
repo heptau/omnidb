@@ -4,11 +4,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Fonctionnalités supplémentaires — Documentation OmniDB</title>
-	<meta name="description" content="Les outils supplémentaires d'OmniDB : paramètres utilisateur, documentation PostgreSQL contextuelle, extraits de code, le panneau Notify, gestion des processus serveur, panneaux de propriétés/DDL, export de données et console SSH.">
+	<meta name="description" content="Outils supplémentaires d'OmniDB : la page d'accueil et le tutoriel Prise en main, la documentation PostgreSQL contextuelle, les panneaux Propriétés/DDL, l'export de données, l'export en DBML, l'historique des requêtes et la console SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/additional_features.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/additional_features.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/additional_features.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/additional_features.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/additional_features.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/additional_features.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/additional_features.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/additional_features.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -18,7 +22,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/fr/additional_features.html">
 	<meta property="og:title" content="Fonctionnalités supplémentaires - Documentation OmniDB">
-	<meta property="og:description" content="Les outils supplémentaires d'OmniDB : paramètres utilisateur, documentation PostgreSQL contextuelle, extraits de code, le panneau Notify, gestion des processus serveur, panneaux de propriétés/DDL, export de données et console SSH.">
+	<meta property="og:description" content="Outils supplémentaires d'OmniDB : la page d'accueil et le tutoriel Prise en main, la documentation PostgreSQL contextuelle, les panneaux Propriétés/DDL, l'export de données, l'export en DBML, l'historique des requêtes et la console SSH.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -128,108 +140,96 @@
 		</nav>
 		<main>
 		<h1>Fonctionnalités supplémentaires</h1>
-		<h4>Paramètres utilisateur</h4>
-		<p>Toujours dans le coin supérieur droit, en cliquant sur l’icône en forme d’engrenage, OmniDB
-			ouvre la fenêtre <em>User Settings</em> (Paramètres utilisateur). Elle comporte quatre onglets :</p>
-		<ul>
-			<li><strong>Shortcuts</strong> (Raccourcis) : permet à l’utilisateur de modifier ses raccourcis dans OmniDB.</li>
-			<li><strong>Options</strong> : permet à l’utilisateur de modifier la taille de police de l’interface et de configurer
-				les options liées au CSV (encodage, délimiteur). Le thème d’OmniDB peut être réglé sur Automatique (suit la
-				préférence de thème de couleur de votre système d’exploitation), Clair ou Sombre.</li>
-			<li><strong>Formatting</strong> (Formatage) : configure la façon dont le formateur SQL (l’action <em>Indent SQL</em>)
-				réécrit votre requête — caractère d’indentation (espaces ou tabulation), taille d’indentation (2/3/4), style de
-				virgule (en début ou en fin de ligne) et casse des mots-clés (conserver/MAJUSCULES/minuscules). Définit également
-				la <strong>Ruler Column</strong> (Colonne de règle) — la ligne de repère verticale que l’éditeur SQL affiche
-				(24-999, valeur par défaut 128) — appliquée en direct à tous les éditeurs ouverts.</li>
-			<li><strong>Password</strong> (Mot de passe) : permet à l’utilisateur de changer son mot de passe.</li>
-		</ul>
+		<p>Ce chapitre rassemble de petites fonctionnalités qui ne justifient pas un chapitre à part entière. Plusieurs
+			fonctionnalités autrefois décrites ici disposent désormais de leur propre chapitre :
+			<a href="settings_and_languages.html">Paramètres et langues</a>,
+			<a href="snippets.html">Extraits</a>, <a href="notify.html">Notifications</a>,
+			<a href="connected_users.html">Utilisateurs connectés</a> (qui remplace l’ancien menu
+			<em>Processus serveur</em> de l’arborescence) et <a href="permissions.html">Rôles et autorisations</a>.</p>
+		<h4>La page d’accueil</h4>
+		<p>L’icône <em>Bienvenue</em> en haut de la barre de navigation de gauche ouvre une page de démarrage comportant le
+			bouton <em>Prise en main</em>, un rappel que la plupart des actions agissent directement sur la base de données
+			à laquelle vous êtes connecté (entraînez-vous donc sur un environnement de test plutôt qu’en production), des liens vers
+			le site web d’OmniDB, le dépôt GitHub et cette documentation, ainsi que la version que vous
+			utilisez.</p>
+		<h4>Tutoriel Prise en main</h4>
+		<p>L’icône en forme d’ampoule près du bas de la barre (<em>Prise en main</em> ; dans l’application de
+			bureau, également <em>Aide &gt; Prise en main</em>) ouvre une liste de guides interactifs qui
+			mettent en évidence, étape par étape, les parties concernées de l’écran : créer un utilisateur OmniDB (version
+			serveur uniquement), créer une connexion à une base de données, créer une connexion de terminal, découvrir le
+			panneau des extraits, utiliser une connexion et l’onglet de connexion (disponible dès qu’une connexion est
+			ouverte). <em>Terminer le guide</em> quitte un guide à tout moment.</p>
 		<h4>Aide contextuelle</h4>
-		<p>La plupart des nœuds de l’arborescence (généralement les nœuds de regroupement comme <em>Schemas</em> ou
-			<em>Tables</em>) offrent une aide contextuelle. Cette fonctionnalité est accessible via un clic droit sur le nœud
-			de l’arborescence. Lorsque vous cliquez sur l’option <em>Doc : …</em>, OmniDB ouvre la page correspondante de la
-			<strong>documentation PostgreSQL</strong> en ligne dans votre navigateur web (le navigateur par défaut du système
-			dans l’application de bureau, ou un nouvel onglet lorsqu’elle fonctionne en tant qu’<a href="deploying_omnidb-server.html">OmniDB
-			Server</a> accessible depuis un navigateur). Elle sélectionne également la bonne version de documentation pour le
+		<p>La plupart des nœuds de l’arborescence (généralement les nœuds de regroupement comme <em>Schémas</em> ou
+			<em>Tables</em>) offrent une aide contextuelle. Cette fonctionnalité est accessible via un clic droit sur le nœud
+			de l’arborescence. Lorsque vous cliquez sur l’option <em>Doc. : …</em>, OmniDB ouvre la page correspondante de la
+			<strong>documentation PostgreSQL</strong> en ligne dans votre navigateur web (le navigateur par défaut du système
+			dans l’application de bureau, ou un nouvel onglet lorsqu’elle fonctionne en tant qu’<a href="deploying_omnidb-server.html">OmniDB
+			Server</a> accessible depuis un navigateur). Elle sélectionne également la bonne version de documentation pour le
 			serveur PostgreSQL auquel vous êtes connecté.</p>
 		<p><img alt="" src="../assets/img/image_071.webp" /></p>
-		<h4>Extraits de code (Snippets)</h4>
-		<p>La <em>fenêtre de travail</em> (Workspace Window) comporte un onglet externe fixe doté d’une fonctionnalité utile
-			appelée <em>Snippets</em>. Elle vous permet de stocker des requêtes, des instructions de commande et tout autre
-			type de texte que vous souhaitez conserver. Vous pouvez également organiser les extraits dans une arborescence de
-			répertoires selon vos préférences. Tous les répertoires et extraits que vous créez sont stockés dans la base de
-			données utilisateur <code>omnidb.db</code> et persistent lors des mises à jour d’OmniDB.
-		</p>
-		<p>Une barre « + »/« - » sous l’arborescence des extraits permet d’ajouter un extrait dans le dossier
-			actuellement sélectionné (ou à la racine de l’arborescence) et de supprimer l’élément sélectionné ; le bouton
-			« - » reste désactivé tant qu’aucun élément supprimable n’est sélectionné. Un onglet d’extrait ouvert affiche
-			un petit point à côté de son titre dès que l’éditeur diverge de la version enregistrée, effacé lors de
-			l’enregistrement ; la fermeture d’un onglet ne demande une confirmation que lorsqu’il contient réellement des
-			modifications non enregistrées.</p>
-		<p><img alt="" src="../assets/img/image_127.webp" /></p>
-		<h4>Notify</h4>
-		<p>Le panneau <em>Notify</em> se trouve dans la barre latérale entre Database et Snippets, et diffuse en continu
-			les messages PostgreSQL <code>LISTEN</code>/<code>NOTIFY</code>, Oracle <code>DBMS_ALERT</code> et Firebird
-			<code>POST_EVENT</code>. Les canaux sont ajoutés, supprimés, mis en pause et repris par connexion, et persistent
-			après le redémarrage de l’application ; les messages reçus sont éphémères, conservés uniquement dans l’onglet
-			du navigateur et effacés au rechargement de la page. Les messages peuvent être consultés sur tous les canaux
-			ou filtrés sur une sélection, et effacés canal par canal ou tous à la fois. MySQL/MariaDB/MS SQL Server/SQLite
-			affichent un message « non pris en charge » plutôt que de masquer la fonctionnalité. La session Notify d’une
-			connexion démarre et s’arrête avec son onglet Database, et le panneau partage la même bande horizontale de
-			connexions ouvertes que le panneau Database, de sorte que sélectionner une connexion dans l’un maintient
-			l’autre synchronisé.</p>
-		<h4>Gestion des processus serveur</h4>
-		<p>En faisant un clic droit sur le nœud racine de l’arborescence, puis en déplaçant le pointeur de la souris vers
-			<em>Monitoring</em> (Supervision) et en cliquant sur <em>Backends</em> (Processus serveur), l’utilisateur peut voir
-			toutes les activités en cours dans la base de données. Certaines informations sont masquées pour les
-			utilisateurs normaux ; seuls les superutilisateurs de la base de données sont autorisés à les voir.
-		</p>
-		<p><img alt="" src="../assets/img/image_174.webp" /></p>
-		<p>En cliquant sur le <em>X</em> dans la colonne <em>Actions</em>, vous pouvez mettre fin au processus. Une fenêtre de
-			confirmation apparaîtra.</p>
-		<p><img alt="" src="../assets/img/image_175.webp" /></p>
-		<h4>Propriétés et DDL</h4>
-		<p>En cliquant sur la plupart des objets de l’arborescence (tables, séquences, vues, rôles, bases de données,
-			etc.), l’utilisateur pourra consulter une liste très complète des propriétés de l’objet.</p>
+		<h4>Propriétés et DDL</h4>
+		<p>En cliquant sur la plupart des objets de l’arborescence (tables, séquences, vues, rôles, bases de données,
+			etc.), l’utilisateur pourra consulter une liste très complète des propriétés de l’objet.</p>
 		<p><img alt="" src="../assets/img/image_176.webp" /></p>
-		<p>Dans l’autre panneau, appelé <em>DDL</em>, l’utilisateur peut voir le code source SQL DDL permettant de recréer
-			l’objet. L’utilisateur peut copier ce texte et le coller où il le souhaite.</p>
+		<p>Dans l’autre panneau, appelé <em>DDL</em>, l’utilisateur peut voir le code source SQL DDL permettant de recréer
+			l’objet — y compris son commentaire (<code>COMMENT ON …</code>) et ses privilèges (<code>GRANT …</code>) lorsque la
+			base de données en possède. L’utilisateur peut copier ce texte et le coller où il le souhaite.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
-		<h4>Export de données</h4>
-		<p>L’<em>onglet Requête</em> (Query Tab) permet d’enregistrer les données des résultats de requête au format
-			CSV, TSV, XLSX, Markdown, JSON ou XML. Une fois que vous cliquez sur le bouton <em>Export Data</em> (Exporter les données),
-			un traitement annulable démarre en arrière-plan pour enregistrer les données dans le fichier. Une fois terminé,
-			OmniDB fournit un lien nommé <em>Save</em> (Enregistrer), permettant à l’utilisateur de télécharger le fichier.
-			L’encodage CSV/TSV (dans <em>Paramètres utilisateur</em> &gt; <em>Options</em>) est désormais défini par défaut sur
-			UTF-8 avec BOM, et sa liste de codecs est regroupée en catégories lisibles.
-		</p>
+		<p>Le séparateur au-dessus du panneau Propriétés/DDL peut être déplacé, et le panneau (tout comme
+			l’arborescence de la base de données elle-même) peut être replié à l’aide du petit bouton de bascule situé sur son séparateur — dans
+			l’application de bureau, également avec <em>Affichage &gt; Afficher/masquer le panneau propriétés/DDL</em> et <em>Affichage &gt;
+			Afficher/masquer l’arborescence de la base de données</em>.</p>
+		<h4>Export de données</h4>
+		<p>L’<em>onglet Requête</em> permet d’enregistrer les résultats de sa requête dans un fichier CSV, TSV, XLSX, JSON, XML ou
+			Markdown. Choisissez le format dans la liste déroulante à côté du bouton <em>Exporter les données</em> puis
+			cliquez sur le bouton : OmniDB exécute à nouveau la requête en arrière-plan et écrit l’intégralité du résultat
+			dans le fichier (l’export peut être annulé pendant son exécution).</p>
+		<ul>
+			<li>Dans l’<strong>application de bureau</strong>, une boîte de dialogue native <em>Enregistrer sous</em> s’ouvre pour que vous
+				choisissiez où enregistrer le fichier, et OmniDB confirme par <em>Fichier exporté vers : …</em>.</li>
+			<li>Dans le <strong>navigateur</strong> (version serveur), la zone de résultat affiche <em>Le fichier est
+				prêt.</em> avec un lien <em>Enregistrer</em> qui le télécharge.</li>
+		</ul>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
-		<p>Tous les fichiers sont stockés dans un dossier temporaire situé dans le dossier d’OmniDB. OmniDB nettoie
-			régulièrement ce dossier, en ne conservant que les fichiers datant de moins de 24 heures.</p>
+		<p>Les fichiers CSV et TSV utilisent l’encodage défini dans <em>Paramètres &gt; Export &gt; Encodage
+			CSV/TSV</em> (par défaut : UTF-8 with BOM), et les fichiers CSV le <em>Délimiteur CSV</em> qui y est défini
+			(<code>;</code> par défaut). Les fichiers d’export sont conservés dans un dossier temporaire du répertoire personnel
+			d’OmniDB, ne peuvent être téléchargés que par l’utilisateur qui les a créés, et sont supprimés
+			automatiquement au bout de 24 heures.</p>
 		<h4>Exporter en DBML</h4>
 		<p>Faites un clic droit sur un nœud de base de données dans l’arborescence PostgreSQL et choisissez
-			<em>Export as DBML</em> (Exporter en DBML) pour générer le schéma complet de la base de données
+			<em>Exporter en DBML</em> pour générer le schéma complet de la base de données
 			sous forme de document <a href="https://dbml.dbdiagram.io/home/" target="_blank"
 			rel="noopener">DBML</a> (Database Markup Language) — chaque table, colonne, type de donnée, clé
 			primaire, contrainte unique et clé étrangère, index et commentaire — via une seule requête
 			d’introspection en SQL pur adaptée du projet <a href="https://pg_dbml.80.cz" target="_blank"
 			rel="noopener">pg_dbml</a>.</p>
 		<p>Le DBML est un format de schéma compact en texte brut, ce qui en fait un bon moyen de donner du
-			contexte sur votre base de données à un assistant LLM/IA : coller un fichier <code>.dbml</code>
+			contexte sur votre base de données à un assistant LLM/IA : coller un fichier <code>.dbml</code>
 			dans une conversation coûte bien moins de tokens que de coller un export SQL complet ou de laisser
 			le modèle exécuter ses propres requêtes d’introspection table par table, tout en décrivant
 			précisément chaque table, colonne, type et relation.</p>
 		<p>Le fichier généré porte par défaut le nom <code>&lt;base_de_données&gt;.dbml</code>. Dans
-			l’application de bureau, cela ouvre la boîte de dialogue native Enregistrer, comme pour
-			<em>Export Data</em> ; dans le navigateur (serveur), une invite <em>Download</em>/<em>Cancel</em>
-			(Télécharger/Annuler) s’affiche à la place — <em>Cancel</em> supprime immédiatement le fichier
+			l’application de bureau, cela ouvre la boîte de dialogue native d’enregistrement, comme pour
+			<em>Exporter les données</em> ; dans le navigateur (serveur), une invite <em>Télécharger</em>/<em>Annuler</em>
+			s’affiche à la place — <em>Annuler</em> supprime immédiatement le fichier
 			généré au lieu d’attendre le nettoyage du dossier temporaire après 24 heures. Pour l’instant,
 			PostgreSQL uniquement.</p>
-		<h4>Historique des requêtes</h4>
-		<p>Depuis l’<em>onglet Requête</em>, vous pouvez cliquer sur le bouton <em>Command History</em> (Historique des
-			commandes) pour afficher un onglet de requête complet, consultable et permettant la recherche.</p>
+		<h4>Historique des requêtes</h4>
+		<p>Depuis l’<em>onglet Requête</em>, vous pouvez cliquer sur le bouton <em>Historique des commandes</em> pour
+			afficher la liste complète, consultable et permettant la recherche, des commandes exécutées sur cette connexion, filtrable
+			par plage de dates et par texte. Voir <a href="writing_sql_queries.html">Écrire des requêtes SQL</a>.</p>
 		<p><img alt="" src="../assets/img/image_203.webp" /></p>
 		<h4>Console SSH</h4>
-		<p>OmniDB propose également une console SSH complète.</p>
+		<p>Outre les connexions aux bases de données, OmniDB peut ouvrir un terminal SSH complet vers un serveur. Créez
+			une connexion de type <em>Terminal</em> dans la section Connexions, en renseignant le serveur
+			SSH, le port, l’utilisateur et le mot de passe ou la clé privée (voir
+			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>). Ouvrez-la
+			depuis le <em>+</em> à la fin de la bande des onglets de connexion → <em>Consoles SSH</em>, ou avec
+			<em>Connecter</em> dans son formulaire. Le terminal s’ouvre dans son propre onglet de connexion ; la clé d’hôte
+			du serveur doit déjà être connue — voir <a href="security.html">Sécurité et serveur
+			multi-utilisateur</a>.</p>
 		<p><img alt="" src="../assets/img/image_204.webp" /></p>
 		</main>
 	</div>

@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Snippets – OmniDB-Dokumentation</title>
+	<meta name="description" content="SQL-Snippets in OmniDB speichern, organisieren und wiederverwenden: der Bereich Snippets, Ordner, Speichern und Einfügen von Snippets aus Abfrage- und Konsolen-Tabs.">
+	<link rel="canonical" href="https://www.omnidb.net/de/snippets.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/snippets.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/snippets.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/snippets.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/snippets.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/snippets.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/snippets.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/snippets.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/snippets.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/de/snippets.html">
+	<meta property="og:title" content="Snippets - OmniDB-Dokumentation">
+	<meta property="og:description" content="SQL-Snippets in OmniDB speichern, organisieren und wiederverwenden: der Bereich Snippets, Ordner, Speichern und Einfügen von Snippets aus Abfrage- und Konsolen-Tabs.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/de/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentation", "item": "https://www.omnidb.net/de/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Snippets", "item": "https://www.omnidb.net/de/snippets.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Navigation umschalten">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentation</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Sponsern" title="Sponsern">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Stern auf GitHub" title="Stern auf GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Sprache ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Design ändern" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatisch</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Hell</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Dunkel</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Startseite</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Erste Schritte</span>
+			<a href="introduction.html">Einführung</a>
+			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop-App</a>
+			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+			<a href="settings_and_languages.html">Einstellungen und Sprachen</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Arbeiten mit Daten</span>
+			<a href="managing_databases.html">Datenbanken verwalten</a>
+			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
+			<a href="managing_table_data.html">Tabellendaten verwalten</a>
+			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="snippets.html" class="active">Snippets</a>
+			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
+			<a href="visualizing_data.html">Daten visualisieren</a>
+			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Erweitert</span>
+			<a href="additional_features.html">Zusätzliche Funktionen</a>
+			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
+			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
+			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="notify.html">Benachrichtigungen</a>
+			<a href="connected_users.html">Verbundene Benutzer</a>
+			<a href="permissions.html">Rollen und Berechtigungen</a>
+			<a href="logical_replication.html">Logische Replikation</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server &amp; Tools</span>
+			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>
+			<a href="console_tab.html">Konsolen-Tab</a>
+			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referenz</span>
+			<a href="legacy_features_and_history.html">Legacy-Funktionen &amp; Historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Snippets</h1>
+<p><em>Snippets</em> sind Textbausteine — Abfragen, Skripte, Befehlsvorlagen, Notizen —, die Sie in OmniDB
+aufbewahren und in jedem SQL-Editor wiederverwenden. Sie sind in einem Ordnerbaum organisiert, werden in
+der eigenen Benutzerdatenbank von OmniDB gespeichert (sodass sie Upgrades überstehen) und sind für jeden
+OmniDB-Benutzer privat.</p>
+<h4>Der Bereich Snippets</h4>
+<p>Klicken Sie in der linken Leiste auf das Symbol <em>Snippets</em> (die Schriftrolle). Der Bereich zeigt
+links den Ordnerbaum und rechts die Editor-Tabs der Snippets; die Trennlinie dazwischen lässt sich
+verschieben.</p>
+<p>Ein Rechtsklick auf eine leere Stelle im Baum bietet <em>Aktualisieren</em>, <em>Neuer Ordner</em> und
+<em>Snippet hinzufügen</em>. Ein Rechtsklick auf einen Ordner bietet dasselbe sowie <em>Ordner
+umbenennen</em> und <em>Ordner löschen</em>; ein Rechtsklick auf ein Snippet bietet <em>Bearbeiten</em>,
+<em>Umbenennen</em> und <em>Löschen</em>. Ein Doppelklick auf ein Snippet öffnet es in einem Editor-Tab
+(oder wechselt zu ihm, falls es bereits geöffnet ist). Die Schaltfläche <strong>+</strong> unter dem Baum
+fügt dem ausgewählten Ordner (oder der obersten Ebene) ein Snippet hinzu, <strong>−</strong> löscht das
+ausgewählte Element.</p>
+<h4>Bearbeiten und Speichern</h4>
+<p>Jeder Editor-Tab ist ein vollständiger SQL-Editor (Syntaxhervorhebung, Autovervollständigung, Suchen
+&amp; Ersetzen) mit den Schaltflächen <em>Einrücken</em> und <em>Speichern</em> darunter. Der Bereich
+beginnt immer mit einem leeren Tab <em>Neues Snippet</em>, und der Tab <em>+</em> öffnet einen weiteren.</p>
+<p>Ein kleiner Punkt neben dem Titel eines Tabs bedeutet, dass er ungespeicherte Änderungen enthält;
+Speichern entfernt ihn, und das Schließen eines Tabs fragt nur dann nach einer Bestätigung, wenn er
+tatsächlich ungespeicherte Änderungen hat. Das Speichern eines aus dem Baum geöffneten Snippets
+überschreibt es. Das Speichern eines neuen, unbenannten Tabs öffnet stattdessen ein Menü:
+<em>Neues Snippet</em> (fragt nach einem Namen und speichert auf der obersten Ebene), <em>ÜBERSCHREIBEN …</em>
+für jedes vorhandene Snippet sowie ein Untermenü für jeden Ordner mit denselben Möglichkeiten darin. Vor
+dem Überschreiben eines vorhandenen Snippets wird zunächst eine Bestätigung abgefragt.</p>
+<p>Tastenkombinationen im Bereich Snippets (sie lassen sich unter
+<a href="settings_and_languages.html">Einstellungen &gt; Tastenkombinationen &gt; Snippets</a> ändern):</p>
+<table>
+	<thead>
+		<tr>
+			<th>Aktion</th>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Snippet speichern</td>
+			<td>Ctrl-S</td>
+			<td>Command-S</td>
+		</tr>
+		<tr>
+			<td>Neues Snippet</td>
+			<td>Ctrl-N</td>
+			<td>Command-N</td>
+		</tr>
+		<tr>
+			<td>Snippet-Tab schließen</td>
+			<td>Ctrl-W</td>
+			<td>Command-W</td>
+		</tr>
+	</tbody>
+</table>
+<h4>Snippets in einem Abfrage- oder Konsolen-Tab verwenden</h4>
+<p>Klicken Sie mit der rechten Maustaste in den Editor eines Abfrage- oder Konsolen-Tabs:</p>
+<ul>
+<li><em>Als Snippet speichern</em> speichert den Text des Editors als Snippet, über dasselbe Menü wie oben
+(ein neues Snippet oder Überschreiben eines vorhandenen, in einem beliebigen Ordner);</li>
+<li><em>Snippet verwenden</em> (erscheint, sobald Sie mindestens ein Snippet haben) fügt den Text des
+gewählten Snippets an der Cursorposition ein.</li>
+</ul>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

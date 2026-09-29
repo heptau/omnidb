@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/en/introduction.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/introduction.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/introduction.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/introduction.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/introduction.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/introduction.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/introduction.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/introduction.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html" class="active">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -129,7 +141,8 @@
 		<main>
 			<h1>Introduction</h1>
 			<p><strong>OmniDB</strong> is an open source browser-based app designed to access and manage
-				many different Database Management systems, e.g. PostgreSQL, Oracle and MySQL.
+				many different Database Management systems: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server,
+				Firebird and SQLite.
 				OmniDB can run either as a desktop app or via browser, combining the flexibility needed
 				for various access paths with a design that puts security first. OmniDB is
 				actively developed, automatically tested on a variety of databases and browsers
@@ -151,11 +164,21 @@
 				and monitoring — is executed in the background and streamed back to the browser
 				as it completes, so the user can keep working across multiple databases and
 				multiple hosts at the same time without blocking on any single one.</p>
-			<p>OmniDB is also secure. All OmniDB user data are stored encrypted, and no
-				database password is stored at all. When the user first connects to a database,
-				OmniDB asks for the password. This password is encrypted and stored in memory
-				for a specific amount of time. When this time expires, OmniDB asks the password
-				again. This ensures maximum security for the database OmniDB is connecting to.</p>
+			<p>OmniDB is also secure. Database passwords you choose to save are encrypted before they
+				are stored, with a key kept in your operating system's secret store; if you prefer not to
+				store a password at all, OmniDB asks for it when you connect and keeps it only in memory, for
+				a limited time. A multi-user server adds sign-in protection and restricts what users can
+				reach on the server machine itself — see <a href="security.html">Security and Multi-user
+				Server</a>.</p>
+			<p>Next to the SQL editor and the database tree, the workspace offers a live
+				<a href="monitoring_dashboard.html">monitoring dashboard</a>, a list of
+				<a href="connected_users.html">connected users</a>, a
+				<a href="notify.html">notification listener</a> (LISTEN/NOTIFY and friends), a
+				<a href="permissions.html">role and privilege browser</a> for PostgreSQL,
+				<a href="snippets.html">snippets</a>, data export to many formats and SSH terminals. The
+				interface is available in English, Czech, German, Spanish, French, Italian, Portuguese,
+				Japanese and Korean — see <a href="settings_and_languages.html">Settings and
+				Languages</a>.</p>
 			<h4>History</h4>
 			<p><strong>OmniDB</strong>'s creators, Rafael Thofehrn Castro and William Ivanski, worked in a
 				company where they needed to deal with several different databases from

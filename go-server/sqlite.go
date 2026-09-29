@@ -3,6 +3,8 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"os"
+	"path/filepath"
 	"strings"
 
 	_ "modernc.org/sqlite"
@@ -12,7 +14,21 @@ import (
 // connection points at — not to be confused with OmniDB's own app database
 // (users/connections/snippets), which is opened via openAppDB instead (see
 // appdb.go).
+//
+// In server mode the file lives on the *server*, so a saved SQLite
+// connection is effectively server filesystem access: pointed at OmniDB's
+// own omnidb.db it hands whoever opens it every user's password hash,
+// connection rows and the ability to flip their own is_superuser. So there
+// (see checkSQLiteTargetPath) paths inside OmniDB's home directory and
+// file: URIs are refused, and SQLite connections are superuser-only (see
+// sqliteAllowedFor) — a superuser could still ATTACH such a file from a
+// query, but superusers already administer every account on the instance.
+// Desktop mode is single-user — the file is the user's own — and is left
+// unrestricted.
 func openSQLiteTarget(path string) (*sql.DB, error) {
+	if err := checkSQLiteTargetPath(path); err != nil {
+		return nil, err
+	}
 	db, err := sql.Open("sqlite", path)
 	if err != nil {
 		return nil, err
@@ -22,6 +38,58 @@ func openSQLiteTarget(path string) (*sql.DB, error) {
 		return nil, err
 	}
 	return db, nil
+}
+
+// checkSQLiteTargetPath enforces openSQLiteTarget's server-mode path rules
+// (a no-op in desktop mode). Also used by test_connection's file-existence
+// check, which would otherwise be a probe of the server's filesystem.
+func checkSQLiteTargetPath(path string) error {
+	if appToken != "" {
+		return nil
+	}
+	if strings.HasPrefix(strings.ToLower(strings.TrimSpace(path)), "file:") {
+		return fmt.Errorf("SQLite URI file names are not allowed on a multi-user server")
+	}
+	home, _, err := homeDirPath(os.Args[1:])
+	if err != nil {
+		return err
+	}
+	if pathWithin(canonicalPath(path), canonicalPath(home)) {
+		return fmt.Errorf("this SQLite file is inside OmniDB's own data directory and cannot be opened")
+	}
+	return nil
+}
+
+// canonicalPath returns path made absolute with symlinks resolved as far
+// as the path exists (a not-yet-existing file resolves through its nearest
+// existing ancestor), so a symlink can't smuggle a protected path past
+// pathWithin.
+func canonicalPath(path string) string {
+	abs, err := filepath.Abs(path)
+	if err != nil {
+		return filepath.Clean(path)
+	}
+	rest := ""
+	cur := abs
+	for {
+		if resolved, err := filepath.EvalSymlinks(cur); err == nil {
+			return filepath.Join(resolved, rest)
+		}
+		parent := filepath.Dir(cur)
+		if parent == cur {
+			return abs
+		}
+		rest = filepath.Join(filepath.Base(cur), rest)
+		cur = parent
+	}
+}
+
+func pathWithin(path, dir string) bool {
+	rel, err := filepath.Rel(dir, path)
+	if err != nil {
+		return false
+	}
+	return rel == "." || (rel != ".." && !strings.HasPrefix(rel, ".."+string(filepath.Separator)))
 }
 
 // sqliteProperties mirrors SQLite.py's GetProperties: a table of Property/

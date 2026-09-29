@@ -35,6 +35,12 @@
       v_is_loading = false;
     }
   }
+  function jsonPostHeaders() {
+    return {
+      "Content-Type": "application/json",
+      "X-CSRFToken": getCookie(v_csrf_cookie_name) || ""
+    };
+  }
   function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== "") {
@@ -131,6 +137,7 @@
     endLoading,
     execAjax,
     getCookie,
+    jsonPostHeaders,
     reportOffline,
     startLoading,
     get v_ajax_call() {

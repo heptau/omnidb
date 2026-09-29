@@ -7,8 +7,12 @@
 	<meta name="description" content="OmniDB es una herramienta de código abierto para la gestión de bases de datos PostgreSQL, Oracle, MySQL y otras, que unifica el acceso a distintos SGBD en un único espacio de trabajo seguro basado en navegador.">
 	<link rel="canonical" href="https://www.omnidb.net/es/introduction.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/introduction.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/introduction.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/introduction.html">
 	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/introduction.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/introduction.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/introduction.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/introduction.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/introduction.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html" class="active">Introducción</a>
 			<a href="installation.html">Instalación</a>
+			<a href="desktop_app.html">Aplicación de escritorio</a>
 			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="settings_and_languages.html">Configuración e idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
 			<a href="visualizing_data.html">Visualización de datos</a>
 			<a href="managing_other_elements.html">Administración de otros elementos</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="notify.html">Notificaciones</a>
+			<a href="connected_users.html">Usuarios conectados</a>
+			<a href="permissions.html">Roles y permisos</a>
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="security.html">Seguridad y servidor multiusuario</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
 		</div>
@@ -130,7 +141,8 @@
 		<main>
 			<h1>Introducción</h1>
 			<p><strong>OmniDB</strong> es una aplicación de código abierto basada en navegador, diseñada para acceder
-				a numerosos sistemas de gestión de bases de datos (SGBD) y administrarlos, por ejemplo PostgreSQL, Oracle y MySQL.
+				a numerosos sistemas de gestión de bases de datos (SGBD) y administrarlos: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server,
+				Firebird y SQLite.
 				OmniDB puede ejecutarse tanto como aplicación de escritorio como en el navegador, combinando la flexibilidad necesaria
 				para los distintos modos de acceso con un diseño que prioriza ante todo la seguridad. OmniDB se
 				desarrolla activamente, se prueba automáticamente en diversas bases de datos y navegadores
@@ -152,11 +164,21 @@
 				y monitorización — se ejecutan en segundo plano y se transmiten al navegador
 				a medida que se completan, de modo que el usuario puede seguir trabajando con varias bases de datos y
 				varios servidores al mismo tiempo, sin quedar bloqueado por ninguno de ellos.</p>
-			<p>OmniDB también es segura. Todos los datos de usuario de OmniDB se almacenan cifrados, y
-				no se almacena ninguna contraseña de base de datos. Cuando el usuario se conecta por primera vez a una base de datos,
-				OmniDB solicita la contraseña. Esta contraseña se cifra y se almacena en memoria
-				durante un tiempo determinado. Cuando ese tiempo expira, OmniDB vuelve a solicitar
-				la contraseña. Esto garantiza la máxima seguridad para la base de datos a la que se conecta OmniDB.</p>
+			<p>OmniDB también es segura. Las contraseñas de bases de datos que decida guardar se cifran antes de
+				almacenarse, con una clave guardada en el almacén de secretos de su sistema operativo; si prefiere no
+				almacenar ninguna contraseña, OmniDB se la solicita al conectarse y la mantiene solo en memoria, durante
+				un tiempo limitado. Un servidor multiusuario añade protección del inicio de sesión y restringe a qué pueden
+				acceder los usuarios en la propia máquina del servidor; consulte <a href="security.html">Seguridad y servidor
+				multiusuario</a>.</p>
+			<p>Además del editor SQL y del árbol de la base de datos, el espacio de trabajo ofrece un
+				<a href="monitoring_dashboard.html">panel de monitorización</a> en tiempo real, una lista de
+				<a href="connected_users.html">usuarios conectados</a>, un
+				<a href="notify.html">receptor de notificaciones</a> (LISTEN/NOTIFY y similares), un
+				<a href="permissions.html">explorador de roles y privilegios</a> para PostgreSQL,
+				<a href="snippets.html">snippets</a>, exportación de datos a numerosos formatos y terminales SSH. La
+				interfaz está disponible en inglés, checo, alemán, español, francés, italiano, portugués,
+				japonés y coreano; consulte <a href="settings_and_languages.html">Configuración e
+				idiomas</a>.</p>
 			<h4>Historia</h4>
 			<p>Los creadores de <strong>OmniDB</strong>, Rafael Thofehrn Castro y William Ivanski, trabajaban en una
 				empresa donde debían lidiar a diario con varias bases de datos distintas

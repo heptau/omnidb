@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Roles y permisos — Documentación de OmniDB</title>
+	<meta name="description" content="Explore y edite roles de PostgreSQL, pertenencias de roles y privilegios efectivos sobre objetos en la sección Permisos de OmniDB, incluidas las concesiones heredadas y a PUBLIC.">
+	<link rel="canonical" href="https://www.omnidb.net/es/permissions.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/permissions.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/permissions.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/permissions.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/permissions.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/permissions.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/permissions.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/permissions.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/permissions.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/es/permissions.html">
+	<meta property="og:title" content="Roles y permisos - Documentación de OmniDB">
+	<meta property="og:description" content="Explore y edite roles de PostgreSQL, pertenencias de roles y privilegios efectivos sobre objetos en la sección Permisos de OmniDB, incluidas las concesiones heredadas y a PUBLIC.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/es/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentación", "item": "https://www.omnidb.net/es/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Roles y permisos", "item": "https://www.omnidb.net/es/permissions.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegación">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentación</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Patrocinar" title="Patrocinar">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Estrella en GitHub" title="Estrella en GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambiar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Inglés</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Checo</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambiar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Oscuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Inicio</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeros pasos</span>
+			<a href="introduction.html">Introducción</a>
+			<a href="installation.html">Instalación</a>
+			<a href="desktop_app.html">Aplicación de escritorio</a>
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="settings_and_languages.html">Configuración e idiomas</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabajar con datos</span>
+			<a href="managing_databases.html">Administración de bases de datos</a>
+			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
+			<a href="managing_table_data.html">Administración de datos de tablas</a>
+			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
+			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
+			<a href="visualizing_data.html">Visualización de datos</a>
+			<a href="managing_other_elements.html">Administración de otros elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzado</span>
+			<a href="additional_features.html">Funciones adicionales</a>
+			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="notify.html">Notificaciones</a>
+			<a href="connected_users.html">Usuarios conectados</a>
+			<a href="permissions.html" class="active">Roles y permisos</a>
+			<a href="logical_replication.html">Replicación lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor y herramientas</span>
+			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="security.html">Seguridad y servidor multiusuario</a>
+			<a href="console_tab.html">Pestaña de consola</a>
+			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referencia</span>
+			<a href="legacy_features_and_history.html">Funciones heredadas e historial</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Roles y permisos</h1>
+<p>La sección <em>Permisos</em> es un explorador de roles y privilegios para PostgreSQL. Presenta
+los roles de un servidor al estilo de Finder, en columnas contiguas: elija un rol a la izquierda y las columnas a
+su derecha muestran de quién es miembro, quién es miembro de él y qué puede hacer realmente sobre cada objeto de
+la base de datos, incluido todo lo que solo tiene de forma indirecta, a través de pertenencias de roles heredadas o
+a través de <code>PUBLIC</code>. Los roles, las pertenencias y los privilegios pueden crearse, modificarse y
+revocarse ahí mismo.</p>
+<p><strong>Nota:</strong> por ahora esta sección solo es compatible con PostgreSQL. Para cualquier otra conexión
+muestra <em>Los permisos aún no son compatibles con …</em> / <em>Actualmente solo se admite PostgreSQL.</em></p>
+<h4>Abrir la sección</h4>
+<p>Haga clic en el icono <em>Permisos</em> (el icono de las personas) de la barra izquierda. La sección trabaja
+sobre una conexión ya abierta en la sección <em>Base de datos</em>: en su parte superior se muestra la misma franja
+de pestañas de conexión abiertas, y la sección usa la pestaña de conexión que esté seleccionada allí. Si no hay
+ninguna conexión abierta, muestra <em>No hay ninguna conexión abierta</em>; abra una primero (consulte
+<a href="managing_databases.html">Administración de bases de datos</a>). Las columnas se reconstruyen cada vez que
+entra en la sección, por lo que cualquier selección anterior se restablece.</p>
+<p>Todo lo que haga aquí requiere los mismos privilegios que requeriría el SQL equivalente
+(<code>CREATEROLE</code>, superusuario o la propiedad del objeto, según la acción): OmniDB ejecuta las sentencias
+con las credenciales de la conexión que está usando.</p>
+<h4>Columna 1: roles</h4>
+<p>La columna <em>Roles</em> enumera todos los roles del servidor, incluidos los roles integrados
+<code>pg_*</code>, ordenados por nombre. Los roles que pueden iniciar sesión (usuarios) tienen un icono de una
+persona; los que no pueden (grupos), un icono de dos personas. La primera fila es siempre <code>PUBLIC</code>
+(icono del globo): no es un rol real, sino el pseudorrol al que pertenece implícitamente todo rol, de modo que los
+privilegios concedidos a <code>PUBLIC</code> pueden explorarse y editarse de la misma forma.</p>
+<p>Haga clic en un rol para seleccionarlo como rol activo; las demás columnas muestran entonces ese rol. Debajo de
+la lista:</p>
+<ul>
+<li><strong>+</strong> abre el diálogo <em>Crear rol</em>: <em>Nombre del rol</em>,
+<em>Contraseña</em> y las casillas de atributos <em>Puede iniciar sesión</em> (activada por defecto),
+<em>Superusuario</em>, <em>Puede crear bases de datos</em>, <em>Puede crear roles</em>, <em>Hereda los
+privilegios de los roles de los que es miembro</em> (activada por defecto), <em>Puede iniciar la replicación</em>
+y <em>Omite la seguridad a nivel de fila</em>, además de <em>Límite de conexiones (-1 = ilimitado)</em> y
+<em>La cuenta caduca</em> (déjelo vacío para que no caduque).</li>
+<li><strong>−</strong> elimina el rol seleccionado (deshabilitado para <code>PUBLIC</code>).</li>
+</ul>
+<p>Al hacer clic derecho en un rol (que no sea <code>PUBLIC</code>) se ofrece:</p>
+<ul>
+<li><em>Cambiar contraseña</em>: pide la nueva contraseña dos veces. La contraseña se convierte en hash, en el
+formato para el que está configurado el propio servidor (SCRAM-SHA-256 o md5), antes de enviarse.</li>
+<li><em>Modificar atributos</em>: los mismos campos de atributos que <em>Crear rol</em>,
+rellenados con los valores actuales del rol. Vaciar <em>La cuenta caduca</em> elimina la caducidad.</li>
+<li><em>Eliminar rol</em>: pregunta <em>¿Eliminar el rol "…"? Esta acción no se puede deshacer.</em> y después ejecuta un simple
+<code>DROP ROLE</code>; PostgreSQL lo rechaza mientras el rol siga siendo propietario de objetos o tenga
+privilegios.</li>
+</ul>
+<h4>Columna 2: pertenencias</h4>
+<p>La segunda columna está dividida en dos mitades:</p>
+<ul>
+<li><strong>… — Miembros</strong> (arriba): los roles que son miembros del rol activo.</li>
+<li><strong>… — Miembro de</strong> (abajo): todos los roles a los que pertenece el rol activo, directamente o a
+través de otros roles, reunidos en una sola lista. <code>PUBLIC</code> aparece siempre en primer lugar.</li>
+</ul>
+<p>En ambas mitades, las pertenencias directas se muestran en texto normal y las indirectas (heredadas), en gris. Una
+pertenencia directa concedida <code>WITH ADMIN OPTION</code> se marca con <em>(admin option)</em>. Para
+<code>PUBLIC</code>, ambas mitades indican simplemente <em>PUBLIC no es miembro de ningún rol.</em></p>
+<ul>
+<li>El <strong>+</strong> bajo <em>Miembro de</em> abre <em>Conceder pertenencia</em>: elija un rol
+para hacer al rol activo miembro de él, opcionalmente <em>Con opción de administración (admin option)</em>.</li>
+<li>El <strong>+</strong> bajo <em>Miembros</em> abre <em>Añadir miembro</em>: el mismo diálogo a la
+inversa; el rol elegido pasa a ser miembro del rol activo.</li>
+<li><strong>−</strong> (o clic derecho → <em>Quitar pertenencia</em>) revoca una pertenencia tras preguntar
+<em>¿Revocar la pertenencia a "…"?</em>. Solo se pueden quitar las pertenencias directas; una heredada debe revocarse allí
+donde se concede realmente.</li>
+<li>Hacer doble clic en una fila, o clic derecho → <em>Establecer como rol activo</em>, convierte ese rol en el rol activo,
+exactamente como si hubiera hecho clic en él en la columna <em>Roles</em>: la forma más rápida de seguir una cadena
+de herencia hacia arriba.</li>
+</ul>
+<h4>Columna 3: objetos y privilegios efectivos</h4>
+<p>La tercera columna, <em>… — Objetos</em>, es un árbol de todo aquello sobre lo que el rol activo tiene algún
+privilegio: sus privilegios <em>efectivos</em>, es decir, sus concesiones directas más todo lo que hereda a través de
+sus pertenencias y de <code>PUBLIC</code>. Empieza con dos grupos, <em>Bases de datos</em> (todas las bases de datos
+del servidor) y <em>Tablespaces</em>; un nodo se muestra normal si el rol tiene algún privilegio en él, y en gris en
+caso contrario.</p>
+<p>Al expandir una base de datos, sus objetos se cargan a través de una conexión aparte a esa base de datos (la base
+de datos activa de la propia pestaña de conexión no cambia): esquemas y, dentro de cada esquema, carpetas para
+tablas, vistas, secuencias, funciones, procedimientos, vistas materializadas, tipos y dominios; los foreign data
+wrappers y los servidores externos cuelgan directamente de la base de datos. Solo se enumeran los objetos sobre los
+que el rol tiene realmente algún privilegio (los esquemas del sistema se omiten); un esquema que aparece en gris
+solo está ahí porque algo de su interior lo está. Si no hay nada en absoluto, la base de datos muestra <em>Sin
+privilegios sobre ningún objeto de esta base de datos.</em></p>
+<h4>Edición de privilegios</h4>
+<p>Haga clic derecho en una base de datos, un tablespace, un esquema o un objeto y elija <em>Editar privilegios</em>. El diálogo enumera como casillas todos los privilegios válidos para ese tipo de objeto:</p>
+<ul>
+<li>base de datos: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;
+tablespace: <code>CREATE</code>; esquema: <code>CREATE</code>, <code>USAGE</code>;</li>
+<li>tabla, vista y vista materializada: <code>SELECT</code>, <code>INSERT</code>,
+<code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>,
+<code>TRIGGER</code>;</li>
+<li>secuencia: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;
+función y procedimiento: <code>EXECUTE</code>;
+tipo, dominio, foreign data wrapper y servidor externo: <code>USAGE</code>.</li>
+</ul>
+<p>Cada casilla indica de dónde procede el privilegio:</p>
+<ul>
+<li><strong>marcada</strong>: el rol lo tiene directamente; desmárquela para aplicar <code>REVOKE</code>;</li>
+<li><strong>marcada pero deshabilitada</strong>, con <em>Heredado de: …</em>: el rol solo lo
+tiene a través de otro rol o de <code>PUBLIC</code>. No se puede revocar aquí; convierta el rol de origen en el rol
+activo (<em>Establecer como rol activo</em>) y revóquelo allí;</li>
+<li><strong>desmarcada</strong>: el rol no lo tiene; márquela para aplicar <code>GRANT</code> directamente.</li>
+</ul>
+<p><em>Con opción de concesión (grant option)</em> se aplica a los privilegios que conceda de nuevo en ese
+diálogo. Confirme con el botón principal del diálogo, cuya etiqueta es el nombre del objeto.</p>
+<p>Para conceder algo sobre un objeto que aún no está en el árbol, use el <strong>+</strong> (<em>Añadir privilegio
+sobre objeto</em>) bajo la columna: elija el <em>Tipo de objeto</em>,
+después la <em>Base de datos</em> (para todo excepto bases de datos y tablespaces; por defecto, la base de datos actual
+de la conexión), el <em>Esquema</em> para los objetos a nivel de esquema, el propio <em>Objeto</em> (las funciones
+se muestran con la firma de sus argumentos), marque los <em>Privilegios</em> y, opcionalmente, <em>Con opción de
+concesión (grant option)</em>.</p>
+<p>Si selecciona <code>PUBLIC</code> en la primera columna, puede editar lo que se concede al propio
+<code>PUBLIC</code> (<code>GRANT … TO PUBLIC</code> / <code>REVOKE … FROM PUBLIC</code>).</p>
+<p><strong>Importante:</strong> cada acción de esta sección se ejecuta en el servidor de inmediato: no hay vista
+previa del SQL ni forma de deshacerla. Solo <em>Eliminar rol</em> y <em>Quitar pertenencia</em> piden confirmación
+antes. Si el servidor rechaza una sentencia, se muestra su mensaje de error.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

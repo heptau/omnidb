@@ -3,7 +3,6 @@ package main
 import (
 	"bytes"
 	"encoding/json"
-	"net/http"
 	"os"
 )
 
@@ -32,7 +31,7 @@ func notifyDesktopShellLanguage(lang string) {
 		if err != nil {
 			return
 		}
-		resp, err := http.Post(url, "application/json", bytes.NewReader(payload))
+		resp, err := postToShell(nil, url, bytes.NewReader(payload))
 		if err != nil {
 			return
 		}

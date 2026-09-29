@@ -86,7 +86,7 @@ import { execAjax } from "../ajax_control_bridge.js";
 import { editCellData } from "../header_actions.js";
 import { showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
-import { escapeHtml } from "../query.js";
+import { escapeHtml, escapeHtmlAttribute } from "../query.js";
 import { t } from "../i18n.js";
 import { connectedUsersAction, uiCopyTextToClipboard } from "../workspace.js";
 import { switchSection } from "../section_switcher.js";
@@ -167,12 +167,14 @@ function addrPort(p_addr, p_port) {
  * composite column's two stacked values carry no per-row label of their own;
  * naming which is which belongs in the header instead, once, rather than on
  * every row. `p_line1`/`p_line2` are already-resolved t() strings (static,
- * developer-chosen translation keys, never raw DB data), so no escaping here.
+ * developer-chosen translation keys, never raw DB data) — escaped anyway, since
+ * the result is rendered as markup (`titleHtml: true`) and a translation is
+ * allowed to contain `&` or `<` as plain text.
  * @param {string} p_line1
  * @param {string} p_line2
  */
 function headerTwoLine(p_line1, p_line2) {
-	return "<div>" + p_line1 + "</div><div class='text-muted' style='font-size:0.85em;'>" + p_line2 + "</div>";
+	return "<div>" + escapeHtml(p_line1) + "</div><div class='text-muted' style='font-size:0.85em;'>" + escapeHtml(p_line2) + "</div>";
 }
 
 /**
@@ -597,12 +599,12 @@ function buildConnectedUsersLayout(p_content, p_conn_tab, p_config, p_token) {
 		"<button id='connected_users_detail_copy_" +
 		v_id +
 		"' type='button' class='btn btn-sm omnidb__theme__btn--secondary me-1' title='" +
-		escapeHtml(t("common.copy")) +
+		escapeHtmlAttribute(t("common.copy")) +
 		"'><i class='fas fa-copy'></i></button>" +
 		"<button id='connected_users_detail_send_" +
 		v_id +
 		"' type='button' class='btn btn-sm omnidb__theme__btn--secondary' title='" +
-		escapeHtml(t("connected_users.open_in_query_tab")) +
+		escapeHtmlAttribute(t("connected_users.open_in_query_tab")) +
 		"'><i class='fas fa-file-import'></i></button>" +
 		"</div>" +
 		"</div>" +
@@ -855,6 +857,7 @@ function renderConnectedUsersGrid(p_tag, p_data, p_reset_detail) {
 		/** @type {any} */
 		var v_col = {
 			title: col.labelKey1 ? headerTwoLine(t(col.labelKey1), t(col.labelKey2)) : t(col.labelKey),
+			titleHtml: !!col.labelKey1,
 			width: col.width,
 			align: col.align,
 			verticalAlign: col.verticalAlign,

@@ -156,7 +156,7 @@ type remoteTerminalEntry struct {
 // 'database' object in Python at all — OmniDatabase.Generic.InstantiateDatabase
 // has no 'terminal' branch and implicitly returns None for it, which is
 // exactly the check `v_database_object['database'] != None` guards against).
-func buildDatabaseList(conns []appConnection) (databases []databaseListEntry, terminals []remoteTerminalEntry) {
+func buildDatabaseList(conns []appConnection, viewerID int64) (databases []databaseListEntry, terminals []remoteTerminalEntry) {
 	for _, c := range conns {
 		if c.UseTunnel || c.Technology == "terminal" {
 			terminals = append(terminals, remoteTerminalEntry{
@@ -176,13 +176,17 @@ func buildDatabaseList(conns []appConnection) (databases []databaseListEntry, te
 			details2 += " <b>(" + c.SSHServer + ":" + c.SSHPort + ")</b>"
 		}
 		server, port, username, pgpassDatabase := resolvePgpassMatchFields(c)
+		connString := c.ConnString
+		if c.OwnerID != viewerID {
+			connString = redactConnStringSecrets(connString)
+		}
 		databases = append(databases, databaseListEntry{
 			DBType:         c.Technology,
 			Alias:          c.Alias,
 			ConnID:         c.ID,
 			ConsoleHelp:    consoleHelpForTechnology(c.Technology),
 			Database:       c.Database,
-			ConnString:     c.ConnString,
+			ConnString:     connString,
 			Details1:       printDatabaseInfo(c),
 			Details2:       details2,
 			Public:         c.Public,

@@ -128,7 +128,7 @@ build-linux:
 # esbuild ships platform-specific binaries). The named volumes also cache
 # across releases, so repeat runs don't redownload every Go module.
 build-linux-docker:
-	docker build -q --platform linux/amd64 -t $(DOCKER_IMAGE) -f scripts/docker/linux-build.Dockerfile .
+	docker build -q --pull --platform linux/amd64 -t $(DOCKER_IMAGE) -f scripts/docker/linux-build.Dockerfile .
 	docker volume create omnidb-linux-frontend-node-modules >/dev/null
 	docker volume create omnidb-linux-workspace-node-modules >/dev/null
 	docker volume create omnidb-linux-gomod-cache >/dev/null

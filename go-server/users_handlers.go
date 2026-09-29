@@ -154,6 +154,7 @@ func handleRemoveUser(upstream *url.URL) http.HandlerFunc {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}
+		syncNativeSessionsForUser(int(userID), "", false, false, true, "")
 
 		writeEnvelope(w, "", false, -1)
 	}
@@ -242,6 +243,7 @@ func handleSaveUsers(upstream *url.URL) http.HandlerFunc {
 				writeEnvelope(w, err.Error(), true, -1)
 				return
 			}
+			syncNativeSessionsForUser(int(req.PUserIDList[i]), username, superuserNum == 1, password != "", false, nativeSessionCookieValue(r))
 		}
 
 		writeEnvelope(w, "", false, -1)

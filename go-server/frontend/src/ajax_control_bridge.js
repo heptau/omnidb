@@ -43,3 +43,8 @@ export function getCookie(...args) {
 export function csrfSafeMethod(...args) {
 	return window.csrfSafeMethod(...args);
 }
+
+/** @type {typeof import('./ajax_control.js').jsonPostHeaders} */
+export function jsonPostHeaders(...args) {
+	return window.jsonPostHeaders(...args);
+}

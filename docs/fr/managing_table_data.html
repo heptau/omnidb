@@ -7,8 +7,12 @@
 	<meta name="description" content="Modifiez les enregistrements des tables directement dans la grille d'OmniDB façon tableur : insérez, mettez à jour et supprimez des lignes, modifiez les champs de texte longs et consultez les erreurs des opérations échouées.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/managing_table_data.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_table_data.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_table_data.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_table_data.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_table_data.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_table_data.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_table_data.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_table_data.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html" class="active">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -139,12 +151,18 @@ droit sur le nœud de la table et sélectionnez l’action <em>Data Actions &
 Data</em> (Actions sur les données &gt ; Modifier les données) :</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>L’interface comporte un éditeur SQL permettant de filtrer et de trier les
-enregistrements. Pour éviter que l’interface ne demande un trop grand nombre
-d’enregistrements, un champ permet de limiter le nombre d’enregistrements
-affichés. La grille des enregistrements indique les noms de colonnes et les
-types de données. Les colonnes appartenant à la clé primaire affichent une
-icône de clé à côté de leur nom.</p>
+<p>L’onglet <em>Modifier les données</em> comporte un petit éditeur SQL destiné à une clause facultative de filtre et de tri,
+ajoutée à la requête qui charge les enregistrements — par exemple <code>where t.cust_id &gt; 10 order by
+t.cust_name</code> (la table est disponible sous l’alias <code>t</code>) —, une liste déroulante qui limite
+le nombre d’enregistrements chargés (<em>Interroger 10 lignes</em>, <em>Interroger 100 lignes</em> ou <em>Interroger 1000
+lignes</em>) et un bouton <em>Exécuter</em> qui (re)charge la grille. La grille des enregistrements indique les noms de colonnes
+et les types de données. Les colonnes appartenant à la clé primaire affichent une icône de clé à côté de leur nom. Si
+la table n’a pas de clé primaire, OmniDB avertit <em>La table n’a pas de clé primaire, les lignes existantes seront en
+lecture seule.</em> — vous pouvez néanmoins ajouter de nouvelles lignes.</p>
+<p>Les modifications ne sont pas écrites immédiatement : modifiez, ajoutez et marquez les lignes selon vos besoins, puis cliquez sur
+<em>Enregistrer les modifications</em>, qui apparaît dès qu’il y a quelque chose à enregistrer. La première colonne de chaque ligne
+contient son action de ligne : un clic sur le <em>×</em> à cet endroit marque la ligne pour suppression (cliquez à nouveau pour
+annuler), ou retire une nouvelle ligne pas encore enregistrée.</p>
 <p>La ligne de la grille portant le symbole <code>+</code> permet d’ajouter de nouveaux
 enregistrements. Insérons quelques enregistrements dans la table <code>customers</code> :</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
@@ -154,8 +172,10 @@ Modifions le <em>cust_name</em> de certains enregistrements existants et, dans 
 même temps, supprimons l’une des lignes :</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
 <p>Les tables peuvent comporter des champs dont les valeurs sont représentées par
-des chaînes très longues. Pour faciliter la modification de ces champs, OmniDB
-propose une interface accessible par un clic droit sur la cellule concernée :</p>
+des chaînes très longues. Pour faciliter la modification de ces champs, faites un clic droit sur la cellule et choisissez
+<em>Edit Content</em> (Modifier le contenu) : un éditeur plus grand s’ouvre (avec coloration syntaxique pour
+les colonnes JSON/JSONB et XML), et <em>Enregistrer</em> réécrit la valeur dans la grille. Le même menu propose
+<em>Copier</em> :</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
 <p><img alt="" src="../assets/img/image_046.webp" /></p>
 <p>L’interface détecte les erreurs pouvant survenir lors des opérations sur les

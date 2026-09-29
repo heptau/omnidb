@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Připojení uživatelé – Dokumentace OmniDB</title>
+	<meta name="description" content="Zjistěte, kdo je připojen k serveru PostgreSQL, MySQL, MariaDB, Oracle, SQL Server nebo Firebird, prohlédněte si jeho aktuální dotaz a ukončete relace v OmniDB.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/connected_users.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/connected_users.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/connected_users.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/connected_users.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/connected_users.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/connected_users.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/connected_users.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/connected_users.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/connected_users.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/connected_users.html">
+	<meta property="og:title" content="Připojení uživatelé - Dokumentace OmniDB">
+	<meta property="og:description" content="Zjistěte, kdo je připojen k serveru PostgreSQL, MySQL, MariaDB, Oracle, SQL Server nebo Firebird, prohlédněte si jeho aktuální dotaz a ukončete relace v OmniDB.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Připojení uživatelé", "item": "https://www.omnidb.net/cs/connected_users.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html" class="active">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Připojení uživatelé</h1>
+<p>Sekce <em>Připojení uživatelé</em> ukazuje, kdo je právě připojen k databázovému serveru —
+backendy PostgreSQL, vlákna MySQL/MariaDB, relace Oracle a SQL Serveru, připojení (attachments)
+Firebirdu —, co kdo z nich dělá, a umožňuje kterékoli z nich ukončit. Nahrazuje starší položky
+kontextové nabídky stromu databáze specifické pro jednotlivé stroje: <em>Připojení serveru</em>
+(Backends), <em>Seznam procesů</em> a <em>Relace</em>.</p>
+<p>Podporováno: PostgreSQL, MySQL, MariaDB, Oracle, SQL Server a Firebird. SQLite nic takového nezná
+a zobrazí <em>Zobrazení připojených uživatelů není pro připojení … podporováno.</em></p>
+<h4>Otevření sekce</h4>
+<p>Klikněte na ikonu <em>Připojení uživatelé</em> na levé liště. Stejně jako Monitorování, Oznámení
+a Oprávnění pracuje s připojením, které je už otevřené v sekci <em>Databáze</em>: nahoře se zobrazuje
+pruh záložek otevřených připojení a seznam patří vybrané záložce. Není-li otevřeno žádné připojení,
+zobrazí se <em>Není otevřeno žádné připojení.</em></p>
+<p>Seznam se načte při vstupu do sekce a při každém přepnutí na jinou záložku připojení; sám se
+neobnovuje. Chcete-li ho načíst znovu, klikněte pravým tlačítkem do mřížky a zvolte
+<em>Obnovit</em>. Počet řádků se zobrazuje nad mřížkou (<em>Počet záznamů: …</em>).</p>
+<h4>Sloupce</h4>
+<p>Sloupce jsou kompaktně seskupené (například ID pod názvem nebo adresa a port na jednom řádku);
+po najetí myší na záhlaví sloupce se zobrazí vysvětlení, co sloupec ukazuje a ze kterého sloupce
+katalogu pochází.</p>
+<ul>
+<li><strong>PostgreSQL</strong> (<code>pg_stat_activity</code>): <em>PID</em>, <em>Databáze</em>,
+<em>Uživatel</em>, <em>Klient</em>, <em>Aplikace</em>, <em>Start procesu</em> /
+<em>Start transakce</em>, <em>Start dotazu</em> / <em>Změna stavu</em>, <em>Čekání</em>,
+<em>Stav</em>, <em>ID transakce</em>, <em>ID dotazu</em>, <em>Typ procesu</em>.</li>
+<li><strong>MySQL/MariaDB</strong> (seznam procesů): <em>Uživatel</em> (s ID připojení),
+<em>Host</em>, <em>Databáze</em>, <em>Příkaz</em>, <em>Čas (s)</em>, <em>Stav</em>.</li>
+<li><strong>Oracle</strong> (<code>v$session</code>): <em>SID</em> (se Serial#),
+<em>Uživatel</em>, <em>Stav</em>, <em>Schéma</em>, <em>Klient</em>, <em>Program</em>, <em>Modul /
+akce</em>, <em>Info o klientovi</em>, <em>Přihlášení</em>, <em>Nečinnost (s)</em>, <em>SQL ID</em>,
+<em>Čekání</em>, <em>Blokující SID</em>.</li>
+<li><strong>SQL Server</strong> (uživatelské relace): <em>ID relace</em>, <em>Přihlašovací
+jméno</em>, <em>Hostitel</em>, <em>Program</em>, <em>Stav</em>.</li>
+<li><strong>Firebird</strong> (<code>mon$attachments</code>, bez vlastního připojení OmniDB):
+<em>ID připojení</em>, <em>Uživatel</em>, <em>Vzdálená adresa</em>, <em>Stav</em>.</li>
+</ul>
+<p>U PostgreSQL a Oracle jsou procesy na pozadí a systémové procesy ve výchozím stavu skryté;
+chcete-li je zahrnout, zaškrtněte nad mřížkou <em>Zobrazit systémové procesy</em> (políčko se
+zobrazí jen tehdy, když takové řádky existují).</p>
+<h4>Zobrazení dotazu relace</h4>
+<p>U PostgreSQL, MySQL a MariaDB otevře kliknutí na řádek pod mřížkou panel <em>Text dotazu</em>
+s příkazem, který daná relace právě provádí (nebo provedla naposledy), se zvýrazněnou syntaxí a jen
+pro čtení. Odtud ho můžete zkopírovat, nebo pomocí <em>Otevřít v novém dotazu</em> pokračovat
+v práci s ním v běžné <a href="writing_sql_queries.html">kartě dotazu</a>, například na něm spustit
+<em>Explain</em>.</p>
+<h4>Ukončení relace</h4>
+<p>Klikněte pravým tlačítkem na řádek a zvolte <em>Ukončit</em>. Po potvrzení OmniDB ukončí relaci
+způsobem, který je pro daný stroj obvyklý — <code>pg_terminate_backend()</code> v PostgreSQL,
+<code>KILL</code> v MySQL/MariaDB a SQL Serveru, <code>ALTER SYSTEM KILL SESSION … IMMEDIATE</code>
+v Oracle, smazáním řádku z <code>mon$attachments</code> ve Firebirdu — a znovu načte seznam. K tomu
+je potřeba odpovídající oprávnění na databázovém serveru. Stejná kontextová nabídka nabízí také
+<em>Kopírovat</em> a <em>Zobrazit obsah</em> pro buňku, na kterou jste klikli.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -54,6 +54,7 @@
   "login.sign_in": "Sign in",
   "login.invalid_token": "Invalid authentication token, use omnidb-server to support multiple users.",
   "login.invalid_credentials": "Invalid username or password.",
+  "login.too_many_attempts": "Too many failed sign-in attempts. Please try again in 15 minutes.",
   "login.empty_suffix": "empty",
   "nav.welcome": "Welcome",
   "nav.connections": "Connections",

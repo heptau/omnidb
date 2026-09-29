@@ -180,7 +180,7 @@ SOFTWARE.
 import { execAjax } from "../ajax_control_bridge.js";
 import { showAlert, showConfirm, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
-import { escapeHtml } from "../query.js";
+import { escapeHtml, escapeHtmlAttribute } from "../query.js";
 import { t } from "../i18n.js";
 import { customMenu } from "../custom_menu.js";
 
@@ -347,11 +347,11 @@ function renderRolesColumn(p_tag) {
 		"<div class='omnidb__list-footer'>" +
 		"<div class='omnidb__addremove'>" +
 		"<button type='button' class='omnidb__permissions__add-role' title='" +
-		escapeHtml(t("tree.create_role")) +
+		escapeHtmlAttribute(t("tree.create_role")) +
 		"'><i class='fas fa-plus'></i></button>" +
 		"<span class='omnidb__addremove-divider'></span>" +
 		"<button type='button' class='omnidb__permissions__delete-role' title='" +
-		escapeHtml(t("common.delete")) +
+		escapeHtmlAttribute(t("common.delete")) +
 		"' disabled><i class='fas fa-minus'></i></button>" +
 		"</div>" +
 		"</div>";
@@ -835,14 +835,14 @@ function buildColumnSection(p_container, p_header_text, p_options) {
 		if (p_options.showAdd) {
 			v_footer_html +=
 				"<button type='button' class='omnidb__permissions__section-add' title='" +
-				escapeHtml(p_options.addTitle || "") +
+				escapeHtmlAttribute(p_options.addTitle || "") +
 				"'><i class='fas fa-plus'></i></button>";
 		}
 		if (p_options.showAdd && p_options.showRemove) v_footer_html += "<span class='omnidb__addremove-divider'></span>";
 		if (p_options.showRemove) {
 			v_footer_html +=
 				"<button type='button' class='omnidb__permissions__section-remove' title='" +
-				escapeHtml(t("common.delete")) +
+				escapeHtmlAttribute(t("common.delete")) +
 				"' disabled><i class='fas fa-minus'></i></button>";
 		}
 		v_footer_html += "</div></div>";

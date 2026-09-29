@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/cs/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_table_data.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_table_data.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_table_data.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_table_data.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_table_data.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_table_data.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_table_data.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
 			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Práce s daty</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 			<a href="managing_table_data.html" class="active">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
 			<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
@@ -136,11 +148,18 @@ u tabulek, které mají primární klíč. Tabulky, které ho nemají, mohou po
 akci <em>Data Actions &gt; Edit Data</em> (Akce s daty &gt; Upravit data):</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>Rozhraní obsahuje SQL editor, kde můžete záznamy filtrovat a řadit. Aby
-rozhraní nevyžádalo příliš mnoho záznamů, je zde pole, které omezuje počet
-zobrazovaných záznamů. Mřížka záznamů obsahuje názvy sloupců
-a datové typy. Sloupce patřící do primárního klíče mají vedle svého názvu
-ikonu klíče.</p>
+<p>Karta <em>Upravit data</em> obsahuje malý SQL editor pro volitelnou podmínku filtrování a řazení,
+která se připojí k dotazu načítajícímu záznamy — například <code>where t.cust_id &gt; 10 order by
+t.cust_name</code> (tabulka je dostupná pod aliasem <code>t</code>) —, rozbalovací seznam, který omezuje
+počet načtených záznamů (<em>Dotaz na 10 řádků</em>, <em>Dotaz na 100 řádků</em> nebo <em>Dotaz na
+1000 řádků</em>), a tlačítko <em>Spustit</em>, které mřížku (znovu) načte. Mřížka záznamů obsahuje
+názvy sloupců a datové typy. Sloupce patřící do primárního klíče mají vedle svého názvu ikonu
+klíče. Pokud tabulka nemá primární klíč, OmniDB upozorní <em>Tabulka nemá primární klíč, stávající
+řádky budou pouze pro čtení.</em> — nové řádky ale přidávat můžete.</p>
+<p>Změny se nezapisují okamžitě: podle potřeby řádky upravte, přidejte a označte, pak klikněte na
+<em>Uložit změny</em>, které se objeví, jakmile je co ukládat. První sloupec každého řádku obsahuje
+jeho akci: kliknutím na <em>×</em> v něm řádek označíte ke smazání (dalším kliknutím označení
+zrušíte), případně odstraníte nový, dosud neuložený řádek.</p>
 <p>Řádek mřížky se symbolem <code>+</code> slouží k přidání nových záznamů. Vložme
 nyní několik záznamů do tabulky <code>customers</code>:</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
@@ -149,8 +168,9 @@ tabulka má primární klíč). Změňme <em>cust_name</em> u některých exist
 záznamů a zároveň odstraňme jeden z řádků:</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
 <p>Tabulky mohou obsahovat pole s hodnotami reprezentovanými velmi dlouhými řetězci. Pro
-usnadnění úpravy těchto polí má OmniDB rozhraní, ke kterému lze přistupovat
-kliknutím pravým tlačítkem na konkrétní buňku:</p>
+usnadnění úpravy těchto polí klikněte na buňku pravým tlačítkem a zvolte <em>Edit Content</em>
+(Upravit obsah): otevře se větší editor (se zvýrazněním syntaxe pro sloupce JSON/JSONB a XML)
+a <em>Uložit</em> zapíše hodnotu zpět do mřížky. Stejná nabídka obsahuje i <em>Kopírovat</em>:</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
 <p><img alt="" src="../assets/img/image_046.webp" /></p>
 <p>Rozhraní detekuje chyby, ke kterým může dojít při operacích souvisejících se

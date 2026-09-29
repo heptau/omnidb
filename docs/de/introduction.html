@@ -7,8 +7,12 @@
 	<meta name="description" content="OmniDB ist ein Open-Source-Datenbankverwaltungstool für PostgreSQL, Oracle, MySQL und mehr, das den Zugriff auf verschiedene DBMS in einem sicheren, browserbasierten Arbeitsbereich vereint.">
 	<link rel="canonical" href="https://www.omnidb.net/de/introduction.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/introduction.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/introduction.html">
 	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/introduction.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/introduction.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/introduction.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/introduction.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/introduction.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/introduction.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Erste Schritte</span>
 			<a href="introduction.html" class="active">Einführung</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop-App</a>
 			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+			<a href="settings_and_languages.html">Einstellungen und Sprachen</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Arbeiten mit Daten</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
 			<a href="managing_table_data.html">Tabellendaten verwalten</a>
 			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
 			<a href="visualizing_data.html">Daten visualisieren</a>
 			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
 			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
 			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="notify.html">Benachrichtigungen</a>
+			<a href="connected_users.html">Verbundene Benutzer</a>
+			<a href="permissions.html">Rollen und Berechtigungen</a>
 			<a href="logical_replication.html">Logische Replikation</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tools</span>
 			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>
 			<a href="console_tab.html">Konsolen-Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
 		</div>
@@ -130,8 +141,8 @@
 		<main>
 			<h1>Einführung</h1>
 			<p><strong>OmniDB</strong> ist eine quelloffene, browserbasierte Anwendung für den Zugriff auf
-				und die Verwaltung von vielen verschiedenen Datenbankverwaltungssystemen, z. B.
-				PostgreSQL, Oracle und MySQL. OmniDB kann sowohl als Desktop-App als auch über den
+				und die Verwaltung von vielen verschiedenen Datenbankverwaltungssystemen:
+				PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird und SQLite. OmniDB kann sowohl als Desktop-App als auch über den
 				Browser laufen und vereint dabei die für unterschiedliche Zugriffswege nötige
 				Flexibilität mit einem Design, das Sicherheit an erste Stelle setzt. OmniDB wird
 				aktiv weiterentwickelt, automatisch mit einer Vielzahl von Datenbanken und Browsern
@@ -155,13 +166,21 @@
 				gestreamt, sobald sie abgeschlossen sind, sodass der Benutzer gleichzeitig an
 				mehreren Datenbanken und mehreren Hosts weiterarbeiten kann, ohne dabei durch
 				einen einzelnen Vorgang blockiert zu werden.</p>
-			<p>OmniDB ist außerdem sicher. Alle OmniDB-Benutzerdaten werden verschlüsselt
-				gespeichert, und es wird überhaupt kein Datenbankpasswort gespeichert. Wenn sich
-				der Benutzer zum ersten Mal mit einer Datenbank verbindet, fragt OmniDB nach dem
-				Passwort. Dieses Passwort wird verschlüsselt und für eine bestimmte Zeit im
-				Arbeitsspeicher abgelegt. Läuft diese Zeit ab, fragt OmniDB das Passwort erneut
-				ab. Dies gewährleistet maximale Sicherheit für die Datenbank, mit der sich OmniDB
-				verbindet.</p>
+			<p>OmniDB ist außerdem sicher. Datenbankpasswörter, die Sie speichern möchten, werden vor dem
+				Speichern verschlüsselt, mit einem Schlüssel, der im Geheimnisspeicher Ihres Betriebssystems liegt;
+				wenn Sie ein Passwort lieber gar nicht speichern, fragt OmniDB beim Verbinden danach und hält es nur
+				für begrenzte Zeit im Arbeitsspeicher. Ein Mehrbenutzer-Server bietet zusätzlich einen Anmeldeschutz
+				und schränkt ein, worauf Benutzer auf dem Serverrechner selbst zugreifen können — siehe
+				<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>.</p>
+			<p>Neben dem SQL-Editor und dem Datenbankbaum bietet der Arbeitsbereich ein
+				<a href="monitoring_dashboard.html">Live-Überwachungs-Dashboard</a>, eine Liste der
+				<a href="connected_users.html">verbundenen Benutzer</a>, einen
+				<a href="notify.html">Benachrichtigungs-Listener</a> (LISTEN/NOTIFY und Verwandte), einen
+				<a href="permissions.html">Rollen- und Privilegien-Browser</a> für PostgreSQL,
+				<a href="snippets.html">Snippets</a>, Datenexport in viele Formate und SSH-Terminals. Die
+				Oberfläche ist auf Englisch, Tschechisch, Deutsch, Spanisch, Französisch, Italienisch, Portugiesisch,
+				Japanisch und Koreanisch verfügbar — siehe <a href="settings_and_languages.html">Einstellungen und
+				Sprachen</a>.</p>
 			<h4>Geschichte</h4>
 			<p>Die Erschaffer von <strong>OmniDB</strong>, Rafael Thofehrn Castro und William Ivanski,
 				arbeiteten in einem Unternehmen, in dem sie täglich mit mehreren verschiedenen

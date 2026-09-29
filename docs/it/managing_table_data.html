@@ -7,8 +7,12 @@
 	<meta name="description" content="Modifica i record delle tabelle direttamente nella griglia di OmniDB simile a un foglio di calcolo: inserisci, aggiorna ed elimina righe, modifica campi di testo lunghi e visualizza gli errori delle operazioni non riuscite.">
 	<link rel="canonical" href="https://www.omnidb.net/it/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/managing_table_data.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_table_data.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_table_data.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_table_data.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_table_data.html">
 	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_table_data.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_table_data.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_table_data.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html">App desktop</a>
 			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html">Impostazioni e lingue</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Lavorare con i dati</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html" class="active">Gestione dei dati delle tabelle</a>
 			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="snippets.html">Snippet</a>
 			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
 			<a href="managing_other_elements.html">Gestione di altri elementi</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server e strumenti</span>
 			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
@@ -135,14 +146,24 @@ tabelle, abbiamo deciso di consentire la modifica e la rimozione dei dati solo
 per le tabelle dotate di chiave primaria. Le tabelle che non ne hanno una
 possono solo ricevere nuovi record.</p>
 <p>Per accedere all’interfaccia di modifica dei record, fai clic destro sul nodo
-della tabella e seleziona l’azione <em>Azioni sui Dati &gt; Modifica Dati</em>:</p>
+della tabella e seleziona l’azione<em>Azioni sui dati &gt; Modifica dati</em>:</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>L’interfaccia dispone di un editor SQL in cui puoi filtrare e ordinare i
-record. Per evitare che l’interfaccia richieda troppi record, è presente un
-campo che limita il numero di record da visualizzare. La griglia dei record
-mostra i nomi delle colonne e i tipi di dato. Le colonne che appartengono alla
-chiave primaria hanno un’icona a forma di chiave accanto al nome.</p>
+<p>La scheda <em>Modifica dati</em> dispone di un piccolo editor SQL per una clausola facoltativa
+di filtro e ordinamento, aggiunta alla query che carica i record — ad esempio
+<code>where t.cust_id &gt; 10 order by t.cust_name</code> (la tabella è disponibile con l’alias
+<code>t</code>) — di un menu a discesa che limita quanti record vengono caricati (<em>Interroga 10
+righe</em>, <em>Interroga 100 righe</em> o <em>Interroga 1000 righe</em>) e di un pulsante
+<em>Esegui</em> che (ri)carica la griglia. La griglia dei record mostra i nomi delle colonne e i
+tipi di dato. Le colonne che appartengono alla chiave primaria hanno un’icona a forma di chiave
+accanto al nome. Se la tabella non ha una chiave primaria, OmniDB avvisa <em>La tabella non ha una
+chiave primaria, le righe esistenti saranno di sola lettura.</em> — puoi comunque aggiungere nuove
+righe.</p>
+<p>Le modifiche non vengono scritte immediatamente: modifica, aggiungi e contrassegna le righe
+secondo necessità, poi fai clic su <em>Salva modifiche</em>, che compare non appena c’è qualcosa da
+salvare. La prima colonna di ogni riga contiene la sua azione di riga: un clic sulla <em>×</em>
+contrassegna la riga per l’eliminazione (un nuovo clic annulla), oppure rimuove una riga nuova non
+ancora salvata.</p>
 <p>La riga della griglia contrassegnata dal simbolo <code>+</code> è la riga per aggiungere
 nuovi record. Inseriamo alcuni record nella tabella <code>customers</code>:</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
@@ -151,9 +172,11 @@ nuovi record. Inseriamo alcuni record nella tabella <code>customers</code>:</p>
 <em>cust_name</em> di alcuni record esistenti e, allo stesso tempo, rimuoviamo una
 delle righe:</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
-<p>Le tabelle possono avere campi con valori rappresentati da stringhe molto
-lunghe. Per facilitare la modifica di questi campi, OmniDB dispone di
-un’interfaccia accessibile facendo clic destro sulla cella specifica:</p>
+<p>Le tabelle possono avere campi con valori rappresentati da stringhe molto
+lunghe. Per facilitare la modifica di questi campi, fai clic destro sulla cella e scegli
+<em>Edit Content</em>: si apre un editor più grande (con evidenziazione della sintassi per le
+colonne JSON/JSONB e XML) e <em>Salva</em> riscrive il valore nella griglia. Lo stesso menu offre
+anche <em>Copy</em>:</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
 <p><img alt="" src="../assets/img/image_046.webp" /></p>
 <p>L’interfaccia rileva gli errori che possono verificarsi durante le operazioni

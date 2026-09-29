@@ -32,12 +32,10 @@ func (a *App) handleOpenURLRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// This loopback listener has no auth of its own (see
-	// startSaveDialogServer's comment) — go-server's own
-	// open_external_url.go already restricts to http(s):// before ever
-	// relaying here, but this endpoint shouldn't rely solely on its caller
-	// having validated that: any other local process that discovers the
-	// ephemeral port could otherwise reach BrowserOpenURL directly. Wails'
+	// Only go-server can reach this listener (shared secret, see
+	// requireRelayAuth), and go-server's own open_external_url.go already
+	// restricts to http(s):// before ever relaying here — but this
+	// endpoint shouldn't rely solely on its caller having validated that. Wails'
 	// own ValidateAndSanitizeURL already rejects javascript:/data:/file:
 	// etc., but checking the scheme here too keeps this endpoint's own
 	// contract independent of that library's internals.

@@ -31,6 +31,7 @@ SOFTWARE.
 import { execAjax } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
 import { t } from "../i18n.js";
+import { escapeHtml } from "../query.js";
 import { showConfirm } from "../notification_control.js";
 
 // Declared here because these were implicit globals: assigned without
@@ -613,7 +614,8 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 
 			if (p_mode == "save")
 				v_elements.push({
-					text: `<b>${t("snippets.overwrite")}</b> ` + v_file.name,
+					// customMenu renders `text` as markup; snippet/folder names are user-entered.
+					text: `<b>${escapeHtml(t("snippets.overwrite"))}</b> ` + escapeHtml(v_file.name),
 					icon: "fas cm-all fa-scroll",
 					action: function () {
 						showConfirm(
@@ -646,7 +648,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 				});
 			else
 				v_elements.push({
-					text: v_file.name,
+					text: escapeHtml(v_file.name),
 					icon: "fas cm-all fa-scroll",
 					action: function () {
 						executeSnippet(v_file.id, p_editor);
@@ -658,7 +660,7 @@ export function buildSnippetContextMenuObjects(p_mode, p_object, p_editor, p_cal
 		(function (i) {
 			var v_folder = p_object.folders[i];
 			v_elements.push({
-				text: v_folder.name,
+				text: escapeHtml(v_folder.name),
 				icon: "fas cm-all fa-folder",
 				submenu: {
 					elements: buildSnippetContextMenuObjects(p_mode, v_folder, p_editor, p_callback),

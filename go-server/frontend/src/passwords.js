@@ -32,7 +32,7 @@ SOFTWARE.
 /// Startup function.
 /// </summary>
 
-import { execAjax } from "./ajax_control_bridge.js";
+import { execAjax, jsonPostHeaders } from "./ajax_control_bridge.js";
 import { t } from "./i18n.js";
 
 // Declared here because these were implicit globals: assigned without
@@ -293,7 +293,7 @@ function readPgpassFileViaInput(p_file, p_lookup_info) {
 function grantPgpassAccess(p_lookup_info) {
 	fetch("/pgpass_grant/", {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers: jsonPostHeaders(),
 		body: JSON.stringify({
 			hostname: p_lookup_info ? p_lookup_info.server : "",
 			port: p_lookup_info ? p_lookup_info.port : "",

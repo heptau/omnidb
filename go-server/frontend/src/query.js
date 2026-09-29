@@ -299,7 +299,7 @@ export function querySQL(
 	p_save_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue(),
 	p_cmd_type = null,
 	p_clear_data = false,
-	p_tab_title = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_title_span.innerHTML,
+	p_tab_title = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_title_span.textContent,
 ) {
 	// Only the actual "Run" action (mode 0) gets the confirmation — modes
 	// 1-4 (fetch more/fetch all/commit/rollback) re-invoke querySQL for a

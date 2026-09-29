@@ -8,7 +8,11 @@ const loginWrapBody = document.getElementById('login_wrap_body');
 loadingContainer.style.display = '';
 
 EventsOn('backend:log', (line) => {
-	loadingLog.innerHTML += line + '<br/>';
+	// textContent, not innerHTML: this page has the Wails runtime bridge
+	// (window.go/window.runtime), so server output must never become markup.
+	const row = document.createElement('div');
+	row.textContent = line;
+	loadingLog.appendChild(row);
 	loginWrapBody.scrollTo(0, 99999);
 });
 

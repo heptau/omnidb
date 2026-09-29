@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/en/installation.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/installation.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/installation.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/installation.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/installation.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/installation.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/installation.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/installation.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/installation.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html" class="active">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -143,12 +155,14 @@
 
 		<p><strong>Important:</strong> The original repository <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> contains only old versions (up to ~2020) and is no longer maintained — see <a href="legacy_features_and_history.html">Legacy Features &amp; History</a> for what changed since.</p>
 
-		<p>For current versions use the revived project’s <a href="https://github.com/heptau/omnidb/releases">releases page</a>. Since the Go rewrite, every release is a single self-contained archive per platform — no installer, no separate runtime to install first:</p>
+		<p>For current versions use the revived project’s <a href="https://github.com/heptau/omnidb/releases">releases page</a>. Since the Go rewrite, every release is a single self-contained archive per platform (plus an optional installer for Windows) — no separate runtime to install first:</p>
 
 		<ul>
 			<li>macOS (Apple Silicon or Intel): <code>OmniDB-macOS-osx-arm64.zip</code> / <code>OmniDB-macOS-osx-x64.zip</code></li>
 			<li>Linux x64: <code>OmniDB-linux-x64.tar.gz</code></li>
-			<li>Windows x64: <code>OmniDB-win-x64.zip</code></li>
+			<li>Windows x64: <code>OmniDB-win-x64.zip</code>, or the installer
+				<code>OmniDB-win-x64-setup.exe</code> (the same app, with a Start-menu entry and an
+				uninstaller; this is also what winget installs)</li>
 		</ul>
 
 		<p>Unzip (or untar) the archive for your platform and run the <code>OmniDB</code> app/binary inside — that’s the whole install. <strong>Linux and Windows builds are produced by CI for every release but haven’t yet been verified on real hardware</strong>, unlike the macOS build; if you hit a platform-specific issue on one of those, please open an issue.</p>
@@ -184,6 +198,7 @@ winget upgrade heptau.OmniDB</code></pre>
 			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip">macOS (Intel)</a></li>
 			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz">Linux (x64)</a></li>
 			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip">Windows (x64)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64-setup.exe">Windows (x64) installer</a></li>
 		</ul>
 
 		<p>These links always point to the latest release. For older versions, checksums, and release notes, see the <a href="https://github.com/heptau/omnidb/releases">releases page</a>.</p>
@@ -191,8 +206,11 @@ winget upgrade heptau.OmniDB</code></pre>
 		<p>Unzip the archive for your platform and launch the app the normal way: on
 			macOS, drag <code>OmniDB.app</code> into <em>Applications</em> and open it from
 			Launchpad/Spotlight or <code>open -a OmniDB</code>; on Linux, run the
-			<code>OmniDB</code> binary directly; on Windows, run <code>OmniDB.exe</code>.
+			<code>OmniDB</code> binary directly; on Windows, run <code>OmniDB.exe</code> (or the installer).
 		</p>
+		<p>See <a href="desktop_app.html">Desktop App</a> for where the app keeps its data, its menu bar
+			and keyboard shortcuts, and macOS specifics such as importing data from an earlier
+			installation.</p>
 
 		<h3>OmniDB Server</h3>
 		<p>The same release archive also contains <code>omnidb-server</code> — a
@@ -222,18 +240,20 @@ omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_log
 		<p>Upon first run, both server and app create a file
 			<code>~/.omnidb/omnidb-app/omnidb.db</code> (for OmniDB app) or
 			<code>~/.omnidb/omnidb-server/omnidb.db</code> (for OmniDB server) in the user home
-			directory, if it does not exist yet — along with a default <code>admin</code>/<code>admin</code>
-			superuser account, ready to sign in with immediately. This file is also called the
+			directory, if it does not exist yet — along with an <code>admin</code>
+			superuser account. The desktop app signs in as this user automatically; in server mode
+			its password is randomly generated and printed once to the server’s log output (the line
+			containing <code>initial login: admin / …</code>). This file is also called the
 			<strong>user database</strong> and contains all users, connections, and other application
 			data. If it already exists (e.g. after an upgrade), OmniDB uses it as-is — it is
 			never overwritten or reset automatically.</p>
-		<h3>OmniDB in the browser</h3>
-		<p>Now that the web server is running, you may access OmniDB browser-based app on
-			your favorite browser. Type in address bar: <code>localhost:8000</code> and hit <code>Enter</code>. If
-			everything went fine, you shall see a page like this:</p>
-		<p><img alt="" src="../assets/img/image_002.webp"/></p>
-		<p>Now you know that OmniDB is running correctly. In the next chapters, we will see
-			how to login for the first time, how to create an user and to utilize OmniDB.</p>
+		<h3>OmniDB in the browser</h3>
+		<p>Once <code>omnidb-server</code> is running, open the address it printed on startup (for
+			example <code>http://127.0.0.1:52149/omnidb_login/</code>) in your favorite browser. You
+			will see OmniDB’s sign-in page; sign in as <code>admin</code> with the one-time password from
+			the log. In the next chapters, we will see how to create users and connections and how to
+			work with OmniDB. The desktop app skips this step entirely — it opens the workspace
+			directly.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

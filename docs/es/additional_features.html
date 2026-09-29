@@ -4,11 +4,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Funciones adicionales — Documentación de OmniDB</title>
-	<meta name="description" content="Herramientas adicionales de OmniDB: configuración de usuario, documentación contextual de PostgreSQL, fragmentos de código, el panel Notify, gestión de backends, paneles de propiedades y DDL, exportación de datos y consola SSH.">
+	<meta name="description" content="Herramientas adicionales de OmniDB: la página de bienvenida y el tutorial Primeros pasos, documentación contextual de PostgreSQL, paneles de propiedades y DDL, exportación de datos, Exportar como DBML, historial de consultas y consola SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/es/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/additional_features.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/additional_features.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/additional_features.html">
 	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/additional_features.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/additional_features.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/additional_features.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/additional_features.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/additional_features.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -18,7 +22,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/es/additional_features.html">
 	<meta property="og:title" content="Funciones adicionales - Documentación de OmniDB">
-	<meta property="og:description" content="Herramientas adicionales de OmniDB: configuración de usuario, documentación contextual de PostgreSQL, fragmentos de código, el panel Notify, gestión de backends, paneles de propiedades y DDL, exportación de datos y consola SSH.">
+	<meta property="og:description" content="Herramientas adicionales de OmniDB: la página de bienvenida y el tutorial Primeros pasos, documentación contextual de PostgreSQL, paneles de propiedades y DDL, exportación de datos, Exportar como DBML, historial de consultas y consola SSH.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
+			<a href="desktop_app.html">Aplicación de escritorio</a>
 			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="settings_and_languages.html">Configuración e idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
 			<a href="visualizing_data.html">Visualización de datos</a>
 			<a href="managing_other_elements.html">Administración de otros elementos</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="notify.html">Notificaciones</a>
+			<a href="connected_users.html">Usuarios conectados</a>
+			<a href="permissions.html">Roles y permisos</a>
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="security.html">Seguridad y servidor multiusuario</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
 		</div>
@@ -129,19 +140,25 @@
 		</nav>
 		<main>
 		<h1>Funciones adicionales</h1>
-		<h4>Configuración de usuario</h4>
-		<p>También en la esquina superior derecha, al hacer clic en el icono con forma de engranaje, OmniDB
-			abrirá la ventana emergente <em>User Settings</em> (Configuración de usuario). Está compuesta por cuatro pestañas:</p>
-		<ul>
-			<li><strong>Shortcuts</strong> (Atajos): permite al usuario cambiar sus atajos de teclado en OmniDB.</li>
-			<li><strong>Options</strong> (Opciones): permite al usuario cambiar el tamaño de fuente de la interfaz y configurar
-				las opciones relacionadas con CSV (codificación, delimitador). El tema de OmniDB se puede configurar como Automático (sigue la preferencia de esquema
-				de color del sistema operativo), Claro u Oscuro.</li>
-			<li><strong>Formatting</strong> (Formato): configura cómo el formateador de SQL (la acción <em>Indent SQL</em>) reescribe
-				su consulta: carácter de sangría (espacios o tabulador), tamaño de sangría (2/3/4), estilo de comas (al principio/al final) y
-				capitalización de palabras clave (conservar/MAYÚSCULAS/minúsculas). También configura la <strong>Ruler Column</strong> (columna de regla) — la línea guía vertical que dibuja el editor SQL (24-999, valor predeterminado 128) — aplicada en vivo a todos los editores abiertos.</li>
-			<li><strong>Password</strong> (Contraseña): permite al usuario cambiar su contraseña.</li>
-		</ul>
+		<p>Este capítulo reúne funciones más pequeñas que no necesitan un capítulo propio. Varias funciones que
+			antes se describían aquí tienen ahora sus propios capítulos:
+			<a href="settings_and_languages.html">Configuración e idiomas</a>,
+			<a href="snippets.html">Snippets</a>, <a href="notify.html">Notificaciones</a>,
+			<a href="connected_users.html">Usuarios conectados</a> (que sustituye al antiguo menú
+			<em>Backends</em> del árbol) y <a href="permissions.html">Roles y permisos</a>.</p>
+		<h4>La página de bienvenida</h4>
+		<p>El icono <em>Bienvenida</em> de la parte superior de la barra izquierda abre una página de inicio con el
+			botón <em>Primeros pasos</em>, un recordatorio de que la mayoría de las acciones actúan directamente sobre la
+			base de datos a la que está conectado (por lo que conviene practicar en un entorno de pruebas y no en
+			producción), enlaces al sitio web de OmniDB, al repositorio de GitHub y a esta documentación, y la versión
+			que está ejecutando.</p>
+		<h4>Tutorial Primeros pasos</h4>
+		<p>El icono de la bombilla, cerca de la parte inferior de la barra (<em>Primeros pasos</em>; en la aplicación
+			de escritorio también <em>Ayuda &gt; Primeros pasos</em>), abre una lista de recorridos interactivos que
+			resaltan paso a paso las partes relevantes de la pantalla: crear un usuario de OmniDB (solo en la versión de
+			servidor), crear una conexión de base de datos, crear una conexión de terminal, conocer el panel de
+			snippets, usar una conexión y la pestaña de conexión (disponible una vez que hay una conexión abierta).
+			<em>Terminar el recorrido</em> abandona un recorrido en cualquier momento.</p>
 		<h4>Ayuda contextual</h4>
 		<p>La mayoría de los nodos del árbol (generalmente los de agrupación, como <em>Schemas</em> o <em>Tables</em>) ofrecen
 			ayuda contextual. Se accede a esta función haciendo clic derecho sobre el nodo del árbol.
@@ -151,49 +168,40 @@
 			<a href="deploying_omnidb-server.html">OmniDB Server</a> basado en navegador). También
 			elige la versión de documentación adecuada para el servidor PostgreSQL al que está conectado.</p>
 		<p><img alt="" src="../assets/img/image_071.webp" /></p>
-		<h4>Snippets</h4>
-		<p>La <em>Workspace Window</em> (ventana de espacio de trabajo) tiene una pestaña externa fija con una función muy útil llamada
-			<em>Snippets</em> (fragmentos de código). Con esta función puede almacenar consultas, instrucciones de comandos y
-			cualquier otro tipo de texto que desee. También puede organizar los fragmentos en un
-			árbol de directorios según sus preferencias. Todos los directorios y fragmentos que cree se
-			almacenan dentro de la base de datos de usuario <code>omnidb.db</code> y persisten cuando actualiza OmniDB.
-		</p>
-		<p>Un pie de página con los botones «+»/«−» debajo del árbol de fragmentos permite añadir un fragmento dentro de la carpeta seleccionada (o en la raíz del árbol) y eliminar el elemento seleccionado; el botón «−» permanece deshabilitado hasta que se selecciona algo que se pueda eliminar. Una pestaña de fragmento abierta muestra un pequeño punto junto a su título en cuanto el editor difiere de lo guardado, que desaparece al guardar; al cerrar una pestaña solo se solicita confirmación cuando realmente hay cambios sin guardar.</p>
-		<p><img alt="" src="../assets/img/image_127.webp" /></p>
-		<h4>Notify</h4>
-		<p>El panel <em>Notify</em> (Notificaciones) se ubica en la barra lateral entre <em>Database</em> (Base de datos) y <em>Snippets</em>, y muestra en tiempo real los mensajes de PostgreSQL <code>LISTEN</code>/<code>NOTIFY</code>, Oracle <code>DBMS_ALERT</code> y Firebird <code>POST_EVENT</code>. Los canales se añaden, eliminan, pausan y reanudan por conexión, y persisten entre reinicios de la aplicación; los mensajes recibidos son efímeros: se conservan solo en la pestaña del navegador y se borran al recargar la página. Los mensajes pueden verse de todos los canales a la vez o filtrarse a una selección, y pueden limpiarse por canal o todos a la vez. MySQL/MariaDB/MS SQL Server/SQLite muestran un mensaje de «no compatible» en lugar de ocultar la función. La sesión de Notify de una conexión se inicia y detiene junto con su pestaña <em>Database</em>, y el panel comparte la misma franja horizontal de conexiones abiertas que el panel <em>Database</em>, de modo que seleccionar una conexión en uno mantiene sincronizado al otro.</p>
-		<h4>Gestión de backends</h4>
-		<p>Al hacer clic derecho en el nodo raíz del árbol, mover el puntero del ratón hacia
-			<em>Monitoring</em> (Monitorización) y luego hacer clic en <em>Backends</em>, el usuario puede ver toda la actividad
-			que ocurre en la base de datos. Cierta información está oculta para los usuarios normales; solo
-			los superusuarios de la base de datos pueden verla.
-		</p>
-		<p><img alt="" src="../assets/img/image_174.webp" /></p>
-		<p>Al hacer clic en la <em>X</em> de la columna <em>Actions</em> (Acciones), puede finalizar el
-			backend. Aparecerá una ventana emergente de confirmación.</p>
-		<p><img alt="" src="../assets/img/image_175.webp" /></p>
-		<h4>Propiedades y DDL</h4>
+		<h4>Propiedades y DDL</h4>
 		<p>Al hacer clic en la mayoría de los objetos de la vista de árbol (tablas, secuencias, vistas,
 			roles, bases de datos, etc.), el usuario podrá ver una lista muy completa
 			de propiedades del objeto.</p>
 		<p><img alt="" src="../assets/img/image_176.webp" /></p>
 		<p>En el otro panel, llamado <em>DDL</em>, el usuario podrá ver el código fuente DDL en SQL
-			que se puede usar para recrear el objeto. El usuario puede copiar este texto y
-			pegarlo donde desee.</p>
+			que se puede usar para recrear el objeto, incluido su comentario
+			(<code>COMMENT ON …</code>) y sus privilegios (<code>GRANT …</code>) cuando la base de datos los tiene.
+			El usuario puede copiar este texto y pegarlo donde desee.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
+		<p>El separador situado encima del panel Propiedades/DDL puede arrastrarse, y el panel (al igual que el propio
+			árbol de la base de datos) puede contraerse con el pequeño botón de alternancia de su separador; en la
+			aplicación de escritorio, también con <em>Ver &gt; Mostrar/ocultar panel de propiedades/DDL</em> y
+			<em>Ver &gt; Mostrar/ocultar árbol de la base de datos</em>.</p>
 		<h4>Exportar datos</h4>
-		<p>La <em>Query Tab</em> (pestaña de consulta) ofrece una forma de guardar los datos de los resultados de una consulta en
-			CSV, TSV, XLSX, Markdown, JSON o XML. Al hacer clic en el botón <em>Export Data</em> (Exportar datos), se inicia un backend cancelable que
-			guarda los datos en el archivo. Una vez finalizado, OmniDB proporciona un enlace llamado
-			<em>Save</em> (Guardar), para que el usuario pueda descargar el archivo. La codificación CSV/TSV (Configuración &gt; Options)
-			usa ahora UTF-8 con BOM de forma predeterminada, y su lista de códecs está agrupada en categorías legibles.
-		</p>
+		<p>La <em>Pestaña de consulta</em> puede guardar los resultados de su consulta en un archivo CSV, TSV, XLSX,
+			JSON, XML o Markdown. Elija el formato en la lista desplegable junto al botón <em>Exportar datos</em> y
+			haga clic en el botón: OmniDB vuelve a ejecutar la consulta en segundo plano y escribe el resultado completo
+			en el archivo (la exportación puede cancelarse mientras se ejecuta).</p>
+		<ul>
+			<li>En la <strong>aplicación de escritorio</strong>, se abre un diálogo nativo <em>Guardar como</em> para que
+				elija dónde guardar el archivo, y OmniDB lo confirma con <em>Archivo exportado a: …</em>.</li>
+			<li>En el <strong>navegador</strong> (versión de servidor), el área de resultados muestra <em>El archivo
+				está listo.</em> con un enlace <em>Guardar</em> que lo descarga.</li>
+		</ul>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
-		<p>Todos los archivos se almacenan en una carpeta temporal dentro de la carpeta de OmniDB. OmniDB
-			limpia esta carpeta regularmente, conservando solo los archivos de menos de 24 horas de antigüedad.</p>
+		<p>Los archivos CSV y TSV usan la codificación configurada en <em>Configuración &gt; Exportar &gt; Codificación
+			CSV/TSV</em> (predeterminada: UTF-8 con BOM), y los archivos CSV el <em>Delimitador CSV</em> configurado allí
+			(predeterminado <code>;</code>). Los archivos exportados se guardan en una carpeta temporal dentro del
+			directorio home de OmniDB, solo puede descargarlos el usuario que los creó y se eliminan automáticamente
+			pasadas 24 horas.</p>
 		<h4>Exportar como DBML</h4>
 		<p>Haga clic con el botón derecho en un nodo de base de datos del árbol de PostgreSQL y elija
-			<em>Export as DBML</em> (Exportar como DBML) para generar el esquema completo de la base de
+			<em>Exportar como DBML</em> para generar el esquema completo de la base de
 			datos como un documento <a href="https://dbml.dbdiagram.io/home/" target="_blank"
 			rel="noopener">DBML</a> (Database Markup Language) — todas las tablas, columnas, tipos de datos,
 			claves primarias, restricciones únicas y de clave foránea, índices y comentarios — mediante una
@@ -205,16 +213,23 @@
 			sus propias consultas de introspección tabla por tabla, mientras sigue describiendo con
 			precisión cada tabla, columna, tipo y relación.</p>
 		<p>El archivo generado usa por defecto el nombre <code>&lt;base_de_datos&gt;.dbml</code>. En la
-			aplicación de escritorio esto abre el diálogo nativo de Guardar, igual que <em>Export Data</em>;
+			aplicación de escritorio esto abre el diálogo nativo de Guardar, igual que <em>Exportar datos</em>;
 			en el navegador (servidor) muestra en su lugar un aviso <em>Download</em>/<em>Cancel</em>
 			(Descargar/Cancelar) — <em>Cancel</em> descarta el archivo generado de inmediato, en vez de
 			esperar a la limpieza de 24 horas de la carpeta temporal. Por ahora, solo PostgreSQL.</p>
 		<h4>Historial de consultas</h4>
-		<p>Desde la <em>Query Tab</em> puede hacer clic en el botón <em>Command History</em> (Historial de comandos) para ver un
-			historial de consultas completo, navegable y con función de búsqueda.</p>
+		<p>Desde la <em>Pestaña de consulta</em> puede hacer clic en el botón <em>Historial de comandos</em> para ver
+			una lista completa, navegable y con búsqueda de los comandos ejecutados en esta conexión, filtrable por rango
+			de fechas y por texto. Consulte <a href="writing_sql_queries.html">Escritura de consultas SQL</a>.</p>
 		<p><img alt="" src="../assets/img/image_203.webp" /></p>
 		<h4>Consola SSH</h4>
-		<p>OmniDB también ofrece una consola SSH completa.</p>
+		<p>Además de las conexiones de base de datos, OmniDB puede abrir un terminal SSH completo contra un servidor.
+			Cree una conexión de tipo <em>Terminal</em> en la sección Conexiones, rellenando el servidor SSH, el puerto,
+			el usuario y la contraseña o la clave privada (consulte
+			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>). Ábrala desde el
+			<em>+</em> al final de la franja de pestañas de conexión → <em>Consolas SSH</em>, o con <em>Conectar</em>
+			en su formulario. El terminal se abre como su propia pestaña de conexión; la clave de host del servidor
+			debe ser ya conocida; consulte <a href="security.html">Seguridad y servidor multiusuario</a>.</p>
 		<p><img alt="" src="../assets/img/image_204.webp" /></p>
 		</main>
 	</div>

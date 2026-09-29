@@ -30,6 +30,7 @@ SOFTWARE.
 
 import { execAjax } from "./ajax_control_bridge.js";
 import { consoleSQL } from "./console.js";
+import { escapeHtml } from "./query.js";
 import { tn } from "./i18n.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { whiteHtmlRenderer, whiteRightHtmlRenderer } from "./renderers.js";
@@ -1097,9 +1098,14 @@ export function renew_autocomplete(p_new_value) {
 					v_num_results++;
 					v_element.visible = true;
 					v_element.visible_index = v_group.num_visible;
+					// grid_data holds the raw catalog identifiers (see
+					// build_autocomplete_elements), and these columns render as
+					// HTML — escape first, then highlight the escaped match, the
+					// same way the keyword branch above does.
+					var v_safe_match = escapeHtml(v_match_text);
 					v_new_data.push([
-						v_group.grid_data[j][0].replace(v_match_text, "<b>" + v_match_text + "</b>"),
-						v_group.grid_data[j][1],
+						escapeHtml(v_group.grid_data[j][0]).replace(v_safe_match, "<b>" + v_safe_match + "</b>"),
+						escapeHtml(v_group.grid_data[j][1] == null ? "" : v_group.grid_data[j][1]),
 					]);
 					v_new_displayed.push(v_element);
 					v_group.num_visible++;

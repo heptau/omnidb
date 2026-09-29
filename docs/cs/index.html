@@ -18,9 +18,14 @@
 
 	<!-- Canonical & crawling -->
 	<link rel="canonical" href="https://www.omnidb.net/cs/">
-	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/">
-	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/index.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/index.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/index.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/index.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/index.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/index.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/index.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/index.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
 	<link rel="manifest" href="../manifest.json">
@@ -70,7 +75,15 @@
 			"SQL editor with autocomplete",
 			"Query plan visualization",
 			"Monitoring dashboard",
-			"SSH tunneling"
+			"Connected users and session termination",
+			"PostgreSQL role and privilege browser",
+			"LISTEN/NOTIFY, DBMS_ALERT and Firebird event listener",
+			"SQL snippets",
+			"Data export to CSV, TSV, XLSX, JSON, XML and Markdown",
+			"DBML schema export",
+			"SSH tunneling and SSH terminal",
+			"User interface in nine languages",
+			"Encrypted saved passwords"
 		],
 		"author": {
 			"@type": "Person",
@@ -148,7 +161,9 @@
 				<span class="nav-group-label">Začínáme</span>
 				<a href="introduction.html">Úvod</a>
 				<a href="installation.html">Instalace</a>
+				<a href="desktop_app.html">Desktopová aplikace</a>
 				<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+				<a href="settings_and_languages.html">Nastavení a jazyky</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Práce s daty</span>
@@ -156,6 +171,7 @@
 				<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 				<a href="managing_table_data.html">Správa dat v tabulkách</a>
 				<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+				<a href="snippets.html">Snippety</a>
 				<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 				<a href="visualizing_data.html">Vizualizace dat</a>
 				<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -166,11 +182,15 @@
 				<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
 				<a href="writing_plpgsql_functions.html">Psaní PL/pgSQL funkcí</a>
 				<a href="monitoring_dashboard.html">Monitorovací panel</a>
+				<a href="notify.html">Oznámení</a>
+				<a href="connected_users.html">Připojení uživatelé</a>
+				<a href="permissions.html">Role a oprávnění</a>
 				<a href="logical_replication.html">Logická replikace</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Server a nástroje</span>
 				<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+				<a href="security.html">Zabezpečení a víceuživatelský server</a>
 				<a href="console_tab.html">Karta konzole</a>
 				<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 			</div>
@@ -239,7 +259,25 @@
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">📤</span>
 					<h3>Export kamkoli</h3>
-					<p>Přímo do CSV, XLSX, TSV, Markdown, JSON nebo XML.</p>
+					<p>Přímo do CSV, XLSX, TSV, Markdown, JSON nebo XML — a celé schéma PostgreSQL do DBML.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📈</span>
+					<h3>Vidíte, co server dělá</h3>
+					<p>Živý monitorovací panel, připojení uživatelé s ukončením relace jedním kliknutím a
+						posluchač LISTEN/NOTIFY.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🛡️</span>
+					<h3>Role a oprávnění na první pohled</h3>
+					<p>Procházejte role PostgreSQL, členství a efektivní oprávnění — včetně zděděných —
+						a udělujte či odebírejte je přímo na místě.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🌍</span>
+					<h3>Mluví vaším jazykem</h3>
+					<p>English, Čeština, Deutsch, Español, Français, Italiano, Português, 日本語 a 한국어 —
+						nebo se prostě řídí jazykem systému.</p>
 				</article>
 			</div>
 		</section>

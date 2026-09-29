@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/en/managing_databases.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_databases.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_databases.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_databases.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_databases.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_databases.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_databases.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -128,146 +140,121 @@
 		</nav>
 		<main>
 		<h1>Managing Databases</h1>
-<p>After creating a connection you can open it by clicking <em>Connect</em> in the
-<em>Connections</em> section, or by double-clicking it in the connection list. You will
-see that the connection will be represented by a kind of outer tab called a
-<em>Connection Tab</em>. And this whole area is called the <em>Workspace Window</em>.</p>
-<p><img alt="" src="../assets/img/image_014.webp"/></p>
-<h4>Sections of the <em>Workspace</em> window</h4>
-<p>This interface has several elements:</p>
-<p><img alt="" src="../assets/img/image_015.webp"/></p>
+<p>After creating a connection you can open it by clicking <em>Connect</em> in the
+<em>Connections</em> section, or by double-clicking it in the connection list. OmniDB then
+switches to the <em>Database</em> section and opens the connection in a new <em>connection
+tab</em>.</p>
+<h4>Sections of the workspace</h4>
+<p>The icon rail on the left edge of the window switches between the workspace's sections:</p>
 <ul>
-<li><strong>1) Connections</strong>: Opens the <em>Connections</em> section, where connections
-are created, arranged and opened</li>
-<li><strong>2) Outer Tabs</strong>: OmniDB lets you work with several databases at the same
-time. Each database will be accessible through an <em>outer tab</em>. Outer tabs also
-can host miscellaneous connection-independent features, like the <em>Snippets</em>
-feature</li>
-<li><strong>3) Options</strong>: At the bottom of the icon rail. <em>Account</em> shows the
-current user, the version and <em>Sign out</em> (server version only), and <em>Settings</em>
-holds the user preferences plus, for a super user, <em>Manage Users</em>.</li>
+<li><strong>Welcome</strong>: the start page, with links to the documentation and the
+<em>Getting started</em> tutorial (see <a href="additional_features.html">Additional
+Features</a>);</li>
+<li><strong>Connections</strong>: where connections are created, arranged and opened (see
+<a href="creating_users_and_connections.html">Creating Users and Connections</a>);</li>
+<li><strong>Database</strong>: the open connection tabs, each with its database tree and its Query
+and Console tabs — described in this chapter;</li>
+<li><strong>Monitoring</strong>, <strong>Notify</strong>, <strong>Permissions</strong> and
+<strong>Connected Users</strong>: tools that work on the connections open in the Database section
+(see <a href="monitoring_dashboard.html">Monitoring Dashboard</a>, <a href="notify.html">Notify</a>,
+<a href="permissions.html">Roles and Permissions</a> and <a href="connected_users.html">Connected
+Users</a>);</li>
+<li><strong>Snippets</strong>: your saved pieces of SQL (see <a href="snippets.html">Snippets</a>);</li>
+<li>at the bottom, <strong>Getting Started</strong> (the interactive tutorial),
+<strong>Account</strong> (server version only: the current user, the version and <em>Sign
+out</em>) and <strong>Settings</strong> (see <a href="settings_and_languages.html">Settings and
+Languages</a>; superusers also find <em>Manage Users</em> there).</li>
 </ul>
-<h4>Connection Outer Tab</h4>
-<p>The outer table named <em>PostgreSQL – testdb</em> has this name because of the alias
-(<em>PostgreSQL</em>) we put in the connection to the <code>testdb</code> database. This tab is a
-<em>Connection Outer Tab</em>. Notice the little tab with a cross besides the
-<em>PostgreSQL – testdb</em> outer tab. This allows you to create a new outer tab that
-will automatically be a <em>Connection Outer Tab</em>. However, the <em>Snippet Outer Tab</em>
-is fixed and will always be the first.</p>
-<p>A new <em>Connection Outer Tab</em> will always automatically point to the first
-connection on your list of database connections. Or, if you opened one from the
-<em>Connections</em> section, it will point to that connection. Observe
-the elements inside of this tab:</p>
-<p><img alt="" src="../assets/img/image_016.webp"/></p>
+<p>The Database, Monitoring, Notify, Permissions and Connected Users sections all show the same
+strip of open connection tabs at the top, with the same selection: select a connection in one of
+them and the others follow. Switching sections never closes a connection.</p>
+<h4>Connection tabs</h4>
+<p>Each open connection is a tab in that strip, named after the connection. A connection tagged with
+an environment (Production, UAT, Development, Archive) shows that environment's color on its tab,
+so a production connection is easy to tell apart. Hovering a tab shows its details (server, or
+connection string), and hovering reveals its close button (×). Tabs can be reordered by dragging
+them.</p>
+<p>The <em>+</em> at the end of the strip opens another connection: it lists your saved
+connections (grouped, if you use groups) and, under <em>SSH Consoles</em>, your terminal
+connections. Closing a connection tab ends its database sessions.</p>
+<p>Inside a connection tab you find:</p>
 <ul>
-<li><strong>1) Connection Selector</strong>: Shows all connections and lets the user select the
-current one</li>
-<li><strong>2) Tree of Structures</strong>: Displays a hierarchical tree where you can navigate
-through the database elements</li>
-<li><strong>3) Properties and DDL Panels</strong>: Display Properties and DDL about the
-currently selected node in the tree view</li>
-<li><strong>4) Inner Tabs</strong>: Allows the user to execute actions in the current database.
-There are several kinds of inner tabs for the current database. By clicking on
-the last small tab with a cross, you can add a new tab. A new tab can be a
-<em>Query Tab</em>, <em>Console Tab</em>, <em>Monitoring Dashboard</em> or <em>Backends</em></li>
+<li><strong>The database tree</strong> on the left, where you navigate through the database
+objects. Right-clicking a node shows what you can do with it.</li>
+<li><strong>The Properties and DDL panels</strong> below the tree, showing the properties and the
+<code>CREATE</code> statement of the node selected in the tree. The tree and this panel can be
+resized by dragging their dividers and collapsed with the small toggle buttons on them.</li>
+<li><strong>Inner tabs</strong> on the right. The <em>+</em> at the end of the inner tab strip
+adds a <em>Query Tab</em> or a <em>Console Tab</em>; other actions (such as <em>Edit Data</em> on
+a table) open their own inner tabs.</li>
 </ul>
-<p><img alt="" src="../assets/img/image_187.webp"/></p>
-<ul>
-<li><strong>5) Inner Tab Content</strong>: Can vary depending on the kind of inner tab. The
-figure shows a <em>Query Tab</em> and in this case the content will be an <em>SQL Editor</em>,
-with syntax highlight, autocomplete and find &amp; replace</li>
-<li><strong>6) Inner Tab Actions</strong>: Can vary depending on the kind of inner tab. For a
-<em>Query Tab</em>, they are <em>Run</em>, <em>Indent SQL</em>, <em>Command History</em>, <em>Explain</em>,
-<em>Explain Analyze</em>, <em>Autocommit</em> and <em>Export Data</em></li>
-<li><strong>7) Inner Tab Results</strong>: A <em>Query Tab</em>, after you click in the <em>Execute
-Button</em> or type the run shortcut (<code>Alt-Q</code>), will show a grid with the query
-results in the <em>Data</em> subtab. If the query calls a function that raises
-messages, those will be shown in the <em>Messages</em> subtab. If instead of <em>Run</em> you
-clicked in <em>Explain</em> or <em>Explain Analyze</em>, the explain plan for the query will
-be shown in the <em>Explain</em> subtab.</li>
-</ul>
-<h4>Working with databases</h4>
-<p>Take a look at your connections selector. OmniDB always points to the first
-available connection but you can change it by clicking on the selector.</p>
-<p><img alt="" src="../assets/img/image_017.webp"/></p>
-<p>Select the <em>PostgreSQL</em> connection. Now go to the tree right below the selector
-and click to expand the root node <em>PostgreSQL</em>.</p>
-<p><img alt="" src="../assets/img/image_018.webp"/></p>
-<p>Bear in mind that every 30 minutes you keep without performing actions on the
-database, will trigger an <em>Authentication</em> popup, meaning that the password that
-OmniDB has encrypted and stored in memory is now expired. As explained before,
-this is important for your database security. After you type the correct
-password, you will see the PostgreSQL node now shows the PostgreSQL version and
-also was expanded, showing the current database connection and also instance
-wide elements: <em>Databases</em>, <em>Tablespaces</em>, <em>Roles</em> and <em>Replication Slots</em>.</p>
-<p>You can connect to a single PostgreSQL database, and using the same connection
-you can connect to other databases in the same PostgreSQL instance. The
-currently active database will be indicated below the connection selector.</p>
-<p><img alt="" src="../assets/img/image_188.webp"/></p>
-<p>To connect to a different database, expand the node corresponding to that
-database. A popup will appear asking if you really want to change the active
-database.</p>
-<p><img alt="" src="../assets/img/image_189.webp"/></p>
-<p>Click on <em>Yes</em> and OmniDB will change the active database to the database you
-choose. It will be reflected on the <em>Active database</em> indicator, and also on
-the outer tab name.</p>
-<p><img alt="" src="../assets/img/image_190.webp"/></p>
-<p>Go ahead and expand the <em>Schemas</em> node. You will see all schemas in the current
-database (in case of PostgreSQL, <code>TOAST</code> and temp schemas are not shown).</p>
+<p>A <em>Query Tab</em> contains an <em>SQL Editor</em> with syntax highlighting, autocomplete
+and find &amp; replace, a toolbar (<em>Run</em>, <em>Run Statement at Cursor</em>, <em>Indent
+SQL</em>, <em>Command history</em>, <em>Explain</em>, <em>Explain Analyze</em>,
+<em>Autocommit</em>, <em>Export Data</em>, …) and the results area below it with the
+<em>Data</em>, <em>Messages</em> and <em>Explain</em> subtabs. See
+<a href="writing_sql_queries.html">Writing SQL Queries</a> for the details.</p>
+<h4>Working with databases</h4>
+<p>Expand the root node of the tree (named after the database engine). The first time you use a
+connection whose password is not stored, OmniDB asks for it. A password typed into that prompt is
+remembered for 30 minutes of your session; after that the prompt appears again. After you type the
+correct password, the root node shows the server version and expands, showing the current database
+connection and also instance-wide elements — for PostgreSQL: <em>Databases</em>,
+<em>Tablespaces</em>, <em>Roles</em> and <em>Replication Slots</em>.</p>
+<p>You can connect to a single PostgreSQL database, and using the same connection you can connect
+to other databases in the same PostgreSQL instance. To switch, expand the node of another database:
+OmniDB asks whether you really want to change the active database, and on <em>Yes</em> makes it
+the active database of that connection tab.</p>
+<p>Go ahead and expand the <em>Schemas</em> node. You will see all schemas in the current
+database (in case of PostgreSQL, <code>TOAST</code> and temp schemas are not shown).</p>
 <p><img alt="" src="../assets/img/image_019.webp"/></p>
-<p>Now click to expand the schema <code>public</code>. You will see different kinds of
-elements contained in this schema.</p>
+<p>Now click to expand the schema <code>public</code>. You will see different kinds of
+elements contained in this schema.</p>
 <p><img alt="" src="../assets/img/image_020.webp"/></p>
-<p>Now click to expand the node <em>Tables</em>, and you will see all tables contained in
-the schema <code>public</code>. Expand any table and you will see its columns, primary key,
+<p>Now click to expand the node <em>Tables</em>, and you will see all tables contained in
+the schema <code>public</code>. Expand any table and you will see its columns, primary key,
 foreign keys, constraints, indexes, rules, triggers and partitions.</p>
 <p><img alt="" src="../assets/img/image_021.webp"/></p>
-<p>In order to view records inside a table, right click it and choose <em>Data Actions &gt; Query Data</em>.</p>
+<p>In order to view records inside a table, right click it and choose <em>Data Actions &gt; Query
+Data</em>.</p>
 <p><img alt="" src="../assets/img/image_022.webp"/></p>
-<p>Notice that OmniDB opens a new SQL editor with a simple query to list table
-records. The records are displayed in a grid right below the editor. This grid
-can be controlled with keyboard as if you were using a spreadsheet manager. You
-can also copy data from single cells or block of cells (that can be selected
-with the keyboard or mouse) and paste on any spreadsheet manager.</p>
+<p>Notice that OmniDB opens a new SQL editor with a simple query to list table
+records. The records are displayed in a grid right below the editor. This grid
+can be controlled with keyboard as if you were using a spreadsheet manager. You
+can also copy data from single cells or block of cells (that can be selected
+with the keyboard or mouse) and paste on any spreadsheet manager.</p>
 <p><img alt="" src="../assets/img/image_023.webp"/></p>
-<p>You can edit the query on the SQL editor, writing simple or more complex
-queries. To execute, click on the action button or hit the keystroke <code>Alt-Q</code>.
-If the results exceed 100 registers, then extra buttons <em>Fetch More</em> and <em>Fetch
-All</em> will appear. More details in the next chapters.</p>
-<h4>Working with multiple tabs inside the same connection</h4>
-<p>Inside a single connection, you can create several inner query tabs by clicking
-on the last little tab with a cross, and then choosing <em>Query Tab</em>.</p>
-<p><img alt="" src="../assets/img/image_024.webp"/></p>
-<p>On OmniDB, you can execute several SQL statements and procedures in parallel.
-When it is executing, an icon will be shown in the tab to indicate its current
-state. If some process is finished and it is not in the current tab, that tab
-will show a green icon indicating the routine being executed there is now
-finished.</p>
-<p><img alt="" src="../assets/img/image_025.webp"/></p>
-<p>By clicking in the <em>Cancel button</em>, you can cancel a process running inside the
-database.</p>
-<p><img alt="" src="../assets/img/image_026.webp"/></p>
-<p>You can also drag and drop a tab to change its order. This works with both inner
-and outer tabs.</p>
-<p><img alt="" src="../assets/img/image_027.webp"/></p>
-<p>Additionally, you can use keyboard shortcuts to manage inner tabs (SQL Query).
-These are the defaults on Windows/Linux (macOS substitutes Ctrl for Alt); all
-of them are rebindable in the Settings dialog’s Shortcuts tab:</p>
+<p>You can edit the query on the SQL editor, writing simple or more complex
+queries. To execute, click on the <em>Run</em> button or press <code>Alt-Q</code>
+(<code>Ctrl-Q</code> on macOS). If the result has more rows than the first batch fetched, the
+buttons <em>Fetch more</em> and <em>Fetch all</em> appear. More details in the next chapters.</p>
+<h4>Working with multiple tabs inside the same connection</h4>
+<p>Inside a single connection, you can create several inner tabs by clicking on the <em>+</em> at
+the end of the inner tab strip, and then choosing <em>Query Tab</em> (or <em>Console Tab</em>).</p>
+<p>On OmniDB, you can execute several SQL statements and procedures in parallel. Each Query Tab
+has its own database session. While a tab is executing, a spinner is shown on it; when a tab you
+are not looking at finishes, it shows a checkmark instead. The red <em>Cancel</em> button cancels
+the statement running in the current tab.</p>
+<p>You can also drag and drop a tab to change its order. This works with both inner tabs and
+connection tabs. When a row of tabs runs out of room, the tabs shrink step by step down to
+icon-only; hovering an icon-only tab shows its name.</p>
+<p>Additionally, you can use keyboard shortcuts to manage inner tabs. These are the defaults on
+Windows/Linux (macOS uses Ctrl instead of Alt); all of them can be changed under
+<a href="settings_and_languages.html">Settings &gt; Shortcuts</a>:</p>
 <ul>
-<li><strong>Alt-I</strong>: Insert a new inner tab</li>
-<li><strong>Alt-Shift-Q</strong>: Removes the current inner tab</li>
-<li><strong>Alt-O</strong>: Change focus to inner tab at left</li>
-<li><strong>Alt-P</strong>: Change focus to inner tab at right</li>
+<li><strong>Alt-I</strong>: Insert a new inner tab</li>
+<li><strong>Alt-Shift-Q</strong>: Removes the current inner tab</li>
+<li><strong>Alt-O</strong>: Change focus to inner tab at left</li>
+<li><strong>Alt-P</strong>: Change focus to inner tab at right</li>
 </ul>
-<p>There are currently no keyboard shortcuts for outer (Connection) tabs — use
-drag-and-drop reordering, or the mouse, for those.</p>
-<p>All SQL Query tabs are automatically saved
-whenever you execute them. Even if you close OmniDB window or browser tab, they
-are already stored in OmniDB <em>User Database</em>. They will be automatically
-restored when you open OmniDB again (if you are using app), open it in another
-browser window (if you are using server), or even if you clicked in the
-<em>Connections</em> window or logged out. Removing an outer tab or inner tab by the
-interface makes it permanently deleted, so it will not be restored.</p>
+<p>There are no keyboard shortcuts for connection tabs — use the mouse or drag-and-drop for
+those. (The desktop app's <em>View</em> menu has shortcuts for switching sections; see
+<a href="desktop_app.html">Desktop App</a>.)</p>
+<p>All Query tabs are saved automatically whenever you execute them. Even if you close the
+OmniDB window or browser tab, they are stored in OmniDB's <em>user database</em> and restored
+the next time you open OmniDB (in the desktop app) or sign in again (in the server version) —
+OmniDB then starts in the Database section with those connections open. Closing a connection tab
+or an inner tab yourself deletes it permanently, so it will not be restored.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

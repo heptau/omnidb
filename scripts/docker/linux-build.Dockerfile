@@ -6,7 +6,7 @@
 # it must be built on Linux. This image lets the release process do that
 # locally via Docker instead of relying on a GitHub Actions runner.
 # =============================================================================
-FROM golang:1.25-bookworm
+FROM golang:1.27-bookworm
 
 # Debian bookworm's apt-get nodejs package is stuck on Node 18, but sass
 # (via chokidar@5, ESM-only) requires Node >=20.19 — matches CI (tests.yml

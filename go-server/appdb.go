@@ -109,5 +109,24 @@ func openAppDB(upstream *url.URL) (*sql.DB, error) {
 		db.Close()
 		return nil, err
 	}
+	// SQLite creates the file with the process umask (typically 0644),
+	// which on a shared machine lets every local user read password
+	// hashes, saved connections and query history. Best-effort: a failure
+	// (e.g. a read-only mount) isn't worth refusing to start over.
+	restrictAppDBFileModes(path)
 	return db, nil
+}
+
+var restrictAppDBOnce sync.Once
+
+// restrictAppDBFileModes chmods omnidb.db and its WAL/journal siblings to
+// 0600, once per process.
+func restrictAppDBFileModes(path string) {
+	restrictAppDBOnce.Do(func() {
+		for _, p := range []string{path, path + "-wal", path + "-shm", path + "-journal"} {
+			if _, err := os.Stat(p); err == nil {
+				_ = os.Chmod(p, 0o600)
+			}
+		}
+	})
 }

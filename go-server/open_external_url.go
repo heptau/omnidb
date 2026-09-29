@@ -64,7 +64,7 @@ func handleOpenExternalURL(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := http.Post(openURL, "application/json", bytes.NewReader(payload))
+	resp, err := postToShell(nil, openURL, bytes.NewReader(payload))
 	if err != nil {
 		writeOpenExternalURLError(w, "Could not reach the desktop app: "+err.Error())
 		return

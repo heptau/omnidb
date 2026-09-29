@@ -7,7 +7,11 @@
 	<meta name="description" content="Equivalentes manuais para a ferramenta de linha de comandos omnidb-config, agora descontinuada: localizar a pasta pessoal, compactar a base de dados SQLite, repô-la e limpar ficheiros temporários.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/omnidb_config_tool.html">
 	<meta name="robots" content="index, follow">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
+			<a href="desktop_app.html">Aplicação de Ambiente de Trabalho</a>
 			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="settings_and_languages.html">Definições e Idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
 			<a href="visualizing_data.html">Visualizar Dados</a>
 			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html" class="active">Ferramenta de Configuração do OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="notify.html">Notificações</a>
+			<a href="connected_users.html">Utilizadores Ligados</a>
+			<a href="permissions.html">Roles e Permissões</a>
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor e Ferramentas</span>
 			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="security.html">Segurança e Servidor Multiutilizador</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
@@ -131,21 +142,49 @@
 <p><strong>Nota:</strong> o utilitário de linha de comandos autónomo <code>omnidb-config</code>/<code>omnidb-config-app</code>/
 <code>omnidb-config-server</code> descrito nesta página pertencia à
 versão anterior baseada em Python/Django e não faz parte do lançamento atual. O
-binário único <code>omnidb-server</code> apenas aceita <code>-A</code>/<code>--app</code> (modo aplicação
-de ambiente de trabalho) e <code>-d</code>/<code>--homedir</code> (escolher a pasta pessoal), documentados no
-capítulo <a href="installation.html">Instalação</a>. As tarefas de manutenção que a
-ferramenta antiga oferecia ainda podem ser feitas manualmente, como descrito abaixo.</p>
+binário único <code>omnidb-server</code> aceita apenas um pequeno conjunto de opções de linha de comandos:
+<code>-A</code>/<code>--app</code> (modo aplicação de ambiente de trabalho), <code>-H</code>/<code>--host</code> (endereço
+de escuta), <code>-p</code>/<code>--port</code> (porta de escuta), <code>-d</code>/<code>--homedir</code>
+(escolher a pasta pessoal) e <code>--set-password</code> (definir a palavra-passe de um utilizador, ver abaixo) —
+todas descritas na secção <em>Opções de linha de comandos</em> de
+<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>. Não existe nenhum ficheiro de configuração.
+As tarefas de manutenção que a ferramenta antiga oferecia ainda podem ser feitas manualmente, como descrito abaixo.</p>
 <h4>Pasta pessoal</h4>
 <p>O OmniDB armazena tudo — a base de dados <code>omnidb.db</code> (utilizadores, ligações e
 outros dados da aplicação) e uma pasta <code>temp</code> para ficheiros exportados — numa única pasta
 pessoal. Por predefinição, esta é <code>~/.omnidb/omnidb-app</code> (modo aplicação de ambiente de trabalho) ou
 <code>~/.omnidb/omnidb-server</code> (modo servidor); passe <code>-d /some/path</code> para usar uma
-pasta diferente.</p>
+pasta diferente (a pasta já tem de existir). Se o sistema operativo não oferecer um armazenamento de segredos
+para a chave de encriptação das palavras-passe guardadas, a mesma pasta guarda também essa chave, no ficheiro
+<code>.connection_secret_key</code> — consulte <a href="security.html">Segurança e Servidor Multiutilizador</a>.
+Quando fizer uma cópia de segurança ou mover o <code>omnidb.db</code>, leve também esse ficheiro.</p>
 <h4>Criar um utilizador</h4>
 <p>Atualmente não existe nenhuma opção de linha de comandos para criar um utilizador sem abrir o OmniDB.
 Na primeira execução com uma pasta pessoal vazia, o OmniDB cria automaticamente um
-superutilizador predefinido <code>admin</code>/<code>admin</code> — inicie sessão com ele e crie
-outros utilizadores a partir do ecrã <em>Users</em>, ou altere a palavra-passe predefinida.</p>
+superutilizador predefinido <code>admin</code> — no modo servidor, com uma palavra-passe aleatória mostrada
+uma única vez na saída de registo do servidor (a linha que contém <code>initial login: admin / …</code>). Inicie sessão com ele e crie
+outros utilizadores em <em>Definições &gt; Conta &gt; Gerir utilizadores</em>, ou altere a palavra-passe em
+<em>Definições &gt; Palavra-passe</em>.</p>
+<h4>Definir ou repor uma palavra-passe</h4>
+<p>Se a palavra-passe inicial de utilização única do <code>admin</code> se perdeu (ou se quiser
+definir a sua antes do primeiro início de sessão), pode definir a palavra-passe de qualquer
+utilizador existente diretamente na base de dados da aplicação, sem iniciar o servidor:</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-server --set-password admin
+user@machine:~$ omnidb-server --set-password admin -d /path/to/homedir
+</code></pre>
+<p>Sem <code>-d</code> é usada a pasta pessoal predefinida do servidor
+(<code>~/.omnidb/omnidb-server</code>). Num terminal, a nova palavra-passe é pedida duas vezes,
+sem ser mostrada; caso contrário, é lida da primeira linha da entrada padrão, o que é útil em
+scripts:</p>
+<pre><code class="language-bash">user@machine:~$ printf '%s\n' "$PW" | omnidb-server --set-password admin
+</code></pre>
+<p>A palavra-passe nunca é passada como argumento da linha de comandos, pelo que não aparece na
+saída de <code>ps</code> nem no histórico da shell. Tem de ter pelo menos 8 caracteres e o
+utilizador já tem de existir. A opção é recusada em conjunto com <code>-A</code>: a aplicação de
+ambiente de trabalho inicia sessão automaticamente e não tem nenhuma palavra-passe para gerir.
+Também pode ser executada com o servidor em funcionamento: a nova palavra-passe é válida de
+imediato para novos inícios de sessão, enquanto os utilizadores que já iniciaram sessão
+permanecem com sessão iniciada até esta expirar ou o servidor ser reiniciado.</p>
 <h4>Compactar (Vacuum)</h4>
 <p>O OmniDB tem uma única base de dados SQLite, <code>omnidb.db</code>, que armazena todos os utilizadores,
 ligações e outros dados relacionados com o OmniDB. Como se trata de um simples ficheiro SQLite, pode
@@ -156,7 +195,7 @@ compactá-lo com qualquer cliente SQLite enquanto o OmniDB não estiver em exec
 <p>Se quiser eliminar todas as informações do OmniDB e obter uma base de dados limpa, como
 acabada de instalar, saia do OmniDB e elimine (ou mova para outro local) o ficheiro
 <code>omnidb.db</code> da pasta pessoal. Um novo ficheiro vazio — com um novo utilizador predefinido
-<code>admin</code>/<code>admin</code> — é criado automaticamente da próxima vez que o OmniDB arrancar. Use isto com
+<code>admin</code> (no modo servidor, com uma nova palavra-passe de utilização única mostrada no registo) — é criado automaticamente da próxima vez que o OmniDB arrancar. Use isto com
 cuidado: não pode ser desfeito.</p>
 <h4>Eliminar ficheiros temporários</h4>
 <p>Os resultados de consultas exportados (CSV/XLSX/etc.) são escritos na pasta <code>temp</code>

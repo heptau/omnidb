@@ -30,25 +30,40 @@ func homeDirFlag(args []string) string {
 // ~/.omnidb/omnidb-server otherwise) is created if missing, matching
 // Python's own "if not os.path.exists(HOME_DIR): os.makedirs(...)".
 func resolveHomeDir(args []string) (string, error) {
-	if dir := homeDirFlag(args); dir != "" {
+	dir, explicit, err := homeDirPath(args)
+	if err != nil {
+		return "", err
+	}
+	if explicit {
 		if _, err := os.Stat(dir); err != nil {
 			return "", fmt.Errorf("home directory does not exist: %s", dir)
 		}
 		return dir, nil
 	}
-
-	base, err := os.UserHomeDir()
-	if err != nil {
-		return "", err
-	}
-	dir := filepath.Join(base, ".omnidb", "omnidb-server")
-	if isAppMode(args) {
-		dir = filepath.Join(base, ".omnidb", "omnidb-app")
-	}
 	if _, err := os.Stat(dir); err != nil {
-		if mkErr := os.MkdirAll(dir, 0o755); mkErr != nil {
+		// 0700: the home dir holds omnidb.db (password hashes, saved
+		// connections, query history) and, without a keyring, the
+		// connection-secret key file.
+		if mkErr := os.MkdirAll(dir, 0o700); mkErr != nil {
 			return "", mkErr
 		}
 	}
 	return dir, nil
+}
+
+// homeDirPath computes resolveHomeDir's directory without touching the
+// filesystem; explicit reports whether it came from -d/--homedir.
+func homeDirPath(args []string) (dir string, explicit bool, err error) {
+	if dir := homeDirFlag(args); dir != "" {
+		return dir, true, nil
+	}
+	base, err := os.UserHomeDir()
+	if err != nil {
+		return "", false, err
+	}
+	dir = filepath.Join(base, ".omnidb", "omnidb-server")
+	if isAppMode(args) {
+		dir = filepath.Join(base, ".omnidb", "omnidb-app")
+	}
+	return dir, false, nil
 }

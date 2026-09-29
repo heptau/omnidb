@@ -7,8 +7,12 @@
 	<meta name="description" content="Générez des graphes entité-relation simples ou complets des tables, colonnes et relations de clés étrangères de votre schéma, directement depuis l'arborescence d'OmniDB.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/visualizing_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/visualizing_data.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/visualizing_data.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/visualizing_data.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/visualizing_data.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/visualizing_data.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/visualizing_data.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/visualizing_data.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/visualizing_data.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/visualizing_data.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html" class="active">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -131,8 +143,7 @@
 <p>Cette fonctionnalité affiche un graphe avec des nœuds représentant les tables et des arêtes représentant les
 relations entre tables via les clés étrangères. À l’aide de la souris, l’utilisateur peut zoomer, dézoomer, et
 glisser-déposer les nœuds pour modifier leur position.</p>
-<p>Il existe deux types de graphes : <em>Simple Graph</em> (Graphe simple) et <em>Complete Graph</em> (Graphe
-complet).</p>
+<p>Il existe deux types de graphes : <em>Graphe simple</em> et <em>Graphe complet</em>.</p>
 <h4>Graphe simple</h4>
 <p>Celui-ci affiche des nœuds de table simples et leurs relations. Pour y accéder, faites simplement un clic
 droit sur le nœud de schéma souhaité dans l’arborescence, puis sélectionnez l’action <em>Render Graph &gt ;

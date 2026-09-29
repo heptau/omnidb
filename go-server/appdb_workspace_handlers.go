@@ -481,6 +481,7 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 				writeEnvelope(w, err.Error(), true, -1)
 				return
 			}
+			syncNativeSessionsForUser(who.UserID, who.Username, who.SuperUser, true, false, nativeSessionCookieValue(r))
 		}
 		// Mirrors Python mutating v_session.v_csv_encoding/v_csv_delimiter
 		// live (not just the UserDetails row) — see native_session.go's
@@ -509,7 +510,7 @@ func handleGetDatabaseList(upstream *url.URL) http.HandlerFunc {
 			writeDatabaseError(w, err.Error())
 			return
 		}
-		databases, terminals := buildDatabaseList(conns)
+		databases, terminals := buildDatabaseList(conns, int64(who.UserID))
 
 		groups, err := fetchGroupsForUser(db, int64(who.UserID))
 		if err != nil {

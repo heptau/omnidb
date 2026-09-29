@@ -76,6 +76,7 @@ func (a *App) startBackend() {
 			"OMNIDB_PGPASS_IMPORT_URL=http://"+a.saveDialogAddr+"/pgpass-import",
 			"OMNIDB_NOTIFY_LANGUAGE_URL=http://"+a.saveDialogAddr+"/notify-language",
 			"OMNIDB_NOTIFY_TITLE_URL=http://"+a.saveDialogAddr+"/notify-title",
+			"OMNIDB_RELAY_TOKEN="+a.relayToken,
 		)
 	}
 
@@ -107,17 +108,31 @@ func (a *App) startBackend() {
 // not be displayed, only navigated to.
 func (a *App) streamServerOutput(pipe io.Reader, watchForReadyURL bool) {
 	scanner := bufio.NewScanner(pipe)
+	readySeen := false
 	for scanner.Scan() {
 		line := scanner.Text()
 
-		if watchForReadyURL && strings.HasPrefix(line, "http") {
-			if u, err := url.Parse(line); err == nil {
-				a.backendMu.Lock()
-				a.backendURL = u.Scheme + "://" + u.Host
-				a.backendMu.Unlock()
+		if watchForReadyURL && !readySeen && strings.HasPrefix(line, "http") {
+			// Only the first such line counts, and only if it points at
+			// go-server's own loopback listener — anything else printing a
+			// URL to stdout later (a library, a debug print) must not be able
+			// to navigate this window, which carries the Wails bridge until
+			// it navigates away, or redirect stopBackend's shutdown request.
+			u, err := url.Parse(line)
+			if err != nil || u.Scheme != "http" || u.Hostname() != "127.0.0.1" {
+				continue
 			}
+			readySeen = true
+			a.backendMu.Lock()
+			a.backendURL = u.Scheme + "://" + u.Host
+			a.backendMu.Unlock()
 			wailsruntime.EventsEmit(a.ctx, "backend:log", "Opening OmniDB...")
 			wailsruntime.EventsEmit(a.ctx, "backend:ready", line)
+			continue
+		}
+		if watchForReadyURL && strings.HasPrefix(line, "http") {
+			// Never echo a later URL line either — same token-leak reasoning
+			// as the ready line itself.
 			continue
 		}
 
@@ -142,7 +157,10 @@ func (a *App) stopBackend() {
 
 	if backendURL != "" {
 		client := http.Client{Timeout: 2 * time.Second}
-		if _, err := client.Post(backendURL+"/internal/shutdown/", "text/plain", nil); err == nil {
+		req, _ := http.NewRequest(http.MethodPost, backendURL+"/internal/shutdown/", nil)
+		req.Header.Set("Authorization", "Bearer "+a.relayToken)
+		if resp, err := client.Do(req); err == nil && resp.StatusCode == http.StatusOK {
+			resp.Body.Close()
 			done := make(chan struct{})
 			go func() {
 				_, _ = a.server.Process.Wait()

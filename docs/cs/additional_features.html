@@ -4,10 +4,15 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Další funkce – Dokumentace OmniDB</title>
-	<meta name="description" content="Doplňkové nástroje OmniDB: uživatelská nastavení, kontextová dokumentace PostgreSQL, úryvky, panel Notify, správa backendů, panely vlastností/DDL, export dat a SSH konzole.">
+	<meta name="description" content="Doplňkové nástroje OmniDB: úvodní stránka Vítejte a průvodce Začínáme, kontextová dokumentace PostgreSQL, panely vlastností/DDL, export dat, export do DBML, historie dotazů a SSH konzole.">
 	<link rel="canonical" href="https://www.omnidb.net/cs/additional_features.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/additional_features.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/additional_features.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/additional_features.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/additional_features.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/additional_features.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/additional_features.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/additional_features.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/additional_features.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -17,7 +22,7 @@
 	<meta property="og:type" content="article">
 	<meta property="og:url" content="https://www.omnidb.net/cs/additional_features.html">
 	<meta property="og:title" content="Další funkce - Dokumentace OmniDB">
-	<meta property="og:description" content="Doplňkové nástroje OmniDB: uživatelská nastavení, kontextová dokumentace PostgreSQL, úryvky, panel Notify, správa backendů, panely vlastností/DDL, export dat a SSH konzole.">
+	<meta property="og:description" content="Doplňkové nástroje OmniDB: úvodní stránka Vítejte a průvodce Začínáme, kontextová dokumentace PostgreSQL, panely vlastností/DDL, export dat, export do DBML, historie dotazů a SSH konzole.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
 	<meta property="og:site_name" content="OmniDB">
 
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
 			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Práce s daty</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
 			<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
@@ -128,26 +140,28 @@
 		</nav>
 		<main>
 		<h1>Další funkce</h1>
-		<h4>Uživatelská nastavení</h4>
-		<p>Také v pravém horním rohu, kliknutím na ikonu ozubeného kola, OmniDB otevře
-			vyskakovací okno <em>User Settings</em> (Uživatelská nastavení). Skládá se ze
-			čtyř karet:</p>
-		<ul>
-			<li><strong>Shortcuts</strong> (Zkratky): Umožňuje uživateli měnit klávesové zkratky v OmniDB.</li>
-			<li><strong>Options</strong> (Možnosti): Umožňuje uživateli měnit velikost písma rozhraní a
-				konfigurovat volby týkající se CSV (kódování, oddělovač). Motiv OmniDB lze nastavit na Automaticky (řídí se podle preference
-				barevného schématu vašeho operačního systému), Světlý nebo Tmavý.</li>
-			<li><strong>Formatting</strong> (Formátování): Nastavuje, jak SQL formátovač (akce <em>Indent SQL</em>,
-				Formátovat SQL) přepisuje váš dotaz — znak odsazení (mezery nebo tabulátor),
-				velikost odsazení (2/3/4), styl čárek (na začátku/na konci řádku) a velikost
-				písmen klíčových slov (zachovat/VELKÁ PÍSMENA/malá písmena). Nastavuje také <strong>Ruler Column</strong> (Vodicí sloupec) —
-				svislou vodicí čáru, kterou SQL editor vykresluje (24-999, výchozí 128) — okamžitě
-				uplatněnou na všechny otevřené editory.</li>
-			<li><strong>Password</strong> (Heslo): Umožňuje uživateli změnit si heslo.</li>
-		</ul>
+		<p>Tato kapitola shrnuje drobnější funkce, které nepotřebují vlastní kapitolu. Několik funkcí,
+			které byly dříve popsány zde, má nyní vlastní kapitoly:
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>,
+			<a href="snippets.html">Snippety</a>, <a href="notify.html">Oznámení</a>,
+			<a href="connected_users.html">Připojení uživatelé</a> (nahrazuje dřívější nabídku
+			<em>Připojení serveru</em> (Backends) ve stromu) a <a href="permissions.html">Role
+			a oprávnění</a>.</p>
+		<h4>Úvodní stránka Vítejte</h4>
+		<p>Ikona <em>Vítejte</em> nahoře na levé liště otevře úvodní stránku s tlačítkem
+			<em>Začínáme</em>, upozorněním, že většina akcí komunikuje přímo s databází, ke které jste
+			připojeni (takže si zkoušejte práci raději v testovacím prostředí než v produkci), odkazy na
+			web OmniDB, repozitář na GitHubu a tuto dokumentaci a s verzí, kterou používáte.</p>
+		<h4>Průvodce Začínáme</h4>
+		<p>Ikona žárovky u spodní části lišty (<em>Začínáme</em>; v desktopové aplikaci také
+			<em>Nápověda &gt; Začínáme</em>) otevře seznam interaktivních průvodců, kteří krok za krokem
+			zvýrazňují příslušné části obrazovky: vytvoření uživatele OmniDB (jen v serverové verzi),
+			vytvoření databázového připojení, vytvoření terminálového připojení, seznámení s panelem
+			snippetů, používání připojení a záložky připojení (dostupné, jakmile je nějaké připojení
+			otevřené). Tlačítkem <em>Ukončit průvodce</em> můžete průvodce kdykoli opustit.</p>
 		<h4>Kontextová nápověda</h4>
-		<p>Většina uzlů stromu (obvykle seskupujících, jako jsou <em>Schemas</em> nebo
-			<em>Tables</em>) nabízí kontextovou nápovědu. K této funkci se dostanete kliknutím
+		<p>Většina uzlů stromu (obvykle seskupujících, jako jsou <em>Schémata</em> nebo
+			<em>Tabulky</em>) nabízí kontextovou nápovědu. K této funkci se dostanete kliknutím
 			pravým tlačítkem na uzel stromu. Když kliknete na volbu <em>Doc: …</em>, OmniDB
 			otevře konkrétní stránku online <strong>dokumentace PostgreSQL</strong> ve vašem
 			webovém prohlížeči (v desktopové aplikaci v systémovém výchozím prohlížeči,
@@ -155,66 +169,38 @@
 			Server</a> jako nová karta). Zároveň zohlední verzi PostgreSQL, ke které
 			jste připojeni, a přesměruje na odpovídající stránku.</p>
 		<p><img alt="" src="../assets/img/image_071.webp" /></p>
-		<h4>Úryvky (Snippets)</h4>
-		<p><em>Workspace Window</em> (okno pracovního prostoru) má pevnou vnější kartu s
-			užitečnou funkcí nazvanou <em>Snippets</em> (Úryvky). Pomocí této funkce můžete
-			ukládat dotazy, příkazové instrukce a jakýkoli jiný text, který potřebujete.
-			Úryvky si také můžete uspořádat do adresářového stromu podle svých představ.
-			Všechny adresáře a úryvky, které vytvoříte, se ukládají do uživatelské
-			databáze <code>omnidb.db</code> a zůstanou zachovány i po aktualizaci OmniDB.
-		</p>
-		<p>Pod stromem úryvků se nachází lišta s tlačítky „+“/„-“: „+“ přidá nový úryvek
-			do aktuálně vybrané složky (nebo do kořene stromu), „-“ smaže vybranou položku
-			a zůstává neaktivní, dokud není vybráno nic, co lze smazat. Otevřená karta
-			úryvku zobrazuje u svého názvu malou tečku, jakmile se obsah editoru odchýlí
-			od uloženého stavu; tečka po uložení zmizí. Zavření karty se na potvrzení ptá
-			pouze tehdy, pokud opravdu obsahuje neuložené změny.</p>
-		<p><img alt="" src="../assets/img/image_127.webp" /></p>
-		<h4>Oznámení (Notify)</h4>
-		<p>Panel <em>Notify</em> se nachází v postranním panelu mezi Database a Snippets
-			a zobrazuje zprávy z PostgreSQL <code>LISTEN</code>/<code>NOTIFY</code>, Oracle
-			<code>DBMS_ALERT</code> a Firebird <code>POST_EVENT</code>. Kanály se pro každé
-			připojení přidávají, odebírají, pozastavují a obnovují a zůstávají zachovány
-			i po restartu aplikace; přijaté zprávy jsou pouze dočasné — uchovávají se jen
-			v rámci karty prohlížeče a při obnovení stránky se vymažou. Zprávy lze zobrazit
-			napříč všemi kanály nebo je omezit na vybrané kanály a lze je vymazat po
-			jednotlivých kanálech nebo všechny najednou. U MySQL/MariaDB/MS SQL Server/SQLite
-			se místo skrytí funkce zobrazí zpráva „not supported“ (nepodporováno). Relace
-			<em>Notify</em> daného připojení se spouští a ukončuje společně s jeho kartou
-			<em>Database</em> a panel sdílí stejný vodorovný pruh otevřených připojení jako
-			panel <em>Database</em>, takže výběr připojení v jednom z nich udržuje v souladu
-			i ten druhý.</p>
-		<h4>Správa backendů</h4>
-		<p>Kliknutím pravým tlačítkem na kořenový uzel stromu, přesunutím kurzoru na
-			<em>Monitoring</em> a kliknutím na <em>Backends</em> může uživatel vidět veškerou
-			aktivitu probíhající v databázi. Některé informace jsou pro běžné uživatele
-			skryté, vidět je mohou pouze superuživatelé databáze.
-		</p>
-		<p><img alt="" src="../assets/img/image_174.webp" /></p>
-		<p>Kliknutím na <em>X</em> ve sloupci <em>Actions</em> (Akce) můžete backend ukončit.
-			Zobrazí se potvrzovací vyskakovací okno.</p>
-		<p><img alt="" src="../assets/img/image_175.webp" /></p>
 		<h4>Vlastnosti a DDL</h4>
 		<p>Kliknutím na většinu objektů ve stromovém zobrazení (tabulky, sekvence,
 			pohledy, role, databáze atd.) si uživatel může zobrazit velmi podrobný
 			seznam vlastností daného objektu.</p>
 		<p><img alt="" src="../assets/img/image_176.webp" /></p>
 		<p>Na dalším panelu s názvem <em>DDL</em> si uživatel může prohlédnout zdrojový SQL
-			kód DDL, který lze použít k opětovnému vytvoření objektu. Uživatel může
-			tento text zkopírovat a vložit, kam potřebuje.</p>
+			kód DDL, který lze použít k opětovnému vytvoření objektu — včetně jeho komentáře
+			(<code>COMMENT ON …</code>) a oprávnění (<code>GRANT …</code>), pokud je databáze má.
+			Uživatel může tento text zkopírovat a vložit, kam potřebuje.</p>
 		<p><img alt="" src="../assets/img/image_177.webp" /></p>
+		<p>Dělicí čáru nad panelem Vlastnosti/DDL lze přetáhnout a panel (stejně jako samotný strom
+			databáze) lze sbalit malým přepínacím tlačítkem na jeho dělicí čáře — v desktopové aplikaci
+			také přes <em>Zobrazit &gt; Přepnout panel vlastností/DDL</em> a <em>Zobrazit &gt;
+			Přepnout strom databáze</em>.</p>
 		<h4>Export dat</h4>
-		<p>Karta <em>Query Tab</em> (Dotaz) nabízí možnost uložit data z výsledků dotazu ve formátu
-			CSV, TSV, XLSX, Markdown, JSON nebo XML. Jakmile kliknete na tlačítko <em>Export Data</em>, spustí
-			se zrušitelný backend, který začne ukládat data do souboru. Jakmile je
-			hotovo, OmniDB nabídne odkaz <em>Save</em> (Uložit), pomocí kterého si uživatel
-			může soubor stáhnout. Kódování CSV/TSV (Nastavení &gt; Možnosti) je nyní ve
-			výchozím stavu UTF-8 se značkou BOM a seznam kodeků je přehledně rozdělen do
-			kategorií.
-		</p>
+		<p><em>Karta dotazu</em> umí uložit výsledky svého dotazu do souboru CSV, TSV, XLSX, JSON, XML
+			nebo Markdown. Vyberte formát v rozbalovacím seznamu vedle tlačítka <em>Exportovat data</em>
+			a klikněte na tlačítko: OmniDB dotaz na pozadí spustí znovu a zapíše celý výsledek do souboru
+			(export lze během běhu zrušit).</p>
+		<ul>
+			<li>V <strong>desktopové aplikaci</strong> se otevře nativní dialog <em>Uložit jako</em>, ve
+				kterém zvolíte, kam soubor uložit, a OmniDB to potvrdí zprávou <em>Soubor exportován do:
+				…</em>.</li>
+			<li>V <strong>prohlížeči</strong> (serverová verze) oblast výsledků zobrazí <em>Soubor je
+				připraven.</em> s odkazem <em>Uložit</em>, který soubor stáhne.</li>
+		</ul>
 		<p><img alt="" src="../assets/img/image_178.webp" /></p>
-		<p>Všechny soubory se ukládají do dočasné složky uvnitř složky OmniDB. OmniDB
-			tuto složku pravidelně čistí a ponechává pouze soubory novější než 24 hodin.</p>
+		<p>Soubory CSV a TSV používají kódování nastavené v <em>Nastavení &gt; Export &gt; Kódování
+			CSV/TSV</em> (výchozí: UTF-8 with BOM) a soubory CSV <em>Oddělovač CSV</em> nastavený tamtéž
+			(výchozí <code>;</code>). Exportované soubory se uchovávají v dočasné složce uvnitř domovského
+			adresáře OmniDB, stáhnout je může jen uživatel, který je vytvořil, a po 24 hodinách se
+			automaticky odstraní.</p>
 		<h4>Export do DBML</h4>
 		<p>Klepnutím pravým tlačítkem na uzel databáze ve stromu PostgreSQL a volbou <em>Exportovat jako
 			DBML</em> vygenerujete schéma celé databáze jako dokument <a href="https://dbml.dbdiagram.io/home/"
@@ -232,12 +218,19 @@
 			zahodí, místo aby čekal na pravidelné čištění dočasné složky po 24 hodinách. Zatím pouze pro
 			PostgreSQL.</p>
 		<h4>Historie dotazů</h4>
-		<p>Na kartě <em>Query Tab</em> (Dotaz) můžete kliknout na tlačítko <em>Command History</em>
-			(Historie příkazů) a zobrazit si úplnou, procházitelnou a prohledávatelnou
-			historii dotazů.</p>
+		<p>Na <em>kartě dotazu</em> můžete kliknout na tlačítko <em>Historie příkazů</em> a zobrazit si
+			úplný, procházitelný a prohledávatelný seznam příkazů spuštěných na tomto připojení, který lze
+			filtrovat podle rozsahu dat a textu. Viz <a href="writing_sql_queries.html">Psaní SQL
+			dotazů</a>.</p>
 		<p><img alt="" src="../assets/img/image_203.webp" /></p>
 		<h4>SSH konzole</h4>
-		<p>OmniDB dále nabízí plnohodnotnou SSH konzoli.</p>
+		<p>Kromě databázových připojení umí OmniDB otevřít i plnohodnotný SSH terminál na server. V sekci
+			Připojení vytvořte připojení typu <em>Terminál</em> a vyplňte SSH server, port, uživatele
+			a heslo nebo soukromý klíč (viz <a href="creating_users_and_connections.html">Vytváření
+			uživatelů a připojení</a>). Otevřete ho přes <em>+</em> na konci pruhu záložek připojení →
+			<em>SSH konzole</em>, nebo tlačítkem <em>Připojit</em> v jeho formuláři. Terminál se otevře jako
+			samostatná záložka připojení; klíč hostitele serveru už musí být známý — viz
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>.</p>
 		<p><img alt="" src="../assets/img/image_204.webp" /></p>
 		</main>
 	</div>

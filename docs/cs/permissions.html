@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Role a oprávnění – Dokumentace OmniDB</title>
+	<meta name="description" content="Procházení a úprava rolí PostgreSQL, členství v rolích a efektivních oprávnění k objektům v sekci Oprávnění v OmniDB, včetně zděděných udělení a udělení pro PUBLIC.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/permissions.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/permissions.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/permissions.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/permissions.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/permissions.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/permissions.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/permissions.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/permissions.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/permissions.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/permissions.html">
+	<meta property="og:title" content="Role a oprávnění - Dokumentace OmniDB">
+	<meta property="og:description" content="Procházení a úprava rolí PostgreSQL, členství v rolích a efektivních oprávnění k objektům v sekci Oprávnění v OmniDB, včetně zděděných udělení a udělení pro PUBLIC.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Role a oprávnění", "item": "https://www.omnidb.net/cs/permissions.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html" class="active">Role a oprávnění</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Role a oprávnění</h1>
+<p>Sekce <em>Oprávnění</em> je prohlížeč rolí a oprávnění pro PostgreSQL. Role serveru rozkládá po
+vzoru Finderu do sloupců vedle sebe: vlevo vyberete roli a sloupce napravo od ní ukazují, čeho je
+členem, kdo je členem jí a co může skutečně dělat s každým databázovým objektem — včetně všeho,
+co má jen nepřímo, prostřednictvím zděděných členství v rolích nebo prostřednictvím
+<code>PUBLIC</code>. Role, členství a oprávnění lze přímo zde vytvářet, měnit a odebírat.</p>
+<p><strong>Poznámka:</strong> tato sekce v současnosti podporuje pouze PostgreSQL. U všech ostatních
+připojení zobrazí <em>Oprávnění zatím nejsou podporována pro …</em> / <em>Aktuálně je podporován
+pouze PostgreSQL.</em></p>
+<h4>Otevření sekce</h4>
+<p>Klikněte na ikonu <em>Oprávnění</em> (ikona lidí) na levé liště. Sekce pracuje s připojením,
+které je už otevřené v sekci <em>Databáze</em>: nahoře se zobrazuje stejný pruh záložek otevřených
+připojení a sekce používá tu záložku připojení, která je v něm vybraná. Není-li otevřeno žádné
+připojení, zobrazí se <em>Není otevřené žádné připojení</em> — nejprve nějaké otevřete (viz
+<a href="managing_databases.html">Správa databází</a>). Sloupce se sestavují znovu při každém
+vstupu do sekce, takže se předchozí výběr vždy zruší.</p>
+<p>Vše, co zde děláte, vyžaduje stejná oprávnění, jaká by vyžadoval odpovídající SQL příkaz
+(<code>CREATEROLE</code>, superuživatele nebo vlastnictví objektu, podle akce) — OmniDB spouští
+příkazy s přihlašovacími údaji připojení, které používáte.</p>
+<h4>Sloupec 1: Role</h4>
+<p>Sloupec <em>Role</em> obsahuje všechny role na serveru včetně vestavěných rolí
+<code>pg_*</code>, seřazené podle názvu. Role, které se mohou přihlásit (uživatelé), mají ikonu
+jedné postavy; role, které se přihlásit nemohou (skupiny), mají ikonu dvou postav. Prvním řádkem je
+vždy <code>PUBLIC</code> (ikona zeměkoule) — nejde o skutečnou roli, ale o pseudoroli, do které
+implicitně patří každá role, aby bylo možné oprávnění udělená roli <code>PUBLIC</code> procházet
+a upravovat stejným způsobem.</p>
+<p>Kliknutím na roli ji zaměříte; ostatní sloupce pak ukazují tuto roli. Pod seznamem:</p>
+<ul>
+<li><strong>+</strong> otevře dialog <em>Vytvořit roli</em>: <em>Název role</em>, <em>Heslo</em>
+a zaškrtávací políčka atributů <em>Může se přihlásit</em> (ve výchozím stavu zapnuto),
+<em>Superuživatel</em>, <em>Může vytvářet databáze</em>, <em>Může vytvářet role</em>, <em>Dědí
+oprávnění rolí, jejichž je členem</em> (ve výchozím stavu zapnuto), <em>Může iniciovat
+replikaci</em> a <em>Obchází zabezpečení na úrovni řádků (RLS)</em>, a dále <em>Limit připojení
+(-1 = neomezeno)</em> a <em>Platnost účtu do</em> (ponechte prázdné pro neomezenou platnost).</li>
+<li><strong>−</strong> odstraní vybranou roli (u <code>PUBLIC</code> je nedostupné).</li>
+</ul>
+<p>Kliknutí pravým tlačítkem na roli (kromě <code>PUBLIC</code>) nabídne:</p>
+<ul>
+<li><em>Změnit heslo</em> — dvakrát se zeptá na nové heslo. Heslo se před odesláním zahešuje ve
+formátu, na který je nakonfigurován samotný server (SCRAM-SHA-256 nebo md5).</li>
+<li><em>Upravit atributy</em> — stejná pole atributů jako v dialogu <em>Vytvořit roli</em>, předvyplněná
+aktuálními hodnotami role. Vymazáním pole <em>Platnost účtu do</em> se omezení platnosti zruší.</li>
+<li><em>Odstranit roli</em> — zeptá se <em>Smazat roli „…“? Tuto akci nelze vrátit zpět.</em> a poté
+spustí prosté <code>DROP ROLE</code>; PostgreSQL ho odmítne, dokud role ještě vlastní objekty nebo
+drží oprávnění.</li>
+</ul>
+<h4>Sloupec 2: členství</h4>
+<p>Druhý sloupec je rozdělen na dvě poloviny:</p>
+<ul>
+<li><strong>… — Členové</strong> (nahoře): role, které jsou členy zaměřené role.</li>
+<li><strong>… — členem role</strong> (dole): všechny role, do kterých zaměřená role patří, ať přímo,
+nebo přes jiné role, sloučené do jednoho seznamu. <code>PUBLIC</code> je vždy uvedena první.</li>
+</ul>
+<p>V obou polovinách se přímá členství zobrazují normálním písmem a nepřímá (zděděná) šedě. Přímé
+členství udělené <code>WITH ADMIN OPTION</code> je označeno <em>(admin option)</em>. U
+<code>PUBLIC</code> obě poloviny jen uvádějí <em>PUBLIC není členem žádné role.</em></p>
+<ul>
+<li><strong>+</strong> pod <em>členem role</em> otevře <em>Přidat členství</em>: vyberte roli, jejímž
+členem se má zaměřená role stát, případně s volbou <em>S právem předávat toto členství (admin
+option)</em>.</li>
+<li><strong>+</strong> pod <em>Členové</em> otevře <em>Přidat člena</em>: stejný dialog v opačném
+směru — vybraná role se stane členem zaměřené role.</li>
+<li><strong>−</strong> (nebo pravým tlačítkem → <em>Odebrat členství</em>) odebere členství po
+dotazu <em>Odebrat členství v roli „…“?</em>. Odebrat lze jen přímá členství; zděděné je nutné
+odebrat tam, kde je skutečně uděleno.</li>
+<li>Dvojklik na řádek, nebo pravým tlačítkem → <em>Nastavit jako aktivní roli</em>, udělá z této
+role zaměřenou roli, přesně jako byste na ni klikli ve sloupci <em>Role</em> — nejrychlejší způsob,
+jak sledovat řetězec dědičnosti směrem nahoru.</li>
+</ul>
+<h4>Sloupec 3: objekty a efektivní oprávnění</h4>
+<p>Třetí sloupec, <em>… — Objekty</em>, je strom všeho, k čemu má zaměřená role jakékoli oprávnění
+— jejích <em>efektivních</em> oprávnění: vlastních přímých udělení a všeho, co dědí přes svá
+členství a přes <code>PUBLIC</code>. Začíná dvěma skupinami, <em>Databáze</em> (všechny databáze
+na serveru) a <em>Tablespace</em>; uzel se zobrazí normálně, pokud v něm role má nějaké
+oprávnění, jinak šedě.</p>
+<p>Rozbalení databáze načte její objekty přes samostatné připojení k této databázi (aktivní databáze
+samotné záložky připojení se nemění): schémata a uvnitř každého schématu složky pro tabulky,
+pohledy, sekvence, funkce, procedury, materializované pohledy, typy a domény; foreign data wrappery
+a cizí servery jsou přímo pod databází. Uvádějí se jen objekty, ke kterým role skutečně má nějaké
+oprávnění (systémová schémata jsou vynechána); šedě zobrazené schéma je v seznamu jen proto, že
+něco uvnitř něj oprávnění má. Není-li tam vůbec nic, databáze zobrazí <em>Žádná oprávnění na
+objektech v této databázi.</em></p>
+<h4>Úprava oprávnění</h4>
+<p>Klikněte pravým tlačítkem na databázi, tablespace, schéma nebo objekt a zvolte <em>Upravit
+oprávnění</em>. Dialog zobrazí každé oprávnění platné pro daný druh objektu jako zaškrtávací
+políčko:</p>
+<ul>
+<li>databáze: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;
+tablespace: <code>CREATE</code>; schéma: <code>CREATE</code>, <code>USAGE</code>;</li>
+<li>tabulka, pohled a materializovaný pohled: <code>SELECT</code>, <code>INSERT</code>,
+<code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>,
+<code>TRIGGER</code>;</li>
+<li>sekvence: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;
+funkce a procedura: <code>EXECUTE</code>;
+typ, doména, foreign data wrapper a cizí server: <code>USAGE</code>.</li>
+</ul>
+<p>Každé políčko prozrazuje, odkud oprávnění pochází:</p>
+<ul>
+<li><strong>zaškrtnuté</strong> — role ho má přímo; zrušením zaškrtnutí ho odeberete
+(<code>REVOKE</code>);</li>
+<li><strong>zaškrtnuté, ale neaktivní</strong>, s textem <em>Zděděno od: …</em> — role ho má jen přes
+jinou roli nebo <code>PUBLIC</code>. Zde ho odebrat nelze; zdrojovou roli nastavte jako aktivní
+(<em>Nastavit jako aktivní roli</em>) a odeberte ho tam;</li>
+<li><strong>nezaškrtnuté</strong> — role ho nemá; zaškrtnutím ho udělíte přímo
+(<code>GRANT</code>).</li>
+</ul>
+<p><em>S právem předávat toto oprávnění dál</em> se vztahuje na oprávnění, která v dialogu nově
+udělíte. Potvrďte hlavním tlačítkem dialogu, které nese název objektu.</p>
+<p>Chcete-li udělit oprávnění k objektu, který ve stromu zatím není, použijte <strong>+</strong>
+(<em>Přidat oprávnění na objektu</em>) pod sloupcem: zvolte <em>Typ objektu</em>, poté
+<em>Databázi</em> (u všeho kromě databází a tablespace; ve výchozím stavu aktuální databáze
+připojení), <em>Schéma</em> u objektů na úrovni schématu, samotný <em>Objekt</em> (funkce se
+zobrazují se signaturou argumentů), zaškrtněte <em>Oprávnění</em> a případně <em>S právem
+předávat toto oprávnění dál</em>.</p>
+<p>Když v prvním sloupci vyberete <code>PUBLIC</code>, můžete upravovat, co je uděleno přímo roli
+<code>PUBLIC</code> (<code>GRANT … TO PUBLIC</code> / <code>REVOKE … FROM PUBLIC</code>).</p>
+<p><strong>Důležité:</strong> každá akce v této sekci se na serveru provede okamžitě — neexistuje
+žádný náhled SQL ani možnost vrácení zpět. Potvrzení předem vyžadují jen <em>Odstranit roli</em> a
+<em>Odebrat členství</em>. Pokud server příkaz odmítne, zobrazí se jeho chybová zpráva.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

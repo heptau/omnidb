@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/en/writing_sql_queries.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/writing_sql_queries.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/writing_sql_queries.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/writing_sql_queries.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/writing_sql_queries.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/writing_sql_queries.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/writing_sql_queries.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/writing_sql_queries.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html" class="active">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -128,84 +140,110 @@
 		</nav>
 		<main>
 		<h1>Writing SQL Queries</h1>
-<p>The most common kind of inner tab is the <em>Query Tab</em>, containing the following
-elements:</p>
-<p><img alt="" src="../assets/img/image_049.webp"/></p>
+<p>The most common kind of inner tab is the <em>Query Tab</em>, containing the following
+elements. Keyboard shortcuts below are the Windows/Linux defaults; on macOS, OmniDB's own
+shortcuts use Ctrl instead of Alt. All of them can be changed under
+<a href="settings_and_languages.html">Settings &gt; Shortcuts</a>.</p>
 <ul>
-<li><strong>1) Tab Header</strong>: You can see the name of the tab and an icon to close it. If
-there is a query running in the tab, you will see an indicator. If the tab
-finishes running and you are working on a different tab, a green indicator you
-be shown. Right-clicking the tab and choosing <em>Rename Tab</em> lets you rename the
-tab.</li>
-<li><strong>2) Add Tab</strong>: You can quickly add another inner tab by clicking on the plus
-icon.</li>
-<li><strong>3) SQL Editor</strong>: Full-featured SQL editor with SQL syntax highlighting,
-Find &amp; Replace (<code>Ctrl-F</code> and <code>Ctrl-H</code>) and an autocomplete component, explained
-below. See <a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a> for the full list of editor
+<li><strong>1) Tab Header</strong>: You can see the name of the tab and, on hover, an icon to
+close it. While a query is running in the tab you will see a spinner; if it finishes while you are
+working on a different tab, a checkmark is shown. Right-clicking the tab and choosing <em>Rename
+Tab</em> lets you rename it.</li>
+<li><strong>2) Add Tab</strong>: You can quickly add another inner tab (<em>Query Tab</em> or
+<em>Console Tab</em>) by clicking on the plus icon.</li>
+<li><strong>3) SQL Editor</strong>: Full-featured SQL editor with SQL syntax highlighting, code
+folding, Find &amp; Replace (<code>Ctrl-F</code> and <code>Ctrl-H</code>), a vertical ruler line
+(its column is set under <em>Settings &gt; Formatting</em>) and an autocomplete component,
+explained below. Right-clicking in the editor offers <em>Copy</em>, <em>Save as snippet</em> and
+<em>Use snippet</em> (see <a href="snippets.html">Snippets</a>). See
+<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a> for the full list of editor
 shortcuts (selection, multicursor, navigation, folding, etc.).</li>
-<li><strong>4) Execute</strong>: The text contained in the SQL Editor will be executed against
-the current active database when you click on this button (or hit the shortcut
-, <code>Alt-Q</code> by default). If there is some selected text in the SQL Editor, it will
-execute only the selected text. Once the command is running, a red <em>Cancel</em>
-button will be shown, allowing you to cancel the execution (or using the
-shortcut, <code>Alt-C</code> by default).</li>
-<li><strong>5) Indent SQL</strong>: This button will prettify any SQL code written in the SQL
-editor (shortcut <code>Alt-S</code> by default, <code>Ctrl-S</code> on macOS).</li>
-<li><strong>6) Query History</strong>: All commands executed against the current database are
-stored in the Query History, which can be accessed by clicking on this button.
-You also will be able to filter by date and text to find a SQL command you need.</li>
-<li><strong>7) Explain (PostgreSQL only)</strong>: Call your SQL query against PostgreSQL by
-putting <code>EXPLAIN</code> in front of it. The results will be shown in a textual and
-graphical form in the Explain tab (please see <a href="visualizing_query_plans.html">Visualizing Query Plans</a> for more details).</li>
-<li><strong>8) Explain Analyze (PostgreSQL only)</strong>: Same as Explain button, but call
-the SQL query with <code>EXPLAIN ANALYZE</code>, which will effectively execute the query.</li>
-<li><strong>9) Autocommit (PostgreSQL only)</strong>: When enabled, every query executed will
-be commited to the database. When disabled, OmniDB starts a transaction and upon
-execution of a query, the interface will show buttons allowing the user to
-<em>Commit</em> or <em>Rollback</em>. The user can also keep the transaction open and execute
-other commands.</li>
-<li><strong>10) Backend Status (PostgreSQL only)</strong>: When you open a new Query Tab, the
-status is “Not Connected”, because OmniDB didn’t start a PostgreSQL backend yet.
-When you execute the first query, OmniDB starts a new backend and keep it linked
-to the Query Tab (each Query Tab will be assigned its own backend). The status
-of the backend (<em>idle</em>, <em>active</em>, <em>idle in transaction</em>, etc) will be shown in
-this field. When you close the Query Tab, OmniDB terminates the backend.</li>
-<li><strong>11) Export File Type</strong>: Can be CSV, TSV, XLSX, JSON, XML, or Markdown.</li>
-<li><strong>12) Export To File</strong>: By clicking on this button, OmniDB executes the
-current query and exports the results to a file. In the desktop app, a native
-“Save As” dialog opens so you can choose where to save it directly. When running
-as a browser-based <a href="deploying_omnidb-server.html">OmniDB Server</a>
-instead, the file is written to the server’s temp folder first, and the
-interface then shows a link so you can download it through the browser.</li>
-<li><strong>13) Data Results</strong>: If the query is a <code>SELECT</code>, then it will show a grid
-with the results. If the query is a DML or DDL, it will show the message
-returned by the RDBMS.</li>
-<li><strong>14) Messages (PostgreSQL only)</strong>: Any messages (such as the ones given by
-the command <code>RAISE NOTICE</code>) will be shown here.</li>
-<li><strong>15) Explain View (PostgreSQL only)</strong>: Shows a full-featured component to
-view the PostgreSQL execution plan in textual or graphical form.</li>
+<li><strong>4) Run</strong>: The text contained in the SQL Editor will be executed against the
+current active database when you click on this button (or press <code>Alt-Q</code>). If there is
+some selected text in the SQL Editor, only the selected text is executed. The editor may contain
+several statements separated by semicolons; they run one after another and the grid shows the
+result of the last one. Once the command is running, a red <em>Cancel</em> button is shown,
+allowing you to cancel the execution (or press <code>Alt-C</code>).</li>
+<li><strong>5) Run Statement at Cursor</strong>: Runs only the single statement the cursor is
+in, without having to select it first. With the cursor right after a <code>;</code>, the following
+statement is run.</li>
+<li><strong>6) Indent SQL</strong>: This button will prettify any SQL code written in the SQL
+editor (shortcut <code>Alt-S</code>), following the style chosen under <em>Settings &gt;
+Formatting</em> (indentation, comma style, keyword case).</li>
+<li><strong>7) Command history</strong>: All commands executed against the current connection are
+stored in the command history, which can be accessed by clicking on this button. You can filter
+it by date range and by text to find the SQL command you need.</li>
+<li><strong>8) Explain (PostgreSQL only)</strong>: Runs your SQL query with <code>EXPLAIN</code>
+in front of it (shortcut <code>Alt-W</code>). The results will be shown in a textual and graphical
+form in the Explain tab (please see <a href="visualizing_query_plans.html">Visualizing Query
+Plans</a> for more details).</li>
+<li><strong>9) Explain Analyze (PostgreSQL only)</strong>: Same as Explain button, but runs the
+SQL query with <code>EXPLAIN ANALYZE</code>, which will effectively execute the query (shortcut
+<code>Alt-E</code>).</li>
+<li><strong>10) Autocommit (PostgreSQL only)</strong>: When enabled, every query executed will be
+committed to the database. When disabled, OmniDB starts a transaction and upon execution of a
+query, the interface will show buttons allowing the user to <em>Commit</em> or <em>Rollback</em>.
+The user can also keep the transaction open and execute other commands.</li>
+<li><strong>11) Backend Status (PostgreSQL only)</strong>: When you open a new Query Tab, the
+status is <em>Not connected</em>, because OmniDB didn’t start a PostgreSQL backend yet. When you
+execute the first query, OmniDB starts a new backend and keeps it linked to the Query Tab (each
+Query Tab gets its own backend). The status of the backend (<em>Idle</em>, <em>Running</em>,
+<em>Idle in transaction</em>, etc.) will be shown in this field. When you close the Query Tab,
+OmniDB terminates the backend.</li>
+<li><strong>12) Export File Type</strong>: CSV, TSV, XLSX, JSON, XML or Markdown.</li>
+<li><strong>13) Export Data</strong>: By clicking on this button, OmniDB executes the current
+query and exports the whole result to a file of the chosen type. In the desktop app, a native
+<em>Save As</em> dialog opens so you can choose where to save it directly, and OmniDB confirms with
+<em>File exported to: …</em>. When running as a browser-based
+<a href="deploying_omnidb-server.html">OmniDB Server</a> instead, the file is written to the
+server’s temp folder first, and the result area then shows <em>The file is ready.</em> with a
+<em>Save</em> link that downloads it through the browser. CSV/TSV encoding and the CSV delimiter
+are set under <em>Settings &gt; Export</em>.</li>
+<li><strong>14) Data Results</strong>: If the query is a <code>SELECT</code>, then it will show a
+grid with the results; the first column stays pinned while you scroll horizontally, and hovering
+a column header shows its full name. If the query is a DML or DDL, it will show the message
+returned by the RDBMS. When there are more rows than the first batch, <em>Fetch more</em> loads
+the next batch and <em>Fetch all</em> the rest. Right-click a cell for <em>Copy</em> or <em>View
+Content</em>; JSON and XML values are shown syntax-highlighted.</li>
+<li><strong>15) Messages (PostgreSQL only)</strong>: Any messages (such as the ones given by the
+command <code>RAISE NOTICE</code>) will be shown here.</li>
+<li><strong>16) Explain View (PostgreSQL only)</strong>: Shows a full-featured component to view
+the PostgreSQL execution plan in textual or graphical form.</li>
 </ul>
-<p>Once executed, the tabs are also saved in OmniDB user database (title and
-contents), so the next time you open OmniDB, you will see them all open. Also,
-every command you execute in a Query Tab is saved to your Query History and to
-the <code>omnidb.log</code> file too.</p>
+<p>The divider between the editor (with its toolbar) and the results can be dragged to give either
+more room.</p>
+<h4>Safety confirmation for destructive statements</h4>
+<p>Before running a statement that starts with <code>DROP</code> or <code>TRUNCATE</code>, or an
+<code>UPDATE</code>/<code>DELETE</code> without a <code>WHERE</code> clause, the Query Tab asks for
+confirmation (<em>This statement is destructive and cannot be undone. Run it anyway?</em>, or
+<em>This statement has no WHERE clause and will affect ALL rows. Run it anyway?</em>). This is a
+safety net against honest mistakes, not a permission system — it looks only at the beginning of
+the text (after comments).</p>
+<p>Once executed, the tabs are also saved in OmniDB user database (title and contents), so the
+next time you open OmniDB, you will see them all open. Also, every command you execute in a Query
+Tab is saved to the command history of that connection.</p>
 <h4>SQL Autocomplete</h4>
-<p>The SQL editor has a feature that helps a lot when creating new queries: SQL
-code completion. With this feature it is possible to autocomplete columns
-contained in a table referenced by an alias. To open the autocomplete interface
-you just have to type the alias, the character <code>.</code> and then hit <code>Ctrl-Space</code>:</p>
+<p>The SQL editor has a feature that helps a lot when creating new queries: SQL code completion.
+Open the suggestions with <code>Ctrl-Space</code>
+(<code>Option-Space</code> on macOS). With this feature it is possible to autocomplete columns
+contained in a table referenced by an alias: type the alias, the character <code>.</code> and
+then open the autocomplete:</p>
 <p><img alt="" src="../assets/img/image_050.webp"/></p>
-<p>If the user does not start the autocomplete with the cursor close to a table
-alias, the component will show multiple categories of data. By typing in the
-filter textbox, elements in all categories will be filtered:</p>
+<p>If the user does not start the autocomplete with the cursor close to a table alias, the
+component will show multiple categories of data. By typing in the filter textbox, elements in all
+categories will be filtered:</p>
 <p><img alt="" src="../assets/img/image_051.webp"/></p>
-<p>The autocomplete component is also able to identify some contextual information.
-For example, if you type a name of a schema, then type the character <code>.</code>, then
-hit <code>Ctrl-Space</code>, you will be able to filter among objects contained only in
-that schema:</p>
+<p>The autocomplete component is also able to identify some contextual information. For example,
+if you type a name of a schema, then type the character <code>.</code>, you will be able to filter
+among objects contained only in that schema:</p>
 <p><img alt="" src="../assets/img/image_052.webp"/></p>
-<p>Please note that for RDBMS other than PostgreSQL, the autocomplete component
-only works for table columns.</p>
+<p>After <code>::</code> (a PostgreSQL type cast), only data types are offered. Choosing a keyword
+also adds what always follows it (for example a space after <code>SELECT</code>, or the opening
+parenthesis after <code>COALESCE</code>). Which categories are offered at all (keywords,
+databases, roles, tablespaces, schemas, extensions, tables, views, columns, functions, indexes) is
+set under <em>Settings &gt; Autocomplete</em>.</p>
+<p>Please note that for RDBMS other than PostgreSQL, the autocomplete component only works for
+table columns.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

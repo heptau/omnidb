@@ -7,8 +7,12 @@
 	<meta name="description" content="Écrivez et exécutez des fonctions et procédures PL/pgSQL dans OmniDB : modèles SQL, exécution, et navigation dans l'arborescence de la base de données.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/writing_plpgsql_functions.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_plpgsql_functions.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/writing_plpgsql_functions.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/writing_plpgsql_functions.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/writing_plpgsql_functions.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/writing_plpgsql_functions.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/writing_plpgsql_functions.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/writing_plpgsql_functions.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/writing_plpgsql_functions.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/writing_plpgsql_functions.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html" class="active">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -137,12 +149,12 @@ contexte avec l’application).</p>
 <p><img alt="" src="../assets/img/image_072.webp" /></p>
 <h4>Écrire des fonctions</h4>
 <p>Dans le schéma <code>public</code>, faites un clic droit sur le nœud <code>Functions</code> (Fonctions) et
-cliquez sur <em>Create Function</em> (Créer une fonction). Un onglet interne <em>SQL Query</em> (Requête SQL)
+cliquez sur <em>Créer une fonction</em>. Un onglet interne <em>Requête SQL</em>
 s’ouvre, contenant déjà un modèle SQL pour vous aider à créer votre première fonction PL/pgSQL.</p>
 <p><img alt="" src="../assets/img/image_073.webp" /></p>
 <p><img alt="" src="../assets/img/image_074.webp" /></p>
 <p>Vous pouvez vous référer à la documentation PostgreSQL pour savoir comment écrire des fonctions définies par
-l’utilisateur. Il suffit de faire un clic droit sur le nœud <em>Functions</em> et de cliquer sur <em>Doc :
+l’utilisateur. Il suffit de faire un clic droit sur le nœud <em>Fonctions</em> et de cliquer sur <em>Doc :
 Functions</em> — la page correspondante de la documentation PostgreSQL s’ouvre dans votre navigateur web (le
 navigateur par défaut du système dans l’application de bureau, ou un nouvel onglet lorsqu’elle fonctionne en
 tant qu’<a href="deploying_omnidb-server.html">OmniDB Server</a> accessible depuis un navigateur).</p>
@@ -174,8 +186,8 @@ $function$
 fonction prend un argument texte appelé <code>p_input</code> et compte le nombre de voyelles présentes dans cette
 <em>chaîne de caractères</em>. Elle retourne ensuite ce nombre.</p>
 <p>Pour créer la fonction, exécutez la commande dans l’onglet interne SQL Query. En cas de succès, la fonction
-apparaîtra sous le nœud d’arborescence <em>Functions</em> (vous pouvez l’actualiser par un clic droit puis en
-cliquant sur <em>Refresh</em>). En développant également le nœud de la fonction, vous pouvez voir son type de
+apparaîtra sous le nœud d’arborescence <em>Fonctions</em> (vous pouvez l’actualiser par un clic droit puis en
+cliquant sur <em>Actualiser</em>). En développant également le nœud de la fonction, vous pouvez voir son type de
 retour et son argument.</p>
 <p><img alt="" src="../assets/img/image_075.webp" /></p>
 <p>Exécutons maintenant cette nouvelle fonction pour la première fois. Ouvrez un simple onglet interne SQL Query

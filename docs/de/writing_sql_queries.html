@@ -7,8 +7,12 @@
 	<meta name="description" content="Der SQL-Editor in OmniDB: Abfragen ausführen, SQL formatieren, Abfrageverlauf, Explain, Autocommit und die SQL-Autovervollständigung.">
 	<link rel="canonical" href="https://www.omnidb.net/de/writing_sql_queries.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/writing_sql_queries.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/writing_sql_queries.html">
 	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/writing_sql_queries.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/writing_sql_queries.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/writing_sql_queries.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/writing_sql_queries.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/writing_sql_queries.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/writing_sql_queries.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,14 +100,17 @@
 			<span class="nav-group-label">Erste Schritte</span>
 			<a href="introduction.html">Einführung</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop-App</a>
 			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+			<a href="settings_and_languages.html">Einstellungen und Sprachen</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Arbeiten mit Daten</span>
 			<a href="managing_databases.html">Datenbanken verwalten</a>
 			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
 			<a href="managing_table_data.html">Tabellendaten verwalten</a>
-			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="writing_sql_queries.html" class="active">SQL-Abfragen schreiben</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
 			<a href="visualizing_data.html">Daten visualisieren</a>
 			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
 			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
 			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="notify.html">Benachrichtigungen</a>
+			<a href="connected_users.html">Verbundene Benutzer</a>
+			<a href="permissions.html">Rollen und Berechtigungen</a>
 			<a href="logical_replication.html">Logische Replikation</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tools</span>
 			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>
 			<a href="console_tab.html">Konsolen-Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
 		</div>
@@ -129,33 +140,37 @@
 		</nav>
 		<main>
 		<h1>SQL-Abfragen schreiben</h1>
-<p>Die häufigste Art von innerem Tab ist der <em>Query Tab</em> (Abfrage-Tab), der die folgenden Elemente enthält:</p>
-<p><img alt="" src="../assets/img/image_049.webp" /></p>
+<p>Die häufigste Art von innerem Tab ist der <em>Abfrage-Tab</em>, der die folgenden Elemente enthält. Die unten genannten Tastenkürzel sind die Voreinstellungen unter Windows/Linux; unter macOS verwenden die eigenen Tastenkürzel von OmniDB Ctrl statt Alt. Alle lassen sich unter <a href="settings_and_languages.html">Einstellungen &gt; Tastenkombinationen</a> ändern.</p>
 <ul>
-<li><strong>1) Tab-Header</strong>: Sie sehen den Namen des Tabs und ein Schließen-Symbol. Wenn im Tab eine Abfrage läuft, wird ein Indikator angezeigt. Ist die Abfrage beendet und Sie arbeiten in einem anderen Tab, erscheint ein grüner Indikator. Ein Rechtsklick auf den Tab und die Auswahl von <em>Rename Tab</em> (Tab umbenennen) lässt Sie den Tab umbenennen.</li>
-<li><strong>2) Tab hinzufügen</strong>: Sie können schnell einen weiteren inneren Tab hinzufügen, indem Sie auf das Plus-Symbol klicken.</li>
-<li><strong>3) SQL-Editor</strong>: Voll ausgestatteter SQL-Editor mit SQL-Syntax-Hervorhebung, Suchen &amp; Ersetzen (<code>Strg-F</code> und <code>Strg-H</code>) und einer Autovervollständigungskomponente (siehe unten). Eine vollständige Liste der Editor-Tastenkürzel (Auswahl, Multicursor, Navigation, Falten usw.) finden Sie unter <a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>.</li>
-<li><strong>4) Ausführen</strong>: Der im SQL-Editor enthaltene Text wird gegen die aktuell aktive Datenbank ausgeführt, wenn Sie auf diese Schaltfläche klicken (oder die Tastenkombination <code>Alt-Q</code> drücken, standardmäßig). Wenn im SQL-Editor Text ausgewählt ist, wird nur der ausgewählte Text ausgeführt. Sobald der Befehl läuft, wird eine rote <em>Abbrechen</em>-Schaltfläche angezeigt, mit der Sie die Ausführung abbrechen können (oder mit der Tastenkombination <code>Alt-C</code>, standardmäßig).</li>
-<li><strong>5) SQL einrücken</strong>: Diese Schaltfläche formatiert jeden SQL-Code im SQL-Editor übersichtlich (Tastenkombination <code>Alt-S</code> standardmäßig, <code>Strg-S</code> auf macOS).</li>
-<li><strong>6) Abfrageverlauf</strong>: Alle gegen die aktuelle Datenbank ausgeführten Befehle werden im Abfrageverlauf gespeichert, der durch Klicken auf diese Schaltfläche aufgerufen werden kann. Sie können auch nach Datum und Text filtern, um einen benötigten SQL-Befehl zu finden.</li>
-<li><strong>7) Explain (nur PostgreSQL)</strong>: Führt Ihre SQL-Abfrage mit vorangestelltem <code>EXPLAIN</code> gegen PostgreSQL aus. Die Ergebnisse werden im Explain-Tab in textueller und grafischer Form angezeigt (siehe <a href="visualizing_query_plans.html">Abfragepläne visualisieren</a> für weitere Details).</li>
-<li><strong>8) Explain Analyze (nur PostgreSQL)</strong>: Wie die Explain-Schaltfläche, aber führt die SQL-Abfrage mit <code>EXPLAIN ANALYZE</code> aus, was die Abfrage tatsächlich ausführt.</li>
-<li><strong>9) Autocommit (nur PostgreSQL)</strong>: Wenn aktiviert, wird jede ausgeführte Abfrage in der Datenbank festgeschrieben. Wenn deaktiviert, startet OmniDB eine Transaktion und die Oberfläche zeigt nach der Ausführung einer Abfrage Schaltflächen zum <em>Commit</em> oder <em>Rollback</em> an. Der Benutzer kann die Transaktion auch offen lassen und weitere Befehle ausführen.</li>
-<li><strong>10) Backend-Status (nur PostgreSQL)</strong>: Wenn Sie einen neuen Query Tab öffnen, lautet der Status „Not Connected", da OmniDB noch kein PostgreSQL-Backend gestartet hat. Wenn Sie die erste Abfrage ausführen, startet OmniDB ein neues Backend und hält es mit dem Query Tab verbunden (jeder Query Tab erhält sein eigenes Backend). Der Status des Backends (<em>idle</em>, <em>active</em>, <em>idle in transaction</em> usw.) wird in diesem Feld angezeigt. Wenn Sie den Query Tab schließen, beendet OmniDB das Backend.</li>
-<li><strong>11) Export-Dateityp</strong>: Kann CSV, TSV, XLSX, JSON, XML oder Markdown sein.</li>
-<li><strong>12) In Datei exportieren</strong>: Durch Klicken auf diese Schaltfläche führt OmniDB die aktuelle Abfrage aus und exportiert die Ergebnisse in eine Datei. In der Desktop-App öffnet sich ein natives „Speichern unter"-Dialog, in dem Sie direkt wählen können, wo die Datei gespeichert werden soll. Beim Betrieb als browserbasierter <a href="deploying_omnidb-server.html">OmniDB Server</a> wird die Datei zuerst in den temporären Ordner des Servers geschrieben, und die Oberfläche zeigt dann einen Link an, über den Sie sie im Browser herunterladen können.</li>
-<li><strong>13) Daten-Ergebnisse</strong>: Wenn die Abfrage ein <code>SELECT</code> ist, wird ein Raster mit den Ergebnissen angezeigt. Wenn die Abfrage ein DML oder DDL ist, wird die vom RDBMS zurückgegebene Meldung angezeigt.</li>
-<li><strong>14) Meldungen (nur PostgreSQL)</strong>: Alle Meldungen (wie die des Befehls <code>RAISE NOTICE</code>) werden hier angezeigt.</li>
-<li><strong>15) Explain-Ansicht (nur PostgreSQL)</strong>: Zeigt eine voll ausgestattete Komponente zur Anzeige des PostgreSQL-Ausführungsplans in textueller oder grafischer Form.</li>
+<li><strong>1) Tab-Header</strong>: Sie sehen den Namen des Tabs und, wenn Sie mit der Maus darüberfahren, ein Symbol zum Schließen. Während im Tab eine Abfrage läuft, wird ein Ladesymbol angezeigt; ist sie beendet, während Sie in einem anderen Tab arbeiten, erscheint ein Häkchen. Ein Rechtsklick auf den Tab und die Auswahl von <em>Tab umbenennen</em> lässt Sie ihn umbenennen.</li>
+<li><strong>2) Tab hinzufügen</strong>: Sie können schnell einen weiteren inneren Tab (<em>Abfrage-Tab</em> oder <em>Konsolen-Tab</em>) hinzufügen, indem Sie auf das Plus-Symbol klicken.</li>
+<li><strong>3) SQL-Editor</strong>: Voll ausgestatteter SQL-Editor mit SQL-Syntaxhervorhebung, Code-Faltung, Suchen &amp; Ersetzen (<code>Ctrl-F</code> und <code>Ctrl-H</code>), einer vertikalen Linealinie (ihre Spalte wird unter <em>Einstellungen &gt; Formatierung</em> festgelegt) und einer Autovervollständigungskomponente (siehe unten). Ein Rechtsklick in den Editor bietet <em>Kopieren</em>, <em>Als Snippet speichern</em> und <em>Snippet verwenden</em> (siehe <a href="snippets.html">Snippets</a>). Eine vollständige Liste der Editor-Tastenkürzel (Auswahl, Multicursor, Navigation, Faltung usw.) finden Sie unter <a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>.</li>
+<li><strong>4) Ausführen</strong>: Der im SQL-Editor enthaltene Text wird gegen die aktuell aktive Datenbank ausgeführt, wenn Sie auf diese Schaltfläche klicken (oder <code>Alt-Q</code> drücken). Wenn im SQL-Editor Text ausgewählt ist, wird nur der ausgewählte Text ausgeführt. Der Editor kann mehrere durch Semikolons getrennte Anweisungen enthalten; sie laufen nacheinander, und das Raster zeigt das Ergebnis der letzten. Sobald der Befehl läuft, wird eine rote Schaltfläche <em>Abbrechen</em> angezeigt, mit der Sie die Ausführung abbrechen können (oder drücken Sie <code>Alt-C</code>).</li>
+<li><strong>5) Anweisung an Cursorposition ausführen</strong>: Führt nur die eine Anweisung aus, in der sich der Cursor befindet, ohne dass Sie sie zuerst markieren müssen. Steht der Cursor direkt hinter einem <code>;</code>, wird die folgende Anweisung ausgeführt.</li>
+<li><strong>6) SQL einrücken</strong>: Diese Schaltfläche formatiert jeden SQL-Code im SQL-Editor übersichtlich (Tastenkürzel <code>Alt-S</code>) und folgt dabei dem unter <em>Einstellungen &gt; Formatierung</em> gewählten Stil (Einrückung, Kommastil, Groß-/Kleinschreibung von Schlüsselwörtern).</li>
+<li><strong>7) Befehlsverlauf</strong>: Alle gegen die aktuelle Verbindung ausgeführten Befehle werden im Befehlsverlauf gespeichert, der durch Klicken auf diese Schaltfläche aufgerufen werden kann. Sie können ihn nach Datumsbereich und nach Text filtern, um den benötigten SQL-Befehl zu finden.</li>
+<li><strong>8) Explain (nur PostgreSQL)</strong>: Führt Ihre SQL-Abfrage mit vorangestelltem <code>EXPLAIN</code> aus (Tastenkürzel <code>Alt-W</code>). Die Ergebnisse werden im Explain-Tab in textueller und grafischer Form angezeigt (siehe <a href="visualizing_query_plans.html">Abfragepläne visualisieren</a> für weitere Details).</li>
+<li><strong>9) Explain Analyze (nur PostgreSQL)</strong>: Wie die Explain-Schaltfläche, führt die SQL-Abfrage aber mit <code>EXPLAIN ANALYZE</code> aus, wodurch die Abfrage tatsächlich ausgeführt wird (Tastenkürzel <code>Alt-E</code>).</li>
+<li><strong>10) Autocommit (nur PostgreSQL)</strong>: Wenn aktiviert, wird jede ausgeführte Abfrage in der Datenbank festgeschrieben. Wenn deaktiviert, startet OmniDB eine Transaktion, und die Oberfläche zeigt nach der Ausführung einer Abfrage Schaltflächen für <em>Commit</em> oder <em>Rollback</em> an. Der Benutzer kann die Transaktion auch offen lassen und weitere Befehle ausführen.</li>
+<li><strong>11) Backend-Status (nur PostgreSQL)</strong>: Wenn Sie einen neuen Abfrage-Tab öffnen, lautet der Status <em>Nicht verbunden</em>, da OmniDB noch kein PostgreSQL-Backend gestartet hat. Wenn Sie die erste Abfrage ausführen, startet OmniDB ein neues Backend und hält es mit dem Abfrage-Tab verbunden (jeder Abfrage-Tab erhält sein eigenes Backend). Der Status des Backends (<em>Inaktiv</em>, <em>Wird ausgeführt</em>, <em>Inaktiv in Transaktion</em> usw.) wird in diesem Feld angezeigt. Wenn Sie den Abfrage-Tab schließen, beendet OmniDB das Backend.</li>
+<li><strong>12) Export-Dateityp</strong>: CSV, TSV, XLSX, JSON, XML oder Markdown.</li>
+<li><strong>13) Daten exportieren</strong>: Durch Klicken auf diese Schaltfläche führt OmniDB die aktuelle Abfrage aus und exportiert das gesamte Ergebnis in eine Datei des gewählten Typs. In der Desktop-App öffnet sich ein nativer Dialog <em>Speichern unter</em>, in dem Sie direkt wählen können, wo die Datei gespeichert werden soll, und OmniDB bestätigt mit <em>Datei exportiert nach: …</em>. Beim Betrieb als browserbasierter <a href="deploying_omnidb-server.html">OmniDB Server</a> wird die Datei stattdessen zuerst in den temporären Ordner des Servers geschrieben, und der Ergebnisbereich zeigt dann <em>Die Datei ist bereit.</em> mit einem Link <em>Speichern</em>, über den Sie sie im Browser herunterladen. CSV/TSV-Kodierung und CSV-Trennzeichen werden unter <em>Einstellungen &gt; Export</em> festgelegt.</li>
+<li><strong>14) Daten-Ergebnisse</strong>: Wenn die Abfrage ein <code>SELECT</code> ist, wird ein Raster mit den Ergebnissen angezeigt; die erste Spalte bleibt beim horizontalen Scrollen fixiert, und wenn Sie mit der Maus über eine Spaltenüberschrift fahren, wird deren vollständiger Name angezeigt. Wenn die Abfrage ein DML oder DDL ist, wird die vom RDBMS zurückgegebene Meldung angezeigt. Gibt es mehr Zeilen als im ersten Block, lädt <em>Mehr abrufen</em> den nächsten Block und <em>Alle abrufen</em> den Rest. Ein Rechtsklick auf eine Zelle bietet <em>Kopieren</em> oder <em>Inhalt anzeigen</em>; JSON- und XML-Werte werden mit Syntaxhervorhebung angezeigt.</li>
+<li><strong>15) Meldungen (nur PostgreSQL)</strong>: Alle Meldungen (wie die des Befehls <code>RAISE NOTICE</code>) werden hier angezeigt.</li>
+<li><strong>16) Explain-Ansicht (nur PostgreSQL)</strong>: Zeigt eine voll ausgestattete Komponente zur Anzeige des PostgreSQL-Ausführungsplans in textueller oder grafischer Form.</li>
 </ul>
-<p>Nach der Ausführung werden die Tabs auch in der OmniDB-Benutzerdatenbank gespeichert (Titel und Inhalt), sodass Sie beim nächsten Öffnen von OmniDB alle geöffnet sehen. Außerdem wird jeder Befehl, den Sie in einem Query Tab ausführen, in Ihrem Abfrageverlauf und in der Datei <code>omnidb.log</code> gespeichert.</p>
+<p>Die Trennlinie zwischen dem Editor (samt Werkzeugleiste) und den Ergebnissen lässt sich verschieben, um dem einen oder dem anderen mehr Platz zu geben.</p>
+<h4>Sicherheitsabfrage bei destruktiven Anweisungen</h4>
+<p>Bevor eine Anweisung ausgeführt wird, die mit <code>DROP</code> oder <code>TRUNCATE</code> beginnt, oder ein <code>UPDATE</code>/<code>DELETE</code> ohne <code>WHERE</code>-Klausel, fragt der Abfrage-Tab nach einer Bestätigung (<em>Diese Anweisung ist destruktiv und kann nicht rückgängig gemacht werden. Trotzdem ausführen?</em> bzw. <em>Diese Anweisung hat keine WHERE-Klausel und betrifft ALLE Zeilen. Trotzdem ausführen?</em>). Dies ist ein Sicherheitsnetz gegen versehentliche Fehler, kein Berechtigungssystem — geprüft wird nur der Anfang des Textes (nach Kommentaren).</p>
+<p>Nach der Ausführung werden die Tabs auch in der OmniDB-Benutzerdatenbank gespeichert (Titel und Inhalt), sodass Sie beim nächsten Öffnen von OmniDB alle geöffnet sehen. Außerdem wird jeder Befehl, den Sie in einem Abfrage-Tab ausführen, im Befehlsverlauf dieser Verbindung gespeichert.</p>
 <h4>SQL-Autovervollständigung</h4>
-<p>Der SQL-Editor verfügt über eine Funktion, die beim Erstellen neuer Abfragen sehr hilfreich ist: die SQL-Code-Vervollständigung. Mit dieser Funktion ist es möglich, Spalten zu vervollständigen, die in einer Tabelle enthalten sind, auf die über einen Alias verwiesen wird. Um die Autovervollständigung zu öffnen, müssen Sie lediglich den Alias, das Zeichen <code>.</code> und dann <code>Strg-Leertaste</code> eingeben:</p>
+<p>Der SQL-Editor verfügt über eine Funktion, die beim Erstellen neuer Abfragen sehr hilfreich ist: die SQL-Code-Vervollständigung. Öffnen Sie die Vorschläge mit <code>Ctrl-Space</code> (<code>Option-Space</code> unter macOS). Mit dieser Funktion ist es möglich, Spalten zu vervollständigen, die in einer Tabelle enthalten sind, auf die über einen Alias verwiesen wird: Geben Sie den Alias und das Zeichen <code>.</code> ein und öffnen Sie dann die Autovervollständigung:</p>
 <p><img alt="" src="../assets/img/image_050.webp" /></p>
 <p>Wenn der Benutzer die Autovervollständigung nicht mit dem Cursor in der Nähe eines Tabellen-Alias startet, zeigt die Komponente mehrere Datenkategorien an. Durch Eingabe im Filter-Textfeld werden Elemente in allen Kategorien gefiltert:</p>
 <p><img alt="" src="../assets/img/image_051.webp" /></p>
-<p>Die Autovervollständigungskomponente kann auch einige kontextbezogene Informationen erkennen. Wenn Sie beispielsweise den Namen eines Schemas eingeben, dann das Zeichen <code>.</code> und <code>Strg-Leertaste</code> drücken, können Sie nach Objekten filtern, die nur in diesem Schema enthalten sind:</p>
+<p>Die Autovervollständigungskomponente kann auch einige kontextbezogene Informationen erkennen. Wenn Sie beispielsweise den Namen eines Schemas und dann das Zeichen <code>.</code> eingeben, können Sie nach Objekten filtern, die nur in diesem Schema enthalten sind:</p>
 <p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p>Nach <code>::</code> (einer PostgreSQL-Typumwandlung) werden nur Datentypen angeboten. Die Auswahl eines Schlüsselworts fügt auch das hinzu, was stets darauf folgt (zum Beispiel ein Leerzeichen nach <code>SELECT</code> oder die öffnende Klammer nach <code>COALESCE</code>). Welche Kategorien überhaupt angeboten werden (Schlüsselwörter, Datenbanken, Rollen, Tablespaces, Schemas, Erweiterungen, Tabellen, Ansichten, Spalten, Funktionen, Indizes), wird unter <em>Einstellungen &gt; Autovervollständigung</em> festgelegt.</p>
 <p>Bitte beachten Sie, dass die Autovervollständigung bei RDBMS außer PostgreSQL nur für Tabellenspalten funktioniert.</p>
 		</main>
 	</div>

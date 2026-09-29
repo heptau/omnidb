@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Impostazioni e lingue – Documentazione OmniDB</title>
+	<meta name="description" content="Le preferenze personali di OmniDB: lingua dell’interfaccia, tema, dimensione del carattere, opzioni di esportazione, completamento automatico, formattazione SQL, scorciatoie da tastiera e password.">
+	<link rel="canonical" href="https://www.omnidb.net/it/settings_and_languages.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/settings_and_languages.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/settings_and_languages.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/settings_and_languages.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/settings_and_languages.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/settings_and_languages.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/settings_and_languages.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/settings_and_languages.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/settings_and_languages.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/it/settings_and_languages.html">
+	<meta property="og:title" content="Impostazioni e lingue - Documentazione OmniDB">
+	<meta property="og:description" content="Le preferenze personali di OmniDB: lingua dell’interfaccia, tema, dimensione del carattere, opzioni di esportazione, completamento automatico, formattazione SQL, scorciatoie da tastiera e password.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/it/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentazione", "item": "https://www.omnidb.net/it/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Impostazioni e lingue", "item": "https://www.omnidb.net/it/settings_and_languages.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Attiva/disattiva navigazione">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentazione</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Sponsorizza" title="Sponsorizza">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Stella su GitHub" title="Stella su GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambia lingua" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambia tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatico</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Chiaro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Scuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Per iniziare</span>
+			<a href="introduction.html">Introduzione</a>
+			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html">App desktop</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html" class="active">Impostazioni e lingue</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Lavorare con i dati</span>
+			<a href="managing_databases.html">Gestione dei database</a>
+			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
+			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="snippets.html">Snippet</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="visualizing_data.html">Visualizzazione dei dati</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzate</span>
+			<a href="additional_features.html">Funzionalità aggiuntive</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
+			<a href="logical_replication.html">Replica logica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
+			<a href="console_tab.html">Scheda Console</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Riferimento</span>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Impostazioni e lingue</h1>
+<p>Ogni utente di OmniDB ha le proprie preferenze: lingua dell’interfaccia, tema, dimensione del
+carattere, opzioni di esportazione, categorie del completamento automatico, stile di
+formattazione SQL e scorciatoie da tastiera. Si impostano tutte in <em>Impostazioni</em> e sono
+memorizzate per utente nel database utente di OmniDB, quindi ti seguono in qualsiasi browser o
+computer da cui accedi allo stesso server OmniDB.</p>
+<h4>Aprire le Impostazioni</h4>
+<p>Fai clic sull’icona a forma di ingranaggio in fondo alla barra laterale sinistra. Nell’app
+desktop puoi usare anche la voce <em>OmniDB &gt; Preferenze…</em> della barra dei menu (Cmd-, su
+macOS, Ctrl-, altrove), mentre <em>Aiuto &gt; Scorciatoie da tastiera</em> apre le Impostazioni
+direttamente sulla categoria Scorciatoie.</p>
+<p>Le Impostazioni sono una vista a due pannelli: le categorie a sinistra (<em>Aspetto</em>,
+<em>Esportazione</em>, <em>Completamento automatico</em>, <em>Formattazione</em>,
+<em>Scorciatoie</em>, <em>Password</em> e, solo per i superuser, <em>Account</em>) e i campi
+della categoria selezionata a destra. Non esiste un pulsante Salva — ogni campo viene salvato non
+appena lo modifichi (i campi di testo poco dopo che hai smesso di scrivere). L’unica eccezione è
+la password, che ha un proprio pulsante <em>Cambia password</em>.</p>
+<h4>Aspetto</h4>
+<ul>
+<li><strong>Lingua</strong>: la lingua dell’intera interfaccia utente — <em>Automatica</em>,
+Čeština, Deutsch, English, Español, Français, Italiano, Português, 日本語 (giapponese) o 한국어
+(coreano). <em>Automatica</em> (il valore predefinito) segue la lingua richiesta dal browser o
+dal sistema operativo e, se quella lingua non è disponibile, ripiega sull’inglese. Il cambio di
+lingua ricarica la pagina. Lo stesso vale per la pagina di accesso e, nell’app desktop, per la
+barra dei menu (vedi <a href="desktop_app.html">App desktop</a>). I nomi dei motori di database,
+dei formati di file e delle codifiche dei caratteri, le parole chiave SQL e i messaggi provenienti
+dal server di database stesso non vengono tradotti.</li>
+<li><strong>Tema</strong>: <em>Automatica</em> (segue l’impostazione chiaro/scuro del sistema
+operativo e cambia in tempo reale quando questa cambia), <em>Chiaro</em> o <em>Scuro</em>.</li>
+<li><strong>Dimensione carattere</strong>: un cursore da 10 a 20 (predefinito 12) che scala il
+testo dell’interfaccia; il valore corrente è mostrato accanto.</li>
+</ul>
+<h4>Esportazione</h4>
+<ul>
+<li><strong>Codifica CSV/TSV</strong>: la codifica dei caratteri delle esportazioni CSV e TSV,
+raggruppata in codifiche Unicode, code page di Windows, ISO 8859, cirilliche, dell’Asia orientale,
+DOS, Mac ed EBCDIC. Il valore predefinito è <em>UTF-8 with BOM</em>, che i fogli di calcolo come
+Excel riconoscono automaticamente come UTF-8.</li>
+<li><strong>Delimitatore CSV</strong>: il separatore di campo usato nelle esportazioni CSV
+(predefinito <code>;</code>).</li>
+</ul>
+<p>Vedi <a href="writing_sql_queries.html">Scrittura di query SQL</a> per l’esportazione dei
+risultati delle query.</p>
+<h4>Completamento automatico</h4>
+<p><strong>Suggerimenti di completamento automatico</strong> stabilisce quali categorie offre il
+completamento automatico dell’editor SQL: Parole chiave, Database, Ruoli, Tablespace, Schemi,
+Estensioni, Tabelle, Viste, Colonne, Funzioni e Indici (<em>Tutti</em>/<em>Nessuno</em> le
+attivano o disattivano tutte insieme).</p>
+<h4>Formattazione</h4>
+<p>Queste opzioni controllano il modo in cui <em>Rientra SQL</em> (il formattatore delle schede
+Query e il pulsante <em>Rientro</em> negli Snippet) riscrive il tuo SQL e come vengono impaginati
+i modelli SQL generati dall’albero del database:</p>
+<ul>
+<li><strong>Carattere di rientro</strong>: <em>Spazi</em> (predefinito) o <em>Tab</em>;</li>
+<li><strong>Dimensione rientro</strong>: 2, 3 o 4 (predefinito 4);</li>
+<li><strong>Stile virgola</strong>: <em>Iniziale (, a inizio riga)</em> (predefinito) o
+<em>Finale (, a fine riga)</em>;</li>
+<li><strong>Maiuscole/minuscole parole chiave</strong>: <em>Mantieni</em> (predefinito),
+<em>MAIUSCOLO</em> o <em>minuscolo</em>;</li>
+<li><strong>Colonna guida</strong>: la posizione in cui ogni editor SQL disegna la linea guida
+verticale (24–999, predefinito 128). È solo un aiuto visivo; il formattatore non manda a capo le
+righe in quel punto.</li>
+</ul>
+<h4>Scorciatoie</h4>
+<p>Le scorciatoie da tastiera proprie di OmniDB, in due gruppi. Per cambiarne una, fai clic sul
+relativo pulsante e premi la nuova combinazione di tasti, oppure premi Esc per annullare. I valori
+predefiniti sono:</p>
+<table>
+	<thead>
+		<tr>
+			<th>Azione</th>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr><td colspan="3"><strong>Database</strong> (schede Query e Console)</td></tr>
+		<tr><td>Esegui query</td><td>Alt-Q</td><td>Ctrl-Q</td></tr>
+		<tr><td>Esegui Explain</td><td>Alt-W</td><td>Ctrl-W</td></tr>
+		<tr><td>Esegui Explain Analyze</td><td>Alt-E</td><td>Ctrl-E</td></tr>
+		<tr><td>Annulla query</td><td>Alt-C</td><td>Ctrl-C</td></tr>
+		<tr><td>Rientro</td><td>Alt-S</td><td>Ctrl-S</td></tr>
+		<tr><td>Completamento automatico</td><td>Ctrl-Space</td><td>Option-Space</td></tr>
+		<tr><td>Nuova scheda interna</td><td>Alt-I</td><td>Ctrl-I</td></tr>
+		<tr><td>Chiudi scheda interna corrente</td><td>Alt-Shift-Q</td><td>Ctrl-Shift-Q</td></tr>
+		<tr><td>Seleziona scheda interna a sinistra</td><td>Alt-O</td><td>Ctrl-O</td></tr>
+		<tr><td>Seleziona scheda interna a destra</td><td>Alt-P</td><td>Ctrl-P</td></tr>
+		<tr><td colspan="3"><strong>Snippet</strong> (sezione Snippet)</td></tr>
+		<tr><td>Salva snippet</td><td>Ctrl-S</td><td>Command-S</td></tr>
+		<tr><td>Nuovo snippet</td><td>Ctrl-N</td><td>Command-N</td></tr>
+		<tr><td>Chiudi scheda snippet</td><td>Ctrl-W</td><td>Command-W</td></tr>
+	</tbody>
+</table>
+<p>Le scorciatoie di modifica del testo dell’editor SQL vero e proprio (selezione, cursori
+multipli, ripiegamento, trova e sostituisci, …) sono elencate a parte in
+<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>. La barra dei menu
+dell’app desktop aggiunge scorciatoie per passare da una sezione all’altra (vedi
+<a href="desktop_app.html">App desktop</a>).</p>
+<h4>Password</h4>
+<p>Digita la <em>Nuova password</em> e ripetila in <em>Conferma</em>; <em>Cambia password</em>
+diventa disponibile quando le due coincidono. Il cambio della password chiude le altre sessioni
+dell’utente. Questa categoria è utile solo in modalità server — l’app desktop accede
+automaticamente.</p>
+<h4>Account</h4>
+<p>Visibile solo ai superuser: <em>Gestisci utenti</em> apre la finestra <em>Gestione utenti</em>,
+in cui si aggiungono, modificano ed eliminano gli utenti di OmniDB — vedi
+<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

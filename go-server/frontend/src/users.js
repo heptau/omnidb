@@ -35,7 +35,7 @@ SOFTWARE.
 import { endLoading, execAjax, startLoading } from "./ajax_control_bridge.js";
 import { t } from "./i18n.js";
 import { showConfirm } from "./notification_control.js";
-import { escapeHtml } from "./query.js";
+import { escapeHtml, escapeHtmlAttribute } from "./query.js";
 
 export function newUserConfirm() {
 	execAjax(
@@ -451,7 +451,7 @@ export function renderSelectedUser(event) {
 	var v_user_div_content = /** @type {HTMLElement} */ (document.getElementById("omnidb_user_content"));
 	if (v_index == "") {
 		v_user_div_content.innerHTML =
-			`<div class='col-12 text-center'><h5 class='my-4'>${t("users.no_user_selected")}</h5></div>`;
+			`<div class='col-12 text-center'><h5 class='my-4'>${escapeHtml(t("users.no_user_selected"))}</h5></div>`;
 	} else {
 		var v_user_count = 0;
 		for (var i = 0; i < v_usersObject.list.length; i++) {
@@ -474,13 +474,13 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" +
 					i +
-					"' type='text' class='form-control my-0' placeholder='" + t("users.username_placeholder") + "' value='" +
-					escapeHtml(v_user_item[0]) +
+					"' type='text' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.username_placeholder")) + "' value='" +
+					escapeHtmlAttribute(v_user_item[0]) +
 					"'>" +
 					"</div>" +
-					`<span class='ms-2'>${t("users.superuser_label")}</span>` +
+					`<span class='ms-2'>${escapeHtml(t("users.superuser_label"))}</span>` +
 					"<div class='ms-2 mb-2'>" +
-					`<div class='omnidb__switch me-2' title='${t("users.superuser_toggle_tooltip")}'>` +
+					`<div class='omnidb__switch me-2' title='${escapeHtmlAttribute(t("users.superuser_toggle_tooltip"))}'>` +
 					"<input type='checkbox' id='user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +
@@ -502,8 +502,8 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" +
 					i +
-					"' type='password' class='form-control my-0' placeholder='" + t("users.new_password_placeholder") + "' value='" +
-					escapeHtml(v_user_item[1]) +
+					"' type='password' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.new_password_placeholder")) + "' value='" +
+					escapeHtmlAttribute(v_user_item[1]) +
 					"'>" +
 					"</div>" +
 					"<span class='me-2 text-danger omnidb__user-list__close'>" +
@@ -517,7 +517,7 @@ export function renderSelectedUser(event) {
 					// same response already carries.
 					"<i id='bt_remove_user_" +
 					i +
-					"' title='" + t("users.remove_user_tooltip") + "' class='fas fa-times action-grid action-close text-danger'></i>" +
+					"' title='" + escapeHtmlAttribute(t("users.remove_user_tooltip")) + "' class='fas fa-times action-grid action-close text-danger'></i>" +
 					"</span>" +
 					"</div>" +
 					"</div>";
@@ -565,13 +565,13 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" +
 					i +
-					"' type='text' class='form-control my-0' placeholder='" + t("users.username_placeholder") + "' value='" +
-					escapeHtml(v_user_item[0]) +
+					"' type='text' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.username_placeholder")) + "' value='" +
+					escapeHtmlAttribute(v_user_item[0]) +
 					"'>" +
 					"</div>" +
-					`<span class='ms-2'>${t("users.superuser_label")}</span>` +
+					`<span class='ms-2'>${escapeHtml(t("users.superuser_label"))}</span>` +
 					"<div class='ms-2 mb-2'>" +
-					`<div class='omnidb__switch me-2' title='${t("users.superuser_toggle_tooltip")}'>` +
+					`<div class='omnidb__switch me-2' title='${escapeHtmlAttribute(t("users.superuser_toggle_tooltip"))}'>` +
 					"<input type='checkbox' id='new_user_item_superuser_" +
 					i +
 					"' class='omnidb__switch--input' " +
@@ -593,14 +593,14 @@ export function renderSelectedUser(event) {
 					"</div>" +
 					"<input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" +
 					i +
-					"' type='password' class='form-control my-0' placeholder='" + t("users.new_password_placeholder") + "' value='" +
-					escapeHtml(v_user_item[1]) +
+					"' type='password' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.new_password_placeholder")) + "' value='" +
+					escapeHtmlAttribute(v_user_item[1]) +
 					"'>" +
 					"</div>" +
 					"<span class='me-2 text-danger omnidb__user-list__close'>" +
 					"<i id='bt_remove_new_user_" +
 					i +
-					"' title='" + t("users.remove_user_tooltip") + "' class='fas fa-times action-grid action-close text-danger'></i>" +
+					"' title='" + escapeHtmlAttribute(t("users.remove_user_tooltip")) + "' class='fas fa-times action-grid action-close text-danger'></i>" +
 					"</span>" +
 					"</div>" +
 					"</div>";

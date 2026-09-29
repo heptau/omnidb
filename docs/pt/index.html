@@ -18,10 +18,14 @@
 
 	<!-- Canonical & crawling -->
 	<link rel="canonical" href="https://www.omnidb.net/pt/">
-	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/">
-	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/">
-	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/index.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/index.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/index.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/index.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/index.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/index.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/index.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/index.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
 	<link rel="manifest" href="../manifest.json">
@@ -71,7 +75,15 @@
 			"SQL editor with autocomplete",
 			"Query plan visualization",
 			"Monitoring dashboard",
-			"SSH tunneling"
+			"Connected users and session termination",
+			"PostgreSQL role and privilege browser",
+			"LISTEN/NOTIFY, DBMS_ALERT and Firebird event listener",
+			"SQL snippets",
+			"Data export to CSV, TSV, XLSX, JSON, XML and Markdown",
+			"DBML schema export",
+			"SSH tunneling and SSH terminal",
+			"User interface in nine languages",
+			"Encrypted saved passwords"
 		],
 		"author": {
 			"@type": "Person",
@@ -149,7 +161,9 @@
 				<span class="nav-group-label">Primeiros Passos</span>
 				<a href="introduction.html">Introdução</a>
 				<a href="installation.html">Instalação</a>
+				<a href="desktop_app.html">Aplicação de Ambiente de Trabalho</a>
 				<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+				<a href="settings_and_languages.html">Definições e Idiomas</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Trabalhar com Dados</span>
@@ -157,6 +171,7 @@
 				<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 				<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 				<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+				<a href="snippets.html">Snippets</a>
 				<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
 				<a href="visualizing_data.html">Visualizar Dados</a>
 				<a href="managing_other_elements.html">Gerir Outros Elementos</a>
@@ -167,11 +182,15 @@
 				<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
 				<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
 				<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+				<a href="notify.html">Notificações</a>
+				<a href="connected_users.html">Utilizadores Ligados</a>
+				<a href="permissions.html">Roles e Permissões</a>
 				<a href="logical_replication.html">Replicação Lógica</a>
 			</div>
 			<div class="nav-group">
 				<span class="nav-group-label">Servidor e Ferramentas</span>
 				<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+				<a href="security.html">Segurança e Servidor Multiutilizador</a>
 				<a href="console_tab.html">Separador de Consola</a>
 				<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 			</div>
@@ -240,7 +259,25 @@
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">📤</span>
 					<h3>Exportar para Qualquer Lugar</h3>
-					<p>Diretamente para CSV, XLSX, TSV, Markdown, JSON ou XML.</p>
+					<p>Diretamente para CSV, XLSX, TSV, Markdown, JSON ou XML — e um esquema PostgreSQL completo para DBML.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">📈</span>
+					<h3>Veja o Que o Servidor Está a Fazer</h3>
+					<p>Um painel de monitorização em tempo real, utilizadores ligados com terminação num só clique e um
+						ouvinte de LISTEN/NOTIFY.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🛡️</span>
+					<h3>Roles e Privilégios num Relance</h3>
+					<p>Explore roles do PostgreSQL, associações e privilégios efetivos — incluindo os
+						herdados — e conceda ou revogue diretamente.</p>
+				</article>
+				<article class="feature-card">
+					<span class="feature-icon" aria-hidden="true">🌍</span>
+					<h3>Fala a Sua Língua</h3>
+					<p>English, Čeština, Deutsch, Español, Français, Italiano, Português, 日本語 e 한국어 —
+						ou simplesmente siga o seu sistema.</p>
 				</article>
 			</div>
 		</section>

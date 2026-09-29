@@ -198,6 +198,35 @@ func updateNativeSessionLanguage(key, language string) {
 	}
 }
 
+// syncNativeSessionsForUser propagates a user-management change to every
+// live session of that user — the session caches UserID/Username/SuperUser
+// at login and resolveIdentity trusts it for the session's whole TTL, so
+// without this a demoted superuser kept superuser rights (and a deleted
+// user kept full access) for up to nativeSessionTTL.
+//
+//   - deleted: every session of the user is destroyed.
+//   - passwordChanged: every session except keepKey (the caller's own, when
+//     users change their own password) is destroyed, so a stolen session
+//     doesn't survive the password reset meant to lock it out.
+//   - otherwise username/superuser are updated in place.
+func syncNativeSessionsForUser(userID int, username string, superuser, passwordChanged, deleted bool, keepKey string) {
+	nativeSessionsMu.Lock()
+	defer nativeSessionsMu.Unlock()
+	for key, sess := range nativeSessions {
+		if sess.UserID != userID {
+			continue
+		}
+		if deleted || (passwordChanged && key != keepKey) {
+			delete(nativeSessions, key)
+			continue
+		}
+		if username != "" {
+			sess.Username = username
+		}
+		sess.SuperUser = superuser
+	}
+}
+
 // nativeSessionCookieValue reads the Go-native session cookie (distinct
 // from sessionCookieValue, which reads Django's own "omnidb_sessionid" —
 // still used to key query cursors/console sessions/terminal sessions,
@@ -296,25 +325,18 @@ func checkCSRF(r *http.Request) bool {
 	return header != "" && header == cookie.Value
 }
 
-// csrfExemptPrefixes are the only POST routes the frontend's own execAjax
-// wrapper (ajax_control.js) never sends X-CSRFToken for — each calls a raw
-// fetch()/http.Error-based handler instead of going through the shared
-// {v_data, v_error, v_error_id} envelope contract, and each already carries
-// its own equivalent protection: /internal/shutdown/, /export_save_dialog/,
-// /open_external_url/, /pgpass_grant/, /pgpass_import/ and /notify_title/
-// are only ever registered on a loopback listener (see main.go's
-// isLoopbackHost gate) and independently check resolveIdentity(); /sign_in/
-// already calls checkCSRF itself (and, unlike these six, is in fact sent
-// with the header by execAjax, so leaving it out of this list would be
-// harmless — it's excluded anyway for clarity since requireCSRF would
-// otherwise run before handleSignIn's own app-token short-circuit).
+// csrfExemptPrefixes are the only non-safe-method routes that skip the
+// double-submit check: /internal/shutdown/ is called by the Wails shell
+// process (not a browser) and requires the shell's shared secret instead
+// (see handleShutdown/shell_relay.go); /sign_in/ calls checkCSRF itself
+// (excluded only because requireCSRF would otherwise run before
+// handleSignIn's own app-token short-circuit). Every raw fetch() the
+// frontend sends (export save dialog, open URL, .pgpass grant/import,
+// window title) carries X-CSRFToken via ajax_control.js's jsonPostHeaders,
+// so those routes are no longer exempt — a same-site page on another
+// 127.0.0.1 port would otherwise ride the SameSite=Lax session cookie.
 var csrfExemptPrefixes = []string{
 	"/internal/shutdown/",
-	"/export_save_dialog/",
-	"/open_external_url/",
-	"/pgpass_grant/",
-	"/pgpass_import/",
-	"/notify_title/",
 	"/sign_in/",
 }
 
@@ -332,7 +354,7 @@ var csrfExemptPrefixes = []string{
 // same net/http.Server.
 func requireCSRF(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.Method != http.MethodPost {
+		if r.Method == http.MethodGet || r.Method == http.MethodHead || r.Method == http.MethodOptions {
 			next.ServeHTTP(w, r)
 			return
 		}

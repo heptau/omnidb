@@ -77,6 +77,7 @@ interface Window {
 	endLoading: any;
 	getCookie: any;
 	csrfSafeMethod: any;
+	jsonPostHeaders: any;
 	/** users.js's scratch state for pending (unsaved) new users -- see getUsers(). */
 	newUsersObject: any;
 	/** workspace.js's drawGraph() stashes the active cytoscape instance here for console debugging. */

@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Desktopová aplikace – Dokumentace OmniDB</title>
+	<meta name="description" content="Používání desktopové aplikace OmniDB: kde jsou uložena její data, panel nabídek a jeho klávesové zkratky, stav okna a specifika macOS sandboxu, jako je import předchozích dat a přístup k .pgpass.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/desktop_app.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/desktop_app.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/desktop_app.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/desktop_app.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/desktop_app.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/desktop_app.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/desktop_app.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/desktop_app.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/desktop_app.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/desktop_app.html">
+	<meta property="og:title" content="Desktopová aplikace - Dokumentace OmniDB">
+	<meta property="og:description" content="Používání desktopové aplikace OmniDB: kde jsou uložena její data, panel nabídek a jeho klávesové zkratky, stav okna a specifika macOS sandboxu, jako je import předchozích dat a přístup k .pgpass.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Desktopová aplikace", "item": "https://www.omnidb.net/cs/desktop_app.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html" class="active">Desktopová aplikace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Desktopová aplikace</h1>
+<p>Desktopová aplikace (<code>OmniDB.app</code> na macOS, <code>OmniDB</code>/<code>OmniDB.exe</code> na
+Linuxu a Windows) je malé nativní okno kolem stejného rozhraní OmniDB, jaké serverová verze
+poskytuje prohlížečům. Na pozadí si spustí vlastní soukromou instanci <code>omnidb-server</code>,
+která naslouchá pouze na místním počítači, a automaticky vás přihlásí jako vestavěného uživatele
+<code>admin</code> — není zde žádná přihlašovací stránka, žádná ikona <em>Účet</em> a nic se
+nemusí nastavovat. Jak aplikaci získat, popisuje kapitola <a href="installation.html">Instalace</a>.</p>
+<h4>Kde jsou uložena data</h4>
+<p>Uložená připojení, snippety, nastavení, historie dotazů apod. se ukládají do
+<code>~/.omnidb/omnidb-app/</code> (uživatelská databáze <code>omnidb.db</code> a k ní složka
+<code>temp</code> pro exporty a uložená pozice okna). Chcete-li mít oddělenou sadu dat
+— například jednorázovou pro testování — spusťte aplikaci s jiným domovským adresářem:</p>
+<pre><code class="language-bash">open -a OmniDB --args -d /path/to/other/dir    # macOS
+./OmniDB -d /path/to/other/dir                  # Linux
+OmniDB.exe -d C:\path\to\other\dir              # Windows</code></pre>
+<p>Adresář už musí existovat; nový prázdný adresář se při prvním použití připraví automaticky.
+Uložená hesla jsou šifrována klíčem uloženým v úložišti tajných údajů operačního systému — viz
+<a href="security.html">Zabezpečení a víceuživatelský server</a>.</p>
+<h4>Panel nabídek</h4>
+<ul>
+<li><strong>OmniDB</strong>: <em>O aplikaci OmniDB</em>, <em>Nastavení…</em> (Cmd/Ctrl-,),
+<em>Importovat data z předchozí instalace…</em> (pouze sandboxovaná sestava pro macOS, viz níže) a
+<em>Ukončit OmniDB</em> (Cmd/Ctrl-Q).</li>
+<li><strong>Edit</strong> a <strong>Window</strong>: standardní nabídky operačního systému
+(zpět/vyjmout/kopírovat/vložit, minimalizovat, zvětšit, celá obrazovka, …).</li>
+<li><strong>Zobrazit</strong>: přechod do sekce levé lišty — <em>Úvod</em>
+(Cmd/Ctrl-Shift-W), <em>Připojení</em> (Cmd/Ctrl-Shift-C), <em>Databáze</em>
+(Cmd/Ctrl-Shift-D), <em>Oznámení</em> (Cmd/Ctrl-Shift-N), <em>Připojení uživatelé</em>
+(Cmd/Ctrl-Shift-U), <em>Snippety</em> (Cmd/Ctrl-Shift-S) — a navíc <em>Přepnout strom databáze</em>
+(Cmd/Ctrl-B) a <em>Přepnout panel vlastností/DDL</em> (Cmd/Ctrl-Shift-B).</li>
+<li><strong>Nápověda</strong>: <em>Začínáme</em> (interaktivní průvodce), <em>Klávesové
+zkratky</em> (otevře Nastavení v kategorii Klávesové zkratky), <em>Navštívit omnidb.net</em> a
+<em>Repozitář na GitHubu</em>.</li>
+</ul>
+<p>Nabídky OmniDB, Zobrazit a Nápověda se zobrazují v jazyce zvoleném v
+<a href="settings_and_languages.html">Nastavení &gt; Vzhled &gt; Jazyk</a> a přepnou se, jakmile ho
+změníte; dokud se nenačte první stránka, řídí se jazykem operačního systému. Standardní nabídky
+Edit a Window zůstávají v angličtině. Titulek okna ukazuje
+sekci, ve které se nacházíte (například <em>OmniDB - Snippety</em>).</p>
+<h4>Velikost a poloha okna</h4>
+<p>Při úplně prvním spuštění se okno otevře maximalizované. Poté se vždy otevře s velikostí,
+polohou a stavem (maximalizované/obnovené), jaké mělo při posledním zavření.</p>
+<h4>Odkazy a soubory</h4>
+<p>Odkazy na externí stránky (položky <em>Doc: …</em> ve stromu databáze, odkazy na úvodní
+stránce, nabídka Nápověda) se otevírají ve vašem výchozím webovém prohlížeči. Exporty a
+<em>Exportovat jako DBML</em> otevírají nativní dialog <em>Uložit jako</em>, takže rovnou vyberete,
+kam se soubor uloží — viz <a href="writing_sql_queries.html">Psaní SQL dotazů</a>.</p>
+<h4>macOS: sandbox, předchozí data a <code>.pgpass</code></h4>
+<p>Aplikace pro macOS běží v App Sandboxu, který jí přiděluje vlastní soukromou domovskou složku.
+To má dva důsledky:</p>
+<ul>
+<li><strong>Data ze starší, nesandboxované instalace</strong> v <code>~/.omnidb</code> nejsou
+automaticky vidět. Při prvním spuštění bez jakýchkoli dat nabídne OmniDB jejich import — zvolte
+<em>Import…</em> a vyberte svou předchozí složku <code>.omnidb</code>, nebo <em>Not Now</em>
+(Teď ne; tento dialog je zatím pouze anglicky). Totéž můžete udělat i později přes
+<em>OmniDB &gt; Importovat data z předchozí instalace…</em>.</li>
+<li><strong><code>~/.pgpass</code></strong> nelze číst, dokud to nepovolíte. Pokud připojení
+PostgreSQL nemá uložené heslo, dialog pro zadání hesla nabídne <em>Udělit přístup k
+.pgpass…</em>: jednou vyberte svůj soubor <code>.pgpass</code> (v tomto dialogu se zobrazují i
+skryté soubory) a OmniDB si oprávnění zapamatuje, takže každé další připojení PostgreSQL v něm
+heslo vyhledá, stejně jako by to udělal <code>psql</code>. Stejný přístup udělí i
+<em>Importovat připojení ze souboru .pgpass…</em> v sekci Připojení. Viz
+<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>.</li>
+</ul>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

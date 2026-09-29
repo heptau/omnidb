@@ -50,13 +50,13 @@ func firebirdTemplateSelect(db *sql.DB, table, indentUnit string) (string, error
 	}
 	names := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("firebird", c.Name)
 	}
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
 	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
-	sb.WriteString(fmt.Sprintf("\nFROM %s AS t", table))
+	sb.WriteString(fmt.Sprintf("\nFROM %s AS t", quotedSchemaTableRef("firebird", "", table)))
 
 	_, pkCols, err := firebirdFirstPrimaryKey(db, table)
 	if err != nil {
@@ -64,7 +64,7 @@ func firebirdTemplateSelect(db *sql.DB, table, indentUnit string) (string, error
 	}
 	if len(pkCols) > 0 {
 		sb.WriteString("\nORDER BY t.")
-		sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
+		sb.WriteString(strings.Join(quoteTemplateColumns("firebird", pkCols), ",\n"+indentUnit+"t."))
 	}
 	return sb.String(), nil
 }
@@ -88,13 +88,13 @@ func firebirdTemplateInsert(db *sql.DB, table, indentUnit string) (string, error
 	values := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("firebird", c.Name)
 		values[i] = "?"
 		comments[i] = firebirdColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("INSERT INTO %s (\n", table))
+	sb.WriteString(fmt.Sprintf("INSERT INTO %s (\n", quotedSchemaTableRef("firebird", "", table)))
 	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
 	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
@@ -120,10 +120,10 @@ func firebirdTemplateUpdate(db *sql.DB, table, indentUnit string) (string, error
 	cores := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		cores[i] = c.Name + " = ?"
+		cores[i] = quoteEditDataColumn("firebird", c.Name) + " = ?"
 		comments[i] = firebirdTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
 	}
-	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", table, formatTemplateColumnList(cores, comments, indentUnit)), nil
+	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", quotedSchemaTableRef("firebird", "", table), formatTemplateColumnList(cores, comments, indentUnit)), nil
 }
 
 func firebirdColumnComment(name, dataType string, isPK bool, nullable string) string {

@@ -8,6 +8,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"runtime/debug"
 	"strings"
 	"time"
 
@@ -278,7 +279,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			}
 			if notifySupportedTechnology(info.Technology) {
 				applyRememberedPassword(r, q.VDBIndex.String(), info)
-				go runNotifyStart(upstream, cookie, clientID, q, body.VContextCode, info)
+				goRecover(func() { runNotifyStart(upstream, cookie, clientID, q, body.VContextCode, info) })
 			} else {
 				// The panel already refuses to start listening for these
 				// engines (it shows an explicit "not supported" tab instead),
@@ -318,7 +319,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			applyActiveDatabaseOverride(r, q.VTabID, info)
 
 			lang := i18n.ResolveLanguage(who.Language, r.Header.Get("Accept-Language"))
-			go runConsole(lang, upstream, cookie, clientID, q, body.VContextCode, info, who.UserID)
+			goRecover(func() { runConsole(lang, upstream, cookie, clientID, q, body.VContextCode, info, who.UserID) })
 			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("{}"))
 			return
@@ -339,7 +340,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
 			applyActiveDatabaseOverride(r, q.VTabID, info)
 
-			go runEditDataFetch(upstream, cookie, q, body.VContextCode, info)
+			goRecover(func() { runEditDataFetch(upstream, cookie, q, body.VContextCode, info) })
 			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("{}"))
 			return
@@ -360,7 +361,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 			applyRememberedPassword(r, q.VDBIndex.String(), info)
 			applyActiveDatabaseOverride(r, q.VTabID, info)
 
-			go runEditDataSave(upstream, cookie, q, body.VContextCode, info)
+			goRecover(func() { runEditDataSave(upstream, cookie, q, body.VContextCode, info) })
 			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("{}"))
 			return
@@ -399,7 +400,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				return
 			}
 
-			go runQueryExport(upstream, cookie, q, format, body.VContextCode, info, who)
+			goRecover(func() { runQueryExport(upstream, cookie, q, format, body.VContextCode, info, who) })
 			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("{}"))
 			return
@@ -435,7 +436,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 				return
 			}
 
-			go runNativeQueryAllData(upstream, cookie, clientID, q, body.VContextCode)
+			goRecover(func() { runNativeQueryAllData(upstream, cookie, clientID, q, body.VContextCode) })
 			w.Header().Set("Content-Type", "application/json")
 			w.Write([]byte("{}"))
 			return
@@ -455,7 +456,7 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 
 		applyRememberedPassword(r, q.VDBIndex.String(), info)
 		applyActiveDatabaseOverride(r, q.VTabID, info)
-		go runNativeQuery(upstream, cookie, clientID, q, body.VContextCode, info, who.UserID)
+		goRecover(func() { runNativeQuery(upstream, cookie, clientID, q, body.VContextCode, info, who.UserID) })
 
 		// Matches create_request's own contract: the real result always
 		// arrives later via /long_polling/, this response body is ignored
@@ -830,4 +831,19 @@ func handleClearClient() http.HandlerFunc {
 		w.Header().Set("Content-Type", "application/json")
 		w.Write([]byte("{}"))
 	}
+}
+
+// goRecover runs fn on its own goroutine, turning a panic into a log line
+// instead of a crash: an unrecovered panic in any goroutine terminates the
+// whole process — every user's sessions and tabs with it — and these
+// workers all process request-supplied data.
+func goRecover(fn func()) {
+	go func() {
+		defer func() {
+			if r := recover(); r != nil {
+				log.Printf("long-polling worker panic: %v\n%s", r, debug.Stack())
+			}
+		}()
+		fn()
+	}()
 }

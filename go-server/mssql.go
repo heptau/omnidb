@@ -49,10 +49,15 @@ func mssqlDSN(info *ConnectionInfo) string {
 		port = "1433"
 	}
 	dsn := url.URL{
-		Scheme:   "sqlserver",
-		User:     url.UserPassword(info.Username, info.Password),
-		Host:     info.Server + ":" + port,
-		RawQuery: "database=" + url.QueryEscape(info.Database) + "&encrypt=disable",
+		Scheme: "sqlserver",
+		User:   url.UserPassword(info.Username, info.Password),
+		Host:   info.Server + ":" + port,
+		// No encrypt parameter: go-mssqldb's default then TLS-encrypts at
+		// least the login packet. The previous "encrypt=disable" sent the
+		// password over the wire in SQL Server's trivially reversible
+		// login-packet obfuscation. Full-session TLS can be requested via a
+		// connection string (encrypt=true/strict).
+		RawQuery: "database=" + url.QueryEscape(info.Database),
 	}
 	return dsn.String()
 }

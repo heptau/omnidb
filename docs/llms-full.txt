@@ -7,7 +7,7 @@ URL: https://www.omnidb.net/en/introduction.html
 
 **Full Content:**
 
-OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle, MySQL, MS SQL Server and Firebird. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. OmniDB is actively developed, automatically tested on a variety of databases and browsers and comes with full documentation.
+OmniDB is an open source browser-based app designed to access and manage many different Database Management systems: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. OmniDB is actively developed, automatically tested on a variety of databases and browsers and comes with full documentation.
 
 Since early development, OmniDB was designed as a browser-based app. Consequently, it runs in any browser, from any operational system. It can be accessed by several computers and multiple users, each one of them with his/her own group of connections. It also can be hosted in any operational system, without the need of install any dependencies. We will see further details on installation in the next chapters.
 
@@ -15,7 +15,9 @@ OmniDB's main objective is to offer an unified workspace with all functionalitie
 
 Despite this, OmniDB is built with simplicity in mind, designed to be a fast and lightweight browser-based application. Long-running work — queries, procedures, and monitoring — is executed in the background and streamed back to the browser as it completes, so the user can keep working across multiple databases and multiple hosts at the same time without blocking on any single one.
 
-OmniDB is also secure. All OmniDB user data are stored encrypted, and no database password is stored at all. When the user first connects to a database, OmniDB asks for the password. This password is encrypted and stored in memory for a specific amount of time. When this time expires, OmniDB asks the password again. This ensures maximum security for the database OmniDB is connecting to.
+OmniDB is also secure. Database passwords you choose to save are encrypted before they are stored, with a key kept in your operating system's secret store; if you prefer not to store a password at all, OmniDB asks for it when you connect and keeps it only in memory, for a limited time. A multi-user server adds sign-in protection and restricts what users can reach on the server machine itself — see Security and Multi-user Server.
+
+Next to the SQL editor and the database tree, the workspace offers a live monitoring dashboard, a list of connected users, a notification listener (LISTEN/NOTIFY and friends), a role and privilege browser for PostgreSQL, snippets, data export to many formats and SSH terminals. The interface is available in English, Czech, German, Spanish, French, Italian, Portuguese, Japanese and Korean — see Settings and Languages.
 
 **History**
 
@@ -24,7 +26,7 @@ OmniDB's creators, Rafael Thofehrn Castro and William Ivanski, worked in a compa
 OmniDB's first version was presented as an undergrad final project in the Computer Science Course from the Federal University of Paraná, in Brazil. The objective was to trace a common line between popular DBMS, and to study deeply their metadata. The result was a tool written in ASP.NET/C# capable of connecting and identifying the main structures (tables, keys, indexes and constraints), in a generic way, from several DBMS:
 
 - Firebird
-- MariaDB / MySQL
+- MariaDB/MySQL
 - Oracle
 - PostgreSQL
 - SQLite
@@ -32,7 +34,7 @@ OmniDB's first version was presented as an undergrad final project in the Comput
 
 OmniDB's first version also allowed the conversion between all DBMSs supported by the tool. This feature was developed to be user friendly, requiring just a few steps: the user needs to select a source connection, the structures that will be converted (just tables and all their structures, along with their data) and the target connection.
 
-In 2025-2026, the project was revived with major releases (3.1.x), focusing on modernizing the codebase, improving security, and adding full support for modern operating systems like macOS Silicon, along with a complete documentation overhaul. This revival culminated in a full rewrite of the backend from Python/Django to Go (3.6.x), removing the Python runtime entirely and shipping a single native binary for every platform. See Legacy Features & History for the full version timeline and what changed along the way.
+In 2025–2026, the project was revived with major releases (3.1.x), focusing on modernizing the codebase, improving security, and adding full support for modern operating systems like macOS Silicon, along with a complete documentation overhaul. This revival culminated in a full rewrite of the backend from Python/Django to Go (3.6.x), removing the Python runtime entirely and shipping a single native binary for every platform. See Legacy Features & History for the full version timeline and what changed along the way.
 
 ---
 
@@ -50,25 +52,29 @@ Both application and server can be installed on the same machine.
 
 **OmniDB Application**
 
-Important: The original repository (https://github.com/OmniDB/OmniDB/releases) contains only old versions (up to ~2020) and is no longer maintained — see Legacy Features & History for what changed since.
+Important: The original repository https://github.com/OmniDB/OmniDB/releases contains only old versions (up to ~2020) and is no longer maintained — see Legacy Features & History for what changed since.
 
-For current versions use the revived project's releases page (https://github.com/heptau/omnidb/releases). Since the Go rewrite, every release is a single self-contained archive per platform — no installer, no separate runtime to install first:
+For current versions use the revived project's releases page (https://github.com/heptau/omnidb/releases). Since the Go rewrite, every release is a single self-contained archive per platform (plus an optional installer for Windows) — no separate runtime to install first:
 
-- macOS (Apple Silicon or Intel): `OmniDB-<version>-macOS-osx-arm64.zip` / `OmniDB-<version>-macOS-osx-x64.zip`
-- Linux x64: `OmniDB-<version>-linux-x64.tar.gz`
-- Windows x64: `OmniDB-<version>-win-x64.zip`
+- macOS (Apple Silicon or Intel): `OmniDB-macOS-osx-arm64.zip` / `OmniDB-macOS-osx-x64.zip`
+- Linux x64: `OmniDB-linux-x64.tar.gz`
+- Windows x64: `OmniDB-win-x64.zip`, or the installer `OmniDB-win-x64-setup.exe` (the same app, with a Start-menu entry and an uninstaller; this is also what winget installs)
 
-Unzip (or untar) the archive for your platform and run the OmniDB app/binary inside — that's the whole install. Linux and Windows builds are produced by CI for every release but haven't yet been verified on real hardware, unlike the macOS build; if you hit a platform-specific issue on one of those, please open an issue.
+Unzip (or untar) the archive for your platform and run the `OmniDB` app/binary inside — that's the whole install. Linux and Windows builds are produced by CI for every release but haven't yet been verified on real hardware, unlike the macOS build; if you hit a platform-specific issue on one of those, please open an issue.
 
 **Installation via Homebrew (macOS only – recommended)**
 
 For macOS users who prefer using a package manager, OmniDB is available through a custom Homebrew tap:
 
-    # Install the latest version:
-    brew install --cask heptau/tap/omnidb
+```
+# Install the latest version:
+brew install --cask heptau/tap/omnidb
+```
 
-    # To upgrade later:
-    brew upgrade heptau/tap/omnidb
+```
+# To upgrade later:
+brew upgrade heptau/tap/omnidb
+```
 
 Homebrew will automatically download the correct ZIP for your architecture (Apple Silicon or Intel), unzip it and place `OmniDB.app` into your Applications folder.
 
@@ -78,31 +84,47 @@ The cask definition is maintained here: heptau/homebrew-tap – omnidb.rb (https
 
 For Windows users who prefer using a package manager, OmniDB is available through the Windows Package Manager (https://learn.microsoft.com/en-us/windows/package-manager/winget/), built into Windows 10 and 11:
 
-    # Install the latest version:
-    winget install heptau.OmniDB
+```
+# Install the latest version:
+winget install heptau.OmniDB
+```
 
-    # To upgrade later:
-    winget upgrade heptau.OmniDB
+```
+# To upgrade later:
+winget upgrade heptau.OmniDB
+```
 
-The manifest is maintained here: microsoft/winget-pkgs (https://github.com/microsoft/winget-pkgs/tree/master/manifests/h/heptau/OmniDB)
+The manifest is maintained here: microsoft/winget-pkgs (https://github.com/microsoft/winget-pkgs/tree/master/manifests/h/heptau/OmniDB).
 
 **Direct download (all platforms)**
 
-Open the latest release (https://github.com/heptau/omnidb/releases/latest) and download the archive matching your OS/architecture from the list above, from its Assets section. Release asset filenames include the version number, so there's no fixed "always latest" URL to link to directly — always go through the releases page itself.
+- macOS (Apple Silicon) (https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip)
+- macOS (Intel) (https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip)
+- Linux (x64) (https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz)
+- Windows (x64) (https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip)
+- Windows (x64) installer (https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64-setup.exe)
 
-Unzip the archive for your platform and launch the app the normal way: on macOS, drag `OmniDB.app` into Applications and open it from Launchpad/Spotlight or `open -a OmniDB`; on Linux, run the `OmniDB` binary directly; on Windows, run `OmniDB.exe`.
+These links always point to the latest release. For older versions, checksums, and release notes, see the releases page (https://github.com/heptau/omnidb/releases).
+
+Unzip the archive for your platform and launch the app the normal way: on macOS, drag `OmniDB.app` into Applications and open it from Launchpad/Spotlight or `open -a OmniDB`; on Linux, run the `OmniDB` binary directly; on Windows, run `OmniDB.exe` (or the installer).
+
+See Desktop App for where the app keeps its data, its menu bar and keyboard shortcuts, and macOS specifics such as importing data from an earlier installation.
 
 **OmniDB Server**
 
 The same release archive also contains `omnidb-server` — a separate, headless binary alongside the desktop app (the desktop app actually launches this same binary internally, as a child process, forcing app mode). Run it directly for the browser-accessible server mode, with no desktop shell involved:
 
-    user@machine:~$ ./omnidb-server
-    omnidb-server: listening on 127.0.0.1:52149 — open http://127.0.0.1:52149/omnidb_login/ in your browser
+```
+user@machine:~$ ./omnidb-server
+omnidb-server: listening on 127.0.0.1:52149 — open http://127.0.0.1:52149/omnidb_login/ in your browser
+```
 
 By default OmniDB listens on `127.0.0.1` only and picks a free port automatically. You can specify both explicitly:
 
-    user@machine:~$ ./omnidb-server -p 8080 -H 0.0.0.0
-    omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_login/ in your browser
+```
+user@machine:~$ ./omnidb-server -p 8080 -H 0.0.0.0
+omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_login/ in your browser
+```
 
 See Deploying omnidb-server for the full set of options and recommended deployment setups (in particular, why exposing `-H 0.0.0.0` directly to the internet without a reverse proxy in front is discouraged — there's no built-in TLS support).
 
@@ -112,13 +134,56 @@ Neither OmniDB app nor server require any additional software to connect to Orac
 
 **OmniDB User Database**
 
-Upon first run, both server and app create a file `~/.omnidb/omnidb-app/omnidb.db` (for OmniDB app) or `~/.omnidb/omnidb-server/omnidb.db` (for OmniDB server) in the user home directory, if it does not exist yet — along with a default `admin`/`admin` superuser account, ready to sign in with immediately. This file is also called the user database and contains all users, connections, and other application data. If it already exists (e.g. after an upgrade), OmniDB uses it as-is — it is never overwritten or reset automatically.
+Upon first run, both server and app create a file `~/.omnidb/omnidb-app/omnidb.db` (for OmniDB app) or `~/.omnidb/omnidb-server/omnidb.db` (for OmniDB server) in the user home directory, if it does not exist yet — along with an `admin` superuser account. The desktop app signs in as this user automatically; in server mode its password is randomly generated and printed once to the server's log output (the line containing `initial login: admin / …`). This file is also called the user database and contains all users, connections, and other application data. If it already exists (e.g. after an upgrade), OmniDB uses it as-is — it is never overwritten or reset automatically.
 
 **OmniDB in the browser**
 
-Now that the web server is running, you may access OmniDB browser-based app on your favorite browser. Type in address bar: `localhost:8000` and hit `Enter`. If everything went fine, you shall see a page like this:
+Once `omnidb-server` is running, open the address it printed on startup (for example `http://127.0.0.1:52149/omnidb_login/`) in your favorite browser. You will see OmniDB's sign-in page; sign in as `admin` with the one-time password from the log. In the next chapters, we will see how to create users and connections and how to work with OmniDB. The desktop app skips this step entirely — it opens the workspace directly.
 
-Now you know that OmniDB is running correctly. In the next chapters, we will see how to login for the first time, how to create an user and to utilize OmniDB.
+---
+
+# Desktop App
+URL: https://www.omnidb.net/en/desktop_app.html
+
+**Full Content:**
+
+The desktop app (`OmniDB.app` on macOS, `OmniDB`/`OmniDB.exe` on Linux and Windows) is a small native window around the same OmniDB interface the server version serves to browsers. It starts its own private copy of `omnidb-server` in the background, listening on the local machine only, and signs you in automatically as the built-in `admin` user — there is no sign-in page, no Account icon and nothing to configure. See Installation for how to get it.
+
+**Where the data lives**
+
+Saved connections, snippets, settings, query history and so on are kept in `~/.omnidb/omnidb-app/` (the `omnidb.db` user database, plus a `temp` folder for exports and the saved window position). To keep a separate set of data — for example a throwaway one for testing — start the app with a different home directory:
+
+```
+open -a OmniDB --args -d /path/to/other/dir    # macOS
+./OmniDB -d /path/to/other/dir                  # Linux
+OmniDB.exe -d C:\path\to\other\dir              # Windows
+```
+
+The directory must already exist; a new, empty one is set up automatically on first use. Saved passwords are encrypted with a key kept in the operating system's secret store — see Security and Multi-user Server.
+
+**The menu bar**
+
+- OmniDB: About OmniDB, Settings… (Cmd/Ctrl-,), Import Data from Previous Installation… (sandboxed macOS build only, see below) and Quit OmniDB (Cmd/Ctrl-Q).
+- Edit and Window: the operating system's standard menus (undo/cut/copy/paste, minimize, zoom, full screen, …).
+- View: jump to a section of the left rail — Welcome (Cmd/Ctrl-Shift-W), Connections (Cmd/Ctrl-Shift-C), Database (Cmd/Ctrl-Shift-D), Notify (Cmd/Ctrl-Shift-N), Connected Users (Cmd/Ctrl-Shift-U), Snippets (Cmd/Ctrl-Shift-S) — plus Toggle Database Tree (Cmd/Ctrl-B) and Toggle Properties/DDL Panel (Cmd/Ctrl-Shift-B).
+- Help: Getting Started (the interactive tutorial), Keyboard Shortcuts (opens Settings on the Shortcuts category), Visit omnidb.net and GitHub Repository.
+
+The OmniDB, View and Help menus are shown in the language chosen under Settings > Appearance > Language and switch as soon as you change it; before the first page has loaded they follow the operating system's language. The standard Edit and Window menus stay in English. The window title shows the section you are in (for example OmniDB - Snippets).
+
+**Window size and position**
+
+On its very first launch the window opens maximized. After that it reopens with the size, position and maximized/restored state it had when you last closed it.
+
+**Links and files**
+
+Links to external pages (the Doc: … entries of the database tree, the Welcome page's links, the Help menu) open in your default web browser. Exports and Export as DBML open the native Save As dialog, so you choose where the file goes directly — see Writing SQL Queries.
+
+**macOS: sandbox, previous data and `.pgpass`**
+
+The macOS app runs in the App Sandbox, which gives it its own private home folder. Two consequences:
+
+- Data from an earlier, non-sandboxed install in `~/.omnidb` is not visible automatically. On the first launch without any data, OmniDB offers to import it — choose Import… and pick your previous `.omnidb` folder, or Not Now. You can do the same later with OmniDB > Import Data from Previous Installation….
+- `~/.pgpass` is not readable until you allow it. When a PostgreSQL connection has no stored password, the password prompt offers Grant access to .pgpass…: pick your `.pgpass` file once (hidden files are shown in that dialog) and OmniDB remembers the permission, so every later PostgreSQL connection looks its password up there, just as `psql` would. Import connections from .pgpass… in the Connections section grants the same access. See Creating Users and Connections.
 
 ---
 
@@ -129,19 +194,21 @@ URL: https://www.omnidb.net/en/creating_users_and_connections.html
 
 **Logging in as user admin**
 
-OmniDB comes only with the user admin. If you are using the server version, the first thing to do is sign in as admin; the default password is admin. The desktop app has no sign-in at all — it runs as a single local user, so everything about user management below simply does not appear there.
+OmniDB comes only with the user admin. If you are using the server version, the first thing to do is sign in as admin with the one-time random password that `omnidb-server` printed to its log output when it created a new app database (the line containing `initial login: admin / …`), and then change it under Settings. If that password gets lost, reset it with `omnidb-server --set-password admin`. After 10 failed sign-in attempts for the same username or client IP address, sign-in is locked for 15 minutes. The desktop app has no sign-in at all — it runs as a single local user, so everything about user management below simply does not appear there.
 
 **Finding your way around**
 
-The whole workspace is reached from the vertical icon rail on the left edge of the window: Welcome, Connections (the plug), Database, Notify and Snippets at the top, and Getting Started, Account (server version only) and Settings (the cog) at the bottom.
+The whole workspace is reached from the vertical icon rail on the left edge of the window: Welcome, Connections (the plug), Database, Monitoring, Notify, Permissions, Connected Users and Snippets at the top, and Getting Started, Account (server version only) and Settings (the cog) at the bottom. Hovering an icon shows its name. See Managing Databases for how the sections work together, and Settings and Languages for the interface language and other preferences.
 
 **Creating another user**
 
 Open Settings at the bottom of the rail and pick the Account category, then click Manage Users. Only a super user has that button — a regular user's Settings has no Account section at all.
 
-The User management window lists the existing users. Click Add new user (the person-with-plus icon) to insert a new, blank user row, shown as (pending info) until you fill it in. Fill in the username and password, check Super User if the new user should be one, and click Save. You can create as many users as you want, edit existing ones, and delete a user by clicking the red cross in the actions column.
+The User management window lists the existing users. Click Add new user (the person-with-plus icon) to insert a new, blank user row, shown as (pending info) until you fill it in. Fill in the User name and New password, switch on Superuser? if the new user should be one, and click Save. You can create as many users as you want, edit existing ones, and delete a user by clicking the red cross in the actions column.
 
 To sign out, click the Account icon (the person, near the bottom of the rail) and then Sign out.
+
+Deleting a user, or taking away superuser status, takes effect immediately, including for that user's sessions that are already open.
 
 **The Connections section**
 
@@ -151,7 +218,9 @@ Each row in the list shows the database engine's icon, the connection's name, an
 
 **Creating connections**
 
-OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite, plus a Terminal connection type that opens an SSH shell instead of a database.
+OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite, plus a Terminal connection type that opens an SSH shell instead of a database. The Connection Type list shows PostgreSQL first, then the others alphabetically, and Terminal last.
+
+For SQLite, the connection points at a database file (on the machine where `omnidb-server` runs); if the file does not exist yet, Test Connection says so and the file is created when you first use the connection. On a multi-user server, SQLite connections are reserved for superusers, and some PostgreSQL connection-string parameters that read files on the server are rejected — see Security and Multi-user Server.
 
 Click the + button under the list to create a connection. Type its name into the heading of the form on the right, choose the Connection Type, and fill in the Host Connection Info card: Server, Port, Database, User and, optionally, User Password. Instead of those individual fields you can fill in a single Connection string (for example `postgresql://postgres@localhost:5432/postgres`) and leave the rest blank. When you are done, click Save in the top right corner of the form.
 
@@ -161,14 +230,14 @@ Test Connection next to it tries the connection without opening it and reports e
 
 The User Password field is optional, and the two choices behave differently:
 
-- Filled in: the password is saved into OmniDB's own configuration database and used automatically every time you open the connection. It is stored as plain text in that local database file, so treat the file as a secret — anyone who can read it can read the passwords in it.
-- Left blank: nothing is stored, and OmniDB asks for the password when you open the connection. What you type is kept only in the server's session memory for that connection, and is gone when the session ends.
+- Filled in: the password is saved into OmniDB's own configuration database and used automatically every time you open the connection. It is encrypted (AES-256-GCM) before being written to that database file, using a key kept in your operating system's own secret store (Keychain on macOS, Credential Manager on Windows, Secret Service on Linux) rather than inside the file itself — so the database file alone is no longer enough to read the passwords in it. If no such secret store is available, OmniDB falls back to a key file kept alongside the database.
+- Left blank: nothing is stored, and OmniDB asks for the password when you open the connection. What you type is kept only in the server's memory, for your session and that connection, for 30 minutes — after that OmniDB asks again.
 
 For PostgreSQL, OmniDB also looks the password up in your `.pgpass` file at connect time, matching the same entry libpq would, so a connection with no stored password can still open without a prompt. In the sandboxed macOS app the password prompt offers Grant access to .pgpass…: you point at the file once and every later connection resolves its own password from it.
 
 If the database refuses the attempt, the prompt stays on screen showing the error OmniDB got (fe_sendauth: no password supplied, an authentication failure, a server that is down, and so on), so you can correct the password and try again.
 
-**Importing connections from .pgpass**
+**Importing connections from `.pgpass`**
 
 The file-import icon next to the + and − buttons reads a `.pgpass` file and creates one PostgreSQL connection per concrete line in it, as a bare `postgresql://user@host:port/db` connection string with no password stored — the point being to keep authenticating from that file rather than copying passwords into OmniDB. Wildcard (`*`) lines are skipped, and so is any line that already matches an existing connection.
 
@@ -176,7 +245,7 @@ The file-import icon next to the + and − buttons reads a `.pgpass` file and cr
 
 - Order: drag a row to any slot in the list. The arrangement is stored per user and survives a reload and a restart. Connections you create later are added at the bottom.
 - Groups: the selector at the top of the sidebar filters the list down to one group. + Group creates a group, and the … button next to it offers Rename, Manage Connections (turns the rows into checkboxes so you can pick which connections belong to the group, then Save changes) and Delete.
-- Public connections: the Public connection? switch in the form makes a connection usable by every other OmniDB user. The Public (n) switch at the bottom of the sidebar shows or hides other users' public connections in your own list.
+- Public connections: the Public connection? switch in the form makes a connection usable by every other OmniDB user. Only its owner can edit it; other users never see its saved password (a password inside its connection string is masked for them), and their Test Connection always tests the stored server. The Public (n) switch at the bottom of the sidebar shows or hides other users' public connections in your own list.
 - Environment: tagging a connection Production, UAT, Development or Archive colors its dot in the list and the edge of its open tab — mainly a safety cue, so reaching for the wrong tab is visibly obvious.
 
 **Opening a connection**
@@ -187,13 +256,13 @@ Click Connect in the form, or simply double-click a row in the list, and OmniDB 
 
 OmniDB allows the user to connect to any remote database through SSH tunnels. Tick Use SSH tunnel in the connection's own form — that enables the fields below it:
 
-- SSH Server: The server you are connecting to via SSH;
+- SSH Server: The server you are connecting to via SSH. Its host key must already be in the `~/.ssh/known_hosts` file of the operating-system user running OmniDB, otherwise the tunnel is refused — see Security and Multi-user Server;
 - SSH Port: The port of the SSH server (default is 22, but it can be any port number);
 - SSH User: The operating system user name you use to connect to the SSH server;
-- Password / Passphrase: The password of the operating system user (or the passphrase for the key below). Leave it blank and OmniDB asks for it each time the tunnel is opened, without storing it. If you fill the field SSH Key Text File, a password is optional;
-- SSH Key Text File: The contents of the local private SSH key you can use to connect to the SSH server. OmniDB reads the file you pick and stores its text, not the file itself. If you fill this field, then you can also fill the field Password / Passphrase, but in this case it will be the passphrase for the SSH private key.
+- Password/Passphrase: The password of the operating system user (or the passphrase for the key below). Leave it blank and OmniDB asks for it each time the tunnel is opened, without storing it. If you fill the field SSH Key Text File, a password is optional;
+- SSH Key Text File: The contents of the local private SSH key you can use to connect to the SSH server. OmniDB reads the file you pick and stores its text, not the file itself. If you fill this field, then you can also fill the field Password/Passphrase, but in this case it will be the passphrase for the SSH private key.
 
-Everything you do store here — the SSH password, the passphrase and the key text — is kept in the same local OmniDB configuration database as the database passwords, and in the same plain form.
+Everything you do store here — the SSH password, the passphrase and the key text — is kept in the same local OmniDB configuration database as the database passwords, encrypted the same way.
 
 While using SSH tunnels, you also need to fill all database fields accordingly. But instead of being relative to the OmniDB server, they will be relative to the SSH Server. This can be done in 2 scenarios as explained below.
 
@@ -207,48 +276,119 @@ Here the database Server needs to be `192.168.0.10`, as it is the relative addre
 
 ---
 
+# Settings and Languages
+URL: https://www.omnidb.net/en/settings_and_languages.html
+
+**Full Content:**
+
+Every OmniDB user has their own preferences: interface language, theme, font size, export options, autocomplete categories, SQL formatting style and keyboard shortcuts. They are all set in Settings and stored per user in OmniDB's user database, so they follow you to any browser or machine where you sign in to the same OmniDB server.
+
+**Opening Settings**
+
+Click the cog icon at the bottom of the left rail. In the desktop app you can also use the menu bar's OmniDB > Settings… (Cmd-, on macOS, Ctrl-, elsewhere), and Help > Keyboard Shortcuts opens Settings directly on the Shortcuts category.
+
+Settings is a two-pane view: categories on the left (Appearance, Export, Autocomplete, Formatting, Shortcuts, Password and, for superusers only, Account) and the selected category's fields on the right. There is no Save button — every field is saved as soon as you change it (text fields shortly after you stop typing). The only exception is the password, which has its own Change Password button.
+
+**Appearance**
+
+- Language: the language of the whole user interface — Automatic, Čeština, Deutsch, English, Español, Français, Italiano, Português, 日本語 (Japanese) or 한국어 (Korean). Automatic (the default) follows the language your browser or operating system asks for, and falls back to English if that language is not available. Changing the language reloads the page. The same applies to the sign-in page, and in the desktop app to the menu bar (see Desktop App). Names of database engines, file formats and character encodings, SQL keywords and messages coming from the database server itself are not translated.
+- Theme: Automatic (follows the operating system's light/dark setting, and switches live when it changes), Light or Dark.
+- Font Size: a slider from 10 to 20 (default 12) scaling the interface text; the current value is shown next to it.
+
+**Export**
+
+- CSV/TSV Encoding: the character encoding of CSV and TSV exports, grouped into Unicode, Windows codepages, ISO 8859, Cyrillic, East Asian, DOS, Mac and EBCDIC encodings. The default is UTF-8 with BOM, which spreadsheet applications such as Excel recognize as UTF-8 automatically.
+- CSV Delimiter: the field separator used for CSV exports (default `;`).
+
+See Writing SQL Queries for exporting query results.
+
+**Autocomplete**
+
+Autocomplete Suggestions chooses which categories the SQL editor's autocomplete offers: Keywords, Databases, Roles, Tablespaces, Schemas, Extensions, Tables, Views, Columns, Functions and Indexes (All/None toggle them all at once).
+
+**Formatting**
+
+These options control how Indent SQL (the formatter in Query tabs and the Indent button in Snippets) rewrites your SQL, and how the SQL templates generated from the database tree are laid out:
+
+- Indent Character: Spaces (default) or Tab;
+- Indent Size: 2, 3 or 4 (default 4);
+- Comma Style: Leading (, at line start) (default) or Trailing (, at line end);
+- Keyword Case: Preserve (default), UPPERCASE or lowercase;
+- Ruler Column: where every SQL editor draws its vertical guide line (24–999, default 128). It is a visual guide only; the formatter does not wrap lines at it.
+
+**Shortcuts**
+
+OmniDB's own keyboard shortcuts, in two groups. To change one, click its button, press the new key combination, or press Esc to cancel. The defaults are:
+
+| Action | Windows/Linux | Mac |
+|---|---|---|
+| Database (Query and Console tabs) |
+| Run Query | Alt-Q | Ctrl-Q |
+| Run Explain | Alt-W | Ctrl-W |
+| Run Explain Analyze | Alt-E | Ctrl-E |
+| Cancel Query | Alt-C | Ctrl-C |
+| Indent | Alt-S | Ctrl-S |
+| Autocomplete | Ctrl-Space | Option-Space |
+| New Inner Tab | Alt-I | Ctrl-I |
+| Remove Current Inner Tab | Alt-Shift-Q | Ctrl-Shift-Q |
+| Select Left Inner Tab | Alt-O | Ctrl-O |
+| Select Right Inner Tab | Alt-P | Ctrl-P |
+| Snippets (Snippets section) |
+| Save Snippet | Ctrl-S | Command-S |
+| New Snippet | Ctrl-N | Command-N |
+| Close Snippet Tab | Ctrl-W | Command-W |
+
+The text-editing shortcuts of the SQL editor itself (selection, multiple cursors, folding, find & replace, …) are listed separately in Editor Keyboard Shortcuts. The desktop app's menu bar adds shortcuts for switching sections (see Desktop App).
+
+**Password**
+
+Type the New Password and repeat it in Confirm; Change Password becomes available once both match. Changing your password signs out your other sessions. This category is only useful in server mode — the desktop app signs in automatically.
+
+**Account**
+
+Shown to superusers only: Manage Users opens the User management window where OmniDB users are added, edited and removed — see Creating Users and Connections.
+
+---
+
 # Managing Databases
 URL: https://www.omnidb.net/en/managing_databases.html
 
 **Full Content:**
 
-After creating a connection you can open it by clicking Connect in the Connections section, or by double-clicking it in the connection list. You will see that the connection will be represented by a kind of outer tab called a Connection Tab. And this whole area is called the Workspace Window.
+After creating a connection you can open it by clicking Connect in the Connections section, or by double-clicking it in the connection list. OmniDB then switches to the Database section and opens the connection in a new connection tab.
 
-**Sections of the Workspace window**
+**Sections of the workspace**
 
-This interface has several elements:
+The icon rail on the left edge of the window switches between the workspace's sections:
 
-- 1) Connections: Opens the Connections section, where connections are created, arranged and opened
-- 2) Outer Tabs: OmniDB lets you work with several databases at the same time. Each database will be accessible through an outer tab. Outer tabs also can host miscellaneous connection-independent features, like the Snippets feature
-- 3) Options: At the bottom of the icon rail. Account shows the current user, the version and Sign out (server version only), and Settings holds the user preferences plus, for a super user, Manage Users.
+- Welcome: the start page, with links to the documentation and the Getting started tutorial (see Additional Features);
+- Connections: where connections are created, arranged and opened (see Creating Users and Connections);
+- Database: the open connection tabs, each with its database tree and its Query and Console tabs — described in this chapter;
+- Monitoring, Notify, Permissions and Connected Users: tools that work on the connections open in the Database section (see Monitoring Dashboard, Notify, Roles and Permissions and Connected Users);
+- Snippets: your saved pieces of SQL (see Snippets);
+- at the bottom, Getting Started (the interactive tutorial), Account (server version only: the current user, the version and Sign out) and Settings (see Settings and Languages; superusers also find Manage Users there).
 
-**Connection Outer Tab**
+The Database, Monitoring, Notify, Permissions and Connected Users sections all show the same strip of open connection tabs at the top, with the same selection: select a connection in one of them and the others follow. Switching sections never closes a connection.
 
-The outer table named PostgreSQL - testdb has this name because of the alias (PostgreSQL) we put in the connection to the `testdb` database. This tab is a Connection Outer Tab. Notice the little tab with a cross besides the PostgreSQL - testdb outer tab. This allows you to create a new outer tab that will automatically be a Connection Outer Tab. However, the Snippet Outer Tab is fixed and will always be the first.
+**Connection tabs**
 
-A new Connection Outer Tab will always automatically point to the first connection on your list of database connections. Or, if you opened one from the Connections section, it will point to that connection. Observe the elements inside of this tab:
+Each open connection is a tab in that strip, named after the connection. A connection tagged with an environment (Production, UAT, Development, Archive) shows that environment's color on its tab, so a production connection is easy to tell apart. Hovering a tab shows its details (server, or connection string), and hovering reveals its close button (×). Tabs can be reordered by dragging them.
 
-- 1) Connection Selector: Shows all connections and lets the user select the current one
-- 2) Tree of Structures: Displays a hierarchical tree where you can navigate through the database elements
-- 3) Properties and DDL Panels: Display Properties and DDL about the currently selected node in the tree view
-- 4) Inner Tabs: Allows the user to execute actions in the current database. There are several kinds of inner tabs for the current database. By clicking on the last small tab with a cross, you can add a new tab. A new tab can be a Query Tab, Console Tab, Monitoring Dashboard or Backends
-- 5) Inner Tab Content: Can vary depending on the kind of inner tab. The figure shows a Query Tab and in this case the content will be an SQL Editor, with syntax highlight, autocomplete and find & replace
-- 6) Inner Tab Actions: Can vary depending on the kind of inner tab. For a Query Tab, they are Run, Indent SQL, Command History, Explain, Explain Analyze, Autocommit and Export Data
-- 7) Inner Tab Results: A Query Tab, after you click in the Execute Button or type the run shortcut (`Alt-Q`), will show a grid with the query results in the Data subtab. If the query calls a function that raises messages, those will be shown in the Messages subtab. If instead of Run you clicked in Explain or Explain Analyze, the explain plan for the query will be shown in the Explain subtab.
+The + at the end of the strip opens another connection: it lists your saved connections (grouped, if you use groups) and, under SSH Consoles, your terminal connections. Closing a connection tab ends its database sessions.
+
+Inside a connection tab you find:
+
+- The database tree on the left, where you navigate through the database objects. Right-clicking a node shows what you can do with it.
+- The Properties and DDL panels below the tree, showing the properties and the `CREATE` statement of the node selected in the tree. The tree and this panel can be resized by dragging their dividers and collapsed with the small toggle buttons on them.
+- Inner tabs on the right. The + at the end of the inner tab strip adds a Query Tab or a Console Tab; other actions (such as Edit Data on a table) open their own inner tabs.
+
+A Query Tab contains an SQL Editor with syntax highlighting, autocomplete and find & replace, a toolbar (Run, Run Statement at Cursor, Indent SQL, Command history, Explain, Explain Analyze, Autocommit, Export Data, …) and the results area below it with the Data, Messages and Explain subtabs. See Writing SQL Queries for the details.
 
 **Working with databases**
 
-Take a look at your connections selector. OmniDB always points to the first available connection but you can change it by clicking on the selector.
+Expand the root node of the tree (named after the database engine). The first time you use a connection whose password is not stored, OmniDB asks for it. A password typed into that prompt is remembered for 30 minutes of your session; after that the prompt appears again. After you type the correct password, the root node shows the server version and expands, showing the current database connection and also instance-wide elements — for PostgreSQL: Databases, Tablespaces, Roles and Replication Slots.
 
-Select the PostgreSQL connection. Now go to the tree right below the selector and click to expand the root node PostgreSQL.
-
-Bear in mind that every 30 minutes you keep without performing actions on the database, will trigger an Authentication popup, meaning that the password that OmniDB has encrypted and stored in memory is now expired. As explained before, this is important for your database security. After you type the correct password, you will see the PostgreSQL node now shows the PostgreSQL version and also was expanded, showing the current database connection and also instance wide elements: Databases, Tablespaces, Roles and Replication Slots.
-
-You can connect to a single PostgreSQL database, and using the same connection you can connect to other databases in the same PostgreSQL instance. The currently active database will be indicated below the connection selector.
-
-To connect to a different database, expand the node corresponding to that database. A popup will appear asking if you really want to change the active database.
-
-Click on Yes and OmniDB will change the active database to the database you choose. It will be reflected on the Active database indicator, and also on the outer tab name.
+You can connect to a single PostgreSQL database, and using the same connection you can connect to other databases in the same PostgreSQL instance. To switch, expand the node of another database: OmniDB asks whether you really want to change the active database, and on Yes makes it the active database of that connection tab.
 
 Go ahead and expand the Schemas node. You will see all schemas in the current database (in case of PostgreSQL, `TOAST` and temp schemas are not shown).
 
@@ -260,28 +400,26 @@ In order to view records inside a table, right click it and choose Data Actions 
 
 Notice that OmniDB opens a new SQL editor with a simple query to list table records. The records are displayed in a grid right below the editor. This grid can be controlled with keyboard as if you were using a spreadsheet manager. You can also copy data from single cells or block of cells (that can be selected with the keyboard or mouse) and paste on any spreadsheet manager.
 
-You can edit the query on the SQL editor, writing simple or more complex queries. To execute, click on the action button or hit the keystroke `Alt-Q`. If the results exceed 50 registers, then extra buttons Fetch More and Fetch All will appear. More details in the next chapters.
+You can edit the query on the SQL editor, writing simple or more complex queries. To execute, click on the Run button or press `Alt-Q` (`Ctrl-Q` on macOS). If the result has more rows than the first batch fetched, the buttons Fetch more and Fetch all appear. More details in the next chapters.
 
 **Working with multiple tabs inside the same connection**
 
-Inside a single connection, you can create several inner query tabs by clicking on the last little tab with a cross, and then choosing Query Tab.
+Inside a single connection, you can create several inner tabs by clicking on the + at the end of the inner tab strip, and then choosing Query Tab (or Console Tab).
 
-On OmniDB, you can execute several SQL statements and procedures in parallel. When it is executing, an icon will be shown in the tab to indicate its current state. If some process is finished and it is not in the current tab, that tab will show a green icon indicating the routine being executed there is now finished.
+On OmniDB, you can execute several SQL statements and procedures in parallel. Each Query Tab has its own database session. While a tab is executing, a spinner is shown on it; when a tab you are not looking at finishes, it shows a checkmark instead. The red Cancel button cancels the statement running in the current tab.
 
-By clicking in the Cancel button, you can cancel a process running inside the database.
+You can also drag and drop a tab to change its order. This works with both inner tabs and connection tabs. When a row of tabs runs out of room, the tabs shrink step by step down to icon-only; hovering an icon-only tab shows its name.
 
-You can also drag and drop a tab to change its order. This works with both inner and outer tabs.
-
-Additionally, you can use keyboard shortcuts to manage inner tabs. These are the defaults on Windows/Linux (macOS substitutes Ctrl for Alt); all of them are rebindable in the Settings dialog's Shortcuts tab:
+Additionally, you can use keyboard shortcuts to manage inner tabs. These are the defaults on Windows/Linux (macOS uses Ctrl instead of Alt); all of them can be changed under Settings > Shortcuts:
 
 - Alt-I: Insert a new inner tab
 - Alt-Shift-Q: Removes the current inner tab
 - Alt-O: Change focus to inner tab at left
 - Alt-P: Change focus to inner tab at right
 
-There are currently no keyboard shortcuts for outer (Connection) tabs — use drag-and-drop reordering, or the mouse, for those.
+There are no keyboard shortcuts for connection tabs — use the mouse or drag-and-drop for those. (The desktop app's View menu has shortcuts for switching sections; see Desktop App.)
 
-All SQL Query tabs are automatically saved whenever you execute them. Even if you close OmniDB window or browser tab, they are already stored in OmniDB User Database. They will be automatically restored when you open OmniDB again (if you are using app), open it in another browser window (if you are using server), or even if you clicked in the Connections window or logged out. Removing an outer tab or inner tab by the interface makes it permanently deleted, so it will not be restored.
+All Query tabs are saved automatically whenever you execute them. Even if you close the OmniDB window or browser tab, they are stored in OmniDB's user database and restored the next time you open OmniDB (in the desktop app) or sign in again (in the server version) — OmniDB then starts in the Database section with those connections open. Closing a connection tab or an inner tab yourself deletes it permanently, so it will not be restored.
 
 ---
 
@@ -294,11 +432,11 @@ Table structures — creating, altering and dropping — are managed with editab
 
 **Creating tables**
 
-We will create example tables (customers and addresses) in the `testdb` database we connected to earlier. Right click on the Tables node and select the Create Table action. This opens a new Query tab pre-filled with a CREATE TABLE template for the current schema.
+We will create example tables (customers and addresses) in the `testdb` database we connected to earlier. Right click on the Tables node and select the Create Table action. This opens a new Query tab pre-filled with a `CREATE TABLE` template for the current schema.
 
 Edit the template into the table you actually want — for customers, a primary key that addresses will later reference:
 
-```sql
+```
 CREATE TABLE public.customers (
 	cust_id serial PRIMARY KEY,
 	cust_name varchar(100) NOT NULL
@@ -309,7 +447,7 @@ Run the statement (the same way you run any query). Right-click the Tables tree 
 
 Now create addresses, with a foreign key back to customers:
 
-```sql
+```
 CREATE TABLE public.addresses (
 	add_id serial PRIMARY KEY,
 	add_street varchar(200) NOT NULL,
@@ -322,9 +460,9 @@ At this point there are two related tables in schema `public`. You can see the s
 
 **Altering tables**
 
-To change an existing table — say, adding a column to customers — right click the table node and select Table Actions > Alter Table. This opens a Query tab with an ALTER TABLE template you edit and run, the same pattern as table creation:
+To change an existing table — say, adding a column to customers — right click the table node and select Table Actions > Alter Table. This opens a Query tab with an `ALTER TABLE` template you edit and run, the same pattern as table creation:
 
-```sql
+```
 ALTER TABLE public.customers ADD COLUMN cust_age integer;
 ```
 
@@ -332,7 +470,7 @@ Any error the database returns — for example trying to add a column name that 
 
 **Removing tables**
 
-To drop a table, right click the table node and select Table Actions > Drop Table. This, too, opens an editable template (DROP TABLE ...) rather than dropping immediately — review it and run it when you're ready.
+To drop a table, right click the table node and select Table Actions > Drop Table. This, too, opens an editable template (`DROP TABLE ...`) rather than dropping immediately — review it and run it when you're ready.
 
 ---
 
@@ -341,17 +479,19 @@ URL: https://www.omnidb.net/en/managing_table_data.html
 
 **Full Content:**
 
-The tool allows us to edit records contained in tables through a very simple and intuitive interface. Given that only a few DBMS have unique identifiers for table records, we opted to allow data editing and removal only for tables that have a primary key. Tables that do not have it can only receive new records.
+The tool allows us to edit records contained in tables through a very simple and intuitive interface. Given that only a few DBMS automatically provide a unique identifier for table records, we opted to allow data editing and removal only for tables that have a primary key. Tables that do not have it can only receive new records.
 
 To access the record editing interface, right click the table node and select the action Data Actions > Edit Data:
 
-The interface has a SQL editor where you can filter and order records. To prevent that the interface requests too many records, there is a field that limits the number of records to be displayed. The records grid has column names and data types. Columns that belong to the primary key have a key icon next to their names.
+The Edit Data tab has a small SQL editor for an optional filter and ordering clause, appended to the query that loads the records — for example `where t.cust_id > 10 order by t.cust_name` (the table is available under the alias `t`) — a drop-down that limits how many records are loaded (Query 10 rows, Query 100 rows or Query 1000 rows) and a Run button that (re)loads the grid. The records grid has column names and data types. Columns that belong to the primary key have a key icon next to their names. If the table has no primary key, OmniDB warns Table has no primary key, existing rows will be read only. — you can still add new rows.
+
+Changes are not written immediately: edit, add and mark rows as needed, then click Save Changes, which appears as soon as there is something to save. The first column of each row holds its row action: clicking the × there marks the row for deletion (click again to undo), or removes a new, not yet saved row.
 
 The row of the grid that have the symbol `+` is the row to add new records. Let us insert some records in the table `customers`:
 
 After saving, the records will be inserted and can be edited (only because this table has a primary key). Let's change the cust_name of some of the existing records and, at the same time, let's remove one of the rows:
 
-Tables can have fields with values represented by very long strings. To help edit these fields, OmniDB has an interface that can be accessed by right clicking the specific cell:
+Tables can have fields with values represented by very long strings. To help edit these fields, right-click the cell and choose Edit Content: a larger editor opens (with syntax highlighting for JSON/JSONB and XML columns), and Save writes the value back into the grid. The same menu has Copy:
 
 The interface detects errors that may occur during operations related to records. To demonstrate, let us insert two records with existing `cust_id` (primary key):
 
@@ -366,35 +506,80 @@ URL: https://www.omnidb.net/en/writing_sql_queries.html
 
 **Full Content:**
 
-The most common kind of inner tab is the Query Tab, containing the following elements:
+The most common kind of inner tab is the Query Tab, containing the following elements. Keyboard shortcuts below are the Windows/Linux defaults; on macOS, OmniDB's own shortcuts use Ctrl instead of Alt. All of them can be changed under Settings > Shortcuts.
 
-- 1) Tab Header: You can see the name of the tab and an icon to close it. If there is a query running in the tab, you will see an indicator. If the tab finishes running and you are working on a different tab, a green indicator you be shown. Right-clicking the tab and choosing Rename Tab lets you rename it.
-- 2) Add Tab: You can quickly add another inner tab by clicking on the plus icon.
-- 3) SQL Editor: Full-featured SQL editor with SQL syntax highlighting, Find & Replace (`Ctrl-F` and `Ctrl-H`) and an autocomplete component, explained below. See Editor Keyboard Shortcuts for the full list of editor shortcuts (selection, multicursor, navigation, folding, etc.).
-- 4) Execute: The text contained in the SQL Editor will be executed against the current active database when you click on this button (or hit the shortcut, `Alt-Q` by default). If there is some selected text in the SQL Editor, it will execute only the selected text. Once the command is running, a red Cancel button will be shown, allowing you to cancel the execution (or using the shortcut, `Alt-C` by default).
-- 5) Indent SQL: This button will prettify any SQL code written in the SQL editor (shortcut `Alt-S` by default, `Ctrl-S` on macOS).
-- 6) Query History: All commands executed against the current database are stored in the Query History, which can be accessed by clicking on this button. You also will be able to filter by date and text to find a SQL command you need.
-- 7) Explain (PostgreSQL only): Call your SQL query against PostgreSQL by putting `EXPLAIN` in front of it. The results will be shown in a textual and graphical form in the Explain tab (please see Visualizing Query Plans for more details).
-- 8) Explain Analyze (PostgreSQL only): Same as Explain button, but call the SQL query with `EXPLAIN ANALYZE`, which will effectively execute the query.
-- 9) Autocommit (PostgreSQL only): When enabled, every query executed will be commited to the database. When disabled, OmniDB starts a transaction and upon execution of a query, the interface will show buttons allowing the user to Commit or Rollback. The user can also keep the transaction open and execute other commands.
-- 10) Backend Status (PostgreSQL only): When you open a new Query Tab, the status is "Not Connected", because OmniDB didn't start a PostgreSQL backend yet. When you execute the first query, OmniDB starts a new backend and keep it linked to the Query Tab (each Query Tab will be assigned its own backend). The status of the backend (idle, active, idle in transaction, etc) will be shown in this field. When you close the Query Tab, OmniDB terminates the backend.
-- 11) Export File Type: Can be CSV, TSV, XLSX, JSON, XML, or Markdown.
-- 12) Export To File: By clicking on this button, OmniDB executes the current query and saves it to a file in OmniDB's temp folder. After the file is saved, the interface allows the user to download it.
-- 13) Data Results: If the query is a `SELECT`, then it will show a grid with the results. If the query is a DML or DDL, it will show the message returned by the RDBMS.
-- 14) Messages (PostgreSQL only): Any messages (such as the ones given by the command `RAISE NOTICE`) will be shown here.
-- 15) Explain View (PostgreSQL only): Shows a full-featured component to view the PostgreSQL execution plan in textual or graphical form.
+- 1) Tab Header: You can see the name of the tab and, on hover, an icon to close it. While a query is running in the tab you will see a spinner; if it finishes while you are working on a different tab, a checkmark is shown. Right-clicking the tab and choosing Rename Tab lets you rename it.
+- 2) Add Tab: You can quickly add another inner tab (Query Tab or Console Tab) by clicking on the plus icon.
+- 3) SQL Editor: Full-featured SQL editor with SQL syntax highlighting, code folding, Find & Replace (`Ctrl-F` and `Ctrl-H`), a vertical ruler line (its column is set under Settings > Formatting) and an autocomplete component, explained below. Right-clicking in the editor offers Copy, Save as snippet and Use snippet (see Snippets). See Editor Keyboard Shortcuts for the full list of editor shortcuts (selection, multicursor, navigation, folding, etc.).
+- 4) Run: The text contained in the SQL Editor will be executed against the current active database when you click on this button (or press `Alt-Q`). If there is some selected text in the SQL Editor, only the selected text is executed. The editor may contain several statements separated by semicolons; they run one after another and the grid shows the result of the last one. Once the command is running, a red Cancel button is shown, allowing you to cancel the execution (or press `Alt-C`).
+- 5) Run Statement at Cursor: Runs only the single statement the cursor is in, without having to select it first. With the cursor right after a `;`, the following statement is run.
+- 6) Indent SQL: This button will prettify any SQL code written in the SQL editor (shortcut `Alt-S`), following the style chosen under Settings > Formatting (indentation, comma style, keyword case).
+- 7) Command history: All commands executed against the current connection are stored in the command history, which can be accessed by clicking on this button. You can filter it by date range and by text to find the SQL command you need.
+- 8) Explain (PostgreSQL only): Runs your SQL query with `EXPLAIN` in front of it (shortcut `Alt-W`). The results will be shown in a textual and graphical form in the Explain tab (please see Visualizing Query Plans for more details).
+- 9) Explain Analyze (PostgreSQL only): Same as Explain button, but runs the SQL query with `EXPLAIN ANALYZE`, which will effectively execute the query (shortcut `Alt-E`).
+- 10) Autocommit (PostgreSQL only): When enabled, every query executed will be committed to the database. When disabled, OmniDB starts a transaction and upon execution of a query, the interface will show buttons allowing the user to Commit or Rollback. The user can also keep the transaction open and execute other commands.
+- 11) Backend Status (PostgreSQL only): When you open a new Query Tab, the status is Not connected, because OmniDB didn't start a PostgreSQL backend yet. When you execute the first query, OmniDB starts a new backend and keeps it linked to the Query Tab (each Query Tab gets its own backend). The status of the backend (Idle, Running, Idle in transaction, etc.) will be shown in this field. When you close the Query Tab, OmniDB terminates the backend.
+- 12) Export File Type: CSV, TSV, XLSX, JSON, XML or Markdown.
+- 13) Export Data: By clicking on this button, OmniDB executes the current query and exports the whole result to a file of the chosen type. In the desktop app, a native Save As dialog opens so you can choose where to save it directly, and OmniDB confirms with File exported to: …. When running as a browser-based OmniDB Server instead, the file is written to the server's temp folder first, and the result area then shows The file is ready. with a Save link that downloads it through the browser. CSV/TSV encoding and the CSV delimiter are set under Settings > Export.
+- 14) Data Results: If the query is a `SELECT`, then it will show a grid with the results; the first column stays pinned while you scroll horizontally, and hovering a column header shows its full name. If the query is a DML or DDL, it will show the message returned by the RDBMS. When there are more rows than the first batch, Fetch more loads the next batch and Fetch all the rest. Right-click a cell for Copy or View Content; JSON and XML values are shown syntax-highlighted.
+- 15) Messages (PostgreSQL only): Any messages (such as the ones given by the command `RAISE NOTICE`) will be shown here.
+- 16) Explain View (PostgreSQL only): Shows a full-featured component to view the PostgreSQL execution plan in textual or graphical form.
 
-Once executed, the tabs are also saved in OmniDB user database (title and contents), so the next time you open OmniDB, you will see them all open. Also, every command you execute in a Query Tab is saved to your Query History and to the `omnidb.log` file too.
+The divider between the editor (with its toolbar) and the results can be dragged to give either more room.
+
+**Safety confirmation for destructive statements**
+
+Before running a statement that starts with `DROP` or `TRUNCATE`, or an `UPDATE`/`DELETE` without a `WHERE` clause, the Query Tab asks for confirmation (This statement is destructive and cannot be undone. Run it anyway?, or This statement has no WHERE clause and will affect ALL rows. Run it anyway?). This is a safety net against honest mistakes, not a permission system — it looks only at the beginning of the text (after comments).
+
+Once executed, the tabs are also saved in OmniDB user database (title and contents), so the next time you open OmniDB, you will see them all open. Also, every command you execute in a Query Tab is saved to the command history of that connection.
 
 **SQL Autocomplete**
 
-The SQL editor has a feature that helps a lot when creating new queries: SQL code completion. With this feature it is possible to autocomplete columns contained in a table referenced by an alias. To open the autocomplete interface you just have to type the alias, the character `.` and then hit `Ctrl-Space`:
+The SQL editor has a feature that helps a lot when creating new queries: SQL code completion. Open the suggestions with `Ctrl-Space` (`Option-Space` on macOS). With this feature it is possible to autocomplete columns contained in a table referenced by an alias: type the alias, the character `.` and then open the autocomplete:
 
 If the user does not start the autocomplete with the cursor close to a table alias, the component will show multiple categories of data. By typing in the filter textbox, elements in all categories will be filtered:
 
-The autocomplete component is also able to identify some contextual information. For example, if you type a name of a schema, then type the character `.`, then hit `Ctrl-Space`, you will be able to filter among objects contained only in that schema:
+The autocomplete component is also able to identify some contextual information. For example, if you type a name of a schema, then type the character `.`, you will be able to filter among objects contained only in that schema:
+
+After `::` (a PostgreSQL type cast), only data types are offered. Choosing a keyword also adds what always follows it (for example a space after `SELECT`, or the opening parenthesis after `COALESCE`). Which categories are offered at all (keywords, databases, roles, tablespaces, schemas, extensions, tables, views, columns, functions, indexes) is set under Settings > Autocomplete.
 
 Please note that for RDBMS other than PostgreSQL, the autocomplete component only works for table columns.
+
+---
+
+# Snippets
+URL: https://www.omnidb.net/en/snippets.html
+
+**Full Content:**
+
+Snippets are pieces of text — queries, scripts, command templates, notes — that you keep in OmniDB and reuse from any SQL editor. They are organized in a folder tree, stored in OmniDB's own user database (so they survive upgrades) and private to each OmniDB user.
+
+**The Snippets section**
+
+Click the Snippets icon (the scroll) in the left rail. The section shows the folder tree on the left and snippet editor tabs on the right; the divider between them can be dragged.
+
+Right-click empty space in the tree for Refresh, New Folder and Add Snippet. Right-clicking a folder offers the same plus Rename Folder and Delete Folder; right-clicking a snippet offers Edit, Rename and Delete. Double-clicking a snippet opens it in an editor tab (or switches to it, if it is already open). The + button below the tree adds a snippet to the selected folder (or at the top level), and − deletes the selected item.
+
+**Editing and saving**
+
+Each editor tab is a full SQL editor (syntax highlighting, autocomplete, find & replace) with Indent and Save buttons below it. The section always starts with one empty New Snippet tab, and the + tab opens another one.
+
+A small dot next to a tab's title means it has unsaved changes; saving clears it, and closing a tab only asks for confirmation when it actually has unsaved changes. Saving a snippet that was opened from the tree overwrites it. Saving a new, unnamed tab opens a menu instead: New Snippet (asks for a name and saves it at the top level), OVERWRITE … for each existing snippet, and a submenu for every folder with the same choices inside it. Overwriting an existing snippet asks for confirmation first.
+
+Keyboard shortcuts in the Snippets section (they can be changed under Settings > Shortcuts > Snippets):
+
+| Action | Windows/Linux | Mac |
+|---|---|---|
+| Save Snippet | Ctrl-S | Command-S |
+| New Snippet | Ctrl-N | Command-N |
+| Close Snippet Tab | Ctrl-W | Command-W |
+
+**Using snippets from a Query or Console tab**
+
+Right-click inside the editor of a Query or Console tab:
+
+- Save as snippet saves the editor's text as a snippet, using the same menu as above (a new snippet, or overwrite an existing one, in any folder);
+- Use snippet (shown once you have at least one snippet) inserts the chosen snippet's text at the cursor.
 
 ---
 
@@ -462,65 +647,52 @@ URL: https://www.omnidb.net/en/additional_features.html
 
 **Full Content:**
 
-**User Settings**
+This chapter collects smaller features that don't need a chapter of their own. Several features that used to be described here now have their own chapters: Settings and Languages, Snippets, Notify, Connected Users (which replaces the former Backends tree menu) and Roles and Permissions.
 
-Also in the upper right corner, by clicking in the gear-like icon, OmniDB will open the User Settings pop-up. It is composed of four tabs:
+**The Welcome page**
 
-- Shortcuts: Allows the user to change its shortcuts in OmniDB.
+The Welcome icon at the top of the left rail opens a start page with the Getting started button, a reminder that most actions talk directly to the database you are connected to (so practice on a test environment rather than production), links to the OmniDB website, the GitHub repository and this documentation, and the version you are running.
 
-- Options: Allows the user to change the font size of the interface and configure CSV/TSV related options (encoding, delimiter). The OmniDB theme can be set to Automatic (follows your operating system's color scheme preference), Light, or Dark.
+**Getting Started tutorial**
 
-- Formatting: Configures how the SQL formatter (the Indent SQL action) rewrites your query — indent character (spaces or tab), indent size (2/3/4), comma style (leading/trailing), and keyword case (preserve/UPPERCASE/lowercase). Also sets the Ruler Column — the vertical guide line the SQL editor draws (24-999, default 128) — applied live to every open editor.
-
-- Password: Allows the user to change its password.
+The lightbulb icon near the bottom of the rail (Getting Started; in the desktop app also Help > Getting Started) opens a list of interactive walkthroughs that highlight the relevant parts of the screen step by step: creating an OmniDB user (server version only), creating a database connection, creating a terminal connection, meeting the snippets panel, using a connection and the connection tab (available once a connection is open). End walkthrough leaves a walkthrough at any time.
 
 **Contextual Help**
 
-Most of tree nodes (generally grouping ones like Schemas or Tables) offer contextual help. This feature can be accessed by right-clicking the tree node. When you click in the Doc: ... option, OmniDB will open an inner tab showing a web browser pointing to the specific page in the online PostgreSQL Documentation. Also, it will redirect to the specific page considering the PostgreSQL version you are connected to.
-
-**Snippets**
-
-Workspace Window has a fixed outer tab with an useful feature called Snippets. With this feature you can store queries, command instructions and any other kinds of text you want. You can also structure the snippets in a directory tree the way you want. All directories and snippets you create are stored inside of `omnidb.db` user database and persist when you upgrade OmniDB.
-
-A "+"/"-" footer below the snippets tree adds a snippet under the currently selected folder (or the tree root) and deletes whatever is selected; "-" stays disabled until something deletable is selected. An open snippet tab shows a small dot next to its title once the editor diverges from what is saved, cleared on Save; closing a tab only prompts for confirmation when it actually has unsaved changes.
-
-**Notify**
-
-The Notify panel sits in the sidebar between Database and Snippets and streams PostgreSQL `LISTEN`/`NOTIFY`, Oracle `DBMS_ALERT`, and Firebird `POST_EVENT` messages. Channels are added, removed, paused, and resumed per connection and persist across app restarts; received messages are ephemeral, kept only in the browser tab and cleared on reload. Messages can be viewed across all channels or filtered to a selection, and cleared per-channel or all at once. MySQL/MariaDB/MS SQL Server/SQLite show a "not supported" message instead of hiding the feature. A connection's Notify session starts and stops together with its Database tab, and the panel shares the same horizontal strip of open connections as the Database panel, so selecting a connection in one keeps the other in sync.
-
-**Backend Management**
-
-By right-clicking in the tree root node, then moving mouse pointer to Monitoring and then clicking on Backends, the user can see all activities going on in the database. Some information is hidden for normal users, only database superusers are allowed to see.
-
-By clicking in the X in the Actions column, you can terminate the backend. A confirmation popup will appear.
+Most of tree nodes (generally grouping ones like Schemas or Tables) offer contextual help. This feature can be accessed by right-clicking the tree node. When you click the Doc: … option, OmniDB opens the specific page of the online PostgreSQL Documentation in your web browser (the system's default browser in the desktop app, or a new tab when running as a browser-based OmniDB Server). It also picks the right documentation version for the PostgreSQL server you are connected to.
 
 **Properties and DDL**
 
 By clicking on most of objects in the tree view (tables, sequences, views, roles, databases, etc), the user will be able to see a very comprehensive list of properties of the object.
 
-In the other panel called DDL, the user will be able to see the SQL DDL source code that can be used to re-create the object. The user can copy this text and paste it wherever he/she wants.
+In the other panel called DDL, the user will be able to see the SQL DDL source code that can be used to re-create the object — including its comment (`COMMENT ON …`) and privileges (`GRANT …`) where the database has them. The user can copy this text and paste it wherever he/she wants.
+
+The divider above the Properties/DDL panel can be dragged, and the panel (as well as the database tree itself) can be collapsed with the small toggle button on its divider — in the desktop app also with View > Toggle Properties/DDL Panel and View > Toggle Database Tree.
 
 **Export Data**
 
-The Query Tab provides a way to save data from query results into a CSV, TSV, XLSX, JSON, XML, or Markdown file. Once you click the Export Data button, a cancellable backend starts to save data into the file. Once it is done, OmniDB provides a link called Save, so the user can download the file.
+The Query Tab can save the results of its query to a CSV, TSV, XLSX, JSON, XML or Markdown file. Pick the format in the drop-down next to the Export Data button and click the button: OmniDB runs the query again in the background and writes the whole result to the file (the export can be cancelled while it runs).
 
-All files are stored in a temporary folder inside OmniDB folder. OmniDB regularly cleans this folder, keeping only files newer than 24 hours.
+- In the desktop app, a native Save As dialog opens so you can choose where to save the file, and OmniDB confirms with File exported to: ….
+- In the browser (server version), the result area shows The file is ready. with a Save link that downloads it.
+
+CSV and TSV files use the encoding set in Settings > Export > CSV/TSV Encoding (default: UTF-8 with BOM), and CSV files the CSV Delimiter set there (default `;`). Export files are kept in a temporary folder inside OmniDB's home directory, can only be downloaded by the user who created them, and are removed automatically after 24 hours.
 
 **Export as DBML**
 
-Right-click a database node in the PostgreSQL tree and choose Export as DBML to generate the whole database's schema as a DBML (Database Markup Language) document — every table, column, data type, primary key, unique and foreign-key constraint, index and comment — via a single pure-SQL introspection query adapted from the pg_dbml project (https://pg_dbml.80.cz).
+Right-click a database node in the PostgreSQL tree and choose Export as DBML to generate the whole database's schema as a DBML (https://dbml.dbdiagram.io/home/) (Database Markup Language) document — every table, column, data type, primary key, unique and foreign-key constraint, index and comment — via a single pure-SQL introspection query adapted from the pg_dbml (https://pg_dbml.80.cz) project.
 
-DBML is a compact, plain-text schema format, which makes it a good fit for giving an LLM/AI assistant context about your database: pasting a .dbml file into a chat is far cheaper in tokens than pasting a full SQL dump or having the model run its own introspection queries table by table, while still precisely describing every table, column, type and relationship.
+DBML is a compact, plain-text schema format, which makes it a good fit for giving an LLM/AI assistant context about your database: pasting a `.dbml` file into a chat is far cheaper in tokens than pasting a full SQL dump or having the model run its own introspection queries table by table, while still precisely describing every table, column, type and relationship.
 
 The generated file defaults to `<database>.dbml`. In the desktop app this opens the native Save dialog, just like Export Data; in the browser (server) it shows a Download/Cancel prompt instead — Cancel discards the generated file right away rather than waiting for the temp folder's 24-hour cleanup. Currently PostgreSQL only.
 
 **Query History**
 
-From the Query Tab you can click on the Command History button to see a full, browsable and searchable query tab.
+From the Query Tab you can click on the Command history button to see a full, browsable and searchable list of the commands run on this connection, filterable by date range and text. See Writing SQL Queries.
 
 **SSH Console**
 
-OmniDB also provides a full-featured SSH Console.
+Besides database connections, OmniDB can open a full-featured SSH terminal to a server. Create a connection of type Terminal in the Connections section, filling in the SSH server, port, user and password or private key (see Creating Users and Connections). Open it from the + at the end of the connection tab strip → SSH Consoles, or with Connect in its form. The terminal opens as its own connection tab; the server's host key must already be known — see Security and Multi-user Server.
 
 ---
 
@@ -529,25 +701,44 @@ URL: https://www.omnidb.net/en/omnidb_config_tool.html
 
 **Full Content:**
 
-Note: the standalone `omnidb-config`/`omnidb-config-app`/`omnidb-config-server` CLI utility described on this page belonged to the previous Python/Django-based build and is not part of the current release. The single `omnidb-server` binary only accepts `-A`/`--app` (desktop app mode) and `-d`/`--homedir` (choose the home directory), documented in the Installation chapter. The maintenance tasks the old tool offered can still be done manually, described below.
+Note: the standalone `omnidb-config`/`omnidb-config-app`/ `omnidb-config-server` CLI utility described on this page belonged to the previous Python/Django-based build and is not part of the current release. The single `omnidb-server` binary accepts only a handful of command-line options: `-A`/`--app` (desktop app mode), `-H`/`--host` (listening address), `-p`/`--port` (listening port), `-d`/`--homedir` (choose the home directory) and `--set-password` (set a user's password, see below) — all described in the Command options section of Deploying omnidb-server. There is no configuration file. The maintenance tasks the old tool offered can still be done manually, described below.
 
 **Home directory**
 
-OmniDB stores everything — the `omnidb.db` database (users, connections, and other app data) and a `temp` folder for exported files — in a single home directory. By default this is `~/.omnidb/omnidb-app` (desktop mode) or `~/.omnidb/omnidb-server` (server mode); pass `-d /some/path` to use a different one.
+OmniDB stores everything — the `omnidb.db` database (users, connections, and other app data) and a `temp` folder for exported files — in a single home directory. By default this is `~/.omnidb/omnidb-app` (desktop mode) or `~/.omnidb/omnidb-server` (server mode); pass `-d /some/path` to use a different one (the directory must already exist). If the operating system offers no secret store for the encryption key of saved passwords, the same directory also holds that key, in the file `.connection_secret_key` — see Security and Multi-user Server. When you back up or move `omnidb.db`, take that file along too.
 
 **Create a user**
 
-There is currently no CLI option to create a user without opening OmniDB. On first run against an empty home directory, OmniDB creates a default `admin`/`admin` superuser automatically — sign in with it and create further users from the Users screen, or change the default password.
+There is currently no CLI option to create a user without opening OmniDB. On first run against an empty home directory, OmniDB creates a default `admin` superuser automatically — in server mode with a random password printed once to the server's log output (the line containing `initial login: admin / …`). Sign in with it and create further users under Settings > Account > Manage Users, or change the password under Settings > Password.
+
+**Set or reset a password**
+
+If the one-time initial `admin` password was lost (or you want to set your own before the first sign-in), set the password of any existing user directly in the app database, without starting the server:
+
+```
+user@machine:~$ omnidb-server --set-password admin
+user@machine:~$ omnidb-server --set-password admin -d /path/to/homedir
+```
+
+Without `-d` it uses the default server home directory (`~/.omnidb/omnidb-server`). In a terminal it asks for the new password twice, without echoing it; otherwise it reads the password from the first line of standard input, which is handy in scripts:
+
+```
+user@machine:~$ printf '%s\n' "$PW" | omnidb-server --set-password admin
+```
+
+The password is never passed as a command-line argument, so it doesn't end up in `ps` output or the shell history. It must be at least 8 characters long, and the user must already exist. The option is refused together with `-A` — the desktop app signs in automatically and has no password to manage. It can also be run while the server is running: the new password works immediately for new sign-ins, while users who are already signed in stay signed in until their session expires or the server restarts.
 
 **Vacuum**
 
 OmniDB has a single SQLite database, `omnidb.db`, storing all users, connections, and other OmniDB-related data. Since it's a plain SQLite file, you can vacuum it with any SQLite client while OmniDB isn't running, e.g.:
 
-    user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
+```
+user@machine:~$ sqlite3 ~/.omnidb/omnidb-app/omnidb.db 'VACUUM;'
+```
 
 **Reset database**
 
-If you wish to wipe out all OmniDB information and get a clean database as it was just installed, quit OmniDB and delete (or move aside) the home directory's `omnidb.db` file. A new, empty one — with a fresh default `admin`/`admin` user — is created automatically the next time OmniDB starts. Use this with caution: it cannot be undone.
+If you wish to wipe out all OmniDB information and get a clean database as it was just installed, quit OmniDB and delete (or move aside) the home directory's `omnidb.db` file. A new, empty one — with a fresh default `admin` user (in server mode with a newly generated one-time password printed to the log) — is created automatically the next time OmniDB starts. Use this with caution: it cannot be undone.
 
 **Delete temporary files**
 
@@ -568,11 +759,11 @@ PostgreSQL is more than a RDBMS engine. It is a developing platform. It provides
 
 In the `public` schema, right-click the `Functions` node and click on Create Function. It will open a SQL Query inner tab, already containing a SQL Template to help you create your first PL/pgSQL function.
 
-You can refer to PostgreSQL documentation on how to write user-defined functions. No need to open a new browser tab: just right-click the Functions node and click on Doc: Functions to view the documentation inside OmniDB.
+You can refer to PostgreSQL documentation on how to write user-defined functions. Just right-click the Functions node and click on Doc: Functions — the relevant PostgreSQL documentation page opens in your web browser (the system's default browser in the desktop app, or a new tab when running as a browser-based OmniDB Server).
 
 For now, let us replace this SQL template entirely for the source code below:
 
-```sql
+```
 CREATE OR REPLACE FUNCTION public.fnc_count_vowels (p_input text)
 RETURNS integer LANGUAGE plpgsql AS
 $function$
@@ -603,7 +794,7 @@ To create the function, execute the command in the SQL Query inner tab. If succe
 
 Now let us execute this new function for the first time. Open a simple SQL Query inner tab and execute the following SQL query:
 
-```sql
+```
 SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 ```
 
@@ -618,73 +809,260 @@ URL: https://www.omnidb.net/en/monitoring_dashboard.html
 
 **Full Content:**
 
-OmniDB has a cool feature called Monitoring Dashboard. We know a picture is worth a thousand words, so please take a look:
+The Monitoring section is a live dashboard of charts and grids for the server behind a connection — transaction rate, backends, WAL production, database size, cache hit ratios and more — built from small, independent cards called Monitoring Units. Besides the units that come with OmniDB you can write your own, each one a single SQL query.
 
-As you can see, this is a new kind of inner tab showing some charts and grids. This Monitoring inner tab is automatically opened once you expand the tree root node (the PostgreSQL node). You can keep it open or close it at any time. To open it again, right-click the root node and click on Dashboard.
+Built-in units exist for PostgreSQL (16 units) and MySQL (1 unit, Thread Count). MariaDB and Oracle connections get the dashboard too, for your own custom units. For other engines the section shows Monitoring is not supported for … connections.
 
-The dashboard is composed of handy information rectangles called Monitoring Units. Here is an example of Monitoring Unit and its interface elements:
+**Opening the dashboard**
 
-- 1: Title of the Monitoring Unit;
-- 2: Refresh the Monitoring Unit. Depending on the type, clicking on this button will refresh the entire drawing area or just make the chart acquire a new set of values;
-- 3: Pause the Monitoring Unit;
-- 4: Interval in seconds for automatic refreshing;
-- 5: Remove the Monitoring Unit of the Monitoring Dashboard;
-- 6: Drawing area, that will be different depending on the type of the Monitoring Unit.
+Click the Monitoring icon in the left rail (between Database and Notify). The dashboard belongs to a connection that is open in the Database section: the strip of open connection tabs is shown at the top of the section, and selecting a tab shows that connection's dashboard. With no connection open it shows No connection open.
 
-**Types of Monitoring Units**
+All units start paused when the dashboard loads, so opening it does not start querying the server by itself. Start the ones you want with their own play button, or all of them at once with Enable All.
 
-There are 3 types of Monitoring Units:
+**The toolbar**
 
-- Grid: The most simple kind, just executes a query from time to time and shows the results in a data grid.
-- Chart: Every time it refreshes, it renders a new complete chart. The old set of values is lost. This is most useful for pie charts, but other kind of charts can be used too.
-- Timeseries: Perhaps this is the most useful kind of Monitoring Unit. It is a chart that appends a new set of values every time it refreshes. Line or bar charts fit best for this type. The last 100 sets of values are kept by the component client-side to be viewed by the user.
+The toolbar at the top stays in place while the cards scroll below it:
 
-**Showing and hiding units in the dashboard**
+- the first, icon-only button (tooltip Manage Units) opens or closes the unit list side panel, described below;
+- Refresh All refreshes every shown unit once;
+- Enable All / Pause All start or stop the automatic refresh of every unit of this connection;
+- Card size — Small, Medium, Large or Full width — sets how wide a card may get before the grid wraps to fewer columns: a narrow window shows one card per row, a wide monitor several side by side. The choice is remembered in your browser.
 
-If you click in the button Refresh All, then all Monitoring Units will be refreshed at once. You can also remove undesired Monitoring Units by clicking in the Remove button. Let us go ahead and remove all units from the dashboard, making it empty:
+**A Monitoring Unit card**
 
-The 17 units that come built into OmniDB (PostgreSQL and MySQL server metrics — transaction rate, backends, WAL production, database/table size, and so on) run as native code and need nothing extra installed in the database.
+Each card has its title at the top, a × that removes (hides) the unit from the dashboard, and — for your own custom units — an edit button that opens its editor (both appear when you hover the card). Below the title are the unit's controls: refresh now, pause / play, and the refresh interval in seconds. The rest of the card is the unit's chart or grid.
 
-Now that our dashboard is empty, let us add some units. Click on the Manage Units button.
+A unit is one of three types:
 
-Click on the green action to add any of the built-in units — e.g. Backends and Database Size. Wait for some seconds and you will have a dashboard like this:
+- Grid: runs its query on each refresh and shows the result as a data grid.
+- Chart (No Append): redraws a complete chart on each refresh; the previous values are replaced. Best for pie or doughnut charts of a current state.
+- Timeseries: appends a new set of values to its chart on each refresh, keeping the most recent points, so you can watch a value develop over time. All built-in units are timeseries.
 
-In a similar way, you can add and remove any unit you want to customize the dashboard the way you want.
+**Managing units**
+
+The Manage Units side panel (toggled by the toolbar's first button, and resizable by dragging its edge) lists every unit available for the connection:
+
+- the checkbox in front of a unit shows or hides it on the dashboard (hiding stops it, the same as its card's ×, but keeps its refresh interval for next time);
+- drag a row up or down to change the order of the cards on the dashboard;
+- the + below the list opens the New Unit editor;
+- for a custom unit, right-click → Edit or Delete, or double-click it to open its editor. Built-in units cannot be edited or deleted, only shown or hidden.
+
+Your custom units are private to your OmniDB user.
+
+**Built-in units**
+
+PostgreSQL: Transaction Rate, Backends, Autovacuum Workers Usage, WAL Production Rate, Temp Files Creation Rate, Autovacuum Freeze, Blocked Locks, Database Size, Database Growth Rate, Heap Cache Miss Ratio, Index Cache Miss Ratio, Seq Scan Ratio, Long Transaction, Long Query, Long Autovacuum and Checkpoints. MySQL: Thread Count. They need nothing extra installed in the database.
 
 **Writing custom Monitoring Units**
 
-OmniDB lets you write your own units, or customize existing ones, by writing a single SQL query — the same connection and permissions your SQL editor already has, just running on a timer instead of on demand. There's no separate scripting language or sandbox to learn.
+A custom unit is a single SQL query that runs on a timer — with the same connection and permissions your SQL editor has. There is no separate scripting language to learn.
 
-Note: since the query re-runs unattended on a refresh interval, only `SELECT` (or `WITH ... SELECT`) queries are accepted — a destructive statement pasted in by mistake is rejected outright rather than silently firing on a timer.
+Note: since the query re-runs unattended, only `SELECT` (or `WITH ... SELECT`) queries are accepted — a destructive statement pasted in by mistake is rejected outright rather than silently firing on a timer.
 
-To create a new Monitoring Unit, click on the Manage Units button in the dashboard, then click on the New Unit button. It will open a new kind of inner tab with a Name, a Type dropdown, a Refresh Interval, and a single SQL Query editor (plus a Chart Type dropdown, shown only for Chart units).
+Click + in the Manage Units panel. A Monitor Unit editor tab opens with the fields Name, Type (Timeseries, Chart (No Append) or Grid), Refresh Interval (seconds), Template (optionally start from an existing unit), Chart Type (Bar, Pie, Doughnut or Line; shown for Chart (No Append) only) and the SQL Query editor.
 
-The query's shape depends on the unit's Type:
+The query's shape depends on the unit's type:
 
-- Grid: no particular shape — whatever columns and rows the query returns become the grid directly. For example:
+Grid: no particular shape — whatever columns and rows the query returns become the grid. For example:
 
-```sql
+```
 SELECT * FROM pg_stat_activity
 ```
 
-- Chart: one row per category — the first column is the label, the remaining column(s) are one series each (the column name becomes the series name). Pick the Chart Type (bar, pie, doughnut, or line) from the dropdown next to the Type selector. For example, a pie chart of database sizes:
+Chart (No Append): one row per category — the first column is the label, the remaining column(s) are one series each (the column name becomes the series name). For example, a pie chart of database sizes:
 
-```sql
+```
 SELECT datname,
        round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
 FROM pg_catalog.pg_database
 WHERE datname NOT IN ('template0', 'template1')
 ```
 
-- Timeseries: exactly one row — each numeric column becomes one continuously-appended line series, refreshed on the configured interval. For example, tracking database size over time:
+Timeseries: exactly one row — each numeric column becomes one continuously-appended series. For example, tracking the total database size over time:
 
-```sql
+```
 SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
 FROM pg_catalog.pg_database
 WHERE NOT datistemplate
 ```
 
-Write (or paste) the query into the SQL Query editor, then click the Test button to see it rendered in the preview drawing area — you can test as many times as you like. Once you're happy with it, give the unit a name, set a refresh interval, and hit Save. Close the edit tab and the new unit appears in the unit list, ready to add to the dashboard (green action) just like a built-in one.
+Click Test to run the query once and see the result rendered below the editor — as many times as you like. When you are happy with it, give the unit a name, set the refresh interval and click Save. The unit then appears in the Manage Units list; tick it to show it on the dashboard.
+
+---
+
+# Notify
+URL: https://www.omnidb.net/en/notify.html
+
+**Full Content:**
+
+The Notify section listens for asynchronous notifications that sessions send through the database itself, and shows them as they arrive:
+
+- PostgreSQL: `LISTEN`/`NOTIFY`;
+- Oracle: `DBMS_ALERT`;
+- Firebird: events (`POST_EVENT`).
+
+MySQL, MariaDB, SQL Server and SQLite have no equivalent; for them the section says NOTIFY-style channels are not supported for … connections. instead of hiding the feature.
+
+**Opening the section**
+
+Click the Notify icon in the left rail. The section shares the strip of open connection tabs with the Database section — select a tab to see that connection's channels and messages. With no connection open it shows No connection open. and asks you to open one in the Database panel first.
+
+Listening does not depend on the Notify section being visible: as soon as a connection is opened in the Database section, OmniDB starts listening on its saved channels (over a separate, dedicated connection, so it never interferes with your Query or Console tabs), and it stops when that connection tab is closed.
+
+**Channels**
+
+The left side of the section is a tree with a Channels root. To add a channel, click + below the tree (or right-click the tree → Add Channel), type the Channel Name and press Enter. OmniDB starts listening on it immediately. Oracle alert names are limited to 30 bytes, Firebird event names to 255.
+
+Right-click a channel for:
+
+- Pause / Resume — stop or restart listening on that channel (a paused channel shows a crossed-out bell);
+- Clear Messages — remove that channel's messages from the list;
+- Delete — remove the channel (also available as − below the tree), after confirmation. Its messages are removed too.
+
+Channels and their paused/active state are saved per OmniDB user and per connection, so they come back after a restart. PostgreSQL channel names are used as quoted, case-sensitive identifiers.
+
+**Messages**
+
+Received messages appear on the right in a table with the columns Channel, Time (when OmniDB received it) and Payload. Firebird events carry no payload, so for them Payload shows how many times the event was posted.
+
+The row of checkboxes above the table filters the list: All channels, or only the channels you tick. Clear All empties the whole list.
+
+Messages are kept only in the browser (or desktop window) that received them: they are not stored anywhere and are gone after a page reload.
+
+If messages arrive faster than the page consumes them, OmniDB stops listening rather than letting them pile up without limit; it also stops if the listening connection fails. In both cases a banner explains why, with a Restart Listening button.
+
+**Sending a test notification**
+
+Notifications are sent with plain SQL, for example from a Query tab on the same database:
+
+```
+-- PostgreSQL (delivered when the transaction commits)
+NOTIFY my_channel, 'hello';
+SELECT pg_notify('my_channel', 'hello');
+
+-- PostgreSQL, channel name with upper-case letters: quote it
+NOTIFY "MyChannel", 'hello';
+
+-- Oracle
+BEGIN
+  DBMS_ALERT.SIGNAL('my_alert', 'hello');
+  COMMIT;
+END;
+
+-- Firebird (the event is posted on commit)
+EXECUTE BLOCK AS BEGIN POST_EVENT 'my_event'; END
+```
+
+---
+
+# Connected Users
+URL: https://www.omnidb.net/en/connected_users.html
+
+**Full Content:**
+
+The Connected Users section shows who is connected to a database server right now — PostgreSQL backends, MySQL/MariaDB threads, Oracle and SQL Server sessions, Firebird attachments — what each of them is doing, and lets you terminate one. It replaces the older per-engine Backends/Process List/Sessions entries of the database tree's context menu.
+
+Supported: PostgreSQL, MySQL, MariaDB, Oracle, SQL Server and Firebird. SQLite has no such concept, and shows Viewing connected users is not supported for … connections.
+
+**Opening the section**
+
+Click the Connected Users icon in the left rail. Like Monitoring, Notify and Permissions, it works on a connection already open in the Database section: the strip of open connection tabs is shown at the top, and the list belongs to the selected tab. With no connection open it shows No connection open.
+
+The list is loaded when you enter the section and whenever you switch to another connection tab; it does not refresh on its own. To reload it, right-click the grid and choose Refresh. The number of rows is shown above the grid (Number of records: …).
+
+**Columns**
+
+Columns are grouped compactly (for example an ID under a name, or address and port on one line); hovering a column header explains what it shows and which catalog column it comes from.
+
+- PostgreSQL (`pg_stat_activity`): PID, Database, User, Client, Application, Process start / Transaction start, Query start / Last state change, Waiting on, State, Transaction ID, Query ID, Process type.
+- MySQL/MariaDB (process list): User (with the connection ID), Host, Database, Command, Time (s), State.
+- Oracle (`v$session`): SID (with Serial#), User, State, Schema, Client, Program, Module / action, Client info, Logon time, Idle (s), SQL ID, Waiting on, Blocking SID.
+- SQL Server (user sessions): Session ID, Login name, Host, Program, State.
+- Firebird (`mon$attachments`, without OmniDB's own attachment): Attachment ID, User, Remote address, State.
+
+For PostgreSQL and Oracle, background/system processes are hidden by default; tick Show system processes above the grid to include them (the checkbox only appears when there are such rows).
+
+**Viewing a session's query**
+
+For PostgreSQL, MySQL and MariaDB, clicking a row opens a Query text pane below the grid with the statement that session is running (or ran last), syntax-highlighted and read-only. From there you can copy it, or use Open in a new Query tab to continue working with it in a regular Query tab, for example to run Explain on it.
+
+**Terminating a session**
+
+Right-click a row and choose Terminate. After you confirm, OmniDB ends that session the engine's own way — `pg_terminate_backend()` on PostgreSQL, `KILL` on MySQL/MariaDB and SQL Server, `ALTER SYSTEM KILL SESSION … IMMEDIATE` on Oracle, deleting the row from `mon$attachments` on Firebird — and reloads the list. This needs the matching privilege on the database server. The same context menu also offers Copy and View Content for the clicked cell.
+
+---
+
+# Roles and Permissions
+URL: https://www.omnidb.net/en/permissions.html
+
+**Full Content:**
+
+The Permissions section is a role and privilege browser for PostgreSQL. It lays a server's roles out Finder-style, in side-by-side columns: pick a role on the left, and the columns to its right show who it is a member of, who is a member of it, and what it can actually do on every database object — including everything it only has indirectly, through inherited role memberships or through `PUBLIC`. Roles, memberships and privileges can be created, changed and revoked right there.
+
+Note: this section currently supports PostgreSQL only. For any other connection it shows Permissions are not yet supported for … / Currently only PostgreSQL is supported.
+
+**Opening the section**
+
+Click the Permissions icon (the people icon) in the left rail. The section works on a connection that is already open in the Database section: the same strip of open connection tabs is shown at its top, and the section uses whichever connection tab is selected there. With no connection open it shows No connection open — open one first (see Managing Databases). The columns are rebuilt every time you enter the section, so any earlier selection is reset.
+
+Everything you do here needs the same privileges the equivalent SQL would need (`CREATEROLE`, superuser, or ownership of the object, depending on the action) — OmniDB runs the statements with the credentials of the connection you are using.
+
+**Column 1: Roles**
+
+The Roles column lists every role on the server, including the built-in `pg_*` roles, sorted by name. Roles that can log in (users) have a single-person icon; roles that cannot (groups) have a two-person icon. The first row is always `PUBLIC` (globe icon) — not a real role, but the pseudo-role every role implicitly belongs to, so that privileges granted to `PUBLIC` can be browsed and edited the same way.
+
+Click a role to focus it; the other columns then show that role. Below the list:
+
+- + opens the Create Role dialog: Role name, Password, and the attribute checkboxes Can log in (on by default), Superuser, Can create databases, Can create roles, Inherits privileges of roles it is a member of (on by default), Can initiate replication and Bypasses row-level security, plus Connection limit (-1 = unlimited) and Account expires (leave empty for no expiration).
+- − drops the selected role (disabled for `PUBLIC`).
+
+Right-clicking a role (not `PUBLIC`) offers:
+
+- Change Password — asks for the new password twice. The password is hashed in the format the server itself is configured for (SCRAM-SHA-256 or md5) before it is sent.
+- Alter Attributes — the same attribute fields as Create Role, pre-filled with the role's current values. Clearing Account expires removes the expiration.
+- Drop Role — asks Drop role "…"? This cannot be undone. and then runs a plain `DROP ROLE`; PostgreSQL refuses it while the role still owns objects or holds privileges.
+
+**Column 2: memberships**
+
+The second column is split in two halves:
+
+- … — Members (top): the roles that are members of the focused role.
+- … — Member of (bottom): every role the focused role belongs to, directly or through other roles, flattened into one list. `PUBLIC` is always listed first.
+
+In both halves, direct memberships are shown in normal text and indirect (inherited) ones greyed out. A direct membership granted `WITH ADMIN OPTION` is marked (admin option). For `PUBLIC` both halves just say PUBLIC is not a member of any role.
+
+- The + under Member of opens Grant Membership: pick a role to make the focused role a member of it, optionally With admin option.
+- The + under Members opens Add Member: the same dialog the other way round — the picked role becomes a member of the focused role.
+- − (or right-click → Remove Membership) revokes a membership after asking Revoke membership in "…"?. Only direct memberships can be removed; an inherited one has to be revoked where it is actually granted.
+- Double-clicking a row, or right-click → Set as Active Role, makes that role the focused one, exactly as if you had clicked it in the Roles column — the quickest way to follow an inheritance chain upwards.
+
+**Column 3: objects and effective privileges**
+
+The third column, … — Objects, is a tree of everything the focused role has any privilege on — its effective privileges: its own direct grants plus everything it inherits through its memberships and through `PUBLIC`. It starts with two groups, Databases (every database on the server) and Tablespaces; a node is shown normally if the role has some privilege there, and greyed out otherwise.
+
+Expanding a database loads its objects over a separate connection to that database (the connection tab's own active database does not change): schemas, and inside each schema folders for tables, views, sequences, functions, procedures, materialized views, types and domains; foreign data wrappers and foreign servers sit directly under the database. Only objects the role actually has a privilege on are listed (system schemas are left out); a schema shown greyed out is there only because something inside it is. If there is nothing at all, the database shows No privileges on any object in this database.
+
+**Editing privileges**
+
+Right-click a database, tablespace, schema or object and choose Edit Privileges. The dialog lists every privilege valid for that kind of object as a checkbox:
+
+- database: `CREATE`, `CONNECT`, `TEMPORARY`; tablespace: `CREATE`; schema: `CREATE`, `USAGE`;
+- table, view and materialized view: `SELECT`, `INSERT`, `UPDATE`, `DELETE`, `TRUNCATE`, `REFERENCES`, `TRIGGER`;
+- sequence: `USAGE`, `SELECT`, `UPDATE`; function and procedure: `EXECUTE`; type, domain, foreign data wrapper and foreign server: `USAGE`.
+
+Each checkbox tells you where the privilege comes from:
+
+- checked — the role holds it directly; uncheck it to `REVOKE` it;
+- checked but disabled, with Inherited from: … — the role only has it through another role or `PUBLIC`. It cannot be revoked here; make the source role active (Set as Active Role) and revoke it there;
+- unchecked — the role does not have it; check it to `GRANT` it directly.
+
+With grant option applies to the privileges you newly grant in that dialog. Confirm with the dialog's main button, which is labelled with the object's name.
+
+To grant something on an object that is not in the tree yet, use the + (Add Object Privilege) under the column: choose the Object Type, then the Database (for everything except databases and tablespaces; it defaults to the connection's current database), the Schema for schema-level objects, the Object itself (functions are shown with their argument signature), tick the Privileges and, optionally, With grant option.
+
+Selecting `PUBLIC` in the first column lets you edit what is granted to `PUBLIC` itself (`GRANT … TO PUBLIC` / `REVOKE … FROM PUBLIC`).
+
+Important: every action in this section is executed on the server immediately — there is no SQL preview and no undo. Only Drop Role and Remove Membership ask for confirmation first. If the server rejects a statement, its error message is shown.
 
 ---
 
@@ -699,7 +1077,7 @@ In this chapter, we will use a 2-node cluster to demonstrate PostgreSQL 10 nativ
 
 **Creating a test environment**
 
-Set up two PostgreSQL 10+ instances however you prefer (Docker, Vagrant, local VMs, or even two databases on the same machine) and configure the settings above on each.
+Set up two PostgreSQL 10+ instances however you prefer (Docker, a virtual machine, or even two databases on the same machine) and configure the settings above on each.
 
 **Connecting to both nodes**
 
@@ -711,7 +1089,7 @@ Then select both connections. Note how OmniDB understands it is connected to Pos
 
 On both nodes, create a table like this:
 
-```sql
+```
 CREATE TABLE customers (
  login text PRIMARY KEY,
  full_name text NOT NULL,
@@ -765,13 +1143,19 @@ Options:
   -d HOMEDIR, --homedir=HOMEDIR
                          home directory containing the omnidb.db database and
                          the temp folder used for exported files
+      --set-password=USER
+                         set USER's password in the app database and exit
+                         (prompts for it; does not start the server)
 ```
 
 - `-H` specifies the address to listen on. Defaults to `127.0.0.1` (loopback-only) — pass `0.0.0.0` to accept connections from other machines, or a specific interface address.
-- `-p` specifies the port to listen on, used in the browser's URL when accessing OmniDB directly. If omitted, the OS picks a free port and prints it to stderr on startup.
-- `-d` lets you choose the folder that stores `omnidb.db` (the application database) and the `temp` folder used for exported files. With this option it's possible to run several instances of `omnidb-server`, each pointing at a different directory — handy for Docker deployments where you mount a volume there.
+- `-p` specifies the port to listen on, used in the browser's URL when accessing OmniDB directly. If omitted, the OS picks a free port and prints it to stderr on startup. Since that port changes on every start, always pass `-p` for a server other people (or a reverse proxy) connect to.
+- `-d` lets you choose the folder that stores `omnidb.db` (the application database) and the `temp` folder used for exported files. The folder must already exist; without `-d`, `~/.omnidb/omnidb-server` is used (created automatically). With this option it's possible to run several instances of `omnidb-server`, each pointing at a different directory — handy for Docker deployments where you mount a volume there.
+- `--set-password USER` sets an existing user's password directly in the app database and exits without starting the server — see OmniDB Config Tool.
 
 Security note: a server started with `-H` set to anything other than loopback should never also be started with `-A`/`--app` — the desktop auto-login link that mode generates is only meant to be reachable locally, so `-A` always forces loopback binding regardless of `-H`, ignoring it entirely rather than risk that combination.
+
+On startup the server prints the address to open, for example `omnidb-server: listening on 127.0.0.1:9000 — open http://127.0.0.1:9000/omnidb_login/ in your browser`. The very first start against an empty home directory also prints the one-time password of the initial `admin` user — see Security and Multi-user Server, which also describes what a multi-user server restricts and protects. Stop the server with Ctrl-C (or `SIGTERM`); it shuts down gracefully.
 
 Let's take a look on how to deploy `omnidb-server` in different scenarios:
 
@@ -781,7 +1165,7 @@ Running `omnidb-server` with `-H 0.0.0.0` (or a specific public interface) makes
 
 **Deploying OmniDB behind a reverse proxy**
 
-The recommended approach: run `omnidb-server` listening only on `127.0.0.1` (the default, so `-H` can be omitted) and let a reverse proxy such as Nginx or Caddy handle TLS termination and forward plain HTTP to it locally.
+The recommended approach: run `omnidb-server` listening only on `127.0.0.1` (the default, so `-H` can be omitted) and let a reverse proxy such as Nginx (https://nginx.org) or Caddy (https://caddyserver.com) handle TLS termination and forward plain HTTP to it locally.
 
 ```
 ./omnidb-server -p 9000
@@ -805,13 +1189,92 @@ server {
         proxy_set_header   X-Forwarded-Ssl https;
         proxy_set_header   X-Forwarded-Proto https;
         proxy_set_header   X-Forwarded-Port 443;
-        proxy_set_header   Host $host;
+        proxy_set_header   Host localhost:9000;
         proxy_http_version 1.1;
     }
 }
 ```
 
+Note the `Host` header: while `omnidb-server` listens on loopback, it only answers requests addressed to `127.0.0.1:<port>`, `localhost:<port>` or `[::1]:<port>` (anything else gets `421 Misdirected Request`) — a protection against DNS-rebinding attacks. The proxy therefore has to forward the request with `Host` set to the local address, as above, rather than passing the public host name through. Keep `X-Forwarded-Proto https`: it tells OmniDB to mark its session cookies `Secure`.
+
 Since everything (including background query/console updates) is served over plain HTTP long-polling rather than websockets, a single `location /` block covering the whole app is all that's needed — there's no separate websocket upgrade path or `/wss` pattern to route specially anymore.
+
+---
+
+# Security and Multi-user Server
+URL: https://www.omnidb.net/en/security.html
+
+**Full Content:**
+
+This chapter collects what OmniDB does to protect saved credentials and a shared, multi-user server, and what that means for you as an administrator or user. For installing and exposing the server see Deploying omnidb-server; for command-line password management see OmniDB Config Tool.
+
+“Server mode” below means `omnidb-server` started without `-A` — a multi-user instance people sign in to from a browser, whether it listens on loopback only or on a network address (`-H`). The desktop app is always single-user.
+
+**Saved passwords are encrypted**
+
+Database passwords saved in a connection, SSH passwords/passphrases and SSH private keys are encrypted (AES-256-GCM) before they are written to OmniDB's user database, `omnidb.db`. The encryption key is not stored in that file: it is kept in the operating system's secret store — the macOS Keychain, the Windows Credential Manager or the Linux Secret Service — so a copy of `omnidb.db` alone does not reveal them.
+
+Where no secret store is reachable (typically a headless Linux server), OmniDB keeps the key in a file named `.connection_secret_key` (readable by its owner only) in the OmniDB home directory instead; once that file exists it is always used. In that case:
+
+- back the key file up together with `omnidb.db`, and protect both equally;
+- if the key is lost, the stored secrets cannot be recovered — the connections still exist, but their passwords and SSH keys have to be entered again.
+
+Existing unencrypted entries from older versions are encrypted automatically the first time a newer version starts. If you would rather not store a password at all, leave it empty in the connection form: OmniDB then asks for it when needed and keeps it only in memory, for 30 minutes, for your session (see Creating Users and Connections).
+
+**The initial `admin` account**
+
+A new server-mode installation creates one superuser, `admin`, with a random password that is printed once to the server's log output:
+
+```
+omnidb-server: initialized a new app database — initial login: admin / <password> (shown only once; change it under Settings, or run: omnidb-server --set-password admin)
+```
+
+Sign in with it and change it under Settings > Password, or set a password of your choice beforehand from the command line:
+
+```
+omnidb-server --set-password admin [-d /path/to/homedir]
+```
+
+The desktop app never shows a sign-in page; it signs in to its own local, loopback-only server automatically.
+
+**Sign-in protection and sessions**
+
+- After 10 failed sign-in attempts for the same user name, or from the same client address, within 15 minutes, further attempts are refused with Too many failed sign-in attempts. Please try again in 15 minutes. The counters are kept in memory and reset when the server restarts. Behind a reverse proxy the client address is the proxy's address.
+- Deleting a user ends all of that user's sessions immediately, and removing superuser status takes effect immediately. Changing a password (in Settings or with `--set-password`) applies to new sign-ins at once; a password changed in Settings also signs out that user's other sessions.
+
+**Restrictions in server mode**
+
+Because every connection of a multi-user server is opened by the server process, on the server machine, some connection options that would read the server's own files are restricted:
+
+- SQLite connections (a SQLite database is a file on the server) can only be created and used by OmniDB superusers. They cannot point inside OmniDB's own home directory, and `file:` URIs are rejected.
+- PostgreSQL connection strings may not use the parameters `passfile`, `servicefile`, `service`, `sslkey`, `sslcert`, `sslrootcert`, `sslcrl` or `sslcrldir`.
+
+These restrictions do not apply to the desktop app, where the files are your own.
+
+**Public connections**
+
+A connection marked Public connection? can be used by every OmniDB user on the server, but only its owner can edit it. For everyone else:
+
+- the saved password is never sent to their browser, and a password embedded in the connection string is shown masked;
+- Test Connection always tests the stored server, port and database — changing those fields in the form first does not redirect the stored password somewhere else.
+
+**Exported files**
+
+Query exports and DBML exports are written to the server's `temp` folder under random names and can only be downloaded by the user who created them. They are deleted automatically after 24 hours.
+
+**SSH host keys**
+
+SSH tunnels and SSH terminal connections verify the server's host key against the `~/.ssh/known_hosts` file of the operating-system user running `omnidb-server`. An unknown or changed host key is refused — OmniDB does not silently trust a host on first use. Add the host once from that account, for example:
+
+```
+ssh user@ssh-server.example.com        # accept the key once
+# or
+ssh-keyscan ssh-server.example.com >> ~/.ssh/known_hosts
+```
+
+**Network exposure**
+
+There is no built-in TLS. Keep `omnidb-server` on `127.0.0.1` (the default) behind a TLS-terminating reverse proxy rather than exposing plain HTTP with `-H 0.0.0.0` — see Deploying omnidb-server. While bound to loopback, the server only answers requests addressed to `127.0.0.1`, `localhost` or `[::1]` with its own port, which protects it against DNS-rebinding attacks from web pages. Session cookies are marked `Secure` when the request arrives over TLS or with `X-Forwarded-Proto: https`, and all state-changing requests are protected against cross-site request forgery.
 
 ---
 
@@ -824,16 +1287,16 @@ The Console Tab provides an easy and comfortable way to interact with your datab
 
 - `\?`: show the command list;
 - `\dt`: list tables;
-- `\d`: list tables, views and sequences; `\d NAME` describes one of them (its columns, types, nullability and defaults) — NAME can be schema-qualified (`\d public.customers`);
+- `\d`: list tables, views and sequences; `\d NAME` describes one of them (its columns, types, nullability and defaults) — `NAME` can be schema-qualified (`\d public.customers`);
 - `\du`: list roles/users;
 - `\l`: list databases;
 - `\df`: list functions;
 - `\x`: toggle expanded/vertical output;
 - `\timing`: toggle showing execution time.
 
-These map to whatever each connected engine actually has: MySQL/MariaDB's "database" doubles as its schema, Oracle's "user" doubles as its schema (and it has no separate multi-database concept), and SQLite has none of schemas/roles/databases at all — where an engine genuinely has nothing to show, the command says so directly instead of returning an empty or misleading result. `\h` (per-SQL-command syntax help, like a PostgreSQL manual page) is not implemented.
+These map to whatever each connected engine actually has: MySQL/MariaDB's “database” doubles as its schema, Oracle's “user” doubles as its schema (and it has no separate multi-database concept), and SQLite has none of schemas/roles/databases at all — where an engine genuinely has nothing to show, the command says so directly instead of returning an empty or misleading result. `\h` (per-SQL-command syntax help, like a PostgreSQL manual page) is not implemented.
 
-The editor on the bottom of the tab area is full-featured just like the Query Tab editor (it provides syntax highlight and autocomplete with Ctrl-Space). To execute a command, just type it in this editor. If the command is a backslash (starts with `\`), just type `Enter` and it will be executed. If it is a regular SQL command, then it can be multi-lined, and you will need to type Alt-Q to execute it.
+The editor on the bottom of the tab area is full-featured just like the Query Tab editor (it provides syntax highlight and autocomplete with Ctrl-Space, Option-Space on macOS, and its right-click menu offers Save as snippet and Use snippet). To execute a command, just type it in this editor. If the command is a backslash (starts with `\`), just type `Enter` and it will be executed. If it is a regular SQL command, then it can be multi-lined, and you will need to press Alt-Q (Ctrl-Q on macOS) to execute it.
 
 All commands and its output will be logged into the display area, which is textual and read-only, so you can copy and paste its contents somewhere else. You can clear the display area by clicking on the Clear Console button.
 
@@ -850,7 +1313,7 @@ URL: https://www.omnidb.net/en/editor_keyboard_shortcuts.html
 
 **Full Content:**
 
-OmniDB's SQL editor, Console editor and DDL/Properties viewer are all built on the Ace code editor (https://ace.c9.io/), which ships with its own rich set of keyboard shortcuts for editing, selecting and navigating text. This chapter lists them for reference. These are separate from the app-level shortcuts (Run Query, Cancel Query, switching tabs, etc.) described in Additional Features and configurable in the Settings dialog's Shortcuts tab.
+OmniDB's SQL editor, Console editor and DDL/Properties viewer are all built on the Ace code editor (https://ace.c9.io/), which ships with its own rich set of keyboard shortcuts for editing, selecting and navigating text. This chapter lists them for reference. These are separate from OmniDB's own app-level shortcuts (Run Query, Cancel Query, switching tabs, etc.), which are listed with their defaults, and can be changed, under Settings > Shortcuts — see Settings and Languages.
 
 **Line Operations**
 
@@ -977,33 +1440,34 @@ OmniDB has gone through several very different lives — a university project, a
 |---|---|
 | Original (ASP.NET/C#) | Undergrad final project at the Federal University of Paraná — the first tool to trace a common line between PostgreSQL, MySQL/MariaDB, Oracle, SQLite, Firebird and SQL Server metadata. |
 | OmniDB (Python/Django) | The long-lived version most people know: a Django web app with a browser-based workspace and, from 2.9 onward, a Python plugin system for community extensions. Development on the original OmniDB/OmniDB (https://github.com/OmniDB/OmniDB) repository stopped around 2020. |
-| 2025-2026 revival (3.1.x) | The project was picked back up: modernized codebase, improved security, native macOS Apple Silicon support, and a full documentation overhaul — still on the Python/Django backend at this point. |
+| 2025–2026 revival (3.1.x) | The project was picked back up: modernized codebase, improved security, native macOS Apple Silicon support, and a full documentation overhaul — still on the Python/Django backend at this point. |
 | Go rewrite (3.6.x) | The entire backend was rewritten from Python/Django to Go and shipped as a single native binary. The Python runtime, and everything that only made sense inside it — including the plugin system — was removed. |
 | Wails migration (done) | The desktop shell moved from NW.js to Wails (https://wails.io) (Go) — a smaller binary, no bundled Chromium, and the app now drives the OS's own native webview instead. |
-
-**PL/pgSQL step debugger (removed)**
-
-OmniDB 2.3.0 added an interactive step debugger for PL/pgSQL functions and procedures — breakpoints, live variable inspection, and per-line execution statistics. It depended on a custom PostgreSQL C extension (`omnidb_plugin`) hooking into PL/pgSQL's internal plugin API, loaded via `shared_preload_libraries` (a server restart), plus a dedicated `omnidb` schema and passwordless local access for a second, debugger-only database connection.
-
-The debugger has been removed, along with its "Debug Function"/"Debug Procedure" tree menu entries. It was never ported during the 3.6.x Go rewrite, and the `omnidb_plugin` extension itself hasn't been touched since 2020. Beyond the ongoing cost of keeping a PostgreSQL-internals C extension working across every new major PostgreSQL version, it fundamentally can't work at all against any managed/cloud PostgreSQL (RDS, Cloud SQL, Supabase, Neon, and similar) — none of them allow a custom `shared_preload_libraries` entry — so a large and growing share of today's users could never have used it regardless of how well it was maintained.
-
-Writing and running PL/pgSQL functions themselves is unaffected — see Writing PL/pgSQL Functions. If you need to step through PL/pgSQL execution against your own self-hosted PostgreSQL server, the original `omnidb_plugin` source is still available in the original repository's history (https://github.com/OmniDB/OmniDB/tree/master/omnidb_plugin), or you can use pldebugger (https://github.com/EnterpriseDB/pldebugger) (the actively-maintained equivalent used by pgAdmin) directly, outside of OmniDB.
-
-**Advanced Object Search (removed)**
-
-Advanced Object Search let users apply pattern matching — the SQL LIKE operator, or a full regular expression — across database object names and table data, searching across several tables in parallel and opening a ready-made query tab for any match found.
-
-Advanced Object Search has been removed. Its tree context-menu entry had already been commented out, and its frontend and backend code called functions that no longer exist anywhere in this codebase's history — it was never carried over during the 3.6.x rewrite from Python/Django to Go, and has not been reachable or functional since. The dead code has now been deleted outright rather than kept as a menu entry that could never work.
-
-There is no supported replacement today. A LIKE or regular-expression search across specific tables or columns can still be written by hand in the regular SQL editor — see Writing SQL Queries.
+| 4.x | New features on the Go codebase: MS SQL Server support back, the Notify, Monitoring, Connected Users and Permissions sections, a redesigned Connections and Settings UI, a multi-language interface, `.pgpass` support, encrypted saved passwords and a hardened multi-user server. |
 
 **The plugin system (removed)**
 
 The plugin system has been removed as part of the 3.6.x rewrite of the backend from Python/Django to Go, and is no longer available.
 
-OmniDB 2.9 introduced a plugin system that let users write Python code, hooked into different parts of the interface, to add their own features without redeploying the whole application. That mechanism depended on dynamically importing arbitrary Python modules into the running server process — something with no equivalent in a compiled Go binary — and was deliberately not carried over. Since it could never do anything useful again, the "Plugins" dialog and its menu entry, and the API endpoints behind it, were removed from the application entirely rather than kept around as a permanently-empty stub.
+OmniDB 2.9 introduced a plugin system that let users write Python code, hooked into different parts of the interface, to add their own features without redeploying the whole application. That mechanism depended on dynamically importing arbitrary Python modules into the running server process — something with no equivalent in a compiled Go binary — and was deliberately not carried over. Since it could never do anything useful again, the “Plugins” dialog and its menu entry, and the API endpoints behind it, were removed from the application entirely rather than kept around as a permanently-empty stub.
 
 If you relied on a specific plugin, there is currently no supported way to port it forward. Anything a plugin used to do by calling into the database directly can usually still be done today through the regular SQL editor, snippets, or a custom monitoring unit.
+
+**PL/pgSQL step debugger (removed)**
+
+OmniDB 2.3.0 added an interactive step debugger for PL/pgSQL functions and procedures — breakpoints, live variable inspection, and per-line execution statistics. It depended on a custom PostgreSQL C extension (`omnidb_plugin`) hooking into PL/pgSQL's internal plugin API, loaded via `shared_preload_libraries` (a server restart), plus a dedicated `omnidb` schema and passwordless local access for a second, debugger-only database connection.
+
+The debugger has been removed, along with its “Debug Function”/“Debug Procedure” tree menu entries. It was never ported during the 3.6.x Go rewrite, and the `omnidb_plugin` extension itself hasn't been touched since 2020. Beyond the ongoing cost of keeping a PostgreSQL-internals C extension working across every new major PostgreSQL version, it fundamentally can't work at all against any managed/cloud PostgreSQL (RDS, Cloud SQL, Supabase, Neon, and similar) — none of them allow a custom `shared_preload_libraries` entry — so a large and growing share of today's users could never have used it regardless of how well it was maintained.
+
+Writing and running PL/pgSQL functions themselves is unaffected — see Writing PL/pgSQL Functions. If you need to step through PL/pgSQL execution against your own self-hosted PostgreSQL server, the original `omnidb_plugin` source is still available in the original repository's history (https://github.com/OmniDB/OmniDB/tree/master/omnidb_plugin), or you can use pldebugger (https://github.com/EnterpriseDB/pldebugger) (the actively-maintained equivalent used by pgAdmin) directly, outside of OmniDB.
+
+**Advanced Object Search (removed)**
+
+Advanced Object Search let users apply pattern matching — the SQL `LIKE` operator, or a full regular expression — across database object names and table data, searching across several tables in parallel and opening a ready-made query tab for any match found.
+
+Advanced Object Search has been removed. Its tree context-menu entry had already been commented out, and its frontend and backend code called functions that no longer exist anywhere in this codebase's history — it was never carried over during the 3.6.x rewrite from Python/Django to Go, and has not been reachable or functional since. The dead code has now been deleted outright rather than kept as a menu entry that could never work.
+
+There is no supported replacement today. A `LIKE` or regular-expression search across specific tables or columns can still be written by hand in the regular SQL editor — see Writing SQL Queries.
 
 **pglogical (removed)**
 
@@ -1011,7 +1475,7 @@ pglogical (https://www.2ndquadrant.com/en/resources/pglogical/) was a PostgreSQL
 
 **Postgres-BDR (removed)**
 
-Postgres-BDR (https://www.2ndquadrant.com/en/resources/bdr/) ("Bi-Directional Replication") was 2ndQuadrant's multi-master extension for PostgreSQL. The old `omnidb-bdr` plugin gave it the same kind of tree-view integration as pglogical. Same story: it was a plugin, and the plugin system it depended on is gone.
+Postgres-BDR (https://www.2ndquadrant.com/en/resources/bdr/) (“Bi-Directional Replication”) was 2ndQuadrant's multi-master extension for PostgreSQL. The old `omnidb-bdr` plugin gave it the same kind of tree-view integration as pglogical. Same story: it was a plugin, and the plugin system it depended on is gone.
 
 **Postgres-XL (removed)**
 

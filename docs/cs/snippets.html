@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Snippety – Dokumentace OmniDB</title>
+	<meta name="description" content="Ukládání, uspořádání a opakované použití SQL snippetů v OmniDB: sekce Snippety, složky, ukládání a vkládání snippetů z karet dotazu a konzole.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/snippets.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/snippets.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/snippets.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/snippets.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/snippets.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/snippets.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/snippets.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/snippets.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/snippets.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/snippets.html">
+	<meta property="og:title" content="Snippety - Dokumentace OmniDB">
+	<meta property="og:description" content="Ukládání, uspořádání a opakované použití SQL snippetů v OmniDB: sekce Snippety, složky, ukládání a vkládání snippetů z karet dotazu a konzole.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Snippety", "item": "https://www.omnidb.net/cs/snippets.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html" class="active">Snippety</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Snippety</h1>
+<p><em>Snippety</em> jsou kusy textu — dotazy, skripty, šablony příkazů, poznámky — které si
+uchováváte v OmniDB a opakovaně je používáte v kterémkoli editoru SQL. Jsou uspořádány do stromu
+složek, uloženy ve vlastní uživatelské databázi OmniDB (takže přečkají aktualizace) a každý
+uživatel OmniDB má své vlastní, soukromé.</p>
+<h4>Sekce Snippety</h4>
+<p>Klikněte na ikonu <em>Snippety</em> (svitek) na levé liště. Sekce zobrazuje vlevo strom složek a
+vpravo záložky editoru snippetů; dělicí čáru mezi nimi lze přetahovat.</p>
+<p>Kliknutím pravým tlačítkem do prázdného místa ve stromu získáte <em>Obnovit</em>, <em>Nová
+složka</em> a <em>Přidat snippet</em>. Kliknutí pravým tlačítkem na složku nabídne totéž a navíc
+<em>Přejmenovat složku</em> a <em>Smazat složku</em>; kliknutí pravým tlačítkem na snippet nabídne
+<em>Upravit</em>, <em>Přejmenovat</em> a <em>Smazat</em>. Dvojklik na snippet ho otevře v záložce
+editoru (nebo se na ni přepne, pokud už je otevřená). Tlačítko <strong>+</strong> pod stromem
+přidá snippet do vybrané složky (nebo na nejvyšší úroveň) a <strong>−</strong> smaže vybranou
+položku.</p>
+<h4>Úpravy a ukládání</h4>
+<p>Každá záložka editoru je plnohodnotný editor SQL (zvýrazňování syntaxe, automatické doplňování,
+hledání a nahrazování) s tlačítky <em>Odsazení</em> a <em>Uložit</em> pod ním. Sekce vždy začíná
+jednou prázdnou záložkou <em>Nový úryvek</em> a záložka <em>+</em> otevře další.</p>
+<p>Malá tečka vedle názvu záložky znamená, že obsahuje neuložené změny; uložením zmizí a zavření
+záložky vyžaduje potvrzení jen tehdy, když neuložené změny opravdu obsahuje. Uložení snippetu,
+který byl otevřen ze stromu, ho přepíše. Uložení nové, nepojmenované záložky místo toho otevře
+nabídku: <em>Nový úryvek</em> (zeptá se na název a uloží ho na nejvyšší úroveň), <em>PŘEPSAT …</em>
+pro každý existující snippet a podnabídku pro každou složku se stejnými volbami uvnitř. Přepsání
+existujícího snippetu nejprve vyžaduje potvrzení.</p>
+<p>Klávesové zkratky v sekci Snippety (lze je změnit v
+<a href="settings_and_languages.html">Nastavení &gt; Klávesové zkratky &gt; Snippety</a>):</p>
+<table>
+	<thead>
+		<tr>
+			<th>Akce</th>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Uložit snippet</td>
+			<td>Ctrl-S</td>
+			<td>Command-S</td>
+		</tr>
+		<tr>
+			<td>Nový snippet</td>
+			<td>Ctrl-N</td>
+			<td>Command-N</td>
+		</tr>
+		<tr>
+			<td>Zavřít záložku snippetu</td>
+			<td>Ctrl-W</td>
+			<td>Command-W</td>
+		</tr>
+	</tbody>
+</table>
+<h4>Použití snippetů z karty dotazu nebo konzole</h4>
+<p>Klikněte pravým tlačítkem do editoru karty dotazu nebo karty konzole:</p>
+<ul>
+<li><em>Uložit jako snippet</em> uloží text editoru jako snippet pomocí stejné nabídky jako výše
+(nový snippet, nebo přepsání existujícího, v libovolné složce);</li>
+<li><em>Použít snippet</em> (zobrazí se, jakmile máte alespoň jeden snippet) vloží text zvoleného
+snippetu na pozici kurzoru.</li>
+</ul>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

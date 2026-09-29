@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Snippets – Documentação OmniDB</title>
+	<meta name="description" content="Guardar, organizar e reutilizar snippets SQL no OmniDB: a secção Snippets, pastas, e guardar e inserir snippets a partir dos separadores de consulta e de consola.">
+	<link rel="canonical" href="https://www.omnidb.net/pt/snippets.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/snippets.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/snippets.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/snippets.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/snippets.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/snippets.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/snippets.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/snippets.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/snippets.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/pt/snippets.html">
+	<meta property="og:title" content="Snippets - Documentação OmniDB">
+	<meta property="og:description" content="Guardar, organizar e reutilizar snippets SQL no OmniDB: a secção Snippets, pastas, e guardar e inserir snippets a partir dos separadores de consulta e de consola.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/pt/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentação", "item": "https://www.omnidb.net/pt/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Snippets", "item": "https://www.omnidb.net/pt/snippets.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Alternar navegação">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentação</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Patrocinar" title="Patrocinar">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Estrela no GitHub" title="Estrela no GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Mudar idioma" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Mudar tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automático</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Claro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Escuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Início</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Primeiros Passos</span>
+			<a href="introduction.html">Introdução</a>
+			<a href="installation.html">Instalação</a>
+			<a href="desktop_app.html">Aplicação de Ambiente de Trabalho</a>
+			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="settings_and_languages.html">Definições e Idiomas</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Trabalhar com Dados</span>
+			<a href="managing_databases.html">Gerir Bases de Dados</a>
+			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
+			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
+			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="snippets.html" class="active">Snippets</a>
+			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
+			<a href="visualizing_data.html">Visualizar Dados</a>
+			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avançado</span>
+			<a href="additional_features.html">Funcionalidades Adicionais</a>
+			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="notify.html">Notificações</a>
+			<a href="connected_users.html">Utilizadores Ligados</a>
+			<a href="permissions.html">Roles e Permissões</a>
+			<a href="logical_replication.html">Replicação Lógica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Servidor e Ferramentas</span>
+			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="security.html">Segurança e Servidor Multiutilizador</a>
+			<a href="console_tab.html">Separador de Consola</a>
+			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Referência</span>
+			<a href="legacy_features_and_history.html">Funcionalidades Legadas e Histórico</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Snippets</h1>
+<p>Os <em>snippets</em> são excertos de texto — consultas, scripts, modelos de comandos, notas — que
+guarda no OmniDB e reutiliza a partir de qualquer editor SQL. Estão organizados numa árvore de pastas, armazenados
+na própria base de dados de utilizador do OmniDB (pelo que sobrevivem às atualizações) e são privados de cada utilizador do OmniDB.</p>
+<h4>A secção Snippets</h4>
+<p>Clique no ícone <em>Snippets</em> (o pergaminho) na barra esquerda. A secção mostra a árvore de pastas
+à esquerda e os separadores de edição de snippets à direita; o divisor entre ambos pode ser arrastado.</p>
+<p>Clique com o botão direito num espaço vazio da árvore para <em>Atualizar</em>, <em>Nova pasta</em> e <em>Adicionar
+snippet</em>. Clicar com o botão direito numa pasta oferece o mesmo, mais <em>Mudar nome da pasta</em> e <em>Eliminar
+pasta</em>; clicar com o botão direito num snippet oferece <em>Editar</em>, <em>Mudar nome</em> e <em>Eliminar</em>.
+Fazer duplo clique num snippet abre-o num separador de edição (ou muda para ele, se já estiver aberto).
+O botão <strong>+</strong> por baixo da árvore adiciona um snippet à pasta selecionada (ou ao nível
+superior), e <strong>−</strong> elimina o item selecionado.</p>
+<h4>Editar e guardar</h4>
+<p>Cada separador de edição é um editor SQL completo (realce de sintaxe, preenchimento automático, localizar e substituir)
+com os botões <em>Indentação</em> e <em>Guardar</em> por baixo. A secção começa sempre com um separador
+<em>Novo snippet</em> vazio, e o separador <em>+</em> abre outro.</p>
+<p>Um pequeno ponto junto ao título de um separador indica que tem alterações não guardadas; guardar faz com que desapareça, e fechar
+um separador só pede confirmação quando existem, de facto, alterações não guardadas. Guardar um snippet que foi
+aberto a partir da árvore substitui-o. Guardar um separador novo, sem nome, abre em vez disso um menu:
+<em>Novo snippet</em> (pede um nome e guarda-o no nível superior), <em>SUBSTITUIR …</em> para
+cada snippet existente, e um submenu para cada pasta com as mesmas opções no seu interior.
+Substituir um snippet existente pede primeiro confirmação.</p>
+<p>Atalhos de teclado na secção Snippets (podem ser alterados em
+<a href="settings_and_languages.html">Definições &gt; Atalhos de teclado &gt; Snippets</a>):</p>
+<table>
+	<thead>
+		<tr>
+			<th>Ação</th>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td>Guardar snippet</td>
+			<td>Ctrl-S</td>
+			<td>Command-S</td>
+		</tr>
+		<tr>
+			<td>Novo snippet</td>
+			<td>Ctrl-N</td>
+			<td>Command-N</td>
+		</tr>
+		<tr>
+			<td>Fechar separador de snippet</td>
+			<td>Ctrl-W</td>
+			<td>Command-W</td>
+		</tr>
+	</tbody>
+</table>
+<h4>Usar snippets a partir de um separador de consulta ou de consola</h4>
+<p>Clique com o botão direito dentro do editor de um separador de consulta ou de consola:</p>
+<ul>
+<li><em>Guardar como snippet</em> guarda o texto do editor como snippet, usando o mesmo menu descrito acima
+(um snippet novo, ou substituir um existente, em qualquer pasta);</li>
+<li><em>Utilizar snippet</em> (mostrado assim que tiver pelo menos um snippet) insere o texto do snippet escolhido
+na posição do cursor.</li>
+</ul>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -7,8 +7,12 @@
 	<meta name="description" content="Use la pestaña de consola de OmniDB como una consola de trabajo similar a psql: un puñado de comandos de barra invertida, historial de comandos, resaltado de sintaxis y autocompletado.">
 	<link rel="canonical" href="https://www.omnidb.net/es/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/console_tab.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/console_tab.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/console_tab.html">
 	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/console_tab.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/console_tab.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/console_tab.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/console_tab.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
+			<a href="desktop_app.html">Aplicación de escritorio</a>
 			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="settings_and_languages.html">Configuración e idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
 			<a href="visualizing_data.html">Visualización de datos</a>
 			<a href="managing_other_elements.html">Administración de otros elementos</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="notify.html">Notificaciones</a>
+			<a href="connected_users.html">Usuarios conectados</a>
+			<a href="permissions.html">Roles y permisos</a>
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="security.html">Seguridad y servidor multiusuario</a>
 			<a href="console_tab.html" class="active">Pestaña de consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
 		</div>
@@ -152,11 +163,12 @@ de esquemas/roles/bases de datos — cuando un motor realmente no tiene nada que
 mostrar, el comando lo indica directamente en lugar de devolver un resultado vacío o
 engañoso. <code>\h</code> (ayuda de sintaxis por comando SQL, como una página de manual de PostgreSQL)
 no está implementado.</p>
-<p>El editor en la parte inferior del área de la pestaña es completo, igual que el editor de la <em>Query
-Tab</em> (pestaña de consulta): ofrece resaltado de sintaxis y autocompletado con <em>Ctrl-Space</em>.
+<p>El editor en la parte inferior del área de la pestaña es completo, igual que el editor de la <em>Pestaña
+de consulta</em>: ofrece resaltado de sintaxis y autocompletado con <em>Ctrl-Space</em> (<em>Option-Space</em>
+en macOS), y su menú contextual ofrece <em>Guardar como snippet</em> y <em>Usar snippet</em>.
 Para ejecutar un comando, simplemente escríbalo en este editor. Si el comando es de barra invertida
-(comienza con <code>\</code>), basta con pulsar <code>Enter</code> y se ejecutará. Si es un comando
-SQL normal, puede ser de varias líneas, y deberá pulsar <em>Alt-Q</em> para
+(comienza con <code>\</code>), basta con pulsar <code>Enter</code> y se ejecutará. Si es un comando
+SQL normal, puede ser de varias líneas, y deberá pulsar <em>Alt-Q</em> (<em>Ctrl-Q</em> en macOS) para
 ejecutarlo.</p>
 <p>Todos los comandos y su salida quedarán registrados en el área de visualización, que es
 de solo texto y de solo lectura, por lo que puede copiar y pegar su contenido en cualquier otro lugar.

@@ -94,6 +94,18 @@ func oracleVerifiedSchemaTable(db *sql.DB, schema, table string) (string, string
 	return s, t, err
 }
 
+// unwrapOracleDisplayIdent reverses oracleIdentEq's display form (a name is
+// wrapped in double quotes only when it isn't plain upper case) back to the
+// raw catalog name, so quoteOracleIdent can quote every name uniformly —
+// an unwrapped upper-case name like ATTACKER.F() would otherwise reach SQL
+// bare. Oracle identifiers can't contain '"', so this is unambiguous.
+func unwrapOracleDisplayIdent(name string) string {
+	if len(name) >= 2 && strings.HasPrefix(name, `"`) && strings.HasSuffix(name, `"`) {
+		return name[1 : len(name)-1]
+	}
+	return name
+}
+
 // quoteOracleIdent double-quotes an Oracle identifier, doubling any embedded
 // double-quote character — the standard Oracle quoted-identifier rule (same
 // shape as quotePostgresIdentifierDoubleQuoted).
@@ -165,7 +177,7 @@ func quotedSchemaTableRef(technology, schema, table string) string {
 	case "mysql", "mariadb":
 		return quoteMySQLIdent(schema) + "." + quoteMySQLIdent(table)
 	case "oracle":
-		return quoteOracleIdent(schema) + "." + quoteOracleIdent(table)
+		return quoteOracleIdent(unwrapOracleDisplayIdent(schema)) + "." + quoteOracleIdent(unwrapOracleDisplayIdent(table))
 	case "mssql":
 		return quoteMSSQLIdent(schema) + "." + quoteMSSQLIdent(table)
 	case "firebird":
@@ -173,4 +185,15 @@ func quotedSchemaTableRef(technology, schema, table string) string {
 	default:
 		return table
 	}
+}
+
+// quoteTemplateColumns applies quoteEditDataColumn to each catalog column
+// name — for the generated SELECT/INSERT/UPDATE templates, several of
+// which (e.g. "Query Data") are executed immediately, not just shown.
+func quoteTemplateColumns(technology string, names []string) []string {
+	out := make([]string, len(names))
+	for i, n := range names {
+		out[i] = quoteEditDataColumn(technology, n)
+	}
+	return out
 }

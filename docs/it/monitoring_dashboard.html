@@ -7,8 +7,12 @@
 	<meta name="description" content="Costruisci una dashboard di monitoraggio del database in tempo reale in OmniDB con unità di tipo griglia, grafico e serie temporale, incluso come scrivere le tue unità personalizzate basate su SQL.">
 	<link rel="canonical" href="https://www.omnidb.net/it/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/monitoring_dashboard.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/monitoring_dashboard.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/monitoring_dashboard.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/monitoring_dashboard.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html">Introduzione</a>
 			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html">App desktop</a>
 			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html">Impostazioni e lingue</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Lavorare con i dati</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
 			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="snippets.html">Snippet</a>
 			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
 			<a href="managing_other_elements.html">Gestione di altri elementi</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
 			<a href="monitoring_dashboard.html" class="active">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server e strumenti</span>
 			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
@@ -127,123 +138,121 @@
 		</div>
 		</nav>
 		<main>
-		<h1>Dashboard di monitoraggio</h1>
-<p>OmniDB ha una funzionalità interessante chiamata <em>Dashboard di
-Monitoraggio</em>. Sappiamo che un’immagine vale più di mille parole, quindi
-dai un’occhiata:</p>
-<p><img alt="" src="../assets/img/image_091.webp" /></p>
-<p>Come puoi vedere, si tratta di un nuovo tipo di scheda interna che mostra
-alcuni grafici e griglie. Questa scheda interna <em>Monitoraggio</em> si apre
-automaticamente quando espandi il nodo radice dell’albero (il nodo
-<em>PostgreSQL</em>). Puoi tenerla aperta o chiuderla in qualsiasi momento. Per
-riaprirla, fai clic destro sul nodo radice e clicca su <em>Dashboard</em>.</p>
-<p><img alt="" src="../assets/img/image_092.webp" /></p>
-<p>La dashboard è composta da comodi rettangoli informativi chiamati <em>Unità di
-Monitoraggio</em>. Ecco un esempio di Unità di Monitoraggio e dei suoi elementi
-dell’interfaccia:</p>
-<p><img alt="" src="../assets/img/image_093.webp" /></p>
+		<h1>Dashboard di monitoraggio</h1>
+<p>La sezione <em>Monitoraggio</em> è una dashboard in tempo reale di grafici e griglie per il
+server dietro una connessione — frequenza delle transazioni, backend, produzione di WAL,
+dimensione del database, rapporti di hit della cache e altro ancora — composta da piccole schede
+indipendenti chiamate <em>unità di monitoraggio</em>. Oltre alle unità fornite con OmniDB puoi
+scriverne di tue, ciascuna costituita da una singola query SQL.</p>
+<p>Esistono unità integrate per PostgreSQL (16 unità) e MySQL (1 unità, <em>Thread Count</em>).
+Anche le connessioni MariaDB e Oracle dispongono della dashboard, per le tue unità
+personalizzate. Per gli altri motori la sezione mostra <em>Il monitoraggio non è supportato per le
+connessioni ….</em></p>
+<h4>Aprire la dashboard</h4>
+<p>Fai clic sull’icona <em>Monitoraggio</em> nella barra laterale sinistra (tra <em>Database</em> e
+<em>Notifiche</em>). La dashboard appartiene a una connessione aperta nella sezione
+<em>Database</em>: in cima alla sezione viene mostrata la striscia delle schede di connessione
+aperte, e selezionando una scheda si vede la dashboard di quella connessione. Se non c’è alcuna
+connessione aperta mostra <em>Nessuna connessione aperta.</em></p>
+<p><strong>Tutte le unità partono in pausa</strong> quando la dashboard viene caricata, quindi
+aprirla non avvia da sola alcuna interrogazione del server. Avvia quelle che ti interessano con il
+rispettivo pulsante di riproduzione, oppure tutte insieme con <em>Attiva tutto</em>.</p>
+<h4>La barra degli strumenti</h4>
+<p>La barra degli strumenti in alto resta al suo posto mentre le schede scorrono sotto di essa:</p>
 <ul>
-<li><strong>1</strong>: Titolo dell’Unità di Monitoraggio;</li>
-<li><strong>2</strong>: Aggiorna l’Unità di Monitoraggio. A seconda del tipo, facendo clic
-su questo pulsante verrà aggiornata l’intera area di disegno oppure il grafico
-acquisirà semplicemente un nuovo set di valori;</li>
-<li><strong>3</strong>: Metti in pausa l’Unità di Monitoraggio;</li>
-<li><strong>4</strong>: Intervallo in secondi per l’aggiornamento automatico;</li>
-<li><strong>5</strong>: Rimuovi l’Unità di Monitoraggio dalla Dashboard di Monitoraggio;</li>
-<li><strong>6</strong>: Area di disegno, che varia a seconda del tipo di Unità di
-Monitoraggio.</li>
+<li>il primo pulsante, con sola icona (tooltip <em>Gestisci unità</em>), apre o chiude il pannello
+laterale con l’elenco delle unità, descritto più avanti;</li>
+<li><em>Aggiorna tutto</em> aggiorna una volta ogni unità visualizzata;</li>
+<li><em>Attiva tutto</em> / <em>Metti in pausa tutto</em> avviano o interrompono l’aggiornamento
+automatico di tutte le unità di questa connessione;</li>
+<li><em>Dimensione schede</em> — <em>Piccola</em>, <em>Media</em>, <em>Grande</em> o <em>Larghezza
+piena</em> — stabilisce quanto può diventare larga una scheda prima che la griglia passi a meno
+colonne: una finestra stretta mostra una scheda per riga, un monitor largo diverse affiancate. La
+scelta viene ricordata nel browser.</li>
 </ul>
-<h4>Tipi di Unità di Monitoraggio</h4>
-<p>Esistono 3 tipi di Unità di Monitoraggio:</p>
+<h4>La scheda di un’unità di monitoraggio</h4>
+<p>Ogni scheda ha in alto il proprio titolo, una <em>×</em> che rimuove (nasconde) l’unità dalla
+dashboard e — per le tue unità personalizzate — un pulsante di modifica che ne apre l’editor
+(entrambi compaiono passando il mouse sulla scheda). Sotto il titolo si trovano i controlli
+dell’unità: aggiorna ora, pausa / riproduci e l’intervallo di aggiornamento in secondi. Il resto
+della scheda è il grafico o la griglia dell’unità.</p>
+<p>Un’unità è di uno di tre tipi:</p>
 <ul>
-<li><strong>Griglia</strong>: Il tipo più semplice, esegue semplicemente una query di tanto
-in tanto e mostra i risultati in una griglia di dati.</li>
+<li><strong>Griglia</strong>: esegue la propria query a ogni aggiornamento e mostra il risultato
+come griglia di dati.</li>
+<li><strong>Grafico (senza accodamento)</strong>: ridisegna un grafico completo a ogni
+aggiornamento; i valori precedenti vengono sostituiti. Ideale per grafici a torta o ad anello di uno
+stato corrente.</li>
+<li><strong>Serie temporale</strong>: a ogni aggiornamento aggiunge al grafico un nuovo insieme di
+valori, mantenendo i punti più recenti, così puoi osservare come evolve un valore nel tempo. Tutte
+le unità integrate sono serie temporali.</li>
 </ul>
-<p><img alt="" src="../assets/img/image_094.webp" /></p>
+<h4>Gestire le unità</h4>
+<p>Il pannello laterale <em>Gestisci unità</em> (che si apre e chiude con il primo pulsante della
+barra degli strumenti e si ridimensiona trascinandone il bordo) elenca tutte le unità disponibili
+per la connessione:</p>
 <ul>
-<li><strong>Grafico</strong>: Ogni volta che si aggiorna, disegna un nuovo grafico
-completo. Il vecchio set di valori viene perso. Questo è particolarmente utile
-per i grafici a torta, ma possono essere usati anche altri tipi di grafici.</li>
+<li>la casella di controllo davanti a un’unità la mostra o la nasconde nella dashboard (nasconderla
+la ferma, come la <em>×</em> della sua scheda, ma ne conserva l’intervallo di aggiornamento per la
+volta successiva);</li>
+<li>trascina una riga in alto o in basso per cambiare l’ordine delle schede nella dashboard;</li>
+<li>il pulsante <strong>+</strong> sotto l’elenco apre l’editor <em>Nuova unità</em>;</li>
+<li>per un’unità personalizzata, clic destro → <em>Modifica</em> o <em>Elimina</em>, oppure doppio
+clic per aprirne l’editor. Le unità integrate non possono essere modificate né eliminate, solo
+mostrate o nascoste.</li>
 </ul>
-<p><img alt="" src="../assets/img/image_095.webp" /></p>
-<ul>
-<li><strong>Serie temporale</strong>: Forse questo è il tipo più utile di Unità di
-Monitoraggio. È un grafico che aggiunge un nuovo set di valori ogni volta che
-si aggiorna. I grafici a linee o a barre sono i più adatti per questo tipo. Gli
-ultimi 100 set di valori vengono mantenuti dal componente lato client per
-essere visualizzati dall’utente.</li>
-</ul>
-<p><img alt="" src="../assets/img/image_096.webp" /></p>
-<h4>Mostrare e nascondere unità nella dashboard</h4>
-<p>Se fai clic sul pulsante <em>Aggiorna Tutto</em>, tutte le Unità di Monitoraggio
-verranno aggiornate contemporaneamente. Puoi anche rimuovere le Unità di
-Monitoraggio indesiderate facendo clic sul pulsante <em>Rimuovi</em>. Procediamo
-rimuovendo tutte le unità dalla dashboard, rendendola vuota:</p>
-<p><img alt="" src="../assets/img/image_097.webp" /></p>
-<p>Le 17 unità integrate in OmniDB (metriche del server PostgreSQL e MySQL —
-frequenza delle transazioni, backend, produzione di WAL, dimensione di
-database/tabelle e così via) vengono eseguite come codice nativo e non
-richiedono nulla di aggiuntivo installato nel database.</p>
-<p><img alt="" src="../assets/img/image_098.webp" /></p>
-<p>Ora che la nostra dashboard è vuota, aggiungiamo alcune unità. Fai clic sul
-pulsante <em>Gestisci Unità</em>.</p>
-<p><img alt="" src="../assets/img/image_099.webp" /></p>
-<p>Fai clic sull’azione verde per aggiungere una qualsiasi delle unità integrate
-— ad es. <em>Backend</em> e <em>Dimensione Database</em>. Attendi qualche secondo e avrai
-una dashboard come questa:</p>
-<p><img alt="" src="../assets/img/image_100.webp" /></p>
-<p>Allo stesso modo, puoi aggiungere e rimuovere qualsiasi unità per
-personalizzare la dashboard come desideri.</p>
-<h4>Scrivere Unità di Monitoraggio personalizzate</h4>
-<p>OmniDB ti permette di scrivere le tue unità, o personalizzare quelle
-esistenti, scrivendo una singola query SQL — la stessa connessione e gli
-stessi permessi che il tuo editor SQL ha già, con la sola differenza che viene
-eseguita a intervalli invece che su richiesta. Non c’è nessun linguaggio di
-scripting separato o sandbox da imparare.</p>
-<p><strong>Nota:</strong> poiché la query viene rieseguita senza supervisione a ogni
-intervallo di aggiornamento, sono accettate solo query <code>SELECT</code> (o
-<code>WITH ... SELECT</code>) — un’istruzione distruttiva incollata per errore viene
-rifiutata immediatamente invece di essere eseguita silenziosamente a ogni
+<p>Le tue unità personalizzate sono private per il tuo utente OmniDB.</p>
+<h4>Unità integrate</h4>
+<p>PostgreSQL: <em>Transaction Rate</em>, <em>Backends</em>, <em>Autovacuum Workers Usage</em>,
+<em>WAL Production Rate</em>, <em>Temp Files Creation Rate</em>, <em>Autovacuum Freeze</em>,
+<em>Blocked Locks</em>, <em>Database Size</em>, <em>Database Growth Rate</em>, <em>Heap Cache Miss
+Ratio</em>, <em>Index Cache Miss Ratio</em>, <em>Seq Scan Ratio</em>, <em>Long Transaction</em>,
+<em>Long Query</em>, <em>Long Autovacuum</em> e <em>Checkpoints</em>. MySQL: <em>Thread
+Count</em>. Non richiedono nulla di aggiuntivo installato nel database.</p>
+<h4>Scrivere unità di monitoraggio personalizzate</h4>
+<p>Un’unità personalizzata è una singola query SQL eseguita a intervalli — con la stessa
+connessione e gli stessi permessi del tuo editor SQL. Non c’è nessun linguaggio di scripting
+separato da imparare.</p>
+<p><strong>Nota:</strong> poiché la query viene rieseguita senza supervisione, sono accettate solo
+query <code>SELECT</code> (o <code>WITH ... SELECT</code>) — un’istruzione distruttiva incollata per
+errore viene rifiutata immediatamente invece di essere eseguita silenziosamente a ogni
 intervallo.</p>
-<p>Per creare una nuova Unità di Monitoraggio, fai clic sul pulsante <em>Gestisci
-Unità</em> nella dashboard, quindi fai clic sul pulsante <em>Nuova Unità</em>. Si aprirà
-un nuovo tipo di scheda interna con un Nome, un menu a tendina Tipo, un
-Intervallo di Aggiornamento e un singolo editor di Query SQL (più un menu a
-tendina Tipo di Grafico, mostrato solo per le unità <em>Grafico</em>).</p>
-<p>La forma della query dipende dal Tipo dell’unità:</p>
+<p>Fai clic su <strong>+</strong> nel pannello <em>Gestisci unità</em>. Si apre una scheda
+dell’editor <em>Unità di monitoraggio</em> con i campi <em>Nome</em>, <em>Tipo</em> (<em>Serie
+temporale</em>, <em>Grafico (senza accodamento)</em> o <em>Griglia</em>), <em>Intervallo di
+aggiornamento</em> (in secondi), <em>Modello</em> (per partire facoltativamente da un’unità
+esistente), <em>Tipo di grafico</em> (<em>Barre</em>, <em>Torta</em>, <em>Ciambella</em> o
+<em>Linee</em>; mostrato solo per <em>Grafico (senza accodamento)</em>) e l’editor <em>Query
+SQL</em>.</p>
+<p>La forma della query dipende dal tipo dell’unità:</p>
 <ul>
 <li>
-<p><strong>Griglia</strong>: nessuna forma particolare — qualsiasi colonna e riga
-restituita dalla query diventa direttamente la griglia. Ad esempio:</p>
+<p><strong>Griglia</strong>: nessuna forma particolare — qualsiasi colonna e riga
+restituita dalla query diventa la griglia. Ad esempio:</p>
 <pre><code class="language-sql">SELECT * FROM pg_stat_activity</code></pre>
 </li>
 <li>
-<p><strong>Grafico</strong>: una riga per categoria — la prima colonna è l’etichetta, le
-colonne restanti sono ciascuna una serie (il nome della colonna diventa il
-nome della serie). Scegli il Tipo di Grafico (a barre, a torta, ad anello o a
-linee) dal menu a tendina accanto al selettore del Tipo. Ad esempio, un
-grafico a torta delle dimensioni dei database:</p>
+<p><strong>Grafico (senza accodamento)</strong>: una riga per categoria — la prima colonna è
+l’etichetta, le colonne restanti sono ciascuna una serie (il nome della colonna diventa il nome
+della serie). Ad esempio, un grafico a torta delle dimensioni dei database:</p>
 <pre><code class="language-sql">SELECT datname,
        round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
 FROM pg_catalog.pg_database
 WHERE datname NOT IN ('template0', 'template1')</code></pre>
 </li>
 <li>
-<p><strong>Serie temporale</strong>: esattamente una riga — ogni colonna numerica diventa
-una serie a linee aggiunta continuamente, aggiornata all’intervallo
-configurato. Ad esempio, per tracciare la dimensione del database nel tempo:</p>
+<p><strong>Serie temporale</strong>: esattamente una riga — ogni colonna numerica diventa una
+serie aggiunta continuamente. Ad esempio, per tracciare la dimensione totale dei database nel
+tempo:</p>
 <pre><code class="language-sql">SELECT round(sum(pg_catalog.pg_database_size(datname)) / 1048576.0, 2) AS total_size_mb
 FROM pg_catalog.pg_database
 WHERE NOT datistemplate</code></pre>
 </li>
 </ul>
-<p>Scrivi (o incolla) la query nell’editor di Query SQL, quindi fai clic sul
-pulsante <em>Test</em> per vederla visualizzata nell’area di anteprima — puoi
-provarla tutte le volte che vuoi. Una volta che sei soddisfatto, assegna un
-nome all’unità, imposta un intervallo di aggiornamento e premi <em>Salva</em>. Chiudi
-la scheda di modifica e la nuova unità apparirà nell’elenco delle unità,
-pronta per essere aggiunta alla dashboard (azione verde) proprio come una
-unità integrata.</p>
+<p>Fai clic su <em>Prova</em> per eseguire la query una volta e vederne il risultato visualizzato
+sotto l’editor — tutte le volte che vuoi. Quando sei soddisfatto, assegna un nome all’unità,
+imposta l’intervallo di aggiornamento e fai clic su <em>Salva</em>. L’unità compare quindi
+nell’elenco <em>Gestisci unità</em>; selezionala per mostrarla nella dashboard.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

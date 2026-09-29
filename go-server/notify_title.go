@@ -32,10 +32,8 @@ type notifyTitleRequest struct {
 // this has to be reachable from section_switcher.js's applyWindowTitle
 // directly, not piggybacked on a render-time hook.
 //
-// No CSRF/token check beyond the session cookie (this route is in
-// native_session.go's csrfExemptPrefixes, same reasoning as
-// /export_save_dialog/): consistent with every other native relay route in
-// this migration. Fire-and-forget on both ends — a missed native title-bar
+// CSRF-checked like every other POST route (section_switcher.js sends
+// X-CSRFToken via jsonPostHeaders). Fire-and-forget on both ends — a missed native title-bar
 // update is cosmetic, corrected on the next section switch, not worth
 // failing the request or making the caller wait on the wails-app round trip.
 func handleNotifyTitle(w http.ResponseWriter, r *http.Request) {
@@ -58,7 +56,7 @@ func handleNotifyTitle(w http.ResponseWriter, r *http.Request) {
 			if err != nil {
 				return
 			}
-			resp, err := http.Post(titleURL, "application/json", bytes.NewReader(payload))
+			resp, err := postToShell(nil, titleURL, bytes.NewReader(payload))
 			if err != nil {
 				return
 			}

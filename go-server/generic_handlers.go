@@ -102,7 +102,9 @@ func handleStartEditData(upstream *url.URL, fallback http.Handler) http.HandlerF
 		if len(pkCols) > 0 {
 			parts := make([]string, len(pkCols))
 			for i, c := range pkCols {
-				parts[i] = "t." + c
+				// Spliced into the filter box and run immediately — quote it
+				// (see quoteEditDataColumn).
+				parts[i] = "t." + quoteEditDataColumn(info.Technology, c)
 			}
 			orderBy = "ORDER BY " + strings.Join(parts, ", ")
 		}

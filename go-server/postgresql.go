@@ -2,7 +2,10 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	"net/url"
+	"regexp"
+	"strings"
 
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/stdlib"
@@ -37,6 +40,11 @@ func openPostgreSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 // the connection is exactly what pgx would have derived from that same DSN
 // on its own.
 func postgresqlConnConfig(info *ConnectionInfo) (*pgx.ConnConfig, error) {
+	if appToken == "" && info.ConnString != "" {
+		if key := pgFileConnStringParam(info.ConnString); key != "" {
+			return nil, fmt.Errorf("connection string parameter %q is not allowed on a multi-user OmniDB server", key)
+		}
+	}
 	cfg, err := pgx.ParseConfig(postgresqlDSN(info))
 	if err != nil {
 		return nil, err
@@ -334,4 +342,26 @@ func postgresqlColumns(db *sql.DB, schema, table string) ([]postgresqlColumn, er
 		columns = append(columns, c)
 	}
 	return columns, rows.Err()
+}
+
+// pgFileConnStringParams are the libpq/pgx connection parameters that make
+// the client read a local file. On a multi-user server that's the *server's*
+// filesystem: e.g. passfile=/some/.pgpass plus a host the user controls
+// sends a matching password from that file to them.
+var pgFileConnStringParams = []string{"passfile", "servicefile", "service", "sslkey", "sslcert", "sslrootcert", "sslcrl", "sslcrldir"}
+
+var pgConnStringKeyPattern = regexp.MustCompile(`(?i)(?:^|[\s?&])([a-z_]+)\s*=`)
+
+// pgFileConnStringParam returns the first pgFileConnStringParams key present
+// in connString (URL query or keyword/value form), or "".
+func pgFileConnStringParam(connString string) string {
+	for _, m := range pgConnStringKeyPattern.FindAllStringSubmatch(connString, -1) {
+		key := strings.ToLower(m[1])
+		for _, p := range pgFileConnStringParams {
+			if key == p {
+				return key
+			}
+		}
+	}
+	return ""
 }

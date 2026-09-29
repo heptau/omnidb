@@ -123,6 +123,7 @@ export PATH="$PATH:$(go env GOPATH)/bin"      # needed to get the `wails` CLI on
 
 make build-mac-arm64    # Apple Silicon
 make build-linux        # Linux x64 — must run ON Linux, see Wails migration notes
+make build-linux-docker # Linux x64 from macOS/Windows, inside Docker (what releases use)
 make build-win          # Windows x64 — fully cross-compiles from macOS/Linux
 ```
 
@@ -130,7 +131,15 @@ make build-win          # Windows x64 — fully cross-compiles from macOS/Linux
 installs the Wails CLI automatically if missing). Every target's Go build step
 (`go build` for `go-server` and Wails' own compile for the shell) cross-compiles
 cleanly to any target platform — the one exception is Wails' own Linux webview
-(a real CGO/GTK binding), which is why `make build-linux` must run on real Linux.
+(a real CGO/GTK binding), which is why `make build-linux` must run on real Linux —
+or inside the Linux container `make build-linux-docker` sets up
+(`scripts/docker/linux-build.Dockerfile`).
+
+Releases are built entirely locally by `scripts/release.sh` (`make release`):
+macOS, Windows (plus the NSIS installer) and Linux via Docker, then
+`checksums.txt`. There is no GitHub Actions release/build matrix any more —
+`.github/workflows/tests.yml` (build, vet, test, govulncheck, bundle-freshness
+check) is the only workflow.
 
 ## Wails migration — current status
 
@@ -170,10 +179,11 @@ context if something about window/login behavior looks odd):**
   never run on real Linux or Windows hardware**. `wails build -platform
   linux/amd64` outright refuses to cross-compile from macOS; Windows fully
   cross-compiles from macOS for both the Go/Wails shell and `go-server` (verified
-  — produces a real PE32+ `.exe`). `.github/workflows/release.yml` builds both
-  live on GitHub-hosted runners — that CI run is the first real test either of
-  these gets. If a release comes back broken on one of these platforms, that's
-  why: there is no NW.js fallback anymore, by design.
+  — produces a real PE32+ `.exe`); Linux is built in Docker
+  (`make build-linux-docker`), which proves it compiles and links but not that it
+  runs on a real desktop. The first real test either platform gets is a user
+  running the release. If a release comes back broken on one of these
+  platforms, that's why: there is no NW.js fallback anymore, by design.
 
 ## Gotchas learned the hard way
 

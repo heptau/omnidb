@@ -358,29 +358,29 @@ func oidArg(oid int64, _ int) []any                 { return []any{oid} }
 func oidPositionArgs(oid int64, position int) []any { return []any{oid, position} }
 
 var postgresqlObjectDescriptionSpecs = map[string]postgresqlObjectDescriptionSpec{
-	"aggregate":                   {commentKind: "AGGREGATE", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
-	"table_field":                 {commentKind: "COLUMN", args: oidPositionArgs, query: `select format('%s.%s', $1::regclass, attname) as id, coalesce(col_description($1, $2), '') as description from pg_attribute where attrelid = $1::regclass and attnum = $2`},
-	"check":                       {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select conname as id, conrelid::regclass as table_id, coalesce(obj_description($1, 'pg_constraint'), '') as description from pg_constraint c where oid = $1`},
-	"foreign_key":                 {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select conname as id, conrelid::regclass as table_id, coalesce(obj_description($1, 'pg_constraint'), '') as description from pg_constraint c where oid = $1`},
-	"pk":                          {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select conname as id, conrelid::regclass as table_id, coalesce(obj_description($1, 'pg_constraint'), '') as description from pg_constraint c where oid = $1`},
-	"unique":                      {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select conname as id, conrelid::regclass as table_id, coalesce(obj_description($1, 'pg_constraint'), '') as description from pg_constraint c where oid = $1`},
-	"exclude":                     {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select conname as id, conrelid::regclass as table_id, coalesce(obj_description($1, 'pg_constraint'), '') as description from pg_constraint c where oid = $1`},
-	"database":                    {commentKind: "DATABASE", args: oidArg, query: `select quote_ident(datname) as id, coalesce(shobj_description($1, 'pg_database'), '') as description from pg_database where oid = $1`},
-	"domain":                      {commentKind: "DOMAIN", args: oidArg, query: `select $1::regtype as id, coalesce(obj_description($1, 'pg_type'), '') as description`},
-	"extension":                   {commentKind: "EXTENSION", args: oidArg, query: `select quote_ident(extname) as id, coalesce(obj_description($1, 'pg_extension'), '') as description from pg_extension where oid = $1`},
-	"eventtrigger":                {commentKind: "EVENT TRIGGER", args: oidArg, query: `select quote_ident(evtname) as id, coalesce(obj_description($1, 'pg_event_trigger'), '') as description from pg_event_trigger where oid = $1`},
-	"fdw":                         {commentKind: "FOREIGN DATA WRAPPER", args: oidArg, query: `select quote_ident(fdwname) as id, coalesce(obj_description($1, 'pg_foreign_data_wrapper'), '') as description from pg_foreign_data_wrapper where oid = $1`},
-	"foreign_server":              {commentKind: "SERVER", args: oidArg, query: `select quote_ident(srvname) as id, coalesce(obj_description($1, 'pg_foreign_server'), '') as description from pg_foreign_server where oid = $1`},
-	"foreign_table":               {commentKind: "FOREIGN TABLE", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
-	"function":                    {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
-	"triggerfunction":             {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
-	"direct_triggerfunction":      {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
-	"eventtriggerfunction":        {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
-	"direct_eventtriggerfunction": {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
-	"index":                       {commentKind: "INDEX", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
-	"mview":                       {commentKind: "MATERIALIZED VIEW", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
-	"procedure":                   {commentKind: "PROCEDURE", args: oidArg, query: `select $1::regprocedure as id, coalesce(obj_description($1, 'pg_proc'), '') as description`},
-	"publication":                 {commentKind: "PUBLICATION", args: oidArg, query: `select quote_ident(pubname) as id, coalesce(obj_description($1, 'pg_publication'), '') as description from pg_publication where oid = $1`},
+	"aggregate":                   {commentKind: "AGGREGATE", args: oidArg, query: `select $1::regprocedure as id, quote_literal(coalesce(obj_description($1, 'pg_proc'), '')) as description`},
+	"table_field":                 {commentKind: "COLUMN", args: oidPositionArgs, query: `select format('%s.%s', $1::regclass, quote_ident(attname)) as id, quote_literal(coalesce(col_description($1, $2), '')) as description from pg_attribute where attrelid = $1::regclass and attnum = $2`},
+	"check":                       {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select quote_ident(conname) as id, conrelid::regclass as table_id, quote_literal(coalesce(obj_description($1, 'pg_constraint'), '')) as description from pg_constraint c where oid = $1`},
+	"foreign_key":                 {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select quote_ident(conname) as id, conrelid::regclass as table_id, quote_literal(coalesce(obj_description($1, 'pg_constraint'), '')) as description from pg_constraint c where oid = $1`},
+	"pk":                          {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select quote_ident(conname) as id, conrelid::regclass as table_id, quote_literal(coalesce(obj_description($1, 'pg_constraint'), '')) as description from pg_constraint c where oid = $1`},
+	"unique":                      {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select quote_ident(conname) as id, conrelid::regclass as table_id, quote_literal(coalesce(obj_description($1, 'pg_constraint'), '')) as description from pg_constraint c where oid = $1`},
+	"exclude":                     {commentKind: "CONSTRAINT", onTable: true, args: oidArg, query: `select quote_ident(conname) as id, conrelid::regclass as table_id, quote_literal(coalesce(obj_description($1, 'pg_constraint'), '')) as description from pg_constraint c where oid = $1`},
+	"database":                    {commentKind: "DATABASE", args: oidArg, query: `select quote_ident(datname) as id, quote_literal(coalesce(shobj_description($1, 'pg_database'), '')) as description from pg_database where oid = $1`},
+	"domain":                      {commentKind: "DOMAIN", args: oidArg, query: `select $1::regtype as id, quote_literal(coalesce(obj_description($1, 'pg_type'), '')) as description`},
+	"extension":                   {commentKind: "EXTENSION", args: oidArg, query: `select quote_ident(extname) as id, quote_literal(coalesce(obj_description($1, 'pg_extension'), '')) as description from pg_extension where oid = $1`},
+	"eventtrigger":                {commentKind: "EVENT TRIGGER", args: oidArg, query: `select quote_ident(evtname) as id, quote_literal(coalesce(obj_description($1, 'pg_event_trigger'), '')) as description from pg_event_trigger where oid = $1`},
+	"fdw":                         {commentKind: "FOREIGN DATA WRAPPER", args: oidArg, query: `select quote_ident(fdwname) as id, quote_literal(coalesce(obj_description($1, 'pg_foreign_data_wrapper'), '')) as description from pg_foreign_data_wrapper where oid = $1`},
+	"foreign_server":              {commentKind: "SERVER", args: oidArg, query: `select quote_ident(srvname) as id, quote_literal(coalesce(obj_description($1, 'pg_foreign_server'), '')) as description from pg_foreign_server where oid = $1`},
+	"foreign_table":               {commentKind: "FOREIGN TABLE", args: oidArg, query: `select $1::regclass as id, quote_literal(coalesce(obj_description($1, 'pg_class'), '')) as description`},
+	"function":                    {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, quote_literal(coalesce(obj_description($1, 'pg_proc'), '')) as description`},
+	"triggerfunction":             {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, quote_literal(coalesce(obj_description($1, 'pg_proc'), '')) as description`},
+	"direct_triggerfunction":      {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, quote_literal(coalesce(obj_description($1, 'pg_proc'), '')) as description`},
+	"eventtriggerfunction":        {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, quote_literal(coalesce(obj_description($1, 'pg_proc'), '')) as description`},
+	"direct_eventtriggerfunction": {commentKind: "FUNCTION", args: oidArg, query: `select $1::regprocedure as id, quote_literal(coalesce(obj_description($1, 'pg_proc'), '')) as description`},
+	"index":                       {commentKind: "INDEX", args: oidArg, query: `select $1::regclass as id, quote_literal(coalesce(obj_description($1, 'pg_class'), '')) as description`},
+	"mview":                       {commentKind: "MATERIALIZED VIEW", args: oidArg, query: `select $1::regclass as id, quote_literal(coalesce(obj_description($1, 'pg_class'), '')) as description`},
+	"procedure":                   {commentKind: "PROCEDURE", args: oidArg, query: `select $1::regprocedure as id, quote_literal(coalesce(obj_description($1, 'pg_proc'), '')) as description`},
+	"publication":                 {commentKind: "PUBLICATION", args: oidArg, query: `select quote_ident(pubname) as id, quote_literal(coalesce(obj_description($1, 'pg_publication'), '')) as description from pg_publication where oid = $1`},
 	// shobj_description's catalog arg must be the catalog that actually
 	// backs the object's comment storage, not just any view that lists
 	// it — "pg_roles" is a view over pg_authid, and role comments are
@@ -388,29 +388,35 @@ var postgresqlObjectDescriptionSpecs = map[string]postgresqlObjectDescriptionSpe
 	// above, both real catalog tables). Using "pg_roles" here always
 	// returned an empty description regardless of whether `COMMENT ON
 	// ROLE` had actually been used. Fixed to "pg_authid".
-	"role": {commentKind: "ROLE", args: oidArg, query: `select $1::regrole as id, coalesce(shobj_description($1, 'pg_authid'), '') as description`},
+	"role": {commentKind: "ROLE", args: oidArg, query: `select $1::regrole as id, quote_literal(coalesce(shobj_description($1, 'pg_authid'), '')) as description`},
 	// Reads rulename/table straight off pg_rewrite (matched only by its own
 	// oid, already unique) instead of joining to the pg_rules view on
 	// rulename alone — rule names are only unique per-table, so two
 	// different tables with an identically-named rule used to make the
 	// old rulename-only join pick an arbitrary matching row and could
 	// misattribute the comment to the wrong table.
-	"rule":         {commentKind: "RULE", onTable: true, args: oidArg, query: `select quote_ident(rw.rulename) as id, rw.ev_class::regclass as table_id, coalesce(obj_description($1, 'pg_rewrite'), '') as description from pg_rewrite rw where rw.oid = $1`},
-	"schema":       {commentKind: "SCHEMA", args: oidArg, query: `select $1::regnamespace as id, coalesce(obj_description($1, 'pg_namespace'), '') as description`},
-	"sequence":     {commentKind: "SEQUENCE", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
-	"statistic":    {commentKind: "STATISTICS", args: oidArg, query: `select format('%s.%s', quote_ident(stxnamespace::regnamespace::text), quote_ident(stxname)) as id, coalesce(obj_description($1, 'pg_statistic_ext'), '') as description from pg_statistic_ext where oid = $1`},
-	"subscription": {commentKind: "SUBSCRIPTION", args: oidArg, query: `select quote_ident(subname) as id, coalesce(obj_description($1, 'pg_subscription'), '') as description from pg_subscription where oid = $1`},
-	"table":        {commentKind: "TABLE", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
-	"tablespace":   {commentKind: "TABLESPACE", args: oidArg, query: `select quote_ident(spcname) as id, coalesce(shobj_description($1, 'pg_tablespace'), '') as description from pg_tablespace where oid = $1`},
-	"trigger":      {commentKind: "TRIGGER", onTable: true, args: oidArg, query: `select tgname as id, tgrelid::regclass as table_id, coalesce(obj_description($1, 'pg_trigger'), '') as description from pg_trigger where oid = $1`},
-	"type":         {commentKind: "TYPE", args: oidArg, query: `select $1::regtype as id, coalesce(obj_description($1, 'pg_type'), '') as description`},
-	"view":         {commentKind: "VIEW", args: oidArg, query: `select $1::regclass as id, coalesce(obj_description($1, 'pg_class'), '') as description`},
+	"rule":         {commentKind: "RULE", onTable: true, args: oidArg, query: `select quote_ident(rw.rulename) as id, rw.ev_class::regclass as table_id, quote_literal(coalesce(obj_description($1, 'pg_rewrite'), '')) as description from pg_rewrite rw where rw.oid = $1`},
+	"schema":       {commentKind: "SCHEMA", args: oidArg, query: `select $1::regnamespace as id, quote_literal(coalesce(obj_description($1, 'pg_namespace'), '')) as description`},
+	"sequence":     {commentKind: "SEQUENCE", args: oidArg, query: `select $1::regclass as id, quote_literal(coalesce(obj_description($1, 'pg_class'), '')) as description`},
+	"statistic":    {commentKind: "STATISTICS", args: oidArg, query: `select format('%s.%s', stxnamespace::regnamespace::text, quote_ident(stxname)) as id, quote_literal(coalesce(obj_description($1, 'pg_statistic_ext'), '')) as description from pg_statistic_ext where oid = $1`},
+	"subscription": {commentKind: "SUBSCRIPTION", args: oidArg, query: `select quote_ident(subname) as id, quote_literal(coalesce(obj_description($1, 'pg_subscription'), '')) as description from pg_subscription where oid = $1`},
+	"table":        {commentKind: "TABLE", args: oidArg, query: `select $1::regclass as id, quote_literal(coalesce(obj_description($1, 'pg_class'), '')) as description`},
+	"tablespace":   {commentKind: "TABLESPACE", args: oidArg, query: `select quote_ident(spcname) as id, quote_literal(coalesce(shobj_description($1, 'pg_tablespace'), '')) as description from pg_tablespace where oid = $1`},
+	"trigger":      {commentKind: "TRIGGER", onTable: true, args: oidArg, query: `select quote_ident(tgname) as id, tgrelid::regclass as table_id, quote_literal(coalesce(obj_description($1, 'pg_trigger'), '')) as description from pg_trigger where oid = $1`},
+	"type":         {commentKind: "TYPE", args: oidArg, query: `select $1::regtype as id, quote_literal(coalesce(obj_description($1, 'pg_type'), '')) as description`},
+	"view":         {commentKind: "VIEW", args: oidArg, query: `select $1::regclass as id, quote_literal(coalesce(obj_description($1, 'pg_class'), '')) as description`},
 }
 
 // postgresqlObjectDescription mirrors PostgreSQL.py's GetObjectDescription
 // dispatch table, producing a "COMMENT ON <KIND> <id> [ON <table_id>] IS
 // '<description>'" string per object kind. Unknown p_type (matching
 // Python's fallthrough) returns "", nil.
+//
+// Every name and the description itself come back from the catalog already
+// quote_ident()/quote_literal()-quoted: the description is text any object
+// owner can set, and splicing it raw between quotes let a crafted comment
+// close the literal and append its own statement to the template the
+// editing user is about to run.
 func postgresqlObjectDescription(db *sql.DB, objType string, oid int64, position int) (string, error) {
 	spec, ok := postgresqlObjectDescriptionSpecs[objType]
 	if !ok {
@@ -422,11 +428,11 @@ func postgresqlObjectDescription(db *sql.DB, objType string, oid int64, position
 		if err := db.QueryRow(spec.query, args...).Scan(&id, &tableID, &description); err != nil {
 			return "", err
 		}
-		return "COMMENT ON " + spec.commentKind + " " + id + " ON " + tableID + " is '" + description + "'", nil
+		return "COMMENT ON " + spec.commentKind + " " + id + " ON " + tableID + " is " + description, nil
 	}
 	var id, description string
 	if err := db.QueryRow(spec.query, args...).Scan(&id, &description); err != nil {
 		return "", err
 	}
-	return "COMMENT ON " + spec.commentKind + " " + id + " is '" + description + "'", nil
+	return "COMMENT ON " + spec.commentKind + " " + id + " is " + description, nil
 }

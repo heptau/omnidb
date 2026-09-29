@@ -53,6 +53,10 @@ func main() {
 }
 
 func run() error {
+	if _, ok := setPasswordFlag(os.Args[1:]); ok {
+		return runSetPasswordCommand(os.Args[1:])
+	}
+
 	var upstream *url.URL
 	standalone := false // true once there's no real Django to compare against — see devUpstreamEnv
 
@@ -139,9 +143,9 @@ func run() error {
 	shutdownCh := make(chan struct{}, 1)
 
 	mux := http.NewServeMux()
-	// Only registered when actually loopback-only — handleShutdown has no
-	// auth check of its own, relying entirely on that (see its comment and
-	// listenAddr's). A -H-exposed server instance can still be stopped the
+	// Only registered when actually loopback-only — these relay to (or are
+	// called by) the desktop shell process, which only exists then (see
+	// handleShutdown's and listenAddr's comments). A -H-exposed server instance can still be stopped the
 	// normal way (SIGTERM/Ctrl+C, see the sigCh select below).
 	if isLoopbackHost(listenHost) {
 		mux.Handle("/internal/shutdown/", handleShutdown(shutdownCh))
@@ -530,7 +534,13 @@ func run() error {
 	}
 	mux.Handle("/", handleRoot(upstream, proxy))
 
-	httpServer := &http.Server{Handler: requireCSRF(mux)}
+	httpServer := &http.Server{
+		Handler: hardenHTTP(listenHost, ownPort, requireCSRF(mux)),
+		// Slowloris guard. No ReadTimeout/WriteTimeout: long-polling and
+		// large exports legitimately keep a response open for minutes.
+		ReadHeaderTimeout: 15 * time.Second,
+		IdleTimeout:       120 * time.Second,
+	}
 
 	serveErrCh := make(chan error, 1)
 	go func() {
@@ -584,12 +594,17 @@ func noUpstreamHandler() http.Handler {
 
 // handleShutdown lets wails-app/backend.go's stopBackend trigger this
 // process's own graceful-shutdown path (see run()'s select on shutdownCh)
-// over loopback HTTP instead of relying on OS signal delivery. No extra
-// auth/origin check needed beyond responding at all: this listener is
-// already bound to 127.0.0.1-only (see listenAddr), the same trust
-// boundary every other route in this file relies on.
+// over loopback HTTP instead of relying on OS signal delivery. Loopback
+// binding alone isn't enough (any local process, or any web page firing a
+// blind <img>/form request at 127.0.0.1, could otherwise kill the backend
+// and lose the user's unsaved tabs), so it requires POST plus the shell's
+// shared secret — see shell_relay.go.
 func handleShutdown(shutdownCh chan<- struct{}) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		if r.Method != http.MethodPost || !hasShellRelayToken(r) {
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
 		shutdownCancel()
 		w.WriteHeader(http.StatusOK)
 		select {

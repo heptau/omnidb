@@ -29,7 +29,7 @@ SOFTWARE.
 */
 
 import { t } from "../i18n.js";
-import { execAjax } from "../ajax_control_bridge.js";
+import { execAjax, jsonPostHeaders } from "../ajax_control_bridge.js";
 import { customMenu } from "../custom_menu.js";
 import { createLegere } from "../lib/omnis_legere/omnis-legere.js";
 import { showAlert, showConfirm, showConfirm3, showError } from "../notification_control.js";
@@ -3435,7 +3435,7 @@ export function exportDBMLPostgresql(p_node) {
 
 			fetch("/export_save_dialog/", {
 				method: "POST",
-				headers: { "Content-Type": "application/json" },
+				headers: jsonPostHeaders(),
 				body: JSON.stringify({
 					v_filepath: p_return.v_data.v_filepath,
 					v_downloadname: p_return.v_data.v_downloadname,
@@ -8838,7 +8838,7 @@ export function getExplainReturn(p_data) {
 			v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_explain.style.display = "block";
 
 			var v_legere_options = {
-				backgroundColor: v_editor_theme === "omnidb_dark" ? "#2f3136" : "#e2e2e2",
+				backgroundColor: v_theme === "dark" ? "#2f3136" : "#e2e2e2",
 				target: v_tab_tag.div_explain,
 			};
 

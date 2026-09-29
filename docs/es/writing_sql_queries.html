@@ -7,8 +7,12 @@
 	<meta name="description" content="Todo lo que ofrece la pestaña SQL Query de OmniDB: el editor, ejecutar y cancelar, autocommit, historial de consultas, exportación a CSV, TSV, XLSX, JSON, XML o Markdown, y autocompletado SQL.">
 	<link rel="canonical" href="https://www.omnidb.net/es/writing_sql_queries.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/writing_sql_queries.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/writing_sql_queries.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/writing_sql_queries.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/writing_sql_queries.html">
 	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/writing_sql_queries.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/writing_sql_queries.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/writing_sql_queries.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/writing_sql_queries.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/writing_sql_queries.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
+			<a href="desktop_app.html">Aplicación de escritorio</a>
 			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="settings_and_languages.html">Configuración e idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html" class="active">Escritura de consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
 			<a href="visualizing_data.html">Visualización de datos</a>
 			<a href="managing_other_elements.html">Administración de otros elementos</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="notify.html">Notificaciones</a>
+			<a href="connected_users.html">Usuarios conectados</a>
+			<a href="permissions.html">Roles y permisos</a>
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="security.html">Seguridad y servidor multiusuario</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
 		</div>
@@ -129,83 +140,109 @@
 		</nav>
 		<main>
 		<h1>Escritura de consultas SQL</h1>
-<p>El tipo de pestaña interna más común es la <em>Query Tab</em>, que contiene los siguientes
-elementos:</p>
-<p><img alt="" src="../assets/img/image_049.webp" /></p>
+<p>El tipo de pestaña interna más común es la <em>Pestaña de consulta</em>, que contiene los siguientes
+elementos. Los atajos de teclado que se indican son los predeterminados en Windows/Linux; en macOS, los
+atajos propios de OmniDB usan Ctrl en lugar de Alt. Todos ellos pueden cambiarse en
+<a href="settings_and_languages.html">Configuración &gt; Atajos de teclado</a>.</p>
 <ul>
-<li><strong>1) Tab Header</strong> (Cabecera de la pestaña): puede ver el nombre de la pestaña y un icono para cerrarla. Si
-hay una consulta en ejecución en la pestaña, verá un indicador. Si la pestaña
-termina de ejecutarse y está trabajando en otra pestaña, se mostrará un indicador
-verde. Haciendo clic derecho en la pestaña y eligiendo <em>Rename Tab</em> (Renombrar pestaña), podrá renombrarla.</li>
-<li><strong>2) Add Tab</strong> (Añadir pestaña): puede añadir rápidamente otra pestaña interna haciendo clic en el icono
-de más.</li>
-<li><strong>3) SQL Editor</strong> (Editor SQL): editor SQL completo con resaltado de sintaxis SQL,
-Buscar y reemplazar (<code>Ctrl-F</code> y <code>Ctrl-H</code>) y un componente de autocompletado, explicado
-más abajo. Consulte <a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a> para la lista completa de atajos
+<li><strong>1) Cabecera de la pestaña</strong>: puede ver el nombre de la pestaña y, al pasar el ratón, un icono para
+cerrarla. Mientras hay una consulta en ejecución en la pestaña, verá un indicador giratorio; si termina mientras
+está trabajando en otra pestaña, se muestra una marca de verificación. Haciendo clic derecho en la pestaña y
+eligiendo <em>Renombrar pestaña</em>, podrá renombrarla.</li>
+<li><strong>2) Añadir pestaña</strong>: puede añadir rápidamente otra pestaña interna (<em>Pestaña de consulta</em> o
+<em>Pestaña de consola</em>) haciendo clic en el icono de más.</li>
+<li><strong>3) Editor SQL</strong>: editor SQL completo con resaltado de sintaxis SQL, plegado de
+código, Buscar y reemplazar (<code>Ctrl-F</code> y <code>Ctrl-H</code>), una línea de regla vertical
+(su columna se configura en <em>Configuración &gt; Formato</em>) y un componente de autocompletado,
+explicado más abajo. Al hacer clic derecho en el editor se ofrecen <em>Copiar</em>, <em>Guardar como snippet</em> y
+<em>Usar snippet</em> (consulte <a href="snippets.html">Snippets</a>). Consulte
+<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a> para la lista completa de atajos
 del editor (selección, multicursor, navegación, plegado, etc.).</li>
-<li><strong>4) Execute</strong> (Ejecutar): el texto contenido en el editor SQL se ejecutará contra
-la base de datos activa actual al hacer clic en este botón (o pulsar el atajo,
-<code>Alt-Q</code> por defecto). Si hay algún texto seleccionado en el editor SQL, se
-ejecutará solo el texto seleccionado. Una vez que el comando esté ejecutándose, se mostrará un botón rojo <em>Cancel</em>
-(Cancelar), que permite cancelar la ejecución (o usando el
-atajo, <code>Alt-C</code> por defecto).</li>
-<li><strong>5) Indent SQL</strong> (Sangrar SQL): este botón dará formato a cualquier código SQL escrito en el editor
-SQL (atajo <code>Alt-S</code> por defecto, <code>Ctrl-S</code> en macOS).</li>
-<li><strong>6) Query History</strong> (Historial de consultas): todos los comandos ejecutados contra la base de datos actual se
-almacenan en el historial de consultas, al que se puede acceder haciendo clic en este botón.
-También podrá filtrar por fecha y texto para encontrar el comando SQL que necesite.</li>
-<li><strong>7) Explain (solo PostgreSQL)</strong>: ejecuta su consulta SQL contra PostgreSQL
-anteponiendo <code>EXPLAIN</code>. Los resultados se mostrarán en forma textual y
-gráfica en la pestaña Explain (consulte <a href="visualizing_query_plans.html">Visualización de planes de consulta</a> para más detalles).</li>
-<li><strong>8) Explain Analyze (solo PostgreSQL)</strong>: igual que el botón Explain, pero
-ejecuta la consulta SQL con <code>EXPLAIN ANALYZE</code>, lo que ejecutará realmente la consulta.</li>
-<li><strong>9) Autocommit (solo PostgreSQL)</strong>: cuando está activado, toda consulta ejecutada
-se confirma (commit) en la base de datos. Cuando está desactivado, OmniDB inicia una transacción y, al
-ejecutar una consulta, la interfaz mostrará botones que permiten al usuario
-hacer <em>Commit</em> o <em>Rollback</em>. El usuario también puede mantener la transacción abierta y ejecutar
-otros comandos.</li>
-<li><strong>10) Backend Status (solo PostgreSQL)</strong>: cuando abre una nueva pestaña de consulta, el
-estado es «Not Connected», porque OmniDB aún no ha iniciado un backend de PostgreSQL.
-Al ejecutar la primera consulta, OmniDB inicia un nuevo backend y lo mantiene vinculado
-a la pestaña de consulta (cada pestaña de consulta tendrá asignado su propio backend). El estado
-del backend (<em>idle</em>, <em>active</em>, <em>idle in transaction</em>, etc.) se mostrará en
-este campo. Al cerrar la pestaña de consulta, OmniDB finaliza el backend.</li>
-<li><strong>11) Export File Type</strong> (Tipo de archivo de exportación): puede ser CSV, TSV, XLSX, JSON, XML o Markdown.</li>
-<li><strong>12) Export To File</strong> (Exportar a archivo): al hacer clic en este botón, OmniDB ejecuta la
-consulta actual y exporta los resultados a un archivo. En la aplicación de escritorio, se abre un diálogo
-nativo «Save As» (Guardar como) para que pueda elegir directamente dónde guardarlo. Cuando se ejecuta
-como <a href="deploying_omnidb-server.html">OmniDB Server</a> basado en navegador, en cambio,
-el archivo se escribe primero en la carpeta temporal del servidor, y la
-interfaz muestra entonces un enlace para poder descargarlo a través del navegador.</li>
-<li><strong>13) Data Results</strong> (Resultados de datos): si la consulta es un <code>SELECT</code>, se mostrará una cuadrícula
-con los resultados. Si la consulta es una DML o DDL, se mostrará el mensaje
-devuelto por el SGBDR.</li>
-<li><strong>14) Messages (solo PostgreSQL)</strong>: aquí se mostrará cualquier mensaje (como los generados por
-el comando <code>RAISE NOTICE</code>).</li>
-<li><strong>15) Explain View (solo PostgreSQL)</strong>: muestra un componente completo para
-ver el plan de ejecución de PostgreSQL en forma textual o gráfica.</li>
+<li><strong>4) Ejecutar</strong>: el texto contenido en el editor SQL se ejecutará contra la base de datos
+activa actual al hacer clic en este botón (o pulsar <code>Alt-Q</code>). Si hay algún texto seleccionado en
+el editor SQL, se ejecuta solo el texto seleccionado. El editor puede contener varias sentencias separadas
+por punto y coma; se ejecutan una tras otra y la cuadrícula muestra el resultado de la última. Una vez que
+el comando está en ejecución, se muestra un botón rojo <em>Cancelar</em>, que permite cancelar la ejecución
+(o pulse <code>Alt-C</code>).</li>
+<li><strong>5) Ejecutar sentencia en el cursor</strong>: ejecuta solo la sentencia en la que se encuentra el
+cursor, sin necesidad de seleccionarla primero. Con el cursor justo después de un <code>;</code>, se ejecuta la
+sentencia siguiente.</li>
+<li><strong>6) Sangrar SQL</strong>: este botón da formato a cualquier código SQL escrito en el editor
+SQL (atajo <code>Alt-S</code>), siguiendo el estilo elegido en <em>Configuración &gt; Formato</em>
+(sangría, estilo de comas, mayúsculas/minúsculas de las palabras clave).</li>
+<li><strong>7) Historial de comandos</strong>: todos los comandos ejecutados contra la conexión actual se
+almacenan en el historial de comandos, al que se puede acceder haciendo clic en este botón. Puede filtrarlo
+por rango de fechas y por texto para encontrar el comando SQL que necesite.</li>
+<li><strong>8) Explain (solo PostgreSQL)</strong>: ejecuta su consulta SQL anteponiendo <code>EXPLAIN</code>
+(atajo <code>Alt-W</code>). Los resultados se mostrarán en forma textual y gráfica en la pestaña Explain
+(consulte <a href="visualizing_query_plans.html">Visualización de planes de consulta</a> para más detalles).</li>
+<li><strong>9) Explain Analyze (solo PostgreSQL)</strong>: igual que el botón Explain, pero ejecuta la
+consulta SQL con <code>EXPLAIN ANALYZE</code>, lo que ejecuta realmente la consulta (atajo
+<code>Alt-E</code>).</li>
+<li><strong>10) Autocommit (solo PostgreSQL)</strong>: cuando está activado, toda consulta ejecutada se
+confirma (commit) en la base de datos. Cuando está desactivado, OmniDB inicia una transacción y, al
+ejecutar una consulta, la interfaz muestra botones que permiten al usuario hacer <em>Confirmar (Commit)</em>
+o <em>Deshacer (Rollback)</em>. El usuario también puede mantener la transacción abierta y ejecutar otros
+comandos.</li>
+<li><strong>11) Estado del backend (solo PostgreSQL)</strong>: cuando abre una nueva pestaña de consulta, el
+estado es <em>No conectado</em>, porque OmniDB aún no ha iniciado un backend de PostgreSQL. Al ejecutar la
+primera consulta, OmniDB inicia un nuevo backend y lo mantiene vinculado a la pestaña de consulta (cada
+pestaña de consulta obtiene su propio backend). El estado del backend (<em>Inactivo</em>, <em>Ejecutando</em>,
+<em>Inactivo en transacción</em>, etc.) se mostrará en este campo. Al cerrar la pestaña de consulta,
+OmniDB finaliza el backend.</li>
+<li><strong>12) Tipo de archivo de exportación</strong>: CSV, TSV, XLSX, JSON, XML o Markdown.</li>
+<li><strong>13) Exportar datos</strong>: al hacer clic en este botón, OmniDB ejecuta la consulta actual y
+exporta el resultado completo a un archivo del tipo elegido. En la aplicación de escritorio, se abre un
+diálogo nativo <em>Guardar como</em> para que pueda elegir directamente dónde guardarlo, y OmniDB lo confirma
+con <em>Archivo exportado a: …</em>. Cuando se ejecuta como <a href="deploying_omnidb-server.html">OmniDB
+Server</a> basado en navegador, en cambio, el archivo se escribe primero en la carpeta temporal del
+servidor, y el área de resultados muestra entonces <em>El archivo está listo.</em> con un enlace
+<em>Guardar</em> que lo descarga a través del navegador. La codificación CSV/TSV y el delimitador CSV se
+configuran en <em>Configuración &gt; Exportar</em>.</li>
+<li><strong>14) Resultados de datos</strong>: si la consulta es un <code>SELECT</code>, se mostrará una
+cuadrícula con los resultados; la primera columna permanece fija mientras se desplaza horizontalmente, y al
+pasar el ratón sobre la cabecera de una columna se muestra su nombre completo. Si la consulta es una DML o
+DDL, se mostrará el mensaje devuelto por el SGBDR. Cuando hay más filas que el primer lote,
+<em>Obtener más</em> carga el lote siguiente y <em>Obtener todo</em>, el resto. Haga clic derecho en una
+celda para <em>Copiar</em> o <em>Ver contenido</em>; los valores JSON y XML se muestran con resaltado de
+sintaxis.</li>
+<li><strong>15) Mensajes (solo PostgreSQL)</strong>: aquí se mostrará cualquier mensaje (como los generados
+por el comando <code>RAISE NOTICE</code>).</li>
+<li><strong>16) Vista Explain (solo PostgreSQL)</strong>: muestra un componente completo para ver el plan de
+ejecución de PostgreSQL en forma textual o gráfica.</li>
 </ul>
+<p>El separador entre el editor (con su barra de herramientas) y los resultados puede arrastrarse para dar
+más espacio a uno u otro.</p>
+<h4>Confirmación de seguridad para sentencias destructivas</h4>
+<p>Antes de ejecutar una sentencia que empiece por <code>DROP</code> o <code>TRUNCATE</code>, o un
+<code>UPDATE</code>/<code>DELETE</code> sin cláusula <code>WHERE</code>, la pestaña de consulta pide
+confirmación (<em>Esta sentencia es destructiva y no se puede deshacer. ¿Ejecutarla de todos modos?</em>, o
+<em>Esta sentencia no tiene cláusula WHERE y afectará a TODAS las filas. ¿Ejecutarla de todos modos?</em>).
+Es una red de seguridad contra errores involuntarios, no un sistema de permisos: solo examina el comienzo
+del texto (después de los comentarios).</p>
 <p>Una vez ejecutadas, las pestañas también se guardan en la base de datos de usuario de OmniDB (título y
-contenido), por lo que la próxima vez que abra OmniDB las verá todas abiertas de nuevo. Además,
-cada comando que ejecute en una pestaña de consulta se guarda en su historial de consultas y también en
-el archivo <code>omnidb.log</code>.</p>
+contenido), por lo que la próxima vez que abra OmniDB las verá todas abiertas. Además, cada comando que
+ejecute en una pestaña de consulta se guarda en el historial de comandos de esa conexión.</p>
 <h4>Autocompletado SQL</h4>
-<p>El editor SQL tiene una función que ayuda mucho al crear nuevas consultas: el
-autocompletado de código SQL. Con esta función es posible autocompletar columnas
-contenidas en una tabla referenciada mediante un alias. Para abrir la interfaz de autocompletado
-solo tiene que escribir el alias, el carácter <code>.</code> y luego pulsar <code>Ctrl-Space</code>:</p>
+<p>El editor SQL tiene una función que ayuda mucho al crear nuevas consultas: el autocompletado de
+código SQL. Abra las sugerencias con <code>Ctrl-Space</code> (<code>Option-Space</code> en macOS). Con
+esta función es posible autocompletar columnas contenidas en una tabla referenciada mediante un alias:
+escriba el alias, el carácter <code>.</code> y abra luego el autocompletado:</p>
 <p><img alt="" src="../assets/img/image_050.webp" /></p>
 <p>Si el usuario no inicia el autocompletado con el cursor cerca de un alias de tabla,
 el componente mostrará varias categorías de datos. Al escribir en el cuadro de filtro, los
 elementos de todas las categorías se filtrarán:</p>
 <p><img alt="" src="../assets/img/image_051.webp" /></p>
 <p>El componente de autocompletado también puede identificar cierta información contextual.
-Por ejemplo, si escribe el nombre de un esquema, luego el carácter <code>.</code>, y luego
-pulsa <code>Ctrl-Space</code>, podrá filtrar únicamente entre los objetos contenidos en
-ese esquema:</p>
+Por ejemplo, si escribe el nombre de un esquema y luego el carácter <code>.</code>, podrá filtrar
+únicamente entre los objetos contenidos en ese esquema:</p>
 <p><img alt="" src="../assets/img/image_052.webp" /></p>
-<p>Tenga en cuenta que, para SGBDR distintos de PostgreSQL, el componente de autocompletado
-solo funciona para columnas de tablas.</p>
+<p>Después de <code>::</code> (una conversión de tipo de PostgreSQL), solo se ofrecen tipos de datos. Al
+elegir una palabra clave también se añade lo que siempre la sigue (por ejemplo, un espacio después de
+<code>SELECT</code>, o el paréntesis de apertura después de <code>COALESCE</code>). Las categorías que se
+ofrecen (palabras clave, bases de datos, roles, tablespaces, esquemas, extensiones, tablas, vistas, columnas,
+funciones, índices) se configuran en <em>Configuración &gt; Autocompletar</em>.</p>
+<p>Tenga en cuenta que, para SGBDR distintos</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

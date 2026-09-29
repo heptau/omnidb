@@ -52,7 +52,7 @@ func handlePgpassImport(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := http.Post(importURL, "application/json", bytes.NewReader(nil))
+	resp, err := postToShell(nil, importURL, bytes.NewReader(nil))
 	if err != nil {
 		writePgpassImportError(w, "Could not reach the desktop app's file picker: "+err.Error())
 		return

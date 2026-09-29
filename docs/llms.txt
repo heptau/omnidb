@@ -2,7 +2,7 @@
 
 ## Overview
 
-OmniDB is an open source browser-based app designed to access and manage many different Database Management systems, e.g. PostgreSQL, Oracle, MySQL, MS SQL Server and Firebird. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. The backend was fully rewritten from Python/Django to Go in 3.6.x, and the desktop shell has migrated from NW.js to Wails; the old Python-based plugin system (pglogical/BDR/Postgres-XL support) was removed in that rewrite and is not coming back — see the Legacy Features & History page.
+OmniDB is an open source browser-based app designed to access and manage many different Database Management systems: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite. Its user interface is available in English, Czech, German, Spanish, French, Italian, Portuguese, Japanese and Korean. OmniDB can run either as a desktop app or via browser, combining the flexibility needed for various access paths with a design that puts security first. The backend was fully rewritten from Python/Django to Go in 3.6.x, and the desktop shell has migrated from NW.js to Wails; the old Python-based plugin system (pglogical/BDR/Postgres-XL support) was removed in that rewrite and is not coming back — see the Legacy Features & History page.
 
 ---
 
@@ -24,12 +24,26 @@ URL: https://www.omnidb.net/en/introduction.html
 
 URL: https://www.omnidb.net/en/installation.html
 
-**Description:** Installation instructions for OmniDB on various platforms.
+**Description:** Installation instructions for OmniDB on macOS, Linux and Windows: release archives, the Windows installer, Homebrew, winget, the omnidb-server binary and the user database location.
 
 **Key Topics:**
 - Installation procedures
 - Platform setup
 - Dependencies
+
+---
+
+## Desktop App
+
+URL: https://www.omnidb.net/en/desktop_app.html
+
+**Description:** Using the OmniDB desktop app (Wails): data directory and the -d override, the menu bar and its section shortcuts, localized menus, window title and remembered window size/position, native Save dialog, and macOS sandbox specifics (importing data from a previous installation, granting access to .pgpass).
+
+**Key Topics:**
+- Data directory (~/.omnidb/omnidb-app) and -d
+- Menu bar: OmniDB/Edit/View/Window/Help and keyboard shortcuts
+- Window state persistence
+- macOS App Sandbox: legacy data import, .pgpass access
 
 ---
 
@@ -43,6 +57,20 @@ URL: https://www.omnidb.net/en/creating_users_and_connections.html
 - User creation
 - Connection management
 - Database authentication
+
+---
+
+## Settings and Languages
+
+URL: https://www.omnidb.net/en/settings_and_languages.html
+
+**Description:** Per-user settings: interface language (Automatic, English, Czech, German, Spanish, French, Italian, Portuguese, Japanese, Korean), theme, font size, CSV/TSV export encoding and delimiter, autocomplete categories, SQL formatting (indent, comma style, keyword case, ruler column), keyboard shortcuts with their defaults, password change and user management.
+
+**Key Topics:**
+- Settings categories: Appearance, Export, Autocomplete, Formatting, Shortcuts, Password, Account
+- Multi-language UI and the Automatic language setting
+- Default keyboard shortcuts (Windows/Linux and macOS) and rebinding
+- Auto-saved settings
 
 ---
 
@@ -101,6 +129,20 @@ URL: https://www.omnidb.net/en/writing_sql_queries.html
 
 ---
 
+## Snippets
+
+URL: https://www.omnidb.net/en/snippets.html
+
+**Description:** Storing, organizing and reusing SQL snippets: the Snippets section's folder tree, editor tabs, saving/overwriting, unsaved-changes indicator, snippet shortcuts, and Save as snippet / Use snippet from Query and Console tabs.
+
+**Key Topics:**
+- Snippet folders and context menus
+- Saving and overwriting snippets
+- Snippet keyboard shortcuts
+- Inserting snippets into SQL editors
+
+---
+
 ## Visualizing Query Plans
 
 URL: https://www.omnidb.net/en/visualizing_query_plans.html
@@ -145,14 +187,15 @@ URL: https://www.omnidb.net/en/managing_other_elements.html
 
 URL: https://www.omnidb.net/en/additional_features.html
 
-**Description:** Additional features and tools in OmniDB.
+**Description:** Smaller features: the Welcome page, the Getting Started tutorial, contextual PostgreSQL documentation, Properties/DDL panels, data export (desktop Save dialog vs. browser download), Export as DBML, query history and SSH terminal connections.
 
 **Key Topics:**
-- SSH tunnels
-- Code snippets
-- Notify panel (LISTEN/NOTIFY, DBMS_ALERT, POST_EVENT)
-- Export tools
+- Welcome page and Getting Started walkthroughs
+- Contextual help (Doc: ...)
+- Properties and DDL panels
+- Export tools (CSV, TSV, XLSX, JSON, XML, Markdown)
 - Export as DBML: PostgreSQL database schema export in the token-efficient DBML format, well suited for giving an LLM/AI assistant schema context
+- SSH console (Terminal connections)
 
 ---
 
@@ -160,11 +203,13 @@ URL: https://www.omnidb.net/en/additional_features.html
 
 URL: https://www.omnidb.net/en/omnidb_config_tool.html
 
-**Description:** The old Python-era `omnidb-config` GUI tool no longer exists; this chapter documents the manual equivalents (SQLite app-database location, default admin user, resetting/vacuuming the database).
+**Description:** The old Python-era `omnidb-config` GUI tool no longer exists; this chapter documents the manual equivalents (SQLite app-database location, default admin user, setting/resetting a user password with `omnidb-server --set-password`, resetting/vacuuming the database).
 
 **Key Topics:**
 - App database location
 - Default admin user
+- Resetting a lost password (`--set-password`)
+- All omnidb-server command-line options (see Deploying omnidb-server)
 - Manual config equivalents
 
 ---
@@ -186,12 +231,56 @@ URL: https://www.omnidb.net/en/writing_plpgsql_functions.html
 
 URL: https://www.omnidb.net/en/monitoring_dashboard.html
 
-**Description:** Database monitoring dashboard — 17 built-in native units plus custom units driven by a single SQL query (grid/chart/timeseries), no scripting sandbox required.
+**Description:** The Monitoring section: a per-connection live dashboard of 17 built-in native units (16 PostgreSQL, 1 MySQL) plus custom units driven by a single SELECT query (Grid, Chart (No Append), Timeseries); units start paused; Enable All/Pause All, card size, and the Manage Units side panel for showing, hiding and ordering units.
 
 **Key Topics:**
-- Built-in monitoring units (PostgreSQL/MySQL)
-- Grid, Chart, and Timeseries unit types
+- Monitoring section and shared connection tabs
+- Built-in units (PostgreSQL/MySQL)
+- Manage Units panel
 - Writing custom units as a single SQL query
+
+---
+
+## Notify
+
+URL: https://www.omnidb.net/en/notify.html
+
+**Description:** The Notify section: listening to PostgreSQL LISTEN/NOTIFY channels, Oracle DBMS_ALERT alerts and Firebird events per connection; adding, pausing and deleting channels; filtering and clearing messages; automatic stop with Restart Listening; sending test notifications with SQL.
+
+**Key Topics:**
+- Supported engines (PostgreSQL, Oracle, Firebird)
+- Channel management and persistence
+- Message list, filters, ephemeral messages
+- Test NOTIFY / DBMS_ALERT.SIGNAL / POST_EVENT examples
+
+---
+
+## Connected Users
+
+URL: https://www.omnidb.net/en/connected_users.html
+
+**Description:** The Connected Users section: live sessions/backends of PostgreSQL, MySQL, MariaDB, Oracle, SQL Server and Firebird servers, per-engine columns, system processes toggle, query text pane with Open in a new Query tab, and terminating sessions.
+
+**Key Topics:**
+- Per-engine session columns
+- Viewing a session's current query
+- Terminating a session
+- Replaces the former Backends/Process List/Sessions tree menus
+
+---
+
+## Roles and Permissions
+
+URL: https://www.omnidb.net/en/permissions.html
+
+**Description:** The PostgreSQL Permissions section: a Miller-columns browser of roles (including the PUBLIC pseudo-role), direct and inherited role memberships, and effective object privileges (direct, inherited and via PUBLIC); creating, altering and dropping roles, granting/revoking memberships and object privileges.
+
+**Key Topics:**
+- Roles column: Create Role, Alter Attributes, Change Password, Drop Role
+- Members / Member of, Grant Membership, Add Member, Set as Active Role
+- Effective privileges tree for databases, tablespaces and schema objects
+- Edit Privileges dialog: direct vs. inherited privileges, With grant option
+- PostgreSQL only; actions execute immediately
 
 ---
 
@@ -212,12 +301,29 @@ URL: https://www.omnidb.net/en/logical_replication.html
 
 URL: https://www.omnidb.net/en/deploying_omnidb-server.html
 
-**Description:** Deploying and configuring OmniDB server — a single Go binary with no separate websocket process and no built-in TLS.
+**Description:** Deploying and configuring OmniDB server — a single Go binary with no configuration file, no separate websocket process and no built-in TLS; all command-line options (-A, -H, -p, -d, --set-password) and a reverse-proxy setup that forwards a loopback Host header.
 
 **Key Topics:**
-- Server deployment
-- Command-line host/port options
-- Reverse proxy setup for TLS termination
+- Command-line options
+- Binding address and port
+- Reverse proxy setup for TLS termination (Host header, X-Forwarded-Proto)
+
+---
+
+## Security and Multi-user Server
+
+URL: https://www.omnidb.net/en/security.html
+
+**Description:** How OmniDB protects saved credentials and a multi-user server: AES-256-GCM encryption of saved passwords with the key in the OS secret store (or a .connection_secret_key file), the one-time initial admin password, sign-in lockout (10 failures / 15 minutes), session invalidation, server-mode restrictions for SQLite and PostgreSQL file parameters, public connection protections, per-user exports, SSH host key verification via known_hosts, and loopback Host allowlist.
+
+**Key Topics:**
+- Encryption of saved passwords at rest
+- Initial admin password and --set-password
+- Sign-in lockout and sessions
+- Server-mode restrictions (SQLite, PostgreSQL connection-string parameters)
+- Public connections and exports
+- SSH known_hosts requirement
+- TLS, reverse proxy, DNS-rebinding protection
 
 ---
 
@@ -238,7 +344,7 @@ URL: https://www.omnidb.net/en/console_tab.html
 
 URL: https://www.omnidb.net/en/editor_keyboard_shortcuts.html
 
-**Description:** Reference table of keyboard shortcuts for the Ace-based SQL/Console editor and DDL/Properties viewer (line operations, selection, multicursor, navigation, find/replace, folding). Separate from the app-level shortcuts covered in Additional Features.
+**Description:** Reference table of keyboard shortcuts for the Ace-based SQL/Console editor and DDL/Properties viewer (line operations, selection, multicursor, navigation, find/replace, folding). Separate from the app-level shortcuts covered in Settings and Languages.
 
 **Key Topics:**
 - Ace editor shortcuts

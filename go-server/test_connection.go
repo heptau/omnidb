@@ -69,6 +69,31 @@ func resolveTestConnectionSecrets(db *sql.DB, req *testConnectionRequest, who *W
 		if conn.OwnerID != int64(who.UserID) && !conn.Public {
 			return "", "", "", fmt.Errorf("connection not found")
 		}
+		if conn.OwnerID != int64(who.UserID) {
+			// A public connection's non-owner may test it, but only against
+			// its stored target: the request's own server/port/connstring/
+			// tunnel fields are otherwise attacker-chosen, and reusing the
+			// stored secret with them would dial the owner's password to any
+			// host (a rogue Postgres server can simply ask for it in
+			// cleartext). Non-owners can't edit a public connection anyway.
+			req.Type = conn.Technology
+			req.Server = conn.Server
+			req.Port = conn.Port
+			req.Database = conn.Database
+			req.User = conn.Username
+			req.ConnString = conn.ConnString
+			req.Tunnel = tunnelRequestData{
+				Enabled: conn.UseTunnel,
+				Server:  conn.SSHServer,
+				Port:    conn.SSHPort,
+				User:    conn.SSHUser,
+			}
+			password, sshPassword, sshKey = conn.Password, conn.SSHPassword, conn.SSHKey
+			if req.TempPassword != nil {
+				password = *req.TempPassword
+			}
+			return password, sshPassword, sshKey, nil
+		}
 		if req.Password == "" {
 			password = conn.Password
 		}
@@ -234,6 +259,16 @@ func handleTestConnection(upstream *url.URL) http.HandlerFunc {
 		if err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
+		}
+		if req.Type == "sqlite" {
+			if !sqliteAllowedFor(who) {
+				writeEnvelope(w, errSQLiteRestricted.Error(), true, -1)
+				return
+			}
+			if err := checkSQLiteTargetPath(req.Database); err != nil {
+				writeEnvelope(w, err.Error(), true, -1)
+				return
+			}
 		}
 
 		message, isError := runTestConnection(lang, &req, password, sshPassword, sshKey)

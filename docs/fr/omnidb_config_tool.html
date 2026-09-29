@@ -7,8 +7,12 @@
 	<meta name="description" content="Équivalents manuels de l'ancien outil en ligne de commande omnidb-config : localiser le répertoire personnel, purger la base SQLite, la réinitialiser et nettoyer les fichiers temporaires.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/omnidb_config_tool.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/omnidb_config_tool.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/omnidb_config_tool.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/omnidb_config_tool.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html" class="active">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -131,21 +143,51 @@
 <p><strong>Remarque :</strong> l’utilitaire en ligne de commande autonome <code>omnidb-config</code>/
 <code>omnidb-config-app</code>/<code>omnidb-config-server</code> décrit sur cette page appartenait à
 l’ancienne version basée sur Python/Django et ne fait pas partie de la version actuelle. Le binaire unique
-<code>omnidb-server</code> n’accepte que <code>-A</code>/<code>--app</code> (mode application de bureau) et
-<code>-d</code>/<code>--homedir</code> (choisir le répertoire personnel), documentés dans le chapitre
-<a href="installation.html">Installation</a>. Les tâches de maintenance que proposait l’ancien outil peuvent
+<code>omnidb-server</code> n’accepte qu’une poignée d’options en ligne de commande :
+<code>-A</code>/<code>--app</code> (mode application de bureau), <code>-H</code>/<code>--host</code> (adresse
+d’écoute), <code>-p</code>/<code>--port</code> (port d’écoute), <code>-d</code>/<code>--homedir</code>
+(choisir le répertoire personnel) et <code>--set-password</code> (définir le mot de passe d’un utilisateur, voir ci-dessous) —
+toutes décrites dans la section <em>Options en ligne de commande</em> du chapitre
+<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>. Il n’existe aucun fichier de configuration.
+Les tâches de maintenance que proposait l’ancien outil peuvent
 toujours être effectuées manuellement, comme décrit ci-dessous.</p>
 <h4>Répertoire personnel</h4>
 <p>OmniDB stocke tout — la base de données <code>omnidb.db</code> (utilisateurs, connexions et autres données
 de l’application) et un dossier <code>temp</code> pour les fichiers exportés — dans un unique répertoire
 personnel. Par défaut, il s’agit de <code>~/.omnidb/omnidb-app</code> (mode bureau) ou
-<code>~/.omnidb/omnidb-server</code> (mode serveur) ; indiquez <code>-../chemin</code> pour en utiliser un
-autre.</p>
+<code>~/.omnidb/omnidb-server</code> (mode serveur) ; indiquez <code>-d /un/chemin</code> pour en utiliser un
+autre (le répertoire doit déjà exister). Si le système d’exploitation ne propose aucun magasin de secrets
+pour la clé de chiffrement des mots de passe enregistrés, ce même répertoire contient aussi cette clé, dans le fichier
+<code>.connection_secret_key</code> — voir <a href="security.html">Sécurité et serveur multi-utilisateur</a>.
+Lorsque vous sauvegardez ou déplacez <code>omnidb.db</code>, emportez aussi ce fichier.</p>
 <h4>Créer un utilisateur</h4>
 <p>Il n’existe actuellement aucune option en ligne de commande pour créer un utilisateur sans ouvrir OmniDB.
 Lors de la première exécution sur un répertoire personnel vide, OmniDB crée automatiquement un superutilisateur
-par défaut <code>admin</code>/<code>admin</code> — connectez-vous avec celui-ci et créez d’autres utilisateurs
-depuis l’écran <em>Users</em> (Utilisateurs), ou changez le mot de passe par défaut.</p>
+par défaut <code>admin</code> — en mode serveur, avec un mot de passe aléatoire affiché une seule fois dans la
+sortie de journal du serveur (la ligne contenant <code>initial login: admin / …</code>). Connectez-vous avec celui-ci et créez d’autres utilisateurs
+sous <em>Paramètres &gt; Compte &gt; Gérer les utilisateurs</em>, ou changez le mot de passe sous
+<em>Paramètres &gt; Mot de passe</em>.</p>
+<h4>Définir ou réinitialiser un mot de passe</h4>
+<p>Si le mot de passe initial à usage unique de <code>admin</code> a été perdu (ou si vous voulez
+définir le vôtre avant la première connexion), vous pouvez définir le mot de passe de n’importe
+quel utilisateur existant directement dans la base de données de l’application, sans démarrer le
+serveur :</p>
+<pre><code class="language-bash">user@machine:~$ omnidb-server --set-password admin
+user@machine:~$ omnidb-server --set-password admin -d /path/to/homedir
+</code></pre>
+<p>Sans <code>-d</code>, c’est le répertoire personnel par défaut du serveur
+(<code>~/.omnidb/omnidb-server</code>) qui est utilisé. Dans un terminal, le nouveau mot de passe
+est demandé deux fois, sans être affiché ; sinon, il est lu depuis la première ligne de l’entrée
+standard, ce qui est pratique dans les scripts :</p>
+<pre><code class="language-bash">user@machine:~$ printf '%s\n' "$PW" | omnidb-server --set-password admin
+</code></pre>
+<p>Le mot de passe n’est jamais passé en argument de ligne de commande, il n’apparaît donc ni dans
+la sortie de <code>ps</code> ni dans l’historique du shell. Il doit comporter au moins 8 caractères,
+et l’utilisateur doit déjà exister. L’option est refusée avec <code>-A</code> : l’application de
+bureau se connecte automatiquement et n’a aucun mot de passe à gérer. Elle peut aussi être lancée
+pendant que le serveur tourne : le nouveau mot de passe est valable immédiatement pour les nouvelles
+connexions, tandis que les utilisateurs déjà connectés le restent jusqu’à l’expiration de leur
+session ou au redémarrage du serveur.</p>
 <h4>Purge (Vacuum)</h4>
 <p>OmniDB possède une seule base de données SQLite, <code>omnidb.db</code>, qui stocke tous les utilisateurs,
 connexions et autres données liées à OmniDB. Comme il s’agit d’un simple fichier SQLite, vous pouvez le purger
@@ -156,7 +198,7 @@ avec n’importe quel client SQLite pendant qu’OmniDB n’est pas en cours d�
 <p>Si vous souhaitez effacer toutes les informations d’OmniDB et obtenir une base de données propre, comme si
 elle venait d’être installée, quittez OmniDB et supprimez (ou déplacez ailleurs) le fichier <code>omnidb.db</code>
 du répertoire personnel. Un nouveau fichier vide — avec un nouvel utilisateur par défaut
-<code>admin</code>/<code>admin</code> — est créé automatiquement au prochain démarrage d’OmniDB. Utilisez cette
+<code>admin</code> (en mode serveur, avec un nouveau mot de passe à usage unique affiché dans le journal) — est créé automatiquement au prochain démarrage d’OmniDB. Utilisez cette
 opération avec prudence : elle est irréversible.</p>
 <h4>Supprimer les fichiers temporaires</h4>
 <p>Les résultats de requêtes exportés (CSV/XLSX/etc.) sont écrits dans le dossier <code>temp</code> du

@@ -189,9 +189,12 @@ func verifyGrantableObject(db *sql.DB, objectType, schema, object string) (grant
 		} else {
 			typtypeCond, kind = "t.typtype <> 'd'", "TYPE"
 		}
+		// Schema-qualified: a bare type name resolves through search_path,
+		// so a same-named type in another schema (e.g. one planted in
+		// public) would receive the GRANT/REVOKE instead.
 		var ident string
 		err := db.QueryRow(`
-			select quote_ident(t.typname)
+			select quote_ident(n.nspname) || '.' || quote_ident(t.typname)
 			from pg_type t
 			inner join pg_namespace n on n.oid = t.typnamespace
 			where (t.typrelid = 0 or (select c.relkind = 'c' from pg_class c where c.oid = t.typrelid))

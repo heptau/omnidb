@@ -59,7 +59,7 @@ func handlePgpassGrant(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := http.Post(grantURL, "application/json", bytes.NewReader(body))
+	resp, err := postToShell(nil, grantURL, bytes.NewReader(body))
 	if err != nil {
 		writePgpassGrantError(w, "Could not reach the desktop app's file picker: "+err.Error())
 		return

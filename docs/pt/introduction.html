@@ -7,7 +7,11 @@
 	<meta name="description" content="O OmniDB é uma ferramenta de gestão de bases de dados de código aberto para PostgreSQL, Oracle, MySQL e outros, unificando o acesso a diferentes SGBD num espaço de trabalho seguro baseado no browser.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/introduction.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/introduction.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/introduction.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/introduction.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/introduction.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/introduction.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/introduction.html">
 	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/introduction.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/introduction.html">
 	<meta name="robots" content="index, follow">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html" class="active">Introdução</a>
 			<a href="installation.html">Instalação</a>
+			<a href="desktop_app.html">Aplicação de Ambiente de Trabalho</a>
 			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="settings_and_languages.html">Definições e Idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
 			<a href="visualizing_data.html">Visualizar Dados</a>
 			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="notify.html">Notificações</a>
+			<a href="connected_users.html">Utilizadores Ligados</a>
+			<a href="permissions.html">Roles e Permissões</a>
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor e Ferramentas</span>
 			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="security.html">Segurança e Servidor Multiutilizador</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
@@ -129,7 +140,8 @@
 		<main>
 			<h1>Introdução</h1>
 			<p><strong>OmniDB</strong> é uma aplicação de código aberto baseada no browser, concebida para aceder e
-				gerir vários sistemas de gestão de bases de dados diferentes, como PostgreSQL, Oracle e MySQL.
+				gerir vários sistemas de gestão de bases de dados diferentes: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server,
+				Firebird e SQLite.
 				O OmniDB pode ser executado como aplicação de ambiente de trabalho ou através do browser, combinando a flexibilidade
 				necessária para vários caminhos de acesso com um design que coloca a segurança em primeiro lugar. O OmniDB é
 				ativamente desenvolvido, testado automaticamente numa variedade de bases de dados e browsers,
@@ -151,11 +163,21 @@
 				e monitorização — é executado em segundo plano e transmitido de volta ao browser
 				à medida que é concluído, para que o utilizador possa continuar a trabalhar em várias bases de dados e
 				vários servidores ao mesmo tempo, sem ficar bloqueado por nenhum deles.</p>
-			<p>O OmniDB também é seguro. Todos os dados de utilizador do OmniDB são armazenados encriptados, e nenhuma
-				palavra-passe de base de dados é armazenada. Quando o utilizador se liga a uma base de dados pela primeira vez,
-				o OmniDB pede a palavra-passe. Esta palavra-passe é encriptada e armazenada em memória
-				durante um período de tempo específico. Quando este tempo expira, o OmniDB pede a palavra-passe
-				novamente. Isto garante a máxima segurança para a base de dados à qual o OmniDB se está a ligar.</p>
+			<p>O OmniDB também é seguro. As palavras-passe de bases de dados que opte por guardar são encriptadas antes
+				de serem armazenadas, com uma chave mantida no armazenamento de segredos do seu sistema operativo; se preferir não
+				guardar nenhuma palavra-passe, o OmniDB pede-a quando se liga e mantém-na apenas em memória, durante
+				um tempo limitado. Um servidor multiutilizador acrescenta proteção do início de sessão e restringe aquilo a que os utilizadores
+				podem aceder na própria máquina do servidor — consulte <a href="security.html">Segurança e Servidor
+				Multiutilizador</a>.</p>
+			<p>Ao lado do editor SQL e da árvore da base de dados, o espaço de trabalho oferece um
+				<a href="monitoring_dashboard.html">painel de monitorização</a> em tempo real, uma lista de
+				<a href="connected_users.html">utilizadores ligados</a>, um
+				<a href="notify.html">ouvinte de notificações</a> (LISTEN/NOTIFY e afins), um
+				<a href="permissions.html">explorador de roles e privilégios</a> para PostgreSQL,
+				<a href="snippets.html">snippets</a>, exportação de dados para muitos formatos e terminais SSH. A
+				interface está disponível em inglês, checo, alemão, espanhol, francês, italiano, português,
+				japonês e coreano — consulte <a href="settings_and_languages.html">Definições e
+				Idiomas</a>.</p>
 			<h4>Histórico</h4>
 			<p>Os criadores do <strong>OmniDB</strong>, Rafael Thofehrn Castro e William Ivanski, trabalhavam numa
 				empresa onde precisavam de lidar diariamente com várias bases de dados diferentes de

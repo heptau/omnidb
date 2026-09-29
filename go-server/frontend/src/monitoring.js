@@ -38,22 +38,6 @@ import { escapeHtml } from "./query.js";
 import { toggleMonitorUnitChartType } from "./tab_functions/inner_monitoring_dashboard_tab.js";
 import { switchSection } from "./section_switcher.js";
 
-export function sanitizeLegend(p_html) {
-	var v_tmp = document.createElement("div");
-	v_tmp.innerHTML = p_html;
-	var v_nodes = v_tmp.querySelectorAll("*");
-	for (var i = 0; i < v_nodes.length; i++) {
-		var v_attrs = v_nodes[i].attributes;
-		for (var j = v_attrs.length - 1; j >= 0; j--) {
-			var v_name = v_attrs[j].name.toLowerCase();
-			if (v_name.startsWith("on") || v_name === "href" || v_name === "src") {
-				v_nodes[i].removeAttribute(v_attrs[j].name);
-			}
-		}
-	}
-	return v_tmp.innerHTML;
-}
-
 // Chart.js v2 had a chart.generateLegend()/options.legendCallback pair for
 // building a custom HTML legend from a chart instance; both were removed in
 // v3+ with no replacement. The documented v3+ way to get the same per-item
@@ -62,25 +46,40 @@ export function sanitizeLegend(p_html) {
 // instance -- this works whether or not the built-in legend is actually
 // displayed (see the "legend.display = false" toggle at each call site,
 // which exists so this custom label strip can replace it instead).
-function buildChartLegendHtml(p_chart) {
+//
+// Built as DOM nodes rather than an HTML string: a label's text is a dataset
+// label from a monitor unit's result, i.e. database data, so it goes in via
+// textContent. (This used to be an HTML string run through an attribute
+// blocklist, which stripped on*/href/src but left any other markup live.)
+//
+// No click handler: this used to carry onclick=updateDataset(event, ...), a
+// function that has never existed anywhere in this repository's history --
+// clicking a legend label threw a ReferenceError. Toggling a dataset from the
+// legend would be a feature to add, not a call to restore.
+/**
+ * @param {HTMLElement} p_target
+ * @param {any} p_chart
+ */
+function renderChartLegend(p_target, p_chart) {
 	var v_items = p_chart.options.plugins.legend.labels.generateLabels(p_chart);
-	var v_text = [];
+	p_target.replaceChildren();
 	for (var i = 0; i < v_items.length; i++) {
-		v_text.push(
-			'<span class="dashboard_unit_label_group"><span class="dashboard_unit_label_box" style="background-color:' +
-				v_items[i].fillStyle +
-				'"></span><span id="legend-' +
-				i +
-				// No onclick: this used to call updateDataset(event, ...), a function
-				// that has never existed anywhere in this repository's history --
-				// clicking a legend label threw a ReferenceError. Toggling a dataset
-				// from the legend would be a feature to add, not a call to restore.
-				'-item" class="dashboard_unit_label">' +
-				v_items[i].text +
-				"</span></span>",
-		);
+		var v_group = document.createElement("span");
+		v_group.className = "dashboard_unit_label_group";
+		var v_box = document.createElement("span");
+		v_box.className = "dashboard_unit_label_box";
+		// fillStyle can also be a CanvasGradient/CanvasPattern, which has no
+		// CSS equivalent -- the old string concatenation produced an invalid
+		// "[object CanvasGradient]" declaration for those anyway.
+		if (typeof v_items[i].fillStyle === "string") v_box.style.backgroundColor = v_items[i].fillStyle;
+		var v_label = document.createElement("span");
+		v_label.id = "legend-" + i + "-item";
+		v_label.className = "dashboard_unit_label";
+		v_label.textContent = v_items[i].text == null ? "" : String(v_items[i].text);
+		v_group.appendChild(v_box);
+		v_group.appendChild(v_label);
+		p_target.appendChild(v_group);
 	}
-	return v_text.join("");
 }
 
 /**
@@ -638,7 +637,7 @@ export function selectUnitTemplate(p_value) {
 					v_tab_tag.object = new Chart(ctx, v_return_unit.v_object);
 					adjustChartTheme(v_tab_tag.object);
 					if (v_show_legend) {
-						v_tab_tag.div_result_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_tab_tag.object));
+						renderChartLegend(v_tab_tag.div_result_label, v_tab_tag.object);
 					}
 				} else if (v_type == "grid") {
 					var columnProperties = [];
@@ -1274,7 +1273,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 								var v_chart = new Chart(ctx, v_return_unit.v_object);
 								adjustChartTheme(v_chart);
 								if (v_show_legend) {
-									v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_chart));
+									renderChartLegend(v_unit.div_label, v_chart);
 								}
 
 								v_unit.object = v_chart;
@@ -1383,7 +1382,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 										v_unit.object.update();
 										if (v_need_rebuild_legend) {
 											//rebuild labels
-											v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_unit.object));
+											renderChartLegend(v_unit.div_label, v_unit.object);
 										}
 									} catch (err) {}
 								}
@@ -1442,7 +1441,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 										v_unit.object.update();
 										if (v_need_rebuild_legend) {
 											//rebuild labels
-											v_unit.div_label.innerHTML = sanitizeLegend(buildChartLegendHtml(v_unit.object));
+											renderChartLegend(v_unit.div_label, v_unit.object);
 										}
 									} catch (err) {}
 								}

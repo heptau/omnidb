@@ -135,7 +135,7 @@ func writePgpassLocationFile(data []byte) error {
 	if err != nil {
 		return err
 	}
-	if err := os.MkdirAll(filepath.Dir(locationPath), 0o755); err != nil {
+	if err := os.MkdirAll(filepath.Dir(locationPath), 0o700); err != nil {
 		return err
 	}
 	return os.WriteFile(locationPath, data, 0o600)

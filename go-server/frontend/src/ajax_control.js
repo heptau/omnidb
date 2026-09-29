@@ -60,6 +60,20 @@ export function endLoading() {
 }
 
 /**
+ * Headers for a raw fetch() JSON POST to this backend: the same
+ * X-CSRFToken double-submit header execAjax attaches, which every
+ * non-safe-method route requires (see go-server/native_session.go's
+ * requireCSRF).
+ * @returns {Record<string, string>}
+ */
+export function jsonPostHeaders() {
+	return {
+		"Content-Type": "application/json",
+		"X-CSRFToken": getCookie(v_csrf_cookie_name) || "",
+	};
+}
+
+/**
  * Used to get a cookie value from document, based on cookie name.
  * @param {string} name - the name of the cookie in the document.
  * @returns {string|null} cookie value, if exists.

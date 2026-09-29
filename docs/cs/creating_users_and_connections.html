@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
 			<a href="creating_users_and_connections.html" class="active">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Práce s daty</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
 			<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
@@ -130,27 +142,34 @@
 		<h1>Vytváření uživatelů a připojení</h1>
 <h4>Přihlášení jako uživatel <em>admin</em></h4>
 <p>OmniDB obsahuje pouze uživatele <em>admin</em>. Pokud používáte serverovou verzi, první věc,
-kterou musíte udělat, je přihlásit se jako <em>admin</em>; výchozí heslo je <em>admin</em>.
+kterou musíte udělat, je přihlásit se jako <em>admin</em> jednorázovým náhodným heslem, které
+<code>omnidb-server</code> vypsal do logu při vytvoření nové aplikační databáze (řádek obsahující
+<code>initial login: admin / …</code>), a pak ho změnit v <em>Nastavení</em>. Ztracené heslo lze obnovit příkazem <code>omnidb-server --set-password admin</code>. Po 10 neúspěšných pokusech
+o přihlášení pro stejné uživatelské jméno nebo IP adresu klienta se přihlašování na 15 minut zablokuje.
 Desktopová aplikace se nepřihlašuje vůbec — běží jako jediný místní uživatel, takže vše o správě
 uživatelů popsané níže v ní vůbec není.</p>
 <h4>Orientace v prostředí</h4>
-<p>Celé pracovní prostředí se ovládá ze svislé lišty ikon u levého okraje okna: <em>Welcome</em>
-(Vítejte), <em>Connections</em> (Připojení — ikona zástrčky), <em>Database</em> (Databáze),
-<em>Notify</em> (Notifikace) a <em>Snippets</em> (Úryvky) nahoře, a <em>Getting Started</em>
-(Začínáme), <em>Account</em> (Účet — jen v serverové verzi) a <em>Settings</em> (Nastavení — ozubené
-kolo) dole.</p>
+<p>Celé pracovní prostředí se ovládá ze svislé lišty ikon u levého okraje okna: <em>Vítejte</em>,
+<em>Připojení</em> (ikona zástrčky), <em>Databáze</em>, <em>Monitorování</em>, <em>Oznámení</em>,
+<em>Oprávnění</em>, <em>Připojení uživatelé</em> a <em>Snippety</em> nahoře, a <em>Začínáme</em>,
+<em>Účet</em> (jen v serverové verzi) a <em>Nastavení</em> (ozubené kolo) dole. Po najetí myší na
+ikonu se zobrazí její název. Jak sekce spolupracují, popisuje kapitola
+<a href="managing_databases.html">Správa databází</a>; jazyk rozhraní a další předvolby kapitola
+<a href="settings_and_languages.html">Nastavení a jazyky</a>.</p>
 <h4>Vytvoření dalšího uživatele</h4>
 <p>Otevřete <em>Settings</em> (Nastavení) dole na liště, zvolte kategorii <em>Account</em> (Účet) a klikněte na <em>Manage Users</em> (Správa uživatelů). Toto tlačítko má jen superuživatel — běžný
 uživatel v nastavení sekci <em>Account</em> vůbec nevidí.</p>
 <p>Okno <em>User management</em> (Správa uživatelů) vypíše existující uživatele. Kliknutím na
 <em>Add new user</em> (Přidat nového uživatele — ikona postavičky s plus) vložíte nový, prázdný
 řádek uživatele, zobrazený jako <em>(pending info)</em> (čeká na vyplnění), dokud ho nevyplníte.
-Vyplňte <em>uživatelské jméno</em> a <em>heslo</em>, zaškrtněte <em>Super User</em>
-(superuživatel), pokud jím má nový uživatel být, a klikněte na <em>Save</em> (Uložit). Můžete
+Vyplňte <em>Uživatelské jméno</em> a <em>Nové heslo</em>, zapněte přepínač
+<em>Superuživatel?</em>, pokud jím má nový uživatel být, a klikněte na <em>Save</em> (Uložit). Můžete
 vytvořit tolik uživatelů, kolik chcete, upravovat existující a mazat je kliknutím na červený
 křížek ve sloupci akcí.</p>
 <p>Odhlásíte se kliknutím na ikonu <em>Account</em> (Účet — postavička dole na liště) a poté na
 <em>Sign out</em> (Odhlásit se).</p>
+<p>Smazání uživatele nebo odebrání statusu superuživatele platí okamžitě, a to i pro relace tohoto
+uživatele, které už jsou otevřené.</p>
 <h4>Sekce Connections</h4>
 <p>Klikněte na ikonu zástrčky na liště. Připojení jsou plnohodnotná sekce pracovního prostředí, ne
 vyskakovací okno: rozdělené zobrazení se seznamem uložených připojení v postranním panelu vlevo a formulářem a tlačítky vybraného připojení vpravo.</p>
@@ -159,7 +178,15 @@ vyskakovací okno: rozdělené zobrazení se seznamem uložených připojení v�
 vedené SSH tunelem.</p>
 <h4>Vytváření připojení</h4>
 <p>OmniDB podporuje PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird a SQLite a navíc
-typ připojení <em>Terminal</em>, který místo databáze otevře SSH shell.</p>
+typ připojení <em>Terminál</em>, který místo databáze otevře SSH shell. Seznam
+<em>Typ připojení</em> uvádí nejprve PostgreSQL, pak ostatní v abecedním pořadí a
+<em>Terminál</em> jako poslední.</p>
+<p>U <em>SQLite</em> připojení ukazuje na databázový soubor (na počítači, kde běží
+<code>omnidb-server</code>); pokud soubor ještě neexistuje, <em>Otestovat připojení</em> to oznámí
+a soubor se vytvoří při prvním použití připojení. Na víceuživatelském serveru jsou připojení SQLite
+vyhrazena superuživatelům a některé parametry připojovacího řetězce PostgreSQL, které čtou soubory
+na serveru, jsou odmítnuty — viz <a href="security.html">Zabezpečení a víceuživatelský
+server</a>.</p>
 <p>Nové připojení vytvoříte tlačítkem <em>+</em> pod seznamem. Do záhlaví formuláře vpravo napište
 název, zvolte <em>Connection Type</em> (Typ připojení) a vyplňte kartu <em>Host Connection Info</em>
 (Údaje o serveru): <em>Server</em>, <em>Port</em>, <em>Database</em> (Databáze), <em>User</em>
@@ -181,8 +208,8 @@ Service na Linuxu), ne v samotném souboru databáze — pouhý přístup k soub
 hesel nestačí. Pokud takové systémové úložiště není k dispozici, OmniDB použije záložní klíčový
 soubor uložený vedle databáze.</li>
 <li><strong>Prázdné</strong>: neuloží se nic a OmniDB se na heslo zeptá při otevření připojení. To,
-co napíšete, zůstane jen v paměti serverové session pro dané připojení a s koncem session
-zmizí.</li>
+co napíšete, zůstane jen v paměti serveru, pro vaši relaci a dané připojení, po dobu 30 minut —
+poté se OmniDB zeptá znovu.</li>
 </ul>
 <p>U PostgreSQL navíc OmniDB v okamžiku připojení dohledá heslo v souboru <code>.pgpass</code>, a to
 podle stejného záznamu, jaký by našla libpq — připojení bez uloženého hesla se tak může otevřít bez
@@ -208,7 +235,9 @@ připojení se přidávají na konec.</li>
 vyberete, která připojení do skupiny patří, a potvrdíte tlačítkem <em>Save changes</em>) a
 <em>Delete</em> (Smazat).</li>
 <li><strong>Veřejná připojení</strong>: přepínač <em>Public connection?</em> (Veřejné připojení?)
-ve formuláři zpřístupní připojení všem ostatním uživatelům OmniDB. Přepínač <em>Public (n)</em>
+ve formuláři zpřístupní připojení všem ostatním uživatelům OmniDB. Upravovat ho může jen jeho
+vlastník; ostatní uživatelé nikdy neuvidí jeho uložené heslo (heslo uvnitř připojovacího řetězce
+je pro ně maskováno) a jejich <em>Otestovat připojení</em> vždy testuje uložený server. Přepínač <em>Public (n)</em>
 dole v postranním panelu zobrazuje nebo skrývá veřejná připojení ostatních uživatelů ve vašem
 seznamu.</li>
 <li><strong>Prostředí</strong>: označení připojení jako <em>Production</em>, <em>UAT</em>,
@@ -226,7 +255,9 @@ nabídne <em>New Connection</em>/<em>Refresh</em>.</p>
 <p>OmniDB umožňuje připojit se k libovolné vzdálené databázi přes SSH tunel. Ve formuláři daného
 připojení zaškrtněte <em>Use SSH tunnel</em> (Použít SSH tunel) — tím se zpřístupní pole pod ním:</p>
 <ul>
-<li><em>SSH Server</em>: server, ke kterému se připojujete přes SSH;</li>
+<li><em>SSH Server</em>: server, ke kterému se připojujete přes SSH. Jeho klíč hostitele už musí
+být v souboru <code>~/.ssh/known_hosts</code> uživatele operačního systému, pod kterým OmniDB běží,
+jinak je tunel odmítnut — viz <a href="security.html">Zabezpečení a víceuživatelský server</a>;</li>
 <li><em>SSH Port</em>: port SSH serveru (výchozí je 22, ale může to být libovolný port);</li>
 <li><em>SSH User</em>: jméno uživatele operačního systému, pod kterým se k SSH serveru
 připojujete;</li>

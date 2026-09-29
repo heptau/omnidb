@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/cs/installation.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/installation.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/installation.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/installation.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/installation.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/installation.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/installation.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/installation.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/installation.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Začínáme</span>
 			<a href="introduction.html">Úvod</a>
 			<a href="installation.html" class="active">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
 			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html">Nastavení a jazyky</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Práce s daty</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
 			<a href="managing_table_data.html">Správa dat v tabulkách</a>
 			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
 			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
 			<a href="visualizing_data.html">Vizualizace dat</a>
 			<a href="managing_other_elements.html">Správa dalších prvků</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
 			<a href="logical_replication.html">Logická replikace</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server a nástroje</span>
 			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
 			<a href="console_tab.html">Panel konzole</a>
 			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
 		</div>
@@ -143,12 +155,14 @@
 
 		<p><strong>Důležité:</strong> Původní repozitář <a href="https://github.com/OmniDB/OmniDB/releases">https://github.com/OmniDB/OmniDB/releases</a> obsahuje pouze staré verze (přibližně do roku 2020) a už se dále neudržuje — co se od té doby změnilo, najdete v části <a href="legacy_features_and_history.html">Starší funkce a historie</a>.</p>
 
-		<p>Pro aktuální verze použijte <a href="https://github.com/heptau/omnidb/releases">stránku s vydáními</a> oživeného projektu. Od přepsání do Go je každé vydání jediným samostatným archivem pro danou platformu — bez instalátoru, bez nutnosti nejprve instalovat samostatný runtime:</p>
+		<p>Pro aktuální verze použijte <a href="https://github.com/heptau/omnidb/releases">stránku s vydáními</a> oživeného projektu. Od přepsání do Go je každé vydání jediným samostatným archivem pro danou platformu (pro Windows navíc volitelně s instalátorem) — bez nutnosti nejprve instalovat samostatný runtime:</p>
 
 		<ul>
 			<li>macOS (Apple Silicon nebo Intel): <code>OmniDB-macOS-osx-arm64.zip</code> / <code>OmniDB-macOS-osx-x64.zip</code></li>
 			<li>Linux x64: <code>OmniDB-linux-x64.tar.gz</code></li>
-			<li>Windows x64: <code>OmniDB-win-x64.zip</code></li>
+			<li>Windows x64: <code>OmniDB-win-x64.zip</code>, nebo instalátor
+				<code>OmniDB-win-x64-setup.exe</code> (stejná aplikace, s položkou v nabídce Start a
+				odinstalačním programem; tento balíček instaluje i winget)</li>
 		</ul>
 
 		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci/binárku <code>OmniDB</code> uvnitř — to je celá instalace. <strong>Sestavení pro Linux a Windows vznikají v CI při každém vydání, ale zatím nebyla ověřena na reálném hardwaru</strong>, na rozdíl od sestavení pro macOS; pokud narazíte na problém specifický pro jednu z těchto platforem, založte prosím issue.</p>
@@ -184,6 +198,7 @@ winget upgrade heptau.OmniDB</code></pre>
 			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip">macOS (Intel)</a></li>
 			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz">Linux (x64)</a></li>
 			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip">Windows (x64)</a></li>
+			<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64-setup.exe">Windows (x64) – instalátor</a></li>
 		</ul>
 
 		<p>Tyto odkazy vždy vedou na nejnovější vydání. Starší verze, kontrolní součty a poznámky k vydání najdete na <a href="https://github.com/heptau/omnidb/releases">stránce se všemi vydáními</a>.</p>
@@ -191,8 +206,11 @@ winget upgrade heptau.OmniDB</code></pre>
 		<p>Rozbalte archiv pro vaši platformu a spusťte aplikaci obvyklým způsobem: na
 			macOS přetáhněte <code>OmniDB.app</code> do složky <em>Aplikace</em> a otevřete ji z
 			Launchpadu/Spotlightu nebo příkazem <code>open -a OmniDB</code>; na Linuxu spusťte
-			binárku <code>OmniDB</code> přímo; na Windows spusťte <code>OmniDB.exe</code>.
+			binárku <code>OmniDB</code> přímo; na Windows spusťte <code>OmniDB.exe</code> (nebo instalátor).
 		</p>
+		<p>Kde aplikace uchovává svá data, její panel nabídek a klávesové zkratky a specifika macOS,
+			jako je import dat z dřívější instalace, popisuje kapitola <a href="desktop_app.html">Desktopová
+			aplikace</a>.</p>
 
 		<h3>Server OmniDB</h3>
 		<p>Stejný archiv s vydáním obsahuje také <code>omnidb-server</code> — samostatnou
@@ -225,18 +243,20 @@ omnidb-server: listening on 0.0.0.0:8080 — open http://0.0.0.0:8080/omnidb_log
 		<p>Při prvním spuštění server i aplikace vytvoří soubor
 			<code>~/.omnidb/omnidb-app/omnidb.db</code> (pro aplikaci OmniDB) nebo
 			<code>~/.omnidb/omnidb-server/omnidb.db</code> (pro server OmniDB) v domovském adresáři
-			uživatele, pokud ještě neexistuje — spolu s výchozím superuživatelským účtem
-			<code>admin</code>/<code>admin</code>, se kterým se lze ihned přihlásit. Tento soubor se také
+			uživatele, pokud ještě neexistuje — spolu se superuživatelským účtem
+			<code>admin</code>. Desktopová aplikace se pod ním přihlašuje automaticky; v serverovém
+			režimu se jeho heslo náhodně vygeneruje a jednou vypíše do logu serveru (řádek obsahující
+			<code>initial login: admin / …</code>). Tento soubor se také
 			nazývá <strong>uživatelská databáze</strong> a obsahuje všechny uživatele, připojení a další
 			data aplikace. Pokud už existuje (např. po aktualizaci), OmniDB ho použije tak, jak je —
 			nikdy ho automaticky nepřepíše ani neresetuje.</p>
 		<h3>OmniDB v prohlížeči</h3>
-		<p>Nyní, když webový server běží, můžete k aplikaci OmniDB dostupné z prohlížeče
-			přistoupit ve svém oblíbeném prohlížeči. Do adresního řádku zadejte: <code>localhost:8000</code>
-			a stiskněte <code>Enter</code>. Pokud vše proběhlo v pořádku, uvidíte stránku podobnou této:</p>
-		<p><img alt="" src="../assets/img/image_002.webp" /></p>
-		<p>Nyní víte, že OmniDB běží správně. V dalších kapitolách se podíváme na to,
-			jak se poprvé přihlásit, jak vytvořit uživatele a jak OmniDB používat.</p>
+		<p>Jakmile <code>omnidb-server</code> běží, otevřete ve svém oblíbeném prohlížeči adresu, kterou
+			vypsal při spuštění (například <code>http://127.0.0.1:52149/omnidb_login/</code>). Zobrazí se
+			přihlašovací stránka OmniDB; přihlaste se jako <code>admin</code> jednorázovým heslem z logu.
+			V dalších kapitolách se podíváme na to, jak vytvářet uživatele a připojení a jak s OmniDB
+			pracovat. Desktopová aplikace tento krok úplně vynechává — otevře rovnou pracovní
+			prostředí.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

@@ -37,7 +37,7 @@ import { showAlert, showConfirm } from "./notification_control.js";
 import { switchSection } from "./section_switcher.js";
 import { v_current_os } from "./shortcuts.js";
 import { refreshHeights } from "./workspace.js";
-import { escapeHtml } from "./query.js";
+import { escapeHtml, escapeHtmlAttribute } from "./query.js";
 import { t } from "./i18n.js";
 
 export function showAbout() {
@@ -676,14 +676,14 @@ export function editCellData(p_ht, p_row, p_col, p_content, p_can_alter, p_data_
 	v_canEditContent = p_can_alter;
 	var v_save_btn_attr = "";
 	if (!v_canEditContent) {
-		v_save_btn_attr = ' disabled title="' + escapeHtml(t("edit_data.no_primary_key")) + '" ';
+		v_save_btn_attr = ' disabled title="' + escapeHtmlAttribute(t("edit_data.no_primary_key")) + '" ';
 	}
 	v_edit_modal.innerHTML =
 		'<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;">' +
 		'<div class="modal-content">' +
 		'<div class="modal-header">' +
 		'<h4 class="mb-0">' + escapeHtml(t("connections.edit_data")) + "</h4>" +
-		'<button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="' + escapeHtml(t("common.close")) + '">' +
+		'<button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="' + escapeHtmlAttribute(t("common.close")) + '">' +
 		'<span aria-hidden="true">&times;</span>' +
 		"</button>" +
 		"</div>" +

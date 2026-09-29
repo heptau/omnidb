@@ -7,8 +7,12 @@
 	<meta name="description" content="Historial de versiones de OmniDB, y qué ocurrió con su antiguo sistema de complementos — soporte para pglogical, Postgres-BDR, Postgres-XL y el depurador paso a paso de PL/pgSQL — tras la reescritura 3.6.x de Python/Django a Go.">
 	<link rel="canonical" href="https://www.omnidb.net/es/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/legacy_features_and_history.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/es/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/legacy_features_and_history.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/legacy_features_and_history.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/legacy_features_and_history.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Primeros pasos</span>
 			<a href="introduction.html">Introducción</a>
 			<a href="installation.html">Instalación</a>
+			<a href="desktop_app.html">Aplicación de escritorio</a>
 			<a href="creating_users_and_connections.html">Creación de usuarios y conexiones</a>
+			<a href="settings_and_languages.html">Configuración e idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabajar con datos</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creación, modificación y eliminación de tablas</a>
 			<a href="managing_table_data.html">Administración de datos de tablas</a>
 			<a href="writing_sql_queries.html">Escritura de consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualización de planes de consulta</a>
 			<a href="visualizing_data.html">Visualización de datos</a>
 			<a href="managing_other_elements.html">Administración de otros elementos</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Herramienta de configuración de OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escritura de funciones PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Panel de monitorización</a>
+			<a href="notify.html">Notificaciones</a>
+			<a href="connected_users.html">Usuarios conectados</a>
+			<a href="permissions.html">Roles y permisos</a>
 			<a href="logical_replication.html">Replicación lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor y herramientas</span>
 			<a href="deploying_omnidb-server.html">Despliegue de omnidb-server</a>
+			<a href="security.html">Seguridad y servidor multiusuario</a>
 			<a href="console_tab.html">Pestaña de consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atajos de teclado del editor</a>
 		</div>
@@ -176,6 +187,13 @@
 						<td>El shell de escritorio pasó de NW.js a <a href="https://wails.io" target="_blank" rel="noopener">Wails</a>
 							(Go) — un binario más pequeño, sin Chromium empaquetado, y la aplicación ahora usa
 							directamente el webview nativo del sistema operativo.</td>
+					</tr>
+					<tr>
+						<td>4.x</td>
+						<td>Nuevas funciones sobre la base de código en Go: vuelve el soporte de MS SQL Server, las secciones
+							Notificaciones, Monitorización, Usuarios conectados y Permisos, una interfaz rediseñada de
+							Conexiones y Configuración, una interfaz multilingüe, soporte de <code>.pgpass</code>,
+							contraseñas guardadas cifradas y un servidor multiusuario reforzado.</td>
 					</tr>
 				</tbody>
 			</table>

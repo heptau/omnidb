@@ -24,9 +24,17 @@ func formatTemplateColumnList(cores, comments []string, indentUnit string) strin
 			line += ","
 		}
 		if comments[i] != "" {
-			line += " -- " + comments[i]
+			line += " -- " + singleLineComment(comments[i])
 		}
 		lines[i] = line
 	}
 	return strings.Join(lines, "\n"+indentUnit)
+}
+
+// singleLineComment flattens CR/LF (and the other line terminators some
+// engines honor) out of text going after a "--": object names can contain
+// a newline when quoted, which would otherwise end the comment and turn the
+// rest of the name into live SQL in the generated template.
+func singleLineComment(s string) string {
+	return strings.NewReplacer("\r", " ", "\n", " ", "\u2028", " ", "\u2029", " ", "\v", " ", "\f", " ").Replace(s)
 }

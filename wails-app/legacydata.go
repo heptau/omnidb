@@ -186,7 +186,7 @@ func findLegacyAppDir(picked string) (string, bool) {
 // dstDir also holds a temp/ subfolder (go-server/appdb.go's resolveTempDir)
 // that's purely ephemeral export scratch space, not user data.
 func copyLegacyDB(srcDir, dstDir string) error {
-	if err := os.MkdirAll(dstDir, 0o755); err != nil {
+	if err := os.MkdirAll(dstDir, 0o700); err != nil {
 		return err
 	}
 	for _, suffix := range legacyDBCompanionSuffixes {
@@ -209,7 +209,8 @@ func copyFile(src, dst string) error {
 	}
 	defer in.Close()
 
-	out, err := os.Create(dst)
+	// 0600: this is the app database (password hashes, saved connections).
+	out, err := os.OpenFile(dst, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o600)
 	if err != nil {
 		return err
 	}

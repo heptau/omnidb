@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Nastavení a jazyky – Dokumentace OmniDB</title>
+	<meta name="description" content="Uživatelská nastavení OmniDB: jazyk rozhraní (devět jazyků nebo automaticky), motiv, velikost písma, kódování exportu, automatické doplňování, formátování SQL a klávesové zkratky.">
+	<link rel="canonical" href="https://www.omnidb.net/cs/settings_and_languages.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/settings_and_languages.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/settings_and_languages.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/settings_and_languages.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/settings_and_languages.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/settings_and_languages.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/settings_and_languages.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/settings_and_languages.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/settings_and_languages.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/cs/settings_and_languages.html">
+	<meta property="og:title" content="Nastavení a jazyky - Dokumentace OmniDB">
+	<meta property="og:description" content="Uživatelská nastavení OmniDB: jazyk rozhraní (devět jazyků nebo automaticky), motiv, velikost písma, kódování exportu, automatické doplňování, formátování SQL a klávesové zkratky.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/cs/" },
+			{ "@type": "ListItem", "position": 2, "name": "Dokumentace", "item": "https://www.omnidb.net/cs/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "Nastavení a jazyky", "item": "https://www.omnidb.net/cs/settings_and_languages.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Přepnout navigaci">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Dokumentace</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Podpora" title="Podpora">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Hvězdička na GitHubu" title="Hvězdička na GitHubu">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Změnit jazyk" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>Angličtina</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Změnit motiv" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automaticky</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Světlý</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Tmavý</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Domů</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Začínáme</span>
+			<a href="introduction.html">Úvod</a>
+			<a href="installation.html">Instalace</a>
+			<a href="desktop_app.html">Desktopová aplikace</a>
+			<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>
+			<a href="settings_and_languages.html" class="active">Nastavení a jazyky</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Práce s daty</span>
+			<a href="managing_databases.html">Správa databází</a>
+			<a href="creating_changing_and_removing_tables.html">Vytváření, úprava a odstraňování tabulek</a>
+			<a href="managing_table_data.html">Správa dat v tabulkách</a>
+			<a href="writing_sql_queries.html">Psaní SQL dotazů</a>
+			<a href="snippets.html">Snippety</a>
+			<a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>
+			<a href="visualizing_data.html">Vizualizace dat</a>
+			<a href="managing_other_elements.html">Správa dalších prvků</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Pokročilé</span>
+			<a href="additional_features.html">Další funkce</a>
+			<a href="omnidb_config_tool.html">Konfigurační nástroj OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Psaní funkcí PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Monitorovací panel</a>
+			<a href="notify.html">Oznámení</a>
+			<a href="connected_users.html">Připojení uživatelé</a>
+			<a href="permissions.html">Role a oprávnění</a>
+			<a href="logical_replication.html">Logická replikace</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server a nástroje</span>
+			<a href="deploying_omnidb-server.html">Nasazení omnidb-server</a>
+			<a href="security.html">Zabezpečení a víceuživatelský server</a>
+			<a href="console_tab.html">Panel konzole</a>
+			<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Reference</span>
+			<a href="legacy_features_and_history.html">Starší funkce a historie</a>
+		</div>
+		</nav>
+		<main>
+		<h1>Nastavení a jazyky</h1>
+<p>Každý uživatel OmniDB má vlastní předvolby: jazyk rozhraní, motiv, velikost písma, možnosti
+exportu, kategorie automatického doplňování, styl formátování SQL a klávesové zkratky. Všechny se
+nastavují v <em>Nastavení</em> a ukládají se pro každého uživatele zvlášť do uživatelské databáze
+OmniDB, takže vás provázejí v jakémkoli prohlížeči nebo na jakémkoli počítači, kde se přihlásíte ke
+stejnému serveru OmniDB.</p>
+<h4>Otevření Nastavení</h4>
+<p>Klikněte na ikonu ozubeného kolečka dole na levé liště. V desktopové aplikaci můžete použít také
+nabídku <em>OmniDB &gt; Nastavení…</em> (Cmd-, na macOS, jinde Ctrl-,) a
+<em>Nápověda &gt; Klávesové zkratky</em> otevře Nastavení rovnou v kategorii Klávesové zkratky.</p>
+<p>Nastavení je rozděleno na dva panely: vlevo kategorie (<em>Vzhled</em>, <em>Export</em>,
+<em>Automatické doplňování</em>, <em>Formátování</em>, <em>Klávesové zkratky</em>, <em>Heslo</em>
+a pouze pro superuživatele <em>Účet</em>) a vpravo pole vybrané kategorie. Není zde žádné tlačítko
+Uložit — každé pole se uloží hned, jak ho změníte (textová pole krátce poté, co přestanete psát).
+Jedinou výjimkou je heslo, které má vlastní tlačítko <em>Změnit heslo</em>.</p>
+<h4>Vzhled</h4>
+<ul>
+<li><strong>Jazyk</strong>: jazyk celého uživatelského rozhraní — <em>Automaticky</em>,
+Čeština, Deutsch, English, Español, Français, Italiano, Português, 日本語 (japonština) nebo 한국어
+(korejština). <em>Automaticky</em> (výchozí) se řídí jazykem, který požaduje váš prohlížeč nebo
+operační systém, a pokud tento jazyk není k dispozici, použije angličtinu. Změna jazyka znovu
+načte stránku. Totéž platí pro přihlašovací stránku a v desktopové aplikaci i pro panel nabídek
+(viz <a href="desktop_app.html">Desktopová aplikace</a>). Názvy databázových strojů, formátů
+souborů a znakových sad, klíčová slova SQL a zprávy pocházející přímo z databázového serveru se
+nepřekládají.</li>
+<li><strong>Motiv</strong>: <em>Automaticky</em> (řídí se světlým/tmavým nastavením operačního
+systému a při jeho změně se okamžitě přepne), <em>Světlý</em> nebo <em>Tmavý</em>.</li>
+<li><strong>Velikost písma</strong>: posuvník od 10 do 20 (výchozí 12), který mění velikost textu
+rozhraní; aktuální hodnota se zobrazuje vedle něj.</li>
+</ul>
+<h4>Export</h4>
+<ul>
+<li><strong>Kódování CSV/TSV</strong>: znaková sada exportů CSV a TSV, seskupená na Unicode,
+kódové stránky Windows, ISO 8859, azbuku, východoasijské, DOS, Mac a EBCDIC. Výchozí je
+<em>UTF-8 with BOM</em> (UTF-8 s BOM), které tabulkové procesory jako Excel automaticky rozpoznají jako UTF-8.</li>
+<li><strong>Oddělovač CSV</strong>: oddělovač polí používaný v exportech CSV (výchozí
+<code>;</code>).</li>
+</ul>
+<p>Export výsledků dotazů popisuje kapitola <a href="writing_sql_queries.html">Psaní SQL dotazů</a>.</p>
+<h4>Automatické doplňování</h4>
+<p><strong>Návrhy automatického doplňování</strong> určují, které kategorie nabízí automatické
+doplňování v editoru SQL: Klíčová slova, Databáze, Role, Tablespace, Schémata, Rozšíření, Tabulky,
+Pohledy, Sloupce, Funkce a Indexy (<em>Vše</em>/<em>Žádné</em> je přepne všechny najednou).</p>
+<h4>Formátování</h4>
+<p>Tyto volby určují, jak <em>Odsadit SQL</em> (formátovač v kartách dotazu a tlačítko
+<em>Odsazení</em> ve Snippetech) přepíše vaše SQL a jak jsou rozvrženy šablony SQL generované ze
+stromu databáze:</p>
+<ul>
+<li><strong>Znak odsazení</strong>: <em>Mezery</em> (výchozí) nebo <em>Tabulátor</em>;</li>
+<li><strong>Velikost odsazení</strong>: 2, 3 nebo 4 (výchozí 4);</li>
+<li><strong>Styl čárek</strong>: <em>Na začátku řádku (, na začátku)</em> (výchozí) nebo <em>Na konci
+řádku (, na konci)</em>;</li>
+<li><strong>Velikost písmen klíčových slov</strong>: <em>Zachovat</em> (výchozí), <em>VELKÁ
+PÍSMENA</em> nebo <em>malá písmena</em>;</li>
+<li><strong>Sloupec pravítka</strong>: kde každý editor SQL vykreslí svislou vodicí čáru (24–999,
+výchozí 128). Jde pouze o vizuální vodítko; formátovač na něm řádky nezalamuje.</li>
+</ul>
+<h4>Klávesové zkratky</h4>
+<p>Vlastní klávesové zkratky OmniDB, rozdělené do dvou skupin. Chcete-li některou změnit, klikněte
+na její tlačítko a stiskněte novou kombinaci kláves, případně klávesou Esc akci zrušte. Výchozí
+hodnoty jsou:</p>
+<table>
+	<thead>
+		<tr>
+			<th>Akce</th>
+			<th>Windows/Linux</th>
+			<th>Mac</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr><td colspan="3"><strong>Databáze</strong> (karty dotazu a konzole)</td></tr>
+		<tr><td>Spustit dotaz</td><td>Alt-Q</td><td>Ctrl-Q</td></tr>
+		<tr><td>Spustit Explain</td><td>Alt-W</td><td>Ctrl-W</td></tr>
+		<tr><td>Spustit Explain Analyze</td><td>Alt-E</td><td>Ctrl-E</td></tr>
+		<tr><td>Zrušit dotaz</td><td>Alt-C</td><td>Ctrl-C</td></tr>
+		<tr><td>Odsazení</td><td>Alt-S</td><td>Ctrl-S</td></tr>
+		<tr><td>Automatické doplňování</td><td>Ctrl-Space</td><td>Option-Space</td></tr>
+		<tr><td>Nová vnitřní záložka</td><td>Alt-I</td><td>Ctrl-I</td></tr>
+		<tr><td>Zavřít aktuální vnitřní záložku</td><td>Alt-Shift-Q</td><td>Ctrl-Shift-Q</td></tr>
+		<tr><td>Vybrat vnitřní záložku vlevo</td><td>Alt-O</td><td>Ctrl-O</td></tr>
+		<tr><td>Vybrat vnitřní záložku vpravo</td><td>Alt-P</td><td>Ctrl-P</td></tr>
+		<tr><td colspan="3"><strong>Snippety</strong> (sekce Snippety)</td></tr>
+		<tr><td>Uložit snippet</td><td>Ctrl-S</td><td>Command-S</td></tr>
+		<tr><td>Nový snippet</td><td>Ctrl-N</td><td>Command-N</td></tr>
+		<tr><td>Zavřít záložku snippetu</td><td>Ctrl-W</td><td>Command-W</td></tr>
+	</tbody>
+</table>
+<p>Zkratky pro úpravy textu v samotném editoru SQL (výběr, více kurzorů, sbalování, hledání a
+nahrazování, …) jsou uvedeny zvlášť v kapitole
+<a href="editor_keyboard_shortcuts.html">Klávesové zkratky editoru</a>. Panel nabídek desktopové
+aplikace přidává zkratky pro přepínání sekcí (viz <a href="desktop_app.html">Desktopová aplikace</a>).</p>
+<h4>Heslo</h4>
+<p>Zadejte <em>Nové heslo</em> a zopakujte ho v poli <em>Potvrzení</em>; tlačítko <em>Změnit
+heslo</em> se zpřístupní, jakmile se obě hodnoty shodují. Změna hesla odhlásí vaše ostatní relace.
+Tato kategorie má smysl pouze v serverovém režimu — desktopová aplikace se přihlašuje
+automaticky.</p>
+<h4>Účet</h4>
+<p>Zobrazuje se pouze superuživatelům: <em>Spravovat uživatele</em> otevře okno <em>Správa
+uživatelů</em>, ve kterém se uživatelé OmniDB přidávají, upravují a odstraňují — viz
+<a href="creating_users_and_connections.html">Vytváření uživatelů a připojení</a>.</p>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

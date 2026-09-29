@@ -93,7 +93,20 @@ func bootstrapAppDB(db *sql.DB) error {
 		}
 	}
 
-	passwordHash, err := hashDjangoPassword("admin")
+	// Desktop (app) mode keeps admin/admin: its auto-login link signs in
+	// with exactly that, the listener is loopback-only and manual sign-in is
+	// disabled there. A server-mode install gets a random first password
+	// instead — a well-known default superuser on a -H-exposed port is an
+	// open door until someone remembers to change it.
+	initialPassword := "admin"
+	if appToken == "" {
+		pw, err := randomToken()
+		if err != nil {
+			return fmt.Errorf("generate initial admin password: %w", err)
+		}
+		initialPassword = pw[:20]
+	}
+	passwordHash, err := hashDjangoPassword(initialPassword)
 	if err != nil {
 		return fmt.Errorf("hash default admin password: %w", err)
 	}
@@ -112,7 +125,11 @@ func bootstrapAppDB(db *sql.DB) error {
 		return fmt.Errorf("commit app db bootstrap: %w", err)
 	}
 
-	fmt.Fprintln(os.Stderr, "omnidb-server: initialized a new app database (default login: admin/admin)")
+	if appToken == "" {
+		fmt.Fprintf(os.Stderr, "omnidb-server: initialized a new app database — initial login: admin / %s (shown only once; change it under Settings, or run: omnidb-server --set-password admin)\n", initialPassword)
+	} else {
+		fmt.Fprintln(os.Stderr, "omnidb-server: initialized a new app database (default login: admin/admin)")
+	}
 	appDBBootstrapDone = true
 	return nil
 }

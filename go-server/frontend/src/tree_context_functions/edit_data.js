@@ -323,7 +323,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 
 			// Both of these are database-sourced identifiers, and this string
 			// really is rendered as markup (VirtualGrid sets a header cell's
-			// innerHTML directly from col.title). The type goes inside a
+			// innerHTML from col.title once titleHtml opts in). The type goes inside a
 			// quoted attribute, the column name into element text, so they
 			// need the attribute-safe and text-safe escapes respectively —
 			// an identifier is allowed to contain a quote.
@@ -335,6 +335,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 
 			if (!v_currTabTag.editDataObject.columns[i].v_is_pk) col.title = v_column_html + v_tooltip_html;
 			else col.title = '<i class="fas fa-key action-key text-secondary"></i> ' + v_column_html + v_tooltip_html;
+			col.titleHtml = true;
 
 			col.renderer = "text";
 			columnProperties.push(col);

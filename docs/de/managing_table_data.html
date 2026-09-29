@@ -7,8 +7,12 @@
 	<meta name="description" content="Bearbeiten Sie Tabellendatensätze direkt im tabellenkalkulationsähnlichen Raster von OmniDB: Zeilen einfügen, aktualisieren und löschen, lange Textfelder bearbeiten und Fehler fehlgeschlagener Vorgänge einsehen.">
 	<link rel="canonical" href="https://www.omnidb.net/de/managing_table_data.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_table_data.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/managing_table_data.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_table_data.html">
 	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_table_data.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_table_data.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_table_data.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_table_data.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_table_data.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_table_data.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Erste Schritte</span>
 			<a href="introduction.html">Einführung</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop-App</a>
 			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+			<a href="settings_and_languages.html">Einstellungen und Sprachen</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Arbeiten mit Daten</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
 			<a href="managing_table_data.html" class="active">Tabellendaten verwalten</a>
 			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
 			<a href="visualizing_data.html">Daten visualisieren</a>
 			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
 			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
 			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="notify.html">Benachrichtigungen</a>
+			<a href="connected_users.html">Verbundene Benutzer</a>
+			<a href="permissions.html">Rollen und Berechtigungen</a>
 			<a href="logical_replication.html">Logische Replikation</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tools</span>
 			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>
 			<a href="console_tab.html">Konsolen-Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
 		</div>
@@ -140,11 +151,20 @@ der rechten Maustaste auf den Tabellenknoten und wählen Sie die Aktion
 <em>Data Actions &gt; Edit Data</em>:</p>
 <p><img alt="" src="../assets/img/image_041.webp" /></p>
 <p><img alt="" src="../assets/img/image_042.webp" /></p>
-<p>Die Oberfläche verfügt über einen SQL-Editor, mit dem Sie Datensätze filtern
-und sortieren können. Damit die Oberfläche nicht zu viele Datensätze anfordert,
-gibt es ein Feld, das die Anzahl der angezeigten Datensätze begrenzt. Das
-Datensatzraster zeigt Spaltennamen und Datentypen. Spalten, die zum
-Primärschlüssel gehören, haben ein Schlüsselsymbol neben ihrem Namen.</p>
+<p>Der Tab <em>Daten bearbeiten</em> enthält einen kleinen SQL-Editor für eine optionale Filter- und
+Sortierklausel, die an die Abfrage zum Laden der Datensätze angehängt wird — zum Beispiel
+<code>where t.cust_id &gt; 10 order by t.cust_name</code> (die Tabelle steht unter dem Alias
+<code>t</code> zur Verfügung) —, eine Auswahlliste, die begrenzt, wie viele Datensätze geladen werden
+(<em>10 Zeilen abfragen</em>, <em>100 Zeilen abfragen</em> oder <em>1000 Zeilen abfragen</em>), und eine
+Schaltfläche <em>Ausführen</em>, die das Raster (neu) lädt. Das Datensatzraster zeigt Spaltennamen und
+Datentypen. Spalten, die zum Primärschlüssel gehören, haben ein Schlüsselsymbol neben ihrem Namen. Hat die
+Tabelle keinen Primärschlüssel, warnt OmniDB mit <em>Die Tabelle hat keinen Primärschlüssel, vorhandene
+Zeilen sind schreibgeschützt.</em> — neue Zeilen können Sie trotzdem hinzufügen.</p>
+<p>Änderungen werden nicht sofort geschrieben: Bearbeiten, ergänzen und markieren Sie Zeilen nach Bedarf und
+klicken Sie dann auf <em>Änderungen speichern</em>; die Schaltfläche erscheint, sobald es etwas zu speichern
+gibt. Die erste Spalte jeder Zeile enthält ihre Zeilenaktion: Ein Klick auf das <em>×</em> dort markiert die
+Zeile zum Löschen (erneuter Klick macht dies rückgängig) bzw. entfernt eine neue, noch nicht gespeicherte
+Zeile.</p>
 <p>Die Zeile des Rasters mit dem Symbol <code>+</code> ist die Zeile zum Hinzufügen neuer
 Datensätze. Fügen wir einige Datensätze in die Tabelle <code>customers</code> ein:</p>
 <p><img alt="" src="../assets/img/image_043.webp" /></p>
@@ -153,8 +173,10 @@ Datensätze. Fügen wir einige Datensätze in die Tabelle <code>customers</code>
 einiger bestehender Datensätze und entfernen wir gleichzeitig eine der Zeilen:</p>
 <p><img alt="" src="../assets/img/image_044.webp" /></p>
 <p>Tabellen können Felder mit sehr langen Zeichenketten als Werten enthalten. Um
-das Bearbeiten dieser Felder zu erleichtern, verfügt OmniDB über eine Oberfläche,
-die per Rechtsklick auf die jeweilige Zelle aufgerufen werden kann:</p>
+das Bearbeiten dieser Felder zu erleichtern, klicken Sie mit der rechten Maustaste auf die Zelle und wählen
+<em>Edit Content</em>: Es öffnet sich ein größerer Editor (mit Syntaxhervorhebung für JSON/JSONB- und
+XML-Spalten), und <em>Speichern</em> schreibt den Wert zurück in das Raster. Dasselbe Menü bietet auch
+<em>Kopieren</em>:</p>
 <p><img alt="" src="../assets/img/image_045.webp" /></p>
 <p><img alt="" src="../assets/img/image_046.webp" /></p>
 <p>Die Oberfläche erkennt Fehler, die bei Vorgängen an Datensätzen auftreten

@@ -167,9 +167,12 @@ func renderWorkspacePage(r *http.Request, who *WhoAmI, ud userDetailsRow, shortc
 	// and changeTheme("auto") corrects it (along with the body class)
 	// against matchMedia within moments of the page loading, same as it
 	// always has for every "auto" user regardless of what's stored here.
-	editorTheme := "omnidb"
+	// Must name a theme that actually ships in lib/ace — the old
+	// "omnidb"/"omnidb_dark" names no longer exist, so every editor created
+	// before changeTheme ran requested a 404 theme-omnidb.js.
+	editorTheme := "sqlserver"
 	if ud.Theme == "dark" {
-		editorTheme = "omnidb_dark"
+		editorTheme = "sqlserver_dark"
 	}
 
 	desktopMode := appToken != ""

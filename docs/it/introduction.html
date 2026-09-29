@@ -7,8 +7,12 @@
 	<meta name="description" content="OmniDB è uno strumento open source per la gestione di database per PostgreSQL, Oracle, MySQL e altri, che unifica l'accesso a diversi DBMS in un unico spazio di lavoro sicuro e basato su browser.">
 	<link rel="canonical" href="https://www.omnidb.net/it/introduction.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/introduction.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/it/introduction.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/introduction.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/introduction.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/introduction.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/introduction.html">
 	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/introduction.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/introduction.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/introduction.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Per iniziare</span>
 			<a href="introduction.html" class="active">Introduzione</a>
 			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html">App desktop</a>
 			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html">Impostazioni e lingue</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Lavorare con i dati</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
 			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
 			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="snippets.html">Snippet</a>
 			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
 			<a href="visualizing_data.html">Visualizzazione dei dati</a>
 			<a href="managing_other_elements.html">Gestione di altri elementi</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
 			<a href="logical_replication.html">Replica logica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server e strumenti</span>
 			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
 			<a href="console_tab.html">Scheda Console</a>
 			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
 		</div>
@@ -129,7 +140,8 @@
 		<main>
 			<h1>Introduzione</h1>
 			<p><strong>OmniDB</strong> è un’applicazione open source basata su browser progettata per accedere e gestire
-				molti sistemi di Database Management diversi, come PostgreSQL, Oracle e MySQL.
+				molti sistemi di Database Management diversi: PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server,
+				Firebird e SQLite.
 				OmniDB può funzionare sia come applicazione desktop che tramite browser, combinando la flessibilità necessaria
 				per vari percorsi di accesso con un design che mette la sicurezza al primo posto. OmniDB è
 				sviluppato attivamente, testato automaticamente su una varietà di database e browser
@@ -151,11 +163,21 @@
 				e monitoraggio — vengono eseguiti in background e trasmessi al browser
 				al completamento, così l’utente può continuare a lavorare su più database e
 				più host contemporaneamente senza blocchi su nessuno di essi.</p>
-			<p>OmniDB è anche sicuro. Tutti i dati degli utenti di OmniDB sono memorizzati crittografati e nessuna
-				password di database viene memorizzata. Quando l’utente si connette per la prima volta a un database,
-				OmniDB richiede la password. Questa password viene crittografata e conservata in memoria
-				per un periodo di tempo specifico. Quando questo tempo scade, OmniDB richiede nuovamente la password.
-				Ciò garantisce la massima sicurezza per il database a cui OmniDB si connette.</p>
+			<p>OmniDB è anche sicuro. Le password dei database che scegli di salvare vengono cifrate prima di
+				essere memorizzate, con una chiave conservata nell’archivio dei segreti del sistema operativo; se
+				preferisci non memorizzare affatto una password, OmniDB la chiede al momento della connessione e
+				la conserva solo in memoria, per un tempo limitato. Un server multiutente aggiunge la protezione
+				dell’accesso e limita ciò che gli utenti possono raggiungere sulla macchina del server stessa —
+				vedi <a href="security.html">Sicurezza e server multiutente</a>.</p>
+			<p>Oltre all’editor SQL e all’albero del database, lo spazio di lavoro offre una
+				<a href="monitoring_dashboard.html">dashboard di monitoraggio</a> in tempo reale, un elenco
+				degli <a href="connected_users.html">utenti connessi</a>, un
+				<a href="notify.html">ascoltatore di notifiche</a> (LISTEN/NOTIFY e simili), un
+				<a href="permissions.html">browser di ruoli e privilegi</a> per PostgreSQL, gli
+				<a href="snippets.html">snippet</a>, l’esportazione dei dati in molti formati e i terminali
+				SSH. L’interfaccia è disponibile in inglese, ceco, tedesco, spagnolo, francese, italiano,
+				portoghese, giapponese e coreano — vedi <a href="settings_and_languages.html">Impostazioni e
+				lingue</a>.</p>
 			<h4>Storia</h4>
 			<p>I creatori di <strong>OmniDB</strong>, Rafael Thofehrn Castro e William Ivanski, lavoravano in
 				un’azienda dove avevano quotidianamente a che fare con diversi database di

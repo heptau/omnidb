@@ -1,6 +1,9 @@
 package main
 
 import (
+	"crypto/rand"
+	"crypto/subtle"
+	"encoding/hex"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,6 +12,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"time"
 
 	wailsruntime "github.com/wailsapp/wails/v2/pkg/runtime"
 )
@@ -48,10 +52,19 @@ type saveDialogResponse struct {
 // switch, which hit the exact same limitation from the other direction),
 // so it never gets that bridge and can never call a bound Go method
 // directly — this HTTP hop is the only way for it to reach this process at
-// all. Loopback-only binding is the same trust boundary go-server's own
-// /internal/shutdown/ relies on (see its comment) — no separate auth token
-// needed on top of that.
+// all. Loopback-only binding is not a trust boundary on its own — any other
+// local process or OS user can connect to 127.0.0.1, and any web page in the
+// user's browser can fire blind "simple" POSTs at it (or read responses via
+// DNS rebinding) — while /pgpass-resolve hands out a plaintext password. So
+// every request must carry a per-launch random secret that only go-server
+// receives (via OMNIDB_RELAY_TOKEN, see backend.go and
+// go-server/shell_relay.go), plus a matching Host header and POST method;
+// see requireRelayAuth.
 func (a *App) startSaveDialogServer() error {
+	token, err := newRelayToken()
+	if err != nil {
+		return err
+	}
 	listener, err := net.Listen("tcp", "127.0.0.1:0")
 	if err != nil {
 		return err
@@ -66,10 +79,45 @@ func (a *App) startSaveDialogServer() error {
 	mux.HandleFunc("/notify-language", a.handleNotifyLanguageRequest)
 	mux.HandleFunc("/notify-title", a.handleNotifyTitleRequest)
 
-	server := &http.Server{Handler: mux}
+	a.relayToken = token
 	a.saveDialogAddr = listener.Addr().String()
+	server := &http.Server{
+		Handler:           requireRelayAuth(a.saveDialogAddr, token, mux),
+		ReadHeaderTimeout: 10 * time.Second,
+	}
 	go server.Serve(listener)
 	return nil
+}
+
+// newRelayToken returns 32 random bytes, hex-encoded.
+func newRelayToken() (string, error) {
+	b := make([]byte, 32)
+	if _, err := rand.Read(b); err != nil {
+		return "", err
+	}
+	return hex.EncodeToString(b), nil
+}
+
+// relayMaxBodyBytes caps every relay request body — go-server only ever
+// sends small JSON payloads here.
+const relayMaxBodyBytes = 64 << 10
+
+// requireRelayAuth rejects anything that isn't a POST to exactly this
+// listener's host:port carrying "Authorization: Bearer <token>". The custom
+// header also forces a CORS preflight for any browser-originated request,
+// which this server never answers, so cross-site pages can't reach the
+// handlers at all.
+func requireRelayAuth(addr, token string, next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		got, ok := strings.CutPrefix(r.Header.Get("Authorization"), "Bearer ")
+		if r.Method != http.MethodPost || r.Host != addr || !ok ||
+			subtle.ConstantTimeCompare([]byte(got), []byte(token)) != 1 {
+			http.Error(w, "forbidden", http.StatusForbidden)
+			return
+		}
+		r.Body = http.MaxBytesReader(w, r.Body, relayMaxBodyBytes)
+		next.ServeHTTP(w, r)
+	})
 }
 
 func (a *App) handleSaveDialogRequest(w http.ResponseWriter, r *http.Request) {
@@ -108,11 +156,10 @@ func (a *App) handleSaveDialogRequest(w http.ResponseWriter, r *http.Request) {
 }
 
 // validateSaveDialogSrcPath confirms srcPath falls inside go-server's own
-// export temp directory before it's ever handed to os.Open — this loopback
-// server has no way to authenticate its caller as go-server specifically
-// (any local process that discovers the ephemeral port could POST here), so
-// it can't just trust that go-server already did this same check in
-// export_save_dialog.go before relaying the request. Independently
+// export temp directory before it's ever handed to os.Open — defense in
+// depth on top of requireRelayAuth: even an authenticated caller shouldn't
+// be trusted to have done this same check in export_save_dialog.go before
+// relaying the request. Independently
 // re-deriving the expected directory (rather than trusting a caller-
 // supplied one) means a malicious request still can't walk srcPath outside
 // the one directory this relay is meant to ever read from.

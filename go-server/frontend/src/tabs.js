@@ -452,7 +452,8 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 		renameTab: function (p_tab, p_name) {
 			var v_tab_title_span = p_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
 			if (v_tab_title_span) {
-				v_tab_title_span.innerHTML = p_name;
+				// Plain text: a tab name is user/database-supplied.
+				v_tab_title_span.textContent = p_name;
 			}
 
 			p_tab.text = p_name;
@@ -700,8 +701,11 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 			var v_effective_tooltip_name = p_tooltip_name;
 			var v_effective_tooltip_is_plain = false;
 			if (!p_tooltip_name && v_name) {
-				var v_tooltip_scratch = document.createElement("div");
-				v_tooltip_scratch.innerHTML = v_name;
+				// DOMParser rather than a detached <div>'s innerHTML: a detached
+				// element still belongs to the live document, so an
+				// `<img onerror>` assigned to it fires even though it is never
+				// attached. A DOMParser document is inert.
+				var v_tooltip_scratch = new DOMParser().parseFromString(v_name, "text/html").body;
 				var v_plain_label = (v_tooltip_scratch.textContent || "").trim();
 				if (v_plain_label) {
 					v_effective_tooltip_name = v_plain_label;
@@ -725,8 +729,10 @@ export function createTabControl({ p_div, p_hierarchy, p_layout }) {
 				if (v_effective_tooltip_is_plain) {
 					v_tooltip_text = v_effective_tooltip_name;
 				} else {
-					var v_tooltip_html_scratch = document.createElement("div");
-					v_tooltip_html_scratch.innerHTML = v_effective_tooltip_name;
+					var v_tooltip_html_scratch = new DOMParser().parseFromString(
+						v_effective_tooltip_name,
+						"text/html",
+					).body;
 					var v_tooltip_lines = [];
 					v_tooltip_html_scratch.childNodes.forEach(function (node) {
 						var v_line = (node.textContent || "").trim();

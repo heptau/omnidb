@@ -7,7 +7,11 @@
 	<meta name="description" content="Inicie sessão como o utilizador admin predefinido, crie utilizadores adicionais do OmniDB e configure ligações a PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, incluindo túneis SSH.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<meta name="robots" content="index, follow">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
+			<a href="desktop_app.html">Aplicação de Ambiente de Trabalho</a>
 			<a href="creating_users_and_connections.html" class="active">Criar Utilizadores e Ligações</a>
+			<a href="settings_and_languages.html">Definições e Idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
 			<a href="visualizing_data.html">Visualizar Dados</a>
 			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="notify.html">Notificações</a>
+			<a href="connected_users.html">Utilizadores Ligados</a>
+			<a href="permissions.html">Roles e Permissões</a>
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor e Ferramentas</span>
 			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="security.html">Segurança e Servidor Multiutilizador</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
@@ -130,16 +141,22 @@
 		<h1>Criar Utilizadores e Ligações</h1>
 <h4>Iniciar sessão como o utilizador <em>admin</em></h4>
 <p>O OmniDB vem apenas com o utilizador <em>admin</em>. Se estiver a usar a versão servidor, a
-primeira coisa a fazer é iniciar sessão como <em>admin</em>, cuja palavra-passe predefinida é
-<em>admin</em>. A aplicação de ambiente de trabalho não tem qualquer início de sessão: funciona como
+primeira coisa a fazer é iniciar sessão como <em>admin</em> com a palavra-passe aleatória de utilização
+única que o <code>omnidb-server</code> mostrou na sua saída de registo ao criar uma nova base de dados da
+aplicação (a linha que contém <code>initial login: admin / …</code>) e, em seguida, alterá-la em
+<em>Definições</em>. Se essa palavra-passe se perder, pode repô-la com <code>omnidb-server --set-password admin</code>. Após 10 tentativas de início de sessão falhadas para o mesmo nome de utilizador ou o mesmo
+endereço IP do cliente, o início de sessão fica bloqueado durante 15 minutos. A aplicação de ambiente de trabalho não tem qualquer início de sessão: funciona como
 um único utilizador local, pelo que tudo o que diz respeito à gestão de utilizadores descrita
 abaixo simplesmente não existe lá.</p>
 <h4>Orientar-se na interface</h4>
 <p>Toda a área de trabalho é comandada a partir da barra vertical de ícones na margem esquerda da
-janela: <em>Welcome</em> (Boas-vindas), <em>Connections</em> (Ligações, o ícone da ficha),
-<em>Database</em> (Base de dados), <em>Notify</em> (Notificações) e <em>Snippets</em> (Excertos) no
-topo, e <em>Getting Started</em> (Primeiros passos), <em>Account</em> (Conta, apenas na versão
-servidor) e <em>Settings</em> (Definições, a roda dentada) em baixo.</p>
+janela: <em>Boas-vindas</em>, <em>Ligações</em> (o ícone da ficha), <em>Base de dados</em>,
+<em>Monitorização</em>, <em>Notificações</em>, <em>Permissões</em>, <em>Utilizadores ligados</em> e
+<em>Snippets</em> no topo, e <em>Introdução</em>, <em>Conta</em> (apenas na versão servidor) e
+<em>Definições</em> (a roda dentada) em baixo. Passar o rato sobre um ícone mostra o seu nome.
+Consulte <a href="managing_databases.html">Gerir Bases de Dados</a> para ver como as secções funcionam em
+conjunto, e <a href="settings_and_languages.html">Definições e Idiomas</a> para o idioma da interface e
+outras preferências.</p>
 <h4>Criar outro utilizador</h4>
 <p>Abra <em>Settings</em> (Definições) no fundo da barra, escolha a categoria <em>Account</em>
 (Conta) e clique em <em>Manage Users</em> (Gerir utilizadores). Só um super-utilizador tem esse
@@ -147,12 +164,14 @@ botão: nas definições de um utilizador normal a secção <em>Account</em> n
 <p>A janela <em>User management</em> (Gestão de utilizadores) lista os utilizadores existentes.
 Clique em <em>Add new user</em> (Adicionar novo utilizador, o ícone da pessoa com um mais) para
 inserir uma nova linha de utilizador vazia, mostrada como <em>(pending info)</em> até a preencher.
-Preencha o <em>nome de utilizador</em> e a <em>palavra-passe</em>, assinale <em>Super User</em> se o
-novo utilizador o deve ser e clique em <em>Save</em> (Guardar). Pode criar tantos utilizadores
+Preencha o <em>Nome de utilizador</em> e a <em>Nova palavra-passe</em>, ative
+<em>Superutilizador?</em> se o novo utilizador o deve ser e clique em <em>Save</em> (Guardar). Pode criar tantos utilizadores
 quantos quiser, editar os existentes e eliminar um clicando na cruz vermelha na coluna de
 ações.</p>
 <p>Para terminar a sessão, clique no ícone <em>Account</em> (Conta, a pessoa no fundo da barra) e
 depois em <em>Sign out</em> (Terminar sessão).</p>
+<p>Eliminar um utilizador, ou retirar-lhe o estatuto de superutilizador, tem efeito imediato, incluindo nas
+sessões desse utilizador que já estejam abertas.</p>
 <h4>A secção Connections</h4>
 <p>Clique no ícone da ficha na barra. As ligações são uma secção completa da área de trabalho e não
 uma janela emergente: uma vista dividida com a lista de ligações guardadas na barra lateral
@@ -163,7 +182,15 @@ caso de uma ligação de terminal). Um pequeno ponto colorido indica o ambient
 de chave assinala uma ligação que passa por um túnel SSH.</p>
 <h4>Criar ligações</h4>
 <p>O OmniDB suporta PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird e SQLite, além de um
-tipo de ligação <em>Terminal</em> que abre uma shell SSH em vez de uma base de dados.</p>
+tipo de ligação <em>Terminal</em> que abre uma shell SSH em vez de uma base de dados. A lista
+<em>Tipo de ligação</em> mostra primeiro o PostgreSQL, depois os restantes por ordem alfabética e, por
+último, <em>Terminal</em>.</p>
+<p>No caso do <em>SQLite</em>, a ligação aponta para um ficheiro de base de dados (na máquina onde o
+<code>omnidb-server</code> é executado); se o ficheiro ainda não existir, o <em>Testar ligação</em> indica-o
+e o ficheiro é criado quando usar a ligação pela primeira vez. Num servidor multiutilizador, as ligações
+SQLite estão reservadas a superutilizadores, e alguns parâmetros da cadeia de ligação do PostgreSQL que leem
+ficheiros no servidor são rejeitados — consulte <a href="security.html">Segurança e Servidor
+Multiutilizador</a>.</p>
 <p>O botão <em>+</em> por baixo da lista cria uma ligação. Escreva o nome no cabeçalho do formulário
 à direita, escolha o <em>Connection Type</em> (tipo de ligação) e preencha o cartão
 <em>Host Connection Info</em> (dados do servidor): <em>Server</em>, <em>Port</em>,
@@ -187,8 +214,8 @@ gravada nesse ficheiro, com uma chave guardada no cofre de segredos do próprio 
 Se não existir esse cofre, o OmniDB recorre a um ficheiro de chave guardado ao lado da base de
 dados.</li>
 <li><strong>Deixado em branco</strong>: não é guardado nada e o OmniDB pede a palavra-passe ao abrir
-a ligação. O que escrever fica apenas na memória de sessão do servidor para essa ligação e
-desaparece quando a sessão termina.</li>
+a ligação. O que escrever fica apenas na memória do servidor, para a sua sessão e essa
+ligação, durante 30 minutos — depois disso o OmniDB volta a pedi-la.</li>
 </ul>
 <p>No caso do PostgreSQL, o OmniDB procura ainda a palavra-passe no seu ficheiro
 <code>.pgpass</code> no momento da ligação, escolhendo a mesma entrada que a libpq escolheria — uma
@@ -217,7 +244,9 @@ criadas depois são acrescentadas no fim.</li>
 que ligações pertencem ao grupo, confirmando com <em>Save changes</em>) e <em>Delete</em>
 (Eliminar).</li>
 <li><strong>Ligações públicas</strong>: o interruptor <em>Public connection?</em> (Ligação pública?)
-do formulário torna a ligação utilizável por todos os outros utilizadores do OmniDB. O interruptor
+do formulário torna a ligação utilizável por todos os outros utilizadores do OmniDB. Só o seu proprietário a
+pode editar; os outros utilizadores nunca veem a palavra-passe guardada (uma palavra-passe dentro da cadeia de
+ligação fica mascarada para eles), e o seu <em>Testar ligação</em> testa sempre o servidor guardado. O interruptor
 <em>Public (n)</em> no fundo da barra lateral mostra ou esconde na sua lista as ligações públicas de
 outros utilizadores.</li>
 <li><strong>Ambiente</strong>: marcar uma ligação como <em>Production</em>, <em>UAT</em>,
@@ -234,10 +263,12 @@ aparece numa ligação já aberta) e clicar com o botão direito num espaço v
 <em>New Connection</em>/<em>Refresh</em>.</p>
 <h4>Utilizar túneis SSH</h4>
 <p>O OmniDB permite ligar-se a qualquer base de dados remota através de túneis SSH. Assinale
-<em>Use SSH tunnel</em> (Usar túnel SSH) no formulário da ligação: isso ativa os campos por
+<em>Use SSH tunnel</em> (Utilizar túnel SSH) no formulário da ligação: isso ativa os campos por
 baixo:</p>
 <ul>
-<li><em>SSH Server</em>: o servidor a que se liga por SSH;</li>
+<li><em>SSH Server</em>: o servidor a que se liga por SSH. A sua chave de anfitrião já tem de constar
+do ficheiro <code>~/.ssh/known_hosts</code> do utilizador do sistema operativo que executa o OmniDB; caso contrário,
+o túnel é recusado — consulte <a href="security.html">Segurança e Servidor Multiutilizador</a>;</li>
 <li><em>SSH Port</em>: a porta do servidor SSH (a predefinição é 22, mas pode ser qualquer
 porta);</li>
 <li><em>SSH User</em>: o nome de utilizador do sistema operativo com que se liga ao servidor
@@ -246,7 +277,7 @@ SSH;</li>
 sistema operativo (ou a frase-passe da chave abaixo). Se a deixar em branco, o OmniDB pede-a sempre
 que o túnel é aberto, sem a guardar. Se preencher o campo <em>SSH Key Text File</em>, a
 palavra-passe é opcional;</li>
-<li><em>SSH Key Text File</em> (Ficheiro da chave SSH): o conteúdo da chave SSH privada local com que
+<li><em>SSH Key Text File</em> (Ficheiro de texto da chave SSH): o conteúdo da chave SSH privada local com que
 se pode ligar ao servidor SSH. O OmniDB lê o ficheiro que escolher e guarda o seu texto, não o
 ficheiro. Se preencher este campo, também pode preencher <em>Password/Passphrase</em>, mas nesse
 caso será a frase-passe da chave privada SSH.</li>

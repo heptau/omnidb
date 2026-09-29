@@ -56,13 +56,13 @@ func mssqlTemplateSelect(db *sql.DB, schema, table, indentUnit string) (string, 
 	}
 	names := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("mssql", c.Name)
 	}
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
 	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
-	sb.WriteString(fmt.Sprintf("\nFROM %s.%s AS t", schema, table))
+	sb.WriteString(fmt.Sprintf("\nFROM %s AS t", quotedSchemaTableRef("mssql", schema, table)))
 
 	_, pkCols, err := mssqlFirstPrimaryKey(db, schema, table)
 	if err != nil {
@@ -70,7 +70,7 @@ func mssqlTemplateSelect(db *sql.DB, schema, table, indentUnit string) (string, 
 	}
 	if len(pkCols) > 0 {
 		sb.WriteString("\nORDER BY t.")
-		sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
+		sb.WriteString(strings.Join(quoteTemplateColumns("mssql", pkCols), ",\n"+indentUnit+"t."))
 	}
 	return sb.String(), nil
 }
@@ -94,13 +94,13 @@ func mssqlTemplateInsert(db *sql.DB, schema, table, indentUnit string) (string, 
 	values := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("mssql", c.Name)
 		values[i] = "?"
 		comments[i] = mssqlColumnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("INSERT INTO %s.%s (\n", schema, table))
+	sb.WriteString(fmt.Sprintf("INSERT INTO %s (\n", quotedSchemaTableRef("mssql", schema, table)))
 	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
 	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
@@ -126,10 +126,10 @@ func mssqlTemplateUpdate(db *sql.DB, schema, table, indentUnit string) (string, 
 	cores := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		cores[i] = c.Name + " = ?"
+		cores[i] = quoteEditDataColumn("mssql", c.Name) + " = ?"
 		comments[i] = mssqlTypeComment(c.DataType, pkSet[c.Name], c.Nullable)
 	}
-	return fmt.Sprintf("UPDATE %s.%s\nSET %s\nWHERE condition", schema, table, formatTemplateColumnList(cores, comments, indentUnit)), nil
+	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", quotedSchemaTableRef("mssql", schema, table), formatTemplateColumnList(cores, comments, indentUnit)), nil
 }
 
 func mssqlColumnComment(name, dataType string, isPK bool, nullable string) string {

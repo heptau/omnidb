@@ -75,6 +75,10 @@ jobs:
         run: go test ./...
         working-directory: go-server
 
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
+        working-directory: go-server
+
       - name: gofmt check
         run: |
           UNFORMATTED="$(gofmt -l .)"
@@ -116,4 +120,8 @@ jobs:
 
       - name: Vet
         run: go vet ./...
+        working-directory: wails-app
+
+      - name: govulncheck
+        run: go run golang.org/x/vuln/cmd/govulncheck@latest ./...
         working-directory: wails-app

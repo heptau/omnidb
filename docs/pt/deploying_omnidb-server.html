@@ -7,7 +7,11 @@
 	<meta name="description" content="Implemente o omnidb-server com segurança: opções de linha de comandos, endereços de vinculação, e como colocar um proxy inverso com terminação TLS, como o Nginx, à sua frente.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/deploying_omnidb-server.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/deploying_omnidb-server.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/deploying_omnidb-server.html">
 	<meta name="robots" content="index, follow">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
+			<a href="desktop_app.html">Aplicação de Ambiente de Trabalho</a>
 			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="settings_and_languages.html">Definições e Idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
 			<a href="visualizing_data.html">Visualizar Dados</a>
 			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="notify.html">Notificações</a>
+			<a href="connected_users.html">Utilizadores Ligados</a>
+			<a href="permissions.html">Roles e Permissões</a>
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor e Ferramentas</span>
 			<a href="deploying_omnidb-server.html" class="active">Implementar o omnidb-server</a>
+			<a href="security.html">Segurança e Servidor Multiutilizador</a>
 			<a href="console_tab.html">Separador de Consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
@@ -145,6 +156,9 @@ Options:
   -d HOMEDIR, --homedir=HOMEDIR
                          home directory containing the omnidb.db database and
                          the temp folder used for exported files
+      --set-password=USER
+                         set USER's password in the app database and exit
+                         (prompts for it; does not start the server)
 </code></pre>
 <ul>
 <li>
@@ -155,14 +169,20 @@ ou o endereço de uma interface específica.</p>
 <li>
 <p><code>-p</code> especifica a porta em que escutar, usada no URL do browser ao
 aceder diretamente ao OmniDB. Se omitida, o sistema operativo escolhe uma porta livre e imprime-a
-para o stderr ao iniciar.</p>
+para o stderr ao iniciar. Como essa porta muda a cada arranque, passe sempre <code>-p</code> num
+servidor ao qual outras pessoas (ou um proxy inverso) se ligam.</p>
 </li>
 <li>
 <p><code>-d</code> permite escolher a pasta que armazena o <code>omnidb.db</code> (a base de dados da
-aplicação) e a pasta <code>temp</code> usada para ficheiros exportados. Com esta opção é
+aplicação) e a pasta <code>temp</code> usada para ficheiros exportados. A pasta já tem de existir;
+sem <code>-d</code>, é usada <code>~/.omnidb/omnidb-server</code> (criada automaticamente). Com esta opção é
 possível executar várias instâncias do <code>omnidb-server</code>, cada uma a apontar para uma
 pasta diferente — útil para implementações Docker onde se monta um volume
 nesse local.</p>
+</li>
+<li>
+<p><code>--set-password USER</code> define a palavra-passe de um utilizador existente diretamente
+na base de dados da aplicação e termina sem iniciar o servidor — consulte <a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>.</p>
 </li>
 </ul>
 <p><strong>Nota de segurança:</strong> um servidor iniciado com <code>-H</code> definido como qualquer valor diferente de
@@ -170,6 +190,12 @@ loopback nunca deve também ser iniciado com <code>-A</code>/<code>--app</code> 
 início de sessão automático de ambiente de trabalho que esse modo gera destina-se apenas a ser acedida localmente, pelo que
 <code>-A</code> força sempre a vinculação a loopback independentemente de <code>-H</code>, ignorando-o por completo
 em vez de arriscar essa combinação.</p>
+<p>Ao arrancar, o servidor mostra o endereço a abrir, por exemplo
+<code>omnidb-server: listening on 127.0.0.1:9000 — open http://127.0.0.1:9000/omnidb_login/ in your browser</code>.
+O primeiro arranque com uma pasta pessoal vazia mostra também a palavra-passe de utilização única do
+utilizador <code>admin</code> inicial — consulte <a href="security.html">Segurança e Servidor Multiutilizador</a>, que
+descreve também o que um servidor multiutilizador restringe e protege. Pare o servidor com Ctrl-C (ou
+<code>SIGTERM</code>); termina de forma ordenada.</p>
 <p>Vejamos como implementar o <code>omnidb-server</code> em diferentes cenários:</p>
 <h4>Implementar o OmniDB diretamente</h4>
 <p>Executar o <code>omnidb-server</code> com <code>-H 0.0.0.0</code> (ou uma interface pública específica) torna-o
@@ -203,11 +229,18 @@ terminação de TLS e encaminhar HTTP simples para ele localmente.</p>
         proxy_set_header   X-Forwarded-Ssl https;
         proxy_set_header   X-Forwarded-Proto https;
         proxy_set_header   X-Forwarded-Port 443;
-        proxy_set_header   Host $host;
+        proxy_set_header   Host localhost:9000;
         proxy_http_version 1.1;
     }
 }
 </code></pre>
+<p><strong>Atenção ao cabeçalho <code>Host</code>:</strong> enquanto o <code>omnidb-server</code> escuta em
+loopback, só responde a pedidos dirigidos a <code>127.0.0.1:&lt;porta&gt;</code>,
+<code>localhost:&lt;porta&gt;</code> ou <code>[::1]:&lt;porta&gt;</code> (tudo o resto recebe
+<code>421 Misdirected Request</code>) — uma proteção contra ataques de DNS rebinding. Por isso, o proxy
+tem de encaminhar o pedido com <code>Host</code> definido para o endereço local, como acima,
+em vez de passar o nome de anfitrião público. Mantenha <code>X-Forwarded-Proto https</code>: indica
+ao OmniDB que deve marcar os seus cookies de sessão como <code>Secure</code>.</p>
 <p>Como tudo (incluindo as atualizações em segundo plano de consultas/consola) é servido através de
 long-polling HTTP simples em vez de websockets, basta um único bloco <code>location /</code>
 a cobrir toda a aplicação — já não existe um caminho separado de atualização

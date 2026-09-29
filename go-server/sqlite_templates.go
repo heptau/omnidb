@@ -35,13 +35,13 @@ func sqliteTemplateSelect(db *sql.DB, table, kind, indentUnit string) (string, e
 
 	names := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("sqlite", c.Name)
 	}
 
 	var sb strings.Builder
 	sb.WriteString("SELECT t.")
 	sb.WriteString(strings.Join(names, ",\n"+indentUnit+"t."))
-	sb.WriteString(fmt.Sprintf("\nFROM %s AS t", table))
+	sb.WriteString(fmt.Sprintf("\nFROM %s AS t", quotedSchemaTableRef("sqlite", "", table)))
 
 	if kind == "t" {
 		pkCols, err := sqlitePrimaryKeyColumnNames(db, table)
@@ -50,7 +50,7 @@ func sqliteTemplateSelect(db *sql.DB, table, kind, indentUnit string) (string, e
 		}
 		if len(pkCols) > 0 {
 			sb.WriteString("\nORDER BY t.")
-			sb.WriteString(strings.Join(pkCols, ",\n"+indentUnit+"t."))
+			sb.WriteString(strings.Join(quoteTemplateColumns("sqlite", pkCols), ",\n"+indentUnit+"t."))
 		}
 	}
 
@@ -90,13 +90,13 @@ func sqliteTemplateInsert(db *sql.DB, table, indentUnit string) (string, error) 
 	values := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.Name
+		names[i] = quoteEditDataColumn("sqlite", c.Name)
 		values[i] = "?"
 		comments[i] = columnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
 	var sb strings.Builder
-	sb.WriteString(fmt.Sprintf("INSERT INTO %s (\n", table))
+	sb.WriteString(fmt.Sprintf("INSERT INTO %s (\n", quotedSchemaTableRef("sqlite", "", table)))
 	sb.WriteString(indentUnit + strings.Join(names, ",\n"+indentUnit))
 	sb.WriteString("\n) VALUES (\n")
 	sb.WriteString(indentUnit + formatTemplateColumnList(values, comments, indentUnit))
@@ -123,9 +123,9 @@ func sqliteTemplateUpdate(db *sql.DB, table, indentUnit string) (string, error) 
 	cores := make([]string, len(columns))
 	comments := make([]string, len(columns))
 	for i, c := range columns {
-		cores[i] = c.Name + " = ?"
+		cores[i] = quoteEditDataColumn("sqlite", c.Name) + " = ?"
 		comments[i] = columnComment(c.Name, c.DataType, pkSet[c.Name], c.Nullable)
 	}
 
-	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", table, formatTemplateColumnList(cores, comments, indentUnit)), nil
+	return fmt.Sprintf("UPDATE %s\nSET %s\nWHERE condition", quotedSchemaTableRef("sqlite", "", table), formatTemplateColumnList(cores, comments, indentUnit)), nil
 }

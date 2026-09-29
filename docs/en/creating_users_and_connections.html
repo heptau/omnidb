@@ -8,6 +8,11 @@
 	<link rel="canonical" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Getting Started</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop App</a>
 			<a href="creating_users_and_connections.html" class="active">Creating Users and Connections</a>
+			<a href="settings_and_languages.html">Settings and Languages</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Working with Data</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Creating, Changing and Removing Tables</a>
 			<a href="managing_table_data.html">Managing Table Data</a>
 			<a href="writing_sql_queries.html">Writing SQL Queries</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizing Query Plans</a>
 			<a href="visualizing_data.html">Visualizing Data</a>
 			<a href="managing_other_elements.html">Managing other Elements</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB Config Tool</a>
 			<a href="writing_plpgsql_functions.html">Writing PL/pgSQL Functions</a>
 			<a href="monitoring_dashboard.html">Monitoring Dashboard</a>
+			<a href="notify.html">Notify</a>
+			<a href="connected_users.html">Connected Users</a>
+			<a href="permissions.html">Roles and Permissions</a>
 			<a href="logical_replication.html">Logical Replication</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tooling</span>
 			<a href="deploying_omnidb-server.html">Deploying omnidb-server</a>
+			<a href="security.html">Security and Multi-user Server</a>
 			<a href="console_tab.html">Console Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Editor Keyboard Shortcuts</a>
 		</div>
@@ -130,25 +142,34 @@
 		<h1>Creating Users and Connections</h1>
 <h4>Logging in as user <em>admin</em></h4>
 <p>OmniDB comes only with the user <em>admin</em>. If you are using the server version, the first
-thing to do is sign in as <em>admin</em>; the default password is <em>admin</em>. The desktop app
+thing to do is sign in as <em>admin</em> with the one-time random password that <code>omnidb-server</code>
+printed to its log output when it created a new app database (the line containing
+<code>initial login: admin / …</code>), and then change it under <em>Settings</em>. If that password gets lost, reset it with <code>omnidb-server --set-password admin</code>. After 10 failed sign-in
+attempts for the same username or client IP address, sign-in is locked for 15 minutes. The desktop app
 has no sign-in at all — it runs as a single local user, so everything about user management below
 simply does not appear there.</p>
 <h4>Finding your way around</h4>
 <p>The whole workspace is reached from the vertical icon rail on the left edge of the window:
-<em>Welcome</em>, <em>Connections</em> (the plug), <em>Database</em>, <em>Notify</em> and
-<em>Snippets</em> at the top, and <em>Getting Started</em>, <em>Account</em> (server version only)
-and <em>Settings</em> (the cog) at the bottom.</p>
+<em>Welcome</em>, <em>Connections</em> (the plug), <em>Database</em>, <em>Monitoring</em>,
+<em>Notify</em>, <em>Permissions</em>, <em>Connected Users</em> and <em>Snippets</em> at the top,
+and <em>Getting Started</em>, <em>Account</em> (server version only) and <em>Settings</em> (the
+cog) at the bottom. Hovering an icon shows its name. See
+<a href="managing_databases.html">Managing Databases</a> for how the sections work together, and
+<a href="settings_and_languages.html">Settings and Languages</a> for the interface language and
+other preferences.</p>
 <h4>Creating another user</h4>
 <p>Open <em>Settings</em> at the bottom of the rail and pick the <em>Account</em> category, then
 click <em>Manage Users</em>. Only a super user has that button — a regular user's Settings has no
 <em>Account</em> section at all.</p>
 <p>The <em>User management</em> window lists the existing users. Click <em>Add new user</em> (the
 person-with-plus icon) to insert a new, blank user row, shown as <em>(pending info)</em> until you
-fill it in. Fill in the <em>username</em> and <em>password</em>, check <em>Super User</em> if the
-new user should be one, and click <em>Save</em>. You can create as many users as you want, edit
+fill it in. Fill in the <em>User name</em> and <em>New password</em>, switch on
+<em>Superuser?</em> if the new user should be one, and click <em>Save</em>. You can create as many users as you want, edit
 existing ones, and delete a user by clicking the red cross in the actions column.</p>
 <p>To sign out, click the <em>Account</em> icon (the person, near the bottom of the rail) and then
 <em>Sign out</em>.</p>
+<p>Deleting a user, or taking away superuser status, takes effect immediately, including for that
+user's sessions that are already open.</p>
 <h4>The Connections section</h4>
 <p>Click the plug icon in the rail. Connections are a full section of the workspace, not a popup:
 a master–detail split view with the list of saved connections in the sidebar on the left and the
@@ -159,7 +180,15 @@ terminal connection). A small colored dot marks the connection's environment, 
 one that goes through an SSH tunnel.</p>
 <h4>Creating connections</h4>
 <p>OmniDB supports PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird and SQLite, plus a
-<em>Terminal</em> connection type that opens an SSH shell instead of a database.</p>
+<em>Terminal</em> connection type that opens an SSH shell instead of a database. The
+<em>Connection Type</em> list shows PostgreSQL first, then the others alphabetically, and
+<em>Terminal</em> last.</p>
+<p>For <em>SQLite</em>, the connection points at a database file (on the machine where
+<code>omnidb-server</code> runs); if the file does not exist yet, <em>Test Connection</em> says so
+and the file is created when you first use the connection. On a multi-user server, SQLite
+connections are reserved for superusers, and some PostgreSQL connection-string parameters that read
+files on the server are rejected — see <a href="security.html">Security and Multi-user
+Server</a>.</p>
 <p>Click the <em>+</em> button under the list to create a connection. Type its name into the
 heading of the form on the right, choose the <em>Connection Type</em>, and fill in the
 <em>Host Connection Info</em> card: <em>Server</em>, <em>Port</em>, <em>Database</em>,
@@ -181,8 +210,8 @@ written to that database file, using a key kept in your operating system's own s
 file itself — so the database file alone is no longer enough to read the passwords in it. If no
 such secret store is available, OmniDB falls back to a key file kept alongside the database.</li>
 <li><strong>Left blank</strong>: nothing is stored, and OmniDB asks for the password when you open
-the connection. What you type is kept only in the server's session memory for that connection, and
-is gone when the session ends.</li>
+the connection. What you type is kept only in the server's memory, for your session and that
+connection, for 30 minutes — after that OmniDB asks again.</li>
 </ul>
 <p>For PostgreSQL, OmniDB also looks the password up in your <code>.pgpass</code> file at connect
 time, matching the same entry libpq would, so a connection with no stored password can still open
@@ -207,8 +236,10 @@ and survives a reload and a restart. Connections you create later are added at
 group. <em>+ Group</em> creates a group, and the <em>…</em> button next to it offers
 <em>Rename</em>, <em>Manage Connections</em> (turns the rows into checkboxes so you can pick which
 connections belong to the group, then <em>Save changes</em>) and <em>Delete</em>.</li>
-<li><strong>Public connections</strong>: the <em>Public connection?</em> switch in the form makes
-a connection usable by every other OmniDB user. The <em>Public (n)</em> switch at the bottom of
+<li><strong>Public connections</strong>: the <em>Public connection?</em> switch in the form makes
+a connection usable by every other OmniDB user. Only its owner can edit it; other users never see
+its saved password (a password inside its connection string is masked for them), and their
+<em>Test Connection</em> always tests the stored server. The <em>Public (n)</em> switch at the bottom of
 the sidebar shows or hides other users' public connections in your own list.</li>
 <li><strong>Environment</strong>: tagging a connection <em>Production</em>, <em>UAT</em>,
 <em>Development</em> or <em>Archive</em> colors its dot in the list and the edge of its open tab —
@@ -224,7 +255,9 @@ in the list offers <em>New Connection</em>/<em>Refresh</em>.</p>
 <p>OmniDB allows the user to connect to any remote database through SSH tunnels. Tick <em>Use SSH
 tunnel</em> in the connection's own form — that enables the fields below it:</p>
 <ul>
-<li><em>SSH Server</em>: The server you are connecting to via SSH;</li>
+<li><em>SSH Server</em>: The server you are connecting to via SSH. Its host key must already be
+in the <code>~/.ssh/known_hosts</code> file of the operating-system user running OmniDB, otherwise
+the tunnel is refused — see <a href="security.html">Security and Multi-user Server</a>;</li>
 <li><em>SSH Port</em>: The port of the SSH server (default is 22, but it can be any port
 number);</li>
 <li><em>SSH User</em>: The operating system user name you use to connect to the SSH

@@ -7,8 +7,12 @@
 	<meta name="description" content="Ein Rundgang durch das OmniDB-Arbeitsbereichsfenster: Verbindungs-Tabs, der Strukturbaum, innere Tabs für Abfragen und Konsolen, und wie man Datenbankobjekte durchsucht und verwaltet.">
 	<link rel="canonical" href="https://www.omnidb.net/de/managing_databases.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_databases.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/managing_databases.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_databases.html">
 	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_databases.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_databases.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_databases.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_databases.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_databases.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_databases.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Erste Schritte</span>
 			<a href="introduction.html">Einführung</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop-App</a>
 			<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>
+			<a href="settings_and_languages.html">Einstellungen und Sprachen</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Arbeiten mit Daten</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
 			<a href="managing_table_data.html">Tabellendaten verwalten</a>
 			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
 			<a href="visualizing_data.html">Daten visualisieren</a>
 			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
 			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
 			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="notify.html">Benachrichtigungen</a>
+			<a href="connected_users.html">Verbundene Benutzer</a>
+			<a href="permissions.html">Rollen und Berechtigungen</a>
 			<a href="logical_replication.html">Logische Replikation</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tools</span>
 			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>
 			<a href="console_tab.html">Konsolen-Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
 		</div>
@@ -129,108 +140,84 @@
 		</nav>
 		<main>
 		<h1>Datenbanken verwalten</h1>
-<p>Nachdem Sie eine Verbindung erstellt haben, können Sie sie öffnen, indem Sie im
-Bereich <em>Connections</em> auf <em>Connect</em> (Verbinden) klicken oder in der Liste
-doppelt auf sie klicken. Sie werden sehen, dass die Verbindung durch eine Art äußeren Tab dargestellt
-wird, der <em>Connection Tab</em> (Verbindungs-Tab) genannt wird. Und dieser gesamte
-Bereich heißt <em>Workspace Window</em> (Arbeitsbereichsfenster).</p>
-<p><img alt="" src="../assets/img/image_014.webp" /></p>
-<h4>Bereiche des <em>Workspace</em>-Fensters</h4>
-<p>Diese Oberfläche besteht aus mehreren Elementen:</p>
-<p><img alt="" src="../assets/img/image_015.webp" /></p>
+<p>Nachdem Sie eine Verbindung erstellt haben, können Sie sie öffnen, indem Sie im Bereich
+<em>Verbindungen</em> auf <em>Verbinden</em> klicken oder in der Verbindungsliste doppelt auf sie klicken.
+OmniDB wechselt dann in den Bereich <em>Datenbank</em> und öffnet die Verbindung in einem neuen
+<em>Verbindungs-Tab</em>.</p>
+<h4>Bereiche des Arbeitsbereichs</h4>
+<p>Die Symbolleiste am linken Fensterrand wechselt zwischen den Bereichen des Arbeitsbereichs:</p>
 <ul>
-<li><strong>1) Connections</strong> (Verbindungen): Öffnet den Bereich <em>Connections</em>, in dem
-Verbindungen angelegt, angeordnet und geöffnet werden</li>
-<li><strong>2) Outer Tabs</strong> (Äußere Tabs): Mit OmniDB können Sie mehrere Datenbanken gleichzeitig
-bearbeiten. Jede Datenbank ist über einen <em>äußeren Tab</em> zugänglich. Äußere Tabs können
-auch verbindungsunabhängige Funktionen beherbergen, wie etwa die Funktion <em>Snippets</em></li>
-<li><strong>3) Options</strong> (Optionen): Unten in der Symbolleiste. <em>Account</em> (Konto) zeigt
-den angemeldeten Benutzer, die Version und <em>Sign out</em> (Abmelden, nur Server-Version), und
-<em>Settings</em> (Einstellungen) enthält die Benutzereinstellungen sowie für einen Superuser
-zusätzlich <em>Manage Users</em> (Benutzer verwalten).</li>
+<li><strong>Willkommen</strong>: die Startseite mit Links zur Dokumentation und zum Tutorial
+<em>Erste Schritte</em> (siehe <a href="additional_features.html">Zusätzliche Funktionen</a>);</li>
+<li><strong>Verbindungen</strong>: hier werden Verbindungen erstellt, angeordnet und geöffnet (siehe
+<a href="creating_users_and_connections.html">Benutzer und Verbindungen erstellen</a>);</li>
+<li><strong>Datenbank</strong>: die geöffneten Verbindungs-Tabs, jeder mit seinem Datenbankbaum und seinen
+Abfrage- und Konsolen-Tabs — Thema dieses Kapitels;</li>
+<li><strong>Überwachung</strong>, <strong>Benachrichtigungen</strong>, <strong>Berechtigungen</strong> und
+<strong>Verbundene Benutzer</strong>: Werkzeuge, die mit den im Bereich Datenbank geöffneten Verbindungen
+arbeiten (siehe <a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>,
+<a href="notify.html">Benachrichtigungen</a>, <a href="permissions.html">Rollen und Berechtigungen</a> und
+<a href="connected_users.html">Verbundene Benutzer</a>);</li>
+<li><strong>Snippets</strong>: Ihre gespeicherten SQL-Bausteine (siehe <a href="snippets.html">Snippets</a>);</li>
+<li>unten <strong>Erste Schritte</strong> (das interaktive Tutorial), <strong>Konto</strong> (nur in der
+Server-Version: der aktuelle Benutzer, die Version und <em>Abmelden</em>) und <strong>Einstellungen</strong>
+(siehe <a href="settings_and_languages.html">Einstellungen und Sprachen</a>; Superuser finden dort auch
+<em>Benutzer verwalten</em>).</li>
 </ul>
-<h4>Äußerer Verbindungs-Tab</h4>
-<p>Der äußere Tab mit dem Namen <em>PostgreSQL – testdb</em> trägt diesen Namen wegen des Alias
-(<em>PostgreSQL</em>), das wir in der Verbindung zur Datenbank <code>testdb</code> angegeben haben. Dieser
-Tab ist ein <em>Connection Outer Tab</em> (äußerer Verbindungs-Tab). Beachten Sie den kleinen Tab
-mit einem Kreuz neben dem äußeren Tab <em>PostgreSQL – testdb</em>. Damit können Sie einen neuen
-äußeren Tab erstellen, der automatisch ein <em>Connection Outer Tab</em> ist. Der <em>Snippet Outer
-Tab</em> hingegen ist fest und steht immer an erster Stelle.</p>
-<p>Ein neuer <em>Connection Outer Tab</em> zeigt automatisch immer auf die erste Verbindung in Ihrer
-Liste der Datenbankverbindungen. Oder, falls Sie eine Verbindung im Bereich <em>Connections</em>
-geöffnet haben, zeigt er auf diese Verbindung. Betrachten Sie die Elemente innerhalb
-dieses Tabs:</p>
-<p><img alt="" src="../assets/img/image_016.webp" /></p>
+<p>Die Bereiche Datenbank, Überwachung, Benachrichtigungen, Berechtigungen und Verbundene Benutzer zeigen oben
+alle dieselbe Leiste geöffneter Verbindungs-Tabs mit derselben Auswahl: Wählen Sie in einem davon eine
+Verbindung, folgen die anderen. Ein Wechsel des Bereichs schließt nie eine Verbindung.</p>
+<h4>Verbindungs-Tabs</h4>
+<p>Jede geöffnete Verbindung ist ein Tab in dieser Leiste, benannt nach der Verbindung. Eine Verbindung,
+die mit einer Umgebung (Production, UAT, Development, Archive) markiert ist, zeigt deren Farbe auf ihrem
+Tab, sodass sich eine Produktionsverbindung leicht unterscheiden lässt. Fährt man mit der Maus über einen
+Tab, werden seine Details (Server oder Verbindungszeichenfolge) und seine Schließen-Schaltfläche (×)
+angezeigt. Tabs lassen sich per Drag &amp; Drop umsortieren.</p>
+<p>Das <em>+</em> am Ende der Leiste öffnet eine weitere Verbindung: Es listet Ihre gespeicherten
+Verbindungen auf (gruppiert, falls Sie Gruppen verwenden) und unter <em>SSH-Konsolen</em> Ihre
+Terminal-Verbindungen. Das Schließen eines Verbindungs-Tabs beendet dessen Datenbanksitzungen.</p>
+<p>Innerhalb eines Verbindungs-Tabs finden Sie:</p>
 <ul>
-<li><strong>1) Connection Selector</strong> (Verbindungsauswahl): Zeigt alle Verbindungen an und lässt
-den Benutzer die aktuelle auswählen</li>
-<li><strong>2) Tree of Structures</strong> (Strukturbaum): Zeigt einen hierarchischen Baum, in dem Sie
-durch die Datenbankelemente navigieren können</li>
-<li><strong>3) Properties and DDL Panels</strong> (Eigenschaften- und DDL-Panels): Zeigen Eigenschaften
-und DDL zum aktuell ausgewählten Knoten in der Baumansicht an</li>
-<li><strong>4) Inner Tabs</strong> (Innere Tabs): Ermöglichen dem Benutzer, Aktionen in der aktuellen
-Datenbank auszuführen. Es gibt mehrere Arten innerer Tabs für die aktuelle Datenbank. Durch
-Klicken auf den letzten kleinen Tab mit Kreuz können Sie einen neuen Tab hinzufügen. Ein
-neuer Tab kann ein <em>Query Tab</em> (Abfrage-Tab), <em>Console Tab</em> (Konsolen-Tab), <em>Monitoring
-Dashboard</em> (Überwachungs-Dashboard) oder <em>Backends</em> sein</li>
+<li><strong>Den Datenbankbaum</strong> links, in dem Sie durch die Datenbankobjekte navigieren. Ein
+Rechtsklick auf einen Knoten zeigt, was Sie damit tun können.</li>
+<li><strong>Die Bereiche Eigenschaften und DDL</strong> unter dem Baum, die die Eigenschaften und die
+<code>CREATE</code>-Anweisung des im Baum ausgewählten Knotens zeigen. Baum und dieser Bereich lassen sich
+durch Ziehen ihrer Trennlinien in der Größe ändern und mit den kleinen Umschaltknöpfen darauf
+einklappen.</li>
+<li><strong>Innere Tabs</strong> rechts. Das <em>+</em> am Ende der Leiste der inneren Tabs fügt einen
+<em>Abfrage-Tab</em> oder einen <em>Konsolen-Tab</em> hinzu; andere Aktionen (etwa <em>Daten
+bearbeiten</em> bei einer Tabelle) öffnen ihre eigenen inneren Tabs.</li>
 </ul>
-<p><img alt="" src="../assets/img/image_187.webp" /></p>
-<ul>
-<li><strong>5) Inner Tab Content</strong> (Inhalt des inneren Tabs): Kann je nach Art des inneren Tabs
-variieren. Die Abbildung zeigt einen <em>Query Tab</em>, und in diesem Fall besteht der Inhalt
-aus einem <em>SQL-Editor</em> mit Syntaxhervorhebung, automatischer Vervollständigung sowie
-Suchen &amp; Ersetzen</li>
-<li><strong>6) Inner Tab Actions</strong> (Aktionen des inneren Tabs): Können je nach Art des inneren Tabs
-variieren. Für einen <em>Query Tab</em> sind dies <em>Run</em> (Ausführen), <em>Indent SQL</em> (SQL einrücken),
-<em>Command History</em> (Befehlsverlauf), <em>Explain</em>, <em>Explain Analyze</em>, <em>Autocommit</em> und
-<em>Export Data</em> (Daten exportieren)</li>
-<li><strong>7) Inner Tab Results</strong> (Ergebnisse des inneren Tabs): Bei einem <em>Query Tab</em> wird nach
-Klick auf die <em>Execute-Schaltfläche</em> oder Drücken des Tastenkürzels zum Ausführen (<code>Alt-Q</code>)
-eine Ergebnistabelle mit den Abfrageergebnissen im Unter-Tab <em>Data</em> angezeigt. Ruft die
-Abfrage eine Funktion auf, die Meldungen ausgibt, werden diese im Unter-Tab <em>Messages</em>
-angezeigt. Haben Sie stattdessen auf <em>Explain</em> oder <em>Explain Analyze</em> geklickt, wird der
-Ausführungsplan der Abfrage im Unter-Tab <em>Explain</em> angezeigt.</li>
-</ul>
-<h4>Arbeiten mit Datenbanken</h4>
-<p>Werfen Sie einen Blick auf Ihre Verbindungsauswahl. OmniDB zeigt immer auf die erste
-verfügbare Verbindung, Sie können dies jedoch durch Klicken auf die Auswahl ändern.</p>
-<p><img alt="" src="../assets/img/image_017.webp" /></p>
-<p>Wählen Sie die Verbindung <em>PostgreSQL</em> aus. Gehen Sie nun zum Baum direkt unter der
-Auswahl und klicken Sie, um den Wurzelknoten <em>PostgreSQL</em> zu erweitern.</p>
-<p><img alt="" src="../assets/img/image_018.webp" /></p>
-<p>Bedenken Sie, dass nach 30 Minuten ohne Aktionen an der Datenbank ein <em>Authentication</em>-Popup
-(Authentifizierung) erscheint, was bedeutet, dass das Passwort, das OmniDB verschlüsselt im
-Arbeitsspeicher abgelegt hat, nun abgelaufen ist. Wie bereits erläutert, ist dies wichtig für
-die Sicherheit Ihrer Datenbank. Nachdem Sie das korrekte Passwort eingegeben haben, sehen Sie,
-dass der PostgreSQL-Knoten nun die PostgreSQL-Version anzeigt und außerdem erweitert wurde,
-wobei die aktuelle Datenbankverbindung sowie instanzweite Elemente angezeigt werden:
-<em>Databases</em> (Datenbanken), <em>Tablespaces</em> (Tablespaces), <em>Roles</em> (Rollen) und
-<em>Replication Slots</em> (Replikationsslots).</p>
-<p>Sie können sich mit einer einzelnen PostgreSQL-Datenbank verbinden und über dieselbe
-Verbindung auch andere Datenbanken in derselben PostgreSQL-Instanz erreichen. Die aktuell
-aktive Datenbank wird unterhalb der Verbindungsauswahl angezeigt.</p>
-<p><img alt="" src="../assets/img/image_188.webp" /></p>
-<p>Um sich mit einer anderen Datenbank zu verbinden, erweitern Sie den entsprechenden Knoten
-dieser Datenbank. Es erscheint ein Popup mit der Frage, ob Sie die aktive Datenbank
-wirklich wechseln möchten.</p>
-<p><img alt="" src="../assets/img/image_189.webp" /></p>
-<p>Klicken Sie auf <em>Yes</em> (Ja), und OmniDB wechselt die aktive Datenbank zur ausgewählten
-Datenbank. Dies spiegelt sich in der Anzeige <em>Active database</em> (Aktive Datenbank) sowie im
-Namen des äußeren Tabs wider.</p>
-<p><img alt="" src="../assets/img/image_190.webp" /></p>
-<p>Erweitern Sie nun den Knoten <em>Schemas</em> (Schemata). Sie sehen alle Schemata in der aktuellen
+<p>Ein <em>Abfrage-Tab</em> enthält einen SQL-Editor mit Syntaxhervorhebung, Autovervollständigung und
+Suchen &amp; Ersetzen, eine Werkzeugleiste (<em>Ausführen</em>, <em>Anweisung an Cursorposition
+ausführen</em>, <em>SQL einrücken</em>, <em>Befehlsverlauf</em>, <em>Explain</em>, <em>Explain
+Analyze</em>, <em>Autocommit</em>, <em>Daten exportieren</em>, …) und darunter den Ergebnisbereich mit
+den Unter-Tabs <em>Daten</em>, <em>Meldungen</em> und <em>Explain</em>. Details dazu finden Sie unter
+<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>.</p>
+<h4>Mit Datenbanken arbeiten</h4>
+<p>Erweitern Sie den Wurzelknoten des Baums (benannt nach der Datenbank-Engine). Wenn Sie eine Verbindung
+ohne gespeichertes Passwort zum ersten Mal verwenden, fragt OmniDB danach. Ein in diese Abfrage
+eingegebenes Passwort wird für 30 Minuten Ihrer Sitzung gespeichert; danach erscheint die Abfrage erneut.
+Nach Eingabe des korrekten Passworts zeigt der Wurzelknoten die Serverversion und klappt auf; er zeigt die
+aktuelle Datenbankverbindung sowie instanzweite Elemente — bei PostgreSQL: <em>Datenbanken</em>,
+<em>Tablespaces</em>, <em>Rollen</em> und <em>Replikations-Slots</em>.</p>
+<p>Sie können sich mit einer einzelnen PostgreSQL-Datenbank verbinden und über dieselbe Verbindung auch mit
+anderen Datenbanken derselben PostgreSQL-Instanz. Zum Wechseln erweitern Sie den Knoten einer anderen
+Datenbank: OmniDB fragt, ob Sie die aktive Datenbank wirklich wechseln möchten, und macht sie bei
+<em>Ja</em> zur aktiven Datenbank dieses Verbindungs-Tabs.</p>
+<p>Erweitern Sie nun den Knoten <em>Schemas</em>. Sie sehen alle Schemata in der aktuellen
 Datenbank (bei PostgreSQL werden <code>TOAST</code>- und temporäre Schemata nicht angezeigt).</p>
 <p><img alt="" src="../assets/img/image_019.webp" /></p>
 <p>Klicken Sie nun, um das Schema <code>public</code> zu erweitern. Sie sehen verschiedene Arten von
 Elementen, die in diesem Schema enthalten sind.</p>
 <p><img alt="" src="../assets/img/image_020.webp" /></p>
-<p>Klicken Sie nun, um den Knoten <em>Tables</em> (Tabellen) zu erweitern, und Sie sehen alle
+<p>Klicken Sie nun, um den Knoten <em>Tabellen</em> zu erweitern, und Sie sehen alle
 Tabellen im Schema <code>public</code>. Erweitern Sie eine beliebige Tabelle, und Sie sehen ihre
 Spalten, den Primärschlüssel, Fremdschlüssel, Constraints, Indizes, Regeln, Trigger und
 Partitionen.</p>
 <p><img alt="" src="../assets/img/image_021.webp" /></p>
 <p>Um Datensätze innerhalb einer Tabelle anzuzeigen, klicken Sie mit der rechten Maustaste
-darauf und wählen Sie <em>Data Actions &gt; Query Data</em>.</p>
+darauf und wählen Sie <em>Datenaktionen &gt; Daten abfragen</em>.</p>
 <p><img alt="" src="../assets/img/image_022.webp" /></p>
 <p>Beachten Sie, dass OmniDB einen neuen SQL-Editor mit einer einfachen Abfrage zum Auflisten
 der Tabellendatensätze öffnet. Die Datensätze werden in einer Ergebnistabelle direkt unter
@@ -240,44 +227,40 @@ Tabellenkalkulation verwenden. Sie können auch Daten aus einzelnen Zellen oder 
 Tabellenkalkulation einfügen.</p>
 <p><img alt="" src="../assets/img/image_023.webp" /></p>
 <p>Sie können die Abfrage im SQL-Editor bearbeiten und einfache oder komplexere Abfragen
-schreiben. Klicken Sie zum Ausführen auf die Aktionsschaltfläche, oder drücken Sie die
-Tastenkombination <code>Alt-Q</code>. Übersteigen die Ergebnisse 100 Datensätze, erscheinen die
-zusätzlichen Schaltflächen <em>Fetch More</em> (Weitere abrufen) und <em>Fetch All</em> (Alle abrufen).
+schreiben. Klicken Sie zum Ausführen auf die Schaltfläche <em>Ausführen</em>, oder drücken Sie
+<code>Alt-Q</code> (<code>Ctrl-Q</code> unter macOS). Hat das Ergebnis mehr Zeilen als der zuerst
+abgerufene Block, erscheinen die Schaltflächen <em>Mehr abrufen</em> und <em>Alle abrufen</em>.
 Weitere Details dazu in den nächsten Kapiteln.</p>
 <h4>Arbeiten mit mehreren Tabs innerhalb derselben Verbindung</h4>
-<p>Innerhalb einer einzelnen Verbindung können Sie mehrere innere Abfrage-Tabs erstellen,
-indem Sie auf den letzten kleinen Tab mit Kreuz klicken und dann <em>Query Tab</em> auswählen.</p>
-<p><img alt="" src="../assets/img/image_024.webp" /></p>
-<p>In OmniDB können Sie mehrere SQL-Anweisungen und Prozeduren parallel ausführen. Während
-der Ausführung wird im Tab ein Symbol angezeigt, das den aktuellen Status kennzeichnet.
-Ist ein Vorgang abgeschlossen und Sie befinden sich nicht im entsprechenden Tab, zeigt
-dieser Tab ein grünes Symbol, das anzeigt, dass die dort ausgeführte Routine nun
-abgeschlossen ist.</p>
-<p><img alt="" src="../assets/img/image_025.webp" /></p>
-<p>Durch Klicken auf die <em>Cancel-Schaltfläche</em> (Abbrechen) können Sie einen in der
-Datenbank laufenden Prozess abbrechen.</p>
-<p><img alt="" src="../assets/img/image_026.webp" /></p>
-<p>Sie können einen Tab auch per Drag &amp; Drop verschieben, um seine Reihenfolge zu ändern.
-Dies funktioniert sowohl bei inneren als auch bei äußeren Tabs.</p>
-<p><img alt="" src="../assets/img/image_027.webp" /></p>
-<p>Zusätzlich können Sie Tastenkürzel zur Verwaltung innerer Tabs (SQL-Abfrage) verwenden.
-Dies sind die Standardkürzel unter Windows/Linux (macOS ersetzt Alt durch Strg); alle
-lassen sich im Tab „Tastenkürzel“ des Einstellungsdialogs neu belegen:</p>
+<p>Innerhalb einer einzelnen Verbindung können Sie mehrere innere Tabs erstellen, indem Sie auf das
+<em>+</em> am Ende der Leiste der inneren Tabs klicken und dann <em>Abfrage-Tab</em> (oder
+<em>Konsolen-Tab</em>) wählen.</p>
+<p>In OmniDB können Sie mehrere SQL-Anweisungen und Prozeduren parallel ausführen. Jeder Abfrage-Tab hat
+seine eigene Datenbanksitzung. Während ein Tab ausgeführt wird, zeigt er ein Ladesymbol; ist ein Tab
+fertig, den Sie gerade nicht ansehen, zeigt er stattdessen ein Häkchen. Die rote Schaltfläche
+<em>Abbrechen</em> bricht die im aktuellen Tab laufende Anweisung ab.</p>
+<p>Sie können einen Tab auch per Drag &amp; Drop verschieben, um seine Reihenfolge zu ändern. Dies
+funktioniert sowohl bei inneren Tabs als auch bei Verbindungs-Tabs. Wird der Platz in einer Tab-Reihe
+knapp, schrumpfen die Tabs schrittweise bis auf ihr Symbol; fährt man mit der Maus über einen solchen
+Tab, wird sein Name angezeigt.</p>
+<p>Zusätzlich können Sie Tastenkürzel zur Verwaltung innerer Tabs verwenden. Dies sind die Standardkürzel
+unter Windows/Linux (macOS verwendet Ctrl statt Alt); alle lassen sich unter
+<a href="settings_and_languages.html">Einstellungen &gt; Tastenkombinationen</a> ändern:</p>
 <ul>
 <li><strong>Alt-I</strong>: Fügt einen neuen inneren Tab ein</li>
-<li><strong>Alt-Umschalt-Q</strong>: Entfernt den aktuellen inneren Tab</li>
+<li><strong>Alt-Shift-Q</strong>: Entfernt den aktuellen inneren Tab</li>
 <li><strong>Alt-O</strong>: Wechselt den Fokus zum inneren Tab links</li>
 <li><strong>Alt-P</strong>: Wechselt den Fokus zum inneren Tab rechts</li>
 </ul>
-<p>Für äußere (Verbindungs-)Tabs gibt es derzeit keine Tastenkürzel — verwenden Sie hierfür
-das Verschieben per Drag &amp; Drop oder die Maus.</p>
-<p>Alle SQL-Abfrage-Tabs werden automatisch gespeichert, sobald Sie sie ausführen. Selbst wenn
-Sie das OmniDB-Fenster oder den Browser-Tab schließen, sind sie bereits in der OmniDB-
-<em>Benutzerdatenbank</em> gespeichert. Sie werden automatisch wiederhergestellt, wenn Sie
-OmniDB erneut öffnen (bei Verwendung der App), es in einem anderen Browserfenster öffnen
-(bei Verwendung des Servers), oder selbst wenn Sie auf das <em>Connections</em>-Fenster geklickt
-oder sich abgemeldet haben. Das Entfernen eines äußeren oder inneren Tabs über die
-Benutzeroberfläche löscht ihn dauerhaft, sodass er nicht wiederhergestellt wird.</p>
+<p>Für Verbindungs-Tabs gibt es keine Tastenkürzel — verwenden Sie hierfür die Maus oder Drag &amp; Drop.
+(Das Menü <em>Ansicht</em> der Desktop-App bietet Tastenkürzel zum Wechseln der Bereiche; siehe
+<a href="desktop_app.html">Desktop-App</a>.)</p>
+<p>Alle Abfrage-Tabs werden automatisch gespeichert, sobald Sie sie ausführen. Selbst wenn Sie das
+OmniDB-Fenster oder den Browser-Tab schließen, sind sie in der <em>Benutzerdatenbank</em> von OmniDB
+gespeichert und werden beim nächsten Öffnen von OmniDB (in der Desktop-App) bzw. bei der nächsten Anmeldung
+(in der Server-Version) wiederhergestellt — OmniDB startet dann im Bereich Datenbank mit diesen geöffneten
+Verbindungen. Wenn Sie einen Verbindungs-Tab oder einen inneren Tab selbst schließen, wird er dauerhaft
+gelöscht und nicht wiederhergestellt.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

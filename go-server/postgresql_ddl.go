@@ -859,14 +859,14 @@ func postgresqlDDLDatabase(db *sql.DB, name string) (string, error) {
 		"CREATE DATABASE %s\n"+
 			"    WITH\n"+
 			"    OWNER = %s\n"+
-			"    ENCODING = '%s'\n"+
-			"    LC_COLLATE = '%s'\n"+
-			"    LC_CTYPE = '%s'\n"+
+			"    ENCODING = %s\n"+
+			"    LC_COLLATE = %s\n"+
+			"    LC_CTYPE = %s\n"+
 			"    TABLESPACE = %s\n"+
 			"    CONNECTION LIMIT = %d;",
 		name,
 		quotePostgresIdentifierDoubleQuoted(owner),
-		encoding, collate, ctype,
+		pgQuoteLiteral(encoding), pgQuoteLiteral(collate), pgQuoteLiteral(ctype),
 		quotePostgresIdentifierDoubleQuoted(tablespace),
 		connLimit,
 	), nil

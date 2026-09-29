@@ -1,6 +1,6 @@
 module omnidb-server
 
-go 1.25.0
+go 1.26.0
 
 require (
 	github.com/go-sql-driver/mysql v1.10.0
@@ -10,7 +10,8 @@ require (
 	github.com/sijms/go-ora/v2 v2.9.0
 	github.com/xuri/excelize/v2 v2.11.0
 	github.com/zalando/go-keyring v0.2.8
-	golang.org/x/crypto v0.55.0
+	golang.org/x/crypto v0.56.0
+	golang.org/x/term v0.46.0
 	golang.org/x/text v0.41.0
 	modernc.org/sqlite v1.57.0
 )
@@ -40,7 +41,7 @@ require (
 	gitlab.com/nyarla/go-crypt v0.0.0-20160106005555-d9a5dc2b789b // indirect
 	golang.org/x/net v0.57.0 // indirect
 	golang.org/x/sync v0.22.0 // indirect
-	golang.org/x/sys v0.47.0 // indirect
+	golang.org/x/sys v0.48.0 // indirect
 	modernc.org/libc v1.74.4 // indirect
 	modernc.org/mathutil v1.7.1 // indirect
 	modernc.org/memory v1.11.0 // indirect

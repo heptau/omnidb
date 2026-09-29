@@ -109,3 +109,18 @@ func TestPostgresqlDSNBuildsFromPartsWhenNoConnString(t *testing.T) {
 		t.Fatalf("expected default port 5432 in DSN, got %q", got)
 	}
 }
+
+func TestPgFileConnStringParam(t *testing.T) {
+	cases := map[string]string{
+		"postgresql://u@h/db?sslmode=require":                "",
+		"postgresql://u@h/db?passfile=/etc/x":                "passfile",
+		"host=h dbname=d sslrootcert=/root/ca.pem":           "sslrootcert",
+		"host=h  SERVICE = foo":                              "service",
+		"postgresql://u@h/db?application_name=sslkey_viewer": "",
+	}
+	for in, want := range cases {
+		if got := pgFileConnStringParam(in); got != want {
+			t.Errorf("pgFileConnStringParam(%q) = %q, want %q", in, got, want)
+		}
+	}
+}

@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"errors"
 	"net/url"
 	"strconv"
 )
@@ -65,6 +66,9 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 	if c.OwnerID != int64(who.UserID) && !c.Public {
 		return &ConnectionInfo{Found: false}, nil
 	}
+	if c.Technology == "sqlite" && !sqliteAllowedFor(who) {
+		return nil, errSQLiteRestricted
+	}
 
 	return &ConnectionInfo{
 		Found:      true,
@@ -78,4 +82,16 @@ func resolveConnection(upstream *url.URL, cookieHeader string, connID string) (*
 		Public:     c.Public,
 		ConnString: c.ConnString,
 	}, nil
+}
+
+// errSQLiteRestricted is returned for a non-superuser's SQLite connection
+// on a multi-user server — see sqliteAllowedFor.
+var errSQLiteRestricted = errors.New("SQLite connections are restricted to superusers on a multi-user OmniDB server")
+
+// sqliteAllowedFor reports whether who may open SQLite connections. In
+// server mode a SQLite "connection" reads and writes files on the server
+// itself with OmniDB's own OS privileges, so it's a superuser-only
+// capability there; desktop mode has one user and no such boundary.
+func sqliteAllowedFor(who *WhoAmI) bool {
+	return appToken != "" || who.SuperUser
 }

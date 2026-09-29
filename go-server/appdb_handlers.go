@@ -96,7 +96,11 @@ func handleGetConnections(upstream *url.URL) http.HandlerFunc {
 				},
 			}
 			if c.Technology != "terminal" {
-				obj["conn_string"] = c.ConnString
+				connString := c.ConnString
+				if c.OwnerID != int64(who.UserID) {
+					connString = redactConnStringSecrets(connString)
+				}
+				obj["conn_string"] = connString
 				obj["server"] = c.Server
 				obj["port"] = c.Port
 				obj["service"] = c.Database

@@ -7,8 +7,12 @@
 	<meta name="description" content="Utilisez l'onglet console d'OmniDB comme une console de travail façon psql : quelques commandes à contre-oblique, historique des commandes, coloration syntaxique et autocomplétion.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/console_tab.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/console_tab.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/console_tab.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/console_tab.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/console_tab.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/console_tab.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html" class="active">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -151,16 +163,15 @@ de données — lorsqu’un moteur n’a réellement rien à afficher, la co
 de renvoyer un résultat vide ou trompeur. <code>\h</code> (aide de syntaxe par commande SQL, comme une page de
 manuel PostgreSQL) n’est pas implémentée.</p>
 <p>L’éditeur situé en bas de la zone de l’onglet est aussi complet que celui de l’<em>onglet Requête</em>
-(coloration syntaxique et autocomplétion avec <em>Ctrl-Space</em>). Pour exécuter une commande, il suffit de la
+(coloration syntaxique et autocomplétion avec <em>Ctrl-Space</em>, <em>Option-Space</em> sur macOS ; son menu contextuel propose en outre <em>Enregistrer comme extrait</em> et <em>Utiliser l’extrait</em>). Pour exécuter une commande, il suffit de la
 saisir dans cet éditeur. S’il s’agit d’une commande à contre-oblique (commençant par <code>\</code>), appuyez
 simplement sur <code>Entrée</code> pour l’exécuter. S’il s’agit d’une commande SQL classique, elle peut
-s’étendre sur plusieurs lignes, et vous devrez alors appuyer sur <em>Alt-Q</em> pour l’exécuter.</p>
+s’étendre sur plusieurs lignes, et vous devrez alors appuyer sur <em>Alt-Q</em> (<em>Ctrl-Q</em> sur macOS) pour l’exécuter.</p>
 <p>Toutes les commandes et leur résultat sont consignés dans la zone d’affichage, qui est textuelle et en
 lecture seule, afin que vous puissiez copier son contenu et le coller ailleurs. Vous pouvez effacer la zone
-d’affichage en cliquant sur le bouton <em>Clear Console</em> (Effacer la console).</p>
+d’affichage en cliquant sur le bouton <em>Effacer la console</em>.</p>
 <p>Toutes les commandes sont également consignées dans l’historique des requêtes de la connexion, ainsi que
-dans un historique local propre à la console, accessible en cliquant sur le bouton <em>Command History</em>
-(Historique des commandes).</p>
+dans un historique local propre à la console, accessible en cliquant sur le bouton <em>Historique des commandes</em>.</p>
 <p>En cliquant sur la coche verte, vous pouvez récupérer la commande et la placer dans l’éditeur afin de la
 modifier puis de l’exécuter. Une autre façon pratique de naviguer dans l’historique consiste à utiliser les
 raccourcis <em>Ctrl-Up</em> et <em>Ctrl-Down</em>, qui collent rapidement dans l’éditeur respectivement la

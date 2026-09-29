@@ -7,8 +7,12 @@
 	<meta name="description" content="Melden Sie sich als Standard-Administratorbenutzer an, erstellen Sie weitere OmniDB-Benutzer und richten Sie Verbindungen zu PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird und SQLite ein, einschließlich SSH-Tunneln.">
 	<link rel="canonical" href="https://www.omnidb.net/de/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_users_and_connections.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/de/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/creating_users_and_connections.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/creating_users_and_connections.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/creating_users_and_connections.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -96,7 +100,9 @@
 			<span class="nav-group-label">Erste Schritte</span>
 			<a href="introduction.html">Einführung</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Desktop-App</a>
 			<a href="creating_users_and_connections.html" class="active">Benutzer und Verbindungen erstellen</a>
+			<a href="settings_and_languages.html">Einstellungen und Sprachen</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Arbeiten mit Daten</span>
@@ -104,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Tabellen erstellen, ändern und löschen</a>
 			<a href="managing_table_data.html">Tabellendaten verwalten</a>
 			<a href="writing_sql_queries.html">SQL-Abfragen schreiben</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Abfragepläne visualisieren</a>
 			<a href="visualizing_data.html">Daten visualisieren</a>
 			<a href="managing_other_elements.html">Weitere Elemente verwalten</a>
@@ -114,11 +121,15 @@
 			<a href="omnidb_config_tool.html">OmniDB-Konfigurationstool</a>
 			<a href="writing_plpgsql_functions.html">PL/pgSQL-Funktionen schreiben</a>
 			<a href="monitoring_dashboard.html">Überwachungs-Dashboard</a>
+			<a href="notify.html">Benachrichtigungen</a>
+			<a href="connected_users.html">Verbundene Benutzer</a>
+			<a href="permissions.html">Rollen und Berechtigungen</a>
 			<a href="logical_replication.html">Logische Replikation</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Server &amp; Tools</span>
 			<a href="deploying_omnidb-server.html">omnidb-server bereitstellen</a>
+			<a href="security.html">Sicherheit und Mehrbenutzer-Server</a>
 			<a href="console_tab.html">Konsolen-Tab</a>
 			<a href="editor_keyboard_shortcuts.html">Tastenkürzel des Editors</a>
 		</div>
@@ -131,15 +142,22 @@
 		<h1>Benutzer und Verbindungen erstellen</h1>
 <h4>Als Benutzer <em>admin</em> anmelden</h4>
 <p>OmniDB wird nur mit dem Benutzer <em>admin</em> ausgeliefert. Wenn Sie die Server-Version
-verwenden, sollten Sie sich zunächst als <em>admin</em> anmelden, das Standardpasswort lautet
-<em>admin</em>. Die Desktop-App kennt überhaupt keine Anmeldung — sie läuft als einziger lokaler
+verwenden, sollten Sie sich zunächst als <em>admin</em> anmelden — mit dem einmaligen Zufallspasswort,
+das <code>omnidb-server</code> beim Anlegen einer neuen App-Datenbank in seine Log-Ausgabe geschrieben hat
+(die Zeile mit <code>initial login: admin / …</code>) — und es anschließend unter <em>Einstellungen</em>
+ändern. Ein verlorenes Passwort lässt sich mit <code>omnidb-server --set-password admin</code> zurücksetzen. Nach 10 fehlgeschlagenen Anmeldeversuchen für denselben Benutzernamen oder dieselbe Client-IP-Adresse
+wird die Anmeldung für 15 Minuten gesperrt. Die Desktop-App kennt überhaupt keine Anmeldung — sie läuft als einziger lokaler
 Benutzer, sodass alles zur Benutzerverwaltung weiter unten dort schlicht nicht vorhanden ist.</p>
 <h4>Orientierung in der Oberfläche</h4>
 <p>Der gesamte Arbeitsbereich wird über die senkrechte Symbolleiste am linken Fensterrand erreicht:
-<em>Welcome</em> (Willkommen), <em>Connections</em> (Verbindungen — das Stecker-Symbol),
-<em>Database</em> (Datenbank), <em>Notify</em> (Benachrichtigungen) und <em>Snippets</em>
-(Textbausteine) oben sowie <em>Getting Started</em> (Erste Schritte), <em>Account</em> (Konto — nur
-in der Server-Version) und <em>Settings</em> (Einstellungen — das Zahnrad) unten.</p>
+<em>Willkommen</em>, <em>Verbindungen</em> (das Stecker-Symbol),
+<em>Datenbank</em>, <em>Überwachung</em>, <em>Benachrichtigungen</em>,
+<em>Berechtigungen</em>, <em>Verbundene Benutzer</em> und
+<em>Snippets</em> oben sowie <em>Erste Schritte</em>, <em>Konto</em> (nur
+in der Server-Version) und <em>Einstellungen</em> (das Zahnrad) unten. Wenn Sie mit der Maus
+über ein Symbol fahren, wird sein Name angezeigt. Wie die Bereiche zusammenspielen, erklärt
+<a href="managing_databases.html">Datenbanken verwalten</a>; die Sprache der Oberfläche und weitere
+Präferenzen beschreibt <a href="settings_and_languages.html">Einstellungen und Sprachen</a>.</p>
 <h4>Einen weiteren Benutzer erstellen</h4>
 <p>Öffnen Sie <em>Settings</em> (Einstellungen) unten in der Leiste, wählen Sie die Kategorie
 <em>Account</em> (Konto) und klicken Sie auf <em>Manage Users</em> (Benutzer verwalten). Diese
@@ -148,12 +166,14 @@ Bereich <em>Account</em> vollständig.</p>
 <p>Das Fenster <em>User management</em> (Benutzerverwaltung) listet die vorhandenen Benutzer auf.
 Ein Klick auf <em>Add new user</em> (Neuen Benutzer hinzufügen — das Symbol mit Person und Plus)
 fügt eine neue, leere Benutzerzeile ein, die bis zum Ausfüllen als <em>(pending info)</em>
-angezeigt wird. Tragen Sie <em>Benutzername</em> und <em>Passwort</em> ein, setzen Sie bei Bedarf
-den Haken bei <em>Super User</em> und klicken Sie auf <em>Save</em> (Speichern). Sie können beliebig
+angezeigt wird. Tragen Sie <em>Benutzername</em> und <em>Neues Passwort</em> ein, schalten Sie bei Bedarf
+<em>Superuser?</em> ein und klicken Sie auf <em>Save</em> (Speichern). Sie können beliebig
 viele Benutzer anlegen, vorhandene bearbeiten und einen Benutzer über das rote Kreuz in der
 Aktionsspalte löschen.</p>
 <p>Zum Abmelden klicken Sie auf das Symbol <em>Account</em> (Konto — die Person unten in der Leiste)
 und dann auf <em>Sign out</em> (Abmelden).</p>
+<p>Das Löschen eines Benutzers oder das Entziehen des Superuser-Status wirkt sofort, auch für bereits
+geöffnete Sitzungen dieses Benutzers.</p>
 <h4>Der Bereich Connections</h4>
 <p>Klicken Sie auf das Stecker-Symbol in der Leiste. Verbindungen sind ein vollwertiger Bereich des
 Arbeitsbereichs und kein Popup: eine geteilte Ansicht mit der Liste der gespeicherten Verbindungen
@@ -166,7 +186,14 @@ Verbindung, ein Schlüsselsymbol eine Verbindung über einen SSH-Tunnel.</p>
 <h4>Verbindungen erstellen</h4>
 <p>OmniDB unterstützt PostgreSQL, MySQL, MariaDB, Oracle, MS SQL Server, Firebird und SQLite sowie
 zusätzlich den Verbindungstyp <em>Terminal</em>, der statt einer Datenbank eine SSH-Shell
-öffnet.</p>
+öffnet. Die Liste <em>Verbindungstyp</em> zeigt PostgreSQL zuerst, dann die übrigen alphabetisch und
+<em>Terminal</em> zuletzt.</p>
+<p>Bei <em>SQLite</em> zeigt die Verbindung auf eine Datenbankdatei (auf dem Rechner, auf dem
+<code>omnidb-server</code> läuft); existiert die Datei noch nicht, meldet <em>Verbindung testen</em> dies,
+und die Datei wird bei der ersten Verwendung der Verbindung angelegt. Auf einem Mehrbenutzer-Server sind
+SQLite-Verbindungen Superusern vorbehalten, und einige Parameter von PostgreSQL-Verbindungszeichenfolgen,
+die Dateien auf dem Server lesen, werden abgelehnt — siehe <a href="security.html">Sicherheit und
+Mehrbenutzer-Server</a>.</p>
 <p>Mit der Schaltfläche <em>+</em> unter der Liste legen Sie eine Verbindung an. Tragen Sie den Namen
 in die Kopfzeile des Formulars rechts ein, wählen Sie den <em>Connection Type</em> (Verbindungstyp)
 und füllen Sie die Karte <em>Host Connection Info</em> (Serverdaten) aus: <em>Server</em>,
@@ -191,8 +218,8 @@ Datei selbst — allein die Datenbankdatei reicht damit nicht mehr aus, um die d
 Passwörter zu lesen. Ist kein solcher geheimer Speicher verfügbar, weicht OmniDB auf eine
 Schlüsseldatei neben der Datenbank aus.</li>
 <li><strong>Leer gelassen</strong>: Es wird nichts gespeichert, und OmniDB fragt beim Öffnen der
-Verbindung nach dem Passwort. Das Eingetippte bleibt nur im Sitzungsspeicher des Servers für diese
-Verbindung und ist mit dem Ende der Sitzung weg.</li>
+Verbindung nach dem Passwort. Das Eingetippte bleibt nur im Arbeitsspeicher des Servers, für Ihre Sitzung
+und diese Verbindung, 30 Minuten lang — danach fragt OmniDB erneut.</li>
 </ul>
 <p>Bei PostgreSQL sucht OmniDB das Passwort beim Verbindungsaufbau zusätzlich in Ihrer Datei
 <code>.pgpass</code>, und zwar nach demselben Eintrag, den auch libpq nehmen würde — eine Verbindung
@@ -221,8 +248,10 @@ Gruppe. <em>+ Group</em> legt eine Gruppe an, und die Schaltfläche <em>…</em>
 Zeilen Kontrollkästchen, mit denen Sie die Zugehörigkeit festlegen und anschließend
 <em>Save changes</em> klicken) und <em>Delete</em> (Löschen).</li>
 <li><strong>Öffentliche Verbindungen</strong>: Der Schalter <em>Public connection?</em> (Öffentliche
-Verbindung?) im Formular macht eine Verbindung für alle anderen OmniDB-Benutzer nutzbar. Der
-Schalter <em>Public (n)</em> unten in der Seitenleiste blendet die öffentlichen Verbindungen anderer
+Verbindung?) im Formular macht eine Verbindung für alle anderen OmniDB-Benutzer nutzbar. Nur ihr
+Eigentümer kann sie bearbeiten; andere Benutzer sehen ihr gespeichertes Passwort nie (ein Passwort in
+ihrer Verbindungszeichenfolge wird für sie maskiert), und ihr <em>Verbindung testen</em> prüft immer den
+gespeicherten Server. Der Schalter <em>Public (n)</em> unten in der Seitenleiste blendet die öffentlichen Verbindungen anderer
 Benutzer in Ihrer eigenen Liste ein oder aus.</li>
 <li><strong>Umgebung</strong>: Wird eine Verbindung als <em>Production</em>, <em>UAT</em>,
 <em>Development</em> oder <em>Archive</em> markiert, färbt das ihren Punkt in der Liste und den Rand
@@ -241,16 +270,19 @@ Verbindung), ein Rechtsklick auf leeren Raum in der Liste bietet
 Sie im Formular der jeweiligen Verbindung den Haken bei <em>Use SSH tunnel</em> (SSH-Tunnel
 verwenden) — damit werden die Felder darunter aktiv:</p>
 <ul>
-<li><em>SSH Server</em>: Der Server, mit dem Sie sich per SSH verbinden;</li>
-<li><em>SSH Port</em>: Der Port des SSH-Servers (Standard ist 22, es kann aber jeder beliebige Port
+<li><em>SSH Server</em> (SSH-Server): Der Server, mit dem Sie sich per SSH verbinden. Sein Hostschlüssel muss
+bereits in der Datei <code>~/.ssh/known_hosts</code> des Betriebssystembenutzers stehen, unter dem OmniDB
+läuft, sonst wird der Tunnel abgelehnt — siehe <a href="security.html">Sicherheit und
+Mehrbenutzer-Server</a>;</li>
+<li><em>SSH Port</em> (SSH-Port): Der Port des SSH-Servers (Standard ist 22, es kann aber jeder beliebige Port
 sein);</li>
-<li><em>SSH User</em>: Der Betriebssystem-Benutzername, mit dem Sie sich am SSH-Server
+<li><em>SSH User</em> (SSH-Benutzer): Der Betriebssystem-Benutzername, mit dem Sie sich am SSH-Server
 anmelden;</li>
 <li><em>Password/Passphrase</em> (Passwort/Passphrase): Das Passwort des Betriebssystem-Benutzers
 (oder die Passphrase für den Schlüssel unten). Lassen Sie es leer, fragt OmniDB bei jedem Öffnen des
 Tunnels danach, ohne es zu speichern. Wenn Sie das Feld <em>SSH Key Text File</em> ausfüllen, ist
 ein Passwort optional;</li>
-<li><em>SSH Key Text File</em> (SSH-Schlüsseldatei): Der Inhalt des lokalen privaten SSH-Schlüssels,
+<li><em>SSH Key Text File</em> (SSH-Schlüssel-Textdatei): Der Inhalt des lokalen privaten SSH-Schlüssels,
 mit dem Sie sich am SSH-Server anmelden können. OmniDB liest die ausgewählte Datei und speichert
 ihren Text, nicht die Datei selbst. Wenn Sie dieses Feld ausfüllen, können Sie zusätzlich
 <em>Password/Passphrase</em> angeben, das dann aber die Passphrase des privaten SSH-Schlüssels

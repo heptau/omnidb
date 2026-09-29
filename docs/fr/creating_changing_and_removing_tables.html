@@ -7,8 +7,12 @@
 	<meta name="description" content="Créez, modifiez et supprimez des tables de base de données dans OmniDB à l'aide de modèles SQL modifiables, ainsi que des graphes de relations de schéma.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/creating_changing_and_removing_tables.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/creating_changing_and_removing_tables.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/creating_changing_and_removing_tables.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html" class="active">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -135,7 +147,7 @@ modèle de départ fonctionnel que vous modifiez avant de l’exécuter.</p>
 <h4>Créer des tables</h4>
 <p>Nous allons créer des tables d’exemple (<em>customers</em> et <em>addresses</em>) dans la base de données
 <code>testdb</code> à laquelle nous nous sommes connectés plus tôt. Faites un clic droit sur le nœud
-<strong>Tables</strong> et sélectionnez l’action <strong>Create Table</strong> (Créer une table). Un nouvel
+<strong>Tables</strong> et sélectionnez l’action <strong>Créer une table</strong>. Un nouvel
 onglet Requête s’ouvre, pré-rempli avec un modèle <code>CREATE TABLE</code> pour le schéma courant.</p>
 <p>Modifiez le modèle pour obtenir la table souhaitée — pour <em>customers</em>, une clé primaire que
 <em>addresses</em> référencera plus tard :</p>
@@ -145,9 +157,9 @@ onglet Requête s’ouvre, pré-rempli avec un modèle <code>CREATE TABLE</code
 );
 </code></pre>
 <p>Exécutez l’instruction (de la même manière que pour n’importe quelle requête). Faites un clic droit sur le
-nœud d’arborescence <em>Tables</em> et cliquez sur <em>Refresh</em> (Actualiser) — la nouvelle table apparaît
+nœud d’arborescence <em>Tables</em> et cliquez sur <em>Actualiser</em> — la nouvelle table apparaît
 désormais en dessous. En laissant <em>customers</em> sélectionnée dans l’arborescence, vous pouvez inspecter ses
-<em>Properties</em> (Propriétés) et son <em>DDL</em> générés dans le panneau situé à côté de l’arborescence, le
+<em>Propriétés</em> et son <em>DDL</em> générés dans le panneau situé à côté de l’arborescence, le
 même panneau utilisé pour tous les autres types d’objets.</p>
 <p>Créez maintenant <em>addresses</em>, avec une clé étrangère pointant vers <em>customers</em> :</p>
 <pre><code class="language-sql">CREATE TABLE public.addresses (

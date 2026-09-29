@@ -40,12 +40,12 @@ const omnidbSaveDialogURLEnv = "OMNIDB_SAVE_DIALOG_URL"
 // Wails has no involvement in that request at all. This HTTP hop is the
 // only bridge available.
 //
-// No CSRF/token check beyond the session cookie: consistent with every
-// other native route in this migration (checkCSRF is only ever called from
-// the login flow, see native_login.go), and the srcPath validation below
+// CSRF-checked like every other POST route (requireCSRF; the frontend sends
+// X-CSRFToken via jsonPostHeaders), and the srcPath validation below
 // closes the one meaningfully sensitive gap a "copy this path somewhere the
 // user picks" relay could otherwise open — the only paths ever accepted are
-// ones export.go itself just wrote into the resolved temp dir.
+// ones export.go itself just wrote into the resolved temp dir for this same
+// user (see resolveExportFilePath).
 func handleExportSaveDialog(w http.ResponseWriter, r *http.Request) {
 	who, err := resolveIdentity(nil, r.Header.Get("Cookie"))
 	if err != nil || !who.Authenticated {
@@ -59,7 +59,7 @@ func handleExportSaveDialog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cleanPath, ok := resolveExportFilePath(req.VFilepath)
+	cleanPath, ok := resolveExportFilePath(req.VFilepath, who.UserID)
 	if !ok {
 		writeExportSaveDialogError(w, "invalid export path")
 		return
@@ -80,7 +80,7 @@ func handleExportSaveDialog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := http.Post(saveURL, "application/json", bytes.NewReader(payload))
+	resp, err := postToShell(nil, saveURL, bytes.NewReader(payload))
 	if err != nil {
 		writeExportSaveDialogError(w, "Could not reach the desktop app's save dialog: "+err.Error())
 		return
@@ -106,7 +106,7 @@ func writeExportSaveDialogError(w http.ResponseWriter, msg string) {
 // resolved temp dir — shared by handleExportSaveDialog and
 // handleDiscardExportFile, both of which only ever accept a path an export
 // handler (export.go, postgresql_export_dbml.go, ...) just wrote there.
-func resolveExportFilePath(rawPath string) (string, bool) {
+func resolveExportFilePath(rawPath string, userID int) (string, bool) {
 	tempDir, err := resolveTempDir(nil)
 	if err != nil {
 		return "", false
@@ -114,6 +114,11 @@ func resolveExportFilePath(rawPath string) (string, bool) {
 	cleanPath := filepath.Clean(rawPath)
 	rel, err := filepath.Rel(tempDir.TempDir, cleanPath)
 	if err != nil || rel == ".." || strings.HasPrefix(rel, ".."+string(filepath.Separator)) {
+		return "", false
+	}
+	// Only a file directly in the temp dir that this user generated — the
+	// temp dir is shared by every user of a server-mode instance.
+	if rel != filepath.Base(rel) || !exportFileOwnedBy(rel, userID) {
 		return "", false
 	}
 	return cleanPath, true
@@ -154,7 +159,7 @@ func handleDiscardExportFile(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	cleanPath, ok := resolveExportFilePath(req.VFilepath)
+	cleanPath, ok := resolveExportFilePath(req.VFilepath, who.UserID)
 	if !ok {
 		writeBadRequest(w)
 		return

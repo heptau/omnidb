@@ -49,6 +49,7 @@ import { showAlert } from "../notification_control.js";
 import { escapeHtml } from "../query.js";
 import { removeTab, renameTab, showMenuNewTabOuter } from "../workspace.js";
 import { t } from "../i18n.js";
+import { jsonPostHeaders } from "../ajax_control_bridge.js";
 
 export var v_openExternalUrl = function (p_url) {
 	if (!gv_desktopMode) {
@@ -58,7 +59,7 @@ export var v_openExternalUrl = function (p_url) {
 
 	fetch("/open_external_url/", {
 		method: "POST",
-		headers: { "Content-Type": "application/json" },
+		headers: jsonPostHeaders(),
 		body: JSON.stringify({ url: p_url }),
 	})
 		.then(function (p_response) {
@@ -95,7 +96,7 @@ export var v_createWebsiteOuterTabFunction = function (p_name, p_site, p_html, p
 	// Creating console tab in the inner tab list
 	var v_tab = v_connTabControl.createTab({
 		p_icon: '<i class="fas fa-globe-americas"></i>',
-		p_name: '<span id="tab_title">' + p_name + "</span>",
+		p_name: '<span id="tab_title">' + escapeHtml(p_name) + "</span>",
 		p_tooltip_name: '<h5 class="my-1">' + escapeHtml(p_name) + "</h5>",
 		p_selectFunction: function () {
 			if (this.tag != null) {

@@ -31,6 +31,7 @@ SOFTWARE.
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { removeTab, renameTab, showMenuNewTab } from "../workspace.js";
 import { t } from "../i18n.js";
+import { escapeHtml } from "../query.js";
 
 
 export var v_createGraphTabFunction = function (p_name) {
@@ -42,7 +43,8 @@ export var v_createGraphTabFunction = function (p_name) {
 
 	var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
 		p_icon: `<i class="fab fa-hubspot icon-tab-title"></i>`,
-		p_name: '<span id="tab_title">' + v_name + "</span>",
+		// A raw database/snippet name — the tab strip renders p_name as markup.
+		p_name: '<span id="tab_title">' + escapeHtml(v_name) + "</span>",
 		p_status:
 			'<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
 		p_selectFunction: function () {

@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>App desktop – Documentazione OmniDB</title>
+	<meta name="description" content="Uso dell’app desktop di OmniDB: dove vengono conservati i dati, la barra dei menu e le sue scorciatoie, lo stato della finestra e le particolarità della sandbox di macOS, come l’importazione dei dati precedenti e l’accesso a .pgpass.">
+	<link rel="canonical" href="https://www.omnidb.net/it/desktop_app.html">
+	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/desktop_app.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/desktop_app.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/desktop_app.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/desktop_app.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/desktop_app.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/desktop_app.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/desktop_app.html">
+	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/desktop_app.html">
+	<meta name="robots" content="index, follow">
+	<meta name="theme-color" content="#192e4d">
+	<link rel="manifest" href="../manifest.json">
+	<link rel="apple-touch-icon" href="../assets/omnidb_logo.png">
+
+	<meta property="og:type" content="article">
+	<meta property="og:url" content="https://www.omnidb.net/it/desktop_app.html">
+	<meta property="og:title" content="App desktop - Documentazione OmniDB">
+	<meta property="og:description" content="Uso dell’app desktop di OmniDB: dove vengono conservati i dati, la barra dei menu e le sue scorciatoie, lo stato della finestra e le particolarità della sandbox di macOS, come l’importazione dei dati precedenti e l’accesso a .pgpass.">
+	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb_logo.png">
+	<meta property="og:site_name" content="OmniDB">
+
+	<link rel="stylesheet" href="../assets/topbar.css">
+	<link rel="stylesheet" href="../assets/style.css">
+	<script src="../assets/theme-switcher.js"></script>
+	<link rel="alternate" type="text/plain" title="llms.txt" href="../llms.txt">
+	<link rel="alternate" type="text/plain" title="llms-full.txt" href="../llms-full.txt">
+
+	<script type="application/ld+json">
+	{
+		"@context": "https://schema.org",
+		"@type": "BreadcrumbList",
+		"itemListElement": [
+			{ "@type": "ListItem", "position": 1, "name": "OmniDB", "item": "https://www.omnidb.net/it/" },
+			{ "@type": "ListItem", "position": 2, "name": "Documentazione", "item": "https://www.omnidb.net/it/introduction.html" },
+			{ "@type": "ListItem", "position": 3, "name": "App desktop", "item": "https://www.omnidb.net/it/desktop_app.html" }
+		]
+	}
+	</script>
+</head>
+<body>
+	<header class="site-topbar">
+		<div class="site-topbar-inner">
+			<button class="menu-toggle" id="menuToggle" aria-label="Attiva/disattiva navigazione">☰</button>
+			<a class="site-topbar-brand" href="./index.html">
+				<img src="../assets/logo.svg" alt="OmniDB" class="brand-logo">
+				<img src="../assets/net.png" alt=".NET" class="brand-net">
+			</a>
+			<nav class="site-topbar-links">
+				<a href="introduction.html" class="active">Documentazione</a>
+				<a href="https://github.com/heptau/omnidb" target="_blank" rel="noopener">GitHub</a>
+			</nav>
+			<div class="site-topbar-spacer"></div>
+			<div class="site-topbar-actions">
+				<a class="nav-icon-btn nav-heart" href="https://github.com/sponsors/heptau" target="_blank" rel="noopener" aria-label="Sponsorizza" title="Sponsorizza">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-.87-.6-2.02-1.44C6.1 16.9 2 13.5 2 9.5c0-2.8 2.2-5 5-5 1.6 0 3.15.75 4.13 1.94L12 7.5l.87-1.06C13.85 5.25 15.4 4.5 17 4.5c2.8 0 5 2.2 5 5 0 4-4.1 7.4-7.98 10.06C12.87 20.4 12 21 12 21z"></path></svg>
+				</a>
+				<a class="nav-icon-btn nav-star" href="https://github.com/heptau/omnidb" target="_blank" rel="noopener" aria-label="Stella su GitHub" title="Stella su GitHub">
+					<svg aria-hidden="true" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87L18.18 21 12 17.77 5.82 21 7 14.14 2 9.27l6.91-1.01L12 2z"></path></svg>
+				</a>
+				<div class="dropdown" data-dropdown="lang">
+					<button class="dropdown-trigger" aria-label="Cambia lingua" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
+						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
+						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
+						<button class="dropdown-option" data-lang-value="es"><span class="dropdown-option-icon">🇪🇸</span><span>Español</span></button>
+						<button class="dropdown-option" data-lang-value="fr"><span class="dropdown-option-icon">🇫🇷</span><span>Français</span></button>
+						<button class="dropdown-option" data-lang-value="it"><span class="dropdown-option-icon">🇮🇹</span><span>Italiano</span></button>
+						<button class="dropdown-option" data-lang-value="pt"><span class="dropdown-option-icon">🇵🇹</span><span>Português</span></button>
+					</div>
+				</div>
+				<div class="dropdown" data-dropdown="theme">
+					<button class="dropdown-trigger" aria-label="Cambia tema" aria-haspopup="true" aria-expanded="false">
+						<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18V4c4.42 0 8 3.58 8 8s-3.58 8-8 8z"></path></svg>
+					</button>
+					<div class="dropdown-menu">
+						<button class="dropdown-option" data-theme-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatico</span></button>
+						<button class="dropdown-option" data-theme-value="light"><span class="dropdown-option-icon">☀️</span><span>Chiaro</span></button>
+						<button class="dropdown-option" data-theme-value="dark"><span class="dropdown-option-icon">🌙</span><span>Scuro</span></button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+	<div class="docs-shell">
+		<div class="menu-overlay" id="menuOverlay"></div>
+		<nav>
+					<a href="./index.html" class="nav-home">Home</a>
+		<div class="nav-group">
+			<span class="nav-group-label">Per iniziare</span>
+			<a href="introduction.html">Introduzione</a>
+			<a href="installation.html">Installazione</a>
+			<a href="desktop_app.html" class="active">App desktop</a>
+			<a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>
+			<a href="settings_and_languages.html">Impostazioni e lingue</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Lavorare con i dati</span>
+			<a href="managing_databases.html">Gestione dei database</a>
+			<a href="creating_changing_and_removing_tables.html">Creazione, modifica ed eliminazione delle tabelle</a>
+			<a href="managing_table_data.html">Gestione dei dati delle tabelle</a>
+			<a href="writing_sql_queries.html">Scrittura di query SQL</a>
+			<a href="snippets.html">Snippet</a>
+			<a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>
+			<a href="visualizing_data.html">Visualizzazione dei dati</a>
+			<a href="managing_other_elements.html">Gestione di altri elementi</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Avanzate</span>
+			<a href="additional_features.html">Funzionalità aggiuntive</a>
+			<a href="omnidb_config_tool.html">Strumento di configurazione OmniDB</a>
+			<a href="writing_plpgsql_functions.html">Scrittura di funzioni PL/pgSQL</a>
+			<a href="monitoring_dashboard.html">Dashboard di monitoraggio</a>
+			<a href="notify.html">Notifiche</a>
+			<a href="connected_users.html">Utenti connessi</a>
+			<a href="permissions.html">Ruoli e permessi</a>
+			<a href="logical_replication.html">Replica logica</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Server e strumenti</span>
+			<a href="deploying_omnidb-server.html">Distribuzione di omnidb-server</a>
+			<a href="security.html">Sicurezza e server multiutente</a>
+			<a href="console_tab.html">Scheda Console</a>
+			<a href="editor_keyboard_shortcuts.html">Scorciatoie da tastiera dell’editor</a>
+		</div>
+		<div class="nav-group">
+			<span class="nav-group-label">Riferimento</span>
+			<a href="legacy_features_and_history.html">Funzionalità legacy e cronologia</a>
+		</div>
+		</nav>
+		<main>
+		<h1>App desktop</h1>
+<p>L’app desktop (<code>OmniDB.app</code> su macOS, <code>OmniDB</code>/<code>OmniDB.exe</code> su
+Linux e Windows) è una piccola finestra nativa attorno alla stessa interfaccia di OmniDB che la
+versione server offre ai browser. Avvia in background una propria copia privata di
+<code>omnidb-server</code>, in ascolto solo sulla macchina locale, e accede automaticamente come
+utente predefinito <code>admin</code> — non c’è alcuna pagina di accesso, nessuna icona
+<em>Account</em> e nulla da configurare. Vedi <a href="installation.html">Installazione</a> per
+sapere come ottenerla.</p>
+<h4>Dove si trovano i dati</h4>
+<p>Le connessioni salvate, gli snippet, le impostazioni, la cronologia delle query e così via
+sono conservati in <code>~/.omnidb/omnidb-app/</code> (il database utente <code>omnidb.db</code>,
+più una cartella <code>temp</code> per le esportazioni e la posizione salvata della finestra).
+Per mantenere un insieme di dati separato — ad esempio uno usa e getta per i test — avvia l’app
+con una directory home diversa:</p>
+<pre><code class="language-bash">open -a OmniDB --args -d /path/to/other/dir    # macOS
+./OmniDB -d /path/to/other/dir                  # Linux
+OmniDB.exe -d C:\path\to\other\dir              # Windows</code></pre>
+<p>La directory deve già esistere; una directory nuova e vuota viene preparata automaticamente al
+primo utilizzo. Le password salvate sono cifrate con una chiave conservata nell’archivio dei
+segreti del sistema operativo — vedi
+<a href="security.html">Sicurezza e server multiutente</a>.</p>
+<h4>La barra dei menu</h4>
+<ul>
+<li><strong>OmniDB</strong>: <em>Informazioni su OmniDB</em>, <em>Preferenze…</em> (Cmd/Ctrl-,),
+<em>Importa dati dall'installazione precedente…</em> (solo nella build sandbox per macOS, vedi
+sotto) ed <em>Esci da OmniDB</em> (Cmd/Ctrl-Q).</li>
+<li><strong>Edit</strong> e <strong>Window</strong>: i menu standard del sistema operativo
+(annulla/taglia/copia/incolla, riduci a icona, zoom, schermo intero, …).</li>
+<li><strong>Vista</strong>: passa a una sezione della barra laterale sinistra —
+<em>Benvenuto</em> (Cmd/Ctrl-Shift-W), <em>Connessioni</em> (Cmd/Ctrl-Shift-C),
+<em>Database</em> (Cmd/Ctrl-Shift-D), <em>Notifiche</em> (Cmd/Ctrl-Shift-N), <em>Utenti
+connessi</em> (Cmd/Ctrl-Shift-U), <em>Snippet</em> (Cmd/Ctrl-Shift-S) — più <em>Attiva/disattiva
+albero del database</em> (Cmd/Ctrl-B) e <em>Attiva/disattiva pannello proprietà/DDL</em>
+(Cmd/Ctrl-Shift-B).</li>
+<li><strong>Aiuto</strong>: <em>Per iniziare</em> (il tutorial interattivo), <em>Scorciatoie da
+tastiera</em> (apre le Impostazioni sulla categoria Scorciatoie), <em>Visita omnidb.net</em> e
+<em>Repository GitHub</em>.</li>
+</ul>
+<p>I menu OmniDB, Vista e Aiuto vengono mostrati nella lingua scelta in
+<a href="settings_and_languages.html">Impostazioni &gt; Aspetto &gt; Lingua</a> e cambiano non
+appena la modifichi; prima che la prima pagina sia caricata seguono la lingua del sistema
+operativo. I menu standard Edit e Window restano in inglese. Il titolo della finestra mostra la
+sezione in cui ti trovi (ad esempio <em>OmniDB - Snippet</em>).</p>
+<h4>Dimensione e posizione della finestra</h4>
+<p>Al primissimo avvio la finestra si apre ingrandita. In seguito si riapre con la dimensione, la
+posizione e lo stato ingrandito/ripristinato che aveva l’ultima volta che l’hai chiusa.</p>
+<h4>Link e file</h4>
+<p>I link a pagine esterne (le voci <em>Doc: …</em> dell’albero del database, i link della pagina
+di benvenuto, il menu Aiuto) si aprono nel browser web predefinito. Le esportazioni ed
+<em>Esporta come DBML</em> aprono la finestra nativa <em>Salva con nome</em>, così scegli
+direttamente dove salvare il file — vedi <a href="writing_sql_queries.html">Scrittura di query
+SQL</a>.</p>
+<h4>macOS: sandbox, dati precedenti e <code>.pgpass</code></h4>
+<p>L’app per macOS gira nella App Sandbox, che le assegna una propria cartella home privata. Due
+conseguenze:</p>
+<ul>
+<li><strong>I dati di una precedente installazione non sandbox</strong> in <code>~/.omnidb</code>
+non sono visibili automaticamente. Al primo avvio senza dati, OmniDB propone di importarli —
+scegli <em>Import…</em> e seleziona la cartella <code>.omnidb</code> precedente, oppure <em>Not
+Now</em>. Puoi fare lo stesso in seguito con <em>OmniDB &gt; Importa dati dall'installazione
+precedente…</em>.</li>
+<li><strong><code>~/.pgpass</code></strong> non è leggibile finché non lo consenti. Quando una
+connessione PostgreSQL non ha una password memorizzata, la richiesta della password offre
+<em>Concedi accesso a .pgpass…</em>: seleziona una volta il tuo file <code>.pgpass</code> (in
+quella finestra i file nascosti sono visibili) e OmniDB ricorda il permesso, così ogni successiva
+connessione PostgreSQL cerca lì la propria password, proprio come farebbe <code>psql</code>.
+<em>Importa connessioni da .pgpass…</em> nella sezione Connessioni concede lo stesso accesso.
+Vedi <a href="creating_users_and_connections.html">Creazione di utenti e connessioni</a>.</li>
+</ul>
+		</main>
+	</div>
+	<script src="../assets/dropdown.js"></script>
+	<script src="../assets/lang-switcher.js"></script>
+	<script src="../assets/script.js"></script>
+</body>
+</html>

@@ -142,7 +142,7 @@ type delimitedExportWriter struct {
 }
 
 func newDelimitedExportWriter(outPath string, delimiter rune, encodingName string) (*delimitedExportWriter, error) {
-	f, err := os.Create(outPath)
+	f, err := createPrivateFile(outPath)
 	if err != nil {
 		return nil, err
 	}
@@ -183,7 +183,7 @@ type markdownExportWriter struct {
 }
 
 func newMarkdownExportWriter(outPath string) (*markdownExportWriter, error) {
-	f, err := os.Create(outPath)
+	f, err := createPrivateFile(outPath)
 	if err != nil {
 		return nil, err
 	}
@@ -254,7 +254,7 @@ type jsonExportWriter struct {
 }
 
 func newJSONExportWriter(outPath string) (*jsonExportWriter, error) {
-	f, err := os.Create(outPath)
+	f, err := createPrivateFile(outPath)
 	if err != nil {
 		return nil, err
 	}
@@ -326,7 +326,7 @@ type xmlExportWriter struct {
 }
 
 func newXMLExportWriter(outPath string) (*xmlExportWriter, error) {
-	f, err := os.Create(outPath)
+	f, err := createPrivateFile(outPath)
 	if err != nil {
 		return nil, err
 	}
@@ -522,10 +522,6 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 		return
 	}
 	cleanTempFolder(tempDir.TempDir)
-	if err := os.MkdirAll(tempDir.TempDir, 0o755); err != nil {
-		queueQueryError(upstream, cookie, contextCode, err)
-		return
-	}
 
 	db, err := openNativeQueryTarget(info)
 	if err != nil {
@@ -535,9 +531,11 @@ func runQueryExport(upstream *url.URL, cookie string, q queryRequestData, format
 	defer db.Close()
 
 	ext := exportExtensions[format]
-	now := time.Now()
-	fileName := fmt.Sprintf("%d_%06d.%s", now.Unix(), now.Nanosecond()/1000, ext)
-	outPath := filepath.Join(tempDir.TempDir, fileName)
+	fileName, outPath, err := newExportTempFile(tempDir.TempDir, who.UserID, ext)
+	if err != nil {
+		queueQueryError(upstream, cookie, contextCode, err)
+		return
+	}
 
 	csvEncoding := who.CSVEncoding
 	if csvEncoding == "" {

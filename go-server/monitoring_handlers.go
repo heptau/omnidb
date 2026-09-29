@@ -73,7 +73,7 @@ func handleGetMonitorUnitList(upstream *url.URL) http.HandlerFunc {
 				rows = append(rows, []any{unit.PluginName, unit.Title, unit.Type})
 				ids = append(ids, int64(unit.ID))
 			}
-			customUnits, err := fetchAllCustomMonitorUnits(appDB)
+			customUnits, err := fetchAllCustomMonitorUnits(appDB, int64(who.UserID), info.Technology)
 			if err == nil {
 				for _, unit := range customUnits {
 					rows = append(rows, []any{"", unit.Title, unit.Type})
@@ -106,10 +106,10 @@ func handleGetMonitorUnitList(upstream *url.URL) http.HandlerFunc {
 			items = append(items, monitorUnitListItem(monitorUnitRef{unit.PluginName, int64(unit.ID)}, unit.Title, unit.Type, unit.Interval, false, byRef))
 		}
 
-		customUnits, err := fetchAllCustomMonitorUnits(appDB)
+		customUnits, err := fetchAllCustomMonitorUnits(appDB, int64(who.UserID), info.Technology)
 		if err == nil {
 			for _, unit := range customUnits {
-				items = append(items, monitorUnitListItem(monitorUnitRef{"", unit.ID}, unit.Title, unit.Type, unit.Interval, unit.UserID.Valid, byRef))
+				items = append(items, monitorUnitListItem(monitorUnitRef{"", unit.ID}, unit.Title, unit.Type, unit.Interval, unit.UserID.Valid && unit.UserID.Int64 == int64(who.UserID), byRef))
 			}
 		}
 

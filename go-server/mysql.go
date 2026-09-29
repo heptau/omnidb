@@ -2,9 +2,9 @@ package main
 
 import (
 	"database/sql"
-	"fmt"
+	"net"
 
-	_ "github.com/go-sql-driver/mysql"
+	"github.com/go-sql-driver/mysql"
 )
 
 // openMySQLTarget opens a connection to the user's saved MySQL/MariaDB
@@ -17,12 +17,23 @@ func openMySQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 	if port == "" {
 		port = "3306"
 	}
-	dsn := fmt.Sprintf("%s:%s@tcp(%s:%s)/%s?parseTime=false",
-		info.Username, info.Password, info.Server, port, info.Database)
-	db, err := sql.Open("mysql", dsn)
+	// Built as a mysql.Config, never a formatted DSN string: a database
+	// name like "x?allowAllFiles=true" would otherwise be parsed as driver
+	// options, letting a rogue server request any local file via LOAD DATA
+	// LOCAL INFILE (and '@', '/' or '?' in a password broke the DSN anyway).
+	cfg := mysql.NewConfig()
+	cfg.User = info.Username
+	cfg.Passwd = info.Password
+	cfg.Net = "tcp"
+	cfg.Addr = net.JoinHostPort(info.Server, port)
+	cfg.DBName = info.Database
+	cfg.ParseTime = false
+	cfg.AllowAllFiles = false
+	connector, err := mysql.NewConnector(cfg)
 	if err != nil {
 		return nil, err
 	}
+	db := sql.OpenDB(connector)
 	if err := db.Ping(); err != nil {
 		db.Close()
 		return nil, err

@@ -13,6 +13,9 @@ import (
 type editDataColumnRef struct {
 	VColumn string `json:"v_column"`
 	VType   string `json:"v_type"`
+	// sqlName is the catalog-verified name quoted for this engine — the
+	// only form ever spliced into SQL text. Set by verifyEditDataColumnRefs.
+	sqlName string
 }
 
 // recordsQuery mirrors each engine's QueryTableRecords, formatting its
@@ -130,9 +133,34 @@ func editDataTableRef(db *sql.DB, technology, schema, table string) (string, err
 func editDataColumnList(columns []editDataColumnRef) string {
 	names := make([]string, len(columns))
 	for i, c := range columns {
-		names[i] = c.VColumn
+		names[i] = c.sqlName
 	}
 	return strings.Join(names, ",")
+}
+
+// quoteEditDataColumn quotes a column name exactly as editDataColumns
+// returned it from the catalog, for splicing into SQL text. Verification
+// (the name exists) is not enough on its own: a lower-privileged database
+// user can create a column literally named e.g.
+// `1;ALTER SERVER ROLE sysadmin ADD MEMBER evil;--`, which then runs with
+// the privileges of whoever opens Edit Data/Query Data on that table.
+// PostgreSQL's catalog query already returns quote_ident() output, so it's
+// used as-is; every other engine returns the raw name.
+func quoteEditDataColumn(technology, catalogName string) string {
+	switch technology {
+	case "postgresql":
+		return catalogName
+	case "mysql", "mariadb":
+		return quoteMySQLIdent(catalogName)
+	case "mssql":
+		return quoteMSSQLIdent(catalogName)
+	case "oracle":
+		return quoteOracleIdent(unwrapOracleDisplayIdent(catalogName))
+	case "firebird":
+		return quoteFirebirdIdent(catalogName)
+	default: // sqlite
+		return quotePostgresIdentifierDoubleQuoted(catalogName)
+	}
 }
 
 func normalizeColumnName(name string) string {
@@ -159,14 +187,14 @@ func columnNameLookup(cols []editDataColumn) map[string]string {
 // editDataColumnList/buildInsertCommand/buildUpdateCommand all splice
 // column names directly into SQL text with no bind-parameter form available
 // for an identifier position.
-func verifyEditDataColumnRefs(byNormalized map[string]string, columns []editDataColumnRef) ([]editDataColumnRef, error) {
+func verifyEditDataColumnRefs(technology string, byNormalized map[string]string, columns []editDataColumnRef) ([]editDataColumnRef, error) {
 	out := make([]editDataColumnRef, len(columns))
 	for i, c := range columns {
 		real, ok := byNormalized[normalizeColumnName(c.VColumn)]
 		if !ok {
 			return nil, fmt.Errorf("column %s does not exist anymore. Please refresh the tree view", c.VColumn)
 		}
-		out[i] = editDataColumnRef{VColumn: real, VType: c.VType}
+		out[i] = editDataColumnRef{VColumn: real, VType: c.VType, sqlName: quoteEditDataColumn(technology, real)}
 	}
 	return out, nil
 }
@@ -175,14 +203,14 @@ func verifyEditDataColumnRefs(byNormalized map[string]string, columns []editData
 // editDataPKValue, which additionally carries the row's own PK cell value —
 // data, not an identifier, so it's passed through unchanged and is always
 // bound as a query parameter, never spliced into SQL text.
-func verifyEditDataPKValues(byNormalized map[string]string, pk []editDataPKValue) ([]editDataPKValue, error) {
+func verifyEditDataPKValues(technology string, byNormalized map[string]string, pk []editDataPKValue) ([]editDataPKValue, error) {
 	out := make([]editDataPKValue, len(pk))
 	for i, p := range pk {
 		real, ok := byNormalized[normalizeColumnName(p.VColumn)]
 		if !ok {
 			return nil, fmt.Errorf("column %s does not exist anymore. Please refresh the tree view", p.VColumn)
 		}
-		out[i] = editDataPKValue{VColumn: real, VType: p.VType, VValue: p.VValue}
+		out[i] = editDataPKValue{VColumn: real, VType: p.VType, VValue: p.VValue, sqlName: quoteEditDataColumn(technology, real)}
 	}
 	return out, nil
 }
@@ -198,11 +226,11 @@ func fetchEditDataRows(db *sql.DB, technology, schema, table, filter string, cou
 		return nil, nil, "", err
 	}
 	byNormalized := columnNameLookup(catalogCols)
-	verifiedColumns, err := verifyEditDataColumnRefs(byNormalized, columns)
+	verifiedColumns, err := verifyEditDataColumnRefs(technology, byNormalized, columns)
 	if err != nil {
 		return nil, nil, "", err
 	}
-	verifiedPKList, err := verifyEditDataColumnRefs(byNormalized, pkList)
+	verifiedPKList, err := verifyEditDataColumnRefs(technology, byNormalized, pkList)
 	if err != nil {
 		return nil, nil, "", err
 	}
@@ -254,6 +282,7 @@ type editDataPKValue struct {
 	VColumn string `json:"v_column"`
 	VType   string `json:"v_type"`
 	VValue  string `json:"v_value"`
+	sqlName string // see editDataColumnRef.sqlName
 }
 
 type editDataRowInfo struct {
@@ -275,7 +304,7 @@ func buildDeleteCommand(technology, tableRef string, pk []editDataPKValue) (stri
 	whereParts := make([]string, len(pk))
 	args := make([]any, len(pk))
 	for i, p := range pk {
-		whereParts[i] = p.VColumn + " = " + bindPlaceholder(technology, i+1)
+		whereParts[i] = p.sqlName + " = " + bindPlaceholder(technology, i+1)
 		args[i] = p.VValue
 	}
 	return "delete from " + tableRef + " where " + strings.Join(whereParts, " and "), args
@@ -289,7 +318,7 @@ func buildInsertCommand(technology, tableRef string, columns []editDataColumnRef
 	placeholders := make([]string, len(columns))
 	args := make([]any, len(columns))
 	for i, c := range columns {
-		names[i] = c.VColumn
+		names[i] = c.sqlName
 		placeholders[i] = bindPlaceholder(technology, i+1)
 		v := dataRow[i+1]
 		if isNullCell(v) {
@@ -310,7 +339,7 @@ func buildUpdateCommand(technology, tableRef string, columns []editDataColumnRef
 	args := make([]any, 0, len(changedCols)+len(pk))
 	pos := 1
 	for _, colIdx := range changedCols {
-		setParts = append(setParts, columns[colIdx].VColumn+" = "+bindPlaceholder(technology, pos))
+		setParts = append(setParts, columns[colIdx].sqlName+" = "+bindPlaceholder(technology, pos))
 		v := dataRow[colIdx+1]
 		if isNullCell(v) {
 			args = append(args, nil)
@@ -321,7 +350,7 @@ func buildUpdateCommand(technology, tableRef string, columns []editDataColumnRef
 	}
 	whereParts := make([]string, 0, len(pk))
 	for _, p := range pk {
-		whereParts = append(whereParts, p.VColumn+" = "+bindPlaceholder(technology, pos))
+		whereParts = append(whereParts, p.sqlName+" = "+bindPlaceholder(technology, pos))
 		args = append(args, p.VValue)
 		pos++
 	}
@@ -343,15 +372,23 @@ func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][
 		return nil, err
 	}
 	byNormalized := columnNameLookup(catalogCols)
-	verifiedColumns, err := verifyEditDataColumnRefs(byNormalized, columns)
+	verifiedColumns, err := verifyEditDataColumnRefs(technology, byNormalized, columns)
 	if err != nil {
 		return nil, err
 	}
 	results := make([]editDataRowResult, 0, len(rowsInfo))
 
 	for i, info := range rowsInfo {
-		verifiedPK, err := verifyEditDataPKValues(byNormalized, info.PK)
+		verifiedPK, err := verifyEditDataPKValues(technology, byNormalized, info.PK)
 		if err != nil {
+			results = append(results, editDataRowResult{Mode: info.Mode, Index: info.Index, Error: true, Message: err.Error()})
+			continue
+		}
+
+		// Every index below comes straight from the request body; an
+		// out-of-range one would otherwise panic this long-polling worker
+		// goroutine and, with it, the whole process.
+		if err := validateEditDataRowShape(info, i, dataRows, len(verifiedColumns)); err != nil {
 			results = append(results, editDataRowResult{Mode: info.Mode, Index: info.Index, Error: true, Message: err.Error()})
 			continue
 		}
@@ -379,6 +416,29 @@ func saveEditDataRows(db *sql.DB, technology, schema, table string, dataRows [][
 		results = append(results, result)
 	}
 	return results, nil
+}
+
+// validateEditDataRowShape checks that rowsInfo[i]'s mode-specific indexes
+// all fall inside dataRows/columns before build*Command dereferences them.
+func validateEditDataRowShape(info editDataRowInfo, i int, dataRows [][]*string, numColumns int) error {
+	switch info.Mode {
+	case 2, 1:
+		if i >= len(dataRows) || len(dataRows[i]) < numColumns+1 {
+			return fmt.Errorf("malformed edit data row")
+		}
+		for _, c := range info.ChangedCols {
+			if c < 0 || c >= numColumns {
+				return fmt.Errorf("malformed edit data row")
+			}
+		}
+	}
+	if (info.Mode == 1 || info.Mode == -1) && len(info.PK) == 0 {
+		return fmt.Errorf("malformed edit data row")
+	}
+	if info.Mode == 1 && len(info.ChangedCols) == 0 {
+		return fmt.Errorf("malformed edit data row")
+	}
+	return nil
 }
 
 // runEditDataFetch delivers thread_query_edit_data's result via Django's

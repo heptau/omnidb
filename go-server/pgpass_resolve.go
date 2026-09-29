@@ -122,7 +122,7 @@ func pgpassPasswordFromShell(resolveURL string, match pgpassMatch) (string, erro
 	}
 
 	client := &http.Client{Timeout: pgpassResolveTimeout}
-	resp, err := client.Post(resolveURL, "application/json", bytes.NewReader(payload))
+	resp, err := postToShell(client, resolveURL, bytes.NewReader(payload))
 	if err != nil {
 		return "", err
 	}

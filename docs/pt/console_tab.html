@@ -7,7 +7,11 @@
 	<meta name="description" content="Use o Separador de Consola do OmniDB como uma consola de rascunho semelhante ao psql: alguns comandos de barra invertida, histórico de comandos, realce de sintaxe e autocompletar.">
 	<link rel="canonical" href="https://www.omnidb.net/pt/console_tab.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/console_tab.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/pt/console_tab.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/console_tab.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/console_tab.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/console_tab.html">
+	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/console_tab.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/console_tab.html">
 	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/console_tab.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/console_tab.html">
 	<meta name="robots" content="index, follow">
@@ -95,7 +99,9 @@
 			<span class="nav-group-label">Primeiros Passos</span>
 			<a href="introduction.html">Introdução</a>
 			<a href="installation.html">Instalação</a>
+			<a href="desktop_app.html">Aplicação de Ambiente de Trabalho</a>
 			<a href="creating_users_and_connections.html">Criar Utilizadores e Ligações</a>
+			<a href="settings_and_languages.html">Definições e Idiomas</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Trabalhar com Dados</span>
@@ -103,6 +109,7 @@
 			<a href="creating_changing_and_removing_tables.html">Criar, Alterar e Remover Tabelas</a>
 			<a href="managing_table_data.html">Gerir Dados de Tabelas</a>
 			<a href="writing_sql_queries.html">Escrever Consultas SQL</a>
+			<a href="snippets.html">Snippets</a>
 			<a href="visualizing_query_plans.html">Visualizar Planos de Consulta</a>
 			<a href="visualizing_data.html">Visualizar Dados</a>
 			<a href="managing_other_elements.html">Gerir Outros Elementos</a>
@@ -113,11 +120,15 @@
 			<a href="omnidb_config_tool.html">Ferramenta de Configuração do OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Escrever Funções PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Painel de Monitorização</a>
+			<a href="notify.html">Notificações</a>
+			<a href="connected_users.html">Utilizadores Ligados</a>
+			<a href="permissions.html">Roles e Permissões</a>
 			<a href="logical_replication.html">Replicação Lógica</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Servidor e Ferramentas</span>
 			<a href="deploying_omnidb-server.html">Implementar o omnidb-server</a>
+			<a href="security.html">Segurança e Servidor Multiutilizador</a>
 			<a href="console_tab.html" class="active">Separador de Consola</a>
 			<a href="editor_keyboard_shortcuts.html">Atalhos de Teclado do Editor</a>
 		</div>
@@ -152,10 +163,10 @@ mostrar, o comando diz isso diretamente, em vez de devolver um resultado vazio 
 enganador. O <code>\h</code> (ajuda de sintaxe por comando SQL, como uma página de manual do PostgreSQL)
 não está implementado.</p>
 <p>O editor na parte inferior da área do separador é completo, tal como o editor do <em>Separador
-de Consulta</em> (disponibiliza realce de sintaxe e autocompletar com <em>Ctrl-Space</em>).
+de Consulta</em> (disponibiliza realce de sintaxe e autocompletar com <em>Ctrl-Space</em>, <em>Option-Space</em> no macOS, e o seu menu do botão direito oferece <em>Guardar como snippet</em> e <em>Utilizar snippet</em>).
 Para executar um comando, basta escrevê-lo neste editor. Se o comando for uma barra invertida
 (começa com <code>\</code>), basta premir <code>Enter</code> e será executado. Se for um comando
-SQL normal, pode ocupar várias linhas, e terá de premir <em>Alt-Q</em> para o
+SQL normal, pode ocupar várias linhas, e terá de premir <em>Alt-Q</em> (<em>Ctrl-Q</em> no macOS) para o
 executar.</p>
 <p>Todos os comandos e a respetiva saída serão registados na área de visualização, que é
 textual e só de leitura, para que possa copiar e colar o seu conteúdo noutro local.

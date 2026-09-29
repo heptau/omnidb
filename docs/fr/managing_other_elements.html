@@ -7,8 +7,12 @@
 	<meta name="description" content="Gérez les objets PostgreSQL autres que les tables, comme les séquences, à l'aide des modèles SQL modifiables d'OmniDB pour les créer, les modifier et les supprimer.">
 	<link rel="canonical" href="https://www.omnidb.net/fr/managing_other_elements.html">
 	<link rel="alternate" hreflang="en" href="https://www.omnidb.net/en/managing_other_elements.html">
-	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/fr/managing_other_elements.html">
+	<link rel="alternate" hreflang="cs" href="https://www.omnidb.net/cs/managing_other_elements.html">
+	<link rel="alternate" hreflang="de" href="https://www.omnidb.net/de/managing_other_elements.html">
+	<link rel="alternate" hreflang="es" href="https://www.omnidb.net/es/managing_other_elements.html">
 	<link rel="alternate" hreflang="fr" href="https://www.omnidb.net/fr/managing_other_elements.html">
+	<link rel="alternate" hreflang="it" href="https://www.omnidb.net/it/managing_other_elements.html">
+	<link rel="alternate" hreflang="pt" href="https://www.omnidb.net/pt/managing_other_elements.html">
 	<link rel="alternate" hreflang="x-default" href="https://www.omnidb.net/en/managing_other_elements.html">
 	<meta name="robots" content="index, follow">
 	<meta name="theme-color" content="#192e4d">
@@ -65,6 +69,7 @@
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>
 					</button>
 					<div class="dropdown-menu">
+						<button class="dropdown-option" data-lang-value="auto"><span class="dropdown-option-icon">🖥️</span><span>Automatique</span></button>
 						<button class="dropdown-option" data-lang-value="en"><span class="dropdown-option-icon">🇬🇧</span><span>English</span></button>
 						<button class="dropdown-option" data-lang-value="cs"><span class="dropdown-option-icon">🇨🇿</span><span>Čeština</span></button>
 						<button class="dropdown-option" data-lang-value="de"><span class="dropdown-option-icon">🇩🇪</span><span>Deutsch</span></button>
@@ -95,7 +100,9 @@
 			<span class="nav-group-label">Premiers pas</span>
 			<a href="introduction.html">Introduction</a>
 			<a href="installation.html">Installation</a>
+			<a href="desktop_app.html">Application de bureau</a>
 			<a href="creating_users_and_connections.html">Créer des utilisateurs et des connexions</a>
+			<a href="settings_and_languages.html">Paramètres et langues</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Travailler avec les données</span>
@@ -103,6 +110,7 @@
 			<a href="creating_changing_and_removing_tables.html">Créer, modifier et supprimer des tables</a>
 			<a href="managing_table_data.html">Gérer les données des tables</a>
 			<a href="writing_sql_queries.html">Écrire des requêtes SQL</a>
+			<a href="snippets.html">Extraits</a>
 			<a href="visualizing_query_plans.html">Visualiser les plans d’exécution</a>
 			<a href="visualizing_data.html">Visualiser les données</a>
 			<a href="managing_other_elements.html" class="active">Gérer les autres éléments</a>
@@ -113,11 +121,15 @@
 			<a href="omnidb_config_tool.html">Outil de configuration OmniDB</a>
 			<a href="writing_plpgsql_functions.html">Écrire des fonctions PL/pgSQL</a>
 			<a href="monitoring_dashboard.html">Tableau de bord de supervision</a>
+			<a href="notify.html">Notifications</a>
+			<a href="connected_users.html">Utilisateurs connectés</a>
+			<a href="permissions.html">Rôles et autorisations</a>
 			<a href="logical_replication.html">Réplication logique</a>
 		</div>
 		<div class="nav-group">
 			<span class="nav-group-label">Serveur et outils</span>
 			<a href="deploying_omnidb-server.html">Déployer omnidb-server</a>
+			<a href="security.html">Sécurité et serveur multi-utilisateur</a>
 			<a href="console_tab.html">Onglet console</a>
 			<a href="editor_keyboard_shortcuts.html">Raccourcis clavier de l’éditeur</a>
 		</div>
@@ -131,8 +143,8 @@
 <p>Toutes les structures PostgreSQL peuvent être gérées à l’aide de <em>modèles SQL</em>. Cela offre à
 l’utilisateur davantage de puissance que l’utilisation de formulaires graphiques pour manipuler les structures.</p>
 <p>Prenons par exemple les séquences du schéma <code>public</code> de la base de données <code>ds2</code>. Pour
-créer une nouvelle séquence, faites un clic droit sur le nœud <em>Sequences</em> (Séquences), et choisissez
-<em>Create Sequence</em> (Créer une séquence).</p>
+créer une nouvelle séquence, faites un clic droit sur le nœud <em>Séquences</em>, et choisissez
+<em>Créer une séquence</em>.</p>
 <p><img alt="" src="../assets/img/image_062.webp" /></p>
 <p><img alt="" src="../assets/img/image_063.webp" /></p>
 <p>Après avoir changé le nom de la séquence, vous pouvez décommenter d’autres options de la commande et les

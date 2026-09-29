@@ -54,6 +54,7 @@
   "login.sign_in": "Přihlásit se",
   "login.invalid_token": "Neplatný ověřovací token, pro podporu více uživatelů použijte omnidb-server.",
   "login.invalid_credentials": "Neplatné uživatelské jméno nebo heslo.",
+  "login.too_many_attempts": "Příliš mnoho neúspěšných pokusů o přihlášení. Zkuste to znovu za 15 minut.",
   "login.empty_suffix": "prázdné",
   "nav.welcome": "Vítejte",
   "nav.connections": "Připojení",
