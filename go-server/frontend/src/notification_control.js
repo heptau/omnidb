@@ -102,16 +102,19 @@ else setTimeout(initMessageModal, 0);
 
 /**
  * @param {(() => void)|null} [p_content_function]
- * @param {boolean|null} [p_large]
+ * @param {boolean|"form"|null} [p_large] true = extra-large; "form" = a fixed
+ * comfortable width (shrinking only when the window is narrower), instead of
+ * one of Bootstrap's breakpoint-stepped sizes.
  */
 export function showMessageModal(p_content_function, p_large) {
 	var v_dialog = el("modal_message_dialog");
 
-	if (p_large == null || p_large == false) {
-		v_dialog.classList.remove("modal-xl");
-	} else {
-		v_dialog.classList.add("modal-xl");
-	}
+	// A title set by an earlier dialog (see setMessageModalTitle) must not leak into this one.
+	var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
+	if (v_old_title) v_old_title.remove();
+
+	v_dialog.classList.toggle("modal-xl", p_large === true);
+	v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
 
 	if (!v_message_modal_animating) {
 		if (p_content_function != null) p_content_function();
@@ -120,6 +123,28 @@ export function showMessageModal(p_content_function, p_large) {
 		v_message_modal_queued = true;
 		v_message_modal_queued_function = p_content_function;
 	}
+}
+
+/**
+ * Puts a title (optional icon + text) in the shared message modal's header.
+ * Call it from a showConfirm/showAlert shown-callback; the next dialog opened
+ * through showMessageModal clears it again.
+ * @param {string} p_text
+ * @param {string|null} [p_icon_class] e.g. "fas node-all fa-table node-table"
+ */
+export function setMessageModalTitle(p_text, p_icon_class = null) {
+	var v_header = el("modal_message_dialog").querySelector(".modal-header");
+	if (!v_header) return;
+	var v_title = document.createElement("h5");
+	v_title.className = "modal-title";
+	if (p_icon_class) {
+		var v_icon = document.createElement("i");
+		v_icon.className = p_icon_class;
+		v_icon.style.marginRight = "8px";
+		v_title.appendChild(v_icon);
+	}
+	v_title.appendChild(document.createTextNode(p_text));
+	v_header.insertBefore(v_title, v_header.firstChild);
 }
 
 /** @param {string} p_message */
@@ -195,7 +220,7 @@ export function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = 
  * @param {(() => void)|null} [p_funcYes]
  * @param {(() => void)|null} [p_funcNo]
  * @param {(() => void)|null} [p_shownCallback]
- * @param {boolean|null} [p_large]
+ * @param {boolean|"form"|null} [p_large] see showMessageModal
  * @param {string|null} [p_yes_label] Overrides the affirmative button's label
  * (default "OK") -- e.g. "Delete", so a destructive confirmation names the
  * actual action instead of a generic acknowledgement.

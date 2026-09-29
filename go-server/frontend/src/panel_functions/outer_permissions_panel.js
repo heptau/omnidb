@@ -178,7 +178,7 @@ SOFTWARE.
  */
 
 import { execAjax } from "../ajax_control_bridge.js";
-import { showAlert, showConfirm, showError } from "../notification_control.js";
+import { setMessageModalTitle, showAlert, showConfirm, showError } from "../notification_control.js";
 import { showPasswordPrompt } from "../passwords.js";
 import { escapeHtml, escapeHtmlAttribute } from "../query.js";
 import { t } from "../i18n.js";
@@ -425,7 +425,7 @@ function renderRolesList(p_tag, p_roles) {
 			if (p_tag.selectedRole === p_role.v_name) v_row.classList.add("omnidb__permissions__role-row--selected");
 
 			var v_icon = document.createElement("i");
-			v_icon.className = "fas " + (p_role.v_is_public ? "fa-globe" : p_role.v_can_login ? "fa-user" : "fa-user-friends");
+			v_icon.className = "fas node-all " + (p_role.v_is_public ? "fa-globe" : p_role.v_can_login ? "fa-user" : "fa-user-friends");
 			v_row.appendChild(v_icon);
 
 			var v_label = document.createElement("span");
@@ -616,7 +616,7 @@ function readRoleAttributeFields() {
  * @param {any} p_tag
  */
 function openCreateRoleDialog(p_tag) {
-	showConfirm(
+	showFormDialog(
 		"",
 		function () {
 			var v_name = /** @type {HTMLInputElement} */ (document.getElementById("perm_role_name")).value.trim();
@@ -676,7 +676,9 @@ function openCreateRoleDialog(p_tag) {
 			appendRoleAttributeFields(v_content, {});
 		},
 		true,
+		t("common.save"),
 		t("tree.create_role"),
+		"fas node-all fa-user",
 	);
 }
 
@@ -690,7 +692,7 @@ function openAlterRoleAttributesDialog(p_tag, p_role_name) {
 		JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }),
 		function (p_return) {
 			var v_current = p_return.v_data;
-			showConfirm(
+			showFormDialog(
 				"",
 				function () {
 					var v_attrs = readRoleAttributeFields();
@@ -727,6 +729,8 @@ function openAlterRoleAttributesDialog(p_tag, p_role_name) {
 				},
 				true,
 				t("common.save"),
+				t("permissions.alter_role_attributes") + ": " + p_role_name,
+				"fas node-all fa-user",
 			);
 		},
 		function (p_return) {
@@ -764,7 +768,7 @@ function openChangePasswordDialog(p_tag, p_role_name) {
 		return v_col;
 	}
 
-	showConfirm(
+	showFormDialog(
 		"",
 		function () {
 			var v_password = /** @type {HTMLInputElement} */ (document.getElementById("perm_change_pwd_role")).value;
@@ -810,6 +814,10 @@ function openChangePasswordDialog(p_tag, p_role_name) {
 			v_row.appendChild(buildPasswordField(t("tree.password_confirmation"), "perm_change_pwd_role_confirm"));
 			/** @type {HTMLElement} */ (document.getElementById("modal_message_content")).appendChild(v_row);
 		},
+		false,
+		t("common.save"),
+		t("tree.change_password") + ": " + p_role_name,
+		"fas node-all fa-user",
 	);
 }
 
@@ -951,10 +959,20 @@ function renderRoleDetailColumn(p_tag, p_role_name) {
 	}
 
 	if (v_is_public_focus) {
-		var v_na_members = document.createElement("div");
-		v_na_members.className = "omnidb__permissions__list-empty";
-		v_na_members.textContent = t("permissions.public_membership_not_applicable");
-		v_col_state.membersListDiv.appendChild(v_na_members);
+		// Every role implicitly gets PUBLIC's privileges (no pg_auth_members
+		// row, and independent of LOGIN/INHERIT), so the Members half lists
+		// every real role -- all "indirect" (grey), never revocable here.
+		renderDescendantsList(
+			p_tag,
+			v_col_state,
+			(p_tag.roles || [])
+				.filter(function (p_role) {
+					return !p_role.v_is_public;
+				})
+				.map(function (p_role) {
+					return { v_name: p_role.v_name, v_direct: false, v_can_login: p_role.v_can_login };
+				}),
+		);
 
 		var v_na_membership = document.createElement("div");
 		v_na_membership.className = "omnidb__permissions__list-empty";
@@ -1068,7 +1086,7 @@ function renderAncestorsList(p_tag, p_col_state, p_ancestors) {
 			if (!p_row.v_direct) v_row.classList.add("omnidb__permissions__role-row--inherited");
 
 			var v_icon = document.createElement("i");
-			v_icon.className = "fas " + (p_row.v_is_public ? "fa-globe" : "fa-users");
+			v_icon.className = "fas node-all " + (p_row.v_is_public ? "fa-globe" : "fa-users");
 			v_row.appendChild(v_icon);
 
 			var v_label = document.createElement("span");
@@ -1113,7 +1131,7 @@ function renderAncestorsList(p_tag, p_col_state, p_ancestors) {
  * for why there's no universal entry to add on this side.
  * @param {any} p_tag
  * @param {any} p_col_state
- * @param {Array<{v_name: string, v_direct: boolean}>} p_descendants
+ * @param {Array<{v_name: string, v_direct: boolean, v_can_login?: boolean}>} p_descendants
  */
 function renderDescendantsList(p_tag, p_col_state, p_descendants) {
 	p_col_state.descendants = p_descendants;
@@ -1136,7 +1154,7 @@ function renderDescendantsList(p_tag, p_col_state, p_descendants) {
 			if (!p_row.v_direct) v_row.classList.add("omnidb__permissions__role-row--inherited");
 
 			var v_icon = document.createElement("i");
-			v_icon.className = "fas fa-users";
+			v_icon.className = "fas node-all " + (p_row.v_can_login === undefined ? "fa-users" : p_row.v_can_login ? "fa-user" : "fa-user-friends");
 			v_row.appendChild(v_icon);
 
 			var v_label = document.createElement("span");
@@ -1208,13 +1226,15 @@ function openMembershipContextMenu(p_tag, p_col_state, p_row, p_event, p_directi
  * that need to pick a role from a list use this instead of a `<select>`.
  * @param {HTMLElement} p_container
  * @param {Array<{v_name: string, v_can_login: boolean}>} p_roles
- * @returns {{listDiv: HTMLElement, getValue: () => string | null}}
+ * Multi-select: a click toggles a row, so any number of roles can be picked.
+ * @returns {{listDiv: HTMLElement, getValues: () => string[]}}
  */
 function buildRolePickerList(p_container, p_roles) {
 	var v_list = document.createElement("div");
 	v_list.className = "omnidb__permissions__role-picker";
 
-	var v_selected = p_roles.length > 0 ? p_roles[0].v_name : null;
+	/** @type {Object<string, boolean>} */
+	var v_selected = {};
 
 	function renderRows() {
 		v_list.innerHTML = "";
@@ -1222,10 +1242,10 @@ function buildRolePickerList(p_container, p_roles) {
 			(function (p_role) {
 				var v_row = document.createElement("div");
 				v_row.className = "omnidb__permissions__role-row";
-				if (p_role.v_name === v_selected) v_row.classList.add("omnidb__permissions__role-row--selected");
+				if (v_selected[p_role.v_name]) v_row.classList.add("omnidb__permissions__role-row--selected");
 
 				var v_icon = document.createElement("i");
-				v_icon.className = "fas " + (p_role.v_can_login ? "fa-user" : "fa-user-friends");
+				v_icon.className = "fas node-all " + (p_role.v_can_login ? "fa-user" : "fa-user-friends");
 				v_row.appendChild(v_icon);
 
 				var v_label = document.createElement("span");
@@ -1233,7 +1253,8 @@ function buildRolePickerList(p_container, p_roles) {
 				v_row.appendChild(v_label);
 
 				v_row.addEventListener("click", function () {
-					v_selected = p_role.v_name;
+					if (v_selected[p_role.v_name]) delete v_selected[p_role.v_name];
+					else v_selected[p_role.v_name] = true;
 					renderRows();
 				});
 
@@ -1246,8 +1267,14 @@ function buildRolePickerList(p_container, p_roles) {
 
 	return {
 		listDiv: v_list,
-		getValue: function () {
-			return v_selected;
+		getValues: function () {
+			return p_roles
+				.map(function (p_role) {
+					return p_role.v_name;
+				})
+				.filter(function (p_name) {
+					return v_selected[p_name];
+				});
 		},
 	};
 }
@@ -1290,42 +1317,51 @@ function openGrantMembershipDialog(p_tag, p_col_state, p_direction) {
 		return;
 	}
 
-	/** @type {{getValue: () => string | null} | null} */
+	/** @type {{getValues: () => string[]} | null} */
 	var v_picker = null;
 
-	showConfirm(
+	showFormDialog(
 		"",
 		function () {
-			var v_picked = v_picker ? v_picker.getValue() : null;
+			var v_picked = v_picker ? v_picker.getValues() : [];
 			var v_admin = /** @type {HTMLInputElement} */ (document.getElementById("perm_grant_admin_option")).checked;
 
-			if (!v_picked) {
+			if (v_picked.length === 0) {
 				showAlert(t("permissions.select_role_hint"));
 				return;
 			}
 
-			var v_member = p_direction === "ancestor" ? v_role : v_picked;
-			var v_parent = p_direction === "ancestor" ? v_picked : v_role;
-
-			execAjax(
-				"/grant_role_membership_postgresql/",
-				JSON.stringify({
-					p_database_index: p_tag.connID,
-					p_tab_id: p_tag.tabID,
-					p_member: v_member,
-					p_parent: v_parent,
-					p_admin_option: v_admin,
-				}),
-				function () {
-					if (p_direction === "ancestor") fetchAncestors(p_tag, p_col_state);
-					else fetchDescendants(p_tag, p_col_state);
-				},
-				function (p_return) {
-					showAlert(p_return.v_data.message || p_return.v_data);
-				},
-				"box",
-				false,
-			);
+			var v_failed = false;
+			var v_ops = v_picked.map(function (p_name) {
+				return function (p_done) {
+					if (v_failed) {
+						p_done();
+						return;
+					}
+					execAjax(
+						"/grant_role_membership_postgresql/",
+						JSON.stringify({
+							p_database_index: p_tag.connID,
+							p_tab_id: p_tag.tabID,
+							p_member: p_direction === "ancestor" ? v_role : p_name,
+							p_parent: p_direction === "ancestor" ? p_name : v_role,
+							p_admin_option: v_admin,
+						}),
+						p_done,
+						function (p_return) {
+							v_failed = true;
+							showAlert(p_return.v_data.message || p_return.v_data);
+							p_done();
+						},
+						"box",
+						false,
+					);
+				};
+			});
+			runSequentially(v_ops, function () {
+				if (p_direction === "ancestor") fetchAncestors(p_tag, p_col_state);
+				else fetchDescendants(p_tag, p_col_state);
+			});
 		},
 		null,
 		function () {
@@ -1354,7 +1390,9 @@ function openGrantMembershipDialog(p_tag, p_col_state, p_direction) {
 			v_content.appendChild(v_admin_row);
 		},
 		true,
+		t("common.save"),
 		t(p_direction === "ancestor" ? "permissions.grant_membership" : "permissions.grant_membership_reverse"),
+		"fas node-all fa-users",
 	);
 }
 
@@ -1445,43 +1483,76 @@ function isSystemSchemaName(p_name) {
 	return /^pg.*temp/.test(p_name);
 }
 
+// [item icon, item colour class, folder icon, folder colour class] per object
+// type -- the exact same glyph + node-* colour class tree_postgresql.js gives
+// that object (and its "Tables"/"Functions"/... folder) in the Database
+// section's tree, so both trees look identical. Keep in sync with it.
+var PERMISSIONS_OBJECT_ICONS = {
+	database: ["fa-database", "node-database", "fa-database", "node-database-list"],
+	tablespace: ["fa-folder", "node-tablespace", "fa-folder-open", "node-tablespace-list"],
+	schema: ["fa-layer-group", "node-schema", "fa-layer-group", "node-schema-list"],
+	table: ["fa-table", "node-table", "fa-th", "node-table-list"],
+	view: ["fa-eye", "node-view", "fa-eye", "node-view-list"],
+	// Only the descending variant is in this app's icon set (see
+	// gen-icons.mjs's MAPPING) -- fa-sort-numeric-up isn't, and
+	// silently rendered as a blank mask (a solid square).
+	sequence: ["fa-sort-numeric-down", "node-sequence", "fa-sort-numeric-down", "node-sequence-list"],
+	function: ["fa-cog", "node-function", "fa-cog", "node-function-list"],
+	procedure: ["fa-cog", "node-procedure", "fa-cog", "node-procedure-list"],
+	materialized_view: ["fa-eye", "node-mview", "fa-eye", "node-mview-list"],
+	type: ["fa-square", "node-type", "fa-square", "node-type-list"],
+	domain: ["fa-square", "node-domain", "fa-square", "node-domain-list"],
+	foreign_data_wrapper: ["fa-cube", "node-fdw", "fa-cube", "node-fdw-list"],
+	foreign_server: ["fa-server", "node-server", "fa-server", "node-server"],
+};
+
 /**
- * @param {string} p_type
+ * Extra icon class marking a node that has no privilege of its own (drawn
+ * grey, present only as the path to something below it) -- CSS then fades
+ * its icon and italicises its label so it doesn't pass for a real grant.
+ * @param {any} p_grant
  */
-function objectTypeIcon(p_type) {
-	switch (p_type) {
-		case "database":
-			return "fa-database";
-		case "tablespace":
-			return "fa-layer-group";
-		case "schema":
-			return "fa-folder";
-		case "table":
-			return "fa-table";
-		case "view":
-			return "fa-eye";
-		case "sequence":
-			// Only the descending variant is in this app's icon set (see
-			// gen-icons.mjs's MAPPING) -- fa-sort-numeric-up isn't, and
-			// silently rendered as a blank mask (a solid square).
-			return "fa-sort-numeric-down";
-		case "function":
-			return "fa-terminal";
-		case "procedure":
-			return "fa-cog";
-		case "materialized_view":
-			return "fa-copy";
-		case "type":
-			return "fa-cube";
-		case "domain":
-			return "fa-cubes";
-		case "foreign_data_wrapper":
-			return "fa-plug";
-		case "foreign_server":
-			return "fa-server";
-		default:
-			return "fa-key";
-	}
+function dimClass(p_grant) {
+	return p_grant.v_privileges.length > 0 ? "" : " omnidb__permissions__node-dim";
+}
+
+/**
+ * showConfirm with the fixed-width "form" dialog sizing -- every form-like
+ * dialog in this file (add membership, grant/edit privileges, role
+ * attributes, ...) goes through here so they all share one width.
+ * @param {string} p_info
+ * @param {(() => void)|null} p_func_yes
+ * @param {(() => void)|null} p_func_no
+ * @param {(() => void)|null} [p_shown_callback]
+ * @param {boolean|null} [_p_large] ignored, kept so call sites read like showConfirm's
+ * @param {string|null} [p_yes_label]
+ * @param {string|null} [p_title] shown in the dialog header, with p_title_icon before it
+ * @param {string|null} [p_title_icon]
+ */
+function showFormDialog(p_info, p_func_yes, p_func_no, p_shown_callback, _p_large, p_yes_label, p_title, p_title_icon) {
+	showConfirm(
+		p_info,
+		p_func_yes,
+		p_func_no,
+		function () {
+			if (p_title) setMessageModalTitle(p_title, p_title_icon);
+			if (p_shown_callback) p_shown_callback();
+		},
+		"form",
+		p_yes_label,
+	);
+}
+
+/**
+ * Full icon class string for one object of p_type, or -- with p_folder --
+ * for the folder that groups objects of that type.
+ * @param {string} p_type
+ * @param {boolean} [p_folder]
+ */
+function objectTypeIcon(p_type, p_folder) {
+	var v_icons = /** @type {Object<string, string[]>} */ (PERMISSIONS_OBJECT_ICONS)[p_type];
+	if (!v_icons) return "fas node-all fa-key";
+	return p_folder ? "fas node-all " + v_icons[2] + " " + v_icons[3] : "fas node-all " + v_icons[0] + " " + v_icons[1];
 }
 
 /**
@@ -1731,7 +1802,7 @@ function renderGrantObjectTypeFields(p_tag, p_col_state, p_dynamic, p_type_value
  * @param {(database: string | undefined, objectType: string, identifier: string) => void} p_on_granted
  */
 function openGrantObjectPrivilegeDialogGeneric(p_tag, p_col_state, p_role_name, p_type_list, p_title, p_on_granted) {
-	showConfirm(
+	showFormDialog(
 		"",
 		function () {
 			var v_type = /** @type {HTMLSelectElement} */ (document.getElementById("perm_grant_object_type")).value;
@@ -1817,7 +1888,9 @@ function openGrantObjectPrivilegeDialogGeneric(p_tag, p_col_state, p_role_name, 
 			renderGrantObjectTypeFields(p_tag, p_col_state, v_dynamic, v_type_field.select.value, p_type_list);
 		},
 		true,
+		t("common.save"),
 		p_title,
+		"fas node-all fa-key",
 	);
 }
 
@@ -2245,14 +2318,14 @@ function renderObjectsTree(p_tag, p_col_state, p_server_grants, p_databases, p_t
 	var v_database_grants = v_server_by_type["database"] || {};
 	var v_tablespace_grants = v_server_by_type["tablespace"] || {};
 
-	var v_databases_group = v_tree.createNode(t("tree.databases"), false, "fas fa-folder", undefined, null, null, null, false);
+	var v_databases_group = v_tree.createNode(t("tree.databases"), false, objectTypeIcon("database", true), undefined, null, null, null, false);
 	for (var d = 0; d < p_databases.length; d++) {
 		var v_db_name = p_databases[d].v_name;
 		var v_db_grant = v_database_grants[v_db_name] || emptyGrantFor("database", "", v_db_name, v_db_name);
 		var v_db_node = v_databases_group.createChildNode(
 			stripPgIdentQuotes(v_db_name),
 			false,
-			"fas " + objectTypeIcon("database"),
+			objectTypeIcon("database") + dimClass(v_db_grant),
 			{ kind: "database", database: v_db_name, grant: v_db_grant },
 			"cm_perm_grant",
 			v_db_grant.v_privileges.length > 0 ? null : "var(--text-secondary)",
@@ -2265,14 +2338,14 @@ function renderObjectsTree(p_tag, p_col_state, p_server_grants, p_databases, p_t
 		p_col_state.databaseNodes[v_db_name] = { node: v_db_node, loaded: false };
 	}
 
-	var v_tablespaces_group = v_tree.createNode(t("tree.tablespaces"), false, "fas fa-folder", undefined, null, null, null, false);
+	var v_tablespaces_group = v_tree.createNode(t("tree.tablespaces"), false, objectTypeIcon("tablespace", true), undefined, null, null, null, false);
 	for (var s = 0; s < p_tablespaces.length; s++) {
 		var v_ts_name = p_tablespaces[s].v_name;
 		var v_ts_grant = v_tablespace_grants[v_ts_name] || emptyGrantFor("tablespace", "", v_ts_name, v_ts_name);
 		var v_ts_node = v_tablespaces_group.createChildNode(
 			v_ts_name,
 			false,
-			"fas " + objectTypeIcon("tablespace"),
+			objectTypeIcon("tablespace") + dimClass(v_ts_grant),
 			{ grant: v_ts_grant },
 			"cm_perm_grant",
 			v_ts_grant.v_privileges.length > 0 ? null : "var(--text-secondary)",
@@ -2354,7 +2427,7 @@ function populateDatabaseNodeChildren(p_database_node, p_database, p_grants) {
 		p_parent_node.createChildNode(
 			p_grant.v_identifier,
 			false,
-			"fas " + objectTypeIcon(p_grant.v_object_type),
+			objectTypeIcon(p_grant.v_object_type),
 			{ grant: p_grant, database: p_database },
 			"cm_perm_grant",
 			null,
@@ -2369,7 +2442,7 @@ function populateDatabaseNodeChildren(p_database_node, p_database, p_grants) {
 		var v_schema_node = p_database_node.createChildNode(
 			v_schema_names[i],
 			false,
-			"fas fa-folder",
+			objectTypeIcon("schema") + dimClass(v_schema_grant),
 			{ grant: v_schema_grant, database: p_database },
 			"cm_perm_grant",
 			v_schema_grant.v_privileges.length > 0 ? null : "var(--text-secondary)",
@@ -2382,7 +2455,7 @@ function populateDatabaseNodeChildren(p_database_node, p_database, p_grants) {
 			var v_type_grants = v_schema_entry.types[v_spec.value];
 			if (!v_type_grants || v_type_grants.length === 0) continue;
 
-			var v_type_node = v_schema_node.createChildNode(t(v_spec.labelKey), false, "fas fa-folder", null, null, null, true);
+			var v_type_node = v_schema_node.createChildNode(t(v_spec.labelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
 			for (var k = 0; k < v_type_grants.length; k++) appendGrantLeafNode(v_type_node, v_type_grants[k]);
 		}
 	}
@@ -2396,7 +2469,7 @@ function populateDatabaseNodeChildren(p_database_node, p_database, p_grants) {
 		var v_spec2 = PERMISSIONS_DATABASE_OBJECT_TYPES.filter(function (p_type) {
 			return p_type.value === v_top_level_types[t_i];
 		})[0];
-		var v_top_node = p_database_node.createChildNode(t(v_spec2.labelKey), false, "fas fa-folder", undefined, null, null, true);
+		var v_top_node = p_database_node.createChildNode(t(v_spec2.labelKey), false, objectTypeIcon(v_spec2.value, true), undefined, null, null, true);
 		for (var m = 0; m < v_grants_of_type.length; m++) appendGrantLeafNode(v_top_node, v_grants_of_type[m]);
 	}
 }
@@ -2454,7 +2527,7 @@ function openEffectiveObjectDetailDialog(p_tag, p_role_name, p_grant, p_type_lis
 		v_sources_by_privilege[p_grant.v_privileges[i].v_privilege] = p_grant.v_privileges[i].v_sources;
 	}
 
-	showConfirm(
+	showFormDialog(
 		"",
 		function () {
 			var v_to_grant = [];
@@ -2462,7 +2535,6 @@ function openEffectiveObjectDetailDialog(p_tag, p_role_name, p_grant, p_type_lis
 			for (var i = 0; i < v_spec.privileges.length; i++) {
 				var v_priv = v_spec.privileges[i];
 				var v_checkbox = /** @type {HTMLInputElement} */ (document.getElementById("perm_detail_priv_" + v_priv));
-				if (v_checkbox.disabled) continue;
 				var v_was_direct = effectivePrivilegeIsDirect(v_sources_by_privilege[v_priv], p_role_name);
 				if (v_checkbox.checked && !v_was_direct) v_to_grant.push(v_priv);
 				if (!v_checkbox.checked && v_was_direct) v_to_revoke.push(v_priv);
@@ -2553,6 +2625,11 @@ function openEffectiveObjectDetailDialog(p_tag, p_role_name, p_grant, p_type_lis
 			v_priv_title.textContent = t("permissions.privileges_label");
 			v_content.appendChild(v_priv_title);
 
+			var v_priv_note = document.createElement("div");
+			v_priv_note.className = "omnidb__permissions__row-suffix mb-2";
+			v_priv_note.textContent = t("permissions.direct_grant_hint");
+			v_content.appendChild(v_priv_note);
+
 			for (var i = 0; i < v_spec.privileges.length; i++) {
 				(function (p_priv) {
 					var v_sources = v_sources_by_privilege[p_priv];
@@ -2568,8 +2645,11 @@ function openEffectiveObjectDetailDialog(p_tag, p_role_name, p_grant, p_type_lis
 					v_input.type = "checkbox";
 					v_input.className = "form-check-input";
 					v_input.id = "perm_detail_priv_" + p_priv;
-					v_input.checked = !!v_sources;
-					v_input.disabled = !v_direct && v_inherited_sources.length > 0;
+					// The box is the role's own *direct* grant -- an inherited-
+					// only privilege stays unticked (with the hint below) so it
+					// can still be granted directly and survive losing the
+					// membership it comes from.
+					v_input.checked = v_direct;
 
 					var v_label = document.createElement("label");
 					v_label.className = "form-check-label";
@@ -2599,7 +2679,9 @@ function openEffectiveObjectDetailDialog(p_tag, p_role_name, p_grant, p_type_lis
 			}
 		},
 		true,
+		t("common.save"),
 		p_grant.v_identifier,
+		objectTypeIcon(p_grant.v_object_type),
 	);
 }
 

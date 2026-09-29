@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The Permissions section's Objects column now uses the same icons and colours as the Database section's tree
+  for databases, tablespaces, schemas, tables, views, functions, etc. and for their "Tables"/"Functions"/...
+  folders. Role icons (including PUBLIC) share the same colour. Indirect (inherited) memberships are now shown in italics with a faded icon, so they
+  stand out from direct ones; the same goes for objects in the Objects column that have no privilege of their own.
+- The Permissions section's "add membership" dialogs ("Member of" and "Members") now allow picking several
+  roles at once; click rows to toggle them. With PUBLIC selected, the "Members" list now shows every role
+  (they all implicitly get PUBLIC's privileges) instead of the "not a member of any role" message.
+- The Permissions section's dialogs (add membership, grant/edit privileges, role attributes, password) now keep one
+  fixed width at any window size instead of jumping between Bootstrap's breakpoint sizes, shrinking only when the
+  window is narrower than that.
+- The object privileges dialog (Permissions section) now lets you grant a privilege directly even when the role
+  already inherits it: the checkboxes reflect the role's own direct grants, while inherited privileges stay
+  listed with an "Inherited from" hint, so a privilege can be kept after removing the membership it came from.
+- The object privileges dialog now shows the object's name with its tree icon in the dialog header; its confirm
+  button reads "Save" instead of repeating the object's name. The other Permissions dialogs (create role, alter
+  attributes, change password, add membership, add object privilege) likewise get a header title, and their
+  confirm button reads "Save".
+
 ## [4.5.0] - 2026-09-29
 
 ### Added

@@ -1404,6 +1404,18 @@ button.close {
    still clear the role's privileges cover it. */
 .omnidb__permissions__role-row--inherited {
 	color: var(--text-secondary);
+	font-style: italic;
+}
+
+/* Fade the icon too -- the text alone is too close to the normal colour. */
+.omnidb__permissions__role-row--inherited > i,
+.omnidb__permissions__node-dim {
+	opacity: 0.45;
+}
+
+/* Objects tree: the label is the icon's next sibling inside the node. */
+.omnidb__permissions__node-dim + span {
+	font-style: italic;
 }
 
 /* PUBLIC's synthesized column 1 entry (PERMISSIONS_PUBLIC_ROLE) -- bold plus
@@ -3242,4 +3254,11 @@ i.tab-status-idle_in_transaction_aborted {
 
 .node-statistic {
 	color: #5078b3;
+}
+
+/* Form-style modal (showMessageModal's "form" size): one fixed comfortable
+   width at every window size, shrinking only when the window itself is
+   narrower -- instead of Bootstrap's breakpoint-stepped .modal-xl. */
+.modal-dialog.omnidb__modal--form {
+	max-width: min(600px, calc(100vw - 1rem));
 }

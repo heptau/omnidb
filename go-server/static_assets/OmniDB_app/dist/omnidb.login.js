@@ -97,11 +97,10 @@
   else setTimeout(initMessageModal, 0);
   function showMessageModal(p_content_function, p_large) {
     var v_dialog = el("modal_message_dialog");
-    if (p_large == null || p_large == false) {
-      v_dialog.classList.remove("modal-xl");
-    } else {
-      v_dialog.classList.add("modal-xl");
-    }
+    var v_old_title = v_dialog.querySelector(".modal-header .modal-title");
+    if (v_old_title) v_old_title.remove();
+    v_dialog.classList.toggle("modal-xl", p_large === true);
+    v_dialog.classList.toggle("omnidb__modal--form", p_large === "form");
     if (!v_message_modal_animating) {
       if (p_content_function != null) p_content_function();
       bootstrap.Modal.getOrCreateInstance(el("modal_message")).show();
@@ -109,6 +108,20 @@
       v_message_modal_queued = true;
       v_message_modal_queued_function = p_content_function;
     }
+  }
+  function setMessageModalTitle(p_text, p_icon_class = null) {
+    var v_header = el("modal_message_dialog").querySelector(".modal-header");
+    if (!v_header) return;
+    var v_title = document.createElement("h5");
+    v_title.className = "modal-title";
+    if (p_icon_class) {
+      var v_icon = document.createElement("i");
+      v_icon.className = p_icon_class;
+      v_icon.style.marginRight = "8px";
+      v_title.appendChild(v_icon);
+    }
+    v_title.appendChild(document.createTextNode(p_text));
+    v_header.insertBefore(v_title, v_header.firstChild);
   }
   function showError(p_message) {
     var v_content_div = el("modal_message_content");
@@ -220,6 +233,7 @@
   const notificationControl = /* @__PURE__ */ Object.freeze(/* @__PURE__ */ Object.defineProperty({
     __proto__: null,
     checkSessionMessage,
+    setMessageModalTitle,
     showAlert: showAlert$1,
     showConfirm,
     showConfirm2,
