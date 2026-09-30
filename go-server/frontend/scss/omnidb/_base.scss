@@ -1351,7 +1351,27 @@ button.close {
 	flex: 0 0 300px;
 	flex-direction: column;
 	min-height: 0;
+	position: relative;
 	width: 300px;
+}
+
+/* attachColumnResizer's drag handle: a thin strip over the column's right
+   border, highlighted on hover and while dragging. */
+.omnidb__permissions__column-resizer {
+	bottom: 0;
+	cursor: col-resize;
+	position: absolute;
+	right: -3px;
+	top: 0;
+	touch-action: none;
+	width: 6px;
+	z-index: 5;
+}
+
+.omnidb__permissions__column-resizer:hover,
+.omnidb__permissions__column-resizer--active {
+	background-color: var(--accent-color);
+	opacity: 0.45;
 }
 
 .omnidb__permissions__column-header {
@@ -1447,6 +1467,53 @@ button.close {
 	border-radius: 4px;
 	max-height: 220px;
 	overflow-y: auto;
+}
+
+/* renderObjectAccess rows: role name on the first line, its privileges (with
+   where each comes from) wrapped underneath. */
+.omnidb__permissions__access-row {
+	flex-wrap: wrap;
+}
+
+.omnidb__permissions__access-privileges {
+	flex: 0 0 100%;
+	padding-left: 1.5rem;
+}
+
+/* Filter row under a column header (role list, databases of the objects tree). */
+.omnidb__permissions__filter {
+	border-bottom: 1px solid var(--border-color);
+	display: flex;
+	flex-wrap: wrap;
+	gap: 6px;
+	padding: 6px 8px;
+}
+
+/* One control per row: the columns are narrow, side by side they truncate. */
+.omnidb__permissions__filter > input,
+.omnidb__permissions__filter > select {
+	flex: 1 1 100%;
+	min-width: 0;
+	width: 100%;
+}
+
+/* appendSqlPreview's collapsible SQL box inside Permissions form dialogs. */
+.omnidb__permissions__sql-preview {
+	margin-top: 0.75rem;
+}
+
+.omnidb__permissions__sql-preview-text {
+	background-color: var(--panel-bg);
+	border: 1px solid var(--border-color);
+	border-radius: 4px;
+	color: var(--text-primary, inherit);
+	font-size: 0.8rem;
+	margin: 0.5rem 0;
+	max-height: 200px;
+	overflow: auto;
+	padding: 0.5rem;
+	white-space: pre-wrap;
+	word-break: break-word;
 }
 
 /* buildColumnSection's own wrapper -- the objects column holds exactly one

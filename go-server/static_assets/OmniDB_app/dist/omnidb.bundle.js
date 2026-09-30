@@ -948,7 +948,7 @@
     if (p_icon_class) {
       var v_icon = document.createElement("i");
       v_icon.className = p_icon_class;
-      v_icon.style.marginRight = "8px";
+      v_title.style.gap = "6px";
       v_title.appendChild(v_icon);
     }
     v_title.appendChild(document.createTextNode(p_text));
@@ -8009,7 +8009,10 @@
   function renderRolesColumn(p_tag) {
     var v_column = document.createElement("div");
     v_column.className = "omnidb__permissions__column omnidb__permissions__column--roles";
-    v_column.innerHTML = "<div class='omnidb__permissions__column-header'>" + escapeHtml(t("permissions.roles_column_title")) + "</div><div class='omnidb__permissions__list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button type='button' class='omnidb__permissions__add-role' title='" + escapeHtmlAttribute(t("tree.create_role")) + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button type='button' class='omnidb__permissions__delete-role' title='" + escapeHtmlAttribute(t("common.delete")) + "' disabled><i class='fas fa-minus'></i></button></div></div>";
+    v_column.innerHTML = "<div class='omnidb__permissions__column-header'>" + escapeHtml(t("permissions.roles_column_title")) + "</div><div class='omnidb__permissions__filter'><input type='text' class='form-control form-control-sm omnidb__permissions__filter-text' placeholder='" + escapeHtmlAttribute(t("permissions.filter_roles_placeholder")) + "'><select class='form-control form-control-sm omnidb__permissions__filter-kind'>" + ROLE_FILTER_KINDS.map(function(p_kind) {
+      return "<option value='" + p_kind + "'>" + escapeHtml(t("permissions.filter_kind_" + p_kind)) + "</option>";
+    }).join("") + "</select></div><div class='omnidb__permissions__list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button type='button' class='omnidb__permissions__add-role' title='" + escapeHtmlAttribute(t("tree.create_role")) + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button type='button' class='omnidb__permissions__delete-role' title='" + escapeHtmlAttribute(t("common.delete")) + "' disabled><i class='fas fa-minus'></i></button></div></div>";
+    attachColumnResizer(v_column, "roles");
     p_tag.columnsDiv.appendChild(v_column);
     p_tag.rolesListDiv = /** @type {HTMLElement} */
     v_column.querySelector(".omnidb__permissions__list");
@@ -8017,6 +8020,21 @@
     v_column.querySelector(".omnidb__permissions__add-role");
     p_tag.deleteRoleBtn = /** @type {HTMLButtonElement} */
     v_column.querySelector(".omnidb__permissions__delete-role");
+    p_tag.roleFilter = { text: "", kind: "all" };
+    var v_filter_text = (
+      /** @type {HTMLInputElement} */
+      v_column.querySelector(".omnidb__permissions__filter-text")
+    );
+    var v_filter_kind = (
+      /** @type {HTMLSelectElement} */
+      v_column.querySelector(".omnidb__permissions__filter-kind")
+    );
+    function onRoleFilterChange() {
+      p_tag.roleFilter = { text: v_filter_text.value.trim().toLowerCase(), kind: v_filter_kind.value };
+      if (p_tag.roles) renderRolesList(p_tag, p_tag.roles);
+    }
+    v_filter_text.addEventListener("input", onRoleFilterChange);
+    v_filter_kind.addEventListener("change", onRoleFilterChange);
     p_tag.addRoleBtn.addEventListener("click", function() {
       openCreateRoleDialog(p_tag);
     });
@@ -8025,6 +8043,7 @@
     });
     fetchRoles(p_tag);
   }
+  var ROLE_FILTER_KINDS = ["all", "login", "group", "superuser", "expired"];
   function fetchRoles(p_tag) {
     execAjax$1(
       "/get_roles_postgresql/",
@@ -8055,10 +8074,34 @@
   function renderRolesList(p_tag, p_roles) {
     p_tag.roles = p_roles;
     p_tag.rolesListDiv.innerHTML = "";
-    for (var i2 = 0; i2 < p_roles.length; i2++) {
+    var v_filter = p_tag.roleFilter || { text: "", kind: "all" };
+    var v_visible = p_roles.filter(function(p_role) {
+      if (v_filter.text && p_role.v_name.toLowerCase().indexOf(v_filter.text) === -1) return false;
+      switch (v_filter.kind) {
+        case "login":
+          return !p_role.v_is_public && p_role.v_can_login;
+        case "group":
+          return !p_role.v_is_public && !p_role.v_can_login;
+        case "superuser":
+          return !!p_role.v_superuser;
+        case "expired":
+          return !!p_role.v_expired;
+        default:
+          return true;
+      }
+    });
+    if (v_visible.length === 0) {
+      var v_empty = document.createElement("div");
+      v_empty.className = "omnidb__permissions__list-empty";
+      v_empty.textContent = t("permissions.filter_no_match");
+      p_tag.rolesListDiv.appendChild(v_empty);
+      return;
+    }
+    for (var i2 = 0; i2 < v_visible.length; i2++) {
       (function(p_role) {
         var v_row = document.createElement("div");
         v_row.className = "omnidb__permissions__role-row";
+        v_row.dataset.role = p_role.v_name;
         if (p_role.v_is_public) v_row.classList.add("omnidb__permissions__role-row--public");
         if (p_tag.selectedRole === p_role.v_name) v_row.classList.add("omnidb__permissions__role-row--selected");
         var v_icon = document.createElement("i");
@@ -8067,6 +8110,15 @@
         var v_label = document.createElement("span");
         v_label.textContent = p_role.v_name;
         v_row.appendChild(v_label);
+        var v_badges = [];
+        if (p_role.v_superuser) v_badges.push(t("permissions.role_badge_superuser"));
+        if (p_role.v_expired) v_badges.push(t("permissions.role_badge_expired"));
+        if (v_badges.length > 0) {
+          var v_badge = document.createElement("span");
+          v_badge.className = "omnidb__permissions__row-suffix";
+          v_badge.textContent = "(" + v_badges.join(", ") + ")";
+          v_row.appendChild(v_badge);
+        }
         v_row.addEventListener("click", function() {
           selectRole(p_tag, p_role.v_name);
         });
@@ -8078,7 +8130,7 @@
           });
         }
         p_tag.rolesListDiv.appendChild(v_row);
-      })(p_roles[i2]);
+      })(v_visible[i2]);
     }
   }
   function selectRole(p_tag, p_role_name) {
@@ -8088,7 +8140,8 @@
     for (var i2 = 0; i2 < v_rows.length; i2++) {
       v_rows[i2].classList.toggle(
         "omnidb__permissions__role-row--selected",
-        v_rows[i2].textContent === p_role_name
+        /** @type {HTMLElement} */
+        v_rows[i2].dataset.role === p_role_name
       );
     }
     renderRoleDetailColumn(p_tag, p_role_name);
@@ -8117,6 +8170,34 @@
           icon: "fas cm-all fa-pen",
           action: function() {
             openAlterRoleAttributesDialog(p_tag, p_role_name);
+          }
+        },
+        {
+          text: t("permissions.rename_role"),
+          icon: "fas cm-all fa-pen",
+          action: function() {
+            openRenameRoleDialog(p_tag, p_role_name);
+          }
+        },
+        {
+          text: t("permissions.export_permissions"),
+          icon: "fas cm-all fa-file",
+          action: function() {
+            openExportPermissionsDialog(p_tag, p_role_name);
+          }
+        },
+        {
+          text: t("permissions.export_permissions_all"),
+          icon: "fas cm-all fa-file",
+          action: function() {
+            openExportPermissionsDialog(p_tag, "");
+          }
+        },
+        {
+          text: t("permissions.clone_role"),
+          icon: "fas cm-all fa-copy",
+          action: function() {
+            openCloneRoleDialog(p_tag, p_role_name);
           }
         },
         {
@@ -8291,10 +8372,296 @@
         v_password_col.appendChild(v_password_input);
         v_content.appendChild(v_password_col);
         appendRoleAttributeFields(v_content, {});
+        appendSqlPreview(v_content, function() {
+          var v_name = (
+            /** @type {HTMLInputElement} */
+            document.getElementById("perm_role_name").value.trim()
+          );
+          if (v_name === "") return null;
+          var v_has_password = (
+            /** @type {HTMLInputElement} */
+            document.getElementById("perm_role_password").value !== ""
+          );
+          return [
+            {
+              url: "/create_role_postgresql/",
+              body: Object.assign(
+                { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_name: v_name, p_password: v_has_password ? "x" : "" },
+                readRoleAttributeFields()
+              )
+            }
+          ];
+        });
       },
       true,
       t("common.save"),
       t("tree.create_role"),
+      "fas node-all fa-user"
+    );
+  }
+  function openRenameRoleDialog(p_tag, p_role_name) {
+    function requestBody() {
+      var v_name = (
+        /** @type {HTMLInputElement} */
+        document.getElementById("perm_rename_name").value.trim()
+      );
+      if (v_name === "") return null;
+      return { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name, p_new_name: v_name };
+    }
+    showFormDialog(
+      "",
+      function() {
+        var v_body = requestBody();
+        if (!v_body) {
+          showAlert(t("permissions.role_name_empty"));
+          return;
+        }
+        execAjax$1(
+          "/rename_role_postgresql/",
+          JSON.stringify(v_body),
+          function() {
+            var v_was_selected = p_tag.selectedRole === p_role_name;
+            if (v_was_selected) {
+              p_tag.selectedRole = v_body.p_new_name;
+              renderRoleDetailColumn(p_tag, v_body.p_new_name);
+              renderObjectsColumn(p_tag, v_body.p_new_name);
+            }
+            fetchRoles(p_tag);
+          },
+          function(p_return) {
+            showAlert(p_return.v_data.message || p_return.v_data);
+          },
+          "box",
+          false
+        );
+      },
+      null,
+      function() {
+        var v_content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        var v_col = document.createElement("div");
+        v_col.className = "col-md-12 mb-3";
+        var v_label = document.createElement("label");
+        v_label.setAttribute("for", "perm_rename_name");
+        v_label.textContent = t("permissions.new_name_label");
+        var v_input = document.createElement("input");
+        v_input.type = "text";
+        v_input.id = "perm_rename_name";
+        v_input.className = "form-control";
+        v_input.value = p_role_name;
+        v_col.appendChild(v_label);
+        v_col.appendChild(v_input);
+        v_content.appendChild(v_col);
+        var v_hint = document.createElement("div");
+        v_hint.className = "omnidb__permissions__row-suffix mb-3";
+        v_hint.textContent = t("permissions.rename_role_hint");
+        v_content.appendChild(v_hint);
+        appendSqlPreview(v_content, function() {
+          var v_body = requestBody();
+          return v_body ? [{ url: "/rename_role_postgresql/", body: v_body }] : null;
+        });
+        v_input.focus();
+        v_input.select();
+      },
+      true,
+      t("common.save"),
+      t("permissions.rename_role") + ": " + p_role_name,
+      "fas node-all fa-user"
+    );
+  }
+  function openExportPermissionsDialog(p_tag, p_role_name) {
+    var v_sections = [
+      { id: "perm_export_roles", key: "p_roles", label: "permissions.export_section_roles" },
+      { id: "perm_export_memberships", key: "p_memberships", label: "permissions.export_section_memberships" },
+      { id: "perm_export_privileges", key: "p_privileges", label: "permissions.export_section_privileges" },
+      { id: "perm_export_defaults", key: "p_default_privileges", label: "permissions.export_section_defaults" }
+    ];
+    showFormDialog(
+      "",
+      function() {
+      },
+      null,
+      function() {
+        var v_cancel = document.getElementById("modal_message_cancel");
+        if (v_cancel) v_cancel.style.display = "none";
+        var v_content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        var v_intro = document.createElement("div");
+        v_intro.className = "omnidb__permissions__row-suffix mb-2";
+        v_intro.textContent = t("permissions.export_hint");
+        v_content.appendChild(v_intro);
+        for (var i2 = 0; i2 < v_sections.length; i2++) {
+          var v_row = document.createElement("div");
+          v_row.className = "form-check";
+          var v_input = document.createElement("input");
+          v_input.type = "checkbox";
+          v_input.className = "form-check-input";
+          v_input.id = v_sections[i2].id;
+          v_input.checked = true;
+          var v_label = document.createElement("label");
+          v_label.className = "form-check-label";
+          v_label.setAttribute("for", v_sections[i2].id);
+          v_label.textContent = t(v_sections[i2].label);
+          v_row.appendChild(v_input);
+          v_row.appendChild(v_label);
+          v_content.appendChild(v_row);
+        }
+        var v_text = document.createElement("textarea");
+        v_text.className = "form-control omnidb__permissions__sql-preview-text mt-2";
+        v_text.readOnly = true;
+        v_text.rows = 14;
+        v_content.appendChild(v_text);
+        var v_copy = document.createElement("button");
+        v_copy.type = "button";
+        v_copy.className = "btn btn-sm btn-outline-secondary";
+        v_copy.textContent = t("permissions.copy_sql");
+        v_content.appendChild(v_copy);
+        var v_token = 0;
+        function load() {
+          var v_mine = ++v_token;
+          v_text.value = "";
+          var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name };
+          for (var j2 = 0; j2 < v_sections.length; j2++) {
+            v_body[v_sections[j2].key] = /** @type {HTMLInputElement} */
+            document.getElementById(v_sections[j2].id).checked;
+          }
+          execAjax$1(
+            "/export_permissions_postgresql/",
+            JSON.stringify(v_body),
+            function(p_return) {
+              if (v_mine === v_token) v_text.value = p_return.v_data.v_sql;
+            },
+            function(p_return) {
+              if (v_mine === v_token) v_text.value = "-- " + (p_return.v_data.message || p_return.v_data);
+            },
+            "box",
+            true
+          );
+        }
+        v_content.addEventListener("change", function(p_event) {
+          if (v_content.contains(v_text) && /** @type {HTMLInputElement} */
+          p_event.target.type === "checkbox") load();
+        });
+        v_copy.addEventListener("click", function() {
+          copyTextQuietly(v_text.value);
+          v_copy.textContent = t("permissions.sql_copied");
+          window.setTimeout(function() {
+            v_copy.textContent = t("permissions.copy_sql");
+          }, 1500);
+        });
+        load();
+      },
+      true,
+      t("common.close"),
+      t(p_role_name ? "permissions.export_permissions" : "permissions.export_permissions_all") + (p_role_name ? ": " + p_role_name : ""),
+      "fas node-all fa-file"
+    );
+  }
+  function openCloneRoleDialog(p_tag, p_role_name) {
+    function requestBody(p_for_preview) {
+      var v_name = (
+        /** @type {HTMLInputElement} */
+        document.getElementById("perm_clone_name").value.trim()
+      );
+      if (v_name === "") return null;
+      var v_password = (
+        /** @type {HTMLInputElement} */
+        document.getElementById("perm_clone_password").value
+      );
+      return {
+        p_database_index: p_tag.connID,
+        p_tab_id: p_tag.tabID,
+        p_source: p_role_name,
+        p_name: v_name,
+        p_password: p_for_preview ? v_password ? "x" : "" : v_password,
+        p_copy_memberships: (
+          /** @type {HTMLInputElement} */
+          document.getElementById("perm_clone_memberships").checked
+        ),
+        p_copy_privileges: (
+          /** @type {HTMLInputElement} */
+          document.getElementById("perm_clone_privileges").checked
+        )
+      };
+    }
+    showFormDialog(
+      "",
+      function() {
+        var v_body = requestBody(false);
+        if (!v_body) {
+          showAlert(t("permissions.role_name_empty"));
+          return;
+        }
+        execAjax$1(
+          "/clone_role_postgresql/",
+          JSON.stringify(v_body),
+          function() {
+            showAlert(t("permissions.role_created"));
+            fetchRoles(p_tag);
+          },
+          function(p_return) {
+            showAlert(p_return.v_data.message || p_return.v_data);
+          },
+          "box",
+          true
+        );
+      },
+      null,
+      function() {
+        var v_content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        function addTextField(p_id, p_label, p_type) {
+          var v_col = document.createElement("div");
+          v_col.className = "col-md-12 mb-3";
+          var v_label = document.createElement("label");
+          v_label.setAttribute("for", p_id);
+          v_label.textContent = p_label;
+          var v_input = document.createElement("input");
+          v_input.type = p_type;
+          v_input.id = p_id;
+          v_input.className = "form-control";
+          v_col.appendChild(v_label);
+          v_col.appendChild(v_input);
+          v_content.appendChild(v_col);
+        }
+        function addCheckbox(p_id, p_label) {
+          var v_row = document.createElement("div");
+          v_row.className = "form-check mb-2";
+          var v_input = document.createElement("input");
+          v_input.type = "checkbox";
+          v_input.className = "form-check-input";
+          v_input.id = p_id;
+          v_input.checked = true;
+          var v_label = document.createElement("label");
+          v_label.className = "form-check-label";
+          v_label.setAttribute("for", p_id);
+          v_label.textContent = p_label;
+          v_row.appendChild(v_input);
+          v_row.appendChild(v_label);
+          v_content.appendChild(v_row);
+        }
+        var v_intro = document.createElement("div");
+        v_intro.className = "omnidb__permissions__row-suffix mb-3";
+        v_intro.textContent = t("permissions.clone_role_hint", { role: p_role_name });
+        v_content.appendChild(v_intro);
+        addTextField("perm_clone_name", t("permissions.role_name"), "text");
+        addTextField("perm_clone_password", t("common.password"), "password");
+        addCheckbox("perm_clone_memberships", t("permissions.clone_copy_memberships"));
+        addCheckbox("perm_clone_privileges", t("permissions.clone_copy_privileges"));
+        appendSqlPreview(v_content, function() {
+          var v_body = requestBody(true);
+          return v_body ? [{ url: "/clone_role_postgresql/", body: v_body }] : null;
+        });
+      },
+      true,
+      t("common.save"),
+      t("permissions.clone_role") + ": " + p_role_name,
       "fas node-all fa-user"
     );
   }
@@ -8340,6 +8707,14 @@
               bypass_rls: v_current.p_bypass_rls,
               connection_limit: v_current.p_connection_limit,
               valid_until: v_current.p_valid_until
+            });
+            appendSqlPreview(v_content, function() {
+              return [
+                {
+                  url: "/alter_role_attributes_postgresql/",
+                  body: Object.assign({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }, readRoleAttributeFields())
+                }
+              ];
             });
           },
           true,
@@ -8480,6 +8855,7 @@
       showAdd: !v_is_public_focus,
       showRemove: !v_is_public_focus
     });
+    attachColumnResizer(v_column, "detail");
     p_tag.columnsDiv.appendChild(v_column);
     var v_col_state = {
       role: p_role_name,
@@ -8593,6 +8969,8 @@
           v_name: p_ancestor.v_name,
           v_direct: p_ancestor.v_direct,
           v_admin_option: p_ancestor.v_admin_option,
+          v_inherit: p_ancestor.v_inherit,
+          v_set: p_ancestor.v_set,
           v_is_public: false
         };
       })
@@ -8612,12 +8990,7 @@
         var v_label = document.createElement("span");
         v_label.textContent = p_row.v_name;
         v_row.appendChild(v_label);
-        if (p_row.v_direct && p_row.v_admin_option) {
-          var v_suffix = document.createElement("span");
-          v_suffix.className = "omnidb__permissions__row-suffix";
-          v_suffix.textContent = t("permissions.admin_option_suffix");
-          v_row.appendChild(v_suffix);
-        }
+        appendMembershipNotes(v_row, p_row);
         v_row.addEventListener("click", function() {
           p_col_state.membershipSelected = p_row.v_direct ? p_row.v_name : null;
           if (p_col_state.membershipRemoveBtn) p_col_state.membershipRemoveBtn.disabled = !p_row.v_direct;
@@ -8636,6 +9009,19 @@
         p_col_state.membershipListDiv.appendChild(v_row);
       })(v_rows[i2]);
     }
+  }
+  function appendMembershipNotes(p_row_element, p_row) {
+    if (!p_row.v_direct) return;
+    var v_notes = [];
+    if (p_row.v_admin_option) v_notes.push(t("permissions.admin_option_suffix"));
+    if (p_row.v_inherit === false) v_notes.push(t("permissions.membership_no_inherit"));
+    if (p_row.v_set === false) v_notes.push(t("permissions.membership_no_set"));
+    if (v_notes.length === 0) return;
+    p_row_element.classList.add("omnidb__permissions__access-row");
+    var v_suffix = document.createElement("span");
+    v_suffix.className = "omnidb__permissions__row-suffix omnidb__permissions__access-privileges";
+    v_suffix.textContent = v_notes.join(" ");
+    p_row_element.appendChild(v_suffix);
   }
   function renderDescendantsList(p_tag, p_col_state, p_descendants) {
     p_col_state.descendants = p_descendants;
@@ -8660,6 +9046,7 @@
         var v_label = document.createElement("span");
         v_label.textContent = p_row.v_name;
         v_row.appendChild(v_label);
+        appendMembershipNotes(v_row, p_row);
         v_row.addEventListener("click", function() {
           p_col_state.membersSelected = p_row.v_direct ? p_row.v_name : null;
           if (p_col_state.membersRemoveBtn) p_col_state.membersRemoveBtn.disabled = !p_row.v_direct;
@@ -8689,6 +9076,15 @@
         }
       }
     ];
+    if (p_row.v_direct && typeof p_row.v_inherit === "boolean") {
+      v_items.push({
+        text: t("permissions.edit_membership_options"),
+        icon: "fas cm-all fa-pen",
+        action: function() {
+          openEditMembershipDialog(p_tag, p_col_state, p_row, p_direction);
+        }
+      });
+    }
     if (p_row.v_direct) {
       v_items.push({
         text: t("permissions.remove_membership"),
@@ -8776,13 +9172,18 @@
             }
             execAjax$1(
               "/grant_role_membership_postgresql/",
-              JSON.stringify({
-                p_database_index: p_tag.connID,
-                p_tab_id: p_tag.tabID,
-                p_member: p_direction === "ancestor" ? v_role : p_name,
-                p_parent: p_direction === "ancestor" ? p_name : v_role,
-                p_admin_option: v_admin
-              }),
+              JSON.stringify(
+                Object.assign(
+                  {
+                    p_database_index: p_tag.connID,
+                    p_tab_id: p_tag.tabID,
+                    p_member: p_direction === "ancestor" ? v_role : p_name,
+                    p_parent: p_direction === "ancestor" ? p_name : v_role,
+                    p_admin_option: v_admin
+                  },
+                  readMembershipOptionSelects()
+                )
+              ),
               p_done,
               function(p_return) {
                 v_failed = true;
@@ -8825,10 +9226,163 @@
         v_admin_row.appendChild(v_admin_input);
         v_admin_row.appendChild(v_admin_label);
         v_content.appendChild(v_admin_row);
+        appendMembershipOptionSelects(p_tag, v_content);
+        appendSqlPreview(v_content, function() {
+          var v_picked = v_picker ? v_picker.getValues() : [];
+          if (v_picked.length === 0) return null;
+          var v_admin = (
+            /** @type {HTMLInputElement} */
+            document.getElementById("perm_grant_admin_option").checked
+          );
+          return v_picked.map(function(p_name) {
+            return {
+              url: "/grant_role_membership_postgresql/",
+              body: Object.assign(
+                {
+                  p_database_index: p_tag.connID,
+                  p_tab_id: p_tag.tabID,
+                  p_member: p_direction === "ancestor" ? v_role : p_name,
+                  p_parent: p_direction === "ancestor" ? p_name : v_role,
+                  p_admin_option: v_admin
+                },
+                readMembershipOptionSelects()
+              )
+            };
+          });
+        });
       },
       true,
       t("common.save"),
       t(p_direction === "ancestor" ? "permissions.grant_membership" : "permissions.grant_membership_reverse"),
+      "fas node-all fa-users"
+    );
+  }
+  function withServerMajor(p_tag, p_callback) {
+    if (typeof p_tag.serverMajor === "number") {
+      p_callback(p_tag.serverMajor);
+      return;
+    }
+    execAjax$1(
+      "/get_postgresql_version/",
+      JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID }),
+      function(p_return) {
+        var v_match = /(\d+)/.exec(String(p_return.v_data.v_version));
+        p_tag.serverMajor = v_match ? parseInt(v_match[1], 10) : 0;
+        p_callback(p_tag.serverMajor);
+      },
+      function() {
+        p_callback(0);
+      },
+      "box",
+      false
+    );
+  }
+  function appendMembershipOptionSelects(p_tag, p_content) {
+    var v_holder = document.createElement("div");
+    p_content.appendChild(v_holder);
+    withServerMajor(p_tag, function(p_major) {
+      if (p_major < 16) return;
+      var v_items = [
+        { value: "", label: t("permissions.option_default") },
+        { value: "true", label: t("permissions.option_yes") },
+        { value: "false", label: t("permissions.option_no") }
+      ];
+      var v_inherit = buildSelectField(v_holder, "perm_grant_inherit", t("permissions.membership_inherit_label"));
+      populateSelectOptions(v_inherit.select, v_items);
+      var v_set = buildSelectField(v_holder, "perm_grant_set", t("permissions.membership_set_label"));
+      populateSelectOptions(v_set.select, v_items);
+    });
+  }
+  function readMembershipOptionSelects() {
+    var v_fields = {};
+    var v_inherit = (
+      /** @type {HTMLSelectElement | null} */
+      document.getElementById("perm_grant_inherit")
+    );
+    var v_set = (
+      /** @type {HTMLSelectElement | null} */
+      document.getElementById("perm_grant_set")
+    );
+    if (v_inherit && v_inherit.value !== "") v_fields.p_inherit = v_inherit.value === "true";
+    if (v_set && v_set.value !== "") v_fields.p_set = v_set.value === "true";
+    return v_fields;
+  }
+  function openEditMembershipDialog(p_tag, p_col_state, p_row, p_direction) {
+    var v_member = p_direction === "ancestor" ? p_col_state.role : p_row.v_name;
+    var v_parent = p_direction === "ancestor" ? p_row.v_name : p_col_state.role;
+    function requestBody() {
+      return {
+        p_database_index: p_tag.connID,
+        p_tab_id: p_tag.tabID,
+        p_member: v_member,
+        p_parent: v_parent,
+        p_admin_option: (
+          /** @type {HTMLInputElement} */
+          document.getElementById("perm_edit_admin").checked
+        ),
+        p_inherit: (
+          /** @type {HTMLInputElement} */
+          document.getElementById("perm_edit_inherit").checked
+        ),
+        p_set: (
+          /** @type {HTMLInputElement} */
+          document.getElementById("perm_edit_set").checked
+        )
+      };
+    }
+    showFormDialog(
+      "",
+      function() {
+        execAjax$1(
+          "/grant_role_membership_postgresql/",
+          JSON.stringify(requestBody()),
+          function() {
+            if (p_direction === "ancestor") fetchAncestors(p_tag, p_col_state);
+            else fetchDescendants(p_tag, p_col_state);
+          },
+          function(p_return) {
+            showAlert(p_return.v_data.message || p_return.v_data);
+          },
+          "box",
+          false
+        );
+      },
+      null,
+      function() {
+        var v_content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        var v_intro = document.createElement("div");
+        v_intro.className = "omnidb__permissions__row-suffix mb-3";
+        v_intro.textContent = t("permissions.edit_membership_hint", { member: v_member, parent: v_parent });
+        v_content.appendChild(v_intro);
+        function addCheckbox(p_id, p_label, p_checked) {
+          var v_row = document.createElement("div");
+          v_row.className = "form-check mb-2";
+          var v_input = document.createElement("input");
+          v_input.type = "checkbox";
+          v_input.className = "form-check-input";
+          v_input.id = p_id;
+          v_input.checked = p_checked;
+          var v_label = document.createElement("label");
+          v_label.className = "form-check-label";
+          v_label.setAttribute("for", p_id);
+          v_label.textContent = p_label;
+          v_row.appendChild(v_input);
+          v_row.appendChild(v_label);
+          v_content.appendChild(v_row);
+        }
+        addCheckbox("perm_edit_admin", t("permissions.admin_option"), !!p_row.v_admin_option);
+        addCheckbox("perm_edit_inherit", t("permissions.membership_inherit_label"), p_row.v_inherit !== false);
+        addCheckbox("perm_edit_set", t("permissions.membership_set_label"), p_row.v_set !== false);
+        appendSqlPreview(v_content, function() {
+          return [{ url: "/grant_role_membership_postgresql/", body: requestBody() }];
+        });
+      },
+      true,
+      t("common.save"),
+      t("permissions.edit_membership_options") + ": " + p_row.v_name,
       "fas node-all fa-users"
     );
   }
@@ -8861,17 +9415,17 @@
     );
   }
   var PERMISSIONS_DATABASE_OBJECT_TYPES = [
-    { value: "schema", labelKey: "permissions.object_type_schema", needsSchema: false, listEndpoint: "/get_schemas_postgresql/", nameField: "v_name", privileges: ["CREATE", "USAGE"] },
-    { value: "table", labelKey: "permissions.object_type_table", needsSchema: true, listEndpoint: "/get_tables_postgresql/", nameField: "v_name", privileges: ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"] },
-    { value: "view", labelKey: "permissions.object_type_view", needsSchema: true, listEndpoint: "/get_views_postgresql/", nameField: "v_name", privileges: ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"] },
-    { value: "sequence", labelKey: "permissions.object_type_sequence", needsSchema: true, listEndpoint: "/get_sequences_postgresql/", nameField: "v_sequence_name", privileges: ["USAGE", "SELECT", "UPDATE"] },
-    { value: "function", labelKey: "permissions.object_type_function", needsSchema: true, listEndpoint: "/get_functions_postgresql/", nameField: "v_id", privileges: ["EXECUTE"] },
-    { value: "procedure", labelKey: "permissions.object_type_procedure", needsSchema: true, listEndpoint: "/get_procedures_postgresql/", nameField: "v_id", privileges: ["EXECUTE"] },
-    { value: "materialized_view", labelKey: "permissions.object_type_materialized_view", needsSchema: true, listEndpoint: "/get_mviews_postgresql/", nameField: "v_name", privileges: ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"] },
-    { value: "type", labelKey: "permissions.object_type_type", needsSchema: true, listEndpoint: "/get_types_postgresql/", nameField: "v_type_name", privileges: ["USAGE"] },
-    { value: "domain", labelKey: "permissions.object_type_domain", needsSchema: true, listEndpoint: "/get_domains_postgresql/", nameField: "v_domain_name", privileges: ["USAGE"] },
-    { value: "foreign_data_wrapper", labelKey: "permissions.object_type_foreign_data_wrapper", needsSchema: false, listEndpoint: "/get_foreign_data_wrappers_postgresql/", nameField: "v_name", privileges: ["USAGE"] },
-    { value: "foreign_server", labelKey: "permissions.object_type_foreign_server", needsSchema: false, listEndpoint: "/get_all_foreign_servers_postgresql/", nameField: "v_name", privileges: ["USAGE"] }
+    { value: "schema", folderLabelKey: "tree.schemas", labelKey: "permissions.object_type_schema", needsSchema: false, listEndpoint: "/get_schemas_postgresql/", nameField: "v_name", privileges: ["CREATE", "USAGE"] },
+    { value: "table", folderLabelKey: "tree.tables", bulkKind: "tables", labelKey: "permissions.object_type_table", needsSchema: true, listEndpoint: "/get_tables_postgresql/", nameField: "v_name", privileges: ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"] },
+    { value: "view", folderLabelKey: "tree.views", labelKey: "permissions.object_type_view", needsSchema: true, listEndpoint: "/get_views_postgresql/", nameField: "v_name", privileges: ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"] },
+    { value: "sequence", folderLabelKey: "tree.topic_sequences", bulkKind: "sequences", labelKey: "permissions.object_type_sequence", needsSchema: true, listEndpoint: "/get_sequences_postgresql/", nameField: "v_sequence_name", privileges: ["USAGE", "SELECT", "UPDATE"] },
+    { value: "function", folderLabelKey: "tree.functions", bulkKind: "functions", labelKey: "permissions.object_type_function", needsSchema: true, listEndpoint: "/get_functions_postgresql/", nameField: "v_id", privileges: ["EXECUTE"] },
+    { value: "procedure", folderLabelKey: "tree.topic_procedures", bulkKind: "procedures", labelKey: "permissions.object_type_procedure", needsSchema: true, listEndpoint: "/get_procedures_postgresql/", nameField: "v_id", privileges: ["EXECUTE"] },
+    { value: "materialized_view", folderLabelKey: "tree.topic_materialized_views", labelKey: "permissions.object_type_materialized_view", needsSchema: true, listEndpoint: "/get_mviews_postgresql/", nameField: "v_name", privileges: ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"] },
+    { value: "type", folderLabelKey: "tree.topic_types", labelKey: "permissions.object_type_type", needsSchema: true, listEndpoint: "/get_types_postgresql/", nameField: "v_type_name", privileges: ["USAGE"] },
+    { value: "domain", folderLabelKey: "tree.topic_domains", labelKey: "permissions.object_type_domain", needsSchema: true, listEndpoint: "/get_domains_postgresql/", nameField: "v_domain_name", privileges: ["USAGE"] },
+    { value: "foreign_data_wrapper", folderLabelKey: "tree.topic_foreign_data_wrappers", labelKey: "permissions.object_type_foreign_data_wrapper", needsSchema: false, listEndpoint: "/get_foreign_data_wrappers_postgresql/", nameField: "v_name", privileges: ["USAGE"] },
+    { value: "foreign_server", folderLabelKey: "tree.foreign_servers", labelKey: "permissions.object_type_foreign_server", needsSchema: false, listEndpoint: "/get_all_foreign_servers_postgresql/", nameField: "v_name", privileges: ["USAGE"] }
   ];
   var PERMISSIONS_SYSTEM_SCHEMAS = ["pg_catalog", "information_schema", "pg_toast"];
   function isSystemSchemaName(p_name) {
@@ -8894,7 +9448,9 @@
     type: ["fa-square", "node-type", "fa-square", "node-type-list"],
     domain: ["fa-square", "node-domain", "fa-square", "node-domain-list"],
     foreign_data_wrapper: ["fa-cube", "node-fdw", "fa-cube", "node-fdw-list"],
-    foreign_server: ["fa-server", "node-server", "fa-server", "node-server"]
+    foreign_server: ["fa-server", "node-server", "fa-server", "node-server"],
+    // Not an object type: the per-database "Owned objects" folder.
+    owned_objects: ["fa-user", "node-all", "fa-user", "node-all"]
   };
   function dimClass(p_grant) {
     return p_grant.v_privileges.length > 0 ? "" : " omnidb__permissions__node-dim";
@@ -8911,6 +9467,187 @@
       "form",
       p_yes_label
     );
+  }
+  var PERMISSIONS_COLUMN_LIMITS = {
+    roles: { min: 200, max: 600 },
+    detail: { min: 220, max: 600 },
+    objects: { min: 240, max: 1400 }
+  };
+  var PERMISSIONS_COLUMN_STORAGE_PREFIX = "omnidb.permissions.columnWidth.";
+  function setColumnWidth(p_column, p_width) {
+    p_column.style.width = p_width === null ? "" : p_width + "px";
+    p_column.style.flexBasis = p_width === null ? "" : p_width + "px";
+  }
+  function attachColumnResizer(p_column, p_key) {
+    var v_limits = PERMISSIONS_COLUMN_LIMITS[p_key];
+    var v_storage_key = PERMISSIONS_COLUMN_STORAGE_PREFIX + p_key;
+    function clamp(p_width) {
+      return Math.max(v_limits.min, Math.min(v_limits.max, Math.round(p_width)));
+    }
+    try {
+      var v_stored = Number(localStorage.getItem(v_storage_key));
+      if (v_stored > 0) setColumnWidth(p_column, clamp(v_stored));
+    } catch (e) {
+    }
+    var v_handle = document.createElement("div");
+    v_handle.className = "omnidb__permissions__column-resizer";
+    v_handle.title = t("permissions.resize_column_hint");
+    p_column.appendChild(v_handle);
+    v_handle.addEventListener("pointerdown", function(p_event) {
+      p_event.preventDefault();
+      var v_start_x = p_event.clientX;
+      var v_start_width = p_column.getBoundingClientRect().width;
+      v_handle.setPointerCapture(p_event.pointerId);
+      v_handle.classList.add("omnidb__permissions__column-resizer--active");
+      document.body.style.cursor = "col-resize";
+      document.body.style.userSelect = "none";
+      function onMove(p_move) {
+        setColumnWidth(p_column, clamp(v_start_width + p_move.clientX - v_start_x));
+      }
+      function onUp() {
+        v_handle.removeEventListener("pointermove", onMove);
+        v_handle.removeEventListener("pointerup", onUp);
+        v_handle.removeEventListener("pointercancel", onUp);
+        v_handle.classList.remove("omnidb__permissions__column-resizer--active");
+        document.body.style.cursor = "";
+        document.body.style.userSelect = "";
+        try {
+          localStorage.setItem(v_storage_key, String(Math.round(p_column.getBoundingClientRect().width)));
+        } catch (e) {
+        }
+      }
+      v_handle.addEventListener("pointermove", onMove);
+      v_handle.addEventListener("pointerup", onUp);
+      v_handle.addEventListener("pointercancel", onUp);
+    });
+    v_handle.addEventListener("dblclick", function() {
+      setColumnWidth(p_column, null);
+      try {
+        localStorage.removeItem(v_storage_key);
+      } catch (e) {
+      }
+    });
+  }
+  function copyTextQuietly(p_text) {
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(p_text).catch(function() {
+      });
+      return;
+    }
+    var v_area = document.createElement("textarea");
+    v_area.style.position = "fixed";
+    v_area.style.opacity = "0";
+    document.body.appendChild(v_area);
+    v_area.value = p_text;
+    v_area.select();
+    try {
+      document.execCommand("copy");
+    } catch (e) {
+    }
+    document.body.removeChild(v_area);
+  }
+  function appendSqlPreview(p_content, p_get_requests) {
+    var v_wrap = document.createElement("div");
+    v_wrap.className = "omnidb__permissions__sql-preview";
+    var v_toggle = document.createElement("button");
+    v_toggle.type = "button";
+    v_toggle.className = "btn btn-sm btn-outline-secondary";
+    v_toggle.textContent = t("permissions.show_sql");
+    v_wrap.appendChild(v_toggle);
+    var v_box = document.createElement("div");
+    v_box.style.display = "none";
+    var v_pre = document.createElement("pre");
+    v_pre.className = "omnidb__permissions__sql-preview-text";
+    v_box.appendChild(v_pre);
+    var v_copy = document.createElement("button");
+    v_copy.type = "button";
+    v_copy.className = "btn btn-sm btn-outline-secondary";
+    v_copy.textContent = t("permissions.copy_sql");
+    v_box.appendChild(v_copy);
+    v_wrap.appendChild(v_box);
+    var v_token = 0;
+    var v_ready = false;
+    var v_timer = 0;
+    function refresh() {
+      if (!v_wrap.isConnected) return;
+      var v_requests = p_get_requests();
+      v_ready = false;
+      if (v_requests === null) {
+        v_pre.textContent = t("permissions.sql_incomplete");
+        return;
+      }
+      if (v_requests.length === 0) {
+        v_pre.textContent = t("permissions.sql_no_changes");
+        return;
+      }
+      var v_mine = ++v_token;
+      var v_parts = [];
+      runSequentially(
+        v_requests.map(function(p_request) {
+          return function(p_done) {
+            execAjax$1(
+              p_request.url,
+              JSON.stringify(Object.assign({}, p_request.body, { p_preview: true })),
+              function(p_return) {
+                v_parts.push(p_return.v_data.v_sql);
+                p_done();
+              },
+              function(p_return) {
+                v_parts.push("-- " + (p_return.v_data.message || p_return.v_data));
+                p_done();
+              },
+              "box",
+              false
+            );
+          };
+        }),
+        function() {
+          if (v_mine !== v_token) return;
+          v_pre.textContent = v_parts.join("\n");
+          v_ready = true;
+        }
+      );
+    }
+    function scheduleRefresh() {
+      if (!v_wrap.isConnected) {
+        p_content.removeEventListener("input", scheduleRefresh);
+        p_content.removeEventListener("change", scheduleRefresh);
+        v_observer.disconnect();
+        return;
+      }
+      if (v_box.style.display === "none") return;
+      clearTimeout(v_timer);
+      v_timer = window.setTimeout(refresh, 250);
+    }
+    v_toggle.addEventListener("click", function() {
+      var v_open = v_box.style.display === "none";
+      v_box.style.display = v_open ? "" : "none";
+      v_toggle.textContent = t(v_open ? "permissions.hide_sql" : "permissions.show_sql");
+      if (v_open) refresh();
+    });
+    v_copy.addEventListener("click", function() {
+      if (!v_ready) return;
+      copyTextQuietly(v_pre.textContent || "");
+      v_copy.textContent = t("permissions.sql_copied");
+      window.setTimeout(function() {
+        v_copy.textContent = t("permissions.copy_sql");
+      }, 1500);
+    });
+    p_content.addEventListener("input", scheduleRefresh);
+    p_content.addEventListener("change", scheduleRefresh);
+    var v_observer = new MutationObserver(function(p_mutations) {
+      var v_outside = p_mutations.some(function(p_mutation) {
+        return !v_wrap.contains(p_mutation.target);
+      });
+      if (v_outside) scheduleRefresh();
+    });
+    v_observer.observe(p_content, { childList: true, subtree: true });
+    p_content.appendChild(v_wrap);
+  }
+  function dialogObjectLabel(p_type, p_label) {
+    if (p_type !== "function" && p_type !== "procedure") return p_label;
+    var v_paren = p_label.indexOf("(");
+    return v_paren > 0 ? p_label.substring(0, v_paren) : p_label;
   }
   function objectTypeIcon(p_type, p_folder) {
     var v_icons = (
@@ -9025,9 +9762,41 @@
     function renderRest(p_container, p_database) {
       if (v_spec.needsSchema) {
         var v_schema_field = buildSelectField(p_container, "perm_grant_object_schema", t("permissions.schema_label"));
+        var v_scope_field = null;
+        var v_bulk_hint = null;
+        var v_action_field = null;
+        if (v_spec.bulkKind) {
+          v_scope_field = buildSelectField(p_container, "perm_grant_scope", t("permissions.scope_label"));
+          populateSelectOptions(v_scope_field.select, [
+            { value: "single", label: t("permissions.scope_single") },
+            { value: "all", label: t("permissions.scope_all_" + v_spec.bulkKind) }
+          ]);
+          v_action_field = buildSelectField(p_container, "perm_grant_action", t("permissions.action_label"));
+          populateSelectOptions(v_action_field.select, [
+            { value: "grant", label: t("permissions.action_grant") },
+            { value: "revoke", label: t("permissions.action_revoke") }
+          ]);
+          v_action_field.col.style.display = "none";
+          v_bulk_hint = document.createElement("div");
+          v_bulk_hint.className = "omnidb__permissions__row-suffix mb-3";
+          v_bulk_hint.textContent = t("permissions.scope_all_hint");
+          v_bulk_hint.style.display = "none";
+          p_container.appendChild(v_bulk_hint);
+        }
         fetchSchemasForPicker(p_tag, p_col_state, p_database, function(p_schemas) {
           populateSelectOptions(v_schema_field.select, p_schemas);
           var v_object_field = buildSelectField(p_container, "perm_grant_object_name", t("permissions.object_label"));
+          if (v_scope_field) {
+            var v_scope_select = v_scope_field.select;
+            var v_applyScope = function() {
+              var v_all = v_scope_select.value === "all";
+              v_object_field.col.style.display = v_all ? "none" : "";
+              if (v_action_field) v_action_field.col.style.display = v_all ? "" : "none";
+              if (v_bulk_hint) v_bulk_hint.style.display = v_all ? "" : "none";
+            };
+            v_scope_select.addEventListener("change", v_applyScope);
+            v_applyScope();
+          }
           var v_loadObjects = function() {
             fetchObjectsForPicker(p_tag, v_spec, v_schema_field.select.value, p_database, function(p_objects) {
               populateSelectOptions(v_object_field.select, p_objects);
@@ -9073,61 +9842,80 @@
     }
   }
   function openGrantObjectPrivilegeDialogGeneric(p_tag, p_col_state, p_role_name, p_type_list, p_title, p_on_granted) {
+    function collect() {
+      var v_type = (
+        /** @type {HTMLSelectElement} */
+        document.getElementById("perm_grant_object_type").value
+      );
+      var v_database_select = (
+        /** @type {HTMLSelectElement | null} */
+        document.getElementById("perm_grant_object_database")
+      );
+      var v_schema_select = (
+        /** @type {HTMLSelectElement | null} */
+        document.getElementById("perm_grant_object_schema")
+      );
+      var v_object_select = (
+        /** @type {HTMLSelectElement | null} */
+        document.getElementById("perm_grant_object_name")
+      );
+      var v_scope_select = (
+        /** @type {HTMLSelectElement | null} */
+        document.getElementById("perm_grant_scope")
+      );
+      var v_action_select = (
+        /** @type {HTMLSelectElement | null} */
+        document.getElementById("perm_grant_action")
+      );
+      var v_grantable = (
+        /** @type {HTMLInputElement} */
+        document.getElementById("perm_grant_object_grantable").checked
+      );
+      var v_bulk = !!v_scope_select && v_scope_select.value === "all";
+      var v_spec = p_type_list.filter(function(p_type) {
+        return p_type.value === v_type;
+      })[0];
+      var v_schema = v_schema_select ? v_schema_select.value : "";
+      var v_object = v_object_select ? v_object_select.value : "";
+      if (v_bulk ? !v_schema : !v_object) return { error: t(v_bulk ? "permissions.select_schema_hint" : "permissions.select_object_hint") };
+      var v_privileges = [];
+      var v_checkboxes = document.querySelectorAll(".perm_grant_privilege_checkbox:checked");
+      for (var i2 = 0; i2 < v_checkboxes.length; i2++) v_privileges.push(
+        /** @type {HTMLInputElement} */
+        v_checkboxes[i2].value
+      );
+      if (v_privileges.length === 0) return { error: t("permissions.select_privilege_hint") };
+      var v_database = v_database_select ? v_database_select.value : void 0;
+      var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name, p_privileges: v_privileges, p_grantable: v_grantable };
+      var v_url;
+      if (v_bulk) {
+        v_url = "/bulk_object_privilege_postgresql/";
+        v_body.p_kind = v_spec.bulkKind;
+        v_body.p_schema = v_schema;
+        v_body.p_revoke = !!v_action_select && v_action_select.value === "revoke";
+      } else {
+        v_url = "/grant_object_privilege_postgresql/";
+        v_body.p_object_type = v_type;
+        v_body.p_schema = v_schema;
+        v_body.p_object = v_object;
+      }
+      if (v_database) v_body.p_database = v_database;
+      return { error: null, url: v_url, body: v_body, database: v_database, type: v_type, object: v_bulk ? v_schema : v_object };
+    }
     showFormDialog(
       "",
       function() {
-        var v_type = (
-          /** @type {HTMLSelectElement} */
-          document.getElementById("perm_grant_object_type").value
-        );
-        var v_database_select = (
-          /** @type {HTMLSelectElement | null} */
-          document.getElementById("perm_grant_object_database")
-        );
-        var v_schema_select = (
-          /** @type {HTMLSelectElement | null} */
-          document.getElementById("perm_grant_object_schema")
-        );
-        var v_object_select = (
-          /** @type {HTMLSelectElement} */
-          document.getElementById("perm_grant_object_name")
-        );
-        var v_grantable = (
-          /** @type {HTMLInputElement} */
-          document.getElementById("perm_grant_object_grantable").checked
-        );
-        var v_object = v_object_select.value;
-        if (!v_object) {
-          showAlert(t("permissions.select_object_hint"));
+        var v_request = collect();
+        if (v_request.error !== null) {
+          showAlert(v_request.error);
           return;
         }
-        var v_privileges = [];
-        var v_checkboxes = document.querySelectorAll(".perm_grant_privilege_checkbox:checked");
-        for (var i2 = 0; i2 < v_checkboxes.length; i2++) v_privileges.push(
-          /** @type {HTMLInputElement} */
-          v_checkboxes[i2].value
-        );
-        if (v_privileges.length === 0) {
-          showAlert(t("permissions.select_privilege_hint"));
-          return;
-        }
-        var v_database = v_database_select ? v_database_select.value : void 0;
-        var v_body = {
-          p_database_index: p_tag.connID,
-          p_tab_id: p_tag.tabID,
-          p_role: p_role_name,
-          p_object_type: v_type,
-          p_schema: v_schema_select ? v_schema_select.value : "",
-          p_object: v_object,
-          p_privileges: v_privileges,
-          p_grantable: v_grantable
-        };
-        if (v_database) v_body.p_database = v_database;
+        var v_done = v_request;
         execAjax$1(
-          "/grant_object_privilege_postgresql/",
-          JSON.stringify(v_body),
+          v_done.url,
+          JSON.stringify(v_done.body),
           function() {
-            p_on_granted(v_database, v_type, v_object);
+            p_on_granted(v_done.database, v_done.type, v_done.object);
           },
           function(p_return) {
             showAlert(p_return.v_data.message || p_return.v_data);
@@ -9169,6 +9957,10 @@
           renderGrantObjectTypeFields(p_tag, p_col_state, v_dynamic, v_type_field.select.value, p_type_list);
         });
         renderGrantObjectTypeFields(p_tag, p_col_state, v_dynamic, v_type_field.select.value, p_type_list);
+        appendSqlPreview(v_content, function() {
+          var v_request = collect();
+          return v_request.error !== null ? null : [{ url: v_request.url, body: v_request.body }];
+        });
       },
       true,
       t("common.save"),
@@ -9213,7 +10005,17 @@
       showAdd: true,
       showRemove: false
     });
+    attachColumnResizer(v_column, "objects");
     p_tag.columnsDiv.appendChild(v_column);
+    var v_filter = document.createElement("div");
+    v_filter.className = "omnidb__permissions__filter";
+    var v_filter_input = document.createElement("input");
+    v_filter_input.type = "text";
+    v_filter_input.className = "form-control form-control-sm";
+    v_filter_input.placeholder = t("permissions.filter_databases_placeholder");
+    v_filter_input.value = p_tag.objectsFilter || "";
+    v_filter.appendChild(v_filter_input);
+    v_section.headerDiv.insertAdjacentElement("afterend", v_filter);
     var v_col_state = {
       role: p_role_name,
       columnDiv: v_column,
@@ -9230,10 +10032,27 @@
       tablespaceNodes: {}
     };
     p_tag.objectsColumn = v_col_state;
+    v_filter_input.addEventListener("input", function() {
+      p_tag.objectsFilter = v_filter_input.value.trim();
+      applyObjectsFilter(p_tag, v_col_state);
+    });
     v_col_state.addBtn.addEventListener("click", function() {
       openAddObjectPrivilegeDialog(p_tag, v_col_state);
     });
     fetchObjectsColumnData(p_tag, v_col_state);
+  }
+  function applyObjectsFilter(p_tag, p_col_state) {
+    var v_text = (p_tag.objectsFilter || "").toLowerCase();
+    function apply(p_nodes) {
+      Object.keys(p_nodes).forEach(function(p_name) {
+        var v_li = p_nodes[p_name].node && p_nodes[p_name].node.elementLi;
+        if (!v_li) return;
+        var v_match = v_text === "" || stripPgIdentQuotes(p_name).toLowerCase().indexOf(v_text) !== -1;
+        v_li.style.display = v_match ? "" : "none";
+      });
+    }
+    apply(p_col_state.databaseNodes);
+    apply(p_col_state.tablespaceNodes);
   }
   function fetchObjectsColumnData(p_tag, p_col_state) {
     var v_server_grants = null;
@@ -9409,9 +10228,80 @@
               action: function() {
                 openObjectDetailDialog(p_tag, p_col_state, p_node.tag.grant, p_node.tag.database);
               }
+            },
+            {
+              text: t("permissions.change_owner"),
+              icon: "fas cm-all fa-user",
+              action: function() {
+                var v_grant = p_node.tag.grant;
+                openChangeOwnerDialog(p_tag, p_col_state, p_node.tag.database, v_grant.v_object_type, v_grant.v_schema || "", objectParamForGrant(v_grant), v_grant.v_identifier, null);
+              }
+            },
+            {
+              text: t("permissions.who_has_access"),
+              icon: "fas cm-all fa-users",
+              action: function() {
+                var v_grant = p_node.tag.grant;
+                openObjectAccessDialog(p_tag, p_node.tag.database, v_grant.v_object_type, v_grant.v_schema || "", objectParamForGrant(v_grant), v_grant.v_identifier);
+              }
             }
           ];
         }
+      }
+    };
+    v_context_menu.cm_perm_owned = {
+      elements: function(p_node) {
+        return [
+          {
+            text: t("permissions.change_owner"),
+            icon: "fas cm-all fa-user",
+            action: function() {
+              var v_owned = p_node.tag.owned;
+              openChangeOwnerDialog(p_tag, p_col_state, p_node.tag.database, v_owned.v_object_type, v_owned.v_schema, v_owned.v_object, p_node.text, p_col_state.role);
+            }
+          },
+          {
+            text: t("permissions.who_has_access"),
+            icon: "fas cm-all fa-users",
+            action: function() {
+              var v_owned = p_node.tag.owned;
+              openObjectAccessDialog(p_tag, p_node.tag.database, v_owned.v_object_type, v_owned.v_schema, v_owned.v_object, p_node.text);
+            }
+          }
+        ];
+      }
+    };
+    v_context_menu.cm_perm_default_folder = {
+      elements: function(p_node) {
+        return [
+          {
+            text: t("permissions.add_default_privileges"),
+            icon: "fas cm-all fa-plus",
+            action: function() {
+              openDefaultPrivilegesDialog(p_tag, p_col_state, p_node.tag.database, null);
+            }
+          }
+        ];
+      }
+    };
+    v_context_menu.cm_perm_default_entry = {
+      elements: function(p_node) {
+        return [
+          {
+            text: t("permissions.edit_privileges"),
+            icon: "fas cm-all fa-pen",
+            action: function() {
+              openDefaultPrivilegesDialog(p_tag, p_col_state, p_node.tag.database, p_node.tag.entry);
+            }
+          },
+          {
+            text: t("permissions.remove_default_privileges"),
+            icon: "fas cm-all fa-times",
+            action: function() {
+              confirmRemoveDefaultPrivileges(p_tag, p_col_state, p_node.tag.database, p_node.tag.entry);
+            }
+          }
+        ];
       }
     };
     var v_tree = createTree(v_tree_div_id, "transparent", v_context_menu);
@@ -9456,6 +10346,7 @@
       p_col_state.tablespaceNodes[v_ts_name] = { node: v_ts_node };
     }
     v_tree.drawTree();
+    applyObjectsFilter(p_tag, p_col_state);
     v_tree.nodeAfterOpenEvent = function(p_node) {
       var v_state = p_node.tag && p_node.tag.kind === "database" ? p_col_state.databaseNodes[p_node.tag.database] : null;
       if (v_state && !v_state.loaded) {
@@ -9465,38 +10356,197 @@
     };
   }
   function fetchDatabaseObjectsForNode(p_tag, p_col_state, p_database_node, p_database) {
+    var v_grants = null;
+    var v_defaults = null;
+    var v_owned = null;
+    var v_failed = false;
+    function onLoaded() {
+      if (v_grants !== null && v_defaults !== null && v_owned !== null && !v_failed) {
+        populateDatabaseNodeChildren(p_database_node, p_database, v_grants, v_defaults, v_owned);
+      }
+    }
+    var v_base = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_col_state.role, p_database };
     execAjax$1(
-      "/get_role_database_grants_postgresql/",
-      JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_col_state.role, p_database }),
+      "/get_role_default_privileges_postgresql/",
+      JSON.stringify(v_base),
       function(p_return) {
-        populateDatabaseNodeChildren(p_database_node, p_database, p_return.v_data);
+        v_defaults = p_return.v_data;
+        onLoaded();
       },
-      function(p_return) {
-        var v_state = p_col_state.databaseNodes[p_database];
-        if (v_state) v_state.loaded = false;
-        if (p_return.v_data.password_timeout) {
-          showPasswordPrompt(
-            p_tag.connID,
-            function() {
-              fetchDatabaseObjectsForNode(p_tag, p_col_state, p_database_node, p_database);
-            },
-            null,
-            p_return.v_data.message
-          );
-        } else {
-          showError(p_return.v_data);
-        }
-      },
+      onFailed,
       "box",
       true
     );
+    execAjax$1(
+      "/get_role_owned_objects_postgresql/",
+      JSON.stringify(v_base),
+      function(p_return) {
+        v_owned = p_return.v_data;
+        onLoaded();
+      },
+      onFailed,
+      "box",
+      true
+    );
+    execAjax$1(
+      "/get_role_database_grants_postgresql/",
+      JSON.stringify(v_base),
+      function(p_return) {
+        v_grants = p_return.v_data;
+        onLoaded();
+      },
+      onFailed,
+      "box",
+      true
+    );
+    function onFailed(p_return) {
+      if (v_failed) return;
+      v_failed = true;
+      var v_state = p_col_state.databaseNodes[p_database];
+      if (v_state) v_state.loaded = false;
+      if (p_return.v_data.password_timeout) {
+        showPasswordPrompt(
+          p_tag.connID,
+          function() {
+            fetchDatabaseObjectsForNode(p_tag, p_col_state, p_database_node, p_database);
+          },
+          null,
+          p_return.v_data.message
+        );
+      } else {
+        showError(p_return.v_data);
+      }
+    }
   }
-  function populateDatabaseNodeChildren(p_database_node, p_database, p_grants) {
+  function populateDatabaseNodeChildren(p_database_node, p_database, p_grants, p_defaults, p_owned) {
     p_database_node.removeChildNodes();
     if (p_grants.length === 0) {
       p_database_node.createChildNode(t("permissions.no_database_grants"), false, null, null, null, "var(--text-secondary)", true);
+    } else {
+      appendDatabaseGrantNodes(p_database_node, p_database, p_grants);
+    }
+    appendOwnedObjectsNode(p_database_node, p_database, p_owned);
+    appendDefaultPrivilegesNode(p_database_node, p_database, p_defaults);
+  }
+  function appendOwnedObjectsNode(p_database_node, p_database, p_owned) {
+    var v_folder = p_database_node.createChildNode(
+      t("permissions.owned_objects", { count: p_owned.v_objects.length + (p_owned.v_truncated ? "+" : "") }),
+      false,
+      objectTypeIcon("owned_objects", true),
+      null,
+      null,
+      null,
+      true
+    );
+    if (p_owned.v_objects.length === 0) {
+      v_folder.createChildNode(t("permissions.no_owned_objects"), false, null, null, null, "var(--text-secondary)", true);
       return;
     }
+    for (var i2 = 0; i2 < PERMISSIONS_DATABASE_OBJECT_TYPES.length; i2++) {
+      var v_spec = PERMISSIONS_DATABASE_OBJECT_TYPES[i2];
+      var v_objects = p_owned.v_objects.filter(function(p_object) {
+        return p_object.v_object_type === v_spec.value;
+      });
+      if (v_objects.length === 0) continue;
+      var v_type_node = v_folder.createChildNode(t(v_spec.folderLabelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
+      for (var j2 = 0; j2 < v_objects.length; j2++) {
+        var v_object = v_objects[j2];
+        var v_label = v_object.v_object_type === "function" || v_object.v_object_type === "procedure" ? v_object.v_object : (v_object.v_schema ? stripPgIdentQuotes(v_object.v_schema) + "." : "") + stripPgIdentQuotes(v_object.v_object);
+        v_type_node.createChildNode(v_label, false, objectTypeIcon(v_object.v_object_type), { database: p_database, owned: v_object }, "cm_perm_owned", null, true);
+      }
+    }
+  }
+  function openChangeOwnerDialog(p_tag, p_col_state, p_database, p_object_type, p_schema, p_object, p_label, p_current_owner) {
+    var v_needs_database = objectTypeNeedsDatabase(p_object_type) && !!p_database;
+    function requestBody() {
+      var v_owner = (
+        /** @type {HTMLSelectElement} */
+        document.getElementById("perm_change_owner").value
+      );
+      if (!v_owner) return null;
+      var v_body = {
+        p_database_index: p_tag.connID,
+        p_tab_id: p_tag.tabID,
+        p_role: v_owner,
+        p_object_type,
+        p_schema,
+        p_object
+      };
+      if (v_needs_database) v_body.p_database = p_database;
+      return v_body;
+    }
+    showFormDialog(
+      "",
+      function() {
+        var v_body = requestBody();
+        if (!v_body) {
+          showAlert(t("permissions.select_owner_hint"));
+          return;
+        }
+        execAjax$1(
+          "/alter_object_owner_postgresql/",
+          JSON.stringify(v_body),
+          function() {
+            if (v_needs_database && p_database) refreshDatabaseNode(p_tag, p_col_state, p_database);
+          },
+          function(p_return) {
+            showAlert(p_return.v_data.message || p_return.v_data);
+          },
+          "box",
+          false
+        );
+      },
+      null,
+      function() {
+        var v_content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        var v_field = buildSelectField(v_content, "perm_change_owner", t("permissions.new_owner_label"));
+        populateSelectOptions(
+          v_field.select,
+          [{ value: "", label: t("permissions.drop_choose_owner") }].concat(
+            (p_tag.roles || []).filter(function(p_role) {
+              return !p_role.v_is_public && p_role.v_name !== p_current_owner && !isPredefinedRoleName(p_role.v_name);
+            }).map(function(p_role) {
+              return { value: p_role.v_name, label: p_role.v_name };
+            })
+          )
+        );
+        appendSqlPreview(v_content, function() {
+          var v_body = requestBody();
+          return v_body ? [{ url: "/alter_object_owner_postgresql/", body: v_body }] : null;
+        });
+      },
+      true,
+      t("common.save"),
+      t("permissions.change_owner") + ": " + dialogObjectLabel(p_object_type, p_label),
+      objectTypeIcon(p_object_type)
+    );
+  }
+  function appendDefaultPrivilegesNode(p_database_node, p_database, p_defaults) {
+    var v_folder = p_database_node.createChildNode(
+      t("permissions.default_privileges"),
+      false,
+      objectTypeIcon("default_privileges", true),
+      { database: p_database },
+      "cm_perm_default_folder",
+      null,
+      true
+    );
+    if (p_defaults.length === 0) {
+      v_folder.createChildNode(t("permissions.no_default_privileges"), false, null, null, null, "var(--text-secondary)", true);
+      return;
+    }
+    for (var i2 = 0; i2 < p_defaults.length; i2++) {
+      var v_entry = p_defaults[i2];
+      var v_label = v_entry.v_creator + " → " + v_entry.v_grantee + ": " + t(DEFAULT_KIND_LABEL_KEY[v_entry.v_kind]) + (v_entry.v_schema ? " (" + v_entry.v_schema + ")" : "") + " [" + v_entry.v_privileges.map(function(p_priv) {
+        return p_priv.v_privilege + (p_priv.v_grantable ? "*" : "");
+      }).join(", ") + "]";
+      v_folder.createChildNode(v_label, false, objectTypeIcon(DEFAULT_KIND_ICON_TYPE[v_entry.v_kind]), { database: p_database, entry: v_entry }, "cm_perm_default_entry", null, true);
+    }
+  }
+  function appendDatabaseGrantNodes(p_database_node, p_database, p_grants) {
     var v_grouped = groupDatabaseObjectGrants(p_grants);
     function appendGrantLeafNode(p_parent_node, p_grant) {
       p_parent_node.createChildNode(
@@ -9527,7 +10577,7 @@
         if (v_spec.value === "schema") continue;
         var v_type_grants = v_schema_entry.types[v_spec.value];
         if (!v_type_grants || v_type_grants.length === 0) continue;
-        var v_type_node = v_schema_node.createChildNode(t(v_spec.labelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
+        var v_type_node = v_schema_node.createChildNode(t(v_spec.folderLabelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
         for (var k = 0; k < v_type_grants.length; k++) appendGrantLeafNode(v_type_node, v_type_grants[k]);
       }
     }
@@ -9538,9 +10588,242 @@
       var v_spec2 = PERMISSIONS_DATABASE_OBJECT_TYPES.filter(function(p_type) {
         return p_type.value === v_top_level_types[t_i];
       })[0];
-      var v_top_node = p_database_node.createChildNode(t(v_spec2.labelKey), false, objectTypeIcon(v_spec2.value, true), void 0, null, null, true);
+      var v_top_node = p_database_node.createChildNode(t(v_spec2.folderLabelKey), false, objectTypeIcon(v_spec2.value, true), void 0, null, null, true);
       for (var m = 0; m < v_grants_of_type.length; m++) appendGrantLeafNode(v_top_node, v_grants_of_type[m]);
     }
+  }
+  var DEFAULT_PRIVILEGE_KINDS = [
+    { value: "tables", privileges: ["SELECT", "INSERT", "UPDATE", "DELETE", "TRUNCATE", "REFERENCES", "TRIGGER"] },
+    { value: "sequences", privileges: ["USAGE", "SELECT", "UPDATE"] },
+    { value: "functions", privileges: ["EXECUTE"] },
+    { value: "types", privileges: ["USAGE"] },
+    { value: "schemas", privileges: ["USAGE", "CREATE"] }
+  ];
+  var DEFAULT_KIND_LABEL_KEY = {
+    tables: "tree.tables",
+    sequences: "tree.topic_sequences",
+    functions: "tree.functions",
+    types: "tree.topic_types",
+    schemas: "tree.schemas"
+  };
+  var DEFAULT_KIND_ICON_TYPE = { tables: "table", sequences: "sequence", functions: "function", types: "type", schemas: "schema" };
+  function openDefaultPrivilegesDialog(p_tag, p_col_state, p_database, p_entry) {
+    var v_editing = !!p_entry;
+    var v_had = {};
+    if (v_editing) {
+      for (var i2 = 0; i2 < p_entry.v_privileges.length; i2++) v_had[p_entry.v_privileges[i2].v_privilege] = true;
+    }
+    var v_grantee = v_editing ? p_entry.v_grantee : p_col_state.role;
+    function collect() {
+      var v_creator = (
+        /** @type {HTMLSelectElement} */
+        document.getElementById("perm_default_creator").value
+      );
+      var v_schema = (
+        /** @type {HTMLSelectElement} */
+        document.getElementById("perm_default_schema").value
+      );
+      var v_kind = (
+        /** @type {HTMLSelectElement} */
+        document.getElementById("perm_default_kind").value
+      );
+      var v_grantable = (
+        /** @type {HTMLInputElement} */
+        document.getElementById("perm_default_grantable").checked
+      );
+      var v_to_grant = [];
+      var v_to_revoke = [];
+      var v_boxes = (
+        /** @type {NodeListOf<HTMLInputElement>} */
+        document.querySelectorAll(".perm_grant_privilege_checkbox")
+      );
+      for (var b = 0; b < v_boxes.length; b++) {
+        if (v_boxes[b].checked && !v_had[v_boxes[b].value]) v_to_grant.push(v_boxes[b].value);
+        if (!v_boxes[b].checked && v_had[v_boxes[b].value]) v_to_revoke.push(v_boxes[b].value);
+      }
+      if (!v_editing && v_to_grant.length === 0) return { error: t("permissions.select_privilege_hint") };
+      var v_base = {
+        p_database_index: p_tag.connID,
+        p_tab_id: p_tag.tabID,
+        p_database,
+        p_role: v_grantee,
+        p_creator: v_creator,
+        p_schema: v_schema,
+        p_kind: v_kind
+      };
+      var v_requests = [];
+      if (v_to_grant.length > 0) {
+        v_requests.push({
+          url: "/alter_default_privileges_postgresql/",
+          body: Object.assign({}, v_base, { p_privileges: v_to_grant, p_grantable: v_grantable, p_revoke: false })
+        });
+      }
+      if (v_to_revoke.length > 0) {
+        v_requests.push({
+          url: "/alter_default_privileges_postgresql/",
+          body: Object.assign({}, v_base, { p_privileges: v_to_revoke, p_grantable: false, p_revoke: true })
+        });
+      }
+      return { error: null, requests: v_requests };
+    }
+    showFormDialog(
+      "",
+      function() {
+        var v_collected = collect();
+        if (v_collected.error !== null) {
+          showAlert(v_collected.error);
+          return;
+        }
+        var v_requests = v_collected.requests;
+        if (v_requests.length === 0) return;
+        runSequentially(
+          v_requests.map(function(p_request) {
+            return function(p_done) {
+              execAjax$1(
+                p_request.url,
+                JSON.stringify(p_request.body),
+                p_done,
+                function(p_return) {
+                  showAlert(p_return.v_data.message || p_return.v_data);
+                },
+                "box",
+                false
+              );
+            };
+          }),
+          function() {
+            refreshDatabaseNode(p_tag, p_col_state, p_database);
+          }
+        );
+      },
+      null,
+      function() {
+        var v_content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        var v_intro = document.createElement("div");
+        v_intro.className = "omnidb__permissions__row-suffix mb-3";
+        v_intro.textContent = t("permissions.default_privileges_hint", { role: v_grantee });
+        v_content.appendChild(v_intro);
+        var v_creator_field = buildSelectField(v_content, "perm_default_creator", t("permissions.default_creator_label"));
+        populateSelectOptions(
+          v_creator_field.select,
+          [{ value: "", label: t("permissions.default_creator_current") }].concat(
+            (p_tag.roles || []).filter(function(p_role) {
+              return !p_role.v_is_public;
+            }).map(function(p_role) {
+              return { value: p_role.v_name, label: p_role.v_name };
+            })
+          )
+        );
+        var v_schema_field = buildSelectField(v_content, "perm_default_schema", t("permissions.schema_label"));
+        populateSelectOptions(v_schema_field.select, [{ value: "", label: t("permissions.default_schema_all") }]);
+        fetchSchemasForPicker(p_tag, p_col_state, p_database, function(p_schemas) {
+          populateSelectOptions(v_schema_field.select, [{ value: "", label: t("permissions.default_schema_all") }].concat(p_schemas));
+          if (v_editing) v_schema_field.select.value = p_entry.v_schema;
+        });
+        var v_kind_field = buildSelectField(v_content, "perm_default_kind", t("permissions.default_kind_label"));
+        populateSelectOptions(
+          v_kind_field.select,
+          DEFAULT_PRIVILEGE_KINDS.map(function(p_kind) {
+            return { value: p_kind.value, label: t(DEFAULT_KIND_LABEL_KEY[p_kind.value]) };
+          })
+        );
+        var v_priv_container = document.createElement("div");
+        v_content.appendChild(v_priv_container);
+        function renderPrivileges() {
+          var v_kind = v_kind_field.select.value;
+          var v_spec = DEFAULT_PRIVILEGE_KINDS.filter(function(p_k) {
+            return p_k.value === v_kind;
+          })[0];
+          v_priv_container.innerHTML = "";
+          appendPrivilegeCheckboxes(v_priv_container, v_spec);
+          if (v_editing) {
+            var v_boxes = (
+              /** @type {NodeListOf<HTMLInputElement>} */
+              v_priv_container.querySelectorAll(".perm_grant_privilege_checkbox")
+            );
+            for (var b = 0; b < v_boxes.length; b++) v_boxes[b].checked = !!v_had[v_boxes[b].value];
+          }
+          if (!v_editing) {
+            v_schema_field.select.disabled = v_kind === "schemas";
+            if (v_kind === "schemas") v_schema_field.select.value = "";
+          }
+        }
+        v_kind_field.select.addEventListener("change", renderPrivileges);
+        var v_grantable_row = document.createElement("div");
+        v_grantable_row.className = "form-check mb-2";
+        var v_grantable_input = document.createElement("input");
+        v_grantable_input.type = "checkbox";
+        v_grantable_input.className = "form-check-input";
+        v_grantable_input.id = "perm_default_grantable";
+        var v_grantable_label = document.createElement("label");
+        v_grantable_label.className = "form-check-label";
+        v_grantable_label.setAttribute("for", "perm_default_grantable");
+        v_grantable_label.textContent = t("permissions.with_grant_option");
+        v_grantable_row.appendChild(v_grantable_input);
+        v_grantable_row.appendChild(v_grantable_label);
+        v_content.appendChild(v_grantable_row);
+        if (v_editing) {
+          v_creator_field.select.value = p_entry.v_creator;
+          v_kind_field.select.value = p_entry.v_kind;
+          v_creator_field.select.disabled = true;
+          v_schema_field.select.disabled = true;
+          v_kind_field.select.disabled = true;
+          v_grantable_input.checked = p_entry.v_privileges.some(function(p_priv) {
+            return p_priv.v_grantable;
+          });
+        }
+        renderPrivileges();
+        appendSqlPreview(v_content, function() {
+          var v_collected = collect();
+          return v_collected.error !== null ? null : v_collected.requests;
+        });
+      },
+      true,
+      t("common.save"),
+      t("permissions.default_privileges") + ": " + stripPgIdentQuotes(p_database),
+      "fas node-all fa-key"
+    );
+  }
+  function confirmRemoveDefaultPrivileges(p_tag, p_col_state, p_database, p_entry) {
+    showConfirm(
+      t("permissions.confirm_remove_default_privileges"),
+      function() {
+        execAjax$1(
+          "/alter_default_privileges_postgresql/",
+          JSON.stringify({
+            p_database_index: p_tag.connID,
+            p_tab_id: p_tag.tabID,
+            p_database,
+            p_role: p_entry.v_grantee,
+            p_creator: p_entry.v_creator,
+            p_schema: p_entry.v_schema,
+            p_kind: p_entry.v_kind,
+            p_privileges: p_entry.v_privileges.map(function(p_priv) {
+              return p_priv.v_privilege;
+            }),
+            p_revoke: true
+          }),
+          function() {
+            refreshDatabaseNode(p_tag, p_col_state, p_database);
+          },
+          function(p_return) {
+            showAlert(p_return.v_data.message || p_return.v_data);
+          },
+          "box",
+          false
+        );
+      },
+      null
+    );
+  }
+  function refreshDatabaseNode(p_tag, p_col_state, p_database) {
+    var v_state = p_col_state.databaseNodes[p_database];
+    if (!v_state) return;
+    v_state.loaded = false;
+    fetchDatabaseObjectsForNode(p_tag, p_col_state, v_state.node, p_database);
   }
   function runSequentially(p_ops, p_final) {
     if (p_ops.length === 0) {
@@ -9561,46 +10844,56 @@
     for (var i2 = 0; i2 < p_grant.v_privileges.length; i2++) {
       v_sources_by_privilege[p_grant.v_privileges[i2].v_privilege] = p_grant.v_privileges[i2].v_sources;
     }
+    function collectRequests() {
+      var v_to_grant = [];
+      var v_to_revoke = [];
+      for (var i3 = 0; i3 < v_spec.privileges.length; i3++) {
+        var v_priv = v_spec.privileges[i3];
+        var v_checkbox = (
+          /** @type {HTMLInputElement} */
+          document.getElementById("perm_detail_priv_" + v_priv)
+        );
+        var v_was_direct = effectivePrivilegeIsDirect(v_sources_by_privilege[v_priv], p_role_name);
+        if (v_checkbox.checked && !v_was_direct) v_to_grant.push(v_priv);
+        if (!v_checkbox.checked && v_was_direct) v_to_revoke.push(v_priv);
+      }
+      var v_grantable_input = (
+        /** @type {HTMLInputElement} */
+        document.getElementById("perm_detail_grantable")
+      );
+      var v_base = {
+        p_database_index: p_tag.connID,
+        p_tab_id: p_tag.tabID,
+        p_role: p_role_name,
+        p_object_type: p_grant.v_object_type,
+        p_schema: v_schema,
+        p_object: v_object
+      };
+      var v_requests = [];
+      if (v_to_grant.length > 0) {
+        v_requests.push({
+          url: "/grant_object_privilege_postgresql/",
+          body: Object.assign({}, v_base, { p_privileges: v_to_grant, p_grantable: v_grantable_input.checked }, p_extra_fields)
+        });
+      }
+      if (v_to_revoke.length > 0) {
+        v_requests.push({
+          url: "/revoke_object_privilege_postgresql/",
+          body: Object.assign({}, v_base, { p_privileges: v_to_revoke }, p_extra_fields)
+        });
+      }
+      return v_requests;
+    }
     showFormDialog(
       "",
       function() {
-        var v_to_grant = [];
-        var v_to_revoke = [];
-        for (var i3 = 0; i3 < v_spec.privileges.length; i3++) {
-          var v_priv = v_spec.privileges[i3];
-          var v_checkbox = (
-            /** @type {HTMLInputElement} */
-            document.getElementById("perm_detail_priv_" + v_priv)
-          );
-          var v_was_direct = effectivePrivilegeIsDirect(v_sources_by_privilege[v_priv], p_role_name);
-          if (v_checkbox.checked && !v_was_direct) v_to_grant.push(v_priv);
-          if (!v_checkbox.checked && v_was_direct) v_to_revoke.push(v_priv);
-        }
-        if (v_to_grant.length === 0 && v_to_revoke.length === 0) return;
-        var v_grantable_input = (
-          /** @type {HTMLInputElement} */
-          document.getElementById("perm_detail_grantable")
-        );
-        var v_ops = [];
-        if (v_to_grant.length > 0) {
-          v_ops.push(function(p_done) {
+        var v_requests = collectRequests();
+        if (v_requests.length === 0) return;
+        var v_ops = v_requests.map(function(p_request) {
+          return function(p_done) {
             execAjax$1(
-              "/grant_object_privilege_postgresql/",
-              JSON.stringify(
-                Object.assign(
-                  {
-                    p_database_index: p_tag.connID,
-                    p_tab_id: p_tag.tabID,
-                    p_role: p_role_name,
-                    p_object_type: p_grant.v_object_type,
-                    p_schema: v_schema,
-                    p_object: v_object,
-                    p_privileges: v_to_grant,
-                    p_grantable: v_grantable_input.checked
-                  },
-                  p_extra_fields
-                )
-              ),
+              p_request.url,
+              JSON.stringify(p_request.body),
               p_done,
               function(p_return) {
                 showAlert(p_return.v_data.message || p_return.v_data);
@@ -9608,35 +10901,8 @@
               "box",
               false
             );
-          });
-        }
-        if (v_to_revoke.length > 0) {
-          v_ops.push(function(p_done) {
-            execAjax$1(
-              "/revoke_object_privilege_postgresql/",
-              JSON.stringify(
-                Object.assign(
-                  {
-                    p_database_index: p_tag.connID,
-                    p_tab_id: p_tag.tabID,
-                    p_role: p_role_name,
-                    p_object_type: p_grant.v_object_type,
-                    p_schema: v_schema,
-                    p_object: v_object,
-                    p_privileges: v_to_revoke
-                  },
-                  p_extra_fields
-                )
-              ),
-              p_done,
-              function(p_return) {
-                showAlert(p_return.v_data.message || p_return.v_data);
-              },
-              "box",
-              false
-            );
-          });
-        }
+          };
+        });
         runSequentially(v_ops, p_on_saved);
       },
       null,
@@ -9698,10 +10964,11 @@
             v_content.appendChild(v_row);
           })(v_spec.privileges[i3]);
         }
+        appendSqlPreview(v_content, collectRequests);
       },
       true,
       t("common.save"),
-      p_grant.v_identifier,
+      dialogObjectLabel(p_grant.v_object_type, p_grant.v_identifier),
       objectTypeIcon(p_grant.v_object_type)
     );
   }
@@ -9741,13 +11008,169 @@
       }
     );
   }
+  function openObjectAccessDialog(p_tag, p_database, p_object_type, p_schema, p_object, p_label) {
+    var v_body = {
+      p_database_index: p_tag.connID,
+      p_tab_id: p_tag.tabID,
+      p_object_type,
+      p_schema,
+      p_object
+    };
+    if (objectTypeNeedsDatabase(p_object_type) && p_database) v_body.p_database = p_database;
+    execAjax$1(
+      "/get_object_access_postgresql/",
+      JSON.stringify(v_body),
+      function(p_return) {
+        var v_data = p_return.v_data;
+        showFormDialog(
+          "",
+          function() {
+          },
+          null,
+          function() {
+            var v_cancel = document.getElementById("modal_message_cancel");
+            if (v_cancel) v_cancel.style.display = "none";
+            renderObjectAccess(
+              p_tag,
+              /** @type {HTMLElement} */
+              document.getElementById("modal_message_content"),
+              v_data
+            );
+          },
+          true,
+          t("common.close"),
+          t("permissions.who_has_access") + ": " + dialogObjectLabel(p_object_type, p_label),
+          objectTypeIcon(p_object_type)
+        );
+      },
+      function(p_return) {
+        showAlert(p_return.v_data.message || p_return.v_data);
+      },
+      "box",
+      true
+    );
+  }
+  function renderObjectAccess(p_tag, p_content, p_data) {
+    if (p_data.v_owner) {
+      var v_owner = document.createElement("div");
+      v_owner.className = "omnidb__permissions__row-suffix mb-2";
+      v_owner.textContent = t("permissions.access_owner", { owner: p_data.v_owner });
+      p_content.appendChild(v_owner);
+    }
+    var v_regular = p_data.v_roles.filter(function(p_role) {
+      return !(p_role.v_superuser && p_role.v_privileges.every(function(p_priv) {
+        return p_priv.v_source === "superuser";
+      }));
+    });
+    var v_superusers = p_data.v_roles.filter(function(p_role) {
+      return v_regular.indexOf(p_role) === -1;
+    });
+    function appendRows(p_parent, p_roles) {
+      for (var i2 = 0; i2 < p_roles.length; i2++) {
+        (function(p_role) {
+          var v_row = document.createElement("div");
+          v_row.className = "omnidb__permissions__role-row omnidb__permissions__access-row";
+          var v_icon = document.createElement("i");
+          var v_is_public = p_role.v_role === "PUBLIC";
+          v_icon.className = "fas node-all " + (v_is_public ? "fa-users" : "fa-user");
+          v_row.appendChild(v_icon);
+          var v_text = document.createElement("span");
+          v_text.textContent = p_role.v_role;
+          v_row.appendChild(v_text);
+          var v_privs = document.createElement("div");
+          v_privs.className = "omnidb__permissions__row-suffix omnidb__permissions__access-privileges";
+          v_privs.textContent = p_role.v_privileges.map(function(p_priv) {
+            var v_notes = [];
+            if (p_priv.v_source !== "direct") v_notes.push(t("permissions.access_source_" + p_priv.v_source));
+            if (p_priv.v_grantable) v_notes.push(t("permissions.access_grant_option"));
+            return p_priv.v_privilege + (v_notes.length > 0 ? " (" + v_notes.join(", ") + ")" : "");
+          }).join(", ");
+          v_row.appendChild(v_privs);
+          v_row.addEventListener("click", function() {
+            var v_known = (p_tag.roles || []).some(function(p_entry) {
+              return p_entry.v_name === p_role.v_role;
+            });
+            if (!v_known) return;
+            var v_close = document.getElementById("modal_message_ok");
+            if (v_close) v_close.click();
+            selectRole(p_tag, p_role.v_role);
+          });
+          p_parent.appendChild(v_row);
+        })(p_roles[i2]);
+      }
+    }
+    var v_list2 = document.createElement("div");
+    v_list2.className = "omnidb__permissions__role-picker";
+    if (v_regular.length === 0) {
+      var v_none = document.createElement("div");
+      v_none.className = "omnidb__permissions__list-empty";
+      v_none.textContent = t("permissions.access_nobody");
+      v_list2.appendChild(v_none);
+    }
+    appendRows(v_list2, v_regular);
+    p_content.appendChild(v_list2);
+    if (v_superusers.length > 0) {
+      var v_details = document.createElement("details");
+      v_details.className = "mt-2";
+      var v_summary = document.createElement("summary");
+      v_summary.className = "omnidb__permissions__row-suffix";
+      v_summary.textContent = t("permissions.access_superusers", { count: v_superusers.length });
+      v_details.appendChild(v_summary);
+      var v_super_list = document.createElement("div");
+      v_super_list.className = "omnidb__permissions__role-picker mt-1";
+      appendRows(v_super_list, v_superusers);
+      v_details.appendChild(v_super_list);
+      p_content.appendChild(v_details);
+    }
+  }
+  function isPredefinedRoleName(p_name) {
+    return p_name.indexOf("pg_") === 0;
+  }
   function confirmDropRole(p_tag, p_role_name) {
-    showConfirm(
-      t("permissions.confirm_drop_role", { role: p_role_name }),
+    execAjax$1(
+      "/get_role_dependencies_postgresql/",
+      JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }),
+      function(p_return) {
+        openDropRoleDialog(p_tag, p_role_name, p_return.v_data);
+      },
+      function(p_return) {
+        showAlert(p_return.v_data.message || p_return.v_data);
+      },
+      "box",
+      true
+    );
+  }
+  function openDropRoleDialog(p_tag, p_role_name, p_deps) {
+    var v_owned = 0;
+    var v_held = 0;
+    for (var i2 = 0; i2 < p_deps.v_databases.length; i2++) {
+      v_owned += p_deps.v_databases[i2].v_owned;
+      v_held += p_deps.v_databases[i2].v_acl + p_deps.v_databases[i2].v_other;
+    }
+    function requestBody() {
+      var v_owner_select = (
+        /** @type {HTMLSelectElement | null} */
+        document.getElementById("perm_drop_new_owner")
+      );
+      return {
+        p_database_index: p_tag.connID,
+        p_tab_id: p_tag.tabID,
+        p_role: p_role_name,
+        p_reassign_to: v_owner_select ? v_owner_select.value : "",
+        p_drop_owned: v_held > 0
+      };
+    }
+    showFormDialog(
+      "",
       function() {
+        var v_body = requestBody();
+        if (v_owned > 0 && !v_body.p_reassign_to) {
+          showAlert(t("permissions.select_owner_hint"));
+          return;
+        }
         execAjax$1(
           "/drop_role_postgresql/",
-          JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }),
+          JSON.stringify(v_body),
           function() {
             showAlert(t("permissions.role_dropped"));
             p_tag.selectedRole = null;
@@ -9763,7 +11186,74 @@
           false
         );
       },
-      null
+      null,
+      function() {
+        var v_content = (
+          /** @type {HTMLElement} */
+          document.getElementById("modal_message_content")
+        );
+        var v_warning = document.createElement("div");
+        v_warning.className = "mb-3";
+        v_warning.textContent = t("permissions.confirm_drop_role", { role: p_role_name });
+        v_content.appendChild(v_warning);
+        if (p_deps.v_databases.length > 0) {
+          var v_heading = document.createElement("div");
+          v_heading.className = "mb-1";
+          v_heading.textContent = t("permissions.drop_dependencies_heading");
+          v_content.appendChild(v_heading);
+          var v_list2 = document.createElement("ul");
+          v_list2.className = "mb-3";
+          for (var d = 0; d < p_deps.v_databases.length; d++) {
+            var v_dep = p_deps.v_databases[d];
+            var v_item = document.createElement("li");
+            v_item.textContent = t("permissions.drop_deps_database", {
+              database: v_dep.v_name === "" ? t("permissions.drop_deps_shared") : v_dep.v_name,
+              owned: v_dep.v_owned,
+              held: v_dep.v_acl + v_dep.v_other
+            });
+            v_list2.appendChild(v_item);
+          }
+          v_content.appendChild(v_list2);
+        }
+        if (p_deps.v_member_of + p_deps.v_members > 0) {
+          var v_memberships = document.createElement("div");
+          v_memberships.className = "omnidb__permissions__row-suffix mb-3";
+          v_memberships.textContent = t("permissions.drop_memberships_note", { count: p_deps.v_member_of + p_deps.v_members });
+          v_content.appendChild(v_memberships);
+        }
+        if (v_owned > 0) {
+          var v_owner_field = buildSelectField(v_content, "perm_drop_new_owner", t("permissions.drop_new_owner_label"));
+          populateSelectOptions(
+            v_owner_field.select,
+            [{ value: "", label: t("permissions.drop_choose_owner") }].concat(
+              (p_tag.roles || []).filter(function(p_role) {
+                return !p_role.v_is_public && p_role.v_name !== p_role_name && !isPredefinedRoleName(p_role.v_name);
+              }).map(function(p_role) {
+                return { value: p_role.v_name, label: p_role.v_name };
+              })
+            )
+          );
+          var v_owner_hint = document.createElement("div");
+          v_owner_hint.className = "omnidb__permissions__row-suffix mb-3";
+          v_owner_hint.textContent = t("permissions.drop_new_owner_hint");
+          v_content.appendChild(v_owner_hint);
+        }
+        if (v_held > 0) {
+          var v_privileges_note = document.createElement("div");
+          v_privileges_note.className = "omnidb__permissions__row-suffix mb-3";
+          v_privileges_note.textContent = t("permissions.drop_privileges_note");
+          v_content.appendChild(v_privileges_note);
+        }
+        appendSqlPreview(v_content, function() {
+          var v_body = requestBody();
+          if (v_owned > 0 && !v_body.p_reassign_to) return null;
+          return [{ url: "/drop_role_postgresql/", body: v_body }];
+        });
+      },
+      true,
+      t("tree.drop_role"),
+      t("tree.drop_role") + ": " + p_role_name,
+      "fas node-all fa-times"
     );
   }
   var v_createNewMonitorUnitTabFunction = function() {

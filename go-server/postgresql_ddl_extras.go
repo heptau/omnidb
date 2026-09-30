@@ -323,11 +323,7 @@ func postgresqlDDLRoleExtras(db *sql.DB, name string) (string, error) {
 		return "", err
 	}
 	for _, m := range memberships {
-		statement := "GRANT " + m.Name + " TO " + ident
-		if m.AdminOption {
-			statement += " WITH ADMIN OPTION"
-		}
-		statements = append(statements, statement+";")
+		statements = append(statements, "GRANT "+m.Name+" TO "+ident+membershipGrantSuffix(m)+";")
 	}
 	return pgJoinDDLExtras(statements), nil
 }

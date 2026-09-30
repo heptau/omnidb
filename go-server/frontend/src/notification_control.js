@@ -140,7 +140,9 @@ export function setMessageModalTitle(p_text, p_icon_class = null) {
 	if (p_icon_class) {
 		var v_icon = document.createElement("i");
 		v_icon.className = p_icon_class;
-		v_icon.style.marginRight = "8px";
+		// .modal-title is a flex row with its own 10px gap (theme CSS), so
+		// an extra margin on the icon made the space far too wide.
+		v_title.style.gap = "6px";
 		v_title.appendChild(v_icon);
 	}
 	v_title.appendChild(document.createTextNode(p_text));

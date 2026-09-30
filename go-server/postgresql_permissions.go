@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -99,52 +100,52 @@ func postgresValidUntilLiteral(db *sql.DB, raw string) (string, error) {
 // hash is our own output, either "md5" + hex or Postgres's SCRAM verifier
 // shape, both drawn from an alphabet that can never contain a quote.
 func postgresqlCreateRole(db *sql.DB, name string, attrs postgresqlRoleAttributes, password string) error {
+	stmt, err := buildCreateRoleSQL(db, name, attrs, password, false)
+	if err != nil {
+		return err
+	}
+	_, err = db.Exec(stmt)
+	return err
+}
+
+// buildCreateRoleSQL renders the CREATE ROLE statement postgresqlCreateRole
+// runs. With maskPassword the PASSWORD clause shows a placeholder instead of
+// the real verifier -- used for the Permissions dialogs' SQL preview, which
+// is displayed and copied around and must never carry password material.
+func buildCreateRoleSQL(db *sql.DB, name string, attrs postgresqlRoleAttributes, password string, maskPassword bool) (string, error) {
 	rawName := strings.TrimSpace(name)
 	if rawName == "" {
-		return fmt.Errorf("role name must not be empty")
+		return "", fmt.Errorf("role name must not be empty")
 	}
 	// Let the server quote the name so the DDL text only ever contains
 	// server-produced identifier text.
 	var quoted string
 	if err := db.QueryRow(`select quote_ident($1)`, rawName).Scan(&quoted); err != nil {
-		return err
+		return "", err
 	}
 
 	stmt := "CREATE ROLE " + quoted + " WITH" + roleAttributeClauses(attrs)
 
 	if password != "" {
-		hash, err := postgresPasswordVerifier(db, password, rawName)
-		if err != nil {
-			return err
+		if maskPassword {
+			stmt += " PASSWORD '********'"
+		} else {
+			hash, err := postgresPasswordVerifier(db, password, rawName)
+			if err != nil {
+				return "", err
+			}
+			stmt += " PASSWORD '" + hash + "'"
 		}
-		stmt += " PASSWORD '" + hash + "'"
 	}
 	if attrs.ValidUntil != "" {
 		literal, err := postgresValidUntilLiteral(db, attrs.ValidUntil)
 		if err != nil {
-			return err
+			return "", err
 		}
 		stmt += " VALID UNTIL " + literal
 	}
 
-	_, err := db.Exec(stmt)
-	return err
-}
-
-// postgresqlDropRole executes DROP ROLE directly, after confirming the role
-// exists via postgresVerifiedRoleName (postgresql_serverlevel.go) — the same
-// safe-identifier technique postgresqlChangeRolePassword uses, since DROP
-// ROLE's target can't be a bind parameter either.
-func postgresqlDropRole(db *sql.DB, name string) error {
-	verified, err := postgresVerifiedRoleName(db, unquotePostgresIdentifier(name))
-	if err != nil {
-		return err
-	}
-	if verified == "" {
-		return fmt.Errorf("role does not exist")
-	}
-	_, err = db.Exec("DROP ROLE " + quotePostgresIdentifierDoubleQuoted(verified))
-	return err
+	return stmt, nil
 }
 
 // postgresqlAlterRoleAttributes executes ALTER ROLE directly, replacing the
@@ -154,12 +155,21 @@ func postgresqlDropRole(db *sql.DB, name string) error {
 // own "no expiration" value) rather than being omitted, which would leave a
 // previously-set expiration untouched instead of clearing it.
 func postgresqlAlterRoleAttributes(db *sql.DB, name string, attrs postgresqlRoleAttributes) error {
-	verified, err := postgresVerifiedRoleName(db, unquotePostgresIdentifier(name))
+	stmt, err := buildAlterRoleAttributesSQL(db, name, attrs)
 	if err != nil {
 		return err
 	}
+	_, err = db.Exec(stmt)
+	return err
+}
+
+func buildAlterRoleAttributesSQL(db *sql.DB, name string, attrs postgresqlRoleAttributes) (string, error) {
+	verified, err := postgresVerifiedRoleName(db, unquotePostgresIdentifier(name))
+	if err != nil {
+		return "", err
+	}
 	if verified == "" {
-		return fmt.Errorf("role does not exist")
+		return "", fmt.Errorf("role does not exist")
 	}
 
 	validUntilRaw := attrs.ValidUntil
@@ -168,12 +178,10 @@ func postgresqlAlterRoleAttributes(db *sql.DB, name string, attrs postgresqlRole
 	}
 	literal, err := postgresValidUntilLiteral(db, validUntilRaw)
 	if err != nil {
-		return err
+		return "", err
 	}
 
-	stmt := "ALTER ROLE " + quotePostgresIdentifierDoubleQuoted(verified) + " WITH" + roleAttributeClauses(attrs) + " VALID UNTIL " + literal
-	_, err = db.Exec(stmt)
-	return err
+	return "ALTER ROLE " + quotePostgresIdentifierDoubleQuoted(verified) + " WITH" + roleAttributeClauses(attrs) + " VALID UNTIL " + literal, nil
 }
 
 // postgresqlRoleMembership is one row of a role's direct "member of" list —
@@ -182,6 +190,47 @@ func postgresqlAlterRoleAttributes(db *sql.DB, name string, attrs postgresqlRole
 type postgresqlRoleMembership struct {
 	Name        string
 	AdminOption bool
+	// Inherit and Set are the PostgreSQL 16+ membership options (does the
+	// member automatically use the role's privileges / may it SET ROLE to
+	// it); nil on older servers, which have neither column.
+	Inherit *bool
+	Set     *bool
+}
+
+// pgMembershipOptionsVersion is the first server_version_num with per-
+// membership INHERIT and SET options (PostgreSQL 16).
+const pgMembershipOptionsVersion = 160000
+
+// postgresqlServerVersionNum is server_version_num as an int (0 if it cannot
+// be read), for feature gates like pgMembershipOptionsVersion.
+func postgresqlServerVersionNum(db *sql.DB) int {
+	var s string
+	if err := db.QueryRow(`show server_version_num`).Scan(&s); err != nil {
+		return 0
+	}
+	n, _ := strconv.Atoi(strings.TrimSpace(s))
+	return n
+}
+
+// membershipGrantSuffix renders the WITH clause that reproduces a membership:
+// on PostgreSQL 16+ every option explicitly (a bare GRANT would take the
+// member's current rolinherit default instead of what the grant actually
+// has), before that just ADMIN OPTION.
+func membershipGrantSuffix(m postgresqlRoleMembership) string {
+	if m.Inherit == nil || m.Set == nil {
+		if m.AdminOption {
+			return " WITH ADMIN OPTION"
+		}
+		return ""
+	}
+	return " WITH ADMIN " + pgBoolKeyword(m.AdminOption) + ", INHERIT " + pgBoolKeyword(*m.Inherit) + ", SET " + pgBoolKeyword(*m.Set)
+}
+
+func pgBoolKeyword(b bool) string {
+	if b {
+		return "TRUE"
+	}
+	return "FALSE"
 }
 
 // postgresqlRoleMemberships lists the roles a role is a direct member of.
@@ -193,12 +242,37 @@ type postgresqlRoleMembership struct {
 // recordable once per grantor, so the same "role is a member of parent" can
 // have several rows behind it.
 func postgresqlRoleMemberships(db *sql.DB, roleName string) ([]postgresqlRoleMembership, error) {
+	return queryRoleMemberships(db, roleName, false)
+}
+
+// postgresqlRoleDirectMembers is postgresqlRoleMemberships' mirror image: the
+// roles that are directly a member *of* roleName (Name is the member), with
+// the same per-membership options.
+func postgresqlRoleDirectMembers(db *sql.DB, roleName string) ([]postgresqlRoleMembership, error) {
+	return queryRoleMemberships(db, roleName, true)
+}
+
+// queryRoleMemberships reads pg_auth_members grouped by the other side of the
+// edge: with members == false, the roles roleName is a member of; with true,
+// the roles that are members of roleName.
+func queryRoleMemberships(db *sql.DB, roleName string, members bool) ([]postgresqlRoleMembership, error) {
+	// inherit_option/set_option exist from PostgreSQL 16; any grantor's row
+	// granting the option counts (bool_or), like admin_option.
+	extraColumns := "null::boolean, null::boolean"
+	withOptions := postgresqlServerVersionNum(db) >= pgMembershipOptionsVersion
+	if withOptions {
+		extraColumns = "bool_or(am.inherit_option), bool_or(am.set_option)"
+	}
+	nameColumn, filterColumn := "g.rolname", "m.rolname"
+	if members {
+		nameColumn, filterColumn = "m.rolname", "g.rolname"
+	}
 	rows, err := db.Query(`
-		select quote_ident(g.rolname), bool_or(am.admin_option)
+		select quote_ident(`+nameColumn+`), bool_or(am.admin_option), `+extraColumns+`
 		from pg_auth_members am
 		inner join pg_roles g on g.oid = am.roleid
 		inner join pg_roles m on m.oid = am.member
-		where quote_ident(m.rolname) = $1
+		where quote_ident(`+filterColumn+`) = $1
 		group by 1
 		order by 1
 	`, roleName)
@@ -210,8 +284,12 @@ func postgresqlRoleMemberships(db *sql.DB, roleName string) ([]postgresqlRoleMem
 	out := make([]postgresqlRoleMembership, 0)
 	for rows.Next() {
 		var m postgresqlRoleMembership
-		if err := rows.Scan(&m.Name, &m.AdminOption); err != nil {
+		var inherit, set sql.NullBool
+		if err := rows.Scan(&m.Name, &m.AdminOption, &inherit, &set); err != nil {
 			return nil, err
+		}
+		if withOptions && inherit.Valid && set.Valid {
+			m.Inherit, m.Set = &inherit.Bool, &set.Bool
 		}
 		out = append(out, m)
 	}
@@ -341,28 +419,61 @@ func postgresqlRoleDescendants(db *sql.DB, roleName string) ([]postgresqlRoleDes
 // via postgresVerifiedRoleName first: like every other role-targeting
 // statement in this file, neither side of GRANT ... TO can be a bind
 // parameter.
-func postgresqlGrantRoleMembership(db *sql.DB, member, parent string, adminOption bool) error {
-	verifiedMember, verifiedParent, err := verifyMemberAndParentRoles(db, member, parent)
+func postgresqlGrantRoleMembership(db *sql.DB, member, parent string, adminOption bool, inherit, set *bool) error {
+	stmt, err := buildGrantRoleMembershipSQL(db, member, parent, adminOption, inherit, set)
 	if err != nil {
 		return err
-	}
-	stmt := "GRANT " + quotePostgresIdentifierDoubleQuoted(verifiedParent) + " TO " + quotePostgresIdentifierDoubleQuoted(verifiedMember)
-	if adminOption {
-		stmt += " WITH ADMIN OPTION"
 	}
 	_, err = db.Exec(stmt)
 	return err
 }
 
+// buildGrantRoleMembershipSQL renders GRANT parent TO member. inherit and set
+// (PostgreSQL 16+; nil = leave to the server's default) switch to the
+// explicit option form, which also makes re-granting an existing membership
+// *update* its options, including turning the admin option off.
+func buildGrantRoleMembershipSQL(db *sql.DB, member, parent string, adminOption bool, inherit, set *bool) (string, error) {
+	verifiedMember, verifiedParent, err := verifyMemberAndParentRoles(db, member, parent)
+	if err != nil {
+		return "", err
+	}
+	stmt := "GRANT " + quotePostgresIdentifierDoubleQuoted(verifiedParent) + " TO " + quotePostgresIdentifierDoubleQuoted(verifiedMember)
+	if inherit != nil || set != nil {
+		if postgresqlServerVersionNum(db) < pgMembershipOptionsVersion {
+			return "", fmt.Errorf("membership INHERIT/SET options require PostgreSQL 16 or newer")
+		}
+		parts := []string{"ADMIN " + pgBoolKeyword(adminOption)}
+		if inherit != nil {
+			parts = append(parts, "INHERIT "+pgBoolKeyword(*inherit))
+		}
+		if set != nil {
+			parts = append(parts, "SET "+pgBoolKeyword(*set))
+		}
+		return stmt + " WITH " + strings.Join(parts, ", "), nil
+	}
+	if adminOption {
+		stmt += " WITH ADMIN OPTION"
+	}
+	return stmt, nil
+}
+
 // postgresqlRevokeRoleMembership executes REVOKE parent FROM member
 // directly — the Permissions panel's "remove membership" action.
 func postgresqlRevokeRoleMembership(db *sql.DB, member, parent string) error {
-	verifiedMember, verifiedParent, err := verifyMemberAndParentRoles(db, member, parent)
+	stmt, err := buildRevokeRoleMembershipSQL(db, member, parent)
 	if err != nil {
 		return err
 	}
-	_, err = db.Exec("REVOKE " + quotePostgresIdentifierDoubleQuoted(verifiedParent) + " FROM " + quotePostgresIdentifierDoubleQuoted(verifiedMember))
+	_, err = db.Exec(stmt)
 	return err
+}
+
+func buildRevokeRoleMembershipSQL(db *sql.DB, member, parent string) (string, error) {
+	verifiedMember, verifiedParent, err := verifyMemberAndParentRoles(db, member, parent)
+	if err != nil {
+		return "", err
+	}
+	return "REVOKE " + quotePostgresIdentifierDoubleQuoted(verifiedParent) + " FROM " + quotePostgresIdentifierDoubleQuoted(verifiedMember), nil
 }
 
 func verifyMemberAndParentRoles(db *sql.DB, member, parent string) (string, string, error) {
@@ -408,4 +519,34 @@ func postgresqlRoleAttributesFor(db *sql.DB, name string) (postgresqlRoleAttribu
 		attrs.ValidUntil = validUntil.String
 	}
 	return attrs, nil
+}
+
+// buildRenameRoleSQL renders ALTER ROLE ... RENAME TO ... . The old name is
+// verified against pg_roles and the new one must not exist yet; the new name
+// is quoted as a plain identifier, same as in CREATE ROLE. Note Postgres
+// clears an md5 password on rename (its hash is keyed to the role name) --
+// the dialog says so.
+func buildRenameRoleSQL(db *sql.DB, oldName, newName string) (string, error) {
+	verified, err := postgresVerifiedRoleName(db, unquotePostgresIdentifier(oldName))
+	if err != nil {
+		return "", err
+	}
+	if verified == "" {
+		return "", fmt.Errorf("role does not exist")
+	}
+	rawNew := strings.TrimSpace(newName)
+	if rawNew == "" {
+		return "", fmt.Errorf("role name must not be empty")
+	}
+	if rawNew == verified {
+		return "", fmt.Errorf("the new name is the same as the current one")
+	}
+	existing, err := postgresVerifiedRoleName(db, rawNew)
+	if err != nil {
+		return "", err
+	}
+	if existing != "" {
+		return "", fmt.Errorf("role %q already exists", rawNew)
+	}
+	return "ALTER ROLE " + quotePostgresIdentifierDoubleQuoted(verified) + " RENAME TO " + quotePostgresIdentifierDoubleQuoted(rawNew), nil
 }

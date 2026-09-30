@@ -62,16 +62,19 @@ func postgresqlTablespaces(db *sql.DB) ([]postgresqlNamedOID, error) {
 }
 
 // postgresqlRole extends postgresqlNamedOID with rolcanlogin so the tree can
-// tell login roles ("users") apart from group roles.
+// tell login roles ("users") apart from group roles; Superuser and Expired
+// (VALID UNTIL already passed) feed the Permissions section's role filter.
 type postgresqlRole struct {
-	Name     string
-	OID      int64
-	CanLogin bool
+	Name      string
+	OID       int64
+	CanLogin  bool
+	Superuser bool
+	Expired   bool
 }
 
 // postgresqlRoles mirrors PostgreSQL.py's QueryRoles.
 func postgresqlRoles(db *sql.DB) ([]postgresqlRole, error) {
-	rows, err := db.Query(`select quote_ident(rolname) as name, oid, rolcanlogin from pg_roles order by rolname`)
+	rows, err := db.Query(`select quote_ident(rolname) as name, oid, rolcanlogin, rolsuper, coalesce(rolvaliduntil < now(), false) from pg_roles order by rolname`)
 	if err != nil {
 		return nil, err
 	}
@@ -79,7 +82,7 @@ func postgresqlRoles(db *sql.DB) ([]postgresqlRole, error) {
 	out := make([]postgresqlRole, 0)
 	for rows.Next() {
 		var r postgresqlRole
-		if err := rows.Scan(&r.Name, &r.OID, &r.CanLogin); err != nil {
+		if err := rows.Scan(&r.Name, &r.OID, &r.CanLogin, &r.Superuser, &r.Expired); err != nil {
 			return nil, err
 		}
 		out = append(out, r)

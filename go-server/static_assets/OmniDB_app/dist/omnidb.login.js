@@ -117,7 +117,7 @@
     if (p_icon_class) {
       var v_icon = document.createElement("i");
       v_icon.className = p_icon_class;
-      v_icon.style.marginRight = "8px";
+      v_title.style.gap = "6px";
       v_title.appendChild(v_icon);
     }
     v_title.appendChild(document.createTextNode(p_text));

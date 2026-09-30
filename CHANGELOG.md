@@ -7,8 +7,78 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Permissions section: the three columns (roles, memberships, objects) can be resized by dragging the thin handle
+  on their right edge — within a minimum and maximum (200–600 px; the objects tree up to 1400 px, since it is
+  the one that benefits from width). The widths are remembered (also across role switches) and a double-click
+  on a handle resets that column to its default.
+- Permissions section: a collapsible "Show SQL" box in the create/alter role, add membership, grant/edit
+  privileges and default-privileges dialogs shows the exact statements the current form values would run
+  (built by the same server code as the real call, nothing executed, passwords masked) and keeps them up to
+  date as the form changes; the statements can be copied.
+- Permissions section: bulk grant/revoke. For tables, sequences, functions and procedures the "Add Object
+  Privilege" dialog has a "Scope" choice, "All ... in the schema", that runs `GRANT`/`REVOKE ... ON ALL
+  ... IN SCHEMA` (affects existing objects only).
+- Permissions section: default privileges (`ALTER DEFAULT PRIVILEGES`). Every database in the Objects column
+  gets a "Default privileges" folder listing the defaults that involve the role, as grantee or as the creating
+  role; add, edit (grants/revokes just the ticks that changed) and remove them per creator role, schema
+  and object kind (tables, sequences, functions, types, schemas).
+
+- Permissions section: object ownership. Every database in the Objects column gets an "Owned objects"
+  folder listing what the focused role owns there (schemas, tables, views, sequences, functions, types, ...,
+  capped at 1000), and any object's context menu has "Change Owner" (`ALTER ... OWNER TO`, with the SQL box).
+- Permissions section: dropping a role that still owns objects or holds privileges no longer just fails with
+  PostgreSQL's "cannot be dropped because some objects depend on it". The drop dialog lists per database what
+  the role owns and holds, asks which role takes over its objects, and then runs `REASSIGN OWNED` and
+  `DROP OWNED` in every affected database (in that order, so nothing is deleted) before `DROP ROLE`; the SQL
+  box shows the whole sequence.
+
+- Permissions section: "Who Has Access" in the context menu of any object in the Objects column — the reverse
+  view, listing every role that can do something with that object and why (owner, direct grant, inherited
+  through a membership, superuser), plus PUBLIC, with grant-option marks. Answers come from PostgreSQL's own
+  `has_*_privilege` functions, so they match what the server really allows; roles that only have what PUBLIC
+  gives everyone are left out, superusers fold into a collapsed group, and clicking a role makes it the active
+  role.
+
+- Permissions section: "Clone Role" in a role's context menu creates a new role with the source's attributes
+  and, optionally, its direct memberships and its direct object privileges in every database (found via
+  `pg_shdepend`, so databases where it holds nothing are never opened). The password is not copied; one can
+  be set in the dialog. Default privileges, owned objects and per-role settings are not copied. The SQL box
+  shows the whole plan per database.
+
+- Permissions section: "Export Permissions" (one role) and "Export Permissions of All Roles" in a role's
+  context menu produce a copyable SQL script that recreates the permissions: `CREATE ROLE` (attributes only),
+  memberships, direct object privileges and default privileges, each database's statements under its own
+  header. Each section can be switched off and the script regenerates. Passwords, PUBLIC's grants, ownership
+  and role settings are not exported; default privileges are exported with the role they are granted to.
+
+- Permissions section: the roles column has a filter — a name search plus a kind selector (all, users that can
+  log in, groups, superusers, roles whose `VALID UNTIL` has passed) — and marks superuser and expired roles
+  in the list; the Objects column has a database/tablespace name filter that survives switching roles.
+
+- Permissions section: "Rename Role" in a role's context menu (`ALTER ROLE ... RENAME TO`, with the SQL box).
+  Grants, memberships and ownership follow the role; the dialog warns that PostgreSQL clears an md5 password on
+  rename.
+
+- Permissions section: PostgreSQL 16+ membership options. The "add membership" dialogs get `INHERIT` and
+  `SET` choices (server default / yes / no; shown only on servers that support them), direct memberships
+  show "(no inherit)" / "(no SET)" next to "(admin option)" — in both the "Member of" and the "Members" list
+  — and "Edit Membership Options" changes a membership's admin/INHERIT/SET options in place (a repeated
+  `GRANT` with all three explicit, so the admin option can be turned off as well). Role DDL, the role
+  export and "Clone Role" now reproduce a membership with its options spelled out on those servers.
+
 ### Changed
 
+- The folders in the Permissions section's Objects tree use the same names as the Database section's tree (plural:
+  "Tables", "Views", "Schemas", "Sequences", "Functions", "Procedures", "Materialized Views", "Types",
+  "Domains", "Foreign Data Wrappers", "Foreign Servers") instead of the singular type names, which stay in the
+  type pickers of the dialogs. The object kinds of default privileges (list entries and the dialog's kind
+  picker) take their names from the same keys.
+- Permissions section dialogs for a function or procedure (edit privileges, change owner, who has access) show
+  only its name in the header, without the argument list, so the title fits.
+- The icon in a dialog header sits closer to the title text (it had an 8px margin on top of the header's own
+  10px flex gap, 18px in all).
 - The Permissions section's Objects column now uses the same icons and colours as the Database section's tree
   for databases, tablespaces, schemas, tables, views, functions, etc. and for their "Tables"/"Functions"/...
   folders. Role icons (including PUBLIC) share the same colour. Indirect (inherited) memberships are now shown in italics with a faded icon, so they

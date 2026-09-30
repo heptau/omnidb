@@ -20,6 +20,7 @@ type pgGrantObjectPrivilegeRequest struct {
 	PPrivileges []string `json:"p_privileges"`
 	PGrantable  bool     `json:"p_grantable"`
 	PDatabase   string   `json:"p_database"`
+	PPreview    bool     `json:"p_preview"`
 }
 
 func handleGrantObjectPrivilegePostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -40,6 +41,11 @@ func handleGrantObjectPrivilegePostgreSQL(upstream *url.URL, fallback http.Handl
 		}
 		defer db.Close()
 
+		if reqBody.PPreview {
+			stmt, err := buildGrantObjectPrivilegeSQL(db, reqBody.PRole, reqBody.PObjectType, reqBody.PSchema, reqBody.PObject, reqBody.PPrivileges, reqBody.PGrantable)
+			writePreviewOrError(w, err, stmt)
+			return
+		}
 		if err := postgresqlGrantObjectPrivilege(db, reqBody.PRole, reqBody.PObjectType, reqBody.PSchema, reqBody.PObject, reqBody.PPrivileges, reqBody.PGrantable); err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -57,6 +63,7 @@ type pgRevokeObjectPrivilegeRequest struct {
 	PObject     string   `json:"p_object"`
 	PPrivileges []string `json:"p_privileges"`
 	PDatabase   string   `json:"p_database"`
+	PPreview    bool     `json:"p_preview"`
 }
 
 func handleRevokeObjectPrivilegePostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -77,6 +84,11 @@ func handleRevokeObjectPrivilegePostgreSQL(upstream *url.URL, fallback http.Hand
 		}
 		defer db.Close()
 
+		if reqBody.PPreview {
+			stmt, err := buildRevokeObjectPrivilegeSQL(db, reqBody.PRole, reqBody.PObjectType, reqBody.PSchema, reqBody.PObject, reqBody.PPrivileges)
+			writePreviewOrError(w, err, stmt)
+			return
+		}
 		if err := postgresqlRevokeObjectPrivilege(db, reqBody.PRole, reqBody.PObjectType, reqBody.PSchema, reqBody.PObject, reqBody.PPrivileges); err != nil {
 			writeDatabaseError(w, err.Error())
 			return

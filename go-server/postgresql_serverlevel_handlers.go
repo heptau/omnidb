@@ -17,7 +17,7 @@ func namedOIDEnvelope(items []postgresqlNamedOID) []map[string]any {
 func roleEnvelope(items []postgresqlRole) []map[string]any {
 	out := make([]map[string]any, 0, len(items))
 	for _, i := range items {
-		out = append(out, map[string]any{"v_name": i.Name, "v_oid": i.OID, "v_can_login": i.CanLogin})
+		out = append(out, map[string]any{"v_name": i.Name, "v_oid": i.OID, "v_can_login": i.CanLogin, "v_superuser": i.Superuser, "v_expired": i.Expired})
 	}
 	return out
 }

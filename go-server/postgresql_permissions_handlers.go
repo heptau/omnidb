@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
+	"strings"
 )
 
 // pgRoleAttributesFields is embedded by every request below that submits a
@@ -54,6 +55,7 @@ type pgCreateRoleRequest struct {
 	pgRoleAttributesFields
 	PName     string `json:"p_name"`
 	PPassword string `json:"p_password"`
+	PPreview  bool   `json:"p_preview"`
 }
 
 func handleCreateRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -74,6 +76,11 @@ func handleCreateRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.H
 		}
 		defer db.Close()
 
+		if reqBody.PPreview {
+			stmt, err := buildCreateRoleSQL(db, reqBody.PName, reqBody.toAttributes(), reqBody.PPassword, true)
+			writePreviewOrError(w, err, stmt)
+			return
+		}
 		if err := postgresqlCreateRole(db, reqBody.PName, reqBody.toAttributes(), reqBody.PPassword); err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -84,9 +91,16 @@ func handleCreateRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.H
 
 type pgDropRoleRequest struct {
 	baseRequest
-	PRole string `json:"p_role"`
+	PRole       string `json:"p_role"`
+	PReassignTo string `json:"p_reassign_to"`
+	PDropOwned  bool   `json:"p_drop_owned"`
+	PPreview    bool   `json:"p_preview"`
 }
 
+// handleDropRolePostgreSQL drops a role, first handing over what it owns
+// (p_reassign_to) and revoking what it holds (p_drop_owned) in every
+// database it has dependencies in -- see buildDropRolePlan. Needs the
+// connection's own details to reach those other databases.
 func handleDropRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
@@ -99,13 +113,22 @@ func handleDropRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.Han
 			writeBadRequest(w)
 			return
 		}
-		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		db, info, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID())
 		if !ok {
 			return
 		}
 		defer db.Close()
 
-		if err := postgresqlDropRole(db, reqBody.PRole); err != nil {
+		steps, err := buildDropRolePlan(db, reqBody.PRole, reqBody.PReassignTo, reqBody.PDropOwned)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		if reqBody.PPreview {
+			writeEnvelope(w, map[string]any{"v_sql": renderSQLPlan(steps)}, false, -1)
+			return
+		}
+		if err := executeSQLPlan(db, info, steps); err != nil {
 			writeDatabaseError(w, err.Error())
 			return
 		}
@@ -113,10 +136,50 @@ func handleDropRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.Han
 	}
 }
 
+type pgGetRoleDependenciesRequest struct {
+	baseRequest
+	PRole string `json:"p_role"`
+}
+
+// handleGetRoleDependenciesPostgreSQL backs the drop-role dialog's summary:
+// per database, what the role owns and holds (see
+// postgresqlRoleDependencyCounts), plus its direct memberships.
+func handleGetRoleDependenciesPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var reqBody pgGetRoleDependenciesRequest
+		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		deps, err := postgresqlRoleDependencyCounts(db, reqBody.PRole)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		databases := make([]map[string]any, 0, len(deps.Databases))
+		for _, d := range deps.Databases {
+			databases = append(databases, map[string]any{"v_name": d.Name, "v_owned": d.Owned, "v_acl": d.ACL, "v_other": d.Other})
+		}
+		writeEnvelope(w, map[string]any{"v_databases": databases, "v_member_of": deps.MemberOf, "v_members": deps.Members}, false, -1)
+	}
+}
+
 type pgAlterRoleAttributesRequest struct {
 	baseRequest
 	pgRoleAttributesFields
-	PRole string `json:"p_role"`
+	PRole    string `json:"p_role"`
+	PPreview bool   `json:"p_preview"`
 }
 
 func handleAlterRoleAttributesPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -137,6 +200,11 @@ func handleAlterRoleAttributesPostgreSQL(upstream *url.URL, fallback http.Handle
 		}
 		defer db.Close()
 
+		if reqBody.PPreview {
+			stmt, err := buildAlterRoleAttributesSQL(db, reqBody.PRole, reqBody.toAttributes())
+			writePreviewOrError(w, err, stmt)
+			return
+		}
 		if err := postgresqlAlterRoleAttributes(db, reqBody.PRole, reqBody.toAttributes()); err != nil {
 			writeDatabaseError(w, err.Error())
 			return
@@ -185,13 +253,22 @@ func handleGetRoleAttributesPostgreSQL(upstream *url.URL, fallback http.Handler)
 // ancestors, so this reuses the existing direct-membership query instead of
 // complicating that CTE for a value only ever shown on its depth-1 rows.
 func ancestorsEnvelope(ancestors []postgresqlRoleAncestor, direct []postgresqlRoleMembership) []map[string]any {
-	adminOptionByName := make(map[string]bool, len(direct))
+	directByName := make(map[string]postgresqlRoleMembership, len(direct))
 	for _, m := range direct {
-		adminOptionByName[m.Name] = m.AdminOption
+		directByName[m.Name] = m
 	}
 	out := make([]map[string]any, 0, len(ancestors))
 	for _, a := range ancestors {
-		out = append(out, map[string]any{"v_name": a.Name, "v_direct": a.Direct, "v_admin_option": adminOptionByName[a.Name]})
+		m := directByName[a.Name]
+		row := map[string]any{"v_name": a.Name, "v_direct": a.Direct, "v_admin_option": m.AdminOption}
+		// PostgreSQL 16+ INHERIT/SET options of a direct membership; null
+		// for indirect rows and on older servers.
+		if a.Direct && m.Inherit != nil && m.Set != nil {
+			row["v_inherit"], row["v_set"] = *m.Inherit, *m.Set
+		} else {
+			row["v_inherit"], row["v_set"] = nil, nil
+		}
+		out = append(out, row)
 	}
 	return out
 }
@@ -247,8 +324,8 @@ type pgGetRoleDescendantsRequest struct {
 // "Members" half (postgresqlRoleDescendants) — the mirror image of
 // handleGetRoleAncestorsPostgreSQL just above: every role that is, directly
 // or indirectly, a member of the focused role, rather than every role the
-// focused role is itself a member of. No admin_option merge here (unlike
-// ancestorsEnvelope) — the "Members" list doesn't show that suffix.
+// focused role is itself a member of. Direct rows carry the same admin/inherit/
+// set flags as ancestorsEnvelope's, from postgresqlRoleDirectMembers.
 func handleGetRoleDescendantsPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		raw, err := readFormData(r)
@@ -272,9 +349,24 @@ func handleGetRoleDescendantsPostgreSQL(upstream *url.URL, fallback http.Handler
 			writeDatabaseError(w, err.Error())
 			return
 		}
+		directMembers, err := postgresqlRoleDirectMembers(db, reqBody.PRole)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		directByName := make(map[string]postgresqlRoleMembership, len(directMembers))
+		for _, m := range directMembers {
+			directByName[m.Name] = m
+		}
 		out := make([]map[string]any, 0, len(descendants))
 		for _, d := range descendants {
-			out = append(out, map[string]any{"v_name": d.Name, "v_direct": d.Direct})
+			m := directByName[d.Name]
+			row := map[string]any{"v_name": d.Name, "v_direct": d.Direct, "v_admin_option": m.AdminOption, "v_inherit": nil, "v_set": nil}
+			// PostgreSQL 16+ options of a direct membership (null otherwise).
+			if d.Direct && m.Inherit != nil && m.Set != nil {
+				row["v_inherit"], row["v_set"] = *m.Inherit, *m.Set
+			}
+			out = append(out, row)
 		}
 		writeEnvelope(w, out, false, -1)
 	}
@@ -285,6 +377,9 @@ type pgGrantRoleMembershipRequest struct {
 	PMember      string `json:"p_member"`
 	PParent      string `json:"p_parent"`
 	PAdminOption bool   `json:"p_admin_option"`
+	PInherit     *bool  `json:"p_inherit"` // PostgreSQL 16+; nil = server default
+	PSet         *bool  `json:"p_set"`     // PostgreSQL 16+; nil = server default
+	PPreview     bool   `json:"p_preview"`
 }
 
 func handleGrantRoleMembershipPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -305,7 +400,12 @@ func handleGrantRoleMembershipPostgreSQL(upstream *url.URL, fallback http.Handle
 		}
 		defer db.Close()
 
-		if err := postgresqlGrantRoleMembership(db, reqBody.PMember, reqBody.PParent, reqBody.PAdminOption); err != nil {
+		if reqBody.PPreview {
+			stmt, err := buildGrantRoleMembershipSQL(db, reqBody.PMember, reqBody.PParent, reqBody.PAdminOption, reqBody.PInherit, reqBody.PSet)
+			writePreviewOrError(w, err, stmt)
+			return
+		}
+		if err := postgresqlGrantRoleMembership(db, reqBody.PMember, reqBody.PParent, reqBody.PAdminOption, reqBody.PInherit, reqBody.PSet); err != nil {
 			writeDatabaseError(w, err.Error())
 			return
 		}
@@ -315,8 +415,9 @@ func handleGrantRoleMembershipPostgreSQL(upstream *url.URL, fallback http.Handle
 
 type pgRevokeRoleMembershipRequest struct {
 	baseRequest
-	PMember string `json:"p_member"`
-	PParent string `json:"p_parent"`
+	PMember  string `json:"p_member"`
+	PParent  string `json:"p_parent"`
+	PPreview bool   `json:"p_preview"`
 }
 
 func handleRevokeRoleMembershipPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
@@ -337,7 +438,157 @@ func handleRevokeRoleMembershipPostgreSQL(upstream *url.URL, fallback http.Handl
 		}
 		defer db.Close()
 
+		if reqBody.PPreview {
+			stmt, err := buildRevokeRoleMembershipSQL(db, reqBody.PMember, reqBody.PParent)
+			writePreviewOrError(w, err, stmt)
+			return
+		}
 		if err := postgresqlRevokeRoleMembership(db, reqBody.PMember, reqBody.PParent); err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		writeEnvelope(w, "", false, -1)
+	}
+}
+
+// writePreviewOrError answers a p_preview request: the statement text the
+// real call would have executed, as {v_sql}, or the same error the real call
+// would have raised (unknown role/object, invalid privilege, ...). Nothing is
+// ever executed on this path.
+func writePreviewOrError(w http.ResponseWriter, err error, stmts ...string) {
+	if err != nil {
+		writeDatabaseError(w, err.Error())
+		return
+	}
+	writeEnvelope(w, map[string]any{"v_sql": strings.Join(stmts, ";\n") + ";"}, false, -1)
+}
+
+type pgCloneRoleRequest struct {
+	baseRequest
+	PSource          string `json:"p_source"`
+	PName            string `json:"p_name"`
+	PPassword        string `json:"p_password"`
+	PCopyMemberships bool   `json:"p_copy_memberships"`
+	PCopyPrivileges  bool   `json:"p_copy_privileges"`
+	PPreview         bool   `json:"p_preview"`
+}
+
+// handleCloneRolePostgreSQL creates a new role modelled on an existing one
+// (see buildCloneRolePlan). Like drop, it needs the connection's own details
+// to reach the other databases the source holds privileges in.
+func handleCloneRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var reqBody pgCloneRoleRequest
+		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		db, info, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID())
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		steps, err := buildCloneRolePlan(db, info, reqBody.PSource, reqBody.PName, reqBody.PPassword, reqBody.PPreview, reqBody.PCopyMemberships, reqBody.PCopyPrivileges)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		if reqBody.PPreview {
+			writeEnvelope(w, map[string]any{"v_sql": renderSQLPlan(steps)}, false, -1)
+			return
+		}
+		if err := executeSQLPlan(db, info, steps); err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		writeEnvelope(w, "", false, -1)
+	}
+}
+
+type pgExportPermissionsRequest struct {
+	baseRequest
+	PRole              string `json:"p_role"` // "" = every non-predefined role
+	PRoles             bool   `json:"p_roles"`
+	PMemberships       bool   `json:"p_memberships"`
+	PPrivileges        bool   `json:"p_privileges"`
+	PDefaultPrivileges bool   `json:"p_default_privileges"`
+}
+
+// handleExportPermissionsPostgreSQL returns the permissions-export script
+// (see buildPermissionsExport) as {v_sql}; read-only.
+func handleExportPermissionsPostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var reqBody pgExportPermissionsRequest
+		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		db, info, ok := resolvePostgreSQLRequest(w, r, upstream, fallback, reqBody.databaseIndex(), reqBody.tabID())
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		script, err := buildPermissionsExport(db, info, reqBody.PRole, pgPermissionsExportOptions{
+			Roles:             reqBody.PRoles,
+			Memberships:       reqBody.PMemberships,
+			Privileges:        reqBody.PPrivileges,
+			DefaultPrivileges: reqBody.PDefaultPrivileges,
+		})
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		writeEnvelope(w, map[string]any{"v_sql": script}, false, -1)
+	}
+}
+
+type pgRenameRoleRequest struct {
+	baseRequest
+	PRole    string `json:"p_role"`
+	PNewName string `json:"p_new_name"`
+	PPreview bool   `json:"p_preview"`
+}
+
+func handleRenameRolePostgreSQL(upstream *url.URL, fallback http.Handler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var reqBody pgRenameRoleRequest
+		if err := json.Unmarshal([]byte(raw), &reqBody); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		db, ok := decodePostgreSQLRequest(w, r, upstream, fallback, reqBody.baseRequest)
+		if !ok {
+			return
+		}
+		defer db.Close()
+
+		stmt, err := buildRenameRoleSQL(db, reqBody.PRole, reqBody.PNewName)
+		if reqBody.PPreview {
+			writePreviewOrError(w, err, stmt)
+			return
+		}
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		if _, err := db.Exec(stmt); err != nil {
 			writeDatabaseError(w, err.Error())
 			return
 		}

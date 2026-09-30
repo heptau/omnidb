@@ -262,30 +262,42 @@ func postgresRoleOrPublicSQL(db *sql.DB, role string) (string, error) {
 // postgresRoleOrPublicSQL) — granting directly to PUBLIC is how the
 // Permissions panel lets PUBLIC itself be the focused/edited role.
 func postgresqlGrantObjectPrivilege(db *sql.DB, role, objectType, schema, object string, privileges []string, grantable bool) error {
-	roleSQL, err := postgresRoleOrPublicSQL(db, role)
+	stmt, err := buildGrantObjectPrivilegeSQL(db, role, objectType, schema, object, privileges, grantable)
 	if err != nil {
 		return err
+	}
+	_, err = db.Exec(stmt)
+	return err
+}
+
+// buildGrantObjectPrivilegeSQL renders (without running) the statement
+// postgresqlGrantObjectPrivilege executes -- every identifier verified and
+// quoted exactly as for execution, so the SQL preview can never show
+// something the real call would not have run.
+func buildGrantObjectPrivilegeSQL(db *sql.DB, role, objectType, schema, object string, privileges []string, grantable bool) (string, error) {
+	roleSQL, err := postgresRoleOrPublicSQL(db, role)
+	if err != nil {
+		return "", err
 	}
 
 	privs, err := validatePrivilegesForObjectType(objectType, privileges)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	kind, ident, err := verifyGrantableObject(db, objectType, schema, object)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if kind == "" {
-		return fmt.Errorf("object does not exist")
+		return "", fmt.Errorf("object does not exist")
 	}
 
 	stmt := "GRANT " + strings.Join(privs, ", ") + " ON " + kind + " " + ident + " TO " + roleSQL
 	if grantable {
 		stmt += " WITH GRANT OPTION"
 	}
-	_, err = db.Exec(stmt)
-	return err
+	return stmt, nil
 }
 
 // postgresqlRevokeObjectPrivilege executes REVOKE directly — the
@@ -294,25 +306,32 @@ func postgresqlGrantObjectPrivilege(db *sql.DB, role, objectType, schema, object
 // this grant row" UX rather than exposing REVOKE GRANT OPTION FOR's
 // narrower "keep the privilege, strip only re-grant rights" form.
 func postgresqlRevokeObjectPrivilege(db *sql.DB, role, objectType, schema, object string, privileges []string) error {
-	roleSQL, err := postgresRoleOrPublicSQL(db, role)
+	stmt, err := buildRevokeObjectPrivilegeSQL(db, role, objectType, schema, object, privileges)
 	if err != nil {
 		return err
+	}
+	_, err = db.Exec(stmt)
+	return err
+}
+
+func buildRevokeObjectPrivilegeSQL(db *sql.DB, role, objectType, schema, object string, privileges []string) (string, error) {
+	roleSQL, err := postgresRoleOrPublicSQL(db, role)
+	if err != nil {
+		return "", err
 	}
 
 	privs, err := validatePrivilegesForObjectType(objectType, privileges)
 	if err != nil {
-		return err
+		return "", err
 	}
 
 	kind, ident, err := verifyGrantableObject(db, objectType, schema, object)
 	if err != nil {
-		return err
+		return "", err
 	}
 	if kind == "" {
-		return fmt.Errorf("object does not exist")
+		return "", fmt.Errorf("object does not exist")
 	}
 
-	stmt := "REVOKE " + strings.Join(privs, ", ") + " ON " + kind + " " + ident + " FROM " + roleSQL
-	_, err = db.Exec(stmt)
-	return err
+	return "REVOKE " + strings.Join(privs, ", ") + " ON " + kind + " " + ident + " FROM " + roleSQL, nil
 }
