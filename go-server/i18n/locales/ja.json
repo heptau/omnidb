@@ -1008,5 +1008,6 @@
   "permissions.option_no": "いいえ",
   "permissions.edit_membership_options": "メンバーシップオプションを編集",
   "permissions.edit_membership_hint": "「{member}」が「{parent}」のメンバーであることのオプション。",
-  "permissions.resize_column_hint": "ドラッグで幅を変更、ダブルクリックでリセット"
+  "permissions.resize_column_hint": "ドラッグで幅を変更、ダブルクリックでリセット",
+  "permissions.export_save_file": "ファイルに保存…"
 }

@@ -50,7 +50,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Permissions section: "Export Permissions" (one role) and "Export Permissions of All Roles" in a role's
   context menu produce a copyable SQL script that recreates the permissions: `CREATE ROLE` (attributes only),
   memberships, direct object privileges and default privileges, each database's statements under its own
-  header. Each section can be switched off and the script regenerates. Passwords, PUBLIC's grants, ownership
+  header. Each section can be switched off and the script regenerates, and "Save as file…" stores it through
+  the native Save dialog in the desktop app (a download prompt in the browser), the same flow the DBML export
+  uses — now shared in `export_file.js` / `writeExportTextFile`. Passwords, PUBLIC's grants, ownership
   and role settings are not exported; default privileges are exported with the role they are granted to.
 
 - Permissions section: the roles column has a filter — a name search plus a kind selector (all, users that can

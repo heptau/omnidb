@@ -1008,5 +1008,6 @@
   "permissions.option_no": "아니요",
   "permissions.edit_membership_options": "멤버십 옵션 편집",
   "permissions.edit_membership_hint": "\"{member}\"이(가) \"{parent}\"의 멤버인 것에 대한 옵션.",
-  "permissions.resize_column_hint": "드래그하여 너비 조정, 더블 클릭하여 초기화"
+  "permissions.resize_column_hint": "드래그하여 너비 조정, 더블 클릭하여 초기화",
+  "permissions.export_save_file": "파일로 저장…"
 }

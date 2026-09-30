@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/hex"
 	"fmt"
+	"net/http"
+	"net/url"
 	"os"
 	"path/filepath"
 	"sync"
@@ -72,4 +74,35 @@ func exportFileTrustedName(name string, userID int) (string, bool) {
 // user — query exports can contain anything the database holds.
 func createPrivateFile(path string) (*os.File, error) {
 	return os.OpenFile(path, os.O_RDWR|os.O_CREATE|os.O_TRUNC, 0o600)
+}
+
+// writeExportTextFile stores one generated text document as a temp export
+// file owned by userID and answers with the same {v_filename, v_filepath,
+// v_downloadname} shape export.go's responses carry, so the frontend's
+// deliverExportFile (export_file.js) can drive the native Save dialog
+// (desktop) / download link (browser) for it. Used by the exports that are
+// always exactly one text blob (DBML, permissions script).
+func writeExportTextFile(w http.ResponseWriter, upstream *url.URL, userID int, content, ext, downloadName string) {
+	tempDir, err := resolveTempDir(upstream)
+	if err != nil {
+		writeDatabaseError(w, err.Error())
+		return
+	}
+	cleanTempFolder(tempDir.TempDir)
+
+	fileName, outPath, err := newExportTempFile(tempDir.TempDir, userID, ext)
+	if err != nil {
+		writeDatabaseError(w, err.Error())
+		return
+	}
+	if err := os.WriteFile(outPath, []byte(content), 0o600); err != nil {
+		writeDatabaseError(w, err.Error())
+		return
+	}
+
+	writeEnvelope(w, map[string]any{
+		"v_filename":     tempDir.Path + "/static/temp/" + fileName,
+		"v_filepath":     outPath,
+		"v_downloadname": downloadName,
+	}, false, -1)
 }

@@ -31,3 +31,18 @@ func TestDefaultPrivilegeStatementsDatabaseWideAndUnknownKind(t *testing.T) {
 		t.Errorf("unknown kind produced %v", got)
 	}
 }
+
+func TestPermissionsExportFileName(t *testing.T) {
+	cases := map[string]string{
+		"":             "permissions-all-roles.sql",
+		"  ":           "permissions-all-roles.sql",
+		"app_user":     "permissions-app_user.sql",
+		`"Weird Name"`: "permissions-Weird_Name.sql",
+		"../etc/pass":  "permissions-.._etc_pass.sql",
+	}
+	for in, want := range cases {
+		if got := permissionsExportFileName(in); got != want {
+			t.Errorf("permissionsExportFileName(%q) = %q, want %q", in, got, want)
+		}
+	}
+}

@@ -518,6 +518,7 @@ type pgExportPermissionsRequest struct {
 	PMemberships       bool   `json:"p_memberships"`
 	PPrivileges        bool   `json:"p_privileges"`
 	PDefaultPrivileges bool   `json:"p_default_privileges"`
+	PFile              bool   `json:"p_file"` // write a temp export file instead of returning the text
 }
 
 // handleExportPermissionsPostgreSQL returns the permissions-export script
@@ -550,8 +551,36 @@ func handleExportPermissionsPostgreSQL(upstream *url.URL, fallback http.Handler)
 			writeDatabaseError(w, err.Error())
 			return
 		}
+		if reqBody.PFile {
+			who, err := resolveIdentity(upstream, r.Header.Get("Cookie"))
+			if err != nil || !who.Authenticated {
+				writeUnauthenticated(w)
+				return
+			}
+			writeExportTextFile(w, upstream, who.UserID, script, "sql", permissionsExportFileName(reqBody.PRole))
+			return
+		}
 		writeEnvelope(w, map[string]any{"v_sql": script}, false, -1)
 	}
+}
+
+// permissionsExportFileName is the suggested file name of a permissions
+// script: permissions-<role>.sql, or permissions-all-roles.sql. Anything
+// outside [A-Za-z0-9_.-] in the role name becomes "_" so the name is safe
+// for every file system (it is only a suggestion, the Save dialog decides).
+func permissionsExportFileName(role string) string {
+	role = unquotePostgresIdentifier(strings.TrimSpace(role))
+	if role == "" {
+		return "permissions-all-roles.sql"
+	}
+	safe := strings.Map(func(r rune) rune {
+		switch {
+		case r >= 'a' && r <= 'z', r >= 'A' && r <= 'Z', r >= '0' && r <= '9', r == '_', r == '.', r == '-':
+			return r
+		}
+		return '_'
+	}, role)
+	return "permissions-" + safe + ".sql"
 }
 
 type pgRenameRoleRequest struct {

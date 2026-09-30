@@ -1015,5 +1015,6 @@
   "permissions.option_no": "Ne",
   "permissions.edit_membership_options": "Upravit volby členství",
   "permissions.edit_membership_hint": "Volby členství role „{member}“ v roli „{parent}“.",
-  "permissions.resize_column_hint": "Tažením změníte šířku, dvojklikem ji vrátíte"
+  "permissions.resize_column_hint": "Tažením změníte šířku, dvojklikem ji vrátíte",
+  "permissions.export_save_file": "Uložit do souboru…"
 }

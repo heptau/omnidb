@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/url"
-	"os"
 )
 
 //go:embed postgresql_export_dbml.sql
@@ -91,27 +90,6 @@ func handleExportDBMLPostgreSQL(upstream *url.URL, fallback http.Handler) http.H
 			return
 		}
 
-		tempDir, err := resolveTempDir(upstream)
-		if err != nil {
-			writeDatabaseError(w, err.Error())
-			return
-		}
-		cleanTempFolder(tempDir.TempDir)
-
-		fileName, outPath, err := newExportTempFile(tempDir.TempDir, who.UserID, "dbml")
-		if err != nil {
-			writeDatabaseError(w, err.Error())
-			return
-		}
-		if err := os.WriteFile(outPath, []byte(dbml), 0o600); err != nil {
-			writeDatabaseError(w, err.Error())
-			return
-		}
-
-		writeEnvelope(w, map[string]any{
-			"v_filename":     tempDir.Path + "/static/temp/" + fileName,
-			"v_filepath":     outPath,
-			"v_downloadname": info.Database + ".dbml",
-		}, false, -1)
+		writeExportTextFile(w, upstream, who.UserID, dbml, "dbml", info.Database+".dbml")
 	}
 }

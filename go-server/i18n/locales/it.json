@@ -1014,5 +1014,6 @@
   "permissions.option_no": "No",
   "permissions.edit_membership_options": "Modifica opzioni di appartenenza",
   "permissions.edit_membership_hint": "Opzioni di «{member}» come membro di «{parent}».",
-  "permissions.resize_column_hint": "Trascina per ridimensionare, doppio clic per ripristinare"
+  "permissions.resize_column_hint": "Trascina per ridimensionare, doppio clic per ripristinare",
+  "permissions.export_save_file": "Salva come file…"
 }

@@ -7919,6 +7919,40 @@
       return null;
     }
   }
+  function deliverExportFile(p_data) {
+    if (!gv_desktopMode) {
+      showConfirm(
+        t("editor.file_ready"),
+        function() {
+          var v_a = document.createElement("a");
+          v_a.href = p_data.v_filename;
+          v_a.download = p_data.v_downloadname;
+          document.body.appendChild(v_a);
+          v_a.click();
+          v_a.remove();
+        },
+        function() {
+          execAjax$1("/discard_export_file/", JSON.stringify({ v_filepath: p_data.v_filepath }), null, null, "box", false);
+        },
+        null,
+        null,
+        t("common.download")
+      );
+      return;
+    }
+    fetch("/export_save_dialog/", {
+      method: "POST",
+      headers: jsonPostHeaders(),
+      body: JSON.stringify({ v_filepath: p_data.v_filepath, v_downloadname: p_data.v_downloadname })
+    }).then(function(p_response) {
+      return p_response.json();
+    }).then(function(p_result) {
+      if (p_result.error) showAlert(t("editor.error_saving_file", { error: p_result.error }));
+      else if (p_result.path) showAlert(t("editor.file_exported_to", { path: p_result.path }));
+    }).catch(function(p_error) {
+      showAlert(t("editor.error_saving_file", { error: p_error }));
+    });
+  }
   var PERMISSIONS_STRIP_SLOT_ID = "permissions_panel_strip_slot";
   var PERMISSIONS_CONTENT_ID = "permissions_panel_content";
   var v_render_token = 0;
@@ -8520,15 +8554,24 @@
         v_copy.className = "btn btn-sm btn-outline-secondary";
         v_copy.textContent = t("permissions.copy_sql");
         v_content.appendChild(v_copy);
-        var v_token = 0;
-        function load() {
-          var v_mine = ++v_token;
-          v_text.value = "";
+        var v_save = document.createElement("button");
+        v_save.type = "button";
+        v_save.className = "btn btn-sm btn-outline-secondary ml-2 ms-2";
+        v_save.textContent = t("permissions.export_save_file");
+        v_content.appendChild(v_save);
+        function requestBody() {
           var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name };
           for (var j2 = 0; j2 < v_sections.length; j2++) {
             v_body[v_sections[j2].key] = /** @type {HTMLInputElement} */
             document.getElementById(v_sections[j2].id).checked;
           }
+          return v_body;
+        }
+        var v_token = 0;
+        function load() {
+          var v_mine = ++v_token;
+          v_text.value = "";
+          var v_body = requestBody();
           execAjax$1(
             "/export_permissions_postgresql/",
             JSON.stringify(v_body),
@@ -8552,6 +8595,20 @@
           window.setTimeout(function() {
             v_copy.textContent = t("permissions.copy_sql");
           }, 1500);
+        });
+        v_save.addEventListener("click", function() {
+          execAjax$1(
+            "/export_permissions_postgresql/",
+            JSON.stringify(Object.assign(requestBody(), { p_file: true })),
+            function(p_return) {
+              deliverExportFile(p_return.v_data);
+            },
+            function(p_return) {
+              showAlert(p_return.v_data.message || p_return.v_data);
+            },
+            "box",
+            true
+          );
         });
         load();
       },
@@ -19090,48 +19147,7 @@
         p_database: p_node.tag.database
       }),
       function(p_return) {
-        if (!gv_desktopMode) {
-          showConfirm(
-            t("editor.file_ready"),
-            function() {
-              var v_a = document.createElement("a");
-              v_a.href = p_return.v_data.v_filename;
-              v_a.download = p_return.v_data.v_downloadname;
-              document.body.appendChild(v_a);
-              v_a.click();
-              v_a.remove();
-            },
-            function() {
-              execAjax$1(
-                "/discard_export_file/",
-                JSON.stringify({ v_filepath: p_return.v_data.v_filepath }),
-                null,
-                null,
-                "box",
-                false
-              );
-            },
-            null,
-            null,
-            t("common.download")
-          );
-          return;
-        }
-        fetch("/export_save_dialog/", {
-          method: "POST",
-          headers: jsonPostHeaders(),
-          body: JSON.stringify({
-            v_filepath: p_return.v_data.v_filepath,
-            v_downloadname: p_return.v_data.v_downloadname
-          })
-        }).then(function(p_response) {
-          return p_response.json();
-        }).then(function(p_result) {
-          if (p_result.error) showAlert(t("editor.error_saving_file", { error: p_result.error }));
-          else if (p_result.path) showAlert(t("editor.file_exported_to", { path: p_result.path }));
-        }).catch(function(p_error) {
-          showAlert(t("editor.error_saving_file", { error: p_error }));
-        });
+        deliverExportFile(p_return.v_data);
       },
       function(p_return) {
         nodeOpenErrorPostgresql(p_return, p_node);

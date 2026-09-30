@@ -1014,5 +1014,6 @@
   "permissions.option_no": "No",
   "permissions.edit_membership_options": "Edit Membership Options",
   "permissions.edit_membership_hint": "Options of \"{member}\" being a member of \"{parent}\".",
-  "permissions.resize_column_hint": "Drag to resize, double-click to reset"
+  "permissions.resize_column_hint": "Drag to resize, double-click to reset",
+  "permissions.export_save_file": "Save as file…"
 }

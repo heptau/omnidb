@@ -183,6 +183,7 @@ import { showPasswordPrompt } from "../passwords.js";
 import { escapeHtml, escapeHtmlAttribute } from "../query.js";
 import { t } from "../i18n.js";
 import { customMenu } from "../custom_menu.js";
+import { deliverExportFile } from "../export_file.js";
 
 var PERMISSIONS_STRIP_SLOT_ID = "permissions_panel_strip_slot";
 var PERMISSIONS_CONTENT_ID = "permissions_panel_content";
@@ -928,15 +929,27 @@ function openExportPermissionsDialog(p_tag, p_role_name) {
 			v_copy.textContent = t("permissions.copy_sql");
 			v_content.appendChild(v_copy);
 
-			var v_token = 0;
-			function load() {
-				var v_mine = ++v_token;
-				v_text.value = "";
+			var v_save = document.createElement("button");
+			v_save.type = "button";
+			v_save.className = "btn btn-sm btn-outline-secondary ml-2 ms-2";
+			v_save.textContent = t("permissions.export_save_file");
+			v_content.appendChild(v_save);
+
+			/** @returns {any} the request for the script with the sections currently ticked */
+			function requestBody() {
 				/** @type {any} */
 				var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name };
 				for (var j = 0; j < v_sections.length; j++) {
 					v_body[v_sections[j].key] = /** @type {HTMLInputElement} */ (document.getElementById(v_sections[j].id)).checked;
 				}
+				return v_body;
+			}
+
+			var v_token = 0;
+			function load() {
+				var v_mine = ++v_token;
+				v_text.value = "";
+				var v_body = requestBody();
 				execAjax(
 					"/export_permissions_postgresql/",
 					JSON.stringify(v_body),
@@ -959,6 +972,22 @@ function openExportPermissionsDialog(p_tag, p_role_name) {
 				window.setTimeout(function () {
 					v_copy.textContent = t("permissions.copy_sql");
 				}, 1500);
+			});
+			// The file is generated server-side (same sections as shown) and
+			// handed to the native Save dialog / browser download.
+			v_save.addEventListener("click", function () {
+				execAjax(
+					"/export_permissions_postgresql/",
+					JSON.stringify(Object.assign(requestBody(), { p_file: true })),
+					function (p_return) {
+						deliverExportFile(p_return.v_data);
+					},
+					function (p_return) {
+						showAlert(p_return.v_data.message || p_return.v_data);
+					},
+					"box",
+					true,
+				);
 			});
 			load();
 		},

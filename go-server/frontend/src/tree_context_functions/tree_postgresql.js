@@ -29,7 +29,8 @@ SOFTWARE.
 */
 
 import { t } from "../i18n.js";
-import { execAjax, jsonPostHeaders } from "../ajax_control_bridge.js";
+import { execAjax } from "../ajax_control_bridge.js";
+import { deliverExportFile } from "../export_file.js";
 import { customMenu } from "../custom_menu.js";
 import { createLegere } from "../lib/omnis_legere/omnis-legere.js";
 import { showAlert, showConfirm, showConfirm3, showError } from "../notification_control.js";
@@ -3405,52 +3406,7 @@ export function exportDBMLPostgresql(p_node) {
 			p_database: p_node.tag.database,
 		}),
 		function (p_return) {
-			if (!gv_desktopMode) {
-				showConfirm(
-					t("editor.file_ready"),
-					function () {
-						var v_a = document.createElement("a");
-						v_a.href = p_return.v_data.v_filename;
-						v_a.download = p_return.v_data.v_downloadname;
-						document.body.appendChild(v_a);
-						v_a.click();
-						v_a.remove();
-					},
-					function () {
-						execAjax(
-							"/discard_export_file/",
-							JSON.stringify({ v_filepath: p_return.v_data.v_filepath }),
-							null,
-							null,
-							"box",
-							false,
-						);
-					},
-					null,
-					null,
-					t("common.download"),
-				);
-				return;
-			}
-
-			fetch("/export_save_dialog/", {
-				method: "POST",
-				headers: jsonPostHeaders(),
-				body: JSON.stringify({
-					v_filepath: p_return.v_data.v_filepath,
-					v_downloadname: p_return.v_data.v_downloadname,
-				}),
-			})
-				.then(function (p_response) {
-					return p_response.json();
-				})
-				.then(function (p_result) {
-					if (p_result.error) showAlert(t("editor.error_saving_file", { error: p_result.error }));
-					else if (p_result.path) showAlert(t("editor.file_exported_to", { path: p_result.path }));
-				})
-				.catch(function (p_error) {
-					showAlert(t("editor.error_saving_file", { error: p_error }));
-				});
+			deliverExportFile(p_return.v_data);
 		},
 		function (p_return) {
 			nodeOpenErrorPostgresql(p_return, p_node);

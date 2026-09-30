@@ -1014,5 +1014,6 @@
   "permissions.option_no": "Nein",
   "permissions.edit_membership_options": "Mitgliedschaftsoptionen bearbeiten",
   "permissions.edit_membership_hint": "Optionen der Mitgliedschaft von „{member}“ in „{parent}“.",
-  "permissions.resize_column_hint": "Ziehen zum Ändern der Breite, Doppelklick zum Zurücksetzen"
+  "permissions.resize_column_hint": "Ziehen zum Ändern der Breite, Doppelklick zum Zurücksetzen",
+  "permissions.export_save_file": "Als Datei speichern…"
 }
