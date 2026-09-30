@@ -147,8 +147,8 @@ para las tablas que tengan una clave primaria. Las tablas que no la tienen solo 
 nuevos registros.</p>
 <p>Para acceder a la interfaz de edición de registros, haga clic derecho en el nodo de la tabla y seleccione
 la acción <em>Acciones de datos &gt; Editar datos</em>:</p>
-<p><img alt="" src="../assets/img/image_041.webp" /></p>
-<p><img alt="" src="../assets/img/image_042.webp" /></p>
+<p><img alt="The Data Actions submenu of a table" src="../assets/img/ui-ctx-data-actions.webp"/></p>
+<p><img alt="The Edit Data tab" src="../assets/img/ui-edit-data.webp"/></p>
 <p>La pestaña <em>Editar datos</em> tiene un pequeño editor SQL para una cláusula opcional de filtrado y
 ordenación, que se añade a la consulta que carga los registros —por ejemplo <code>where t.cust_id &gt; 10 order by
 t.cust_name</code> (la tabla está disponible con el alias <code>t</code>)—, una lista desplegable que limita
@@ -163,24 +163,22 @@ contiene su acción de fila: al hacer clic en la <em>×</em> se marca la fila pa
 para deshacerlo), o se descarta una fila nueva aún no guardada.</p>
 <p>La fila de la cuadrícula que tiene el símbolo <code>+</code> es la fila para añadir nuevos registros. Vamos
 a insertar algunos registros en la tabla <code>customers</code>:</p>
-<p><img alt="" src="../assets/img/image_043.webp" /></p>
+<p><img alt="Two new rows added in the Edit Data grid" src="../assets/img/ui-edit-data-insert.webp"/></p>
 <p>Tras guardar, los registros se insertarán y podrán editarse (solo porque esta
 tabla tiene una clave primaria). Cambiemos el <em>cust_name</em> de algunos de los registros
 existentes y, al mismo tiempo, eliminemos una de las filas:</p>
-<p><img alt="" src="../assets/img/image_044.webp" /></p>
+<p><img alt="Edit Data with a changed cell and a row marked for deletion" src="../assets/img/ui-edit-data-changes.webp"/></p>
 <p>Las tablas pueden tener campos con valores representados por cadenas muy largas. Para ayudar a
 editar estos campos, haga clic derecho en la celda y elija <em>Edit Content</em>: se abre un editor más grande
 (con resaltado de sintaxis para columnas JSON/JSONB y XML), y <em>Guardar</em> escribe el valor de vuelta
 en la cuadrícula. El mismo menú ofrece <em>Copiar</em>:</p>
-<p><img alt="" src="../assets/img/image_045.webp" /></p>
-<p><img alt="" src="../assets/img/image_046.webp" /></p>
+<p><img alt="The cell context menu of the Edit Data grid" src="../assets/img/ui-edit-data-cell-menu.webp"/></p>
+<p><img alt="The Edit Content dialog" src="../assets/img/ui-edit-data-content.webp"/></p>
 <p>La interfaz detecta los errores que puedan ocurrir durante las operaciones relacionadas con
 los registros. Para demostrarlo, insertemos dos registros con un <code>cust_id</code> existente
 (clave primaria):</p>
-<p><img alt="" src="../assets/img/image_047.webp" /></p>
+<p><img alt="The error dialog shown when saving fails" src="../assets/img/ui-edit-data-error.webp"/></p>
 <p>Muestra qué comandos se intentaron ejecutar y los respectivos errores.</p>
-<p>Para completar este capítulo, añadamos algunos registros a la tabla <em>Address</em>:</p>
-<p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

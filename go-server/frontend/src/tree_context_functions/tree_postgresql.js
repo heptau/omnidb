@@ -7398,7 +7398,7 @@ export function getPublicationsPostgresql(node) {
 					null,
 					false,
 				);
-				if (p_return.v_data[i].v_alltables == "False") {
+				if (!p_return.v_data[i].v_alltables) {
 					v_tables = v_node.createChildNode(t("tree.tables"),
 						false,
 						"fas node-all fa-th node-table-list",

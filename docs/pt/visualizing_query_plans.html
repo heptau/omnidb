@@ -149,22 +149,22 @@ Analyze</em>.</p>
 sua consulta. A visualização inicial é <em>textual</em> e mostrará exatamente o resultado
 do comando <code>EXPLAIN</code>, mas com barras coloridas representando o custo estimado.
 Quanto maior o custo, mais escura e larga é a barra.</p>
-<p><img alt="" src="../assets/img/image_054.webp" /></p>
+<p><img alt="The textual Explain view" src="../assets/img/ui-explain-text.webp"/></p>
 <p>Quando clica no botão <em>Explain Analyze</em>, o OmniDB executa um comando <code>EXPLAIN
-ANALYZE</code> na sua consulta. Tenha em atenção que este comando executa realmente a
+(ANALYZE, BUFFERS)</code> na sua consulta. Tenha em atenção que este comando executa realmente a
 consulta. Além disso, a visualização textual mostrará muito mais informação, e os
 custos não são estimados como os fornecidos pelo comando <code>EXPLAIN</code>; são
 custos reais.</p>
-<p><img alt="" src="../assets/img/image_055.webp" /></p>
+<p><img alt="The textual Explain Analyze view" src="../assets/img/ui-explain-analyze-text.webp"/></p>
 <h4>Visualização em árvore</h4>
 <p>Tanto o modo <em>Explain</em> como o <em>Explain Analyze</em> também podem representar graficamente a
 saída textual num diagrama em <em>árvore</em>. Cada círculo representa um nó executado pelo
 plano de consulta, e quanto maior o círculo, maior o custo.</p>
-<p><img alt="" src="../assets/img/image_056.webp" /></p>
+<p><img alt="The plan as a tree diagram" src="../assets/img/ui-explain-tree1.webp"/></p>
 <p>À medida que as consultas se tornam cada vez mais complexas, também o seu plano de consulta pode ser muito
 complexo. Com consultas desse tipo (como a consulta de <em>verificação de bloat</em> que executámos abaixo), a
 visualização em árvore pode ser muito interessante:</p>
-<p><img alt="" src="../assets/img/image_057.webp" /></p>
+<p><img alt="The plan as a zoomed tree diagram" src="../assets/img/ui-explain-tree2.webp"/></p>
 <p>O componente de visualização de planos de consulta permite alternar facilmente entre a
 visualização textual e as 2 visualizações em árvore, que podem ser ampliadas ou reduzidas com zoom.</p>
 		</main>

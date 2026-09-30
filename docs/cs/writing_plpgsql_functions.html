@@ -145,13 +145,12 @@ velmi výkonný a flexibilní programovací jazyk zvaný <code>PL/pgSQL</code>.
 jazyka si můžete psát vlastní <em>uživatelsky definované funkce</em> a dosáhnout tak
 úrovně abstrakce a procedurálních výpočtů, které by se v čistém SQL dosahovaly
 obtížně (a někdy by se bez přepínání kontextu do aplikace nedaly dosáhnout vůbec).</p>
-<p><img alt="" src="../assets/img/image_072.webp" /></p>
 <h4>Psaní funkcí</h4>
 <p>Ve schématu <code>public</code> klikněte pravým tlačítkem na uzel <code>Functions</code> a
 zvolte <em>Create Function</em>. Otevře se vnitřní záložka <em>SQL Query</em>, která už
 obsahuje SQL šablonu pomáhající vytvořit vaši první PL/pgSQL funkci.</p>
-<p><img alt="" src="../assets/img/image_073.webp" /></p>
-<p><img alt="" src="../assets/img/image_074.webp" /></p>
+<p><img alt="The context menu of the Functions node" src="../assets/img/ui-ctx-functions.webp"/></p>
+<p><img alt="The CREATE FUNCTION template" src="../assets/img/ui-function-create.webp"/></p>
 <p>Ohledně psaní uživatelsky definovaných funkcí se můžete podívat do
 dokumentace PostgreSQL. Stačí kliknout pravým tlačítkem na uzel <em>Functions</em>
 a zvolit <em>Doc: Functions</em> — příslušná stránka dokumentace PostgreSQL se
@@ -189,17 +188,17 @@ tento <em>řetězec</em> obsahuje. Poté tento počet vrátí.</p>
 podaří, funkce se objeví pod stromovým uzlem <em>Functions</em> (můžete jej obnovit
 kliknutím pravým tlačítkem a volbou <em>Refresh</em>). Rozbalením uzlu funkce navíc
 uvidíte její návratový typ a argument.</p>
-<p><img alt="" src="../assets/img/image_075.webp" /></p>
+<p><img alt="A function in the tree and the result of calling it" src="../assets/img/ui-function-run.webp"/></p>
 <p>Nyní tuto novou funkci poprvé spusťme. Otevřete jednoduchou vnitřní záložku
 SQL Query a spusťte následující SQL dotaz:</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
-<p><img alt="" src="../assets/img/image_076.webp" /></p>
 <p>Všimněte si, že dotaz vrací jedinou hodnotu obsahující počet samohlásek
 v textu.</p>
 <p>Kliknutím pravým tlačítkem na uzel funkce uvidíte, že jsou k dispozici akce
 pro její úpravu, výběr a odstranění. Jak jste asi tušili, každá akce otevře
 vnitřní záložky SQL Query s praktickými SQL šablonami.</p>
+<p><img alt="The context menu of a function" src="../assets/img/ui-ctx-function.webp"/></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

@@ -150,22 +150,22 @@ Analyze</em>.</p>
 su consulta. La visualización inicial es <em>textual</em> y mostrará exactamente la salida
 del comando <code>EXPLAIN</code>, pero con barras coloreadas que representan el coste estimado.
 Cuanto mayor sea el coste, más oscura y ancha será la barra.</p>
-<p><img alt="" src="../assets/img/image_054.webp" /></p>
+<p><img alt="The textual Explain view" src="../assets/img/ui-explain-text.webp"/></p>
 <p>Al hacer clic en el botón <em>Explain Analyze</em>, OmniDB ejecutará un comando <code>EXPLAIN
-ANALYZE</code> en su consulta. Tenga en cuenta que este comando realmente ejecutará la
+(ANALYZE, BUFFERS)</code> en su consulta. Tenga en cuenta que este comando realmente ejecutará la
 consulta. Además, la visualización textual mostrará mucha más información, y los
 costes no son estimados como los que proporciona el comando <code>EXPLAIN</code>; son
 costes reales.</p>
-<p><img alt="" src="../assets/img/image_055.webp" /></p>
+<p><img alt="The textual Explain Analyze view" src="../assets/img/ui-explain-analyze-text.webp"/></p>
 <h4>Visualización en árbol</h4>
 <p>Tanto los modos <em>Explain</em> como <em>Explain Analyze</em> también pueden representar
 gráficamente la salida textual en un diagrama de <em>árbol</em>. Cada círculo representa un nodo ejecutado por
 el plan de consulta, y cuanto mayor sea el círculo, mayor será el coste.</p>
-<p><img alt="" src="../assets/img/image_056.webp" /></p>
+<p><img alt="The plan as a tree diagram" src="../assets/img/ui-explain-tree1.webp"/></p>
 <p>A medida que las consultas se vuelven cada vez más complejas, su plan de consulta también
 puede ser muy complejo. Con este tipo de consultas (como la consulta de <em>comprobación de bloat</em> que ejecutamos antes), la
 visualización en árbol puede resultar muy interesante:</p>
-<p><img alt="" src="../assets/img/image_057.webp" /></p>
+<p><img alt="The plan as a zoomed tree diagram" src="../assets/img/ui-explain-tree2.webp"/></p>
 <p>El componente de visualización de planes de consulta le permite alternar fácilmente entre la
 visualización textual y las 2 visualizaciones en árbol, que se pueden ampliar y reducir.</p>
 		</main>

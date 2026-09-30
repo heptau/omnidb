@@ -143,6 +143,7 @@
 elementos. Os atalhos de teclado indicados abaixo são os predefinidos no Windows/Linux; no macOS, os atalhos
 próprios do OmniDB usam Ctrl em vez de Alt. Todos podem ser alterados em
 <a href="settings_and_languages.html">Definições &gt; Atalhos de teclado</a>.</p>
+<p><img alt="A Query tab with the SQL editor, toolbar and results" src="../assets/img/ui-query-editor.webp"/></p>
 <ul>
 <li><strong>1) Cabeçalho do Separador</strong>: Pode ver o nome do separador e, ao passar o rato, um ícone para
 o fechar. Enquanto uma consulta está em execução no separador, verá um indicador giratório; se terminar enquanto
@@ -177,7 +178,7 @@ por intervalo de datas e por texto para encontrar o comando SQL de que precisa
 gráfica no separador Explain (consulte <a href="visualizing_query_plans.html">Visualizar Planos de
 Consulta</a> para mais detalhes).</li>
 <li><strong>9) Explain Analyze (apenas PostgreSQL)</strong>: O mesmo que o botão Explain, mas executa a
-consulta SQL com <code>EXPLAIN ANALYZE</code>, que efetivamente executa a consulta (atalho
+consulta SQL com <code>EXPLAIN (ANALYZE, BUFFERS)</code>, que efetivamente executa a consulta (atalho
 <code>Alt-E</code>).</li>
 <li><strong>10) Autocommit (apenas PostgreSQL)</strong>: Quando ativado, todas as consultas executadas
 são submetidas (commit) na base de dados. Quando desativado, o OmniDB inicia uma transação e, após a
@@ -227,15 +228,15 @@ automática de código SQL. Abra as sugestões com <code>Ctrl-Space</code>
 (<code>Option-Space</code> no macOS). Com esta funcionalidade é possível autocompletar colunas
 contidas numa tabela referenciada por um alias: escreva o alias, o carácter <code>.</code> e
 depois abra o autocompletar:</p>
-<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p><img alt="Autocomplete after a table alias" src="../assets/img/ui-autocomplete-alias.webp"/></p>
 <p>Se o utilizador não iniciar o autocompletar com o cursor próximo de um alias
 de tabela, o componente mostrará várias categorias de dados. Ao escrever na caixa de
 filtro, os elementos em todas as categorias serão filtrados:</p>
-<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p><img alt="Autocomplete offering all categories" src="../assets/img/ui-autocomplete-all.webp"/></p>
 <p>O componente de autocompletar também é capaz de identificar alguma informação contextual.
 Por exemplo, se escrever o nome de um esquema e depois o carácter <code>.</code>, poderá filtrar
 entre objetos contidos apenas nesse esquema:</p>
-<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p><img alt="Autocomplete after a schema name" src="../assets/img/ui-autocomplete-schema.webp"/></p>
 <p>Depois de <code>::</code> (uma conversão de tipo do PostgreSQL), são oferecidos apenas tipos de dados. Escolher uma
 palavra-chave acrescenta também aquilo que sempre se lhe segue (por exemplo, um espaço depois de <code>SELECT</code>, ou o
 parêntese de abertura depois de <code>COALESCE</code>). As categorias oferecidas (palavras-chave,

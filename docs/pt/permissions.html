@@ -138,33 +138,40 @@
 		</div>
 		</nav>
 		<main>
-		<h1>Roles e Permissões</h1>
-<p>A secção <em>Permissões</em> é um explorador de roles e privilégios para PostgreSQL. Apresenta as
-roles de um servidor ao estilo do Finder, em colunas lado a lado: escolha uma role à esquerda, e as
-colunas à sua direita mostram de que roles ela é membro, quem é membro dela, e o que ela pode
+			<h1>Roles e Permissões</h1>
+<p>A secção <em>Permissões</em> é um explorador de roles e privilégios para PostgreSQL. Apresenta as
+roles de um servidor ao estilo do Finder, em colunas lado a lado: escolha uma role à esquerda, e as
+colunas à sua direita mostram de que roles ela é membro, quem é membro dela, e o que ela pode
 realmente fazer em cada objeto da base de dados — incluindo tudo aquilo que só tem indiretamente, através de
-associações de roles herdadas ou através de <code>PUBLIC</code>. Roles, associações e privilégios
-podem ser criados, alterados e revogados ali mesmo.</p>
-<p><strong>Nota:</strong> esta secção suporta atualmente apenas o PostgreSQL. Para qualquer outra
+associações de roles herdadas ou através de <code>PUBLIC</code>. Roles, associações, privilégios,
+privilégios predefinidos e propriedade podem ser criados, alterados e revogados ali mesmo.</p>
+<p><strong>Nota:</strong> esta secção suporta atualmente apenas o PostgreSQL. Para qualquer outra
 ligação, mostra <em>As permissões ainda não são suportadas para …</em> / <em>De momento, apenas o PostgreSQL é suportado.</em></p>
-<h4>Abrir a secção</h4>
-<p>Clique no ícone <em>Permissões</em> (o ícone das pessoas) na barra esquerda. A secção trabalha sobre
-uma ligação que já está aberta na secção <em>Base de dados</em>: a mesma faixa de separadores de ligação
-abertos é mostrada no seu topo, e a secção usa o separador de ligação que estiver
+<p><img alt="The Permissions section with three columns" src="../assets/img/ui-perm-roles.webp"/></p>
+<h4>Abrir a secção</h4>
+<p>Clique no ícone <em>Permissões</em> (o ícone das pessoas) na barra esquerda. A secção trabalha sobre
+uma ligação que já está aberta na secção <em>Base de dados</em>: a mesma faixa de separadores de ligação
+abertos é mostrada no seu topo, e a secção usa o separador de ligação que estiver
 selecionado. Sem nenhuma ligação aberta, mostra <em>Nenhuma ligação aberta</em> — abra primeiro uma
 (consulte <a href="managing_databases.html">Gerir Bases de Dados</a>). As colunas são reconstruídas sempre
 que entra na secção, pelo que qualquer seleção anterior é reposta.</p>
-<p>Tudo o que fizer aqui requer os mesmos privilégios de que o SQL equivalente precisaria
-(<code>CREATEROLE</code>, superutilizador, ou ser proprietário do objeto, consoante a ação) —
-o OmniDB executa as instruções com as credenciais da ligação que está a usar.</p>
+<p>Tudo o que fizer aqui requer os mesmos privilégios de que o SQL equivalente precisaria
+(<code>CREATEROLE</code>, superutilizador, ou ser proprietário do objeto, consoante a ação) —
+o OmniDB executa as instruções com as credenciais da ligação que está a usar. As três
+colunas podem ser redimensionadas arrastando a pequena pega no seu bordo direito; um duplo clique
+numa pega repõe essa coluna, e as larguras são memorizadas.</p>
 <h4>Coluna 1: Roles</h4>
-<p>A coluna <em>Roles</em> lista todas as roles do servidor, incluindo as roles incorporadas
+<p>A coluna <em>Roles</em> lista todas as roles do servidor, incluindo as roles incorporadas
 <code>pg_*</code>, ordenadas por nome. As roles que podem iniciar sessão (utilizadores) têm um ícone de uma só pessoa;
-as que não podem (grupos) têm um ícone de duas pessoas. A primeira linha é sempre
-<code>PUBLIC</code> (ícone do globo) — não é uma role real, mas a pseudo-role a que todas as roles pertencem
-implicitamente, para que os privilégios concedidos a <code>PUBLIC</code> possam ser explorados e editados da mesma
+as que não podem (grupos) têm um ícone de duas pessoas; os superutilizadores são assinalados com <em>superutilizador</em> e as roles
+cuja conta expirou com <em>expirada</em>. A primeira linha é sempre
+<code>PUBLIC</code> (ícone do globo) — não é uma role real, mas a pseudo-role a que todas as roles pertencem
+implicitamente, para que os privilégios concedidos a <code>PUBLIC</code> possam ser explorados e editados da mesma
 forma.</p>
-<p>Clique numa role para a pôr em foco; as outras colunas mostram então essa role. Por baixo da lista:</p>
+<p>A caixa acima da lista filtra as roles por nome, e a lista pendente ao lado filtra-as por tipo: <em>Todas as
+funções</em>, <em>Utilizadores (podem iniciar sessão)</em>, <em>Grupos (sem início de sessão)</em>, <em>Superutilizadores</em> ou
+<em>Expiradas</em>.</p>
+<p>Clique numa role para a pôr em foco; as outras colunas mostram então essa role. Por baixo da lista:</p>
 <ul>
 <li><strong>+</strong> abre o diálogo <em>Criar role</em>: <em>Nome do role</em>,
 <em>Palavra-passe</em> e as caixas de seleção de atributos <em>Pode iniciar sessão</em> (ativada por predefinição),
@@ -172,89 +179,146 @@ forma.</p>
 privilégios dos roles de que é membro</em> (ativada por predefinição), <em>Pode iniciar a replicação</em>
 e <em>Ignora a segurança ao nível da linha</em>, mais <em>Limite de ligações (-1 = ilimitado)</em> e
 <em>A conta expira em</em> (deixe vazio para não expirar).</li>
-<li><strong>−</strong> elimina a role selecionada (desativado para <code>PUBLIC</code>).</li>
+<li><strong>−</strong> elimina a role selecionada (desativado para <code>PUBLIC</code>).</li>
 </ul>
-<p>Clicar com o botão direito numa role (que não seja <code>PUBLIC</code>) oferece:</p>
+<p><img alt="The Create Role dialog with the SQL preview" src="../assets/img/ui-perm-create-role.webp"/></p>
+<p>Clicar com o botão direito numa role (que não seja <code>PUBLIC</code>) oferece:</p>
 <ul>
-<li><em>Alterar palavra-passe</em> — pede a nova palavra-passe duas vezes. A palavra-passe é transformada em hash no
-formato para o qual o próprio servidor está configurado (SCRAM-SHA-256 ou md5) antes de ser enviada.</li>
+<li><em>Alterar palavra-passe</em> — pede a nova palavra-passe duas vezes. A palavra-passe é transformada em hash no
+formato para o qual o próprio servidor está configurado (SCRAM-SHA-256 ou md5) antes de ser enviada.</li>
 <li><em>Alterar atributos</em> — os mesmos campos de atributos que <em>Criar role</em>, preenchidos com
-os valores atuais da role. Limpar <em>A conta expira em</em> remove a expiração.</li>
-<li><em>Eliminar role</em> — pergunta <em>Eliminar o role "…"? Esta ação não pode ser anulada.</em> e depois executa um
-simples <code>DROP ROLE</code>; o PostgreSQL recusa-o enquanto a role ainda for proprietária de objetos ou detiver
-privilégios.</li>
+os valores atuais da role. Limpar <em>A conta expira em</em> remove a expiração.</li>
+<li><em>Renomear função</em> — <code>ALTER ROLE … RENAME TO</code>. As concessões, associações e propriedade
+acompanham a role; o diálogo avisa que o PostgreSQL apaga uma palavra-passe guardada como md5 ao renomear.</li>
+<li><em>Exportar permissões</em> / <em>Exportar permissões de todas as funções</em> — um script SQL copiável
+que recria as permissões: <code>CREATE ROLE</code> (apenas atributos), associações, privilégios diretos
+sobre objetos e privilégios predefinidos, com as instruções de cada base de dados sob o seu próprio cabeçalho.
+Cada parte pode ser desativada e o script é regenerado; <em>Guardar como ficheiro…</em> guarda-o
+(um diálogo nativo de guardar na aplicação de ambiente de trabalho, uma transferência no navegador). As palavras-passe, as concessões de <code>PUBLIC</code>,
+a propriedade e as definições das roles não são exportadas.</li>
+<li><em>Clonar função</em> — cria uma nova role com os atributos da role de origem e, opcionalmente,
+as suas associações diretas e os seus privilégios diretos sobre objetos em todas as bases de dados (encontrados através de
+<code>pg_shdepend</code>, pelo que as bases de dados onde não detém nada nunca são abertas). A palavra-passe não é
+copiada; pode definir uma no diálogo. Os privilégios predefinidos, os objetos próprios e as definições por role
+não são copiados.</li>
+<li><em>Eliminar role</em> — se a role ainda for proprietária de objetos ou detiver privilégios, o diálogo lista,
+por base de dados, o que ela possui e detém e pergunta que role assume os seus objetos. O OmniDB executa então
+<code>REASSIGN OWNED</code> e <code>DROP OWNED</code> em cada base de dados afetada (por esta ordem, para que
+nada seja eliminado) antes de <code>DROP ROLE</code>. Sem quaisquer dependências, limita-se a pedir
+confirmação.</li>
 </ul>
+<p><img alt="The context menu of a role" src="../assets/img/ui-perm-role-menu.webp"/></p>
 <h4>Coluna 2: associações</h4>
-<p>A segunda coluna está dividida em duas metades:</p>
+<p>A segunda coluna está dividida em duas metades:</p>
 <ul>
-<li><strong>… — Membros</strong> (em cima): as roles que são membros da role em foco.</li>
-<li><strong>… — Membro de</strong> (em baixo): todas as roles a que a role em foco pertence, diretamente ou
+<li><strong>… — Membros</strong> (em cima): as roles que são membros da role em foco. Com
+<code>PUBLIC</code> em foco, lista todas as roles, uma vez que todas recebem implicitamente os
+privilégios de <code>PUBLIC</code>.</li>
+<li><strong>… — Membro de</strong> (em baixo): todas as roles a que a role em foco pertence, diretamente ou
 através de outras roles, reunidas numa única lista. <code>PUBLIC</code> aparece sempre em primeiro lugar.</li>
 </ul>
-<p>Em ambas as metades, as associações diretas são mostradas em texto normal e as indiretas (herdadas)
-a cinzento. Uma associação direta concedida <code>WITH ADMIN OPTION</code> é assinalada com
-<em>(admin option)</em>. Para <code>PUBLIC</code>, ambas as metades dizem apenas <em>PUBLIC não é membro
-de nenhum role.</em></p>
+<p>Em ambas as metades, as associações diretas são mostradas em texto normal e as indiretas (herdadas)
+em itálico com um ícone esbatido. Uma associação direta concedida <code>WITH ADMIN OPTION</code> é assinalada com
+<em>(admin option)</em>; no PostgreSQL 16 e posteriores, <em>(sem herança)</em> e <em>(sem SET)</em>
+assinalam associações que não têm a opção <code>INHERIT</code> ou <code>SET</code>.</p>
 <ul>
-<li>O <strong>+</strong> por baixo de <em>Membro de</em> abre <em>Conceder associação</em>: escolha uma
-role para tornar a role em foco membro dela, opcionalmente <em>Com opção de administração (admin option)</em>.</li>
-<li>O <strong>+</strong> por baixo de <em>Membros</em> abre <em>Adicionar membro</em>: o mesmo diálogo no
-sentido inverso — a role escolhida torna-se membro da role em foco.</li>
+<li>O <strong>+</strong> por baixo de <em>Membro de</em> abre <em>Conceder associação</em>: escolha uma ou mais
+roles (clique nas linhas para as alternar) de que tornar a role em foco membro, opcionalmente <em>Com
+opção de administração (admin option)</em>. No PostgreSQL 16+, o diálogo oferece também as escolhas <em>Herdar os privilégios da função (INHERIT)</em> e <em>Pode fazer SET ROLE para ela (SET)</em>
+(<em>Predefinição do servidor</em> / <em>Sim</em> / <em>Não</em>).</li>
+<li>O <strong>+</strong> por baixo de <em>Membros</em> abre <em>Adicionar membro</em>: o mesmo diálogo no
+sentido inverso — as roles escolhidas tornam-se membros da role em foco.</li>
 <li><strong>−</strong> (ou botão direito → <em>Remover associação</em>) revoga uma associação depois de
 perguntar <em>Revogar a associação a "…"?</em>. Só as associações diretas podem ser removidas; uma herdada
 tem de ser revogada onde é efetivamente concedida.</li>
+<li>Botão direito → <em>Editar opções de pertença</em> altera no local a opção de administração de uma associação direta
+e (no PostgreSQL 16+) as opções <code>INHERIT</code>/<code>SET</code>.</li>
 <li>Fazer duplo clique numa linha, ou botão direito → <em>Definir como role ativo</em>, torna essa role a
-role em foco, exatamente como se tivesse clicado nela na coluna <em>Roles</em> — a forma mais rápida de
+role em foco, exatamente como se tivesse clicado nela na coluna <em>Roles</em> — a forma mais rápida de
 seguir uma cadeia de herança para cima.</li>
 </ul>
-<h4>Coluna 3: objetos e privilégios efetivos</h4>
-<p>A terceira coluna, <em>… — Objetos</em>, é uma árvore de tudo aquilo sobre que a role em foco tem algum
-privilégio — os seus privilégios <em>efetivos</em>: as suas próprias concessões diretas mais tudo o que
-herda através das suas associações e através de <code>PUBLIC</code>. Começa com dois grupos,
+<h4>Coluna 3: objetos e privilégios efetivos</h4>
+<p>A terceira coluna, <em>… — Objetos</em>, é uma árvore de tudo aquilo sobre que a role em foco tem algum
+privilégio — os seus privilégios efetivos: as suas próprias concessões diretas mais tudo o que
+herda através das suas associações e através de <code>PUBLIC</code>. Começa com dois grupos,
 <em>Bases de dados</em> (todas as bases de dados do servidor) e <em>Tablespaces</em>; um nó é mostrado
-normalmente se a role tiver algum privilégio aí, e a cinzento caso contrário.</p>
-<p>Expandir uma base de dados carrega os seus objetos através de uma ligação separada a essa base de dados (a
+normalmente se a role tiver algum privilégio aí, e a cinzento caso contrário. A caixa no topo
+filtra as bases de dados e os tablespaces por nome e mantém o seu texto quando muda de role.</p>
+<p>Expandir uma base de dados carrega os seus objetos através de uma ligação separada a essa base de dados (a
 base de dados ativa do próprio separador de ligação não muda): esquemas e, dentro de cada esquema,
 pastas para tabelas, vistas, sequências, funções, procedimentos, vistas materializadas, tipos e
-domínios; os foreign data wrappers e os servidores externos ficam diretamente por baixo da base de dados. Só são listados
-os objetos sobre os quais a role tem efetivamente algum privilégio (os esquemas de sistema são omitidos); um esquema mostrado
-a cinzento só está lá porque algo no seu interior está. Se não houver absolutamente nada, a base de dados
+domínios; os foreign data wrappers e os servidores externos ficam diretamente por baixo da base de dados. Só são listados
+os objetos sobre os quais a role tem efetivamente algum privilégio (os esquemas de sistema são omitidos); um esquema mostrado
+a cinzento só está lá porque algo no seu interior está. Cada base de dados tem ainda duas pastas extra:
+<em>Objetos próprios (n)</em>, que lista o que a role possui aí (até 1000 entradas), e
+<em>Privilégios predefinidos</em>, descritos abaixo. Se não houver absolutamente nada, a base de dados
 mostra <em>Sem privilégios sobre nenhum objeto desta base de dados.</em></p>
+<p><img alt="The Objects column expanded down to the tables" src="../assets/img/ui-perm-objects.webp"/></p>
 <h4>Editar privilégios</h4>
-<p>Clique com o botão direito numa base de dados, tablespace, esquema ou objeto e escolha <em>Editar privilégios</em>. O
+<p>Clique com o botão direito numa base de dados, tablespace, esquema ou objeto e escolha <em>Editar privilégios</em>. O
 diálogo lista, como caixa de seleção, cada privilégio válido para esse tipo de objeto:</p>
 <ul>
-<li>base de dados: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;
-tablespace: <code>CREATE</code>; esquema: <code>CREATE</code>, <code>USAGE</code>;</li>
-<li>tabela, vista e vista materializada: <code>SELECT</code>, <code>INSERT</code>,
-<code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>,
-<code>TRIGGER</code>;</li>
-<li>sequência: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;
-função e procedimento: <code>EXECUTE</code>;
-tipo, domínio, foreign data wrapper e servidor externo: <code>USAGE</code>.</li>
+<li>base de dados: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;</li>
+<li>tablespace: <code>CREATE</code>; esquema: <code>CREATE</code>, <code>USAGE</code>;</li>
+<li>tabela, vista e vista materializada: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>,
+<code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>, <code>TRIGGER</code>;</li>
+<li>sequência: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;</li>
+<li>função e procedimento: <code>EXECUTE</code>;</li>
+<li>tipo, domínio, foreign data wrapper e servidor externo: <code>USAGE</code>.</li>
 </ul>
-<p>Cada caixa de seleção indica de onde vem o privilégio:</p>
+<p>As caixas de seleção mostram o que a role detém diretamente:</p>
 <ul>
-<li><strong>assinalada</strong> — a role detém-no diretamente; desmarque-a para o revogar (<code>REVOKE</code>);</li>
-<li><strong>assinalada mas desativada</strong>, com <em>Herdado de: …</em> — a role só o tem
-através de outra role ou de <code>PUBLIC</code>. Não pode ser revogado aqui; torne ativa a role de origem
-(<em>Definir como role ativo</em>) e revogue-o lá;</li>
-<li><strong>não assinalada</strong> — a role não o tem; assinale-a para o conceder (<code>GRANT</code>)
-diretamente.</li>
+<li><strong>assinalada</strong> — concedida diretamente à role; desmarque-a para a revogar (<code>REVOKE</code>);</li>
+<li><strong>não assinalada</strong> — não concedida diretamente; assinale-a para a conceder (<code>GRANT</code>). Se a role
+já tiver o privilégio através de outra role ou de <code>PUBLIC</code>, fica não assinalada e é
+etiquetada <em>Herdado de: …</em> — pode mesmo assim assinalá-la para a conceder diretamente, de modo a que sobreviva à
+remoção da associação de onde veio. Para retirar um privilégio herdado, revogue-o na sua
+origem (torne ativa a role de origem com <em>Definir como role ativo</em>).</li>
 </ul>
+<p><img alt="The Edit Privileges dialog with the SQL preview" src="../assets/img/ui-perm-edit-privileges.webp"/></p>
 <p><em>Com opção de concessão (grant option)</em> aplica-se aos privilégios que conceder de novo nesse diálogo. Confirme
-com o botão principal do diálogo, cujo rótulo é o nome do objeto.</p>
+com <em>Guardar</em>.</p>
 <p>Para conceder algo sobre um objeto que ainda não está na árvore, use o <strong>+</strong>
 (<em>Adicionar privilégio sobre objeto</em>) por baixo da coluna: escolha o <em>Tipo de objeto</em>, depois a
-<em>Base de dados</em> (para tudo exceto bases de dados e tablespaces; por predefinição, a base de dados atual
-da ligação), o <em>Esquema</em> para objetos ao nível do esquema, o próprio
-<em>Objeto</em> (as funções são mostradas com a sua assinatura de argumentos), assinale os
-<em>Privilégios</em> e, opcionalmente, <em>Com opção de concessão (grant option)</em>.</p>
+<em>Base de dados</em> (para tudo exceto bases de dados e tablespaces; por predefinição, a base de dados atual
+da ligação), o <em>Esquema</em> para objetos ao nível do esquema, o próprio
+<em>Objeto</em> (as funções são mostradas com a sua assinatura de argumentos), assinale os
+<em>Privilégios</em> e, opcionalmente, <em>Com opção de concessão (grant option)</em>. Para tabelas, sequências, funções
+e procedimentos, a escolha <em>Âmbito</em> pode ser mudada de <em>Objeto selecionado</em> para <em>Todas as … 
+do esquema</em>, com <em>Conceder</em> ou <em>Revogar</em>: o OmniDB executa então <code>GRANT</code>/<code>REVOKE
+… ON ALL … IN SCHEMA</code>, o que afeta os objetos que existem agora, não os criados mais tarde.</p>
 <p>Selecionar <code>PUBLIC</code> na primeira coluna permite-lhe editar aquilo que está concedido ao próprio
 <code>PUBLIC</code> (<code>GRANT … TO PUBLIC</code> / <code>REVOKE … FROM PUBLIC</code>).</p>
-<p><strong>Importante:</strong> todas as ações desta secção são executadas de imediato no servidor
-— não há pré-visualização do SQL nem forma de anular. Só <em>Eliminar role</em> e <em>Remover associação</em>
-pedem confirmação primeiro. Se o servidor rejeitar uma instrução, é mostrada a respetiva mensagem de erro.</p>
+<h4>Privilégios predefinidos</h4>
+<p>A pasta <em>Privilégios predefinidos</em> de uma base de dados lista as entradas de <code>ALTER DEFAULT PRIVILEGES</code>
+que envolvem a role em foco, seja como beneficiária ou como role criadora. São a
+forma de cobrir os objetos criados no futuro. Clique com o botão direito na pasta para <em>Adicionar privilégios
+predefinidos</em>: escolha a role criadora (<em>Para objetos criados por</em>), o esquema (ou todos os
+esquemas), o tipo de objeto (tabelas, sequências, funções, tipos, esquemas) e os privilégios. Clique com o botão direito
+numa entrada existente para <em>Editar privilégios</em> (só as marcas que alterar são concedidas ou revogadas) ou
+<em>Remover privilégios predefinidos</em>.</p>
+<h4>Propriedade e quem tem acesso</h4>
+<ul>
+<li><strong>Alterar proprietário</strong> (menu de contexto de qualquer objeto na coluna Objetos) executa
+<code>ALTER … OWNER TO</code> para o objeto.</li>
+<li><strong>Quem tem acesso</strong> é a vista inversa: lista todas as roles que podem fazer algo
+com o objeto e porquê — proprietário, concessão direta, herdado através de uma associação ou superutilizador —
+mais <code>PUBLIC</code>, com marcas de opção de concessão. As respostas vêm das próprias funções
+<code>has_*_privilege</code> do PostgreSQL, pelo que correspondem ao que o servidor realmente permite. As roles que só
+têm o que <code>PUBLIC</code> dá a todos são omitidas e os superutilizadores são agrupados num
+grupo recolhido; clicar numa role torna-a a role ativa.</li>
+</ul>
+<p><img alt="The Who Has Access dialog" src="../assets/img/ui-perm-who-has-access.webp"/></p>
+<h4>Pré-visualizar o SQL</h4>
+<p>Os diálogos para criar, alterar, renomear e clonar roles, adicionar associações, conceder ou
+editar privilégios, privilégios predefinidos e alterar proprietários têm uma caixa recolhível <em>Mostrar SQL</em>.
+Mostra as instruções exatas que os valores atuais do formulário executariam — construídas pelo mesmo código
+do servidor que a chamada real, nada é executado, as palavras-passe são mascaradas — e mantém-nas atualizadas à medida que
+o formulário muda. <em>Copiar SQL</em> copia-as.</p>
+<p><strong>Importante:</strong> confirmar um diálogo executa as instruções no servidor
+de imediato — não há forma de anular. Reveja-as primeiro com <em>Mostrar SQL</em>. <em>Eliminar role</em>,
+<em>Remover associação</em> e <em>Remover privilégios predefinidos</em> também pedem confirmação. Se o
+servidor rejeitar uma instrução, é mostrada a respetiva mensagem de erro.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

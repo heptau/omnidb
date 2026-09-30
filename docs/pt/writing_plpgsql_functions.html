@@ -146,13 +146,12 @@ linguagem, pode escrever as suas próprias <em>funções definidas pelo utilizad
 de abstração e cálculos processuais que seriam difíceis de conseguir com SQL
 simples (e por vezes impossíveis de conseguir sem mudar de contexto para a
 aplicação).</p>
-<p><img alt="" src="../assets/img/image_072.webp" /></p>
 <h4>Escrever funções</h4>
 <p>No esquema <code>public</code>, clique com o botão direito no nó <code>Functions</code> e clique em <em>Create
 Function</em> (Criar Função). Abrirá um separador interior de <em>Consulta SQL</em>, já contendo um
 Modelo SQL para o ajudar a criar a sua primeira função PL/pgSQL.</p>
-<p><img alt="" src="../assets/img/image_073.webp" /></p>
-<p><img alt="" src="../assets/img/image_074.webp" /></p>
+<p><img alt="The context menu of the Functions node" src="../assets/img/ui-ctx-functions.webp"/></p>
+<p><img alt="The CREATE FUNCTION template" src="../assets/img/ui-function-create.webp"/></p>
 <p>Pode consultar a documentação do PostgreSQL sobre como escrever funções
 definidas pelo utilizador. Basta clicar com o botão direito no nó <em>Functions</em> e clicar em <em>Doc:
 Functions</em> — a página relevante da documentação do PostgreSQL abre no seu
@@ -189,17 +188,17 @@ vogais existem nessa <em>string</em>. Depois devolve essa contagem.</p>
 for bem-sucedido, a função aparecerá sob o nó da árvore <em>Functions</em> (pode
 atualizá-lo clicando com o botão direito e depois clicando em <em>Refresh</em>). Ao expandir o
 nó da função também, pode ver o seu tipo de retorno e o seu argumento.</p>
-<p><img alt="" src="../assets/img/image_075.webp" /></p>
+<p><img alt="A function in the tree and the result of calling it" src="../assets/img/ui-function-run.webp"/></p>
 <p>Agora vamos executar esta nova função pela primeira vez. Abra um separador interior simples de Consulta
 SQL e execute a seguinte consulta SQL:</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
-<p><img alt="" src="../assets/img/image_076.webp" /></p>
 <p>Repare como a consulta devolve um único valor, contendo o número de vogais no
 texto.</p>
 <p>Ao clicar com o botão direito no nó da função, pode ver que existem ações para a editar,
 selecionar e eliminar. Como provavelmente adivinhou, cada ação abrirá separadores interiores de Consulta
 SQL com modelos SQL práticos.</p>
+<p><img alt="The context menu of a function" src="../assets/img/ui-ctx-function.webp"/></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

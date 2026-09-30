@@ -152,6 +152,7 @@
 			base de datos a la que está conectado (por lo que conviene practicar en un entorno de pruebas y no en
 			producción), enlaces al sitio web de OmniDB, al repositorio de GitHub y a esta documentación, y la versión
 			que está ejecutando.</p>
+<p><img alt="The Welcome page" src="../assets/img/ui-welcome.webp"/></p>
 		<h4>Tutorial Primeros pasos</h4>
 		<p>El icono de la bombilla, cerca de la parte inferior de la barra (<em>Primeros pasos</em>; en la aplicación
 			de escritorio también <em>Ayuda &gt; Primeros pasos</em>), abre una lista de recorridos interactivos que
@@ -167,17 +168,17 @@
 			navegador predeterminado del sistema en la aplicación de escritorio, o una nueva pestaña cuando se ejecuta como
 			<a href="deploying_omnidb-server.html">OmniDB Server</a> basado en navegador). También
 			elige la versión de documentación adecuada para el servidor PostgreSQL al que está conectado.</p>
-		<p><img alt="" src="../assets/img/image_071.webp" /></p>
+<p><img alt="The context menu of the Tables node, with the Doc links" src="../assets/img/ui-ctx-tables.webp"/></p>
 		<h4>Propiedades y DDL</h4>
 		<p>Al hacer clic en la mayoría de los objetos de la vista de árbol (tablas, secuencias, vistas,
 			roles, bases de datos, etc.), el usuario podrá ver una lista muy completa
 			de propiedades del objeto.</p>
-		<p><img alt="" src="../assets/img/image_176.webp" /></p>
+<p><img alt="A table expanded in the database tree, with its Properties panel" src="../assets/img/ui-tree-table.webp"/></p>
 		<p>En el otro panel, llamado <em>DDL</em>, el usuario podrá ver el código fuente DDL en SQL
 			que se puede usar para recrear el objeto, incluido su comentario
 			(<code>COMMENT ON …</code>) y sus privilegios (<code>GRANT …</code>) cuando la base de datos los tiene.
 			El usuario puede copiar este texto y pegarlo donde desee.</p>
-		<p><img alt="" src="../assets/img/image_177.webp" /></p>
+<p><img alt="The DDL panel of a selected table" src="../assets/img/ui-tree-ddl.webp"/></p>
 		<p>El separador situado encima del panel Propiedades/DDL puede arrastrarse, y el panel (al igual que el propio
 			árbol de la base de datos) puede contraerse con el pequeño botón de alternancia de su separador; en la
 			aplicación de escritorio, también con <em>Ver &gt; Mostrar/ocultar panel de propiedades/DDL</em> y
@@ -193,7 +194,7 @@
 			<li>En el <strong>navegador</strong> (versión de servidor), el área de resultados muestra <em>El archivo
 				está listo.</em> con un enlace <em>Guardar</em> que lo descarga.</li>
 		</ul>
-		<p><img alt="" src="../assets/img/image_178.webp" /></p>
+<p><img alt="The export format list and the Export Data button" src="../assets/img/ui-export-toolbar.webp"/></p>
 		<p>Los archivos CSV y TSV usan la codificación configurada en <em>Configuración &gt; Exportar &gt; Codificación
 			CSV/TSV</em> (predeterminada: UTF-8 con BOM), y los archivos CSV el <em>Delimitador CSV</em> configurado allí
 			(predeterminado <code>;</code>). Los archivos exportados se guardan en una carpeta temporal dentro del
@@ -221,7 +222,7 @@
 		<p>Desde la <em>Pestaña de consulta</em> puede hacer clic en el botón <em>Historial de comandos</em> para ver
 			una lista completa, navegable y con búsqueda de los comandos ejecutados en esta conexión, filtrable por rango
 			de fechas y por texto. Consulte <a href="writing_sql_queries.html">Escritura de consultas SQL</a>.</p>
-		<p><img alt="" src="../assets/img/image_203.webp" /></p>
+<p><img alt="The Command history window" src="../assets/img/ui-query-history.webp"/></p>
 		<h4>Consola SSH</h4>
 		<p>Además de las conexiones de base de datos, OmniDB puede abrir un terminal SSH completo contra un servidor.
 			Cree una conexión de tipo <em>Terminal</em> en la sección Conexiones, rellenando el servidor SSH, el puerto,
@@ -230,7 +231,6 @@
 			<em>+</em> al final de la franja de pestañas de conexión → <em>Consolas SSH</em>, o con <em>Conectar</em>
 			en su formulario. El terminal se abre como su propia pestaña de conexión; la clave de host del servidor
 			debe ser ya conocida; consulte <a href="security.html">Seguridad y servidor multiusuario</a>.</p>
-		<p><img alt="" src="../assets/img/image_204.webp" /></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

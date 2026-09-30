@@ -9,6 +9,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- Explain and Explain Analyze in a PostgreSQL Query tab showed an empty Explain view: they send the query with
+  `v_all_data` set, and the native long-polling handler treated any such request as "fetch the rest of an
+  already-open result set" — finding no cursor, it answered with an empty result. A mode-0 request is now always
+  a fresh run (fetch-more/fetch-all, modes 1/2, are unchanged).
+- The Edit Data error dialog (failed insert/update/delete) showed its markup as literal text
+  (`<b>Command:</b> … <br/>…`) since `showAlert` stopped rendering HTML; the command and the database message are
+  now HTML-escaped and rendered as intended.
+- Logical replication tree: a publication that is not "All Tables" had no "Tables" node any more — the frontend
+  still compared the flag with the string `"False"` from the Python days, while the Go backend sends a boolean.
+- `omnidb-server` in server mode now creates its app database at startup, so a fresh install prints the one-time
+  admin password immediately instead of only after the first (necessarily failing) sign-in attempt.
+- Website: every screenshot in the documentation was replaced with one taken from the current version of the
+  application (English UI, 61 images; the old 2018-era ones are gone) and screenshots were added to the chapters
+  that had none (Welcome page, connections, Query tab, Console, Snippets, Settings, Monitoring, Notify,
+  Connected Users, Permissions, plans, graphs, autocomplete…). The SSH Console screenshot was dropped rather than
+  replaced.
+- Website: the Roles and Permissions chapter was rewritten for the 4.5 Permissions section (Show SQL, default
+  privileges, ownership, Who Has Access, Clone/Rename/Export, role filter, bulk grants, PostgreSQL 16 membership
+  options, direct-vs-inherited checkboxes); the Console Tab chapter no longer claims a "green check" and
+  Ctrl-Up/Ctrl-Down history shortcuts that do not exist (the history window has a right-click menu instead);
+  Explain Analyze is documented as `EXPLAIN (ANALYZE, BUFFERS)`; `docs/llms-full.txt` re-synced for both chapters.
 - Switching the PostgreSQL database in a connection tab no longer inserts a second, oversized DBMS logo
   into the tab title (the tab already shows the icon; only the text is updated now).
 - Website: the homepage light/dark screenshot slider no longer sits in a bordered, rounded, shadowed frame — the

@@ -146,8 +146,8 @@ identifikátor pro záznamy tabulek, rozhodli jsme se umožnit úpravu a odstra
 u tabulek, které mají primární klíč. Tabulky, které ho nemají, mohou pouze přijímat nové záznamy.</p>
 <p>Pro přístup k rozhraní pro úpravu záznamů klikněte pravým tlačítkem na uzel tabulky a vyberte
 akci <em>Data Actions &gt; Edit Data</em> (Akce s daty &gt; Upravit data):</p>
-<p><img alt="" src="../assets/img/image_041.webp" /></p>
-<p><img alt="" src="../assets/img/image_042.webp" /></p>
+<p><img alt="The Data Actions submenu of a table" src="../assets/img/ui-ctx-data-actions.webp"/></p>
+<p><img alt="The Edit Data tab" src="../assets/img/ui-edit-data.webp"/></p>
 <p>Karta <em>Upravit data</em> obsahuje malý SQL editor pro volitelnou podmínku filtrování a řazení,
 která se připojí k dotazu načítajícímu záznamy — například <code>where t.cust_id &gt; 10 order by
 t.cust_name</code> (tabulka je dostupná pod aliasem <code>t</code>) —, rozbalovací seznam, který omezuje
@@ -162,24 +162,22 @@ jeho akci: kliknutím na <em>×</em> v něm řádek označíte ke smazání (da
 zrušíte), případně odstraníte nový, dosud neuložený řádek.</p>
 <p>Řádek mřížky se symbolem <code>+</code> slouží k přidání nových záznamů. Vložme
 nyní několik záznamů do tabulky <code>customers</code>:</p>
-<p><img alt="" src="../assets/img/image_043.webp" /></p>
+<p><img alt="Two new rows added in the Edit Data grid" src="../assets/img/ui-edit-data-insert.webp"/></p>
 <p>Po uložení se záznamy vloží a lze je upravovat (pouze proto, že tato
 tabulka má primární klíč). Změňme <em>cust_name</em> u některých existujících
 záznamů a zároveň odstraňme jeden z řádků:</p>
-<p><img alt="" src="../assets/img/image_044.webp" /></p>
+<p><img alt="Edit Data with a changed cell and a row marked for deletion" src="../assets/img/ui-edit-data-changes.webp"/></p>
 <p>Tabulky mohou obsahovat pole s hodnotami reprezentovanými velmi dlouhými řetězci. Pro
 usnadnění úpravy těchto polí klikněte na buňku pravým tlačítkem a zvolte <em>Edit Content</em>
 (Upravit obsah): otevře se větší editor (se zvýrazněním syntaxe pro sloupce JSON/JSONB a XML)
 a <em>Uložit</em> zapíše hodnotu zpět do mřížky. Stejná nabídka obsahuje i <em>Kopírovat</em>:</p>
-<p><img alt="" src="../assets/img/image_045.webp" /></p>
-<p><img alt="" src="../assets/img/image_046.webp" /></p>
+<p><img alt="The cell context menu of the Edit Data grid" src="../assets/img/ui-edit-data-cell-menu.webp"/></p>
+<p><img alt="The Edit Content dialog" src="../assets/img/ui-edit-data-content.webp"/></p>
 <p>Rozhraní detekuje chyby, ke kterým může dojít při operacích souvisejících se
 záznamy. Pro ukázku vložme dva záznamy se shodným <code>cust_id</code>
 (primární klíč):</p>
-<p><img alt="" src="../assets/img/image_047.webp" /></p>
+<p><img alt="The error dialog shown when saving fails" src="../assets/img/ui-edit-data-error.webp"/></p>
 <p>Zobrazí se, které příkazy se pokusily provést, a příslušné chyby.</p>
-<p>Na závěr této kapitoly přidejme několik záznamů do tabulky <em>Address</em>:</p>
-<p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

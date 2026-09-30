@@ -144,6 +144,7 @@
 elementos. Los atajos de teclado que se indican son los predeterminados en Windows/Linux; en macOS, los
 atajos propios de OmniDB usan Ctrl en lugar de Alt. Todos ellos pueden cambiarse en
 <a href="settings_and_languages.html">Configuración &gt; Atajos de teclado</a>.</p>
+<p><img alt="A Query tab with the SQL editor, toolbar and results" src="../assets/img/ui-query-editor.webp"/></p>
 <ul>
 <li><strong>1) Cabecera de la pestaña</strong>: puede ver el nombre de la pestaña y, al pasar el ratón, un icono para
 cerrarla. Mientras hay una consulta en ejecución en la pestaña, verá un indicador giratorio; si termina mientras
@@ -177,7 +178,7 @@ por rango de fechas y por texto para encontrar el comando SQL que necesite.</li>
 (atajo <code>Alt-W</code>). Los resultados se mostrarán en forma textual y gráfica en la pestaña Explain
 (consulte <a href="visualizing_query_plans.html">Visualización de planes de consulta</a> para más detalles).</li>
 <li><strong>9) Explain Analyze (solo PostgreSQL)</strong>: igual que el botón Explain, pero ejecuta la
-consulta SQL con <code>EXPLAIN ANALYZE</code>, lo que ejecuta realmente la consulta (atajo
+consulta SQL con <code>EXPLAIN (ANALYZE, BUFFERS)</code>, lo que ejecuta realmente la consulta (atajo
 <code>Alt-E</code>).</li>
 <li><strong>10) Autocommit (solo PostgreSQL)</strong>: cuando está activado, toda consulta ejecutada se
 confirma (commit) en la base de datos. Cuando está desactivado, OmniDB inicia una transacción y, al
@@ -228,15 +229,15 @@ ejecute en una pestaña de consulta se guarda en el historial de comandos de esa
 código SQL. Abra las sugerencias con <code>Ctrl-Space</code> (<code>Option-Space</code> en macOS). Con
 esta función es posible autocompletar columnas contenidas en una tabla referenciada mediante un alias:
 escriba el alias, el carácter <code>.</code> y abra luego el autocompletado:</p>
-<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p><img alt="Autocomplete after a table alias" src="../assets/img/ui-autocomplete-alias.webp"/></p>
 <p>Si el usuario no inicia el autocompletado con el cursor cerca de un alias de tabla,
 el componente mostrará varias categorías de datos. Al escribir en el cuadro de filtro, los
 elementos de todas las categorías se filtrarán:</p>
-<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p><img alt="Autocomplete offering all categories" src="../assets/img/ui-autocomplete-all.webp"/></p>
 <p>El componente de autocompletado también puede identificar cierta información contextual.
 Por ejemplo, si escribe el nombre de un esquema y luego el carácter <code>.</code>, podrá filtrar
 únicamente entre los objetos contenidos en ese esquema:</p>
-<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p><img alt="Autocomplete after a schema name" src="../assets/img/ui-autocomplete-schema.webp"/></p>
 <p>Después de <code>::</code> (una conversión de tipo de PostgreSQL), solo se ofrecen tipos de datos. Al
 elegir una palabra clave también se añade lo que siempre la sigue (por ejemplo, un espacio después de
 <code>SELECT</code>, o el paréntesis de apertura después de <code>COALESCE</code>). Las categorías que se

@@ -144,6 +144,7 @@
 elements. Keyboard shortcuts below are the Windows/Linux defaults; on macOS, OmniDB's own
 shortcuts use Ctrl instead of Alt. All of them can be changed under
 <a href="settings_and_languages.html">Settings &gt; Shortcuts</a>.</p>
+<p><img alt="A Query tab with the SQL editor, toolbar and results" src="../assets/img/ui-query-editor.webp"/></p>
 <ul>
 <li><strong>1) Tab Header</strong>: You can see the name of the tab and, on hover, an icon to
 close it. While a query is running in the tab you will see a spinner; if it finishes while you are
@@ -178,7 +179,7 @@ in front of it (shortcut <code>Alt-W</code>). The results will be shown in a tex
 form in the Explain tab (please see <a href="visualizing_query_plans.html">Visualizing Query
 Plans</a> for more details).</li>
 <li><strong>9) Explain Analyze (PostgreSQL only)</strong>: Same as Explain button, but runs the
-SQL query with <code>EXPLAIN ANALYZE</code>, which will effectively execute the query (shortcut
+SQL query with <code>EXPLAIN (ANALYZE, BUFFERS)</code>, which will effectively execute the query (shortcut
 <code>Alt-E</code>).</li>
 <li><strong>10) Autocommit (PostgreSQL only)</strong>: When enabled, every query executed will be
 committed to the database. When disabled, OmniDB starts a transaction and upon execution of a
@@ -228,15 +229,15 @@ Open the suggestions with <code>Ctrl-Space</code>
 (<code>Option-Space</code> on macOS). With this feature it is possible to autocomplete columns
 contained in a table referenced by an alias: type the alias, the character <code>.</code> and
 then open the autocomplete:</p>
-<p><img alt="" src="../assets/img/image_050.webp"/></p>
+<p><img alt="Autocomplete after a table alias" src="../assets/img/ui-autocomplete-alias.webp"/></p>
 <p>If the user does not start the autocomplete with the cursor close to a table alias, the
 component will show multiple categories of data. By typing in the filter textbox, elements in all
 categories will be filtered:</p>
-<p><img alt="" src="../assets/img/image_051.webp"/></p>
+<p><img alt="Autocomplete offering all categories" src="../assets/img/ui-autocomplete-all.webp"/></p>
 <p>The autocomplete component is also able to identify some contextual information. For example,
 if you type a name of a schema, then type the character <code>.</code>, you will be able to filter
 among objects contained only in that schema:</p>
-<p><img alt="" src="../assets/img/image_052.webp"/></p>
+<p><img alt="Autocomplete after a schema name" src="../assets/img/ui-autocomplete-schema.webp"/></p>
 <p>After <code>::</code> (a PostgreSQL type cast), only data types are offered. Choosing a keyword
 also adds what always follows it (for example a space after <code>SELECT</code>, or the opening
 parenthesis after <code>COALESCE</code>). Which categories are offered at all (keywords,

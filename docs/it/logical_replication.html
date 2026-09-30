@@ -156,12 +156,12 @@ ciascuna le configurazioni indicate sopra.</p>
 <h4>Connessione a entrambi i nodi</h4>
 <p>Usiamo OmniDB per connetterci a entrambi i nodi PostgreSQL. Per prima cosa,
 inserisci le informazioni di connessione nella sezione <em>Connessioni</em>:</p>
-<p><img alt="" src="../assets/img/image_117.webp" /></p>
+<p><img alt="The Connections section with the connection form" src="../assets/img/ui-connections-form.webp"/></p>
 <p>Seleziona quindi entrambe le connessioni. Nota come OmniDB riconosce di essere
 connesso a PostgreSQL 10 e abilita un nuovo nodo nell’albero della connessione
 corrente: si chiama <em>Replica logica</em>. Al suo interno troviamo <em>Pubblicazioni</em>
 e <em>Sottoscrizioni</em>.</p>
-<p><img alt="" src="../assets/img/image_118.webp" /></p>
+<p><img alt="The Logical Replication node of the database tree" src="../assets/img/ui-repl-logical-node.webp"/></p>
 <h4>Creazione di una tabella di test su entrambi i nodi</h4>
 <p>Su entrambi i nodi, crea una tabella come questa:</p>
 <pre><code class="language-sql">CREATE TABLE customers (
@@ -170,46 +170,44 @@ e <em>Sottoscrizioni</em>.</p>
  registration_date timestamptz NOT NULL DEFAULT now()
 )
 </code></pre>
-<p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Creazione di una pubblicazione sulla prima macchina</h4>
 <p>All’interno del nodo di connessione, espandi il nodo <em>Replica logica</em>, quindi
 fai clic destro sul nodo <em>Pubblicazioni</em> e scegli l’azione <em>Crea Pubblicazione</em>.
 OmniDB aprirà una scheda con un modello SQL contenente il comando
 <code>CREATE PUBLICATION</code>, pronto perché tu possa apportare le modifiche necessarie
 ed eseguirlo:</p>
-<p><img alt="" src="../assets/img/image_120.webp" /></p>
+<p><img alt="The CREATE PUBLICATION template" src="../assets/img/ui-repl-create-publication.webp"/></p>
 <p>Dopo aver modificato ed eseguito il comando, puoi fare di nuovo clic destro sul
 nodo <em>Pubblicazioni</em> e selezionare l’azione <em>Aggiorna</em>. Vedrai che verrà creato
 un nuovo nodo con lo stesso nome assegnato alla pubblicazione. Espandendo
 questo nodo, potrai vedere i dettagli e le tabelle della pubblicazione:</p>
-<p><img alt="" src="../assets/img/image_121.webp" /></p>
+<p><img alt="A publication in the tree" src="../assets/img/ui-repl-publication.webp"/></p>
 <h4>Creazione di una sottoscrizione sulla seconda macchina</h4>
 <p>All’interno del nodo di connessione, espandi il nodo <em>Replica logica</em>, quindi
 fai clic destro sul nodo <em>Sottoscrizioni</em> e scegli l’azione <em>Crea Sottoscrizione</em>.
 OmniDB aprirà una scheda con un modello SQL contenente il comando
 <code>CREATE SUBSCRIPTION</code>, pronto perché tu possa apportare le modifiche necessarie
 ed eseguirlo:</p>
-<p><img alt="" src="../assets/img/image_122.webp" /></p>
+<p><img alt="The CREATE SUBSCRIPTION template" src="../assets/img/ui-repl-create-subscription.webp"/></p>
 <p>Dopo aver modificato ed eseguito il comando, puoi fare di nuovo clic destro sul
 nodo <em>Sottoscrizioni</em> e selezionare l’azione <em>Aggiorna</em>. Vedrai che verrà
 creato un nuovo nodo con lo stesso nome assegnato alla sottoscrizione.
 Espandendo questo nodo, potrai vedere i dettagli, le pubblicazioni referenziate
 e le tabelle della sottoscrizione:</p>
-<p><img alt="" src="../assets/img/image_123.webp" /></p>
+<p><img alt="A subscription in the tree" src="../assets/img/ui-repl-subscription.webp"/></p>
 <p>Inoltre, il comando <code>CREATE SUBSCRIPTION</code> ha creato uno <em>slot di replica
 logica</em> chiamato <code>testsub</code> (con lo stesso nome della sottoscrizione) sulla
 prima macchina:</p>
-<p><img alt="" src="../assets/img/image_124.webp" /></p>
+<p><img alt="Replication slots" src="../assets/img/ui-repl-slots.webp"/></p>
 <h4>Verifica della replica logica</h4>
 <p>Per verificare che la replica funzioni, creiamo alcuni dati sul nodo 1. Fai
 clic destro sulla tabella <code>public.customers</code>, quindi vai su <em>Azioni sui Dati</em>
 e fai clic sull’azione <em>Modifica Dati</em>. In questa griglia puoi aggiungere,
-modificare ed eliminare dati dalla tabella. Aggiungi 2 righe di esempio, così:</p>
-<p><img alt="" src="../assets/img/image_125.webp" /></p>
+modificare ed eliminare dati dalla tabella. Aggiungi 2 righe di esempio, così.</p>
 <p>Quindi, sull’altro nodo, verifica che la tabella <code>public.customers</code> sia stata
 popolata automaticamente. Fai clic destro sulla tabella <code>public.customers</code>,
 quindi vai su <em>Azioni sui Dati</em> e fai clic sull’azione <em>Interroga Dati</em>:</p>
-<p><img alt="" src="../assets/img/image_126.webp" /></p>
+<p><img alt="Rows replicated to the second node" src="../assets/img/ui-repl-replica-data.webp"/></p>
 <p>Come possiamo vedere, entrambe le righe create sulla prima macchina sono state
 replicate sulla seconda macchina. Questo ci conferma che la replica logica
 funziona correttamente.</p>

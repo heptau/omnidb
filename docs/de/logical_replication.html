@@ -157,12 +157,12 @@ konfigurieren Sie auf jeder die oben genannten Einstellungen.</p>
 <h4>Mit beiden Knoten verbinden</h4>
 <p>Verbinden wir uns mit OmniDB mit beiden PostgreSQL-Knoten. Füllen Sie zunächst
 die Verbindungsinformationen im Bereich <em>Connections</em> aus:</p>
-<p><img alt="" src="../assets/img/image_117.webp" /></p>
+<p><img alt="The Connections section with the connection form" src="../assets/img/ui-connections-form.webp"/></p>
 <p>Wählen Sie dann beide Verbindungen aus. Beachten Sie, wie OmniDB erkennt, dass
 es mit PostgreSQL 10 verbunden ist, und einen neuen Knoten in der aktuellen
 Verbindungsbaumansicht aktiviert: <em>Logical Replication</em> (Logische Replikation).
 Darin sehen wir <em>Publications</em> (Publikationen) und <em>Subscriptions</em> (Abonnements).</p>
-<p><img alt="" src="../assets/img/image_118.webp" /></p>
+<p><img alt="The Logical Replication node of the database tree" src="../assets/img/ui-repl-logical-node.webp"/></p>
 <h4>Testtabelle auf beiden Knoten erstellen</h4>
 <p>Erstellen Sie auf beiden Knoten eine Tabelle wie diese:</p>
 <pre><code class="language-sql">CREATE TABLE customers (
@@ -171,51 +171,49 @@ Darin sehen wir <em>Publications</em> (Publikationen) und <em>Subscriptions</em>
  registration_date timestamptz NOT NULL DEFAULT now()
 )
 </code></pre>
-<p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Publikation auf der ersten Maschine erstellen</h4>
 <p>Erweitern Sie innerhalb des Verbindungsknotens den Knoten <em>Logical Replication</em>,
 klicken Sie dann mit der rechten Maustaste auf den Knoten <em>Publications</em> und
 wählen Sie die Aktion <em>Create Publication</em> (Publikation erstellen). OmniDB
 öffnet einen SQL-Vorlagen-Tab mit dem Befehl <code>CREATE PUBLICATION</code>, bereit für
 ein paar Anpassungen und zur Ausführung:</p>
-<p><img alt="" src="../assets/img/image_120.webp" /></p>
+<p><img alt="The CREATE PUBLICATION template" src="../assets/img/ui-repl-create-publication.webp"/></p>
 <p>Nach dem Anpassen und Ausführen des Befehls können Sie erneut mit der rechten
 Maustaste auf den Knoten <em>Publications</em> klicken und die Aktion <em>Refresh</em>
 (Aktualisieren) auswählen. Sie sehen, dass ein neuer Knoten mit demselben Namen
 angelegt wird, den Sie der Publikation gegeben haben. Erweitern Sie diesen Knoten,
 um die Details und die Tabellen der Publikation einzusehen:</p>
-<p><img alt="" src="../assets/img/image_121.webp" /></p>
+<p><img alt="A publication in the tree" src="../assets/img/ui-repl-publication.webp"/></p>
 <h4>Abonnement auf der zweiten Maschine erstellen</h4>
 <p>Erweitern Sie innerhalb des Verbindungsknotens den Knoten <em>Logical Replication</em>,
 klicken Sie dann mit der rechten Maustaste auf den Knoten <em>Subscriptions</em> und
 wählen Sie die Aktion <em>Create Subscription</em> (Abonnement erstellen). OmniDB
 öffnet einen SQL-Vorlagen-Tab mit dem Befehl <code>CREATE SUBSCRIPTION</code>, bereit für
 ein paar Anpassungen und zur Ausführung:</p>
-<p><img alt="" src="../assets/img/image_122.webp" /></p>
+<p><img alt="The CREATE SUBSCRIPTION template" src="../assets/img/ui-repl-create-subscription.webp"/></p>
 <p>Nach dem Anpassen und Ausführen des Befehls können Sie erneut mit der rechten
 Maustaste auf den Knoten <em>Subscriptions</em> klicken und die Aktion <em>Refresh</em>
 auswählen. Sie sehen, dass ein neuer Knoten mit demselben Namen angelegt wird,
 den Sie dem Abonnement gegeben haben. Erweitern Sie diesen Knoten, um die
 Details, die referenzierten Publikationen und die Tabellen des Abonnements
 einzusehen:</p>
-<p><img alt="" src="../assets/img/image_123.webp" /></p>
+<p><img alt="A subscription in the tree" src="../assets/img/ui-repl-subscription.webp"/></p>
 <p>Außerdem hat der Befehl <code>CREATE SUBSCRIPTION</code> auf der ersten Maschine einen
 <em>logischen Replikationsslot</em> namens <code>testsub</code> erzeugt (denselben Namen wie
 das Abonnement):</p>
-<p><img alt="" src="../assets/img/image_124.webp" /></p>
+<p><img alt="Replication slots" src="../assets/img/ui-repl-slots.webp"/></p>
 <h4>Logische Replikation testen</h4>
 <p>Um zu prüfen, ob die Replikation funktioniert, erstellen wir einige Daten auf
 Knoten 1. Klicken Sie mit der rechten Maustaste auf die Tabelle
 <code>public.customers</code>, gehen Sie dann zu <em>Data Actions</em> und klicken Sie auf die
 Aktion <em>Edit Data</em> (Daten bearbeiten). In diesem Raster können Sie Daten der
 Tabelle hinzufügen, bearbeiten und entfernen. Fügen Sie 2 Beispieldatensätze
-hinzu, etwa so:</p>
-<p><img alt="" src="../assets/img/image_125.webp" /></p>
+hinzu, etwa so.</p>
 <p>Prüfen Sie anschließend auf dem anderen Knoten, ob die Tabelle
 <code>public.customers</code> automatisch befüllt wurde. Klicken Sie mit der rechten
 Maustaste auf die Tabelle <code>public.customers</code>, gehen Sie dann zu <em>Data
 Actions</em> und klicken Sie auf die Aktion <em>Query Data</em>:</p>
-<p><img alt="" src="../assets/img/image_126.webp" /></p>
+<p><img alt="Rows replicated to the second node" src="../assets/img/ui-repl-replica-data.webp"/></p>
 <p>Wie wir sehen können, wurden beide auf der ersten Maschine erstellten Datensätze
 auf die zweite Maschine repliziert. Das zeigt uns, dass die logische Replikation
 funktioniert.</p>

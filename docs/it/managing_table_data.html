@@ -147,8 +147,8 @@ per le tabelle dotate di chiave primaria. Le tabelle che non ne hanno una
 possono solo ricevere nuovi record.</p>
 <p>Per accedere all’interfaccia di modifica dei record, fai clic destro sul nodo
 della tabella e seleziona l’azione<em>Azioni sui dati &gt; Modifica dati</em>:</p>
-<p><img alt="" src="../assets/img/image_041.webp" /></p>
-<p><img alt="" src="../assets/img/image_042.webp" /></p>
+<p><img alt="The Data Actions submenu of a table" src="../assets/img/ui-ctx-data-actions.webp"/></p>
+<p><img alt="The Edit Data tab" src="../assets/img/ui-edit-data.webp"/></p>
 <p>La scheda <em>Modifica dati</em> dispone di un piccolo editor SQL per una clausola facoltativa
 di filtro e ordinamento, aggiunta alla query che carica i record — ad esempio
 <code>where t.cust_id &gt; 10 order by t.cust_name</code> (la tabella è disponibile con l’alias
@@ -166,27 +166,24 @@ contrassegna la riga per l’eliminazione (un nuovo clic annulla), oppure rimuov
 ancora salvata.</p>
 <p>La riga della griglia contrassegnata dal simbolo <code>+</code> è la riga per aggiungere
 nuovi record. Inseriamo alcuni record nella tabella <code>customers</code>:</p>
-<p><img alt="" src="../assets/img/image_043.webp" /></p>
+<p><img alt="Two new rows added in the Edit Data grid" src="../assets/img/ui-edit-data-insert.webp"/></p>
 <p>Dopo il salvataggio, i record verranno inseriti e potranno essere modificati
 (solo perché questa tabella ha una chiave primaria). Modifichiamo il campo
 <em>cust_name</em> di alcuni record esistenti e, allo stesso tempo, rimuoviamo una
 delle righe:</p>
-<p><img alt="" src="../assets/img/image_044.webp" /></p>
+<p><img alt="Edit Data with a changed cell and a row marked for deletion" src="../assets/img/ui-edit-data-changes.webp"/></p>
 <p>Le tabelle possono avere campi con valori rappresentati da stringhe molto
 lunghe. Per facilitare la modifica di questi campi, fai clic destro sulla cella e scegli
 <em>Edit Content</em>: si apre un editor più grande (con evidenziazione della sintassi per le
 colonne JSON/JSONB e XML) e <em>Salva</em> riscrive il valore nella griglia. Lo stesso menu offre
 anche <em>Copy</em>:</p>
-<p><img alt="" src="../assets/img/image_045.webp" /></p>
-<p><img alt="" src="../assets/img/image_046.webp" /></p>
+<p><img alt="The cell context menu of the Edit Data grid" src="../assets/img/ui-edit-data-cell-menu.webp"/></p>
+<p><img alt="The Edit Content dialog" src="../assets/img/ui-edit-data-content.webp"/></p>
 <p>L’interfaccia rileva gli errori che possono verificarsi durante le operazioni
 sui record. Per dimostrarlo, proviamo a inserire due record con lo stesso
 <code>cust_id</code> (chiave primaria) già esistente:</p>
-<p><img alt="" src="../assets/img/image_047.webp" /></p>
+<p><img alt="The error dialog shown when saving fails" src="../assets/img/ui-edit-data-error.webp"/></p>
 <p>Vengono mostrati i comandi che si è tentato di eseguire e i rispettivi errori.</p>
-<p>Per completare questo capitolo, aggiungiamo alcuni record alla tabella
-<em>Address</em>:</p>
-<p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

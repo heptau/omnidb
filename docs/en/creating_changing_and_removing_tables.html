@@ -150,6 +150,7 @@ running it.</p>
 database we connected to earlier. Right click on the <strong>Tables</strong> node and select
 the <strong>Create Table</strong> action. This opens a new Query tab pre-filled with a
 <code>CREATE TABLE</code> template for the current schema.</p>
+<p><img alt="A Query tab with the CREATE TABLE template" src="../assets/img/ui-create-table-template.webp"/></p>
 <p>Edit the template into the table you actually want — for <em>customers</em>, a primary
 key that <em>addresses</em> will later reference:</p>
 <pre><code class="language-sql">CREATE TABLE public.customers (
@@ -175,6 +176,7 @@ schema structure with the graph feature: right click the schema <code>public</
 and select <em>Render Graph &gt; Simple Graph</em> for just the tables and their
 relationships, or <em>Render Graph &gt; Complete Graph</em> to also include columns and
 constraints. Both render as an interactive, pannable/zoomable diagram.</p>
+<p><img alt="A simple graph of the tables of a schema" src="../assets/img/ui-graph-simple.webp"/></p>
 <h4>Altering tables</h4>
 <p>To change an existing table — say, adding a column to <em>customers</em> — right
 click the table node and select <em>Table Actions &gt; Alter Table</em>. This opens a

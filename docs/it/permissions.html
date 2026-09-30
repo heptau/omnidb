@@ -144,9 +144,11 @@ ruoli di un server in stile Finder, in colonne affiancate: scegli un ruolo a sin
 colonne alla sua destra mostrano di chi è membro, chi è membro di esso e che cosa può
 effettivamente fare su ogni oggetto del database — compreso tutto ciò che possiede solo
 indirettamente, tramite appartenenze ereditate o tramite <code>PUBLIC</code>. Ruoli,
-appartenenze e privilegi si possono creare, modificare e revocare direttamente lì.</p>
+appartenenze, privilegi, privilegi predefiniti e proprietà si possono creare, modificare e
+revocare direttamente lì.</p>
 <p><strong>Nota:</strong> al momento questa sezione supporta solo PostgreSQL. Per qualsiasi altra
 connessione mostra <em>I permessi non sono ancora supportati per …</em> / <em>Al momento è supportato solo PostgreSQL.</em></p>
+<p><img alt="The Permissions section with three columns" src="../assets/img/ui-perm-roles.webp"/></p>
 <h4>Aprire la sezione</h4>
 <p>Fai clic sull’icona <em>Permessi</em> (l’icona con le persone) nella barra laterale
 sinistra. La sezione lavora su una connessione già aperta nella sezione <em>Database</em>: in
@@ -156,14 +158,20 @@ database</a>). Le colonne vengono ricostruite ogni volta che entri nella sezione
 selezione precedente viene azzerata.</p>
 <p>Tutto ciò che fai qui richiede gli stessi privilegi che richiederebbe l’SQL equivalente
 (<code>CREATEROLE</code>, superuser o la proprietà dell’oggetto, a seconda dell’azione) — OmniDB
-esegue le istruzioni con le credenziali della connessione che stai usando.</p>
+esegue le istruzioni con le credenziali della connessione che stai usando. Le tre colonne si
+possono ridimensionare trascinando la sottile maniglia sul loro bordo destro; un doppio clic su
+una maniglia ripristina quella colonna, e le larghezze vengono ricordate.</p>
 <h4>Colonna 1: ruoli</h4>
 <p>La colonna <em>Ruoli</em> elenca tutti i ruoli del server, compresi i ruoli predefiniti
 <code>pg_*</code>, ordinati per nome. I ruoli che possono accedere (utenti) hanno un’icona con una
-sola persona; quelli che non possono (gruppi) un’icona con due persone. La prima riga è sempre
-<code>PUBLIC</code> (icona del globo) — non un vero ruolo, ma lo pseudo-ruolo a cui ogni ruolo
-appartiene implicitamente, in modo che i privilegi concessi a <code>PUBLIC</code> si possano
-esplorare e modificare allo stesso modo.</p>
+sola persona; quelli che non possono (gruppi) un’icona con due persone; i superutenti sono
+contrassegnati da <em>(superutente)</em> e i ruoli il cui account è scaduto da <em>(scaduto)</em>.
+La prima riga è sempre <code>PUBLIC</code> (icona del globo) — non un vero ruolo, ma lo pseudo-ruolo
+a cui ogni ruolo appartiene implicitamente, in modo che i privilegi concessi a <code>PUBLIC</code>
+si possano esplorare e modificare allo stesso modo.</p>
+<p>La casella sopra l’elenco filtra i ruoli per nome, e l’elenco a discesa accanto a essa per
+tipo: <em>Tutti i ruoli</em>, <em>Utenti (possono accedere)</em>, <em>Gruppi (senza accesso)</em>,
+<em>Superutenti</em> o <em>Scaduti</em>.</p>
 <p>Fai clic su un ruolo per metterlo a fuoco; le altre colonne mostrano allora quel ruolo. Sotto
 l’elenco:</p>
 <ul>
@@ -175,6 +183,7 @@ predefinita), <em>Superutente</em>, <em>Può creare database</em>, <em>Può crea
 scadenza).</li>
 <li><strong>−</strong> elimina il ruolo selezionato (disattivato per <code>PUBLIC</code>).</li>
 </ul>
+<p><img alt="The Create Role dialog with the SQL preview" src="../assets/img/ui-perm-create-role.webp"/></p>
 <p>Il clic destro su un ruolo (non <code>PUBLIC</code>) offre:</p>
 <ul>
 <li><em>Cambia password</em> — chiede due volte la nuova password. Prima dell’invio la password
@@ -183,30 +192,54 @@ md5).</li>
 <li><em>Modifica attributi</em> — gli stessi campi degli attributi di <em>Crea ruolo</em>,
 precompilati con i valori attuali del ruolo. Svuotando <em>Scadenza dell’account</em> si rimuove la
 scadenza.</li>
-<li><em>Elimina ruolo</em> — chiede <em>Eliminare il ruolo "…"? L’operazione non può essere annullata.</em> e poi esegue
-un semplice <code>DROP ROLE</code>; PostgreSQL lo rifiuta finché il ruolo possiede ancora oggetti
-o detiene privilegi.</li>
+<li><em>Rinomina ruolo</em> — <code>ALTER ROLE … RENAME TO</code>. Permessi, appartenenze e proprietà
+seguono il ruolo; la finestra avverte che PostgreSQL cancella una password memorizzata come md5
+quando il ruolo viene rinominato.</li>
+<li><em>Esporta permessi</em> / <em>Esporta i permessi di tutti i ruoli</em> — uno script SQL copiabile
+che ricrea i permessi: <code>CREATE ROLE</code> (solo attributi), appartenenze, privilegi diretti
+sugli oggetti e privilegi predefiniti, con le istruzioni di ogni database sotto una propria
+intestazione. Ogni parte si può disattivare e lo script viene rigenerato; <em>Salva come file…</em>
+lo memorizza (una finestra di salvataggio nativa nell’app desktop, un download nel browser).
+Password, concessioni di <code>PUBLIC</code>, proprietà e impostazioni dei ruoli non vengono
+esportate.</li>
+<li><em>Clona ruolo</em> — crea un nuovo ruolo con gli attributi del ruolo di origine e, facoltativamente,
+le sue appartenenze dirette e i suoi privilegi diretti sugli oggetti in ogni database (individuati
+tramite <code>pg_shdepend</code>, così i database in cui non detiene nulla non vengono mai aperti).
+La password non viene copiata; puoi impostarne una nella finestra. Privilegi predefiniti, oggetti
+posseduti e impostazioni per singolo ruolo non vengono copiati.</li>
+<li><em>Elimina ruolo</em> — se il ruolo possiede ancora oggetti o detiene privilegi, la finestra elenca,
+per database, che cosa possiede e detiene e chiede quale ruolo subentra nella proprietà dei suoi
+oggetti. OmniDB esegue poi <code>REASSIGN OWNED</code> e <code>DROP OWNED</code> in ogni database
+interessato (in quest’ordine, così nulla viene eliminato) prima di <code>DROP ROLE</code>. Senza
+alcuna dipendenza chiede semplicemente conferma.</li>
 </ul>
+<p><img alt="The context menu of a role" src="../assets/img/ui-perm-role-menu.webp"/></p>
 <h4>Colonna 2: appartenenze</h4>
 <p>La seconda colonna è divisa in due metà:</p>
 <ul>
-<li><strong>… — Membri</strong> (in alto): i ruoli che sono membri del ruolo a fuoco.</li>
+<li><strong>… — Membri</strong> (in alto): i ruoli che sono membri del ruolo a fuoco. Con
+<code>PUBLIC</code> a fuoco elenca tutti i ruoli, poiché tutti ottengono implicitamente i privilegi
+di <code>PUBLIC</code>.</li>
 <li><strong>… — Membro di</strong> (in basso): ogni ruolo a cui appartiene il ruolo a fuoco,
 direttamente o tramite altri ruoli, riunito in un unico elenco. <code>PUBLIC</code> è sempre
 elencato per primo.</li>
 </ul>
 <p>In entrambe le metà le appartenenze dirette sono mostrate in testo normale e quelle indirette
-(ereditate) in grigio. Un’appartenenza diretta concessa <code>WITH ADMIN OPTION</code> è
-contrassegnata da <em>(admin option)</em>. Per <code>PUBLIC</code> entrambe le metà riportano
-soltanto <em>PUBLIC non è membro di alcun ruolo.</em></p>
+(ereditate) in corsivo con un’icona sbiadita. Un’appartenenza diretta concessa <code>WITH ADMIN OPTION</code> è
+contrassegnata da <em>(admin option)</em>; da PostgreSQL 16 in poi, <em>(senza ereditarietà)</em> e <em>(senza SET)</em>
+contrassegnano le appartenenze prive dell’opzione <code>INHERIT</code> o <code>SET</code>.</p>
 <ul>
 <li>Il pulsante <strong>+</strong> sotto <em>Membro di</em> apre <em>Concedi appartenenza</em>:
-scegli un ruolo di cui rendere membro il ruolo a fuoco, facoltativamente <em>Con opzione di amministrazione (admin option)</em>.</li>
+scegli uno o più ruoli (fai clic sulle righe per attivarli/disattivarli) di cui rendere membro il ruolo a fuoco,
+facoltativamente <em>Con opzione di amministrazione (admin option)</em>. Da PostgreSQL 16 in poi la finestra offre anche
+le scelte <em>INHERIT</em> e <em>SET</em> (<em>Predefinito del server</em> / <em>Sì</em> / <em>No</em>).</li>
 <li>Il pulsante <strong>+</strong> sotto <em>Membri</em> apre <em>Aggiungi membro</em>: la stessa
-finestra nel verso opposto — il ruolo scelto diventa membro del ruolo a fuoco.</li>
+finestra nel verso opposto — i ruoli scelti diventano membri del ruolo a fuoco.</li>
 <li><strong>−</strong> (oppure clic destro → <em>Rimuovi appartenenza</em>) revoca un’appartenenza
 dopo aver chiesto <em>Revocare l’appartenenza a "…"?</em>. Si possono rimuovere solo le appartenenze
 dirette; una ereditata va revocata là dove è effettivamente concessa.</li>
+<li>Clic destro → <em>Modifica opzioni di appartenenza</em> modifica sul posto l’opzione admin di
+un’appartenenza diretta e (da PostgreSQL 16 in poi) le opzioni <code>INHERIT</code>/<code>SET</code>.</li>
 <li>Un doppio clic su una riga, oppure clic destro → <em>Imposta come ruolo attivo</em>, mette a fuoco
 quel ruolo, esattamente come se avessi fatto clic su di esso nella colonna <em>Ruoli</em> — il
 modo più rapido per risalire una catena di ereditarietà.</li>
@@ -216,51 +249,89 @@ modo più rapido per risalire una catena di ereditarietà.</li>
 qualsiasi privilegio — i suoi privilegi <em>effettivi</em>: le concessioni dirette più tutto ciò
 che eredita tramite le sue appartenenze e tramite <code>PUBLIC</code>. Parte con due gruppi,
 <em>Database</em> (tutti i database del server) e <em>Tablespace</em>; un nodo è mostrato
-normalmente se il ruolo vi ha qualche privilegio, altrimenti in grigio.</p>
+normalmente se il ruolo vi ha qualche privilegio, altrimenti in grigio. La casella in alto
+filtra database e tablespace per nome e conserva il testo quando cambi ruolo.</p>
 <p>L’espansione di un database ne carica gli oggetti tramite una connessione separata a quel
-database (il database attivo della scheda di connessione non cambia): gli schemi e, all’interno
-di ciascuno schema, cartelle per tabelle, viste, sequenze, funzioni, procedure, viste
-materializzate, tipi e domini; i foreign data wrapper e i foreign server si trovano direttamente
+database (il database attivo della scheda di connessione non cambia): gli <em>Schemi</em> e, all’interno
+di ciascuno schema, cartelle per <em>Tabelle</em>, <em>Viste</em>, <em>Sequenze</em>, <em>Funzioni</em>,
+<em>Procedure</em>, <em>Viste materializzate</em>, <em>Tipi</em> e <em>Domini</em>; i foreign data wrapper e i foreign server si trovano direttamente
 sotto il database. Vengono elencati solo gli oggetti su cui il ruolo ha effettivamente un
 privilegio (gli schemi di sistema sono esclusi); uno schema mostrato in grigio è presente solo
-perché lo è qualcosa al suo interno. Se non c’è proprio nulla, il database mostra <em>Nessun
+perché lo è qualcosa al suo interno. Ogni database ha inoltre due cartelle in più:
+<em>Oggetti posseduti (n)</em>, che elenca ciò che il ruolo possiede lì (fino a 1000 voci), e
+<em>Privilegi predefiniti</em>, descritta più avanti. Se non c’è proprio nulla, il database mostra <em>Nessun
 privilegio su alcun oggetto di questo database.</em></p>
+<p><img alt="The Objects column expanded down to the tables" src="../assets/img/ui-perm-objects.webp"/></p>
 <h4>Modificare i privilegi</h4>
 <p>Fai clic con il tasto destro su un database, un tablespace, uno schema o un oggetto e scegli
 <em>Modifica privilegi</em>. La finestra elenca come caselle di controllo tutti i privilegi validi per
 quel tipo di oggetto:</p>
 <ul>
-<li>database: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;
-tablespace: <code>CREATE</code>; schema: <code>CREATE</code>, <code>USAGE</code>;</li>
+<li>database: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;</li>
+<li>tablespace: <code>CREATE</code>; schema: <code>CREATE</code>, <code>USAGE</code>;</li>
 <li>tabella, vista e vista materializzata: <code>SELECT</code>, <code>INSERT</code>,
 <code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>,
 <code>TRIGGER</code>;</li>
-<li>sequenza: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;
-funzione e procedura: <code>EXECUTE</code>;
-tipo, dominio, foreign data wrapper e foreign server: <code>USAGE</code>.</li>
+<li>sequenza: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;</li>
+<li>funzione e procedura: <code>EXECUTE</code>;</li>
+<li>tipo, dominio, foreign data wrapper e foreign server: <code>USAGE</code>.</li>
 </ul>
-<p>Ogni casella indica da dove proviene il privilegio:</p>
+<p>Le caselle mostrano ciò che il ruolo detiene direttamente:</p>
 <ul>
-<li><strong>selezionata</strong> — il ruolo lo detiene direttamente; deselezionala per
-revocarlo con <code>REVOKE</code>;</li>
-<li><strong>selezionata ma disattivata</strong>, con <em>Ereditato da: …</em> — il ruolo lo ha
-solo tramite un altro ruolo o <code>PUBLIC</code>. Non si può revocare qui; rendi attivo il ruolo
-di origine (<em>Imposta come ruolo attivo</em>) e revocalo lì;</li>
-<li><strong>non selezionata</strong> — il ruolo non lo ha; selezionala per concederlo
-direttamente con <code>GRANT</code>.</li>
+<li><strong>selezionata</strong> — concessa direttamente al ruolo; deselezionala per
+revocarla con <code>REVOKE</code>;</li>
+<li><strong>non selezionata</strong> — non concessa direttamente; selezionala per concederla con
+<code>GRANT</code>. Se il ruolo ha già il privilegio tramite un altro ruolo o <code>PUBLIC</code>, resta
+non selezionata ed è etichettata <em>Ereditato da: …</em> — puoi comunque selezionarla per
+concederla direttamente, così sopravvive alla rimozione dell’appartenenza da cui proveniva. Per
+togliere un privilegio ereditato, revocalo alla sua origine (rendi attivo il ruolo di origine con
+<em>Imposta come ruolo attivo</em>).</li>
 </ul>
-<p><em>Con opzione di concessione (grant option)</em> si applica ai privilegi che concedi ex novo in quella finestra.
-Conferma con il pulsante principale della finestra, che riporta il nome dell’oggetto.</p>
+<p><img alt="The Edit Privileges dialog with the SQL preview" src="../assets/img/ui-perm-edit-privileges.webp"/></p>
+<p><em>Con opzione di concessione (grant option)</em> si applica ai privilegi che concedi ex novo in quella finestra. Conferma
+con <em>Salva</em>.</p>
 <p>Per concedere qualcosa su un oggetto che non è ancora nell’albero, usa il pulsante
-<strong>+</strong> (<em>Aggiungi privilegio su oggetto</em>) sotto la colonna: scegli il <em>Tipo di oggetto</em>, poi il <em>Database</em> (per tutto tranne database e tablespace; il valore
-predefinito è il database corrente della connessione), lo <em>Schema</em> per gli oggetti a
-livello di schema, l’<em>Oggetto</em> stesso (le funzioni sono mostrate con la firma degli
-argomenti), seleziona i <em>Privilegi</em> e, facoltativamente, <em>Con opzione di concessione (grant option)</em>.</p>
+<strong>+</strong> (<em>Aggiungi privilegio su oggetto</em>) sotto la colonna: scegli il <em>Tipo di oggetto</em>, poi il
+<em>Database</em> (per tutto tranne database e tablespace; il valore predefinito è il database
+corrente della connessione), lo <em>Schema</em> per gli oggetti a livello di schema, l’<em>Oggetto</em>
+stesso (le funzioni sono mostrate con la firma degli argomenti), seleziona i <em>Privilegi</em> e,
+facoltativamente, <em>Con opzione di concessione (grant option)</em>. Per tabelle, sequenze, funzioni
+e procedure la scelta <em>Ambito</em> si può cambiare da <em>Oggetto selezionato</em> a <em>Tutte le …
+dello schema</em>, con <em>Concedi</em> o <em>Revoca</em>: OmniDB esegue allora <code>GRANT</code>/<code>REVOKE
+… ON ALL … IN SCHEMA</code>, che riguarda gli oggetti esistenti ora, non quelli creati in seguito.</p>
 <p>Selezionando <code>PUBLIC</code> nella prima colonna puoi modificare ciò che è concesso a
 <code>PUBLIC</code> stesso (<code>GRANT … TO PUBLIC</code> / <code>REVOKE … FROM PUBLIC</code>).</p>
-<p><strong>Importante:</strong> ogni azione in questa sezione viene eseguita immediatamente sul
-server — non c’è anteprima SQL né annullamento. Solo <em>Elimina ruolo</em> e <em>Rimuovi appartenenza</em> chiedono prima una conferma. Se il server rifiuta un’istruzione, ne viene mostrato
-il messaggio di errore.</p>
+<h4>Privilegi predefiniti</h4>
+<p>La cartella <em>Privilegi predefiniti</em> di un database elenca le voci di <code>ALTER DEFAULT PRIVILEGES</code>
+che coinvolgono il ruolo a fuoco, come beneficiario o come ruolo creatore. Sono il modo per coprire
+gli oggetti creati in futuro. Fai clic con il tasto destro sulla cartella per <em>Aggiungi privilegi
+predefiniti</em>: scegli il ruolo creatore (<em>Per oggetti creati da</em>), lo schema (o tutti gli
+schemi), il tipo di oggetto (tabelle, sequenze, funzioni, tipi, schemi) e i privilegi. Fai clic con il
+tasto destro su una voce esistente per <em>Modifica privilegi</em> (vengono concessi o revocati solo i
+segni di spunta che cambi) o <em>Rimuovi privilegi predefiniti</em>.</p>
+<h4>Proprietà e chi ha accesso</h4>
+<ul>
+<li><strong>Cambia proprietario</strong> (menu contestuale di qualsiasi oggetto nella colonna Oggetti)
+esegue <code>ALTER … OWNER TO</code> per l’oggetto.</li>
+<li><strong>Chi ha accesso</strong> è la vista inversa: elenca ogni ruolo che può fare qualcosa
+con l’oggetto e perché — proprietario, concessione diretta, ereditato tramite un’appartenenza o
+superutente — più <code>PUBLIC</code>, con i contrassegni della grant option. Le risposte provengono dalle
+funzioni <code>has_*_privilege</code> di PostgreSQL stesso, quindi corrispondono a ciò che il server
+consente realmente. I ruoli che hanno solo ciò che <code>PUBLIC</code> dà a tutti sono esclusi e i
+superutenti sono raggruppati in un gruppo compresso; facendo clic su un ruolo lo si rende il ruolo
+attivo.</li>
+</ul>
+<p><img alt="The Who Has Access dialog" src="../assets/img/ui-perm-who-has-access.webp"/></p>
+<h4>Anteprima dell’SQL</h4>
+<p>Le finestre per creare, modificare, rinominare e clonare ruoli, aggiungere appartenenze, concedere o
+modificare privilegi, privilegi predefiniti e cambiare proprietari hanno un riquadro comprimibile
+<em>Mostra SQL</em>. Mostra le istruzioni esatte che i valori attuali del modulo eseguirebbero —
+costruite dallo stesso codice server della chiamata reale, nulla viene eseguito, le password sono
+mascherate — e le mantiene aggiornate al variare del modulo. <em>Copia SQL</em> le copia.</p>
+<p><strong>Importante:</strong> confermare una finestra esegue le istruzioni sul server
+immediatamente — non c’è annullamento. Controllale prima con <em>Mostra SQL</em>. Anche <em>Elimina ruolo</em>,
+<em>Rimuovi appartenenza</em> e <em>Rimuovi privilegi predefiniti</em> chiedono una conferma. Se il
+server rifiuta un’istruzione, ne viene mostrato il messaggio di errore.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

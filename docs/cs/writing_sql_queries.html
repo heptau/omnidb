@@ -144,6 +144,7 @@
 následující prvky. Uvedené klávesové zkratky jsou výchozí pro Windows/Linux; na macOS používají
 vlastní zkratky OmniDB místo Alt klávesu Ctrl. Všechny lze změnit v
 <a href="settings_and_languages.html">Nastavení &gt; Klávesové zkratky</a>.</p>
+<p><img alt="A Query tab with the SQL editor, toolbar and results" src="../assets/img/ui-query-editor.webp"/></p>
 <ul>
 <li><strong>1) Hlavička karty</strong>: Vidíte zde název karty a po najetí myší ikonu pro její
 zavření. Dokud na kartě probíhá dotaz, zobrazuje se točící se indikátor; pokud dotaz doběhne ve
@@ -179,7 +180,7 @@ filtrovat podle rozsahu dat a podle textu, abyste našli potřebný SQL příka
 i grafické podobě na kartě Explain (podrobnosti naleznete v kapitole
 <a href="visualizing_query_plans.html">Vizualizace plánů dotazů</a>).</li>
 <li><strong>9) Explain Analyze (pouze PostgreSQL)</strong>: Stejné jako tlačítko Explain, ale
-dotaz se spustí s příkazem <code>EXPLAIN ANALYZE</code>, který dotaz skutečně provede (zkratka
+dotaz se spustí s příkazem <code>EXPLAIN (ANALYZE, BUFFERS)</code>, který dotaz skutečně provede (zkratka
 <code>Alt-E</code>).</li>
 <li><strong>10) Automatické potvrzování (pouze PostgreSQL)</strong>: Když je zapnuto, každý
 spuštěný dotaz se ihned potvrdí (commit) do databáze. Když je vypnuto, OmniDB zahájí transakci
@@ -229,15 +230,15 @@ dotazu, se navíc ukládá do historie příkazů daného připojení.</p>
 otevřete klávesami <code>Ctrl-Space</code> (<code>Option-Space</code> na macOS). Díky této funkci
 je možné doplňovat sloupce obsažené v tabulce, na kterou odkazuje alias: napište alias, znak
 <code>.</code> a poté otevřete automatické doplňování:</p>
-<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p><img alt="Autocomplete after a table alias" src="../assets/img/ui-autocomplete-alias.webp"/></p>
 <p>Pokud uživatel spustí automatické doplňování s kurzorem, který není blízko
 aliasu tabulky, komponenta zobrazí více kategorií dat. Psaním do filtračního
 textového pole se prvky ve všech kategoriích filtrují:</p>
-<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p><img alt="Autocomplete offering all categories" src="../assets/img/ui-autocomplete-all.webp"/></p>
 <p>Komponenta automatického doplňování dokáže rozpoznat i některé kontextové informace. Pokud
 například napíšete název schématu a poté znak <code>.</code>, budete moci filtrovat pouze mezi
 objekty obsaženými v daném schématu:</p>
-<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p><img alt="Autocomplete after a schema name" src="../assets/img/ui-autocomplete-schema.webp"/></p>
 <p>Za <code>::</code> (přetypování v PostgreSQL) se nabízejí jen datové typy. Výběr klíčového slova
 přidá i to, co za ním vždy následuje (například mezeru za <code>SELECT</code> nebo otevírací
 závorku za <code>COALESCE</code>). Které kategorie se vůbec nabízejí (klíčová slova, databáze, role,

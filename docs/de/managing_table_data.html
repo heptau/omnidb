@@ -149,8 +149,8 @@ Datensätze aufnehmen.</p>
 <p>Um die Oberfläche zum Bearbeiten von Datensätzen aufzurufen, klicken Sie mit
 der rechten Maustaste auf den Tabellenknoten und wählen Sie die Aktion
 <em>Data Actions &gt; Edit Data</em>:</p>
-<p><img alt="" src="../assets/img/image_041.webp" /></p>
-<p><img alt="" src="../assets/img/image_042.webp" /></p>
+<p><img alt="The Data Actions submenu of a table" src="../assets/img/ui-ctx-data-actions.webp"/></p>
+<p><img alt="The Edit Data tab" src="../assets/img/ui-edit-data.webp"/></p>
 <p>Der Tab <em>Daten bearbeiten</em> enthält einen kleinen SQL-Editor für eine optionale Filter- und
 Sortierklausel, die an die Abfrage zum Laden der Datensätze angehängt wird — zum Beispiel
 <code>where t.cust_id &gt; 10 order by t.cust_name</code> (die Tabelle steht unter dem Alias
@@ -167,27 +167,24 @@ Zeile zum Löschen (erneuter Klick macht dies rückgängig) bzw. entfernt eine n
 Zeile.</p>
 <p>Die Zeile des Rasters mit dem Symbol <code>+</code> ist die Zeile zum Hinzufügen neuer
 Datensätze. Fügen wir einige Datensätze in die Tabelle <code>customers</code> ein:</p>
-<p><img alt="" src="../assets/img/image_043.webp" /></p>
+<p><img alt="Two new rows added in the Edit Data grid" src="../assets/img/ui-edit-data-insert.webp"/></p>
 <p>Nach dem Speichern werden die Datensätze eingefügt und können bearbeitet werden
 (nur weil diese Tabelle einen Primärschlüssel hat). Ändern wir den <em>cust_name</em>
 einiger bestehender Datensätze und entfernen wir gleichzeitig eine der Zeilen:</p>
-<p><img alt="" src="../assets/img/image_044.webp" /></p>
+<p><img alt="Edit Data with a changed cell and a row marked for deletion" src="../assets/img/ui-edit-data-changes.webp"/></p>
 <p>Tabellen können Felder mit sehr langen Zeichenketten als Werten enthalten. Um
 das Bearbeiten dieser Felder zu erleichtern, klicken Sie mit der rechten Maustaste auf die Zelle und wählen
 <em>Edit Content</em>: Es öffnet sich ein größerer Editor (mit Syntaxhervorhebung für JSON/JSONB- und
 XML-Spalten), und <em>Speichern</em> schreibt den Wert zurück in das Raster. Dasselbe Menü bietet auch
 <em>Kopieren</em>:</p>
-<p><img alt="" src="../assets/img/image_045.webp" /></p>
-<p><img alt="" src="../assets/img/image_046.webp" /></p>
+<p><img alt="The cell context menu of the Edit Data grid" src="../assets/img/ui-edit-data-cell-menu.webp"/></p>
+<p><img alt="The Edit Content dialog" src="../assets/img/ui-edit-data-content.webp"/></p>
 <p>Die Oberfläche erkennt Fehler, die bei Vorgängen an Datensätzen auftreten
 können. Fügen wir zur Demonstration zwei Datensätze mit einer bereits
 existierenden <code>cust_id</code> (Primärschlüssel) ein:</p>
-<p><img alt="" src="../assets/img/image_047.webp" /></p>
+<p><img alt="The error dialog shown when saving fails" src="../assets/img/ui-edit-data-error.webp"/></p>
 <p>Es zeigt an, welche Befehle ausgeführt werden sollten und welche Fehler dabei
 jeweils auftraten.</p>
-<p>Zum Abschluss dieses Kapitels fügen wir noch einige Datensätze in die Tabelle
-<em>Address</em> ein:</p>
-<p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

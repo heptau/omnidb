@@ -144,14 +144,14 @@
 <p>Für diese Funktion zeigt der innere Tab <em>SQL Query</em> zwei Schaltflächen: <em>Explain</em> und <em>Explain Analyze</em>.</p>
 <h4>Textuelle Visualisierung</h4>
 <p>Wenn Sie auf die Schaltfläche <em>Explain</em> klicken, führt OmniDB einen <code>EXPLAIN</code>-Befehl für Ihre Abfrage aus. Die anfängliche Visualisierung ist <em>textuell</em> und zeigt genau die Ausgabe des <code>EXPLAIN</code>-Befehls, jedoch mit farbigen Balken, die die geschätzten Kosten darstellen. Je höher die Kosten, desto dunkler und breiter ist der Balken.</p>
-<p><img alt="" src="../assets/img/image_054.webp" /></p>
-<p>Wenn Sie auf die Schaltfläche <em>Explain Analyze</em> klicken, führt OmniDB einen <code>EXPLAIN ANALYZE</code>-Befehl für Ihre Abfrage aus. Beachten Sie, dass dieser Befehl die Abfrage tatsächlich ausführt. Die textuelle Visualisierung zeigt zudem viel mehr Informationen an, und die Kosten sind keine Schätzungen wie bei denen des <code>EXPLAIN</code>-Befehls — es sind tatsächliche Kosten.</p>
-<p><img alt="" src="../assets/img/image_055.webp" /></p>
+<p><img alt="The textual Explain view" src="../assets/img/ui-explain-text.webp"/></p>
+<p>Wenn Sie auf die Schaltfläche <em>Explain Analyze</em> klicken, führt OmniDB einen <code>EXPLAIN (ANALYZE, BUFFERS)</code>-Befehl für Ihre Abfrage aus. Beachten Sie, dass dieser Befehl die Abfrage tatsächlich ausführt. Die textuelle Visualisierung zeigt zudem viel mehr Informationen an, und die Kosten sind keine Schätzungen wie bei denen des <code>EXPLAIN</code>-Befehls — es sind tatsächliche Kosten.</p>
+<p><img alt="The textual Explain Analyze view" src="../assets/img/ui-explain-analyze-text.webp"/></p>
 <h4>Baum-Visualisierung</h4>
 <p>Beide Modi — <em>Explain</em> und <em>Explain Analyze</em> — können die textuelle Ausgabe auch grafisch als <em>Baumdiagramm</em> darstellen. Jeder Kreis repräsentiert einen vom Abfrageplan ausgeführten Knoten; je größer der Kreis, desto höher die Kosten.</p>
-<p><img alt="" src="../assets/img/image_056.webp" /></p>
+<p><img alt="The plan as a tree diagram" src="../assets/img/ui-explain-tree1.webp"/></p>
 <p>Wenn Abfragen immer komplexer werden, kann auch ihr Abfrageplan sehr komplex sein. Bei solchen Abfragen (wie der <em>check bloat</em>-Abfrage, die wir unten ausgeführt haben) kann die Baum-Visualisierung sehr interessant sein:</p>
-<p><img alt="" src="../assets/img/image_057.webp" /></p>
+<p><img alt="The plan as a zoomed tree diagram" src="../assets/img/ui-explain-tree2.webp"/></p>
 <p>Die Abfrageplan-Visualisierungskomponente ermöglicht es Ihnen, einfach zwischen textueller und zwei Baum-Visualisierungen zu wechseln, die hinein- und herausgezoomt werden können.</p>
 		</main>
 	</div>

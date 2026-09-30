@@ -147,13 +147,12 @@ language you can write your own <em>user-defined functions</em> to achieve abstr
 levels and procedural calculations that would be difficult to achieve with plain
 SQL (and sometimes impossible to achieve without context-switching with the
 application).</p>
-<p><img alt="" src="../assets/img/image_072.webp"/></p>
 <h4>Writing functions</h4>
 <p>In the <code>public</code> schema, right-click the <code>Functions</code> node and click on <em>Create
 Function</em>. It will open a <em>SQL Query</em> inner tab, already containing a SQL
 Template to help you create your first PL/pgSQL function.</p>
-<p><img alt="" src="../assets/img/image_073.webp"/></p>
-<p><img alt="" src="../assets/img/image_074.webp"/></p>
+<p><img alt="The context menu of the Functions node" src="../assets/img/ui-ctx-functions.webp"/></p>
+<p><img alt="The CREATE FUNCTION template" src="../assets/img/ui-function-create.webp"/></p>
 <p>You can refer to PostgreSQL documentation on how to write user-defined
 functions. Just right-click the <em>Functions</em> node and click on <em>Doc:
 Functions</em> — the relevant PostgreSQL documentation page opens in your web
@@ -191,17 +190,17 @@ many vowels there are in this <em>string</em>. Then returns this count.</p>
 successful, the function will appear under the <em>Functions</em> tree node (you can
 refresh it by right-clicking and then clicking in <em>Refresh</em>). By expanding the
 function node as well, you can see its return type and its argument.</p>
-<p><img alt="" src="../assets/img/image_075.webp"/></p>
+<p><img alt="A function in the tree and the result of calling it" src="../assets/img/ui-function-run.webp"/></p>
 <p>Now let us execute this new function for the first time. Open a simple SQL Query
 inner tab and execute the following SQL query:</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
-<p><img alt="" src="../assets/img/image_076.webp"/></p>
 <p>Note how the query returns a single value, containing the number of vowels in
 the text.</p>
 <p>By right-clicking the function node, you can see there are actions to edit,
 select and drop it. As you probably guessed, each action will open SQL Query
 inner tabs with handy SQL templates in them.</p>
+<p><img alt="The context menu of a function" src="../assets/img/ui-ctx-function.webp"/></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

@@ -143,6 +143,7 @@
 elementi. Le scorciatoie da tastiera indicate sotto sono quelle predefinite su Windows/Linux; su
 macOS le scorciatoie proprie di OmniDB usano Ctrl al posto di Alt. Tutte possono essere modificate
 in <a href="settings_and_languages.html">Impostazioni &gt; Scorciatoie</a>.</p>
+<p><img alt="A Query tab with the SQL editor, toolbar and results" src="../assets/img/ui-query-editor.webp"/></p>
 <ul>
 <li><strong>1) Intestazione della scheda</strong>: Puoi vedere il nome della scheda e, passando il
 mouse, un’icona per chiuderla. Mentre nella scheda è in esecuzione una query vedrai un indicatore
@@ -181,7 +182,7 @@ filtrarla per intervallo di date e per testo per trovare il comando SQL di cui h
 testuale e grafica nella scheda Explain (per maggiori dettagli, vedi
 <a href="visualizing_query_plans.html">Visualizzazione dei piani di query</a>).</li>
 <li><strong>9) Explain Analyze (solo PostgreSQL)</strong>: Come il pulsante Explain, ma esegue la
-query SQL con <code>EXPLAIN ANALYZE</code>, che eseguirà effettivamente la query (scorciatoia
+query SQL con <code>EXPLAIN (ANALYZE, BUFFERS)</code>, che eseguirà effettivamente la query (scorciatoia
 <code>Alt-E</code>).</li>
 <li><strong>10) Autocommit (solo PostgreSQL)</strong>: Quando abilitato, ogni query eseguita verrà
 confermata (commit) sul database. Quando disabilitato, OmniDB avvia una transazione e,
@@ -233,15 +234,15 @@ completamento automatico del codice SQL. Apri i suggerimenti con <code>Ctrl-Spac
 (<code>Option-Space</code> su macOS). Con questa funzionalità è possibile completare
 automaticamente le colonne contenute in una tabella referenziata tramite un alias: digita l’alias,
 il carattere <code>.</code> e poi apri il completamento automatico:</p>
-<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p><img alt="Autocomplete after a table alias" src="../assets/img/ui-autocomplete-alias.webp"/></p>
 <p>Se l’utente non avvia il completamento automatico con il cursore vicino a un alias di tabella, il
 componente mostrerà più categorie di dati. Digitando nel campo di filtro, gli elementi di tutte le
 categorie verranno filtrati:</p>
-<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p><img alt="Autocomplete offering all categories" src="../assets/img/ui-autocomplete-all.webp"/></p>
 <p>Il componente di completamento automatico è anche in grado di identificare alcune informazioni
 contestuali. Ad esempio, se digiti il nome di uno schema e poi il carattere <code>.</code>, potrai
 filtrare tra gli oggetti contenuti solo in quello schema:</p>
-<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p><img alt="Autocomplete after a schema name" src="../assets/img/ui-autocomplete-schema.webp"/></p>
 <p>Dopo <code>::</code> (un cast di tipo PostgreSQL) vengono proposti solo tipi di dato. La scelta
 di una parola chiave aggiunge anche ciò che la segue sempre (ad esempio uno spazio dopo
 <code>SELECT</code>, o la parentesi aperta dopo <code>COALESCE</code>). Quali categorie vengano

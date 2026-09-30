@@ -603,9 +603,9 @@ export function saveEditDataReturnRender(p_message, p_context) {
 
 				v_commands_log +=
 					"<b>Command:</b> " +
-					v_data[i].command +
+					escapeHtml(v_data[i].command) +
 					'<br/><br/><b>Message:</b><br><br><div class="error_text">' +
-					v_data[i].v_message +
+					escapeHtml(v_data[i].v_message) +
 					"</div><br/><br/>";
 
 				v_currTabTag.button_save.style.visibility = "visible";
@@ -636,9 +636,9 @@ export function saveEditDataReturnRender(p_message, p_context) {
 
 				v_commands_log +=
 					"<b>Command:</b> " +
-					v_data[i].command +
+					escapeHtml(v_data[i].command) +
 					'<br/><br/><b>Message:</b><br><br><div class="error_text">' +
-					v_data[i].v_message +
+					escapeHtml(v_data[i].v_message) +
 					"</div><br/><br/>";
 
 				v_currTabTag.button_save.style.visibility = "visible";
@@ -669,9 +669,9 @@ export function saveEditDataReturnRender(p_message, p_context) {
 
 				v_commands_log +=
 					"<b>Command:</b> " +
-					v_data[i].command +
+					escapeHtml(v_data[i].command) +
 					'<br/><br/><b>Message:</b><br><br><div class="error_text">' +
-					v_data[i].v_message +
+					escapeHtml(v_data[i].v_message) +
 					"</div><br/><br/>";
 
 				v_currTabTag.button_save.style.visibility = "visible";
@@ -683,7 +683,7 @@ export function saveEditDataReturnRender(p_message, p_context) {
 	if (v_has_error) {
 		//v_div_commands_log.innerHTML = v_commands_log;
 		//$('#div_commands_log').addClass('isActive');
-		showAlert(v_commands_log);
+		showAlert(v_commands_log, null, null, true);
 	}
 
 	v_currTabTag.editDataObject.ht.render();

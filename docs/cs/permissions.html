@@ -139,125 +139,191 @@
 		</div>
 		</nav>
 		<main>
-		<h1>Role a oprávnění</h1>
-<p>Sekce <em>Oprávnění</em> je prohlížeč rolí a oprávnění pro PostgreSQL. Role serveru rozkládá po
-vzoru Finderu do sloupců vedle sebe: vlevo vyberete roli a sloupce napravo od ní ukazují, čeho je
-členem, kdo je členem jí a co může skutečně dělat s každým databázovým objektem — včetně všeho,
-co má jen nepřímo, prostřednictvím zděděných členství v rolích nebo prostřednictvím
-<code>PUBLIC</code>. Role, členství a oprávnění lze přímo zde vytvářet, měnit a odebírat.</p>
-<p><strong>Poznámka:</strong> tato sekce v současnosti podporuje pouze PostgreSQL. U všech ostatních
+			<h1>Role a oprávnění</h1>
+<p>Sekce <em>Oprávnění</em> je prohlížeč rolí a oprávnění pro PostgreSQL. Role serveru rozkládá po
+vzoru Finderu do sloupců vedle sebe: vlevo vyberete roli a sloupce napravo od ní ukazují, čeho je
+členem, kdo je členem jí a co může skutečně dělat s každým databázovým objektem — včetně všeho,
+co má jen nepřímo, prostřednictvím zděděných členství v rolích nebo prostřednictvím
+<code>PUBLIC</code>. Role, členství, oprávnění, výchozí oprávnění a vlastnictví lze přímo zde
+vytvářet, měnit a odebírat.</p>
+<p><strong>Poznámka:</strong> tato sekce v současnosti podporuje pouze PostgreSQL. U všech ostatních
 připojení zobrazí <em>Oprávnění zatím nejsou podporována pro …</em> / <em>Aktuálně je podporován
 pouze PostgreSQL.</em></p>
+<p><img alt="The Permissions section with three columns" src="../assets/img/ui-perm-roles.webp"/></p>
 <h4>Otevření sekce</h4>
-<p>Klikněte na ikonu <em>Oprávnění</em> (ikona lidí) na levé liště. Sekce pracuje s připojením,
-které je už otevřené v sekci <em>Databáze</em>: nahoře se zobrazuje stejný pruh záložek otevřených
-připojení a sekce používá tu záložku připojení, která je v něm vybraná. Není-li otevřeno žádné
+<p>Klikněte na ikonu <em>Oprávnění</em> (ikona lidí) na levé liště. Sekce pracuje s připojením,
+které je už otevřené v sekci <em>Databáze</em>: nahoře se zobrazuje stejný pruh záložek otevřených
+připojení a sekce používá tu záložku připojení, která je v něm vybraná. Není-li otevřeno žádné
 připojení, zobrazí se <em>Není otevřené žádné připojení</em> — nejprve nějaké otevřete (viz
 <a href="managing_databases.html">Správa databází</a>). Sloupce se sestavují znovu při každém
 vstupu do sekce, takže se předchozí výběr vždy zruší.</p>
 <p>Vše, co zde děláte, vyžaduje stejná oprávnění, jaká by vyžadoval odpovídající SQL příkaz
 (<code>CREATEROLE</code>, superuživatele nebo vlastnictví objektu, podle akce) — OmniDB spouští
-příkazy s přihlašovacími údaji připojení, které používáte.</p>
+příkazy s přihlašovacími údaji připojení, které používáte. Tři sloupce lze zvětšovat a zmenšovat
+tažením tenkého úchytu na jejich pravém okraji; dvojklik na úchyt vrátí šířku daného sloupce
+do výchozího stavu a šířky se pamatují.</p>
 <h4>Sloupec 1: Role</h4>
 <p>Sloupec <em>Role</em> obsahuje všechny role na serveru včetně vestavěných rolí
 <code>pg_*</code>, seřazené podle názvu. Role, které se mohou přihlásit (uživatelé), mají ikonu
-jedné postavy; role, které se přihlásit nemohou (skupiny), mají ikonu dvou postav. Prvním řádkem je
-vždy <code>PUBLIC</code> (ikona zeměkoule) — nejde o skutečnou roli, ale o pseudoroli, do které
-implicitně patří každá role, aby bylo možné oprávnění udělená roli <code>PUBLIC</code> procházet
-a upravovat stejným způsobem.</p>
+jedné postavy; role, které se přihlásit nemohou (skupiny), mají ikonu dvou postav; superuživatelé
+jsou označeni <em>(superuživatel)</em> a role s vypršelou platností účtu <em>(prošlá platnost)</em>.
+Prvním řádkem je vždy <code>PUBLIC</code> (ikona zeměkoule) — nejde o skutečnou roli, ale
+o pseudoroli, do které implicitně patří každá role, aby bylo možné oprávnění udělená roli
+<code>PUBLIC</code> procházet a upravovat stejným způsobem.</p>
+<p>Pole nad seznamem filtruje role podle názvu a rozbalovací seznam vedle něj podle druhu:
+<em>Všechny role</em>, <em>Uživatelé (mohou se přihlásit)</em>, <em>Skupiny (bez přihlášení)</em>,
+<em>Superuživatelé</em> nebo <em>Prošlé</em>.</p>
 <p>Kliknutím na roli ji zaměříte; ostatní sloupce pak ukazují tuto roli. Pod seznamem:</p>
 <ul>
 <li><strong>+</strong> otevře dialog <em>Vytvořit roli</em>: <em>Název role</em>, <em>Heslo</em>
-a zaškrtávací políčka atributů <em>Může se přihlásit</em> (ve výchozím stavu zapnuto),
+a zaškrtávací políčka atributů <em>Může se přihlásit</em> (ve výchozím stavu zapnuto),
 <em>Superuživatel</em>, <em>Může vytvářet databáze</em>, <em>Může vytvářet role</em>, <em>Dědí
 oprávnění rolí, jejichž je členem</em> (ve výchozím stavu zapnuto), <em>Může iniciovat
-replikaci</em> a <em>Obchází zabezpečení na úrovni řádků (RLS)</em>, a dále <em>Limit připojení
+replikaci</em> a <em>Obchází zabezpečení na úrovni řádků (RLS)</em>, a dále <em>Limit připojení
 (-1 = neomezeno)</em> a <em>Platnost účtu do</em> (ponechte prázdné pro neomezenou platnost).</li>
 <li><strong>−</strong> odstraní vybranou roli (u <code>PUBLIC</code> je nedostupné).</li>
 </ul>
+<p><img alt="The Create Role dialog with the SQL preview" src="../assets/img/ui-perm-create-role.webp"/></p>
 <p>Kliknutí pravým tlačítkem na roli (kromě <code>PUBLIC</code>) nabídne:</p>
 <ul>
 <li><em>Změnit heslo</em> — dvakrát se zeptá na nové heslo. Heslo se před odesláním zahešuje ve
 formátu, na který je nakonfigurován samotný server (SCRAM-SHA-256 nebo md5).</li>
-<li><em>Upravit atributy</em> — stejná pole atributů jako v dialogu <em>Vytvořit roli</em>, předvyplněná
+<li><em>Upravit atributy</em> — stejná pole atributů jako v dialogu <em>Vytvořit roli</em>, předvyplněná
 aktuálními hodnotami role. Vymazáním pole <em>Platnost účtu do</em> se omezení platnosti zruší.</li>
-<li><em>Odstranit roli</em> — zeptá se <em>Smazat roli „…“? Tuto akci nelze vrátit zpět.</em> a poté
-spustí prosté <code>DROP ROLE</code>; PostgreSQL ho odmítne, dokud role ještě vlastní objekty nebo
-drží oprávnění.</li>
+<li><em>Přejmenovat roli</em> — <code>ALTER ROLE … RENAME TO</code>. Oprávnění, členství i vlastnictví
+přejdou na nový název; dialog upozorní, že PostgreSQL při přejmenování smaže heslo uložené jako md5.</li>
+<li><em>Exportovat oprávnění</em> / <em>Exportovat oprávnění všech rolí</em> — kopírovatelný SQL
+skript, který oprávnění znovu vytvoří: <code>CREATE ROLE</code> (pouze atributy), členství, přímá
+oprávnění na objektech a výchozí oprávnění, příkazy každé databáze pod jejím vlastním nadpisem.
+Každou část lze vypnout a skript se znovu vygeneruje; <em>Uložit do souboru…</em> ho uloží
+(nativní dialog Uložit v desktopové aplikaci, stažení v prohlížeči). Hesla, oprávnění
+<code>PUBLIC</code>, vlastnictví a nastavení rolí se neexportují.</li>
+<li><em>Klonovat roli</em> — vytvoří novou roli s atributy zdrojové role a volitelně i s jejími přímými
+členstvími a přímými oprávněními na objektech v každé databázi (nalezenými přes
+<code>pg_shdepend</code>, takže databáze, kde role nic nedrží, se vůbec neotevírají). Heslo se
+nekopíruje; v dialogu ho můžete nastavit. Výchozí oprávnění, vlastněné objekty a nastavení
+jednotlivých rolí se nekopírují.</li>
+<li><em>Odstranit roli</em> — pokud role stále vlastní objekty nebo drží oprávnění, dialog po
+databázích vypíše, co vlastní a drží, a zeptá se, která role převezme její objekty. OmniDB pak
+v každé dotčené databázi spustí <code>REASSIGN OWNED</code> a <code>DROP OWNED</code> (v tomto pořadí, takže
+se nic nesmaže) a teprve poté <code>DROP ROLE</code>. Bez jakýchkoli závislostí se jen zeptá na
+potvrzení.</li>
 </ul>
+<p><img alt="The context menu of a role" src="../assets/img/ui-perm-role-menu.webp"/></p>
 <h4>Sloupec 2: členství</h4>
 <p>Druhý sloupec je rozdělen na dvě poloviny:</p>
 <ul>
-<li><strong>… — Členové</strong> (nahoře): role, které jsou členy zaměřené role.</li>
+<li><strong>… — Členové</strong> (nahoře): role, které jsou členy zaměřené role. Je-li zaměřena
+<code>PUBLIC</code>, uvádí všechny role, protože všechny implicitně dostávají oprávnění
+<code>PUBLIC</code>.</li>
 <li><strong>… — členem role</strong> (dole): všechny role, do kterých zaměřená role patří, ať přímo,
 nebo přes jiné role, sloučené do jednoho seznamu. <code>PUBLIC</code> je vždy uvedena první.</li>
 </ul>
-<p>V obou polovinách se přímá členství zobrazují normálním písmem a nepřímá (zděděná) šedě. Přímé
-členství udělené <code>WITH ADMIN OPTION</code> je označeno <em>(admin option)</em>. U
-<code>PUBLIC</code> obě poloviny jen uvádějí <em>PUBLIC není členem žádné role.</em></p>
+<p>V obou polovinách se přímá členství zobrazují normálním písmem a nepřímá (zděděná)
+kurzívou s vybledlou ikonou. Přímé členství udělené <code>WITH ADMIN OPTION</code> je označeno
+<em>(admin option)</em>; na PostgreSQL 16 a novějším označují <em>(bez dědění)</em> a <em>(bez SET)</em>
+členství, kterým chybí volba <code>INHERIT</code> nebo <code>SET</code>.</p>
 <ul>
-<li><strong>+</strong> pod <em>členem role</em> otevře <em>Přidat členství</em>: vyberte roli, jejímž
-členem se má zaměřená role stát, případně s volbou <em>S právem předávat toto členství (admin
-option)</em>.</li>
-<li><strong>+</strong> pod <em>Členové</em> otevře <em>Přidat člena</em>: stejný dialog v opačném
-směru — vybraná role se stane členem zaměřené role.</li>
+<li><strong>+</strong> pod <em>členem role</em> otevře <em>Přidat členství</em>: vyberte jednu nebo více
+rolí, jejichž členem se má zaměřená role stát (kliknutím na řádky je přepínáte), případně
+s volbou <em>S právem předávat toto členství (admin option)</em>. Na PostgreSQL 16+ dialog nabízí také
+volby <em>INHERIT</em> a <em>SET</em> (<em>Výchozí podle serveru</em> / <em>Ano</em> / <em>Ne</em>).</li>
+<li><strong>+</strong> pod <em>Členové</em> otevře <em>Přidat člena</em>: stejný dialog v opačném
+směru — vybrané role se stanou členy zaměřené role.</li>
 <li><strong>−</strong> (nebo pravým tlačítkem → <em>Odebrat členství</em>) odebere členství po
-dotazu <em>Odebrat členství v roli „…“?</em>. Odebrat lze jen přímá členství; zděděné je nutné
+dotazu <em>Odebrat členství v roli „…“?</em>. Odebrat lze jen přímá členství; zděděné je nutné
 odebrat tam, kde je skutečně uděleno.</li>
-<li>Dvojklik na řádek, nebo pravým tlačítkem → <em>Nastavit jako aktivní roli</em>, udělá z této
+<li>Pravým tlačítkem → <em>Upravit volby členství</em> změní u přímého členství přímo na místě
+admin option a (na PostgreSQL 16+) volby <code>INHERIT</code>/<code>SET</code>.</li>
+<li>Dvojklik na řádek, nebo pravým tlačítkem → <em>Nastavit jako aktivní roli</em>, udělá z této
 role zaměřenou roli, přesně jako byste na ni klikli ve sloupci <em>Role</em> — nejrychlejší způsob,
 jak sledovat řetězec dědičnosti směrem nahoru.</li>
 </ul>
-<h4>Sloupec 3: objekty a efektivní oprávnění</h4>
-<p>Třetí sloupec, <em>… — Objekty</em>, je strom všeho, k čemu má zaměřená role jakékoli oprávnění
-— jejích <em>efektivních</em> oprávnění: vlastních přímých udělení a všeho, co dědí přes svá
-členství a přes <code>PUBLIC</code>. Začíná dvěma skupinami, <em>Databáze</em> (všechny databáze
-na serveru) a <em>Tablespace</em>; uzel se zobrazí normálně, pokud v něm role má nějaké
-oprávnění, jinak šedě.</p>
-<p>Rozbalení databáze načte její objekty přes samostatné připojení k této databázi (aktivní databáze
-samotné záložky připojení se nemění): schémata a uvnitř každého schématu složky pro tabulky,
-pohledy, sekvence, funkce, procedury, materializované pohledy, typy a domény; foreign data wrappery
-a cizí servery jsou přímo pod databází. Uvádějí se jen objekty, ke kterým role skutečně má nějaké
-oprávnění (systémová schémata jsou vynechána); šedě zobrazené schéma je v seznamu jen proto, že
-něco uvnitř něj oprávnění má. Není-li tam vůbec nic, databáze zobrazí <em>Žádná oprávnění na
-objektech v této databázi.</em></p>
+<h4>Sloupec 3: objekty a efektivní oprávnění</h4>
+<p>Třetí sloupec, <em>… — Objekty</em>, je strom všeho, k čemu má zaměřená role jakékoli oprávnění
+— jejích <em>efektivních</em> oprávnění: vlastních přímých udělení a všeho, co dědí přes svá
+členství a přes <code>PUBLIC</code>. Začíná dvěma skupinami, <em>Databáze</em> (všechny databáze
+na serveru) a <em>Tablespace</em>; uzel se zobrazí normálně, pokud v něm role má nějaké
+oprávnění, jinak šedě. Pole nahoře filtruje databáze a tablespace podle názvu a při přepnutí
+role si svůj text zachová.</p>
+<p>Rozbalení databáze načte její objekty přes samostatné připojení k této databázi (aktivní databáze
+samotné záložky připojení se nemění): <em>Schémata</em> a uvnitř každého schématu složky pro
+<em>Tabulky</em>, <em>Pohledy</em>, <em>Sekvence</em>, <em>Funkce</em>, <em>Procedury</em>,
+<em>Materializované pohledy</em>, <em>Typy</em> a <em>Domény</em>; foreign data wrappery
+a cizí servery jsou přímo pod databází. Uvádějí se jen objekty, ke kterým role skutečně má nějaké
+oprávnění (systémová schémata jsou vynechána); šedě zobrazené schéma je v seznamu jen proto, že
+něco uvnitř něj oprávnění má. Každá databáze má navíc dvě další složky:
+<em>Vlastněné objekty (n)</em>, která uvádí, co tam role vlastní (nejvýše 1000 položek), a
+<em>Výchozí oprávnění</em>, popsaná níže. Není-li tam vůbec nic, databáze zobrazí <em>Žádná
+oprávnění na objektech v této databázi.</em></p>
+<p><img alt="The Objects column expanded down to the tables" src="../assets/img/ui-perm-objects.webp"/></p>
 <h4>Úprava oprávnění</h4>
-<p>Klikněte pravým tlačítkem na databázi, tablespace, schéma nebo objekt a zvolte <em>Upravit
+<p>Klikněte pravým tlačítkem na databázi, tablespace, schéma nebo objekt a zvolte <em>Upravit
 oprávnění</em>. Dialog zobrazí každé oprávnění platné pro daný druh objektu jako zaškrtávací
 políčko:</p>
 <ul>
-<li>databáze: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;
-tablespace: <code>CREATE</code>; schéma: <code>CREATE</code>, <code>USAGE</code>;</li>
-<li>tabulka, pohled a materializovaný pohled: <code>SELECT</code>, <code>INSERT</code>,
-<code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>,
-<code>TRIGGER</code>;</li>
-<li>sekvence: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;
-funkce a procedura: <code>EXECUTE</code>;
-typ, doména, foreign data wrapper a cizí server: <code>USAGE</code>.</li>
+<li>databáze: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;</li>
+<li>tablespace: <code>CREATE</code>; schéma: <code>CREATE</code>, <code>USAGE</code>;</li>
+<li>tabulka, pohled a materializovaný pohled: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>,
+<code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>, <code>TRIGGER</code>;</li>
+<li>sekvence: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;</li>
+<li>funkce a procedura: <code>EXECUTE</code>;</li>
+<li>typ, doména, foreign data wrapper a cizí server: <code>USAGE</code>.</li>
 </ul>
-<p>Každé políčko prozrazuje, odkud oprávnění pochází:</p>
+<p>Políčka ukazují, co role drží přímo:</p>
 <ul>
-<li><strong>zaškrtnuté</strong> — role ho má přímo; zrušením zaškrtnutí ho odeberete
+<li><strong>zaškrtnuté</strong> — uděleno roli přímo; zrušením zaškrtnutí ho odeberete
 (<code>REVOKE</code>);</li>
-<li><strong>zaškrtnuté, ale neaktivní</strong>, s textem <em>Zděděno od: …</em> — role ho má jen přes
-jinou roli nebo <code>PUBLIC</code>. Zde ho odebrat nelze; zdrojovou roli nastavte jako aktivní
-(<em>Nastavit jako aktivní roli</em>) a odeberte ho tam;</li>
-<li><strong>nezaškrtnuté</strong> — role ho nemá; zaškrtnutím ho udělíte přímo
-(<code>GRANT</code>).</li>
+<li><strong>nezaškrtnuté</strong> — není uděleno přímo; zaškrtnutím ho udělíte (<code>GRANT</code>).
+Pokud role oprávnění už má přes jinou roli nebo <code>PUBLIC</code>, zůstává nezaškrtnuté a je
+označeno <em>Zděděno od: …</em> — přesto ho můžete zaškrtnout a udělit přímo, takže zůstane
+zachováno i po odebrání členství, ze kterého pochází. Chcete-li zděděné oprávnění odebrat,
+odeberte ho u zdroje (zdrojovou roli nastavte jako aktivní pomocí <em>Nastavit jako aktivní roli</em>).</li>
 </ul>
-<p><em>S právem předávat toto oprávnění dál</em> se vztahuje na oprávnění, která v dialogu nově
-udělíte. Potvrďte hlavním tlačítkem dialogu, které nese název objektu.</p>
-<p>Chcete-li udělit oprávnění k objektu, který ve stromu zatím není, použijte <strong>+</strong>
+<p><img alt="The Edit Privileges dialog with the SQL preview" src="../assets/img/ui-perm-edit-privileges.webp"/></p>
+<p><em>S právem předávat toto oprávnění dál</em> se vztahuje na oprávnění, která v dialogu nově
+udělíte. Potvrďte tlačítkem <em>Uložit</em>.</p>
+<p>Chcete-li udělit oprávnění k objektu, který ve stromu zatím není, použijte <strong>+</strong>
 (<em>Přidat oprávnění na objektu</em>) pod sloupcem: zvolte <em>Typ objektu</em>, poté
-<em>Databázi</em> (u všeho kromě databází a tablespace; ve výchozím stavu aktuální databáze
-připojení), <em>Schéma</em> u objektů na úrovni schématu, samotný <em>Objekt</em> (funkce se
-zobrazují se signaturou argumentů), zaškrtněte <em>Oprávnění</em> a případně <em>S právem
-předávat toto oprávnění dál</em>.</p>
-<p>Když v prvním sloupci vyberete <code>PUBLIC</code>, můžete upravovat, co je uděleno přímo roli
+<em>Databázi</em> (u všeho kromě databází a tablespace; ve výchozím stavu aktuální databáze
+připojení), <em>Schéma</em> u objektů na úrovni schématu, samotný <em>Objekt</em> (funkce se
+zobrazují se signaturou argumentů), zaškrtněte <em>Oprávnění</em> a případně <em>S právem
+předávat toto oprávnění dál</em>. U tabulek, sekvencí, funkcí a procedur lze volbu <em>Rozsah</em>
+přepnout z <em>Vybraný objekt</em> na <em>Všechny … ve schématu</em> s akcí <em>Udělit</em> nebo
+<em>Odebrat</em>: OmniDB pak spustí <code>GRANT</code>/<code>REVOKE … ON ALL … IN SCHEMA</code>, což se
+týká objektů existujících nyní, nikoli těch vytvořených později.</p>
+<p>Když v prvním sloupci vyberete <code>PUBLIC</code>, můžete upravovat, co je uděleno přímo roli
 <code>PUBLIC</code> (<code>GRANT … TO PUBLIC</code> / <code>REVOKE … FROM PUBLIC</code>).</p>
-<p><strong>Důležité:</strong> každá akce v této sekci se na serveru provede okamžitě — neexistuje
-žádný náhled SQL ani možnost vrácení zpět. Potvrzení předem vyžadují jen <em>Odstranit roli</em> a
-<em>Odebrat členství</em>. Pokud server příkaz odmítne, zobrazí se jeho chybová zpráva.</p>
+<h4>Výchozí oprávnění</h4>
+<p>Složka <em>Výchozí oprávnění</em> u databáze uvádí položky <code>ALTER DEFAULT PRIVILEGES</code>,
+které se týkají zaměřené role, ať jako příjemce, nebo jako vytvářející role. Slouží k pokrytí
+objektů, které vzniknou v budoucnu. Klikněte na složku pravým tlačítkem a zvolte <em>Přidat výchozí
+oprávnění</em>: vyberte vytvářející roli (<em>Pro objekty vytvořené rolí</em>), schéma (nebo všechna
+schémata), druh objektu (tabulky, sekvence, funkce, typy, schémata) a oprávnění. Pravým tlačítkem
+na existující položku zvolíte <em>Upravit oprávnění</em> (udělí se nebo odeberou jen ta zaškrtnutí,
+která změníte) nebo <em>Odebrat výchozí oprávnění</em>.</p>
+<h4>Vlastnictví a kdo má přístup</h4>
+<ul>
+<li><strong>Změnit vlastníka</strong> (kontextová nabídka libovolného objektu ve sloupci Objekty)
+spustí pro objekt <code>ALTER … OWNER TO</code>.</li>
+<li><strong>Kdo má přístup</strong> je opačný pohled: uvádí každou roli, která může s objektem
+něco dělat, a proč — vlastník, přímé udělení, zděděno přes členství nebo superuživatel — a dále
+<code>PUBLIC</code>, s označením práva předávat oprávnění dál. Odpovědi pocházejí z vlastních funkcí
+PostgreSQL <code>has_*_privilege</code>, takže odpovídají tomu, co server skutečně dovolí. Role, které
+mají jen to, co <code>PUBLIC</code> dává všem, jsou vynechány a superuživatelé jsou sloučeni do
+sbalené skupiny; kliknutím na roli ji nastavíte jako aktivní.</li>
+</ul>
+<p><img alt="The Who Has Access dialog" src="../assets/img/ui-perm-who-has-access.webp"/></p>
+<h4>Náhled SQL</h4>
+<p>Dialogy pro vytvoření, úpravu, přejmenování a klonování rolí, přidání členství, udělení nebo
+úpravu oprávnění, výchozí oprávnění a změnu vlastníka mají sbalitelné pole <em>Zobrazit SQL</em>.
+Ukazuje přesné příkazy, které by se s aktuálními hodnotami formuláře spustily — sestavené stejným
+kódem serveru jako skutečné volání, nic se neprovádí, hesla jsou maskována — a při změnách
+formuláře je průběžně aktualizuje. <em>Kopírovat SQL</em> je zkopíruje.</p>
+<p><strong>Důležité:</strong> potvrzení dialogu provede příkazy na serveru okamžitě — neexistuje
+možnost vrácení zpět. Nejprve je zkontrolujte pomocí <em>Zobrazit SQL</em>. <em>Odstranit roli</em>,
+<em>Odebrat členství</em> a <em>Odebrat výchozí oprávnění</em> se navíc ptají na potvrzení. Pokud
+server příkaz odmítne, zobrazí se jeho chybová zpráva.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

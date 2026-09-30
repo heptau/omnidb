@@ -142,11 +142,10 @@
 		<h1>PL/pgSQL-Funktionen schreiben</h1>
 <h4>Einführung</h4>
 <p>PostgreSQL ist mehr als nur ein RDBMS. Es ist eine Entwicklungsplattform. Es bietet eine sehr leistungsfähige und flexible Programmiersprache namens <code>PL/pgSQL</code>. Mit dieser Sprache können Sie Ihre eigenen <em>benutzerdefinierten Funktionen</em> schreiben, um Abstraktionsebenen und prozedurale Berechnungen zu erreichen, die mit einfachem SQL nur schwer zu realisieren wären (und manchmal ohne Kontextwechsel mit der Anwendung unmöglich sind).</p>
-<p><img alt="" src="../assets/img/image_072.webp" /></p>
 <h4>Funktionen schreiben</h4>
 <p>Klicken Sie im Schema <code>public</code> mit der rechten Maustaste auf den Knoten <code>Functions</code> und dann auf <em>Create Function</em>. Es öffnet sich ein innerer Tab <em>SQL Query</em>, der bereits eine SQL-Vorlage enthält, die Ihnen hilft, Ihre erste PL/pgSQL-Funktion zu erstellen.</p>
-<p><img alt="" src="../assets/img/image_073.webp" /></p>
-<p><img alt="" src="../assets/img/image_074.webp" /></p>
+<p><img alt="The context menu of the Functions node" src="../assets/img/ui-ctx-functions.webp"/></p>
+<p><img alt="The CREATE FUNCTION template" src="../assets/img/ui-function-create.webp"/></p>
 <p>Sie können in der PostgreSQL-Dokumentation nachschlagen, wie man benutzerdefinierte Funktionen schreibt. Klicken Sie einfach mit der rechten Maustaste auf den Knoten <em>Functions</em> und dann auf <em>Doc: Functions</em> — die entsprechende PostgreSQL-Dokumentationsseite öffnet sich in Ihrem Webbrowser (dem Standardbrowser des Systems in der Desktop-App oder einem neuen Tab beim Betrieb als browserbasierter <a href="deploying_omnidb-server.html">OmniDB Server</a>).</p>
 <p>Ersetzen wir nun diese SQL-Vorlage vollständig durch den folgenden Quellcode:</p>
 <pre><code class="language-sql">CREATE OR REPLACE FUNCTION public.fnc_count_vowels (p_input text)
@@ -174,13 +173,13 @@ $function$
 </code></pre>
 <p>Dies erstellt eine Funktion namens <code>fnc_count_vowels</code> im Schema <code>public</code>. Diese Funktion nimmt ein Text-Argument namens <code>p_input</code> entgegen und zählt, wie viele Vokale in diesem <em>String</em> enthalten sind. Anschließend wird diese Anzahl zurückgegeben.</p>
 <p>Um die Funktion zu erstellen, führen Sie den Befehl im inneren Tab <em>SQL Query</em> aus. Bei Erfolg erscheint die Funktion unter dem Baumknoten <em>Functions</em> (Sie können ihn durch Rechtsklick und Klicken auf <em>Refresh</em> aktualisieren). Wenn Sie den Funktionsknoten ebenfalls aufklappen, sehen Sie seinen Rückgabetyp und seine Argumente.</p>
-<p><img alt="" src="../assets/img/image_075.webp" /></p>
+<p><img alt="A function in the tree and the result of calling it" src="../assets/img/ui-function-run.webp"/></p>
 <p>Lassen Sie uns nun diese neue Funktion zum ersten Mal ausführen. Öffnen Sie einen einfachen inneren Tab <em>SQL Query</em> und führen Sie die folgende SQL-Abfrage aus:</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
-<p><img alt="" src="../assets/img/image_076.webp" /></p>
 <p>Beachten Sie, wie die Abfrage einen einzelnen Wert zurückgibt, der die Anzahl der Vokale im Text enthält.</p>
 <p>Durch Rechtsklick auf den Funktionsknoten sehen Sie Aktionen zum Bearbeiten, Auswählen und Löschen. Wie Sie wahrscheinlich vermuten, öffnet jede Aktion innere Tabs <em>SQL Query</em> mit praktischen SQL-Vorlagen.</p>
+<p><img alt="The context menu of a function" src="../assets/img/ui-ctx-function.webp"/></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

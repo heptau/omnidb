@@ -144,6 +144,7 @@
 suivants. Les raccourcis clavier ci-dessous sont les valeurs par défaut sous Windows/Linux ; sur macOS, les
 raccourcis propres à OmniDB utilisent Ctrl au lieu d’Alt. Tous peuvent être modifiés sous
 <a href="settings_and_languages.html">Paramètres &gt; Raccourcis</a>.</p>
+<p><img alt="A Query tab with the SQL editor, toolbar and results" src="../assets/img/ui-query-editor.webp"/></p>
 <ul>
 <li><strong>1) En-tête de l’onglet</strong> : vous y voyez le nom de l’onglet et, au survol, une icône permettant
 de le fermer. Pendant qu’une requête s’exécute dans l’onglet, un indicateur de chargement s’affiche ; si elle se termine pendant que vous
@@ -178,7 +179,7 @@ par plage de dates et par texte pour retrouver la commande SQL dont vous avez be
 dans l’onglet Explain (voir <a href="visualizing_query_plans.html">Visualiser les plans
 d’exécution</a> pour plus de détails).</li>
 <li><strong>9) Explain Analyze (PostgreSQL uniquement)</strong> : identique au bouton Explain, mais exécute la
-requête SQL avec <code>EXPLAIN ANALYZE</code>, ce qui exécute effectivement la requête (raccourci
+requête SQL avec <code>EXPLAIN (ANALYZE, BUFFERS)</code>, ce qui exécute effectivement la requête (raccourci
 <code>Alt-E</code>).</li>
 <li><strong>10) Validation automatique (PostgreSQL uniquement)</strong> : lorsqu’elle est activée, chaque requête exécutée est
 validée dans la base de données. Lorsqu’elle est désactivée, OmniDB démarre une transaction et, après l’exécution d’une
@@ -228,17 +229,17 @@ Ouvrez les suggestions avec <code>Ctrl-Space</code>
 (<code>Option-Space</code> sur macOS). Elle permet de compléter automatiquement les colonnes
 d’une table référencée par un alias : tapez l’alias, le caractère <code>.</code>, puis
 ouvrez l’autocomplétion :</p>
-<p><img alt="" src="../assets/img/image_050.webp" /></p>
+<p><img alt="Autocomplete after a table alias" src="../assets/img/ui-autocomplete-alias.webp"/></p>
 <p>Si l’utilisateur démarre l’autocomplétion avec le curseur éloigné de tout
 alias de table, le composant affiche plusieurs catégories de données. En
 saisissant du texte dans le champ de filtre, les éléments de toutes les
 catégories sont filtrés :</p>
-<p><img alt="" src="../assets/img/image_051.webp" /></p>
+<p><img alt="Autocomplete offering all categories" src="../assets/img/ui-autocomplete-all.webp"/></p>
 <p>Le composant d’autocomplétion est également capable d’identifier certaines
 informations contextuelles. Par exemple, si vous saisissez le nom d’un schéma,
 puis le caractère <code>.</code>, vous pourrez filtrer
 uniquement parmi les objets contenus dans ce schéma :</p>
-<p><img alt="" src="../assets/img/image_052.webp" /></p>
+<p><img alt="Autocomplete after a schema name" src="../assets/img/ui-autocomplete-schema.webp"/></p>
 <p>Après <code>::</code> (un transtypage PostgreSQL), seuls les types de données sont proposés. Le choix d’un mot-clé
 ajoute également ce qui le suit toujours (par exemple une espace après <code>SELECT</code>, ou la parenthèse
 ouvrante après <code>COALESCE</code>). Les catégories proposées (mots-clés,

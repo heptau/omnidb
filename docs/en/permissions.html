@@ -144,11 +144,12 @@
 server's roles out Finder-style, in side-by-side columns: pick a role on the left, and the
 columns to its right show who it is a member of, who is a member of it, and what it can
 actually do on every database object — including everything it only has indirectly, through
-inherited role memberships or through <code>PUBLIC</code>. Roles, memberships and privileges
-can be created, changed and revoked right there.</p>
+inherited role memberships or through <code>PUBLIC</code>. Roles, memberships, privileges,
+default privileges and ownership can be created, changed and revoked right there.</p>
 <p><strong>Note:</strong> this section currently supports PostgreSQL only. For any other
 connection it shows <em>Permissions are not yet supported for …</em> / <em>Currently only
 PostgreSQL is supported.</em></p>
+<p><img alt="The Permissions section with three columns" src="../assets/img/ui-perm-roles.webp"/></p>
 <h4>Opening the section</h4>
 <p>Click the <em>Permissions</em> icon (the people icon) in the left rail. The section works on
 a connection that is already open in the <em>Database</em> section: the same strip of open
@@ -158,14 +159,19 @@ selected there. With no connection open it shows <em>No connection open</em> —
 you enter the section, so any earlier selection is reset.</p>
 <p>Everything you do here needs the same privileges the equivalent SQL would need
 (<code>CREATEROLE</code>, superuser, or ownership of the object, depending on the action) —
-OmniDB runs the statements with the credentials of the connection you are using.</p>
+OmniDB runs the statements with the credentials of the connection you are using. The three
+columns can be resized by dragging the thin handle on their right edge; a double-click on a
+handle resets that column, and the widths are remembered.</p>
 <h4>Column 1: Roles</h4>
-<p>The <em>Roles</em> column lists every role on the server, including the built-in
-<code>pg_*</code> roles, sorted by name. Roles that can log in (users) have a single-person icon;
-roles that cannot (groups) have a two-person icon. The first row is always
-<code>PUBLIC</code> (globe icon) — not a real role, but the pseudo-role every role implicitly
-belongs to, so that privileges granted to <code>PUBLIC</code> can be browsed and edited the same
-way.</p>
+<p>The <em>Roles</em> column lists every role on the server, including the built-in <code>pg_*</code>
+roles, sorted by name. Roles that can log in (users) have a single-person icon; roles that
+cannot (groups) have a two-person icon; superusers are marked <em>(superuser)</em> and roles
+whose account has expired <em>(expired)</em>. The first row is always <code>PUBLIC</code> (globe
+icon) — not a real role, but the pseudo-role every role implicitly belongs to, so that
+privileges granted to <code>PUBLIC</code> can be browsed and edited the same way.</p>
+<p>The box above the list filters roles by name, and the drop-down next to it by kind: <em>All
+roles</em>, <em>Users (can log in)</em>, <em>Groups (no login)</em>, <em>Superusers</em> or
+<em>Expired</em>.</p>
 <p>Click a role to focus it; the other columns then show that role. Below the list:</p>
 <ul>
 <li><strong>+</strong> opens the <em>Create Role</em> dialog: <em>Role name</em>,
@@ -176,87 +182,145 @@ and <em>Bypasses row-level security</em>, plus <em>Connection limit (-1 = unlimi
 <em>Account expires</em> (leave empty for no expiration).</li>
 <li><strong>−</strong> drops the selected role (disabled for <code>PUBLIC</code>).</li>
 </ul>
+<p><img alt="The Create Role dialog with the SQL preview" src="../assets/img/ui-perm-create-role.webp"/></p>
 <p>Right-clicking a role (not <code>PUBLIC</code>) offers:</p>
 <ul>
 <li><em>Change Password</em> — asks for the new password twice. The password is hashed in the
 format the server itself is configured for (SCRAM-SHA-256 or md5) before it is sent.</li>
 <li><em>Alter Attributes</em> — the same attribute fields as <em>Create Role</em>, pre-filled with
 the role's current values. Clearing <em>Account expires</em> removes the expiration.</li>
-<li><em>Drop Role</em> — asks <em>Drop role "…"? This cannot be undone.</em> and then runs a
-plain <code>DROP ROLE</code>; PostgreSQL refuses it while the role still owns objects or holds
-privileges.</li>
+<li><em>Rename Role</em> — <code>ALTER ROLE … RENAME TO</code>. Grants, memberships and ownership
+follow the role; the dialog warns that PostgreSQL clears a password stored as md5 on rename.</li>
+<li><em>Export Permissions</em> / <em>Export Permissions of All Roles</em> — a copyable SQL script
+that recreates the permissions: <code>CREATE ROLE</code> (attributes only), memberships, direct
+object privileges and default privileges, each database's statements under its own header.
+Each part can be switched off and the script regenerates; <em>Save as file…</em> stores it
+(a native Save dialog in the desktop app, a download in the browser). Passwords, <code>PUBLIC</code>'s
+grants, ownership and role settings are not exported.</li>
+<li><em>Clone Role</em> — creates a new role with the source role's attributes and, optionally,
+its direct memberships and its direct object privileges in every database (found through
+<code>pg_shdepend</code>, so databases where it holds nothing are never opened). The password is not
+copied; you can set one in the dialog. Default privileges, owned objects and per-role settings
+are not copied.</li>
+<li><em>Drop Role</em> — if the role still owns objects or holds privileges, the dialog lists,
+per database, what it owns and holds and asks which role takes over its objects. OmniDB then
+runs <code>REASSIGN OWNED</code> and <code>DROP OWNED</code> in every affected database (in that order, so
+nothing is deleted) before <code>DROP ROLE</code>. Without any dependencies it just asks for
+confirmation.</li>
 </ul>
+<p><img alt="The context menu of a role" src="../assets/img/ui-perm-role-menu.webp"/></p>
 <h4>Column 2: memberships</h4>
 <p>The second column is split in two halves:</p>
 <ul>
-<li><strong>… — Members</strong> (top): the roles that are members of the focused role.</li>
+<li><strong>… — Members</strong> (top): the roles that are members of the focused role. With
+<code>PUBLIC</code> focused it lists every role, since they all implicitly get <code>PUBLIC</code>'s
+privileges.</li>
 <li><strong>… — Member of</strong> (bottom): every role the focused role belongs to, directly or
 through other roles, flattened into one list. <code>PUBLIC</code> is always listed first.</li>
 </ul>
 <p>In both halves, direct memberships are shown in normal text and indirect (inherited) ones
-greyed out. A direct membership granted <code>WITH ADMIN OPTION</code> is marked
-<em>(admin option)</em>. For <code>PUBLIC</code> both halves just say <em>PUBLIC is not a member
-of any role.</em></p>
+in italics with a faded icon. A direct membership granted <code>WITH ADMIN OPTION</code> is marked
+<em>(admin option)</em>; on PostgreSQL 16 and later, <em>(no inherit)</em> and <em>(no SET)</em>
+mark memberships that lack the <code>INHERIT</code> or <code>SET</code> option.</p>
 <ul>
-<li>The <strong>+</strong> under <em>Member of</em> opens <em>Grant Membership</em>: pick a
-role to make the focused role a member of it, optionally <em>With admin option</em>.</li>
+<li>The <strong>+</strong> under <em>Member of</em> opens <em>Grant Membership</em>: pick one or more
+roles (click rows to toggle them) to make the focused role a member of, optionally <em>With
+admin option</em>. On PostgreSQL 16+ the dialog also offers <em>INHERIT</em> and <em>SET</em> choices
+(<em>Server default</em> / <em>Yes</em> / <em>No</em>).</li>
 <li>The <strong>+</strong> under <em>Members</em> opens <em>Add Member</em>: the same dialog the
-other way round — the picked role becomes a member of the focused role.</li>
+other way round — the picked roles become members of the focused role.</li>
 <li><strong>−</strong> (or right-click → <em>Remove Membership</em>) revokes a membership after
 asking <em>Revoke membership in "…"?</em>. Only direct memberships can be removed; an inherited
 one has to be revoked where it is actually granted.</li>
+<li>Right-click → <em>Edit Membership Options</em> changes a direct membership's admin option
+and (on PostgreSQL 16+) <code>INHERIT</code>/<code>SET</code> options in place.</li>
 <li>Double-clicking a row, or right-click → <em>Set as Active Role</em>, makes that role the
-focused one, exactly as if you had clicked it in the <em>Roles</em> column — the quickest way to
+focused one, exactly as if you had clicked it in the Roles column — the quickest way to
 follow an inheritance chain upwards.</li>
 </ul>
 <h4>Column 3: objects and effective privileges</h4>
 <p>The third column, <em>… — Objects</em>, is a tree of everything the focused role has any
-privilege on — its <em>effective</em> privileges: its own direct grants plus everything it
+privilege on — its effective privileges: its own direct grants plus everything it
 inherits through its memberships and through <code>PUBLIC</code>. It starts with two groups,
 <em>Databases</em> (every database on the server) and <em>Tablespaces</em>; a node is shown
-normally if the role has some privilege there, and greyed out otherwise.</p>
+normally if the role has some privilege there, and greyed out otherwise. The box at the top
+filters databases and tablespaces by name and keeps its text when you switch roles.</p>
 <p>Expanding a database loads its objects over a separate connection to that database (the
-connection tab's own active database does not change): schemas, and inside each schema
-folders for tables, views, sequences, functions, procedures, materialized views, types and
-domains; foreign data wrappers and foreign servers sit directly under the database. Only objects
-the role actually has a privilege on are listed (system schemas are left out); a schema shown
-greyed out is there only because something inside it is. If there is nothing at all, the database
-shows <em>No privileges on any object in this database.</em></p>
+connection tab's own active database does not change): <em>Schemas</em>, and inside each schema
+folders for <em>Tables</em>, <em>Views</em>, <em>Sequences</em>, <em>Functions</em>,
+<em>Procedures</em>, <em>Materialized Views</em>, <em>Types</em> and <em>Domains</em>; foreign data
+wrappers and foreign servers sit directly under the database. Only objects the role actually has
+a privilege on are listed (system schemas are left out); a schema shown greyed out is there only
+because something inside it is. Every database also has two extra folders:
+<em>Owned objects (n)</em>, listing what the role owns there (up to 1000 entries), and
+<em>Default privileges</em>, described below. If there is nothing at all, the database shows
+<em>No privileges on any object in this database.</em></p>
+<p><img alt="The Objects column expanded down to the tables" src="../assets/img/ui-perm-objects.webp"/></p>
 <h4>Editing privileges</h4>
 <p>Right-click a database, tablespace, schema or object and choose <em>Edit Privileges</em>. The
 dialog lists every privilege valid for that kind of object as a checkbox:</p>
 <ul>
-<li>database: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;
-tablespace: <code>CREATE</code>; schema: <code>CREATE</code>, <code>USAGE</code>;</li>
-<li>table, view and materialized view: <code>SELECT</code>, <code>INSERT</code>,
-<code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>,
-<code>TRIGGER</code>;</li>
-<li>sequence: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;
-function and procedure: <code>EXECUTE</code>;
-type, domain, foreign data wrapper and foreign server: <code>USAGE</code>.</li>
+<li>database: <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code>;</li>
+<li>tablespace: <code>CREATE</code>; schema: <code>CREATE</code>, <code>USAGE</code>;</li>
+<li>table, view and materialized view: <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>,
+<code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>, <code>TRIGGER</code>;</li>
+<li>sequence: <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code>;</li>
+<li>function and procedure: <code>EXECUTE</code>;</li>
+<li>type, domain, foreign data wrapper and foreign server: <code>USAGE</code>.</li>
 </ul>
-<p>Each checkbox tells you where the privilege comes from:</p>
+<p>The checkboxes show what the role holds directly:</p>
 <ul>
-<li><strong>checked</strong> — the role holds it directly; uncheck it to <code>REVOKE</code> it;</li>
-<li><strong>checked but disabled</strong>, with <em>Inherited from: …</em> — the role only has it
-through another role or <code>PUBLIC</code>. It cannot be revoked here; make the source role
-active (<em>Set as Active Role</em>) and revoke it there;</li>
-<li><strong>unchecked</strong> — the role does not have it; check it to <code>GRANT</code> it
-directly.</li>
+<li><strong>checked</strong> — granted directly to the role; uncheck it to <code>REVOKE</code> it;</li>
+<li><strong>unchecked</strong> — not granted directly; check it to <code>GRANT</code> it. If the role
+already has the privilege through another role or <code>PUBLIC</code>, it stays unchecked and is
+labelled <em>Inherited from: …</em> — you can still tick it to grant it directly, so it survives
+removing the membership it came from. To take an inherited privilege away, revoke it at its
+source (make the source role active with <em>Set as Active Role</em>).</li>
 </ul>
+<p><img alt="The Edit Privileges dialog with the SQL preview" src="../assets/img/ui-perm-edit-privileges.webp"/></p>
 <p><em>With grant option</em> applies to the privileges you newly grant in that dialog. Confirm
-with the dialog's main button, which is labelled with the object's name.</p>
+with <em>Save</em>.</p>
 <p>To grant something on an object that is not in the tree yet, use the <strong>+</strong>
 (<em>Add Object Privilege</em>) under the column: choose the <em>Object Type</em>, then the
 <em>Database</em> (for everything except databases and tablespaces; it defaults to the
 connection's current database), the <em>Schema</em> for schema-level objects, the
 <em>Object</em> itself (functions are shown with their argument signature), tick the
-<em>Privileges</em> and, optionally, <em>With grant option</em>.</p>
+<em>Privileges</em> and, optionally, <em>With grant option</em>. For tables, sequences, functions
+and procedures the <em>Scope</em> choice can be switched from <em>Selected object</em> to <em>All …
+in the schema</em>, with <em>Grant</em> or <em>Revoke</em>: OmniDB then runs <code>GRANT</code>/<code>REVOKE
+… ON ALL … IN SCHEMA</code>, which affects the objects that exist now, not those created later.</p>
 <p>Selecting <code>PUBLIC</code> in the first column lets you edit what is granted to
 <code>PUBLIC</code> itself (<code>GRANT … TO PUBLIC</code> / <code>REVOKE … FROM PUBLIC</code>).</p>
-<p><strong>Important:</strong> every action in this section is executed on the server immediately
-— there is no SQL preview and no undo. Only <em>Drop Role</em> and <em>Remove Membership</em>
-ask for confirmation first. If the server rejects a statement, its error message is shown.</p>
+<h4>Default privileges</h4>
+<p>The <em>Default privileges</em> folder of a database lists the <code>ALTER DEFAULT PRIVILEGES</code>
+entries that involve the focused role, either as the grantee or as the creating role. They are the
+way to cover objects created in the future. Right-click the folder for <em>Add Default
+Privileges</em>: choose the creating role (<em>For objects created by</em>), the schema (or all
+schemas), the object kind (tables, sequences, functions, types, schemas) and the privileges. Right-click
+an existing entry for <em>Edit Privileges</em> (only the ticks you change are granted or revoked) or
+<em>Remove Default Privileges</em>.</p>
+<h4>Ownership and who has access</h4>
+<ul>
+<li><strong>Change Owner</strong> (context menu of any object in the Objects column) runs
+<code>ALTER … OWNER TO</code> for the object.</li>
+<li><strong>Who Has Access</strong> is the reverse view: it lists every role that can do something
+with the object and why — owner, direct grant, inherited through a membership or superuser —
+plus <code>PUBLIC</code>, with grant-option marks. The answers come from PostgreSQL's own
+<code>has_*_privilege</code> functions, so they match what the server really allows. Roles that only
+have what <code>PUBLIC</code> gives everyone are left out and superusers are folded into a
+collapsed group; clicking a role makes it the active role.</li>
+</ul>
+<p><img alt="The Who Has Access dialog" src="../assets/img/ui-perm-who-has-access.webp"/></p>
+<h4>Previewing the SQL</h4>
+<p>The dialogs for creating, altering, renaming and cloning roles, adding memberships, granting or
+editing privileges, default privileges and changing owners have a collapsible <em>Show SQL</em>
+box. It shows the exact statements the current form values would run — built by the same server
+code as the real call, nothing is executed, passwords are masked — and keeps them up to date as
+the form changes. <em>Copy SQL</em> copies them.</p>
+<p><strong>Important:</strong> confirming a dialog executes the statements on the server
+immediately — there is no undo. Review them with <em>Show SQL</em> first. <em>Drop Role</em>,
+<em>Remove Membership</em> and <em>Remove Default Privileges</em> also ask for confirmation. If the
+server rejects a statement, its error message is shown.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

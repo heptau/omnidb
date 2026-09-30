@@ -150,21 +150,21 @@ et <em>Explain Analyze</em>.</p>
 requête. La visualisation initiale est <em>textuelle</em> et affiche exactement la sortie de la commande
 <code>EXPLAIN</code>, mais avec des barres colorées représentant le coût estimé. Plus le coût est élevé, plus la
 barre est sombre et large.</p>
-<p><img alt="" src="../assets/img/image_054.webp" /></p>
+<p><img alt="The textual Explain view" src="../assets/img/ui-explain-text.webp"/></p>
 <p>Lorsque vous cliquez sur le bouton <em>Explain Analyze</em>, OmniDB exécute une commande <code>EXPLAIN
-ANALYZE</code> sur votre requête. Attention, cette commande exécute réellement la requête. De plus, la
+(ANALYZE, BUFFERS)</code> sur votre requête. Attention, cette commande exécute réellement la requête. De plus, la
 visualisation textuelle affiche beaucoup plus d’informations, et les coûts ne sont plus des estimations comme
 avec la commande <code>EXPLAIN</code> ; ce sont des coûts réels.</p>
-<p><img alt="" src="../assets/img/image_055.webp" /></p>
+<p><img alt="The textual Explain Analyze view" src="../assets/img/ui-explain-analyze-text.webp"/></p>
 <h4>Visualisation en arbre</h4>
 <p>Les modes <em>Explain</em> et <em>Explain Analyze</em> peuvent également représenter graphiquement la sortie
 textuelle sous forme de diagramme en <em>arbre</em>. Chaque cercle représente un nœud exécuté par le plan de la
 requête, et plus le cercle est grand, plus le coût est élevé.</p>
-<p><img alt="" src="../assets/img/image_056.webp" /></p>
+<p><img alt="The plan as a tree diagram" src="../assets/img/ui-explain-tree1.webp"/></p>
 <p>Lorsque les requêtes deviennent de plus en plus complexes, leur plan d’exécution peut aussi devenir très
 complexe. Avec de telles requêtes (comme la requête de <em>vérification du bloat</em> que nous avons exécutée
 ci-dessous), la visualisation en arbre peut être très intéressante :</p>
-<p><img alt="" src="../assets/img/image_057.webp" /></p>
+<p><img alt="The plan as a zoomed tree diagram" src="../assets/img/ui-explain-tree2.webp"/></p>
 <p>Le composant de visualisation des plans d’exécution vous permet de basculer facilement entre la visualisation
 textuelle et 2 visualisations en arbre, qui peuvent être zoomées en avant et en arrière.</p>
 		</main>

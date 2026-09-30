@@ -429,7 +429,11 @@ func handleCreateRequest(upstream *url.URL, fallback http.Handler) http.HandlerF
 		// mode 1) left off — see runNativeQueryAllData. A requestTypeCancelThread
 		// arriving mid-stream does interrupt it — see queryCursor.cancel's
 		// comment in querycursor.go for how.
-		if q.VAllData || q.VMode == 2 {
+		// A mode-0 request is always a fresh run, even when it also carries
+		// v_all_data (Explain / Explain Analyze send both): there is no
+		// cursor to continue yet, so treating it as a fetch-everything
+		// request returned an empty result and left the Explain view blank.
+		if q.VMode == 2 || (q.VAllData && q.VMode != 0) {
 			info, err := resolveConnection(upstream, cookie, q.VDBIndex.String())
 			if err != nil || !info.Found || !nativeQueryTechnology(info.Technology) {
 				fallback.ServeHTTP(w, r)

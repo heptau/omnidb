@@ -149,8 +149,8 @@ recevoir que de nouveaux enregistrements.</p>
 <p>Pour accéder à l’interface de modification des enregistrements, effectuez un clic
 droit sur le nœud de la table et sélectionnez l’action <em>Data Actions &gt ; Edit
 Data</em> (Actions sur les données &gt ; Modifier les données) :</p>
-<p><img alt="" src="../assets/img/image_041.webp" /></p>
-<p><img alt="" src="../assets/img/image_042.webp" /></p>
+<p><img alt="The Data Actions submenu of a table" src="../assets/img/ui-ctx-data-actions.webp"/></p>
+<p><img alt="The Edit Data tab" src="../assets/img/ui-edit-data.webp"/></p>
 <p>L’onglet <em>Modifier les données</em> comporte un petit éditeur SQL destiné à une clause facultative de filtre et de tri,
 ajoutée à la requête qui charge les enregistrements — par exemple <code>where t.cust_id &gt; 10 order by
 t.cust_name</code> (la table est disponible sous l’alias <code>t</code>) —, une liste déroulante qui limite
@@ -165,28 +165,25 @@ contient son action de ligne : un clic sur le <em>×</em> à cet endroit marque 
 annuler), ou retire une nouvelle ligne pas encore enregistrée.</p>
 <p>La ligne de la grille portant le symbole <code>+</code> permet d’ajouter de nouveaux
 enregistrements. Insérons quelques enregistrements dans la table <code>customers</code> :</p>
-<p><img alt="" src="../assets/img/image_043.webp" /></p>
+<p><img alt="Two new rows added in the Edit Data grid" src="../assets/img/ui-edit-data-insert.webp"/></p>
 <p>Après l’enregistrement, les enregistrements sont insérés et peuvent être
 modifiés (uniquement parce que cette table possède une clé primaire).
 Modifions le <em>cust_name</em> de certains enregistrements existants et, dans le
 même temps, supprimons l’une des lignes :</p>
-<p><img alt="" src="../assets/img/image_044.webp" /></p>
+<p><img alt="Edit Data with a changed cell and a row marked for deletion" src="../assets/img/ui-edit-data-changes.webp"/></p>
 <p>Les tables peuvent comporter des champs dont les valeurs sont représentées par
 des chaînes très longues. Pour faciliter la modification de ces champs, faites un clic droit sur la cellule et choisissez
 <em>Edit Content</em> (Modifier le contenu) : un éditeur plus grand s’ouvre (avec coloration syntaxique pour
 les colonnes JSON/JSONB et XML), et <em>Enregistrer</em> réécrit la valeur dans la grille. Le même menu propose
 <em>Copier</em> :</p>
-<p><img alt="" src="../assets/img/image_045.webp" /></p>
-<p><img alt="" src="../assets/img/image_046.webp" /></p>
+<p><img alt="The cell context menu of the Edit Data grid" src="../assets/img/ui-edit-data-cell-menu.webp"/></p>
+<p><img alt="The Edit Content dialog" src="../assets/img/ui-edit-data-content.webp"/></p>
 <p>L’interface détecte les erreurs pouvant survenir lors des opérations sur les
 enregistrements. Pour le démontrer, insérons deux enregistrements avec un même
 <code>cust_id</code> (clé primaire) :</p>
-<p><img alt="" src="../assets/img/image_047.webp" /></p>
+<p><img alt="The error dialog shown when saving fails" src="../assets/img/ui-edit-data-error.webp"/></p>
 <p>Elle affiche les commandes qui ont été tentées ainsi que les erreurs
 correspondantes.</p>
-<p>Pour terminer ce chapitre, ajoutons quelques enregistrements à la table
-<em>Address</em> :</p>
-<p><img alt="" src="../assets/img/image_048.webp" /></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

@@ -150,21 +150,21 @@ identifikovat úzká hrdla výkonu ve vašem SQL dotazu.</p>
 <code>EXPLAIN</code>. Počáteční vizualizace je <em>textová</em> a zobrazí přesně výstup příkazu
 <code>EXPLAIN</code>, ale s barevnými pruhy představujícími odhadovanou cenu (cost). Čím
 vyšší cena, tím tmavší a širší pruh.</p>
-<p><img alt="" src="../assets/img/image_054.webp" /></p>
+<p><img alt="The textual Explain view" src="../assets/img/ui-explain-text.webp"/></p>
 <p>Když kliknete na tlačítko <em>Explain Analyze</em>, OmniDB spustí ve vašem dotazu
-příkaz <code>EXPLAIN ANALYZE</code>. Pozor, tento příkaz dotaz skutečně provede. Textová
+příkaz <code>EXPLAIN (ANALYZE, BUFFERS)</code>. Pozor, tento příkaz dotaz skutečně provede. Textová
 vizualizace navíc zobrazí mnohem více informací a ceny už nejsou odhadované
 jako u příkazu <code>EXPLAIN</code>, ale skutečné.</p>
-<p><img alt="" src="../assets/img/image_055.webp" /></p>
+<p><img alt="The textual Explain Analyze view" src="../assets/img/ui-explain-analyze-text.webp"/></p>
 <h4>Stromová vizualizace</h4>
 <p>Oba režimy, <em>Explain</em> i <em>Explain Analyze</em>, dokážou textový výstup zobrazit
 také graficky jako <em>stromový</em> diagram. Každý kruh představuje uzel provedený
 plánem dotazu a čím větší kruh, tím vyšší cena.</p>
-<p><img alt="" src="../assets/img/image_056.webp" /></p>
+<p><img alt="The plan as a tree diagram" src="../assets/img/ui-explain-tree1.webp"/></p>
 <p>Čím složitější jsou dotazy, tím složitější může být i jejich plán dotazu. U
 takových dotazů (jako je dotaz <em>check bloat</em>, který jsme spustili níže) může
 být stromová vizualizace velmi zajímavá:</p>
-<p><img alt="" src="../assets/img/image_057.webp" /></p>
+<p><img alt="The plan as a zoomed tree diagram" src="../assets/img/ui-explain-tree2.webp"/></p>
 <p>Komponenta pro vizualizaci plánu dotazu umožňuje snadno přepínat mezi textovou
 a dvěma stromovými vizualizacemi, které lze přibližovat a oddalovat.</p>
 		</main>

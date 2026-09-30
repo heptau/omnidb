@@ -146,13 +146,12 @@ chiamato <code>PL/pgSQL</code>. Usando questo linguaggio puoi scrivere le tue
 <em>funzioni definite dall’utente</em> per ottenere livelli di astrazione e calcoli
 procedurali che sarebbero difficili da ottenere con il semplice SQL (e a volte
 impossibili da ottenere senza passare attraverso l’applicazione).</p>
-<p><img alt="" src="../assets/img/image_072.webp" /></p>
 <h4>Scrivere funzioni</h4>
 <p>Nello schema <code>public</code>, fai clic destro sul nodo <code>Funzioni</code> e clicca su <em>Crea
 Funzione</em>. Si aprirà una scheda interna <em>Query SQL</em>, già contenente un
 modello SQL per aiutarti a creare la tua prima funzione PL/pgSQL.</p>
-<p><img alt="" src="../assets/img/image_073.webp" /></p>
-<p><img alt="" src="../assets/img/image_074.webp" /></p>
+<p><img alt="The context menu of the Functions node" src="../assets/img/ui-ctx-functions.webp"/></p>
+<p><img alt="The CREATE FUNCTION template" src="../assets/img/ui-function-create.webp"/></p>
 <p>Puoi consultare la documentazione di PostgreSQL su come scrivere funzioni
 definite dall’utente. Basta fare clic destro sul nodo <em>Funzioni</em> e cliccare
 su <em>Doc.: Funzioni</em> — si aprirà la pagina di documentazione PostgreSQL
@@ -194,18 +193,18 @@ l’operazione ha successo, la funzione apparirà sotto il nodo dell’albero
 <em>Funzioni</em> (puoi aggiornarlo facendo clic destro e poi cliccando su
 <em>Aggiorna</em>). Espandendo anche il nodo della funzione, puoi vedere il suo tipo
 di ritorno e il suo argomento.</p>
-<p><img alt="" src="../assets/img/image_075.webp" /></p>
+<p><img alt="A function in the tree and the result of calling it" src="../assets/img/ui-function-run.webp"/></p>
 <p>Ora eseguiamo questa nuova funzione per la prima volta. Apri una semplice
 scheda interna Query SQL ed esegui la seguente query SQL:</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
-<p><img alt="" src="../assets/img/image_076.webp" /></p>
 <p>Nota come la query restituisca un singolo valore, contenente il numero di
 vocali nel testo.</p>
 <p>Facendo clic destro sul nodo della funzione, puoi vedere che sono disponibili
 azioni per modificarla, selezionarla ed eliminarla. Come probabilmente avrai
 intuito, ciascuna azione aprirà schede interne Query SQL con comodi modelli
 SQL già pronti.</p>
+<p><img alt="The context menu of a function" src="../assets/img/ui-ctx-function.webp"/></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

@@ -6571,7 +6571,7 @@
           v_currTabTag.editDataObject.ht.alter("remove_row", v_data[i2].index);
         } else {
           v_has_error = true;
-          v_commands_log += "<b>Command:</b> " + v_data[i2].command + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + v_data[i2].v_message + "</div><br/><br/>";
+          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
           v_currTabTag.button_save.style.visibility = "visible";
         }
       } else if (v_data[i2].mode == 2) {
@@ -6593,7 +6593,7 @@
           v_currTabTag.editDataObject.infoRows[v_data[i2].index].pk = v_pk_list;
         } else {
           v_has_error = true;
-          v_commands_log += "<b>Command:</b> " + v_data[i2].command + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + v_data[i2].v_message + "</div><br/><br/>";
+          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
           v_currTabTag.button_save.style.visibility = "visible";
         }
       } else if (v_data[i2].mode == 1) {
@@ -6615,14 +6615,14 @@
           v_currTabTag.editDataObject.infoRows[v_data[i2].index].pk = v_pk_list;
         } else {
           v_has_error = true;
-          v_commands_log += "<b>Command:</b> " + v_data[i2].command + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + v_data[i2].v_message + "</div><br/><br/>";
+          v_commands_log += "<b>Command:</b> " + escapeHtml(v_data[i2].command) + '<br/><br/><b>Message:</b><br><br><div class="error_text">' + escapeHtml(v_data[i2].v_message) + "</div><br/><br/>";
           v_currTabTag.button_save.style.visibility = "visible";
         }
       }
       v_currTabTag.bt_cancel.style.display = "";
     }
     if (v_has_error) {
-      showAlert(v_commands_log);
+      showAlert(v_commands_log, null, null, true);
     }
     v_currTabTag.editDataObject.ht.render();
     p_context.tab_tag.tab_loading_span.style.display = "none";
@@ -22625,7 +22625,7 @@
             null,
             false
           );
-          if (p_return.v_data[i$7].v_alltables == "False") {
+          if (!p_return.v_data[i$7].v_alltables) {
             v_tables = v_node$6.createChildNode(
               t("tree.tables"),
               false,

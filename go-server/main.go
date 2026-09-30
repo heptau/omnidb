@@ -544,6 +544,18 @@ func run() error {
 	}
 	mux.Handle("/", handleRoot(upstream, proxy))
 
+	// Create the app database now instead of on the first request that
+	// happens to need it, so a fresh install prints its one-time admin
+	// password (see bootstrapAppDB) at startup and not only after someone
+	// has already tried to sign in.
+	if standalone {
+		if appdb, err := openAppDB(upstream); err != nil {
+			log.Printf("app database: %v", err)
+		} else {
+			appdb.Close()
+		}
+	}
+
 	httpServer := &http.Server{
 		Handler: hardenHTTP(listenHost, ownPort, requireCSRF(mux)),
 		// Slowloris guard. No ReadTimeout/WriteTimeout: long-polling and

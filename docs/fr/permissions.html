@@ -139,16 +139,17 @@
 		</div>
 		</nav>
 		<main>
-		<h1>Rôles et autorisations</h1>
+			<h1>Rôles et autorisations</h1>
 <p>La section <em>Autorisations</em> est un navigateur de rôles et de privilèges pour PostgreSQL. Elle présente
 les rôles d’un serveur à la manière du Finder, en colonnes côte à côte : choisissez un rôle à gauche, et les
 colonnes à sa droite montrent de quels rôles il est membre, quels rôles sont membres de lui, et ce qu’il peut
 réellement faire sur chaque objet de la base de données — y compris tout ce dont il ne dispose qu’indirectement, par le biais
-d’appartenances à des rôles héritées ou de <code>PUBLIC</code>. Les rôles, les appartenances et les privilèges
-peuvent être créés, modifiés et révoqués directement à cet endroit.</p>
+d’appartenances à des rôles héritées ou de <code>PUBLIC</code>. Les rôles, les appartenances, les privilèges,
+les privilèges par défaut et la propriété peuvent être créés, modifiés et révoqués directement à cet endroit.</p>
 <p><strong>Remarque :</strong> cette section ne prend actuellement en charge que PostgreSQL. Pour toute autre
-connexion, elle affiche <em>Les permissions ne sont pas encore prises en charge pour …</em> / <em>Seul PostgreSQL
-est actuellement pris en charge.</em></p>
+connexion, elle affiche <em>Les autorisations ne sont pas encore prises en charge pour …</em> / <em>Actuellement, seul
+PostgreSQL est pris en charge.</em></p>
+<p><img alt="The Permissions section with three columns" src="../assets/img/ui-perm-roles.webp"/></p>
 <h4>Ouvrir la section</h4>
 <p>Cliquez sur l’icône <em>Autorisations</em> (l’icône représentant des personnes) dans la barre de navigation de gauche. La section fonctionne sur
 une connexion déjà ouverte dans la section <em>Base de données</em> : la même bande d’onglets de
@@ -158,105 +159,168 @@ sélectionné. Si aucune connexion n’est ouverte, elle affiche <em>Aucune conn
 que vous entrez dans la section ; toute sélection antérieure est donc réinitialisée.</p>
 <p>Tout ce que vous faites ici nécessite les mêmes privilèges que le SQL équivalent
 (<code>CREATEROLE</code>, superutilisateur ou propriété de l’objet, selon l’action) —
-OmniDB exécute les instructions avec les identifiants de la connexion que vous utilisez.</p>
+OmniDB exécute les instructions avec les identifiants de la connexion que vous utilisez. Les trois
+colonnes peuvent être redimensionnées en faisant glisser la fine poignée située sur leur bord droit ; un double clic sur
+une poignée réinitialise cette colonne, et les largeurs sont mémorisées.</p>
 <h4>Colonne 1 : Rôles</h4>
 <p>La colonne <em>Rôles</em> liste tous les rôles du serveur, y compris les rôles intégrés
 <code>pg_*</code>, triés par nom. Les rôles qui peuvent se connecter (utilisateurs) ont une icône à une personne ;
-ceux qui ne le peuvent pas (groupes) ont une icône à deux personnes. La première ligne est toujours
+ceux qui ne le peuvent pas (groupes) ont une icône à deux personnes ; les superutilisateurs sont signalés par
+<em>(superutilisateur)</em> et les rôles dont le compte a expiré par <em>(expiré)</em>. La première ligne est toujours
 <code>PUBLIC</code> (icône de globe) — ce n’est pas un vrai rôle, mais le pseudo-rôle auquel chaque rôle appartient
 implicitement, afin que les privilèges accordés à <code>PUBLIC</code> puissent être consultés et modifiés de la même
 manière.</p>
+<p>La zone de saisie située au-dessus de la liste filtre les rôles par nom, et la liste déroulante à côté par type :
+<em>Tous les rôles</em>, <em>Utilisateurs (connexion possible)</em>, <em>Groupes (sans connexion)</em>,
+<em>Superutilisateurs</em> ou <em>Expirés</em>.</p>
 <p>Cliquez sur un rôle pour le rendre actif ; les autres colonnes affichent alors ce rôle. Sous la liste :</p>
 <ul>
 <li><strong>+</strong> ouvre la boîte de dialogue <em>Créer un rôle</em> : <em>Nom du rôle</em>,
 <em>Mot de passe</em>, et les cases d’attributs <em>Peut se connecter</em> (cochée par défaut),
 <em>Superutilisateur</em>, <em>Peut créer des bases de données</em>, <em>Peut créer des rôles</em>, <em>Hérite
-des privilèges des rôles dont il est membre</em> (cochée par défaut), <em>Peut lancer la réplication</em>
-et <em>Contourne la sécurité au niveau des lignes</em>, ainsi que <em>Limite de connexions (-1 = illimitée)</em> et
+des privilèges des rôles dont il est membre</em> (cochée par défaut), <em>Peut lancer une réplication</em>
+et <em>Contourne la sécurité au niveau des lignes (RLS)</em>, ainsi que <em>Limite de connexions (-1 = illimité)</em> et
 <em>Expiration du compte</em> (laisser vide pour aucune expiration).</li>
 <li><strong>−</strong> supprime le rôle sélectionné (désactivé pour <code>PUBLIC</code>).</li>
 </ul>
+<p><img alt="The Create Role dialog with the SQL preview" src="../assets/img/ui-perm-create-role.webp"/></p>
 <p>Un clic droit sur un rôle (autre que <code>PUBLIC</code>) propose :</p>
 <ul>
 <li><em>Changer le mot de passe</em> — demande deux fois le nouveau mot de passe. Le mot de passe est haché dans le
 format pour lequel le serveur lui-même est configuré (SCRAM-SHA-256 ou md5) avant d’être envoyé.</li>
 <li><em>Modifier les attributs</em> — les mêmes champs d’attributs que <em>Créer un rôle</em>, préremplis avec
 les valeurs actuelles du rôle. Vider <em>Expiration du compte</em> supprime l’expiration.</li>
-<li><em>Supprimer le rôle</em> — demande <em>Supprimer le rôle « … » ? Cette action est irréversible.</em> puis exécute un
-simple <code>DROP ROLE</code> ; PostgreSQL le refuse tant que le rôle possède encore des objets ou détient
-des privilèges.</li>
+<li><em>Renommer le rôle</em> — <code>ALTER ROLE … RENAME TO</code>. Les privilèges, appartenances et la propriété
+suivent le rôle ; la boîte de dialogue avertit que PostgreSQL efface un mot de passe stocké en md5 lors du renommage.</li>
+<li><em>Exporter les permissions</em> / <em>Exporter les permissions de tous les rôles</em> — un script SQL copiable
+qui recrée les permissions : <code>CREATE ROLE</code> (attributs uniquement), appartenances, privilèges directs sur les
+objets et privilèges par défaut, les instructions de chaque base de données étant placées sous leur propre en-tête.
+Chaque partie peut être désactivée et le script se régénère ; <em>Enregistrer dans un fichier…</em> le stocke
+(une boîte de dialogue d’enregistrement native dans l’application de bureau, un téléchargement dans le navigateur). Les mots de passe, les
+droits de <code>PUBLIC</code>, la propriété et les réglages des rôles ne sont pas exportés.</li>
+<li><em>Cloner le rôle</em> — crée un nouveau rôle avec les attributs du rôle source et, en option,
+ses appartenances directes et ses privilèges directs sur les objets dans toutes les bases de données (repérés via
+<code>pg_shdepend</code>, si bien que les bases où il ne détient rien ne sont jamais ouvertes). Le mot de passe n’est pas
+copié ; vous pouvez en définir un dans la boîte de dialogue. Les privilèges par défaut, les objets possédés et les réglages
+propres au rôle ne sont pas copiés.</li>
+<li><em>Supprimer le rôle</em> — si le rôle possède encore des objets ou détient des privilèges, la boîte de dialogue liste,
+par base de données, ce qu’il possède et détient, et demande quel rôle reprend ses objets. OmniDB exécute ensuite
+<code>REASSIGN OWNED</code> et <code>DROP OWNED</code> dans chaque base concernée (dans cet ordre, afin que
+rien ne soit supprimé) avant <code>DROP ROLE</code>. Sans aucune dépendance, il demande simplement
+une confirmation.</li>
 </ul>
+<p><img alt="The context menu of a role" src="../assets/img/ui-perm-role-menu.webp"/></p>
 <h4>Colonne 2 : appartenances</h4>
 <p>La deuxième colonne est divisée en deux moitiés :</p>
 <ul>
-<li><strong>… — Membres</strong> (en haut) : les rôles qui sont membres du rôle actif.</li>
+<li><strong>… — Membres</strong> (en haut) : les rôles qui sont membres du rôle actif. Lorsque
+<code>PUBLIC</code> est actif, elle liste tous les rôles, puisqu’ils reçoivent tous implicitement les
+privilèges de <code>PUBLIC</code>.</li>
 <li><strong>… — Membre de</strong> (en bas) : tous les rôles auxquels appartient le rôle actif, directement ou
 par l’intermédiaire d’autres rôles, réunis en une seule liste. <code>PUBLIC</code> figure toujours en premier.</li>
 </ul>
 <p>Dans les deux moitiés, les appartenances directes sont affichées en texte normal et les appartenances indirectes (héritées)
-en grisé. Une appartenance directe accordée <code>WITH ADMIN OPTION</code> est signalée par
-<em>(option d’administration)</em>. Pour <code>PUBLIC</code>, les deux moitiés indiquent simplement <em>PUBLIC n’est membre
-d’aucun rôle.</em></p>
+en italique avec une icône estompée. Une appartenance directe accordée <code>WITH ADMIN OPTION</code> est signalée par
+<em>(admin option)</em> ; à partir de PostgreSQL 16, <em>(sans héritage)</em> et <em>(sans SET)</em>
+signalent les appartenances qui n’ont pas l’option <code>INHERIT</code> ou <code>SET</code>.</p>
 <ul>
-<li>Le <strong>+</strong> sous <em>Membre de</em> ouvre <em>Accorder l’appartenance</em> : choisissez un
-rôle dont le rôle actif deviendra membre, éventuellement <em>Avec option d’administration</em>.</li>
+<li>Le <strong>+</strong> sous <em>Membre de</em> ouvre <em>Accorder l’appartenance</em> : choisissez un ou plusieurs
+rôles (cliquez sur les lignes pour les basculer) dont le rôle actif deviendra membre, éventuellement <em>Avec option
+d’administration (admin option)</em>. À partir de PostgreSQL 16, la boîte de dialogue propose aussi des choix <em>INHERIT</em> et <em>SET</em>
+(<em>Défaut du serveur</em> / <em>Oui</em> / <em>Non</em>).</li>
 <li>Le <strong>+</strong> sous <em>Membres</em> ouvre <em>Ajouter un membre</em> : la même boîte de dialogue dans
-l’autre sens — le rôle choisi devient membre du rôle actif.</li>
+l’autre sens — les rôles choisis deviennent membres du rôle actif.</li>
 <li><strong>−</strong> (ou clic droit → <em>Retirer l’appartenance</em>) révoque une appartenance après avoir
-demandé <em>Révoquer l’appartenance à « … » ?</em>. Seules les appartenances directes peuvent être retirées ; une appartenance
+demandé <em>Révoquer l’appartenance au rôle « … » ?</em>. Seules les appartenances directes peuvent être retirées ; une appartenance
 héritée doit être révoquée là où elle est réellement accordée.</li>
+<li>Clic droit → <em>Modifier les options d’appartenance</em> modifie sur place l’option d’administration d’une appartenance directe
+et (à partir de PostgreSQL 16) ses options <code>INHERIT</code>/<code>SET</code>.</li>
 <li>Un double clic sur une ligne, ou clic droit → <em>Définir comme rôle actif</em>, fait de ce rôle le
 rôle actif, exactement comme si vous aviez cliqué dessus dans la colonne <em>Rôles</em> — le moyen le plus rapide de
 remonter une chaîne d’héritage.</li>
 </ul>
 <h4>Colonne 3 : objets et privilèges effectifs</h4>
 <p>La troisième colonne, <em>… — Objets</em>, est une arborescence de tout ce sur quoi le rôle actif possède un
-privilège quelconque — ses privilèges <em>effectifs</em> : ses propres droits accordés directement, plus tout ce qu’il
+privilège quelconque — ses privilèges effectifs : ses propres droits accordés directement, plus tout ce qu’il
 hérite par ses appartenances et par <code>PUBLIC</code>. Elle commence par deux groupes,
 <em>Bases de données</em> (toutes les bases de données du serveur) et <em>Tablespaces</em> ; un nœud est affiché
-normalement si le rôle y possède un privilège, et en grisé sinon.</p>
+normalement si le rôle y possède un privilège, et en grisé sinon. La zone de saisie en haut
+filtre les bases de données et les tablespaces par nom et conserve son texte lorsque vous changez de rôle.</p>
 <p>Le dépliage d’une base de données charge ses objets via une connexion distincte à cette base (la base
-active de l’onglet de connexion ne change pas) : les schémas et, dans chaque schéma, des
-dossiers pour les tables, vues, séquences, fonctions, procédures, vues matérialisées, types et
-domaines ; les wrappers de données distantes (foreign data wrappers) et les serveurs distants se trouvent directement sous la base de données. Seuls les objets
+active de l’onglet de connexion ne change pas) : les <em>Schémas</em> et, dans chaque schéma, des
+dossiers pour les <em>Tables</em>, <em>Vues</em>, <em>Séquences</em>, <em>Fonctions</em>,
+<em>Procédures</em>, <em>Vues matérialisées</em>, <em>Types</em> et <em>Domaines</em> ; les wrappers de données distantes (foreign data wrappers)
+et les serveurs distants se trouvent directement sous la base de données. Seuls les objets
 sur lesquels le rôle possède réellement un privilège sont listés (les schémas système sont exclus) ; un schéma affiché
-en grisé n’est présent que parce qu’un élément qu’il contient l’est. S’il n’y a rien du tout, la base de données
-affiche <em>Aucun privilège sur aucun objet de cette base de données.</em></p>
+en grisé n’est présent que parce qu’un élément qu’il contient l’est. Chaque base de données possède aussi deux dossiers supplémentaires :
+<em>Objets possédés (n)</em>, qui liste ce que le rôle y possède (jusqu’à 1000 entrées), et
+<em>Privilèges par défaut</em>, décrit plus bas. S’il n’y a rien du tout, la base de données
+affiche <em>Aucun privilège sur les objets de cette base de données.</em></p>
+<p><img alt="The Objects column expanded down to the tables" src="../assets/img/ui-perm-objects.webp"/></p>
 <h4>Modifier les privilèges</h4>
 <p>Faites un clic droit sur une base de données, un tablespace, un schéma ou un objet et choisissez <em>Modifier les privilèges</em>. La
 boîte de dialogue liste sous forme de cases à cocher chaque privilège valide pour ce type d’objet :</p>
 <ul>
-<li>base de données : <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code> ;
-tablespace : <code>CREATE</code> ; schéma : <code>CREATE</code>, <code>USAGE</code> ;</li>
-<li>table, vue et vue matérialisée : <code>SELECT</code>, <code>INSERT</code>,
-<code>UPDATE</code>, <code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>,
-<code>TRIGGER</code> ;</li>
-<li>séquence : <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code> ;
-fonction et procédure : <code>EXECUTE</code> ;
-type, domaine, wrapper de données distantes et serveur distant : <code>USAGE</code>.</li>
+<li>base de données : <code>CREATE</code>, <code>CONNECT</code>, <code>TEMPORARY</code> ;</li>
+<li>tablespace : <code>CREATE</code> ; schéma : <code>CREATE</code>, <code>USAGE</code> ;</li>
+<li>table, vue et vue matérialisée : <code>SELECT</code>, <code>INSERT</code>, <code>UPDATE</code>,
+<code>DELETE</code>, <code>TRUNCATE</code>, <code>REFERENCES</code>, <code>TRIGGER</code> ;</li>
+<li>séquence : <code>USAGE</code>, <code>SELECT</code>, <code>UPDATE</code> ;</li>
+<li>fonction et procédure : <code>EXECUTE</code> ;</li>
+<li>type, domaine, wrapper de données distantes et serveur distant : <code>USAGE</code>.</li>
 </ul>
-<p>Chaque case indique d’où provient le privilège :</p>
+<p>Les cases indiquent ce que le rôle détient directement :</p>
 <ul>
-<li><strong>cochée</strong> — le rôle le détient directement ; décochez-la pour le révoquer (<code>REVOKE</code>) ;</li>
-<li><strong>cochée mais désactivée</strong>, avec <em>Hérité de : …</em> — le rôle ne le détient que
-par un autre rôle ou par <code>PUBLIC</code>. Il ne peut pas être révoqué ici ; rendez le rôle source
-actif (<em>Définir comme rôle actif</em>) et révoquez-le à partir de celui-ci ;</li>
-<li><strong>non cochée</strong> — le rôle ne le détient pas ; cochez-la pour l’accorder (<code>GRANT</code>)
-directement.</li>
+<li><strong>cochée</strong> — accordé directement au rôle ; décochez-la pour le révoquer (<code>REVOKE</code>) ;</li>
+<li><strong>non cochée</strong> — non accordé directement ; cochez-la pour l’accorder (<code>GRANT</code>). Si le rôle
+possède déjà le privilège par un autre rôle ou par <code>PUBLIC</code>, la case reste non cochée et est
+étiquetée <em>Hérité de : …</em> — vous pouvez quand même la cocher pour l’accorder directement, afin qu’il survive à
+la suppression de l’appartenance dont il provient. Pour retirer un privilège hérité, révoquez-le à sa
+source (rendez le rôle source actif avec <em>Définir comme rôle actif</em>).</li>
 </ul>
-<p><em>Avec option d’attribution</em> s’applique aux privilèges que vous accordez nouvellement dans cette boîte de dialogue. Validez
-avec le bouton principal de la boîte de dialogue, qui porte le nom de l’objet.</p>
+<p><img alt="The Edit Privileges dialog with the SQL preview" src="../assets/img/ui-perm-edit-privileges.webp"/></p>
+<p><em>Avec option de transmission (grant option)</em> s’applique aux privilèges que vous accordez nouvellement dans cette boîte de dialogue. Validez
+avec <em>Enregistrer</em>.</p>
 <p>Pour accorder un privilège sur un objet qui ne figure pas encore dans l’arborescence, utilisez le <strong>+</strong>
 (<em>Ajouter un privilège sur un objet</em>) sous la colonne : choisissez le <em>Type d’objet</em>, puis la
 <em>Base de données</em> (pour tout sauf les bases de données et les tablespaces ; par défaut, la base
 de données actuelle de la connexion), le <em>Schéma</em> pour les objets de niveau schéma, l’<em>Objet</em>
 lui-même (les fonctions sont affichées avec la signature de leurs arguments), cochez les
-<em>Privilèges</em> et, éventuellement, <em>Avec option d’attribution</em>.</p>
+<em>Privilèges</em> et, éventuellement, <em>Avec option de transmission (grant option)</em>. Pour les tables, séquences, fonctions
+et procédures, le choix <em>Portée</em> peut passer de <em>Objet sélectionné</em> à <em>Toutes les … du
+schéma</em>, avec <em>Accorder</em> ou <em>Révoquer</em> : OmniDB exécute alors <code>GRANT</code>/<code>REVOKE
+… ON ALL … IN SCHEMA</code>, ce qui concerne les objets existant actuellement, et non ceux créés plus tard.</p>
 <p>Sélectionner <code>PUBLIC</code> dans la première colonne vous permet de modifier ce qui est accordé à
 <code>PUBLIC</code> lui-même (<code>GRANT … TO PUBLIC</code> / <code>REVOKE … FROM PUBLIC</code>).</p>
-<p><strong>Important :</strong> chaque action de cette section est exécutée immédiatement sur le serveur
-— il n’y a ni aperçu SQL ni annulation. Seuls <em>Supprimer le rôle</em> et <em>Retirer l’appartenance</em>
-demandent d’abord une confirmation. Si le serveur rejette une instruction, son message d’erreur est affiché.</p>
+<h4>Privilèges par défaut</h4>
+<p>Le dossier <em>Privilèges par défaut</em> d’une base de données liste les entrées <code>ALTER DEFAULT PRIVILEGES</code>
+qui impliquent le rôle actif, soit comme bénéficiaire, soit comme rôle créateur. Ils permettent de couvrir les objets créés à l’avenir.
+Faites un clic droit sur le dossier pour <em>Ajouter des privilèges par défaut</em> : choisissez le rôle créateur (<em>Pour les objets créés par</em>),
+le schéma (ou tous les schémas), le type d’objet (tables, séquences, fonctions, types, schémas) et les privilèges.
+Faites un clic droit sur une entrée existante pour <em>Modifier les privilèges</em> (seules les cases que vous changez sont accordées ou révoquées) ou
+<em>Supprimer les privilèges par défaut</em>.</p>
+<h4>Propriété et qui a accès</h4>
+<ul>
+<li><strong>Changer le propriétaire</strong> (menu contextuel de n’importe quel objet de la colonne Objets) exécute
+<code>ALTER … OWNER TO</code> sur l’objet.</li>
+<li><strong>Qui a accès</strong> est la vue inverse : elle liste chaque rôle qui peut faire quelque chose
+avec l’objet et pourquoi — propriétaire, droit direct, hérité par une appartenance ou superutilisateur —
+ainsi que <code>PUBLIC</code>, avec des marques pour l’option de transmission. Les réponses proviennent des fonctions
+<code>has_*_privilege</code> de PostgreSQL lui-même, elles correspondent donc à ce que le serveur autorise réellement. Les rôles qui n’ont
+que ce que <code>PUBLIC</code> donne à tout le monde sont omis et les superutilisateurs sont regroupés dans un
+groupe replié ; un clic sur un rôle en fait le rôle actif.</li>
+</ul>
+<p><img alt="The Who Has Access dialog" src="../assets/img/ui-perm-who-has-access.webp"/></p>
+<h4>Aperçu du SQL</h4>
+<p>Les boîtes de dialogue de création, de modification, de renommage et de clonage de rôles, d’ajout d’appartenances, d’octroi ou de
+modification de privilèges, de privilèges par défaut et de changement de propriétaire disposent d’une zone repliable <em>Afficher le SQL</em>.
+Elle montre les instructions exactes que les valeurs actuelles du formulaire exécuteraient — construites par le même code serveur
+que l’appel réel, rien n’est exécuté, les mots de passe sont masqués — et les tient à jour au fur et à mesure que
+le formulaire change. <em>Copier le SQL</em> les copie.</p>
+<p><strong>Important :</strong> valider une boîte de dialogue exécute les instructions sur le serveur
+immédiatement — il n’y a pas d’annulation. Relisez-les d’abord avec <em>Afficher le SQL</em>. <em>Supprimer le rôle</em>,
+<em>Retirer l’appartenance</em> et <em>Supprimer les privilèges par défaut</em> demandent aussi une confirmation. Si le
+serveur rejette une instruction, son message d’erreur est affiché.</p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>

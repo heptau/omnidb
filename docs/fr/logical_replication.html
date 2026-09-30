@@ -155,10 +155,10 @@ même deux bases de données sur la même machine) et configurez les paramè
 <h4>Se connecter aux deux nœuds</h4>
 <p>Utilisons OmniDB pour nous connecter aux deux nœuds PostgreSQL. Tout d’abord, renseignez les informations de
 connexion dans la section <em>Connexions</em> :</p>
-<p><img alt="" src="../assets/img/image_117.webp" /></p>
+<p><img alt="The Connections section with the connection form" src="../assets/img/ui-connections-form.webp"/></p>
 <p>Sélectionnez ensuite les deux connexions. Remarquez comment OmniDB comprend qu’il est connecté à PostgreSQL
 10 et active un nouveau nœud dans l’arborescence de la connexion en cours : il s’appelle <em>Réplication logique</em>. À l’intérieur, on trouve <em>Publications</em> et <em>Abonnements</em>.</p>
-<p><img alt="" src="../assets/img/image_118.webp" /></p>
+<p><img alt="The Logical Replication node of the database tree" src="../assets/img/ui-repl-logical-node.webp"/></p>
 <h4>Créer une table de test sur les deux nœuds</h4>
 <p>Sur les deux nœuds, créez une table comme celle-ci :</p>
 <pre><code class="language-sql">CREATE TABLE customers (
@@ -167,42 +167,40 @@ connexion dans la section <em>Connexions</em> :</p>
  registration_date timestamptz NOT NULL DEFAULT now()
 )
 </code></pre>
-<p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Créer une publication sur la première machine</h4>
 <p>Dans le nœud de connexion, développez le nœud <em>Réplication logique</em>, puis faites un clic droit sur le
 nœud <em>Publications</em>, et choisissez l’action <em>Créer une publication</em>. OmniDB
 ouvre un onglet avec un modèle SQL contenant la commande <code>CREATE PUBLICATION</code>, prêt à être ajusté et
 exécuté :</p>
-<p><img alt="" src="../assets/img/image_120.webp" /></p>
+<p><img alt="The CREATE PUBLICATION template" src="../assets/img/ui-repl-create-publication.webp"/></p>
 <p>Après avoir ajusté et exécuté la commande, vous pouvez faire un clic droit sur le nœud <em>Publications</em>
 et cliquer à nouveau sur l’action <em>Actualiser</em>. Vous verrez qu’un nouveau nœud portant le même
 nom que celui donné à la publication a été créé. En développant ce nœud, vous verrez les détails et les tables
 de la publication :</p>
-<p><img alt="" src="../assets/img/image_121.webp" /></p>
+<p><img alt="A publication in the tree" src="../assets/img/ui-repl-publication.webp"/></p>
 <h4>Créer un abonnement sur la seconde machine</h4>
 <p>Dans le nœud de connexion, développez le nœud <em>Réplication logique</em>, puis faites un clic droit sur le
 nœud <em>Abonnements</em>, et choisissez l’action <em>Créer un abonnement</em>. OmniDB
 ouvre un onglet avec un modèle SQL contenant la commande <code>CREATE SUBSCRIPTION</code>, prêt à être ajusté et
 exécuté :</p>
-<p><img alt="" src="../assets/img/image_122.webp" /></p>
+<p><img alt="The CREATE SUBSCRIPTION template" src="../assets/img/ui-repl-create-subscription.webp"/></p>
 <p>Après avoir ajusté et exécuté la commande, vous pouvez faire un clic droit sur le nœud <em>Abonnements</em>
 et cliquer à nouveau sur l’action <em>Actualiser</em>. Vous verrez qu’un nouveau nœud portant le même nom que celui
 donné à l’abonnement a été créé. En développant ce nœud, vous verrez les détails, les publications référencées
 et les tables de l’abonnement :</p>
-<p><img alt="" src="../assets/img/image_123.webp" /></p>
+<p><img alt="A subscription in the tree" src="../assets/img/ui-repl-subscription.webp"/></p>
 <p>De plus, la commande <code>CREATE SUBSCRIPTION</code> a créé un <em>slot de réplication logique</em> appelé
 <code>testsub</code> (le même nom que l’abonnement) sur la première machine :</p>
-<p><img alt="" src="../assets/img/image_124.webp" /></p>
+<p><img alt="Replication slots" src="../assets/img/ui-repl-slots.webp"/></p>
 <h4>Tester la réplication logique</h4>
 <p>Pour vérifier que la réplication fonctionne, créons quelques données sur le nœud 1. Faites un clic droit sur
 la table <code>public.customers</code>, pointez vers <em>Actions sur les données</em>, puis
 cliquez sur l’action <em>Modifier les données</em>. Dans cette grille, vous pouvez ajouter, modifier
-et supprimer des données de la table. Ajoutez 2 lignes d’exemple, comme ceci :</p>
-<p><img alt="" src="../assets/img/image_125.webp" /></p>
+et supprimer des données de la table. Ajoutez 2 lignes d’exemple, comme ceci .</p>
 <p>Ensuite, sur l’autre nœud, vérifiez si la table <code>public.customers</code> a été peuplée automatiquement.
 Faites un clic droit sur la table <code>public.customers</code>, pointez vers <em>Actions sur les données</em>, puis
 cliquez sur l’action <em>Interroger les données</em> :</p>
-<p><img alt="" src="../assets/img/image_126.webp" /></p>
+<p><img alt="Rows replicated to the second node" src="../assets/img/ui-repl-replica-data.webp"/></p>
 <p>Comme on peut le voir, les deux lignes créées sur la première machine ont été répliquées sur la seconde
 machine. Cela indique que la réplication logique fonctionne.</p>
 <p>Vous pouvez maintenant effectuer d’autres actions, comme ajouter/retirer des tables de la publication ou

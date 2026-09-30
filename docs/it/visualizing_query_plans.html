@@ -151,24 +151,24 @@ sulla tua query. La visualizzazione iniziale è <em>testuale</em> e mostrerà
 esattamente l’output del comando <code>EXPLAIN</code>, ma con barre colorate che
 rappresentano il costo stimato. Più alto è il costo, più scura e larga sarà
 la barra.</p>
-<p><img alt="" src="../assets/img/image_054.webp" /></p>
+<p><img alt="The textual Explain view" src="../assets/img/ui-explain-text.webp"/></p>
 <p>Quando fai clic sul pulsante <em>Spiega ed Esegui</em>, OmniDB eseguirà un comando
-<code>EXPLAIN ANALYZE</code> sulla tua query. Attenzione: questo comando eseguirà
+<code>EXPLAIN (ANALYZE, BUFFERS)</code> sulla tua query. Attenzione: questo comando eseguirà
 effettivamente la query. Inoltre, la visualizzazione testuale mostrerà molte
 più informazioni, e i costi non saranno stimati come quelli forniti dal
 comando <code>EXPLAIN</code>, ma reali.</p>
-<p><img alt="" src="../assets/img/image_055.webp" /></p>
+<p><img alt="The textual Explain Analyze view" src="../assets/img/ui-explain-analyze-text.webp"/></p>
 <h4>Visualizzazione ad albero</h4>
 <p>Sia la modalità <em>Spiega</em> che <em>Spiega ed Esegui</em> possono anche rappresentare
 graficamente l’output testuale in un diagramma ad <em>albero</em>. Ogni cerchio
 rappresenta un nodo eseguito dal piano di query, e più grande è il cerchio,
 più alto è il costo.</p>
-<p><img alt="" src="../assets/img/image_056.webp" /></p>
+<p><img alt="The plan as a tree diagram" src="../assets/img/ui-explain-tree1.webp"/></p>
 <p>Quando le query diventano sempre più complesse, anche il loro piano di query
 può diventare molto complesso. Con query di questo tipo (come la query di
 <em>controllo del bloat</em> che abbiamo eseguito qui sotto) la visualizzazione ad
 albero può risultare molto interessante:</p>
-<p><img alt="" src="../assets/img/image_057.webp" /></p>
+<p><img alt="The plan as a zoomed tree diagram" src="../assets/img/ui-explain-tree2.webp"/></p>
 <p>Il componente di visualizzazione del piano di query ti permette di passare
 facilmente tra la visualizzazione testuale e le 2 visualizzazioni ad albero,
 che possono essere ingrandite e rimpicciolite.</p>

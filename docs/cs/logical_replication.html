@@ -156,12 +156,12 @@ počítači) a na obou nastavte výše uvedené parametry.</p>
 <h4>Připojení k oběma uzlům</h4>
 <p>K připojení k oběma uzlům PostgreSQL použijeme OmniDB. Nejprve vyplňte
 informace o připojení v sekci <em>Connections</em>:</p>
-<p><img alt="" src="../assets/img/image_117.webp" /></p>
+<p><img alt="The Connections section with the connection form" src="../assets/img/ui-connections-form.webp"/></p>
 <p>Poté vyberte obě připojení. Všimněte si, že OmniDB rozpozná připojení k
 PostgreSQL 10 a zpřístupní ve stromovém zobrazení aktuálního připojení nový
 uzel nazvaný <em>Logical Replication</em>. Uvnitř najdeme uzly <em>Publications</em> a
 <em>Subscriptions</em>.</p>
-<p><img alt="" src="../assets/img/image_118.webp" /></p>
+<p><img alt="The Logical Replication node of the database tree" src="../assets/img/ui-repl-logical-node.webp"/></p>
 <h4>Vytvoření testovací tabulky na obou uzlech</h4>
 <p>Na obou uzlech vytvořte tabulku takto:</p>
 <pre><code class="language-sql">CREATE TABLE customers (
@@ -170,42 +170,40 @@ uzel nazvaný <em>Logical Replication</em>. Uvnitř najdeme uzly <em>Publication
  registration_date timestamptz NOT NULL DEFAULT now()
 )
 </code></pre>
-<p><img alt="" src="../assets/img/image_119.webp" /></p>
 <h4>Vytvoření publikace na prvním počítači</h4>
 <p>Uvnitř uzlu připojení rozbalte uzel <em>Logical Replication</em>, poté klikněte
 pravým tlačítkem na uzel <em>Publications</em> a zvolte akci <em>Create Publication</em>.
 OmniDB otevře záložku se SQL šablonou obsahující příkaz <code>CREATE PUBLICATION</code>
 připravený k úpravám a spuštění:</p>
-<p><img alt="" src="../assets/img/image_120.webp" /></p>
+<p><img alt="The CREATE PUBLICATION template" src="../assets/img/ui-repl-create-publication.webp"/></p>
 <p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
 uzel <em>Publications</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
 uzel se stejným názvem, jaký jste dali publikaci. Rozbalením tohoto uzlu
 uvidíte podrobnosti a tabulky patřící k publikaci:</p>
-<p><img alt="" src="../assets/img/image_121.webp" /></p>
+<p><img alt="A publication in the tree" src="../assets/img/ui-repl-publication.webp"/></p>
 <h4>Vytvoření odběru na druhém počítači</h4>
 <p>Uvnitř uzlu připojení rozbalte uzel <em>Logical Replication</em>, poté klikněte
 pravým tlačítkem na uzel <em>Subscriptions</em> a zvolte akci <em>Create Subscription</em>.
 OmniDB otevře záložku se SQL šablonou obsahující příkaz <code>CREATE SUBSCRIPTION</code>
 připravený k úpravám a spuštění:</p>
-<p><img alt="" src="../assets/img/image_122.webp" /></p>
+<p><img alt="The CREATE SUBSCRIPTION template" src="../assets/img/ui-repl-create-subscription.webp"/></p>
 <p>Po úpravě a spuštění příkazu můžete znovu kliknout pravým tlačítkem na
 uzel <em>Subscriptions</em> a zvolit akci <em>Refresh</em>. Uvidíte, že se vytvořil nový
 uzel se stejným názvem, jaký jste dali odběru. Rozbalením tohoto uzlu uvidíte
 podrobnosti, odkazované publikace a tabulky patřící k odběru:</p>
-<p><img alt="" src="../assets/img/image_123.webp" /></p>
+<p><img alt="A subscription in the tree" src="../assets/img/ui-repl-subscription.webp"/></p>
 <p>Příkaz <code>CREATE SUBSCRIPTION</code> navíc na prvním počítači vytvořil <em>slot logické
 replikace</em> nazvaný <code>testsub</code> (stejný název jako odběr):</p>
-<p><img alt="" src="../assets/img/image_124.webp" /></p>
+<p><img alt="Replication slots" src="../assets/img/ui-repl-slots.webp"/></p>
 <h4>Test logické replikace</h4>
 <p>Abychom ověřili, že replikace funguje, vytvořme na uzlu 1 nějaká data.
 Klikněte pravým tlačítkem na tabulku <code>public.customers</code>, najeďte na <em>Data
 Actions</em> a klikněte na akci <em>Edit Data</em>. V této tabulce můžete do tabulky
-přidávat, upravovat a odstraňovat data. Přidejte 2 ukázkové řádky, takto:</p>
-<p><img alt="" src="../assets/img/image_125.webp" /></p>
+přidávat, upravovat a odstraňovat data. Přidejte 2 ukázkové řádky, takto.</p>
 <p>Poté na druhém uzlu ověřte, zda se tabulka <code>public.customers</code> automaticky
 naplnila. Klikněte pravým tlačítkem na tabulku <code>public.customers</code>, najeďte
 na <em>Data Actions</em> a klikněte na akci <em>Query Data</em>:</p>
-<p><img alt="" src="../assets/img/image_126.webp" /></p>
+<p><img alt="Rows replicated to the second node" src="../assets/img/ui-repl-replica-data.webp"/></p>
 <p>Jak vidíme, oba řádky vytvořené na prvním počítači byly replikovány na
 druhý počítač. To nám říká, že logická replikace funguje.</p>
 <p>Nyní můžete provádět další akce, jako je přidávání/odebírání tabulek z

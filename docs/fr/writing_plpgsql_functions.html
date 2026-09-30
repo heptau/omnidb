@@ -146,13 +146,12 @@ de programmation très puissant et flexible appelé <code>PL/pgSQL</code>. Gr�
 vos propres <em>fonctions définies par l’utilisateur</em> pour atteindre des niveaux d’abstraction et des
 calculs procéduraux qu’il serait difficile d’obtenir avec du SQL pur (et parfois impossible sans changer de
 contexte avec l’application).</p>
-<p><img alt="" src="../assets/img/image_072.webp" /></p>
 <h4>Écrire des fonctions</h4>
 <p>Dans le schéma <code>public</code>, faites un clic droit sur le nœud <code>Functions</code> (Fonctions) et
 cliquez sur <em>Créer une fonction</em>. Un onglet interne <em>Requête SQL</em>
 s’ouvre, contenant déjà un modèle SQL pour vous aider à créer votre première fonction PL/pgSQL.</p>
-<p><img alt="" src="../assets/img/image_073.webp" /></p>
-<p><img alt="" src="../assets/img/image_074.webp" /></p>
+<p><img alt="The context menu of the Functions node" src="../assets/img/ui-ctx-functions.webp"/></p>
+<p><img alt="The CREATE FUNCTION template" src="../assets/img/ui-function-create.webp"/></p>
 <p>Vous pouvez vous référer à la documentation PostgreSQL pour savoir comment écrire des fonctions définies par
 l’utilisateur. Il suffit de faire un clic droit sur le nœud <em>Fonctions</em> et de cliquer sur <em>Doc :
 Functions</em> — la page correspondante de la documentation PostgreSQL s’ouvre dans votre navigateur web (le
@@ -189,16 +188,16 @@ fonction prend un argument texte appelé <code>p_input</code> et compte le no
 apparaîtra sous le nœud d’arborescence <em>Fonctions</em> (vous pouvez l’actualiser par un clic droit puis en
 cliquant sur <em>Actualiser</em>). En développant également le nœud de la fonction, vous pouvez voir son type de
 retour et son argument.</p>
-<p><img alt="" src="../assets/img/image_075.webp" /></p>
+<p><img alt="A function in the tree and the result of calling it" src="../assets/img/ui-function-run.webp"/></p>
 <p>Exécutons maintenant cette nouvelle fonction pour la première fois. Ouvrez un simple onglet interne SQL Query
 et exécutez la requête SQL suivante :</p>
 <pre><code class="language-sql">SELECT public.fnc_count_vowels('The quick brown fox jumps over the lazy dog.')
 </code></pre>
-<p><img alt="" src="../assets/img/image_076.webp" /></p>
 <p>Remarquez comment la requête retourne une seule valeur, contenant le nombre de voyelles dans le texte.</p>
 <p>En faisant un clic droit sur le nœud de la fonction, vous verrez qu’il existe des actions pour la modifier,
 la sélectionner et la supprimer. Comme vous l’aurez probablement deviné, chaque action ouvrira des onglets
 internes SQL Query avec des modèles SQL pratiques déjà remplis.</p>
+<p><img alt="The context menu of a function" src="../assets/img/ui-ctx-function.webp"/></p>
 		</main>
 	</div>
 	<script src="../assets/dropdown.js"></script>
