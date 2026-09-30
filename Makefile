@@ -183,7 +183,7 @@ _prepare_dirs: _sync_version
 _ensure_wails:
 	@if [ ! -x "$(WAILS)" ]; then \
 		echo "Installing Wails CLI..."; \
-		go install github.com/wailsapp/wails/v2/cmd/wails@v2.15.0; \
+		go install github.com/wailsapp/wails/v2/cmd/wails@v2.16.0; \
 	fi
 
 # A literal ad-hoc identity (`codesign --sign -`) does NOT actually enable
@@ -292,7 +292,7 @@ MAC_SIGN_IDENTITY ?= $(LOCAL_SIGN_CERT_NAME)
 
 _build_mac: _prepare_dirs _ensure_wails _ensure_local_signing_cert _build_frontend_release
 	@echo "Building Wails desktop shell (darwin/$(WAILS_GOARCH))..."
-	cd wails-app && $(WAILS) build -clean -platform darwin/$(WAILS_GOARCH)
+	cd wails-app && MACOSX_DEPLOYMENT_TARGET=13.0 CGO_CFLAGS="-mmacosx-version-min=13.0" CGO_LDFLAGS="-mmacosx-version-min=13.0" $(WAILS) build -clean -platform darwin/$(WAILS_GOARCH)
 
 	@echo "Setting up .app structure..."
 	rm -rf $(BUILD_DIR)/$(APP_NAME).app

@@ -11,6 +11,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - `SECURITY.md`: made explicit that security fixes are released only for the latest version; older versions are
   not patched.
+- Dependency updates (minor/patch): Go — `pgx/v5` 5.11.0, `go-sql-driver/mysql` 1.10.1, `go-mssqldb` 1.11.2,
+  `firebirdsql` 0.9.21, `modernc.org/sqlite` 1.60.1, `golang.org/x/{crypto,net,sync,text}`, Wails 2.16.0 (including the CLI version pinned in the `Makefile` and
+  the Linux build Dockerfile);
+  frontend — `bootstrap` 5.3.8, `moment` 2.31.0, `lucide-static`, `simple-icons`, `sass`, `@types/node`.
+  Vite 8 and jQuery 4 (major versions) are intentionally not adopted yet.
+- macOS build now targets macOS 13.0 explicitly (`MACOSX_DEPLOYMENT_TARGET` in the `Makefile`, `LSMinimumSystemVersion`
+  in the Info.plists): the Go toolchain already emits code for macOS 13, so the old 10.13 minimum was inaccurate and
+  made the linker warn about a version mismatch.
 
 ### Fixed
 

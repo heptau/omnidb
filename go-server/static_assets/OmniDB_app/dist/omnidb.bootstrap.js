@@ -1386,8 +1386,8 @@
     write
   }, Symbol.toStringTag, { value: "Module" }));
   /*!
-    * Bootstrap v5.3.3 (https://getbootstrap.com/)
-    * Copyright 2011-2024 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
+    * Bootstrap v5.3.8 (https://getbootstrap.com/)
+    * Copyright 2011-2025 The Bootstrap Authors (https://github.com/twbs/bootstrap/graphs/contributors)
     * Licensed under MIT (https://github.com/twbs/bootstrap/blob/main/LICENSE)
     */
   const elementMap = /* @__PURE__ */ new Map();
@@ -1570,7 +1570,7 @@
     });
   };
   const execute = (possibleCallback, args = [], defaultValue = possibleCallback) => {
-    return typeof possibleCallback === "function" ? possibleCallback(...args) : defaultValue;
+    return typeof possibleCallback === "function" ? possibleCallback.call(...args) : defaultValue;
   };
   const executeAfterTransition = (callback, transitionElement, waitForTransition = true) => {
     if (!waitForTransition) {
@@ -1847,7 +1847,7 @@
       const bsKeys = Object.keys(element.dataset).filter((key) => key.startsWith("bs") && !key.startsWith("bsConfig"));
       for (const key of bsKeys) {
         let pureKey = key.replace(/^bs/, "");
-        pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1, pureKey.length);
+        pureKey = pureKey.charAt(0).toLowerCase() + pureKey.slice(1);
         attributes[pureKey] = normalizeData(element.dataset[key]);
       }
       return attributes;
@@ -1895,7 +1895,7 @@
       }
     }
   }
-  const VERSION = "5.3.3";
+  const VERSION = "5.3.8";
   class BaseComponent extends Config {
     constructor(element, config) {
       super();
@@ -1915,6 +1915,7 @@
         this[propertyName] = null;
       }
     }
+    // Private
     _queueCallback(callback, element, isAnimated = true) {
       executeAfterTransition(callback, element, isAnimated);
     }
@@ -2667,10 +2668,10 @@
       this._element.style[dimension] = "";
       this._queueCallback(complete, this._element, true);
     }
+    // Private
     _isShown(element = this._element) {
       return element.classList.contains(CLASS_NAME_SHOW$7);
     }
-    // Private
     _configAfterMerge(config) {
       config.toggle = Boolean(config.toggle);
       config.parent = getElement(config.parent);
@@ -2879,7 +2880,7 @@
     }
     _createPopper() {
       if (typeof Popper === "undefined") {
-        throw new TypeError("Bootstrap's dropdowns require Popper (https://popper.js.org)");
+        throw new TypeError("Bootstrap's dropdowns require Popper (https://popper.js.org/docs/v2/)");
       }
       let referenceElement = this._element;
       if (this._config.reference === "parent") {
@@ -2954,7 +2955,7 @@
       }
       return {
         ...defaultBsPopperConfig,
-        ...execute(this._config.popperConfig, [defaultBsPopperConfig])
+        ...execute(this._config.popperConfig, [void 0, defaultBsPopperConfig])
       };
     }
     _selectMenuItem({
@@ -3935,7 +3936,7 @@
       return this._config.sanitize ? sanitizeHtml(arg, this._config.allowList, this._config.sanitizeFn) : arg;
     }
     _resolvePossibleFunction(arg) {
-      return execute(arg, [this]);
+      return execute(arg, [void 0, this]);
     }
     _putElementInTemplate(element, templateElement) {
       if (this._config.html) {
@@ -4016,7 +4017,7 @@
   class Tooltip extends BaseComponent {
     constructor(element, config) {
       if (typeof Popper === "undefined") {
-        throw new TypeError("Bootstrap's tooltips require Popper (https://popper.js.org)");
+        throw new TypeError("Bootstrap's tooltips require Popper (https://popper.js.org/docs/v2/)");
       }
       super(element, config);
       this._isEnabled = true;
@@ -4056,7 +4057,6 @@
       if (!this._isEnabled) {
         return;
       }
-      this._activeTrigger.click = !this._activeTrigger.click;
       if (this._isShown()) {
         this._leave();
         return;
@@ -4228,7 +4228,7 @@
       return offset2;
     }
     _resolvePossibleFunction(arg) {
-      return execute(arg, [this._element]);
+      return execute(arg, [this._element, this._element]);
     }
     _getPopperConfig(attachment) {
       const defaultBsPopperConfig = {
@@ -4264,7 +4264,7 @@
       };
       return {
         ...defaultBsPopperConfig,
-        ...execute(this._config.popperConfig, [defaultBsPopperConfig])
+        ...execute(this._config.popperConfig, [void 0, defaultBsPopperConfig])
       };
     }
     _setListeners() {
@@ -4273,6 +4273,7 @@
         if (trigger === "click") {
           EventHandler.on(this._element, this.constructor.eventName(EVENT_CLICK$1), this._config.selector, (event) => {
             const context = this._initializeOnDelegatedTarget(event);
+            context._activeTrigger[TRIGGER_CLICK] = !(context._isShown() && context._activeTrigger[TRIGGER_CLICK]);
             context.toggle();
           });
         } else if (trigger !== TRIGGER_MANUAL) {
