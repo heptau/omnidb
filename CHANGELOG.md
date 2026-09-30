@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- Switching the PostgreSQL database in a connection tab no longer inserts a second, oversized DBMS logo
+  into the tab title (the tab already shows the icon; only the text is updated now).
+- Website: the homepage light/dark screenshot slider no longer sits in a bordered, rounded, shadowed frame — the
+  screenshots blend straight into the page background, and the aspect ratio matches the new screenshots.
+
 ## [4.5.1] - 2026-09-30
 
 ### Added
