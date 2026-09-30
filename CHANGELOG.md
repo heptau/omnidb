@@ -13,6 +13,28 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   into the tab title (the tab already shows the icon; only the text is updated now).
 - Website: the homepage light/dark screenshot slider no longer sits in a bordered, rounded, shadowed frame — the
   screenshots blend straight into the page background, and the aspect ratio matches the new screenshots.
+- Website: the homepage install commands span the full card width, the copy button only appears on hover (overlaid
+  on the right edge, always visible on touch devices), and the Homebrew command drops the unnecessary `--cask`.
+- Website: the homepage "Install OmniDB" section now shows Homebrew and winget side by side, with the GitHub
+  Releases card full-width underneath and its downloads as icon buttons in a row (stacked on narrow screens).
+  The redundant "Download for …" / "Intel Mac?" / "GitHub" button row below it, the small verification note and the
+  now-unused `download-links.js` were removed.
+- Website: the homepage footer no longer has the separate "Maintained and revived by …" line; the author link now
+  sits on the name in the copyright line.
+- Website: the ".NET" badge next to the logo in the top bar is hidden on narrow screens (≤ 520 px), where it did not fit.
+  The mobile menu button in the top bar no longer gets squeezed narrow and now looks like the language/theme buttons
+  (background and border only on hover).
+- Website: the homepage now mentions that the macOS app runs in the App Sandbox (in the "Actively Hardened" card).
+- Website: the homepage tagline now says the project is "actively developed" (not "revived") by the author of
+  PgArachne "and other tools", the latter linking to the author's projects page.
+  The other "revival"/"revived" wording on the homepages (page title, headline, meta/Open Graph/JSON-LD
+  descriptions, footer), the installation guide and the web manifest was reworded the same way; the project
+  history pages keep it, since they describe the actual 2025–2026 history.
+- Website: the installation guide's download list now links each archive/installer file name to its GitHub
+  download, and the "not yet verified on real hardware" note and the installer's explanatory parenthetical were
+  removed.
+- Website: the SSH tunnel images on the "Creating Users and Connections" page no longer have a border, rounded
+  corners, shadow or dimming — they sit directly on the page.
 
 ## [4.5.1] - 2026-09-30
 

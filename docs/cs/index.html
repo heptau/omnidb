@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>OmniDB | Obnova open source nástroje pro správu databází</title>
+	<title>OmniDB | Open source nástroj pro správu databází</title>
 	<meta name="description" content="OmniDB je výkonné open source kolaborativní prostředí pro správu databází. Přepsáno z Pythonu do Go a nově postaveno na Wails, k dispozici pro macOS, Linux a Windows.">
 	<meta name="keywords" content="OmniDB, správa databází, nástroj pro PostgreSQL, SQL editor, open source databázový klient, PgArachne, administrace databází">
 
@@ -34,8 +34,8 @@
 	<!-- Open Graph -->
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://www.omnidb.net/cs/">
-	<meta property="og:title" content="OmniDB | Obnova open source nástroje pro správu databází">
-	<meta property="og:description" content="OmniDB prochází aktivní obnovou — lehká, rychlá a open source správa databází. Desktopová aplikace zaměřená na PostgreSQL pro macOS, Linux a Windows, přepsaná v Go a postavená na Wails.">
+	<meta property="og:title" content="OmniDB | Open source nástroj pro správu databází">
+	<meta property="og:description" content="OmniDB se aktivně vyvíjí — lehká, rychlá a open source správa databází. Desktopová aplikace zaměřená na PostgreSQL pro macOS, Linux a Windows, přepsaná v Go a postavená na Wails.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
@@ -44,7 +44,7 @@
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="OmniDB | Obnova open source nástroje pro správu databází">
+	<meta name="twitter:title" content="OmniDB | Open source nástroj pro správu databází">
 	<meta name="twitter:description" content="Lehká, rychlá a open source správa databází. Desktopová aplikace zaměřená na PostgreSQL, přepsaná v Go a postavená na Wails.">
 	<meta name="twitter:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
 
@@ -60,7 +60,7 @@
 		"name": "OmniDB",
 		"applicationCategory": "DeveloperApplication",
 		"operatingSystem": "macOS, Linux, Windows",
-		"description": "Obnovený open source nástroj pro správu databází. Odlehčená desktopová aplikace zaměřená na PostgreSQL s podporou MySQL, Oracle, MariaDB, MS SQL Server, Firebird a SQLite. Backend byl přepsán z Pythonu do Go a desktopový shell běží na Wails s nativním webview operačního systému.",
+		"description": "Open source nástroj pro správu databází. Odlehčená desktopová aplikace zaměřená na PostgreSQL s podporou MySQL, Oracle, MariaDB, MS SQL Server, Firebird a SQLite. Backend byl přepsán z Pythonu do Go a desktopový shell běží na Wails s nativním webview operačního systému.",
 		"url": "https://www.omnidb.net",
 		"downloadUrl": "https://github.com/heptau/omnidb/releases",
 		"license": "https://opensource.org/licenses/MIT",
@@ -202,13 +202,13 @@
 	<main>
 	<div class="hero">
 		<span class="eyebrow-badge">⬡ Open source · Zaměřeno na PostgreSQL</span>
-		<h1>Obnova projektu OmniDB</h1>
+		<h1>Projekt OmniDB</h1>
 		<p class="lead">
 			Lehký, výkonný a open source nástroj pro správu databází je zpět, aby posílil moderní vývojářské
 			workflow.
 		</p>
 		<p class="lead-secondary">
-			Aktivně obnovováno autorem <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
+			Aktivně vyvíjeno autorem <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a> a <a href="https://www.80.cz/projects/" class="pg-link" target="_blank" rel="noopener">dalších nástrojů</a>
 			— spojuje robustní administraci databází s moderní architekturou tenkého klienta.
 		</p>
 
@@ -254,7 +254,7 @@
 					<span class="feature-icon" aria-hidden="true">🔒</span>
 					<h3>Aktivně zabezpečováno</h3>
 					<p>Skutečné opravy — SQL injection, XSS, IDOR — přibývají průběžně. Podívejte se do
-						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelogu</a>.</p>
+						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelogu</a>. Na macOS aplikace běží v App Sandboxu.</p>
 				</article>
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">📤</span>
@@ -290,7 +290,7 @@
 					<h3>Homebrew <span class="install-tag">macOS</span></h3>
 					<p>Doporučeno pro macOS — cask automaticky rozpozná Apple Silicon nebo Intel.</p>
 					<div class="install-command-row">
-						<pre><code class="install-command" id="brewCmd">brew install --cask heptau/tap/omnidb</code></pre>
+						<pre><code class="install-command" id="brewCmd">brew install heptau/tap/omnidb</code></pre>
 						<button class="copy-btn" type="button" data-copy-target="brewCmd" aria-label="Kopírovat příkaz">
 							<span class="copy-btn-icon">⧉</span>
 						</button>
@@ -307,15 +307,15 @@
 						</button>
 					</div>
 				</div>
-				<div class="install-card">
+				<div class="install-card install-card-wide">
 					<span class="install-icon" aria-hidden="true">⬇️</span>
 					<h3>GitHub Releases <span class="install-tag">macOS · Linux · Windows</span></h3>
 					<p>Stáhněte si samostatný archiv pro vaši platformu — bez instalátoru, bez samostatného runtime.</p>
 					<ul class="download-links">
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" target="_blank" rel="noopener">macOS (Apple Silicon)</a></li>
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" target="_blank" rel="noopener">macOS (Intel)</a></li>
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" target="_blank" rel="noopener">Linux (x64)</a></li>
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip" target="_blank" rel="noopener">Windows (x64)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🍎</span>macOS (ARM)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🍎</span>macOS (Intel)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🐧</span>Linux (x64)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🪟</span>Windows (x64)</a></li>
 					</ul>
 					<p class="download-links-more"><a href="https://github.com/heptau/omnidb/releases" target="_blank" rel="noopener">Všechny verze a changelog →</a></p>
 				</div>
@@ -323,36 +323,20 @@
 			<p class="docs-link">
 				Úplné instrukce k instalaci: <a href="installation.html">→ Podrobný průvodce instalací</a>
 			</p>
-			<p class="small-note">
-				<small>macOS je ověřen end-to-end; sestavení pro Linux a Windows vznikají ve stejné CI pipeline, ale
-					zatím nebyla ověřena na reálném hardwaru. Starší verze (přibližně do roku 2020) z původního
-					repozitáře již nejsou udržovány.</small>
-			</p>
 		</section>
 
-		<div class="button-group">
-			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" class="btn btn-primary" target="_blank" rel="noopener"
-				data-dl-mac-arm="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" data-dl-linux="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" data-dl-win="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip"
-				data-label-mac="Stáhnout pro macOS" data-label-linux="Stáhnout pro Linux" data-label-win="Stáhnout pro Windows">Stáhnout</a>
-			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" data-intel-fallback target="_blank" rel="noopener">Mac s Intelem?</a>
-			<a href="https://github.com/heptau/omnidb" class="btn btn-outline" target="_blank" rel="noopener">GitHub</a>
-		</div>
 	</div>
 	</main>
 	</div>
 
 	<footer>
 		<div class="footer-inner">
-			<p class="footer-author">Udržuje a obnovuje <a href="https://www.80.cz" target="_blank" rel="noopener"><strong>Zbyněk Vanžura</strong></a> (autor
-				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a> a <a href="https://www.80.cz/projects/" target="_blank" rel="noopener">dalších projektů</a>)</p>
 			<p class="footer-copyright">
-				© 2026 Zbyněk Vanžura. Vydáno pod licencí <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
+				© 2026 <a href="https://www.80.cz" target="_blank" rel="noopener">Zbyněk Vanžura</a>. Vydáno pod licencí <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
 			</p>
 			<p class="footer-note">
-				Původně vytvořeno týmem OmniDB. Tato obnova je věnována udržení prostředí lehkého a moderního pro
+				Původně vytvořeno týmem OmniDB. Tento projekt je věnován udržení prostředí lehkého a moderního pro
 				dnešní databázové workflow.
-			</p>
-			<p class="footer-note">
 				Velká část kódu a dokumentace tohoto projektu vzniká s pomocí nástrojů AI/LLM; každou změnu
 				před vydáním kontroluje lidský správce.
 			</p>
@@ -362,7 +346,6 @@
 	<script src="../assets/dropdown.js"></script>
 	<script src="../assets/lang-switcher.js"></script>
 	<script src="../assets/script.js"></script>
-	<script src="../assets/download-links.js"></script>
 	<script>
 		(function () {
 			document.querySelectorAll('.copy-btn').forEach(function (copyBtn) {

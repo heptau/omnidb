@@ -3,7 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>OmniDB | Renaissance d’un outil open source de gestion de bases de données</title>
+	<title>OmniDB | Outil open source de gestion de bases de données</title>
 	<meta name="description" content="OmniDB est un environnement collaboratif open source performant pour la gestion de bases de données. Réécrit de Python vers Go et reconstruit sur Wails, disponible pour macOS, Linux et Windows.">
 	<meta name="keywords" content="OmniDB, gestion de bases de données, outil PostgreSQL, éditeur SQL, client de base de données open source, PgArachne, administration de bases de données">
 
@@ -34,8 +34,8 @@
 	<!-- Open Graph -->
 	<meta property="og:type" content="website">
 	<meta property="og:url" content="https://www.omnidb.net/fr/">
-	<meta property="og:title" content="OmniDB | Renaissance d'un outil open source de gestion de bases de données">
-	<meta property="og:description" content="OmniDB connaît une renaissance active — gestion de bases de données légère, rapide et open source. Application de bureau axée sur PostgreSQL pour macOS, Linux et Windows, réécrite en Go et construite sur Wails.">
+	<meta property="og:title" content="OmniDB | Outil open source de gestion de bases de données">
+	<meta property="og:description" content="OmniDB est activement développé — gestion de bases de données légère, rapide et open source. Application de bureau axée sur PostgreSQL pour macOS, Linux et Windows, réécrite en Go et construite sur Wails.">
 	<meta property="og:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
 	<meta property="og:image:width" content="1200">
 	<meta property="og:image:height" content="630">
@@ -44,7 +44,7 @@
 
 	<!-- Twitter Card -->
 	<meta name="twitter:card" content="summary_large_image">
-	<meta name="twitter:title" content="OmniDB | Renaissance d'un outil open source de gestion de bases de données">
+	<meta name="twitter:title" content="OmniDB | Outil open source de gestion de bases de données">
 	<meta name="twitter:description" content="Gestion de bases de données légère, rapide et open source. Application de bureau axée sur PostgreSQL, réécrite en Go et construite sur Wails.">
 	<meta name="twitter:image" content="https://www.omnidb.net/assets/omnidb-logo.png">
 
@@ -60,7 +60,7 @@
 		"name": "OmniDB",
 		"applicationCategory": "DeveloperApplication",
 		"operatingSystem": "macOS, Linux, Windows",
-		"description": "Outil de gestion de bases de données open source relancé. Application de bureau légère axée sur PostgreSQL avec prise en charge de MySQL, Oracle, MariaDB, MS SQL Server, Firebird et SQLite. Le backend a été réécrit de Python vers Go et le shell de bureau fonctionne sur Wails avec la webview native du système d'exploitation.",
+		"description": "Outil de gestion de bases de données open source. Application de bureau légère axée sur PostgreSQL avec prise en charge de MySQL, Oracle, MariaDB, MS SQL Server, Firebird et SQLite. Le backend a été réécrit de Python vers Go et le shell de bureau fonctionne sur Wails avec la webview native du système d'exploitation.",
 		"url": "https://www.omnidb.net",
 		"downloadUrl": "https://github.com/heptau/omnidb/releases",
 		"license": "https://opensource.org/licenses/MIT",
@@ -203,13 +203,13 @@
 	<main>
 	<div class="hero">
 		<span class="eyebrow-badge">⬡ Open source · Axé sur PostgreSQL</span>
-		<h1>Renaissance du projet OmniDB</h1>
+		<h1>Projet OmniDB</h1>
 		<p class="lead">
 			L’outil de gestion de bases de données léger, puissant et open source est de retour pour
 			accompagner les workflows de développement modernes.
 		</p>
 		<p class="lead-secondary">
-			Activement relancé par l'auteur de <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a>
+			Activement développé par l'auteur de <a href="https://www.pgarachne.com" class="pg-link" target="_blank">PgArachne</a> et <a href="https://www.80.cz/projects/" class="pg-link" target="_blank" rel="noopener">d'autres outils</a>
 			— alliant une administration de bases de données robuste à des architectures client léger modernes.
 		</p>
 
@@ -255,7 +255,7 @@
 					<span class="feature-icon" aria-hidden="true">🔒</span>
 					<h3>Activement sécurisé</h3>
 					<p>De vraies corrections — injections SQL, XSS, IDOR — arrivent en continu. Consultez le
-						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelog</a>.</p>
+						<a href="https://github.com/heptau/omnidb/blob/master/CHANGELOG.md" target="_blank" rel="noopener">changelog</a>. Sous macOS, l’application s’exécute dans l’App Sandbox.</p>
 				</article>
 				<article class="feature-card">
 					<span class="feature-icon" aria-hidden="true">📤</span>
@@ -291,7 +291,7 @@
 					<h3>Homebrew <span class="install-tag">macOS</span></h3>
 					<p>Recommandé pour macOS — le cask détecte automatiquement Apple Silicon ou Intel.</p>
 					<div class="install-command-row">
-						<pre><code class="install-command" id="brewCmd">brew install --cask heptau/tap/omnidb</code></pre>
+						<pre><code class="install-command" id="brewCmd">brew install heptau/tap/omnidb</code></pre>
 						<button class="copy-btn" type="button" data-copy-target="brewCmd" aria-label="Copier la commande">
 							<span class="copy-btn-icon">⧉</span>
 						</button>
@@ -308,15 +308,15 @@
 						</button>
 					</div>
 				</div>
-				<div class="install-card">
+				<div class="install-card install-card-wide">
 					<span class="install-icon" aria-hidden="true">⬇️</span>
 					<h3>GitHub Releases <span class="install-tag">macOS · Linux · Windows</span></h3>
 					<p>Téléchargez l’archive autonome pour votre plateforme — sans installateur, sans runtime séparé.</p>
 					<ul class="download-links">
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" target="_blank" rel="noopener">macOS (Apple Silicon)</a></li>
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" target="_blank" rel="noopener">macOS (Intel)</a></li>
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" target="_blank" rel="noopener">Linux (x64)</a></li>
-						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip" target="_blank" rel="noopener">Windows (x64)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🍎</span>macOS (ARM)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🍎</span>macOS (Intel)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🐧</span>Linux (x64)</a></li>
+						<li><a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip" target="_blank" rel="noopener"><span class="dl-icon" aria-hidden="true">🪟</span>Windows (x64)</a></li>
 					</ul>
 					<p class="download-links-more"><a href="https://github.com/heptau/omnidb/releases" target="_blank" rel="noopener">Toutes les versions et le changelog →</a></p>
 				</div>
@@ -324,36 +324,20 @@
 			<p class="docs-link">
 				Instructions d’installation complètes : <a href="installation.html">→ Guide d’installation détaillé</a>
 			</p>
-			<p class="small-note">
-				<small>macOS est vérifié de bout en bout ; les versions Linux et Windows proviennent du même pipeline CI
-					mais n’ont pas encore été vérifiées sur du matériel réel. Les anciennes versions (jusqu’à ~2020)
-					du dépôt d’origine ne sont plus maintenues.</small>
-			</p>
 		</section>
 
-		<div class="button-group">
-			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" class="btn btn-primary" target="_blank" rel="noopener"
-				data-dl-mac-arm="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip" data-dl-linux="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz" data-dl-win="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip"
-				data-label-mac="Télécharger pour macOS" data-label-linux="Télécharger pour Linux" data-label-win="Télécharger pour Windows">Télécharger</a>
-			<a href="https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip" data-intel-fallback target="_blank" rel="noopener">Mac Intel ?</a>
-			<a href="https://github.com/heptau/omnidb" class="btn btn-outline" target="_blank" rel="noopener">GitHub</a>
-		</div>
 	</div>
 	</main>
 	</div>
 
 	<footer>
 		<div class="footer-inner">
-			<p class="footer-author">Maintenu et relancé par <a href="https://www.80.cz" target="_blank" rel="noopener"><strong>Zbyněk Vanžura</strong></a> (auteur de
-				<a href="https://www.pgarachne.com" target="_blank">PgArachne</a> et <a href="https://www.80.cz/projects/" target="_blank" rel="noopener">d'autres projets</a>)</p>
 			<p class="footer-copyright">
-				© 2026 Zbyněk Vanžura. Distribué sous licence <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
+				© 2026 <a href="https://www.80.cz" target="_blank" rel="noopener">Zbyněk Vanžura</a>. Distribué sous licence <a href="https://opensource.org/licenses/MIT" target="_blank" rel="noopener">MIT</a>.
 			</p>
 			<p class="footer-note">
-				Créé à l’origine par l’équipe OmniDB. Cette renaissance vise à garder l’environnement léger
+				Créé à l’origine par l’équipe OmniDB. Ce projet vise à garder l’environnement léger
 				et moderne pour les workflows de bases de données actuels.
-			</p>
-			<p class="footer-note">
 				Une grande partie du code et de la documentation de ce projet est développée avec l’assistance d’outils
 				d’IA/LLM ; chaque modification est révisée par un mainteneur humain avant sa publication.
 			</p>
@@ -363,7 +347,6 @@
 	<script src="../assets/dropdown.js"></script>
 	<script src="../assets/lang-switcher.js"></script>
 	<script src="../assets/script.js"></script>
-	<script src="../assets/download-links.js"></script>
 	<script>
 		(function () {
 			document.querySelectorAll('.copy-btn').forEach(function (copyBtn) {

@@ -54,13 +54,13 @@ Both application and server can be installed on the same machine.
 
 Important: The original repository https://github.com/OmniDB/OmniDB/releases contains only old versions (up to ~2020) and is no longer maintained — see Legacy Features & History for what changed since.
 
-For current versions use the revived project's releases page (https://github.com/heptau/omnidb/releases). Since the Go rewrite, every release is a single self-contained archive per platform (plus an optional installer for Windows) — no separate runtime to install first:
+For current versions use the project's releases page (https://github.com/heptau/omnidb/releases). Since the Go rewrite, every release is a single self-contained archive per platform (plus an optional installer for Windows) — no separate runtime to install first:
 
-- macOS (Apple Silicon or Intel): `OmniDB-macOS-osx-arm64.zip` / `OmniDB-macOS-osx-x64.zip`
-- Linux x64: `OmniDB-linux-x64.tar.gz`
-- Windows x64: `OmniDB-win-x64.zip`, or the installer `OmniDB-win-x64-setup.exe` (the same app, with a Start-menu entry and an uninstaller; this is also what winget installs)
+- macOS (Apple Silicon or Intel): [OmniDB-macOS-osx-arm64.zip](https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-arm64.zip) / [OmniDB-macOS-osx-x64.zip](https://github.com/heptau/omnidb/releases/latest/download/OmniDB-macOS-osx-x64.zip)
+- Linux x64: [OmniDB-linux-x64.tar.gz](https://github.com/heptau/omnidb/releases/latest/download/OmniDB-linux-x64.tar.gz)
+- Windows x64: [OmniDB-win-x64.zip](https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64.zip), or the installer [OmniDB-win-x64-setup.exe](https://github.com/heptau/omnidb/releases/latest/download/OmniDB-win-x64-setup.exe)
 
-Unzip (or untar) the archive for your platform and run the `OmniDB` app/binary inside — that's the whole install. Linux and Windows builds are produced by CI for every release but haven't yet been verified on real hardware, unlike the macOS build; if you hit a platform-specific issue on one of those, please open an issue.
+Unzip (or untar) the archive for your platform and run the `OmniDB` app/binary inside — that's the whole install.
 
 **Installation via Homebrew (macOS only – recommended)**
 
