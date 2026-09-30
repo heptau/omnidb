@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- `SECURITY.md`: made explicit that security fixes are released only for the latest version; older versions are
+  not patched.
+
 ### Fixed
 
 - Explain and Explain Analyze in a PostgreSQL Query tab showed an empty Explain view: they send the query with

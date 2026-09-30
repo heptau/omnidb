@@ -2,15 +2,24 @@
 
 ## Supported Versions
 
-| Version | Supported          |
-|---------|--------------------|
-| 4.0.x   | :white_check_mark: |
-| < 4.0   | :x:                |
+**Security fixes are released only for the latest version of OmniDB.** Older
+versions — including older releases of the current major line — do **not**
+receive security fixes, backports or patch releases. If you run anything other
+than the [latest release](https://github.com/heptau/omnidb/releases/latest),
+you are running with known, unpatched vulnerabilities as soon as a fix ships —
+please upgrade.
+
+| Version              | Supported          |
+|----------------------|--------------------|
+| Latest release       | :white_check_mark: |
+| Any older version    | :x:                |
 
 Versions before 4.0 were built on the legacy Python/Django backend, which has
 been fully replaced by the Go backend (`go-server/`) and Wails desktop shell
-(`wails-app/`). Those releases no longer receive security fixes — please
-upgrade.
+(`wails-app/`).
+
+When reporting a vulnerability, please verify it against the latest release;
+reports that affect only older versions will not be fixed there.
 
 ## Reporting a Vulnerability
 
