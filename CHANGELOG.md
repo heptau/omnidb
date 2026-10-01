@@ -9,6 +9,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Command History context menu: the entry is now "Open Content In New Query Tab" and opens the selected command in a
+  new query tab instead of overwriting the editor of the current one.
+- Connecting to a database (and restoring saved connection tabs) no longer opens a Console panel automatically;
+  only the query tab is created. A Console tab can still be added on demand from the "+" menu.
 - SQL tab: the query result summary (rows, execution time, start time) moved from the toolbar next to the run buttons
   into the result tab strip, right after the Explain tab, before the explain-mode toggle.
 - jQuery, moment and the vendored daterangepicker plugin are gone from the frontend. The Console/Command History

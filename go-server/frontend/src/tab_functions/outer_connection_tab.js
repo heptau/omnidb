@@ -534,7 +534,6 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 		startMonitoringForConnTab(v_tab);
 
 		if (p_create_query_tab) {
-			v_connTabControl.tag.createConsoleTab();
 			v_connTabControl.tag.createQueryTab();
 		}
 

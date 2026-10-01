@@ -56,7 +56,7 @@
   "console.column_date": "Datum",
   "console.column_command": "Příkaz",
   "console.copy_to_console_tab": "Zkopírovat obsah do záložky konzole",
-  "console.copy_to_query_tab": "Zkopírovat obsah do záložky dotazu",
+  "console.copy_to_query_tab": "Otevřít obsah v nové záložce dotazu",
   "confirm.lose_changes": "Přijdete o neuložené změny. Chcete pokračovat?",
   "confirm.sign_out": "Opravdu se chcete odhlásit?",
   "login.user_label": "uživatel",

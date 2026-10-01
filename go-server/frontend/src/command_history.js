@@ -304,10 +304,13 @@ export function commandHistoryLastPage() {
 
 export function commandHistoryOpenCmd(p_index) {
 	var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[3];
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(v_command);
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
-	v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
 	closeCommandHistory();
+	// Opens the command in a new query tab so the current tab's editor is left untouched.
+	v_connTabControl.tag.createQueryTab();
+	var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
+	v_editor.setValue(v_command);
+	v_editor.clearSelection();
+	v_editor.gotoLine(0, 0, true);
 }
 
 /// <summary>

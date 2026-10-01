@@ -56,7 +56,7 @@
   "console.column_date": "Fecha",
   "console.column_command": "Comando",
   "console.copy_to_console_tab": "Copiar contenido a la pestaña de consola",
-  "console.copy_to_query_tab": "Copiar contenido a la pestaña de consulta",
+  "console.copy_to_query_tab": "Abrir contenido en una nueva pestaña de consulta",
   "confirm.lose_changes": "Perderá los cambios existentes. ¿Desea continuar?",
   "confirm.sign_out": "¿Está seguro de que desea cerrar sesión?",
   "login.user_label": "usuario",

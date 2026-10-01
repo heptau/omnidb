@@ -273,7 +273,6 @@ export function getDatabaseList(p_init, p_callback) {
 									v_name,
 									p_tooltip_name,
 								);
-								v_connTabControl.tag.createConsoleTab();
 							}
 						}
 

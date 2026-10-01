@@ -12097,10 +12097,12 @@ ${t2 ? `    <#ArrowNext [${t2}] />
   }
   function commandHistoryOpenCmd(p_index) {
     var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[3];
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(v_command);
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
-    v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
     closeCommandHistory();
+    v_connTabControl.tag.createQueryTab();
+    var v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
+    v_editor.setValue(v_command);
+    v_editor.clearSelection();
+    v_editor.gotoLine(0, 0, true);
   }
   function refreshCommandList() {
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
@@ -21890,7 +21892,6 @@ ${t2 ? `    <#ArrowNext [${t2}] />
       startNotifyForConnTab(v_tab);
       startMonitoringForConnTab(v_tab);
       if (p_create_query_tab) {
-        v_connTabControl.tag.createConsoleTab();
         v_connTabControl.tag.createQueryTab();
       }
       setTimeout(function() {
@@ -35454,7 +35455,6 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                     v_name,
                     p_tooltip_name
                   );
-                  v_connTabControl.tag.createConsoleTab();
                 }
               }
               v_current_parent = p_return.v_data.v_existing_tabs[i2].index;

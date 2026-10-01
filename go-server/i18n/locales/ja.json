@@ -56,7 +56,7 @@
   "console.column_date": "日付",
   "console.column_command": "コマンド",
   "console.copy_to_console_tab": "内容をコンソールタブにコピー",
-  "console.copy_to_query_tab": "内容をクエリタブにコピー",
+  "console.copy_to_query_tab": "内容を新しいクエリタブで開く",
   "confirm.lose_changes": "既存の変更が失われます。続行しますか?",
   "confirm.sign_out": "サインアウトしてもよろしいですか?",
   "login.user_label": "ユーザー",

@@ -56,7 +56,7 @@
   "console.column_date": "Datum",
   "console.column_command": "Befehl",
   "console.copy_to_console_tab": "Inhalt in Konsolen-Tab kopieren",
-  "console.copy_to_query_tab": "Inhalt in Abfrage-Tab kopieren",
+  "console.copy_to_query_tab": "Inhalt in neuem Abfrage-Tab öffnen",
   "confirm.lose_changes": "Vorhandene Änderungen gehen verloren. Möchten Sie fortfahren?",
   "confirm.sign_out": "Möchten Sie sich wirklich abmelden?",
   "login.user_label": "Benutzer",

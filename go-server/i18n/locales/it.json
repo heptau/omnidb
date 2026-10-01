@@ -56,7 +56,7 @@
   "console.column_date": "Data",
   "console.column_command": "Comando",
   "console.copy_to_console_tab": "Copia contenuto nella scheda console",
-  "console.copy_to_query_tab": "Copia contenuto nella scheda query",
+  "console.copy_to_query_tab": "Apri contenuto in una nuova scheda query",
   "confirm.lose_changes": "Perderai le modifiche esistenti. Vuoi continuare?",
   "confirm.sign_out": "Sei sicuro di voler disconnetterti?",
   "login.user_label": "utente",

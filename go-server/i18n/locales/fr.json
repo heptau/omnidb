@@ -56,7 +56,7 @@
   "console.column_date": "Date",
   "console.column_command": "Commande",
   "console.copy_to_console_tab": "Copier le contenu vers l'onglet Console",
-  "console.copy_to_query_tab": "Copier le contenu vers l'onglet Requête",
+  "console.copy_to_query_tab": "Ouvrir le contenu dans un nouvel onglet Requête",
   "confirm.lose_changes": "Vous perdrez les modifications existantes. Voulez-vous continuer ?",
   "confirm.sign_out": "Voulez-vous vraiment vous déconnecter ?",
   "login.user_label": "utilisateur",

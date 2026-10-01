@@ -56,7 +56,7 @@
   "console.column_date": "Date",
   "console.column_command": "Command",
   "console.copy_to_console_tab": "Copy Content To Console Tab",
-  "console.copy_to_query_tab": "Copy Content To Query Tab",
+  "console.copy_to_query_tab": "Open Content In New Query Tab",
   "confirm.lose_changes": "You will lose existing changes. Would you like to continue?",
   "confirm.sign_out": "Are you sure you want to sign out?",
   "login.user_label": "user",

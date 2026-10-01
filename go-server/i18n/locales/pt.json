@@ -56,7 +56,7 @@
   "console.column_date": "Data",
   "console.column_command": "Comando",
   "console.copy_to_console_tab": "Copiar conteúdo para o separador de consola",
-  "console.copy_to_query_tab": "Copiar conteúdo para o separador de consulta",
+  "console.copy_to_query_tab": "Abrir conteúdo num novo separador de consulta",
   "confirm.lose_changes": "Vai perder as alterações existentes. Deseja continuar?",
   "confirm.sign_out": "Tem a certeza de que deseja terminar a sessão?",
   "login.user_label": "utilizador",
