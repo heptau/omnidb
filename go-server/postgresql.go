@@ -49,6 +49,15 @@ func postgresqlConnConfig(info *ConnectionInfo) (*pgx.ConnConfig, error) {
 	if err != nil {
 		return nil, err
 	}
+	// Honour an application_name the user set themselves (connection string
+	// or PGAPPNAME — pgx folds both into RuntimeParams), else identify as
+	// "OmniDB <version>".
+	if cfg.RuntimeParams == nil {
+		cfg.RuntimeParams = map[string]string{}
+	}
+	if cfg.RuntimeParams["application_name"] == "" {
+		cfg.RuntimeParams["application_name"] = omnidbVersion
+	}
 	applyPgpassPassword(cfg)
 	return cfg, nil
 }

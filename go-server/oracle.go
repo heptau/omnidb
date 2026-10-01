@@ -33,7 +33,7 @@ func openOracleTarget(info *ConnectionInfo) (*sql.DB, error) {
 			port = p
 		}
 	}
-	dsn := go_ora.BuildUrl(info.Server, port, info.Database, info.Username, info.Password, nil)
+	dsn := go_ora.BuildUrl(info.Server, port, info.Database, info.Username, info.Password, map[string]string{"PROGRAM": omnidbVersion})
 	db, err := sql.Open("oracle", dsn)
 	if err != nil {
 		return nil, err

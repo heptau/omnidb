@@ -9,7 +9,7 @@ func TestMSSQLDSNPrefersConnStringWhenServerBlank(t *testing.T) {
 	info := &ConnectionInfo{
 		ConnString: "sqlserver://sa:test@127.0.0.1:1433?database=master",
 	}
-	got := mssqlDSN(info)
+	got := mssqlBaseDSN(info)
 	if got != info.ConnString {
 		t.Fatalf("expected raw connstring %q, got %q", info.ConnString, got)
 	}
@@ -20,7 +20,7 @@ func TestMSSQLDSNSubstitutesDatabaseIntoConnString(t *testing.T) {
 		ConnString: "sqlserver://sa:test@127.0.0.1:1433?database=master&encrypt=disable",
 		Database:   "seconddb",
 	}
-	got := mssqlDSN(info)
+	got := mssqlBaseDSN(info)
 	if !strings.Contains(got, "database=seconddb") {
 		t.Fatalf("expected database=seconddb, got %q", got)
 	}
@@ -41,7 +41,7 @@ func TestMSSQLDSNIgnoresConnStringWhenServerSet(t *testing.T) {
 		Password:   "p",
 		ConnString: "sqlserver://someone-else@unrelated-host:1433?database=other",
 	}
-	got := mssqlDSN(info)
+	got := mssqlBaseDSN(info)
 	if strings.Contains(got, "unrelated-host") {
 		t.Fatalf("expected discrete fields to win over stale connstring, got %q", got)
 	}
@@ -57,8 +57,22 @@ func TestMSSQLDSNBuildsFromPartsWhenNoConnString(t *testing.T) {
 		Username: "sa",
 		Password: "test",
 	}
-	got := mssqlDSN(info)
+	got := mssqlBaseDSN(info)
 	if !strings.Contains(got, "localhost:1433") {
 		t.Fatalf("expected default port 1433 in DSN, got %q", got)
+	}
+}
+
+func TestMSSQLDSNAddsDefaultAppName(t *testing.T) {
+	got := mssqlDSN(&ConnectionInfo{Server: "h", Port: "1433", Username: "u", Password: "p", Database: "d"})
+	if !strings.Contains(got, "app+name=OmniDB+"+omnidbShortVersion) {
+		t.Fatalf("missing default app name: %s", got)
+	}
+}
+
+func TestMSSQLDSNKeepsUserAppName(t *testing.T) {
+	in := "sqlserver://sa:x@h:1433?App+Name=Mine&database=master"
+	if got := mssqlDSNWithAppName(in); got != in {
+		t.Fatalf("user app name overridden: %s", got)
 	}
 }

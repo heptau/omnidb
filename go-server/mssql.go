@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"net/url"
+	"strings"
 
 	_ "github.com/microsoft/go-mssqldb"
 )
@@ -32,6 +33,28 @@ func openMSSQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 // Unlike postgres/mysql, go-mssqldb's sqlserver:// URLs carry the database
 // name as a query parameter rather than the URL path.
 func mssqlDSN(info *ConnectionInfo) string {
+	return mssqlDSNWithAppName(mssqlBaseDSN(info))
+}
+
+// mssqlDSNWithAppName adds "app name=OmniDB <version>" unless the DSN
+// already sets one (key matching is case-insensitive, spaces optional).
+func mssqlDSNWithAppName(dsn string) string {
+	u, err := url.Parse(dsn)
+	if err != nil || u.Scheme != "sqlserver" {
+		return dsn
+	}
+	q := u.Query()
+	for k := range q {
+		if strings.EqualFold(strings.ReplaceAll(k, " ", ""), "appname") {
+			return dsn
+		}
+	}
+	q.Set("app name", omnidbVersion)
+	u.RawQuery = q.Encode()
+	return u.String()
+}
+
+func mssqlBaseDSN(info *ConnectionInfo) string {
 	if info.Server == "" && info.ConnString != "" {
 		if info.Database == "" {
 			return info.ConnString

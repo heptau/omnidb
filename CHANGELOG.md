@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- Connections now identify themselves to the server as `OmniDB <version>` (e.g. `OmniDB 5.4.2`): PostgreSQL
+  `application_name` (a value set in the connection string or `PGAPPNAME` wins), SQL Server `app name` (also
+  overridable in the connection string), MySQL/MariaDB `program_name` connection attribute and Oracle `PROGRAM`.
+  Firebird and SQLite have no such setting.
+
 ### Changed
 
 - SQL formatter rewritten (the button/menu entry "Indent SQL" is now "Format SQL" in all languages, with a magic-wand icon instead of the indent glyph): it now understands nesting — subqueries become indented blocks, CTEs

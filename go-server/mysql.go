@@ -29,6 +29,8 @@ func openMySQLTarget(info *ConnectionInfo) (*sql.DB, error) {
 	cfg.DBName = info.Database
 	cfg.ParseTime = false
 	cfg.AllowAllFiles = false
+	// Visible in performance_schema.session_connect_attrs.
+	cfg.ConnectionAttributes = "program_name:" + omnidbVersion
 	connector, err := mysql.NewConnector(cfg)
 	if err != nil {
 		return nil, err
