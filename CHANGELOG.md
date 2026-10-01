@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- SQL tab: the query result summary (rows, execution time, start time) moved from the toolbar next to the run buttons
+  into the result tab strip, right after the Explain tab, before the explain-mode toggle.
 - jQuery, moment and the vendored daterangepicker plugin are gone from the frontend. The Console/Command History
   time-range filter is now a small dropdown (`time_range_picker.js`) with the same presets plus a custom range:
   days from a `vanilla-calendar-pro` calendar, start/end hours from two native time inputs (the calendar itself

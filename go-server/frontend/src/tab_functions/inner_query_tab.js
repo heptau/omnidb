@@ -207,9 +207,6 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'<button id="bt_cancel_' +
 		v_tab.id +
 		'" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("common.cancel")) + '" style="display: none;">' + escapeHtml(t("common.cancel")) + '</button>' +
-		'<div id="div_query_info_' +
-		v_tab.id +
-		'" class="omnidb__query-info"></div>' +
 		'<button id="bt_export_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="' + escapeHtmlAttribute(t("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button>' +
@@ -327,6 +324,13 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		"</div>";
 	v_explain_tab.elementA.classList.add("dbms_object");
 	v_explain_tab.elementA.classList.add("postgresql_object");
+
+	// Result summary (rows / time / start time) lives in the result tab strip,
+	// right after the Explain tab (before the explain-mode toggle).
+	var v_query_info_div = document.createElement("div");
+	v_query_info_div.id = "div_query_info_" + v_tab.id;
+	v_query_info_div.className = "omnidb__query-info";
+	v_explain_tab.elementA.after(v_query_info_div);
 
 	// Creating the editor for `query`.
 	var langTools = ace.require("ace/ext/language_tools");

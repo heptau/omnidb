@@ -1655,7 +1655,9 @@ button.close {
 	// toolbar mustn't grow when the first query finishes, because the result pane's
 	// height is computed from where its top edge sits and isn't redone afterwards.
 	min-height: 2.4em;
-	margin-left: 5px;
+	margin: 0 8px;
+	align-self: center;
+	white-space: nowrap;
 	vertical-align: middle;
 }
 

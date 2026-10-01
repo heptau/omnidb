@@ -84,6 +84,7 @@ function recomputeTabShrinkStages(p_tabListDiv) {
 	var v_fixed = [];
 	for (var i = 0; i < v_children.length; i++) {
 		var v_link = v_children[i];
+		if (!v_link.classList.contains("omnidb__tab-menu__link")) continue;
 		if (v_link.classList.contains("active") || v_link.classList.contains("omnidb__tab-menu__link--compact")) {
 			v_fixed.push(v_link);
 		} else {
