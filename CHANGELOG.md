@@ -9,6 +9,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- SQL formatter rewritten (the button/menu entry "Indent SQL" is now "Format SQL" in all languages, with a magic-wand icon instead of the indent glyph): it now understands nesting — subqueries become indented blocks, CTEs
+  (`WITH`), `CASE ... END`, `ON CONFLICT`, `INSERT ... VALUES`, `UPDATE ... SET`, `CREATE TABLE` column lists and
+  `ALTER TABLE` actions are laid out per item, `AND`/`OR` break only in `WHERE`/`HAVING`/`JOIN` conditions (never
+  inside `BETWEEN`), statements are separated by a blank line, and `$$ ... $$` bodies, `E'..'` strings, `::` casts,
+  `->>`-style operators, parameters (`:p`, `$1`, `@v`), `[ms sql idents]` and non-ASCII identifiers are handled
+  correctly. The indent character/size, comma style and keyword case settings are all honoured, and two new
+  settings were added: **SQL Layout** (block / compact) and **AND / OR Position** (leading / trailing); the
+  **Ruler Column** is now also the width above which long parenthesised lists are wrapped. New defaults are
+  trailing commas and UPPERCASE keywords; users who still had the old default pair (leading commas, preserved
+  case) are moved to them once on startup. Translated in all nine languages.
+
 - Command History context menu: the entry is now "Open Content In New Query Tab" and opens the selected command in a
   new query tab instead of overwriting the editor of the current one.
 - Connecting to a database (and restoring saved connection tabs) no longer opens a Console panel automatically;

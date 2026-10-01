@@ -136,7 +136,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 		'<div class="tab_actions omnidb__tab-actions omnidb__tab-actions--no-divider mt-2">' +
 		'<button id="bt_indent_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + t("editor.indent_sql") + '"><i class="fas fa-indent me-2"></i>' + t("common.indent") + '</button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + t("editor.indent_sql") + '"><i class="fas fa-magic me-2"></i>' + t("common.indent") + '</button>' +
 		'<button id="bt_save_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + t("common.save") + '"><i class="fas fa-save me-2"></i>' + t("common.save") + '</button>' +

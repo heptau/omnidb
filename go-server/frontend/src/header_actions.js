@@ -458,6 +458,20 @@ export function showConfigUser() {
 			break;
 		}
 	}
+	var layoutRadios = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("sql_layout"));
+	for (var i = 0; i < layoutRadios.length; i++) {
+		if (layoutRadios[i].value === v_sql_layout) {
+			layoutRadios[i].checked = true;
+			break;
+		}
+	}
+	var logicRadios = /** @type {NodeListOf<HTMLInputElement>} */ (document.getElementsByName("sql_logical_operator"));
+	for (var i = 0; i < logicRadios.length; i++) {
+		if (logicRadios[i].value === v_sql_logical_operator) {
+			logicRadios[i].checked = true;
+			break;
+		}
+	}
 	/** @type {HTMLInputElement} */ (document.getElementById("txt_ruler_column")).value = String(v_ruler_column || 128);
 
 	var v_disabled_autocomplete_types = v_autocomplete_disabled_types.split(",");
@@ -548,6 +562,8 @@ function persistConfigUserInternal(p_pwd, p_callback) {
 		p_indent_size: v_indent_size,
 		p_comma_style: v_comma_style,
 		p_keyword_case: v_keyword_case,
+		p_sql_layout: v_sql_layout,
+		p_sql_logical_operator: v_sql_logical_operator,
 		p_ruler_column: v_ruler_column,
 		p_autocomplete_disabled_types: v_autocomplete_disabled_types,
 		p_language: v_language_preference,

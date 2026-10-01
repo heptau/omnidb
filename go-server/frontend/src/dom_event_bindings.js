@@ -240,6 +240,14 @@ bindAll('input[name="keyword_case"]', 'change', (e) => {
   v_keyword_case = /** @type {HTMLInputElement} */ (e.target).value
   persistConfigUser()
 })
+bindAll('input[name="sql_layout"]', 'change', (e) => {
+  v_sql_layout = /** @type {HTMLInputElement} */ (e.target).value
+  persistConfigUser()
+})
+bindAll('input[name="sql_logical_operator"]', 'change', (e) => {
+  v_sql_logical_operator = /** @type {HTMLInputElement} */ (e.target).value
+  persistConfigUser()
+})
 bind('txt_ruler_column', 'input', () => debouncedPersistConfigUser())
 
 // --- settings: password -- the one field that keeps an explicit action ------

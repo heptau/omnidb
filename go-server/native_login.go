@@ -192,7 +192,7 @@ func userCSVPrefs(db *sql.DB, userID int64) (encoding, delimiter, language strin
 	err = db.QueryRow(`select csv_encoding, csv_delimiter, coalesce(language, 'auto') from OmniDB_app_userdetails where user_id = ?`, userID).Scan(&encoding, &delimiter, &language)
 	if err == sql.ErrNoRows {
 		if _, insertErr := db.Exec(
-			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case, language) values (?, 'auto', 12, 'utf-8', ';', 0, '    ', 'space', 4, 'leading', 'preserve', 'auto')`,
+			`insert into OmniDB_app_userdetails (user_id, theme, font_size, csv_encoding, csv_delimiter, welcome_closed, indent_unit, indent_char, indent_size, comma_style, keyword_case, language) values (?, 'auto', 12, 'utf-8', ';', 0, '    ', 'space', 4, 'trailing', 'upper', 'auto')`,
 			userID,
 		); insertErr != nil {
 			return "", "", "", insertErr

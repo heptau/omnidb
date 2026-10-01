@@ -171,8 +171,10 @@ func migrateAppDB(db *sql.DB) error {
 		{"indent_unit", "varchar(20)", "'    '"},
 		{"indent_char", "varchar(5)", "'space'"},
 		{"indent_size", "integer", "4"},
-		{"comma_style", "varchar(10)", "'leading'"},
-		{"keyword_case", "varchar(10)", "'preserve'"},
+		{"comma_style", "varchar(10)", "'trailing'"},
+		{"keyword_case", "varchar(10)", "'upper'"},
+		{"sql_layout", "varchar(10)", "'block'"},
+		{"sql_logical_operator", "varchar(10)", "'leading'"},
 		{"ruler_column", "integer", "128"},
 		{"autocomplete_disabled_types", "varchar(255)", "''"},
 		{"language", "varchar(10)", "'auto'"},
@@ -207,6 +209,25 @@ func migrateAppDB(db *sql.DB) error {
 		}
 	} else if err != nil {
 		return fmt.Errorf("check OmniDB_app_userdetails.theme_default_migrated: %w", err)
+	}
+
+	// One-time data fix, same marker-column idiom as the theme migration
+	// above: the SQL formatter's defaults changed from leading commas +
+	// preserved keyword case to trailing commas + UPPERCASE keywords. Rows
+	// still holding exactly the old default pair were never a deliberate
+	// choice, so move them to the new defaults once; anything else (and any
+	// pick made after this migration) is left alone.
+	var hasFormatMigrated string
+	err = db.QueryRow(`select name from pragma_table_info('OmniDB_app_userdetails') where name = 'sql_format_defaults_migrated'`).Scan(&hasFormatMigrated)
+	if err == sql.ErrNoRows {
+		if _, err := db.Exec(`alter table OmniDB_app_userdetails add column "sql_format_defaults_migrated" integer NOT NULL DEFAULT 1`); err != nil {
+			return fmt.Errorf("add sql_format_defaults_migrated to OmniDB_app_userdetails: %w", err)
+		}
+		if _, err := db.Exec(`update OmniDB_app_userdetails set comma_style = 'trailing', keyword_case = 'upper' where comma_style = 'leading' and keyword_case = 'preserve'`); err != nil {
+			return fmt.Errorf("migrate SQL formatter defaults: %w", err)
+		}
+	} else if err != nil {
+		return fmt.Errorf("check OmniDB_app_userdetails.sql_format_defaults_migrated: %w", err)
 	}
 
 	// Add the mssql technology row if missing (v4.4.0+) -- unlike the

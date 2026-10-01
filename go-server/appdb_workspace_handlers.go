@@ -12,11 +12,14 @@ import (
 )
 
 type indentSQLRequest struct {
-	PSQL        string `json:"p_sql"`
-	IndentChar  string `json:"p_indent_char"`
-	IndentSize  int    `json:"p_indent_size"`
-	CommaStyle  string `json:"p_comma_style"`
-	KeywordCase string `json:"p_keyword_case"`
+	PSQL            string `json:"p_sql"`
+	IndentChar      string `json:"p_indent_char"`
+	IndentSize      int    `json:"p_indent_size"`
+	CommaStyle      string `json:"p_comma_style"`
+	KeywordCase     string `json:"p_keyword_case"`
+	Layout          string `json:"p_sql_layout"`
+	LogicalOperator string `json:"p_sql_logical_operator"`
+	WrapWidth       int    `json:"p_wrap_width"`
 }
 
 // indentUnitFromCharSize builds the actual indent string ("  ", "   ",
@@ -31,25 +34,10 @@ func indentUnitFromCharSize(char string, size int) string {
 	return strings.Repeat(" ", size)
 }
 
-// handleIndentSQL mirrors workspace.py's indent_sql — Python called
-// sqlparse.format(v_sql, reindent=True), a generic (not engine-specific)
-// tokenizer-based reformatter; reindentSQL (sql_indent.go) replicates that
-// same generic behavior natively, since indent_sql's wire contract only
-// ever carries the raw SQL text, no connection/technology context.
-//
-// A second, PostgreSQL-specific tier is planned on top of this: dispatch
-// to the user's own pg_procrustes (github.com/heptau/pg_procrustes, a
-// native Go formatter driven by the real PostgreSQL parser) specifically
-// for PostgreSQL connections, once its formatter/config packages are made
-// importable (they currently live under internal/, which Go blocks
-// external modules from importing) — that tier needs a wire contract
-// change (passing which engine a tab is connected to) this generic pass
-// doesn't need. See go-backend-migration memory for the full writeup,
-// including a real cgo/cross-compile caveat (pg_procrustes depends on
-// pg_query_go, which uses cgo to compile actual PostgreSQL parser source —
-// this build's other dependencies are deliberately pure-Go for exactly the
-// cross-compilation reasons this would reintroduce, so that tier needs to
-// be weighed, not just wired in, once the API is available).
+// handleIndentSQL formats the SQL text of an editor with reindentSQL
+// (sql_indent.go), using the caller's formatting settings. The wire contract
+// only carries the SQL and the settings — no connection/engine context — so
+// the formatter is dialect-agnostic.
 func handleIndentSQL(upstream *url.URL) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		who, err := resolveIdentity(upstream, r.Header.Get("Cookie"))
@@ -69,16 +57,14 @@ func handleIndentSQL(upstream *url.URL) http.HandlerFunc {
 			return
 		}
 
+		// blank/unknown values fall back to the defaults inside reindentSQL
 		opts := IndentOptions{
-			CommaStyle:  req.CommaStyle,
-			KeywordCase: req.KeywordCase,
-		}
-		opts.IndentUnit = indentUnitFromCharSize(req.IndentChar, req.IndentSize)
-		if opts.CommaStyle == "" {
-			opts.CommaStyle = DefaultIndentOptions.CommaStyle
-		}
-		if opts.KeywordCase == "" {
-			opts.KeywordCase = DefaultIndentOptions.KeywordCase
+			IndentUnit:      indentUnitFromCharSize(req.IndentChar, req.IndentSize),
+			CommaStyle:      req.CommaStyle,
+			KeywordCase:     req.KeywordCase,
+			Layout:          req.Layout,
+			LogicalOperator: req.LogicalOperator,
+			WrapWidth:       req.WrapWidth,
 		}
 		writeEnvelope(w, reindentSQLSafe(req.PSQL, opts), false, -1)
 	}
@@ -416,6 +402,8 @@ type saveConfigUserRequest struct {
 	PIndentSize                int    `json:"p_indent_size"`
 	PCommaStyle                string `json:"p_comma_style"`
 	PKeywordCase               string `json:"p_keyword_case"`
+	PSQLLayout                 string `json:"p_sql_layout"`
+	PSQLLogicalOperator        string `json:"p_sql_logical_operator"`
 	PRulerColumn               int    `json:"p_ruler_column"`
 	PAutocompleteDisabledTypes string `json:"p_autocomplete_disabled_types"`
 	PLanguage                  string `json:"p_language"`
@@ -494,11 +482,17 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 			req.PIndentSize = 4
 		}
 		indentUnit := indentUnitFromCharSize(req.PIndentChar, req.PIndentSize)
-		if req.PCommaStyle == "" {
-			req.PCommaStyle = "leading"
+		if req.PCommaStyle != "leading" {
+			req.PCommaStyle = "trailing"
 		}
-		if req.PKeywordCase == "" {
-			req.PKeywordCase = "preserve"
+		if req.PKeywordCase != "preserve" && req.PKeywordCase != "lower" {
+			req.PKeywordCase = "upper"
+		}
+		if req.PSQLLayout != "compact" {
+			req.PSQLLayout = "block"
+		}
+		if req.PSQLLogicalOperator != "trailing" {
+			req.PSQLLogicalOperator = "leading"
 		}
 		if req.PRulerColumn < 24 || req.PRulerColumn > 999 {
 			req.PRulerColumn = 128
@@ -507,7 +501,7 @@ func handleSaveConfigUser(upstream *url.URL) http.HandlerFunc {
 			req.PLanguage = "auto"
 		}
 		autocompleteDisabledTypes := sanitizeAutocompleteDisabledTypes(req.PAutocompleteDisabledTypes)
-		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase, req.PRulerColumn, autocompleteDisabledTypes, req.PLanguage); err != nil {
+		if err := saveConfigUser(db, int64(who.UserID), req.PTheme, fontSize, req.PCSVEncoding, req.PCSVDelimiter, indentUnit, req.PIndentChar, req.PIndentSize, req.PCommaStyle, req.PKeywordCase, req.PSQLLayout, req.PSQLLogicalOperator, req.PRulerColumn, autocompleteDisabledTypes, req.PLanguage); err != nil {
 			writeEnvelope(w, err.Error(), true, -1)
 			return
 		}

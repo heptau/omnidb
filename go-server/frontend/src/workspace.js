@@ -1245,8 +1245,11 @@ export function indentSQL(p_mode = false) {
 					p_sql: v_sql_value,
 					p_indent_char: v_indent_char || 'space',
 					p_indent_size: v_indent_size || 4,
-					p_comma_style: v_comma_style || 'leading',
-					p_keyword_case: v_keyword_case || 'preserve',
+					p_comma_style: v_comma_style || 'trailing',
+					p_keyword_case: v_keyword_case || 'upper',
+					p_sql_layout: v_sql_layout || 'block',
+					p_sql_logical_operator: v_sql_logical_operator || 'leading',
+					p_wrap_width: v_ruler_column || 128,
 				}),
 				function (p_return) {
 					v_editor.setValue(p_return.v_data);

@@ -172,7 +172,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button>' +
 		'<button id="bt_indent_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.indent_sql")) + '"><i class="fas fa-indent fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.indent_sql")) + '"><i class="fas fa-magic fa-light"></i></button>' +
 		'<button id="bt_history_' +
 		v_tab.id +
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button>' +

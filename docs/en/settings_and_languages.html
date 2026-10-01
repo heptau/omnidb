@@ -187,18 +187,23 @@ autocomplete offers: Keywords, Databases, Roles, Tablespaces, Schemas, Extension
 Columns, Functions and Indexes (<em>All</em>/<em>None</em> toggle them all at once).</p>
 <p><img alt="Settings, Autocomplete category" src="../assets/img/ui-settings-autocomplete.webp"/></p>
 <h4>Formatting</h4>
-<p>These options control how <em>Indent SQL</em> (the formatter in Query tabs and the
+<p>These options control how <em>Format SQL</em> (the formatter in Query tabs and the
 <em>Indent</em> button in Snippets) rewrites your SQL, and how the SQL templates generated from
 the database tree are laid out:</p>
 <ul>
 <li><strong>Indent Character</strong>: <em>Spaces</em> (default) or <em>Tab</em>;</li>
 <li><strong>Indent Size</strong>: 2, 3 or 4 (default 4);</li>
-<li><strong>Comma Style</strong>: <em>Leading (, at line start)</em> (default) or <em>Trailing (, at line
-end)</em>;</li>
-<li><strong>Keyword Case</strong>: <em>Preserve</em> (default), <em>UPPERCASE</em> or
-<em>lowercase</em>;</li>
+<li><strong>Comma Style</strong>: <em>Trailing (, at line end)</em> (default) or <em>Leading (, at line
+start)</em>;</li>
+<li><strong>Keyword Case</strong>: <em>UPPERCASE</em> (default), <em>lowercase</em> or
+<em>Preserve</em>;</li>
+<li><strong>SQL Layout</strong>: <em>Block</em> (default) puts the items of a multi-item list (select list,
+<code>GROUP BY</code>, <code>SET</code>, <code>VALUES</code>, ...) on their own lines below the keyword;
+<em>Compact</em> keeps the first item on the keyword line;</li>
+<li><strong>AND / OR Position</strong>: <em>Leading</em> (default) or <em>Trailing</em>;</li>
 <li><strong>Ruler Column</strong>: where every SQL editor draws its vertical guide line (24–999,
-default 128). It is a visual guide only; the formatter does not wrap lines at it.</li>
+default 128). The formatter also wraps parenthesised lists (function arguments, <code>IN</code> lists,
+column lists) one item per line when they would run past it.</li>
 </ul>
 <p><img alt="Settings, Formatting category" src="../assets/img/ui-settings-formatting.webp"/></p>
 <h4>Shortcuts</h4>

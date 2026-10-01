@@ -51,6 +51,8 @@ Object.assign(window, {
   v_indent_size: cfg.indent_size,
   v_comma_style: cfg.comma_style,
   v_keyword_case: cfg.keyword_case,
+  v_sql_layout: cfg.sql_layout,
+  v_sql_logical_operator: cfg.sql_logical_operator,
   v_ruler_column: cfg.ruler_column,
   v_autocomplete_disabled_types: cfg.autocomplete_disabled_types,
   v_version: cfg.omnidb_version,

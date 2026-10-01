@@ -97,6 +97,7 @@ const MAPPING = {
 	"fa-pause-circle": ["lucide", "pause-circle"],
 	"fa-eraser": ["lucide", "eraser"],
 	"fa-indent": ["lucide", "indent"],
+	"fa-magic": ["lucide", "wand-sparkles"],
 	"fa-folder-open": ["lucide", "folder-open"],
 	"fa-cubes": ["lucide", "boxes"],
 	"fa-cube": ["lucide", "box"],

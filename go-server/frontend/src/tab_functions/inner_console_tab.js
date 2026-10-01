@@ -136,7 +136,7 @@ export var v_createConsoleTabFunction = function () {
 		"' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.run")) + "'><i class='fas fa-play fa-light'></i></button>" +
 		"<button id='bt_indent_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.indent_sql")) + "'><i class='fas fa-indent fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.indent_sql")) + "'><i class='fas fa-magic fa-light'></i></button>" +
 		"<button id='bt_clear_" +
 		v_tab.id +
 		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.clear_console")) + "'><i class='fas fa-broom fa-light'></i></button>" +

@@ -699,10 +699,42 @@
 								</div>
 							</div>
 
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label data-i18n="settings.formatting.sql_layout">SQL Layout</label>
+									<div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="sql_layout" id="sql_layout_block" value="block">
+											<label class="form-check-label" for="sql_layout_block" data-i18n="settings.formatting.layout_block">Block (items below the keyword)</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="sql_layout" id="sql_layout_compact" value="compact">
+											<label class="form-check-label" for="sql_layout_compact" data-i18n="settings.formatting.layout_compact">Compact (first item on the keyword line)</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
+							<div class="row mb-3">
+								<div class="col-md-12">
+									<label data-i18n="settings.formatting.logical_operator">AND / OR Position</label>
+									<div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="sql_logical_operator" id="sql_logical_operator_leading" value="leading">
+											<label class="form-check-label" for="sql_logical_operator_leading" data-i18n="settings.formatting.logical_leading">Leading (AND/OR at line start)</label>
+										</div>
+										<div class="form-check form-check-inline">
+											<input class="form-check-input" type="radio" name="sql_logical_operator" id="sql_logical_operator_trailing" value="trailing">
+											<label class="form-check-label" for="sql_logical_operator_trailing" data-i18n="settings.formatting.logical_trailing">Trailing (AND/OR at line end)</label>
+										</div>
+									</div>
+								</div>
+							</div>
+
 							<div class="omnidb__settings__field">
 								<label for="txt_ruler_column" data-i18n="settings.formatting.ruler_column">Ruler Column</label>
 								<input type="number" class="form-control omnidb__settings__ruler-column" id="txt_ruler_column" min="24" max="999" step="1" placeholder="128">
-								<span class="omnidb__settings__hint" data-i18n="settings.formatting.ruler_column_hint">Column where the editor shows a vertical guide line. Not yet used by SQL formatting.</span>
+								<span class="omnidb__settings__hint" data-i18n="settings.formatting.ruler_column_hint">Column where the editor shows a vertical guide line. Also the line width above which SQL formatting wraps long parenthesised lists.</span>
 							</div>
 						</div>
 

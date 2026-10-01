@@ -56,6 +56,8 @@ type workspaceBootstrap struct {
 	IndentSize                int                          `json:"indent_size"`
 	CommaStyle                string                       `json:"comma_style"`
 	KeywordCase               string                       `json:"keyword_case"`
+	SQLLayout                 string                       `json:"sql_layout"`
+	SQLLogicalOperator        string                       `json:"sql_logical_operator"`
 	RulerColumn               int                          `json:"ruler_column"`
 	AutocompleteDisabledTypes string                       `json:"autocomplete_disabled_types"`
 	WelcomeClosed             bool                         `json:"welcome_closed"`
@@ -195,6 +197,8 @@ func renderWorkspacePage(r *http.Request, who *WhoAmI, ud userDetailsRow, shortc
 		IndentSize:                ud.IndentSize,
 		CommaStyle:                ud.CommaStyle,
 		KeywordCase:               ud.KeywordCase,
+		SQLLayout:                 ud.SQLLayout,
+		SQLLogicalOperator:        ud.SQLLogicalOperator,
 		RulerColumn:               ud.RulerColumn,
 		AutocompleteDisabledTypes: ud.AutocompleteDisabledTypes,
 		WelcomeClosed:             ud.WelcomeClosed,
