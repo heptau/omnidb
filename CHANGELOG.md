@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- The "+" connection menu in the Database section now lists just the connection name with the database-type icon
+  and an environment colour dot; the connection string / host details moved to a hover tooltip.
 - SQL editor tabs in the Database section now autosave: a new tab, its title and its text are persisted (new
   `/save_tab/` route, debounced 0.5 s after every change) instead of only when a query was run, so they survive
   a restart; the last selected query tab is remembered and re-selected on startup.

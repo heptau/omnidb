@@ -752,6 +752,7 @@
         v_ul.aimara_level = 0;
         v_a.innerHTML = p_menu[i3].text;
         v_li.appendChild(v_span);
+        if (p_menu[i3].title) v_li.title = p_menu[i3].title;
         if (p_menu[i3].icon != void 0) {
           var v_img = createSimpleElement("i", null, p_menu[i3].icon);
           v_img.innerHTML = "&nbsp;";
@@ -799,6 +800,7 @@
         v_ul.aimara_level = p_level;
         v_a.innerHTML = p_submenu[i3].text;
         v_li.appendChild(v_span);
+        if (p_submenu[i3].title) v_li.title = p_submenu[i3].title;
         if (p_submenu[i3].icon != void 0) {
           var v_img = createSimpleElement("i", null, p_submenu[i3].icon);
           v_img.innerHTML = "&nbsp;";
@@ -38558,6 +38560,40 @@
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initWorkspace);
   else setTimeout(initWorkspace, 0);
+  var ENV_DOT_CLASS = {
+    production: "omnidb__env-dot--production",
+    uat: "omnidb__env-dot--uat",
+    development: "omnidb__env-dot--development",
+    archive: "omnidb__env-dot--archive"
+  };
+  function buildConnMenuEntry(v_conn) {
+    let text = "";
+    let tooltip = "";
+    let name = "";
+    let plainTitle = "";
+    const details = [];
+    if (v_conn.v_public) {
+      text += '<i class="fas fa-users me-2" style="color:#c57dd2;"></i>';
+    }
+    if (ENV_DOT_CLASS[v_conn.v_environment]) {
+      text += '<b class="' + ENV_DOT_CLASS[v_conn.v_environment] + '" style="display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;position:static;"></b>';
+    }
+    if (v_conn.v_alias && v_conn.v_alias !== "") {
+      name = escapeHtml(v_conn.v_alias);
+      tooltip += '<h5 class="my-1">' + name + "</h5>";
+      plainTitle = v_conn.v_alias;
+    }
+    if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
+      details.push(v_conn.v_conn_string);
+    } else {
+      if (v_conn.v_details1) details.push(v_conn.v_details1);
+      if (v_conn.v_details2) details.push(v_conn.v_details2);
+    }
+    for (const d of details) tooltip += '<div class="mb-1">' + escapeHtml(d) + "</div>";
+    text += name !== "" ? name : escapeHtml(details.join(" - "));
+    const title = [plainTitle, ...details].filter(Boolean).join("\n");
+    return { text, name, tooltip, title };
+  }
   function getDatabaseList(p_init, p_callback) {
     execAjax$2(
       "/get_database_list/",
@@ -39321,32 +39357,10 @@
           for (var i2 = 0; i2 < v_connTabControl.tag.connections.length; i2++)
             (function(i3) {
               var v_conn = v_connTabControl.tag.connections[i3];
-              var v_conn_name = "";
-              let p_tooltip_name = "";
-              let v_name = "";
-              if (v_conn.v_public) {
-                v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
-              }
-              if (v_conn.v_alias && v_conn.v_alias !== "") {
-                v_name = escapeHtml(v_conn.v_alias);
-                v_conn_name += "(" + escapeHtml(v_conn.v_alias) + ")";
-                p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
-              }
-              if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
-                v_conn_name += " " + escapeHtml(v_conn.v_conn_string);
-                p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
-              } else {
-                if (v_conn.v_details1) {
-                  v_conn_name += escapeHtml(v_conn.v_details1);
-                  p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
-                }
-                if (v_conn.v_details2) {
-                  v_conn_name += " - " + escapeHtml(v_conn.v_details2);
-                  p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
-                }
-              }
+              const { text: v_conn_name, name: v_name, tooltip: p_tooltip_name, title: v_conn_title } = buildConnMenuEntry(v_conn);
               v_submenu_connection_list.push({
                 text: v_conn_name,
+                title: v_conn_title,
                 icon: "fas cm-all node-" + v_conn.v_db_type,
                 action: function() {
                   v_connTabControl.tag.createConnTab(v_conn.v_conn_id, true, v_name, p_tooltip_name);
@@ -39364,32 +39378,10 @@
                 for (var k = 0; k < v_connTabControl.tag.connections.length; k++)
                   (function(k2) {
                     var v_conn = v_connTabControl.tag.connections[k2];
-                    var v_conn_name = "";
-                    let p_tooltip_name = "";
-                    let v_name = "";
-                    if (v_conn.v_public) {
-                      v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
-                    }
-                    if (v_conn.v_alias && v_conn.v_alias !== "") {
-                      v_name = escapeHtml(v_conn.v_alias);
-                      v_conn_name += "(" + escapeHtml(v_conn.v_alias) + ")";
-                      p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
-                    }
-                    if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
-                      v_conn_name += " " + escapeHtml(v_conn.v_conn_string);
-                      p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
-                    } else {
-                      if (v_conn.v_details1) {
-                        v_conn_name += escapeHtml(v_conn.v_details1);
-                        p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
-                      }
-                      if (v_conn.v_details2) {
-                        v_conn_name += " - " + escapeHtml(v_conn.v_details2);
-                        p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
-                      }
-                    }
+                    const { text: v_conn_name, name: v_name, tooltip: p_tooltip_name, title: v_conn_title } = buildConnMenuEntry(v_conn);
                     v_group_connections.push({
                       text: v_conn_name,
+                      title: v_conn_title,
                       icon: "fas cm-all node-" + v_conn.v_db_type,
                       action: function() {
                         startLoading();
@@ -39404,33 +39396,11 @@
                   for (var k = 0; k < v_connTabControl.tag.connections.length; k++)
                     (function(k2) {
                       var v_conn = v_connTabControl.tag.connections[k2];
-                      var v_conn_name = "";
-                      let p_tooltip_name = "";
-                      let v_name = "";
-                      if (v_conn.v_public) {
-                        v_conn_name += '<i class="fas fa-users me-3" style="color:#c57dd2;"></i>';
-                      }
-                      if (v_conn.v_alias && v_conn.v_alias !== "") {
-                        v_name = escapeHtml(v_conn.v_alias);
-                        v_conn_name += "(" + escapeHtml(v_conn.v_alias) + ")";
-                        p_tooltip_name += '<h5 class="my-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
-                      }
-                      if (v_conn.v_conn_string && v_conn.v_conn_string !== "") {
-                        v_conn_name += " " + escapeHtml(v_conn.v_conn_string);
-                        p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_conn_string) + "</div>";
-                      } else {
-                        if (v_conn.v_details1) {
-                          v_conn_name += escapeHtml(v_conn.v_details1);
-                          p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details1) + "</div>";
-                        }
-                        if (v_conn.v_details2) {
-                          v_conn_name += " - " + escapeHtml(v_conn.v_details2);
-                          p_tooltip_name += '<div class="mb-1">' + escapeHtml(v_conn.v_details2) + "</div>";
-                        }
-                      }
+                      const { text: v_conn_name, name: v_name, tooltip: p_tooltip_name, title: v_conn_title } = buildConnMenuEntry(v_conn);
                       if (v_conn.v_conn_id == v_current_group.conn_list[j2]) {
                         v_group_connections.push({
                           text: v_conn_name,
+                          title: v_conn_title,
                           icon: "fas cm-all node-" + v_conn.v_db_type,
                           action: function() {
                             startLoading();

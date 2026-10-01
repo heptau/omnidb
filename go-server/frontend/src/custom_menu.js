@@ -85,6 +85,7 @@ export function customMenu(p_position, p_menu, p_object) {
 			v_a.innerHTML = p_menu[i].text;
 
 			v_li.appendChild(v_span);
+			if (p_menu[i].title) v_li.title = p_menu[i].title;
 
 			if (p_menu[i].icon != undefined) {
 				var v_img = createSimpleElement("i", null, p_menu[i].icon);
@@ -143,6 +144,7 @@ export function customMenuRecursive(p_submenu, p_ul, p_object, p_closediv, p_cm_
 			v_a.innerHTML = p_submenu[i].text;
 
 			v_li.appendChild(v_span);
+			if (p_submenu[i].title) v_li.title = p_submenu[i].title;
 
 			if (p_submenu[i].icon != undefined) {
 				var v_img = createSimpleElement("i", null, p_submenu[i].icon);
