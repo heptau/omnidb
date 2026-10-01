@@ -162,65 +162,99 @@ export function execAjax(
 			v_cancel_button.style.display = "block";
 		}
 	}
-	// Setting the token.
-	var csrftoken = getCookie(v_csrf_cookie_name);
-	// Requesting data with ajax.
-	v_ajax_call = $.ajax({
-		url: v_url_folder + p_url,
-		data: {
-			data: p_data,
-			tab_token: "",
+	// Requesting data with fetch. The returned handle mimics the two bits of
+	// jqXHR the callers still rely on: abort() and readyState (0 = idle or
+	// aborted, 1 = in flight, 4 = finished -- long_polling.js polls it).
+	var v_controller = new AbortController();
+	var v_handle = {
+		readyState: 1,
+		abort: function () {
+			v_handle.readyState = 0;
+			v_controller.abort();
 		},
-		type: "post",
-		dataType: "json",
-		beforeSend: function (xhr, settings) {
-			if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-				xhr.setRequestHeader("X-CSRFToken", csrftoken);
-			}
-		},
-		success: function (p_return) {
-			// Terminating the load animation.
-			if (p_loading == null || p_loading == true) {
-				endLoading();
-			}
-			// Intercepting the workflow when the request returns with evaluated server errors.
-			if (p_return.v_error) {
-				if (p_return.v_error_id == 1) {
-					showAlert(t("errors.not_authenticated"));
-				} else if (p_errorFunc) {
-					p_errorFunc(p_return);
-				} else {
-					showAlert(p_return.v_data);
-				}
-			}
-			// Resuming the workflow with the success callback function.
-			else {
-				if (p_successFunc != null) {
-					p_successFunc(p_return);
-				}
-			}
-		},
-		error: function (msg) {
-			// Terminating the load animation.
-			if (p_loading == null || p_loading == true) {
-				endLoading();
-			}
+	};
+	v_ajax_call = v_handle;
 
-			// Calling the optional function assigned as a callback if the ajax request fails.
-			if (p_onAjaxErrorCallBack) {
-				p_onAjaxErrorCallBack(msg);
+	var v_finishLoading = function () {
+		// Terminating the load animation.
+		if (p_loading == null || p_loading == true) {
+			endLoading();
+		}
+	};
+	var v_fail = function (msg) {
+		v_finishLoading();
+		// Calling the optional function assigned as a callback if the ajax request fails.
+		if (p_onAjaxErrorCallBack) {
+			p_onAjaxErrorCallBack(msg);
+		} else {
+			// Prompting error messages related to ajax error.
+			if (msg.readyState != 0) {
+				showAlert(t("errors.request_error"));
 			} else {
-				// Prompting error messages related to ajax error.
-				if (msg.readyState != 0) {
-					showAlert(t("errors.request_error"));
-				} else {
-					if (msg.statusText != "abort") {
-						reportOffline();
-					}
+				if (msg.statusText != "abort") {
+					reportOffline();
 				}
 			}
-		},
-	});
+		}
+	};
+
+	(async function () {
+		var p_return;
+		try {
+			var v_response = await fetch(v_url_folder + p_url, {
+				method: "POST",
+				// URLSearchParams sets the form-urlencoded Content-Type itself.
+				body: new URLSearchParams({
+					data: typeof p_data === "string" ? p_data : JSON.stringify(p_data),
+					tab_token: "",
+				}),
+				headers: { "X-CSRFToken": getCookie(v_csrf_cookie_name) || "" },
+				signal: v_controller.signal,
+			});
+			if (!v_response.ok) {
+				v_handle.readyState = 4;
+				v_fail({ readyState: 4, status: v_response.status, statusText: v_response.statusText });
+				return;
+			}
+			p_return = await v_response.json();
+		} catch (e) {
+			var err = /** @type {any} */ (e);
+			if (err && err.name === "AbortError") {
+				v_handle.readyState = 0;
+				v_fail({ readyState: 0, status: 0, statusText: "abort" });
+			} else if (err instanceof SyntaxError) {
+				// Reached the server but the body wasn't JSON (jQuery's "parsererror").
+				v_handle.readyState = 4;
+				v_fail({ readyState: 4, status: 200, statusText: "parsererror" });
+			} else {
+				// Network failure -- the server is unreachable.
+				v_handle.readyState = 0;
+				v_fail({ readyState: 0, status: 0, statusText: "error" });
+			}
+			return;
+		}
+		v_handle.readyState = 4;
+
+		// Callbacks run outside the try above, so an exception thrown by one of
+		// them is not mistaken for a request failure.
+		v_finishLoading();
+		// Intercepting the workflow when the request returns with evaluated server errors.
+		if (p_return.v_error) {
+			if (p_return.v_error_id == 1) {
+				showAlert(t("errors.not_authenticated"));
+			} else if (p_errorFunc) {
+				p_errorFunc(p_return);
+			} else {
+				showAlert(p_return.v_data);
+			}
+		}
+		// Resuming the workflow with the success callback function.
+		else {
+			if (p_successFunc != null) {
+				p_successFunc(p_return);
+			}
+		}
+	})();
 
 	return v_ajax_call;
 }

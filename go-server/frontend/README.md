@@ -41,15 +41,13 @@ must work on a machine with no Node installed, and `//go:embed` needs the files
 to already exist. CI rebuilds and fails if the committed output does not match
 the sources.
 
-## The seven bundles
+## The five bundles
 
 | Bundle | Entry | Loaded by |
 | --- | --- | --- |
-| `omnidb.jquery.js` | `src/jquery-global.js` | both pages, where `lib/jquery/jquery.min.js` used to sit -- the very first `<script>` tag on each |
-| `omnidb.bootstrap.js` | `src/bootstrap-framework-global.js` | both pages, right after `omnidb.jquery.js`, where `lib/bootstrap/bootstrap.min.js` used to sit |
+| `omnidb.bootstrap.js` | `src/bootstrap-framework-global.js` | both pages, where `lib/bootstrap/bootstrap.min.js` used to sit |
 | `omnidb.early.js` | `src/early.js` | `workspace.html`, before the inline `startLoading()` call |
 | `omnidb.login.js` | `src/login.js` | `login.html` |
-| `omnidb.moment.js` | `src/moment-global.js` | `workspace.html`, where `lib/moment/moment.min.js` used to sit |
 | `omnidb.chartjs.js` | `src/chartjs-global.js` | `workspace.html`, where `Chart.bundle.js` + `chartjs-plugin-annotation.min.js` used to sit |
 | `omnidb.bundle.js` | `src/main.js` | `workspace.html`, after the third-party libraries |
 
@@ -63,16 +61,7 @@ They are separate because their `<script>` tags sit at genuinely different
 points in the page, not for code-splitting. `ajax_control.js` reads
 `#bt_cancel_ajax` out of the DOM as it loads and has to run where its tag was;
 `login.html` is a different page that only ever needed three of these files and
-has no use for the workspace's 1.2 MB; `jquery-global.js` has to publish
-`window.$`/`window.jQuery` before literally anything else on either page,
-including the other bundles, since none of the ~39k lines that read those
-globals were rewritten to import jQuery for themselves; `bootstrap-framework-global.js`
-keeps the same position its `<script>` tag always had, right after jQuery's,
-though nothing actually depends on that order (Bootstrap 5 does not need
-jQuery); `moment-global.js` has
-to publish `window.moment` before `daterangepicker.js`'s own `<script>` tag runs, since
-that file is not migrated yet and its UMD wrapper falls back to reading the
-global when no AMD/CommonJS loader is present.
+has no use for the workspace's 1.2 MB.
 
 Rollup cannot emit more than one IIFE bundle per build, so each has its own
 thin config file and `npm run build` runs them in sequence. The shared options
@@ -208,21 +197,15 @@ Every line of workspace JavaScript this project owns is built from here.
 code, still loaded as plain `<script>` tags:
 
 - Ace (+ `mode-sql`, `ext-language_tools`), Cytoscape (+ spread, klay),
-  xterm (+ fit), daterangepicker, AimaraJS, and the pgexplain bundle (its own
+  xterm (+ fit), AimaraJS, and the pgexplain bundle (its own
   React, React-DOM and D3). `bootstrap.min.css` too
   — only each library's JS moved so far; the CSS side of this migration is a
   separate, not-yet-started question. (The AG Grid CSS/themes that used to be
   in this list are gone outright, not moved — see below.)
 
-Four are moved to real npm packages so far:
+Two are moved to real npm packages as standalone bundles so far (jQuery and moment are gone; the
+time-range picker is `vanilla-calendar-pro`, imported by `src/time_range_picker.js`):
 
-- `jquery` (`src/jquery-global.js`, its own tiny bundle — see above). The
-  vendored copy hashed byte-identical to npm's `3.7.1`, so this is a pure
-  delivery-mechanism swap: none of the ~39k lines reading the bare `$`/`jQuery`
-  globals had to change, and `globals.d.ts` still declares them (plus
-  `window.bootstrap`, for the same reason) for the same reason moment's
-  `execAjax`/`showAlert` stay declared — real imports everywhere would be a
-  much larger, separate change.
 - `bootstrap` (`src/bootstrap-framework-global.js`, its own tiny bundle). The
   vendored `bootstrap.min.js` turned out to be `bootstrap.bundle.min.js`
   (Popper included) under a plain name — hashed identical once compared
@@ -231,14 +214,6 @@ Four are moved to real npm packages so far:
   the pre-bundled file, which lets the bundler tree-shake unused components.
   Named "framework", not "bootstrap-global.js", to stay well clear of
   `bootstrap-globals.js` — unrelated, and one character away.
-- `moment` (`src/moment-global.js`, its own tiny bundle). It could not just
-  become an ordinary import in the main bundle: `daterangepicker.js` is not
-  migrated yet and reads `window.moment` at load time, so something has to
-  publish that global before its `<script>` tag runs. `console.js` and
-  `command_history.js`, the only other consumers, `import moment from
-  'moment'` directly and get their own bundled copy — moment has no shared
-  state to split-brain on, unlike `ajax_control.js`, so the small duplication
-  is a reasonable trade for real types over `any`.
 - `chart.js` (`src/chartjs-global.js`, its own tiny bundle). Originally moved
   in at `2.9.4` — the vendored "Chart.bundle.js" was `Chart.bundle.min.js`
   under a plain name, same story as Bootstrap — then upgraded to `4.5.1`.

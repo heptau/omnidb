@@ -3333,3 +3333,11 @@ i.tab-status-idle_in_transaction_aborted {
 .modal-dialog.omnidb__modal--form {
 	max-width: min(600px, calc(100vw - 1rem));
 }
+
+/* Dialog that follows the window width continuously (2rem gutter on each
+   side) instead of jumping between Bootstrap's breakpoint-stepped widths. */
+.modal-dialog.omnidb__modal--fluid {
+	max-width: none;
+	margin-left: 2rem;
+	margin-right: 2rem;
+}

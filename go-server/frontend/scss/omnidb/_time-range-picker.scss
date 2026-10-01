@@ -1,0 +1,75 @@
+// Dropdown behind the Console/Command History time-range button -- see
+// src/time_range_picker.js. The calendar inside it is vanilla-calendar-pro;
+// only the pieces it needs (core layout + both colour themes, switched by its
+// own data-vc-theme attribute) are pulled in.
+@use "../../node_modules/vanilla-calendar-pro/styles/layout/core.css" as vc-layout;
+@use "../../node_modules/vanilla-calendar-pro/styles/themes/light/core.css" as vc-light;
+@use "../../node_modules/vanilla-calendar-pro/styles/themes/dark/core.css" as vc-dark;
+
+.omnidb-trp {
+	position: absolute;
+	top: 100%;
+	left: 0;
+	margin-top: 4px;
+	z-index: 1060;
+	display: flex;
+	align-items: flex-start;
+	background-color: var(--panel-bg);
+	color: var(--text-primary);
+	border: 1px solid var(--border-color);
+	border-radius: 8px;
+	box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+	overflow: hidden;
+}
+
+.omnidb-trp__ranges {
+	list-style: none;
+	margin: 0;
+	padding: 4px 0;
+	min-width: 170px;
+
+	li {
+		padding: 6px 14px;
+		cursor: pointer;
+		white-space: nowrap;
+
+		&:hover {
+			background-color: var(--hover-bg);
+		}
+	}
+}
+
+.omnidb-trp__custom {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	padding: 8px;
+	border-left: 1px solid var(--border-color);
+
+	&[hidden] {
+		display: none;
+	}
+}
+
+.omnidb-trp__times {
+	display: flex;
+	gap: 12px;
+	justify-content: center;
+
+	label {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		white-space: nowrap;
+	}
+
+	input {
+		width: auto;
+	}
+}
+
+.omnidb-trp__buttons {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+}

@@ -32,7 +32,6 @@ SOFTWARE.
 /// Console state
 /// </summary>
 
-import moment from "moment";
 import { execAjax } from "./ajax_control_bridge.js";
 import { editCellData } from "./header_actions.js";
 import { SetAcked, createRequest, removeContext } from "./long_polling.js";
@@ -40,6 +39,7 @@ import { showAlert, showConfirm } from "./notification_control.js";
 import { escapeHtml, escapeHtmlAttribute, setTabStatus, v_queryRequestCodes } from "./query.js";
 import { blueHtmlRenderer, whiteHtmlRenderer } from "./renderers.js";
 import { t } from "./i18n.js";
+import { setupTimeRangePicker } from "./time_range_picker.js";
 
 export var v_consoleState = {
 	Idle: 0,
@@ -78,9 +78,12 @@ export function showConsoleHistory() {
 	var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
 
 	v_tab_tag.consoleHistory.headerDiv.innerHTML =
-		"<div class='mb-2 form-inline justify-content-center'>" +
-		"<div class='input-group w-auto me-2'>" +
-		"<span class='my-auto'>" + escapeHtml(t("console.select_daterange")) + "</span>&nbsp;" +
+		"<div class='mb-2 d-flex flex-column gap-2'>" +
+		"<div class='d-flex align-items-center gap-2'>" +
+		"<span>" + escapeHtml(t("console.time_range")) + "</span>" +
+		"<div class='position-relative' id='console_history_timerange_container_" +
+		v_tab_tag.tab_id +
+		"'>" +
 		"<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t("common.start_time")) + "' id='cl_input_from_" +
 		v_tab_tag.tab_id +
 		"'>" +
@@ -91,47 +94,43 @@ export function showConsoleHistory() {
 		v_tab_tag.tab_id +
 		"'>" +
 		"<i class='far fa-calendar-alt'></i>&nbsp;" +
-		// Deliberately not translated -- this label (and the "ranges" keys/
-		// label comparisons in the daterangepicker call below) doubles as a
-		// control-flow discriminant against what the plugin itself passes
-		// back to its onChange callback ("Custom Range", "Yesterday", "Last
-		// Month"), so translating just the display text would desync it from
-		// the comparisons and break range detection.
-		"<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i>" +
+		"<span></span> <i class='fa fa-caret-down'></i>" +
 		"</button>" +
 		"</div>" +
-		"<label class='me-1'>" + escapeHtml(t("console.command_contains")) + "</label>" +
+		"</div>" +
+		"<div class='d-flex align-items-center gap-2'>" +
+		"<label for='cl_input_contains_" + v_tab_tag.tab_id + "' class='text-nowrap'>" + escapeHtml(t("console.search_commands")) + "</label>" +
 		"<input type='text' id='cl_input_contains_" +
 		v_tab_tag.tab_id +
-		"' class='me-2 form-control' />" +
+		"' class='form-control form-control-sm' />" +
 		"</div>" +
-		"<div id='console_history_daterangepicker_container_" +
+		"</div>" +
+		"<div class='mb-2 d-flex align-items-center gap-1'>" +
+		"<button id='bt_refresh_" +
 		v_tab_tag.tab_id +
-		"' style='position:relative;'></div>" +
-		"<div class='mb-2 d-flex justify-content-center align-items-center'>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary' title='" + escapeHtmlAttribute(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button>" +
+		"<button id='bt_clear_" +
+		v_tab_tag.tab_id +
+		"' class='bt_execute btn btn-sm btn-danger' title='" + escapeHtmlAttribute(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button>" +
+		"<div class='d-flex align-items-center gap-1 ms-auto'>" +
 		"<button id='bt_first_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.first")) + "'>" + escapeHtml(t("common.first")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t("common.first")) + "' aria-label='" + escapeHtmlAttribute(t("common.first")) + "'><i class='fas fa-angle-double-left'></i></button>" +
 		"<button id='bt_previous_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.previous")) + "'>" + escapeHtml(t("common.previous")) + "</button>" +
-		"<span id='cl_curr_page_" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t("common.previous")) + "' aria-label='" + escapeHtmlAttribute(t("common.previous")) + "'><i class='fas fa-angle-left'></i></button>" +
+		"<span class='mx-1'><span id='cl_curr_page_" +
 		v_tab_tag.tab_id +
 		"'></span> / <span id='cl_num_pages_" +
 		v_tab_tag.tab_id +
-		"'></span>" +
+		"'></span></span>" +
 		"<button id='bt_next_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.next")) + "'>" + escapeHtml(t("common.next")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t("common.next")) + "' aria-label='" + escapeHtmlAttribute(t("common.next")) + "'><i class='fas fa-angle-right'></i></button>" +
 		"<button id='bt_last_" +
 		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.last")) + "'>" + escapeHtml(t("common.last")) + "</button>" +
-		"<button id='bt_refresh_" +
-		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='" + escapeHtmlAttribute(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button>" +
-		"<button id='bt_clear_" +
-		v_tab_tag.tab_id +
-		"' class='bt_execute btn btn-sm btn-danger mx-1' title='" + escapeHtmlAttribute(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button>" +
+		"' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t("common.last")) + "' aria-label='" + escapeHtmlAttribute(t("common.last")) + "'><i class='fas fa-angle-double-right'></i></button>" +
+		"</div>" +
 		"</div>";
 
 	var v_grid_div = v_tab_tag.consoleHistory.gridDiv;
@@ -153,14 +152,14 @@ export function showConsoleHistory() {
 	var col = {};
 	col.readOnly = true;
 	col.title = t("console.column_date");
-	col.width = "141px";
+	col.fitContent = true;
 	columnProperties.push(col);
 
 	/** @type {any} */
 	var col2 = {};
 	col2.readOnly = true;
 	col2.title = t("console.column_command");
-	col2.width = "435px";
+	col2.grow = true;
 	columnProperties.push(col2);
 
 	v_tab_tag.consoleHistory.grid = new Handsontable(v_grid_div, {
@@ -228,9 +227,9 @@ export function showConsoleHistory() {
 	v_tab_tag.consoleHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tab_tag.tab_id);
 	v_tab_tag.consoleHistory.spanCurrPage.innerHTML = 1;
 	v_tab_tag.consoleHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tab_tag.tab_id);
-	v_tab_tag.consoleHistory.inputStartedFrom.value = moment().subtract(6, "hour").toISOString();
+	v_tab_tag.consoleHistory.inputStartedFrom.value = new Date(Date.now() - 6 * 3600 * 1000).toISOString();
 	v_tab_tag.consoleHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tab_tag.tab_id);
-	v_tab_tag.consoleHistory.inputStartedTo.value = moment().toISOString();
+	v_tab_tag.consoleHistory.inputStartedTo.value = new Date().toISOString();
 	v_tab_tag.consoleHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tab_tag.tab_id);
 	v_tab_tag.consoleHistory.inputCommandContains.value = v_tab_tag.consoleHistory.inputCommandContainsLastValue;
 
@@ -253,55 +252,15 @@ export function showConsoleHistory() {
 		);
 	}
 
-	// Setting daterangepicker
-	var cl_time_range = document.getElementById("cl_time_range_" + v_tab_tag.tab_id);
-
-	$(cl_time_range).daterangepicker(
-		{
-			timePicker: true,
-			startDate: moment(v_tab_tag.consoleHistory.inputStartedFrom.value).format("Y-MM-DD H"),
-			endDate: moment(v_tab_tag.consoleHistory.inputStartedTo.value).format("Y-MM-DD H"),
-			parentEl: document.getElementById("console_history_daterangepicker_container_" + v_tab_tag.tab_id),
-			previewUTC: true,
-			locale: {
-				format: "Y-MM-DD H",
-			},
-			ranges: {
-				"Last 6 Hours": [moment().subtract(6, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-				"Last 12 Hours": [moment().subtract(12, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-				"Last 24 Hours": [moment().subtract(24, "hour").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-				"Last 7 Days": [moment().subtract(7, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-				"Last 30 Days": [moment().subtract(30, "days").startOf("day").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-				Yesterday: [
-					moment().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
-					moment().subtract(1, "days").endOf("day").format("Y-MM-DD H"),
-				],
-				"This Month": [moment().startOf("month").format("Y-MM-DD H"), moment().format("Y-MM-DD H")],
-				"Last Month": [
-					moment().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
-					moment().subtract(1, "month").endOf("month").format("Y-MM-DD H"),
-				],
-			},
-		},
-		function (start, end, label) {
-			v_tab_tag.consoleHistory.inputStartedFrom.value = moment(start).toISOString();
-
-			// Update Button Labels
-			if (label === "Custom Range") {
-				$("#cl_time_range_" + v_tab_tag.tab_id + " span").html(
-					start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A"),
-				);
-			} else {
-				$("#cl_time_range_" + v_tab_tag.tab_id + " span").html(label);
-			}
-
-			if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
-				v_tab_tag.consoleHistory.inputStartedTo.value = moment(end).toISOString();
-			} else v_tab_tag.consoleHistory.inputStartedTo.value = null;
-
-			refreshConsoleHistoryList();
-		},
-	);
+	// Time range dropdown (presets + custom range)
+	setupTimeRangePicker({
+		button: /** @type {HTMLElement} */ (document.getElementById("cl_time_range_" + v_tab_tag.tab_id)),
+		label: /** @type {HTMLElement} */ (document.querySelector("#cl_time_range_" + v_tab_tag.tab_id + " span")),
+		container: /** @type {HTMLElement} */ (document.getElementById("console_history_timerange_container_" + v_tab_tag.tab_id)),
+		fromInput: v_tab_tag.consoleHistory.inputStartedFrom,
+		toInput: v_tab_tag.consoleHistory.inputStartedTo,
+		onChange: refreshConsoleHistoryList,
+	});
 
 	refreshConsoleHistoryList();
 }

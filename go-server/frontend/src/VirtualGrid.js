@@ -41,6 +41,8 @@ const ROW_HEIGHT = 28;
 const HEADER_HEIGHT = 28;
 const MIN_COL_WIDTH = 120;
 const RENDER_BUFFER_ROWS = 8;
+const FIT_SAMPLE_ROWS = 1000;
+const MIN_FIT_WIDTH = 56;
 
 // Parsed with DOMParser, not a detached element's innerHTML: a detached
 // <div> still belongs to the live document, so `<img src=x onerror=...>`
@@ -204,6 +206,11 @@ export class VirtualGrid {
 				pinned: pinned,
 				renderer: col.renderer,
 				readOnly: !!col.readOnly,
+				// fitContent: width follows the widest header/cell text (see
+				// _fitContentColumns). grow: when any column has it, only those
+				// columns share out the spare space (see _smartSizeColumns).
+				fitContent: !!col.fitContent,
+				grow: !!col.grow,
 			};
 		});
 	}
@@ -397,6 +404,37 @@ export class VirtualGrid {
 		this._renderNow();
 	}
 
+	// Sets the width of every `fitContent` column to its widest header / cell
+	// text (first FIT_SAMPLE_ROWS rows only, so a huge result stays cheap).
+	// Cell text is measured with canvas, not the DOM, since only a window of
+	// rows is ever rendered; HTML cells count as their text content.
+	_fitContentColumns() {
+		if (!this._columns.some((c) => c.fitContent) || !this._scrollEl || !this._headerRow) return;
+		const ctx = document.createElement("canvas").getContext("2d");
+		if (!ctx) return;
+		const th = this._headerRow.firstElementChild;
+		const headerStyle = getComputedStyle(th || this._scrollEl);
+		const bodyStyle = getComputedStyle(this._scrollEl);
+		const headerFont = headerStyle.font;
+		const bodyFont = bodyStyle.font;
+		// cell padding (0.36rem each side) + borders + sort indicator / rounding slack
+		const slack = 28;
+		this._columns.forEach((c, i) => {
+			if (!c.fitContent) return;
+			ctx.font = headerFont;
+			let max = ctx.measureText(htmlToText(c.title)).width + 12;
+			ctx.font = bodyFont;
+			const limit = Math.min(this._rows.length, FIT_SAMPLE_ROWS);
+			for (let r = 0; r < limit; r++) {
+				const text = htmlToText(String(normalizeCellValue(this._rows[r][i]) ?? ""));
+				if (text) max = Math.max(max, ctx.measureText(text).width);
+			}
+			c.baseWidth = Math.max(Math.ceil(max + slack), MIN_FIT_WIDTH);
+			c.width = c.baseWidth;
+		});
+		this._layoutColumns();
+	}
+
 	// Re-fits the columns to the container: when their base widths add up to
 	// less than the available width the spare space is shared out between them,
 	// otherwise they keep their base widths (and the grid scrolls). Run on every
@@ -412,10 +450,14 @@ export class VirtualGrid {
 		// border-collapse makes the table half a border wider than its <col>s add up
 		// to, so leave a couple of pixels spare or it always overflows by a hair.
 		const extra = Math.max(0, available - 2 - totalBase);
-		const share = Math.floor(extra / n);
+		// Spare space goes to the `grow` columns when there are any, else to all.
+		const growing = this._columns.some((c) => c.grow);
+		const receivers = growing ? this._columns.filter((c) => c.grow) : this._columns;
+		const share = Math.floor(extra / receivers.length);
+		const lastReceiver = receivers[receivers.length - 1];
 		let changed = false;
-		this._columns.forEach((c, i) => {
-			const w = c.baseWidth + share + (i === n - 1 ? extra - share * n : 0);
+		this._columns.forEach((c) => {
+			const w = receivers.includes(c) ? c.baseWidth + share + (c === lastReceiver ? extra - share * receivers.length : 0) : c.baseWidth;
 			if (w !== c.width) changed = true;
 			c.width = w;
 		});
@@ -758,6 +800,7 @@ export class VirtualGrid {
 		this._setRows(this._withSpareRows(this._stripTrailingEmptyRows(data)));
 		this._selectedDisplay = -1;
 		this._renderedStart = -1;
+		this._fitContentColumns();
 		this._renderNow();
 		setTimeout(() => this._smartSizeColumns(), 150);
 	}

@@ -7,6 +7,27 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- jQuery, moment and the vendored daterangepicker plugin are gone from the frontend. The Console/Command History
+  time-range filter is now a small dropdown (`time_range_picker.js`) with the same presets plus a custom range:
+  days from a `vanilla-calendar-pro` calendar, start/end hours from two native time inputs (the calendar itself
+  can only hold one time of day). The presets are translated in all nine languages (the button label used to
+  stay English), and the picker follows the light/dark theme. `execAjax` now uses `fetch` instead of `$.ajax`
+  (same request format; abort, offline and error handling unchanged).
+- Command History buttons (SQL tab and Console tab) use a history icon (clock with a back arrow) instead of a list
+  icon. The history filter's label is now the short "Time range:" / "Období:" (translated everywhere) instead of
+  "Select a daterange:", its range button has rounded corners on both sides again (it was squared on the left), the search box now sits on the same
+  line with a "Search commands:" label (was "Command contains:", with the box wrapping underneath), and the range
+  dropdown opens directly below its button instead of a few rows lower. The history dialogs' toolbar is reordered
+  (Refresh and Clear list on the left, First/Previous/Next/Last as icon-only buttons with the text as tooltip on the
+  right), the dialogs follow the window width continuously instead of jumping between Bootstrap's `modal-xl` steps, and the
+  dark theme no longer draws a border and background box around the whole dialog content.
+- Command/Console History grids: every column but the SQL command is now sized to its content (the command takes all
+  the remaining width; previously spare space was split between all columns), and in Command History the Status
+  column moved to the end. The grid supports this through two new column options, `fitContent` and `grow`. The
+  search box sits on its own line below the time range.
+
 ## [5.4.3] - 2026-10-02
 
 ### Fixed

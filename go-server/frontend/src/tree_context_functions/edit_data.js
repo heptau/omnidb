@@ -424,7 +424,7 @@ export function queryEditDataReturnRender(p_message, p_context) {
 					return;
 				}
 
-				$.each(changes, function (index, element) {
+				changes.forEach(function (element, index) {
 					var change = element;
 					var rowIndex = change[0];
 					var columnIndex = change[1];

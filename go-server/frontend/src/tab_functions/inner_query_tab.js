@@ -128,7 +128,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		"<div class='modal fade' id='modal_command_history_" +
 		v_tab.id +
 		"' tabindex='-1' role='dialog' aria-hidden='true'>" +
-		"<div class='modal-dialog modal-xl' role='document'>" +
+		"<div class='modal-dialog omnidb__modal--fluid' role='document'>" +
 		"<div class='modal-content'>" +
 		"<div class='modal-header'>" +
 		"<h5 class='modal-title'>" +
@@ -175,7 +175,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.indent_sql")) + '"><i class="fas fa-indent fa-light"></i></button>' +
 		'<button id="bt_history_' +
 		v_tab.id +
-		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("query.command_history_title")) + '"><i class="fas fa-list fa-light"></i></button>' +
+		'" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button>' +
 		'<button id="bt_explain_' +
 		v_tab.id +
 		'" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button>' +

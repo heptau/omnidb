@@ -190,7 +190,7 @@ func sqliteDatetimeToJS(s string) string {
 
 // jsDatetimeToSQLite is sqliteDatetimeToJS's missing inverse — every
 // p_command_from/p_command_to/p_console_from/p_console_to bound the
-// frontend sends is a moment().toISOString() value (command_history.js),
+// frontend sends is a Date.toISOString() value (time_range_picker.js),
 // "T"-separated with a "Z" suffix. Comparing that directly against
 // start_time's space-separated stored text (as every fetch/clear function
 // in this file used to do, string op, no parsing) silently excluded every

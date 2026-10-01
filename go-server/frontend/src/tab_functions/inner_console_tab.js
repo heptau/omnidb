@@ -93,7 +93,7 @@ export var v_createConsoleTabFunction = function () {
 		"<div class='modal fade' id='modal_console_history_" +
 		v_tab.id +
 		"' tabindex='-1' role='dialog' aria-hidden='true'>" +
-		"<div class='modal-dialog modal-xl' role='document'>" +
+		"<div class='modal-dialog omnidb__modal--fluid' role='document'>" +
 		"<div class='modal-content'>" +
 		"<div class='modal-header'>" +
 		"<h5 class='modal-title'>" +
@@ -142,7 +142,7 @@ export var v_createConsoleTabFunction = function () {
 		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.clear_console")) + "'><i class='fas fa-broom fa-light'></i></button>" +
 		"<button id='bt_history_" +
 		v_tab.id +
-		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.commands_history_title")) + "'><i class='fas fa-list fa-light'></i></button>" +
+		"' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.commands_history_title")) + "'><i class='fas fa-history fa-light'></i></button>" +
 		"<div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" +
 		v_tab.id +
 		"' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" +

@@ -1151,7 +1151,6 @@
 
 	</div>
 
-	<script src="{{url_folder}}/static/OmniDB_app/dist/omnidb.jquery.js?v{{static_cache_bust}}"></script>
 	<!-- Early Vite bundle (go-server/frontend/, src/early.js). Separate from the
 	     main bundle below because these files have to run before the inline
 	     startLoading() call a few lines down -- and ajax_control.js reads
@@ -1181,10 +1180,7 @@
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/cytoscape/cytoscape-klay.js"></script>
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/dist/omnidb.chartjs.js?v{{static_cache_bust}}"></script>
 	<!--<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/new/js/chartjs-plugin-datalabels.js?v{{static_cache_bust}}"></script>-->
-	<!-- <script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/js/jquery.datetimepicker.full.min.js?v2"></script> -->
 	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/aimaraJS/lib/Aimara.js?v{{static_cache_bust}}"></script>
-	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/dist/omnidb.moment.js?v{{static_cache_bust}}"></script>
-	<script type="text/javascript" src="{{url_folder}}/static/OmniDB_app/lib/daterangepicker/daterangepicker.js?v{{static_cache_bust}}"></script>
 	<!-- Vite bundle (go-server/frontend/). Replaces the individual <script>
 	     tags for every workspace JS file migrated so far, in the position the
 	     first of them occupied -- the tag order in this file is the code's only
@@ -1227,7 +1223,8 @@
 			actions: null
 		};
 
-		$('#menu_' + v_menu_item).addClass('header_a_selected');
+		var v_menu_element = document.getElementById('menu_' + v_menu_item);
+		if (v_menu_element) v_menu_element.classList.add('header_a_selected');
 	</script>
 </body>
 

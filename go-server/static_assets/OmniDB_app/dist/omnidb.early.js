@@ -75,55 +75,86 @@
         v_cancel_button.style.display = "block";
       }
     }
-    var csrftoken = getCookie(v_csrf_cookie_name);
-    v_ajax_call = $.ajax({
-      url: v_url_folder + p_url,
-      data: {
-        data: p_data,
-        tab_token: ""
-      },
-      type: "post",
-      dataType: "json",
-      beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-      },
-      success: function(p_return) {
-        if (p_loading == null || p_loading == true) {
-          endLoading();
-        }
-        if (p_return.v_error) {
-          if (p_return.v_error_id == 1) {
-            showAlert(t("errors.not_authenticated"));
-          } else if (p_errorFunc) {
-            p_errorFunc(p_return);
-          } else {
-            showAlert(p_return.v_data);
-          }
+    var v_controller = new AbortController();
+    var v_handle = {
+      readyState: 1,
+      abort: function() {
+        v_handle.readyState = 0;
+        v_controller.abort();
+      }
+    };
+    v_ajax_call = v_handle;
+    var v_finishLoading = function() {
+      if (p_loading == null || p_loading == true) {
+        endLoading();
+      }
+    };
+    var v_fail = function(msg) {
+      v_finishLoading();
+      if (p_onAjaxErrorCallBack) {
+        p_onAjaxErrorCallBack(msg);
+      } else {
+        if (msg.readyState != 0) {
+          showAlert(t("errors.request_error"));
         } else {
-          if (p_successFunc != null) {
-            p_successFunc(p_return);
-          }
-        }
-      },
-      error: function(msg) {
-        if (p_loading == null || p_loading == true) {
-          endLoading();
-        }
-        if (p_onAjaxErrorCallBack) {
-          p_onAjaxErrorCallBack(msg);
-        } else {
-          if (msg.readyState != 0) {
-            showAlert(t("errors.request_error"));
-          } else {
-            if (msg.statusText != "abort") {
-              reportOffline();
-            }
+          if (msg.statusText != "abort") {
+            reportOffline();
           }
         }
       }
-    });
+    };
+    (async function() {
+      var p_return;
+      try {
+        var v_response = await fetch(v_url_folder + p_url, {
+          method: "POST",
+          // URLSearchParams sets the form-urlencoded Content-Type itself.
+          body: new URLSearchParams({
+            data: typeof p_data === "string" ? p_data : JSON.stringify(p_data),
+            tab_token: ""
+          }),
+          headers: { "X-CSRFToken": getCookie(v_csrf_cookie_name) || "" },
+          signal: v_controller.signal
+        });
+        if (!v_response.ok) {
+          v_handle.readyState = 4;
+          v_fail({ readyState: 4, status: v_response.status, statusText: v_response.statusText });
+          return;
+        }
+        p_return = await v_response.json();
+      } catch (e) {
+        var err = (
+          /** @type {any} */
+          e
+        );
+        if (err && err.name === "AbortError") {
+          v_handle.readyState = 0;
+          v_fail({ readyState: 0, status: 0, statusText: "abort" });
+        } else if (err instanceof SyntaxError) {
+          v_handle.readyState = 4;
+          v_fail({ readyState: 4, status: 200, statusText: "parsererror" });
+        } else {
+          v_handle.readyState = 0;
+          v_fail({ readyState: 0, status: 0, statusText: "error" });
+        }
+        return;
+      }
+      v_handle.readyState = 4;
+      v_finishLoading();
+      if (p_return.v_error) {
+        if (p_return.v_error_id == 1) {
+          showAlert(t("errors.not_authenticated"));
+        } else if (p_errorFunc) {
+          p_errorFunc(p_return);
+        } else {
+          showAlert(p_return.v_data);
+        }
+      } else {
+        if (p_successFunc != null) {
+          p_successFunc(p_return);
+        }
+      }
+    })();
     return v_ajax_call;
   }
   function reportOffline() {
