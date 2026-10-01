@@ -31,6 +31,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Removed unused files: the bundled Roboto/Roboto Mono fonts (3.2 MB, never referenced by any CSS), unreferenced
+  vendored CSS (`Aimara.css`, `daterangepicker.css`, `font-awesome.min.css`) and cytoscape sources
+  (`foograph.js`, `layout.js`), a stray `.directory` file, and `docs/assets/dashboard.png`; the website's
+  JSON-LD `screenshot` now points to `assets/screenshot.webp`; `docs/assets/net.png` was losslessly optimized.
 - `SECURITY.md`: made explicit that security fixes are released only for the latest version; older versions are
   not patched.
 - Dependency updates (minor/patch): Go — `pgx/v5` 5.11.0, `go-sql-driver/mysql` 1.10.1, `go-mssqldb` 1.11.2,
