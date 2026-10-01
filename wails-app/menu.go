@@ -65,29 +65,29 @@ func (a *App) buildMenu(lang string) *menu.Menu {
 		wailsruntime.Quit(a.ctx)
 	})
 
-	// Every accelerator below is Cmd/Ctrl+Shift+<letter>, not plain
-	// Cmd/Ctrl+<letter>: the frontend's own shortcuts.js already uses plain
-	// Ctrl+<letter> (mac) / Alt+<letter> (Windows/Linux) for its own bindings
-	// (Run Query, Indent, ...), and plain Cmd+<letter> already means
-	// something fixed system-wide (Cmd+C copy, Cmd+S save, Cmd+M minimize) —
-	// overriding those natively would be surprising. Shift avoids both.
+	// The View entries deliberately carry no native accelerator: their keys
+	// (Cmd/Ctrl+Shift+<letter>, Cmd/Ctrl+B, ...) are user-configurable
+	// shortcuts handled by the page itself (frontend shortcuts.js, "Global"
+	// section of Settings > Shortcuts). A native accelerator would shadow the
+	// page's keydown and make those keys impossible to rebind -- or to reuse,
+	// e.g. Cmd+Shift+W now closes a connection tab.
 	// Same order as the vertical section-nav rail (section_switcher.js's
 	// SECTION_NAMES): Welcome, Connections, Database, Monitoring, Notify,
 	// Permissions, Connected Users, Snippets. Settings is deliberately not repeated here — it
 	// already has its own entry (and its own Cmd/Ctrl+, accelerator) in the
 	// OmniDB app menu above.
 	viewMenu := menu.NewMenu()
-	viewMenu.AddText(t("welcome"), keys.Combo("w", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('welcome')"))
-	viewMenu.AddText(t("connections"), keys.Combo("c", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("startConnectionManagement()"))
-	viewMenu.AddText(t("database"), keys.Combo("d", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('database')"))
-	viewMenu.AddText(t("monitoring"), keys.Combo("m", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('monitoring')"))
-	viewMenu.AddText(t("notify"), keys.Combo("n", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('notify')"))
-	viewMenu.AddText(t("permissions"), keys.Combo("p", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('permissions')"))
-	viewMenu.AddText(t("connected_users"), keys.Combo("u", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('connected_users')"))
-	viewMenu.AddText(t("snippets"), keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("toggleSnippetPanel()"))
+	viewMenu.AddText(t("welcome"), nil, a.execJS("switchSection('welcome')"))
+	viewMenu.AddText(t("connections"), nil, a.execJS("startConnectionManagement()"))
+	viewMenu.AddText(t("database"), nil, a.execJS("switchSection('database')"))
+	viewMenu.AddText(t("monitoring"), nil, a.execJS("switchSection('monitoring')"))
+	viewMenu.AddText(t("notify"), nil, a.execJS("switchSection('notify')"))
+	viewMenu.AddText(t("permissions"), nil, a.execJS("switchSection('permissions')"))
+	viewMenu.AddText(t("connected_users"), nil, a.execJS("switchSection('connected_users')"))
+	viewMenu.AddText(t("snippets"), nil, a.execJS("toggleSnippetPanel()"))
 	viewMenu.AddSeparator()
-	viewMenu.AddText(t("toggle_tree"), keys.CmdOrCtrl("b"), a.execJS("toggleTreeContainer()"))
-	viewMenu.AddText(t("toggle_props"), keys.Combo("b", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS(
+	viewMenu.AddText(t("toggle_tree"), nil, a.execJS("toggleTreeContainer()"))
+	viewMenu.AddText(t("toggle_props"), nil, a.execJS(
 		`if (v_connTabControl.selectedTab) {`+
 			`var id = v_connTabControl.selectedTab.id;`+
 			`toggleTreeTabsContainer('tree_tabs_parent_' + id);`+

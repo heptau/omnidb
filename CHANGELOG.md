@@ -16,6 +16,20 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
+- Keyboard shortcuts reworked. Defaults now follow each platform's own conventions (`Mod` = Cmd on macOS, Ctrl on
+  Windows/Linux): inner tabs open/close with `Mod+T` / `Mod+W` (in the Snippets section the same keys create/close a
+  snippet tab), connection tabs with `Mod+Shift+T` / `Mod+Shift+W` (closing asks for confirmation), `Ctrl+Tab` /
+  `Ctrl+Shift+Tab` cycle connection tabs, `Mod+Enter` runs the query, `Mod+Shift+Enter` the statement at the cursor,
+  `F7` / `Shift+F7` Explain (Analyze), `Mod+.` cancels, `Mod+Shift+F` formats SQL. New configurable shortcuts: run
+  statement at cursor, command history, export, fetch more/all, commit, rollback, section navigation and toggling
+  the navigation tree / properties panel (these used to be fixed native menu accelerators, so they now work in
+  server mode too and can be rebound). Settings > Shortcuts is grouped into Global / Tabs / Query editor / Snippets
+  sections, every entry has a reset-to-default button (plus "Reset all"), a shortcut can be cleared with Backspace,
+  and a combination already used by another action is refused. Only non-default shortcuts are stored, so earlier
+  automatically saved defaults are replaced by the new ones. Shortcuts now fire even while an editor has focus and
+  match physical letter/digit keys, so Option-combinations on macOS and non-US layouts work. Translated in all nine
+  languages.
+
 - SQL formatter rewritten (the button/menu entry "Indent SQL" is now "Format SQL" in all languages, with a magic-wand icon instead of the indent glyph): it now understands nesting — subqueries become indented blocks, CTEs
   (`WITH`), `CASE ... END`, `ON CONFLICT`, `INSERT ... VALUES`, `UPDATE ... SET`, `CREATE TABLE` column lists and
   `ALTER TABLE` actions are laid out per item, `AND`/`OR` break only in `WHERE`/`HAVING`/`JOIN` conditions (never

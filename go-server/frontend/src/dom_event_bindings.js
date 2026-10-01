@@ -45,7 +45,6 @@ import {
   updateIndentUnit,
   updatePasswordButtonState,
 } from './header_actions.js'
-import { startSetShortcut } from './shortcuts.js'
 import { v_openExternalUrl } from './tab_functions/website_tab.js'
 import { deleteRowEditData } from './tree_context_functions/edit_data.js'
 import { startTutorial } from './tutorial_functions/tutorial.js'
@@ -181,15 +180,6 @@ bind('about_link_github', 'click', () => showWebsite('GitHub', 'https://github.c
 // --- settings: sidebar category switcher ------------------------------------
 bindAll('.omnidb__settings__list-item', 'click', (e) =>
   selectSettingsCategory(/** @type {HTMLElement} */ (e.currentTarget).getAttribute('data-category')),
-)
-
-// --- settings: shortcuts -----------------------------------------------------
-//
-// By prefix rather than by listing ten ids, so adding a shortcut row to the
-// template needs no change here. Auto-saves as soon as a combo is captured
-// (see shortcuts.js's setShortcutEvent) -- no Save button any more.
-bindAll('#config_shortcuts button[id^="shortcut_"]', 'click', (e) =>
-  startSetShortcut(e.currentTarget),
 )
 
 // --- settings: appearance ----------------------------------------------------

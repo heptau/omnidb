@@ -74,7 +74,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 			// Only prompt when the tab actually has unsaved changes (the same
 			// dot shown next to its title, see the dirty-dot block below) --
 			// closing an already-saved snippet, whether via the X or the
-			// keyboard shortcut (shortcuts.js's shortcut_close_snippet_tab),
+			// keyboard shortcut (shortcuts.js's shortcut_remove_inner_tab),
 			// shouldn't need a confirmation nobody asked for.
 			if (v_current_tab.tag.tab_dirty_dot.style.display !== "none") {
 				beforeCloseTab(e, function () {

@@ -35,7 +35,7 @@ SOFTWARE.
 import { execAjax } from "./ajax_control_bridge.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { switchSection } from "./section_switcher.js";
-import { v_current_os } from "./shortcuts.js";
+import { shortcutsToPersist, v_current_os } from "./shortcuts.js";
 import { refreshHeights } from "./workspace.js";
 import { escapeHtml, escapeHtmlAttribute } from "./query.js";
 import { t } from "./i18n.js";
@@ -637,13 +637,8 @@ export function changePassword() {
 /// silently by shortcuts.js right after a key combo is captured.
 /// </summary>
 export function saveShortcuts() {
-	var v_shortcut_list = [];
-
-	for (var property in v_shortcut_object.shortcuts) {
-		if (v_shortcut_object.shortcuts.hasOwnProperty(property)) {
-			v_shortcut_list.push(v_shortcut_object.shortcuts[property]);
-		}
-	}
+	// Only the entries that differ from the defaults -- see shortcutsToPersist.
+	var v_shortcut_list = shortcutsToPersist();
 
 	var input = JSON.stringify({
 		p_shortcuts: v_shortcut_list,
