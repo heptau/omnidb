@@ -57,13 +57,13 @@
     window.v_language = cfg2.language;
     window.v_i18n = cfg2.i18n;
   }
-  function interpolate(s, vars) {
-    if (!vars) return s;
-    return s.replace(/\{(\w+)\}/g, function(whole, name) {
+  function interpolate(s2, vars) {
+    if (!vars) return s2;
+    return s2.replace(/\{(\w+)\}/g, function(whole, name) {
       return Object.prototype.hasOwnProperty.call(vars, name) ? String(vars[name]) : whole;
     });
   }
-  function t(key, vars) {
+  function t$1(key, vars) {
     var dict = typeof v_i18n !== "undefined" ? v_i18n : null;
     var template = dict && Object.prototype.hasOwnProperty.call(dict, key) ? dict[key] : void 0;
     if (template === void 0) {
@@ -72,37 +72,37 @@
     }
     return interpolate(template, vars);
   }
-  function pluralSuffix(lang2, n) {
-    if (lang2 === "cs") {
-      if (n === 1) return "one";
-      if (n >= 2 && n <= 4) return "few";
+  function pluralSuffix(lang, n2) {
+    if (lang === "cs") {
+      if (n2 === 1) return "one";
+      if (n2 >= 2 && n2 <= 4) return "few";
       return "other";
     }
-    return n === 1 ? "one" : "other";
+    return n2 === 1 ? "one" : "other";
   }
-  function tn(key, n, vars) {
-    var lang2 = typeof v_language !== "undefined" && v_language ? v_language : "en";
+  function tn(key, n2, vars) {
+    var lang = typeof v_language !== "undefined" && v_language ? v_language : "en";
     var dict = typeof v_i18n !== "undefined" ? v_i18n : null;
-    var fullKey = key + "." + pluralSuffix(lang2, n);
+    var fullKey = key + "." + pluralSuffix(lang, n2);
     if (!dict || !Object.prototype.hasOwnProperty.call(dict, fullKey)) {
       fullKey = key + ".other";
     }
-    var fullVars = Object.assign({ n }, vars);
-    return t(fullKey, fullVars);
+    var fullVars = Object.assign({ n: n2 }, vars);
+    return t$1(fullKey, fullVars);
   }
   function applyStaticI18n() {
     if (typeof v_language !== "undefined" && v_language) {
       document.documentElement.setAttribute("lang", v_language);
     }
-    document.documentElement.style.setProperty("--i18n-empty-suffix", JSON.stringify(" (" + t("login.empty_suffix") + ")"));
+    document.documentElement.style.setProperty("--i18n-empty-suffix", JSON.stringify(" (" + t$1("login.empty_suffix") + ")"));
     document.querySelectorAll("[data-i18n]").forEach(function(el2) {
       var key = el2.getAttribute("data-i18n");
-      if (key) el2.textContent = t(key);
+      if (key) el2.textContent = t$1(key);
     });
     ["title", "placeholder", "aria-label", "alt", "label"].forEach(function(attr) {
       document.querySelectorAll("[data-i18n-" + attr + "]").forEach(function(el2) {
         var key = el2.getAttribute("data-i18n-" + attr);
-        if (key) el2.setAttribute(attr, t(key));
+        if (key) el2.setAttribute(attr, t$1(key));
       });
     });
   }
@@ -137,6 +137,7 @@
     var v_fixed = [];
     for (var i2 = 0; i2 < v_children.length; i2++) {
       var v_link = v_children[i2];
+      if (!v_link.classList.contains("omnidb__tab-menu__link")) continue;
       if (v_link.classList.contains("active") || v_link.classList.contains("omnidb__tab-menu__link--compact")) {
         v_fixed.push(v_link);
       } else {
@@ -156,26 +157,26 @@
       return;
     }
     var v_fixedWidth = 0;
-    for (var f = 0; f < v_fixed.length; f++) {
-      var v_fixedStyle = getComputedStyle(v_fixed[f]);
-      v_fixedWidth += v_fixed[f].getBoundingClientRect().width + parseFloat(v_fixedStyle.marginLeft) + parseFloat(v_fixedStyle.marginRight);
+    for (var f2 = 0; f2 < v_fixed.length; f2++) {
+      var v_fixedStyle = getComputedStyle(v_fixed[f2]);
+      v_fixedWidth += v_fixed[f2].getBoundingClientRect().width + parseFloat(v_fixedStyle.marginLeft) + parseFloat(v_fixedStyle.marginRight);
     }
     var v_shrinkableMargin = parseFloat(getComputedStyle(v_shrinkable[0]).marginRight) || 0;
     var v_containerStyle = getComputedStyle(p_tabListDiv);
     var v_innerWidth = p_tabListDiv.clientWidth - parseFloat(v_containerStyle.paddingLeft) - parseFloat(v_containerStyle.paddingRight);
     var v_available = v_innerWidth - v_fixedWidth - v_shrinkableMargin * v_shrinkable.length;
     var v_each = Math.max(MIN_SHRINK_WIDTH_PX, Math.floor(v_available / v_shrinkable.length));
-    for (var k = 0; k < v_shrinkable.length; k++) {
-      v_shrinkable[k].style.flex = "0 0 " + v_each + "px";
+    for (var k2 = 0; k2 < v_shrinkable.length; k2++) {
+      v_shrinkable[k2].style.flex = "0 0 " + v_each + "px";
     }
     var v_width = v_shrinkable[0].getBoundingClientRect().width;
     var v_hideClose = v_width > 0 && v_width < CLOSE_ZONE_THRESHOLD_PX;
     var v_hideStatus = v_width > 0 && v_width < STATUS_ZONE_THRESHOLD_PX;
     var v_iconOnly = v_width > 0 && v_width < ICON_ONLY_THRESHOLD_PX;
-    for (var m = 0; m < v_shrinkable.length; m++) {
-      v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--hide-close-zone", v_hideClose);
-      v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--hide-status-zone", v_hideStatus);
-      v_shrinkable[m].classList.toggle("omnidb__tab-menu__link--icon-only", v_iconOnly);
+    for (var m2 = 0; m2 < v_shrinkable.length; m2++) {
+      v_shrinkable[m2].classList.toggle("omnidb__tab-menu__link--hide-close-zone", v_hideClose);
+      v_shrinkable[m2].classList.toggle("omnidb__tab-menu__link--hide-status-zone", v_hideStatus);
+      v_shrinkable[m2].classList.toggle("omnidb__tab-menu__link--icon-only", v_iconOnly);
     }
   }
   const v_tabListObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(function(p_entries) {
@@ -443,7 +444,7 @@
         );
         this.tabMenu.classList.add(this.tabCssVariation + "shown");
       },
-      toggleTabMenu: function(e) {
+      toggleTabMenu: function(e2) {
         var v_this = this;
         document.getElementById(p_div).classList.toggle(
           this.tabCssVariation + "container--menu-shown"
@@ -536,11 +537,11 @@
         v_a.setAttribute("aria-controls", "div_" + v_tab.id);
         if (v_tab.isDraggable) {
           v_a.setAttribute("draggable", "true");
-          v_a.addEventListener("dragstart", function(e) {
+          v_a.addEventListener("dragstart", function(e2) {
             v_control.dragItem = v_a;
-            if (e.dataTransfer) {
-              e.dataTransfer.effectAllowed = "move";
-              e.dataTransfer.setData("text/plain", "");
+            if (e2.dataTransfer) {
+              e2.dataTransfer.effectAllowed = "move";
+              e2.dataTransfer.setData("text/plain", "");
             }
             setTimeout(function() {
               v_a.classList.add("omnidb__tab-menu__link--dragging");
@@ -567,18 +568,18 @@
         var v_close = document.createElement("i");
         v_close.className = "fas fa-times tab-icon icon-close omnidb__tab-menu__link-close";
         v_tab.elementClose = v_close;
-        v_close.onclick = function(e) {
-          e.stopPropagation();
-          e.preventDefault();
+        v_close.onclick = function(e2) {
+          e2.stopPropagation();
+          e2.preventDefault();
           if (v_tab.closeFunction != null) {
-            v_tab.closeFunction(e, v_tab);
+            v_tab.closeFunction(e2, v_tab);
           }
         };
         if (p_rightClickFunction) {
-          v_a.oncontextmenu = function(e) {
-            e.stopPropagation();
-            e.preventDefault();
-            p_rightClickFunction(e);
+          v_a.oncontextmenu = function(e2) {
+            e2.stopPropagation();
+            e2.preventDefault();
+            p_rightClickFunction(e2);
           };
         }
         var v_icon = p_icon !== false ? '<span class="omnidb__menu__btn omnidb__tab-menu__link-icon">' + p_icon + "</span>" : "";
@@ -630,7 +631,7 @@
           v_tab.elementStatus = v_status;
           v_a.appendChild(v_status);
         }
-        v_a.ondblclick = function(e) {
+        v_a.ondblclick = function(e2) {
           if (v_tab.dblClickFunction != null) v_tab.dblClickFunction(v_tab);
         };
         var v_div2 = document.createElement("div");
@@ -640,14 +641,14 @@
         v_div2.setAttribute("aria-labelledby", "a_" + v_tab.id);
         v_tab.elementA = v_a;
         v_tab.elementDiv = v_div2;
-        v_a.onclick = function(e) {
-          e.stopPropagation();
-          e.preventDefault();
+        v_a.onclick = function(e2) {
+          e2.stopPropagation();
+          e2.preventDefault();
           if (v_tab.selectable) {
             v_control.selectTab(v_tab);
           }
           if (v_tab.clickFunction != null) {
-            v_tab.clickFunction(e);
+            v_tab.clickFunction(e2);
           }
         };
         if (this.trailingTab && this.trailingTab !== v_tab) {
@@ -664,12 +665,12 @@
         return v_tab;
       }
     };
-    v_div_tab_list.addEventListener("dragover", function(e) {
+    v_div_tab_list.addEventListener("dragover", function(e2) {
       if (v_tabControl.dragItem === null) return;
-      e.preventDefault();
-      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
+      e2.preventDefault();
+      if (e2.dataTransfer) e2.dataTransfer.dropEffect = "move";
       var v_drag_item = v_tabControl.dragItem;
-      var v_target = v_tabControl.getTabDragTarget(e.clientX);
+      var v_target = v_tabControl.getTabDragTarget(e2.clientX);
       if (v_target === null) {
         var v_last = v_div_tab_list.lastElementChild;
         var v_last_tab = v_last != null ? v_tabControl.tabList.find((t2) => t2.elementA === v_last) : null;
@@ -684,9 +685,9 @@
         v_div_tab_list.insertBefore(v_drag_item, v_target);
       }
     });
-    v_div_tab_list.addEventListener("drop", function(e) {
+    v_div_tab_list.addEventListener("drop", function(e2) {
       if (v_tabControl.dragItem === null) return;
-      e.preventDefault();
+      e2.preventDefault();
     });
     return v_tabControl;
   }
@@ -719,9 +720,9 @@
       this.parentNode.removeChild(this);
       v_outer_div.parentNode.removeChild(v_outer_div);
     };
-    v_closediv.oncontextmenu = function(e) {
-      e.preventDefault();
-      e.stopPropagation();
+    v_closediv.oncontextmenu = function(e2) {
+      e2.preventDefault();
+      e2.stopPropagation();
       v_div.parentNode.removeChild(v_div);
       this.parentNode.removeChild(this);
       v_outer_div.parentNode.removeChild(v_outer_div);
@@ -763,10 +764,10 @@
         if (p_menu[i3].submenu != void 0) {
           v_li.onmouseenter = function() {
             var v_submenus = document.getElementsByClassName("aimara_sub-menu");
-            for (var k = 0; k < v_submenus.length; k++) {
+            for (var k2 = 0; k2 < v_submenus.length; k2++) {
               var v_submenu = (
                 /** @type {HTMLElement} */
-                v_submenus[k]
+                v_submenus[k2]
               );
               if ((v_submenu.aimara_level ?? 0) >= this.aimara_level) v_submenu.style.display = "none";
             }
@@ -811,10 +812,10 @@
         if (p_submenu[i3].submenu != void 0) {
           v_li.onmouseenter = function() {
             var v_submenus = document.getElementsByClassName("aimara_sub-menu");
-            for (var k = 0; k < v_submenus.length; k++) {
+            for (var k2 = 0; k2 < v_submenus.length; k2++) {
               var v_submenu = (
                 /** @type {HTMLElement} */
-                v_submenus[k]
+                v_submenus[k2]
               );
               if ((v_submenu.aimara_level ?? 0) >= this.aimara_level) v_submenu.style.display = "none";
             }
@@ -902,13 +903,13 @@
     v_message_modal_queued_function = null;
     v_shown_callback = null;
     var v_modal_message = el$2("modal_message");
-    v_modal_message.addEventListener("hide.bs.modal", function(e) {
+    v_modal_message.addEventListener("hide.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
-    v_modal_message.addEventListener("show.bs.modal", function(e) {
+    v_modal_message.addEventListener("show.bs.modal", function(e2) {
       v_message_modal_animating = true;
     });
-    v_modal_message.addEventListener("hidden.bs.modal", function(e) {
+    v_modal_message.addEventListener("hidden.bs.modal", function(e2) {
       el$2("modal_message_content").innerHTML = "";
       v_message_modal_animating = false;
       if (v_message_modal_queued == true) {
@@ -918,7 +919,7 @@
       v_message_modal_queued = false;
       v_message_modal_queued_function = null;
     });
-    v_modal_message.addEventListener("shown.bs.modal", function(e) {
+    v_modal_message.addEventListener("shown.bs.modal", function(e2) {
       v_message_modal_animating = false;
       if (v_shown_callback) {
         v_shown_callback();
@@ -963,7 +964,7 @@
     var v_button_no = el$2("modal_message_no");
     var v_button_cancel = el$2("modal_message_cancel");
     v_content_div.textContent = p_message;
-    v_button_ok.textContent = t("common.ok");
+    v_button_ok.textContent = t$1("common.ok");
     v_button_yes.style.display = "none";
     v_button_ok.style.display = "";
     v_button_no.style.display = "none";
@@ -985,7 +986,7 @@
       } else {
         v_content_div.textContent = p_info;
       }
-      v_button_ok.textContent = t("common.ok");
+      v_button_ok.textContent = t$1("common.ok");
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
       };
@@ -1005,7 +1006,7 @@
       var v_button_no = el$2("modal_message_no");
       var v_button_cancel = el$2("modal_message_cancel");
       v_content_div.textContent = p_info;
-      v_button_ok.textContent = p_yes_label || t("common.ok");
+      v_button_ok.textContent = p_yes_label || t$1("common.ok");
       v_button_ok.onclick = function() {
         if (p_funcYes != null) p_funcYes();
       };
@@ -1084,14 +1085,14 @@
       /** @type {HTMLElement} */
       document.getElementById("modal_password")
     );
-    v_modal_password.addEventListener("hidden.bs.modal", function(e) {
+    v_modal_password.addEventListener("hidden.bs.modal", function(e2) {
       if (v_modal_password_ok_clicked != true && v_modal_password_cancel_callback != null) {
         v_modal_password_cancel_callback();
       } else if (v_modal_password_ok_clicked == true && v_modal_password_ok_after_hide_function != null) {
         v_modal_password_ok_after_hide_function();
       }
     });
-    v_modal_password.addEventListener("shown.bs.modal", function(e) {
+    v_modal_password.addEventListener("shown.bs.modal", function(e2) {
       if (v_modal_password_input != null) {
         v_modal_password_input.focus();
         v_modal_password_input.onkeydown = function(event2) {
@@ -1107,7 +1108,7 @@
     v_modal_password_ok_after_hide_function = null;
     v_modal_password_cancel_callback = null;
     v_modal_password_input = null;
-    if (gv_desktopMode) el$1("modal_password_pgpass_button").textContent = t("passwords.grant_pgpass_access");
+    if (gv_desktopMode) el$1("modal_password_pgpass_button").textContent = t$1("passwords.grant_pgpass_access");
     el$1("modal_password_pgpass_button").addEventListener("click", function() {
       if (gv_desktopMode) {
         grantPgpassAccess(v_pgpass_lookup_info);
@@ -1115,9 +1116,9 @@
         el$1("modal_password_pgpass_input").click();
       }
     });
-    el$1("modal_password_pgpass_input").addEventListener("change", function(e) {
-      var v_file = e.target.files ? e.target.files[0] : null;
-      e.target.value = "";
+    el$1("modal_password_pgpass_input").addEventListener("change", function(e2) {
+      var v_file = e2.target.files ? e2.target.files[0] : null;
+      e2.target.value = "";
       if (v_file && v_pgpass_lookup_info) readPgpassFileViaInput(v_file, v_pgpass_lookup_info);
     });
   }
@@ -1165,11 +1166,11 @@
   }
   function readPgpassFileViaInput(p_file, p_lookup_info) {
     var v_reader = new FileReader();
-    v_reader.onload = function(e) {
+    v_reader.onload = function(e2) {
       var v_text = (
         /** @type {string} */
         /** @type {FileReader} */
-        e.target.result
+        e2.target.result
       );
       var v_password = findPgpassPassword(
         parsePgpassText(v_text),
@@ -1180,7 +1181,7 @@
       );
       if (v_password === null) {
         showPgpassError(
-          t("passwords.no_matching_entry", {
+          t$1("passwords.no_matching_entry", {
             conn: p_lookup_info.server + ":" + p_lookup_info.port + ":" + p_lookup_info.database + ":" + p_lookup_info.username
           })
         );
@@ -1211,7 +1212,7 @@
       }
       if (!p_result.matched && p_lookup_info) {
         showPgpassError(
-          t("passwords.file_has_no_entry", {
+          t$1("passwords.file_has_no_entry", {
             conn: p_lookup_info.server + ":" + p_lookup_info.port + ":" + p_lookup_info.database + ":" + p_lookup_info.username
           })
         );
@@ -1220,7 +1221,7 @@
       hidePgpassError();
       retryWithPgpassPassword();
     }).catch(function(p_err) {
-      showPgpassError(t("connections.pgpass_picker_unreachable", { error: p_err }));
+      showPgpassError(t$1("connections.pgpass_picker_unreachable", { error: p_err }));
     });
   }
   function retryWithPgpassPassword() {
@@ -1325,4168 +1326,6 @@
     parsePgpassText,
     showPasswordPrompt
   }, Symbol.toStringTag, { value: "Module" }));
-  //! moment.js
-  //! version : 2.31.0
-  //! authors : Tim Wood, Iskren Chernev, Moment.js contributors
-  //! license : MIT
-  //! momentjs.com
-  var hookCallback;
-  function hooks() {
-    return hookCallback.apply(null, arguments);
-  }
-  function setHookCallback(callback) {
-    hookCallback = callback;
-  }
-  function isArray(input) {
-    return input instanceof Array || Object.prototype.toString.call(input) === "[object Array]";
-  }
-  function isObject(input) {
-    return input != null && Object.prototype.toString.call(input) === "[object Object]";
-  }
-  function hasOwnProp(a, b) {
-    return Object.prototype.hasOwnProperty.call(a, b);
-  }
-  function isObjectEmpty(obj) {
-    if (Object.getOwnPropertyNames) {
-      return Object.getOwnPropertyNames(obj).length === 0;
-    } else {
-      var k;
-      for (k in obj) {
-        if (hasOwnProp(obj, k)) {
-          return false;
-        }
-      }
-      return true;
-    }
-  }
-  function isUndefined(input) {
-    return input === void 0;
-  }
-  function isNumber(input) {
-    return typeof input === "number" || Object.prototype.toString.call(input) === "[object Number]";
-  }
-  function isDate(input) {
-    return input instanceof Date || Object.prototype.toString.call(input) === "[object Date]";
-  }
-  function map(arr, fn) {
-    var res = [], i2, arrLen = arr.length;
-    for (i2 = 0; i2 < arrLen; ++i2) {
-      res.push(fn(arr[i2], i2));
-    }
-    return res;
-  }
-  function extend(a, b) {
-    for (var i2 in b) {
-      if (hasOwnProp(b, i2)) {
-        a[i2] = b[i2];
-      }
-    }
-    if (hasOwnProp(b, "toString")) {
-      a.toString = b.toString;
-    }
-    if (hasOwnProp(b, "valueOf")) {
-      a.valueOf = b.valueOf;
-    }
-    return a;
-  }
-  function createUTC(input, format2, locale2, strict) {
-    return createLocalOrUTC(input, format2, locale2, strict, true).utc();
-  }
-  function defaultParsingFlags() {
-    return {
-      empty: false,
-      unusedTokens: [],
-      unusedInput: [],
-      overflow: -2,
-      charsLeftOver: 0,
-      nullInput: false,
-      invalidEra: null,
-      invalidMonth: null,
-      invalidOffset: null,
-      invalidFormat: false,
-      userInvalidated: false,
-      iso: false,
-      parsedDateParts: [],
-      era: null,
-      meridiem: null,
-      rfc2822: false,
-      weekdayMismatch: false
-    };
-  }
-  function getParsingFlags(m) {
-    if (m._pf == null) {
-      m._pf = defaultParsingFlags();
-    }
-    return m._pf;
-  }
-  var some;
-  if (Array.prototype.some) {
-    some = Array.prototype.some;
-  } else {
-    some = function(fun) {
-      var t2 = Object(this), len = t2.length >>> 0, i2;
-      for (i2 = 0; i2 < len; i2++) {
-        if (i2 in t2 && fun.call(this, t2[i2], i2, t2)) {
-          return true;
-        }
-      }
-      return false;
-    };
-  }
-  function isValid$2(m) {
-    var flags = null, parsedParts = false, isNowValid = m._d && !isNaN(m._d.getTime());
-    if (isNowValid) {
-      flags = getParsingFlags(m);
-      parsedParts = some.call(flags.parsedDateParts, function(i2) {
-        return i2 != null;
-      });
-      isNowValid = flags.overflow < 0 && !flags.empty && !flags.invalidEra && !flags.invalidMonth && !flags.invalidOffset && !flags.invalidWeekday && !flags.weekdayMismatch && !flags.nullInput && !flags.invalidFormat && !flags.userInvalidated && (!flags.meridiem || flags.meridiem && parsedParts);
-      if (m._strict) {
-        isNowValid = isNowValid && flags.charsLeftOver === 0 && flags.unusedTokens.length === 0 && flags.bigHour === void 0;
-      }
-    }
-    if (Object.isFrozen == null || !Object.isFrozen(m)) {
-      m._isValid = isNowValid;
-    } else {
-      return isNowValid;
-    }
-    return m._isValid;
-  }
-  function createInvalid$1(flags) {
-    var m = createUTC(NaN);
-    if (flags != null) {
-      extend(getParsingFlags(m), flags);
-    } else {
-      getParsingFlags(m).userInvalidated = true;
-    }
-    return m;
-  }
-  var momentProperties = hooks.momentProperties = [], updateInProgress = false;
-  function copyConfig(to2, from2) {
-    var i2, prop, val, momentPropertiesLen = momentProperties.length;
-    if (!isUndefined(from2._isAMomentObject)) {
-      to2._isAMomentObject = from2._isAMomentObject;
-    }
-    if (!isUndefined(from2._i)) {
-      to2._i = from2._i;
-    }
-    if (!isUndefined(from2._f)) {
-      to2._f = from2._f;
-    }
-    if (!isUndefined(from2._l)) {
-      to2._l = from2._l;
-    }
-    if (!isUndefined(from2._strict)) {
-      to2._strict = from2._strict;
-    }
-    if (!isUndefined(from2._tzm)) {
-      to2._tzm = from2._tzm;
-    }
-    if (!isUndefined(from2._isUTC)) {
-      to2._isUTC = from2._isUTC;
-    }
-    if (!isUndefined(from2._offset)) {
-      to2._offset = from2._offset;
-    }
-    if (!isUndefined(from2._pf)) {
-      to2._pf = getParsingFlags(from2);
-    }
-    if (!isUndefined(from2._locale)) {
-      to2._locale = from2._locale;
-    }
-    if (momentPropertiesLen > 0) {
-      for (i2 = 0; i2 < momentPropertiesLen; i2++) {
-        prop = momentProperties[i2];
-        val = from2[prop];
-        if (!isUndefined(val)) {
-          to2[prop] = val;
-        }
-      }
-    }
-    return to2;
-  }
-  function Moment(config) {
-    copyConfig(this, config);
-    this._d = new Date(config._d != null ? config._d.getTime() : NaN);
-    if (!this.isValid()) {
-      this._d = /* @__PURE__ */ new Date(NaN);
-    }
-    if (updateInProgress === false) {
-      updateInProgress = true;
-      hooks.updateOffset(this);
-      updateInProgress = false;
-    }
-  }
-  function isMoment(obj) {
-    return obj instanceof Moment || obj != null && obj._isAMomentObject != null;
-  }
-  function warn(msg) {
-    if (hooks.suppressDeprecationWarnings === false && typeof console !== "undefined" && console.warn) {
-      console.warn("Deprecation warning: " + msg);
-    }
-  }
-  function deprecate(msg, fn) {
-    var firstTime = true;
-    return extend(function() {
-      if (hooks.deprecationHandler != null) {
-        hooks.deprecationHandler(null, msg);
-      }
-      if (firstTime) {
-        var args = [], arg2, i2, key, argLen = arguments.length;
-        for (i2 = 0; i2 < argLen; i2++) {
-          arg2 = "";
-          if (typeof arguments[i2] === "object") {
-            arg2 += "\n[" + i2 + "] ";
-            for (key in arguments[0]) {
-              if (hasOwnProp(arguments[0], key)) {
-                arg2 += key + ": " + arguments[0][key] + ", ";
-              }
-            }
-            arg2 = arg2.slice(0, -2);
-          } else {
-            arg2 = arguments[i2];
-          }
-          args.push(arg2);
-        }
-        warn(
-          msg + "\nArguments: " + Array.prototype.slice.call(args).join("") + "\n" + new Error().stack
-        );
-        firstTime = false;
-      }
-      return fn.apply(this, arguments);
-    }, fn);
-  }
-  var deprecations = {};
-  function deprecateSimple(name, msg) {
-    if (hooks.deprecationHandler != null) {
-      hooks.deprecationHandler(name, msg);
-    }
-    if (!deprecations[name]) {
-      warn(msg + "\n" + new Error().stack);
-      deprecations[name] = true;
-    }
-  }
-  hooks.suppressDeprecationWarnings = false;
-  hooks.deprecationHandler = null;
-  function isFunction(input) {
-    return typeof Function !== "undefined" && input instanceof Function || Object.prototype.toString.call(input) === "[object Function]";
-  }
-  var aliases = {
-    D: "date",
-    dates: "date",
-    date: "date",
-    d: "day",
-    days: "day",
-    day: "day",
-    e: "weekday",
-    weekdays: "weekday",
-    weekday: "weekday",
-    E: "isoWeekday",
-    isoweekdays: "isoWeekday",
-    isoweekday: "isoWeekday",
-    DDD: "dayOfYear",
-    dayofyears: "dayOfYear",
-    dayofyear: "dayOfYear",
-    h: "hour",
-    hours: "hour",
-    hour: "hour",
-    ms: "millisecond",
-    milliseconds: "millisecond",
-    millisecond: "millisecond",
-    m: "minute",
-    minutes: "minute",
-    minute: "minute",
-    M: "month",
-    months: "month",
-    month: "month",
-    Q: "quarter",
-    quarters: "quarter",
-    quarter: "quarter",
-    s: "second",
-    seconds: "second",
-    second: "second",
-    gg: "weekYear",
-    weekyears: "weekYear",
-    weekyear: "weekYear",
-    GG: "isoWeekYear",
-    isoweekyears: "isoWeekYear",
-    isoweekyear: "isoWeekYear",
-    w: "week",
-    weeks: "week",
-    week: "week",
-    W: "isoWeek",
-    isoweeks: "isoWeek",
-    isoweek: "isoWeek",
-    y: "year",
-    years: "year",
-    year: "year"
-  };
-  function normalizeUnits(units) {
-    return typeof units === "string" ? aliases[units] || aliases[units.toLowerCase()] : void 0;
-  }
-  function normalizeObjectUnits(inputObject) {
-    var normalizedInput = {}, normalizedProp, prop;
-    for (prop in inputObject) {
-      if (hasOwnProp(inputObject, prop)) {
-        normalizedProp = normalizeUnits(prop);
-        if (normalizedProp) {
-          normalizedInput[normalizedProp] = inputObject[prop];
-        }
-      }
-    }
-    return normalizedInput;
-  }
-  var priorities = {
-    date: 9,
-    day: 11,
-    weekday: 11,
-    isoWeekday: 11,
-    dayOfYear: 4,
-    hour: 13,
-    millisecond: 16,
-    minute: 14,
-    month: 8,
-    quarter: 7,
-    second: 15,
-    weekYear: 1,
-    isoWeekYear: 1,
-    week: 5,
-    isoWeek: 5,
-    year: 1
-  };
-  function getPrioritizedUnits(unitsObj) {
-    var units = [], u;
-    for (u in unitsObj) {
-      if (hasOwnProp(unitsObj, u)) {
-        units.push({ unit: u, priority: priorities[u] });
-      }
-    }
-    units.sort(function(a, b) {
-      return a.priority - b.priority;
-    });
-    return units;
-  }
-  function zeroFill(number, targetLength, forceSign) {
-    var absNumber = "" + Math.abs(number), zerosToFill = targetLength - absNumber.length, sign2 = number >= 0;
-    return (sign2 ? forceSign ? "+" : "" : "-") + Math.pow(10, Math.max(0, zerosToFill)).toString().substr(1) + absNumber;
-  }
-  var formattingTokens = /(\[[^\[]*\])|(\\e)|(\\)?(eHHmm|[Hh]mm(ss)?|Mo|MM?M?M?|Do|DDDo|DD?D?D?|ddd?d?|do?|w[o|w]?|W[o|W]?|Qo?|N{1,5}|YYYYYY|YYYYY|YYYY|YY|y{2,4}|yo?|gg(ggg?)?|GG(GGG?)?|e|E|a|A|hh?|HH?|kk?|mm?|ss?|S{1,9}|x|X|zz?|ZZ?|.)/g, localFormattingTokens = /(\[[^\[]*\])|(\\)?(LTS|LT|LL?L?L?|l{1,4})/g, formatFunctions = {}, formatTokenFunctions = {};
-  function addFormatToken(token2, padded, ordinal2, callback) {
-    var func = callback;
-    if (typeof callback === "string") {
-      func = function() {
-        return this[callback]();
-      };
-    }
-    if (token2) {
-      formatTokenFunctions[token2] = func;
-    }
-    if (padded) {
-      formatTokenFunctions[padded[0]] = function() {
-        return zeroFill(func.apply(this, arguments), padded[1], padded[2]);
-      };
-    }
-    if (ordinal2) {
-      formatTokenFunctions[ordinal2] = function() {
-        return this.localeData().ordinal(
-          func.apply(this, arguments),
-          token2
-        );
-      };
-    }
-  }
-  function removeFormattingTokens(input) {
-    if (input.match(/\[[\s\S]/)) {
-      return input.replace(/^\[|\]$/g, "");
-    }
-    return input.replace(/\\/g, "");
-  }
-  function makeFormatFunction(format2) {
-    var array = format2.match(formattingTokens), i2, length;
-    for (i2 = 0, length = array.length; i2 < length; i2++) {
-      if (formatTokenFunctions[array[i2]]) {
-        array[i2] = formatTokenFunctions[array[i2]];
-      } else {
-        array[i2] = removeFormattingTokens(array[i2]);
-      }
-    }
-    return function(mom) {
-      var output = "", i3;
-      for (i3 = 0; i3 < length; i3++) {
-        output += isFunction(array[i3]) ? array[i3].call(mom, format2) : array[i3];
-      }
-      return output;
-    };
-  }
-  function formatMoment(m, format2) {
-    if (!m.isValid()) {
-      return m.localeData().invalidDate();
-    }
-    format2 = expandFormat(format2, m.localeData());
-    var cacheKey = "$" + format2;
-    if (!hasOwnProp(formatFunctions, cacheKey)) {
-      formatFunctions[cacheKey] = makeFormatFunction(format2);
-    }
-    return formatFunctions[cacheKey](m);
-  }
-  function expandFormat(format2, locale2) {
-    var i2 = 5;
-    function replaceLongDateFormatTokens(input) {
-      return locale2.longDateFormat(input) || input;
-    }
-    localFormattingTokens.lastIndex = 0;
-    while (i2 >= 0 && localFormattingTokens.test(format2)) {
-      format2 = format2.replace(
-        localFormattingTokens,
-        replaceLongDateFormatTokens
-      );
-      localFormattingTokens.lastIndex = 0;
-      i2 -= 1;
-    }
-    return format2;
-  }
-  var match1 = /\d/, match2 = /\d\d/, match3 = /\d{3}/, match4 = /\d{4}/, match6 = /[+-]?\d{6}/, match1to2 = /\d\d?/, match3to4 = /\d\d\d\d?/, match5to6 = /\d\d\d\d\d\d?/, match1to3 = /\d{1,3}/, match1to4 = /\d{1,4}/, match1to6 = /[+-]?\d{1,6}/, matchUnsigned = /\d+/, matchSigned = /[+-]?\d+/, matchOffset = /Z|[+-]\d\d:?\d\d/gi, matchShortOffset = /Z|[+-]\d\d(?::?\d\d)?/gi, matchTimestamp = /[+-]?\d+(\.\d{1,3})?/, matchWord = /[0-9]{0,256}['a-z\u00A0-\u05FF\u0700-\uD7FF\uF900-\uFDCF\uFDF0-\uFF07\uFF10-\uFFEF]{1,256}|[\u0600-\u06FF\/]{1,256}(\s*?[\u0600-\u06FF]{1,256}){1,2}/i, match1to2NoLeadingZero = /^[1-9]\d?/, match1to2HasZero = /^([1-9]\d|\d)/, regexes;
-  regexes = {};
-  function addRegexToken(token2, regex, strictRegex) {
-    regexes[token2] = isFunction(regex) ? regex : function(isStrict, localeData2) {
-      return isStrict && strictRegex ? strictRegex : regex;
-    };
-  }
-  function getParseRegexForToken(token2, config) {
-    if (!hasOwnProp(regexes, token2)) {
-      return new RegExp(unescapeFormat(token2));
-    }
-    return regexes[token2](config._strict, config._locale);
-  }
-  function unescapeFormat(s) {
-    return regexEscape(
-      s.replace("\\", "").replace(
-        /\\(\[)|\\(\])|\[([^\]\[]*)\]|\\(.)/g,
-        function(matched, p1, p2, p3, p4) {
-          return p1 || p2 || p3 || p4;
-        }
-      )
-    );
-  }
-  function regexEscape(s) {
-    return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, "\\$&");
-  }
-  function absFloor(number) {
-    if (number < 0) {
-      return Math.ceil(number) || 0;
-    } else {
-      return Math.floor(number);
-    }
-  }
-  function toInt(argumentForCoercion) {
-    var coercedNumber = +argumentForCoercion, value = 0;
-    if (coercedNumber !== 0 && isFinite(coercedNumber)) {
-      value = absFloor(coercedNumber);
-    }
-    return value;
-  }
-  var tokens = {};
-  function addParseToken(token2, callback) {
-    var i2, func = callback, tokenLen;
-    if (typeof token2 === "string") {
-      token2 = [token2];
-    }
-    if (isNumber(callback)) {
-      func = function(input, array) {
-        array[callback] = toInt(input);
-      };
-    }
-    tokenLen = token2.length;
-    for (i2 = 0; i2 < tokenLen; i2++) {
-      tokens[token2[i2]] = func;
-    }
-  }
-  function addWeekParseToken(token2, callback) {
-    addParseToken(token2, function(input, array, config, token3) {
-      config._w = config._w || {};
-      callback(input, config._w, config, token3);
-    });
-  }
-  function addTimeToArrayFromToken(token2, input, config) {
-    if (input != null && hasOwnProp(tokens, token2)) {
-      tokens[token2](input, config._a, config, token2);
-    }
-  }
-  function isLeapYear(year) {
-    return year % 4 === 0 && year % 100 !== 0 || year % 400 === 0;
-  }
-  var YEAR = 0, MONTH = 1, DATE = 2, HOUR = 3, MINUTE = 4, SECOND = 5, MILLISECOND = 6, WEEK = 7, WEEKDAY = 8;
-  addFormatToken("Y", 0, 0, function() {
-    var y = this.year();
-    return y <= 9999 ? zeroFill(y, 4) : "+" + y;
-  });
-  addFormatToken(0, ["YY", 2], 0, function() {
-    return this.year() % 100;
-  });
-  addFormatToken(0, ["YYYY", 4], 0, "year");
-  addFormatToken(0, ["YYYYY", 5], 0, "year");
-  addFormatToken(0, ["YYYYYY", 6, true], 0, "year");
-  addRegexToken("Y", matchSigned);
-  addRegexToken("YY", match1to2, match2);
-  addRegexToken("YYYY", match1to4, match4);
-  addRegexToken("YYYYY", match1to6, match6);
-  addRegexToken("YYYYYY", match1to6, match6);
-  addParseToken(["YYYYY", "YYYYYY"], YEAR);
-  addParseToken("YYYY", function(input, array) {
-    array[YEAR] = input.length === 2 ? hooks.parseTwoDigitYear(input) : toInt(input);
-  });
-  addParseToken("YY", function(input, array) {
-    array[YEAR] = hooks.parseTwoDigitYear(input);
-  });
-  addParseToken("Y", function(input, array) {
-    array[YEAR] = parseInt(input, 10);
-  });
-  function daysInYear(year) {
-    return isLeapYear(year) ? 366 : 365;
-  }
-  hooks.parseTwoDigitYear = function(input) {
-    return toInt(input) + (toInt(input) > 68 ? 1900 : 2e3);
-  };
-  var getSetYear = makeGetSet("FullYear", true);
-  function getIsLeapYear() {
-    return isLeapYear(this.year());
-  }
-  function makeGetSet(unit, keepTime) {
-    return function(value) {
-      if (value != null) {
-        set$1(this, unit, value);
-        hooks.updateOffset(this, keepTime);
-        return this;
-      } else {
-        return get$2(this, unit);
-      }
-    };
-  }
-  function get$2(mom, unit) {
-    if (!mom.isValid()) {
-      return NaN;
-    }
-    var d = mom._d, isUTC = mom._isUTC;
-    switch (unit) {
-      case "Milliseconds":
-        return isUTC ? d.getUTCMilliseconds() : d.getMilliseconds();
-      case "Seconds":
-        return isUTC ? d.getUTCSeconds() : d.getSeconds();
-      case "Minutes":
-        return isUTC ? d.getUTCMinutes() : d.getMinutes();
-      case "Hours":
-        return isUTC ? d.getUTCHours() : d.getHours();
-      case "Date":
-        return isUTC ? d.getUTCDate() : d.getDate();
-      case "Day":
-        return isUTC ? d.getUTCDay() : d.getDay();
-      case "Month":
-        return isUTC ? d.getUTCMonth() : d.getMonth();
-      case "FullYear":
-        return isUTC ? d.getUTCFullYear() : d.getFullYear();
-      default:
-        return NaN;
-    }
-  }
-  function set$1(mom, unit, value) {
-    var d, isUTC, year, month, date;
-    if (!mom.isValid() || isNaN(value)) {
-      return;
-    }
-    d = mom._d;
-    isUTC = mom._isUTC;
-    switch (unit) {
-      case "Milliseconds":
-        return void (isUTC ? d.setUTCMilliseconds(value) : d.setMilliseconds(value));
-      case "Seconds":
-        return void (isUTC ? d.setUTCSeconds(value) : d.setSeconds(value));
-      case "Minutes":
-        return void (isUTC ? d.setUTCMinutes(value) : d.setMinutes(value));
-      case "Hours":
-        return void (isUTC ? d.setUTCHours(value) : d.setHours(value));
-      case "Date":
-        return void (isUTC ? d.setUTCDate(value) : d.setDate(value));
-      // case 'Day': // Not real
-      //    return void (isUTC ? d.setUTCDay(value) : d.setDay(value));
-      // case 'Month': // Not used because we need to pass two variables
-      //     return void (isUTC ? d.setUTCMonth(value) : d.setMonth(value));
-      case "FullYear":
-        break;
-      // See below ...
-      default:
-        return;
-    }
-    year = value;
-    month = mom.month();
-    date = mom.date();
-    date = date === 29 && month === 1 && !isLeapYear(year) ? 28 : date;
-    void (isUTC ? d.setUTCFullYear(year, month, date) : d.setFullYear(year, month, date));
-  }
-  function stringGet(units) {
-    units = normalizeUnits(units);
-    if (isFunction(this[units])) {
-      return this[units]();
-    }
-    return this;
-  }
-  function stringSet(units, value) {
-    if (typeof units === "object") {
-      units = normalizeObjectUnits(units);
-      var prioritized = getPrioritizedUnits(units), i2, prioritizedLen = prioritized.length;
-      for (i2 = 0; i2 < prioritizedLen; i2++) {
-        this[prioritized[i2].unit](units[prioritized[i2].unit]);
-      }
-    } else {
-      units = normalizeUnits(units);
-      if (isFunction(this[units])) {
-        return this[units](value);
-      }
-    }
-    return this;
-  }
-  function mod$1(n, x) {
-    return (n % x + x) % x;
-  }
-  var indexOf;
-  if (Array.prototype.indexOf) {
-    indexOf = Array.prototype.indexOf;
-  } else {
-    indexOf = function(o) {
-      var i2;
-      for (i2 = 0; i2 < this.length; ++i2) {
-        if (this[i2] === o) {
-          return i2;
-        }
-      }
-      return -1;
-    };
-  }
-  function daysInMonth(year, month) {
-    if (isNaN(year) || isNaN(month)) {
-      return NaN;
-    }
-    var modMonth = mod$1(month, 12);
-    year += (month - modMonth) / 12;
-    return modMonth === 1 ? isLeapYear(year) ? 29 : 28 : 31 - modMonth % 7 % 2;
-  }
-  addFormatToken("M", ["MM", 2], "Mo", function() {
-    return this.month() + 1;
-  });
-  addFormatToken("MMM", 0, 0, function(format2) {
-    return this.localeData().monthsShort(this, format2);
-  });
-  addFormatToken("MMMM", 0, 0, function(format2) {
-    return this.localeData().months(this, format2);
-  });
-  addRegexToken("M", match1to2, match1to2NoLeadingZero);
-  addRegexToken("MM", match1to2, match2);
-  addRegexToken("MMM", function(isStrict, locale2) {
-    return locale2.monthsShortRegex(isStrict);
-  });
-  addRegexToken("MMMM", function(isStrict, locale2) {
-    return locale2.monthsRegex(isStrict);
-  });
-  addParseToken(["M", "MM"], function(input, array) {
-    array[MONTH] = toInt(input) - 1;
-  });
-  addParseToken(["MMM", "MMMM"], function(input, array, config, token2) {
-    var month = config._locale.monthsParse(input, token2, config._strict);
-    if (month != null) {
-      array[MONTH] = month;
-    } else {
-      getParsingFlags(config).invalidMonth = input;
-    }
-  });
-  var defaultLocaleMonths = "January_February_March_April_May_June_July_August_September_October_November_December".split(
-    "_"
-  ), defaultLocaleMonthsShort = "Jan_Feb_Mar_Apr_May_Jun_Jul_Aug_Sep_Oct_Nov_Dec".split("_"), MONTHS_IN_FORMAT = /D[oD]?(\[[^\[\]]*\]|\s)+MMMM?/, defaultMonthsShortRegex = matchWord, defaultMonthsRegex = matchWord, monthsParseProperties = [
-    "monthsParse",
-    "longMonthsParse",
-    "shortMonthsParse",
-    "monthsRegex",
-    "monthsShortRegex",
-    "monthsStrictRegex",
-    "monthsShortStrictRegex"
-  ];
-  function clearMonthsParseCache(locale2, config) {
-    var i2, prop;
-    for (i2 = 0; i2 < monthsParseProperties.length; i2++) {
-      prop = monthsParseProperties[i2];
-      if (!hasOwnProp(config, prop)) {
-        delete locale2["_" + prop];
-      }
-    }
-  }
-  function localeMonths(m, format2) {
-    if (!m) {
-      return isArray(this._months) ? this._months : this._months["standalone"];
-    }
-    return isArray(this._months) ? this._months[m.month()] : this._months[(this._months.isFormat || MONTHS_IN_FORMAT).test(format2) ? "format" : "standalone"][m.month()];
-  }
-  function localeMonthsShort(m, format2) {
-    if (!m) {
-      return isArray(this._monthsShort) ? this._monthsShort : this._monthsShort["standalone"];
-    }
-    return isArray(this._monthsShort) ? this._monthsShort[m.month()] : this._monthsShort[MONTHS_IN_FORMAT.test(format2) ? "format" : "standalone"][m.month()];
-  }
-  function handleStrictParse$1(monthName, format2, strict) {
-    var i2, ii, mom, llc = monthName.toLocaleLowerCase();
-    if (!this._monthsParse) {
-      this._monthsParse = [];
-      this._longMonthsParse = [];
-      this._shortMonthsParse = [];
-      for (i2 = 0; i2 < 12; ++i2) {
-        mom = createUTC([2e3, i2]);
-        this._shortMonthsParse[i2] = this.monthsShort(
-          mom,
-          ""
-        ).toLocaleLowerCase();
-        this._longMonthsParse[i2] = this.months(mom, "").toLocaleLowerCase();
-      }
-    }
-    if (strict) {
-      if (format2 === "MMM") {
-        ii = indexOf.call(this._shortMonthsParse, llc);
-        return ii !== -1 ? ii : null;
-      } else {
-        ii = indexOf.call(this._longMonthsParse, llc);
-        return ii !== -1 ? ii : null;
-      }
-    } else {
-      if (format2 === "MMM") {
-        ii = indexOf.call(this._shortMonthsParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._longMonthsParse, llc);
-        return ii !== -1 ? ii : null;
-      } else {
-        ii = indexOf.call(this._longMonthsParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._shortMonthsParse, llc);
-        return ii !== -1 ? ii : null;
-      }
-    }
-  }
-  function localeMonthsParse(monthName, format2, strict) {
-    var i2, mom, regex;
-    if (this._monthsParseExact) {
-      return handleStrictParse$1.call(this, monthName, format2, strict);
-    }
-    if (!this._monthsParse) {
-      this._monthsParse = [];
-      this._longMonthsParse = [];
-      this._shortMonthsParse = [];
-    }
-    for (i2 = 0; i2 < 12; i2++) {
-      mom = createUTC([2e3, i2]);
-      if (strict && !this._longMonthsParse[i2]) {
-        this._longMonthsParse[i2] = new RegExp(
-          "^" + this.months(mom, "").replace(".", "") + "$",
-          "i"
-        );
-        this._shortMonthsParse[i2] = new RegExp(
-          "^" + this.monthsShort(mom, "").replace(".", "") + "$",
-          "i"
-        );
-      }
-      if (!strict && !this._monthsParse[i2]) {
-        regex = "^" + this.months(mom, "") + "|^" + this.monthsShort(mom, "");
-        this._monthsParse[i2] = new RegExp(regex.replace(".", ""), "i");
-      }
-      if (strict && format2 === "MMMM" && this._longMonthsParse[i2].test(monthName)) {
-        return i2;
-      } else if (strict && format2 === "MMM" && this._shortMonthsParse[i2].test(monthName)) {
-        return i2;
-      } else if (!strict && this._monthsParse[i2].test(monthName)) {
-        return i2;
-      }
-    }
-  }
-  function setMonth(mom, value) {
-    if (!mom.isValid()) {
-      return mom;
-    }
-    if (typeof value === "string") {
-      if (/^\d+$/.test(value)) {
-        value = toInt(value);
-      } else {
-        value = mom.localeData().monthsParse(value);
-        if (!isNumber(value)) {
-          return mom;
-        }
-      }
-    }
-    var month = value, date = mom.date();
-    date = date < 29 ? date : Math.min(date, daysInMonth(mom.year(), month));
-    void (mom._isUTC ? mom._d.setUTCMonth(month, date) : mom._d.setMonth(month, date));
-    return mom;
-  }
-  function getSetMonth(value) {
-    if (value != null) {
-      setMonth(this, value);
-      hooks.updateOffset(this, true);
-      return this;
-    } else {
-      return get$2(this, "Month");
-    }
-  }
-  function getDaysInMonth() {
-    return daysInMonth(this.year(), this.month());
-  }
-  function monthsShortRegex(isStrict) {
-    if (this._monthsParseExact) {
-      if (!hasOwnProp(this, "_monthsRegex")) {
-        computeMonthsParse.call(this);
-      }
-      if (isStrict) {
-        return this._monthsShortStrictRegex;
-      } else {
-        return this._monthsShortRegex;
-      }
-    } else {
-      if (!hasOwnProp(this, "_monthsShortRegex")) {
-        this._monthsShortRegex = defaultMonthsShortRegex;
-      }
-      return this._monthsShortStrictRegex && isStrict ? this._monthsShortStrictRegex : this._monthsShortRegex;
-    }
-  }
-  function monthsRegex(isStrict) {
-    if (this._monthsParseExact) {
-      if (!hasOwnProp(this, "_monthsRegex")) {
-        computeMonthsParse.call(this);
-      }
-      if (isStrict) {
-        return this._monthsStrictRegex;
-      } else {
-        return this._monthsRegex;
-      }
-    } else {
-      if (!hasOwnProp(this, "_monthsRegex")) {
-        this._monthsRegex = defaultMonthsRegex;
-      }
-      return this._monthsStrictRegex && isStrict ? this._monthsStrictRegex : this._monthsRegex;
-    }
-  }
-  function computeMonthsParse() {
-    function cmpLenRev(a, b) {
-      return b.length - a.length;
-    }
-    var shortPieces = [], longPieces = [], mixedPieces = [], i2, mom, shortP, longP;
-    for (i2 = 0; i2 < 12; i2++) {
-      mom = createUTC([2e3, i2]);
-      shortP = regexEscape(this.monthsShort(mom, ""));
-      longP = regexEscape(this.months(mom, ""));
-      shortPieces.push(shortP);
-      longPieces.push(longP);
-      mixedPieces.push(longP);
-      mixedPieces.push(shortP);
-    }
-    shortPieces.sort(cmpLenRev);
-    longPieces.sort(cmpLenRev);
-    mixedPieces.sort(cmpLenRev);
-    this._monthsRegex = new RegExp("^(" + mixedPieces.join("|") + ")", "i");
-    this._monthsShortRegex = this._monthsRegex;
-    this._monthsStrictRegex = new RegExp(
-      "^(" + longPieces.join("|") + ")",
-      "i"
-    );
-    this._monthsShortStrictRegex = new RegExp(
-      "^(" + shortPieces.join("|") + ")",
-      "i"
-    );
-  }
-  addFormatToken("d", 0, "do", "day");
-  addFormatToken("dd", 0, 0, function(format2) {
-    return this.localeData().weekdaysMin(this, format2);
-  });
-  addFormatToken("ddd", 0, 0, function(format2) {
-    return this.localeData().weekdaysShort(this, format2);
-  });
-  addFormatToken("dddd", 0, 0, function(format2) {
-    return this.localeData().weekdays(this, format2);
-  });
-  addFormatToken("e", 0, 0, "weekday");
-  addFormatToken("E", 0, 0, "isoWeekday");
-  addFormatToken("eHHmm", 0, 0, function() {
-    return "" + this.weekday() + zeroFill(this.hours(), 2) + zeroFill(this.minutes(), 2);
-  });
-  addRegexToken("d", match1to2);
-  addRegexToken("e", match1to2);
-  addRegexToken("E", match1to2);
-  addRegexToken("eHHmm", match5to6);
-  addRegexToken("dd", function(isStrict, locale2) {
-    return locale2.weekdaysMinRegex(isStrict);
-  });
-  addRegexToken("ddd", function(isStrict, locale2) {
-    return locale2.weekdaysShortRegex(isStrict);
-  });
-  addRegexToken("dddd", function(isStrict, locale2) {
-    return locale2.weekdaysRegex(isStrict);
-  });
-  addWeekParseToken(["dd", "ddd", "dddd"], function(input, week, config, token2) {
-    var weekday = config._locale.weekdaysParse(input, token2, config._strict);
-    if (weekday != null) {
-      week.d = weekday;
-    } else {
-      getParsingFlags(config).invalidWeekday = input;
-    }
-  });
-  addWeekParseToken(["d", "e", "E"], function(input, week, config, token2) {
-    week[token2] = toInt(input);
-  });
-  addWeekParseToken("eHHmm", function(input, week, config) {
-    var weekdayEnd = input.length - 4;
-    week.e = toInt(input.substr(0, weekdayEnd));
-    config._a[HOUR] = toInt(input.substr(weekdayEnd, 2));
-    config._a[MINUTE] = toInt(input.substr(weekdayEnd + 2));
-  });
-  function parseWeekday(input, locale2) {
-    if (typeof input !== "string") {
-      return input;
-    }
-    if (!isNaN(input)) {
-      return parseInt(input, 10);
-    }
-    input = locale2.weekdaysParse(input);
-    if (typeof input === "number") {
-      return input;
-    }
-    return null;
-  }
-  function parseIsoWeekday(input, locale2) {
-    if (typeof input === "string") {
-      return locale2.weekdaysParse(input) % 7 || 7;
-    }
-    return isNaN(input) ? null : input;
-  }
-  function shiftWeekdays(ws, n) {
-    return ws.slice(n, 7).concat(ws.slice(0, n));
-  }
-  var defaultLocaleWeekdays = "Sunday_Monday_Tuesday_Wednesday_Thursday_Friday_Saturday".split("_"), defaultLocaleWeekdaysShort = "Sun_Mon_Tue_Wed_Thu_Fri_Sat".split("_"), defaultLocaleWeekdaysMin = "Su_Mo_Tu_We_Th_Fr_Sa".split("_"), defaultWeekdaysRegex = matchWord, defaultWeekdaysShortRegex = matchWord, defaultWeekdaysMinRegex = matchWord, weekdaysParseProperties = [
-    "weekdaysParse",
-    "fullWeekdaysParse",
-    "shortWeekdaysParse",
-    "minWeekdaysParse",
-    "weekdaysRegex",
-    "weekdaysShortRegex",
-    "weekdaysMinRegex",
-    "weekdaysStrictRegex",
-    "weekdaysShortStrictRegex",
-    "weekdaysMinStrictRegex"
-  ];
-  function clearWeekdaysParseCache(locale2, config) {
-    var i2, prop;
-    for (i2 = 0; i2 < weekdaysParseProperties.length; i2++) {
-      prop = weekdaysParseProperties[i2];
-      if (!hasOwnProp(config, prop)) {
-        delete locale2["_" + prop];
-      }
-    }
-  }
-  function localeWeekdays(m, format2) {
-    var weekdays = isArray(this._weekdays) ? this._weekdays : this._weekdays[m && m !== true && this._weekdays.isFormat.test(format2) ? "format" : "standalone"];
-    return m === true ? shiftWeekdays(weekdays, this._week.dow) : m ? weekdays[m.day()] : weekdays;
-  }
-  function localeWeekdaysShort(m) {
-    return m === true ? shiftWeekdays(this._weekdaysShort, this._week.dow) : m ? this._weekdaysShort[m.day()] : this._weekdaysShort;
-  }
-  function localeWeekdaysMin(m) {
-    return m === true ? shiftWeekdays(this._weekdaysMin, this._week.dow) : m ? this._weekdaysMin[m.day()] : this._weekdaysMin;
-  }
-  function handleStrictParse(weekdayName, format2, strict) {
-    var i2, ii, mom, llc = weekdayName.toLocaleLowerCase();
-    if (!this._weekdaysParse) {
-      this._weekdaysParse = [];
-      this._shortWeekdaysParse = [];
-      this._minWeekdaysParse = [];
-      for (i2 = 0; i2 < 7; ++i2) {
-        mom = createUTC([2e3, 1]).day(i2);
-        this._minWeekdaysParse[i2] = this.weekdaysMin(
-          mom,
-          ""
-        ).toLocaleLowerCase();
-        this._shortWeekdaysParse[i2] = this.weekdaysShort(
-          mom,
-          ""
-        ).toLocaleLowerCase();
-        this._weekdaysParse[i2] = this.weekdays(mom, "").toLocaleLowerCase();
-      }
-    }
-    if (strict) {
-      if (format2 === "dddd") {
-        ii = indexOf.call(this._weekdaysParse, llc);
-        return ii !== -1 ? ii : null;
-      } else if (format2 === "ddd") {
-        ii = indexOf.call(this._shortWeekdaysParse, llc);
-        return ii !== -1 ? ii : null;
-      } else {
-        ii = indexOf.call(this._minWeekdaysParse, llc);
-        return ii !== -1 ? ii : null;
-      }
-    } else {
-      if (format2 === "dddd") {
-        ii = indexOf.call(this._weekdaysParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._shortWeekdaysParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._minWeekdaysParse, llc);
-        return ii !== -1 ? ii : null;
-      } else if (format2 === "ddd") {
-        ii = indexOf.call(this._shortWeekdaysParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._weekdaysParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._minWeekdaysParse, llc);
-        return ii !== -1 ? ii : null;
-      } else {
-        ii = indexOf.call(this._minWeekdaysParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._weekdaysParse, llc);
-        if (ii !== -1) {
-          return ii;
-        }
-        ii = indexOf.call(this._shortWeekdaysParse, llc);
-        return ii !== -1 ? ii : null;
-      }
-    }
-  }
-  function localeWeekdaysParse(weekdayName, format2, strict) {
-    var i2, mom, regex;
-    if (this._weekdaysParseExact) {
-      return handleStrictParse.call(this, weekdayName, format2, strict);
-    }
-    if (!this._weekdaysParse) {
-      this._weekdaysParse = [];
-      this._minWeekdaysParse = [];
-      this._shortWeekdaysParse = [];
-      this._fullWeekdaysParse = [];
-    }
-    for (i2 = 0; i2 < 7; i2++) {
-      mom = createUTC([2e3, 1]).day(i2);
-      if (strict && !this._fullWeekdaysParse[i2]) {
-        this._fullWeekdaysParse[i2] = new RegExp(
-          "^" + this.weekdays(mom, "").replace(".", "\\.?") + "$",
-          "i"
-        );
-        this._shortWeekdaysParse[i2] = new RegExp(
-          "^" + this.weekdaysShort(mom, "").replace(".", "\\.?") + "$",
-          "i"
-        );
-        this._minWeekdaysParse[i2] = new RegExp(
-          "^" + this.weekdaysMin(mom, "").replace(".", "\\.?") + "$",
-          "i"
-        );
-      }
-      if (!this._weekdaysParse[i2]) {
-        regex = "^" + this.weekdays(mom, "") + "|^" + this.weekdaysShort(mom, "") + "|^" + this.weekdaysMin(mom, "");
-        this._weekdaysParse[i2] = new RegExp(regex.replace(".", ""), "i");
-      }
-      if (strict && format2 === "dddd" && this._fullWeekdaysParse[i2].test(weekdayName)) {
-        return i2;
-      } else if (strict && format2 === "ddd" && this._shortWeekdaysParse[i2].test(weekdayName)) {
-        return i2;
-      } else if (strict && format2 === "dd" && this._minWeekdaysParse[i2].test(weekdayName)) {
-        return i2;
-      } else if (!strict && this._weekdaysParse[i2].test(weekdayName)) {
-        return i2;
-      }
-    }
-  }
-  function getSetDayOfWeek(input) {
-    if (!this.isValid()) {
-      return input != null ? this : NaN;
-    }
-    var day = get$2(this, "Day");
-    if (input != null) {
-      input = parseWeekday(input, this.localeData());
-      return this.add(input - day, "d");
-    } else {
-      return day;
-    }
-  }
-  function getSetLocaleDayOfWeek(input) {
-    if (!this.isValid()) {
-      return input != null ? this : NaN;
-    }
-    var weekday = (this.day() + 7 - this.localeData()._week.dow) % 7;
-    return input == null ? weekday : this.add(input - weekday, "d");
-  }
-  function getSetISODayOfWeek(input) {
-    if (!this.isValid()) {
-      return input != null ? this : NaN;
-    }
-    if (input != null) {
-      var weekday = parseIsoWeekday(input, this.localeData());
-      return this.day(this.day() % 7 ? weekday : weekday - 7);
-    } else {
-      return this.day() || 7;
-    }
-  }
-  function weekdaysRegex(isStrict) {
-    if (this._weekdaysParseExact) {
-      if (!hasOwnProp(this, "_weekdaysRegex")) {
-        computeWeekdaysParse.call(this);
-      }
-      if (isStrict) {
-        return this._weekdaysStrictRegex;
-      } else {
-        return this._weekdaysRegex;
-      }
-    } else {
-      if (!hasOwnProp(this, "_weekdaysRegex")) {
-        this._weekdaysRegex = defaultWeekdaysRegex;
-      }
-      return this._weekdaysStrictRegex && isStrict ? this._weekdaysStrictRegex : this._weekdaysRegex;
-    }
-  }
-  function weekdaysShortRegex(isStrict) {
-    if (this._weekdaysParseExact) {
-      if (!hasOwnProp(this, "_weekdaysRegex")) {
-        computeWeekdaysParse.call(this);
-      }
-      if (isStrict) {
-        return this._weekdaysShortStrictRegex;
-      } else {
-        return this._weekdaysShortRegex;
-      }
-    } else {
-      if (!hasOwnProp(this, "_weekdaysShortRegex")) {
-        this._weekdaysShortRegex = defaultWeekdaysShortRegex;
-      }
-      return this._weekdaysShortStrictRegex && isStrict ? this._weekdaysShortStrictRegex : this._weekdaysShortRegex;
-    }
-  }
-  function weekdaysMinRegex(isStrict) {
-    if (this._weekdaysParseExact) {
-      if (!hasOwnProp(this, "_weekdaysRegex")) {
-        computeWeekdaysParse.call(this);
-      }
-      if (isStrict) {
-        return this._weekdaysMinStrictRegex;
-      } else {
-        return this._weekdaysMinRegex;
-      }
-    } else {
-      if (!hasOwnProp(this, "_weekdaysMinRegex")) {
-        this._weekdaysMinRegex = defaultWeekdaysMinRegex;
-      }
-      return this._weekdaysMinStrictRegex && isStrict ? this._weekdaysMinStrictRegex : this._weekdaysMinRegex;
-    }
-  }
-  function computeWeekdaysParse() {
-    function cmpLenRev(a, b) {
-      return b.length - a.length;
-    }
-    var minPieces = [], shortPieces = [], longPieces = [], mixedPieces = [], i2, mom, minp, shortp, longp;
-    for (i2 = 0; i2 < 7; i2++) {
-      mom = createUTC([2e3, 1]).day(i2);
-      minp = regexEscape(this.weekdaysMin(mom, ""));
-      shortp = regexEscape(this.weekdaysShort(mom, ""));
-      longp = regexEscape(this.weekdays(mom, ""));
-      minPieces.push(minp);
-      shortPieces.push(shortp);
-      longPieces.push(longp);
-      mixedPieces.push(minp);
-      mixedPieces.push(shortp);
-      mixedPieces.push(longp);
-    }
-    minPieces.sort(cmpLenRev);
-    shortPieces.sort(cmpLenRev);
-    longPieces.sort(cmpLenRev);
-    mixedPieces.sort(cmpLenRev);
-    this._weekdaysRegex = new RegExp("^(" + mixedPieces.join("|") + ")", "i");
-    this._weekdaysShortRegex = this._weekdaysRegex;
-    this._weekdaysMinRegex = this._weekdaysRegex;
-    this._weekdaysStrictRegex = new RegExp(
-      "^(" + longPieces.join("|") + ")",
-      "i"
-    );
-    this._weekdaysShortStrictRegex = new RegExp(
-      "^(" + shortPieces.join("|") + ")",
-      "i"
-    );
-    this._weekdaysMinStrictRegex = new RegExp(
-      "^(" + minPieces.join("|") + ")",
-      "i"
-    );
-  }
-  function set(config) {
-    var prop, i2;
-    clearMonthsParseCache(this, config);
-    clearWeekdaysParseCache(this, config);
-    for (i2 in config) {
-      if (hasOwnProp(config, i2)) {
-        prop = config[i2];
-        if (isFunction(prop)) {
-          this[i2] = prop;
-        } else {
-          this["_" + i2] = prop;
-        }
-      }
-    }
-    this._config = config;
-    this._dayOfMonthOrdinalParseLenient = new RegExp(
-      (this._dayOfMonthOrdinalParse.source || this._ordinalParse.source) + "|" + /\d{1,2}/.source
-    );
-  }
-  function mergeConfigs(parentConfig, childConfig) {
-    var res = extend({}, parentConfig), prop;
-    for (prop in childConfig) {
-      if (hasOwnProp(childConfig, prop)) {
-        if (isObject(parentConfig[prop]) && isObject(childConfig[prop])) {
-          res[prop] = {};
-          extend(res[prop], parentConfig[prop]);
-          extend(res[prop], childConfig[prop]);
-        } else if (childConfig[prop] != null) {
-          res[prop] = childConfig[prop];
-        } else {
-          delete res[prop];
-        }
-      }
-    }
-    for (prop in parentConfig) {
-      if (hasOwnProp(parentConfig, prop) && !hasOwnProp(childConfig, prop) && isObject(parentConfig[prop])) {
-        res[prop] = extend({}, res[prop]);
-      }
-    }
-    return res;
-  }
-  function Locale(config) {
-    if (config != null) {
-      this.set(config);
-    }
-  }
-  var keys;
-  if (Object.keys) {
-    keys = Object.keys;
-  } else {
-    keys = function(obj) {
-      var i2, res = [];
-      for (i2 in obj) {
-        if (hasOwnProp(obj, i2)) {
-          res.push(i2);
-        }
-      }
-      return res;
-    };
-  }
-  var defaultCalendar = {
-    sameDay: "[Today at] LT",
-    nextDay: "[Tomorrow at] LT",
-    nextWeek: "dddd [at] LT",
-    lastDay: "[Yesterday at] LT",
-    lastWeek: "[Last] dddd [at] LT",
-    sameElse: "L"
-  };
-  function calendar$1(key, mom, now2) {
-    var output = this._calendar[key] || this._calendar["sameElse"];
-    return isFunction(output) ? output.call(mom, now2) : output;
-  }
-  var defaultLongDateFormat = {
-    LTS: "h:mm:ss A",
-    LT: "h:mm A",
-    L: "MM/DD/YYYY",
-    LL: "MMMM D, YYYY",
-    LLL: "MMMM D, YYYY h:mm A",
-    LLLL: "dddd, MMMM D, YYYY h:mm A"
-  };
-  function longDateFormat(key) {
-    var format2 = this._longDateFormat[key], formatUpper = this._longDateFormat[key.toUpperCase()], formatCache = this._longDateFormatCache;
-    if (format2 || !formatUpper) {
-      return format2;
-    }
-    if (formatCache && formatCache[key] && formatCache[key].formatUpper === formatUpper) {
-      return formatCache[key].format;
-    }
-    format2 = formatUpper.match(formattingTokens).map(function(tok) {
-      if (tok === "MMMM" || tok === "MM" || tok === "DD" || tok === "dddd") {
-        return tok.slice(1);
-      }
-      return tok;
-    }).join("");
-    if (!formatCache) {
-      formatCache = this._longDateFormatCache = {};
-    }
-    formatCache[key] = {
-      formatUpper,
-      format: format2
-    };
-    return format2;
-  }
-  var defaultInvalidDate = "Invalid date";
-  function invalidDate() {
-    return this._invalidDate;
-  }
-  var defaultOrdinal = "%d", defaultDayOfMonthOrdinalParse = /\d{1,2}/;
-  function ordinal(number) {
-    return this._ordinal.replace("%d", number);
-  }
-  var defaultRelativeTime = {
-    future: "in %s",
-    past: "%s ago",
-    s: "a few seconds",
-    ss: "%d seconds",
-    m: "a minute",
-    mm: "%d minutes",
-    h: "an hour",
-    hh: "%d hours",
-    d: "a day",
-    dd: "%d days",
-    w: "a week",
-    ww: "%d weeks",
-    M: "a month",
-    MM: "%d months",
-    y: "a year",
-    yy: "%d years"
-  };
-  function relativeTimeWithoutPostformat(number, withoutSuffix, string, isFuture) {
-    var output = this._relativeTime[string];
-    return isFunction(output) ? output(number, withoutSuffix, string, isFuture) : output.replace(/%d/i, number);
-  }
-  function relativeTime$1(number, withoutSuffix, string, isFuture) {
-    return this.postformat(
-      relativeTimeWithoutPostformat.call(
-        this,
-        number,
-        withoutSuffix,
-        string,
-        isFuture
-      )
-    );
-  }
-  function pastFutureWithoutPostformat(diff2, output) {
-    var format2 = this._relativeTime[diff2 > 0 ? "future" : "past"];
-    return isFunction(format2) ? format2(output) : format2.replace(/%s/i, output);
-  }
-  function pastFuture(diff2, output) {
-    return this.postformat(
-      pastFutureWithoutPostformat.call(this, diff2, output)
-    );
-  }
-  function createDate(y, m, d, h, M, s, ms) {
-    var date;
-    if (y < 100 && y >= 0) {
-      date = new Date(y + 400, m, d, h, M, s, ms);
-      if (isFinite(date.getFullYear())) {
-        date.setFullYear(y);
-      }
-    } else {
-      date = new Date(y, m, d, h, M, s, ms);
-    }
-    return date;
-  }
-  function createUTCDate(y) {
-    var date, args;
-    if (y < 100 && y >= 0) {
-      args = Array.prototype.slice.call(arguments);
-      args[0] = y + 400;
-      date = new Date(Date.UTC.apply(null, args));
-      if (isFinite(date.getUTCFullYear())) {
-        date.setUTCFullYear(y);
-      }
-    } else {
-      date = new Date(Date.UTC.apply(null, arguments));
-    }
-    return date;
-  }
-  function firstWeekOffset(year, dow, doy) {
-    var fwd = 7 + dow - doy, fwdlw = (7 + createUTCDate(year, 0, fwd).getUTCDay() - dow) % 7;
-    return -fwdlw + fwd - 1;
-  }
-  function dayOfYearFromWeeks(year, week, weekday, dow, doy) {
-    var localWeekday = (7 + weekday - dow) % 7, weekOffset = firstWeekOffset(year, dow, doy), dayOfYear = 1 + 7 * (week - 1) + localWeekday + weekOffset, resYear, resDayOfYear;
-    if (dayOfYear <= 0) {
-      resYear = year - 1;
-      resDayOfYear = daysInYear(resYear) + dayOfYear;
-    } else if (dayOfYear > daysInYear(year)) {
-      resYear = year + 1;
-      resDayOfYear = dayOfYear - daysInYear(year);
-    } else {
-      resYear = year;
-      resDayOfYear = dayOfYear;
-    }
-    return {
-      year: resYear,
-      dayOfYear: resDayOfYear
-    };
-  }
-  function weekOfYearFromDayOfYear(year, dayOfYear, dow, doy) {
-    var weekOffset = firstWeekOffset(year, dow, doy), week = Math.floor((dayOfYear - weekOffset - 1) / 7) + 1, resWeek, resYear;
-    if (week < 1) {
-      resYear = year - 1;
-      resWeek = week + weeksInYear(resYear, dow, doy);
-    } else if (week > weeksInYear(year, dow, doy)) {
-      resWeek = week - weeksInYear(year, dow, doy);
-      resYear = year + 1;
-    } else {
-      resYear = year;
-      resWeek = week;
-    }
-    return {
-      week: resWeek,
-      year: resYear
-    };
-  }
-  function weekOfYear(mom, dow, doy) {
-    return weekOfYearFromDayOfYear(mom.year(), mom.dayOfYear(), dow, doy);
-  }
-  function weekOfYearFromDate(year, month, date, dow, doy) {
-    var dayOfYear = Math.round(
-      (createUTCDate(year, month, date) - createUTCDate(year, 0, 1)) / 864e5
-    ) + 1;
-    return weekOfYearFromDayOfYear(year, dayOfYear, dow, doy);
-  }
-  function weeksInYear(year, dow, doy) {
-    var weekOffset = firstWeekOffset(year, dow, doy), weekOffsetNext = firstWeekOffset(year + 1, dow, doy);
-    return (daysInYear(year) - weekOffset + weekOffsetNext) / 7;
-  }
-  addFormatToken("w", ["ww", 2], "wo", "week");
-  addFormatToken("W", ["WW", 2], "Wo", "isoWeek");
-  addRegexToken("w", match1to2, match1to2NoLeadingZero);
-  addRegexToken("ww", match1to2, match2);
-  addRegexToken("W", match1to2, match1to2NoLeadingZero);
-  addRegexToken("WW", match1to2, match2);
-  addWeekParseToken(
-    ["w", "ww", "W", "WW"],
-    function(input, week, config, token2) {
-      week[token2.substr(0, 1)] = toInt(input);
-    }
-  );
-  function localeWeek(mom) {
-    return weekOfYear(mom, this._week.dow, this._week.doy).week;
-  }
-  var defaultLocaleWeek = {
-    dow: 0,
-    // Sunday is the first day of the week.
-    doy: 6
-    // The week that contains Jan 6th is the first week of the year.
-  };
-  function localeFirstDayOfWeek() {
-    return this._week.dow;
-  }
-  function localeFirstDayOfYear() {
-    return this._week.doy;
-  }
-  function getSetWeek(input) {
-    var week = this.localeData().week(this);
-    return input == null ? week : this.add((input - week) * 7, "d");
-  }
-  function getSetISOWeek(input) {
-    var week = weekOfYear(this, 1, 4).week;
-    return input == null ? week : this.add((input - week) * 7, "d");
-  }
-  function hFormat() {
-    return this.hours() % 12 || 12;
-  }
-  function kFormat() {
-    return this.hours() || 24;
-  }
-  addFormatToken("H", ["HH", 2], 0, "hour");
-  addFormatToken("h", ["hh", 2], 0, hFormat);
-  addFormatToken("k", ["kk", 2], 0, kFormat);
-  addFormatToken("hmm", 0, 0, function() {
-    return "" + hFormat.apply(this) + zeroFill(this.minutes(), 2);
-  });
-  addFormatToken("hmmss", 0, 0, function() {
-    return "" + hFormat.apply(this) + zeroFill(this.minutes(), 2) + zeroFill(this.seconds(), 2);
-  });
-  addFormatToken("Hmm", 0, 0, function() {
-    return "" + this.hours() + zeroFill(this.minutes(), 2);
-  });
-  addFormatToken("Hmmss", 0, 0, function() {
-    return "" + this.hours() + zeroFill(this.minutes(), 2) + zeroFill(this.seconds(), 2);
-  });
-  function meridiem(token2, lowercase) {
-    addFormatToken(token2, 0, 0, function() {
-      return this.localeData().meridiem(
-        this.hours(),
-        this.minutes(),
-        lowercase
-      );
-    });
-  }
-  meridiem("a", true);
-  meridiem("A", false);
-  function matchMeridiem(isStrict, locale2) {
-    return locale2._meridiemParse;
-  }
-  addRegexToken("a", matchMeridiem);
-  addRegexToken("A", matchMeridiem);
-  addRegexToken("H", match1to2, match1to2HasZero);
-  addRegexToken("h", match1to2, match1to2NoLeadingZero);
-  addRegexToken("k", match1to2, match1to2NoLeadingZero);
-  addRegexToken("HH", match1to2, match2);
-  addRegexToken("hh", match1to2, match2);
-  addRegexToken("kk", match1to2, match2);
-  addRegexToken("hmm", match3to4);
-  addRegexToken("hmmss", match5to6);
-  addRegexToken("Hmm", match3to4);
-  addRegexToken("Hmmss", match5to6);
-  addParseToken(["H", "HH"], HOUR);
-  addParseToken(["k", "kk"], function(input, array, config) {
-    var kInput = toInt(input);
-    array[HOUR] = kInput === 24 ? 0 : kInput;
-  });
-  addParseToken(["a", "A"], function(input, array, config) {
-    config._isPm = config._locale.isPM(input);
-    config._meridiem = input;
-  });
-  addParseToken(["h", "hh"], function(input, array, config) {
-    array[HOUR] = toInt(input);
-    getParsingFlags(config).bigHour = true;
-  });
-  addParseToken("hmm", function(input, array, config) {
-    var pos = input.length - 2;
-    array[HOUR] = toInt(input.substr(0, pos));
-    array[MINUTE] = toInt(input.substr(pos));
-    getParsingFlags(config).bigHour = true;
-  });
-  addParseToken("hmmss", function(input, array, config) {
-    var pos1 = input.length - 4, pos2 = input.length - 2;
-    array[HOUR] = toInt(input.substr(0, pos1));
-    array[MINUTE] = toInt(input.substr(pos1, 2));
-    array[SECOND] = toInt(input.substr(pos2));
-    getParsingFlags(config).bigHour = true;
-  });
-  addParseToken("Hmm", function(input, array, config) {
-    var pos = input.length - 2;
-    array[HOUR] = toInt(input.substr(0, pos));
-    array[MINUTE] = toInt(input.substr(pos));
-  });
-  addParseToken("Hmmss", function(input, array, config) {
-    var pos1 = input.length - 4, pos2 = input.length - 2;
-    array[HOUR] = toInt(input.substr(0, pos1));
-    array[MINUTE] = toInt(input.substr(pos1, 2));
-    array[SECOND] = toInt(input.substr(pos2));
-  });
-  function localeIsPM(input) {
-    return (input + "").toLowerCase().charAt(0) === "p";
-  }
-  var defaultLocaleMeridiemParse = /[ap]\.?m?\.?/i, getSetHour = makeGetSet("Hours", true);
-  function localeMeridiem(hours2, minutes2, isLower) {
-    if (hours2 > 11) {
-      return isLower ? "pm" : "PM";
-    } else {
-      return isLower ? "am" : "AM";
-    }
-  }
-  var baseConfig = {
-    calendar: defaultCalendar,
-    longDateFormat: defaultLongDateFormat,
-    invalidDate: defaultInvalidDate,
-    ordinal: defaultOrdinal,
-    dayOfMonthOrdinalParse: defaultDayOfMonthOrdinalParse,
-    relativeTime: defaultRelativeTime,
-    months: defaultLocaleMonths,
-    monthsShort: defaultLocaleMonthsShort,
-    week: defaultLocaleWeek,
-    weekdays: defaultLocaleWeekdays,
-    weekdaysMin: defaultLocaleWeekdaysMin,
-    weekdaysShort: defaultLocaleWeekdaysShort,
-    meridiemParse: defaultLocaleMeridiemParse
-  };
-  var locales = {}, localeFamilies = {}, globalLocale;
-  function commonPrefix(arr1, arr2) {
-    var i2, minl = Math.min(arr1.length, arr2.length);
-    for (i2 = 0; i2 < minl; i2 += 1) {
-      if (arr1[i2] !== arr2[i2]) {
-        return i2;
-      }
-    }
-    return minl;
-  }
-  function normalizeLocale(key) {
-    return key ? key.toLowerCase().replace("_", "-") : key;
-  }
-  function chooseLocale(names) {
-    var i2 = 0, j2, next, locale2, split;
-    while (i2 < names.length) {
-      split = normalizeLocale(names[i2]).split("-");
-      j2 = split.length;
-      next = normalizeLocale(names[i2 + 1]);
-      next = next ? next.split("-") : null;
-      while (j2 > 0) {
-        locale2 = loadLocale(split.slice(0, j2).join("-"));
-        if (locale2) {
-          return locale2;
-        }
-        if (next && next.length >= j2 && commonPrefix(split, next) >= j2 - 1) {
-          break;
-        }
-        j2--;
-      }
-      i2++;
-    }
-    return globalLocale;
-  }
-  function isLocaleNameSane(name) {
-    return typeof name === "string" && /^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(name);
-  }
-  function loadLocale(name) {
-    var oldLocale = null, aliasedRequire, normalizedName;
-    if (hasOwnProp(locales, name)) {
-      return locales[name];
-    }
-    normalizedName = normalizeLocale(name);
-    if (hasOwnProp(locales, normalizedName)) {
-      return locales[normalizedName];
-    }
-    if (typeof module !== "undefined" && module && module.exports && isLocaleNameSane(normalizedName)) {
-      try {
-        oldLocale = globalLocale._abbr;
-        aliasedRequire = require;
-        aliasedRequire("./locale/" + normalizedName);
-        getSetGlobalLocale(oldLocale);
-      } catch (e) {
-        locales[normalizedName] = null;
-      }
-    }
-    if (hasOwnProp(locales, normalizedName)) {
-      return locales[normalizedName];
-    }
-  }
-  function getSetGlobalLocale(key, values) {
-    var data;
-    if (key) {
-      if (isUndefined(values)) {
-        data = getLocale(key);
-      } else {
-        data = defineLocale(key, values);
-      }
-      if (data) {
-        globalLocale = data;
-      } else {
-        if (typeof console !== "undefined" && console.warn) {
-          console.warn(
-            "Locale " + key + " not found. Did you forget to load it?"
-          );
-        }
-      }
-    }
-    return globalLocale._abbr;
-  }
-  function defineLocale(name, config) {
-    if (config !== null) {
-      var locale2, parentConfig = baseConfig;
-      config.abbr = name;
-      if (locales[name] != null) {
-        deprecateSimple(
-          "defineLocaleOverride",
-          "use moment.updateLocale(localeName, config) to change an existing locale. moment.defineLocale(localeName, config) should only be used for creating a new locale See http://momentjs.com/guides/#/warnings/define-locale/ for more info."
-        );
-        parentConfig = locales[name]._config;
-      } else if (config.parentLocale != null) {
-        if (locales[config.parentLocale] != null) {
-          parentConfig = locales[config.parentLocale]._config;
-        } else {
-          locale2 = loadLocale(config.parentLocale);
-          if (locale2 != null) {
-            parentConfig = locale2._config;
-          } else {
-            if (!localeFamilies[config.parentLocale]) {
-              localeFamilies[config.parentLocale] = [];
-            }
-            localeFamilies[config.parentLocale].push({
-              name,
-              config
-            });
-            return null;
-          }
-        }
-      }
-      locales[name] = new Locale(mergeConfigs(parentConfig, config));
-      if (localeFamilies[name]) {
-        localeFamilies[name].forEach(function(x) {
-          defineLocale(x.name, x.config);
-        });
-      }
-      getSetGlobalLocale(name);
-      return locales[name];
-    } else {
-      delete locales[name];
-      return null;
-    }
-  }
-  function updateLocale(name, config) {
-    var locale2, tmpLocale = loadLocale(name), parentConfig = baseConfig;
-    if (tmpLocale != null) {
-      name = tmpLocale._abbr;
-    }
-    if (config != null) {
-      if (locales[name] != null && locales[name].parentLocale != null) {
-        locales[name].set(mergeConfigs(locales[name]._config, config));
-      } else {
-        if (tmpLocale != null) {
-          parentConfig = tmpLocale._config;
-        }
-        config = mergeConfigs(parentConfig, config);
-        if (tmpLocale == null) {
-          config.abbr = name;
-        }
-        locale2 = new Locale(config);
-        locale2.parentLocale = locales[name];
-        locales[name] = locale2;
-      }
-      getSetGlobalLocale(name);
-    } else {
-      if (locales[name] != null) {
-        if (locales[name].parentLocale != null) {
-          locales[name] = locales[name].parentLocale;
-          if (name === getSetGlobalLocale()) {
-            getSetGlobalLocale(name);
-          }
-        } else if (locales[name] != null) {
-          delete locales[name];
-        }
-      }
-    }
-    return locales[name];
-  }
-  function getLocale(key) {
-    var locale2;
-    if (key && key._locale && key._locale._abbr) {
-      key = key._locale._abbr;
-    }
-    if (!key) {
-      return globalLocale;
-    }
-    if (!isArray(key)) {
-      locale2 = loadLocale(key);
-      if (locale2) {
-        return locale2;
-      }
-      key = [key];
-    }
-    return chooseLocale(key);
-  }
-  function listLocales() {
-    return keys(locales);
-  }
-  function checkOverflow(m) {
-    var overflow, a = m._a;
-    if (a && getParsingFlags(m).overflow === -2) {
-      overflow = a[MONTH] < 0 || a[MONTH] > 11 ? MONTH : a[DATE] < 1 || a[DATE] > daysInMonth(a[YEAR], a[MONTH]) ? DATE : a[HOUR] < 0 || a[HOUR] > 24 || a[HOUR] === 24 && (a[MINUTE] !== 0 || a[SECOND] !== 0 || a[MILLISECOND] !== 0) ? HOUR : a[MINUTE] < 0 || a[MINUTE] > 59 ? MINUTE : a[SECOND] < 0 || a[SECOND] > 59 ? SECOND : a[MILLISECOND] < 0 || a[MILLISECOND] > 999 ? MILLISECOND : -1;
-      if (getParsingFlags(m)._overflowDayOfYear && (overflow < YEAR || overflow > DATE)) {
-        overflow = DATE;
-      }
-      if (getParsingFlags(m)._overflowWeeks && overflow === -1) {
-        overflow = WEEK;
-      }
-      if (getParsingFlags(m)._overflowWeekday && overflow === -1) {
-        overflow = WEEKDAY;
-      }
-      getParsingFlags(m).overflow = overflow;
-    }
-    return m;
-  }
-  var extendedIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})-(?:\d\d-\d\d|W\d\d-\d|W\d\d|\d\d\d|\d\d))(?:(T| )(\d\d(?::\d\d(?::\d\d(?:[.,]\d+)?)?)?)([+-]\d\d(?::?\d\d)?|\s*Z)?)?$/, basicIsoRegex = /^\s*((?:[+-]\d{6}|\d{4})(?:\d\d\d\d|W\d\d\d|W\d\d|\d\d\d|\d\d|))(?:(T| )(\d\d(?:\d\d(?:\d\d(?:[.,]\d+)?)?)?)([+-]\d\d(?::?\d\d)?|\s*Z)?)?$/, tzRegex = /Z|[+-]\d\d(?::?\d\d)?/, isoDates = [
-    ["YYYYYY-MM-DD", /[+-]\d{6}-\d\d-\d\d/],
-    ["YYYY-MM-DD", /\d{4}-\d\d-\d\d/],
-    ["GGGG-[W]WW-E", /\d{4}-W\d\d-\d/],
-    ["GGGG-[W]WW", /\d{4}-W\d\d/, false],
-    ["YYYY-DDD", /\d{4}-\d{3}/],
-    ["YYYY-MM", /\d{4}-\d\d/, false],
-    ["YYYYYYMMDD", /[+-]\d{10}/],
-    ["YYYYMMDD", /\d{8}/],
-    ["GGGG[W]WWE", /\d{4}W\d{3}/],
-    ["GGGG[W]WW", /\d{4}W\d{2}/, false],
-    ["YYYYDDD", /\d{7}/],
-    ["YYYYMM", /\d{6}/, false],
-    ["YYYY", /\d{4}/, false]
-  ], isoTimes = [
-    ["HH:mm:ss.SSSS", /\d\d:\d\d:\d\d\.\d+/],
-    ["HH:mm:ss,SSSS", /\d\d:\d\d:\d\d,\d+/],
-    ["HH:mm:ss", /\d\d:\d\d:\d\d/],
-    ["HH:mm", /\d\d:\d\d/],
-    ["HHmmss.SSSS", /\d\d\d\d\d\d\.\d+/],
-    ["HHmmss,SSSS", /\d\d\d\d\d\d,\d+/],
-    ["HHmmss", /\d\d\d\d\d\d/],
-    ["HHmm", /\d\d\d\d/],
-    ["HH", /\d\d/]
-  ], aspNetJsonRegex = /^\/?Date\((-?\d+)/i, rfc2822 = /^(?:(Mon|Tue|Wed|Thu|Fri|Sat|Sun),?\s)?(\d{1,2})\s(Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec)\s(\d{2,4})\s(\d\d):(\d\d)(?::(\d\d))?\s(?:(UT|GMT|[ECMP][SD]T)|([Zz])|([+-]\d{4}))$/, obsOffsets = {
-    UT: 0,
-    GMT: 0,
-    EDT: -4 * 60,
-    EST: -5 * 60,
-    CDT: -5 * 60,
-    CST: -6 * 60,
-    MDT: -6 * 60,
-    MST: -7 * 60,
-    PDT: -7 * 60,
-    PST: -8 * 60
-  };
-  function configFromISO(config) {
-    var i2, l, string = config._i, match = extendedIsoRegex.exec(string) || basicIsoRegex.exec(string), allowTime, dateFormat, timeFormat, tzFormat, isoDatesLen = isoDates.length, isoTimesLen = isoTimes.length;
-    if (match) {
-      getParsingFlags(config).iso = true;
-      for (i2 = 0, l = isoDatesLen; i2 < l; i2++) {
-        if (isoDates[i2][1].exec(match[1])) {
-          dateFormat = isoDates[i2][0];
-          allowTime = isoDates[i2][2] !== false;
-          break;
-        }
-      }
-      if (dateFormat == null) {
-        config._isValid = false;
-        return;
-      }
-      if (match[3]) {
-        for (i2 = 0, l = isoTimesLen; i2 < l; i2++) {
-          if (isoTimes[i2][1].exec(match[3])) {
-            timeFormat = (match[2] || " ") + isoTimes[i2][0];
-            break;
-          }
-        }
-        if (timeFormat == null) {
-          config._isValid = false;
-          return;
-        }
-      }
-      if (!allowTime && timeFormat != null) {
-        config._isValid = false;
-        return;
-      }
-      if (match[4]) {
-        if (tzRegex.exec(match[4])) {
-          tzFormat = "Z";
-        } else {
-          config._isValid = false;
-          return;
-        }
-      }
-      config._f = dateFormat + (timeFormat || "") + (tzFormat || "");
-      configFromStringAndFormat(config);
-    } else {
-      config._isValid = false;
-    }
-  }
-  function extractFromRFC2822Strings(yearStr, monthStr, dayStr, hourStr, minuteStr, secondStr) {
-    var result = [
-      untruncateYear(yearStr),
-      defaultLocaleMonthsShort.indexOf(monthStr),
-      parseInt(dayStr, 10),
-      parseInt(hourStr, 10),
-      parseInt(minuteStr, 10)
-    ];
-    if (secondStr) {
-      result.push(parseInt(secondStr, 10));
-    }
-    return result;
-  }
-  function untruncateYear(yearStr) {
-    var year = parseInt(yearStr, 10);
-    if (year <= 49) {
-      return 2e3 + year;
-    } else if (year <= 999) {
-      return 1900 + year;
-    }
-    return year;
-  }
-  function preprocessRFC2822(s) {
-    return s.replace(/\([^()]*\)|[\n\t]/g, " ").replace(/(\s\s+)/g, " ").replace(/^\s\s*/, "").replace(/\s\s*$/, "");
-  }
-  function checkWeekday(weekdayStr, parsedInput, config) {
-    if (weekdayStr) {
-      var weekdayProvided = defaultLocaleWeekdaysShort.indexOf(weekdayStr), weekdayActual = new Date(
-        parsedInput[0],
-        parsedInput[1],
-        parsedInput[2]
-      ).getDay();
-      if (weekdayProvided !== weekdayActual) {
-        getParsingFlags(config).weekdayMismatch = true;
-        config._isValid = false;
-        return false;
-      }
-    }
-    return true;
-  }
-  function calculateOffset(obsOffset, militaryOffset, numOffset) {
-    if (obsOffset) {
-      return obsOffsets[obsOffset];
-    } else if (militaryOffset) {
-      return 0;
-    } else {
-      var hm = parseInt(numOffset, 10), m = hm % 100, h = (hm - m) / 100;
-      return h * 60 + m;
-    }
-  }
-  function configFromRFC2822(config) {
-    var match = rfc2822.exec(preprocessRFC2822(config._i)), parsedArray;
-    if (match) {
-      parsedArray = extractFromRFC2822Strings(
-        match[4],
-        match[3],
-        match[2],
-        match[5],
-        match[6],
-        match[7]
-      );
-      if (!checkWeekday(match[1], parsedArray, config)) {
-        return;
-      }
-      config._a = parsedArray;
-      config._tzm = calculateOffset(match[8], match[9], match[10]);
-      config._d = createUTCDate.apply(null, config._a);
-      config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-      getParsingFlags(config).rfc2822 = true;
-    } else {
-      config._isValid = false;
-    }
-  }
-  function configFromString(config) {
-    var matched = aspNetJsonRegex.exec(config._i);
-    if (matched !== null) {
-      config._d = /* @__PURE__ */ new Date(+matched[1]);
-      return;
-    }
-    configFromISO(config);
-    if (config._isValid === false) {
-      delete config._isValid;
-    } else {
-      return;
-    }
-    configFromRFC2822(config);
-    if (config._isValid === false) {
-      delete config._isValid;
-    } else {
-      return;
-    }
-    if (config._strict) {
-      config._isValid = false;
-    } else {
-      hooks.createFromInputFallback(config);
-    }
-  }
-  hooks.createFromInputFallback = deprecate(
-    "value provided is not in a recognized RFC2822 or ISO format. moment construction falls back to js Date(), which is not reliable across all browsers and versions. Non RFC2822/ISO date formats are discouraged. Please refer to http://momentjs.com/guides/#/warnings/js-date/ for more info.",
-    function(config) {
-      config._d = /* @__PURE__ */ new Date(config._i + (config._useUTC ? " UTC" : ""));
-    }
-  );
-  function defaults(a, b, c) {
-    if (a != null) {
-      return a;
-    }
-    if (b != null) {
-      return b;
-    }
-    return c;
-  }
-  function currentDateArray(config, now2, forWeek) {
-    var hadWeekContext = Object.prototype.hasOwnProperty.call(
-      config,
-      "_isDefaultDatePartsForWeek"
-    ), weekContext = config._isDefaultDatePartsForWeek;
-    config._isDefaultDatePartsForWeek = !!forWeek;
-    try {
-      return hooks._getDefaultDateParts(config, now2, forWeek);
-    } finally {
-      if (hadWeekContext) {
-        config._isDefaultDatePartsForWeek = weekContext;
-      } else {
-        delete config._isDefaultDatePartsForWeek;
-      }
-    }
-  }
-  function currentDateNow(config) {
-    var now2 = config._defaultDatePartsNow;
-    if (!now2) {
-      return hooks.now();
-    }
-    if (!now2.hasValue) {
-      now2.value = hooks.now();
-      now2.hasValue = true;
-    }
-    return now2.value;
-  }
-  function getDefaultDateParts(config, now2, forWeek) {
-    var useWeekDefaults = forWeek || config._isDefaultDatePartsForWeek, nowValue = useWeekDefaults ? createLocal(now2) : new Date(now2);
-    if (useWeekDefaults) {
-      return [nowValue.year(), nowValue.month(), nowValue.date()];
-    }
-    if (config._useUTC) {
-      return [
-        nowValue.getUTCFullYear(),
-        nowValue.getUTCMonth(),
-        nowValue.getUTCDate()
-      ];
-    }
-    return [nowValue.getFullYear(), nowValue.getMonth(), nowValue.getDate()];
-  }
-  hooks._getDefaultDateParts = getDefaultDateParts;
-  function configFromArray(config) {
-    var i2, date, input = [], now2, currentDate, expectedWeekday, yearToUse, dateIsDefaulted;
-    if (config._d) {
-      return;
-    }
-    if (config._a[YEAR] == null || config._a[MONTH] == null || config._a[DATE] == null) {
-      now2 = currentDateNow(config);
-      currentDate = currentDateArray(config, now2);
-    }
-    if (config._w && config._a[DATE] == null && config._a[MONTH] == null) {
-      dayOfYearFromWeekInfo(config, currentDateArray(config, now2, true));
-    }
-    if (config._dayOfYear != null) {
-      yearToUse = config._a[YEAR] != null ? config._a[YEAR] : currentDate[YEAR];
-      if (config._dayOfYear > daysInYear(yearToUse) || config._dayOfYear === 0) {
-        getParsingFlags(config)._overflowDayOfYear = true;
-      }
-      date = createUTCDate(yearToUse, 0, config._dayOfYear);
-      config._a[MONTH] = date.getUTCMonth();
-      config._a[DATE] = date.getUTCDate();
-    }
-    dateIsDefaulted = config._a[YEAR] == null || config._a[MONTH] == null || config._a[DATE] == null;
-    for (i2 = 0; i2 < 3 && config._a[i2] == null; ++i2) {
-      config._a[i2] = input[i2] = currentDate[i2];
-    }
-    for (; i2 < 7; i2++) {
-      config._a[i2] = input[i2] = config._a[i2] == null ? i2 === 2 ? 1 : 0 : config._a[i2];
-    }
-    if (config._a[HOUR] === 24 && config._a[MINUTE] === 0 && config._a[SECOND] === 0 && config._a[MILLISECOND] === 0) {
-      config._nextDay = true;
-      config._a[HOUR] = 0;
-    }
-    config._d = (config._useUTC ? createUTCDate : createDate).apply(
-      null,
-      input
-    );
-    expectedWeekday = config._useUTC ? config._d.getUTCDay() : config._d.getDay();
-    if (config._tzm != null) {
-      config._d.setUTCMinutes(config._d.getUTCMinutes() - config._tzm);
-    }
-    if (config._nextDay) {
-      config._a[HOUR] = 24;
-    }
-    if (config._w && typeof config._w.d !== "undefined" && !dateIsDefaulted && config._w.d !== expectedWeekday) {
-      getParsingFlags(config).weekdayMismatch = true;
-    }
-  }
-  function dayOfYearFromWeekInfo(config, currentDate) {
-    var w, weekYear, week, weekday, dow, doy, temp, weekdayOverflow, curWeek;
-    w = config._w;
-    if (w.GG != null || w.W != null || w.E != null) {
-      dow = 1;
-      doy = 4;
-      weekYear = defaults(
-        w.GG,
-        config._a[YEAR],
-        weekOfYearFromDate(
-          currentDate[YEAR],
-          currentDate[MONTH],
-          currentDate[DATE],
-          1,
-          4
-        ).year
-      );
-      week = defaults(w.W, 1);
-      weekday = defaults(w.E, 1);
-      if (weekday < 1 || weekday > 7) {
-        weekdayOverflow = true;
-      }
-    } else {
-      dow = config._locale._week.dow;
-      doy = config._locale._week.doy;
-      curWeek = weekOfYearFromDate(
-        currentDate[YEAR],
-        currentDate[MONTH],
-        currentDate[DATE],
-        dow,
-        doy
-      );
-      weekYear = defaults(w.gg, config._a[YEAR], curWeek.year);
-      week = defaults(w.w, curWeek.week);
-      if (w.d != null) {
-        weekday = w.d;
-        if (weekday < 0 || weekday > 6) {
-          weekdayOverflow = true;
-        }
-      } else if (w.e != null) {
-        weekday = w.e + dow;
-        if (w.e < 0 || w.e > 6) {
-          weekdayOverflow = true;
-        }
-      } else {
-        weekday = dow;
-      }
-    }
-    if (week < 1 || week > weeksInYear(weekYear, dow, doy)) {
-      getParsingFlags(config)._overflowWeeks = true;
-    } else if (weekdayOverflow != null) {
-      getParsingFlags(config)._overflowWeekday = true;
-    } else {
-      temp = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy);
-      config._a[YEAR] = temp.year;
-      config._dayOfYear = temp.dayOfYear;
-    }
-  }
-  hooks.ISO_8601 = function() {
-  };
-  hooks.RFC_2822 = function() {
-  };
-  function configFromStringAndFormat(config) {
-    if (config._f === hooks.ISO_8601) {
-      configFromISO(config);
-      return;
-    }
-    if (config._f === hooks.RFC_2822) {
-      configFromRFC2822(config);
-      return;
-    }
-    config._a = [];
-    getParsingFlags(config).empty = true;
-    var string = "" + config._i, i2, parsedInput, tokens2, token2, skipped, stringLength = string.length, totalParsedInputLength = 0, era, tokenLen;
-    tokens2 = expandFormat(config._f, config._locale).match(formattingTokens) || [];
-    tokenLen = tokens2.length;
-    for (i2 = 0; i2 < tokenLen; i2++) {
-      token2 = tokens2[i2];
-      parsedInput = (string.match(getParseRegexForToken(token2, config)) || [])[0];
-      if (parsedInput) {
-        skipped = string.substr(0, string.indexOf(parsedInput));
-        if (skipped.length > 0) {
-          getParsingFlags(config).unusedInput.push(skipped);
-        }
-        string = string.slice(
-          string.indexOf(parsedInput) + parsedInput.length
-        );
-        totalParsedInputLength += parsedInput.length;
-      }
-      if (formatTokenFunctions[token2]) {
-        if (parsedInput) {
-          getParsingFlags(config).empty = false;
-        } else {
-          getParsingFlags(config).unusedTokens.push(token2);
-        }
-        addTimeToArrayFromToken(token2, parsedInput, config);
-      } else if (config._strict && !parsedInput) {
-        getParsingFlags(config).unusedTokens.push(token2);
-      }
-    }
-    getParsingFlags(config).charsLeftOver = stringLength - totalParsedInputLength;
-    if (string.length > 0) {
-      getParsingFlags(config).unusedInput.push(string);
-    }
-    if (config._a[HOUR] <= 12 && getParsingFlags(config).bigHour === true && config._a[HOUR] > 0) {
-      getParsingFlags(config).bigHour = void 0;
-    }
-    getParsingFlags(config).parsedDateParts = config._a.slice(0);
-    getParsingFlags(config).meridiem = config._meridiem;
-    config._a[HOUR] = meridiemFixWrap(
-      config._locale,
-      config._a[HOUR],
-      config._meridiem
-    );
-    era = getParsingFlags(config).era;
-    if (era !== null) {
-      config._a[YEAR] = config._locale.erasConvertYear(era, config._a[YEAR]);
-    }
-    configFromArray(config);
-    checkOverflow(config);
-  }
-  function meridiemFixWrap(locale2, hour, meridiem2) {
-    var isPm;
-    if (meridiem2 == null) {
-      return hour;
-    }
-    if (locale2.meridiemHour != null) {
-      return locale2.meridiemHour(hour, meridiem2);
-    } else if (locale2.isPM != null) {
-      isPm = locale2.isPM(meridiem2);
-      if (isPm && hour < 12) {
-        hour += 12;
-      }
-      if (!isPm && hour === 12) {
-        hour = 0;
-      }
-      return hour;
-    } else {
-      return hour;
-    }
-  }
-  function configFromStringAndArray(config) {
-    var tempConfig, bestMoment, scoreToBeat, i2, currentScore, validFormatFound, bestFormatIsValid = false, defaultDatePartsNow = {}, configfLen = config._f.length;
-    if (configfLen === 0) {
-      getParsingFlags(config).invalidFormat = true;
-      config._d = /* @__PURE__ */ new Date(NaN);
-      return;
-    }
-    for (i2 = 0; i2 < configfLen; i2++) {
-      currentScore = 0;
-      validFormatFound = false;
-      tempConfig = copyConfig({}, config);
-      if (config._useUTC != null) {
-        tempConfig._useUTC = config._useUTC;
-      }
-      tempConfig._defaultDatePartsNow = defaultDatePartsNow;
-      tempConfig._f = config._f[i2];
-      configFromStringAndFormat(tempConfig);
-      if (isValid$2(tempConfig)) {
-        validFormatFound = true;
-      }
-      currentScore += getParsingFlags(tempConfig).charsLeftOver;
-      currentScore += getParsingFlags(tempConfig).unusedTokens.length * 10;
-      getParsingFlags(tempConfig).score = currentScore;
-      if (!bestFormatIsValid) {
-        if (scoreToBeat == null || currentScore < scoreToBeat || validFormatFound) {
-          scoreToBeat = currentScore;
-          bestMoment = tempConfig;
-          if (validFormatFound) {
-            bestFormatIsValid = true;
-          }
-        }
-      } else {
-        if (currentScore < scoreToBeat) {
-          scoreToBeat = currentScore;
-          bestMoment = tempConfig;
-        }
-      }
-    }
-    extend(config, bestMoment || tempConfig);
-  }
-  function configFromObject(config) {
-    if (config._d) {
-      return;
-    }
-    var i2 = normalizeObjectUnits(config._i), dayOrDate = i2.day === void 0 ? i2.date : i2.day;
-    config._a = map(
-      [i2.year, i2.month, dayOrDate, i2.hour, i2.minute, i2.second, i2.millisecond],
-      function(obj) {
-        return obj && parseInt(obj, 10);
-      }
-    );
-    configFromArray(config);
-  }
-  function createFromConfig(config) {
-    var res = new Moment(checkOverflow(prepareConfig(config)));
-    if (res._nextDay) {
-      res.add(1, "d");
-      res._nextDay = void 0;
-    }
-    return res;
-  }
-  function prepareConfig(config) {
-    var input = config._i, format2 = config._f;
-    config._locale = config._locale || getLocale(config._l);
-    if (input === null || format2 === void 0 && input === "") {
-      return createInvalid$1({ nullInput: true });
-    }
-    if (typeof input === "string") {
-      config._i = input = config._locale.preparse(input);
-    }
-    if (isMoment(input)) {
-      return new Moment(checkOverflow(input));
-    } else if (isDate(input)) {
-      config._d = input;
-    } else if (isArray(format2)) {
-      configFromStringAndArray(config);
-    } else if (format2) {
-      configFromStringAndFormat(config);
-    } else {
-      configFromInput(config);
-    }
-    if (!isValid$2(config)) {
-      config._d = null;
-    }
-    return config;
-  }
-  function configFromInput(config) {
-    var input = config._i;
-    if (isUndefined(input)) {
-      config._d = new Date(hooks.now());
-    } else if (isDate(input)) {
-      config._d = new Date(input.valueOf());
-    } else if (typeof input === "string") {
-      configFromString(config);
-    } else if (isArray(input)) {
-      config._a = map(input.slice(0), function(obj) {
-        return parseInt(obj, 10);
-      });
-      configFromArray(config);
-    } else if (isObject(input)) {
-      configFromObject(config);
-    } else if (isNumber(input)) {
-      config._d = new Date(input);
-    } else {
-      hooks.createFromInputFallback(config);
-    }
-  }
-  function createLocalOrUTC(input, format2, locale2, strict, isUTC) {
-    var c = {};
-    if (format2 === true || format2 === false) {
-      strict = format2;
-      format2 = void 0;
-    }
-    if (locale2 === true || locale2 === false) {
-      strict = locale2;
-      locale2 = void 0;
-    }
-    if (isObject(input) && isObjectEmpty(input) || isArray(input) && input.length === 0) {
-      input = void 0;
-    }
-    c._isAMomentObject = true;
-    c._useUTC = c._isUTC = isUTC;
-    c._l = locale2;
-    c._i = input;
-    c._f = format2;
-    c._strict = strict;
-    return createFromConfig(c);
-  }
-  function createLocal(input, format2, locale2, strict) {
-    return createLocalOrUTC(input, format2, locale2, strict, false);
-  }
-  var prototypeMin = deprecate(
-    "moment().min is deprecated, use moment.max instead. http://momentjs.com/guides/#/warnings/min-max/",
-    function() {
-      var other = createLocal.apply(null, arguments);
-      if (this.isValid() && other.isValid()) {
-        return other < this ? this : other;
-      } else {
-        return createInvalid$1();
-      }
-    }
-  ), prototypeMax = deprecate(
-    "moment().max is deprecated, use moment.min instead. http://momentjs.com/guides/#/warnings/min-max/",
-    function() {
-      var other = createLocal.apply(null, arguments);
-      if (this.isValid() && other.isValid()) {
-        return other > this ? this : other;
-      } else {
-        return createInvalid$1();
-      }
-    }
-  );
-  function pickBy(fn, moments) {
-    var res, i2;
-    if (moments.length === 1 && isArray(moments[0])) {
-      moments = moments[0];
-    }
-    if (!moments.length) {
-      return createLocal();
-    }
-    for (i2 = 0; i2 < moments.length; ++i2) {
-      if (isMoment(moments[i2])) {
-        res = moments[i2];
-        break;
-      }
-    }
-    if (!res) {
-      return createInvalid$1();
-    }
-    for (++i2; i2 < moments.length; ++i2) {
-      if (isMoment(moments[i2]) && (!moments[i2].isValid() || moments[i2][fn](res))) {
-        res = moments[i2];
-      }
-    }
-    return res;
-  }
-  function min() {
-    var args = [].slice.call(arguments, 0);
-    return pickBy("isBefore", args);
-  }
-  function max() {
-    var args = [].slice.call(arguments, 0);
-    return pickBy("isAfter", args);
-  }
-  var now = function() {
-    return Date.now ? Date.now() : +/* @__PURE__ */ new Date();
-  };
-  var ordering = [
-    "year",
-    "quarter",
-    "month",
-    "week",
-    "day",
-    "hour",
-    "minute",
-    "second",
-    "millisecond"
-  ];
-  function isDurationValid(m) {
-    var key, unitHasDecimal = false, i2, orderLen = ordering.length;
-    for (key in m) {
-      if (hasOwnProp(m, key) && !(indexOf.call(ordering, key) !== -1 && (m[key] == null || !isNaN(m[key])))) {
-        return false;
-      }
-    }
-    for (i2 = 0; i2 < orderLen; ++i2) {
-      if (m[ordering[i2]]) {
-        if (unitHasDecimal) {
-          return false;
-        }
-        if (parseFloat(m[ordering[i2]]) !== toInt(m[ordering[i2]])) {
-          unitHasDecimal = true;
-        }
-      }
-    }
-    return true;
-  }
-  function isValid$1() {
-    return this._isValid;
-  }
-  function createInvalid() {
-    return createDuration(NaN);
-  }
-  function Duration(duration) {
-    var normalizedInput = normalizeObjectUnits(duration), years2 = normalizedInput.year || 0, quarters = normalizedInput.quarter || 0, months2 = normalizedInput.month || 0, weeks2 = normalizedInput.week || normalizedInput.isoWeek || 0, days2 = normalizedInput.day || 0, hours2 = normalizedInput.hour || 0, minutes2 = normalizedInput.minute || 0, seconds2 = normalizedInput.second || 0, milliseconds2 = normalizedInput.millisecond || 0;
-    this._isValid = isDurationValid(normalizedInput);
-    this._milliseconds = +milliseconds2 + seconds2 * 1e3 + // 1000
-    minutes2 * 6e4 + // 1000 * 60
-    hours2 * 1e3 * 60 * 60;
-    this._days = +days2 + weeks2 * 7;
-    this._months = +months2 + quarters * 3 + years2 * 12;
-    this._data = {};
-    this._locale = getLocale();
-    this._bubble();
-  }
-  function isDuration(obj) {
-    return obj instanceof Duration;
-  }
-  function absRound(number) {
-    if (number < 0) {
-      return Math.round(-1 * number) * -1;
-    } else {
-      return Math.round(number);
-    }
-  }
-  function compareArrays(array1, array2, dontConvert) {
-    var len = Math.min(array1.length, array2.length), lengthDiff = Math.abs(array1.length - array2.length), diffs = 0, i2;
-    for (i2 = 0; i2 < len; i2++) {
-      if (toInt(array1[i2]) !== toInt(array2[i2])) {
-        diffs++;
-      }
-    }
-    return diffs + lengthDiff;
-  }
-  function offset(token2, separator) {
-    addFormatToken(token2, 0, 0, function() {
-      var offset2 = this.utcOffset(), sign2 = "+";
-      if (offset2 < 0) {
-        offset2 = -offset2;
-        sign2 = "-";
-      }
-      return sign2 + zeroFill(~~(offset2 / 60), 2) + separator + zeroFill(~~offset2 % 60, 2);
-    });
-  }
-  offset("Z", ":");
-  offset("ZZ", "");
-  addRegexToken("Z", matchShortOffset);
-  addRegexToken("ZZ", matchShortOffset);
-  addParseToken(["Z", "ZZ"], function(input, array, config) {
-    var offset2 = offsetFromString(matchShortOffset, input);
-    config._useUTC = true;
-    config._tzm = offset2;
-    if (offset2 === null) {
-      getParsingFlags(config).invalidOffset = input;
-    }
-  });
-  var chunkOffset = /([\+\-]|\d\d)/gi;
-  function offsetFromString(matcher, string) {
-    var matches = (string || "").match(matcher), chunk, parts, minutes2;
-    if (matches === null) {
-      return null;
-    }
-    chunk = matches[matches.length - 1] || [];
-    parts = (chunk + "").match(chunkOffset) || ["-", 0, 0];
-    minutes2 = +(parts[1] * 60) + toInt(parts[2]);
-    if (toInt(parts[2]) > 59 || (parts[0] === "+" ? minutes2 > 14 * 60 : minutes2 > 12 * 60)) {
-      return null;
-    }
-    return minutes2 === 0 ? 0 : parts[0] === "+" ? minutes2 : -minutes2;
-  }
-  function cloneWithOffset(input, model) {
-    var res, diff2;
-    if (model._isUTC) {
-      res = model.clone();
-      diff2 = (isMoment(input) || isDate(input) ? input.valueOf() : createLocal(input).valueOf()) - res.valueOf();
-      res._d.setTime(res._d.valueOf() + diff2);
-      hooks.updateOffset(res, false);
-      return res;
-    } else {
-      return createLocal(input).local();
-    }
-  }
-  function getDateOffset(m) {
-    return -Math.round(m._d.getTimezoneOffset());
-  }
-  hooks.updateOffset = function() {
-  };
-  function getSetOffset(input, keepLocalTime, keepMinutes) {
-    var offset2 = this._offset || 0, localAdjust;
-    if (!this.isValid()) {
-      return input != null ? this : NaN;
-    }
-    if (input != null) {
-      if (typeof input === "string") {
-        input = offsetFromString(matchShortOffset, input);
-        if (input === null) {
-          return this;
-        }
-      } else if (Math.abs(input) < 16 && !keepMinutes) {
-        input = input * 60;
-      }
-      if (!this._isUTC && keepLocalTime) {
-        localAdjust = getDateOffset(this);
-      }
-      this._offset = input;
-      this._isUTC = true;
-      if (localAdjust != null) {
-        this.add(localAdjust, "m");
-      }
-      if (offset2 !== input) {
-        if (!keepLocalTime || this._changeInProgress) {
-          addSubtract$1(
-            this,
-            createDuration(input - offset2, "m"),
-            1,
-            false
-          );
-        } else if (!this._changeInProgress) {
-          this._changeInProgress = true;
-          hooks.updateOffset(this, true);
-          this._changeInProgress = null;
-        }
-      }
-      return this;
-    } else {
-      return this._isUTC ? offset2 : getDateOffset(this);
-    }
-  }
-  function getSetZone(input, keepLocalTime) {
-    if (input != null) {
-      if (typeof input !== "string") {
-        input = -input;
-      }
-      this.utcOffset(input, keepLocalTime);
-      return this;
-    } else {
-      return -this.utcOffset();
-    }
-  }
-  function setOffsetToUTC(keepLocalTime) {
-    return this.utcOffset(0, keepLocalTime);
-  }
-  function setOffsetToLocal(keepLocalTime) {
-    if (this._isUTC) {
-      this.utcOffset(0, keepLocalTime);
-      this._isUTC = false;
-      if (keepLocalTime) {
-        this.subtract(getDateOffset(this), "m");
-      }
-    }
-    return this;
-  }
-  function setOffsetToParsedOffset() {
-    if (this._tzm != null) {
-      this.utcOffset(this._tzm, false, true);
-    } else if (typeof this._i === "string") {
-      var tZone = offsetFromString(matchOffset, this._i);
-      if (tZone != null) {
-        this.utcOffset(tZone);
-      } else {
-        this.utcOffset(0, true);
-      }
-    }
-    return this;
-  }
-  function hasAlignedHourOffset(input) {
-    if (!this.isValid()) {
-      return false;
-    }
-    input = input ? createLocal(input).utcOffset() : 0;
-    return (this.utcOffset() - input) % 60 === 0;
-  }
-  function isDaylightSavingTime() {
-    return this.utcOffset() > this.clone().month(0).utcOffset() || this.utcOffset() > this.clone().month(5).utcOffset();
-  }
-  function isDaylightSavingTimeShifted() {
-    if (!isUndefined(this._isDSTShifted)) {
-      return this._isDSTShifted;
-    }
-    var c = {}, other;
-    copyConfig(c, this);
-    c = prepareConfig(c);
-    if (c._a) {
-      other = c._isUTC ? createUTC(c._a) : createLocal(c._a);
-      this._isDSTShifted = this.isValid() && compareArrays(c._a, other.toArray()) > 0;
-    } else {
-      this._isDSTShifted = false;
-    }
-    return this._isDSTShifted;
-  }
-  function isLocal() {
-    return this.isValid() ? !this._isUTC : false;
-  }
-  function isUtcOffset() {
-    return this.isValid() ? this._isUTC : false;
-  }
-  function isUtc() {
-    return this.isValid() ? this._isUTC && this._offset === 0 : false;
-  }
-  var aspNetRegex = /^(-|\+)?(?:(\d*)[. ])?(\d+):(\d+)(?::(\d+)(\.\d*)?)?$/, isoRegex = /^(-|\+)?P(?:([-+]?[0-9,.]*)Y)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)W)?(?:([-+]?[0-9,.]*)D)?(?:T(?:([-+]?[0-9,.]*)H)?(?:([-+]?[0-9,.]*)M)?(?:([-+]?[0-9,.]*)S)?)?$/;
-  function createDuration(input, key) {
-    var duration = input, match = null, sign2, ret, diffRes;
-    if (isDuration(input)) {
-      duration = {
-        ms: input._milliseconds,
-        d: input._days,
-        M: input._months
-      };
-    } else if (isNumber(input) || !isNaN(+input)) {
-      duration = {};
-      if (key) {
-        duration[key] = +input;
-      } else {
-        duration.milliseconds = +input;
-      }
-    } else if (match = aspNetRegex.exec(input)) {
-      sign2 = match[1] === "-" ? -1 : 1;
-      duration = {
-        y: 0,
-        d: toInt(match[DATE]) * sign2,
-        h: toInt(match[HOUR]) * sign2,
-        m: toInt(match[MINUTE]) * sign2,
-        s: toInt(match[SECOND]) * sign2,
-        ms: toInt(absRound(match[MILLISECOND] * 1e3)) * sign2
-        // the millisecond decimal point is included in the match
-      };
-    } else if (match = isoRegex.exec(input)) {
-      sign2 = match[1] === "-" ? -1 : 1;
-      duration = {
-        y: parseIso(match[2], sign2),
-        M: parseIso(match[3], sign2),
-        w: parseIso(match[4], sign2),
-        d: parseIso(match[5], sign2),
-        h: parseIso(match[6], sign2),
-        m: parseIso(match[7], sign2),
-        s: parseIso(match[8], sign2)
-      };
-    } else if (duration == null) {
-      duration = {};
-    } else if (typeof duration === "object" && ("from" in duration || "to" in duration)) {
-      diffRes = momentsDifference(
-        createLocal(duration.from),
-        createLocal(duration.to)
-      );
-      duration = {};
-      duration.ms = diffRes.milliseconds;
-      duration.M = diffRes.months;
-    }
-    ret = new Duration(duration);
-    if (isDuration(input) && hasOwnProp(input, "_locale")) {
-      ret._locale = input._locale;
-    }
-    if (isDuration(input) && hasOwnProp(input, "_isValid")) {
-      ret._isValid = input._isValid;
-    }
-    return ret;
-  }
-  createDuration.fn = Duration.prototype;
-  createDuration.invalid = createInvalid;
-  function parseIso(inp, sign2) {
-    var res = inp && parseFloat(inp.replace(",", "."));
-    return (isNaN(res) ? 0 : res) * sign2;
-  }
-  function positiveMomentsDifference(base, other) {
-    var res = {};
-    res.months = other.month() - base.month() + (other.year() - base.year()) * 12;
-    if (base.clone().add(res.months, "M").isAfter(other)) {
-      --res.months;
-    }
-    res.milliseconds = +other - +base.clone().add(res.months, "M");
-    return res;
-  }
-  function momentsDifference(base, other) {
-    var res;
-    if (!(base.isValid() && other.isValid())) {
-      return { milliseconds: 0, months: 0 };
-    }
-    other = cloneWithOffset(other, base);
-    if (base.isBefore(other)) {
-      res = positiveMomentsDifference(base, other);
-    } else {
-      res = positiveMomentsDifference(other, base);
-      res.milliseconds = -res.milliseconds;
-      res.months = -res.months;
-    }
-    return res;
-  }
-  function createAdder(direction, name) {
-    return function(val, period) {
-      var dur, tmp2;
-      if (period !== null && !isNaN(+period)) {
-        deprecateSimple(
-          name,
-          "moment()." + name + "(period, number) is deprecated. Please use moment()." + name + "(number, period). See http://momentjs.com/guides/#/warnings/add-inverted-param/ for more info."
-        );
-        tmp2 = val;
-        val = period;
-        period = tmp2;
-      }
-      dur = createDuration(val, period);
-      addSubtract$1(this, dur, direction);
-      return this;
-    };
-  }
-  function addSubtract$1(mom, duration, isAdding, updateOffset) {
-    var milliseconds2 = duration._milliseconds, days2 = absRound(duration._days), months2 = absRound(duration._months);
-    if (!mom.isValid()) {
-      return;
-    }
-    updateOffset = updateOffset == null ? true : updateOffset;
-    if (months2) {
-      setMonth(mom, get$2(mom, "Month") + months2 * isAdding);
-    }
-    if (days2) {
-      set$1(mom, "Date", get$2(mom, "Date") + days2 * isAdding);
-    }
-    if (milliseconds2) {
-      mom._d.setTime(mom._d.valueOf() + milliseconds2 * isAdding);
-    }
-    if (updateOffset) {
-      hooks.updateOffset(mom, days2 || months2);
-    }
-  }
-  var add$1 = createAdder(1, "add"), subtract$1 = createAdder(-1, "subtract");
-  function isString(input) {
-    return typeof input === "string" || input instanceof String;
-  }
-  function isMomentInput(input) {
-    return isMoment(input) || isDate(input) || isString(input) || isNumber(input) || isNumberOrStringArray(input) || isMomentInputObject(input) || input === null || input === void 0;
-  }
-  function isMomentInputObject(input) {
-    var objectTest = isObject(input) && !isObjectEmpty(input), propertyTest = false, properties2 = [
-      "years",
-      "year",
-      "y",
-      "months",
-      "month",
-      "M",
-      "days",
-      "day",
-      "d",
-      "dates",
-      "date",
-      "D",
-      "hours",
-      "hour",
-      "h",
-      "minutes",
-      "minute",
-      "m",
-      "seconds",
-      "second",
-      "s",
-      "milliseconds",
-      "millisecond",
-      "ms"
-    ], i2, property, propertyLen = properties2.length;
-    for (i2 = 0; i2 < propertyLen; i2 += 1) {
-      property = properties2[i2];
-      propertyTest = propertyTest || hasOwnProp(input, property);
-    }
-    return objectTest && propertyTest;
-  }
-  function isNumberOrStringArray(input) {
-    var arrayTest = isArray(input), dataTypeTest = false;
-    if (arrayTest) {
-      dataTypeTest = input.filter(function(item) {
-        return !isNumber(item) && isString(input);
-      }).length === 0;
-    }
-    return arrayTest && dataTypeTest;
-  }
-  function isCalendarSpec(input) {
-    var objectTest = isObject(input) && !isObjectEmpty(input), propertyTest = false, properties2 = [
-      "sameDay",
-      "nextDay",
-      "lastDay",
-      "nextWeek",
-      "lastWeek",
-      "sameElse"
-    ], i2, property;
-    for (i2 = 0; i2 < properties2.length; i2 += 1) {
-      property = properties2[i2];
-      propertyTest = propertyTest || hasOwnProp(input, property);
-    }
-    return objectTest && propertyTest;
-  }
-  function getCalendarFormat(myMoment, now2) {
-    var diff2 = myMoment.diff(now2, "days", true);
-    return diff2 < -6 ? "sameElse" : diff2 < -1 ? "lastWeek" : diff2 < 0 ? "lastDay" : diff2 < 1 ? "sameDay" : diff2 < 2 ? "nextDay" : diff2 < 7 ? "nextWeek" : "sameElse";
-  }
-  function calendar(time, formats) {
-    if (arguments.length === 1) {
-      if (!arguments[0]) {
-        time = void 0;
-        formats = void 0;
-      } else if (isMomentInput(arguments[0])) {
-        time = arguments[0];
-        formats = void 0;
-      } else if (isCalendarSpec(arguments[0])) {
-        formats = arguments[0];
-        time = void 0;
-      }
-    }
-    var now2 = time || createLocal(), sod = cloneWithOffset(now2, this).startOf("day"), format2 = hooks.calendarFormat(this, sod) || "sameElse", output = formats && (isFunction(formats[format2]) ? formats[format2].call(this, now2) : formats[format2]);
-    return this.format(
-      output || this.localeData().calendar(format2, this, createLocal(now2))
-    );
-  }
-  function clone$1() {
-    return new Moment(this);
-  }
-  function isAfter(input, units) {
-    var localInput = isMoment(input) ? input : createLocal(input);
-    if (!(this.isValid() && localInput.isValid())) {
-      return false;
-    }
-    units = normalizeUnits(units) || "millisecond";
-    if (units === "millisecond") {
-      return this.valueOf() > localInput.valueOf();
-    } else {
-      return localInput.valueOf() < this.clone().startOf(units).valueOf();
-    }
-  }
-  function isBefore(input, units) {
-    var localInput = isMoment(input) ? input : createLocal(input);
-    if (!(this.isValid() && localInput.isValid())) {
-      return false;
-    }
-    units = normalizeUnits(units) || "millisecond";
-    if (units === "millisecond") {
-      return this.valueOf() < localInput.valueOf();
-    } else {
-      return this.clone().endOf(units).valueOf() < localInput.valueOf();
-    }
-  }
-  function isBetween(from2, to2, units, inclusivity) {
-    var localFrom = isMoment(from2) ? from2 : createLocal(from2), localTo = isMoment(to2) ? to2 : createLocal(to2);
-    if (!(this.isValid() && localFrom.isValid() && localTo.isValid())) {
-      return false;
-    }
-    inclusivity = inclusivity || "()";
-    return (inclusivity[0] === "(" ? this.isAfter(localFrom, units) : !this.isBefore(localFrom, units)) && (inclusivity[1] === ")" ? this.isBefore(localTo, units) : !this.isAfter(localTo, units));
-  }
-  function isSame(input, units) {
-    var localInput = isMoment(input) ? input : createLocal(input), inputMs;
-    if (!(this.isValid() && localInput.isValid())) {
-      return false;
-    }
-    units = normalizeUnits(units) || "millisecond";
-    if (units === "millisecond") {
-      return this.valueOf() === localInput.valueOf();
-    } else {
-      inputMs = localInput.valueOf();
-      return this.clone().startOf(units).valueOf() <= inputMs && inputMs <= this.clone().endOf(units).valueOf();
-    }
-  }
-  function isSameOrAfter(input, units) {
-    return this.isSame(input, units) || this.isAfter(input, units);
-  }
-  function isSameOrBefore(input, units) {
-    return this.isSame(input, units) || this.isBefore(input, units);
-  }
-  function diff(input, units, asFloat) {
-    var that, zoneDelta, output;
-    if (!this.isValid()) {
-      return NaN;
-    }
-    that = cloneWithOffset(input, this);
-    if (!that.isValid()) {
-      return NaN;
-    }
-    zoneDelta = (that.utcOffset() - this.utcOffset()) * 6e4;
-    units = normalizeUnits(units);
-    switch (units) {
-      case "year":
-        output = monthDiff(this, that) / 12;
-        break;
-      case "month":
-        output = monthDiff(this, that);
-        break;
-      case "quarter":
-        output = monthDiff(this, that) / 3;
-        break;
-      case "second":
-        output = (this - that) / 1e3;
-        break;
-      // 1000
-      case "minute":
-        output = (this - that) / 6e4;
-        break;
-      // 1000 * 60
-      case "hour":
-        output = (this - that) / 36e5;
-        break;
-      // 1000 * 60 * 60
-      case "day":
-        output = (this - that - zoneDelta) / 864e5;
-        break;
-      // 1000 * 60 * 60 * 24, negate dst
-      case "week":
-        output = (this - that - zoneDelta) / 6048e5;
-        break;
-      // 1000 * 60 * 60 * 24 * 7, negate dst
-      default:
-        output = this - that;
-    }
-    return asFloat ? output : absFloor(output);
-  }
-  function monthDiff(a, b) {
-    if (a.date() < b.date()) {
-      return -monthDiff(b, a);
-    }
-    var wholeMonthDiff = (b.year() - a.year()) * 12 + (b.month() - a.month()), anchor = a.clone().add(wholeMonthDiff, "months"), anchor2, adjust;
-    if (b - anchor < 0) {
-      anchor2 = a.clone().add(wholeMonthDiff - 1, "months");
-      adjust = (b - anchor) / (anchor - anchor2);
-    } else {
-      anchor2 = a.clone().add(wholeMonthDiff + 1, "months");
-      adjust = (b - anchor) / (anchor2 - anchor);
-    }
-    return -(wholeMonthDiff + adjust) || 0;
-  }
-  hooks.defaultFormat = "YYYY-MM-DDTHH:mm:ssZ";
-  hooks.defaultFormatUtc = "YYYY-MM-DDTHH:mm:ss[Z]";
-  function toString() {
-    return this.clone().locale("en").format("ddd MMM DD YYYY HH:mm:ss [GMT]ZZ");
-  }
-  function toISOString$1(keepOffset) {
-    if (!this.isValid()) {
-      return null;
-    }
-    var utc = keepOffset !== true, m = utc ? this.clone().utc() : this;
-    if (m.year() < 0 || m.year() > 9999) {
-      return formatMoment(
-        m,
-        utc ? "YYYYYY-MM-DD[T]HH:mm:ss.SSS[Z]" : "YYYYYY-MM-DD[T]HH:mm:ss.SSSZ"
-      );
-    }
-    if (isFunction(Date.prototype.toISOString)) {
-      if (utc) {
-        return this.toDate().toISOString();
-      } else {
-        return new Date(this.valueOf() + this.utcOffset() * 60 * 1e3).toISOString().replace("Z", formatMoment(m, "Z"));
-      }
-    }
-    return formatMoment(
-      m,
-      utc ? "YYYY-MM-DD[T]HH:mm:ss.SSS[Z]" : "YYYY-MM-DD[T]HH:mm:ss.SSSZ"
-    );
-  }
-  function inspect() {
-    if (!this.isValid()) {
-      return "moment.invalid(/* " + this._i + " */)";
-    }
-    var func = "moment", zone = "", prefix, year, datetime, suffix;
-    if (!this.isLocal()) {
-      func = this.utcOffset() === 0 ? "moment.utc" : "moment.parseZone";
-      zone = "Z";
-    }
-    prefix = "[" + func + '("]';
-    year = 0 <= this.year() && this.year() <= 9999 ? "YYYY" : "YYYYYY";
-    datetime = "-MM-DD[T]HH:mm:ss.SSS";
-    suffix = zone + '[")]';
-    return this.format(prefix + year + datetime + suffix);
-  }
-  function format(inputString) {
-    if (!inputString) {
-      inputString = this.isUtc() ? hooks.defaultFormatUtc : hooks.defaultFormat;
-    }
-    var output = formatMoment(this, inputString);
-    return this.localeData().postformat(output);
-  }
-  function from(time, withoutSuffix) {
-    if (this.isValid() && (isMoment(time) && time.isValid() || createLocal(time).isValid())) {
-      return createDuration({ to: this, from: time }).locale(this.locale()).humanize(!withoutSuffix);
-    } else {
-      return this.localeData().invalidDate();
-    }
-  }
-  function fromNow(withoutSuffix) {
-    return this.from(createLocal(), withoutSuffix);
-  }
-  function to(time, withoutSuffix) {
-    if (this.isValid() && (isMoment(time) && time.isValid() || createLocal(time).isValid())) {
-      return createDuration({ from: this, to: time }).locale(this.locale()).humanize(!withoutSuffix);
-    } else {
-      return this.localeData().invalidDate();
-    }
-  }
-  function toNow(withoutSuffix) {
-    return this.to(createLocal(), withoutSuffix);
-  }
-  function locale(key) {
-    var newLocaleData;
-    if (key === void 0) {
-      return this._locale._abbr;
-    } else {
-      newLocaleData = getLocale(key);
-      if (newLocaleData != null) {
-        this._locale = newLocaleData;
-      }
-      return this;
-    }
-  }
-  var lang = deprecate(
-    "moment().lang() is deprecated. Instead, use moment().localeData() to get the language configuration. Use moment().locale() to change languages.",
-    function(key) {
-      if (key === void 0) {
-        return this.localeData();
-      } else {
-        return this.locale(key);
-      }
-    }
-  );
-  function localeData() {
-    return this._locale;
-  }
-  var MS_PER_SECOND = 1e3, MS_PER_MINUTE = 60 * MS_PER_SECOND, MS_PER_HOUR = 60 * MS_PER_MINUTE, MS_PER_400_YEARS = (365 * 400 + 97) * 24 * MS_PER_HOUR;
-  function mod(dividend, divisor) {
-    return (dividend % divisor + divisor) % divisor;
-  }
-  function localStartOfDate(y, m, d) {
-    if (y < 100 && y >= 0) {
-      return new Date(y + 400, m, d) - MS_PER_400_YEARS;
-    } else {
-      return new Date(y, m, d).valueOf();
-    }
-  }
-  function utcStartOfDate(y, m, d) {
-    if (y < 100 && y >= 0) {
-      return Date.UTC(y + 400, m, d) - MS_PER_400_YEARS;
-    } else {
-      return Date.UTC(y, m, d);
-    }
-  }
-  function startOf(units) {
-    var time, startOfDate;
-    units = normalizeUnits(units);
-    if (units === void 0 || units === "millisecond" || !this.isValid()) {
-      return this;
-    }
-    startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
-    switch (units) {
-      case "year":
-        time = startOfDate(this.year(), 0, 1);
-        break;
-      case "quarter":
-        time = startOfDate(
-          this.year(),
-          this.month() - this.month() % 3,
-          1
-        );
-        break;
-      case "month":
-        time = startOfDate(this.year(), this.month(), 1);
-        break;
-      case "week":
-        time = startOfDate(
-          this.year(),
-          this.month(),
-          this.date() - this.weekday()
-        );
-        break;
-      case "isoWeek":
-        time = startOfDate(
-          this.year(),
-          this.month(),
-          this.date() - (this.isoWeekday() - 1)
-        );
-        break;
-      case "day":
-      case "date":
-        time = startOfDate(this.year(), this.month(), this.date());
-        break;
-      case "hour":
-        time = this._d.valueOf();
-        time -= mod(
-          time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE),
-          MS_PER_HOUR
-        );
-        break;
-      case "minute":
-        time = this._d.valueOf();
-        time -= mod(time, MS_PER_MINUTE);
-        break;
-      case "second":
-        time = this._d.valueOf();
-        time -= mod(time, MS_PER_SECOND);
-        break;
-    }
-    this._d.setTime(time);
-    hooks.updateOffset(this, true);
-    return this;
-  }
-  function endOf(units) {
-    var time, startOfDate;
-    units = normalizeUnits(units);
-    if (units === void 0 || units === "millisecond" || !this.isValid()) {
-      return this;
-    }
-    startOfDate = this._isUTC ? utcStartOfDate : localStartOfDate;
-    switch (units) {
-      case "year":
-        time = startOfDate(this.year() + 1, 0, 1) - 1;
-        break;
-      case "quarter":
-        time = startOfDate(
-          this.year(),
-          this.month() - this.month() % 3 + 3,
-          1
-        ) - 1;
-        break;
-      case "month":
-        time = startOfDate(this.year(), this.month() + 1, 1) - 1;
-        break;
-      case "week":
-        time = startOfDate(
-          this.year(),
-          this.month(),
-          this.date() - this.weekday() + 7
-        ) - 1;
-        break;
-      case "isoWeek":
-        time = startOfDate(
-          this.year(),
-          this.month(),
-          this.date() - (this.isoWeekday() - 1) + 7
-        ) - 1;
-        break;
-      case "day":
-      case "date":
-        time = startOfDate(this.year(), this.month(), this.date() + 1) - 1;
-        break;
-      case "hour":
-        time = this._d.valueOf();
-        time += MS_PER_HOUR - mod(
-          time + (this._isUTC ? 0 : this.utcOffset() * MS_PER_MINUTE),
-          MS_PER_HOUR
-        ) - 1;
-        break;
-      case "minute":
-        time = this._d.valueOf();
-        time += MS_PER_MINUTE - mod(time, MS_PER_MINUTE) - 1;
-        break;
-      case "second":
-        time = this._d.valueOf();
-        time += MS_PER_SECOND - mod(time, MS_PER_SECOND) - 1;
-        break;
-    }
-    this._d.setTime(time);
-    hooks.updateOffset(this, true);
-    return this;
-  }
-  function valueOf$1() {
-    return this._d.valueOf() - (this._offset || 0) * 6e4;
-  }
-  function unix() {
-    return Math.floor(this.valueOf() / 1e3);
-  }
-  function toDate() {
-    return new Date(this.valueOf());
-  }
-  function toArray() {
-    var m = this;
-    return [
-      m.year(),
-      m.month(),
-      m.date(),
-      m.hour(),
-      m.minute(),
-      m.second(),
-      m.millisecond()
-    ];
-  }
-  function toObject() {
-    var m = this;
-    return {
-      years: m.year(),
-      months: m.month(),
-      date: m.date(),
-      hours: m.hours(),
-      minutes: m.minutes(),
-      seconds: m.seconds(),
-      milliseconds: m.milliseconds()
-    };
-  }
-  function toJSON() {
-    return this.isValid() ? this.toISOString() : null;
-  }
-  function isValid() {
-    return isValid$2(this);
-  }
-  function parsingFlags() {
-    return extend({}, getParsingFlags(this));
-  }
-  function invalidAt() {
-    return getParsingFlags(this).overflow;
-  }
-  function creationData() {
-    return {
-      input: this._i,
-      format: this._f,
-      locale: this._locale,
-      isUTC: this._isUTC,
-      strict: this._strict
-    };
-  }
-  addFormatToken("N", 0, 0, "eraAbbr");
-  addFormatToken("NN", 0, 0, "eraAbbr");
-  addFormatToken("NNN", 0, 0, "eraAbbr");
-  addFormatToken("NNNN", 0, 0, "eraName");
-  addFormatToken("NNNNN", 0, 0, "eraNarrow");
-  addFormatToken("y", ["y", 1], "yo", "eraYear");
-  addFormatToken("y", ["yy", 2], 0, "eraYear");
-  addFormatToken("y", ["yyy", 3], 0, "eraYear");
-  addFormatToken("y", ["yyyy", 4], 0, "eraYear");
-  addRegexToken("N", matchEraAbbr);
-  addRegexToken("NN", matchEraAbbr);
-  addRegexToken("NNN", matchEraAbbr);
-  addRegexToken("NNNN", matchEraName);
-  addRegexToken("NNNNN", matchEraNarrow);
-  addParseToken(
-    ["N", "NN", "NNN", "NNNN", "NNNNN"],
-    function(input, array, config, token2) {
-      var era = config._locale.erasParse(input, token2, config._strict);
-      if (era) {
-        getParsingFlags(config).era = era;
-      } else {
-        getParsingFlags(config).invalidEra = input;
-      }
-    }
-  );
-  addRegexToken("y", matchUnsigned);
-  addRegexToken("yy", matchUnsigned);
-  addRegexToken("yyy", matchUnsigned);
-  addRegexToken("yyyy", matchUnsigned);
-  addRegexToken("yo", matchEraYearOrdinal);
-  addParseToken(["y", "yy", "yyy", "yyyy"], YEAR);
-  addParseToken(["yo"], function(input, array, config, token2) {
-    var match;
-    if (config._locale._eraYearOrdinalRegex) {
-      match = input.match(config._locale._eraYearOrdinalRegex);
-    }
-    if (config._locale.eraYearOrdinalParse) {
-      array[YEAR] = config._locale.eraYearOrdinalParse(input, match);
-    } else {
-      array[YEAR] = parseInt(input, 10);
-    }
-  });
-  function localeEras(m, format2) {
-    var i2, l, date, eras = this._eras || getLocale("en")._eras;
-    for (i2 = 0, l = eras.length; i2 < l; ++i2) {
-      switch (typeof eras[i2].since) {
-        case "string":
-          date = hooks(eras[i2].since).startOf("day");
-          eras[i2].since = date.valueOf();
-          break;
-      }
-      switch (typeof eras[i2].until) {
-        case "undefined":
-          eras[i2].until = Infinity;
-          break;
-        case "string":
-          date = hooks(eras[i2].until).startOf("day").valueOf();
-          eras[i2].until = date.valueOf();
-          break;
-      }
-    }
-    return eras;
-  }
-  function localeErasParse(eraName, format2, strict) {
-    var i2, l, eras = this.eras(), name, abbr, narrow;
-    eraName = eraName.toUpperCase();
-    for (i2 = 0, l = eras.length; i2 < l; ++i2) {
-      name = eras[i2].name.toUpperCase();
-      abbr = eras[i2].abbr.toUpperCase();
-      narrow = eras[i2].narrow.toUpperCase();
-      if (strict) {
-        switch (format2) {
-          case "N":
-          case "NN":
-          case "NNN":
-            if (abbr === eraName) {
-              return eras[i2];
-            }
-            break;
-          case "NNNN":
-            if (name === eraName) {
-              return eras[i2];
-            }
-            break;
-          case "NNNNN":
-            if (narrow === eraName) {
-              return eras[i2];
-            }
-            break;
-        }
-      } else if ([name, abbr, narrow].indexOf(eraName) >= 0) {
-        return eras[i2];
-      }
-    }
-  }
-  function localeErasConvertYear(era, year) {
-    var dir = era.since <= era.until ? 1 : -1;
-    if (year === void 0) {
-      return hooks(era.since).year();
-    } else {
-      return hooks(era.since).year() + (year - era.offset) * dir;
-    }
-  }
-  function getEraName() {
-    var i2, l, val, eras = this.localeData().eras();
-    for (i2 = 0, l = eras.length; i2 < l; ++i2) {
-      val = this.clone().startOf("day").valueOf();
-      if (eras[i2].since <= val && val <= eras[i2].until) {
-        return eras[i2].name;
-      }
-      if (eras[i2].until <= val && val <= eras[i2].since) {
-        return eras[i2].name;
-      }
-    }
-    return "";
-  }
-  function getEraNarrow() {
-    var i2, l, val, eras = this.localeData().eras();
-    for (i2 = 0, l = eras.length; i2 < l; ++i2) {
-      val = this.clone().startOf("day").valueOf();
-      if (eras[i2].since <= val && val <= eras[i2].until) {
-        return eras[i2].narrow;
-      }
-      if (eras[i2].until <= val && val <= eras[i2].since) {
-        return eras[i2].narrow;
-      }
-    }
-    return "";
-  }
-  function getEraAbbr() {
-    var i2, l, val, eras = this.localeData().eras();
-    for (i2 = 0, l = eras.length; i2 < l; ++i2) {
-      val = this.clone().startOf("day").valueOf();
-      if (eras[i2].since <= val && val <= eras[i2].until) {
-        return eras[i2].abbr;
-      }
-      if (eras[i2].until <= val && val <= eras[i2].since) {
-        return eras[i2].abbr;
-      }
-    }
-    return "";
-  }
-  function getEraYear() {
-    var i2, l, dir, val, eras = this.localeData().eras();
-    for (i2 = 0, l = eras.length; i2 < l; ++i2) {
-      dir = eras[i2].since <= eras[i2].until ? 1 : -1;
-      val = this.clone().startOf("day").valueOf();
-      if (eras[i2].since <= val && val <= eras[i2].until || eras[i2].until <= val && val <= eras[i2].since) {
-        return (this.year() - hooks(eras[i2].since).year()) * dir + eras[i2].offset;
-      }
-    }
-    return this.year();
-  }
-  function erasNameRegex(isStrict) {
-    if (!hasOwnProp(this, "_erasNameRegex")) {
-      computeErasParse.call(this);
-    }
-    return isStrict ? this._erasNameRegex : this._erasRegex;
-  }
-  function erasAbbrRegex(isStrict) {
-    if (!hasOwnProp(this, "_erasAbbrRegex")) {
-      computeErasParse.call(this);
-    }
-    return isStrict ? this._erasAbbrRegex : this._erasRegex;
-  }
-  function erasNarrowRegex(isStrict) {
-    if (!hasOwnProp(this, "_erasNarrowRegex")) {
-      computeErasParse.call(this);
-    }
-    return isStrict ? this._erasNarrowRegex : this._erasRegex;
-  }
-  function matchEraAbbr(isStrict, locale2) {
-    return locale2.erasAbbrRegex(isStrict);
-  }
-  function matchEraName(isStrict, locale2) {
-    return locale2.erasNameRegex(isStrict);
-  }
-  function matchEraNarrow(isStrict, locale2) {
-    return locale2.erasNarrowRegex(isStrict);
-  }
-  function matchEraYearOrdinal(isStrict, locale2) {
-    return locale2._eraYearOrdinalRegex || matchUnsigned;
-  }
-  function computeErasParse() {
-    var abbrPieces = [], namePieces = [], narrowPieces = [], mixedPieces = [], i2, l, erasName, erasAbbr, erasNarrow, eras = this.eras();
-    for (i2 = 0, l = eras.length; i2 < l; ++i2) {
-      erasName = regexEscape(eras[i2].name);
-      erasAbbr = regexEscape(eras[i2].abbr);
-      erasNarrow = regexEscape(eras[i2].narrow);
-      namePieces.push(erasName);
-      abbrPieces.push(erasAbbr);
-      narrowPieces.push(erasNarrow);
-      mixedPieces.push(erasName);
-      mixedPieces.push(erasAbbr);
-      mixedPieces.push(erasNarrow);
-    }
-    this._erasRegex = new RegExp("^(" + mixedPieces.join("|") + ")", "i");
-    this._erasNameRegex = new RegExp("^(" + namePieces.join("|") + ")", "i");
-    this._erasAbbrRegex = new RegExp("^(" + abbrPieces.join("|") + ")", "i");
-    this._erasNarrowRegex = new RegExp(
-      "^(" + narrowPieces.join("|") + ")",
-      "i"
-    );
-  }
-  addFormatToken(0, ["gg", 2], 0, function() {
-    return this.weekYear() % 100;
-  });
-  addFormatToken(0, ["GG", 2], 0, function() {
-    return this.isoWeekYear() % 100;
-  });
-  function addWeekYearFormatToken(token2, getter) {
-    addFormatToken(0, [token2, token2.length], 0, getter);
-  }
-  addWeekYearFormatToken("gggg", "weekYear");
-  addWeekYearFormatToken("ggggg", "weekYear");
-  addWeekYearFormatToken("GGGG", "isoWeekYear");
-  addWeekYearFormatToken("GGGGG", "isoWeekYear");
-  addRegexToken("G", matchSigned);
-  addRegexToken("g", matchSigned);
-  addRegexToken("GG", match1to2, match2);
-  addRegexToken("gg", match1to2, match2);
-  addRegexToken("GGGG", match1to4, match4);
-  addRegexToken("gggg", match1to4, match4);
-  addRegexToken("GGGGG", match1to6, match6);
-  addRegexToken("ggggg", match1to6, match6);
-  addWeekParseToken(
-    ["gggg", "ggggg", "GGGG", "GGGGG"],
-    function(input, week, config, token2) {
-      week[token2.substr(0, 2)] = toInt(input);
-    }
-  );
-  addWeekParseToken(["gg", "GG"], function(input, week, config, token2) {
-    week[token2] = hooks.parseTwoDigitYear(input);
-  });
-  function getSetWeekYear(input) {
-    return getSetWeekYearHelper.call(
-      this,
-      input,
-      this.week(),
-      this.weekday() + this.localeData()._week.dow,
-      this.localeData()._week.dow,
-      this.localeData()._week.doy
-    );
-  }
-  function getSetISOWeekYear(input) {
-    return getSetWeekYearHelper.call(
-      this,
-      input,
-      this.isoWeek(),
-      this.isoWeekday(),
-      1,
-      4
-    );
-  }
-  function getISOWeeksInYear() {
-    return weeksInYear(this.year(), 1, 4);
-  }
-  function getISOWeeksInISOWeekYear() {
-    return weeksInYear(this.isoWeekYear(), 1, 4);
-  }
-  function getWeeksInYear() {
-    var weekInfo = this.localeData()._week;
-    return weeksInYear(this.year(), weekInfo.dow, weekInfo.doy);
-  }
-  function getWeeksInWeekYear() {
-    var weekInfo = this.localeData()._week;
-    return weeksInYear(this.weekYear(), weekInfo.dow, weekInfo.doy);
-  }
-  function getSetWeekYearHelper(input, week, weekday, dow, doy) {
-    var weeksTarget;
-    if (input == null) {
-      return weekOfYear(this, dow, doy).year;
-    } else {
-      weeksTarget = weeksInYear(input, dow, doy);
-      if (week > weeksTarget) {
-        week = weeksTarget;
-      }
-      return setWeekAll.call(this, input, week, weekday, dow, doy);
-    }
-  }
-  function setWeekAll(weekYear, week, weekday, dow, doy) {
-    var dayOfYearData = dayOfYearFromWeeks(weekYear, week, weekday, dow, doy), date = createUTCDate(dayOfYearData.year, 0, dayOfYearData.dayOfYear);
-    this.year(date.getUTCFullYear());
-    this.month(date.getUTCMonth());
-    this.date(date.getUTCDate());
-    return this;
-  }
-  addFormatToken("Q", 0, "Qo", "quarter");
-  addRegexToken("Q", match1);
-  addParseToken("Q", function(input, array) {
-    array[MONTH] = (toInt(input) - 1) * 3;
-  });
-  function getSetQuarter(input) {
-    return input == null ? Math.ceil((this.month() + 1) / 3) : this.month((input - 1) * 3 + this.month() % 3);
-  }
-  addFormatToken("D", ["DD", 2], "Do", "date");
-  addRegexToken("D", match1to2, match1to2NoLeadingZero);
-  addRegexToken("DD", match1to2, match2);
-  addRegexToken("Do", function(isStrict, locale2) {
-    return isStrict ? locale2._dayOfMonthOrdinalParse || locale2._ordinalParse : locale2._dayOfMonthOrdinalParseLenient;
-  });
-  addParseToken(["D", "DD"], DATE);
-  addParseToken("Do", function(input, array) {
-    array[DATE] = toInt(input.match(match1to2)[0]);
-  });
-  var getSetDayOfMonth = makeGetSet("Date", true);
-  addFormatToken("DDD", ["DDDD", 3], "DDDo", "dayOfYear");
-  addRegexToken("DDD", match1to3);
-  addRegexToken("DDDD", match3);
-  addParseToken(["DDD", "DDDD"], function(input, array, config) {
-    config._dayOfYear = toInt(input);
-  });
-  function getSetDayOfYear(input) {
-    var dayOfYear = Math.round(
-      (this.clone().startOf("day") - this.clone().startOf("year")) / 864e5
-    ) + 1;
-    return input == null ? dayOfYear : this.add(input - dayOfYear, "d");
-  }
-  addFormatToken("m", ["mm", 2], 0, "minute");
-  addRegexToken("m", match1to2, match1to2HasZero);
-  addRegexToken("mm", match1to2, match2);
-  addParseToken(["m", "mm"], MINUTE);
-  var getSetMinute = makeGetSet("Minutes", false);
-  addFormatToken("s", ["ss", 2], 0, "second");
-  addRegexToken("s", match1to2, match1to2HasZero);
-  addRegexToken("ss", match1to2, match2);
-  addParseToken(["s", "ss"], SECOND);
-  var getSetSecond = makeGetSet("Seconds", false);
-  addFormatToken("S", 0, 0, function() {
-    return ~~(this.millisecond() / 100);
-  });
-  addFormatToken(0, ["SS", 2], 0, function() {
-    return ~~(this.millisecond() / 10);
-  });
-  addFormatToken(0, ["SSS", 3], 0, "millisecond");
-  addFormatToken(0, ["SSSS", 4], 0, function() {
-    return this.millisecond() * 10;
-  });
-  addFormatToken(0, ["SSSSS", 5], 0, function() {
-    return this.millisecond() * 100;
-  });
-  addFormatToken(0, ["SSSSSS", 6], 0, function() {
-    return this.millisecond() * 1e3;
-  });
-  addFormatToken(0, ["SSSSSSS", 7], 0, function() {
-    return this.millisecond() * 1e4;
-  });
-  addFormatToken(0, ["SSSSSSSS", 8], 0, function() {
-    return this.millisecond() * 1e5;
-  });
-  addFormatToken(0, ["SSSSSSSSS", 9], 0, function() {
-    return this.millisecond() * 1e6;
-  });
-  addRegexToken("S", match1to3, match1);
-  addRegexToken("SS", match1to3, match2);
-  addRegexToken("SSS", match1to3, match3);
-  var token, getSetMillisecond;
-  for (token = "SSSS"; token.length <= 9; token += "S") {
-    addRegexToken(token, matchUnsigned);
-  }
-  function parseMs(input, array) {
-    array[MILLISECOND] = toInt(("0." + input) * 1e3);
-  }
-  for (token = "S"; token.length <= 9; token += "S") {
-    addParseToken(token, parseMs);
-  }
-  getSetMillisecond = makeGetSet("Milliseconds", false);
-  addFormatToken("z", 0, 0, "zoneAbbr");
-  addFormatToken("zz", 0, 0, "zoneName");
-  function getZoneAbbr() {
-    return this._isUTC ? "UTC" : "";
-  }
-  function getZoneName() {
-    return this._isUTC ? "Coordinated Universal Time" : "";
-  }
-  var proto$2 = Moment.prototype;
-  proto$2.add = add$1;
-  proto$2.calendar = calendar;
-  proto$2.clone = clone$1;
-  proto$2.diff = diff;
-  proto$2.endOf = endOf;
-  proto$2.format = format;
-  proto$2.from = from;
-  proto$2.fromNow = fromNow;
-  proto$2.to = to;
-  proto$2.toNow = toNow;
-  proto$2.get = stringGet;
-  proto$2.invalidAt = invalidAt;
-  proto$2.isAfter = isAfter;
-  proto$2.isBefore = isBefore;
-  proto$2.isBetween = isBetween;
-  proto$2.isSame = isSame;
-  proto$2.isSameOrAfter = isSameOrAfter;
-  proto$2.isSameOrBefore = isSameOrBefore;
-  proto$2.isValid = isValid;
-  proto$2.lang = lang;
-  proto$2.locale = locale;
-  proto$2.localeData = localeData;
-  proto$2.max = prototypeMax;
-  proto$2.min = prototypeMin;
-  proto$2.parsingFlags = parsingFlags;
-  proto$2.set = stringSet;
-  proto$2.startOf = startOf;
-  proto$2.subtract = subtract$1;
-  proto$2.toArray = toArray;
-  proto$2.toObject = toObject;
-  proto$2.toDate = toDate;
-  proto$2.toISOString = toISOString$1;
-  proto$2.inspect = inspect;
-  if (typeof Symbol !== "undefined" && Symbol.for != null) {
-    proto$2[Symbol.for("nodejs.util.inspect.custom")] = function() {
-      return "Moment<" + this.format() + ">";
-    };
-  }
-  proto$2.toJSON = toJSON;
-  proto$2.toString = toString;
-  proto$2.unix = unix;
-  proto$2.valueOf = valueOf$1;
-  proto$2.creationData = creationData;
-  proto$2.eraName = getEraName;
-  proto$2.eraNarrow = getEraNarrow;
-  proto$2.eraAbbr = getEraAbbr;
-  proto$2.eraYear = getEraYear;
-  proto$2.year = getSetYear;
-  proto$2.isLeapYear = getIsLeapYear;
-  proto$2.weekYear = getSetWeekYear;
-  proto$2.isoWeekYear = getSetISOWeekYear;
-  proto$2.quarter = proto$2.quarters = getSetQuarter;
-  proto$2.month = getSetMonth;
-  proto$2.daysInMonth = getDaysInMonth;
-  proto$2.week = proto$2.weeks = getSetWeek;
-  proto$2.isoWeek = proto$2.isoWeeks = getSetISOWeek;
-  proto$2.weeksInYear = getWeeksInYear;
-  proto$2.weeksInWeekYear = getWeeksInWeekYear;
-  proto$2.isoWeeksInYear = getISOWeeksInYear;
-  proto$2.isoWeeksInISOWeekYear = getISOWeeksInISOWeekYear;
-  proto$2.date = getSetDayOfMonth;
-  proto$2.day = proto$2.days = getSetDayOfWeek;
-  proto$2.weekday = getSetLocaleDayOfWeek;
-  proto$2.isoWeekday = getSetISODayOfWeek;
-  proto$2.dayOfYear = getSetDayOfYear;
-  proto$2.hour = proto$2.hours = getSetHour;
-  proto$2.minute = proto$2.minutes = getSetMinute;
-  proto$2.second = proto$2.seconds = getSetSecond;
-  proto$2.millisecond = proto$2.milliseconds = getSetMillisecond;
-  proto$2.utcOffset = getSetOffset;
-  proto$2.utc = setOffsetToUTC;
-  proto$2.local = setOffsetToLocal;
-  proto$2.parseZone = setOffsetToParsedOffset;
-  proto$2.hasAlignedHourOffset = hasAlignedHourOffset;
-  proto$2.isDST = isDaylightSavingTime;
-  proto$2.isLocal = isLocal;
-  proto$2.isUtcOffset = isUtcOffset;
-  proto$2.isUtc = isUtc;
-  proto$2.isUTC = isUtc;
-  proto$2.zoneAbbr = getZoneAbbr;
-  proto$2.zoneName = getZoneName;
-  proto$2.dates = deprecate(
-    "dates accessor is deprecated. Use date instead.",
-    getSetDayOfMonth
-  );
-  proto$2.months = deprecate(
-    "months accessor is deprecated. Use month instead",
-    getSetMonth
-  );
-  proto$2.years = deprecate(
-    "years accessor is deprecated. Use year instead",
-    getSetYear
-  );
-  proto$2.zone = deprecate(
-    "moment().zone is deprecated, use moment().utcOffset instead. http://momentjs.com/guides/#/warnings/zone/",
-    getSetZone
-  );
-  proto$2.isDSTShifted = deprecate(
-    "isDSTShifted is deprecated. See http://momentjs.com/guides/#/warnings/dst-shifted/ for more information",
-    isDaylightSavingTimeShifted
-  );
-  function createUnix(input) {
-    return createLocal(input * 1e3);
-  }
-  function createInZone() {
-    return createLocal.apply(null, arguments).parseZone();
-  }
-  function preParsePostFormat(string) {
-    return string;
-  }
-  var proto$1 = Locale.prototype;
-  proto$1.calendar = calendar$1;
-  proto$1.longDateFormat = longDateFormat;
-  proto$1.invalidDate = invalidDate;
-  proto$1.ordinal = ordinal;
-  proto$1.preparse = preParsePostFormat;
-  proto$1.postformat = preParsePostFormat;
-  proto$1.relativeTime = relativeTime$1;
-  proto$1.pastFuture = pastFuture;
-  proto$1.set = set;
-  proto$1.eras = localeEras;
-  proto$1.erasParse = localeErasParse;
-  proto$1.erasConvertYear = localeErasConvertYear;
-  proto$1.erasAbbrRegex = erasAbbrRegex;
-  proto$1.erasNameRegex = erasNameRegex;
-  proto$1.erasNarrowRegex = erasNarrowRegex;
-  proto$1.months = localeMonths;
-  proto$1.monthsShort = localeMonthsShort;
-  proto$1.monthsParse = localeMonthsParse;
-  proto$1.monthsRegex = monthsRegex;
-  proto$1.monthsShortRegex = monthsShortRegex;
-  proto$1.week = localeWeek;
-  proto$1.firstDayOfYear = localeFirstDayOfYear;
-  proto$1.firstDayOfWeek = localeFirstDayOfWeek;
-  proto$1.weekdays = localeWeekdays;
-  proto$1.weekdaysMin = localeWeekdaysMin;
-  proto$1.weekdaysShort = localeWeekdaysShort;
-  proto$1.weekdaysParse = localeWeekdaysParse;
-  proto$1.weekdaysRegex = weekdaysRegex;
-  proto$1.weekdaysShortRegex = weekdaysShortRegex;
-  proto$1.weekdaysMinRegex = weekdaysMinRegex;
-  proto$1.isPM = localeIsPM;
-  proto$1.meridiem = localeMeridiem;
-  function get$1(format2, index, field, setter) {
-    var locale2 = getLocale(), utc = createUTC().set(setter, index);
-    return locale2[field](utc, format2);
-  }
-  function listMonthsImpl(format2, index, field) {
-    if (isNumber(format2)) {
-      index = format2;
-      format2 = void 0;
-    }
-    format2 = format2 || "";
-    if (index != null) {
-      return get$1(format2, index, field, "month");
-    }
-    var i2, out = [];
-    for (i2 = 0; i2 < 12; i2++) {
-      out[i2] = get$1(format2, i2, field, "month");
-    }
-    return out;
-  }
-  function listWeekdaysImpl(localeSorted, format2, index, field) {
-    if (typeof localeSorted === "boolean") {
-      if (isNumber(format2)) {
-        index = format2;
-        format2 = void 0;
-      }
-      format2 = format2 || "";
-    } else {
-      format2 = localeSorted;
-      index = format2;
-      localeSorted = false;
-      if (isNumber(format2)) {
-        index = format2;
-        format2 = void 0;
-      }
-      format2 = format2 || "";
-    }
-    var locale2 = getLocale(), shift = localeSorted ? locale2._week.dow : 0, i2, out = [];
-    if (index != null) {
-      return get$1(format2, (index + shift) % 7, field, "day");
-    }
-    for (i2 = 0; i2 < 7; i2++) {
-      out[i2] = get$1(format2, (i2 + shift) % 7, field, "day");
-    }
-    return out;
-  }
-  function listMonths(format2, index) {
-    return listMonthsImpl(format2, index, "months");
-  }
-  function listMonthsShort(format2, index) {
-    return listMonthsImpl(format2, index, "monthsShort");
-  }
-  function listWeekdays(localeSorted, format2, index) {
-    return listWeekdaysImpl(localeSorted, format2, index, "weekdays");
-  }
-  function listWeekdaysShort(localeSorted, format2, index) {
-    return listWeekdaysImpl(localeSorted, format2, index, "weekdaysShort");
-  }
-  function listWeekdaysMin(localeSorted, format2, index) {
-    return listWeekdaysImpl(localeSorted, format2, index, "weekdaysMin");
-  }
-  getSetGlobalLocale("en", {
-    eras: [
-      {
-        since: "0001-01-01",
-        until: Infinity,
-        offset: 1,
-        name: "Anno Domini",
-        narrow: "AD",
-        abbr: "AD"
-      },
-      {
-        since: "0000-12-31",
-        until: -Infinity,
-        offset: 1,
-        name: "Before Christ",
-        narrow: "BC",
-        abbr: "BC"
-      }
-    ],
-    dayOfMonthOrdinalParse: /\d{1,2}(th|st|nd|rd)/,
-    ordinal: function(number) {
-      var b = number % 10, output = toInt(number % 100 / 10) === 1 ? "th" : b === 1 ? "st" : b === 2 ? "nd" : b === 3 ? "rd" : "th";
-      return number + output;
-    }
-  });
-  hooks.lang = deprecate(
-    "moment.lang is deprecated. Use moment.locale instead.",
-    getSetGlobalLocale
-  );
-  hooks.langData = deprecate(
-    "moment.langData is deprecated. Use moment.localeData instead.",
-    getLocale
-  );
-  var mathAbs = Math.abs;
-  function abs$1() {
-    var data = this._data;
-    this._milliseconds = mathAbs(this._milliseconds);
-    this._days = mathAbs(this._days);
-    this._months = mathAbs(this._months);
-    data.milliseconds = mathAbs(data.milliseconds);
-    data.seconds = mathAbs(data.seconds);
-    data.minutes = mathAbs(data.minutes);
-    data.hours = mathAbs(data.hours);
-    data.months = mathAbs(data.months);
-    data.years = mathAbs(data.years);
-    return this;
-  }
-  function addSubtract(duration, input, value, direction) {
-    var other = createDuration(input, value);
-    duration._milliseconds += direction * other._milliseconds;
-    duration._days += direction * other._days;
-    duration._months += direction * other._months;
-    return duration._bubble();
-  }
-  function add(input, value) {
-    return addSubtract(this, input, value, 1);
-  }
-  function subtract(input, value) {
-    return addSubtract(this, input, value, -1);
-  }
-  function absCeil(number) {
-    if (number < 0) {
-      return Math.floor(number);
-    } else {
-      return Math.ceil(number);
-    }
-  }
-  function bubble() {
-    var milliseconds2 = this._milliseconds, days2 = this._days, months2 = this._months, data = this._data, seconds2, minutes2, hours2, years2, monthsFromDays;
-    if (!(milliseconds2 >= 0 && days2 >= 0 && months2 >= 0 || milliseconds2 <= 0 && days2 <= 0 && months2 <= 0)) {
-      milliseconds2 += absCeil(monthsToDays(months2) + days2) * 864e5;
-      days2 = 0;
-      months2 = 0;
-    }
-    data.milliseconds = milliseconds2 % 1e3;
-    seconds2 = absFloor(milliseconds2 / 1e3);
-    data.seconds = seconds2 % 60;
-    minutes2 = absFloor(seconds2 / 60);
-    data.minutes = minutes2 % 60;
-    hours2 = absFloor(minutes2 / 60);
-    data.hours = hours2 % 24;
-    days2 += absFloor(hours2 / 24);
-    monthsFromDays = absFloor(daysToMonths(days2));
-    months2 += monthsFromDays;
-    days2 -= absCeil(monthsToDays(monthsFromDays));
-    years2 = absFloor(months2 / 12);
-    months2 %= 12;
-    data.days = days2;
-    data.months = months2;
-    data.years = years2;
-    return this;
-  }
-  function daysToMonths(days2) {
-    return days2 * 4800 / 146097;
-  }
-  function monthsToDays(months2) {
-    return months2 * 146097 / 4800;
-  }
-  function as(units) {
-    if (!this.isValid()) {
-      return NaN;
-    }
-    var days2, months2, milliseconds2 = this._milliseconds;
-    units = normalizeUnits(units);
-    if (units === "month" || units === "quarter" || units === "year") {
-      days2 = this._days + milliseconds2 / 864e5;
-      months2 = this._months + daysToMonths(days2);
-      switch (units) {
-        case "month":
-          return months2;
-        case "quarter":
-          return months2 / 3;
-        case "year":
-          return months2 / 12;
-      }
-    } else {
-      days2 = this._days + Math.round(monthsToDays(this._months));
-      switch (units) {
-        case "week":
-          return days2 / 7 + milliseconds2 / 6048e5;
-        case "day":
-          return days2 + milliseconds2 / 864e5;
-        case "hour":
-          return days2 * 24 + milliseconds2 / 36e5;
-        case "minute":
-          return days2 * 1440 + milliseconds2 / 6e4;
-        case "second":
-          return days2 * 86400 + milliseconds2 / 1e3;
-        // Math.floor prevents floating point math errors here
-        case "millisecond":
-          return Math.floor(days2 * 864e5) + milliseconds2;
-        default:
-          throw new Error("Unknown unit " + units);
-      }
-    }
-  }
-  function makeAs(alias) {
-    return function() {
-      return this.as(alias);
-    };
-  }
-  var asMilliseconds = makeAs("ms"), asSeconds = makeAs("s"), asMinutes = makeAs("m"), asHours = makeAs("h"), asDays = makeAs("d"), asWeeks = makeAs("w"), asMonths = makeAs("M"), asQuarters = makeAs("Q"), asYears = makeAs("y"), valueOf = asMilliseconds;
-  function clone() {
-    return createDuration(this);
-  }
-  function get(units) {
-    units = normalizeUnits(units);
-    return this.isValid() ? this[units + "s"]() : NaN;
-  }
-  function makeGetter(name) {
-    return function() {
-      return this.isValid() ? this._data[name] : NaN;
-    };
-  }
-  var milliseconds = makeGetter("milliseconds"), seconds = makeGetter("seconds"), minutes = makeGetter("minutes"), hours = makeGetter("hours"), days = makeGetter("days"), months = makeGetter("months"), years = makeGetter("years");
-  function weeks() {
-    return absFloor(this.days() / 7);
-  }
-  var round = Math.round, thresholds = {
-    ss: 44,
-    // a few seconds to seconds
-    s: 45,
-    // seconds to minute
-    m: 45,
-    // minutes to hour
-    h: 22,
-    // hours to day
-    d: 26,
-    // days to month/week
-    w: null,
-    // weeks to month
-    M: 11
-    // months to year
-  };
-  function substituteTimeAgo(string, number, withoutSuffix, isFuture, locale2) {
-    return relativeTimeWithoutPostformat.call(
-      locale2,
-      number || 1,
-      !!withoutSuffix,
-      string,
-      isFuture
-    );
-  }
-  function relativeTime(posNegDuration, withoutSuffix, thresholds2, locale2) {
-    var duration = createDuration(posNegDuration).abs(), seconds2 = round(duration.as("s")), minutes2 = round(duration.as("m")), hours2 = round(duration.as("h")), days2 = round(duration.as("d")), months2 = round(duration.as("M")), weeks2 = round(duration.as("w")), years2 = round(duration.as("y")), a = seconds2 <= thresholds2.ss && ["s", seconds2] || seconds2 < thresholds2.s && ["ss", seconds2] || minutes2 <= 1 && ["m"] || minutes2 < thresholds2.m && ["mm", minutes2] || hours2 <= 1 && ["h"] || hours2 < thresholds2.h && ["hh", hours2] || days2 <= 1 && ["d"] || days2 < thresholds2.d && ["dd", days2];
-    if (thresholds2.w != null) {
-      a = a || weeks2 <= 1 && ["w"] || weeks2 < thresholds2.w && ["ww", weeks2];
-    }
-    a = a || months2 <= 1 && ["M"] || months2 < thresholds2.M && ["MM", months2] || years2 <= 1 && ["y"] || ["yy", years2];
-    a[2] = withoutSuffix;
-    a[3] = +posNegDuration > 0;
-    a[4] = locale2;
-    return substituteTimeAgo.apply(null, a);
-  }
-  function getSetRelativeTimeRounding(roundingFunction) {
-    if (roundingFunction === void 0) {
-      return round;
-    }
-    if (typeof roundingFunction === "function") {
-      round = roundingFunction;
-      return true;
-    }
-    return false;
-  }
-  function getSetRelativeTimeThreshold(threshold, limit) {
-    if (thresholds[threshold] === void 0) {
-      return false;
-    }
-    if (limit === void 0) {
-      return thresholds[threshold];
-    }
-    thresholds[threshold] = limit;
-    if (threshold === "s") {
-      thresholds.ss = limit - 1;
-    }
-    return true;
-  }
-  function humanize(argWithSuffix, argThresholds) {
-    if (!this.isValid()) {
-      return this.localeData().invalidDate();
-    }
-    var withSuffix = false, th = thresholds, locale2, output;
-    if (typeof argWithSuffix === "object") {
-      argThresholds = argWithSuffix;
-      argWithSuffix = false;
-    }
-    if (typeof argWithSuffix === "boolean") {
-      withSuffix = argWithSuffix;
-    }
-    if (typeof argThresholds === "object") {
-      th = extend(extend({}, thresholds), argThresholds || {});
-      if (argThresholds.s != null && argThresholds.ss == null) {
-        th.ss = argThresholds.s - 1;
-      }
-    }
-    locale2 = this.localeData();
-    output = relativeTime(this, !withSuffix, th, locale2);
-    if (withSuffix) {
-      output = pastFutureWithoutPostformat.call(locale2, +this, output);
-    }
-    return locale2.postformat(output);
-  }
-  var abs = Math.abs;
-  function sign(x) {
-    return (x > 0) - (x < 0) || +x;
-  }
-  function toISOString() {
-    if (!this.isValid()) {
-      return this.localeData().invalidDate();
-    }
-    var seconds2 = abs(this._milliseconds) / 1e3, days2 = abs(this._days), months2 = abs(this._months), minutes2, hours2, years2, s, total = this.asSeconds(), totalSign, ymSign, daysSign, hmsSign;
-    if (!total) {
-      return "P0D";
-    }
-    minutes2 = absFloor(seconds2 / 60);
-    hours2 = absFloor(minutes2 / 60);
-    seconds2 %= 60;
-    minutes2 %= 60;
-    years2 = absFloor(months2 / 12);
-    months2 %= 12;
-    s = seconds2 ? seconds2.toFixed(3).replace(/\.?0+$/, "") : "";
-    totalSign = total < 0 ? "-" : "";
-    ymSign = sign(this._months) !== sign(total) ? "-" : "";
-    daysSign = sign(this._days) !== sign(total) ? "-" : "";
-    hmsSign = sign(this._milliseconds) !== sign(total) ? "-" : "";
-    return totalSign + "P" + (years2 ? ymSign + years2 + "Y" : "") + (months2 ? ymSign + months2 + "M" : "") + (days2 ? daysSign + days2 + "D" : "") + (hours2 || minutes2 || seconds2 ? "T" : "") + (hours2 ? hmsSign + hours2 + "H" : "") + (minutes2 ? hmsSign + minutes2 + "M" : "") + (seconds2 ? hmsSign + s + "S" : "");
-  }
-  var proto = Duration.prototype;
-  proto.isValid = isValid$1;
-  proto.abs = abs$1;
-  proto.add = add;
-  proto.subtract = subtract;
-  proto.as = as;
-  proto.asMilliseconds = asMilliseconds;
-  proto.asSeconds = asSeconds;
-  proto.asMinutes = asMinutes;
-  proto.asHours = asHours;
-  proto.asDays = asDays;
-  proto.asWeeks = asWeeks;
-  proto.asMonths = asMonths;
-  proto.asQuarters = asQuarters;
-  proto.asYears = asYears;
-  proto.valueOf = valueOf;
-  proto._bubble = bubble;
-  proto.clone = clone;
-  proto.get = get;
-  proto.milliseconds = milliseconds;
-  proto.seconds = seconds;
-  proto.minutes = minutes;
-  proto.hours = hours;
-  proto.days = days;
-  proto.weeks = weeks;
-  proto.months = months;
-  proto.years = years;
-  proto.humanize = humanize;
-  proto.toISOString = toISOString;
-  proto.toString = toISOString;
-  proto.toJSON = toISOString;
-  proto.locale = locale;
-  proto.localeData = localeData;
-  proto.toIsoString = deprecate(
-    "toIsoString() is deprecated. Please use toISOString() instead (notice the capitals)",
-    toISOString
-  );
-  proto.lang = lang;
-  addFormatToken("X", 0, 0, "unix");
-  addFormatToken("x", 0, 0, "valueOf");
-  addRegexToken("x", matchSigned);
-  addRegexToken("X", matchTimestamp);
-  addParseToken("X", function(input, array, config) {
-    config._d = new Date(parseFloat(input) * 1e3);
-  });
-  addParseToken("x", function(input, array, config) {
-    config._d = new Date(toInt(input));
-  });
-  //! moment.js
-  hooks.version = "2.31.0";
-  setHookCallback(createLocal);
-  hooks.fn = proto$2;
-  hooks.min = min;
-  hooks.max = max;
-  hooks.now = now;
-  hooks.utc = createUTC;
-  hooks.unix = createUnix;
-  hooks.months = listMonths;
-  hooks.isDate = isDate;
-  hooks.locale = getSetGlobalLocale;
-  hooks.invalid = createInvalid$1;
-  hooks.duration = createDuration;
-  hooks.isMoment = isMoment;
-  hooks.weekdays = listWeekdays;
-  hooks.parseZone = createInZone;
-  hooks.localeData = getLocale;
-  hooks.isDuration = isDuration;
-  hooks.monthsShort = listMonthsShort;
-  hooks.weekdaysMin = listWeekdaysMin;
-  hooks.defineLocale = defineLocale;
-  hooks.updateLocale = updateLocale;
-  hooks.locales = listLocales;
-  hooks.weekdaysShort = listWeekdaysShort;
-  hooks.normalizeUnits = normalizeUnits;
-  hooks.relativeTimeRounding = getSetRelativeTimeRounding;
-  hooks.relativeTimeThreshold = getSetRelativeTimeThreshold;
-  hooks.calendarFormat = getCalendarFormat;
-  hooks.prototype = proto$2;
-  hooks.HTML5_FMT = {
-    DATETIME_LOCAL: "YYYY-MM-DDTHH:mm",
-    // <input type="datetime-local" />
-    DATETIME_LOCAL_SECONDS: "YYYY-MM-DDTHH:mm:ss",
-    // <input type="datetime-local" step="1" />
-    DATETIME_LOCAL_MS: "YYYY-MM-DDTHH:mm:ss.SSS",
-    // <input type="datetime-local" step="0.001" />
-    DATE: "YYYY-MM-DD",
-    // <input type="date" />
-    TIME: "HH:mm",
-    // <input type="time" />
-    TIME_SECONDS: "HH:mm:ss",
-    // <input type="time" step="1" />
-    TIME_MS: "HH:mm:ss.SSS",
-    // <input type="time" step="0.001" />
-    WEEK: "GGGG-[W]WW",
-    // <input type="week" />
-    MONTH: "YYYY-MM"
-    // <input type="month" />
-  };
   var NOTIFY_ICON_ACTIVE = "fas node-all fa-bell";
   var NOTIFY_ICON_PAUSED = "fas node-all fa-bell-slash";
   function getTreeNotifyChannels(p_tag) {
@@ -5494,14 +1333,14 @@
       cm_notify_root: {
         elements: [
           {
-            text: t("notify.add_channel"),
+            text: t$1("notify.add_channel"),
             icon: "fas cm-all fa-plus",
             action: function(node) {
               promptAddChannel(p_tag);
             }
           },
           {
-            text: t("common.refresh"),
+            text: t$1("common.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               refreshNotifyChannels(p_tag);
@@ -5518,7 +1357,7 @@
           var v_elements = [];
           if (p_node.tag.active) {
             v_elements.push({
-              text: t("notify.pause"),
+              text: t$1("notify.pause"),
               icon: "fas cm-all fa-pause",
               action: function(node) {
                 pauseChannel(p_tag, node);
@@ -5526,7 +1365,7 @@
             });
           } else {
             v_elements.push({
-              text: t("notify.resume"),
+              text: t$1("notify.resume"),
               icon: "fas cm-all fa-play",
               action: function(node) {
                 resumeChannel(p_tag, node);
@@ -5534,14 +1373,14 @@
             });
           }
           v_elements.push({
-            text: t("notify.clear_messages"),
+            text: t$1("notify.clear_messages"),
             icon: "fas cm-all fa-eraser",
             action: function(node) {
               clearNotifyChannelMessages(p_tag, node.tag.name);
             }
           });
           v_elements.push({
-            text: t("common.delete"),
+            text: t$1("common.delete"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               deleteChannel(p_tag, node);
@@ -5554,7 +1393,7 @@
     var tree = createTree(p_tag.divTree.id, "#fcfdfd", context_menu);
     tree.tag = {};
     var node1 = tree.createNode(
-      t("notify.channels_section"),
+      t$1("notify.channels_section"),
       true,
       NOTIFY_ICON_ACTIVE,
       null,
@@ -5564,9 +1403,9 @@
       "cm_notify_root"
     );
     tree.drawTree();
-    document.getElementById(p_tag.divTree.id).oncontextmenu = function(e) {
-      e.preventDefault();
-      tree.nodeContextMenu(e, node1);
+    document.getElementById(p_tag.divTree.id).oncontextmenu = function(e2) {
+      e2.preventDefault();
+      tree.nodeContextMenu(e2, node1);
     };
     tree.clickNodeEvent = function(p_node) {
       updateNotifySelectedChannel(p_tag, p_node.tag && p_node.tag.type === "notify_channel" ? p_node : null);
@@ -5660,7 +1499,7 @@
         var v_input = document.createElement("input");
         v_input.id = "element_name";
         v_input.className = "form-control";
-        v_input.placeholder = t("notify.channel_name_placeholder");
+        v_input.placeholder = t$1("notify.channel_name_placeholder");
         v_input.style.width = "100%";
         document.getElementById("modal_message_content").appendChild(v_input);
         v_input.onkeydown = function() {
@@ -5704,7 +1543,7 @@
   function deleteChannel(p_tag, p_node) {
     var v_channel_name = p_node.tag.name;
     showConfirm(
-      t("notify.confirm_delete_channel"),
+      t$1("notify.confirm_delete_channel"),
       function() {
         execAjax$2(
           "/delete_notify_channel/",
@@ -5813,17 +1652,17 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("notify.no_connection_open");
+    v_title.textContent = t$1("notify.no_connection_open");
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("notify.open_connection_hint");
+    v_text.textContent = t$1("notify.open_connection_hint");
     v_wrapper.appendChild(v_text);
     p_content.appendChild(v_wrapper);
   }
   function buildNotifyTabLayout(p_tag) {
     var v_id = p_tag.tab_id;
-    p_tag.divTab.innerHTML = "<div class='omnidb__notify__tab'><div id='" + v_id + "_notify_div_left' class='omnidb__notify__div-left'><div id='" + v_id + "_notify_tree' class='omnidb__notify__tree'></div><div id='" + v_id + "_notify_footer' class='omnidb__list-footer'><div class='omnidb__addremove'><button id='" + v_id + "_notify_add_channel' type='button' title='" + t("notify.add_channel") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='" + v_id + "_notify_delete_channel' type='button' title='" + t("notify.delete_channel") + "' disabled><i class='fas fa-minus'></i></button></div></div><div id='" + v_id + "_notify_resize_line' class='resize_line_vertical omnidb__resize-line__container omnidb__notify__resize-line'></div></div><div id='" + v_id + "_notify_div_right' class='omnidb__notify__div-right'><div id='" + v_id + "_notify_banner' class='omnidb__notify__banner' style='display: none;'></div><div id='" + v_id + "_notify_filter' class='omnidb__notify__filter'></div><div id='" + v_id + "_notify_messages' class='omnidb__notify__messages'></div></div></div>";
+    p_tag.divTab.innerHTML = "<div class='omnidb__notify__tab'><div id='" + v_id + "_notify_div_left' class='omnidb__notify__div-left'><div id='" + v_id + "_notify_tree' class='omnidb__notify__tree'></div><div id='" + v_id + "_notify_footer' class='omnidb__list-footer'><div class='omnidb__addremove'><button id='" + v_id + "_notify_add_channel' type='button' title='" + t$1("notify.add_channel") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='" + v_id + "_notify_delete_channel' type='button' title='" + t$1("notify.delete_channel") + "' disabled><i class='fas fa-minus'></i></button></div></div><div id='" + v_id + "_notify_resize_line' class='resize_line_vertical omnidb__resize-line__container omnidb__notify__resize-line'></div></div><div id='" + v_id + "_notify_div_right' class='omnidb__notify__div-right'><div id='" + v_id + "_notify_banner' class='omnidb__notify__banner' style='display: none;'></div><div id='" + v_id + "_notify_filter' class='omnidb__notify__filter'></div><div id='" + v_id + "_notify_messages' class='omnidb__notify__messages'></div></div></div>";
     p_tag.divLeft = /** @type {HTMLElement} */
     document.getElementById(v_id + "_notify_div_left");
     p_tag.divTree = /** @type {HTMLElement} */
@@ -5854,8 +1693,8 @@
   }
   function resizeNotifyHorizontal(p_event, p_tag) {
     p_event.preventDefault();
-    var v_move = function(e) {
-      var v_width = e.clientX - p_tag.divLeft.getBoundingClientRect().left;
+    var v_move = function(e2) {
+      var v_width = e2.clientX - p_tag.divLeft.getBoundingClientRect().left;
       if (v_width < 150) v_width = 150;
       if (v_width > 600) v_width = 600;
       p_tag.divLeft.style.width = v_width + "px";
@@ -5877,11 +1716,11 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("notify.channels_not_supported", { technology: p_db_type });
+    v_title.textContent = t$1("notify.channels_not_supported", { technology: p_db_type });
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("notify.supported_technologies_hint");
+    v_text.textContent = t$1("notify.supported_technologies_hint");
     v_wrapper.appendChild(v_text);
     v_div.appendChild(v_wrapper);
   }
@@ -5916,12 +1755,12 @@
     if (p_tag.divBanner == null) return;
     p_tag.divBanner.innerHTML = "";
     var v_text = document.createElement("span");
-    v_text.textContent = p_message ? String(p_message) : t("notify.listening_stopped");
+    v_text.textContent = p_message ? String(p_message) : t$1("notify.listening_stopped");
     p_tag.divBanner.appendChild(v_text);
     var v_button = document.createElement("button");
     v_button.type = "button";
     v_button.className = "btn btn-sm omnidb__theme__btn--secondary ms-2";
-    v_button.textContent = t("notify.restart_listening");
+    v_button.textContent = t$1("notify.restart_listening");
     v_button.addEventListener("click", function() {
       restartNotifyListening(p_tag);
     });
@@ -5940,7 +1779,7 @@
     v_div.innerHTML = "";
     var v_channels = p_tag.channels || [];
     v_div.appendChild(
-      buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_all", t("notify.all_channels"), p_tag.filterChannel == null, function(p_checked) {
+      buildNotifyFilterCheckbox(p_tag.tab_id + "_notify_filter_all", t$1("notify.all_channels"), p_tag.filterChannel == null, function(p_checked) {
         p_tag.filterChannel = p_checked ? null : /* @__PURE__ */ new Set();
         renderNotifyFilter(p_tag);
         renderNotifyMessages(p_tag);
@@ -5955,7 +1794,7 @@
             var v_set;
             if (p_tag.filterChannel == null) {
               v_set = /* @__PURE__ */ new Set();
-              for (var k = 0; k < v_channels.length; k++) v_set.add(v_channels[k].name);
+              for (var k2 = 0; k2 < v_channels.length; k2++) v_set.add(v_channels[k2].name);
             } else {
               v_set = new Set(p_tag.filterChannel);
             }
@@ -5970,7 +1809,7 @@
     var v_clear_all = document.createElement("button");
     v_clear_all.type = "button";
     v_clear_all.className = "btn btn-sm omnidb__theme__btn--secondary omnidb__notify__filter-clear";
-    v_clear_all.textContent = t("notify.clear_all");
+    v_clear_all.textContent = t$1("notify.clear_all");
     v_clear_all.addEventListener("click", function() {
       clearAllNotifyMessages(p_tag);
     });
@@ -6008,7 +1847,7 @@
     if (v_messages.length === 0) {
       var v_empty = document.createElement("div");
       v_empty.className = "omnidb__notify__empty";
-      v_empty.textContent = p_tag.messages.length === 0 ? t("notify.no_messages_yet") : t("notify.no_messages_selected_channels");
+      v_empty.textContent = p_tag.messages.length === 0 ? t$1("notify.no_messages_yet") : t$1("notify.no_messages_selected_channels");
       v_div.appendChild(v_empty);
       return;
     }
@@ -6016,10 +1855,10 @@
     v_table.className = "omnidb__notify__table";
     var v_thead = document.createElement("thead");
     var v_header_row = document.createElement("tr");
-    var v_columns = [t("notify.column_channel"), t("notify.column_time"), t("notify.column_payload")];
-    for (var c = 0; c < v_columns.length; c++) {
+    var v_columns = [t$1("notify.column_channel"), t$1("notify.column_time"), t$1("notify.column_payload")];
+    for (var c2 = 0; c2 < v_columns.length; c2++) {
       var v_th = document.createElement("th");
-      v_th.textContent = v_columns[c];
+      v_th.textContent = v_columns[c2];
       v_header_row.appendChild(v_th);
     }
     v_thead.appendChild(v_header_row);
@@ -6028,9 +1867,9 @@
     for (var i2 = 0; i2 < v_messages.length; i2++) {
       var v_row = document.createElement("tr");
       var v_cells = [v_messages[i2].channel, v_messages[i2].ts, v_messages[i2].payload];
-      for (var k = 0; k < v_cells.length; k++) {
+      for (var k2 = 0; k2 < v_cells.length; k2++) {
         var v_td = document.createElement("td");
-        v_td.textContent = v_cells[k] == null ? "" : String(v_cells[k]);
+        v_td.textContent = v_cells[k2] == null ? "" : String(v_cells[k2]);
         v_row.appendChild(v_td);
       }
       v_tbody.appendChild(v_row);
@@ -6066,19 +1905,19 @@
     };
     v_tag.context = createContext(v_context);
     v_tag.editor_console.focus();
-    v_tag.editor_console.write(t("terminal.starting"));
+    v_tag.editor_console.write(t$1("terminal.starting"));
     v_tag.clear_terminal = true;
     terminalRun(true, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
   }
   function terminalKey(p_key) {
     terminalRun(false, p_key);
   }
-  function terminalContextMenu(e, p_tab) {
+  function terminalContextMenu(e2, p_tab) {
     var v_tab = p_tab ? p_tab : v_connTabControl.selectedTab;
     var v_tag = v_tab.tag;
     var v_option_list = [];
     v_option_list.push({
-      text: t("terminal.adjust_dimensions"),
+      text: t$1("terminal.adjust_dimensions"),
       icon: "fas cm-all fa-window-maximize",
       action: function() {
         terminalRun(false, "stty rows " + v_tag.editor_console.rows + " cols " + v_tag.editor_console.cols + "\n");
@@ -6089,8 +1928,8 @@
     });
     customMenu(
       {
-        x: e.clientX + 5,
-        y: e.clientY + 5
+        x: e2.clientX + 5,
+        y: e2.clientY + 5
       },
       v_option_list,
       null
@@ -6108,8 +1947,8 @@
       v_spawn: p_spawn,
       v_ssh_id: v_tag.connId
     };
-    var d = /* @__PURE__ */ new Date();
-    [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+    var d2 = /* @__PURE__ */ new Date();
+    [(d2.getMonth() + 1).padLeft(), d2.getDate().padLeft(), d2.getFullYear()].join("/") + " " + [d2.getHours().padLeft(), d2.getMinutes().padLeft(), d2.getSeconds().padLeft()].join(":");
     createRequest(v_queryRequestCodes.Terminal, v_message_data, v_tag.context.code);
     v_tag.state = v_consoleState.Executing;
   }
@@ -6401,7 +2240,7 @@
     var v_tab_tag;
     if (p_tab_tag) v_tab_tag = p_tab_tag;
     else v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    if (v_tab_tag.state == v_editDataState.Querying) v_tab_tag.div_result.innerHTML = t("common.canceled");
+    if (v_tab_tag.state == v_editDataState.Querying) v_tab_tag.div_result.innerHTML = t$1("common.canceled");
     v_tab_tag.state = v_editDataState.Idle;
     v_tab_tag.tab_loading_span.style.display = "none";
     v_tab_tag.tab_check_span.style.display = "none";
@@ -6413,7 +2252,7 @@
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_state = v_currTabTag.state;
     if (v_state != 0) {
-      showAlert$1(t("common.tab_activity_in_progress"));
+      showAlert$1(t$1("common.tab_activity_in_progress"));
     } else {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Querying;
       v_currTabTag.button_save.style.visibility = "hidden";
@@ -6444,13 +2283,13 @@
         v_context.tab_tag.editDataObject.ht.destroy();
         v_context.tab_tag.editDataObject.ht = null;
       }
-      v_context.tab_tag.div_result.innerHTML = t("common.running");
+      v_context.tab_tag.div_result.innerHTML = t$1("common.running");
       v_context.tab_tag.query_info.innerHTML = "";
       createRequest(v_queryRequestCodes.QueryEditData, v_message_data, v_context);
       setTimeout(function() {
         if (!v_context.acked) {
           cancelEditDataTab(v_context.tab_tag);
-          showAlert$1(t("query.no_response_from_server"));
+          showAlert$1(t$1("query.no_response_from_server"));
         }
       }, 1e4);
     }
@@ -6495,10 +2334,10 @@
       v_err_div.className = "error_text";
       v_err_div.textContent = p_message.v_data;
       v_div_result.appendChild(v_err_div);
-      v_query_info.innerHTML = t("edit_data.response_time", { seconds: request_time / 1e3 });
+      v_query_info.innerHTML = t$1("edit_data.response_time", { seconds: request_time / 1e3 });
     } else {
       if (v_currTabTag.editDataObject.pk.length == 0) {
-        if (v_currTabTag.editDataObject.firstRender) showAlert$1(t("edit_data.no_pk_readonly_warning"));
+        if (v_currTabTag.editDataObject.firstRender) showAlert$1(t$1("edit_data.no_pk_readonly_warning"));
         v_currTabTag.editDataObject.firstRender = false;
         v_currTabTag.editDataObject.hasPK = false;
       } else v_currTabTag.editDataObject.hasPK = true;
@@ -6607,7 +2446,7 @@
           if (!changes) {
             return;
           }
-          $.each(changes, function(index, element) {
+          changes.forEach(function(element, index) {
             var change = element;
             var rowIndex = change[0];
             var columnIndex = change[1];
@@ -6671,7 +2510,7 @@
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_state = v_currTabTag.state;
     if (v_state != v_editDataState.Idle) {
-      showAlert$1(t("common.tab_activity_in_progress"));
+      showAlert$1(t$1("common.tab_activity_in_progress"));
     } else {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Saving;
       v_currTabTag.button_save.style.visibility = "hidden";
@@ -6730,7 +2569,7 @@
     v_currTabTag.div_result;
     var v_query_info = v_currTabTag.query_info;
     var request_time = p_context.duration;
-    v_query_info.innerHTML = t("edit_data.save_time", { seconds: request_time / 1e3 });
+    v_query_info.innerHTML = t$1("edit_data.save_time", { seconds: request_time / 1e3 });
     var v_commands_log = "";
     var v_has_error = false;
     v_currTabTag.button_save.style.visibility = "hidden";
@@ -6888,7 +2727,7 @@
         break;
       }
       case v_queryResponseCodes.SessionMissing: {
-        showAlert$1(t("errors.session_not_found_reload"));
+        showAlert$1(t$1("errors.session_not_found_reload"));
         break;
       }
       case v_queryResponseCodes.MessageException: {
@@ -7102,13 +2941,1009 @@
     },
     v_polling_started
   }, Symbol.toStringTag, { value: "Module" }));
+  /*! name: vanilla-calendar-pro v3.4.0 | url: https://github.com/uvarov-frontend/vanilla-calendar-pro */
+  var e = (e2) => /* @__PURE__ */ new Date(`${e2}T00:00:00`), t = (e2) => `${e2.getFullYear()}-${String(e2.getMonth() + 1).padStart(2, "0")}-${String(e2.getDate()).padStart(2, "0")}`, n = (n2, a2) => n2.reduce((n3, l2) => {
+    if (l2 instanceof Date || "number" == typeof l2) {
+      let e2 = l2 instanceof Date ? l2 : new Date(l2);
+      n3.push(t(e2));
+    } else l2.match(/^(\d{4}-\d{2}-\d{2})$/g) ? n3.push(l2) : l2.replace(/(\d{4}-\d{2}-\d{2}).*?(\d{4}-\d{2}-\d{2})/g, (l3, o2, r2) => {
+      let u2 = e(o2), m2 = e(r2).setHours(23, 59, 59, 999);
+      for (let e2 = u2.getTime(); e2 <= m2; e2 = u2.setDate(u2.getDate() + 1)) n3.push(t(u2));
+      return l3;
+    });
+    return n3;
+  }, []), a = (e2, t2) => {
+    if (t2 && t2.values.length === e2.length) {
+      let n2 = 0;
+      for (; n2 < e2.length && t2.values[n2] === e2[n2]; ) n2++;
+      if (n2 === e2.length) return t2;
+    }
+    return { values: e2.slice(), set: new Set(e2) };
+  }, l = /* @__PURE__ */ new WeakMap(), o = (e2) => {
+    var t2;
+    let o2 = null != (t2 = e2.selectedHolidays) && t2[0] ? e2.selectedHolidays : [], r2 = JSON.stringify(o2.map((e3) => e3 instanceof Date ? e3.getTime() : e3)), i2 = l.get(e2);
+    l.set(e2, { holidayKey: r2, holidays: (null == i2 ? void 0 : i2.holidayKey) === r2 ? i2.holidays : new Set(n(o2)), selected: a(e2.context.selectedDates, null == i2 ? void 0 : i2.selected), disabled: a(e2.context.disableDates, null == i2 ? void 0 : i2.disabled), enabled: a(e2.context.enableDates, null == i2 ? void 0 : i2.enabled), min: Date.parse(`${e2.context.displayDateMin}T00:00:00`), max: Date.parse(`${e2.context.displayDateMax}T00:00:00`), first: Date.parse(`${e2.context.selectedDates[0]}T00:00:00`), last: Date.parse(`${e2.context.selectedDates[e2.context.selectedDates.length - 1]}T00:00:00`) });
+  }, r = (e2) => l.get(e2), i$8 = ["motion", "time", "annotations", "weeks", "months"], s = /* @__PURE__ */ new WeakMap(), c = {}, d = /* @__PURE__ */ Object.freeze([]), u = (e2) => {
+    var t2;
+    return null == (t2 = s.get(e2)) ? c : t2;
+  }, m = (e2, t2 = e2) => {
+    if (t2.extensions && t2.extensions !== e2.extensions && (new Set(t2.extensions).size !== e2.extensions.length || t2.extensions.some((t3) => !e2.extensions.includes(t3)))) throw Error("Calendar extensions are fixed at construction. Create a new Calendar to change them.");
+    let n2 = u(e2), a2 = (e3, t3, a3) => {
+      if (e3 && !n2[t3]) throw Error(`The "${a3}" option requires ${t3}. Import { ${t3} } from 'vanilla-calendar-pro' and add it to extensions: [${t3}].`);
+    };
+    a2(t2.animation || t2.enableSwipe, "motion", t2.animation ? "animation" : "enableSwipe"), a2(t2.selectionTimeMode, "time", "selectionTimeMode"), a2(t2.popups && Object.keys(t2.popups).length || t2.onCreateDateRangeTooltip, "annotations", t2.onCreateDateRangeTooltip ? "onCreateDateRangeTooltip" : "popups"), a2("multiple" === t2.type, "months", "type"), a2("week" === t2.type || t2.enableCollapse || t2.enableWeekNumbers || t2.onClickWeekDay, "weeks", "week" === t2.type ? "type" : t2.enableCollapse ? "enableCollapse" : t2.enableWeekNumbers ? "enableWeekNumbers" : "onClickWeekDay");
+  }, p = (e2, t2, n2) => {
+    var a2;
+    return null == (a2 = u(e2).annotations) ? void 0 : a2.tooltip(e2, t2, n2);
+  }, h = /* @__PURE__ */ new WeakMap(), v = (e2) => {
+    let t2 = h.get(e2);
+    return t2 || (t2 = { lastDateEl: null, isHovering: false, rangeMin: void 0, rangeMax: void 0, tooltipEl: null, timeoutId: null, frameId: null }, h.set(e2, t2)), t2;
+  }, y = (e2) => {
+    e2.context.mainElement.querySelectorAll("[data-vc-date-hover]").forEach((e3) => e3.removeAttribute("data-vc-date-hover"));
+  }, g = (e2, t2, n2) => {
+    e2.context[t2] = n2;
+  }, f = (e2, t2) => void 0 === t2 || ("function" == typeof t2 ? t2(e2) : t2), x = (e2) => f(e2, e2.enableDateToggle), b = (e2) => {
+    if (e2.length < 3 || e2.includes(void 0)) return e2.sort((e3, t3) => +new Date(e3) - new Date(t3));
+    let t2 = e2.map((e3) => ({ date: e3, time: +new Date(e3) }));
+    return t2.sort((e3, t3) => e3.time - t3.time), t2.forEach((t3, n2) => e2[n2] = t3.date), e2;
+  }, D = (e2) => {
+    var t2;
+    let n2 = h.get(e2);
+    n2 && (null == (t2 = n2.cleanup) || t2.call(n2), n2.cleanup = void 0, null !== n2.timeoutId && clearTimeout(n2.timeoutId), null !== n2.frameId && cancelAnimationFrame(n2.frameId), n2.lastDateEl = null, n2.tooltipEl = null, n2.timeoutId = null, n2.frameId = null, h.delete(e2));
+  }, M = (a2, l2, o2 = true) => {
+    let r2 = v(a2);
+    if (r2.lastDateEl = l2, y(a2), !r2.cleanup) {
+      let n2 = a2.context.mainElement, l3 = /* @__PURE__ */ ((n3) => (a3) => {
+        if (!n3.context.selectedDates[0] || 1 !== n3.context.selectedDates.length && !n3.onCreateDateRangeTooltip) return;
+        let l4 = v(n3);
+        if (l4.isHovering) return;
+        let o4 = a3.target;
+        l4.isHovering = true, l4.frameId = requestAnimationFrame(() => {
+          var a4;
+          l4.frameId = null, l4.isHovering = false, !n3.context.isDestroyed && n3.context.mainElement.contains(o4) && (1 === n3.context.selectedDates.length ? ((n4, a5) => {
+            var l5;
+            let o5 = v(n4);
+            if (n4.context.mainElement.hasAttribute("data-vc-dragging") || !a5 || null == n4 || null == (l5 = n4.context) || !l5.selectedDates[0]) return;
+            if (!a5.closest('[data-vc="dates"]')) return o5.lastDateEl = null, p(n4, o5.tooltipEl, null), void y(n4);
+            let r3 = a5.closest("[data-vc-date]");
+            if (!r3 || o5.lastDateEl === r3) return;
+            o5.lastDateEl = r3, p(n4, o5.tooltipEl, r3), y(n4);
+            let i4 = r3.dataset.vcDate, s2 = e(n4.context.selectedDates[0]), c2 = e(i4), [d2, u2] = s2 < c2 ? [s2, c2] : [c2, s2], [m2, h2] = s2 < c2 ? [n4.context.selectedDates[0], i4] : [i4, n4.context.selectedDates[0]], g2 = new Set(n4.context.disableDates), f2 = new Date(d2);
+            for (; f2 <= u2 && g2.has(t(f2)); ) f2.setDate(f2.getDate() + 1);
+            f2 <= u2 && n4.context.mainElement.querySelectorAll("[data-vc-date]").forEach((t2) => {
+              let n5 = t2.dataset.vcDate;
+              if (n5 === m2 || n5 === h2) t2.dataset.vcDateHover = m2 === h2 ? "first-and-last" : n5 === m2 ? "first" : "last";
+              else {
+                let a6 = e(n5);
+                a6 >= d2 && a6 <= u2 && !g2.has(n5) && (t2.dataset.vcDateHover = "");
+              }
+            });
+          })(n3, o4) : n3.context.selectedDates[0] && n3.onCreateDateRangeTooltip && (null == (a4 = u(n3).annotations) || a4.hover(n3, o4)));
+        });
+      })(a2), o3 = () => ((e2) => {
+        let t2 = v(e2);
+        null !== t2.timeoutId && clearTimeout(t2.timeoutId), t2.timeoutId = setTimeout(() => {
+          t2.timeoutId = null, !e2.context.isDestroyed && (t2.lastDateEl = null, p(e2, t2.tooltipEl, null), y(e2));
+        }, 50);
+      })(a2), i3 = (e2) => ((e3, t2) => {
+        if ("Escape" !== t2.key || 1 !== e3.context.selectedDates.length) return;
+        let n3 = v(e3);
+        n3.lastDateEl = null, g(e3, "selectedDates", []), p(e3, n3.tooltipEl, null), y(e3);
+      })(a2, e2);
+      n2.addEventListener("mousemove", l3), n2.addEventListener("mouseleave", o3), n2.addEventListener("keydown", i3), r2.cleanup = () => {
+        n2.removeEventListener("mousemove", l3), n2.removeEventListener("mouseleave", o3), n2.removeEventListener("keydown", i3);
+      };
+    }
+    a2.disableDatesGaps && (null != r2.rangeMin || (r2.rangeMin = a2.context.displayDateMin), null != r2.rangeMax || (r2.rangeMax = a2.context.displayDateMax)), r2.tooltipEl = a2.onCreateDateRangeTooltip ? a2.context.mainElement.querySelector("[data-vc-date-range-tooltip]") : null;
+    let i2 = null == l2 ? void 0 : l2.dataset.vcDate;
+    if (i2) {
+      let e2 = 1 === a2.context.selectedDates.length && a2.context.selectedDates[0].includes(i2);
+      g(a2, "selectedDates", e2 && !x(a2) ? [i2, i2] : e2 && x(a2) ? [] : a2.context.selectedDates.length > 1 ? [i2] : [...a2.context.selectedDates, i2]), a2.context.selectedDates.length > 1 && b(a2.context.selectedDates);
+    }
+    ({ set: () => {
+      a2.disableDatesGaps && ((n2) => {
+        var a3, l3;
+        if (null == n2 || null == (a3 = n2.context) || null == (a3 = a3.selectedDates) || !a3[0] || null == (l3 = n2.context.disableDates) || !l3[0]) return;
+        let o3 = e(n2.context.selectedDates[0]), [r3, i3] = n2.context.disableDates.map((t2) => e(t2)).reduce(([e2, t2], n3) => [o3 >= n3 ? n3 : e2, o3 < n3 && null === t2 ? n3 : t2], [null, null]);
+        r3 && g(n2, "displayDateMin", t(new Date(r3.setDate(r3.getDate() + 1)))), i3 && g(n2, "displayDateMax", t(new Date(i3.setDate(i3.getDate() - 1)))), n2.disableDatesPast && !n2.disableAllDates && e(n2.context.displayDateMin) < e(n2.context.dateToday) && g(n2, "displayDateMin", n2.context.dateToday);
+      })(a2), p(a2, r2.tooltipEl, l2);
+    }, reset: () => {
+      if (!o2) return;
+      let [e2, t2] = [a2.context.selectedDates[0], a2.context.selectedDates[a2.context.selectedDates.length - 1]];
+      g(a2, "selectedDates", a2.context.selectedDates[0] === a2.context.selectedDates[a2.context.selectedDates.length - 1] ? [a2.context.selectedDates[0], a2.context.selectedDates[0]] : a2.enableEdgeDatesOnly ? [e2, t2] : (() => {
+        let l3 = new Set(a2.context.disableDates);
+        return n([`${e2}:${t2}`]).filter((e3) => !l3.has(e3));
+      })()), a2.disableDatesGaps && (g(a2, "displayDateMin", r2.rangeMin), g(a2, "displayDateMax", r2.rangeMax)), a2.onCreateDateRangeTooltip && p(a2, r2.tooltipEl, a2.context.selectedDates[0] ? l2 : null);
+    } })[1 === a2.context.selectedDates.length ? "set" : "reset"]();
+  }, w = (e2) => e2.getRootNode ? e2.getRootNode() : document, E = /* @__PURE__ */ new WeakSet(), k = "data-vc-prev-tabindex", T = (e2) => e2.tabIndex >= 0 && !e2.hasAttribute("disabled") && "true" !== e2.getAttribute("aria-disabled"), A = (e2) => {
+    if (e2.hasAttribute(k)) return;
+    let t2 = e2.getAttribute("tabindex");
+    e2.setAttribute(k, null == t2 ? "" : t2);
+  }, C = (e2) => {
+    if (!e2.hasAttribute(k)) return;
+    let t2 = e2.getAttribute(k);
+    "" === t2 || null === t2 ? e2.removeAttribute("tabindex") : e2.setAttribute("tabindex", t2), e2.removeAttribute(k);
+  }, S = (e2) => {
+    e2.setAttribute("inert", ""), e2.ariaHidden = "true", ((e3) => {
+      T(e3) && (A(e3), e3.tabIndex = -1);
+      let t2 = document.createTreeWalker(e3, NodeFilter.SHOW_ELEMENT, { acceptNode: (e4) => T(e4) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP });
+      for (; t2.nextNode(); ) {
+        let e4 = t2.currentNode;
+        A(e4), e4.tabIndex = -1;
+      }
+    })(e2);
+  }, $ = (e2) => {
+    var t2;
+    if (H(e2), !e2.context.isShowInInputMode || !e2.context.currentType) return;
+    let n2 = e2.context.mainElement.contains(w(e2.context.mainElement).activeElement);
+    e2.context.mainElement.dataset.vcCalendarHidden = "", g(e2, "isShowInInputMode", false), e2.inputMode && S(e2.context.mainElement), null != (t2 = e2.context.inputElement) && t2.hasAttribute("aria-expanded") && e2.context.inputElement.setAttribute("aria-expanded", "false"), e2.context.cleanupHandlers[0] && (e2.context.cleanupHandlers.forEach((e3) => e3()), g(e2, "cleanupHandlers", [])), e2.inputMode && e2.context.inputElement && n2 && (("function" == typeof e2.openOnFocus || true === e2.openOnFocus) && ((e3) => {
+      E.add(e3);
+    })(e2), e2.context.inputElement.focus()), e2.onHide && e2.onHide(e2);
+  };
+  function Y(e2) {
+    if (null == e2 || !e2.getBoundingClientRect) return { top: 0, bottom: 0, left: 0, right: 0 };
+    let t2 = e2.getBoundingClientRect(), n2 = document.documentElement;
+    return { bottom: t2.bottom, right: t2.right, top: t2.top + window.scrollY - n2.clientTop, left: t2.left + window.scrollX - n2.clientLeft };
+  }
+  function N() {
+    return { vw: Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0), vh: Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0) };
+  }
+  function I(e2, t2, n2 = 5) {
+    let a2 = { top: true, bottom: true, left: true, right: true }, l2 = [];
+    if (!t2 || !e2) return { canShow: a2, parentPositions: l2 };
+    let { bottom: o2, top: r2 } = (function(e3) {
+      let { top: t3, left: n3 } = { left: window.scrollX || document.documentElement.scrollLeft || 0, top: window.scrollY || document.documentElement.scrollTop || 0 }, { top: a3, left: l3 } = Y(e3), { vh: o3, vw: r3 } = N(), i3 = a3 - t3, s3 = l3 - n3;
+      return { top: i3, bottom: o3 - (i3 + e3.clientHeight), left: s3, right: r3 - (s3 + e3.clientWidth) };
+    })(e2), { top: i2, left: s2 } = Y(e2), { height: c2, width: d2 } = t2.getBoundingClientRect(), { vh: u2, vw: m2 } = N(), p2 = m2 / 2, h2 = u2 / 2;
+    return [{ condition: i2 < h2, position: "top" }, { condition: i2 > h2, position: "bottom" }, { condition: s2 < p2, position: "left" }, { condition: s2 > p2, position: "right" }].forEach(({ condition: e3, position: t3 }) => {
+      e3 && l2.push(t3);
+    }), Object.assign(a2, { top: c2 <= r2 - n2, bottom: c2 <= o2 - n2, left: d2 <= s2, right: d2 <= m2 - s2 }), { canShow: a2, parentPositions: l2 };
+  }
+  var L = (e2, t2, n2) => {
+    if (!e2) return;
+    let a2 = "auto" === n2 ? (function(e3, t3) {
+      let n3 = "left";
+      if (!t3 || !e3) return n3;
+      let { canShow: a3, parentPositions: l3 } = I(e3, t3), o3 = a3.left && a3.right;
+      return (o3 && a3.bottom ? "center" : o3 && a3.top ? ["top", "center"] : Array.isArray(l3) ? ["bottom" === l3[0] ? "top" : "bottom", ...l3.slice(1)] : l3) || n3;
+    })(e2, t2) : n2, l2 = { top: -t2.offsetHeight, bottom: e2.offsetHeight, left: 0, center: e2.offsetWidth / 2 - t2.offsetWidth / 2, right: e2.offsetWidth - t2.offsetWidth }, o2 = Array.isArray(a2) ? a2[0] : "bottom", r2 = Array.isArray(a2) ? a2[1] : a2;
+    t2.dataset.vcPosition = o2;
+    let { top: i2, left: s2 } = Y(e2), c2 = i2 + l2[o2], d2 = s2 + l2[r2], { vw: u2 } = N();
+    if (d2 + t2.clientWidth > u2) {
+      let e3 = window.innerWidth - document.body.clientWidth;
+      d2 = u2 - t2.clientWidth - e3;
+    } else d2 < 0 && (d2 = 0);
+    Object.assign(t2.style, { left: `${d2}px`, top: `${c2}px` });
+  }, W = /* @__PURE__ */ new WeakMap(), H = (e2) => {
+    clearTimeout(W.get(e2)), W.delete(e2);
+  }, O = (e2) => {
+    H(e2), W.set(e2, setTimeout(() => {
+      W.delete(e2), e2.context.isDestroyed || q(e2);
+    }));
+  }, q = (e2) => {
+    var t2, n2;
+    if (H(e2), e2.context.isShowInInputMode || e2.context.isDestroyed) return;
+    if (!e2.context.currentType) return void e2.context.mainElement.click();
+    g(e2, "cleanupHandlers", []), g(e2, "isShowInInputMode", true), e2.inputMode && ((n2 = e2.context.mainElement).removeAttribute("inert"), n2.removeAttribute("aria-hidden"), ((e3) => {
+      C(e3), e3.querySelectorAll(`[${k}]`).forEach(C);
+    })(n2)), L(e2.context.inputElement, e2.context.mainElement, e2.positionToInput), e2.context.mainElement.removeAttribute("data-vc-calendar-hidden"), null != (t2 = e2.context.inputElement) && t2.hasAttribute("aria-expanded") && e2.context.inputElement.setAttribute("aria-expanded", "true");
+    let a2 = () => {
+      L(e2.context.inputElement, e2.context.mainElement, e2.positionToInput);
+    };
+    window.addEventListener("resize", a2), e2.context.cleanupHandlers.push(() => window.removeEventListener("resize", a2));
+    let l2 = (t3) => {
+      "Escape" === t3.key && $(e2);
+    };
+    document.addEventListener("keydown", l2), e2.context.cleanupHandlers.push(() => document.removeEventListener("keydown", l2));
+    let o2 = (t3) => {
+      var n3;
+      let a3 = null == (n3 = t3.composedPath()[0]) ? t3.target : n3;
+      a3 === e2.context.inputElement || e2.context.mainElement.contains(a3) || $(e2);
+    };
+    document.addEventListener("click", o2, { capture: true }), e2.context.cleanupHandlers.push(() => document.removeEventListener("click", o2, { capture: true })), e2.onShow && e2.onShow(e2);
+  }, F = 'The calendar has not been initialized, please initialize it using the "init()" method first.', P = "You specified an incorrect language label or did not specify the required number of values ​​for «locale.weekdays» or «locale.months».", _ = (e2) => String(e2).replace(/[&<>"']/g, (e3) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[e3]), R = (e2, t2) => `
+  <div class="${_(e2.styles.header)}" data-vc="header" role="group" aria-label="${_(e2.labels.navigation)}">
+${t2 ? `    <#ArrowPrev [${t2}] />
+` : ""}    <div class="${_(e2.styles.headerContent)}" data-vc-header="content" aria-live="polite" aria-atomic="true">
+      <#Month />
+      <#Year />
+    </div>
+${t2 ? `    <#ArrowNext [${t2}] />
+` : ""}  </div>
+`, j$1 = (e2, t2 = "month") => `${R(e2, t2)}  <div class="${_(e2.styles.wrapper)}" data-vc="wrapper">
+    <#WeekNumbers />
+    <div class="${_(e2.styles.content)}" data-vc="content" role="grid">
+      <#Week />
+      <#Dates />
+      <#DateRangeTooltip />
+    </div>
+  </div>
+  <#Collapse />
+  <#ControlTime />
+`, z = (e2) => e2, K = /* @__PURE__ */ new WeakMap(), B = (e2) => {
+    var t2;
+    null == (t2 = K.get(e2)) || t2.observer.disconnect(), K.delete(e2);
+  }, U = B, X = (e2) => {
+    var t2;
+    return !(e2.animation || e2.enableCollapse || e2.onCreateDateEls || e2.onCreateDateRangeTooltip || e2.disableDatesGaps || e2.popups && Object.keys(e2.popups).length || e2.sanitizerHTML !== z || "default" !== e2.context.currentType && "multiple" !== e2.context.currentType || e2.layouts[e2.context.currentType] !== ("multiple" === e2.context.currentType ? null == (t2 = u(e2).months) ? void 0 : t2.layout(e2) : j$1(e2)));
+  }, G = (e2) => JSON.stringify(Object.entries(e2).filter(([e3]) => "context" !== e3 && "selectedDates" !== e3), (e3, t2) => "function" == typeof t2 || t2), Z = ({ context: e2 }) => JSON.stringify([e2.currentType, e2.locale, e2.dateToday, e2.dateMin, e2.dateMax, e2.displayDateMin, e2.displayDateMax, e2.selectedYear, e2.selectedMonth, e2.displayMonthsCount, e2.selectedHours, e2.selectedMinutes, e2.selectedKeeping, e2.selectedTime]), V = (e2) => JSON.stringify([Z(e2), e2.context.displayYear, e2.context.displayWeekDate, e2.context.selectedDates, e2.context.disableDates, e2.context.enableDates]), J = (e2, t2 = false) => {
+    let n2 = K.get(e2);
+    if (!n2 || !t2 && !n2.fullLayout || n2.dirty || n2.observer.takeRecords().length || !X(e2)) return;
+    let a2 = w(e2.context.mainElement).activeElement;
+    if (!a2 || a2 === e2.context.mainElement || !e2.context.mainElement.contains(a2) || t2 && !a2.closest('[data-vc="column"], [data-vc="dates"], [data-vc-week="numbers"]')) try {
+      if (n2.options === G(e2) && n2.context === V(e2) && n2.timezone === new Intl.DateTimeFormat().resolvedOptions().timeZone) return n2;
+    } catch (l2) {
+    }
+  }, Q = (e2, t2 = false) => {
+    if (B(e2), X(e2) && !e2.context.isDestroyed) try {
+      let n2 = G(e2), a2 = V(e2);
+      if (n2.length + a2.length > 262144) return;
+      let l2 = Array.from(e2.context.mainElement.querySelectorAll('[data-vc="dates"]'));
+      if (l2.length !== e2.context.displayMonthsCount) return;
+      let o2 = { observer: new MutationObserver(() => o2.dirty = true), dirty: false, fullLayout: t2, options: n2, context: a2, structure: Z(e2), timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone, month: 12 * e2.context.selectedYear + e2.context.selectedMonth, count: l2.length };
+      o2.observer.observe(e2.context.mainElement, { subtree: true, childList: true, attributes: true, characterData: true }), K.set(e2, o2);
+    } catch (n2) {
+      B(e2);
+    }
+  }, ee = (e2, t2, n2, a2 = "") => {
+    t2 ? e2.getAttribute(n2) !== a2 && e2.setAttribute(n2, a2) : e2.getAttribute(n2) === a2 && e2.removeAttribute(n2);
+  }, te = (t2, n2, a2, l2, o2, i2, s2) => {
+    var c2;
+    let d2 = (p2 = i2, Date.parse(`${p2}T00:00:00`)), u2 = r(t2), m2 = u2.min > d2 || u2.max < d2 || u2.disabled.set.has(i2) || !t2.selectionMonthsMode && "current" !== s2 || !t2.selectionYearsMode && e(i2).getFullYear() !== n2;
+    var p2;
+    ee(a2, m2, "data-vc-date-disabled"), l2 && ee(l2, m2, "aria-disabled", "true"), l2 && m2 && ee(l2, true, "tabindex", "-1"), l2 && l2.disabled !== !!m2 && (l2.disabled = !!m2), ee(a2, !t2.disableToday && t2.context.dateToday === i2, "data-vc-date-today"), ee(a2, !t2.disableToday && t2.context.dateToday === i2, "aria-current", "date"), ee(a2, null == (c2 = t2.selectedWeekends) ? void 0 : c2.includes(o2), "data-vc-date-weekend"), ee(a2, u2.holidays.has(i2), "data-vc-date-holiday");
+    let h2 = u2.selected.set.has(i2), v2 = h2 ? "" : void 0;
+    h2 ? (ee(a2, true, "aria-selected", "true"), t2.context.selectedDates.length > 1 && "multiple-ranged" === t2.selectionDatesMode && (t2.context.selectedDates[0] === i2 && t2.context.selectedDates[t2.context.selectedDates.length - 1] === i2 ? v2 = "first-and-last" : t2.context.selectedDates[0] === i2 ? v2 = "first" : t2.context.selectedDates[t2.context.selectedDates.length - 1] === i2 && (v2 = "last"), t2.context.selectedDates[0] !== i2 && t2.context.selectedDates[t2.context.selectedDates.length - 1] !== i2 && (v2 = "middle"))) : a2.hasAttribute("data-vc-date-selected") && a2.removeAttribute("aria-selected"), !u2.disabled.set.has(i2) && t2.enableEdgeDatesOnly && t2.context.selectedDates.length > 1 && "multiple-ranged" === t2.selectionDatesMode && (d2 > u2.first && d2 < u2.last ? v2 = "middle" : "middle" === v2 && (v2 = void 0)), void 0 === v2 ? a2.hasAttribute("data-vc-date-selected") && a2.removeAttribute("data-vc-date-selected") : ee(a2, true, "data-vc-date-selected", v2);
+  }, ne = /* @__PURE__ */ new Map(), ae = /* @__PURE__ */ new Map(), le = (e2, t2, n2) => {
+    var a2, l2;
+    let o2 = null == (a2 = e2.disableWeekdays) ? void 0 : a2.includes(n2), i2 = e2.disableAllDates && !(null == (l2 = e2.context.enableDates) || !l2[0]), s2 = r(e2);
+    if ((o2 || i2) && !s2.enabled.set.has(t2) && !s2.disabled.set.has(t2)) {
+      let n3 = e2.context.disableDates;
+      if (s2.disabled.set.add(t2), e2.onCreateDateEls) n3.push(t2), b(n3), s2.disabled.values = n3.slice();
+      else {
+        let e3 = +new Date(t2), a3 = 0, l3 = n3.length;
+        for (; a3 < l3; ) {
+          let t3 = a3 + l3 >>> 1;
+          +new Date(n3[t3]) <= e3 ? a3 = t3 + 1 : l3 = t3;
+        }
+        n3.splice(a3, 0, t2), s2.disabled.values.splice(a3, 0, t2);
+      }
+    }
+  }, oe = (t2, n2, a2, l2, r2, i2) => {
+    var s2;
+    let c2, d2 = e(r2).getDay(), m2 = "string" == typeof t2.locale && t2.locale.length ? t2.locale : "en", p2 = document.createElement("div");
+    p2.className = t2.styles.date, p2.dataset.vcDate = r2, p2.dataset.vcDateMonth = i2, p2.dataset.vcDateWeekDay = String(d2), p2.role = "gridcell", ("current" === i2 || t2.displayDatesOutside) && (c2 = document.createElement("button"), c2.className = t2.styles.dateBtn, c2.type = "button", c2.dataset.vcDateBtn = "", c2.ariaLabel = ((e2, t3) => {
+      let n3 = `${t3}:${e2}`, a3 = ae.get(n3);
+      if (void 0 !== a3) return a3;
+      let l3 = ne.get(t3);
+      l3 || (l3 = new Intl.DateTimeFormat(t3, { dateStyle: "long", timeZone: "UTC" }), ne.size >= 8 && ne.delete(ne.keys().next().value), ne.set(t3, l3));
+      let o2 = l3.format(/* @__PURE__ */ new Date(`${e2}T00:00:00.000Z`));
+      return ae.size >= 512 && ae.delete(ae.keys().next().value), ae.set(n3, o2), o2;
+    })(r2, m2), c2.innerText = String(l2), p2.appendChild(c2)), t2.enableWeekNumbers && (null == (s2 = u(t2).weeks) || s2.date(t2, p2, r2)), le(t2, r2, d2), te(t2, n2, p2, c2, d2, r2, i2), a2.addDate(p2), t2.onCreateDateEls && (t2.onCreateDateEls(t2, p2), o(t2));
+  }, re = [{ container: '[data-vc="dates"]', item: "[data-vc-date-btn]", active: ["[data-vc-date-selected] [data-vc-date-btn]", "[data-vc-date-today] [data-vc-date-btn]"] }, { container: '[data-vc="months"]', item: "[data-vc-months-month]", active: ["[data-vc-months-month-selected]"] }, { container: '[data-vc="years"]', item: "[data-vc-years-year]", active: ["[data-vc-years-year-selected]"] }], ie = (e2) => !e2.hasAttribute("disabled") && "true" !== e2.getAttribute("aria-disabled"), se = (e2, t2, n2) => {
+    if (n2 && ie(n2)) return e2.querySelectorAll(`${t2.item}:not([tabindex="-1"])`).forEach((e3) => {
+      e3 !== n2 && (e3.tabIndex = -1);
+    }), void ("0" !== n2.getAttribute("tabindex") && (n2.tabIndex = 0));
+    let a2 = Array.from(e2.querySelectorAll(t2.item));
+    if (!a2[0]) return;
+    let l2 = ((e3, t3, n3) => {
+      var a3;
+      let l3 = t3.active.map((t4) => e3.querySelector(t4)).find((e4) => !!e4 && ie(e4));
+      return null == (a3 = null == l3 ? n3.find(ie) : l3) ? n3[0] : a3;
+    })(e2, t2, a2);
+    a2.forEach((e3) => {
+      let t3 = e3 === l2 ? 0 : -1;
+      e3.getAttribute("tabindex") !== String(t3) && (e3.tabIndex = t3);
+    });
+  }, ce = (e2) => {
+    let t2 = e2.target, n2 = re.find((e3) => {
+      var n3;
+      return null == (n3 = t2.matches) ? void 0 : n3.call(t2, e3.item);
+    }), a2 = n2 ? t2.closest(n2.container) : null;
+    n2 && a2 && se(a2, n2, t2);
+  }, de = (e2) => {
+    re.forEach((t2) => {
+      e2.context.mainElement.querySelectorAll(t2.container).forEach((e3) => {
+        e3.closest("[data-vc-ghost]") || se(e3, t2, null);
+      });
+    });
+  }, ue = (e2, n2, a2 = true) => {
+    var l2;
+    U(e2);
+    let r2 = new Date(e2.context.selectedYear, e2.context.selectedMonth, 1), i2 = e2.context.mainElement.querySelectorAll('[data-vc="dates"]'), s2 = u(e2).weeks, c2 = e2.enableWeekNumbers ? e2.context.mainElement.querySelectorAll('[data-vc-week="numbers"]') : [], d2 = null == (l2 = u(e2).annotations) ? void 0 : l2.prepare(e2, i2.length);
+    i2.forEach((a3, l3) => {
+      e2.selectionDatesMode || (a3.dataset.vcDatesDisabled = "");
+      let i3 = n2 ? 12 * e2.context.selectedYear + e2.context.selectedMonth + l3 - n2.month : -1;
+      if (n2 && i3 >= 0 && i3 < n2.count) return;
+      if (a3.textContent = "", o(e2), "week" === e2.context.currentType) return null == s2 || s2.dates(e2, a3), null == d2 || d2(a3), void (null == s2 || s2.numbers(e2, 0, 7, c2[l3], a3));
+      let u2 = new Date(r2);
+      u2.setMonth(u2.getMonth() + l3);
+      let m2 = u2.getMonth(), p2 = u2.getFullYear(), h2 = (new Date(p2, m2, 1).getDay() - e2.firstWeekday + 7) % 7, v2 = new Date(p2, m2 + 1, 0).getDate(), y2 = h2 + v2, g2 = Math.ceil(y2 / 7), f2 = 7 * g2 - y2, x2 = [];
+      for (let t2 = 0; t2 < g2; t2++) {
+        let t3 = document.createElement("div");
+        t3.className = e2.styles.datesRow, t3.setAttribute("data-vc-dates", "row"), t3.setAttribute("role", "row"), x2.push(t3);
+      }
+      let b2 = 0, D2 = 0, M2 = { addDate: (e3) => {
+        x2[b2].appendChild(e3), D2++, D2 >= 7 && (b2++, D2 = 0);
+      } };
+      ((e3, t2, n3, a4, l4) => {
+        let o2 = new Date(n3, a4, 0).getDate() - (l4 - 1), r3 = 0 === a4 ? n3 - 1 : n3, i4 = 0 === a4 ? 12 : a4 < 10 ? `0${a4}` : a4;
+        for (let s3 = l4; s3 > 0; s3--, o2++) oe(e3, n3, t2, o2, `${r3}-${i4}-${o2}`, "prev");
+      })(e2, M2, p2, m2, h2), ((e3, n3, a4, l4, o2) => {
+        for (let r3 = 1; r3 <= a4; r3++) {
+          let a5 = new Date(l4, o2, r3);
+          oe(e3, l4, n3, r3, t(a5), "current");
+        }
+      })(e2, M2, v2, p2, m2), ((e3, t2, n3, a4, l4) => {
+        let o2 = l4 + 1 === 12 ? a4 + 1 : a4, r3 = l4 + 1 === 12 ? "01" : l4 + 2 < 10 ? `0${l4 + 2}` : l4 + 2;
+        for (let i4 = 1; i4 <= n3; i4++) {
+          let n4 = `${o2}-${r3}-${i4 < 10 ? `0${i4}` : String(i4)}`;
+          oe(e3, a4, t2, i4, n4, "next");
+        }
+      })(e2, M2, f2, p2, m2);
+      for (let e3 of x2) a3.appendChild(e3);
+      null == d2 || d2(a3), null == s2 || s2.numbers(e2, h2, v2, c2[l3], a3);
+    }), de(e2), a2 && Q(e2, null == n2 ? void 0 : n2.fullLayout);
+  }, me = (e2, t2) => `${R(e2, "Years" === t2 ? "year" : void 0)}  <div class="${_(e2.styles.wrapper)}" data-vc="wrapper">
+    <div class="${_(e2.styles.content)}" data-vc="content">
+      <#${t2} />
+    </div>
+  </div>
+`, pe = (e2) => me(e2, "Months"), he = (e2) => me(e2, "Years"), ye = (e2, t2, n2) => e2.labels["arrow" + ("prev" === t2 ? "Prev" : "Next")][n2], ge = { ArrowNext: (e2, t2) => `<button type="button" class="${_(e2.styles.arrowNext)}" data-vc-arrow="next" aria-label="${_(ye(e2, "next", t2))}"></button>`, ArrowPrev: (e2, t2) => `<button type="button" class="${_(e2.styles.arrowPrev)}" data-vc-arrow="prev" aria-label="${_(ye(e2, "prev", t2))}"></button>`, Dates: (e2) => `<div class="${_(e2.styles.dates)}" data-vc="dates" role="rowgroup" aria-label="${_(e2.labels.dates)}"></div>`, Month: (e2) => `<button type="button" class="${_(e2.styles.month)}" data-vc="month"></button>`, Months: (e2) => `<div class="${_(e2.styles.months)}" data-vc="months" role="grid" aria-label="${_(e2.labels.months)}"></div>`, Week: (e2) => `<div class="${_(e2.styles.week)}" data-vc="week" role="row" aria-label="${_(e2.labels.week)}"></div>`, Year: (e2) => `<button type="button" class="${_(e2.styles.year)}" data-vc="year"></button>`, Years: (e2) => `<div class="${_(e2.styles.years)}" data-vc="years" role="grid" aria-label="${_(e2.labels.years)}"></div>` }, fe = (e2, t2) => t2.replace(/[\n\t]/g, "").replace(/<#(?!\/?Multiple)(.*?)>/g, (t3, n2) => {
+    let a2 = (n2.match(/\[(.*?)\]/) || [])[1], l2 = ((e3, t4) => {
+      var n3, a3, l3, o3;
+      return "Collapse" === t4 ? null == (n3 = u(e3).weeks) ? void 0 : n3.component : "WeekNumbers" === t4 ? null == (a3 = u(e3).weeks) ? void 0 : a3.numbersComponent : "DateRangeTooltip" === t4 ? null == (l3 = u(e3).annotations) ? void 0 : l3.component : "ControlTime" === t4 ? null == (o3 = u(e3).time) ? void 0 : o3.component : Object.prototype.hasOwnProperty.call(ge, t4) ? ge[t4] : void 0;
+    })(e2, n2.replace(/[/\s\n\t]|\[(.*?)\]/g, "")), o2 = l2 ? l2(e2, null == a2 ? null : a2) : "";
+    return e2.sanitizerHTML(o2);
+  }).replace(/[\n\t]/g, ""), xe = (e2, t2) => {
+    var n2, a2, l2;
+    let o2 = u(e2), r2 = { default: j$1, month: pe, year: he, multiple: null == (n2 = o2.months) ? void 0 : n2.layout, week: null == (a2 = o2.weeks) ? void 0 : a2.layout };
+    var i2;
+    Object.keys(r2).forEach((t3) => {
+      var n3, a3;
+      let l3 = t3;
+      e2.layouts[l3].length || (e2.layouts[l3] = null == (n3 = null == (a3 = r2[l3]) ? void 0 : a3.call(r2, e2)) ? "" : n3);
+    }), e2.context.mainElement.className = e2.styles.calendar, e2.context.mainElement.dataset.vc = "calendar", e2.context.mainElement.dataset.vcType = e2.context.currentType, e2.context.mainElement.toggleAttribute("data-vc-swipe", e2.enableSwipe), e2.context.mainElement.role = e2.inputMode ? "dialog" : "group", e2.context.mainElement.tabIndex = -1, e2.context.mainElement.ariaLabel = e2.labels.application, null != (l2 = o2.months) && l2.render(e2, t2) || (null == (i2 = o2.time) || i2.destroy(e2), e2.context.mainElement.innerHTML = e2.sanitizerHTML(fe(e2, e2.layouts[e2.context.currentType]))), ((e3) => {
+      let t3 = ["multiple", "multiple-ranged"].includes(String(e3.selectionDatesMode));
+      e3.context.mainElement.querySelectorAll('[data-vc="content"][role="grid"]').forEach((e4) => {
+        t3 ? e4.setAttribute("aria-multiselectable", "true") : e4.removeAttribute("aria-multiselectable");
+      });
+    })(e2);
+  }, be = (e2, t2, n2, a2) => {
+    e2.style.visibility = n2 ? "hidden" : "", t2.style.visibility = a2 ? "hidden" : "";
+  }, De = (n2) => {
+    if ("month" === n2.context.currentType) return;
+    let a2 = n2.context.mainElement.querySelector('[data-vc-arrow="prev"]'), l2 = n2.context.mainElement.querySelector('[data-vc-arrow="next"]');
+    a2 && l2 && { default: () => ((n3, a3, l3) => {
+      let o2 = e(t(new Date(n3.context.selectedYear, n3.context.selectedMonth, 1))), r2 = new Date(o2.getTime()), i2 = new Date(o2.getTime());
+      r2.setMonth(r2.getMonth() - n3.monthsToSwitch), i2.setMonth(i2.getMonth() + n3.monthsToSwitch);
+      let s2 = e(n3.context.dateMin), c2 = e(n3.context.dateMax);
+      n3.selectionYearsMode || (s2.setFullYear(o2.getFullYear()), c2.setFullYear(o2.getFullYear())), be(a3, l3, !n3.selectionMonthsMode || r2.getFullYear() < s2.getFullYear() || r2.getFullYear() === s2.getFullYear() && r2.getMonth() < s2.getMonth(), !n3.selectionMonthsMode || i2.getFullYear() > c2.getFullYear() || i2.getFullYear() === c2.getFullYear() && i2.getMonth() > c2.getMonth() - (n3.context.displayMonthsCount - 1));
+    })(n2, a2, l2), year: () => ((t2, n3, a3) => {
+      let l3 = e(t2.context.dateMin), o2 = e(t2.context.dateMax);
+      be(n3, a3, !!(l3.getFullYear() && t2.context.displayYear - 7 <= l3.getFullYear()), !!(o2.getFullYear() && t2.context.displayYear + 7 >= o2.getFullYear()));
+    })(n2, a2, l2), week: () => {
+      var e2;
+      return null == (e2 = u(n2).weeks) ? void 0 : e2.arrows(n2, a2, l2);
+    } }["multiple" === n2.context.currentType ? "default" : n2.context.currentType]();
+  }, Me = (e2, t2) => {
+    let n2 = e2.context.mainElement.querySelectorAll('[data-vc="month"]'), a2 = e2.context.mainElement.querySelectorAll('[data-vc="year"]'), l2 = new Date(e2.context.selectedYear, e2.context.selectedMonth, 1);
+    [n2, a2].forEach((n3) => null == n3 ? void 0 : n3.forEach((n4, a3) => {
+      (!t2 || t2.includes(a3)) && ((e3, t3, n5, a4, l3) => {
+        let o2 = new Date(a4.setFullYear(e3.context.selectedYear, e3.context.selectedMonth + n5)).getFullYear(), r2 = new Date(a4.setMonth(e3.context.selectedMonth + n5)).getMonth(), i2 = e3.context.locale.months.long[r2], s2 = t3.closest('[data-vc="column"]');
+        s2 && (s2.ariaLabel = `${i2} ${o2}`);
+        let c2 = { month: { id: r2, label: i2 }, year: { id: o2, label: o2 } };
+        t3.innerText = String(c2[l3].label), t3.dataset[`vc${l3.charAt(0).toUpperCase() + l3.slice(1)}`] = String(c2[l3].id), t3.ariaLabel = `${e3.labels[l3]} ${c2[l3].label}`;
+        let d2 = { month: e3.selectionMonthsMode, year: e3.selectionYearsMode }, u2 = false === d2[l3] || "only-arrows" === d2[l3];
+        u2 && (t3.tabIndex = -1), t3.disabled = u2;
+      })(e2, n4, a3, l2, n4.dataset.vc);
+    }));
+  }, we = (e2, t2, n2, a2, l2) => {
+    let o2 = { month: { selected: "data-vc-months-month-selected", aria: "aria-selected", value: "vcMonthsMonth", selectedProperty: "selectedMonth" }, year: { selected: "data-vc-years-year-selected", aria: "aria-selected", value: "vcYearsYear", selectedProperty: "selectedYear" } };
+    var r2, i2;
+    l2 && (null == (r2 = e2.context.mainElement.querySelectorAll({ month: "[data-vc-months-month]", year: "[data-vc-years-year]" }[n2])) || r2.forEach((e3) => {
+      var t3;
+      e3.removeAttribute(o2[n2].selected), null == (t3 = e3.parentElement) || t3.removeAttribute(o2[n2].aria);
+    }), g(e2, o2[n2].selectedProperty, Number(t2.dataset[o2[n2].value])), Me(e2), "year" === n2 && De(e2)), a2 && (t2.setAttribute(o2[n2].selected, ""), null == (i2 = t2.parentElement) || i2.setAttribute(o2[n2].aria, "true"));
+  }, Ee = (e2, t2, n2, a2, l2, o2, r2, i2) => {
+    let s2 = "month" === t2 ? "months" : "years", c2 = document.createElement("div");
+    c2.className = e2.styles[`${s2}Cell`], c2.setAttribute(`data-vc-${s2}`, "cell"), c2.role = "gridcell";
+    let d2 = n2.cloneNode(false);
+    return d2.className = e2.styles["month" === t2 ? "monthsMonth" : "yearsYear"], d2.innerText = r2, d2.ariaLabel = i2, d2.setAttribute(`data-vc-${s2}-${t2}`, String(o2)), l2 && (d2.ariaDisabled = "true"), l2 && (d2.tabIndex = -1), d2.disabled = l2, c2.appendChild(d2), we(e2, d2, t2, a2 === o2, false), c2;
+  }, ke = (e2, t2) => {
+    var n2, a2;
+    return null == (n2 = null == (a2 = u(e2).months) ? void 0 : a2.column(e2, t2)) ? { currentValue: null, columnID: 0 } : n2;
+  }, Te = (t2, n2) => {
+    var a2;
+    let l2 = null == n2 || null == (a2 = n2.closest('[data-vc="header"]')) ? void 0 : a2.querySelector('[data-vc="year"]'), o2 = l2 ? Number(l2.dataset.vcYear) : t2.context.selectedYear, r2 = null != n2 && n2.dataset.vcMonth ? Number(n2.dataset.vcMonth) : t2.context.selectedMonth;
+    g(t2, "currentType", "month"), xe(t2, n2), Me(t2);
+    let i2 = t2.context.mainElement.querySelector('[data-vc="months"]');
+    if (!t2.selectionMonthsMode || !i2) return;
+    let s2 = t2.monthsToSwitch > 1 ? t2.context.locale.months.long.map((e2, n3) => r2 - t2.monthsToSwitch * n3).concat(t2.context.locale.months.long.map((e2, n3) => r2 + t2.monthsToSwitch * n3)).filter((e2) => e2 >= 0 && e2 <= 12) : Array.from(Array(12).keys()), c2 = document.createElement("button");
+    c2.type = "button";
+    let d2, u2 = () => ({ min: e(t2.context.dateMin), max: e(t2.context.dateMax), monthCount: t2.context.displayMonthsCount - 1, columnID: ke(t2, "month").columnID }), m2 = t2.onCreateMonthEls ? void 0 : u2();
+    for (let e2 = 0; e2 < 12; e2++) {
+      e2 % 4 == 0 && (d2 = document.createElement("div"), d2.className = t2.styles.monthsRow, d2.dataset.vcMonths = "row", d2.role = "row", i2.appendChild(d2));
+      let { min: n3, max: a3, monthCount: l3, columnID: p2 } = null == m2 ? u2() : m2, h2 = Ee(t2, "month", c2, r2, o2 <= n3.getFullYear() && e2 < n3.getMonth() + p2 || o2 >= a3.getFullYear() && e2 > a3.getMonth() - l3 + p2 || o2 > a3.getFullYear() || e2 !== r2 && !s2.includes(e2), e2, t2.context.locale.months.short[e2], t2.context.locale.months.long[e2]);
+      null == d2 || d2.appendChild(h2), t2.onCreateMonthEls && t2.onCreateMonthEls(t2, h2);
+    }
+    de(t2);
+  }, Ae = (e2) => {
+    var t2;
+    let n2 = e2.selectedWeekends ? [...e2.selectedWeekends] : [], a2 = [...e2.context.locale.weekdays.long].map((t3, a3) => ({ id: a3, titleShort: e2.context.locale.weekdays.short[a3], titleLong: t3, isWeekend: n2.includes(a3) })), l2 = [...a2.slice(e2.firstWeekday), ...a2.slice(0, e2.firstWeekday)], o2 = null == (t2 = u(e2).weeks) ? void 0 : t2.weekday(e2), r2 = document.createElement(o2 ? "div" : "b");
+    e2.context.mainElement.querySelectorAll('[data-vc="week"]').forEach((t3) => {
+      l2.forEach((n3) => {
+        let a3 = r2.cloneNode(false);
+        a3.className = e2.styles.weekDay, a3.role = "columnheader", a3.ariaLabel = n3.titleLong, a3.dataset.vcWeekDay = String(n3.id), n3.isWeekend && (a3.dataset.vcWeekDayOff = ""), o2 ? o2(a3, n3.titleShort, n3.titleLong) : a3.innerText = n3.titleShort, t3.appendChild(a3);
+      });
+    });
+  }, Ce = (t2, n2) => {
+    let a2 = null != n2 && n2.dataset.vcYear ? Number(n2.dataset.vcYear) : t2.context.selectedYear;
+    g(t2, "currentType", "year"), xe(t2, n2), Me(t2), De(t2);
+    let l2 = t2.context.mainElement.querySelector('[data-vc="years"]');
+    if (!t2.selectionYearsMode || !l2) return;
+    let o2 = "multiple" === t2.type ? t2.context.selectedYear === a2 ? 0 : 1 : 0, r2 = document.createElement("button");
+    r2.type = "button";
+    let i2, s2 = () => [e(t2.context.dateMin).getFullYear(), e(t2.context.dateMax).getFullYear()], c2 = t2.onCreateYearEls ? void 0 : s2();
+    for (let e2 = t2.context.displayYear - 7; e2 < t2.context.displayYear + 8; e2++) {
+      (e2 - (t2.context.displayYear - 7)) % 5 == 0 && (i2 = document.createElement("div"), i2.className = t2.styles.yearsRow, i2.dataset.vcYears = "row", i2.role = "row", l2.appendChild(i2));
+      let [n3, d2] = null == c2 ? s2() : c2, u2 = Ee(t2, "year", r2, a2, e2 < n3 + o2 || e2 > d2, e2, String(e2), String(e2));
+      null == i2 || i2.appendChild(u2), t2.onCreateYearEls && t2.onCreateYearEls(t2, u2);
+    }
+    de(t2);
+  }, Se = /* @__PURE__ */ new WeakMap(), $e = (e2) => {
+    var t2, n2;
+    let a2 = "not all" !== window.matchMedia("(prefers-color-scheme)").media;
+    var l2, o2;
+    if (!a2 || "system" !== e2.selectedTheme) return null == (l2 = (o2 = e2.context).cleanupSystemTheme) || l2.call(o2), void (e2.context.mainElement.dataset.vcTheme = a2 ? e2.selectedTheme : "light");
+    let r2 = e2.themeAttrDetect.length ? document.querySelector(e2.themeAttrDetect) : null, i2 = e2.themeAttrDetect.replace(/^.*\[(.+)\]/g, (e3, t3) => t3), s2 = Se.get(e2);
+    if ((null == s2 ? void 0 : s2.element) === r2 && s2.attr === i2) return void s2.update();
+    null == (t2 = (n2 = e2.context).cleanupSystemTheme) || t2.call(n2);
+    let c2, d2 = window.matchMedia("(prefers-color-scheme: dark)"), u2 = () => {
+      let t3 = null == r2 ? void 0 : r2.getAttribute(i2), n3 = !t3 || "system" === t3;
+      e2.context.mainElement.dataset.vcTheme = n3 ? d2.matches ? "dark" : "light" : t3, n3 && !c2 ? d2.addEventListener ? (d2.addEventListener("change", u2), c2 = () => d2.removeEventListener("change", u2)) : (d2.addListener(u2), c2 = () => d2.removeListener(u2)) : !n3 && c2 && (c2(), c2 = void 0);
+    }, m2 = r2 ? ((e3, t3, n3) => {
+      let a3 = new MutationObserver((e4) => {
+        for (let a4 = 0; a4 < e4.length; a4++) if (e4[a4].attributeName === t3) {
+          n3();
+          break;
+        }
+      });
+      return a3.observe(e3, { attributes: true, attributeFilter: [t3] }), () => a3.disconnect();
+    })(r2, i2, u2) : void 0;
+    Se.set(e2, { element: r2, attr: i2, update: u2 }), g(e2, "cleanupSystemTheme", () => {
+      null == m2 || m2(), null == c2 || c2(), Se.delete(e2), g(e2, "cleanupSystemTheme", void 0);
+    }), u2();
+  };
+  function Ye(e2) {
+    return Ye = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function(e3) {
+      return typeof e3;
+    } : function(e3) {
+      return e3 && "function" == typeof Symbol && e3.constructor === Symbol && e3 !== Symbol.prototype ? "symbol" : typeof e3;
+    }, Ye(e2);
+  }
+  function Ne(e2, t2, n2) {
+    return (t2 = (function(e3) {
+      var t3 = (function(e4) {
+        if ("object" != Ye(e4) || !e4) return e4;
+        var t4 = e4[Symbol.toPrimitive];
+        if (void 0 !== t4) {
+          var n3 = t4.call(e4, "string");
+          if ("object" != Ye(n3)) return n3;
+          throw TypeError("@@toPrimitive must return a primitive value.");
+        }
+        return String(e4);
+      })(e3);
+      return "symbol" == Ye(t3) ? t3 : t3 + "";
+    })(t2)) in e2 ? Object.defineProperty(e2, t2, { value: n2, enumerable: true, configurable: true, writable: true }) : e2[t2] = n2, e2;
+  }
+  function Ie(e2, t2) {
+    var n2 = Object.keys(e2);
+    if (Object.getOwnPropertySymbols) {
+      var a2 = Object.getOwnPropertySymbols(e2);
+      t2 && (a2 = a2.filter(function(t3) {
+        return Object.getOwnPropertyDescriptor(e2, t3).enumerable;
+      })), n2.push.apply(n2, a2);
+    }
+    return n2;
+  }
+  function Le(e2) {
+    for (var t2 = 1; t2 < arguments.length; t2++) {
+      var n2 = null == arguments[t2] ? {} : arguments[t2];
+      t2 % 2 ? Ie(Object(n2), true).forEach(function(t3) {
+        Ne(e2, t3, n2[t3]);
+      }) : Object.getOwnPropertyDescriptors ? Object.defineProperties(e2, Object.getOwnPropertyDescriptors(n2)) : Ie(Object(n2)).forEach(function(t3) {
+        Object.defineProperty(e2, t3, Object.getOwnPropertyDescriptor(n2, t3));
+      });
+    }
+    return e2;
+  }
+  var We = /* @__PURE__ */ new Map(), He = (e2, t2, n2) => {
+    let a2 = new Intl.DateTimeFormat(e2, { [t2]: n2, timeZone: "UTC" });
+    return Array.from({ length: "weekday" === t2 ? 7 : 12 }, (e3, n3) => {
+      return (l2 = a2.format(new Date(Date.UTC(1978, "month" === t2 ? n3 : 0, "weekday" === t2 ? n3 + 1 : 1)))).charAt(0).toUpperCase() + l2.slice(1).replace(/\./, "");
+      var l2;
+    });
+  }, Oe = (e2) => {
+    if (e2.context.locale.weekdays.short[6] && e2.context.locale.weekdays.long[6] && e2.context.locale.months.short[11] && e2.context.locale.months.long[11]) return;
+    if ("string" != typeof e2.locale) {
+      var t2, n2, a2, l2;
+      if (!(null != (t2 = e2.locale) && null != (t2 = t2.weekdays) && t2.short[6] && null != (n2 = e2.locale) && null != (n2 = n2.weekdays) && n2.long[6] && null != (a2 = e2.locale) && null != (a2 = a2.months) && a2.short[11] && null != (l2 = e2.locale) && null != (l2 = l2.months) && l2.long[11])) throw Error(P);
+      return void g(e2, "locale", Le({}, e2.locale));
+    }
+    if ("string" == typeof e2.locale && !e2.locale.length) throw Error(P);
+    let o2 = We.get(e2.locale);
+    o2 || (o2 = { weekdays: { short: He(e2.locale, "weekday", "short"), long: He(e2.locale, "weekday", "long") }, months: { short: He(e2.locale, "month", "short"), long: He(e2.locale, "month", "long") } }, We.size >= 8 && We.delete(We.keys().next().value), We.set(e2.locale, o2));
+    for (let r2 of ["weekdays", "months"]) for (let t3 of ["short", "long"]) e2.context.locale[r2][t3].push(...o2[r2][t3]);
+  }, qe = (e2, t2 = true) => {
+    var n2;
+    U(e2), $e(e2), Oe(e2), xe(e2), Me(e2), De(e2), null == (n2 = u(e2).time) || n2.render(e2), { default: () => {
+      Ae(e2), ue(e2, void 0, false);
+    }, multiple: () => {
+      Ae(e2), ue(e2, void 0, false);
+    }, week: () => {
+      var t3;
+      null == (t3 = u(e2).weeks) || t3.init(e2), Ae(e2), ue(e2, void 0, false);
+    }, month: () => Te(e2), year: () => Ce(e2) }[e2.context.currentType](), t2 && Q(e2, true);
+  }, Fe = (t2, n2 = false) => {
+    o(t2), t2.context.mainElement.querySelectorAll("[data-vc-date]").forEach((a2) => {
+      let l2 = a2.querySelector("[data-vc-date-btn]"), o2 = a2.dataset.vcDate, r2 = e(o2), i2 = r2.getDay();
+      n2 && le(t2, o2, i2);
+      let s2 = n2 ? a2.dataset.vcDateMonth : "current";
+      "prev" === s2 && r2.setMonth(r2.getMonth() + 1, 1), "next" === s2 && r2.setMonth(r2.getMonth() - 1, 1), te(t2, n2 ? r2.getFullYear() : t2.context.selectedYear, a2, l2, i2, o2, s2);
+    }), de(t2);
+  }, Pe = (e2) => {
+    let t2 = [{ container: '[data-vc="dates"]', row: '[data-vc-dates="row"]', item: "[data-vc-date-btn]" }, { container: '[data-vc="months"]', row: '[data-vc-months="row"]', item: "[data-vc-months-month]" }, { container: '[data-vc="years"]', row: '[data-vc-years="row"]', item: "[data-vc-years-year]" }], n2 = (e3) => !e3.disabled && "true" !== e3.getAttribute("aria-disabled"), a2 = (e3) => {
+      let a3 = e3.target.closest("button");
+      if (!a3 || !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e3.key)) return;
+      let l2, o2 = t2.find((e4) => a3.matches(e4.item)), r2 = o2 ? a3.closest(o2.container) : null;
+      if (o2 && r2 && !r2.closest("[data-vc-ghost]") && n2(a3)) {
+        if ("ArrowUp" === e3.key || "ArrowDown" === e3.key) l2 = ((e4, t3, a4, l3) => {
+          var o3;
+          let r3 = a4.closest(t3.row);
+          if (!r3) return a4;
+          let i2 = Array.from(e4.querySelectorAll(t3.row)), s2 = i2.indexOf(r3), c2 = Array.from(r3.children).indexOf(a4.parentElement), d2 = i2[s2 + l3], u2 = null == d2 || null == (o3 = d2.children[c2]) ? void 0 : o3.querySelector(t3.item);
+          return u2 && n2(u2) ? u2 : a4;
+        })(r2, o2, a3, "ArrowUp" === e3.key ? -1 : 1);
+        else {
+          let t3 = Array.from(r2.querySelectorAll(o2.item)).filter(n2), i2 = t3.indexOf(a3);
+          if (-1 === i2) return;
+          l2 = "ArrowLeft" === e3.key ? t3[Math.max(0, i2 - 1)] : t3[Math.min(t3.length - 1, i2 + 1)];
+        }
+        e3.preventDefault(), null == l2 || l2.focus();
+      }
+    };
+    return e2.context.mainElement.addEventListener("keydown", a2), e2.context.mainElement.addEventListener("focusin", ce), () => {
+      e2.context.mainElement.removeEventListener("keydown", a2), e2.context.mainElement.removeEventListener("focusin", ce);
+    };
+  }, _e = '[data-vc="dates"]', Re = (e2, t2) => "next" === e2 ? t2 : -t2, je = (n2) => {
+    let a2 = { selector: _e, shift: (a3) => ((n3, a4) => {
+      let l2 = e(t(new Date(n3.context.selectedYear, n3.context.selectedMonth, 1)));
+      l2.setMonth(l2.getMonth() + Re(a4, n3.monthsToSwitch)), g(n3, "selectedMonth", l2.getMonth()), g(n3, "selectedYear", l2.getFullYear());
+    })(n2, a3), render: (e2, t2) => ue(n2, t2) };
+    return { default: a2, multiple: a2, week: { selector: _e, shift: (e2) => {
+      var t2;
+      return null == (t2 = u(n2).weeks) ? void 0 : t2.shift(n2, e2);
+    }, render: () => ue(n2) }, year: { selector: '[data-vc="years"]', shift: (e2) => g(n2, "displayYear", n2.context.displayYear + Re(e2, 15)), render: (e2) => Ce(n2, e2) }, month: null }[n2.context.currentType];
+  }, ze = (e2, t2, n2) => {
+    var a2;
+    let l2 = je(e2);
+    if (!l2) return;
+    let { mainElement: o2 } = e2.context, r2 = o2.contains(w(o2).activeElement), i2 = "multiple" === e2.context.currentType ? J(e2, true) : void 0;
+    U(e2), l2.shift(t2);
+    let s2 = i2 ? null == (a2 = u(e2).months) ? void 0 : a2.rotate(e2, i2) : void 0;
+    s2 || (i2 = void 0), Me(e2, s2), De(e2);
+    let c2 = u(e2).motion;
+    c2 && e2.animation ? c2.navigate(e2, l2.selector, t2, () => l2.render(n2, i2)) : l2.render(n2, i2), ((e3, t3, n3) => {
+      var a3;
+      let { mainElement: l3 } = e3.context;
+      if (!n3 || l3.contains(w(l3).activeElement)) return;
+      let o3 = l3.querySelector(`[data-vc-arrow="${t3}"]`);
+      if (o3 && "hidden" !== o3.style.visibility) return o3.focus();
+      null == (a3 = Array.from(l3.querySelectorAll('[tabindex="0"]')).find((e4) => !e4.closest("[data-vc-ghost]"))) || a3.focus();
+    })(e2, t2, r2);
+  }, Ke = (e2, t2, n2) => {
+    let a2 = t2.dataset.vcDate, l2 = t2.closest("[data-vc-date][data-vc-date-selected]"), o2 = x(e2);
+    (!l2 || o2) && g(e2, "selectedDates", l2 ? e2.context.selectedDates.filter((e3) => e3 !== a2) : n2 ? [...e2.context.selectedDates, a2] : [a2]);
+  }, Be = ["month", "year"], Ue = '[data-vc="column"]', Xe = (e2, t2, n2) => {
+    let a2 = u(e2).motion;
+    a2 && e2.animation ? a2.changeView(e2, t2, n2) : n2();
+  }, Ge = (e2, t2) => {
+    var n2;
+    let { columnID: a2 } = ke(e2, e2.context.currentType);
+    g(e2, "currentType", e2.type), Xe(e2, a2, () => qe(e2)), null == (n2 = e2.context.mainElement.querySelector(`[data-vc="${t2}"]`)) || n2.focus();
+  }, Ze = (e2) => {
+    let t2 = (t3) => {
+      var n2, a2;
+      ((e3, t4) => {
+        let n3 = t4.target, a3 = n3.closest("[data-vc-arrow]");
+        a3 && (ze(e3, a3.dataset.vcArrow, n3), e3.onClickArrow && e3.onClickArrow(e3, t4));
+      })(e2, t3), null == (n2 = u(e2).weeks) || n2.click(e2, t3), ((e3, t4) => {
+        let n3 = t4.target, a3 = n3.closest("[data-vc-date-btn]");
+        if (!e3.selectionDatesMode || !["single", "multiple", "multiple-ranged"].includes(e3.selectionDatesMode) || !a3) return;
+        let l2 = a3.closest("[data-vc-date]");
+        ({ single: () => Ke(e3, l2, false), multiple: () => Ke(e3, l2, true), "multiple-ranged": () => M(e3, l2) })[e3.selectionDatesMode](), e3.context.selectedDates && b(e3.context.selectedDates), e3.onClickDate && e3.onClickDate(e3, t4), e3.inputMode && e3.context.inputElement && e3.context.mainElement && e3.onChangeToInput && e3.onChangeToInput(e3, t4);
+        let o2 = n3.closest('[data-vc-date-month="prev"]'), r2 = n3.closest('[data-vc-date-month="next"]');
+        ({ prev: () => e3.enableMonthChangeOnDayClick ? ze(e3, "prev") : Fe(e3), next: () => e3.enableMonthChangeOnDayClick ? ze(e3, "next") : Fe(e3), current: () => Fe(e3) })[o2 ? "prev" : r2 ? "next" : "current"]();
+      })(e2, t3), ((e3, t4) => {
+        let n3 = { month: e3.selectionMonthsMode, year: e3.selectionYearsMode };
+        Be.forEach((a3) => {
+          n3[a3] && t4.target && ((e4, t5, n4) => {
+            let a4 = t5.target, l2 = a4.closest(`[data-vc="${n4}"]`), o2 = ((e5, t6) => {
+              let n5 = t6.closest(Ue);
+              return n5 ? Array.from(e5.context.mainElement.querySelectorAll(Ue)).indexOf(n5) : 0;
+            })(e4, a4), r2 = { year: () => Xe(e4, o2, () => Ce(e4, a4)), month: () => Xe(e4, o2, () => Te(e4, a4)) };
+            if (l2 && e4.onClickTitle && e4.onClickTitle(e4, t5), l2 && e4.context.currentType !== n4) {
+              let t6 = a4.closest(Ue);
+              return r2[n4](), ((e5, t7, n5) => {
+                var a5;
+                return null == (a5 = (null == n5 ? e5.context.mainElement : n5).querySelector(`[data-vc-${t7}s-${t7}][tabindex="0"]`)) ? void 0 : a5.focus();
+              })(e4, n4, t6);
+            }
+            let i2 = a4.closest(`[data-vc-${n4}s-${n4}]`);
+            if (i2) return ((e5, t6, n5, a5) => {
+              ({ year: () => {
+                var t7;
+                if ("multiple" === e5.type) return null == (t7 = u(e5).months) ? void 0 : t7.select(e5, "year", a5);
+                g(e5, "selectedYear", Number(a5.dataset.vcYearsYear));
+              }, month: () => {
+                var t7;
+                if ("multiple" === e5.type) return null == (t7 = u(e5).months) ? void 0 : t7.select(e5, "month", a5);
+                g(e5, "selectedMonth", Number(a5.dataset.vcMonthsMonth));
+              } })[n5](), { year: () => {
+                var n6;
+                return null == (n6 = e5.onClickYear) ? void 0 : n6.call(e5, e5, t6);
+              }, month: () => {
+                var n6;
+                return null == (n6 = e5.onClickMonth) ? void 0 : n6.call(e5, e5, t6);
+              } }[n5](), e5.context.currentType === e5.type ? we(e5, a5, n5, true, true) : Ge(e5, n5);
+            })(e4, t5, n4, i2);
+            let s2 = a4.closest('[data-vc="grid"]'), c2 = a4.closest('[data-vc="column"]');
+            (e4.context.currentType === n4 && l2 || "multiple" === e4.type && e4.context.currentType === n4 && s2 && !c2) && Ge(e4, n4);
+          })(e3, t4, a3);
+        });
+      })(e2, t3), null == (a2 = u(e2).weeks) || a2.collapseClick(e2, t3);
+    };
+    return e2.context.mainElement.addEventListener("click", t2), () => e2.context.mainElement.removeEventListener("click", t2);
+  }, Ve = /* @__PURE__ */ new WeakMap(), Je = (e2, t2) => {
+    let a2 = e2[t2].map((e3) => e3 instanceof Date ? e3.getTime() : e3), l2 = Ve.get(e2), o2 = null == l2 ? void 0 : l2[t2];
+    if (o2 && a2.length === o2.values.length) {
+      let e3 = 0;
+      for (; e3 < a2.length && a2[e3] === o2.values[e3]; ) e3++;
+      if (e3 === a2.length && o2.timezone === new Intl.DateTimeFormat().resolvedOptions().timeZone) return o2.dates.slice();
+    }
+    let r2 = n(e2[t2]);
+    if (r2.length > 1 && b(r2), r2.length > 128 && r2.length <= 1e4 && a2.length <= 1e4) {
+      let n2 = null == l2 ? {} : l2;
+      n2[t2] = { values: a2, dates: r2.slice(), timezone: new Intl.DateTimeFormat().resolvedOptions().timeZone }, Ve.set(e2, n2);
+    } else l2 && delete l2[t2];
+    return r2;
+  }, Qe = (e2, t2) => "today" === e2 ? (() => {
+    let e3 = /* @__PURE__ */ new Date();
+    return new Date(e3.getTime() - 6e4 * e3.getTimezoneOffset()).toISOString().substring(0, 10);
+  })() : e2 instanceof Date || "number" == typeof e2 || "string" == typeof e2 ? n([e2])[0] : t2, et = (e2, t2, n2) => {
+    g(e2, "selectedMonth", t2), g(e2, "selectedYear", n2), g(e2, "displayYear", n2);
+  }, tt = (t2) => {
+    var a2, l2;
+    if (t2.enableCollapse && !["default", "week"].includes(t2.type)) throw Error("The «enableCollapse» parameter is only supported by the «default» and «week» calendar types.");
+    g(t2, "currentType", t2.type), ((e2) => {
+      if ("multiple" === e2.type && (e2.displayMonthsCount <= 1 || e2.displayMonthsCount > 12) || "multiple" !== e2.type && e2.displayMonthsCount > 1) throw Error("For the «multiple» calendar type, the «displayMonthsCount» parameter can have a value from 2 to 12, and for all others it cannot be greater than 1.");
+      g(e2, "displayMonthsCount", e2.displayMonthsCount ? e2.displayMonthsCount : "multiple" === e2.type ? 2 : 1);
+    })(t2), ((t3) => {
+      var n2, a3, l3;
+      let o2 = Qe(t3.dateMin, t3.dateMin), r2 = Qe(t3.dateMax, t3.dateMax), i2 = Qe(t3.displayDateMin, o2), s2 = Qe(t3.displayDateMax, r2);
+      if (g(t3, "dateToday", Qe(t3.dateToday, t3.dateToday)), g(t3, "displayDateMin", i2 ? e(o2) >= e(i2) ? o2 : i2 : o2), g(t3, "displayDateMax", s2 ? e(r2) <= e(s2) ? r2 : s2 : r2), g(t3, "displayDateMin", t3.disableDatesPast && !t3.disableAllDates && e(i2) < e(t3.context.dateToday) || t3.disableAllDates ? t3.context.dateToday : i2), g(t3, "displayDateMax", t3.disableAllDates ? t3.context.dateToday : s2), g(t3, "disableDates", t3.disableDates[0] && !t3.disableAllDates ? Je(t3, "disableDates") : t3.disableAllDates ? [t3.context.displayDateMin] : []), g(t3, "enableDates", t3.enableDates[0] ? Je(t3, "enableDates") : []), null != (n2 = t3.context.enableDates) && n2[0] && null != (a3 = t3.context.disableDates) && a3[0]) {
+        let e2 = new Set(t3.context.enableDates);
+        g(t3, "disableDates", t3.context.disableDates.filter((t4) => !e2.has(t4)));
+      }
+      null != (l3 = t3.context.enableDates) && l3[0] && t3.disableAllDates && (g(t3, "displayDateMin", t3.context.enableDates[0]), g(t3, "displayDateMax", t3.context.enableDates[t3.context.enableDates.length - 1])), g(t3, "dateMin", t3.displayDisabledDates ? o2 : t3.context.displayDateMin), g(t3, "dateMax", t3.displayDisabledDates ? r2 : t3.context.displayDateMax);
+    })(t2), ((t3) => {
+      var a3;
+      if (t3.enableJumpToSelectedDate && null != (a3 = t3.selectedDates) && a3[0] && void 0 === t3.selectedMonth && void 0 === t3.selectedYear) {
+        let a4 = e(n(t3.selectedDates)[0]);
+        return void et(t3, a4.getMonth(), a4.getFullYear());
+      }
+      if (((t4) => {
+        let a4 = (e2) => {
+          let n2 = new Date(e2);
+          et(t4, n2.getMonth(), n2.getFullYear());
+        };
+        return t4.displayDateMin && "today" !== t4.displayDateMin && (l4 = t4.displayDateMin, o3 = /* @__PURE__ */ new Date(), new Date(l4).getTime() > o3.getTime()) ? (a4(e(Qe(t4.selectedDates.length && t4.selectedDates[0] ? n(t4.selectedDates)[0] : t4.displayDateMin, t4.displayDateMin))), true) : !(!t4.displayDateMax || "today" === t4.displayDateMax || !((e2, t5) => new Date(e2).getTime() < t5.getTime())(t4.displayDateMax, /* @__PURE__ */ new Date()) || (a4(e(Qe(t4.selectedDates.length && t4.selectedDates[0] ? n(t4.selectedDates)[0] : t4.displayDateMax, t4.displayDateMax))), 0));
+        var l4, o3;
+      })(t3)) return;
+      let l3 = void 0 !== t3.selectedMonth && Number(t3.selectedMonth) >= 0 && Number(t3.selectedMonth) < 12, o2 = void 0 !== t3.selectedYear && Number(t3.selectedYear) >= 0 && Number(t3.selectedYear) <= 9999;
+      et(t3, l3 ? Number(t3.selectedMonth) : e(t3.context.dateToday).getMonth(), o2 ? Number(t3.selectedYear) : e(t3.context.dateToday).getFullYear());
+    })(t2), ((e2) => {
+      var t3;
+      g(e2, "selectedDates", null != (t3 = e2.selectedDates) && t3[0] ? n(e2.selectedDates) : []);
+    })(t2), null == (a2 = u(t2).weeks) || a2.init(t2), null == (l2 = u(t2).time) || l2.init(t2);
+  }, nt = (e2, { year: t2, month: n2, dates: a2, time: l2, locale: o2 }, r2 = true, i2) => {
+    var s2, c2, d2, m2;
+    U(e2);
+    let p2 = u(e2);
+    null == (s2 = p2.motion) || s2.reset(e2), null == (c2 = p2.time) || c2.destroy(e2), null == (d2 = p2.annotations) || d2.destroy(e2), D(e2);
+    let h2 = { year: e2.selectedYear, month: e2.selectedMonth, dates: e2.selectedDates, time: e2.selectedTime };
+    var v2;
+    e2.selectedYear = t2 ? h2.year : e2.context.selectedYear, e2.selectedMonth = n2 ? h2.month : e2.context.selectedMonth, e2.selectedTime = l2 ? h2.time : e2.context.selectedTime, e2.selectedDates = "only-first" === a2 && null != (m2 = e2.context.selectedDates) && m2[0] ? [e2.context.selectedDates[0]] : true === a2 ? h2.dates : e2.context.selectedDates, o2 && g(e2, "locale", { months: { short: [], long: [] }, weekdays: { short: [], long: [] } }), tt(e2), r2 && (i2 && Oe(e2), i2 && i2.structure === Z(e2) ? ($e(e2), null == (v2 = p2.time) || v2.render(e2), Fe(e2, true)) : qe(e2, false)), e2.selectedYear = h2.year, e2.selectedMonth = h2.month, e2.selectedDates = h2.dates, e2.selectedTime = h2.time, "multiple-ranged" === e2.selectionDatesMode && M(e2, null, !!a2), r2 && Q(e2, true);
+  }, at = (e2, t2, n2) => {
+    if (!e2.context.isInit) throw Error(F);
+    m(e2), nt(e2, Le(Le({}, { year: true, month: true, dates: true, time: true, locale: true }), t2), !(e2.inputMode && !e2.context.inputModeInit), n2), e2.onUpdate && e2.onUpdate(e2);
+  }, lt = ["extensions", "context", "init", "update", "destroy", "show", "hide", "set", "queryAndMemoize"], ot = (e2, t2, n2 = true) => {
+    let a2 = Object.keys(t2);
+    for (let l2 = 0; l2 < a2.length; l2++) {
+      let o2 = a2[l2];
+      "__proto__" !== o2 && "constructor" !== o2 && "prototype" !== o2 && (n2 && lt.includes(String(o2)) || ("object" != typeof e2[o2] || null === e2[o2] || "object" != typeof t2[o2] || null === t2[o2] || t2[o2] instanceof Date || Array.isArray(t2[o2]) ? void 0 !== t2[o2] && (e2[o2] = t2[o2]) : ot(e2[o2], t2[o2], false)));
+    }
+  }, rt = { application: "Calendar", navigation: "Calendar Navigation", arrowNext: { month: "Next month", year: "Next list of years", week: "Next week" }, arrowPrev: { month: "Previous month", year: "Previous list of years", week: "Previous week" }, month: "Select month, current selected month:", months: "List of months", year: "Select year, current selected year:", years: "List of years", week: "Days of the week", weekNumber: "Numbers of weeks in a year", collapse: "Collapse to a single week", expand: "Expand to the whole month", dates: "Dates in the current month", selectingTime: "Selecting a time ", inputHour: "Hours", inputMinute: "Minutes", rangeHour: "Slider for selecting hours", rangeMinute: "Slider for selecting minutes", btnKeeping: "Switch AM/PM, current position:" }, it = { calendar: "vc", controls: "vc-controls", grid: "vc-grid", column: "vc-column", header: "vc-header", headerContent: "vc-header__content", month: "vc-month", year: "vc-year", arrowPrev: "vc-arrow vc-arrow_prev", arrowNext: "vc-arrow vc-arrow_next", wrapper: "vc-wrapper", content: "vc-content", months: "vc-months", monthsRow: "vc-months__row", monthsCell: "vc-months__cell", monthsMonth: "vc-months__month", years: "vc-years", yearsRow: "vc-years__row", yearsCell: "vc-years__cell", yearsYear: "vc-years__year", week: "vc-week", weekDay: "vc-week__day", weekDayBtn: "vc-week__day-btn", weekNumbers: "vc-week-numbers", weekNumbersTitle: "vc-week-numbers__title", weekNumbersContent: "vc-week-numbers__content", weekNumber: "vc-week-number", collapse: "vc-collapse", dates: "vc-dates", datesRow: "vc-dates__row", date: "vc-date", dateBtn: "vc-date__btn", datePopup: "vc-date__popup", dateRangeTooltip: "vc-date-range-tooltip", time: "vc-time", timeContent: "vc-time__content", timeHour: "vc-time__hour", timeMinute: "vc-time__minute", timeKeeping: "vc-time__keeping", timeRanges: "vc-time__ranges", timeRange: "vc-time__range" }, st = class {
+    constructor() {
+      Ne(this, "type", "default"), Ne(this, "inputMode", false), Ne(this, "openOnFocus", true), Ne(this, "positionToInput", "left"), Ne(this, "animation", false), Ne(this, "firstWeekday", 1), Ne(this, "monthsToSwitch", 1), Ne(this, "themeAttrDetect", "html[data-theme]"), Ne(this, "locale", "en"), Ne(this, "dateToday", "today"), Ne(this, "dateMin", "1970-01-01"), Ne(this, "dateMax", "2470-12-31"), Ne(this, "displayDateMin", void 0), Ne(this, "displayDateMax", void 0), Ne(this, "displayDatesOutside", true), Ne(this, "displayDisabledDates", false), Ne(this, "displayMonthsCount", void 0), Ne(this, "disableDates", []), Ne(this, "disableAllDates", false), Ne(this, "disableDatesPast", false), Ne(this, "disableDatesGaps", false), Ne(this, "disableWeekdays", []), Ne(this, "disableToday", false), Ne(this, "enableDates", []), Ne(this, "enableEdgeDatesOnly", true), Ne(this, "enableDateToggle", true), Ne(this, "enableWeekNumbers", false), Ne(this, "enableMonthChangeOnDayClick", true), Ne(this, "enableJumpToSelectedDate", false), Ne(this, "enableCollapse", false), Ne(this, "enableSwipe", false), Ne(this, "selectionDatesMode", "single"), Ne(this, "selectionMonthsMode", true), Ne(this, "selectionYearsMode", true), Ne(this, "selectionTimeMode", false), Ne(this, "selectedDates", []), Ne(this, "selectedMonth", void 0), Ne(this, "selectedYear", void 0), Ne(this, "selectedHolidays", []), Ne(this, "selectedWeekends", [0, 6]), Ne(this, "selectedTime", void 0), Ne(this, "selectedTheme", "system"), Ne(this, "timeMinHour", 0), Ne(this, "timeMaxHour", 23), Ne(this, "timeMinMinute", 0), Ne(this, "timeMaxMinute", 59), Ne(this, "timeControls", "all"), Ne(this, "timeStepHour", 1), Ne(this, "timeStepMinute", 1), Ne(this, "sanitizerHTML", z), Ne(this, "onClickDate", void 0), Ne(this, "onClickWeekDay", void 0), Ne(this, "onClickWeekNumber", void 0), Ne(this, "onClickTitle", void 0), Ne(this, "onClickMonth", void 0), Ne(this, "onClickYear", void 0), Ne(this, "onClickArrow", void 0), Ne(this, "onChangeTime", void 0), Ne(this, "onChangeToInput", void 0), Ne(this, "onCreateDateRangeTooltip", void 0), Ne(this, "onCreateDateEls", void 0), Ne(this, "onCreateMonthEls", void 0), Ne(this, "onCreateYearEls", void 0), Ne(this, "onInit", void 0), Ne(this, "onUpdate", void 0), Ne(this, "onDestroy", void 0), Ne(this, "onShow", void 0), Ne(this, "onHide", void 0), Ne(this, "popups", {}), Ne(this, "labels", Le(Le({}, rt), {}, { arrowNext: Le({}, rt.arrowNext), arrowPrev: Le({}, rt.arrowPrev) })), Ne(this, "layouts", { default: "", multiple: "", month: "", year: "", week: "" }), Ne(this, "styles", Le({}, it));
+    }
+  }, on = class e2 extends st {
+    constructor(t2, n2) {
+      var a2;
+      super(), Ne(this, "extensions", void 0), Ne(this, "init", () => ((e3) => {
+        var t3;
+        if (e3.context.isInit) throw Error("The calendar has already been initialized, calling init() again is not allowed. Create a new Calendar instance instead.");
+        if (m(e3), g(e3, "originalElement", e3.context.mainElement.cloneNode(true)), g(e3, "isInit", true), e3.inputMode) {
+          let t4 = ((e4) => {
+            g(e4, "inputElement", e4.context.mainElement);
+            let t5 = e4.context.inputElement;
+            ["input", "button", "textarea"].includes(t5.localName) && (t5.setAttribute("aria-haspopup", "dialog"), ("button" === t5.localName || "combobox" === t5.getAttribute("role")) && t5.setAttribute("aria-expanded", "false"));
+            let n3 = () => {
+              e4.context.inputModeInit ? O(e4) : ((e5) => {
+                var t6;
+                let n4 = document.createElement("div");
+                n4.className = e5.styles.calendar, n4.dataset.vc = "calendar", n4.dataset.vcInput = "", n4.dataset.vcCalendarHidden = "", Object.assign(n4.style, { left: "0", top: "0" }), S(n4);
+                let a4 = w(e5.context.mainElement), l3 = a4 === document ? document.body : a4;
+                g(e5, "inputModeInit", true), g(e5, "isShowInInputMode", false), g(e5, "mainElement", n4), l3.appendChild(e5.context.mainElement), nt(e5, { year: true, month: true, dates: true, time: true, locale: true }), O(e5), e5.onInit && e5.onInit(e5), e5.context.isDestroyed || (Pe(e5), null == (t6 = u(e5).motion) || t6.bind(e5), Ze(e5));
+              })(e4);
+            };
+            e4.context.inputElement.addEventListener("click", n3);
+            let a3 = "function" == typeof e4.openOnFocus || true === e4.openOnFocus, l2 = () => {
+              ((e5) => E.has(e5))(e4) ? ((e5) => {
+                E.delete(e5);
+              })(e4) : ((e5) => f(e5, e5.openOnFocus))(e4) && n3();
+            };
+            a3 && e4.context.inputElement.addEventListener("focus", l2);
+            let o3 = (t6) => {
+              let n4 = "Tab" === t6.key && !t6.shiftKey, a4 = ["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(t6.key);
+              (n4 || a4) && ((t7) => {
+                var n5;
+                if (!e4.context.isShowInInputMode || w(e4.context.mainElement).activeElement !== e4.context.inputElement) return false;
+                let a5 = (e5) => e5.tabIndex >= 0 && !e5.hasAttribute("disabled") && "true" !== e5.getAttribute("aria-disabled"), l3 = null == (n5 = document.createTreeWalker(e4.context.mainElement, NodeFilter.SHOW_ELEMENT, { acceptNode: (e5) => a5(e5) ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_SKIP }).nextNode()) ? a5(e4.context.mainElement) ? e4.context.mainElement : null : n5;
+                !l3 || l3.tabIndex < 0 || (t7.preventDefault(), l3.focus());
+              })(t6);
+            };
+            return e4.context.inputElement.addEventListener("keydown", o3), () => {
+              t5.removeEventListener("click", n3), a3 && t5.removeEventListener("focus", l2), t5.removeEventListener("keydown", o3);
+            };
+          })(e3);
+          return g(e3, "cleanupInput", t4), t4;
+        }
+        if (tt(e3), qe(e3), "multiple-ranged" === e3.selectionDatesMode && 1 === e3.context.selectedDates.length && (M(e3, null), Fe(e3)), e3.onInit && e3.onInit(e3), !e3.context.isDestroyed) return Pe(e3), null == (t3 = u(e3).motion) || t3.bind(e3), Ze(e3);
+      })(this)), Ne(this, "update", (e3) => at(this, e3)), Ne(this, "destroy", () => {
+        let t3 = this.inputMode ? this.context.inputElement : this.context.mainElement;
+        if (((e3) => {
+          var t4, n3, a3, o3, r2, i2, s2, c2;
+          if (!e3.context.isInit) throw Error(F);
+          if (e3.context.isDestroyed) throw Error("The calendar has already been destroyed, calling destroy() again is not allowed.");
+          B(e3);
+          let d2 = u(e3);
+          var m2, p2, h2, v2, y2;
+          null == (t4 = d2.motion) || t4.destroy(e3), null == (n3 = d2.time) || n3.destroy(e3), null == (a3 = d2.annotations) || a3.destroy(e3), D(e3), ((e4) => {
+            l.delete(e4);
+          })(e3), H(e3), null == (o3 = (r2 = e3.context).cleanupInput) || o3.call(r2), g(e3, "cleanupInput", void 0), null == (i2 = e3.context.cleanupHandlers) || i2.forEach((e4) => e4()), g(e3, "cleanupHandlers", []), g(e3, "isShowInInputMode", false), null == (s2 = (c2 = e3.context).cleanupSystemTheme) || s2.call(c2), e3.inputMode ? (e3.context.mainElement !== e3.context.inputElement && (null == (h2 = e3.context.mainElement.parentElement) || h2.removeChild(e3.context.mainElement)), null == (m2 = e3.context.inputElement) || null == (p2 = m2.replaceWith) || p2.call(m2, e3.context.originalElement), g(e3, "inputElement", void 0)) : null == (v2 = (y2 = e3.context.mainElement).replaceWith) || v2.call(y2, e3.context.originalElement), g(e3, "mainElement", e3.context.originalElement), g(e3, "isDestroyed", true), e3.onDestroy && e3.onDestroy(e3);
+        })(this), t3) for (let [n3, a3] of e2.memoizedElements) a3 === t3 && e2.memoizedElements.delete(n3);
+      }), Ne(this, "show", () => q(this)), Ne(this, "hide", () => $(this)), Ne(this, "set", (e3, t3) => ((e4, t4, n3) => {
+        m(e4, t4);
+        let a3 = Object.keys(t4);
+        t4.extensions && a3.splice(a3.indexOf("extensions"), 1);
+        let l2 = 1 === a3.length && "selectedDates" === a3[0] ? J(e4) : void 0;
+        ot(e4, t4), e4.context.isInit && at(e4, n3, l2);
+      })(this, e3, t3)), Ne(this, "context", void 0), this.context = Le(Le({}, this.context), {}, { locale: { months: { short: [], long: [] }, weekdays: { short: [], long: [] } } }), g(this, "mainElement", "string" == typeof t2 ? null == (a2 = e2.memoizedElements.get(t2)) ? this.queryAndMemoize(t2) : a2 : t2);
+      let o2 = null == n2 ? void 0 : n2.extensions;
+      this.extensions = null != o2 && o2.length ? Object.freeze(Array.from(new Set(o2))) : d, ((e3) => {
+        if (!e3.extensions.length) return;
+        let t3 = {};
+        for (let n3 of e3.extensions) {
+          let e4 = n3, a3 = e4.name;
+          if (!i$8.includes(a3)) throw Error("Unknown calendar extension.");
+          if (t3[a3] && t3[a3] !== e4) throw Error(`Conflicting calendar extension: ${a3}.`);
+          Object.assign(t3, { [a3]: e4 });
+        }
+        s.set(e3, t3);
+      })(this), n2 && ot(this, n2);
+    }
+    queryAndMemoize(t2) {
+      let n2 = document.querySelector(t2);
+      if (!n2) throw Error(((e3) => `${e3} is not found, check the first argument passed to new Calendar. If the element lives inside a Shadow DOM, a string selector can't reach it - resolve the element yourself (e.g. shadowRoot.querySelector(...)) and pass it directly instead.`)(t2));
+      return e2.memoizedElements.set(t2, n2), n2;
+    }
+  };
+  Ne(on, "memoizedElements", /* @__PURE__ */ new Map());
+  const PRESETS = [
+    { key: "last_6_hours", from: () => hoursAgo(6), to: null },
+    { key: "last_12_hours", from: () => hoursAgo(12), to: null },
+    { key: "last_24_hours", from: () => hoursAgo(24), to: null },
+    { key: "last_7_days", from: () => startOfDay(daysAgo(7)), to: null },
+    { key: "last_30_days", from: () => startOfDay(daysAgo(30)), to: null },
+    { key: "yesterday", from: () => startOfDay(daysAgo(1)), to: () => endOfDay(daysAgo(1)) },
+    { key: "this_month", from: () => new Date((/* @__PURE__ */ new Date()).getFullYear(), (/* @__PURE__ */ new Date()).getMonth(), 1), to: null },
+    {
+      key: "last_month",
+      from: () => new Date((/* @__PURE__ */ new Date()).getFullYear(), (/* @__PURE__ */ new Date()).getMonth() - 1, 1),
+      to: () => new Date((/* @__PURE__ */ new Date()).getFullYear(), (/* @__PURE__ */ new Date()).getMonth(), 0, 23, 59, 59, 999)
+    }
+  ];
+  function hoursAgo(n2) {
+    return new Date(Date.now() - n2 * 3600 * 1e3);
+  }
+  function daysAgo(n2) {
+    var d2 = /* @__PURE__ */ new Date();
+    d2.setDate(d2.getDate() - n2);
+    return d2;
+  }
+  function startOfDay(d2) {
+    return new Date(d2.getFullYear(), d2.getMonth(), d2.getDate());
+  }
+  function endOfDay(d2) {
+    return new Date(d2.getFullYear(), d2.getMonth(), d2.getDate(), 23, 59, 59, 999);
+  }
+  function pad(n2) {
+    return String(n2).padStart(2, "0");
+  }
+  function toDayString(d2) {
+    return d2.getFullYear() + "-" + pad(d2.getMonth() + 1) + "-" + pad(d2.getDate());
+  }
+  function toTimeString(d2) {
+    return pad(d2.getHours()) + ":" + pad(d2.getMinutes());
+  }
+  function fromDayAndTime(day, time, seconds = 0) {
+    var [y2, m2, d2] = day.split("-").map(Number);
+    var [hh, mm] = (time || "00:00").split(":").map(Number);
+    return new Date(y2, m2 - 1, d2, hh, mm, seconds, seconds ? 999 : 0);
+  }
+  function parseInputDate(value, fallback) {
+    var d2 = value ? new Date(value) : fallback;
+    return isNaN(d2.getTime()) ? fallback : d2;
+  }
+  function setCustomLabel(label, from, to) {
+    var fmt = new Intl.DateTimeFormat(window.v_language || "en", { dateStyle: "medium", timeStyle: "short" });
+    label.textContent = fmt.format(from) + " - " + fmt.format(to);
+  }
+  function setupTimeRangePicker({ button, label, container, fromInput, toInput, onChange }) {
+    label.textContent = t$1("timerange.last_6_hours");
+    var panel = null;
+    var calendar = null;
+    function close() {
+      if (calendar) {
+        calendar.destroy();
+        calendar = null;
+      }
+      if (panel) {
+        panel.remove();
+        panel = null;
+      }
+      document.removeEventListener("mousedown", onOutsideMouseDown, true);
+      document.removeEventListener("keydown", onKeyDown, true);
+    }
+    function onOutsideMouseDown(e2) {
+      var target = (
+        /** @type {Node} */
+        e2.target
+      );
+      if (panel && !panel.contains(target) && !button.contains(target)) close();
+    }
+    function onKeyDown(e2) {
+      if (e2.key === "Escape") close();
+    }
+    function apply(from, to, setLabel) {
+      fromInput.value = from.toISOString();
+      toInput.value = to ? to.toISOString() : "";
+      setLabel();
+      close();
+      onChange();
+    }
+    function open() {
+      if (panel) {
+        close();
+        return;
+      }
+      panel = document.createElement("div");
+      panel.className = "omnidb-trp";
+      var ranges = document.createElement("ul");
+      ranges.className = "omnidb-trp__ranges";
+      for (const preset of PRESETS) {
+        var li = document.createElement("li");
+        li.textContent = t$1("timerange." + preset.key);
+        li.addEventListener(
+          "click",
+          () => apply(preset.from(), preset.to ? preset.to() : null, () => {
+            label.textContent = t$1("timerange." + preset.key);
+          })
+        );
+        ranges.appendChild(li);
+      }
+      var customItem = document.createElement("li");
+      customItem.textContent = t$1("timerange.custom_range");
+      ranges.appendChild(customItem);
+      panel.appendChild(ranges);
+      var custom = document.createElement("div");
+      custom.className = "omnidb-trp__custom";
+      custom.hidden = true;
+      var calendarEl = document.createElement("div");
+      custom.appendChild(calendarEl);
+      var times = document.createElement("div");
+      times.className = "omnidb-trp__times";
+      var makeTimeInput = (text) => {
+        var wrap = document.createElement("label");
+        wrap.append(text + " ");
+        var input = document.createElement("input");
+        input.type = "time";
+        input.className = "form-control form-control-sm";
+        wrap.appendChild(input);
+        times.appendChild(wrap);
+        return input;
+      };
+      var fromTime = makeTimeInput(t$1("common.start_time"));
+      var toTime = makeTimeInput(t$1("common.end_time"));
+      custom.appendChild(times);
+      var buttons = document.createElement("div");
+      buttons.className = "omnidb-trp__buttons";
+      var cancelButton = document.createElement("button");
+      cancelButton.type = "button";
+      cancelButton.className = "btn btn-sm omnidb__theme__btn--secondary";
+      cancelButton.textContent = t$1("common.cancel");
+      cancelButton.addEventListener("click", close);
+      var applyButton = document.createElement("button");
+      applyButton.type = "button";
+      applyButton.className = "btn btn-sm omnidb__theme__btn--primary";
+      applyButton.textContent = t$1("timerange.apply");
+      buttons.append(cancelButton, applyButton);
+      custom.appendChild(buttons);
+      panel.appendChild(custom);
+      var currentFrom = parseInputDate(fromInput.value, hoursAgo(6));
+      var currentTo = parseInputDate(toInput.value, /* @__PURE__ */ new Date());
+      fromTime.value = toTimeString(currentFrom);
+      toTime.value = toTimeString(currentTo);
+      customItem.addEventListener("click", () => {
+        if (calendar) return;
+        custom.hidden = false;
+        var lang = window.v_language || "en";
+        calendar = new on(calendarEl, {
+          selectionDatesMode: "multiple-ranged",
+          selectedDates: [toDayString(currentFrom), toDayString(currentTo)],
+          selectedTheme: document.body.classList.contains("omnidb--theme-dark") ? "dark" : "light",
+          locale: lang,
+          firstWeekday: lang === "en" ? 0 : 1,
+          enableDateToggle: false
+        });
+        calendar.init();
+      });
+      applyButton.addEventListener("click", () => {
+        var days = (
+          /** @type {string[]} */
+          (calendar?.selectedDates || []).slice().sort()
+        );
+        if (!days.length) return;
+        var from = fromDayAndTime(days[0], fromTime.value);
+        var to = fromDayAndTime(days[days.length - 1], toTime.value, 59);
+        if (to < from) [from, to] = [to, from];
+        apply(from, to, () => setCustomLabel(label, from, to));
+      });
+      container.appendChild(panel);
+      document.addEventListener("mousedown", onOutsideMouseDown, true);
+      document.addEventListener("keydown", onKeyDown, true);
+    }
+    button.addEventListener("click", open);
+  }
   var v_consoleState = {
     Idle: 0,
     Executing: 1,
     Ready: 2
   };
   function deleteConsoleHistoryList() {
-    showConfirm(t("console.confirm_clear_history"), function() {
+    showConfirm(t$1("console.confirm_clear_history"), function() {
       execAjax$2(
         "/clear_console_list/",
         JSON.stringify({
@@ -7127,7 +3962,7 @@
   function showConsoleHistory() {
     v_connTabControl.selectedTab.tag;
     var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tab_tag.consoleHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto me-2'><span class='my-auto'>" + escapeHtml(t("console.select_daterange")) + "</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t("common.start_time")) + "' id='cl_input_from_" + v_tab_tag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t("common.end_time")) + "' id='cl_input_to_" + v_tab_tag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tab_tag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='me-1'>" + escapeHtml(t("console.command_contains")) + "</label><input type='text' id='cl_input_contains_" + v_tab_tag.tab_id + "' class='me-2 form-control' /></div><div id='console_history_daterangepicker_container_" + v_tab_tag.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.first")) + "'>" + escapeHtml(t("common.first")) + "</button><button id='bt_previous_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.previous")) + "'>" + escapeHtml(t("common.previous")) + "</button><span id='cl_curr_page_" + v_tab_tag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tab_tag.tab_id + "'></span><button id='bt_next_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.next")) + "'>" + escapeHtml(t("common.next")) + "</button><button id='bt_last_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.last")) + "'>" + escapeHtml(t("common.last")) + "</button><button id='bt_refresh_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='" + escapeHtmlAttribute(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button><button id='bt_clear_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='" + escapeHtmlAttribute(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button></div>";
+    v_tab_tag.consoleHistory.headerDiv.innerHTML = "<div class='mb-2 d-flex flex-column gap-2'><div class='d-flex align-items-center gap-2'><span>" + escapeHtml(t$1("console.time_range")) + "</span><div class='position-relative' id='console_history_timerange_container_" + v_tab_tag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.start_time")) + "' id='cl_input_from_" + v_tab_tag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.end_time")) + "' id='cl_input_to_" + v_tab_tag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tab_tag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span></span> <i class='fa fa-caret-down'></i></button></div></div><div class='d-flex align-items-center gap-2'><label for='cl_input_contains_" + v_tab_tag.tab_id + "' class='text-nowrap'>" + escapeHtml(t$1("console.search_commands")) + "</label><input type='text' id='cl_input_contains_" + v_tab_tag.tab_id + "' class='form-control form-control-sm' /></div></div><div class='mb-2 d-flex align-items-center gap-1'><button id='bt_refresh_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary' title='" + escapeHtmlAttribute(t$1("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t$1("common.refresh")) + "</button><button id='bt_clear_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm btn-danger' title='" + escapeHtmlAttribute(t$1("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t$1("console.clear_list")) + "</button><div class='d-flex align-items-center gap-1 ms-auto'><button id='bt_first_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.first")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.first")) + "'><i class='fas fa-angle-double-left'></i></button><button id='bt_previous_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.previous")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.previous")) + "'><i class='fas fa-angle-left'></i></button><span class='mx-1'><span id='cl_curr_page_" + v_tab_tag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tab_tag.tab_id + "'></span></span><button id='bt_next_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.next")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.next")) + "'><i class='fas fa-angle-right'></i></button><button id='bt_last_" + v_tab_tag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.last")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.last")) + "'><i class='fas fa-angle-double-right'></i></button></div></div>";
     var v_grid_div = v_tab_tag.consoleHistory.gridDiv;
     v_grid_div.innerHTML = "";
     if (v_tab_tag.consoleHistory.grid != null) {
@@ -7136,13 +3971,13 @@
     var columnProperties = [];
     var col = {};
     col.readOnly = true;
-    col.title = t("console.column_date");
-    col.width = "141px";
+    col.title = t$1("console.column_date");
+    col.fitContent = true;
     columnProperties.push(col);
     var col2 = {};
     col2.readOnly = true;
-    col2.title = t("console.column_command");
-    col2.width = "435px";
+    col2.title = t$1("console.column_command");
+    col2.grow = true;
     columnProperties.push(col2);
     v_tab_tag.consoleHistory.grid = new Handsontable(v_grid_div, {
       licenseKey: "non-commercial-and-evaluation",
@@ -7180,13 +4015,13 @@
         },
         items: {
           copy: {
-            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t("common.copy")) + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t$1("common.copy")) + "</div>"
           },
           copy_to_console: {
-            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t("console.copy_to_console_tab")) + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t$1("console.copy_to_console_tab")) + "</div>"
           },
           view_data: {
-            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t("common.view_content")) + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t$1("common.view_content")) + "</div>"
           }
         }
       },
@@ -7206,9 +4041,9 @@
     v_tab_tag.consoleHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tab_tag.tab_id);
     v_tab_tag.consoleHistory.spanCurrPage.innerHTML = 1;
     v_tab_tag.consoleHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tab_tag.tab_id);
-    v_tab_tag.consoleHistory.inputStartedFrom.value = hooks().subtract(6, "hour").toISOString();
+    v_tab_tag.consoleHistory.inputStartedFrom.value = new Date(Date.now() - 6 * 3600 * 1e3).toISOString();
     v_tab_tag.consoleHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tab_tag.tab_id);
-    v_tab_tag.consoleHistory.inputStartedTo.value = hooks().toISOString();
+    v_tab_tag.consoleHistory.inputStartedTo.value = (/* @__PURE__ */ new Date()).toISOString();
     v_tab_tag.consoleHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tab_tag.tab_id);
     v_tab_tag.consoleHistory.inputCommandContains.value = v_tab_tag.consoleHistory.inputCommandContainsLastValue;
     v_tab_tag.consoleHistory.inputCommandContains.addEventListener("change", () => refreshConsoleHistoryList());
@@ -7226,49 +4061,23 @@
         () => handler()
       );
     }
-    var cl_time_range = document.getElementById("cl_time_range_" + v_tab_tag.tab_id);
-    $(cl_time_range).daterangepicker(
-      {
-        timePicker: true,
-        startDate: hooks(v_tab_tag.consoleHistory.inputStartedFrom.value).format("Y-MM-DD H"),
-        endDate: hooks(v_tab_tag.consoleHistory.inputStartedTo.value).format("Y-MM-DD H"),
-        parentEl: document.getElementById("console_history_daterangepicker_container_" + v_tab_tag.tab_id),
-        previewUTC: true,
-        locale: {
-          format: "Y-MM-DD H"
-        },
-        ranges: {
-          "Last 6 Hours": [hooks().subtract(6, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 12 Hours": [hooks().subtract(12, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 24 Hours": [hooks().subtract(24, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 7 Days": [hooks().subtract(7, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 30 Days": [hooks().subtract(30, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          Yesterday: [
-            hooks().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
-            hooks().subtract(1, "days").endOf("day").format("Y-MM-DD H")
-          ],
-          "This Month": [hooks().startOf("month").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last Month": [
-            hooks().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
-            hooks().subtract(1, "month").endOf("month").format("Y-MM-DD H")
-          ]
-        }
-      },
-      function(start, end, label) {
-        v_tab_tag.consoleHistory.inputStartedFrom.value = hooks(start).toISOString();
-        if (label === "Custom Range") {
-          $("#cl_time_range_" + v_tab_tag.tab_id + " span").html(
-            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
-          );
-        } else {
-          $("#cl_time_range_" + v_tab_tag.tab_id + " span").html(label);
-        }
-        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
-          v_tab_tag.consoleHistory.inputStartedTo.value = hooks(end).toISOString();
-        } else v_tab_tag.consoleHistory.inputStartedTo.value = null;
-        refreshConsoleHistoryList();
-      }
-    );
+    setupTimeRangePicker({
+      button: (
+        /** @type {HTMLElement} */
+        document.getElementById("cl_time_range_" + v_tab_tag.tab_id)
+      ),
+      label: (
+        /** @type {HTMLElement} */
+        document.querySelector("#cl_time_range_" + v_tab_tag.tab_id + " span")
+      ),
+      container: (
+        /** @type {HTMLElement} */
+        document.getElementById("console_history_timerange_container_" + v_tab_tag.tab_id)
+      ),
+      fromInput: v_tab_tag.consoleHistory.inputStartedFrom,
+      toInput: v_tab_tag.consoleHistory.inputStartedTo,
+      onChange: refreshConsoleHistoryList
+    });
     refreshConsoleHistoryList();
   }
   function consoleHistoryNextPage() {
@@ -7380,10 +4189,10 @@
     var v_content = v_tag.editor_input.getValue().trim();
     if (!p_check_command || v_content[0] == "\\") {
       if (v_tag.state != v_consoleState.Idle) {
-        showAlert$1(t("common.tab_activity_in_progress"));
+        showAlert$1(t$1("common.tab_activity_in_progress"));
       } else {
         if (v_content == "" && p_mode == 0) {
-          showAlert$1(t("common.provide_a_string"));
+          showAlert$1(t$1("common.provide_a_string"));
         } else {
           if (v_connTabControl.selectedTab.tag.consoleHistoryList)
             v_connTabControl.selectedTab.tag.consoleHistoryList.unshift(v_content);
@@ -7401,7 +4210,7 @@
             v_autocommit: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.check_autocommit.checked
           };
           v_tag.editor_input.setReadOnly(true);
-          var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+          var d2 = /* @__PURE__ */ new Date(), dformat = [(d2.getMonth() + 1).padLeft(), d2.getDate().padLeft(), d2.getFullYear()].join("/") + " " + [d2.getHours().padLeft(), d2.getMinutes().padLeft(), d2.getSeconds().padLeft()].join(":");
           var v_context = {
             tab_tag: v_tag,
             start_datetime: dformat,
@@ -7417,7 +4226,7 @@
           v_tag.tab_loading_span.style.display = "";
           v_tag.tab_check_span.style.display = "none";
           v_tag.bt_cancel.style.display = "";
-          v_tag.query_info.innerHTML = "<b>" + escapeHtml(t("common.start_time")) + "</b>: " + dformat + "<br><b>" + escapeHtml(t("common.running")) + "</b>";
+          v_tag.query_info.innerHTML = "<b>" + escapeHtml(t$1("common.start_time")) + "</b>: " + dformat + "<br><b>" + escapeHtml(t$1("common.running")) + "</b>";
           v_tag.bt_fetch_more.style.display = "none";
           v_tag.bt_fetch_all.style.display = "none";
           v_tag.bt_skip_fetch.style.display = "none";
@@ -7447,7 +4256,7 @@
     v_tab_tag.tab_loading_span.style.display = "none";
     v_tab_tag.tab_check_span.style.display = "none";
     v_tab_tag.bt_cancel.style.display = "none";
-    v_tab_tag.query_info.innerHTML = escapeHtml(t("common.canceled"));
+    v_tab_tag.query_info.innerHTML = escapeHtml(t$1("common.canceled"));
     setTabStatus(v_tab_tag, 0);
     removeContext(v_tab_tag.context.v_context_code);
     SetAcked(v_tab_tag.context);
@@ -7480,9 +4289,9 @@
     v_tag.editor_input.clearSelection();
     v_tag.query_info.innerHTML = "";
     var v_qi_b1 = document.createElement("b");
-    v_qi_b1.textContent = t("common.start_time");
+    v_qi_b1.textContent = t$1("common.start_time");
     var v_qi_b2 = document.createElement("b");
-    v_qi_b2.textContent = t("common.duration");
+    v_qi_b2.textContent = t$1("common.duration");
     var v_qi_t1 = document.createTextNode(": " + p_context.start_datetime + " ");
     var v_qi_t2 = document.createTextNode(": " + p_message.v_data.v_duration);
     v_tag.query_info.appendChild(v_qi_b1);
@@ -7562,8 +4371,8 @@
       tooltipKey: "connected_users.col_myproc_user_tooltip",
       width: 150,
       html: true,
-      value: function(v) {
-        return twoLine(v.user, isBlank(v.id) ? null : "ID: " + v.id);
+      value: function(v2) {
+        return twoLine(v2.user, isBlank(v2.id) ? null : "ID: " + v2.id);
       }
     },
     { labelKey: "connected_users.col_myproc_host_label", tooltipKey: "connected_users.col_myproc_host_tooltip", raw: "host", width: 150 },
@@ -7577,8 +4386,8 @@
       query: "select * from pg_stat_activity",
       terminateAction: "postgresqlTerminateBackend",
       queryColumnKey: "query",
-      isSystemRow: function(v) {
-        return isBlank(v.datname) && isBlank(v.usename);
+      isSystemRow: function(v2) {
+        return isBlank(v2.datname) && isBlank(v2.usename);
       },
       layout: [
         { labelKey: "connected_users.col_pg_pid_label", tooltipKey: "connected_users.col_pg_pid_tooltip", raw: "pid", width: 90, align: "right" },
@@ -7587,8 +4396,8 @@
           tooltipKey: "connected_users.col_pg_database_tooltip",
           width: 150,
           html: true,
-          value: function(v) {
-            return twoLine(v.datname, isBlank(v.datid) ? null : "ID: " + v.datid);
+          value: function(v2) {
+            return twoLine(v2.datname, isBlank(v2.datid) ? null : "ID: " + v2.datid);
           }
         },
         {
@@ -7596,8 +4405,8 @@
           tooltipKey: "connected_users.col_pg_user_tooltip",
           width: 140,
           html: true,
-          value: function(v) {
-            return twoLine(v.usename, isBlank(v.usesysid) ? null : "ID: " + v.usesysid);
+          value: function(v2) {
+            return twoLine(v2.usename, isBlank(v2.usesysid) ? null : "ID: " + v2.usesysid);
           }
         },
         {
@@ -7605,8 +4414,8 @@
           tooltipKey: "connected_users.col_pg_client_tooltip",
           width: 170,
           html: true,
-          value: function(v) {
-            return twoLine(addrPort(v.client_addr, v.client_port), v.client_hostname);
+          value: function(v2) {
+            return twoLine(addrPort(v2.client_addr, v2.client_port), v2.client_hostname);
           }
         },
         { labelKey: "connected_users.col_pg_application_label", tooltipKey: "connected_users.col_pg_application_tooltip", raw: "application_name", width: 140 },
@@ -7625,8 +4434,8 @@
           width: 170,
           html: true,
           verticalAlign: "top",
-          value: function(v) {
-            return timeTwoLine(v.backend_start, v.xact_start);
+          value: function(v2) {
+            return timeTwoLine(v2.backend_start, v2.xact_start);
           }
         },
         {
@@ -7636,8 +4445,8 @@
           width: 170,
           html: true,
           verticalAlign: "top",
-          value: function(v) {
-            return timeTwoLine(v.query_start, v.state_change);
+          value: function(v2) {
+            return timeTwoLine(v2.query_start, v2.state_change);
           }
         },
         {
@@ -7645,8 +4454,8 @@
           tooltipKey: "connected_users.col_pg_wait_tooltip",
           width: 150,
           html: true,
-          value: function(v) {
-            return waitLine(v.wait_event_type, v.wait_event);
+          value: function(v2) {
+            return waitLine(v2.wait_event_type, v2.wait_event);
           }
         },
         { labelKey: "connected_users.col_pg_state_label", tooltipKey: "connected_users.col_pg_state_tooltip", raw: "state", width: 90 },
@@ -7655,10 +4464,10 @@
           tooltipKey: "connected_users.col_pg_xact_tooltip",
           width: 130,
           html: true,
-          value: function(v) {
+          value: function(v2) {
             return twoLine(
-              isBlank(v.backend_xid) ? null : "XID: " + v.backend_xid,
-              isBlank(v.backend_xmin) ? null : "Xmin: " + v.backend_xmin
+              isBlank(v2.backend_xid) ? null : "XID: " + v2.backend_xid,
+              isBlank(v2.backend_xmin) ? null : "Xmin: " + v2.backend_xmin
             );
           }
         },
@@ -7682,8 +4491,8 @@
       query: "select * from v$session",
       terminateAction: "oracleTerminateBackend",
       queryColumnKey: null,
-      isSystemRow: function(v) {
-        return isBlank(v.username);
+      isSystemRow: function(v2) {
+        return isBlank(v2.username);
       },
       layout: [
         {
@@ -7691,10 +4500,10 @@
           tooltipKey: "connected_users.col_oracle_sid_tooltip",
           width: 110,
           html: true,
-          value: function(v) {
+          value: function(v2) {
             return twoLine(
-              isBlank(v.sid) ? null : "SID: " + v.sid,
-              isBlank(v["serial#"]) ? null : "Serial#: " + v["serial#"]
+              isBlank(v2.sid) ? null : "SID: " + v2.sid,
+              isBlank(v2["serial#"]) ? null : "Serial#: " + v2["serial#"]
             );
           }
         },
@@ -7706,8 +4515,8 @@
           tooltipKey: "connected_users.col_oracle_client_tooltip",
           width: 170,
           html: true,
-          value: function(v) {
-            return twoLine(v.machine, isBlank(v.osuser) ? null : "OS: " + v.osuser);
+          value: function(v2) {
+            return twoLine(v2.machine, isBlank(v2.osuser) ? null : "OS: " + v2.osuser);
           }
         },
         { labelKey: "connected_users.col_oracle_program_label", tooltipKey: "connected_users.col_oracle_program_tooltip", raw: "program", width: 150 },
@@ -7716,8 +4525,8 @@
           tooltipKey: "connected_users.col_oracle_module_tooltip",
           width: 160,
           html: true,
-          value: function(v) {
-            return twoLine(v.module, v.action);
+          value: function(v2) {
+            return twoLine(v2.module, v2.action);
           }
         },
         { labelKey: "connected_users.col_oracle_client_info_label", tooltipKey: "connected_users.col_oracle_client_info_tooltip", raw: "client_info", width: 180 },
@@ -7729,8 +4538,8 @@
           tooltipKey: "connected_users.col_oracle_wait_tooltip",
           width: 170,
           html: true,
-          value: function(v) {
-            return waitDuration(v.event, v.seconds_in_wait);
+          value: function(v2) {
+            return waitDuration(v2.event, v2.seconds_in_wait);
           }
         },
         { labelKey: "connected_users.col_oracle_blocking_label", tooltipKey: "connected_users.col_oracle_blocking_tooltip", raw: "blocking_session", width: 100, align: "right" }
@@ -7800,11 +4609,11 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("connected_users.no_connection_open");
+    v_title.textContent = t$1("connected_users.no_connection_open");
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("connected_users.open_connection_hint");
+    v_text.textContent = t$1("connected_users.open_connection_hint");
     v_wrapper.appendChild(v_text);
     p_content.appendChild(v_wrapper);
   }
@@ -7816,17 +4625,17 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("connected_users.not_supported", { technology: p_db_type });
+    v_title.textContent = t$1("connected_users.not_supported", { technology: p_db_type });
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("connected_users.supported_technologies_hint");
+    v_text.textContent = t$1("connected_users.supported_technologies_hint");
     v_wrapper.appendChild(v_text);
     p_content.appendChild(v_wrapper);
   }
   function buildConnectedUsersLayout(p_content, p_conn_tab, p_config, p_token) {
     var v_id = p_conn_tab.id;
-    p_content.innerHTML = "<div class='omnidb__connected-users__pane'><div class='omnidb__connected-users__info-bar'><span id='connected_users_query_info_" + v_id + "' class='query_info'></span><label id='connected_users_system_toggle_" + v_id + "' class='omnidb__connected-users__system-toggle' style='display:none;'><input type='checkbox' id='connected_users_system_checkbox_" + v_id + "' />" + escapeHtml(t("connected_users.show_system_rows")) + "</label></div><div id='connected_users_grid_" + v_id + "' class='omnidb__connected-users__grid'></div><div id='connected_users_resize_" + v_id + "' class='omnidb__resize-line__container' style='display:none;'><div class='resize_line_horizontal'></div></div><div id='connected_users_detail_" + v_id + "' class='omnidb__connected-users__detail' style='display:none;'><div class='omnidb__connected-users__detail-toolbar'><span>" + escapeHtml(t("connected_users.query_detail_title")) + "</span><div><button id='connected_users_detail_copy_" + v_id + "' type='button' class='btn btn-sm omnidb__theme__btn--secondary me-1' title='" + escapeHtmlAttribute(t("common.copy")) + "'><i class='fas fa-copy'></i></button><button id='connected_users_detail_send_" + v_id + "' type='button' class='btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t("connected_users.open_in_query_tab")) + "'><i class='fas fa-file-import'></i></button></div></div><div id='connected_users_detail_editor_" + v_id + "' class='omnidb__connected-users__detail-editor'></div></div></div>";
+    p_content.innerHTML = "<div class='omnidb__connected-users__pane'><div class='omnidb__connected-users__info-bar'><span id='connected_users_query_info_" + v_id + "' class='query_info'></span><label id='connected_users_system_toggle_" + v_id + "' class='omnidb__connected-users__system-toggle' style='display:none;'><input type='checkbox' id='connected_users_system_checkbox_" + v_id + "' />" + escapeHtml(t$1("connected_users.show_system_rows")) + "</label></div><div id='connected_users_grid_" + v_id + "' class='omnidb__connected-users__grid'></div><div id='connected_users_resize_" + v_id + "' class='omnidb__resize-line__container' style='display:none;'><div class='resize_line_horizontal'></div></div><div id='connected_users_detail_" + v_id + "' class='omnidb__connected-users__detail' style='display:none;'><div class='omnidb__connected-users__detail-toolbar'><span>" + escapeHtml(t$1("connected_users.query_detail_title")) + "</span><div><button id='connected_users_detail_copy_" + v_id + "' type='button' class='btn btn-sm omnidb__theme__btn--secondary me-1' title='" + escapeHtmlAttribute(t$1("common.copy")) + "'><i class='fas fa-copy'></i></button><button id='connected_users_detail_send_" + v_id + "' type='button' class='btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("connected_users.open_in_query_tab")) + "'><i class='fas fa-file-import'></i></button></div></div><div id='connected_users_detail_editor_" + v_id + "' class='omnidb__connected-users__detail-editor'></div></div></div>";
     var v_tag = {
       token: p_token,
       connID: p_conn_tab.tag.selectedDatabaseIndex,
@@ -7863,8 +4672,8 @@
     });
     document.getElementById("connected_users_resize_" + v_id).addEventListener(
       "mousedown",
-      function(e) {
-        resizeConnectedUsersVertical(e, v_tag);
+      function(e2) {
+        resizeConnectedUsersVertical(e2, v_tag);
       }
     );
     document.getElementById("connected_users_detail_copy_" + v_id).addEventListener(
@@ -7886,10 +4695,10 @@
   }
   function resizeConnectedUsersVertical(p_event, p_tag) {
     p_event.preventDefault();
-    var v_move = function(e) {
+    var v_move = function(e2) {
       var v_container = p_tag.divDetail.parentElement;
       var v_rect = v_container.getBoundingClientRect();
-      var v_height = v_rect.bottom - e.clientY;
+      var v_height = v_rect.bottom - e2.clientY;
       if (v_height < 80) v_height = 80;
       if (v_height > v_rect.height - 120) v_height = v_rect.height - 120;
       p_tag.divDetail.style.flex = "0 0 " + v_height + "px";
@@ -7986,19 +4795,19 @@
       p_tag.ht.destroy();
       p_tag.ht = null;
     }
-    p_tag.query_info.textContent = t("connected_users.record_count", { count: p_data.v_data.length });
-    var v_lower_names = p_data.v_col_names.map(function(n) {
-      return String(n).toLowerCase();
+    p_tag.query_info.textContent = t$1("connected_users.record_count", { count: p_data.v_data.length });
+    var v_lower_names = p_data.v_col_names.map(function(n2) {
+      return String(n2).toLowerCase();
     });
     p_tag.queryColRawIndex = p_tag.queryColumnKey ? v_lower_names.indexOf(p_tag.queryColumnKey) : -1;
     var v_column_properties = p_tag.layout.map(function(col) {
       var v_col = {
-        title: col.labelKey1 ? headerTwoLine(t(col.labelKey1), t(col.labelKey2)) : t(col.labelKey),
+        title: col.labelKey1 ? headerTwoLine(t$1(col.labelKey1), t$1(col.labelKey2)) : t$1(col.labelKey),
         titleHtml: !!col.labelKey1,
         width: col.width,
         align: col.align,
         verticalAlign: col.verticalAlign,
-        tooltip: col.raw ? t(col.labelKey) + " (" + col.raw + ") -- " + t(col.tooltipKey) : t(col.tooltipKey)
+        tooltip: col.raw ? t$1(col.labelKey) + " (" + col.raw + ") -- " + t$1(col.tooltipKey) : t$1(col.tooltipKey)
       };
       if (col.html) v_col.renderer = "html";
       return v_col;
@@ -8054,16 +4863,16 @@
         },
         items: {
           refresh: {
-            name: '<div style="position: absolute;"><i class="fas fa-sync-alt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.refresh") + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-sync-alt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.refresh") + "</div>"
           },
           copy: {
-            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.copy") + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.copy") + "</div>"
           },
           view_data: {
-            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.view_content") + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.view_content") + "</div>"
           },
           terminate: {
-            name: '<div style="position: absolute;"><i class="fas fa-times cm-all text-danger" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.terminate") + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-times cm-all text-danger" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.terminate") + "</div>"
           }
         }
       }
@@ -8075,7 +4884,7 @@
       if (!v_row2 || v_row2.length === 0) return;
       try {
         showConnectedUsersDetail(p_tag, JSON.parse(v_row2[v_row2.length - 1]));
-      } catch (e) {
+      } catch (e2) {
       }
     });
   }
@@ -8085,14 +4894,14 @@
     if (v_row == null || v_row.length === 0) return null;
     try {
       return JSON.parse(v_row[v_row.length - 1]);
-    } catch (e) {
+    } catch (e2) {
       return null;
     }
   }
   function deliverExportFile(p_data) {
     if (!gv_desktopMode) {
       showConfirm(
-        t("editor.file_ready"),
+        t$1("editor.file_ready"),
         function() {
           var v_a = document.createElement("a");
           v_a.href = p_data.v_filename;
@@ -8106,7 +4915,7 @@
         },
         null,
         null,
-        t("common.download")
+        t$1("common.download")
       );
       return;
     }
@@ -8117,10 +4926,10 @@
     }).then(function(p_response) {
       return p_response.json();
     }).then(function(p_result) {
-      if (p_result.error) showAlert$1(t("editor.error_saving_file", { error: p_result.error }));
-      else if (p_result.path) showAlert$1(t("editor.file_exported_to", { path: p_result.path }));
+      if (p_result.error) showAlert$1(t$1("editor.error_saving_file", { error: p_result.error }));
+      else if (p_result.path) showAlert$1(t$1("editor.file_exported_to", { path: p_result.path }));
     }).catch(function(p_error) {
-      showAlert$1(t("editor.error_saving_file", { error: p_error }));
+      showAlert$1(t$1("editor.error_saving_file", { error: p_error }));
     });
   }
   var PERMISSIONS_STRIP_SLOT_ID = "permissions_panel_strip_slot";
@@ -8162,11 +4971,11 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("permissions.no_connection_open");
+    v_title.textContent = t$1("permissions.no_connection_open");
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("permissions.open_connection_hint");
+    v_text.textContent = t$1("permissions.open_connection_hint");
     v_wrapper.appendChild(v_text);
     p_content.appendChild(v_wrapper);
   }
@@ -8178,11 +4987,11 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("permissions.not_supported", { technology: p_db_type });
+    v_title.textContent = t$1("permissions.not_supported", { technology: p_db_type });
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("permissions.postgresql_only_hint");
+    v_text.textContent = t$1("permissions.postgresql_only_hint");
     v_wrapper.appendChild(v_text);
     p_content.appendChild(v_wrapper);
   }
@@ -8213,9 +5022,9 @@
   function renderRolesColumn(p_tag) {
     var v_column = document.createElement("div");
     v_column.className = "omnidb__permissions__column omnidb__permissions__column--roles";
-    v_column.innerHTML = "<div class='omnidb__permissions__column-header'>" + escapeHtml(t("permissions.roles_column_title")) + "</div><div class='omnidb__permissions__filter'><input type='text' class='form-control form-control-sm omnidb__permissions__filter-text' placeholder='" + escapeHtmlAttribute(t("permissions.filter_roles_placeholder")) + "'><select class='form-control form-control-sm omnidb__permissions__filter-kind'>" + ROLE_FILTER_KINDS.map(function(p_kind) {
-      return "<option value='" + p_kind + "'>" + escapeHtml(t("permissions.filter_kind_" + p_kind)) + "</option>";
-    }).join("") + "</select></div><div class='omnidb__permissions__list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button type='button' class='omnidb__permissions__add-role' title='" + escapeHtmlAttribute(t("tree.create_role")) + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button type='button' class='omnidb__permissions__delete-role' title='" + escapeHtmlAttribute(t("common.delete")) + "' disabled><i class='fas fa-minus'></i></button></div></div>";
+    v_column.innerHTML = "<div class='omnidb__permissions__column-header'>" + escapeHtml(t$1("permissions.roles_column_title")) + "</div><div class='omnidb__permissions__filter'><input type='text' class='form-control form-control-sm omnidb__permissions__filter-text' placeholder='" + escapeHtmlAttribute(t$1("permissions.filter_roles_placeholder")) + "'><select class='form-control form-control-sm omnidb__permissions__filter-kind'>" + ROLE_FILTER_KINDS.map(function(p_kind) {
+      return "<option value='" + p_kind + "'>" + escapeHtml(t$1("permissions.filter_kind_" + p_kind)) + "</option>";
+    }).join("") + "</select></div><div class='omnidb__permissions__list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button type='button' class='omnidb__permissions__add-role' title='" + escapeHtmlAttribute(t$1("tree.create_role")) + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button type='button' class='omnidb__permissions__delete-role' title='" + escapeHtmlAttribute(t$1("common.delete")) + "' disabled><i class='fas fa-minus'></i></button></div></div>";
     attachColumnResizer(v_column, "roles");
     p_tag.columnsDiv.appendChild(v_column);
     p_tag.rolesListDiv = /** @type {HTMLElement} */
@@ -8297,7 +5106,7 @@
     if (v_visible.length === 0) {
       var v_empty = document.createElement("div");
       v_empty.className = "omnidb__permissions__list-empty";
-      v_empty.textContent = t("permissions.filter_no_match");
+      v_empty.textContent = t$1("permissions.filter_no_match");
       p_tag.rolesListDiv.appendChild(v_empty);
       return;
     }
@@ -8315,8 +5124,8 @@
         v_label.textContent = p_role.v_name;
         v_row.appendChild(v_label);
         var v_badges = [];
-        if (p_role.v_superuser) v_badges.push(t("permissions.role_badge_superuser"));
-        if (p_role.v_expired) v_badges.push(t("permissions.role_badge_expired"));
+        if (p_role.v_superuser) v_badges.push(t$1("permissions.role_badge_superuser"));
+        if (p_role.v_expired) v_badges.push(t$1("permissions.role_badge_expired"));
         if (v_badges.length > 0) {
           var v_badge = document.createElement("span");
           v_badge.className = "omnidb__permissions__row-suffix";
@@ -8327,10 +5136,10 @@
           selectRole(p_tag, p_role.v_name);
         });
         if (!p_role.v_is_public) {
-          v_row.addEventListener("contextmenu", function(e) {
-            e.preventDefault();
+          v_row.addEventListener("contextmenu", function(e2) {
+            e2.preventDefault();
             selectRole(p_tag, p_role.v_name);
-            openRoleContextMenu(p_tag, p_role.v_name, e);
+            openRoleContextMenu(p_tag, p_role.v_name, e2);
           });
         }
         p_tag.rolesListDiv.appendChild(v_row);
@@ -8356,14 +5165,14 @@
       { x: p_event.clientX, y: p_event.clientY },
       [
         {
-          text: t("tree.change_password"),
+          text: t$1("tree.change_password"),
           icon: "fas cm-all fa-key",
           action: function() {
             openChangePasswordDialog(p_tag, p_role_name);
           }
         },
         {
-          text: t("permissions.alter_role_attributes"),
+          text: t$1("permissions.alter_role_attributes"),
           // fa-pen, not the more semantically-literal fa-sliders-h --
           // this app's icon set is a curated ~100-name subset (see
           // frontend/scripts/gen-icons.mjs), not the full Font Awesome
@@ -8377,35 +5186,35 @@
           }
         },
         {
-          text: t("permissions.rename_role"),
+          text: t$1("permissions.rename_role"),
           icon: "fas cm-all fa-pen",
           action: function() {
             openRenameRoleDialog(p_tag, p_role_name);
           }
         },
         {
-          text: t("permissions.export_permissions"),
+          text: t$1("permissions.export_permissions"),
           icon: "fas cm-all fa-file",
           action: function() {
             openExportPermissionsDialog(p_tag, p_role_name);
           }
         },
         {
-          text: t("permissions.export_permissions_all"),
+          text: t$1("permissions.export_permissions_all"),
           icon: "fas cm-all fa-file",
           action: function() {
             openExportPermissionsDialog(p_tag, "");
           }
         },
         {
-          text: t("permissions.clone_role"),
+          text: t$1("permissions.clone_role"),
           icon: "fas cm-all fa-copy",
           action: function() {
             openCloneRoleDialog(p_tag, p_role_name);
           }
         },
         {
-          text: t("tree.drop_role"),
+          text: t$1("tree.drop_role"),
           icon: "fas cm-all fa-times",
           action: function() {
             confirmDropRole(p_tag, p_role_name);
@@ -8432,18 +5241,18 @@
       v_row.appendChild(v_label);
       return v_row;
     }
-    p_container.appendChild(checkboxRow("perm_role_can_login", t("permissions.attr_can_login"), p_values.can_login ?? true));
-    p_container.appendChild(checkboxRow("perm_role_superuser", t("permissions.attr_superuser"), !!p_values.superuser));
-    p_container.appendChild(checkboxRow("perm_role_createdb", t("permissions.attr_createdb"), !!p_values.createdb));
-    p_container.appendChild(checkboxRow("perm_role_createrole", t("permissions.attr_createrole"), !!p_values.createrole));
-    p_container.appendChild(checkboxRow("perm_role_inherit", t("permissions.attr_inherit"), p_values.inherit ?? true));
-    p_container.appendChild(checkboxRow("perm_role_replication", t("permissions.attr_replication"), !!p_values.replication));
-    p_container.appendChild(checkboxRow("perm_role_bypassrls", t("permissions.attr_bypass_rls"), !!p_values.bypass_rls));
+    p_container.appendChild(checkboxRow("perm_role_can_login", t$1("permissions.attr_can_login"), p_values.can_login ?? true));
+    p_container.appendChild(checkboxRow("perm_role_superuser", t$1("permissions.attr_superuser"), !!p_values.superuser));
+    p_container.appendChild(checkboxRow("perm_role_createdb", t$1("permissions.attr_createdb"), !!p_values.createdb));
+    p_container.appendChild(checkboxRow("perm_role_createrole", t$1("permissions.attr_createrole"), !!p_values.createrole));
+    p_container.appendChild(checkboxRow("perm_role_inherit", t$1("permissions.attr_inherit"), p_values.inherit ?? true));
+    p_container.appendChild(checkboxRow("perm_role_replication", t$1("permissions.attr_replication"), !!p_values.replication));
+    p_container.appendChild(checkboxRow("perm_role_bypassrls", t$1("permissions.attr_bypass_rls"), !!p_values.bypass_rls));
     var v_connlimit_col = document.createElement("div");
     v_connlimit_col.className = "col-md-12 mb-3";
     var v_connlimit_label = document.createElement("label");
     v_connlimit_label.setAttribute("for", "perm_role_connlimit");
-    v_connlimit_label.textContent = t("permissions.connection_limit");
+    v_connlimit_label.textContent = t$1("permissions.connection_limit");
     var v_connlimit_input = document.createElement("input");
     v_connlimit_input.type = "number";
     v_connlimit_input.id = "perm_role_connlimit";
@@ -8456,7 +5265,7 @@
     v_valid_until_col.className = "col-md-12 mb-3";
     var v_valid_until_label = document.createElement("label");
     v_valid_until_label.setAttribute("for", "perm_role_valid_until");
-    v_valid_until_label.textContent = t("permissions.valid_until");
+    v_valid_until_label.textContent = t$1("permissions.valid_until");
     var v_valid_until_input = document.createElement("input");
     v_valid_until_input.type = "datetime-local";
     v_valid_until_input.id = "perm_role_valid_until";
@@ -8468,7 +5277,7 @@
     v_valid_until_col.appendChild(v_valid_until_input);
     var v_valid_until_hint = document.createElement("div");
     v_valid_until_hint.className = "form-text";
-    v_valid_until_hint.textContent = t("permissions.valid_until_hint");
+    v_valid_until_hint.textContent = t$1("permissions.valid_until_hint");
     v_valid_until_col.appendChild(v_valid_until_hint);
     p_container.appendChild(v_valid_until_col);
   }
@@ -8521,7 +5330,7 @@
           document.getElementById("perm_role_name").value.trim()
         );
         if (v_name === "") {
-          showAlert$1(t("permissions.role_name_empty"));
+          showAlert$1(t$1("permissions.role_name_empty"));
           return;
         }
         var v_password = (
@@ -8535,7 +5344,7 @@
             Object.assign({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_name: v_name, p_password: v_password }, v_attrs)
           ),
           function() {
-            showAlert$1(t("permissions.role_created"));
+            showAlert$1(t$1("permissions.role_created"));
             fetchRoles(p_tag);
           },
           function(p_return) {
@@ -8555,7 +5364,7 @@
         v_name_col.className = "col-md-12 mb-3";
         var v_name_label = document.createElement("label");
         v_name_label.setAttribute("for", "perm_role_name");
-        v_name_label.textContent = t("permissions.role_name");
+        v_name_label.textContent = t$1("permissions.role_name");
         var v_name_input = document.createElement("input");
         v_name_input.type = "text";
         v_name_input.id = "perm_role_name";
@@ -8567,7 +5376,7 @@
         v_password_col.className = "col-md-12 mb-3";
         var v_password_label = document.createElement("label");
         v_password_label.setAttribute("for", "perm_role_password");
-        v_password_label.textContent = t("common.password");
+        v_password_label.textContent = t$1("common.password");
         var v_password_input = document.createElement("input");
         v_password_input.type = "password";
         v_password_input.id = "perm_role_password";
@@ -8598,8 +5407,8 @@
         });
       },
       true,
-      t("common.save"),
-      t("tree.create_role"),
+      t$1("common.save"),
+      t$1("tree.create_role"),
       "fas node-all fa-user"
     );
   }
@@ -8617,7 +5426,7 @@
       function() {
         var v_body = requestBody();
         if (!v_body) {
-          showAlert$1(t("permissions.role_name_empty"));
+          showAlert$1(t$1("permissions.role_name_empty"));
           return;
         }
         execAjax$2(
@@ -8649,7 +5458,7 @@
         v_col.className = "col-md-12 mb-3";
         var v_label = document.createElement("label");
         v_label.setAttribute("for", "perm_rename_name");
-        v_label.textContent = t("permissions.new_name_label");
+        v_label.textContent = t$1("permissions.new_name_label");
         var v_input = document.createElement("input");
         v_input.type = "text";
         v_input.id = "perm_rename_name";
@@ -8660,7 +5469,7 @@
         v_content.appendChild(v_col);
         var v_hint = document.createElement("div");
         v_hint.className = "omnidb__permissions__row-suffix mb-3";
-        v_hint.textContent = t("permissions.rename_role_hint");
+        v_hint.textContent = t$1("permissions.rename_role_hint");
         v_content.appendChild(v_hint);
         appendSqlPreview(v_content, function() {
           var v_body = requestBody();
@@ -8670,8 +5479,8 @@
         v_input.select();
       },
       true,
-      t("common.save"),
-      t("permissions.rename_role") + ": " + p_role_name,
+      t$1("common.save"),
+      t$1("permissions.rename_role") + ": " + p_role_name,
       "fas node-all fa-user"
     );
   }
@@ -8696,7 +5505,7 @@
         );
         var v_intro = document.createElement("div");
         v_intro.className = "omnidb__permissions__row-suffix mb-2";
-        v_intro.textContent = t("permissions.export_hint");
+        v_intro.textContent = t$1("permissions.export_hint");
         v_content.appendChild(v_intro);
         for (var i2 = 0; i2 < v_sections.length; i2++) {
           var v_row = document.createElement("div");
@@ -8709,7 +5518,7 @@
           var v_label = document.createElement("label");
           v_label.className = "form-check-label";
           v_label.setAttribute("for", v_sections[i2].id);
-          v_label.textContent = t(v_sections[i2].label);
+          v_label.textContent = t$1(v_sections[i2].label);
           v_row.appendChild(v_input);
           v_row.appendChild(v_label);
           v_content.appendChild(v_row);
@@ -8722,12 +5531,12 @@
         var v_copy = document.createElement("button");
         v_copy.type = "button";
         v_copy.className = "btn btn-sm btn-outline-secondary";
-        v_copy.textContent = t("permissions.copy_sql");
+        v_copy.textContent = t$1("permissions.copy_sql");
         v_content.appendChild(v_copy);
         var v_save = document.createElement("button");
         v_save.type = "button";
         v_save.className = "btn btn-sm btn-outline-secondary ml-2 ms-2";
-        v_save.textContent = t("permissions.export_save_file");
+        v_save.textContent = t$1("permissions.export_save_file");
         v_content.appendChild(v_save);
         function requestBody() {
           var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name };
@@ -8761,9 +5570,9 @@
         });
         v_copy.addEventListener("click", function() {
           copyTextQuietly(v_text.value);
-          v_copy.textContent = t("permissions.sql_copied");
+          v_copy.textContent = t$1("permissions.sql_copied");
           window.setTimeout(function() {
-            v_copy.textContent = t("permissions.copy_sql");
+            v_copy.textContent = t$1("permissions.copy_sql");
           }, 1500);
         });
         v_save.addEventListener("click", function() {
@@ -8783,8 +5592,8 @@
         load();
       },
       true,
-      t("common.close"),
-      t(p_role_name ? "permissions.export_permissions" : "permissions.export_permissions_all") + (p_role_name ? ": " + p_role_name : ""),
+      t$1("common.close"),
+      t$1(p_role_name ? "permissions.export_permissions" : "permissions.export_permissions_all") + (p_role_name ? ": " + p_role_name : ""),
       "fas node-all fa-file"
     );
   }
@@ -8820,14 +5629,14 @@
       function() {
         var v_body = requestBody(false);
         if (!v_body) {
-          showAlert$1(t("permissions.role_name_empty"));
+          showAlert$1(t$1("permissions.role_name_empty"));
           return;
         }
         execAjax$2(
           "/clone_role_postgresql/",
           JSON.stringify(v_body),
           function() {
-            showAlert$1(t("permissions.role_created"));
+            showAlert$1(t$1("permissions.role_created"));
             fetchRoles(p_tag);
           },
           function(p_return) {
@@ -8875,20 +5684,20 @@
         }
         var v_intro = document.createElement("div");
         v_intro.className = "omnidb__permissions__row-suffix mb-3";
-        v_intro.textContent = t("permissions.clone_role_hint", { role: p_role_name });
+        v_intro.textContent = t$1("permissions.clone_role_hint", { role: p_role_name });
         v_content.appendChild(v_intro);
-        addTextField("perm_clone_name", t("permissions.role_name"), "text");
-        addTextField("perm_clone_password", t("common.password"), "password");
-        addCheckbox("perm_clone_memberships", t("permissions.clone_copy_memberships"));
-        addCheckbox("perm_clone_privileges", t("permissions.clone_copy_privileges"));
+        addTextField("perm_clone_name", t$1("permissions.role_name"), "text");
+        addTextField("perm_clone_password", t$1("common.password"), "password");
+        addCheckbox("perm_clone_memberships", t$1("permissions.clone_copy_memberships"));
+        addCheckbox("perm_clone_privileges", t$1("permissions.clone_copy_privileges"));
         appendSqlPreview(v_content, function() {
           var v_body = requestBody(true);
           return v_body ? [{ url: "/clone_role_postgresql/", body: v_body }] : null;
         });
       },
       true,
-      t("common.save"),
-      t("permissions.clone_role") + ": " + p_role_name,
+      t$1("common.save"),
+      t$1("permissions.clone_role") + ": " + p_role_name,
       "fas node-all fa-user"
     );
   }
@@ -8908,7 +5717,7 @@
                 Object.assign({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }, v_attrs)
               ),
               function() {
-                showAlert$1(t("permissions.role_updated"));
+                showAlert$1(t$1("permissions.role_updated"));
                 fetchRoles(p_tag);
               },
               function(p_return2) {
@@ -8945,8 +5754,8 @@
             });
           },
           true,
-          t("common.save"),
-          t("permissions.alter_role_attributes") + ": " + p_role_name,
+          t$1("common.save"),
+          t$1("permissions.alter_role_attributes") + ": " + p_role_name,
           "fas node-all fa-user"
         );
       },
@@ -8984,15 +5793,15 @@
           document.getElementById("perm_change_pwd_role_confirm").value
         );
         if (v_password === "") {
-          showAlert$1(t("tree.password_empty"));
+          showAlert$1(t$1("tree.password_empty"));
           return;
         }
         if (v_password_confirm === "") {
-          showAlert$1(t("tree.password_confirmation_empty"));
+          showAlert$1(t$1("tree.password_confirmation_empty"));
           return;
         }
         if (v_password !== v_password_confirm) {
-          showAlert$1(t("tree.passwords_do_not_match"));
+          showAlert$1(t$1("tree.passwords_do_not_match"));
           return;
         }
         execAjax$2(
@@ -9004,7 +5813,7 @@
             p_password: v_password
           }),
           function() {
-            showAlert$1(t("tree.password_changed_successfully"));
+            showAlert$1(t$1("tree.password_changed_successfully"));
           },
           function(p_return) {
             showAlert$1(p_return.v_data.message);
@@ -9017,13 +5826,13 @@
       function() {
         var v_row = document.createElement("div");
         v_row.className = "form-row";
-        v_row.appendChild(buildPasswordField(t("common.password"), "perm_change_pwd_role"));
-        v_row.appendChild(buildPasswordField(t("tree.password_confirmation"), "perm_change_pwd_role_confirm"));
+        v_row.appendChild(buildPasswordField(t$1("common.password"), "perm_change_pwd_role"));
+        v_row.appendChild(buildPasswordField(t$1("tree.password_confirmation"), "perm_change_pwd_role_confirm"));
         document.getElementById("modal_message_content").appendChild(v_row);
       },
       false,
-      t("common.save"),
-      t("tree.change_password") + ": " + p_role_name,
+      t$1("common.save"),
+      t$1("tree.change_password") + ": " + p_role_name,
       "fas node-all fa-user"
     );
   }
@@ -9038,7 +5847,7 @@
       }
       if (p_options.showAdd && p_options.showRemove) v_footer_html += "<span class='omnidb__addremove-divider'></span>";
       if (p_options.showRemove) {
-        v_footer_html += "<button type='button' class='omnidb__permissions__section-remove' title='" + escapeHtmlAttribute(t("common.delete")) + "' disabled><i class='fas fa-minus'></i></button>";
+        v_footer_html += "<button type='button' class='omnidb__permissions__section-remove' title='" + escapeHtmlAttribute(t$1("common.delete")) + "' disabled><i class='fas fa-minus'></i></button>";
       }
       v_footer_html += "</div></div>";
     }
@@ -9072,13 +5881,13 @@
     var v_is_public_focus = p_role_name === "PUBLIC";
     var v_column = document.createElement("div");
     v_column.className = "omnidb__permissions__column";
-    var v_members_section = buildColumnSection(v_column, t("permissions.members_column_title", { role: p_role_name }), {
-      addTitle: t("permissions.grant_membership_reverse"),
+    var v_members_section = buildColumnSection(v_column, t$1("permissions.members_column_title", { role: p_role_name }), {
+      addTitle: t$1("permissions.grant_membership_reverse"),
       showAdd: !v_is_public_focus,
       showRemove: !v_is_public_focus
     });
-    var v_membership_section = buildColumnSection(v_column, t("permissions.member_of_column_title", { role: p_role_name }), {
-      addTitle: t("permissions.grant_membership"),
+    var v_membership_section = buildColumnSection(v_column, t$1("permissions.member_of_column_title", { role: p_role_name }), {
+      addTitle: t$1("permissions.grant_membership"),
       showAdd: !v_is_public_focus,
       showRemove: !v_is_public_focus
     });
@@ -9132,7 +5941,7 @@
       );
       var v_na_membership = document.createElement("div");
       v_na_membership.className = "omnidb__permissions__list-empty";
-      v_na_membership.textContent = t("permissions.public_membership_not_applicable");
+      v_na_membership.textContent = t$1("permissions.public_membership_not_applicable");
       v_col_state.membershipListDiv.appendChild(v_na_membership);
     } else {
       fetchDescendants(p_tag, v_col_state);
@@ -9229,9 +6038,9 @@
         v_row.addEventListener("dblclick", function() {
           selectRole(p_tag, p_row.v_name);
         });
-        v_row.addEventListener("contextmenu", function(e) {
-          e.preventDefault();
-          openMembershipContextMenu(p_tag, p_col_state, p_row, e, "ancestor");
+        v_row.addEventListener("contextmenu", function(e2) {
+          e2.preventDefault();
+          openMembershipContextMenu(p_tag, p_col_state, p_row, e2, "ancestor");
         });
         p_col_state.membershipListDiv.appendChild(v_row);
       })(v_rows[i2]);
@@ -9240,9 +6049,9 @@
   function appendMembershipNotes(p_row_element, p_row) {
     if (!p_row.v_direct) return;
     var v_notes = [];
-    if (p_row.v_admin_option) v_notes.push(t("permissions.admin_option_suffix"));
-    if (p_row.v_inherit === false) v_notes.push(t("permissions.membership_no_inherit"));
-    if (p_row.v_set === false) v_notes.push(t("permissions.membership_no_set"));
+    if (p_row.v_admin_option) v_notes.push(t$1("permissions.admin_option_suffix"));
+    if (p_row.v_inherit === false) v_notes.push(t$1("permissions.membership_no_inherit"));
+    if (p_row.v_set === false) v_notes.push(t$1("permissions.membership_no_set"));
     if (v_notes.length === 0) return;
     p_row_element.classList.add("omnidb__permissions__access-row");
     var v_suffix = document.createElement("span");
@@ -9258,7 +6067,7 @@
     if (p_descendants.length === 0) {
       var v_empty = document.createElement("div");
       v_empty.className = "omnidb__permissions__list-empty";
-      v_empty.textContent = t("permissions.no_members");
+      v_empty.textContent = t$1("permissions.no_members");
       p_col_state.membersListDiv.appendChild(v_empty);
       return;
     }
@@ -9285,9 +6094,9 @@
         v_row.addEventListener("dblclick", function() {
           selectRole(p_tag, p_row.v_name);
         });
-        v_row.addEventListener("contextmenu", function(e) {
-          e.preventDefault();
-          openMembershipContextMenu(p_tag, p_col_state, p_row, e, "descendant");
+        v_row.addEventListener("contextmenu", function(e2) {
+          e2.preventDefault();
+          openMembershipContextMenu(p_tag, p_col_state, p_row, e2, "descendant");
         });
         p_col_state.membersListDiv.appendChild(v_row);
       })(p_descendants[i2]);
@@ -9296,7 +6105,7 @@
   function openMembershipContextMenu(p_tag, p_col_state, p_row, p_event, p_direction) {
     var v_items = [
       {
-        text: t("permissions.set_as_active_role"),
+        text: t$1("permissions.set_as_active_role"),
         icon: "fas cm-all fa-user",
         action: function() {
           selectRole(p_tag, p_row.v_name);
@@ -9305,7 +6114,7 @@
     ];
     if (p_row.v_direct && typeof p_row.v_inherit === "boolean") {
       v_items.push({
-        text: t("permissions.edit_membership_options"),
+        text: t$1("permissions.edit_membership_options"),
         icon: "fas cm-all fa-pen",
         action: function() {
           openEditMembershipDialog(p_tag, p_col_state, p_row, p_direction);
@@ -9314,7 +6123,7 @@
     }
     if (p_row.v_direct) {
       v_items.push({
-        text: t("permissions.remove_membership"),
+        text: t$1("permissions.remove_membership"),
         icon: "fas cm-all fa-times",
         action: function() {
           confirmRevokeMembership(p_tag, p_col_state, p_row.v_name, p_direction);
@@ -9374,7 +6183,7 @@
       return !p_role.v_is_public && p_role.v_name !== v_role && v_existing_direct.indexOf(p_role.v_name) === -1;
     });
     if (v_candidates.length === 0) {
-      showAlert$1(t("permissions.no_grantable_roles"));
+      showAlert$1(t$1("permissions.no_grantable_roles"));
       return;
     }
     var v_picker = null;
@@ -9387,7 +6196,7 @@
           document.getElementById("perm_grant_admin_option").checked
         );
         if (v_picked.length === 0) {
-          showAlert$1(t("permissions.select_role_hint"));
+          showAlert$1(t$1("permissions.select_role_hint"));
           return;
         }
         var v_failed = false;
@@ -9436,7 +6245,7 @@
         var v_picker_col = document.createElement("div");
         v_picker_col.className = "col-md-12 mb-3";
         var v_picker_label = document.createElement("label");
-        v_picker_label.textContent = t("permissions.parent_role_label");
+        v_picker_label.textContent = t$1("permissions.parent_role_label");
         v_picker_col.appendChild(v_picker_label);
         v_picker = buildRolePickerList(v_picker_col, v_candidates);
         v_content.appendChild(v_picker_col);
@@ -9449,7 +6258,7 @@
         var v_admin_label = document.createElement("label");
         v_admin_label.className = "form-check-label";
         v_admin_label.setAttribute("for", "perm_grant_admin_option");
-        v_admin_label.textContent = t("permissions.admin_option");
+        v_admin_label.textContent = t$1("permissions.admin_option");
         v_admin_row.appendChild(v_admin_input);
         v_admin_row.appendChild(v_admin_label);
         v_content.appendChild(v_admin_row);
@@ -9479,8 +6288,8 @@
         });
       },
       true,
-      t("common.save"),
-      t(p_direction === "ancestor" ? "permissions.grant_membership" : "permissions.grant_membership_reverse"),
+      t$1("common.save"),
+      t$1(p_direction === "ancestor" ? "permissions.grant_membership" : "permissions.grant_membership_reverse"),
       "fas node-all fa-users"
     );
   }
@@ -9510,13 +6319,13 @@
     withServerMajor(p_tag, function(p_major) {
       if (p_major < 16) return;
       var v_items = [
-        { value: "", label: t("permissions.option_default") },
-        { value: "true", label: t("permissions.option_yes") },
-        { value: "false", label: t("permissions.option_no") }
+        { value: "", label: t$1("permissions.option_default") },
+        { value: "true", label: t$1("permissions.option_yes") },
+        { value: "false", label: t$1("permissions.option_no") }
       ];
-      var v_inherit = buildSelectField(v_holder, "perm_grant_inherit", t("permissions.membership_inherit_label"));
+      var v_inherit = buildSelectField(v_holder, "perm_grant_inherit", t$1("permissions.membership_inherit_label"));
       populateSelectOptions(v_inherit.select, v_items);
-      var v_set = buildSelectField(v_holder, "perm_grant_set", t("permissions.membership_set_label"));
+      var v_set = buildSelectField(v_holder, "perm_grant_set", t$1("permissions.membership_set_label"));
       populateSelectOptions(v_set.select, v_items);
     });
   }
@@ -9582,7 +6391,7 @@
         );
         var v_intro = document.createElement("div");
         v_intro.className = "omnidb__permissions__row-suffix mb-3";
-        v_intro.textContent = t("permissions.edit_membership_hint", { member: v_member, parent: v_parent });
+        v_intro.textContent = t$1("permissions.edit_membership_hint", { member: v_member, parent: v_parent });
         v_content.appendChild(v_intro);
         function addCheckbox(p_id, p_label, p_checked) {
           var v_row = document.createElement("div");
@@ -9600,22 +6409,22 @@
           v_row.appendChild(v_label);
           v_content.appendChild(v_row);
         }
-        addCheckbox("perm_edit_admin", t("permissions.admin_option"), !!p_row.v_admin_option);
-        addCheckbox("perm_edit_inherit", t("permissions.membership_inherit_label"), p_row.v_inherit !== false);
-        addCheckbox("perm_edit_set", t("permissions.membership_set_label"), p_row.v_set !== false);
+        addCheckbox("perm_edit_admin", t$1("permissions.admin_option"), !!p_row.v_admin_option);
+        addCheckbox("perm_edit_inherit", t$1("permissions.membership_inherit_label"), p_row.v_inherit !== false);
+        addCheckbox("perm_edit_set", t$1("permissions.membership_set_label"), p_row.v_set !== false);
         appendSqlPreview(v_content, function() {
           return [{ url: "/grant_role_membership_postgresql/", body: requestBody() }];
         });
       },
       true,
-      t("common.save"),
-      t("permissions.edit_membership_options") + ": " + p_row.v_name,
+      t$1("common.save"),
+      t$1("permissions.edit_membership_options") + ": " + p_row.v_name,
       "fas node-all fa-users"
     );
   }
   function confirmRevokeMembership(p_tag, p_col_state, p_other_role, p_direction) {
     showConfirm(
-      t("permissions.confirm_revoke_membership", { role: p_other_role }),
+      t$1("permissions.confirm_revoke_membership", { role: p_other_role }),
       function() {
         var v_member = p_direction === "ancestor" ? p_col_state.role : p_other_role;
         var v_parent = p_direction === "ancestor" ? p_other_role : p_col_state.role;
@@ -9714,11 +6523,11 @@
     try {
       var v_stored = Number(localStorage.getItem(v_storage_key));
       if (v_stored > 0) setColumnWidth(p_column, clamp(v_stored));
-    } catch (e) {
+    } catch (e2) {
     }
     var v_handle = document.createElement("div");
     v_handle.className = "omnidb__permissions__column-resizer";
-    v_handle.title = t("permissions.resize_column_hint");
+    v_handle.title = t$1("permissions.resize_column_hint");
     p_column.appendChild(v_handle);
     v_handle.addEventListener("pointerdown", function(p_event) {
       p_event.preventDefault();
@@ -9740,7 +6549,7 @@
         document.body.style.userSelect = "";
         try {
           localStorage.setItem(v_storage_key, String(Math.round(p_column.getBoundingClientRect().width)));
-        } catch (e) {
+        } catch (e2) {
         }
       }
       v_handle.addEventListener("pointermove", onMove);
@@ -9751,7 +6560,7 @@
       setColumnWidth(p_column, null);
       try {
         localStorage.removeItem(v_storage_key);
-      } catch (e) {
+      } catch (e2) {
       }
     });
   }
@@ -9769,7 +6578,7 @@
     v_area.select();
     try {
       document.execCommand("copy");
-    } catch (e) {
+    } catch (e2) {
     }
     document.body.removeChild(v_area);
   }
@@ -9779,7 +6588,7 @@
     var v_toggle = document.createElement("button");
     v_toggle.type = "button";
     v_toggle.className = "btn btn-sm btn-outline-secondary";
-    v_toggle.textContent = t("permissions.show_sql");
+    v_toggle.textContent = t$1("permissions.show_sql");
     v_wrap.appendChild(v_toggle);
     var v_box = document.createElement("div");
     v_box.style.display = "none";
@@ -9789,7 +6598,7 @@
     var v_copy = document.createElement("button");
     v_copy.type = "button";
     v_copy.className = "btn btn-sm btn-outline-secondary";
-    v_copy.textContent = t("permissions.copy_sql");
+    v_copy.textContent = t$1("permissions.copy_sql");
     v_box.appendChild(v_copy);
     v_wrap.appendChild(v_box);
     var v_token = 0;
@@ -9800,11 +6609,11 @@
       var v_requests = p_get_requests();
       v_ready = false;
       if (v_requests === null) {
-        v_pre.textContent = t("permissions.sql_incomplete");
+        v_pre.textContent = t$1("permissions.sql_incomplete");
         return;
       }
       if (v_requests.length === 0) {
-        v_pre.textContent = t("permissions.sql_no_changes");
+        v_pre.textContent = t$1("permissions.sql_no_changes");
         return;
       }
       var v_mine = ++v_token;
@@ -9849,15 +6658,15 @@
     v_toggle.addEventListener("click", function() {
       var v_open = v_box.style.display === "none";
       v_box.style.display = v_open ? "" : "none";
-      v_toggle.textContent = t(v_open ? "permissions.hide_sql" : "permissions.show_sql");
+      v_toggle.textContent = t$1(v_open ? "permissions.hide_sql" : "permissions.show_sql");
       if (v_open) refresh();
     });
     v_copy.addEventListener("click", function() {
       if (!v_ready) return;
       copyTextQuietly(v_pre.textContent || "");
-      v_copy.textContent = t("permissions.sql_copied");
+      v_copy.textContent = t$1("permissions.sql_copied");
       window.setTimeout(function() {
-        v_copy.textContent = t("permissions.copy_sql");
+        v_copy.textContent = t$1("permissions.copy_sql");
       }, 1500);
     });
     p_content.addEventListener("input", scheduleRefresh);
@@ -9961,7 +6770,7 @@
     var v_priv_wrapper = document.createElement("div");
     v_priv_wrapper.className = "mb-2";
     var v_priv_title = document.createElement("label");
-    v_priv_title.textContent = t("permissions.privileges_label");
+    v_priv_title.textContent = t$1("permissions.privileges_label");
     v_priv_wrapper.appendChild(v_priv_title);
     for (var i2 = 0; i2 < p_spec.privileges.length; i2++) {
       var v_row = document.createElement("div");
@@ -9988,31 +6797,31 @@
     p_dynamic.innerHTML = "";
     function renderRest(p_container, p_database) {
       if (v_spec.needsSchema) {
-        var v_schema_field = buildSelectField(p_container, "perm_grant_object_schema", t("permissions.schema_label"));
+        var v_schema_field = buildSelectField(p_container, "perm_grant_object_schema", t$1("permissions.schema_label"));
         var v_scope_field = null;
         var v_bulk_hint = null;
         var v_action_field = null;
         if (v_spec.bulkKind) {
-          v_scope_field = buildSelectField(p_container, "perm_grant_scope", t("permissions.scope_label"));
+          v_scope_field = buildSelectField(p_container, "perm_grant_scope", t$1("permissions.scope_label"));
           populateSelectOptions(v_scope_field.select, [
-            { value: "single", label: t("permissions.scope_single") },
-            { value: "all", label: t("permissions.scope_all_" + v_spec.bulkKind) }
+            { value: "single", label: t$1("permissions.scope_single") },
+            { value: "all", label: t$1("permissions.scope_all_" + v_spec.bulkKind) }
           ]);
-          v_action_field = buildSelectField(p_container, "perm_grant_action", t("permissions.action_label"));
+          v_action_field = buildSelectField(p_container, "perm_grant_action", t$1("permissions.action_label"));
           populateSelectOptions(v_action_field.select, [
-            { value: "grant", label: t("permissions.action_grant") },
-            { value: "revoke", label: t("permissions.action_revoke") }
+            { value: "grant", label: t$1("permissions.action_grant") },
+            { value: "revoke", label: t$1("permissions.action_revoke") }
           ]);
           v_action_field.col.style.display = "none";
           v_bulk_hint = document.createElement("div");
           v_bulk_hint.className = "omnidb__permissions__row-suffix mb-3";
-          v_bulk_hint.textContent = t("permissions.scope_all_hint");
+          v_bulk_hint.textContent = t$1("permissions.scope_all_hint");
           v_bulk_hint.style.display = "none";
           p_container.appendChild(v_bulk_hint);
         }
         fetchSchemasForPicker(p_tag, p_col_state, p_database, function(p_schemas) {
           populateSelectOptions(v_schema_field.select, p_schemas);
-          var v_object_field = buildSelectField(p_container, "perm_grant_object_name", t("permissions.object_label"));
+          var v_object_field = buildSelectField(p_container, "perm_grant_object_name", t$1("permissions.object_label"));
           if (v_scope_field) {
             var v_scope_select = v_scope_field.select;
             var v_applyScope = function() {
@@ -10033,7 +6842,7 @@
           v_loadObjects();
         });
       } else {
-        var v_object_field2 = buildSelectField(p_container, "perm_grant_object_name", t("permissions.object_label"));
+        var v_object_field2 = buildSelectField(p_container, "perm_grant_object_name", t$1("permissions.object_label"));
         fetchObjectsForPicker(p_tag, v_spec, "", p_database, function(p_objects) {
           populateSelectOptions(v_object_field2.select, p_objects);
         });
@@ -10041,7 +6850,7 @@
       appendPrivilegeCheckboxes(p_container, v_spec);
     }
     if (objectTypeNeedsDatabase(p_type_value)) {
-      var v_db_field = buildSelectField(p_dynamic, "perm_grant_object_database", t("permissions.database_label"));
+      var v_db_field = buildSelectField(p_dynamic, "perm_grant_object_database", t$1("permissions.database_label"));
       var v_rest_container = document.createElement("div");
       p_dynamic.appendChild(v_rest_container);
       fetchAllDatabases(p_tag, function(p_databases) {
@@ -10104,14 +6913,14 @@
       })[0];
       var v_schema = v_schema_select ? v_schema_select.value : "";
       var v_object = v_object_select ? v_object_select.value : "";
-      if (v_bulk ? !v_schema : !v_object) return { error: t(v_bulk ? "permissions.select_schema_hint" : "permissions.select_object_hint") };
+      if (v_bulk ? !v_schema : !v_object) return { error: t$1(v_bulk ? "permissions.select_schema_hint" : "permissions.select_object_hint") };
       var v_privileges = [];
       var v_checkboxes = document.querySelectorAll(".perm_grant_privilege_checkbox:checked");
       for (var i2 = 0; i2 < v_checkboxes.length; i2++) v_privileges.push(
         /** @type {HTMLInputElement} */
         v_checkboxes[i2].value
       );
-      if (v_privileges.length === 0) return { error: t("permissions.select_privilege_hint") };
+      if (v_privileges.length === 0) return { error: t$1("permissions.select_privilege_hint") };
       var v_database = v_database_select ? v_database_select.value : void 0;
       var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name, p_privileges: v_privileges, p_grantable: v_grantable };
       var v_url;
@@ -10157,11 +6966,11 @@
           /** @type {HTMLElement} */
           document.getElementById("modal_message_content")
         );
-        var v_type_field = buildSelectField(v_content, "perm_grant_object_type", t("permissions.object_type_label"));
+        var v_type_field = buildSelectField(v_content, "perm_grant_object_type", t$1("permissions.object_type_label"));
         populateSelectOptions(
           v_type_field.select,
           p_type_list.map(function(p_type) {
-            return { value: p_type.value, label: t(p_type.labelKey) };
+            return { value: p_type.value, label: t$1(p_type.labelKey) };
           })
         );
         var v_dynamic = document.createElement("div");
@@ -10176,7 +6985,7 @@
         var v_grantable_label = document.createElement("label");
         v_grantable_label.className = "form-check-label";
         v_grantable_label.setAttribute("for", "perm_grant_object_grantable");
-        v_grantable_label.textContent = t("permissions.with_grant_option");
+        v_grantable_label.textContent = t$1("permissions.with_grant_option");
         v_grantable_row.appendChild(v_grantable_input);
         v_grantable_row.appendChild(v_grantable_label);
         v_content.appendChild(v_grantable_row);
@@ -10190,7 +6999,7 @@
         });
       },
       true,
-      t("common.save"),
+      t$1("common.save"),
       p_title,
       "fas node-all fa-key"
     );
@@ -10227,8 +7036,8 @@
     closeObjectsColumn(p_tag);
     var v_column = document.createElement("div");
     v_column.className = "omnidb__permissions__column";
-    var v_section = buildColumnSection(v_column, t("permissions.objects_column_title", { role: p_role_name }), {
-      addTitle: t("permissions.add_object_privilege"),
+    var v_section = buildColumnSection(v_column, t$1("permissions.objects_column_title", { role: p_role_name }), {
+      addTitle: t$1("permissions.add_object_privilege"),
       showAdd: true,
       showRemove: false
     });
@@ -10239,7 +7048,7 @@
     var v_filter_input = document.createElement("input");
     v_filter_input.type = "text";
     v_filter_input.className = "form-control form-control-sm";
-    v_filter_input.placeholder = t("permissions.filter_databases_placeholder");
+    v_filter_input.placeholder = t$1("permissions.filter_databases_placeholder");
     v_filter_input.value = p_tag.objectsFilter || "";
     v_filter.appendChild(v_filter_input);
     v_section.headerDiv.insertAdjacentElement("afterend", v_filter);
@@ -10450,14 +7259,14 @@
         elements: function(p_node) {
           return [
             {
-              text: t("permissions.edit_privileges"),
+              text: t$1("permissions.edit_privileges"),
               icon: "fas cm-all fa-pen",
               action: function() {
                 openObjectDetailDialog(p_tag, p_col_state, p_node.tag.grant, p_node.tag.database);
               }
             },
             {
-              text: t("permissions.change_owner"),
+              text: t$1("permissions.change_owner"),
               icon: "fas cm-all fa-user",
               action: function() {
                 var v_grant = p_node.tag.grant;
@@ -10465,7 +7274,7 @@
               }
             },
             {
-              text: t("permissions.who_has_access"),
+              text: t$1("permissions.who_has_access"),
               icon: "fas cm-all fa-users",
               action: function() {
                 var v_grant = p_node.tag.grant;
@@ -10480,7 +7289,7 @@
       elements: function(p_node) {
         return [
           {
-            text: t("permissions.change_owner"),
+            text: t$1("permissions.change_owner"),
             icon: "fas cm-all fa-user",
             action: function() {
               var v_owned = p_node.tag.owned;
@@ -10488,7 +7297,7 @@
             }
           },
           {
-            text: t("permissions.who_has_access"),
+            text: t$1("permissions.who_has_access"),
             icon: "fas cm-all fa-users",
             action: function() {
               var v_owned = p_node.tag.owned;
@@ -10502,7 +7311,7 @@
       elements: function(p_node) {
         return [
           {
-            text: t("permissions.add_default_privileges"),
+            text: t$1("permissions.add_default_privileges"),
             icon: "fas cm-all fa-plus",
             action: function() {
               openDefaultPrivilegesDialog(p_tag, p_col_state, p_node.tag.database, null);
@@ -10515,14 +7324,14 @@
       elements: function(p_node) {
         return [
           {
-            text: t("permissions.edit_privileges"),
+            text: t$1("permissions.edit_privileges"),
             icon: "fas cm-all fa-pen",
             action: function() {
               openDefaultPrivilegesDialog(p_tag, p_col_state, p_node.tag.database, p_node.tag.entry);
             }
           },
           {
-            text: t("permissions.remove_default_privileges"),
+            text: t$1("permissions.remove_default_privileges"),
             icon: "fas cm-all fa-times",
             action: function() {
               confirmRemoveDefaultPrivileges(p_tag, p_col_state, p_node.tag.database, p_node.tag.entry);
@@ -10541,9 +7350,9 @@
     }
     var v_database_grants = v_server_by_type["database"] || {};
     var v_tablespace_grants = v_server_by_type["tablespace"] || {};
-    var v_databases_group = v_tree.createNode(t("tree.databases"), false, objectTypeIcon("database", true), void 0, null, null, null, false);
-    for (var d = 0; d < p_databases.length; d++) {
-      var v_db_name = p_databases[d].v_name;
+    var v_databases_group = v_tree.createNode(t$1("tree.databases"), false, objectTypeIcon("database", true), void 0, null, null, null, false);
+    for (var d2 = 0; d2 < p_databases.length; d2++) {
+      var v_db_name = p_databases[d2].v_name;
       var v_db_grant = v_database_grants[v_db_name] || emptyGrantFor("database", "", v_db_name, v_db_name);
       var v_db_node = v_databases_group.createChildNode(
         stripPgIdentQuotes(v_db_name),
@@ -10557,9 +7366,9 @@
       v_db_node.createChildNode("", false, "node-spin", null, null, null, false);
       p_col_state.databaseNodes[v_db_name] = { node: v_db_node, loaded: false };
     }
-    var v_tablespaces_group = v_tree.createNode(t("tree.tablespaces"), false, objectTypeIcon("tablespace", true), void 0, null, null, null, false);
-    for (var s = 0; s < p_tablespaces.length; s++) {
-      var v_ts_name = p_tablespaces[s].v_name;
+    var v_tablespaces_group = v_tree.createNode(t$1("tree.tablespaces"), false, objectTypeIcon("tablespace", true), void 0, null, null, null, false);
+    for (var s2 = 0; s2 < p_tablespaces.length; s2++) {
+      var v_ts_name = p_tablespaces[s2].v_name;
       var v_ts_grant = v_tablespace_grants[v_ts_name] || emptyGrantFor("tablespace", "", v_ts_name, v_ts_name);
       var v_ts_node = v_tablespaces_group.createChildNode(
         v_ts_name,
@@ -10648,7 +7457,7 @@
   function populateDatabaseNodeChildren(p_database_node, p_database, p_grants, p_defaults, p_owned) {
     p_database_node.removeChildNodes();
     if (p_grants.length === 0) {
-      p_database_node.createChildNode(t("permissions.no_database_grants"), false, null, null, null, "var(--text-secondary)", true);
+      p_database_node.createChildNode(t$1("permissions.no_database_grants"), false, null, null, null, "var(--text-secondary)", true);
     } else {
       appendDatabaseGrantNodes(p_database_node, p_database, p_grants);
     }
@@ -10657,7 +7466,7 @@
   }
   function appendOwnedObjectsNode(p_database_node, p_database, p_owned) {
     var v_folder = p_database_node.createChildNode(
-      t("permissions.owned_objects", { count: p_owned.v_objects.length + (p_owned.v_truncated ? "+" : "") }),
+      t$1("permissions.owned_objects", { count: p_owned.v_objects.length + (p_owned.v_truncated ? "+" : "") }),
       false,
       objectTypeIcon("owned_objects", true),
       null,
@@ -10666,7 +7475,7 @@
       true
     );
     if (p_owned.v_objects.length === 0) {
-      v_folder.createChildNode(t("permissions.no_owned_objects"), false, null, null, null, "var(--text-secondary)", true);
+      v_folder.createChildNode(t$1("permissions.no_owned_objects"), false, null, null, null, "var(--text-secondary)", true);
       return;
     }
     for (var i2 = 0; i2 < PERMISSIONS_DATABASE_OBJECT_TYPES.length; i2++) {
@@ -10675,7 +7484,7 @@
         return p_object.v_object_type === v_spec.value;
       });
       if (v_objects.length === 0) continue;
-      var v_type_node = v_folder.createChildNode(t(v_spec.folderLabelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
+      var v_type_node = v_folder.createChildNode(t$1(v_spec.folderLabelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
       for (var j2 = 0; j2 < v_objects.length; j2++) {
         var v_object = v_objects[j2];
         var v_label = v_object.v_object_type === "function" || v_object.v_object_type === "procedure" ? v_object.v_object : (v_object.v_schema ? stripPgIdentQuotes(v_object.v_schema) + "." : "") + stripPgIdentQuotes(v_object.v_object);
@@ -10707,7 +7516,7 @@
       function() {
         var v_body = requestBody();
         if (!v_body) {
-          showAlert$1(t("permissions.select_owner_hint"));
+          showAlert$1(t$1("permissions.select_owner_hint"));
           return;
         }
         execAjax$2(
@@ -10729,10 +7538,10 @@
           /** @type {HTMLElement} */
           document.getElementById("modal_message_content")
         );
-        var v_field = buildSelectField(v_content, "perm_change_owner", t("permissions.new_owner_label"));
+        var v_field = buildSelectField(v_content, "perm_change_owner", t$1("permissions.new_owner_label"));
         populateSelectOptions(
           v_field.select,
-          [{ value: "", label: t("permissions.drop_choose_owner") }].concat(
+          [{ value: "", label: t$1("permissions.drop_choose_owner") }].concat(
             (p_tag.roles || []).filter(function(p_role) {
               return !p_role.v_is_public && p_role.v_name !== p_current_owner && !isPredefinedRoleName(p_role.v_name);
             }).map(function(p_role) {
@@ -10746,14 +7555,14 @@
         });
       },
       true,
-      t("common.save"),
-      t("permissions.change_owner") + ": " + dialogObjectLabel(p_object_type, p_label),
+      t$1("common.save"),
+      t$1("permissions.change_owner") + ": " + dialogObjectLabel(p_object_type, p_label),
       objectTypeIcon(p_object_type)
     );
   }
   function appendDefaultPrivilegesNode(p_database_node, p_database, p_defaults) {
     var v_folder = p_database_node.createChildNode(
-      t("permissions.default_privileges"),
+      t$1("permissions.default_privileges"),
       false,
       objectTypeIcon("default_privileges", true),
       { database: p_database },
@@ -10762,12 +7571,12 @@
       true
     );
     if (p_defaults.length === 0) {
-      v_folder.createChildNode(t("permissions.no_default_privileges"), false, null, null, null, "var(--text-secondary)", true);
+      v_folder.createChildNode(t$1("permissions.no_default_privileges"), false, null, null, null, "var(--text-secondary)", true);
       return;
     }
     for (var i2 = 0; i2 < p_defaults.length; i2++) {
       var v_entry = p_defaults[i2];
-      var v_label = v_entry.v_creator + " → " + v_entry.v_grantee + ": " + t(DEFAULT_KIND_LABEL_KEY[v_entry.v_kind]) + (v_entry.v_schema ? " (" + v_entry.v_schema + ")" : "") + " [" + v_entry.v_privileges.map(function(p_priv) {
+      var v_label = v_entry.v_creator + " → " + v_entry.v_grantee + ": " + t$1(DEFAULT_KIND_LABEL_KEY[v_entry.v_kind]) + (v_entry.v_schema ? " (" + v_entry.v_schema + ")" : "") + " [" + v_entry.v_privileges.map(function(p_priv) {
         return p_priv.v_privilege + (p_priv.v_grantable ? "*" : "");
       }).join(", ") + "]";
       v_folder.createChildNode(v_label, false, objectTypeIcon(DEFAULT_KIND_ICON_TYPE[v_entry.v_kind]), { database: p_database, entry: v_entry }, "cm_perm_default_entry", null, true);
@@ -10804,8 +7613,8 @@
         if (v_spec.value === "schema") continue;
         var v_type_grants = v_schema_entry.types[v_spec.value];
         if (!v_type_grants || v_type_grants.length === 0) continue;
-        var v_type_node = v_schema_node.createChildNode(t(v_spec.folderLabelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
-        for (var k = 0; k < v_type_grants.length; k++) appendGrantLeafNode(v_type_node, v_type_grants[k]);
+        var v_type_node = v_schema_node.createChildNode(t$1(v_spec.folderLabelKey), false, objectTypeIcon(v_spec.value, true), null, null, null, true);
+        for (var k2 = 0; k2 < v_type_grants.length; k2++) appendGrantLeafNode(v_type_node, v_type_grants[k2]);
       }
     }
     var v_top_level_types = ["foreign_data_wrapper", "foreign_server"];
@@ -10815,8 +7624,8 @@
       var v_spec2 = PERMISSIONS_DATABASE_OBJECT_TYPES.filter(function(p_type) {
         return p_type.value === v_top_level_types[t_i];
       })[0];
-      var v_top_node = p_database_node.createChildNode(t(v_spec2.folderLabelKey), false, objectTypeIcon(v_spec2.value, true), void 0, null, null, true);
-      for (var m = 0; m < v_grants_of_type.length; m++) appendGrantLeafNode(v_top_node, v_grants_of_type[m]);
+      var v_top_node = p_database_node.createChildNode(t$1(v_spec2.folderLabelKey), false, objectTypeIcon(v_spec2.value, true), void 0, null, null, true);
+      for (var m2 = 0; m2 < v_grants_of_type.length; m2++) appendGrantLeafNode(v_top_node, v_grants_of_type[m2]);
     }
   }
   var DEFAULT_PRIVILEGE_KINDS = [
@@ -10864,11 +7673,11 @@
         /** @type {NodeListOf<HTMLInputElement>} */
         document.querySelectorAll(".perm_grant_privilege_checkbox")
       );
-      for (var b = 0; b < v_boxes.length; b++) {
-        if (v_boxes[b].checked && !v_had[v_boxes[b].value]) v_to_grant.push(v_boxes[b].value);
-        if (!v_boxes[b].checked && v_had[v_boxes[b].value]) v_to_revoke.push(v_boxes[b].value);
+      for (var b2 = 0; b2 < v_boxes.length; b2++) {
+        if (v_boxes[b2].checked && !v_had[v_boxes[b2].value]) v_to_grant.push(v_boxes[b2].value);
+        if (!v_boxes[b2].checked && v_had[v_boxes[b2].value]) v_to_revoke.push(v_boxes[b2].value);
       }
-      if (!v_editing && v_to_grant.length === 0) return { error: t("permissions.select_privilege_hint") };
+      if (!v_editing && v_to_grant.length === 0) return { error: t$1("permissions.select_privilege_hint") };
       var v_base = {
         p_database_index: p_tag.connID,
         p_tab_id: p_tag.tabID,
@@ -10931,12 +7740,12 @@
         );
         var v_intro = document.createElement("div");
         v_intro.className = "omnidb__permissions__row-suffix mb-3";
-        v_intro.textContent = t("permissions.default_privileges_hint", { role: v_grantee });
+        v_intro.textContent = t$1("permissions.default_privileges_hint", { role: v_grantee });
         v_content.appendChild(v_intro);
-        var v_creator_field = buildSelectField(v_content, "perm_default_creator", t("permissions.default_creator_label"));
+        var v_creator_field = buildSelectField(v_content, "perm_default_creator", t$1("permissions.default_creator_label"));
         populateSelectOptions(
           v_creator_field.select,
-          [{ value: "", label: t("permissions.default_creator_current") }].concat(
+          [{ value: "", label: t$1("permissions.default_creator_current") }].concat(
             (p_tag.roles || []).filter(function(p_role) {
               return !p_role.v_is_public;
             }).map(function(p_role) {
@@ -10944,17 +7753,17 @@
             })
           )
         );
-        var v_schema_field = buildSelectField(v_content, "perm_default_schema", t("permissions.schema_label"));
-        populateSelectOptions(v_schema_field.select, [{ value: "", label: t("permissions.default_schema_all") }]);
+        var v_schema_field = buildSelectField(v_content, "perm_default_schema", t$1("permissions.schema_label"));
+        populateSelectOptions(v_schema_field.select, [{ value: "", label: t$1("permissions.default_schema_all") }]);
         fetchSchemasForPicker(p_tag, p_col_state, p_database, function(p_schemas) {
-          populateSelectOptions(v_schema_field.select, [{ value: "", label: t("permissions.default_schema_all") }].concat(p_schemas));
+          populateSelectOptions(v_schema_field.select, [{ value: "", label: t$1("permissions.default_schema_all") }].concat(p_schemas));
           if (v_editing) v_schema_field.select.value = p_entry.v_schema;
         });
-        var v_kind_field = buildSelectField(v_content, "perm_default_kind", t("permissions.default_kind_label"));
+        var v_kind_field = buildSelectField(v_content, "perm_default_kind", t$1("permissions.default_kind_label"));
         populateSelectOptions(
           v_kind_field.select,
           DEFAULT_PRIVILEGE_KINDS.map(function(p_kind) {
-            return { value: p_kind.value, label: t(DEFAULT_KIND_LABEL_KEY[p_kind.value]) };
+            return { value: p_kind.value, label: t$1(DEFAULT_KIND_LABEL_KEY[p_kind.value]) };
           })
         );
         var v_priv_container = document.createElement("div");
@@ -10971,7 +7780,7 @@
               /** @type {NodeListOf<HTMLInputElement>} */
               v_priv_container.querySelectorAll(".perm_grant_privilege_checkbox")
             );
-            for (var b = 0; b < v_boxes.length; b++) v_boxes[b].checked = !!v_had[v_boxes[b].value];
+            for (var b2 = 0; b2 < v_boxes.length; b2++) v_boxes[b2].checked = !!v_had[v_boxes[b2].value];
           }
           if (!v_editing) {
             v_schema_field.select.disabled = v_kind === "schemas";
@@ -10988,7 +7797,7 @@
         var v_grantable_label = document.createElement("label");
         v_grantable_label.className = "form-check-label";
         v_grantable_label.setAttribute("for", "perm_default_grantable");
-        v_grantable_label.textContent = t("permissions.with_grant_option");
+        v_grantable_label.textContent = t$1("permissions.with_grant_option");
         v_grantable_row.appendChild(v_grantable_input);
         v_grantable_row.appendChild(v_grantable_label);
         v_content.appendChild(v_grantable_row);
@@ -11009,14 +7818,14 @@
         });
       },
       true,
-      t("common.save"),
-      t("permissions.default_privileges") + ": " + stripPgIdentQuotes(p_database),
+      t$1("common.save"),
+      t$1("permissions.default_privileges") + ": " + stripPgIdentQuotes(p_database),
       "fas node-all fa-key"
     );
   }
   function confirmRemoveDefaultPrivileges(p_tag, p_col_state, p_database, p_entry) {
     showConfirm(
-      t("permissions.confirm_remove_default_privileges"),
+      t$1("permissions.confirm_remove_default_privileges"),
       function() {
         execAjax$2(
           "/alter_default_privileges_postgresql/",
@@ -11147,16 +7956,16 @@
         var v_grantable_label = document.createElement("label");
         v_grantable_label.className = "form-check-label";
         v_grantable_label.setAttribute("for", "perm_detail_grantable");
-        v_grantable_label.textContent = t("permissions.with_grant_option");
+        v_grantable_label.textContent = t$1("permissions.with_grant_option");
         v_grantable_row.appendChild(v_grantable_input);
         v_grantable_row.appendChild(v_grantable_label);
         v_content.appendChild(v_grantable_row);
         var v_priv_title = document.createElement("label");
-        v_priv_title.textContent = t("permissions.privileges_label");
+        v_priv_title.textContent = t$1("permissions.privileges_label");
         v_content.appendChild(v_priv_title);
         var v_priv_note = document.createElement("div");
         v_priv_note.className = "omnidb__permissions__row-suffix mb-2";
-        v_priv_note.textContent = t("permissions.direct_grant_hint");
+        v_priv_note.textContent = t$1("permissions.direct_grant_hint");
         v_content.appendChild(v_priv_note);
         for (var i3 = 0; i3 < v_spec.privileges.length; i3++) {
           (function(p_priv) {
@@ -11181,7 +7990,7 @@
             if (v_inherited_sources.length > 0) {
               var v_hint = document.createElement("span");
               v_hint.className = "omnidb__permissions__row-suffix";
-              v_hint.textContent = " " + t("permissions.inherited_from", {
+              v_hint.textContent = " " + t$1("permissions.inherited_from", {
                 sources: v_inherited_sources.map(function(p_source) {
                   return p_source.v_grantee;
                 }).join(", ")
@@ -11194,7 +8003,7 @@
         appendSqlPreview(v_content, collectRequests);
       },
       true,
-      t("common.save"),
+      t$1("common.save"),
       dialogObjectLabel(p_grant.v_object_type, p_grant.v_identifier),
       objectTypeIcon(p_grant.v_object_type)
     );
@@ -11220,7 +8029,7 @@
       p_col_state,
       p_col_state.role,
       PERMISSIONS_ALL_OBJECT_TYPES,
-      t("permissions.add_object_privilege"),
+      t$1("permissions.add_object_privilege"),
       function(p_database, p_object_type, p_identifier) {
         if (objectTypeNeedsDatabase(p_object_type) && p_database) {
           var v_state = p_col_state.databaseNodes[p_database];
@@ -11265,8 +8074,8 @@
             );
           },
           true,
-          t("common.close"),
-          t("permissions.who_has_access") + ": " + dialogObjectLabel(p_object_type, p_label),
+          t$1("common.close"),
+          t$1("permissions.who_has_access") + ": " + dialogObjectLabel(p_object_type, p_label),
           objectTypeIcon(p_object_type)
         );
       },
@@ -11281,7 +8090,7 @@
     if (p_data.v_owner) {
       var v_owner = document.createElement("div");
       v_owner.className = "omnidb__permissions__row-suffix mb-2";
-      v_owner.textContent = t("permissions.access_owner", { owner: p_data.v_owner });
+      v_owner.textContent = t$1("permissions.access_owner", { owner: p_data.v_owner });
       p_content.appendChild(v_owner);
     }
     var v_regular = p_data.v_roles.filter(function(p_role) {
@@ -11308,8 +8117,8 @@
           v_privs.className = "omnidb__permissions__row-suffix omnidb__permissions__access-privileges";
           v_privs.textContent = p_role.v_privileges.map(function(p_priv) {
             var v_notes = [];
-            if (p_priv.v_source !== "direct") v_notes.push(t("permissions.access_source_" + p_priv.v_source));
-            if (p_priv.v_grantable) v_notes.push(t("permissions.access_grant_option"));
+            if (p_priv.v_source !== "direct") v_notes.push(t$1("permissions.access_source_" + p_priv.v_source));
+            if (p_priv.v_grantable) v_notes.push(t$1("permissions.access_grant_option"));
             return p_priv.v_privilege + (v_notes.length > 0 ? " (" + v_notes.join(", ") + ")" : "");
           }).join(", ");
           v_row.appendChild(v_privs);
@@ -11331,7 +8140,7 @@
     if (v_regular.length === 0) {
       var v_none = document.createElement("div");
       v_none.className = "omnidb__permissions__list-empty";
-      v_none.textContent = t("permissions.access_nobody");
+      v_none.textContent = t$1("permissions.access_nobody");
       v_list2.appendChild(v_none);
     }
     appendRows(v_list2, v_regular);
@@ -11341,7 +8150,7 @@
       v_details.className = "mt-2";
       var v_summary = document.createElement("summary");
       v_summary.className = "omnidb__permissions__row-suffix";
-      v_summary.textContent = t("permissions.access_superusers", { count: v_superusers.length });
+      v_summary.textContent = t$1("permissions.access_superusers", { count: v_superusers.length });
       v_details.appendChild(v_summary);
       var v_super_list = document.createElement("div");
       v_super_list.className = "omnidb__permissions__role-picker mt-1";
@@ -11392,14 +8201,14 @@
       function() {
         var v_body = requestBody();
         if (v_owned > 0 && !v_body.p_reassign_to) {
-          showAlert$1(t("permissions.select_owner_hint"));
+          showAlert$1(t$1("permissions.select_owner_hint"));
           return;
         }
         execAjax$2(
           "/drop_role_postgresql/",
           JSON.stringify(v_body),
           function() {
-            showAlert$1(t("permissions.role_dropped"));
+            showAlert$1(t$1("permissions.role_dropped"));
             p_tag.selectedRole = null;
             p_tag.deleteRoleBtn.disabled = true;
             if (p_tag.column2 && p_tag.column2.role === p_role_name) closeColumn2(p_tag);
@@ -11421,20 +8230,20 @@
         );
         var v_warning = document.createElement("div");
         v_warning.className = "mb-3";
-        v_warning.textContent = t("permissions.confirm_drop_role", { role: p_role_name });
+        v_warning.textContent = t$1("permissions.confirm_drop_role", { role: p_role_name });
         v_content.appendChild(v_warning);
         if (p_deps.v_databases.length > 0) {
           var v_heading = document.createElement("div");
           v_heading.className = "mb-1";
-          v_heading.textContent = t("permissions.drop_dependencies_heading");
+          v_heading.textContent = t$1("permissions.drop_dependencies_heading");
           v_content.appendChild(v_heading);
           var v_list2 = document.createElement("ul");
           v_list2.className = "mb-3";
-          for (var d = 0; d < p_deps.v_databases.length; d++) {
-            var v_dep = p_deps.v_databases[d];
+          for (var d2 = 0; d2 < p_deps.v_databases.length; d2++) {
+            var v_dep = p_deps.v_databases[d2];
             var v_item = document.createElement("li");
-            v_item.textContent = t("permissions.drop_deps_database", {
-              database: v_dep.v_name === "" ? t("permissions.drop_deps_shared") : v_dep.v_name,
+            v_item.textContent = t$1("permissions.drop_deps_database", {
+              database: v_dep.v_name === "" ? t$1("permissions.drop_deps_shared") : v_dep.v_name,
               owned: v_dep.v_owned,
               held: v_dep.v_acl + v_dep.v_other
             });
@@ -11445,14 +8254,14 @@
         if (p_deps.v_member_of + p_deps.v_members > 0) {
           var v_memberships = document.createElement("div");
           v_memberships.className = "omnidb__permissions__row-suffix mb-3";
-          v_memberships.textContent = t("permissions.drop_memberships_note", { count: p_deps.v_member_of + p_deps.v_members });
+          v_memberships.textContent = t$1("permissions.drop_memberships_note", { count: p_deps.v_member_of + p_deps.v_members });
           v_content.appendChild(v_memberships);
         }
         if (v_owned > 0) {
-          var v_owner_field = buildSelectField(v_content, "perm_drop_new_owner", t("permissions.drop_new_owner_label"));
+          var v_owner_field = buildSelectField(v_content, "perm_drop_new_owner", t$1("permissions.drop_new_owner_label"));
           populateSelectOptions(
             v_owner_field.select,
-            [{ value: "", label: t("permissions.drop_choose_owner") }].concat(
+            [{ value: "", label: t$1("permissions.drop_choose_owner") }].concat(
               (p_tag.roles || []).filter(function(p_role) {
                 return !p_role.v_is_public && p_role.v_name !== p_role_name && !isPredefinedRoleName(p_role.v_name);
               }).map(function(p_role) {
@@ -11462,13 +8271,13 @@
           );
           var v_owner_hint = document.createElement("div");
           v_owner_hint.className = "omnidb__permissions__row-suffix mb-3";
-          v_owner_hint.textContent = t("permissions.drop_new_owner_hint");
+          v_owner_hint.textContent = t$1("permissions.drop_new_owner_hint");
           v_content.appendChild(v_owner_hint);
         }
         if (v_held > 0) {
           var v_privileges_note = document.createElement("div");
           v_privileges_note.className = "omnidb__permissions__row-suffix mb-3";
-          v_privileges_note.textContent = t("permissions.drop_privileges_note");
+          v_privileges_note.textContent = t$1("permissions.drop_privileges_note");
           v_content.appendChild(v_privileges_note);
         }
         appendSqlPreview(v_content, function() {
@@ -11478,14 +8287,14 @@
         });
       },
       true,
-      t("tree.drop_role"),
-      t("tree.drop_role") + ": " + p_role_name,
+      t$1("tree.drop_role"),
+      t$1("tree.drop_role") + ": " + p_role_name,
       "fas node-all fa-times"
     );
   }
   var v_createNewMonitorUnitTabFunction = function() {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-    let v_name_html = '<span id="tab_title">' + t("monitoring.monitor_unit_tab") + "</span>";
+    let v_name_html = '<span id="tab_title">' + t$1("monitoring.monitor_unit_tab") + "</span>";
     let v_status_html = '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>';
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-align-left icon-tab-title"></i>',
@@ -11496,9 +8305,9 @@
           this.tag.resize();
         }
       },
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_current_tab = p_tab;
-        beforeCloseTab(e, function() {
+        beforeCloseTab(e2, function() {
           removeTab(v_current_tab);
           if (v_tab.tag.tabCloseFunction) v_tab.tag.tabCloseFunction(v_tab.tag);
         });
@@ -11506,7 +8315,7 @@
       p_dblClickFunction: renameTab
     });
     v_connTabControl.selectedTab.tag.tabControl.selectTab(v_tab);
-    var v_html = '<button id="bt_test_unit_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1">' + t("monitoring.test") + '</button><button id="bt_save_unit_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary btn-sm my-1">' + t("common.save") + '</button><div class="row">  <div class="col-md-3 mb-3">    <label for="conn_form_title">' + t("monitoring.name") + '</label>    <input type="text" class="form-control" id="txt_unit_name_' + v_tab.id + '" placeholder="' + t("monitoring.name") + '">  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_type">' + t("monitoring.type") + '</label>    <select id="select_type_' + v_tab.id + '" class="form-control">      <option value="timeseries">' + t("monitoring.timeseries") + '</option>      <option value="chart">' + t("monitoring.chart_no_append") + '</option>      <option value="grid">' + t("monitoring.grid") + '</option>    </select>  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_title">' + t("monitoring.refresh_interval") + '</label>    <input type="text" class="form-control" id="txt_interval_' + v_tab.id + '" placeholder="' + t("monitoring.title") + '">  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_type">' + t("monitoring.template") + '</label>    <select id="select_template_' + v_tab.id + '" class="form-control">      <option value=-1>' + t("monitoring.select_template") + '</option>    </select>  </div></div><div class="row" id="chart_type_row_' + v_tab.id + '" style="display:none;">  <div class="col-md-3 mb-3">    <label for="conn_form_type">' + t("monitoring.chart_type") + '</label>    <select id="select_chart_type_' + v_tab.id + '" class="form-control">      <option value="bar">' + t("monitoring.chart_bar") + '</option>      <option value="pie">' + t("monitoring.chart_pie") + '</option>      <option value="doughnut">' + t("monitoring.chart_doughnut") + '</option>      <option value="line">' + t("monitoring.chart_line") + '</option>    </select>  </div></div><div class="row">  <div class="col-md-12 mb-1">    <label for="conn_form_title">' + t("monitoring.sql_query") + '</label>  </div>  <div class="col-md-12">    <div id="txt_data_' + v_tab.id + '" style=" width: 100%; height: 250px;"></div>  </div></div>';
+    var v_html = '<button id="bt_test_unit_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary btn-sm my-1 me-1">' + t$1("monitoring.test") + '</button><button id="bt_save_unit_' + v_tab.id + '" class="btn omnidb__theme__btn--secondary btn-sm my-1">' + t$1("common.save") + '</button><div class="row">  <div class="col-md-3 mb-3">    <label for="conn_form_title">' + t$1("monitoring.name") + '</label>    <input type="text" class="form-control" id="txt_unit_name_' + v_tab.id + '" placeholder="' + t$1("monitoring.name") + '">  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_type">' + t$1("monitoring.type") + '</label>    <select id="select_type_' + v_tab.id + '" class="form-control">      <option value="timeseries">' + t$1("monitoring.timeseries") + '</option>      <option value="chart">' + t$1("monitoring.chart_no_append") + '</option>      <option value="grid">' + t$1("monitoring.grid") + '</option>    </select>  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_title">' + t$1("monitoring.refresh_interval") + '</label>    <input type="text" class="form-control" id="txt_interval_' + v_tab.id + '" placeholder="' + t$1("monitoring.title") + '">  </div>  <div class="col-md-3 mb-3">    <label for="conn_form_type">' + t$1("monitoring.template") + '</label>    <select id="select_template_' + v_tab.id + '" class="form-control">      <option value=-1>' + t$1("monitoring.select_template") + '</option>    </select>  </div></div><div class="row" id="chart_type_row_' + v_tab.id + '" style="display:none;">  <div class="col-md-3 mb-3">    <label for="conn_form_type">' + t$1("monitoring.chart_type") + '</label>    <select id="select_chart_type_' + v_tab.id + '" class="form-control">      <option value="bar">' + t$1("monitoring.chart_bar") + '</option>      <option value="pie">' + t$1("monitoring.chart_pie") + '</option>      <option value="doughnut">' + t$1("monitoring.chart_doughnut") + '</option>      <option value="line">' + t$1("monitoring.chart_line") + '</option>    </select>  </div></div><div class="row">  <div class="col-md-12 mb-1">    <label for="conn_form_title">' + t$1("monitoring.sql_query") + '</label>  </div>  <div class="col-md-12">    <div id="txt_data_' + v_tab.id + '" style=" width: 100%; height: 250px;"></div>  </div></div>';
     var v_div = (
       /** @type {HTMLElement} */
       document.getElementById("div_" + v_tab.id)
@@ -11526,9 +8335,9 @@
     );
     document.getElementById("select_template_" + v_tab.id).addEventListener(
       "change",
-      (e) => selectUnitTemplate(
+      (e2) => selectUnitTemplate(
         /** @type {HTMLSelectElement} */
-        e.target.value
+        e2.target.value
       )
     );
     ace.require("ace/ext/language_tools");
@@ -11540,8 +8349,8 @@
       getValue: function() {
         return v_select_chart_type.value;
       },
-      setValue: function(v) {
-        v_select_chart_type.value = v || "bar";
+      setValue: function(v2) {
+        v_select_chart_type.value = v2 || "bar";
       },
       clearSelection: function() {
       },
@@ -11605,8 +8414,8 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
+      p_clickFunction: function(e2) {
+        showMenuNewTab(e2);
       }
     });
     v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -11765,7 +8574,7 @@
     div_header_row1.className = "d-flex justify-content-between align-items-center";
     var button_close = document.createElement("button");
     button_close.className = "omnidb__monitor-unit__header-btn text-muted";
-    button_close.title = t("common.close");
+    button_close.title = t$1("common.close");
     button_close.onclick = /* @__PURE__ */ (function(div2) {
       return function() {
         closeMonitorUnit(div2);
@@ -11780,7 +8589,7 @@
     if (!v_return_unit.v_plugin_name) {
       var button_edit = document.createElement("button");
       button_edit.className = "omnidb__monitor-unit__header-btn text-muted";
-      button_edit.title = t("common.edit");
+      button_edit.title = t$1("common.edit");
       button_edit.onclick = function() {
         editMonitorUnit(v_return_unit.v_id);
       };
@@ -11799,7 +8608,7 @@
     })(div);
     button_refresh.innerHTML = "<i class='fas fa-sync-alt fa-light'></i>";
     button_refresh.className = "btn omnidb__theme__btn--secondary btn-sm";
-    button_refresh.title = t("common.refresh");
+    button_refresh.title = t$1("common.refresh");
     var button_pause = document.createElement("button");
     button_pause.onclick = /* @__PURE__ */ (function(div2) {
       return function() {
@@ -11808,7 +8617,7 @@
     })(div);
     button_pause.innerHTML = "<i class='fas fa-pause-circle fa-light'></i>";
     button_pause.className = "btn omnidb__theme__btn--secondary btn-sm";
-    button_pause.title = t("notify.pause");
+    button_pause.title = t$1("notify.pause");
     button_pause.style.display = "none";
     var button_play = document.createElement("button");
     button_play.onclick = /* @__PURE__ */ (function(div2) {
@@ -11818,7 +8627,7 @@
     })(div);
     button_play.innerHTML = "<i class='fas fa-play-circle fa-light'></i>";
     button_play.className = "btn omnidb__theme__btn--secondary btn-sm";
-    button_play.title = t("monitoring.play");
+    button_play.title = t$1("monitoring.play");
     var interval = document.createElement("input");
     interval.value = v_return_unit.v_interval;
     interval.className = "form-control form-control-sm";
@@ -11897,7 +8706,7 @@
     return div;
   }
   function deleteMonitorUnit(p_unit_id) {
-    showConfirm(t("monitoring.confirm_delete_unit"), function() {
+    showConfirm(t$1("monitoring.confirm_delete_unit"), function() {
       var input = JSON.stringify({ p_unit_id });
       execAjax$2(
         "/delete_monitor_unit/",
@@ -11969,7 +8778,7 @@
   function saveMonitorScript() {
     var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     if (v_tab_tag.input_unit_name.value.trim() == "") {
-      showAlert$1(t("monitoring.name_required"));
+      showAlert$1(t$1("monitoring.name_required"));
     } else {
       var v_interval = parseInt(v_tab_tag.input_interval.value, 10);
       var input = JSON.stringify({
@@ -11987,7 +8796,7 @@
         input,
         function(p_return) {
           v_tab_tag.unit_id = p_return.v_data;
-          showAlert$1(t("monitoring.unit_saved"));
+          showAlert$1(t$1("monitoring.unit_saved"));
         },
         function(p_return) {
           if (p_return.v_data.password_timeout) {
@@ -12036,7 +8845,7 @@
   }
   document.getElementById("modal_monitoring_unit_test").addEventListener(
     "shown.bs.modal",
-    function(e) {
+    function(e2) {
       var v_script_chart = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
       var v_script_data = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_data.getValue();
       var v_type = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.select_type.value;
@@ -12209,12 +9018,12 @@
   }
   function buildMonitorUnitList(p_tag, p_items) {
     var p_list_div = p_tag.unitListDiv;
-    var v_sorted = p_items.slice().sort(function(a, b) {
-      var v_a_has_position = a.saved_id > 0;
-      var v_b_has_position = b.saved_id > 0;
+    var v_sorted = p_items.slice().sort(function(a2, b2) {
+      var v_a_has_position = a2.saved_id > 0;
+      var v_b_has_position = b2.saved_id > 0;
       if (v_a_has_position !== v_b_has_position) return v_a_has_position ? -1 : 1;
-      if (v_a_has_position) return a.position - b.position;
-      return a.title.localeCompare(b.title);
+      if (v_a_has_position) return a2.position - b2.position;
+      return a2.title.localeCompare(b2.title);
     });
     p_list_div.innerHTML = "";
     p_tag.selectedUnitRef = null;
@@ -12240,29 +9049,29 @@
     p_checkbox.addEventListener("change", function() {
       saveMonitorUnitOrder();
     });
-    p_row.addEventListener("click", function(e) {
-      if (e.target === p_checkbox) return;
+    p_row.addEventListener("click", function(e2) {
+      if (e2.target === p_checkbox) return;
       selectMonitorUnitRow(p_tag, p_row, p_item);
     });
     if (p_item.owned) {
       p_row.addEventListener("dblclick", function() {
         editMonitorUnit(p_item.unit_id);
       });
-      p_row.addEventListener("contextmenu", function(e) {
-        e.preventDefault();
+      p_row.addEventListener("contextmenu", function(e2) {
+        e2.preventDefault();
         selectMonitorUnitRow(p_tag, p_row, p_item);
         customMenu(
-          { x: e.clientX + 5, y: e.clientY + 5 },
+          { x: e2.clientX + 5, y: e2.clientY + 5 },
           [
             {
-              text: t("common.edit"),
+              text: t$1("common.edit"),
               icon: "fas cm-all fa-edit",
               action: function() {
                 editMonitorUnit(p_item.unit_id);
               }
             },
             {
-              text: t("common.delete"),
+              text: t$1("common.delete"),
               icon: "fas cm-all fa-times",
               action: function() {
                 deleteMonitorUnit(p_item.unit_id);
@@ -12273,8 +9082,8 @@
         );
       });
     } else {
-      p_row.addEventListener("contextmenu", function(e) {
-        e.preventDefault();
+      p_row.addEventListener("contextmenu", function(e2) {
+        e2.preventDefault();
       });
     }
   }
@@ -12293,11 +9102,11 @@
   }
   function bindMonitorUnitDrag(p_row, p_list_div) {
     p_row.setAttribute("draggable", "true");
-    p_row.addEventListener("dragstart", function(e) {
+    p_row.addEventListener("dragstart", function(e2) {
       v_monunit_drag_item = p_row;
-      if (e.dataTransfer) {
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", "");
+      if (e2.dataTransfer) {
+        e2.dataTransfer.effectAllowed = "move";
+        e2.dataTransfer.setData("text/plain", "");
       }
       setTimeout(function() {
         p_row.classList.add("omnidb__monitor-unit-list__item--dragging");
@@ -12330,20 +9139,20 @@
     return v_closest;
   }
   function bindMonitorUnitListDrop(p_list_div) {
-    p_list_div.addEventListener("dragover", function(e) {
+    p_list_div.addEventListener("dragover", function(e2) {
       if (v_monunit_drag_item === null) return;
-      e.preventDefault();
-      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
-      var v_target = getMonitorUnitDragTarget(p_list_div, e.clientY);
+      e2.preventDefault();
+      if (e2.dataTransfer) e2.dataTransfer.dropEffect = "move";
+      var v_target = getMonitorUnitDragTarget(p_list_div, e2.clientY);
       if (v_target === null) {
         if (p_list_div.lastElementChild !== v_monunit_drag_item) p_list_div.appendChild(v_monunit_drag_item);
       } else if (v_target.previousElementSibling !== v_monunit_drag_item) {
         p_list_div.insertBefore(v_monunit_drag_item, v_target);
       }
     });
-    p_list_div.addEventListener("drop", function(e) {
+    p_list_div.addEventListener("drop", function(e2) {
       if (v_monunit_drag_item === null) return;
-      e.preventDefault();
+      e2.preventDefault();
     });
   }
   function saveMonitorUnitOrder() {
@@ -12397,8 +9206,8 @@
         var v_desired = p_return.v_data;
         for (var i2 = p_tab_tag.units.length - 1; i2 >= 0; i2--) {
           var v_unit = p_tab_tag.units[i2];
-          var v_still_shown = v_desired.some(function(d) {
-            return d.v_plugin_name === v_unit.plugin_name && d.v_id === v_unit.id;
+          var v_still_shown = v_desired.some(function(d2) {
+            return d2.v_plugin_name === v_unit.plugin_name && d2.v_id === v_unit.id;
           });
           if (!v_still_shown) {
             teardownMonitorUnit(v_unit);
@@ -12410,9 +9219,9 @@
         for (var j2 = 0; j2 < v_desired.length; j2++) {
           var v_d = v_desired[j2];
           var v_existing = null;
-          for (var k = 0; k < p_tab_tag.units.length; k++) {
-            if (p_tab_tag.units[k].plugin_name === v_d.v_plugin_name && p_tab_tag.units[k].id === v_d.v_id) {
-              v_existing = p_tab_tag.units[k];
+          for (var k2 = 0; k2 < p_tab_tag.units.length; k2++) {
+            if (p_tab_tag.units[k2].plugin_name === v_d.v_plugin_name && p_tab_tag.units[k2].id === v_d.v_id) {
+              v_existing = p_tab_tag.units[k2];
               break;
             }
           }
@@ -12425,8 +9234,8 @@
           }
         }
         p_tab_tag.units = v_reordered_units;
-        for (var m = 0; m < v_new_divs.length; m++) {
-          refreshMonitorDashboard(true, p_tab_tag, v_new_divs[m]);
+        for (var m2 = 0; m2 < v_new_divs.length; m2++) {
+          refreshMonitorDashboard(true, p_tab_tag, v_new_divs[m2]);
         }
         refreshMonitorUnitsObjects(p_tab_tag);
       },
@@ -12492,20 +9301,20 @@
           for (var i3 = 0; i3 < p_return.v_data.length; i3++) {
             var v_return_unit = p_return.v_data[i3];
             var v_unit = null;
-            for (var p = 0; p < v_tab_tag.units.length; p++) {
-              if (v_return_unit.v_sequence == v_tab_tag.units[p].unit_sequence) {
-                v_tab_tag.units[p].saved_id = v_return_unit.v_saved_id;
-                v_tab_tag.units[p].type = v_return_unit.v_type;
+            for (var p2 = 0; p2 < v_tab_tag.units.length; p2++) {
+              if (v_return_unit.v_sequence == v_tab_tag.units[p2].unit_sequence) {
+                v_tab_tag.units[p2].saved_id = v_return_unit.v_saved_id;
+                v_tab_tag.units[p2].type = v_return_unit.v_type;
                 if (v_return_unit.v_object) {
                   if (v_return_unit.v_object.data) {
-                    v_tab_tag.units[p].object_data = JSON.parse(JSON.stringify(v_return_unit.v_object.data));
+                    v_tab_tag.units[p2].object_data = JSON.parse(JSON.stringify(v_return_unit.v_object.data));
                   } else if (v_return_unit.v_object.elements) {
-                    v_tab_tag.units[p].object_data = JSON.parse(JSON.stringify(v_return_unit.v_object.elements));
+                    v_tab_tag.units[p2].object_data = JSON.parse(JSON.stringify(v_return_unit.v_object.elements));
                   } else {
-                    v_tab_tag.units[p].object_data = JSON.parse(JSON.stringify(v_return_unit.v_object));
+                    v_tab_tag.units[p2].object_data = JSON.parse(JSON.stringify(v_return_unit.v_object));
                   }
                 }
-                v_unit = v_tab_tag.units[p];
+                v_unit = v_tab_tag.units[p2];
                 break;
               }
             }
@@ -12554,8 +9363,8 @@
                     for (var j2 = v_unit.object.data.datasets.length - 1; j2 >= 0; j2--) {
                       var dataset = v_unit.object.data.datasets[j2];
                       var v_found = false;
-                      for (var k = 0; k < v_return_unit.v_object.datasets.length; k++) {
-                        var return_dataset = v_return_unit.v_object.datasets[k];
+                      for (var k2 = 0; k2 < v_return_unit.v_object.datasets.length; k2++) {
+                        var return_dataset = v_return_unit.v_object.datasets[k2];
                         if (return_dataset.label == dataset.label) {
                           v_found = true;
                           break;
@@ -12568,8 +9377,8 @@
                     }
                     for (var j2 = v_unit.object.data.labels.length - 1; j2 >= 0; j2--) {
                       var v_found = false;
-                      for (var k = 0; k < v_return_unit.v_object.labels.length; k++) {
-                        if (JSON.stringify(v_return_unit.v_object.labels[k]) == JSON.stringify(v_unit.object.data.labels[j2])) {
+                      for (var k2 = 0; k2 < v_return_unit.v_object.labels.length; k2++) {
+                        if (JSON.stringify(v_return_unit.v_object.labels[k2]) == JSON.stringify(v_unit.object.data.labels[j2])) {
                           v_found = true;
                           break;
                         }
@@ -12581,24 +9390,24 @@
                     for (var j2 = 0; j2 < v_return_unit.v_object.datasets.length; j2++) {
                       var return_dataset = v_return_unit.v_object.datasets[j2];
                       var v_found = false;
-                      for (var k = 0; k < v_unit.object.data.datasets.length; k++) {
-                        var dataset = v_unit.object.data.datasets[k];
+                      for (var k2 = 0; k2 < v_unit.object.data.datasets.length; k2++) {
+                        var dataset = v_unit.object.data.datasets[k2];
                         if (return_dataset.label == dataset.label) {
                           var new_dataset = dataset;
                           if (return_dataset.backgroundColor && return_dataset.backgroundColor.length) {
                             var v_color_list = [];
-                            for (var l = 0; l < v_return_unit.v_object.labels.length; l++) {
+                            for (var l2 = 0; l2 < v_return_unit.v_object.labels.length; l2++) {
                               var v_found_label = false;
-                              for (var m = 0; m < v_unit.object.data.labels.length; m++) {
-                                if (JSON.stringify(v_return_unit.v_object.labels[l]) == JSON.stringify(v_unit.object.data.labels[m])) {
-                                  v_color_list.push(dataset.backgroundColor[m]);
+                              for (var m2 = 0; m2 < v_unit.object.data.labels.length; m2++) {
+                                if (JSON.stringify(v_return_unit.v_object.labels[l2]) == JSON.stringify(v_unit.object.data.labels[m2])) {
+                                  v_color_list.push(dataset.backgroundColor[m2]);
                                   v_found_label = true;
                                   break;
                                 }
                               }
                               if (!v_found_label) {
                                 v_need_rebuild_legend = true;
-                                v_color_list.push(return_dataset.backgroundColor[l]);
+                                v_color_list.push(return_dataset.backgroundColor[l2]);
                               }
                             }
                             new_dataset.backgroundColor = v_color_list;
@@ -12641,8 +9450,8 @@
                     for (var j2 = 0; j2 < v_return_unit.v_object.datasets.length; j2++) {
                       var return_dataset = v_return_unit.v_object.datasets[j2];
                       var v_found = false;
-                      for (var k = 0; k < v_unit.object.data.datasets.length; k++) {
-                        var dataset = v_unit.object.data.datasets[k];
+                      for (var k2 = 0; k2 < v_unit.object.data.datasets.length; k2++) {
+                        var dataset = v_unit.object.data.datasets[k2];
                         if (return_dataset.label == dataset.label) {
                           var new_dataset = dataset;
                           new_dataset.data[new_dataset.data.length - 1] = return_dataset.data[0];
@@ -12653,7 +9462,7 @@
                       }
                       if (!v_found) {
                         v_need_rebuild_legend = true;
-                        for (var k = 0; k < v_unit.object.data.labels.length - 1; k++) {
+                        for (var k2 = 0; k2 < v_unit.object.data.labels.length - 1; k2++) {
                           return_dataset.data.unshift(null);
                         }
                         v_unit.object.data.datasets.push(return_dataset);
@@ -12761,12 +9570,12 @@
                   for (var j2 = 0; j2 < v_return_unit.v_object.nodes.length; j2++) {
                     var v_found_node = false;
                     var node = v_return_unit.v_object.nodes[j2];
-                    for (var k = 0; k < v_existing_nodes.length; k++) {
-                      if (v_existing_nodes[k].data("id") == node.data["id"]) {
+                    for (var k2 = 0; k2 < v_existing_nodes.length; k2++) {
+                      if (v_existing_nodes[k2].data("id") == node.data["id"]) {
                         v_found_node = true;
                         for (var property in node.data) {
                           if (node.data.hasOwnProperty(property)) {
-                            v_existing_nodes[k].data(property, node.data[property]);
+                            v_existing_nodes[k2].data(property, node.data[property]);
                           }
                         }
                         break;
@@ -12780,12 +9589,12 @@
                   for (var j2 = 0; j2 < v_return_unit.v_object.edges.length; j2++) {
                     var v_found_edge = false;
                     var edge = v_return_unit.v_object.edges[j2];
-                    for (var k = 0; k < v_existing_edges.length; k++) {
-                      if (v_existing_edges[k].data("id") == edge.data["id"]) {
+                    for (var k2 = 0; k2 < v_existing_edges.length; k2++) {
+                      if (v_existing_edges[k2].data("id") == edge.data["id"]) {
                         v_found_edge = true;
                         for (var property in edge.data) {
                           if (edge.data.hasOwnProperty(property)) {
-                            v_existing_edges[k].data(property, edge.data[property]);
+                            v_existing_edges[k2].data(property, edge.data[property]);
                           }
                         }
                         break;
@@ -12796,30 +9605,30 @@
                       v_new_objects.push(edge);
                     }
                   }
-                  for (var k = 0; k < v_existing_edges.length; k++) {
+                  for (var k2 = 0; k2 < v_existing_edges.length; k2++) {
                     var v_found_edge = false;
                     for (var j2 = 0; j2 < v_return_unit.v_object.edges.length; j2++) {
                       var edge = v_return_unit.v_object.edges[j2];
-                      if (v_existing_edges[k].data("id") == edge.data["id"]) {
+                      if (v_existing_edges[k2].data("id") == edge.data["id"]) {
                         v_found_edge = true;
                         break;
                       }
                     }
                     if (!v_found_edge) {
-                      v_existing_edges[k].remove();
+                      v_existing_edges[k2].remove();
                     }
                   }
-                  for (var k = 0; k < v_existing_nodes.length; k++) {
+                  for (var k2 = 0; k2 < v_existing_nodes.length; k2++) {
                     var v_found_node = false;
                     for (var j2 = 0; j2 < v_return_unit.v_object.nodes.length; j2++) {
                       var node = v_return_unit.v_object.nodes[j2];
-                      if (v_existing_nodes[k].data("id") == node.data["id"]) {
+                      if (v_existing_nodes[k2].data("id") == node.data["id"]) {
                         v_found_node = true;
                         break;
                       }
                     }
                     if (!v_found_node) {
-                      v_existing_nodes[k].remove();
+                      v_existing_nodes[k2].remove();
                     }
                   }
                   if (v_new_objects.length > 0) {
@@ -12929,8 +9738,8 @@
     var v_offset_left = p_panel_div.getBoundingClientRect().left;
     var v_start_x = event2.x;
     var v_start_width = p_panel_div.getBoundingClientRect().width;
-    var v_move = function(e) {
-      resizeMonitorUnitPanel(v_offset_left + v_start_width + (e.x - v_start_x), p_panel_div, p_root);
+    var v_move = function(e2) {
+      resizeMonitorUnitPanel(v_offset_left + v_start_width + (e2.x - v_start_x), p_panel_div, p_root);
     };
     var v_up = function() {
       document.body.removeEventListener("mousemove", v_move);
@@ -12977,7 +9786,7 @@
     if (!monitoringSupportedDbType(v_db_type)) return;
     var v_root = document.createElement("div");
     v_root.className = "omnidb__monitoring-result-tabs";
-    v_root.innerHTML = "<div class='omnidb__monitor-unit-panel omnidb__monitor-unit-panel--collapsed' id='monitor_unit_panel_" + v_id + "'><div id='monitoring_units_grid_" + v_id + "' class='omnidb__monitor-unit-list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='bt_new_unit_" + v_id + "' type='button' title='" + t("modals.monitoring.new_unit") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='bt_delete_unit_" + v_id + "' type='button' title='" + t("common.delete") + "' disabled><i class='fas fa-minus'></i></button></div></div></div><div class='omnidb__monitor-unit-panel-resize' id='monitor_unit_resize_" + v_id + "'><div class='resize_line_vertical omnidb__resize-line__container' style='height: 100%;'></div></div><div class='omnidb__monitor-unit-dashboard'><div class='omnidb__monitor-unit-toolbar'><button id='bt_toggle_manage_units_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2' title='" + t("monitoring.manage_units") + "'><i class='fas fa-sidebar'></i></button><button id='bt_refresh_dashboard_" + v_id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>" + t("monitoring.refresh_all") + "</button><button id='bt_enable_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-play me-2'></i>" + t("monitoring.enable_all") + "</button><button id='bt_pause_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-pause me-2'></i>" + t("monitoring.pause_all") + "</button><select id='select_monitor_unit_width_" + v_id + "' class='form-select form-select-sm omnidb__monitor-unit-width-select my-2' title='" + t("monitoring.card_size_label") + "'><option value='small'>" + t("monitoring.card_size_small") + "</option><option value='medium'>" + t("monitoring.card_size_medium") + "</option><option value='large'>" + t("monitoring.card_size_large") + "</option><option value='full'>" + t("monitoring.card_size_full") + "</option></select></div><div id='dashboard_" + v_id + "' class='dashboard_all'></div></div>";
+    v_root.innerHTML = "<div class='omnidb__monitor-unit-panel omnidb__monitor-unit-panel--collapsed' id='monitor_unit_panel_" + v_id + "'><div id='monitoring_units_grid_" + v_id + "' class='omnidb__monitor-unit-list'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='bt_new_unit_" + v_id + "' type='button' title='" + t$1("modals.monitoring.new_unit") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='bt_delete_unit_" + v_id + "' type='button' title='" + t$1("common.delete") + "' disabled><i class='fas fa-minus'></i></button></div></div></div><div class='omnidb__monitor-unit-panel-resize' id='monitor_unit_resize_" + v_id + "'><div class='resize_line_vertical omnidb__resize-line__container' style='height: 100%;'></div></div><div class='omnidb__monitor-unit-dashboard'><div class='omnidb__monitor-unit-toolbar'><button id='bt_toggle_manage_units_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2' title='" + t$1("monitoring.manage_units") + "'><i class='fas fa-sidebar'></i></button><button id='bt_refresh_dashboard_" + v_id + "' class='btn omnidb__theme__btn--primary btn-sm my-2 me-2'><i class='fas fa-sync-alt me-2'></i>" + t$1("monitoring.refresh_all") + "</button><button id='bt_enable_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-play me-2'></i>" + t$1("monitoring.enable_all") + "</button><button id='bt_pause_all_" + v_id + "' class='btn omnidb__theme__btn--secondary btn-sm my-2 me-2'><i class='fas fa-pause me-2'></i>" + t$1("monitoring.pause_all") + "</button><select id='select_monitor_unit_width_" + v_id + "' class='form-select form-select-sm omnidb__monitor-unit-width-select my-2' title='" + t$1("monitoring.card_size_label") + "'><option value='small'>" + t$1("monitoring.card_size_small") + "</option><option value='medium'>" + t$1("monitoring.card_size_medium") + "</option><option value='large'>" + t$1("monitoring.card_size_large") + "</option><option value='full'>" + t$1("monitoring.card_size_full") + "</option></select></div><div id='dashboard_" + v_id + "' class='dashboard_all'></div></div>";
     v_tag.rootDiv = v_root;
     v_tag.dashboard_div = v_root.querySelector("#dashboard_" + v_id);
     v_tag.unitListDiv = v_root.querySelector("#monitoring_units_grid_" + v_id);
@@ -13074,11 +9883,11 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("monitoring.no_connection_open");
+    v_title.textContent = t$1("monitoring.no_connection_open");
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("monitoring.open_connection_hint");
+    v_text.textContent = t$1("monitoring.open_connection_hint");
     v_wrapper.appendChild(v_text);
     p_content.appendChild(v_wrapper);
   }
@@ -13090,11 +9899,11 @@
     v_wrapper.appendChild(v_icon);
     var v_title = document.createElement("div");
     v_title.className = "omnidb__notify__unsupported-title";
-    v_title.textContent = t("monitoring.not_supported", { technology: p_db_type });
+    v_title.textContent = t$1("monitoring.not_supported", { technology: p_db_type });
     v_wrapper.appendChild(v_title);
     var v_text = document.createElement("div");
     v_text.className = "omnidb__notify__unsupported-text";
-    v_text.textContent = t("monitoring.supported_technologies_hint");
+    v_text.textContent = t$1("monitoring.supported_technologies_hint");
     v_wrapper.appendChild(v_text);
     p_content.appendChild(v_wrapper);
   }
@@ -13104,7 +9913,7 @@
   }
   var SNIPPET_PANEL_ID = "snippets_panel";
   var v_createSnippetPanelFunction = function(p_index) {
-    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='button_new_snippet' type='button' title='" + t("snippets.add_snippet") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='button_delete_snippet' type='button' title='" + t("common.delete") + "' disabled><i class='fas fa-minus'></i></button></div></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
+    var v_html = "<div id='" + SNIPPET_PANEL_ID + "' class='omnidb__snippets__panel h-100'><div class='h-100' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_div_layout_grid' class='d-flex h-100'><div id='" + SNIPPET_PANEL_ID + "_div_left' class='omnidb__snippets__div-left h-100' style='width: 300px; flex-shrink: 0; position: relative;'><div class='h-100'><div class='omnidb__snippets__content-left h-100 d-flex flex-column'><div id='" + SNIPPET_PANEL_ID + "_tree' style='overflow: auto; flex-grow: 1; transition: scroll 0.3s;'></div><div class='omnidb__list-footer'><div class='omnidb__addremove'><button id='button_new_snippet' type='button' title='" + t$1("snippets.add_snippet") + "'><i class='fas fa-plus'></i></button><span class='omnidb__addremove-divider'></span><button id='button_delete_snippet' type='button' title='" + t$1("common.delete") + "' disabled><i class='fas fa-minus'></i></button></div></div></div></div><div id='snippet_resize_line_" + SNIPPET_PANEL_ID + "' class='resize_line_vertical omnidb__resize-line__container' style='position:absolute;height: 100%;width: 10px;cursor: ew-resize;top: 0px;right: 0px;z-index: 10;'></div></div><div id='" + SNIPPET_PANEL_ID + "_div_right' class='omnidb__snippets__div-right pt-0 flex-grow-1' style='position: relative;'><div id='" + SNIPPET_PANEL_ID + "_tabs' class='w-100'></div></div></div></div></div>";
     var v_target = (
       /** @type {HTMLElement} */
       document.getElementById("omnidb__section_snippets")
@@ -13133,8 +9942,8 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
+      p_clickFunction: function(e2) {
+        showMenuNewTab(e2);
       }
     });
     v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -13987,21 +10796,21 @@
     var v_first_element = null;
     var v_last_element = null;
     v_autocomplete_object.selected = null;
-    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
-      v_autocomplete_object.elements[k].container.parentNode.style.display = "none";
-      if (v_autocomplete_object.elements[k].type == "keyword") {
-        v_autocomplete_object.elements[k].container.parentNode.scrollTop = 0;
-        v_autocomplete_object.elements[k].container.innerHTML = "";
+    for (var k2 = 0; k2 < v_autocomplete_object.elements.length; k2++) {
+      v_autocomplete_object.elements[k2].container.parentNode.style.display = "none";
+      if (v_autocomplete_object.elements[k2].type == "keyword") {
+        v_autocomplete_object.elements[k2].container.parentNode.scrollTop = 0;
+        v_autocomplete_object.elements[k2].container.innerHTML = "";
       }
-      v_autocomplete_object.elements[k].elements = [];
+      v_autocomplete_object.elements[k2].elements = [];
     }
     var v_num_results = 0;
     for (var i2 = 0; i2 < p_data.length; i2++) {
       var v_local_group = p_data[i2];
       var v_global_group;
-      for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
-        if (v_autocomplete_object.elements[k].type == v_local_group.type) {
-          v_global_group = v_autocomplete_object.elements[k];
+      for (var k2 = 0; k2 < v_autocomplete_object.elements.length; k2++) {
+        if (v_autocomplete_object.elements[k2].type == v_local_group.type) {
+          v_global_group = v_autocomplete_object.elements[k2];
           break;
         }
       }
@@ -14087,11 +10896,11 @@
     } else {
       v_autocomplete_object.no_results.style.display = "block";
     }
-    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
-      if (v_autocomplete_object.elements[k].type != "keyword") {
-        v_autocomplete_object.elements[k].grid.render();
-        v_autocomplete_object.elements[k].grid.selectCell(0, 0);
-        v_autocomplete_object.elements[k].grid.deselectCell();
+    for (var k2 = 0; k2 < v_autocomplete_object.elements.length; k2++) {
+      if (v_autocomplete_object.elements[k2].type != "keyword") {
+        v_autocomplete_object.elements[k2].grid.render();
+        v_autocomplete_object.elements[k2].grid.selectCell(0, 0);
+        v_autocomplete_object.elements[k2].grid.deselectCell();
       }
     }
     v_autocomplete_object.editor.focus();
@@ -14167,11 +10976,11 @@
     } else {
       v_autocomplete_object.no_results.style.display = "block";
     }
-    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
-      if (v_autocomplete_object.elements[k].type != "keyword") {
-        v_autocomplete_object.elements[k].grid.render();
-        v_autocomplete_object.elements[k].grid.selectCell(0, 0);
-        v_autocomplete_object.elements[k].grid.deselectCell();
+    for (var k2 = 0; k2 < v_autocomplete_object.elements.length; k2++) {
+      if (v_autocomplete_object.elements[k2].type != "keyword") {
+        v_autocomplete_object.elements[k2].grid.render();
+        v_autocomplete_object.elements[k2].grid.selectCell(0, 0);
+        v_autocomplete_object.elements[k2].grid.deselectCell();
       }
     }
     var v_new_selected = null;
@@ -14454,10 +11263,10 @@
     v_autocomplete_object.type_cast_mode = false;
     v_autocomplete_object.selected_grid = null;
     v_autocomplete_object.selected_grid_row = null;
-    for (var k = 0; k < v_autocomplete_object.elements.length; k++) {
-      v_autocomplete_object.elements[k].container.parentNode.style.display = "none";
-      if (v_autocomplete_object.elements[k].type == "keyword") v_autocomplete_object.elements[k].container.innerHTML = "";
-      v_autocomplete_object.elements[k].elements = [];
+    for (var k2 = 0; k2 < v_autocomplete_object.elements.length; k2++) {
+      v_autocomplete_object.elements[k2].container.parentNode.style.display = "none";
+      if (v_autocomplete_object.elements[k2].type == "keyword") v_autocomplete_object.elements[k2].container.innerHTML = "";
+      v_autocomplete_object.elements[k2].elements = [];
     }
     v_autocomplete_object.div.style.display = "none";
     v_autocomplete_object.close_div.parentNode.removeChild(v_autocomplete_object.close_div);
@@ -14613,7 +11422,7 @@
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-terminal icon-tab-title"></i>',
-      p_name: t("console.console_tab_name"),
+      p_name: t$1("console.console_tab_name"),
       p_status: '<span id="tab_loading" style="display:none;"><i class="tab-icon node-spin"></i></span><i title="" id="tab_check" style="display: none;" class="fas fa-check-circle tab-icon icon-check"></i>',
       p_selectFunction: function() {
         if (this.tag != null) {
@@ -14624,9 +11433,9 @@
           checkConsoleStatus(this);
         }
       },
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_current_tab = p_tab;
-        beforeCloseTab(e, function() {
+        beforeCloseTab(e2, function() {
           removeTab(v_current_tab);
         });
       }
@@ -14642,8 +11451,8 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var console_history_modal = "<div class='modal fade' id='modal_console_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t("console.commands_history_title")) + "</h5><button id='bt_close_console_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='console_history_div_" + v_tab.id + "' class='console_command_history'><div id='console_history_header_" + v_tab.id + "' class='console_command_history_header'></div><div id='console_history_grid_" + v_tab.id + "' class='console_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div><div id='console_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div>" + console_history_modal + "<div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.run")) + "'><i class='fas fa-play fa-light'></i></button><button id='bt_indent_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.indent_sql")) + "'><i class='fas fa-indent fa-light'></i></button><button id='bt_clear_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.clear_console")) + "'><i class='fas fa-broom fa-light'></i></button><button id='bt_history_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.commands_history_title")) + "'><i class='fas fa-list fa-light'></i></button><div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" + v_tab.id + "' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" + v_tab.id + "'>" + escapeHtml(t("editor.autocommit")) + "</label></div><div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" + v_tab.id + "' title='" + escapeHtmlAttribute(t("query.status_not_connected")) + "' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" + v_tab.id + "' title='" + escapeHtmlAttribute(t("query.status_not_connected")) + "' class='tab-status-text query_info dbms_object postgresql_object ms-1'>" + escapeHtml(t("query.status_not_connected")) + "</span></div><button id='bt_fetch_more_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.fetch_more_tooltip")) + "' style='display: none; '>" + escapeHtml(t("editor.fetch_more")) + "</button><button id='bt_fetch_all_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.fetch_all_tooltip")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.fetch_all")) + "</button><button id='bt_skip_fetch_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("console.skip_fetch")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("console.skip_fetch")) + "</button><button id='bt_commit_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.commit")) + "</button><button id='bt_rollback_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t("editor.rollback")) + "</button><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t("common.cancel")) + "' style=' display: none;'>" + escapeHtml(t("common.cancel")) + "</button><div id='div_query_info_" + v_tab.id + "' class='omnidb__query-info'></div></div></div><div id='txt_input_" + v_tab.id + "' class='omnidb__console__text-input' style=' width: 100%; height: 150px; border: 1px solid #c3c3c3;'></div>";
+    var console_history_modal = "<div class='modal fade' id='modal_console_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog omnidb__modal--fluid' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t$1("console.commands_history_title")) + "</h5><button id='bt_close_console_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t$1("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='console_history_div_" + v_tab.id + "' class='console_command_history'><div id='console_history_header_" + v_tab.id + "' class='console_command_history_header'></div><div id='console_history_grid_" + v_tab.id + "' class='console_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
+    var v_html = "<div id='txt_console_" + v_tab.id + "' class='omnidb__txt-console' style=' width: 100%; height: 120px;'></div><div id='console_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div>" + console_history_modal + "<div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("editor.run")) + "'><i class='fas fa-play fa-light'></i></button><button id='bt_indent_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("editor.indent_sql")) + "'><i class='fas fa-indent fa-light'></i></button><button id='bt_clear_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("console.clear_console")) + "'><i class='fas fa-broom fa-light'></i></button><button id='bt_history_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("console.commands_history_title")) + "'><i class='fas fa-history fa-light'></i></button><div class='dbms_object postgresql_object omnidb__form-check form-check form-check-inline'><input id='check_autocommit_" + v_tab.id + "' class='form-check-input' type='checkbox' checked='checked'><label class='form-check-label dbms_object postgresql_object custom_checkbox query_info' for='check_autocommit_" + v_tab.id + "'>" + escapeHtml(t$1("editor.autocommit")) + "</label></div><div class='dbms_object postgresql_object omnidb__tab-status'><i id='query_tab_status_" + v_tab.id + "' title='" + escapeHtmlAttribute(t$1("query.status_not_connected")) + "' class='fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon'></i><span id='query_tab_status_text_" + v_tab.id + "' title='" + escapeHtmlAttribute(t$1("query.status_not_connected")) + "' class='tab-status-text query_info dbms_object postgresql_object ms-1'>" + escapeHtml(t$1("query.status_not_connected")) + "</span></div><button id='bt_fetch_more_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("console.fetch_more_tooltip")) + "' style='display: none; '>" + escapeHtml(t$1("editor.fetch_more")) + "</button><button id='bt_fetch_all_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("console.fetch_all_tooltip")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t$1("editor.fetch_all")) + "</button><button id='bt_skip_fetch_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("console.skip_fetch")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t$1("console.skip_fetch")) + "</button><button id='bt_commit_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t$1("editor.commit")) + "</button><button id='bt_rollback_" + v_tab.id + "' class='dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("editor.run")) + "' style='margin-left: 5px; display: none; '>" + escapeHtml(t$1("editor.rollback")) + "</button><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='" + escapeHtmlAttribute(t$1("common.cancel")) + "' style=' display: none;'>" + escapeHtml(t$1("common.cancel")) + "</button><div id='div_query_info_" + v_tab.id + "' class='omnidb__query-info'></div></div></div><div id='txt_input_" + v_tab.id + "' class='omnidb__console__text-input' style=' width: 100%; height: 150px; border: 1px solid #c3c3c3;'></div>";
     document.getElementById("div_" + v_tab.id);
     v_tab.elementDiv.innerHTML = v_html;
     ace.require("ace/ext/language_tools");
@@ -14687,7 +11496,7 @@
       event2.preventDefault();
       var v_option_list = [
         {
-          text: t("common.copy"),
+          text: t$1("common.copy"),
           icon: "fas cm-all fa-terminal",
           action: function() {
             var copy_text = v_editor1.getValue();
@@ -14695,7 +11504,7 @@
           }
         },
         {
-          text: t("editor.save_as_snippet"),
+          text: t$1("editor.save_as_snippet"),
           icon: "fas cm-all fa-save",
           submenu: {
             elements: buildSnippetContextMenuObjects("save", v_connTabControl.tag.globalSnippets, v_editor1)
@@ -14704,7 +11513,7 @@
       ];
       if (v_connTabControl.tag.globalSnippets.files.length != 0 || v_connTabControl.tag.globalSnippets.folders.length != 0)
         v_option_list.push({
-          text: t("editor.use_snippet"),
+          text: t$1("editor.use_snippet"),
           icon: "fas cm-all fa-scroll",
           submenu: {
             elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor1)
@@ -14846,8 +11655,8 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
+      p_clickFunction: function(e2) {
+        showMenuNewTab(e2);
       }
     });
     v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -14867,7 +11676,7 @@
     v_createConsoleTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
   var v_createEditDataTabFunction = function(p_table) {
-    var v_name = t("common.query");
+    var v_name = t$1("common.query");
     if (p_table) v_name = p_table;
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
@@ -14884,9 +11693,9 @@
           checkEditDataStatus(this);
         }
       },
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_current_tab = p_tab;
-        beforeCloseTab(e, function() {
+        beforeCloseTab(e2, function() {
           removeTab(v_current_tab);
         });
       },
@@ -14908,7 +11717,7 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + t("editor.run") + "'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >" + t("editor.query_n_rows", { n: 10 }) + "</option><option value='100'>" + t("editor.query_n_rows", { n: 100 }) + "</option><option value='1000'>" + t("editor.query_n_rows", { n: 1e3 }) + "</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='" + t("common.cancel") + "' style='display: none;'>" + t("common.cancel") + "</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>" + t("editor.save_changes") + "</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div></div>";
+    var v_html = "<div class='p-2 omnidb__theme-border-top--primary'><div id='div_edit_data_select_" + v_tab.id + "' class='query_info mb-2' style='font-size: 1.15rem;'><span class='text-primary'>select</span> * <span class='text-primary'>from</span> " + p_table + " t</div></div><div id='txt_filter_data_" + v_tab.id + "' style=' width: 100%; height: 100px;border: 1px solid #c3c3c3;'></div><div id='edit_data_resize_line_" + v_tab.id + "' class='omnidb__resize-line__container' style='width: 100%; height: 5px; cursor: ns-resize;'><div class='resize_line_horizontal' style='height: 0px;'></div><div style='height:5px;'></div></div><div class='row mb-1'><div class='tab_actions omnidb__tab-actions col-12'><button id='bt_start_" + v_tab.id + "' class='btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn' title='" + t$1("editor.run") + "'><i class='fas fa-play'></i></button><select id='sel_filtered_data_" + v_tab.id + "' class='sel_export_file_type form-control w-auto me-2'><option selected='selected' value='10' >" + t$1("editor.query_n_rows", { n: 10 }) + "</option><option value='100'>" + t$1("editor.query_n_rows", { n: 100 }) + "</option><option value='1000'>" + t$1("editor.query_n_rows", { n: 1e3 }) + "</option></select><button id='bt_cancel_" + v_tab.id + "' class='btn btn-sm btn-danger omnidb__tab-actions__btn' title='" + t$1("common.cancel") + "' style='display: none;'>" + t$1("common.cancel") + "</button><div id='div_edit_data_query_info_" + v_tab.id + "' class='query_info' style='display: inline-block; margin-left: 5px; vertical-align: middle;'></div><button id='bt_saveEditData_" + v_tab.id + "' class='btn btn-sm btn-success omnidb__tab-actions__btn' style='visibility: hidden;'>" + t$1("editor.save_changes") + "</button></div></div><div class='p-2 omnidb__theme-border--primary'><div id='div_edit_data_data_" + v_tab.id + "' style='width: 100%; overflow: auto;'></div></div>";
     v_tab.elementDiv.innerHTML = v_html;
     var v_height = window.innerHeight - /** @type {HTMLElement} */
     (document.getElementById("div_edit_data_data_" + v_tab.id).getBoundingClientRect().top + window.scrollY) - 20;
@@ -15027,8 +11836,8 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
+      p_clickFunction: function(e2) {
+        showMenuNewTab(e2);
       }
     });
     v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -15044,7 +11853,7 @@
     v_createEditDataTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
   var v_createGraphTabFunction = function(p_name) {
-    var v_name = t("workspace.graph_tab");
+    var v_name = t$1("workspace.graph_tab");
     if (p_name) v_name = p_name;
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
@@ -15057,9 +11866,9 @@
           this.tag.resize();
         }
       },
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_current_tab = p_tab;
-        beforeCloseTab(e, function() {
+        beforeCloseTab(e2, function() {
           if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.network) {
             v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.network.destroy();
           }
@@ -15109,8 +11918,8 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
+      p_clickFunction: function(e2) {
+        showMenuNewTab(e2);
       }
     });
     v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -15126,7 +11935,7 @@
     v_createGraphTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
   function deleteCommandList() {
-    showConfirm(t("console.confirm_clear_command_history"), function() {
+    showConfirm(t$1("console.confirm_clear_command_history"), function() {
       execAjax$2(
         "/clear_command_list/",
         JSON.stringify({
@@ -15145,7 +11954,7 @@
   function showCommandList() {
     v_connTabControl.selectedTab.tag;
     var v_tabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
-    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 form-inline justify-content-center'><div class='input-group w-auto me-2'><span class='my-auto'>" + escapeHtml(t("console.select_daterange")) + "</span>&nbsp;<input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t("common.start_time")) + "' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t("common.end_time")) + "' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span>Last 6 Hours</span> <i class='fa fa-caret-down'></i></button></div><label class='me-1'>" + escapeHtml(t("console.command_contains")) + "</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='me-2 form-control' /></div><div id='command_history_daterangepicker_container_" + v_tabTag.tab_id + "' style='position:relative;'></div><div class='mb-2 d-flex justify-content-center align-items-center'><button id='bt_first_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.first")) + "'>" + escapeHtml(t("common.first")) + "</button><button id='bt_previous_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.previous")) + "'>" + escapeHtml(t("common.previous")) + "</button><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span><button id='bt_next_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.next")) + "'>" + escapeHtml(t("common.next")) + "</button><button id='bt_last_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary mx-1' title='" + escapeHtmlAttribute(t("common.last")) + "'>" + escapeHtml(t("common.last")) + "</button><button id='bt_refresh_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary mx-1' title='" + escapeHtmlAttribute(t("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t("common.refresh")) + "</button><button id='bt_clear_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm btn-danger mx-1' title='" + escapeHtmlAttribute(t("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t("console.clear_list")) + "</button></div>";
+    v_tabTag.commandHistory.headerDiv.innerHTML = "<div class='mb-2 d-flex flex-column gap-2'><div class='d-flex align-items-center gap-2'><span>" + escapeHtml(t$1("console.time_range")) + "</span><div class='position-relative' id='command_history_timerange_container_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.start_time")) + "' id='cl_input_from_" + v_tabTag.tab_id + "'><input type='text' class='form-control form-control-sm d-none' placeholder='" + escapeHtmlAttribute(t$1("common.end_time")) + "' id='cl_input_to_" + v_tabTag.tab_id + "'><button type='button' class='btn btn-sm omnidb__theme__btn--primary' id='cl_time_range_" + v_tabTag.tab_id + "'><i class='far fa-calendar-alt'></i>&nbsp;<span></span> <i class='fa fa-caret-down'></i></button></div></div><div class='d-flex align-items-center gap-2'><label for='cl_input_contains_" + v_tabTag.tab_id + "' class='text-nowrap'>" + escapeHtml(t$1("console.search_commands")) + "</label><input type='text' id='cl_input_contains_" + v_tabTag.tab_id + "' class='form-control form-control-sm' /></div></div><div class='mb-2 d-flex align-items-center gap-1'><button id='bt_refresh_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--primary' title='" + escapeHtmlAttribute(t$1("common.refresh")) + "'><i class='fas fa-sync-alt me-1'></i>" + escapeHtml(t$1("common.refresh")) + "</button><button id='bt_clear_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm btn-danger' title='" + escapeHtmlAttribute(t$1("console.clear_list")) + "'><i class='fas fa-broom me-1'></i>" + escapeHtml(t$1("console.clear_list")) + "</button><div class='d-flex align-items-center gap-1 ms-auto'><button id='bt_first_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.first")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.first")) + "'><i class='fas fa-angle-double-left'></i></button><button id='bt_previous_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.previous")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.previous")) + "'><i class='fas fa-angle-left'></i></button><span class='mx-1'><span id='cl_curr_page_" + v_tabTag.tab_id + "'></span> / <span id='cl_num_pages_" + v_tabTag.tab_id + "'></span></span><button id='bt_next_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.next")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.next")) + "'><i class='fas fa-angle-right'></i></button><button id='bt_last_" + v_tabTag.tab_id + "' class='bt_execute btn btn-sm omnidb__theme__btn--secondary' title='" + escapeHtmlAttribute(t$1("common.last")) + "' aria-label='" + escapeHtmlAttribute(t$1("common.last")) + "'><i class='fas fa-angle-double-right'></i></button></div></div>";
     var v_gridDiv = v_tabTag.commandHistory.gridDiv;
     v_gridDiv.innerHTML = "";
     if (v_tabTag.commandHistory.grid != null) {
@@ -15153,27 +11962,30 @@
     }
     var v_columnProperties = [];
     var v_column = {};
-    v_column.title = t("common.start_time");
+    v_column.title = t$1("common.start_time");
     v_column.readOnly = true;
+    v_column.fitContent = true;
     v_columnProperties.push(v_column);
     var v_column = {};
-    v_column.title = t("common.end_time");
+    v_column.title = t$1("common.end_time");
     v_column.readOnly = true;
+    v_column.fitContent = true;
     v_columnProperties.push(v_column);
     var v_column = {};
-    v_column.title = t("common.duration");
+    v_column.title = t$1("common.duration");
     v_column.readOnly = true;
-    v_column.width = 100;
+    v_column.fitContent = true;
     v_columnProperties.push(v_column);
     var v_column = {};
-    v_column.title = t("common.status");
+    v_column.title = t$1("console.column_command");
     v_column.readOnly = true;
-    v_column.width = 50;
+    v_column.grow = true;
+    v_columnProperties.push(v_column);
+    var v_column = {};
+    v_column.title = t$1("common.status");
+    v_column.readOnly = true;
+    v_column.fitContent = true;
     v_column.renderer = "html";
-    v_columnProperties.push(v_column);
-    var v_column = {};
-    v_column.title = t("console.column_command");
-    v_column.readOnly = true;
     v_columnProperties.push(v_column);
     v_tabTag.commandHistory.grid = new Handsontable(v_gridDiv, {
       licenseKey: "non-commercial-and-evaluation",
@@ -15197,7 +12009,7 @@
         },
         items: {
           view_data: {
-            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t("console.copy_to_query_tab")) + "</div>"
+            name: '<div style="position: absolute;"><i class="fas fa-bolt cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + escapeHtml(t$1("console.copy_to_query_tab")) + "</div>"
           }
         }
       },
@@ -15220,9 +12032,9 @@
     v_tabTag.commandHistory.spanCurrPage = document.getElementById("cl_curr_page_" + v_tabTag.tab_id);
     v_tabTag.commandHistory.spanCurrPage.innerHTML = 1;
     v_tabTag.commandHistory.inputStartedFrom = document.getElementById("cl_input_from_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputStartedFrom.value = hooks().subtract(6, "hour").toISOString();
+    v_tabTag.commandHistory.inputStartedFrom.value = new Date(Date.now() - 6 * 3600 * 1e3).toISOString();
     v_tabTag.commandHistory.inputStartedTo = document.getElementById("cl_input_to_" + v_tabTag.tab_id);
-    v_tabTag.commandHistory.inputStartedTo.value = hooks().toISOString();
+    v_tabTag.commandHistory.inputStartedTo.value = (/* @__PURE__ */ new Date()).toISOString();
     v_tabTag.commandHistory.inputCommandContains = document.getElementById("cl_input_contains_" + v_tabTag.tab_id);
     v_tabTag.commandHistory.inputCommandContains.value = v_tabTag.commandHistory.inputCommandContainsLastValue;
     v_tabTag.commandHistory.inputCommandContains.addEventListener("change", () => refreshCommandList());
@@ -15240,49 +12052,23 @@
         () => handler()
       );
     }
-    var cl_time_range = document.getElementById("cl_time_range_" + v_tabTag.tab_id);
-    $(cl_time_range).daterangepicker(
-      {
-        timePicker: true,
-        startDate: hooks(v_tabTag.commandHistory.inputStartedFrom.value).format("Y-MM-DD H"),
-        endDate: hooks(v_tabTag.commandHistory.inputStartedTo.value).format("Y-MM-DD H"),
-        parentEl: document.getElementById("command_history_daterangepicker_container_" + v_tabTag.tab_id),
-        previewUTC: true,
-        locale: {
-          format: "Y-MM-DD H"
-        },
-        ranges: {
-          "Last 6 Hours": [hooks().subtract(6, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 12 Hours": [hooks().subtract(12, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 24 Hours": [hooks().subtract(24, "hour").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 7 Days": [hooks().subtract(7, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last 30 Days": [hooks().subtract(30, "days").startOf("day").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          Yesterday: [
-            hooks().subtract(1, "days").startOf("day").format("Y-MM-DD H"),
-            hooks().subtract(1, "days").endOf("day").format("Y-MM-DD H")
-          ],
-          "This Month": [hooks().startOf("month").format("Y-MM-DD H"), hooks().format("Y-MM-DD H")],
-          "Last Month": [
-            hooks().subtract(1, "month").startOf("month").format("Y-MM-DD H"),
-            hooks().subtract(1, "month").endOf("month").format("Y-MM-DD H")
-          ]
-        }
-      },
-      function(start, end, label) {
-        v_tabTag.commandHistory.inputStartedFrom.value = hooks(start).toISOString();
-        if (label === "Custom Range") {
-          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(
-            start.format("MMMM D, YYYY hh:mm A") + " - " + end.format("MMMM D, YYYY hh:mm A")
-          );
-        } else {
-          $("#cl_time_range_" + v_tabTag.tab_id + " span").html(label);
-        }
-        if (label === "Custom Range" || label === "Yesterday" || label === "Last Month") {
-          v_tabTag.commandHistory.inputStartedTo.value = hooks(end).toISOString();
-        } else v_tabTag.commandHistory.inputStartedTo.value = null;
-        refreshCommandList();
-      }
-    );
+    setupTimeRangePicker({
+      button: (
+        /** @type {HTMLElement} */
+        document.getElementById("cl_time_range_" + v_tabTag.tab_id)
+      ),
+      label: (
+        /** @type {HTMLElement} */
+        document.querySelector("#cl_time_range_" + v_tabTag.tab_id + " span")
+      ),
+      container: (
+        /** @type {HTMLElement} */
+        document.getElementById("command_history_timerange_container_" + v_tabTag.tab_id)
+      ),
+      fromInput: v_tabTag.commandHistory.inputStartedFrom,
+      toInput: v_tabTag.commandHistory.inputStartedTo,
+      onChange: refreshCommandList
+    });
     refreshCommandList();
   }
   function commandHistoryNextPage() {
@@ -15310,7 +12096,7 @@
     }
   }
   function commandHistoryOpenCmd(p_index) {
-    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[4];
+    var v_command = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.getDataAtRow(p_index)[3];
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(v_command);
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
@@ -15339,6 +12125,8 @@
         for (let i2 = 0; i2 < p_return.v_data.commandList.length; i2++) {
           p_return.v_data.commandList[i2][0] = new Date(p_return.v_data.commandList[i2][0]).toLocaleString();
           p_return.v_data.commandList[i2][1] = new Date(p_return.v_data.commandList[i2][1]).toLocaleString();
+          var v_row = p_return.v_data.commandList[i2];
+          p_return.v_data.commandList[i2] = [v_row[0], v_row[1], v_row[2], v_row[4], v_row[3]];
         }
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.grid.loadData(p_return.v_data.commandList);
       },
@@ -16129,7 +12917,7 @@
       cm_server: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16144,7 +12932,7 @@
       cm_databases: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16155,18 +12943,18 @@
             }
           },
           {
-            text: t("tree.create_database"),
+            text: t$1("tree.create_database"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_database"), node.tree.tag.create_database);
+              tabSQLTemplate(t$1("tree.create_database"), node.tree.tag.create_database);
             }
           },
           {
-            text: t("tree.doc_databases"),
+            text: t$1("tree.doc_databases"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_databases") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_databases") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/managing-databases.html"
               );
             }
@@ -16176,28 +12964,28 @@
       cm_database: {
         elements: [
           {
-            text: t("tree.alter_database"),
+            text: t$1("tree.alter_database"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_database"), node.tree.tag.alter_database.replace("#database_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_database"), node.tree.tag.alter_database.replace("#database_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_database"),
+            text: t$1("tree.drop_database"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
             }
           },
           {
-            text: t("tree.export_dbml"),
+            text: t$1("tree.export_dbml"),
             icon: "fas cm-all fa-file-export",
             action: function(node) {
               exportDBMLPostgresql(node);
@@ -16208,7 +12996,7 @@
       cm_tablespaces: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16219,18 +13007,18 @@
             }
           },
           {
-            text: t("tree.create_tablespace"),
+            text: t$1("tree.create_tablespace"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_tablespace"), node.tree.tag.create_tablespace);
+              tabSQLTemplate(t$1("tree.create_tablespace"), node.tree.tag.create_tablespace);
             }
           },
           {
-            text: t("tree.doc_tablespaces"),
+            text: t$1("tree.doc_tablespaces"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_tablespaces") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_tablespaces") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/manage-ag-tablespaces.html"
               );
             }
@@ -16240,24 +13028,24 @@
       cm_tablespace: {
         elements: [
           {
-            text: t("tree.alter_tablespace"),
+            text: t$1("tree.alter_tablespace"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_tablespace"), node.tree.tag.alter_tablespace.replace("#tablespace_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_tablespace"), node.tree.tag.alter_tablespace.replace("#tablespace_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_tablespace"),
+            text: t$1("tree.drop_tablespace"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_tablespace"), node.tree.tag.drop_tablespace.replace("#tablespace_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_tablespace"), node.tree.tag.drop_tablespace.replace("#tablespace_name#", node.text));
             }
           }
         ]
@@ -16265,7 +13053,7 @@
       cm_roles: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16276,18 +13064,18 @@
             }
           },
           {
-            text: t("tree.create_role"),
+            text: t$1("tree.create_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_role"), node.tree.tag.create_role);
+              tabSQLTemplate(t$1("tree.create_role"), node.tree.tag.create_role);
             }
           },
           {
-            text: t("tree.doc_roles"),
+            text: t$1("tree.doc_roles"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_roles") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_roles") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/user-manag.html"
               );
             }
@@ -16297,7 +13085,7 @@
       cm_role: {
         elements: [
           {
-            text: t("tree.change_password"),
+            text: t$1("tree.change_password"),
             icon: "fas cm-all fa-key",
             action: function(node) {
               function buildPasswordField(p_label_text, p_input_id, p_placeholder) {
@@ -16327,15 +13115,15 @@
                     document.getElementById("change_pwd_role_confirm").value
                   );
                   if (v_password == "") {
-                    showAlert$1(t("tree.password_empty"));
+                    showAlert$1(t$1("tree.password_empty"));
                     return;
                   }
                   if (v_password_confirm == "") {
-                    showAlert$1(t("tree.password_confirmation_empty"));
+                    showAlert$1(t$1("tree.password_confirmation_empty"));
                     return;
                   }
                   if (v_password != v_password_confirm) {
-                    showAlert$1(t("tree.passwords_do_not_match"));
+                    showAlert$1(t$1("tree.passwords_do_not_match"));
                     return;
                   }
                   execAjax$2(
@@ -16347,7 +13135,7 @@
                       p_password: v_password
                     }),
                     function(p_return) {
-                      showAlert$1(t("tree.password_changed_successfully"));
+                      showAlert$1(t$1("tree.password_changed_successfully"));
                     },
                     function(p_return) {
                       showAlert$1(p_return.v_data.message);
@@ -16360,32 +13148,32 @@
                 function() {
                   var v_row = document.createElement("div");
                   v_row.className = "form-row";
-                  v_row.appendChild(buildPasswordField(t("common.password"), "change_pwd_role", t("common.password")));
-                  v_row.appendChild(buildPasswordField(t("tree.password_confirmation"), "change_pwd_role_confirm", t("tree.password_confirmation")));
+                  v_row.appendChild(buildPasswordField(t$1("common.password"), "change_pwd_role", t$1("common.password")));
+                  v_row.appendChild(buildPasswordField(t$1("tree.password_confirmation"), "change_pwd_role_confirm", t$1("tree.password_confirmation")));
                   document.getElementById("modal_message_content").appendChild(v_row);
                 }
               );
             }
           },
           {
-            text: t("tree.alter_role"),
+            text: t$1("tree.alter_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_role"),
+            text: t$1("tree.drop_role"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
             }
           }
         ]
@@ -16393,7 +13181,7 @@
       cm_extensions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16404,18 +13192,18 @@
             }
           },
           {
-            text: t("tree.create_extension"),
+            text: t$1("tree.create_extension"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_extension"), node.tree.tag.create_extension);
+              tabSQLTemplate(t$1("tree.create_extension"), node.tree.tag.create_extension);
             }
           },
           {
-            text: t("tree.doc_extensions"),
+            text: t$1("tree.doc_extensions"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_extensions") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_extensions") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/extend-extensions.html"
               );
             }
@@ -16425,24 +13213,24 @@
       cm_extension: {
         elements: [
           {
-            text: t("tree.alter_extension"),
+            text: t$1("tree.alter_extension"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_extension"), node.tree.tag.alter_extension.replace("#extension_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_extension"), node.tree.tag.alter_extension.replace("#extension_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_extension"),
+            text: t$1("tree.drop_extension"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_role"), node.tree.tag.drop_extension.replace("#extension_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_role"), node.tree.tag.drop_extension.replace("#extension_name#", node.text));
             }
           }
         ]
@@ -16450,7 +13238,7 @@
       cm_schemas: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16461,18 +13249,18 @@
             }
           },
           {
-            text: t("tree.create_schema"),
+            text: t$1("tree.create_schema"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_schema"), node.tree.tag.create_schema);
+              tabSQLTemplate(t$1("tree.create_schema"), node.tree.tag.create_schema);
             }
           },
           {
-            text: t("tree.doc_schemas"),
+            text: t$1("tree.doc_schemas"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_schemas") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_schemas") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/ddl-schemas.html"
               );
             }
@@ -16482,14 +13270,14 @@
       cm_schema: {
         elements: [
           {
-            text: t("tree.render_graph"),
+            text: t$1("tree.render_graph"),
             icon: "fab cm-all fa-hubspot",
             action: function(node) {
             },
             submenu: {
               elements: [
                 {
-                  text: t("tree.simple_graph"),
+                  text: t$1("tree.simple_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -16497,7 +13285,7 @@
                   }
                 },
                 {
-                  text: t("tree.complete_graph"),
+                  text: t$1("tree.complete_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -16508,24 +13296,24 @@
             }
           },
           {
-            text: t("tree.alter_schema"),
+            text: t$1("tree.alter_schema"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_schema"), node.tree.tag.alter_schema.replace("#schema_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_schema"), node.tree.tag.alter_schema.replace("#schema_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_schema"),
+            text: t$1("tree.drop_schema"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_schema"), node.tree.tag.drop_schema.replace("#schema_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_schema"), node.tree.tag.drop_schema.replace("#schema_name#", node.text));
             }
           }
         ]
@@ -16533,7 +13321,7 @@
       cm_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16544,38 +13332,38 @@
             }
           },
           {
-            text: t("tree.create_table"),
+            text: t$1("tree.create_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_basics"),
+            text: t$1("tree.doc_basics"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_table_basics") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_table_basics") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/ddl-basics.html"
               );
             }
           },
           {
-            text: t("tree.doc_constraints"),
+            text: t$1("tree.doc_constraints"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_table_constraints") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_table_constraints") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/ddl-constraints.html"
               );
             }
           },
           {
-            text: t("tree.doc_modifying"),
+            text: t$1("tree.doc_modifying"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_modifying_tables") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_modifying_tables") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/ddl-alter.html"
               );
             }
@@ -16585,7 +13373,7 @@
       cm_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16596,54 +13384,54 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectPostgresql(node.tag.schema, node.text, "t");
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text, node.tag.schema);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertPostgresql(node.tag.schema, node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdatePostgresql(node.tag.schema, node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.delete_records"),
+                      t$1("tree.delete_records"),
                       node.tree.tag.delete.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.truncate_table"),
+                  text: t$1("tree.truncate_table"),
                   icon: "fas cm-all fa-cut",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.truncate_table"),
+                      t$1("tree.truncate_table"),
                       node.tree.tag.truncate.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
@@ -16652,53 +13440,53 @@
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.vacuum_table"),
+                  text: t$1("tree.vacuum_table"),
                   icon: "fas cm-all fa-broom",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.vacuum_table"),
+                      t$1("tree.vacuum_table"),
                       node.tree.tag.vacuum_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.analyze_table"),
+                  text: t$1("tree.analyze_table"),
                   icon: "fas cm-all fa-search-plus",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.analyze_table"),
+                      t$1("tree.analyze_table"),
                       node.tree.tag.analyze_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.alter_table"),
+                  text: t$1("tree.alter_table"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.alter_table"),
+                      t$1("tree.alter_table"),
                       node.tree.tag.alter_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.edit_comment"),
+                  text: t$1("tree.edit_comment"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     getObjectDescriptionPostgresql(node);
                   }
                 },
                 {
-                  text: t("tree.drop_table"),
+                  text: t$1("tree.drop_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.drop_table"),
+                      t$1("tree.drop_table"),
                       node.tree.tag.drop_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
@@ -16711,7 +13499,7 @@
       cm_inherited_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16722,11 +13510,11 @@
             }
           },
           {
-            text: t("tree.doc_inheritance"),
+            text: t$1("tree.doc_inheritance"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_table_inheritance") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_table_inheritance") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/tutorial-inheritance.html"
               );
             }
@@ -16736,7 +13524,7 @@
       cm_partitioned_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16747,11 +13535,11 @@
             }
           },
           {
-            text: t("tree.doc_partitioning"),
+            text: t$1("tree.doc_partitioning"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_table_partitioning") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_table_partitioning") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/ddl-partitioning.html.html"
               );
             }
@@ -16761,11 +13549,11 @@
       cm_columns: {
         elements: [
           {
-            text: t("tree.create_column"),
+            text: t$1("tree.create_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_column"),
+                t$1("tree.create_column"),
                 node.tree.tag.create_column.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
@@ -16775,28 +13563,28 @@
       cm_column: {
         elements: [
           {
-            text: t("tree.alter_column"),
+            text: t$1("tree.alter_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_column"),
+                t$1("tree.alter_column"),
                 node.tree.tag.alter_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_column"),
+            text: t$1("tree.drop_column"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_column"),
+                t$1("tree.drop_column"),
                 node.tree.tag.drop_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
@@ -16806,7 +13594,7 @@
       cm_pks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16817,11 +13605,11 @@
             }
           },
           {
-            text: t("tree.create_primary_key"),
+            text: t$1("tree.create_primary_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_primary_key"),
+                t$1("tree.create_primary_key"),
                 node.tree.tag.create_primarykey.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
@@ -16831,7 +13619,7 @@
       cm_pk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16842,18 +13630,18 @@
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_primary_key"),
+            text: t$1("tree.drop_primary_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_primary_key"),
+                t$1("tree.drop_primary_key"),
                 node.tree.tag.drop_primarykey.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -16863,7 +13651,7 @@
       cm_fks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16874,11 +13662,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_key"),
+            text: t$1("tree.create_foreign_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_key"),
+                t$1("tree.create_foreign_key"),
                 node.tree.tag.create_foreignkey.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
@@ -16888,7 +13676,7 @@
       cm_fk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16899,18 +13687,18 @@
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_foreign_key"),
+            text: t$1("tree.drop_foreign_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_foreign_key"),
+                t$1("tree.drop_foreign_key"),
                 node.tree.tag.drop_foreignkey.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -16920,7 +13708,7 @@
       cm_uniques: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16931,11 +13719,11 @@
             }
           },
           {
-            text: t("tree.create_unique"),
+            text: t$1("tree.create_unique"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_unique"),
+                t$1("tree.create_unique"),
                 node.tree.tag.create_unique.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
@@ -16945,7 +13733,7 @@
       cm_unique: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16956,18 +13744,18 @@
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_unique"),
+            text: t$1("tree.drop_unique"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_unique"),
+                t$1("tree.drop_unique"),
                 node.tree.tag.drop_unique.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -16977,7 +13765,7 @@
       cm_indexes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -16988,21 +13776,21 @@
             }
           },
           {
-            text: t("tree.create_index"),
+            text: t$1("tree.create_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_index"),
+                t$1("tree.create_index"),
                 node.tree.tag.create_index.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
           },
           {
-            text: t("tree.doc_indexes"),
+            text: t$1("tree.doc_indexes"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_indexes") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_indexes") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/indexes.html"
               );
             }
@@ -17012,7 +13800,7 @@
       cm_index: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17023,11 +13811,11 @@
             }
           },
           {
-            text: t("tree.alter_index"),
+            text: t$1("tree.alter_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_index"),
+                t$1("tree.alter_index"),
                 node.tree.tag.alter_index.replace(
                   "#index_name#",
                   node.tag.schema + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -17036,11 +13824,11 @@
             }
           },
           {
-            text: t("tree.reindex"),
+            text: t$1("tree.reindex"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.reindex"),
+                t$1("tree.reindex"),
                 node.tree.tag.reindex.replace(
                   "#index_name#",
                   node.tag.schema + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -17049,18 +13837,18 @@
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_index"),
+            text: t$1("tree.drop_index"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_index"),
+                t$1("tree.drop_index"),
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
                   node.tag.schema + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -17073,7 +13861,7 @@
       cm_checks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17084,11 +13872,11 @@
             }
           },
           {
-            text: t("tree.create_check"),
+            text: t$1("tree.create_check"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_check"),
+                t$1("tree.create_check"),
                 node.tree.tag.create_check.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
@@ -17098,18 +13886,18 @@
       cm_check: {
         elements: [
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_check"),
+            text: t$1("tree.drop_check"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_check"),
+                t$1("tree.drop_check"),
                 node.tree.tag.drop_check.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -17119,7 +13907,7 @@
       cm_excludes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17130,11 +13918,11 @@
             }
           },
           {
-            text: t("tree.create_exclude"),
+            text: t$1("tree.create_exclude"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_exclude"),
+                t$1("tree.create_exclude"),
                 node.tree.tag.create_exclude.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
@@ -17144,18 +13932,18 @@
       cm_exclude: {
         elements: [
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_exclude"),
+            text: t$1("tree.drop_exclude"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_exclude"),
+                t$1("tree.drop_exclude"),
                 node.tree.tag.drop_exclude.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -17165,7 +13953,7 @@
       cm_rules: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17176,21 +13964,21 @@
             }
           },
           {
-            text: t("tree.create_rule"),
+            text: t$1("tree.create_rule"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_rule"),
+                t$1("tree.create_rule"),
                 node.tree.tag.create_rule.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
           },
           {
-            text: t("tree.doc_rules"),
+            text: t$1("tree.doc_rules"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_rules") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_rules") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/rules.html"
               );
             }
@@ -17200,17 +13988,17 @@
       cm_rule: {
         elements: [
           {
-            text: t("tree.alter_rule"),
+            text: t$1("tree.alter_rule"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_rule"),
+                t$1("tree.alter_rule"),
                 node.tree.tag.alter_rule.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#rule_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.edit_rule"),
+            text: t$1("tree.edit_rule"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -17218,18 +14006,18 @@
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_rule"),
+            text: t$1("tree.drop_rule"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_rule"),
+                t$1("tree.drop_rule"),
                 node.tree.tag.drop_rule.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#rule_name#", node.text)
               );
             }
@@ -17239,7 +14027,7 @@
       cm_triggers: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17250,21 +14038,21 @@
             }
           },
           {
-            text: t("tree.create_trigger"),
+            text: t$1("tree.create_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_trigger"),
+                t$1("tree.create_trigger"),
                 node.tree.tag.create_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
           },
           {
-            text: t("tree.doc_triggers"),
+            text: t$1("tree.doc_triggers"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_triggers") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_triggers") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/trigger-definition.html"
               );
             }
@@ -17274,7 +14062,7 @@
       cm_view_triggers: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17285,21 +14073,21 @@
             }
           },
           {
-            text: t("tree.create_trigger"),
+            text: t$1("tree.create_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_trigger"),
+                t$1("tree.create_trigger"),
                 node.tree.tag.create_view_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
           },
           {
-            text: t("tree.doc_triggers"),
+            text: t$1("tree.doc_triggers"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_triggers") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_triggers") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/trigger-definition.html"
               );
             }
@@ -17309,48 +14097,48 @@
       cm_trigger: {
         elements: [
           {
-            text: t("tree.alter_trigger"),
+            text: t$1("tree.alter_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_trigger"),
+                t$1("tree.alter_trigger"),
                 node.tree.tag.alter_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.enable_trigger"),
+            text: t$1("tree.enable_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.enable_trigger"),
+                t$1("tree.enable_trigger"),
                 node.tree.tag.enable_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.disable_trigger"),
+            text: t$1("tree.disable_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.disable_trigger"),
+                t$1("tree.disable_trigger"),
                 node.tree.tag.disable_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_trigger"),
+            text: t$1("tree.drop_trigger"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_trigger"),
+                t$1("tree.drop_trigger"),
                 node.tree.tag.drop_trigger.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#trigger_name#", node.text)
               );
             }
@@ -17360,7 +14148,7 @@
       cm_eventtriggers: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17371,18 +14159,18 @@
             }
           },
           {
-            text: t("tree.create_event_trigger"),
+            text: t$1("tree.create_event_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_event_trigger"), node.tree.tag.create_eventtrigger);
+              tabSQLTemplate(t$1("tree.create_event_trigger"), node.tree.tag.create_eventtrigger);
             }
           },
           {
-            text: t("tree.doc_event_triggers"),
+            text: t$1("tree.doc_event_triggers"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_event_triggers") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_event_triggers") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/event-triggers.html"
               );
             }
@@ -17392,44 +14180,44 @@
       cm_eventtrigger: {
         elements: [
           {
-            text: t("tree.alter_event_trigger"),
+            text: t$1("tree.alter_event_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_trigger"), node.tree.tag.alter_eventtrigger.replace("#trigger_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_trigger"), node.tree.tag.alter_eventtrigger.replace("#trigger_name#", node.text));
             }
           },
           {
-            text: t("tree.enable_event_trigger"),
+            text: t$1("tree.enable_event_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.enable_event_trigger"),
+                t$1("tree.enable_event_trigger"),
                 node.tree.tag.enable_eventtrigger.replace("#trigger_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.disable_event_trigger"),
+            text: t$1("tree.disable_event_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.disable_event_trigger"),
+                t$1("tree.disable_event_trigger"),
                 node.tree.tag.disable_eventtrigger.replace("#trigger_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_event_trigger"),
+            text: t$1("tree.drop_event_trigger"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_event_trigger"), node.tree.tag.drop_eventtrigger.replace("#trigger_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_event_trigger"), node.tree.tag.drop_eventtrigger.replace("#trigger_name#", node.text));
             }
           }
         ]
@@ -17437,7 +14225,7 @@
       cm_inheriteds: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17448,21 +14236,21 @@
             }
           },
           {
-            text: t("tree.create_inherited"),
+            text: t$1("tree.create_inherited"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_inherited"),
+                t$1("tree.create_inherited"),
                 node.tree.tag.create_inherited.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
           },
           {
-            text: t("tree.doc_partitioning"),
+            text: t$1("tree.doc_partitioning"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_partitioning") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_partitioning") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/ddl-partitioning.html"
               );
             }
@@ -17472,20 +14260,20 @@
       cm_inherited: {
         elements: [
           {
-            text: t("tree.no_inherit_table"),
+            text: t$1("tree.no_inherit_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.no_inherit_partition"),
+                t$1("tree.no_inherit_partition"),
                 node.tree.tag.noinherit_partition.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#partition_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.drop_inherited"),
+            text: t$1("tree.drop_inherited"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_partition"), node.tree.tag.drop_partition.replace("#partition_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_partition"), node.tree.tag.drop_partition.replace("#partition_name#", node.text));
             }
           }
         ]
@@ -17493,7 +14281,7 @@
       cm_partitions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17504,21 +14292,21 @@
             }
           },
           {
-            text: t("tree.create_partition"),
+            text: t$1("tree.create_partition"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_partition"),
+                t$1("tree.create_partition"),
                 node.tree.tag.create_partition.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
           },
           {
-            text: t("tree.doc_partitioning"),
+            text: t$1("tree.doc_partitioning"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_partitioning") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_partitioning") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/ddl-partitioning.html"
               );
             }
@@ -17528,20 +14316,20 @@
       cm_partition: {
         elements: [
           {
-            text: t("tree.detach_partition"),
+            text: t$1("tree.detach_partition"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.detach_partition"),
+                t$1("tree.detach_partition"),
                 node.tree.tag.detach_partition.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace("#partition_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.drop_partition"),
+            text: t$1("tree.drop_partition"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_partition"), node.tree.tag.drop_partition.replace("#partition_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_partition"), node.tree.tag.drop_partition.replace("#partition_name#", node.text));
             }
           }
         ]
@@ -17549,7 +14337,7 @@
       cm_statistics: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17560,21 +14348,21 @@
             }
           },
           {
-            text: t("tree.create_statistics"),
+            text: t$1("tree.create_statistics"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_statistics"),
+                t$1("tree.create_statistics"),
                 node.tree.tag.create_statistics.replace("#table_name#", node.tag.schema + "." + node.parent.text).replace("#schema_name#", node.tag.schema)
               );
             }
           },
           {
-            text: t("tree.doc_statistics"),
+            text: t$1("tree.doc_statistics"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_statistics") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_statistics") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/planner-stats.html"
               );
             }
@@ -17584,7 +14372,7 @@
       cm_statistic: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17595,24 +14383,24 @@
             }
           },
           {
-            text: t("tree.alter_statistics"),
+            text: t$1("tree.alter_statistics"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_statistics"), node.tree.tag.alter_statistics.replace("#statistics_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_statistics"), node.tree.tag.alter_statistics.replace("#statistics_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_statistics"),
+            text: t$1("tree.drop_statistics"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_statistics"), node.tree.tag.drop_statistics.replace("#statistics_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_statistics"), node.tree.tag.drop_statistics.replace("#statistics_name#", node.text));
             }
           }
         ]
@@ -17620,7 +14408,7 @@
       cm_functions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17631,18 +14419,18 @@
             }
           },
           {
-            text: t("tree.create_function"),
+            text: t$1("tree.create_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_function"), node.tree.tag.create_function.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_function"), node.tree.tag.create_function.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_functions"),
+            text: t$1("tree.doc_functions"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_functions") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_functions") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-createfunction.html"
               );
             }
@@ -17652,7 +14440,7 @@
       cm_function: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17663,14 +14451,14 @@
             }
           },
           {
-            text: t("tree.select_function"),
+            text: t$1("tree.select_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               TemplateSelectFunctionPostgresql(node.tag.schema, node.text, node.tag.id);
             }
           },
           {
-            text: t("tree.edit_function"),
+            text: t$1("tree.edit_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -17678,24 +14466,24 @@
             }
           },
           {
-            text: t("tree.alter_function"),
+            text: t$1("tree.alter_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_function"), node.tree.tag.alter_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.alter_function"), node.tree.tag.alter_function.replace("#function_name#", node.tag.id));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_function"),
+            text: t$1("tree.drop_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -17703,7 +14491,7 @@
       cm_procedures: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17714,18 +14502,18 @@
             }
           },
           {
-            text: t("tree.create_procedure"),
+            text: t$1("tree.create_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_procedure"), node.tree.tag.create_procedure.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_procedure"), node.tree.tag.create_procedure.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_procedures"),
+            text: t$1("tree.doc_procedures"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_procedures") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_procedures") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-createprocedure.html"
               );
             }
@@ -17735,7 +14523,7 @@
       cm_procedure: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17746,14 +14534,14 @@
             }
           },
           {
-            text: t("tree.call_procedure"),
+            text: t$1("tree.call_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               TemplateCallProcedurePostgresql(node.tag.schema, node.text, node.tag.id);
             }
           },
           {
-            text: t("tree.edit_procedure"),
+            text: t$1("tree.edit_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -17761,24 +14549,24 @@
             }
           },
           {
-            text: t("tree.alter_procedure"),
+            text: t$1("tree.alter_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_procedure"), node.tree.tag.alter_procedure.replace("#procedure_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.alter_procedure"), node.tree.tag.alter_procedure.replace("#procedure_name#", node.tag.id));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_procedure"),
+            text: t$1("tree.drop_procedure"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#procedure_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#procedure_name#", node.tag.id));
             }
           }
         ]
@@ -17786,7 +14574,7 @@
       cm_triggerfunctions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17797,21 +14585,21 @@
             }
           },
           {
-            text: t("tree.create_trigger_function"),
+            text: t$1("tree.create_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_trigger_function"),
+                t$1("tree.create_trigger_function"),
                 node.tree.tag.create_triggerfunction.replace("#schema_name#", node.tag.schema)
               );
             }
           },
           {
-            text: t("tree.doc_trigger_functions"),
+            text: t$1("tree.doc_trigger_functions"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_trigger_functions") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_trigger_functions") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/plpgsql-trigger.html"
               );
             }
@@ -17821,7 +14609,7 @@
       cm_triggerfunction: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17832,7 +14620,7 @@
             }
           },
           {
-            text: t("tree.edit_trigger_function"),
+            text: t$1("tree.edit_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -17840,28 +14628,28 @@
             }
           },
           {
-            text: t("tree.alter_trigger_function"),
+            text: t$1("tree.alter_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_trigger_function"),
+                t$1("tree.alter_trigger_function"),
                 node.tree.tag.alter_triggerfunction.replace("#function_name#", node.tag.id)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_trigger_function"),
+            text: t$1("tree.drop_trigger_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_trigger_function"),
+                t$1("tree.drop_trigger_function"),
                 node.tree.tag.drop_triggerfunction.replace("#function_name#", node.tag.id)
               );
             }
@@ -17871,7 +14659,7 @@
       cm_direct_triggerfunction: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17882,7 +14670,7 @@
             }
           },
           {
-            text: t("tree.edit_trigger_function"),
+            text: t$1("tree.edit_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -17890,28 +14678,28 @@
             }
           },
           {
-            text: t("tree.alter_trigger_function"),
+            text: t$1("tree.alter_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_trigger_function"),
+                t$1("tree.alter_trigger_function"),
                 node.tree.tag.alter_triggerfunction.replace("#function_name#", node.tag.id)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_trigger_function"),
+            text: t$1("tree.drop_trigger_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_trigger_function"),
+                t$1("tree.drop_trigger_function"),
                 node.tree.tag.drop_triggerfunction.replace("#function_name#", node.tag.id)
               );
             }
@@ -17921,7 +14709,7 @@
       cm_eventtriggerfunctions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17932,21 +14720,21 @@
             }
           },
           {
-            text: t("tree.create_event_trigger_function"),
+            text: t$1("tree.create_event_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_event_trigger_function"),
+                t$1("tree.create_event_trigger_function"),
                 node.tree.tag.create_eventtriggerfunction.replace("#schema_name#", node.tag.schema)
               );
             }
           },
           {
-            text: t("tree.doc_event_trigger_functions"),
+            text: t$1("tree.doc_event_trigger_functions"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_event_trigger_functions") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_event_trigger_functions") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/functions-event-triggers.html"
               );
             }
@@ -17956,7 +14744,7 @@
       cm_eventtriggerfunction: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -17967,7 +14755,7 @@
             }
           },
           {
-            text: t("tree.edit_event_trigger_function"),
+            text: t$1("tree.edit_event_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -17975,28 +14763,28 @@
             }
           },
           {
-            text: t("tree.alter_event_trigger_function"),
+            text: t$1("tree.alter_event_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_event_trigger_function"),
+                t$1("tree.alter_event_trigger_function"),
                 node.tree.tag.alter_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_event_trigger_function"),
+            text: t$1("tree.drop_event_trigger_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_event_trigger_function"),
+                t$1("tree.drop_event_trigger_function"),
                 node.tree.tag.drop_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
             }
@@ -18006,7 +14794,7 @@
       cm_direct_eventtriggerfunction: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18017,7 +14805,7 @@
             }
           },
           {
-            text: t("tree.edit_event_trigger_function"),
+            text: t$1("tree.edit_event_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -18025,28 +14813,28 @@
             }
           },
           {
-            text: t("tree.alter_event_trigger_function"),
+            text: t$1("tree.alter_event_trigger_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_event_trigger_function"),
+                t$1("tree.alter_event_trigger_function"),
                 node.tree.tag.alter_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_event_trigger_function"),
+            text: t$1("tree.drop_event_trigger_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_event_trigger_function"),
+                t$1("tree.drop_event_trigger_function"),
                 node.tree.tag.drop_eventtriggerfunction.replace("#function_name#", node.tag.id)
               );
             }
@@ -18056,7 +14844,7 @@
       cm_aggregates: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -18068,18 +14856,18 @@
             }
           },
           {
-            text: t("tree.create_aggregate"),
+            text: t$1("tree.create_aggregate"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_aggregate"), node.tree.tag.create_aggregate.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_aggregate"), node.tree.tag.create_aggregate.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_aggregates"),
+            text: t$1("tree.doc_aggregates"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_aggregates") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_aggregates") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-createaggregate.html"
               );
             }
@@ -18089,7 +14877,7 @@
       cm_aggregate: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -18101,24 +14889,24 @@
             }
           },
           {
-            text: t("tree.alter_aggregate"),
+            text: t$1("tree.alter_aggregate"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_aggregate"), node.tree.tag.alter_aggregate.replace("#aggregate_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.alter_aggregate"), node.tree.tag.alter_aggregate.replace("#aggregate_name#", node.tag.id));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_aggregate"),
+            text: t$1("tree.drop_aggregate"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_aggregate"), node.tree.tag.drop_aggregate.replace("#aggregate_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_aggregate"), node.tree.tag.drop_aggregate.replace("#aggregate_name#", node.tag.id));
             }
           }
         ]
@@ -18126,7 +14914,7 @@
       cm_sequences: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18137,18 +14925,18 @@
             }
           },
           {
-            text: t("tree.create_sequence"),
+            text: t$1("tree.create_sequence"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_sequence"), node.tree.tag.create_sequence.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_sequence"), node.tree.tag.create_sequence.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_sequences"),
+            text: t$1("tree.doc_sequences"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_sequences") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_sequences") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-createsequence.html"
               );
             }
@@ -18158,28 +14946,28 @@
       cm_sequence: {
         elements: [
           {
-            text: t("tree.alter_sequence"),
+            text: t$1("tree.alter_sequence"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_sequence"),
+                t$1("tree.alter_sequence"),
                 node.tree.tag.alter_sequence.replace("#sequence_name#", node.tag.schema + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_sequence"),
+            text: t$1("tree.drop_sequence"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_sequence"),
+                t$1("tree.drop_sequence"),
                 node.tree.tag.drop_sequence.replace("#sequence_name#", node.parent.parent.text + "." + node.text)
               );
             }
@@ -18189,7 +14977,7 @@
       cm_views: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18200,18 +14988,18 @@
             }
           },
           {
-            text: t("tree.create_view"),
+            text: t$1("tree.create_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_views"),
+            text: t$1("tree.doc_views"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_views") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_views") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-createview.html"
               );
             }
@@ -18221,7 +15009,7 @@
       cm_view: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18232,14 +15020,14 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               TemplateSelectPostgresql(node.parent.parent.text, node.text, "v");
             }
           },
           {
-            text: t("tree.edit_view"),
+            text: t$1("tree.edit_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -18247,28 +15035,28 @@
             }
           },
           {
-            text: t("tree.alter_view"),
+            text: t$1("tree.alter_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_view"),
+                t$1("tree.alter_view"),
                 node.tree.tag.alter_view.replace(/#view_name#/g, node.tag.schema + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_view"),
+            text: t$1("tree.drop_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_view"),
+                t$1("tree.drop_view"),
                 node.tree.tag.drop_view.replace("#view_name#", node.tag.schema + "." + node.text)
               );
             }
@@ -18278,7 +15066,7 @@
       cm_mviews: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18289,21 +15077,21 @@
             }
           },
           {
-            text: t("tree.create_mat_view"),
+            text: t$1("tree.create_mat_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_materialized_view"),
+                t$1("tree.create_materialized_view"),
                 node.tree.tag.create_mview.replace("#schema_name#", node.tag.schema)
               );
             }
           },
           {
-            text: t("tree.doc_mat_views"),
+            text: t$1("tree.doc_mat_views"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_materialized_views") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_materialized_views") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-creatematerializedview.html"
               );
             }
@@ -18313,7 +15101,7 @@
       cm_mview: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18324,14 +15112,14 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               TemplateSelectPostgresql(node.tag.schema, node.text, "m");
             }
           },
           {
-            text: t("tree.edit_mat_view"),
+            text: t$1("tree.edit_mat_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -18339,48 +15127,48 @@
             }
           },
           {
-            text: t("tree.alter_mat_view"),
+            text: t$1("tree.alter_mat_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_materialized_view"),
+                t$1("tree.alter_materialized_view"),
                 node.tree.tag.alter_mview.replace("#view_name#", node.tag.schema + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.refresh_mat_view"),
+            text: t$1("tree.refresh_mat_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.refresh_materialized_view"),
+                t$1("tree.refresh_materialized_view"),
                 node.tree.tag.refresh_mview.replace("#view_name#", node.tag.schema + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.analyze_mat_view"),
+            text: t$1("tree.analyze_mat_view"),
             icon: "fas cm-all fa-search-plus",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.analyze_mat_view"),
+                t$1("tree.analyze_mat_view"),
                 node.tree.tag.analyze_table.replace("#table_name#", node.tag.schema + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_mat_view"),
+            text: t$1("tree.drop_mat_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_materialized_view"),
+                t$1("tree.drop_materialized_view"),
                 node.tree.tag.drop_mview.replace("#view_name#", node.tag.schema + "." + node.text)
               );
             }
@@ -18390,7 +15178,7 @@
       cm_physicalreplicationslots: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18401,18 +15189,18 @@
             }
           },
           {
-            text: t("tree.create_slot"),
+            text: t$1("tree.create_slot"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_physical_replication_slot"), node.tree.tag.create_physicalreplicationslot);
+              tabSQLTemplate(t$1("tree.create_physical_replication_slot"), node.tree.tag.create_physicalreplicationslot);
             }
           },
           {
-            text: t("tree.doc_replication_slots"),
+            text: t$1("tree.doc_replication_slots"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_physical_replication_slots") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_physical_replication_slots") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/warm-standby.html#streaming-replication-slots"
               );
             }
@@ -18422,11 +15210,11 @@
       cm_physicalreplicationslot: {
         elements: [
           {
-            text: t("tree.drop_slot"),
+            text: t$1("tree.drop_slot"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_physical_replication_slot"),
+                t$1("tree.drop_physical_replication_slot"),
                 node.tree.tag.drop_physicalreplicationslot.replace("#slot_name#", node.text)
               );
             }
@@ -18436,7 +15224,7 @@
       cm_logicalreplicationslots: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18447,18 +15235,18 @@
             }
           },
           {
-            text: t("tree.create_slot"),
+            text: t$1("tree.create_slot"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_logical_replication_slot"), node.tree.tag.create_logicalreplicationslot);
+              tabSQLTemplate(t$1("tree.create_logical_replication_slot"), node.tree.tag.create_logicalreplicationslot);
             }
           },
           {
-            text: t("tree.doc_replication_slots"),
+            text: t$1("tree.doc_replication_slots"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_logical_replication_slots") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_logical_replication_slots") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/logicaldecoding-explanation.html#logicaldecoding-replication-slots"
               );
             }
@@ -18468,11 +15256,11 @@
       cm_logicalreplicationslot: {
         elements: [
           {
-            text: t("tree.drop_slot"),
+            text: t$1("tree.drop_slot"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_logical_replication_slot"),
+                t$1("tree.drop_logical_replication_slot"),
                 node.tree.tag.drop_logicalreplicationslot.replace("#slot_name#", node.text)
               );
             }
@@ -18482,7 +15270,7 @@
       cm_publications: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18493,18 +15281,18 @@
             }
           },
           {
-            text: t("tree.create_publication"),
+            text: t$1("tree.create_publication"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_publication"), node.tree.tag.create_publication);
+              tabSQLTemplate(t$1("tree.create_publication"), node.tree.tag.create_publication);
             }
           },
           {
-            text: t("tree.doc_publications"),
+            text: t$1("tree.doc_publications"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_publications") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_publications") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/logical-replication-publication.html"
               );
             }
@@ -18514,24 +15302,24 @@
       cm_publication: {
         elements: [
           {
-            text: t("tree.alter_publication"),
+            text: t$1("tree.alter_publication"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_publication"), node.tree.tag.alter_publication.replace("#pub_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_publication"), node.tree.tag.alter_publication.replace("#pub_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_publication"),
+            text: t$1("tree.drop_publication"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_publication"), node.tree.tag.drop_publication.replace("#pub_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_publication"), node.tree.tag.drop_publication.replace("#pub_name#", node.text));
             }
           }
         ]
@@ -18539,7 +15327,7 @@
       cm_pubtables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18550,10 +15338,10 @@
             }
           },
           {
-            text: t("tree.add_table"),
+            text: t$1("tree.add_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.add_table"), node.tree.tag.add_pubtable.replace("#pub_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.add_table"), node.tree.tag.add_pubtable.replace("#pub_name#", node.parent.text));
             }
           }
         ]
@@ -18561,11 +15349,11 @@
       cm_pubtable: {
         elements: [
           {
-            text: t("tree.drop_table"),
+            text: t$1("tree.drop_table"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_table"),
+                t$1("tree.drop_table"),
                 node.tree.tag.drop_pubtable.replace("#pub_name#", node.parent.parent.text).replace("#table_name#", node.text)
               );
             }
@@ -18575,7 +15363,7 @@
       cm_subscriptions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18586,18 +15374,18 @@
             }
           },
           {
-            text: t("tree.create_subscription"),
+            text: t$1("tree.create_subscription"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_subscription"), node.tree.tag.create_subscription);
+              tabSQLTemplate(t$1("tree.create_subscription"), node.tree.tag.create_subscription);
             }
           },
           {
-            text: t("tree.doc_subscriptions"),
+            text: t$1("tree.doc_subscriptions"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_subscriptions") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_subscriptions") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/logical-replication-subscription.html"
               );
             }
@@ -18607,24 +15395,24 @@
       cm_subscription: {
         elements: [
           {
-            text: t("tree.alter_subscription"),
+            text: t$1("tree.alter_subscription"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_subscription"), node.tree.tag.alter_subscription.replace("#sub_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_subscription"), node.tree.tag.alter_subscription.replace("#sub_name#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_subscription"),
+            text: t$1("tree.drop_subscription"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_subscription"), node.tree.tag.drop_subscription.replace("#sub_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_subscription"), node.tree.tag.drop_subscription.replace("#sub_name#", node.text));
             }
           }
         ]
@@ -18632,7 +15420,7 @@
       cm_fdws: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18643,18 +15431,18 @@
             }
           },
           {
-            text: t("tree.create_foreign_data_wrapper"),
+            text: t$1("tree.create_foreign_data_wrapper"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_foreign_data_wrapper"), node.tree.tag.create_fdw);
+              tabSQLTemplate(t$1("tree.create_foreign_data_wrapper"), node.tree.tag.create_fdw);
             }
           },
           {
-            text: t("tree.doc_foreign_data_wrappers"),
+            text: t$1("tree.doc_foreign_data_wrappers"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_foreign_data_wrappers") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_foreign_data_wrappers") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/postgres-fdw.html"
               );
             }
@@ -18664,24 +15452,24 @@
       cm_fdw: {
         elements: [
           {
-            text: t("tree.alter_foreign_data_wrapper"),
+            text: t$1("tree.alter_foreign_data_wrapper"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_foreign_data_wrapper"), node.tree.tag.alter_fdw.replace("#fdwname#", node.text));
+              tabSQLTemplate(t$1("tree.alter_foreign_data_wrapper"), node.tree.tag.alter_fdw.replace("#fdwname#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_foreign_data_wrapper"),
+            text: t$1("tree.drop_foreign_data_wrapper"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_foreign_data_wrapper"), node.tree.tag.drop_fdw.replace("#fdwname#", node.text));
+              tabSQLTemplate(t$1("tree.drop_foreign_data_wrapper"), node.tree.tag.drop_fdw.replace("#fdwname#", node.text));
             }
           }
         ]
@@ -18689,7 +15477,7 @@
       cm_foreign_servers: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18700,11 +15488,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_server"),
+            text: t$1("tree.create_foreign_server"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_server"),
+                t$1("tree.create_foreign_server"),
                 node.tree.tag.create_foreign_server.replace("#fdwname#", node.parent.text)
               );
             }
@@ -18714,31 +15502,31 @@
       cm_foreign_server: {
         elements: [
           {
-            text: t("tree.alter_foreign_server"),
+            text: t$1("tree.alter_foreign_server"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_foreign_server"), node.tree.tag.alter_foreign_server.replace("#srvname#", node.text));
+              tabSQLTemplate(t$1("tree.alter_foreign_server"), node.tree.tag.alter_foreign_server.replace("#srvname#", node.text));
             }
           },
           {
-            text: t("tree.import_foreign_schema"),
+            text: t$1("tree.import_foreign_schema"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.import_foreign_schema"), node.tree.tag.import_foreign_schema.replace("#srvname#", node.text));
+              tabSQLTemplate(t$1("tree.import_foreign_schema"), node.tree.tag.import_foreign_schema.replace("#srvname#", node.text));
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_foreign_server"),
+            text: t$1("tree.drop_foreign_server"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_foreign_server"), node.tree.tag.drop_foreign_server.replace("#srvname#", node.text));
+              tabSQLTemplate(t$1("tree.drop_foreign_server"), node.tree.tag.drop_foreign_server.replace("#srvname#", node.text));
             }
           }
         ]
@@ -18746,7 +15534,7 @@
       cm_user_mappings: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18757,11 +15545,11 @@
             }
           },
           {
-            text: t("tree.create_user_mapping"),
+            text: t$1("tree.create_user_mapping"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_user_mapping"),
+                t$1("tree.create_user_mapping"),
                 node.tree.tag.create_user_mapping.replace("#srvname#", node.parent.text)
               );
             }
@@ -18771,21 +15559,21 @@
       cm_user_mapping: {
         elements: [
           {
-            text: t("tree.alter_user_mapping"),
+            text: t$1("tree.alter_user_mapping"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_user_mapping"),
+                t$1("tree.alter_user_mapping"),
                 node.tree.tag.alter_user_mapping.replace("#user_name#", node.text).replace("#srvname#", node.parent.parent.text)
               );
             }
           },
           {
-            text: t("tree.drop_user_mapping"),
+            text: t$1("tree.drop_user_mapping"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_user_mapping"),
+                t$1("tree.drop_user_mapping"),
                 node.tree.tag.drop_user_mapping.replace("#user_name#", node.text).replace("#srvname#", node.parent.parent.text)
               );
             }
@@ -18795,7 +15583,7 @@
       cm_foreign_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18806,11 +15594,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_table"),
+            text: t$1("tree.create_foreign_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_table"),
+                t$1("tree.create_foreign_table"),
                 node.tree.tag.create_foreign_table.replace("#schema_name#", node.tag.schema)
               );
             }
@@ -18820,7 +15608,7 @@
       cm_foreign_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18831,44 +15619,44 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectPostgresql(node.tag.schema, node.text, "f");
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text, node.tag.schema);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertPostgresql(node.tag.schema, node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdatePostgresql(node.tag.schema, node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.delete_records"),
+                      t$1("tree.delete_records"),
                       node.tree.tag.delete.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
@@ -18877,43 +15665,43 @@
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.analyze_foreign_table"),
+                  text: t$1("tree.analyze_foreign_table"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.analyze_foreign_table"),
+                      t$1("tree.analyze_foreign_table"),
                       node.tree.tag.analyze_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.alter_foreign_table"),
+                  text: t$1("tree.alter_foreign_table"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.alter_foreign_table"),
+                      t$1("tree.alter_foreign_table"),
                       node.tree.tag.alter_foreign_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.edit_comment"),
+                  text: t$1("tree.edit_comment"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     getObjectDescriptionPostgresql(node);
                   }
                 },
                 {
-                  text: t("tree.drop_foreign_table"),
+                  text: t$1("tree.drop_foreign_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.drop_foreign_table"),
+                      t$1("tree.drop_foreign_table"),
                       node.tree.tag.drop_foreign_table.replace("#table_name#", node.tag.schema + "." + node.text)
                     );
                   }
@@ -18926,11 +15714,11 @@
       cm_foreign_columns: {
         elements: [
           {
-            text: t("tree.create_foreign_column"),
+            text: t$1("tree.create_foreign_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_column"),
+                t$1("tree.create_foreign_column"),
                 node.tree.tag.create_foreign_column.replace("#table_name#", node.tag.schema + "." + node.parent.text)
               );
             }
@@ -18940,21 +15728,21 @@
       cm_foreign_column: {
         elements: [
           {
-            text: t("tree.alter_foreign_column"),
+            text: t$1("tree.alter_foreign_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_foreign_column"),
+                t$1("tree.alter_foreign_column"),
                 node.tree.tag.alter_foreign_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
           },
           {
-            text: t("tree.drop_foreign_column"),
+            text: t$1("tree.drop_foreign_column"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_foreign_column"),
+                t$1("tree.drop_foreign_column"),
                 node.tree.tag.drop_foreign_column.replace("#table_name#", node.tag.schema + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
@@ -18964,7 +15752,7 @@
       cm_types: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -18975,18 +15763,18 @@
             }
           },
           {
-            text: t("tree.create_type"),
+            text: t$1("tree.create_type"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_type"), node.tree.tag.create_type.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_type"), node.tree.tag.create_type.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_types"),
+            text: t$1("tree.doc_types"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_types") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_types") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-createtype.html"
               );
             }
@@ -18996,28 +15784,28 @@
       cm_type: {
         elements: [
           {
-            text: t("tree.alter_type"),
+            text: t$1("tree.alter_type"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_type"),
+                t$1("tree.alter_type"),
                 node.tree.tag.alter_type.replace("#type_name#", node.tag.schema + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_type"),
+            text: t$1("tree.drop_type"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_type"),
+                t$1("tree.drop_type"),
                 node.tree.tag.drop_type.replace("#type_name#", node.tag.schema + "." + node.text)
               );
             }
@@ -19027,7 +15815,7 @@
       cm_domains: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -19038,18 +15826,18 @@
             }
           },
           {
-            text: t("tree.create_domain"),
+            text: t$1("tree.create_domain"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_domain"), node.tree.tag.create_domain.replace("#schema_name#", node.tag.schema));
+              tabSQLTemplate(t$1("tree.create_domain"), node.tree.tag.create_domain.replace("#schema_name#", node.tag.schema));
             }
           },
           {
-            text: t("tree.doc_domains"),
+            text: t$1("tree.doc_domains"),
             icon: "fas cm-all fa-globe-americas",
             action: function(node) {
               v_connTabControl.tag.createWebsiteTab(
-                t("tree.documentation_title", { name: t("tree.topic_domains") }),
+                t$1("tree.documentation_title", { name: t$1("tree.topic_domains") }),
                 "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node.tree.tag.version) + "/static/sql-createdomain.html"
               );
             }
@@ -19059,28 +15847,28 @@
       cm_domain: {
         elements: [
           {
-            text: t("tree.alter_domain"),
+            text: t$1("tree.alter_domain"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_domain"),
+                t$1("tree.alter_domain"),
                 node.tree.tag.alter_domain.replace("#domain_name#", node.tag.schema + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.edit_comment"),
+            text: t$1("tree.edit_comment"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               getObjectDescriptionPostgresql(node);
             }
           },
           {
-            text: t("tree.drop_domain"),
+            text: t$1("tree.drop_domain"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_domain"),
+                t$1("tree.drop_domain"),
                 node.tree.tag.drop_domain.replace("#domain_name#", node.tag.schema + "." + node.text)
               );
             }
@@ -19090,7 +15878,7 @@
       cm_partitioned_parent: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -19105,7 +15893,7 @@
       cm_inherited_parent: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -19120,7 +15908,7 @@
       cm_refresh: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreePostgresql(node);
@@ -19136,7 +15924,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t$1("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -19148,7 +15936,7 @@
         let pos_x = v_first_child_toggle.offsetLeft - 24;
         let pos_y = v_first_child_toggle.offsetTop - 64;
         v_connTabControl.selectedTab.tag.divTree.scroll(pos_x, pos_y);
-      } catch (e) {
+      } catch (e2) {
       }
     };
     tree.clickNodeEvent = function(node) {
@@ -19251,11 +16039,11 @@
         /** @type {HTMLElement} */
         document.getElementById("modal_message_content")
       );
-      v_content_div.appendChild(document.createTextNode(t("tree.confirm_switch_database_prefix")));
+      v_content_div.appendChild(document.createTextNode(t$1("tree.confirm_switch_database_prefix")));
       var v_bold = document.createElement("b");
       v_bold.textContent = p_node.tag.database;
       v_content_div.appendChild(v_bold);
-      v_content_div.appendChild(document.createTextNode(t("tree.confirm_switch_database_suffix")));
+      v_content_div.appendChild(document.createTextNode(t$1("tree.confirm_switch_database_suffix")));
     } else p_callback_continue();
   }
   function getObjectDescriptionPostgresql(p_node) {
@@ -19733,7 +16521,7 @@
         if (v_det_name) v_det_name.textContent = v_connTabControl.selectedTab.tag.selectedDatabase;
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.refresh"),
+          text: t$1("tree.refresh"),
           icon: "fas cm-all fa-sync-alt",
           action: function(node2) {
             if (node2.childNodes == 0) refreshTreePostgresql(node2);
@@ -19744,14 +16532,14 @@
           }
         });
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.monitoring"),
+          text: t$1("tree.monitoring"),
           icon: "fas cm-all fa-chart-line",
           action: function(node2) {
           },
           submenu: {
             elements: [
               {
-                text: t("tree.dashboard"),
+                text: t$1("tree.dashboard"),
                 icon: "fas cm-all fa-chart-line",
                 action: function(node2) {
                   switchSection("monitoring");
@@ -19761,31 +16549,31 @@
           }
         });
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.doc_postgresql"),
+          text: t$1("tree.doc_postgresql"),
           icon: "fas cm-all fa-globe-americas",
           action: function(node2) {
             v_connTabControl.tag.createWebsiteTab(
-              t("tree.documentation_title", { name: t("tree.topic_postgresql") }),
+              t$1("tree.documentation_title", { name: t$1("tree.topic_postgresql") }),
               "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node2.tree.tag.version) + "/static/"
             );
           }
         });
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.doc_sql_language"),
+          text: t$1("tree.doc_sql_language"),
           icon: "fas cm-all fa-globe-americas",
           action: function(node2) {
             v_connTabControl.tag.createWebsiteTab(
-              t("tree.documentation_title", { name: t("tree.topic_sql_language") }),
+              t$1("tree.documentation_title", { name: t$1("tree.topic_sql_language") }),
               "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node2.tree.tag.version) + "/static/sql.html"
             );
           }
         });
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.doc_sql_commands"),
+          text: t$1("tree.doc_sql_commands"),
           icon: "fas cm-all fa-globe-americas",
           action: function(node2) {
             v_connTabControl.tag.createWebsiteTab(
-              t("tree.documentation_title", { name: t("tree.topic_sql_commands") }),
+              t$1("tree.documentation_title", { name: t$1("tree.topic_sql_commands") }),
               "https://www.postgresql.org/docs/" + getMajorVersionPostgresql(node2.tree.tag.version) + "/static/sql-commands.html"
             );
           }
@@ -19919,7 +16707,7 @@
         };
         node.setText(p_return.v_data.v_database_return.version);
         var node_databases = node.createChildNode(
-          t("tree.databases"),
+          t$1("tree.databases"),
           false,
           "fas node-all fa-database node-database-list",
           {
@@ -19930,7 +16718,7 @@
         );
         node_databases.createChildNode("", true, "node-spin", null, null);
         var node_tablespaces = node.createChildNode(
-          t("tree.tablespaces"),
+          t$1("tree.tablespaces"),
           false,
           "fas node-all fa-folder-open node-tablespace-list",
           {
@@ -19941,7 +16729,7 @@
         );
         node_tablespaces.createChildNode("", true, "node-spin", null, null);
         var node_roles = node.createChildNode(
-          t("tree.roles"),
+          t$1("tree.roles"),
           false,
           "fas node-all fa-users node-user-list",
           {
@@ -19953,7 +16741,7 @@
         node_roles.createChildNode("", true, "node-spin", null, null);
         if (parseFloat(getMajorVersionPostgresql(node.tree.tag.version)) >= 9.4) {
           var node_replication = node.createChildNode(
-            t("tree.replication_slots"),
+            t$1("tree.replication_slots"),
             false,
             "fas node-all fa-sitemap node-repslot-list",
             {
@@ -19962,7 +16750,7 @@
             null
           );
           var node_phyrepslots = node_replication.createChildNode(
-            t("tree.topic_physical_replication_slots"),
+            t$1("tree.topic_physical_replication_slots"),
             false,
             "fas node-all fa-sitemap node-repslot-list",
             {
@@ -19973,7 +16761,7 @@
           );
           node_phyrepslots.createChildNode("", true, "node-spin", null, null);
           var node_logrepslots = node_replication.createChildNode(
-            t("tree.topic_logical_replication_slots"),
+            t$1("tree.topic_logical_replication_slots"),
             false,
             "fas node-all fa-sitemap node-repslot-list",
             {
@@ -20009,7 +16797,7 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.tag.database_data = p_return.v_data;
         var node_schemas = node.createChildNode(
-          t("tree.schemas"),
+          t$1("tree.schemas"),
           false,
           "fas node-all fa-layer-group node-schema-list",
           {
@@ -20021,7 +16809,7 @@
         );
         node_schemas.createChildNode("", true, "node-spin", null, null);
         var node_extensions = node.createChildNode(
-          t("tree.extensions"),
+          t$1("tree.extensions"),
           false,
           "fas node-all fa-cubes node-extension-list",
           {
@@ -20033,7 +16821,7 @@
         );
         node_extensions.createChildNode("", true, "node-spin", null, null);
         var node_fdws = node.createChildNode(
-          t("tree.topic_foreign_data_wrappers"),
+          t$1("tree.topic_foreign_data_wrappers"),
           false,
           "fas node-all fa-cube node-fdw-list",
           {
@@ -20045,7 +16833,7 @@
         );
         node_fdws.createChildNode("", true, "node-spin", null, null);
         var node_eventtriggers = node.createChildNode(
-          t("tree.topic_event_triggers"),
+          t$1("tree.topic_event_triggers"),
           false,
           "fas node-all fa-bolt node-eventtrigger",
           {
@@ -20058,7 +16846,7 @@
         node_eventtriggers.createChildNode("", true, "node-spin", null, null);
         if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
           var node_replication = node.createChildNode(
-            t("tree.logical_replication"),
+            t$1("tree.logical_replication"),
             false,
             "fas node-all fa-sitemap node-logrep",
             {
@@ -20068,7 +16856,7 @@
             null
           );
           var node_publications = node_replication.createChildNode(
-            t("tree.topic_publications"),
+            t$1("tree.topic_publications"),
             false,
             "fas node-all fa-arrow-alt-circle-down node-publication-list",
             {
@@ -20080,7 +16868,7 @@
           );
           node_publications.createChildNode("", true, "node-spin", null, null);
           var node_subscriptions = node_replication.createChildNode(
-            t("tree.topic_subscriptions"),
+            t$1("tree.topic_subscriptions"),
             false,
             "fas node-all fa-arrow-alt-circle-up node-subscription-list",
             {
@@ -20110,7 +16898,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.databases") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.databases") + " (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -20153,7 +16941,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tablespaces") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tablespaces") + " (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -20190,7 +16978,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.roles") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.roles") + " (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           var v_role_icon = p_return.v_data[i$7].v_can_login ? "fas node-all fa-user node-user" : "fas node-all fa-user-friends node-user-group";
@@ -20229,7 +17017,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.extensions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.extensions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -20267,7 +17055,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.schemas") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.schemas") + " (" + p_return.v_data.length + ")");
         node.tag.num_schemas = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -20286,7 +17074,7 @@
             false
           );
           var node_tables = v_node$6.createChildNode(
-            t("tree.tables"),
+            t$1("tree.tables"),
             false,
             "fas node-all fa-th node-table-list",
             {
@@ -20302,7 +17090,7 @@
           node_tables.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
             var node_ptables = v_node$6.createChildNode(
-              t("tree.partitioned_tables"),
+              t$1("tree.partitioned_tables"),
               false,
               "fas node-all fa-th node-ptable-list",
               {
@@ -20318,7 +17106,7 @@
             node_ptables.createChildNode("", true, "node-spin", null, null, null, false);
           }
           var node_itables = v_node$6.createChildNode(
-            t("tree.inheritance_tables"),
+            t$1("tree.inheritance_tables"),
             false,
             "fas node-all fa-th node-itable-list",
             {
@@ -20333,7 +17121,7 @@
           );
           node_itables.createChildNode("", true, "node-spin", null, null, null, false);
           var node_foreign_tables = v_node$6.createChildNode(
-            t("tree.foreign_tables"),
+            t$1("tree.foreign_tables"),
             false,
             "fas node-all fa-th node-ftable-list",
             {
@@ -20348,7 +17136,7 @@
           );
           node_foreign_tables.createChildNode("", true, "node-spin", null, null, null, false);
           var node_sequences = v_node$6.createChildNode(
-            t("tree.topic_sequences"),
+            t$1("tree.topic_sequences"),
             false,
             "fas node-all fa-sort-numeric-down node-sequence-list",
             {
@@ -20363,7 +17151,7 @@
           );
           node_sequences.createChildNode("", true, "node-spin", null, null, null, false);
           var node_views = v_node$6.createChildNode(
-            t("tree.views"),
+            t$1("tree.views"),
             false,
             "fas node-all fa-eye node-view-list",
             {
@@ -20379,7 +17167,7 @@
           node_views.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseFloat(getMajorVersionPostgresql(node.tree.tag.version)) >= 9.3) {
             var node_views = v_node$6.createChildNode(
-              t("tree.topic_materialized_views"),
+              t$1("tree.topic_materialized_views"),
               false,
               "fas node-all fa-eye node-mview-list",
               {
@@ -20395,7 +17183,7 @@
             node_views.createChildNode("", true, "node-spin", null, null, null, false);
           }
           var node_functions = v_node$6.createChildNode(
-            t("tree.functions"),
+            t$1("tree.functions"),
             false,
             "fas node-all fa-cog node-function-list",
             {
@@ -20410,7 +17198,7 @@
           );
           node_functions.createChildNode("", true, "node-spin", null, null, null, false);
           var node_triggerfunctions = v_node$6.createChildNode(
-            t("tree.topic_trigger_functions"),
+            t$1("tree.topic_trigger_functions"),
             false,
             "fas node-all fa-cog node-tfunction-list",
             {
@@ -20425,7 +17213,7 @@
           );
           node_triggerfunctions.createChildNode("", true, "node-spin", null, null, null, false);
           var node_eventtriggerfunctions = v_node$6.createChildNode(
-            t("tree.topic_event_trigger_functions"),
+            t$1("tree.topic_event_trigger_functions"),
             false,
             "fas node-all fa-cog node-etfunction-list",
             {
@@ -20441,7 +17229,7 @@
           node_eventtriggerfunctions.createChildNode("", true, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 11) {
             var node_procedures = v_node$6.createChildNode(
-              t("tree.topic_procedures"),
+              t$1("tree.topic_procedures"),
               false,
               "fas node-all fa-cog node-procedure-list",
               {
@@ -20457,7 +17245,7 @@
             node_procedures.createChildNode("", true, "node-spin", null, null, null, false);
           }
           var node_aggregates = v_node$6.createChildNode(
-            t("tree.topic_aggregates"),
+            t$1("tree.topic_aggregates"),
             false,
             "fas node-all fa-cog node-aggregate-list",
             {
@@ -20472,7 +17260,7 @@
           );
           node_aggregates.createChildNode("", true, "node-spin", null, null, null, false);
           var node_types = v_node$6.createChildNode(
-            t("tree.topic_types"),
+            t$1("tree.topic_types"),
             false,
             "fas node-all fa-square node-type-list",
             {
@@ -20487,7 +17275,7 @@
           );
           node_types.createChildNode("", true, "node-spin", null, null, null, false);
           var node_domains = v_node$6.createChildNode(
-            t("tree.topic_domains"),
+            t$1("tree.topic_domains"),
             false,
             "fas node-all fa-square node-domain-list",
             {
@@ -20524,7 +17312,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -20585,7 +17373,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.topic_sequences") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_sequences") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -20626,7 +17414,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -20682,7 +17470,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$6 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -20708,7 +17496,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$7].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$7].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20722,7 +17510,7 @@
         }
         if (node.tag.has_rules) {
           v_node$6 = node.createChildNode(
-            t("tree.topic_rules"),
+            t$1("tree.topic_rules"),
             false,
             "fas node-all fa-lightbulb node-rule",
             {
@@ -20738,7 +17526,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$6 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -20802,7 +17590,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_materialized_views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_materialized_views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -20858,7 +17646,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$6 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -20884,7 +17672,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$7].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$7].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -20898,7 +17686,7 @@
         }
         if (node.tag.has_indexes) {
           v_node$6 = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -20915,7 +17703,7 @@
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
             v_node$6 = node.createChildNode(
-              t("tree.topic_statistics"),
+              t$1("tree.topic_statistics"),
               false,
               "fas node-all fa-chart-bar node-statistics",
               {
@@ -20982,7 +17770,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$6 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -21010,7 +17798,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$7].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$7].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -21022,7 +17810,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$7].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$7].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -21036,7 +17824,7 @@
         }
         if (node.tag.has_primary_keys) {
           v_node$6 = node.createChildNode(
-            t("tree.primary_key"),
+            t$1("tree.primary_key"),
             false,
             "fas node-all fa-key node-pkey",
             {
@@ -21052,7 +17840,7 @@
         }
         if (node.tag.has_foreign_keys) {
           v_node$6 = node.createChildNode(
-            t("tree.foreign_keys"),
+            t$1("tree.foreign_keys"),
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -21068,7 +17856,7 @@
         }
         if (node.tag.has_uniques) {
           v_node$6 = node.createChildNode(
-            t("tree.uniques"),
+            t$1("tree.uniques"),
             false,
             "fas node-all fa-key node-unique",
             {
@@ -21084,7 +17872,7 @@
         }
         if (node.tag.has_checks) {
           v_node$6 = node.createChildNode(
-            t("tree.checks"),
+            t$1("tree.checks"),
             false,
             "fas node-all fa-check-square node-check",
             {
@@ -21100,7 +17888,7 @@
         }
         if (node.tag.has_excludes) {
           v_node$6 = node.createChildNode(
-            t("tree.excludes"),
+            t$1("tree.excludes"),
             false,
             "fas node-all fa-times-circle node-exclude",
             {
@@ -21116,7 +17904,7 @@
         }
         if (node.tag.has_indexes) {
           v_node$6 = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -21132,7 +17920,7 @@
         }
         if (node.tag.has_rules) {
           v_node$6 = node.createChildNode(
-            t("tree.topic_rules"),
+            t$1("tree.topic_rules"),
             false,
             "fas node-all fa-lightbulb node-rule",
             {
@@ -21148,7 +17936,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$6 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -21164,7 +17952,7 @@
         }
         if (node.tag.has_partitions) {
           v_node$6 = node.createChildNode(
-            t("tree.inherited_tables"),
+            t$1("tree.inherited_tables"),
             false,
             "fas node-all fa-table node-inherited",
             {
@@ -21179,7 +17967,7 @@
           v_node$6.createChildNode("", false, "node-spin", null, null, null, false);
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
             v_node$6 = node.createChildNode(
-              t("tree.partitions"),
+              t$1("tree.partitions"),
               false,
               "fas node-all fa-table node-partition",
               {
@@ -21197,7 +17985,7 @@
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
             v_node$6 = node.createChildNode(
-              t("tree.topic_statistics"),
+              t$1("tree.topic_statistics"),
               false,
               "fas node-all fa-chart-bar node-statistics",
               {
@@ -21234,7 +18022,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.primary_key") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -21320,7 +18108,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.uniques") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -21414,7 +18202,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.indexes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -21510,7 +18298,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -21528,7 +18316,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[i$7][1],
+            t$1("tree.prop_referenced_table") + p_return.v_data[i$7][1],
             false,
             "fas node-all fa-table node-table",
             {
@@ -21540,7 +18328,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[i$7][2],
+            t$1("tree.prop_delete_rule") + p_return.v_data[i$7][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -21552,7 +18340,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[i$7][3],
+            t$1("tree.prop_update_rule") + p_return.v_data[i$7][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -21589,7 +18377,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.createChildNode(
-          t("tree.prop_referenced_table") + p_return.v_data[0][0],
+          t$1("tree.prop_referenced_table") + p_return.v_data[0][0],
           false,
           "fas node-all fa-table node-table",
           {
@@ -21601,7 +18389,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_delete_rule") + p_return.v_data[0][1],
+          t$1("tree.prop_delete_rule") + p_return.v_data[0][1],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           {
@@ -21613,7 +18401,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_update_rule") + p_return.v_data[0][2],
+          t$1("tree.prop_update_rule") + p_return.v_data[0][2],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           {
@@ -21660,7 +18448,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.checks") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.checks") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -21715,7 +18503,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.excludes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.excludes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -21735,7 +18523,7 @@
               false
             );
             v_node2.createChildNode(
-              t("tree.prop_attributes") + p_return.v_data[i$7][1],
+              t$1("tree.prop_attributes") + p_return.v_data[i$7][1],
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -21747,7 +18535,7 @@
               false
             );
             v_node2.createChildNode(
-              t("tree.prop_operators") + p_return.v_data[i$7][2],
+              t$1("tree.prop_operators") + p_return.v_data[i$7][2],
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -21782,7 +18570,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.topic_rules") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_rules") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -21853,7 +18641,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.topic_triggers") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_triggers") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -21872,7 +18660,7 @@
               true
             );
             v_node2.createChildNode(
-              t("tree.prop_enabled") + p_return.v_data[i$7].v_enabled,
+              t$1("tree.prop_enabled") + p_return.v_data[i$7].v_enabled,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -21920,7 +18708,7 @@
         p_tab_id: v_connTabControl.selectedTab.id
       }),
       function(p_return) {
-        node.setText(t("tree.topic_event_triggers") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_event_triggers") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -21938,7 +18726,7 @@
               true
             );
             v_node2.createChildNode(
-              t("tree.prop_enabled") + p_return.v_data[i$7].v_enabled,
+              t$1("tree.prop_enabled") + p_return.v_data[i$7].v_enabled,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -21949,7 +18737,7 @@
               false
             );
             v_node2.createChildNode(
-              t("tree.prop_event") + p_return.v_data[i$7].v_event,
+              t$1("tree.prop_event") + p_return.v_data[i$7].v_event,
               false,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -21997,7 +18785,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.inherited_tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.inherited_tables") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -22038,7 +18826,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.partitions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.partitions") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -22079,7 +18867,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.topic_statistics") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_statistics") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -22167,7 +18955,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22314,7 +19102,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
         node.tag.num_procedures = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22461,7 +19249,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_trigger_functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_trigger_functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           node.createChildNode(
@@ -22529,7 +19317,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_event_trigger_functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_event_trigger_functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           node.createChildNode(
@@ -22599,7 +19387,7 @@
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
-        node.setText(t("tree.topic_aggregates") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_aggregates") + " (" + p_return.v_data.length + ")");
         node.tag.num_aggregates = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22651,7 +19439,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_physical_replication_slots") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_physical_replication_slots") + " (" + p_return.v_data.length + ")");
         node.tag.num_repslots = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22688,7 +19476,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_logical_replication_slots") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_logical_replication_slots") + " (" + p_return.v_data.length + ")");
         node.tag.num_repslots = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22725,7 +19513,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_publications") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_publications") + " (" + p_return.v_data.length + ")");
         node.tag.num_pubs = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22742,7 +19530,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_all_tables") + p_return.v_data[i$7].v_alltables,
+            t$1("tree.prop_all_tables") + p_return.v_data[i$7].v_alltables,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -22753,7 +19541,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_insert") + p_return.v_data[i$7].v_insert,
+            t$1("tree.prop_insert") + p_return.v_data[i$7].v_insert,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -22764,7 +19552,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_update") + p_return.v_data[i$7].v_update,
+            t$1("tree.prop_update") + p_return.v_data[i$7].v_update,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -22775,7 +19563,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_delete") + p_return.v_data[i$7].v_delete,
+            t$1("tree.prop_delete") + p_return.v_data[i$7].v_delete,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -22786,7 +19574,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_truncate") + p_return.v_data[i$7].v_truncate,
+            t$1("tree.prop_truncate") + p_return.v_data[i$7].v_truncate,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -22798,7 +19586,7 @@
           );
           if (!p_return.v_data[i$7].v_alltables) {
             v_tables = v_node$6.createChildNode(
-              t("tree.tables"),
+              t$1("tree.tables"),
               false,
               "fas node-all fa-th node-table-list",
               {
@@ -22834,7 +19622,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22871,7 +19659,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_subscriptions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_subscriptions") + " (" + p_return.v_data.length + ")");
         node.tag.num_subs = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -22888,7 +19676,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_enabled") + p_return.v_data[i$7].v_enabled,
+            t$1("tree.prop_enabled") + p_return.v_data[i$7].v_enabled,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -22899,7 +19687,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_conninfo") + p_return.v_data[i$7].v_conninfo,
+            t$1("tree.prop_conninfo") + p_return.v_data[i$7].v_conninfo,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -22910,7 +19698,7 @@
             false
           );
           v_publications = v_node$6.createChildNode(
-            t("tree.referenced_publications"),
+            t$1("tree.referenced_publications"),
             false,
             "fas node-all fa-arrow-alt-circle-down node-publication",
             {
@@ -22937,7 +19725,7 @@
             );
           }
           v_tables = v_node$6.createChildNode(
-            t("tree.tables"),
+            t$1("tree.tables"),
             false,
             "fas node-all fa-th node-table-list",
             {
@@ -22972,7 +19760,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -23009,7 +19797,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_foreign_data_wrappers") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_foreign_data_wrappers") + " (" + p_return.v_data.length + ")");
         node.tag.num_fdws = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -23026,7 +19814,7 @@
             false
           );
           v_node$6 = v_node$6.createChildNode(
-            t("tree.foreign_servers"),
+            t$1("tree.foreign_servers"),
             false,
             "fas node-all fa-server node-server",
             {
@@ -23061,7 +19849,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.foreign_servers") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_servers") + " (" + p_return.v_data.length + ")");
         node.tag.num_foreign_servers = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -23079,7 +19867,7 @@
           );
           if (p_return.v_data[i$7].v_type != null) {
             v_node$6.createChildNode(
-              t("tree.prop_type") + p_return.v_data[i$7].v_type,
+              t$1("tree.prop_type") + p_return.v_data[i$7].v_type,
               true,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -23092,7 +19880,7 @@
           }
           if (p_return.v_data[i$7].v_version != null) {
             v_node$6.createChildNode(
-              t("tree.prop_version") + p_return.v_data[i$7].v_version,
+              t$1("tree.prop_version") + p_return.v_data[i$7].v_version,
               true,
               "fas node-all fa-ellipsis-h node-bullet",
               {
@@ -23122,7 +19910,7 @@
             }
           }
           v_node$6 = v_node$6.createChildNode(
-            t("tree.user_mappings"),
+            t$1("tree.user_mappings"),
             false,
             "fas node-all fa-user-friends node-user",
             {
@@ -23157,7 +19945,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.user_mappings") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.user_mappings") + " (" + p_return.v_data.length + ")");
         node.tag.num_user_mappings = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -23214,7 +20002,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.foreign_tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -23269,7 +20057,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$6 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -23296,7 +20084,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$7].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$7].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -23308,7 +20096,7 @@
             false
           );
           v_node$6.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$7].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$7].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -23385,7 +20173,7 @@
         if (node.tag.has_statistics) {
           if (parseInt(getMajorVersionPostgresql(node.tree.tag.version)) >= 10) {
             v_node$6 = node.createChildNode(
-              t("tree.topic_statistics"),
+              t$1("tree.topic_statistics"),
               false,
               "fas node-all fa-chart-bar node-statistics",
               {
@@ -23421,7 +20209,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.topic_types") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_types") + " (" + p_return.v_data.length + ")");
         node.tag.num_types = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -23461,7 +20249,7 @@
         p_schema: node.tag.schema
       }),
       function(p_return) {
-        node.setText(t("tree.topic_domains") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_domains") + " (" + p_return.v_data.length + ")");
         node.tag.num_domains = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
@@ -23502,7 +20290,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.partitioned_tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.partitioned_tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_partitioned = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -23607,7 +20395,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.inheritance_tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.inheritance_tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_partitioned = p_return.v_data.length;
         for (i$7 = 0; i$7 < p_return.v_data.length; i$7++) {
           v_node$6 = node.createChildNode(
@@ -23740,7 +20528,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -23762,7 +20550,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -23785,7 +20573,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_select_prefix") + p_schema + "." + p_function, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_select_prefix") + p_schema + "." + p_function, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -23808,7 +20596,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_call_prefix") + p_schema + "." + p_procedure, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_call_prefix") + p_schema + "." + p_procedure, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -23839,7 +20627,7 @@
         // since that escaping went in, just a wall of visible tags. The
         // message rides on the node's tag instead, and clickNodeEvent
         // below opens it.
-        t("tree.error_click_for_detail"),
+        t$1("tree.error_click_for_detail"),
         false,
         "fas fa-times node-error",
         {
@@ -23887,7 +20675,7 @@
   }
   function postgresqlTerminateBackend(p_row) {
     var v_pid = parseInt(p_row[2], 10);
-    showConfirm(t("tree.confirm_terminate_backend", { pid: v_pid }), function() {
+    showConfirm(t$1("tree.confirm_terminate_backend", { pid: v_pid }), function() {
       postgresqlTerminateBackendConfirm(v_pid);
     });
   }
@@ -23898,7 +20686,7 @@
     if (v_selected_text != "") v_query = v_selected_text;
     else v_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
     if (v_query.trim() == "") {
-      showAlert$1(t("common.provide_a_string"));
+      showAlert$1(t$1("common.provide_a_string"));
     } else {
       if (v_explain_control.context === "default") {
         if (p_mode == 0) {
@@ -24081,62 +20869,89 @@
     }
     return cookieValue;
   }
-  function csrfSafeMethod(method) {
-    return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
-  }
   var v_ajax_call = null;
   var v_cancel_button = document.getElementById("bt_cancel_ajax");
   function execAjax$1(p_url, p_data, p_successFunc, p_errorFunc, p_notifMode, p_loading, p_cancel_button, p_onAjaxErrorCallBack = false) {
     if (v_cancel_button != null) {
       v_cancel_button.style.display = "none";
     }
-    var csrftoken = getCookie(v_csrf_cookie_name);
-    v_ajax_call = $.ajax({
-      url: v_url_folder + p_url,
-      data: {
-        data: p_data,
-        tab_token: ""
-      },
-      type: "post",
-      dataType: "json",
-      beforeSend: function(xhr, settings) {
-        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
-          xhr.setRequestHeader("X-CSRFToken", csrftoken);
-        }
-      },
-      success: function(p_return) {
-        if (p_return.v_error) {
-          if (p_return.v_error_id == 1) {
-            showAlert(t("errors.not_authenticated"));
-          } else if (p_errorFunc) {
-            p_errorFunc(p_return);
-          } else {
-            showAlert(p_return.v_data);
-          }
+    var v_controller = new AbortController();
+    var v_handle = {
+      readyState: 1,
+      abort: function() {
+        v_handle.readyState = 0;
+        v_controller.abort();
+      }
+    };
+    v_ajax_call = v_handle;
+    var v_fail = function(msg) {
+      if (p_onAjaxErrorCallBack) {
+        p_onAjaxErrorCallBack(msg);
+      } else {
+        if (msg.readyState != 0) {
+          showAlert(t$1("errors.request_error"));
         } else {
-          if (p_successFunc != null) {
-            p_successFunc(p_return);
-          }
-        }
-      },
-      error: function(msg) {
-        if (p_onAjaxErrorCallBack) {
-          p_onAjaxErrorCallBack(msg);
-        } else {
-          if (msg.readyState != 0) {
-            showAlert(t("errors.request_error"));
-          } else {
-            if (msg.statusText != "abort") {
-              reportOffline();
-            }
+          if (msg.statusText != "abort") {
+            reportOffline();
           }
         }
       }
-    });
+    };
+    (async function() {
+      var p_return;
+      try {
+        var v_response = await fetch(v_url_folder + p_url, {
+          method: "POST",
+          // URLSearchParams sets the form-urlencoded Content-Type itself.
+          body: new URLSearchParams({
+            data: typeof p_data === "string" ? p_data : JSON.stringify(p_data),
+            tab_token: ""
+          }),
+          headers: { "X-CSRFToken": getCookie(v_csrf_cookie_name) || "" },
+          signal: v_controller.signal
+        });
+        if (!v_response.ok) {
+          v_handle.readyState = 4;
+          v_fail({ readyState: 4, status: v_response.status, statusText: v_response.statusText });
+          return;
+        }
+        p_return = await v_response.json();
+      } catch (e2) {
+        var err = (
+          /** @type {any} */
+          e2
+        );
+        if (err && err.name === "AbortError") {
+          v_handle.readyState = 0;
+          v_fail({ readyState: 0, status: 0, statusText: "abort" });
+        } else if (err instanceof SyntaxError) {
+          v_handle.readyState = 4;
+          v_fail({ readyState: 4, status: 200, statusText: "parsererror" });
+        } else {
+          v_handle.readyState = 0;
+          v_fail({ readyState: 0, status: 0, statusText: "error" });
+        }
+        return;
+      }
+      v_handle.readyState = 4;
+      if (p_return.v_error) {
+        if (p_return.v_error_id == 1) {
+          showAlert(t$1("errors.not_authenticated"));
+        } else if (p_errorFunc) {
+          p_errorFunc(p_return);
+        } else {
+          showAlert(p_return.v_data);
+        }
+      } else {
+        if (p_successFunc != null) {
+          p_successFunc(p_return);
+        }
+      }
+    })();
     return v_ajax_call;
   }
   function reportOffline() {
-    showAlert(t("errors.webserver_shutdown"));
+    showAlert(t$1("errors.webserver_shutdown"));
     document.getElementById("ajax_status");
   }
   const AUTOSAVE_DELAY_MS = 500;
@@ -24201,19 +21016,19 @@
         LAST_TAB_KEY,
         JSON.stringify({ conn: p_tag.connTab.tag.selectedDatabaseIndex, tab_db_id: p_tag.tab_db_id || null })
       );
-    } catch (e) {
+    } catch (e2) {
     }
   }
   function recallActiveTab() {
     try {
       return JSON.parse(localStorage.getItem(LAST_TAB_KEY) || "null");
-    } catch (e) {
+    } catch (e2) {
       return null;
     }
   }
   var v_createQueryTabFunction = function(p_table, p_tab_db_id) {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
-    var v_name = t("common.query");
+    var v_name = t$1("common.query");
     if (p_table) {
       v_name = p_table;
     }
@@ -24233,21 +21048,21 @@
           rememberActiveTab(this.tag);
         }
       },
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_current_tab = p_tab;
-        beforeCloseTab(e, function() {
+        beforeCloseTab(e2, function() {
           removeTab(v_current_tab);
         });
       },
-      p_rightClickFunction: function(e) {
+      p_rightClickFunction: function(e2) {
         customMenu(
           {
-            x: e.clientX + 5,
-            y: e.clientY + 5
+            x: e2.clientX + 5,
+            y: e2.clientY + 5
           },
           [
             {
-              text: t("workspace.rename_tab"),
+              text: t$1("workspace.rename_tab"),
               icon: "fas cm-all fa-edit",
               action: function() {
                 renameTab(v_tab);
@@ -24274,8 +21089,8 @@
       document.getElementById("tab_check")
     );
     v_tab_check_span.id = "tab_check_" + v_tab.id;
-    var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog modal-xl' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t("query.command_history_title")) + "</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
-    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.indent_sql")) + '"><i class="fas fa-indent fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("query.command_history_title")) + '"><i class="fas fa-list fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("editor.run")) + '" style="display: none;">' + escapeHtml(t("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t("common.cancel")) + '" style="display: none;">' + escapeHtml(t("common.cancel")) + '</button><div id="div_query_info_' + v_tab.id + '" class="omnidb__query-info"></div><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="' + escapeHtmlAttribute(t("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
+    var command_history_modal = "<div class='modal fade' id='modal_command_history_" + v_tab.id + "' tabindex='-1' role='dialog' aria-hidden='true'><div class='modal-dialog omnidb__modal--fluid' role='document'><div class='modal-content'><div class='modal-header'><h5 class='modal-title'>" + escapeHtml(t$1("query.command_history_title")) + "</h5><button id='bt_close_command_history_" + v_tab.id + "' type='button' class='close' data-dismiss='modal' aria-label='" + escapeHtmlAttribute(t$1("common.close")) + "'><span aria-hidden='true'>&times;</span></button></div><div class='modal-body'><div id='command_history_div_" + v_tab.id + "' class='query_command_history'><div id='command_history_header_" + v_tab.id + "' class='query_command_history_header'></div><div id='command_history_grid_" + v_tab.id + "' class='query_command_history_grid' style='width: 100%; height: calc(100vh - 16.5rem); overflow: hidden;'></div></div></div></div></div></div>";
+    var v_html = '<div id="txt_query_' + v_tab.id + '" style="width: 100%; height: 200px;"></div>' + command_history_modal + '<div class="row mb-1"><div class="tab_actions omnidb__tab-actions col-12"><button id="bt_start_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '"><i class="fas fa-play fa-light"></i></button><button id="bt_start_stmt_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run_statement_at_cursor")) + '"><i class="fas fa-play-circle fa-light"></i></button><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.indent_sql")) + '"><i class="fas fa-indent fa-light"></i></button><button id="bt_history_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("query.command_history_title")) + '"><i class="fas fa-history fa-light"></i></button><button id="bt_explain_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain")) + '" style="display: none;"><i class="fas fa-search fa-light"></i></button><button id="bt_analyze_' + v_tab.id + '" class="dbms_object postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.explain_analyze")) + '" style="display: none;"><i class="fas fa-search-plus fa-light"></i></button><div class="dbms_object postgresql_object omnidb__form-check form-check form-check-inline"><input id="check_autocommit_' + v_tab.id + '" class="form-check-input" type="checkbox" checked="checked"><label class="form-check-label dbms_object postgresql_object custom_checkbox query_info" for="check_autocommit_' + v_tab.id + '">' + escapeHtml(t$1("editor.autocommit")) + '</label></div><div class="dbms_object postgresql_object omnidb__tab-status"><i id="query_tab_status_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="fas fa-dot-circle tab-status tab-status-closed dbms_object postgresql_object omnidb__tab-status__icon"></i><span id="query_tab_status_text_' + v_tab.id + '" title="' + escapeHtmlAttribute(t$1("query.status_not_connected")) + '" class="tab-status-text query_info dbms_object postgresql_object ms-1">' + escapeHtml(t$1("query.status_not_connected")) + '</span></div><button id="bt_fetch_more_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_more")) + '</button><button id="bt_fetch_all_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.fetch_all")) + '</button><button id="bt_commit_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.commit")) + '</button><button id="bt_rollback_' + v_tab.id + '" class="dbms_object dbms_object_hidden postgresql_object btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("editor.run")) + '" style="display: none;">' + escapeHtml(t$1("editor.rollback")) + '</button><button id="bt_cancel_' + v_tab.id + '" class="btn btn-sm btn-danger omnidb__tab-actions__btn" title="' + escapeHtmlAttribute(t$1("common.cancel")) + '" style="display: none;">' + escapeHtml(t$1("common.cancel")) + '</button><button id="bt_export_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn ms-auto" title="' + escapeHtmlAttribute(t$1("editor.export_data")) + '"><i class="far fa-file fa-light"></i></button><select id="sel_export_type_' + v_tab.id + '" class="form-control omnidb__tab-actions__select" style="width: 80px;"><option selected="selected" value="csv">CSV</option><option value="tsv">TSV</option><option value="xlsx">XLSX</option><option value="json">JSON</option><option value="xml">XML</option><option value="md">Markdown</option></select></div></div><div id="query_resize_line_' + v_tab.id + '" class="omnidb__resize-line__container" style="width: 100%; height: 5px; cursor: ns-resize;"><div class="resize_line_horizontal" style="height: 0px;"></div><div style="height:5px;"></div></div><div id="query_result_tabs_container' + v_tab.id + '" class="omnidb__query-result-tabs"><div style="position:absolute;top:0.25rem;right:2.75rem;"><div class="omnidb__switch--explain omnidb__switch--explain--sm float-end me-1" title="' + escapeHtmlAttribute(t$1("editor.toggle_explain_tooltip")) + '"><input id="explainContextToggler' + v_tab.id + '" type="checkbox" class="omnidb__switch--explain--input"><label for="explainContextToggler' + v_tab.id + '" class="omnidb__switch--explain--label"><span><i class="fas fa-th"></i></span></label></div></div><button id="bt_expand_query_result_' + v_tab.id + '" style="position:absolute;top:0.25rem;right:0.25rem;" type="button" class="btn btn-sm omnidb__theme__btn--secondary"><i class="fas fa-expand"></i></button><div id="query_result_tabs_' + v_tab.id + '"></div></div>';
     v_tab.elementDiv.innerHTML = v_html;
     var v_curr_tabs = createTabControl({ p_div: "query_result_tabs_" + v_tab.id });
     var v_selectDataTabFunc = function() {
@@ -24295,17 +21110,17 @@
       v_tab.tag.resize();
     };
     var v_data_tab = v_curr_tabs.createTab({
-      p_name: t("editor.data_tab"),
+      p_name: t$1("editor.data_tab"),
       p_close: false,
-      p_clickFunction: function(e) {
+      p_clickFunction: function(e2) {
         v_selectDataTabFunc();
       }
     });
     v_data_tab.elementDiv.innerHTML = "<div class='p-2 omnidb__query-result-tabs__content omnidb__theme-border--primary'><div id='div_result_" + v_tab.id + "' class='omnidb__query-result-tabs__content' style='width: 100%; overflow: hidden;'></div></div>";
     var v_messages_tab = v_curr_tabs.createTab({
-      p_name: escapeHtml(t("editor.messages_tab")) + " <div id='query_result_tabs_count_notices_" + v_tab.id + "' class='count_notices' style='display: none;'></div>",
+      p_name: escapeHtml(t$1("editor.messages_tab")) + " <div id='query_result_tabs_count_notices_" + v_tab.id + "' class='count_notices' style='display: none;'></div>",
       p_close: false,
-      p_clickFunction: function(e) {
+      p_clickFunction: function(e2) {
         v_selectMessageTabFunc();
       }
     });
@@ -24313,15 +21128,19 @@
     v_messages_tab.elementA.classList.add("dbms_object");
     v_messages_tab.elementA.classList.add("postgresql_object");
     var v_explain_tab = v_curr_tabs.createTab({
-      p_name: t("editor.explain"),
+      p_name: t$1("editor.explain"),
       p_close: false,
-      p_clickFunction: function(e) {
+      p_clickFunction: function(e2) {
         v_selectExplainTabFunc();
       }
     });
     v_explain_tab.elementDiv.innerHTML = "<div class='p-2 omnidb__query-result-tabs__content omnidb__theme-border--primary'><div id='div_explain_default" + v_tab.id + "' class='omnidb__query-result-tabs__content omnidb__query-result-tabs__content--explain-default' style='width: 100%; overflow: auto;'></div><div id='div_explain_" + v_tab.id + "' class='omnidb__query-result-tabs__content omnidb__query-result-tabs__content--explain-legere' style='width: 100%; overflow: hidden;'></div></div>";
     v_explain_tab.elementA.classList.add("dbms_object");
     v_explain_tab.elementA.classList.add("postgresql_object");
+    var v_query_info_div = document.createElement("div");
+    v_query_info_div.id = "div_query_info_" + v_tab.id;
+    v_query_info_div.className = "omnidb__query-info";
+    v_explain_tab.elementA.after(v_query_info_div);
     ace.require("ace/ext/language_tools");
     var v_editor = ace.edit("txt_query_" + v_tab.id);
     v_editor.$blockScrolling = Infinity;
@@ -24356,7 +21175,7 @@
       event2.preventDefault();
       var v_option_list = [
         {
-          text: t("common.copy"),
+          text: t$1("common.copy"),
           icon: "fas cm-all fa-terminal",
           action: function() {
             var copy_text = v_editor.getValue();
@@ -24364,7 +21183,7 @@
           }
         },
         {
-          text: t("editor.save_as_snippet"),
+          text: t$1("editor.save_as_snippet"),
           icon: "fas cm-all fa-save",
           submenu: {
             elements: buildSnippetContextMenuObjects("save", v_connTabControl.tag.globalSnippets, v_editor)
@@ -24373,7 +21192,7 @@
       ];
       if (v_connTabControl.tag.globalSnippets.files.length != 0 || v_connTabControl.tag.globalSnippets.folders.length != 0)
         v_option_list.push({
-          text: t("editor.use_snippet"),
+          text: t$1("editor.use_snippet"),
           icon: "fas cm-all fa-scroll",
           submenu: {
             elements: buildSnippetContextMenuObjects("load", v_connTabControl.tag.globalSnippets, v_editor)
@@ -24410,7 +21229,7 @@
       var v_exp_callback = function(p_data) {
         if (!gv_desktopMode) {
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.selectDataTabFunc();
-          var v_text = '<div style="font-size: 14px;">' + escapeHtml(t("editor.file_ready")) + ' <a class="link_text" href="' + escapeHtmlAttribute(p_data.v_data.v_filename) + '" download="' + escapeHtmlAttribute(p_data.v_data.v_downloadname) + '">' + escapeHtml(t("common.save")) + "</a></div>";
+          var v_text = '<div style="font-size: 14px;">' + escapeHtml(t$1("editor.file_ready")) + ' <a class="link_text" href="' + escapeHtmlAttribute(p_data.v_data.v_filename) + '" download="' + escapeHtmlAttribute(p_data.v_data.v_downloadname) + '">' + escapeHtml(t$1("common.save")) + "</a></div>";
           v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.innerHTML = v_text;
           return;
         }
@@ -24425,12 +21244,12 @@
           return p_response.json();
         }).then(function(p_result) {
           if (p_result.error) {
-            showAlert$1(t("editor.error_saving_file", { error: p_result.error }));
+            showAlert$1(t$1("editor.error_saving_file", { error: p_result.error }));
           } else if (p_result.path) {
-            showAlert$1(t("editor.file_exported_to", { path: p_result.path }));
+            showAlert$1(t$1("editor.file_exported_to", { path: p_result.path }));
           }
         }).catch(function(p_error) {
-          showAlert$1(t("editor.error_saving_file", { error: p_error }));
+          showAlert$1(t$1("editor.error_saving_file", { error: p_error }));
         });
       };
       var v_exp_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
@@ -24603,8 +21422,8 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTab(e);
+      p_clickFunction: function(e2) {
+        showMenuNewTab(e2);
       }
     });
     v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -24628,7 +21447,7 @@
     v_createQueryTabFunction
   }, Symbol.toStringTag, { value: "Module" }));
   var v_createSnippetTextTabFunction = function(p_snippet = null) {
-    var v_name = t("settings.shortcuts.new_snippet");
+    var v_name = t$1("settings.shortcuts.new_snippet");
     var v_details = {
       id: null,
       name: null,
@@ -24656,10 +21475,10 @@
           this.editor.focus();
         }
       },
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_current_tab = p_tab;
         if (v_current_tab.tag.tab_dirty_dot.style.display !== "none") {
-          beforeCloseTab(e, function() {
+          beforeCloseTab(e2, function() {
             removeTab(v_current_tab);
           });
         } else {
@@ -24670,7 +21489,7 @@
     v_connTabControl.snippet_tag.tabControl.selectTab(v_tab);
     var v_tab_dirty_dot = document.createElement("span");
     v_tab_dirty_dot.className = "omnidb__tab-dirty-dot";
-    v_tab_dirty_dot.title = t("editor.unsaved_changes");
+    v_tab_dirty_dot.title = t$1("editor.unsaved_changes");
     v_tab_dirty_dot.style.display = "none";
     v_tab.elementA.appendChild(v_tab_dirty_dot);
     var v_tab_title_span = (
@@ -24693,7 +21512,7 @@
       // in _base.scss) instead of a JS-computed pixel height -- no inline
       // height here, the flex column gives it whatever's left after the
       // action bar below takes its own (fixed) height.
-      '<div id="txt_snippet_' + v_tab.id + '" class="omnidb__snippets__editor-host" style="border-right: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3;"></div><div class="tab_actions omnidb__tab-actions omnidb__tab-actions--no-divider mt-2"><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + t("editor.indent_sql") + '"><i class="fas fa-indent me-2"></i>' + t("common.indent") + '</button><button id="bt_save_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + t("common.save") + '"><i class="fas fa-save me-2"></i>' + t("common.save") + "</button></div>"
+      '<div id="txt_snippet_' + v_tab.id + '" class="omnidb__snippets__editor-host" style="border-right: 1px solid #c3c3c3; border-bottom: 1px solid #c3c3c3;"></div><div class="tab_actions omnidb__tab-actions omnidb__tab-actions--no-divider mt-2"><button id="bt_indent_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--secondary omnidb__tab-actions__btn" title="' + t$1("editor.indent_sql") + '"><i class="fas fa-indent me-2"></i>' + t$1("common.indent") + '</button><button id="bt_save_' + v_tab.id + '" class="btn btn-sm omnidb__theme__btn--primary omnidb__tab-actions__btn" title="' + t$1("common.save") + '"><i class="fas fa-save me-2"></i>' + t$1("common.save") + "</button></div>"
     );
     var v_div = (
       /** @type {HTMLElement} */
@@ -24764,7 +21583,7 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
+      p_clickFunction: function(e2) {
         v_connTabControl.tag.createSnippetTextTab();
       }
     });
@@ -24797,7 +21616,7 @@
     switchSection("database");
     if (v_connTabControl.tag.connections.length == 0) {
       v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
-      showAlert$1(t("connections.create_connections_first"));
+      showAlert$1(t$1("connections.create_connections_first"));
     } else {
       let v_conn = v_connTabControl.tag.connections[0];
       for (let i2 = 0; i2 < v_connTabControl.tag.connections.length; i2++) {
@@ -24857,9 +21676,9 @@
           }
         },
         p_close: true,
-        p_closeFunction: function(e, p_tab) {
+        p_closeFunction: function(e2, p_tab) {
           var v_this_tab = p_tab;
-          beforeCloseTab(e, function() {
+          beforeCloseTab(e2, function() {
             var v_tabs_to_remove = [];
             var v_message_data = { tab_id: p_tab.tag.tab_id, tab_db_id: null };
             v_tabs_to_remove.push(v_message_data);
@@ -24890,7 +21709,7 @@
         p_tooltip_name
       });
       v_connTabControl.selectTab(v_tab);
-      var v_html = `<div style="position: relative; height: 100%;"><div style="display: grid; grid-template-areas: 'left splitter right'; grid-template-columns: auto 12px minmax(0, 1fr); height: 100%;"><div id="` + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="grid-area: left; max-width: 300px; width: 300px;"><div class="omnidb__workspace__content-left"><div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div><div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div><div id="' + v_tab.id + '_left_resize_line_horizontal" class="resize_line_horizontal omnidb__resize-line__container" style="position: relative; width: 100%; height: 12px; cursor: ns-resize;"><button id="bt_toggle_tree_tabs_' + v_tab.id + '" type="button" class="omnidb__tree-tabs__toggler" title="' + t("workspace.toggle_properties_ddl_panel") + '"><i class="fas fa-arrows-alt-v"></i></button></div><div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;"><div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;"><div class="div_loading_cover"></div><div class="div_loading_content">  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">    <span class="sr-only ">' + t("common.loading") + '</span>  </div></div></div><div id="tree_tabs_' + v_tab.id + '" class="omnidb__tree-tabs__container" style="position: relative;"></div></div></div></div><div id="connection_resize_line_' + v_tab.id + '" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; z-index: 10; background-color: var(--panel-bg);"><div class="resize_line_vertical omnidb__resize-line__container" style="height: 100%;"></div><button id="bt_toggle_tree_container_' + v_tab.id + '" type="button" class="omnidb__tree__toggler" title="' + t("workspace.toggle_database_tree") + '"><i class="fas fa-arrows-alt-h"></i></button></div><div id="' + v_tab.id + '_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;"><div id="' + v_tab.id + '_tabs" class="w-100"></div></div></div></div>';
+      var v_html = `<div style="position: relative; height: 100%;"><div style="display: grid; grid-template-areas: 'left splitter right'; grid-template-columns: auto 12px minmax(0, 1fr); height: 100%;"><div id="` + v_tab.id + '_div_left" class="omnidb__workspace__div-left col" style="grid-area: left; max-width: 300px; width: 300px;"><div class="omnidb__workspace__content-left"><div id="' + v_tab.id + '_details" class="omnidb__workspace__connection-details"></div><div id="' + v_tab.id + '_tree" style="overflow-y: auto; flex-grow: 1; min-height: 0; transition: scroll 0.3s;"></div><div id="' + v_tab.id + '_left_resize_line_horizontal" class="resize_line_horizontal omnidb__resize-line__container" style="position: relative; width: 100%; height: 12px; cursor: ns-resize;"><button id="bt_toggle_tree_tabs_' + v_tab.id + '" type="button" class="omnidb__tree-tabs__toggler" title="' + t$1("workspace.toggle_properties_ddl_panel") + '"><i class="fas fa-arrows-alt-v"></i></button></div><div id="tree_tabs_parent_' + v_tab.id + '" class="omnidb__tree-tabs" style="position: relative; flex-shrink: 0; flex-basis: 280px;"><div id="' + v_tab.id + '_loading" class="div_loading" style="z-index: 1000;"><div class="div_loading_cover"></div><div class="div_loading_content">  <div class="spinner-border text-primary" style="width: 4rem; height: 4rem;" role="status">    <span class="sr-only ">' + t$1("common.loading") + '</span>  </div></div></div><div id="tree_tabs_' + v_tab.id + '" class="omnidb__tree-tabs__container" style="position: relative;"></div></div></div></div><div id="connection_resize_line_' + v_tab.id + '" style="grid-area: splitter; position: relative; height: 100%; width: 12px; cursor: ew-resize; z-index: 10; background-color: var(--panel-bg);"><div class="resize_line_vertical omnidb__resize-line__container" style="height: 100%;"></div><button id="bt_toggle_tree_container_' + v_tab.id + '" type="button" class="omnidb__tree__toggler" title="' + t$1("workspace.toggle_database_tree") + '"><i class="fas fa-arrows-alt-h"></i></button></div><div id="' + v_tab.id + '_div_right" class="omnidb__workspace__div-right col" style="grid-area: right; position: relative;"><div id="' + v_tab.id + '_tabs" class="w-100"></div></div></div></div>';
       var v_tab_title_span = v_tab.elementA.querySelector(".omnidb__tab-menu__link-name");
       if (v_tab_title_span) {
         v_tab_title_span.id = "tab_title_" + v_tab.id;
@@ -24932,16 +21751,16 @@
         refreshTreeHeight();
       };
       var v_properties_tab = v_treeTabs.createTab({
-        p_name: t("workspace.properties_tab"),
+        p_name: t$1("workspace.properties_tab"),
         p_close: false,
-        p_clickFunction: function(e) {
+        p_clickFunction: function(e2) {
           v_selectPropertiesTabFunc();
         }
       });
       var v_ddl_tab = v_treeTabs.createTab({
-        p_name: t("workspace.ddl_tab"),
+        p_name: t$1("workspace.ddl_tab"),
         p_close: false,
-        p_clickFunction: function(e) {
+        p_clickFunction: function(e2) {
           v_selectDDLTabFunc();
         }
       });
@@ -24955,8 +21774,8 @@
         p_close: false,
         p_selectable: false,
         p_isDraggable: false,
-        p_clickFunction: function(e) {
-          showMenuNewTab(e);
+        p_clickFunction: function(e2) {
+          showMenuNewTab(e2);
         }
       });
       v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -24986,11 +21805,11 @@
       var v_ddlProperties = v_ddl_tab.elementDiv;
       var columnProperties = [];
       var col = {};
-      col.title = t("workspace.property_column");
+      col.title = t$1("workspace.property_column");
       col.readOnly = true;
       columnProperties.push(col);
       var col = {};
-      col.title = t("workspace.value_column");
+      col.title = t$1("workspace.value_column");
       col.readOnly = true;
       columnProperties.push(col);
       var ht = new Handsontable(v_divProperties, {
@@ -25106,7 +21925,7 @@
     development: "omnidb__tab--env-development",
     archive: "omnidb__tab--env-archive"
   };
-  var v_createOuterTerminalTabFunction = function(p_conn_id = -1, p_alias = t("connections.terminal"), p_details = false, p_environment = "") {
+  var v_createOuterTerminalTabFunction = function(p_conn_id = -1, p_alias = t$1("connections.terminal"), p_details = false, p_environment = "") {
     let v_tooltip_name = "";
     if (p_alias) {
       v_tooltip_name += '<h5 class="my-1">' + escapeHtml(p_alias) + "</h5>";
@@ -25127,15 +21946,15 @@
         }
       },
       p_close: true,
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_this_tab = p_tab;
-        beforeCloseTab(e, function() {
+        beforeCloseTab(e2, function() {
           createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: v_this_tab.tag.tab_id, tab_db_id: null }]);
           v_this_tab.removeTab();
         });
       },
-      p_rightClickFunction: function(e) {
-        terminalContextMenu(e, v_tab);
+      p_rightClickFunction: function(e2) {
+        terminalContextMenu(e2, v_tab);
       },
       p_tooltip_name: v_tooltip_name
     });
@@ -25195,10 +22014,10 @@
       return p_response.json();
     }).then(function(p_result) {
       if (p_result && p_result.error) {
-        showAlert$1(t("workspace.error_opening_link_detail", { error: p_result.error }));
+        showAlert$1(t$1("workspace.error_opening_link_detail", { error: p_result.error }));
       }
     }).catch(function() {
-      showAlert$1(t("workspace.error_opening_link"));
+      showAlert$1(t$1("workspace.error_opening_link"));
     });
   };
   var v_createWebsiteTabFunction = function(p_name, p_site) {
@@ -25219,9 +22038,9 @@
           this.tag.resize();
         }
       },
-      p_closeFunction: function(e, p_tab) {
+      p_closeFunction: function(e2, p_tab) {
         var v_current_tab = p_tab;
-        beforeCloseTab(e, function() {
+        beforeCloseTab(e2, function() {
           if (p_close_function != null) {
             p_close_function();
           }
@@ -25256,8 +22075,8 @@
       p_close: false,
       p_selectable: false,
       p_isDraggable: false,
-      p_clickFunction: function(e) {
-        showMenuNewTabOuter(e);
+      p_clickFunction: function(e2) {
+        showMenuNewTabOuter(e2);
       }
     });
     v_add_tab.elementA.classList.add("omnidb__tab-menu__link--compact");
@@ -25278,8 +22097,8 @@
         p_close: false,
         p_selectable: false,
         p_isDraggable: false,
-        p_clickFunction: function(e) {
-          showMenuNewTabOuter(e);
+        p_clickFunction: function(e2) {
+          showMenuNewTabOuter(e2);
         },
         p_tooltip_name: '<h5 class="my-1">Add Connection</h5>'
       });
@@ -25302,17 +22121,17 @@
     v_connTabControl.tag.createGraphTab = v_createGraphTabFunction;
     v_connTabControl.tag.createOuterTerminalTab = v_createOuterTerminalTabFunction;
   }
-  function beforeCloseTab(e, p_confirm_function) {
-    if (e) {
-      if (e.clientX == 0 && e.clientY == 0)
-        showConfirm(t("confirm.remove_tab"), function() {
+  function beforeCloseTab(e2, p_confirm_function) {
+    if (e2) {
+      if (e2.clientX == 0 && e2.clientY == 0)
+        showConfirm(t$1("confirm.remove_tab"), function() {
           p_confirm_function();
         });
       else {
         customMenu(
           {
-            x: e.clientX + 5,
-            y: e.clientY + 5
+            x: e2.clientX + 5,
+            y: e2.clientY + 5
           },
           [
             {
@@ -25481,9 +22300,9 @@
 			</g>
 	</svg>`;
     let v_html_title = '<div class="d-flex justify-content-center mb-4"><span class="omnidb__welcome__logo">' + v_animated_omnis + "</span></div>";
-    let v_html_intro = '<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center">' + t("welcome.intro") + '</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started"><i class="fas fa-list me-2"></i>' + t("welcome.getting_started_button") + `</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-info-circle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">` + t("welcome.callout") + "</div></div></div>";
-    let v_html_useful_links = '<div class="alert alert-success p-3 omnidb__welcome__useful-card"><h2 class="text-center mb-4">' + t("welcome.useful_stuff") + '</h2><ul><li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net"><i class="fas fa-globe-americas"></i> <span>' + t("welcome.omnidb_web") + '</span></a></li><li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>' + t("welcome.github_repo") + '</span></a></li><li><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net/en/introduction.html"><i class="fas fa-list"></i> <span>' + t("welcome.read_the_docs") + "</span></a></li></ul></div>";
-    let v_html_about = '<div class="card p-3 mt-3 text-center"><span class="badge bg-light text-dark border p-2 mb-2"><i class="fas fa-code-branch me-1"></i> ' + t("modals.about.version_line", { version: v_short_version }) + '</span><span class="badge bg-light text-dark border p-2"><i class="fas fa-balance-scale me-1"></i> ' + t("modals.about.license") + "</span></div>";
+    let v_html_intro = '<div class="card p-3 omnidb__welcome__intro-card"><p class="text-center">' + t$1("welcome.intro") + '</p><button type="button" class="btn btn-lg omnidb__theme__btn--primary w-auto mx-auto my-4" data-omnidb-action="start-tutorial" data-omnidb-arg="getting_started"><i class="fas fa-list me-2"></i>' + t$1("welcome.getting_started_button") + `</button><div class="alert-info p-2 rounded mt-4" style="display: grid; grid-template: 'icon text';"><i class="fas fa-info-circle p-4" style="grid-area: icon;"></i><div style="grid-area: text;">` + t$1("welcome.callout") + "</div></div></div>";
+    let v_html_useful_links = '<div class="alert alert-success p-3 omnidb__welcome__useful-card"><h2 class="text-center mb-4">' + t$1("welcome.useful_stuff") + '</h2><ul><li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net"><i class="fas fa-globe-americas"></i> <span>' + t$1("welcome.omnidb_web") + '</span></a></li><li class="mb-2"><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://github.com/heptau/omnidb"><i class="fab fa-github"></i> <span>' + t$1("welcome.github_repo") + '</span></a></li><li><a class="btn btn-success text-white" href="#" data-omnidb-action="open-external-url" data-omnidb-arg="https://www.omnidb.net/en/introduction.html"><i class="fas fa-list"></i> <span>' + t$1("welcome.read_the_docs") + "</span></a></li></ul></div>";
+    let v_html_about = '<div class="card p-3 mt-3 text-center"><span class="badge bg-light text-dark border p-2 mb-2"><i class="fas fa-code-branch me-1"></i> ' + t$1("modals.about.version_line", { version: v_short_version }) + '</span><span class="badge bg-light text-dark border p-2"><i class="fas fa-balance-scale me-1"></i> ' + t$1("modals.about.license") + "</span></div>";
     var v_html = `<div class="container" style="position: relative;"><div class="row"><div class="col-12"><div id="welcome_content" class="omnidb__welcome" style="height: 100vh;display: flex;align-items: center;font-size: 1.2rem;justify-content: center;"><div><div style="display: grid; grid-template: 'intro getting_started links'; grid-gap: 64px;"><div style="grid-area: intro;">` + v_html_title + v_html_intro + '</div><div style="grid-area: links;">' + v_html_useful_links + v_html_about + "</div></div></div></div></div></div>";
     v_target.innerHTML = v_html;
     endLoading();
@@ -25498,7 +22317,7 @@
       cm_server: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25513,14 +22332,14 @@
       cm_connection: {
         elements: [
           {
-            text: t("tree.render_graph"),
+            text: t$1("tree.render_graph"),
             icon: "fab cm-all fa-hubspot",
             action: function(node) {
             },
             submenu: {
               elements: [
                 {
-                  text: t("tree.simple_graph"),
+                  text: t$1("tree.simple_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -25528,7 +22347,7 @@
                   }
                 },
                 {
-                  text: t("tree.complete_graph"),
+                  text: t$1("tree.complete_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -25543,7 +22362,7 @@
       cm_tablespaces: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25554,10 +22373,10 @@
             }
           },
           {
-            text: t("tree.create_tablespace"),
+            text: t$1("tree.create_tablespace"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_tablespace"), node.tree.tag.create_tablespace);
+              tabSQLTemplate(t$1("tree.create_tablespace"), node.tree.tag.create_tablespace);
             }
           }
         ]
@@ -25565,17 +22384,17 @@
       cm_tablespace: {
         elements: [
           {
-            text: t("tree.alter_tablespace"),
+            text: t$1("tree.alter_tablespace"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_tablespace"), node.tree.tag.alter_tablespace.replace("#tablespace_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_tablespace"), node.tree.tag.alter_tablespace.replace("#tablespace_name#", node.text));
             }
           },
           {
-            text: t("tree.drop_tablespace"),
+            text: t$1("tree.drop_tablespace"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_tablespace"), node.tree.tag.drop_tablespace.replace("#tablespace_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_tablespace"), node.tree.tag.drop_tablespace.replace("#tablespace_name#", node.text));
             }
           }
         ]
@@ -25583,7 +22402,7 @@
       cm_roles: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25594,10 +22413,10 @@
             }
           },
           {
-            text: t("tree.create_role"),
+            text: t$1("tree.create_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_role"), node.tree.tag.create_role);
+              tabSQLTemplate(t$1("tree.create_role"), node.tree.tag.create_role);
             }
           }
         ]
@@ -25605,17 +22424,17 @@
       cm_role: {
         elements: [
           {
-            text: t("tree.alter_role"),
+            text: t$1("tree.alter_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
             }
           },
           {
-            text: t("tree.drop_role"),
+            text: t$1("tree.drop_role"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
             }
           }
         ]
@@ -25623,7 +22442,7 @@
       cm_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25634,10 +22453,10 @@
             }
           },
           {
-            text: t("tree.create_table"),
+            text: t$1("tree.create_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.tree.tag.v_username));
+              tabSQLTemplate(t$1("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.tree.tag.v_username));
             }
           }
         ]
@@ -25645,7 +22464,7 @@
       cm_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25656,44 +22475,44 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectOracle(node.tree.tag.v_username, node.text);
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text, node.tree.tag.v_username);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertOracle(node.tree.tag.v_username, node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdateOracle(node.tree.tag.v_username, node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.delete_records"),
+                      t$1("tree.delete_records"),
                       node.tree.tag.delete.replace("#table_name#", node.tree.tag.v_username + "." + node.text)
                     );
                   }
@@ -25702,26 +22521,26 @@
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.alter_table_sql"),
+                  text: t$1("tree.alter_table_sql"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.alter_table"),
+                      t$1("tree.alter_table"),
                       node.tree.tag.alter_table.replace("#table_name#", node.tree.tag.v_username + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.drop_table"),
+                  text: t$1("tree.drop_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.drop_table"),
+                      t$1("tree.drop_table"),
                       node.tree.tag.drop_table.replace("#table_name#", node.tree.tag.v_username + "." + node.text)
                     );
                   }
@@ -25734,11 +22553,11 @@
       cm_columns: {
         elements: [
           {
-            text: t("tree.create_column"),
+            text: t$1("tree.create_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_field"),
+                t$1("tree.create_field"),
                 node.tree.tag.create_column.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
               );
             }
@@ -25748,21 +22567,21 @@
       cm_column: {
         elements: [
           {
-            text: t("tree.alter_column"),
+            text: t$1("tree.alter_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_column"),
+                t$1("tree.alter_column"),
                 node.tree.tag.alter_column.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
           },
           {
-            text: t("tree.drop_column"),
+            text: t$1("tree.drop_column"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_column"),
+                t$1("tree.drop_column"),
                 node.tree.tag.drop_column.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
@@ -25772,7 +22591,7 @@
       cm_pks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25783,11 +22602,11 @@
             }
           },
           {
-            text: t("tree.create_primary_key"),
+            text: t$1("tree.create_primary_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_primary_key"),
+                t$1("tree.create_primary_key"),
                 node.tree.tag.create_primarykey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
               );
             }
@@ -25797,7 +22616,7 @@
       cm_pk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25808,11 +22627,11 @@
             }
           },
           {
-            text: t("tree.drop_primary_key"),
+            text: t$1("tree.drop_primary_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_primary_key"),
+                t$1("tree.drop_primary_key"),
                 node.tree.tag.drop_primarykey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -25822,7 +22641,7 @@
       cm_fks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25833,11 +22652,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_key"),
+            text: t$1("tree.create_foreign_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_key"),
+                t$1("tree.create_foreign_key"),
                 node.tree.tag.create_foreignkey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
               );
             }
@@ -25847,7 +22666,7 @@
       cm_fk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25858,11 +22677,11 @@
             }
           },
           {
-            text: t("tree.drop_foreign_key"),
+            text: t$1("tree.drop_foreign_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_foreign_key"),
+                t$1("tree.drop_foreign_key"),
                 node.tree.tag.drop_foreignkey.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -25872,7 +22691,7 @@
       cm_uniques: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25883,11 +22702,11 @@
             }
           },
           {
-            text: t("tree.create_unique"),
+            text: t$1("tree.create_unique"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_unique"),
+                t$1("tree.create_unique"),
                 node.tree.tag.create_unique.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
               );
             }
@@ -25897,7 +22716,7 @@
       cm_unique: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25908,11 +22727,11 @@
             }
           },
           {
-            text: t("tree.drop_unique"),
+            text: t$1("tree.drop_unique"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_unique"),
+                t$1("tree.drop_unique"),
                 node.tree.tag.drop_unique.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -25922,7 +22741,7 @@
       cm_indexes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25933,11 +22752,11 @@
             }
           },
           {
-            text: t("tree.create_index"),
+            text: t$1("tree.create_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_index"),
+                t$1("tree.create_index"),
                 node.tree.tag.create_index.replace("#table_name#", node.tree.tag.v_username + "." + node.parent.text)
               );
             }
@@ -25947,7 +22766,7 @@
       cm_index: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25958,11 +22777,11 @@
             }
           },
           {
-            text: t("tree.alter_index"),
+            text: t$1("tree.alter_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_index"),
+                t$1("tree.alter_index"),
                 node.tree.tag.alter_index.replace(
                   "#index_name#",
                   node.tree.tag.v_username + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -25971,11 +22790,11 @@
             }
           },
           {
-            text: t("tree.drop_index"),
+            text: t$1("tree.drop_index"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_index"),
+                t$1("tree.drop_index"),
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
                   node.tree.tag.v_username + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -25988,7 +22807,7 @@
       cm_sequences: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -25999,11 +22818,11 @@
             }
           },
           {
-            text: t("tree.create_sequence"),
+            text: t$1("tree.create_sequence"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_sequence"),
+                t$1("tree.create_sequence"),
                 node.tree.tag.create_sequence.replace("#schema_name#", node.tree.tag.v_username)
               );
             }
@@ -26013,21 +22832,21 @@
       cm_sequence: {
         elements: [
           {
-            text: t("tree.alter_sequence"),
+            text: t$1("tree.alter_sequence"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_sequence"),
+                t$1("tree.alter_sequence"),
                 node.tree.tag.alter_sequence.replace("#sequence_name#", node.tree.tag.v_username + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.drop_sequence"),
+            text: t$1("tree.drop_sequence"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_sequence"),
+                t$1("tree.drop_sequence"),
                 node.tree.tag.drop_sequence.replace("#sequence_name#", node.tree.tag.v_username + "." + node.text)
               );
             }
@@ -26037,7 +22856,7 @@
       cm_views: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -26048,10 +22867,10 @@
             }
           },
           {
-            text: t("tree.create_view"),
+            text: t$1("tree.create_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.tree.tag.v_username));
+              tabSQLTemplate(t$1("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.tree.tag.v_username));
             }
           }
         ]
@@ -26059,7 +22878,7 @@
       cm_view: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -26070,7 +22889,7 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               var v_table_name = "";
@@ -26085,7 +22904,7 @@
             }
           },
           {
-            text: t("tree.edit_view"),
+            text: t$1("tree.edit_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -26093,11 +22912,11 @@
             }
           },
           {
-            text: t("tree.drop_view"),
+            text: t$1("tree.drop_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_view"),
+                t$1("tree.drop_view"),
                 node.tree.tag.drop_view.replace("#view_name#", node.tree.tag.v_username + "." + node.text)
               );
             }
@@ -26270,7 +23089,7 @@
       cm_functions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -26281,11 +23100,11 @@
             }
           },
           {
-            text: t("tree.create_function"),
+            text: t$1("tree.create_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_function"),
+                t$1("tree.create_function"),
                 node.tree.tag.create_function.replace("#schema_name#", node.tree.tag.v_username)
               );
             }
@@ -26295,7 +23114,7 @@
       cm_function: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -26306,7 +23125,7 @@
             }
           },
           {
-            text: t("tree.edit_function"),
+            text: t$1("tree.edit_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -26314,10 +23133,10 @@
             }
           },
           {
-            text: t("tree.drop_function"),
+            text: t$1("tree.drop_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -26325,7 +23144,7 @@
       cm_procedures: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -26336,11 +23155,11 @@
             }
           },
           {
-            text: t("tree.create_procedure"),
+            text: t$1("tree.create_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_procedure"),
+                t$1("tree.create_procedure"),
                 node.tree.tag.create_procedure.replace("#schema_name#", node.tree.tag.v_username)
               );
             }
@@ -26350,7 +23169,7 @@
       cm_procedure: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -26361,7 +23180,7 @@
             }
           },
           {
-            text: t("tree.edit_procedure"),
+            text: t$1("tree.edit_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -26369,10 +23188,10 @@
             }
           },
           {
-            text: t("tree.drop_procedure"),
+            text: t$1("tree.drop_procedure"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -26548,7 +23367,7 @@
       cm_refresh: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -26564,7 +23383,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t$1("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -26749,7 +23568,7 @@
       function(p_return) {
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.refresh"),
+          text: t$1("tree.refresh"),
           icon: "fas cm-all fa-sync-alt",
           action: function(node2) {
             if (node2.childNodes == 0) refreshTreeOracle(node2);
@@ -26825,7 +23644,7 @@
         );
         if (node.tree.tag.superuser) {
           var node_tablespaces = node.createChildNode(
-            t("tree.tablespaces"),
+            t$1("tree.tablespaces"),
             false,
             "fas node-all fa-folder-open node-tablespace-list",
             {
@@ -26836,7 +23655,7 @@
           );
           node_tablespaces.createChildNode("", true, "node-spin", null, null);
           var node_roles = node.createChildNode(
-            t("tree.roles"),
+            t$1("tree.roles"),
             false,
             "fas node-all fa-users node-user-list",
             {
@@ -26848,7 +23667,7 @@
           node_roles.createChildNode("", true, "node-spin", null, null);
         }
         var node_tables = node_connection.createChildNode(
-          t("tree.tables"),
+          t$1("tree.tables"),
           false,
           "fas node-all fa-th node-table-list",
           {
@@ -26859,7 +23678,7 @@
         );
         node_tables.createChildNode("", true, "node-spin", null, null);
         var node_sequences = node_connection.createChildNode(
-          t("tree.topic_sequences"),
+          t$1("tree.topic_sequences"),
           false,
           "fas node-all fa-sort-numeric-down node-sequence-list",
           {
@@ -26870,7 +23689,7 @@
         );
         node_sequences.createChildNode("", true, "node-spin", null, null);
         var node_views = node_connection.createChildNode(
-          t("tree.views"),
+          t$1("tree.views"),
           false,
           "fas node-all fa-eye node-view-list",
           {
@@ -26881,7 +23700,7 @@
         );
         node_views.createChildNode("", true, "node-spin", null, null);
         var node_functions = node_connection.createChildNode(
-          t("tree.functions"),
+          t$1("tree.functions"),
           false,
           "fas node-all fa-cog node-function-list",
           {
@@ -26892,7 +23711,7 @@
         );
         node_functions.createChildNode("", true, "node-spin", null, null);
         var node_functions = node_connection.createChildNode(
-          t("tree.topic_procedures"),
+          t$1("tree.topic_procedures"),
           false,
           "fas node-all fa-cog node-procedure-list",
           {
@@ -26925,7 +23744,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tablespaces") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tablespaces") + " (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           v_node$5 = node.createChildNode(
@@ -26961,7 +23780,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.roles") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.roles") + " (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           v_node$5 = node.createChildNode(
@@ -26998,7 +23817,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           v_node$5 = node.createChildNode(
@@ -27055,7 +23874,7 @@
         p_schema: null
       }),
       function(p_return) {
-        node.setText(t("tree.topic_sequences") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_sequences") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
@@ -27093,7 +23912,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           v_node$5 = node.createChildNode(
@@ -27144,7 +23963,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$5 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           null,
@@ -27165,7 +23984,7 @@
             false
           );
           v_node$5.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$6].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$6].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27176,7 +23995,7 @@
         }
         if (node.tag.has_rules) {
           v_node$5 = node.createChildNode(
-            t("tree.topic_rules"),
+            t$1("tree.topic_rules"),
             false,
             "fas node-all fa-lightbulb node-rule",
             {
@@ -27190,7 +24009,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$5 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -27254,7 +24073,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$5 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -27277,7 +24096,7 @@
             false
           );
           v_node$5.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$6].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$6].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27286,7 +24105,7 @@
             false
           );
           v_node$5.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$6].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$6].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27297,7 +24116,7 @@
         }
         if (node.tag.has_primary_keys) {
           v_node$5 = node.createChildNode(
-            t("tree.primary_key"),
+            t$1("tree.primary_key"),
             false,
             "fas node-all fa-key node-pkey",
             {
@@ -27311,7 +24130,7 @@
         }
         if (node.tag.has_foreign_keys) {
           v_node$5 = node.createChildNode(
-            t("tree.foreign_keys"),
+            t$1("tree.foreign_keys"),
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -27325,7 +24144,7 @@
         }
         if (node.tag.has_uniques) {
           v_node$5 = node.createChildNode(
-            t("tree.uniques"),
+            t$1("tree.uniques"),
             false,
             "fas node-all fa-key node-unique",
             {
@@ -27339,7 +24158,7 @@
         }
         if (node.tag.has_indexes) {
           v_node$5 = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -27353,7 +24172,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$5 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -27367,7 +24186,7 @@
         }
         if (node.tag.has_partitions) {
           v_node$5 = node.createChildNode(
-            t("tree.partitions"),
+            t$1("tree.partitions"),
             false,
             "fas node-all fa-table node-partition",
             {
@@ -27401,7 +24220,7 @@
         p_schema: null
       }),
       function(p_return) {
-        node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.primary_key") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -27481,7 +24300,7 @@
         p_schema: null
       }),
       function(p_return) {
-        node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.uniques") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
@@ -27568,7 +24387,7 @@
         p_schema: null
       }),
       function(p_return) {
-        node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.indexes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -27656,7 +24475,7 @@
         p_schema: null
       }),
       function(p_return) {
-        node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           v_node$5 = node.createChildNode(
@@ -27671,7 +24490,7 @@
             false
           );
           v_node$5.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[i$6][1],
+            t$1("tree.prop_referenced_table") + p_return.v_data[i$6][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -27680,7 +24499,7 @@
             false
           );
           v_node$5.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[i$6][2],
+            t$1("tree.prop_delete_rule") + p_return.v_data[i$6][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27689,7 +24508,7 @@
             false
           );
           v_node$5.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[i$6][3],
+            t$1("tree.prop_update_rule") + p_return.v_data[i$6][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -27723,7 +24542,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.createChildNode(
-          t("tree.prop_referenced_table") + p_return.v_data[0][0],
+          t$1("tree.prop_referenced_table") + p_return.v_data[0][0],
           false,
           "fas node-all fa-table node-table",
           null,
@@ -27732,7 +24551,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_delete_rule") + p_return.v_data[0][1],
+          t$1("tree.prop_delete_rule") + p_return.v_data[0][1],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           null,
@@ -27741,7 +24560,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_update_rule") + p_return.v_data[0][2],
+          t$1("tree.prop_update_rule") + p_return.v_data[0][2],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           null,
@@ -27782,7 +24601,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           v_node$5 = node.createChildNode(
@@ -27916,7 +24735,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$6 = 0; i$6 < p_return.v_data.length; i$6++) {
           v_node$5 = node.createChildNode(
@@ -28076,7 +24895,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -28098,7 +24917,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -28171,7 +24990,7 @@
   }
   function oracleTerminateBackend(p_row) {
     var v_pid = p_row[1] + "," + p_row[2];
-    showConfirm(t("tree.confirm_terminate_session", { pid: v_pid }), function() {
+    showConfirm(t$1("tree.confirm_terminate_session", { pid: v_pid }), function() {
       oracleTerminateBackendConfirm(v_pid);
     });
   }
@@ -28217,7 +25036,7 @@
       cm_server: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28232,7 +25051,7 @@
       cm_databases: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28243,10 +25062,10 @@
             }
           },
           {
-            text: t("tree.create_database"),
+            text: t$1("tree.create_database"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_database"), node.tree.tag.create_database);
+              tabSQLTemplate(t$1("tree.create_database"), node.tree.tag.create_database);
             }
           }
         ]
@@ -28254,14 +25073,14 @@
       cm_database: {
         elements: [
           {
-            text: t("tree.render_graph"),
+            text: t$1("tree.render_graph"),
             icon: "fab cm-all fa-hubspot",
             action: function(node) {
             },
             submenu: {
               elements: [
                 {
-                  text: t("tree.simple_graph"),
+                  text: t$1("tree.simple_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -28269,7 +25088,7 @@
                   }
                 },
                 {
-                  text: t("tree.complete_graph"),
+                  text: t$1("tree.complete_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -28280,17 +25099,17 @@
             }
           },
           {
-            text: t("tree.alter_database"),
+            text: t$1("tree.alter_database"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_database"), node.tree.tag.alter_database.replace("#database_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_database"), node.tree.tag.alter_database.replace("#database_name#", node.text));
             }
           },
           {
-            text: t("tree.drop_database"),
+            text: t$1("tree.drop_database"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
             }
           }
         ]
@@ -28298,7 +25117,7 @@
       cm_roles: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28309,10 +25128,10 @@
             }
           },
           {
-            text: t("tree.create_role"),
+            text: t$1("tree.create_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_role"), node.tree.tag.create_role);
+              tabSQLTemplate(t$1("tree.create_role"), node.tree.tag.create_role);
             }
           }
         ]
@@ -28320,17 +25139,17 @@
       cm_role: {
         elements: [
           {
-            text: t("tree.alter_role"),
+            text: t$1("tree.alter_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
             }
           },
           {
-            text: t("tree.drop_role"),
+            text: t$1("tree.drop_role"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
             }
           }
         ]
@@ -28338,7 +25157,7 @@
       cm_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28349,10 +25168,10 @@
             }
           },
           {
-            text: t("tree.create_table"),
+            text: t$1("tree.create_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -28360,7 +25179,7 @@
       cm_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28371,44 +25190,44 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectMariadb(node.parent.parent.text, node.text);
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text, node.parent.parent.text);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertMariadb(node.parent.parent.text, node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdateMariadb(node.parent.parent.text, node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.delete_records"),
+                      t$1("tree.delete_records"),
                       node.tree.tag.delete.replace("#table_name#", node.parent.parent.text + "." + node.text)
                     );
                   }
@@ -28417,26 +25236,26 @@
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.alter_table_sql"),
+                  text: t$1("tree.alter_table_sql"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.alter_table"),
+                      t$1("tree.alter_table"),
                       node.tree.tag.alter_table.replace("#table_name#", node.parent.parent.text + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.drop_table"),
+                  text: t$1("tree.drop_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.drop_table"),
+                      t$1("tree.drop_table"),
                       node.tree.tag.drop_table.replace("#table_name#", node.parent.parent.text + "." + node.text)
                     );
                   }
@@ -28449,11 +25268,11 @@
       cm_columns: {
         elements: [
           {
-            text: t("tree.create_column"),
+            text: t$1("tree.create_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_field"),
+                t$1("tree.create_field"),
                 node.tree.tag.create_column.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -28466,21 +25285,21 @@
       cm_column: {
         elements: [
           {
-            text: t("tree.alter_column"),
+            text: t$1("tree.alter_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_column"),
+                t$1("tree.alter_column"),
                 node.tree.tag.alter_column.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
           },
           {
-            text: t("tree.drop_column"),
+            text: t$1("tree.drop_column"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_column"),
+                t$1("tree.drop_column"),
                 node.tree.tag.drop_column.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
@@ -28490,7 +25309,7 @@
       cm_pks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28501,11 +25320,11 @@
             }
           },
           {
-            text: t("tree.create_primary_key"),
+            text: t$1("tree.create_primary_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_primary_key"),
+                t$1("tree.create_primary_key"),
                 node.tree.tag.create_primarykey.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -28518,7 +25337,7 @@
       cm_pk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28529,11 +25348,11 @@
             }
           },
           {
-            text: t("tree.drop_primary_key"),
+            text: t$1("tree.drop_primary_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_primary_key"),
+                t$1("tree.drop_primary_key"),
                 node.tree.tag.drop_primarykey.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -28543,7 +25362,7 @@
       cm_fks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28554,11 +25373,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_key"),
+            text: t$1("tree.create_foreign_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_key"),
+                t$1("tree.create_foreign_key"),
                 node.tree.tag.create_foreignkey.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -28571,7 +25390,7 @@
       cm_fk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28582,11 +25401,11 @@
             }
           },
           {
-            text: t("tree.drop_foreign_key"),
+            text: t$1("tree.drop_foreign_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_foreign_key"),
+                t$1("tree.drop_foreign_key"),
                 node.tree.tag.drop_foreignkey.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -28596,7 +25415,7 @@
       cm_uniques: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28607,11 +25426,11 @@
             }
           },
           {
-            text: t("tree.create_unique"),
+            text: t$1("tree.create_unique"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_unique"),
+                t$1("tree.create_unique"),
                 node.tree.tag.create_unique.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -28624,7 +25443,7 @@
       cm_unique: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28635,11 +25454,11 @@
             }
           },
           {
-            text: t("tree.drop_unique"),
+            text: t$1("tree.drop_unique"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_unique"),
+                t$1("tree.drop_unique"),
                 node.tree.tag.drop_unique.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -28649,7 +25468,7 @@
       cm_indexes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28660,11 +25479,11 @@
             }
           },
           {
-            text: t("tree.create_index"),
+            text: t$1("tree.create_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_index"),
+                t$1("tree.create_index"),
                 node.tree.tag.create_index.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -28677,7 +25496,7 @@
       cm_index: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28688,11 +25507,11 @@
             }
           },
           {
-            text: t("tree.drop_index"),
+            text: t$1("tree.drop_index"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_index"),
+                t$1("tree.drop_index"),
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
                   node.parent.parent.parent.parent.text + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -28705,7 +25524,7 @@
       cm_sequences: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeOracle(node);
@@ -28716,10 +25535,10 @@
             }
           },
           {
-            text: t("tree.create_sequence"),
+            text: t$1("tree.create_sequence"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_sequence"), node.tree.tag.create_sequence.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_sequence"), node.tree.tag.create_sequence.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -28727,21 +25546,21 @@
       cm_sequence: {
         elements: [
           {
-            text: t("tree.alter_sequence"),
+            text: t$1("tree.alter_sequence"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_sequence"),
+                t$1("tree.alter_sequence"),
                 node.tree.tag.alter_sequence.replace("#sequence_name#", node.parent.parent.text + "." + node.text)
               );
             }
           },
           {
-            text: t("tree.drop_sequence"),
+            text: t$1("tree.drop_sequence"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_sequence"),
+                t$1("tree.drop_sequence"),
                 node.tree.tag.drop_sequence.replace("#sequence_name#", node.parent.parent.text + "." + node.text)
               );
             }
@@ -28751,7 +25570,7 @@
       cm_views: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28762,10 +25581,10 @@
             }
           },
           {
-            text: t("tree.create_view"),
+            text: t$1("tree.create_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -28773,7 +25592,7 @@
       cm_view: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28784,7 +25603,7 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               var v_table_name = "";
@@ -28799,7 +25618,7 @@
             }
           },
           {
-            text: t("tree.edit_view"),
+            text: t$1("tree.edit_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -28807,11 +25626,11 @@
             }
           },
           {
-            text: t("tree.drop_view"),
+            text: t$1("tree.drop_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_view"),
+                t$1("tree.drop_view"),
                 node.tree.tag.drop_view.replace("#view_name#", node.parent.parent.text + "." + node.text)
               );
             }
@@ -28984,7 +25803,7 @@
       cm_functions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -28995,10 +25814,10 @@
             }
           },
           {
-            text: t("tree.create_function"),
+            text: t$1("tree.create_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_function"), node.tree.tag.create_function.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_function"), node.tree.tag.create_function.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -29006,7 +25825,7 @@
       cm_function: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -29017,7 +25836,7 @@
             }
           },
           {
-            text: t("tree.edit_function"),
+            text: t$1("tree.edit_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -29025,10 +25844,10 @@
             }
           },
           {
-            text: t("tree.drop_function"),
+            text: t$1("tree.drop_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -29036,7 +25855,7 @@
       cm_procedures: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -29047,10 +25866,10 @@
             }
           },
           {
-            text: t("tree.create_procedure"),
+            text: t$1("tree.create_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_procedure"), node.tree.tag.create_procedure.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_procedure"), node.tree.tag.create_procedure.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -29058,7 +25877,7 @@
       cm_procedure: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -29069,7 +25888,7 @@
             }
           },
           {
-            text: t("tree.edit_procedure"),
+            text: t$1("tree.edit_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -29077,10 +25896,10 @@
             }
           },
           {
-            text: t("tree.drop_procedure"),
+            text: t$1("tree.drop_procedure"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -29088,7 +25907,7 @@
       cm_refresh: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMariadb(node);
@@ -29104,7 +25923,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t$1("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -29256,7 +26075,7 @@
       function(p_return) {
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.refresh"),
+          text: t$1("tree.refresh"),
           icon: "fas cm-all fa-sync-alt",
           action: function(node2) {
             if (node2.childNodes == 0) refreshTreeMariadb(node2);
@@ -29318,7 +26137,7 @@
         };
         node.setText(p_return.v_data.v_database_return.version);
         var node_databases = node.createChildNode(
-          t("tree.databases"),
+          t$1("tree.databases"),
           false,
           "fas node-all fa-database node-database-list",
           {
@@ -29330,7 +26149,7 @@
         node_databases.createChildNode("", true, "node-spin", null, null);
         if (node.tree.tag.superuser) {
           var node_roles = node.createChildNode(
-            t("tree.roles"),
+            t$1("tree.roles"),
             false,
             "fas node-all fa-users node-user-list",
             {
@@ -29356,7 +26175,7 @@
   function getDatabaseObjectsMariadb(node) {
     node.removeChildNodes();
     var node_tables = node.createChildNode(
-      t("tree.tables"),
+      t$1("tree.tables"),
       false,
       "fas node-all fa-th node-table-list",
       {
@@ -29369,7 +26188,7 @@
     node_tables.createChildNode("", true, "node-spin", null, null);
     if (parseFloat(getMajorVersionMariadb(node.tree.tag.version)) >= 10.3) {
       var node_sequences = node.createChildNode(
-        t("tree.topic_sequences"),
+        t$1("tree.topic_sequences"),
         false,
         "fas node-all fa-sort-numeric-down node-sequence-list",
         {
@@ -29382,7 +26201,7 @@
       node_sequences.createChildNode("", true, "node-spin", null, null);
     }
     var node_views = node.createChildNode(
-      t("tree.views"),
+      t$1("tree.views"),
       false,
       "fas node-all fa-eye node-view-list",
       {
@@ -29394,7 +26213,7 @@
     );
     node_views.createChildNode("", true, "node-spin", null, null);
     var node_functions = node.createChildNode(
-      t("tree.functions"),
+      t$1("tree.functions"),
       false,
       "fas node-all fa-cog node-function-list",
       {
@@ -29406,7 +26225,7 @@
     );
     node_functions.createChildNode("", true, "node-spin", null, null);
     var node_functions = node.createChildNode(
-      t("tree.topic_procedures"),
+      t$1("tree.topic_procedures"),
       false,
       "fas node-all fa-cog node-procedure-list",
       {
@@ -29430,7 +26249,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.databases") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.databases") + " (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           var v_node2 = node.createChildNode(
@@ -29472,7 +26291,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.roles") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.roles") + " (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           v_node$4 = node.createChildNode(
@@ -29510,7 +26329,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           v_node$4 = node.createChildNode(
@@ -29568,7 +26387,7 @@
         p_schema: null
       }),
       function(p_return) {
-        node.setText(t("tree.topic_sequences") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_sequences") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
@@ -29606,7 +26425,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           v_node$4 = node.createChildNode(
@@ -29659,7 +26478,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$4 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           null,
@@ -29681,7 +26500,7 @@
             false
           );
           v_node$4.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$5].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -29692,7 +26511,7 @@
         }
         if (node.tag.has_rules) {
           v_node$4 = node.createChildNode(
-            t("tree.topic_rules"),
+            t$1("tree.topic_rules"),
             false,
             "fas node-all fa-lightbulb node-rule",
             {
@@ -29707,7 +26526,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$4 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -29772,7 +26591,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$4 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -29797,7 +26616,7 @@
             false
           );
           v_node$4.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$5].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$5].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -29806,7 +26625,7 @@
             false
           );
           v_node$4.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$5].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$5].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -29817,7 +26636,7 @@
         }
         if (node.tag.has_primary_keys) {
           v_node$4 = node.createChildNode(
-            t("tree.primary_key"),
+            t$1("tree.primary_key"),
             false,
             "fas node-all fa-key node-pkey",
             {
@@ -29832,7 +26651,7 @@
         }
         if (node.tag.has_foreign_keys) {
           v_node$4 = node.createChildNode(
-            t("tree.foreign_keys"),
+            t$1("tree.foreign_keys"),
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -29847,7 +26666,7 @@
         }
         if (node.tag.has_uniques) {
           v_node$4 = node.createChildNode(
-            t("tree.uniques"),
+            t$1("tree.uniques"),
             false,
             "fas node-all fa-key node-unique",
             {
@@ -29862,7 +26681,7 @@
         }
         if (node.tag.has_indexes) {
           v_node$4 = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -29877,7 +26696,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$4 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -29892,7 +26711,7 @@
         }
         if (node.tag.has_partitions) {
           v_node$4 = node.createChildNode(
-            t("tree.partitions"),
+            t$1("tree.partitions"),
             false,
             "fas node-all fa-table node-partition",
             {
@@ -29927,7 +26746,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.primary_key") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -30009,7 +26828,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.uniques") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
@@ -30098,7 +26917,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.indexes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -30187,7 +27006,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           v_node$4 = node.createChildNode(
@@ -30203,7 +27022,7 @@
             false
           );
           v_node$4.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[i$5][1],
+            t$1("tree.prop_referenced_table") + p_return.v_data[i$5][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -30212,7 +27031,7 @@
             false
           );
           v_node$4.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[i$5][2],
+            t$1("tree.prop_delete_rule") + p_return.v_data[i$5][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -30221,7 +27040,7 @@
             false
           );
           v_node$4.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[i$5][3],
+            t$1("tree.prop_update_rule") + p_return.v_data[i$5][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -30255,7 +27074,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.createChildNode(
-          t("tree.prop_referenced_table") + p_return.v_data[0][0],
+          t$1("tree.prop_referenced_table") + p_return.v_data[0][0],
           false,
           "fas node-all fa-table node-table",
           null,
@@ -30264,7 +27083,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_delete_rule") + p_return.v_data[0][1],
+          t$1("tree.prop_delete_rule") + p_return.v_data[0][1],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           null,
@@ -30273,7 +27092,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_update_rule") + p_return.v_data[0][2],
+          t$1("tree.prop_update_rule") + p_return.v_data[0][2],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           null,
@@ -30314,7 +27133,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           v_node$4 = node.createChildNode(
@@ -30449,7 +27268,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$5 = 0; i$5 < p_return.v_data.length; i$5++) {
           v_node$4 = node.createChildNode(
@@ -30611,7 +27430,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -30633,7 +27452,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -30711,7 +27530,7 @@
     );
   }
   function mariadbTerminateBackend(p_row) {
-    showConfirm(t("tree.confirm_terminate_process", { pid: p_row[0] }), function() {
+    showConfirm(t$1("tree.confirm_terminate_process", { pid: p_row[0] }), function() {
       mariadbTerminateBackendConfirm(parseInt(p_row[0], 10));
     });
   }
@@ -30760,7 +27579,7 @@
       cm_server: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -30775,7 +27594,7 @@
       cm_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -30786,10 +27605,10 @@
             }
           },
           {
-            text: t("tree.create_table"),
+            text: t$1("tree.create_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA));
+              tabSQLTemplate(t$1("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA));
             }
           }
         ]
@@ -30797,7 +27616,7 @@
       cm_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -30808,44 +27627,44 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectMssql(MSSQL_DEFAULT_SCHEMA, node.text);
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text, MSSQL_DEFAULT_SCHEMA);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertMssql(MSSQL_DEFAULT_SCHEMA, node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdateMssql(MSSQL_DEFAULT_SCHEMA, node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.delete_records"),
+                      t$1("tree.delete_records"),
                       node.tree.tag.delete.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
                     );
                   }
@@ -30854,26 +27673,26 @@
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.alter_table_sql"),
+                  text: t$1("tree.alter_table_sql"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.alter_table"),
+                      t$1("tree.alter_table"),
                       node.tree.tag.alter_table.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.drop_table"),
+                  text: t$1("tree.drop_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.drop_table"),
+                      t$1("tree.drop_table"),
                       node.tree.tag.drop_table.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
                     );
                   }
@@ -30886,11 +27705,11 @@
       cm_columns: {
         elements: [
           {
-            text: t("tree.create_column"),
+            text: t$1("tree.create_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_field"),
+                t$1("tree.create_field"),
                 node.tree.tag.create_column.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
               );
             }
@@ -30900,21 +27719,21 @@
       cm_column: {
         elements: [
           {
-            text: t("tree.alter_column"),
+            text: t$1("tree.alter_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_column"),
+                t$1("tree.alter_column"),
                 node.tree.tag.alter_column.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
           },
           {
-            text: t("tree.drop_column"),
+            text: t$1("tree.drop_column"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_column"),
+                t$1("tree.drop_column"),
                 node.tree.tag.drop_column.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
@@ -30924,7 +27743,7 @@
       cm_pks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -30935,11 +27754,11 @@
             }
           },
           {
-            text: t("tree.create_primary_key"),
+            text: t$1("tree.create_primary_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_primary_key"),
+                t$1("tree.create_primary_key"),
                 node.tree.tag.create_primarykey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
               );
             }
@@ -30949,7 +27768,7 @@
       cm_pk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -30960,11 +27779,11 @@
             }
           },
           {
-            text: t("tree.drop_primary_key"),
+            text: t$1("tree.drop_primary_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_primary_key"),
+                t$1("tree.drop_primary_key"),
                 node.tree.tag.drop_primarykey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -30974,7 +27793,7 @@
       cm_fks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -30985,11 +27804,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_key"),
+            text: t$1("tree.create_foreign_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_key"),
+                t$1("tree.create_foreign_key"),
                 node.tree.tag.create_foreignkey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
               );
             }
@@ -30999,7 +27818,7 @@
       cm_fk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31010,11 +27829,11 @@
             }
           },
           {
-            text: t("tree.drop_foreign_key"),
+            text: t$1("tree.drop_foreign_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_foreign_key"),
+                t$1("tree.drop_foreign_key"),
                 node.tree.tag.drop_foreignkey.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -31024,7 +27843,7 @@
       cm_uniques: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31035,11 +27854,11 @@
             }
           },
           {
-            text: t("tree.create_unique"),
+            text: t$1("tree.create_unique"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_unique"),
+                t$1("tree.create_unique"),
                 node.tree.tag.create_unique.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
               );
             }
@@ -31049,7 +27868,7 @@
       cm_unique: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31060,11 +27879,11 @@
             }
           },
           {
-            text: t("tree.drop_unique"),
+            text: t$1("tree.drop_unique"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_unique"),
+                t$1("tree.drop_unique"),
                 node.tree.tag.drop_unique.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -31074,7 +27893,7 @@
       cm_indexes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31085,11 +27904,11 @@
             }
           },
           {
-            text: t("tree.create_index"),
+            text: t$1("tree.create_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_index"),
+                t$1("tree.create_index"),
                 node.tree.tag.create_index.replace("#table_name#", MSSQL_DEFAULT_SCHEMA + "." + node.parent.text)
               );
             }
@@ -31099,7 +27918,7 @@
       cm_index: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31110,11 +27929,11 @@
             }
           },
           {
-            text: t("tree.alter_index"),
+            text: t$1("tree.alter_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_index"),
+                t$1("tree.alter_index"),
                 node.tree.tag.alter_index.replace(
                   "#index_name#",
                   MSSQL_DEFAULT_SCHEMA + "." + node.text.replace(" (UNIQUE)", "").replace(" (NONUNIQUE)", "")
@@ -31123,11 +27942,11 @@
             }
           },
           {
-            text: t("tree.drop_index"),
+            text: t$1("tree.drop_index"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_index"),
+                t$1("tree.drop_index"),
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
                   MSSQL_DEFAULT_SCHEMA + "." + node.text.replace(" (UNIQUE)", "").replace(" (NONUNIQUE)", "")
@@ -31140,7 +27959,7 @@
       cm_views: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31151,10 +27970,10 @@
             }
           },
           {
-            text: t("tree.create_view"),
+            text: t$1("tree.create_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA));
+              tabSQLTemplate(t$1("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA));
             }
           }
         ]
@@ -31162,7 +27981,7 @@
       cm_view: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31173,7 +27992,7 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               var v_table_name = MSSQL_DEFAULT_SCHEMA + "." + node.text;
@@ -31187,7 +28006,7 @@
             }
           },
           {
-            text: t("tree.edit_view"),
+            text: t$1("tree.edit_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -31195,11 +28014,11 @@
             }
           },
           {
-            text: t("tree.drop_view"),
+            text: t$1("tree.drop_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_view"),
+                t$1("tree.drop_view"),
                 node.tree.tag.drop_view.replace("#view_name#", MSSQL_DEFAULT_SCHEMA + "." + node.text)
               );
             }
@@ -31209,7 +28028,7 @@
       cm_functions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31220,11 +28039,11 @@
             }
           },
           {
-            text: t("tree.create_function"),
+            text: t$1("tree.create_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_function"),
+                t$1("tree.create_function"),
                 node.tree.tag.create_function.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA)
               );
             }
@@ -31234,7 +28053,7 @@
       cm_function: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31245,7 +28064,7 @@
             }
           },
           {
-            text: t("tree.edit_function"),
+            text: t$1("tree.edit_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -31253,10 +28072,10 @@
             }
           },
           {
-            text: t("tree.drop_function"),
+            text: t$1("tree.drop_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -31264,7 +28083,7 @@
       cm_procedures: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31275,11 +28094,11 @@
             }
           },
           {
-            text: t("tree.create_procedure"),
+            text: t$1("tree.create_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_procedure"),
+                t$1("tree.create_procedure"),
                 node.tree.tag.create_procedure.replace("#schema_name#", MSSQL_DEFAULT_SCHEMA)
               );
             }
@@ -31289,7 +28108,7 @@
       cm_procedure: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31300,7 +28119,7 @@
             }
           },
           {
-            text: t("tree.edit_procedure"),
+            text: t$1("tree.edit_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -31308,10 +28127,10 @@
             }
           },
           {
-            text: t("tree.drop_procedure"),
+            text: t$1("tree.drop_procedure"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -31319,7 +28138,7 @@
       cm_refresh: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMssql(node);
@@ -31335,7 +28154,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t$1("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -31472,7 +28291,7 @@
       function(p_return) {
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.refresh"),
+          text: t$1("tree.refresh"),
           icon: "fas cm-all fa-sync-alt",
           action: function(node2) {
             if (node2.childNodes == 0) refreshTreeMssql(node2);
@@ -31513,7 +28332,7 @@
         };
         node.setText(p_return.v_data.v_database_return.version);
         var node_tables = node.createChildNode(
-          t("tree.tables"),
+          t$1("tree.tables"),
           false,
           "fas node-all fa-th node-table-list",
           {
@@ -31524,7 +28343,7 @@
         );
         node_tables.createChildNode("", true, "node-spin", null, null);
         var node_views = node.createChildNode(
-          t("tree.views"),
+          t$1("tree.views"),
           false,
           "fas node-all fa-eye node-view-list",
           {
@@ -31535,7 +28354,7 @@
         );
         node_views.createChildNode("", true, "node-spin", null, null);
         var node_functions = node.createChildNode(
-          t("tree.functions"),
+          t$1("tree.functions"),
           false,
           "fas node-all fa-cog node-function-list",
           {
@@ -31546,7 +28365,7 @@
         );
         node_functions.createChildNode("", true, "node-spin", null, null);
         var node_procedures = node.createChildNode(
-          t("tree.topic_procedures"),
+          t$1("tree.topic_procedures"),
           false,
           "fas node-all fa-cog node-procedure-list",
           {
@@ -31580,7 +28399,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           v_node$3 = node.createChildNode(
@@ -31632,7 +28451,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           v_node$3 = node.createChildNode(
@@ -31682,7 +28501,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$3 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           null,
@@ -31703,7 +28522,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$4].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$4].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -31764,7 +28583,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$3 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -31787,7 +28606,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$4].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$4].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -31796,7 +28615,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$4].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$4].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -31807,7 +28626,7 @@
         }
         if (node.tag.has_primary_keys) {
           v_node$3 = node.createChildNode(
-            t("tree.primary_key"),
+            t$1("tree.primary_key"),
             false,
             "fas node-all fa-key node-pkey",
             {
@@ -31821,7 +28640,7 @@
         }
         if (node.tag.has_foreign_keys) {
           v_node$3 = node.createChildNode(
-            t("tree.foreign_keys"),
+            t$1("tree.foreign_keys"),
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -31835,7 +28654,7 @@
         }
         if (node.tag.has_uniques) {
           v_node$3 = node.createChildNode(
-            t("tree.uniques"),
+            t$1("tree.uniques"),
             false,
             "fas node-all fa-key node-unique",
             {
@@ -31849,7 +28668,7 @@
         }
         if (node.tag.has_indexes) {
           v_node$3 = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -31883,7 +28702,7 @@
         p_schema: MSSQL_DEFAULT_SCHEMA
       }),
       function(p_return) {
-        node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.primary_key") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -31963,7 +28782,7 @@
         p_schema: MSSQL_DEFAULT_SCHEMA
       }),
       function(p_return) {
-        node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.uniques") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
@@ -32050,7 +28869,7 @@
         p_schema: MSSQL_DEFAULT_SCHEMA
       }),
       function(p_return) {
-        node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.indexes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -32138,7 +28957,7 @@
         p_schema: MSSQL_DEFAULT_SCHEMA
       }),
       function(p_return) {
-        node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           v_node$3 = node.createChildNode(
@@ -32153,7 +28972,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[i$4][1],
+            t$1("tree.prop_referenced_table") + p_return.v_data[i$4][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -32162,7 +28981,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[i$4][2],
+            t$1("tree.prop_delete_rule") + p_return.v_data[i$4][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -32171,7 +28990,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[i$4][3],
+            t$1("tree.prop_update_rule") + p_return.v_data[i$4][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -32206,7 +29025,7 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           node.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[0][0],
+            t$1("tree.prop_referenced_table") + p_return.v_data[0][0],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -32215,7 +29034,7 @@
             false
           );
           node.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[0][1],
+            t$1("tree.prop_delete_rule") + p_return.v_data[0][1],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -32224,7 +29043,7 @@
             false
           );
           node.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[0][2],
+            t$1("tree.prop_update_rule") + p_return.v_data[0][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -32266,7 +29085,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           v_node$3 = node.createChildNode(
@@ -32328,7 +29147,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$4].v_type,
+            t$1("tree.prop_type") + p_return.v_data[i$4].v_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -32387,7 +29206,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$4 = 0; i$4 < p_return.v_data.length; i$4++) {
           v_node$3 = node.createChildNode(
@@ -32449,7 +29268,7 @@
             false
           );
           v_node$3.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$4].v_type,
+            t$1("tree.prop_type") + p_return.v_data[i$4].v_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -32534,7 +29353,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -32556,7 +29375,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -32625,7 +29444,7 @@
   }
   function mssqlTerminateBackend(p_row) {
     var v_pid = p_row[0];
-    showConfirm(t("tree.confirm_terminate_session", { pid: v_pid }), function() {
+    showConfirm(t$1("tree.confirm_terminate_session", { pid: v_pid }), function() {
       mssqlTerminateBackendConfirm(v_pid);
     });
   }
@@ -32668,7 +29487,7 @@
       cm_server: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32683,7 +29502,7 @@
       cm_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32694,10 +29513,10 @@
             }
           },
           {
-            text: t("tree.create_table"),
+            text: t$1("tree.create_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table);
+              tabSQLTemplate(t$1("tree.create_table"), node.tree.tag.create_table);
             }
           }
         ]
@@ -32705,7 +29524,7 @@
       cm_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32716,65 +29535,65 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectFirebird(node.text);
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertFirebird(node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdateFirebird(node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(t("tree.delete_records"), node.tree.tag.delete.replace("#table_name#", node.text));
+                    tabSQLTemplate(t$1("tree.delete_records"), node.tree.tag.delete.replace("#table_name#", node.text));
                   }
                 }
               ]
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.alter_table_sql"),
+                  text: t$1("tree.alter_table_sql"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
-                    tabSQLTemplate(t("tree.alter_table"), node.tree.tag.alter_table.replace("#table_name#", node.text));
+                    tabSQLTemplate(t$1("tree.alter_table"), node.tree.tag.alter_table.replace("#table_name#", node.text));
                   }
                 },
                 {
-                  text: t("tree.drop_table"),
+                  text: t$1("tree.drop_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(t("tree.drop_table"), node.tree.tag.drop_table.replace("#table_name#", node.text));
+                    tabSQLTemplate(t$1("tree.drop_table"), node.tree.tag.drop_table.replace("#table_name#", node.text));
                   }
                 }
               ]
@@ -32785,10 +29604,10 @@
       cm_columns: {
         elements: [
           {
-            text: t("tree.create_column"),
+            text: t$1("tree.create_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_field"), node.tree.tag.create_column.replace("#table_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_field"), node.tree.tag.create_column.replace("#table_name#", node.parent.text));
             }
           }
         ]
@@ -32796,21 +29615,21 @@
       cm_column: {
         elements: [
           {
-            text: t("tree.alter_column"),
+            text: t$1("tree.alter_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_column"),
+                t$1("tree.alter_column"),
                 node.tree.tag.alter_column.replace("#table_name#", node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
           },
           {
-            text: t("tree.drop_column"),
+            text: t$1("tree.drop_column"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_column"),
+                t$1("tree.drop_column"),
                 node.tree.tag.drop_column.replace("#table_name#", node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
@@ -32820,7 +29639,7 @@
       cm_pks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32831,11 +29650,11 @@
             }
           },
           {
-            text: t("tree.create_primary_key"),
+            text: t$1("tree.create_primary_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_primary_key"),
+                t$1("tree.create_primary_key"),
                 node.tree.tag.create_primarykey.replace("#table_name#", node.parent.text)
               );
             }
@@ -32845,7 +29664,7 @@
       cm_pk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32856,11 +29675,11 @@
             }
           },
           {
-            text: t("tree.drop_primary_key"),
+            text: t$1("tree.drop_primary_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_primary_key"),
+                t$1("tree.drop_primary_key"),
                 node.tree.tag.drop_primarykey.replace("#table_name#", node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -32870,7 +29689,7 @@
       cm_fks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32881,11 +29700,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_key"),
+            text: t$1("tree.create_foreign_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_key"),
+                t$1("tree.create_foreign_key"),
                 node.tree.tag.create_foreignkey.replace("#table_name#", node.parent.text)
               );
             }
@@ -32895,7 +29714,7 @@
       cm_fk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32906,11 +29725,11 @@
             }
           },
           {
-            text: t("tree.drop_foreign_key"),
+            text: t$1("tree.drop_foreign_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_foreign_key"),
+                t$1("tree.drop_foreign_key"),
                 node.tree.tag.drop_foreignkey.replace("#table_name#", node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -32920,7 +29739,7 @@
       cm_uniques: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32931,10 +29750,10 @@
             }
           },
           {
-            text: t("tree.create_unique"),
+            text: t$1("tree.create_unique"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_unique"), node.tree.tag.create_unique.replace("#table_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_unique"), node.tree.tag.create_unique.replace("#table_name#", node.parent.text));
             }
           }
         ]
@@ -32942,7 +29761,7 @@
       cm_unique: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32953,11 +29772,11 @@
             }
           },
           {
-            text: t("tree.drop_unique"),
+            text: t$1("tree.drop_unique"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_unique"),
+                t$1("tree.drop_unique"),
                 node.tree.tag.drop_unique.replace("#table_name#", node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -32967,7 +29786,7 @@
       cm_indexes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -32978,10 +29797,10 @@
             }
           },
           {
-            text: t("tree.create_index"),
+            text: t$1("tree.create_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_index"), node.tree.tag.create_index.replace("#table_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_index"), node.tree.tag.create_index.replace("#table_name#", node.parent.text));
             }
           }
         ]
@@ -32989,7 +29808,7 @@
       cm_index: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33000,11 +29819,11 @@
             }
           },
           {
-            text: t("tree.alter_index"),
+            text: t$1("tree.alter_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_index"),
+                t$1("tree.alter_index"),
                 node.tree.tag.alter_index.replace(
                   "#index_name#",
                   node.text.replace(" (UNIQUE)", "").replace(" (NONUNIQUE)", "")
@@ -33013,11 +29832,11 @@
             }
           },
           {
-            text: t("tree.drop_index"),
+            text: t$1("tree.drop_index"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_index"),
+                t$1("tree.drop_index"),
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
                   node.text.replace(" (UNIQUE)", "").replace(" (NONUNIQUE)", "")
@@ -33030,7 +29849,7 @@
       cm_views: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33041,10 +29860,10 @@
             }
           },
           {
-            text: t("tree.create_view"),
+            text: t$1("tree.create_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view);
+              tabSQLTemplate(t$1("tree.create_view"), node.tree.tag.create_view);
             }
           }
         ]
@@ -33052,7 +29871,7 @@
       cm_view: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33063,7 +29882,7 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               var v_table_name = node.text;
@@ -33077,7 +29896,7 @@
             }
           },
           {
-            text: t("tree.edit_view"),
+            text: t$1("tree.edit_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -33085,10 +29904,10 @@
             }
           },
           {
-            text: t("tree.drop_view"),
+            text: t$1("tree.drop_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_view"), node.tree.tag.drop_view.replace("#view_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_view"), node.tree.tag.drop_view.replace("#view_name#", node.text));
             }
           }
         ]
@@ -33096,7 +29915,7 @@
       cm_functions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33107,10 +29926,10 @@
             }
           },
           {
-            text: t("tree.create_function"),
+            text: t$1("tree.create_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_function"), node.tree.tag.create_function);
+              tabSQLTemplate(t$1("tree.create_function"), node.tree.tag.create_function);
             }
           }
         ]
@@ -33118,7 +29937,7 @@
       cm_function: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33129,7 +29948,7 @@
             }
           },
           {
-            text: t("tree.edit_function"),
+            text: t$1("tree.edit_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -33137,10 +29956,10 @@
             }
           },
           {
-            text: t("tree.drop_function"),
+            text: t$1("tree.drop_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -33148,7 +29967,7 @@
       cm_procedures: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33159,10 +29978,10 @@
             }
           },
           {
-            text: t("tree.create_procedure"),
+            text: t$1("tree.create_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_procedure"), node.tree.tag.create_procedure);
+              tabSQLTemplate(t$1("tree.create_procedure"), node.tree.tag.create_procedure);
             }
           }
         ]
@@ -33170,7 +29989,7 @@
       cm_procedure: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33181,7 +30000,7 @@
             }
           },
           {
-            text: t("tree.edit_procedure"),
+            text: t$1("tree.edit_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -33189,10 +30008,10 @@
             }
           },
           {
-            text: t("tree.drop_procedure"),
+            text: t$1("tree.drop_procedure"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -33200,7 +30019,7 @@
       cm_refresh: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeFirebird(node);
@@ -33216,7 +30035,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t$1("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -33349,7 +30168,7 @@
       function(p_return) {
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.refresh"),
+          text: t$1("tree.refresh"),
           icon: "fas cm-all fa-sync-alt",
           action: function(node2) {
             if (node2.childNodes == 0) refreshTreeFirebird(node2);
@@ -33390,7 +30209,7 @@
         };
         node.setText(p_return.v_data.v_database_return.version);
         var node_tables = node.createChildNode(
-          t("tree.tables"),
+          t$1("tree.tables"),
           false,
           "fas node-all fa-th node-table-list",
           {
@@ -33401,7 +30220,7 @@
         );
         node_tables.createChildNode("", true, "node-spin", null, null);
         var node_views = node.createChildNode(
-          t("tree.views"),
+          t$1("tree.views"),
           false,
           "fas node-all fa-eye node-view-list",
           {
@@ -33412,7 +30231,7 @@
         );
         node_views.createChildNode("", true, "node-spin", null, null);
         var node_functions = node.createChildNode(
-          t("tree.functions"),
+          t$1("tree.functions"),
           false,
           "fas node-all fa-cog node-function-list",
           {
@@ -33423,7 +30242,7 @@
         );
         node_functions.createChildNode("", true, "node-spin", null, null);
         var node_procedures = node.createChildNode(
-          t("tree.topic_procedures"),
+          t$1("tree.topic_procedures"),
           false,
           "fas node-all fa-cog node-procedure-list",
           {
@@ -33456,7 +30275,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
           v_node$2 = node.createChildNode(
@@ -33507,7 +30326,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
           v_node$2 = node.createChildNode(
@@ -33556,7 +30375,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$2 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           null,
@@ -33577,7 +30396,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$3].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$3].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -33636,7 +30455,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$2 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -33659,7 +30478,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$3].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$3].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -33668,7 +30487,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$3].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$3].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -33679,7 +30498,7 @@
         }
         if (node.tag.has_primary_keys) {
           v_node$2 = node.createChildNode(
-            t("tree.primary_key"),
+            t$1("tree.primary_key"),
             false,
             "fas node-all fa-key node-pkey",
             {
@@ -33693,7 +30512,7 @@
         }
         if (node.tag.has_foreign_keys) {
           v_node$2 = node.createChildNode(
-            t("tree.foreign_keys"),
+            t$1("tree.foreign_keys"),
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -33707,7 +30526,7 @@
         }
         if (node.tag.has_uniques) {
           v_node$2 = node.createChildNode(
-            t("tree.uniques"),
+            t$1("tree.uniques"),
             false,
             "fas node-all fa-key node-unique",
             {
@@ -33721,7 +30540,7 @@
         }
         if (node.tag.has_indexes) {
           v_node$2 = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -33754,7 +30573,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.primary_key") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -33832,7 +30651,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.uniques") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
@@ -33917,7 +30736,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.indexes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -34003,7 +30822,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
           v_node$2 = node.createChildNode(
@@ -34018,7 +30837,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[i$3][1],
+            t$1("tree.prop_referenced_table") + p_return.v_data[i$3][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -34027,7 +30846,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[i$3][2],
+            t$1("tree.prop_delete_rule") + p_return.v_data[i$3][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -34036,7 +30855,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[i$3][3],
+            t$1("tree.prop_update_rule") + p_return.v_data[i$3][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -34070,7 +30889,7 @@
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           node.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[0][0],
+            t$1("tree.prop_referenced_table") + p_return.v_data[0][0],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -34079,7 +30898,7 @@
             false
           );
           node.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[0][1],
+            t$1("tree.prop_delete_rule") + p_return.v_data[0][1],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -34088,7 +30907,7 @@
             false
           );
           node.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[0][2],
+            t$1("tree.prop_update_rule") + p_return.v_data[0][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -34129,7 +30948,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
           v_node$2 = node.createChildNode(
@@ -34190,7 +31009,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$3].v_type,
+            t$1("tree.prop_type") + p_return.v_data[i$3].v_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -34247,7 +31066,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$3 = 0; i$3 < p_return.v_data.length; i$3++) {
           v_node$2 = node.createChildNode(
@@ -34308,7 +31127,7 @@
             false
           );
           v_node$2.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$3].v_type,
+            t$1("tree.prop_type") + p_return.v_data[i$3].v_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -34390,7 +31209,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_insert_prefix") + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_insert_prefix") + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -34411,7 +31230,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_update_prefix") + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_update_prefix") + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -34480,7 +31299,7 @@
   }
   function firebirdTerminateBackend(p_row) {
     var v_pid = p_row[0];
-    showConfirm(t("tree.confirm_terminate_attachment", { pid: v_pid }), function() {
+    showConfirm(t$1("tree.confirm_terminate_attachment", { pid: v_pid }), function() {
       firebirdTerminateBackendConfirm(v_pid);
     });
   }
@@ -34523,7 +31342,7 @@
       cm_server: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34538,7 +31357,7 @@
       cm_databases: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34549,10 +31368,10 @@
             }
           },
           {
-            text: t("tree.create_database"),
+            text: t$1("tree.create_database"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_database"), node.tree.tag.create_database);
+              tabSQLTemplate(t$1("tree.create_database"), node.tree.tag.create_database);
             }
           }
         ]
@@ -34560,14 +31379,14 @@
       cm_database: {
         elements: [
           {
-            text: t("tree.render_graph"),
+            text: t$1("tree.render_graph"),
             icon: "fab cm-all fa-hubspot",
             action: function(node) {
             },
             submenu: {
               elements: [
                 {
-                  text: t("tree.simple_graph"),
+                  text: t$1("tree.simple_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -34575,7 +31394,7 @@
                   }
                 },
                 {
-                  text: t("tree.complete_graph"),
+                  text: t$1("tree.complete_graph"),
                   icon: "fab cm-all fa-hubspot",
                   action: function(node) {
                     v_connTabControl.tag.createGraphTab(node.text);
@@ -34586,17 +31405,17 @@
             }
           },
           {
-            text: t("tree.alter_database"),
+            text: t$1("tree.alter_database"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_database"), node.tree.tag.alter_database.replace("#database_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_database"), node.tree.tag.alter_database.replace("#database_name#", node.text));
             }
           },
           {
-            text: t("tree.drop_database"),
+            text: t$1("tree.drop_database"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_database"), node.tree.tag.drop_database.replace("#database_name#", node.text));
             }
           }
         ]
@@ -34604,7 +31423,7 @@
       cm_roles: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34615,10 +31434,10 @@
             }
           },
           {
-            text: t("tree.create_role"),
+            text: t$1("tree.create_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_role"), node.tree.tag.create_role);
+              tabSQLTemplate(t$1("tree.create_role"), node.tree.tag.create_role);
             }
           }
         ]
@@ -34626,17 +31445,17 @@
       cm_role: {
         elements: [
           {
-            text: t("tree.alter_role"),
+            text: t$1("tree.alter_role"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.alter_role"), node.tree.tag.alter_role.replace("#role_name#", node.text));
             }
           },
           {
-            text: t("tree.drop_role"),
+            text: t$1("tree.drop_role"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_role"), node.tree.tag.drop_role.replace("#role_name#", node.text));
             }
           }
         ]
@@ -34644,7 +31463,7 @@
       cm_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34655,10 +31474,10 @@
             }
           },
           {
-            text: t("tree.create_table"),
+            text: t$1("tree.create_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_table"), node.tree.tag.create_table.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -34666,7 +31485,7 @@
       cm_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34677,44 +31496,44 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectMysql(node.parent.parent.text, node.text);
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text, node.parent.parent.text);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertMysql(node.parent.parent.text, node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdateMysql(node.parent.parent.text, node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.delete_records"),
+                      t$1("tree.delete_records"),
                       node.tree.tag.delete.replace("#table_name#", node.parent.parent.text + "." + node.text)
                     );
                   }
@@ -34723,26 +31542,26 @@
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.alter_table_sql"),
+                  text: t$1("tree.alter_table_sql"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.alter_table"),
+                      t$1("tree.alter_table"),
                       node.tree.tag.alter_table.replace("#table_name#", node.parent.parent.text + "." + node.text)
                     );
                   }
                 },
                 {
-                  text: t("tree.drop_table"),
+                  text: t$1("tree.drop_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
                     tabSQLTemplate(
-                      t("tree.drop_table"),
+                      t$1("tree.drop_table"),
                       node.tree.tag.drop_table.replace("#table_name#", node.parent.parent.text + "." + node.text)
                     );
                   }
@@ -34755,11 +31574,11 @@
       cm_columns: {
         elements: [
           {
-            text: t("tree.create_column"),
+            text: t$1("tree.create_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_field"),
+                t$1("tree.create_field"),
                 node.tree.tag.create_column.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -34772,21 +31591,21 @@
       cm_column: {
         elements: [
           {
-            text: t("tree.alter_column"),
+            text: t$1("tree.alter_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_column"),
+                t$1("tree.alter_column"),
                 node.tree.tag.alter_column.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
           },
           {
-            text: t("tree.drop_column"),
+            text: t$1("tree.drop_column"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_column"),
+                t$1("tree.drop_column"),
                 node.tree.tag.drop_column.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace(/#column_name#/g, node.text)
               );
             }
@@ -34796,7 +31615,7 @@
       cm_pks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34807,11 +31626,11 @@
             }
           },
           {
-            text: t("tree.create_primary_key"),
+            text: t$1("tree.create_primary_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_primary_key"),
+                t$1("tree.create_primary_key"),
                 node.tree.tag.create_primarykey.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -34824,7 +31643,7 @@
       cm_pk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34835,11 +31654,11 @@
             }
           },
           {
-            text: t("tree.drop_primary_key"),
+            text: t$1("tree.drop_primary_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_primary_key"),
+                t$1("tree.drop_primary_key"),
                 node.tree.tag.drop_primarykey.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -34849,7 +31668,7 @@
       cm_fks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34860,11 +31679,11 @@
             }
           },
           {
-            text: t("tree.create_foreign_key"),
+            text: t$1("tree.create_foreign_key"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_foreign_key"),
+                t$1("tree.create_foreign_key"),
                 node.tree.tag.create_foreignkey.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -34877,7 +31696,7 @@
       cm_fk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34888,11 +31707,11 @@
             }
           },
           {
-            text: t("tree.drop_foreign_key"),
+            text: t$1("tree.drop_foreign_key"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_foreign_key"),
+                t$1("tree.drop_foreign_key"),
                 node.tree.tag.drop_foreignkey.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -34902,7 +31721,7 @@
       cm_uniques: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34913,11 +31732,11 @@
             }
           },
           {
-            text: t("tree.create_unique"),
+            text: t$1("tree.create_unique"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_unique"),
+                t$1("tree.create_unique"),
                 node.tree.tag.create_unique.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -34930,7 +31749,7 @@
       cm_unique: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34941,11 +31760,11 @@
             }
           },
           {
-            text: t("tree.drop_unique"),
+            text: t$1("tree.drop_unique"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_unique"),
+                t$1("tree.drop_unique"),
                 node.tree.tag.drop_unique.replace("#table_name#", node.parent.parent.parent.parent.text + "." + node.parent.parent.text).replace("#constraint_name#", node.text)
               );
             }
@@ -34955,7 +31774,7 @@
       cm_indexes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34966,11 +31785,11 @@
             }
           },
           {
-            text: t("tree.create_index"),
+            text: t$1("tree.create_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.create_index"),
+                t$1("tree.create_index"),
                 node.tree.tag.create_index.replace(
                   "#table_name#",
                   node.parent.parent.parent.text + "." + node.parent.text
@@ -34983,7 +31802,7 @@
       cm_index: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -34994,11 +31813,11 @@
             }
           },
           {
-            text: t("tree.drop_index"),
+            text: t$1("tree.drop_index"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_index"),
+                t$1("tree.drop_index"),
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
                   node.parent.parent.parent.parent.text + "." + node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -35011,7 +31830,7 @@
       cm_views: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -35022,10 +31841,10 @@
             }
           },
           {
-            text: t("tree.create_view"),
+            text: t$1("tree.create_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_view"), node.tree.tag.create_view.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -35033,7 +31852,7 @@
       cm_view: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -35044,7 +31863,7 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               var v_table_name = "";
@@ -35059,7 +31878,7 @@
             }
           },
           {
-            text: t("tree.edit_view"),
+            text: t$1("tree.edit_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -35067,11 +31886,11 @@
             }
           },
           {
-            text: t("tree.drop_view"),
+            text: t$1("tree.drop_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_view"),
+                t$1("tree.drop_view"),
                 node.tree.tag.drop_view.replace("#view_name#", node.parent.parent.text + "." + node.text)
               );
             }
@@ -35244,7 +32063,7 @@
       cm_functions: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -35255,10 +32074,10 @@
             }
           },
           {
-            text: t("tree.create_function"),
+            text: t$1("tree.create_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_function"), node.tree.tag.create_function.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_function"), node.tree.tag.create_function.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -35266,7 +32085,7 @@
       cm_function: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -35277,7 +32096,7 @@
             }
           },
           {
-            text: t("tree.edit_function"),
+            text: t$1("tree.edit_function"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -35285,10 +32104,10 @@
             }
           },
           {
-            text: t("tree.drop_function"),
+            text: t$1("tree.drop_function"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_function"), node.tree.tag.drop_function.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -35296,7 +32115,7 @@
       cm_procedures: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -35307,10 +32126,10 @@
             }
           },
           {
-            text: t("tree.create_procedure"),
+            text: t$1("tree.create_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_procedure"), node.tree.tag.create_procedure.replace("#schema_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_procedure"), node.tree.tag.create_procedure.replace("#schema_name#", node.parent.text));
             }
           }
         ]
@@ -35318,7 +32137,7 @@
       cm_procedure: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -35329,7 +32148,7 @@
             }
           },
           {
-            text: t("tree.edit_procedure"),
+            text: t$1("tree.edit_procedure"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               v_connTabControl.tag.createQueryTab(node.text);
@@ -35337,10 +32156,10 @@
             }
           },
           {
-            text: t("tree.drop_procedure"),
+            text: t$1("tree.drop_procedure"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
+              tabSQLTemplate(t$1("tree.drop_procedure"), node.tree.tag.drop_procedure.replace("#function_name#", node.tag.id));
             }
           }
         ]
@@ -35348,7 +32167,7 @@
       cm_refresh: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeMysql(node);
@@ -35364,7 +32183,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t$1("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -35507,7 +32326,7 @@
       function(p_return) {
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.refresh"),
+          text: t$1("tree.refresh"),
           icon: "fas cm-all fa-sync-alt",
           action: function(node2) {
             if (node2.childNodes == 0) refreshTreeMysql(node2);
@@ -35566,7 +32385,7 @@
         };
         node.setText(p_return.v_data.v_database_return.version);
         var node_databases = node.createChildNode(
-          t("tree.databases"),
+          t$1("tree.databases"),
           false,
           "fas node-all fa-database node-database-list",
           {
@@ -35578,7 +32397,7 @@
         node_databases.createChildNode("", true, "node-spin", null, null);
         if (node.tree.tag.superuser) {
           var node_roles = node.createChildNode(
-            t("tree.roles"),
+            t$1("tree.roles"),
             false,
             "fas node-all fa-users node-user-list",
             {
@@ -35604,7 +32423,7 @@
   function getDatabaseObjectsMysql(node) {
     node.removeChildNodes();
     var node_tables = node.createChildNode(
-      t("tree.tables"),
+      t$1("tree.tables"),
       false,
       "fas node-all fa-th node-table-list",
       {
@@ -35616,7 +32435,7 @@
     );
     node_tables.createChildNode("", true, "node-spin", null, null);
     var node_views = node.createChildNode(
-      t("tree.views"),
+      t$1("tree.views"),
       false,
       "fas node-all fa-eye node-view-list",
       {
@@ -35628,7 +32447,7 @@
     );
     node_views.createChildNode("", true, "node-spin", null, null);
     var node_functions = node.createChildNode(
-      t("tree.functions"),
+      t$1("tree.functions"),
       false,
       "fas node-all fa-cog node-function-list",
       {
@@ -35640,7 +32459,7 @@
     );
     node_functions.createChildNode("", true, "node-spin", null, null);
     var node_functions = node.createChildNode(
-      t("tree.topic_procedures"),
+      t$1("tree.topic_procedures"),
       false,
       "fas node-all fa-cog node-procedure-list",
       {
@@ -35664,7 +32483,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.databases") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.databases") + " (" + p_return.v_data.length + ")");
         node.tag.num_databases = p_return.v_data.length;
         for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           var v_node2 = node.createChildNode(
@@ -35706,7 +32525,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.roles") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.roles") + " (" + p_return.v_data.length + ")");
         node.tag.num_tablespaces = p_return.v_data.length;
         for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           v_node$1 = node.createChildNode(
@@ -35744,7 +32563,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           v_node$1 = node.createChildNode(
@@ -35804,7 +32623,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           v_node$1 = node.createChildNode(
@@ -35857,7 +32676,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$1 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           null,
@@ -35879,7 +32698,7 @@
             false
           );
           v_node$1.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$2].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$2].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -35890,7 +32709,7 @@
         }
         if (node.tag.has_rules) {
           v_node$1 = node.createChildNode(
-            t("tree.topic_rules"),
+            t$1("tree.topic_rules"),
             false,
             "fas node-all fa-lightbulb node-rule",
             {
@@ -35905,7 +32724,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$1 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -35970,7 +32789,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         v_list$1 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -35995,7 +32814,7 @@
             false
           );
           v_node$1.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$2].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$2].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -36004,7 +32823,7 @@
             false
           );
           v_node$1.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$2].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$2].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -36015,7 +32834,7 @@
         }
         if (node.tag.has_primary_keys) {
           v_node$1 = node.createChildNode(
-            t("tree.primary_key"),
+            t$1("tree.primary_key"),
             false,
             "fas node-all fa-key node-pkey",
             {
@@ -36030,7 +32849,7 @@
         }
         if (node.tag.has_foreign_keys) {
           v_node$1 = node.createChildNode(
-            t("tree.foreign_keys"),
+            t$1("tree.foreign_keys"),
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -36045,7 +32864,7 @@
         }
         if (node.tag.has_uniques) {
           v_node$1 = node.createChildNode(
-            t("tree.uniques"),
+            t$1("tree.uniques"),
             false,
             "fas node-all fa-key node-unique",
             {
@@ -36060,7 +32879,7 @@
         }
         if (node.tag.has_indexes) {
           v_node$1 = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -36075,7 +32894,7 @@
         }
         if (node.tag.has_triggers) {
           v_node$1 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -36090,7 +32909,7 @@
         }
         if (node.tag.has_partitions) {
           v_node$1 = node.createChildNode(
-            t("tree.partitions"),
+            t$1("tree.partitions"),
             false,
             "fas node-all fa-table node-partition",
             {
@@ -36125,7 +32944,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.primary_key") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -36207,7 +33026,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.uniques") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         if (p_return.v_data.length > 0) {
           for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
@@ -36296,7 +33115,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.indexes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         var v_node2;
         if (p_return.v_data.length > 0) {
@@ -36385,7 +33204,7 @@
         p_schema: node.parent.parent.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) node.removeChildNodes();
         for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           v_node$1 = node.createChildNode(
@@ -36401,7 +33220,7 @@
             false
           );
           v_node$1.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[i$2][1],
+            t$1("tree.prop_referenced_table") + p_return.v_data[i$2][1],
             false,
             "fas node-all fa-table node-table",
             null,
@@ -36410,7 +33229,7 @@
             false
           );
           v_node$1.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[i$2][2],
+            t$1("tree.prop_delete_rule") + p_return.v_data[i$2][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -36419,7 +33238,7 @@
             false
           );
           v_node$1.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[i$2][3],
+            t$1("tree.prop_update_rule") + p_return.v_data[i$2][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             null,
@@ -36453,7 +33272,7 @@
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
         node.createChildNode(
-          t("tree.prop_referenced_table") + p_return.v_data[0][0],
+          t$1("tree.prop_referenced_table") + p_return.v_data[0][0],
           false,
           "fas node-all fa-table node-table",
           null,
@@ -36462,7 +33281,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_delete_rule") + p_return.v_data[0][1],
+          t$1("tree.prop_delete_rule") + p_return.v_data[0][1],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           null,
@@ -36471,7 +33290,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_update_rule") + p_return.v_data[0][2],
+          t$1("tree.prop_update_rule") + p_return.v_data[0][2],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           null,
@@ -36512,7 +33331,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.functions") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.functions") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           v_node$1 = node.createChildNode(
@@ -36647,7 +33466,7 @@
       }),
       function(p_return) {
         if (node.childNodes.length > 0) node.removeChildNodes();
-        node.setText(t("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_procedures") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$2 = 0; i$2 < p_return.v_data.length; i$2++) {
           v_node$1 = node.createChildNode(
@@ -36809,7 +33628,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_insert_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -36831,7 +33650,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_update_prefix") + p_schema + "." + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -36903,7 +33722,7 @@
     );
   }
   function mysqlTerminateBackend(p_row) {
-    showConfirm(t("tree.confirm_terminate_process", { pid: p_row[0] }), function() {
+    showConfirm(t$1("tree.confirm_terminate_process", { pid: p_row[0] }), function() {
       mysqlTerminateBackendConfirm(parseInt(p_row[0], 10));
     });
   }
@@ -36949,7 +33768,7 @@
       cm_server: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -36965,7 +33784,7 @@
       cm_tables: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -36977,10 +33796,10 @@
             }
           },
           {
-            text: t("tree.create_table"),
+            text: t$1("tree.create_table"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_table"), node.tree.tag.create_table);
+              tabSQLTemplate(t$1("tree.create_table"), node.tree.tag.create_table);
             }
           }
         ]
@@ -36988,7 +33807,7 @@
       cm_table: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37000,65 +33819,65 @@
             }
           },
           {
-            text: t("tree.data_actions"),
+            text: t$1("tree.data_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.query_data"),
+                  text: t$1("tree.query_data"),
                   icon: "fas cm-all fa-search",
                   action: function(node) {
                     TemplateSelectSqlite(node.text, "t");
                   }
                 },
                 {
-                  text: t("tree.edit_data"),
+                  text: t$1("tree.edit_data"),
                   icon: "fas cm-all fa-table",
                   action: function(node) {
                     v_startEditData(node.text);
                   }
                 },
                 {
-                  text: t("tree.insert_record"),
+                  text: t$1("tree.insert_record"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateInsertSqlite(node.text);
                   }
                 },
                 {
-                  text: t("tree.update_records"),
+                  text: t$1("tree.update_records"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
                     TemplateUpdateSqlite(node.text);
                   }
                 },
                 {
-                  text: t("tree.delete_records"),
+                  text: t$1("tree.delete_records"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(t("tree.delete_records"), node.tree.tag.delete.replace("#table_name#", node.text));
+                    tabSQLTemplate(t$1("tree.delete_records"), node.tree.tag.delete.replace("#table_name#", node.text));
                   }
                 }
               ]
             }
           },
           {
-            text: t("tree.table_actions"),
+            text: t$1("tree.table_actions"),
             icon: "fas cm-all fa-list",
             submenu: {
               elements: [
                 {
-                  text: t("tree.alter_table"),
+                  text: t$1("tree.alter_table"),
                   icon: "fas cm-all fa-edit",
                   action: function(node) {
-                    tabSQLTemplate(t("tree.alter_table"), node.tree.tag.alter_table.replace("#table_name#", node.text));
+                    tabSQLTemplate(t$1("tree.alter_table"), node.tree.tag.alter_table.replace("#table_name#", node.text));
                   }
                 },
                 {
-                  text: t("tree.drop_table"),
+                  text: t$1("tree.drop_table"),
                   icon: "fas cm-all fa-times",
                   action: function(node) {
-                    tabSQLTemplate(t("tree.drop_table"), node.tree.tag.drop_table.replace("#table_name#", node.text));
+                    tabSQLTemplate(t$1("tree.drop_table"), node.tree.tag.drop_table.replace("#table_name#", node.text));
                   }
                 }
               ]
@@ -37069,10 +33888,10 @@
       cm_columns: {
         elements: [
           {
-            text: t("tree.create_column"),
+            text: t$1("tree.create_column"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_column"), node.tree.tag.create_column.replace("#table_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_column"), node.tree.tag.create_column.replace("#table_name#", node.parent.text));
             }
           }
         ]
@@ -37083,7 +33902,7 @@
       cm_pks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37099,7 +33918,7 @@
       cm_pk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37115,7 +33934,7 @@
       cm_fks: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37131,7 +33950,7 @@
       cm_fk: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37147,7 +33966,7 @@
       cm_uniques: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37163,7 +33982,7 @@
       cm_unique: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37179,7 +33998,7 @@
       cm_indexes: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37191,10 +34010,10 @@
             }
           },
           {
-            text: t("tree.create_index"),
+            text: t$1("tree.create_index"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_index"), node.tree.tag.create_index.replace("#table_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_index"), node.tree.tag.create_index.replace("#table_name#", node.parent.text));
             }
           }
         ]
@@ -37202,7 +34021,7 @@
       cm_index: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37214,11 +34033,11 @@
             }
           },
           {
-            text: t("tree.reindex"),
+            text: t$1("tree.reindex"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.reindex"),
+                t$1("tree.reindex"),
                 node.tree.tag.reindex.replace(
                   "#index_name#",
                   node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -37227,11 +34046,11 @@
             }
           },
           {
-            text: t("tree.drop_index"),
+            text: t$1("tree.drop_index"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_index"),
+                t$1("tree.drop_index"),
                 node.tree.tag.drop_index.replace(
                   "#index_name#",
                   node.text.replace(" (Unique)", "").replace(" (Non Unique)", "")
@@ -37244,7 +34063,7 @@
       cm_triggers: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37256,10 +34075,10 @@
             }
           },
           {
-            text: t("tree.create_trigger"),
+            text: t$1("tree.create_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_trigger"), node.tree.tag.create_trigger.replace("#table_name#", node.parent.text));
+              tabSQLTemplate(t$1("tree.create_trigger"), node.tree.tag.create_trigger.replace("#table_name#", node.parent.text));
             }
           }
         ]
@@ -37267,21 +34086,21 @@
       cm_trigger: {
         elements: [
           {
-            text: t("tree.alter_trigger"),
+            text: t$1("tree.alter_trigger"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.alter_trigger"),
+                t$1("tree.alter_trigger"),
                 node.tree.tag.alter_trigger.replace("#table_name#", node.parent.parent.text).replace("#trigger_name#", node.text)
               );
             }
           },
           {
-            text: t("tree.drop_trigger"),
+            text: t$1("tree.drop_trigger"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               tabSQLTemplate(
-                t("tree.drop_trigger"),
+                t$1("tree.drop_trigger"),
                 node.tree.tag.drop_trigger.replace("#table_name#", node.parent.parent.text).replace("#trigger_name#", node.text)
               );
             }
@@ -37291,7 +34110,7 @@
       cm_views: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37303,10 +34122,10 @@
             }
           },
           {
-            text: t("tree.create_view"),
+            text: t$1("tree.create_view"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
-              tabSQLTemplate(t("tree.create_view"), node.tree.tag.create_view);
+              tabSQLTemplate(t$1("tree.create_view"), node.tree.tag.create_view);
             }
           }
         ]
@@ -37314,7 +34133,7 @@
       cm_view: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37326,17 +34145,17 @@
             }
           },
           {
-            text: t("tree.query_data"),
+            text: t$1("tree.query_data"),
             icon: "fas cm-all fa-search",
             action: function(node) {
               TemplateSelectSqlite(node.text, "v");
             }
           },
           {
-            text: t("tree.drop_view"),
+            text: t$1("tree.drop_view"),
             icon: "fas cm-all fa-times",
             action: function(node) {
-              tabSQLTemplate(t("tree.drop_view"), node.tree.tag.drop_view.replace("#view_name#", node.text));
+              tabSQLTemplate(t$1("tree.drop_view"), node.tree.tag.drop_view.replace("#view_name#", node.text));
             }
           }
         ]
@@ -37344,7 +34163,7 @@
       cm_refresh: {
         elements: [
           {
-            text: t("tree.refresh"),
+            text: t$1("tree.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) {
@@ -37361,7 +34180,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection.">    <input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input">    <label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t$1("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection.">    <input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input">    <label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -37373,7 +34192,7 @@
         let pos_x = v_first_child_toggle.offsetLeft - 24;
         let pos_y = v_first_child_toggle.offsetTop - 64;
         v_connTabControl.selectedTab.tag.divTree.scroll(pos_x, pos_y);
-      } catch (e) {
+      } catch (e2) {
       }
     };
     tree.clickNodeEvent = function(node) {
@@ -37457,7 +34276,7 @@
       function(p_return) {
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
-          text: t("tree.refresh"),
+          text: t$1("tree.refresh"),
           icon: "fas cm-all fa-sync-alt",
           action: function(node2) {
             if (node2.childNodes == 0) {
@@ -37489,7 +34308,7 @@
           drop_trigger: p_return.v_data.v_database_return.drop_trigger
         };
         var node_tables = node.createChildNode(
-          t("tree.tables"),
+          t$1("tree.tables"),
           false,
           "fas node-all fa-th node-table-list",
           {
@@ -37502,7 +34321,7 @@
         );
         node_tables.createChildNode("", true, "node-spin", null, null, null, false);
         var node_views = node.createChildNode(
-          t("tree.views"),
+          t$1("tree.views"),
           false,
           "fas node-all fa-eye node-view-list",
           {
@@ -37549,7 +34368,7 @@
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
-        node.setText(t("tree.tables") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.tables") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (i$1 = 0; i$1 < p_return.v_data.length; i$1++) {
           v_node = node.createChildNode(
@@ -37611,7 +34430,7 @@
           node.removeChildNodes();
         }
         v_list = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -37636,7 +34455,7 @@
             false
           );
           v_node.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i$1].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i$1].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -37647,7 +34466,7 @@
             false
           );
           v_node.createChildNode(
-            t("tree.prop_nullable") + p_return.v_data[i$1].v_nullable,
+            t$1("tree.prop_nullable") + p_return.v_data[i$1].v_nullable,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -37660,7 +34479,7 @@
         }
         if (node.tag.has_primary_keys) {
           v_node = node.createChildNode(
-            t("tree.primary_key"),
+            t$1("tree.primary_key"),
             false,
             "fas node-all fa-key node-pkey",
             {
@@ -37675,7 +34494,7 @@
         }
         if (node.tag.has_foreign_keys) {
           v_node = node.createChildNode(
-            t("tree.foreign_keys"),
+            t$1("tree.foreign_keys"),
             false,
             "fas node-all fa-key node-fkey",
             {
@@ -37690,7 +34509,7 @@
         }
         if (node.tag.has_uniques) {
           v_node = node.createChildNode(
-            t("tree.uniques"),
+            t$1("tree.uniques"),
             false,
             "fas node-all fa-key node-unique",
             {
@@ -37705,7 +34524,7 @@
         }
         if (node.tag.has_checks) {
           v_node = node.createChildNode(
-            t("tree.checks"),
+            t$1("tree.checks"),
             false,
             "fas node-all fa-check-square node-check",
             {
@@ -37720,7 +34539,7 @@
         }
         if (node.tag.has_indexes) {
           v_node = node.createChildNode(
-            t("tree.indexes"),
+            t$1("tree.indexes"),
             false,
             "fas node-all fa-thumbtack node-index",
             {
@@ -37735,7 +34554,7 @@
         }
         if (node.tag.has_triggers) {
           v_node = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -37769,7 +34588,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.primary_key") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.primary_key") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -37851,7 +34670,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.foreign_keys") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -37869,7 +34688,7 @@
             false
           );
           v_node.createChildNode(
-            t("tree.prop_referenced_table") + p_return.v_data[i$1][1],
+            t$1("tree.prop_referenced_table") + p_return.v_data[i$1][1],
             false,
             "fas node-all fa-table node-table",
             {
@@ -37880,7 +34699,7 @@
             false
           );
           v_node.createChildNode(
-            t("tree.prop_delete_rule") + p_return.v_data[i$1][2],
+            t$1("tree.prop_delete_rule") + p_return.v_data[i$1][2],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -37891,7 +34710,7 @@
             false
           );
           v_node.createChildNode(
-            t("tree.prop_update_rule") + p_return.v_data[i$1][3],
+            t$1("tree.prop_update_rule") + p_return.v_data[i$1][3],
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -37928,7 +34747,7 @@
           node.removeChildNodes();
         }
         node.createChildNode(
-          t("tree.prop_referenced_table") + p_return.v_data[0][0],
+          t$1("tree.prop_referenced_table") + p_return.v_data[0][0],
           false,
           "fas node-all fa-table node-table",
           {
@@ -37939,7 +34758,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_delete_rule") + p_return.v_data[0][1],
+          t$1("tree.prop_delete_rule") + p_return.v_data[0][1],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           {
@@ -37950,7 +34769,7 @@
           false
         );
         node.createChildNode(
-          t("tree.prop_update_rule") + p_return.v_data[0][2],
+          t$1("tree.prop_update_rule") + p_return.v_data[0][2],
           false,
           "fas node-all fa-ellipsis-h node-bullet",
           {
@@ -37994,7 +34813,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.uniques") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.uniques") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -38082,7 +34901,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.indexes") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.indexes") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -38173,7 +34992,7 @@
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
-        node.setText(t("tree.views") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.views") + " (" + p_return.v_data.length + ")");
         node.tag.num_tables = p_return.v_data.length;
         for (var i2 = 0; i2 < p_return.v_data.length; i2++) {
           var v_node2 = node.createChildNode(
@@ -38225,7 +35044,7 @@
           node.removeChildNodes();
         }
         var v_list2 = node.createChildNode(
-          t("tree.columns_count", { n: p_return.v_data.length }),
+          t$1("tree.columns_count", { n: p_return.v_data.length }),
           false,
           "fas node-all fa-columns node-column",
           {
@@ -38249,7 +35068,7 @@
             false
           );
           v_node2.createChildNode(
-            t("tree.prop_type") + p_return.v_data[i2].v_data_type,
+            t$1("tree.prop_type") + p_return.v_data[i2].v_data_type,
             false,
             "fas node-all fa-ellipsis-h node-bullet",
             {
@@ -38262,7 +35081,7 @@
         }
         if (node.tag.has_rules) {
           var v_node2 = node.createChildNode(
-            t("tree.topic_rules"),
+            t$1("tree.topic_rules"),
             false,
             "fas node-all fa-lightbulb node-rule",
             {
@@ -38277,7 +35096,7 @@
         }
         if (node.tag.has_triggers) {
           var v_node2 = node.createChildNode(
-            t("tree.topic_triggers"),
+            t$1("tree.topic_triggers"),
             false,
             "fas node-all fa-bolt node-trigger",
             {
@@ -38338,7 +35157,7 @@
         p_table: node.parent.text
       }),
       function(p_return) {
-        node.setText(t("tree.topic_triggers") + " (" + p_return.v_data.length + ")");
+        node.setText(t$1("tree.topic_triggers") + " (" + p_return.v_data.length + ")");
         if (node.childNodes.length > 0) {
           node.removeChildNodes();
         }
@@ -38404,7 +35223,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_insert_prefix") + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_insert_prefix") + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -38425,7 +35244,7 @@
         p_indent_size: v_indent_size
       }),
       function(p_return) {
-        tabSQLTemplate(t("tree.tab_update_prefix") + p_table, p_return.v_data.v_template);
+        tabSQLTemplate(t$1("tree.tab_update_prefix") + p_table, p_return.v_data.v_template);
       },
       function(p_return) {
         showError(p_return.v_data);
@@ -38589,7 +35408,7 @@
       if (v_conn.v_details1) details.push(v_conn.v_details1);
       if (v_conn.v_details2) details.push(v_conn.v_details2);
     }
-    for (const d of details) tooltip += '<div class="mb-1">' + escapeHtml(d) + "</div>";
+    for (const d2 of details) tooltip += '<div class="mb-1">' + escapeHtml(d2) + "</div>";
     text += name !== "" ? name : escapeHtml(details.join(" - "));
     const title = [plainTitle, ...details].filter(Boolean).join("\n");
     return { text, name, tooltip, title };
@@ -38613,9 +35432,9 @@
                 let v_conn = false;
                 let v_name = "";
                 let p_tooltip_name = "";
-                for (let k = 0; k < v_connTabControl.tag.connections.length; k++) {
-                  if (p_return.v_data.v_existing_tabs[i2].index === v_connTabControl.tag.connections[k].v_conn_id) {
-                    v_conn = v_connTabControl.tag.connections[k];
+                for (let k2 = 0; k2 < v_connTabControl.tag.connections.length; k2++) {
+                  if (p_return.v_data.v_existing_tabs[i2].index === v_connTabControl.tag.connections[k2].v_conn_id) {
+                    v_conn = v_connTabControl.tag.connections[k2];
                     v_name = v_conn.v_alias ? escapeHtml(v_conn.v_alias) : "";
                     if (v_conn.v_alias) {
                       p_tooltip_name += '<h5 class="mb-1">' + escapeHtml(v_conn.v_alias) + "</h5>";
@@ -38660,8 +35479,8 @@
             }
             var v_last = recallActiveTab();
             if (v_last) {
-              for (var r = 0; r < v_restored.length; r++) {
-                var v_cand = v_restored[r];
+              for (var r2 = 0; r2 < v_restored.length; r2++) {
+                var v_cand = v_restored[r2];
                 if (v_cand.inner.tag.tab_db_id === v_last.tab_db_id && v_cand.conn.tag.selectedDatabaseIndex === v_last.conn) {
                   v_connTabControl.selectTab(v_cand.conn);
                   v_cand.conn.tag.tabControl.selectTab(v_cand.inner);
@@ -38744,11 +35563,11 @@
       if (v_tab.tag != null) {
         if (v_tab.tag.mode == "edit" || v_tab.tag.mode == "alter" || v_tab.tag.mode == "data_mining") {
           showAlert$1(
-            t("workspace.close_tabs_warning", {
-              edit_data: t("connections.edit_data"),
-              alter_table: t("tree.alter_table"),
-              monitoring_dashboard: t("workspace.monitoring_dashboard"),
-              advanced_search: t("workspace.advanced_object_search")
+            t$1("workspace.close_tabs_warning", {
+              edit_data: t$1("connections.edit_data"),
+              alter_table: t$1("tree.alter_table"),
+              monitoring_dashboard: t$1("workspace.monitoring_dashboard"),
+              advanced_search: t$1("workspace.advanced_object_search")
             }),
             null,
             null,
@@ -39042,9 +35861,9 @@
         v_tag.ddlEditor.resize();
       }
     };
-    var v_move = function(e) {
-      v_last_screen_y = e.screenY;
-      v_last_page_y = e.pageY;
+    var v_move = function(e2) {
+      v_last_screen_y = e2.screenY;
+      v_last_page_y = e2.pageY;
       if (v_pending) return;
       v_pending = true;
       requestAnimationFrame(v_apply);
@@ -39090,8 +35909,8 @@
         v_tag.tabControl.selectedTab.tag.resize();
       }
     };
-    var v_move = function(e) {
-      v_last_x = e.x;
+    var v_move = function(e2) {
+      v_last_x = e2.x;
       if (v_pending) return;
       v_pending = true;
       requestAnimationFrame(v_apply);
@@ -39111,8 +35930,8 @@
       v_pending = false;
       resizeSnippetPanel(v_last_x);
     };
-    var v_move = function(e) {
-      v_last_x = e.x;
+    var v_move = function(e2) {
+      v_last_x = e2.x;
       if (v_pending) return;
       v_pending = true;
       requestAnimationFrame(v_apply);
@@ -39133,8 +35952,8 @@
     var v_offsetLeft = v_sidebar.getBoundingClientRect().left;
     var v_start_x = event2.x;
     var v_start_width = v_sidebar.getBoundingClientRect().width;
-    var v_move = function(e) {
-      resizeConnectionsPanel(v_offsetLeft + v_start_width + (e.x - v_start_x));
+    var v_move = function(e2) {
+      resizeConnectionsPanel(v_offsetLeft + v_start_width + (e2.x - v_start_x));
     };
     var v_up = function() {
       document.body.removeEventListener("mousemove", v_move);
@@ -39187,8 +36006,8 @@
       v_result_div.style.height = v_start_result_height - v_height_diff + "px";
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.resize(true);
     };
-    var v_move = function(e) {
-      v_last_y = e.screenY;
+    var v_move = function(e2) {
+      v_last_y = e2.screenY;
       if (v_pending) return;
       v_pending = true;
       requestAnimationFrame(v_apply);
@@ -39312,7 +36131,7 @@
     if (v_mode) {
       var v_sql_value = v_editor.getValue();
       if (v_sql_value.trim() == "") {
-        showAlert$1(t("common.provide_a_string"));
+        showAlert$1(t$1("common.provide_a_string"));
       } else {
         execAjax$2(
           "/indent_sql/",
@@ -39334,7 +36153,7 @@
       }
     }
   }
-  function showMenuNewTabOuter(e) {
+  function showMenuNewTabOuter(e2) {
     {
       var v_option_list = [];
       if (v_connTabControl.tag.hooks.outerTabMenu.length > 0) {
@@ -39344,7 +36163,7 @@
       }
       if (v_show_terminal_option) {
         v_option_list.push({
-          text: t("workspace.local_terminal"),
+          text: t$1("workspace.local_terminal"),
           icon: "fas cm-all fa-terminal",
           action: function() {
             v_connTabControl.tag.createOuterTerminalTab();
@@ -39375,9 +36194,9 @@
               var v_current_group = v_connTabControl.tag.groups[i3];
               var v_group_connections = [];
               if (i3 == 0) {
-                for (var k = 0; k < v_connTabControl.tag.connections.length; k++)
-                  (function(k2) {
-                    var v_conn = v_connTabControl.tag.connections[k2];
+                for (var k2 = 0; k2 < v_connTabControl.tag.connections.length; k2++)
+                  (function(k3) {
+                    var v_conn = v_connTabControl.tag.connections[k3];
                     const { text: v_conn_name, name: v_name, tooltip: p_tooltip_name, title: v_conn_title } = buildConnMenuEntry(v_conn);
                     v_group_connections.push({
                       text: v_conn_name,
@@ -39390,12 +36209,12 @@
                         }, 0);
                       }
                     });
-                  })(k);
+                  })(k2);
               } else {
                 for (var j2 = 0; j2 < v_current_group.conn_list.length; j2++) {
-                  for (var k = 0; k < v_connTabControl.tag.connections.length; k++)
-                    (function(k2) {
-                      var v_conn = v_connTabControl.tag.connections[k2];
+                  for (var k2 = 0; k2 < v_connTabControl.tag.connections.length; k2++)
+                    (function(k3) {
+                      var v_conn = v_connTabControl.tag.connections[k3];
                       const { text: v_conn_name, name: v_name, tooltip: p_tooltip_name, title: v_conn_title } = buildConnMenuEntry(v_conn);
                       if (v_conn.v_conn_id == v_current_group.conn_list[j2]) {
                         v_group_connections.push({
@@ -39411,7 +36230,7 @@
                         });
                         return;
                       }
-                    })(k);
+                    })(k2);
                 }
               }
               var v_group_data = {
@@ -39449,7 +36268,7 @@
             });
           })(i2);
         v_option_list.push({
-          text: t("workspace.ssh_consoles"),
+          text: t$1("workspace.ssh_consoles"),
           icon: "fas cm-all fa-terminal",
           submenu: {
             elements: v_submenu_terminal_list
@@ -39459,8 +36278,8 @@
       if (v_option_list.length > 0) {
         customMenu(
           {
-            x: e.clientX + 5,
-            y: e.clientY + 5
+            x: e2.clientX + 5,
+            y: e2.clientY + 5
           },
           v_option_list,
           null
@@ -39473,17 +36292,17 @@
       }
     }
   }
-  function showMenuNewTab(e) {
+  function showMenuNewTab(e2) {
     var v_option_list = [
       {
-        text: t("workspace.query_tab"),
+        text: t$1("workspace.query_tab"),
         icon: "fas cm-all fa-search",
         action: function() {
           v_connTabControl.tag.createQueryTab();
         }
       },
       {
-        text: t("workspace.console_tab"),
+        text: t$1("workspace.console_tab"),
         icon: "fas cm-all fa-terminal",
         action: function() {
           v_connTabControl.tag.createConsoleTab();
@@ -39497,8 +36316,8 @@
     }
     customMenu(
       {
-        x: e.clientX + 5,
-        y: e.clientY + 5
+        x: e2.clientX + 5,
+        y: e2.clientY + 5
       },
       v_option_list,
       null
@@ -39534,7 +36353,7 @@
       event2.dataTransfer.effectAllowed = "move";
       gridContainer.classList.add("omnidb__workspace-resize-grid--active");
       event2.srcElement.classList.add("omnidb__workspace-resize-grid__draggable--is-dragging");
-    } catch (e) {
+    } catch (e2) {
     }
   }
   function dragEnd(event2, grid_container) {
@@ -39565,7 +36384,7 @@
         document.getElementsByClassName("omnidb__workspace-resize-grid__column")[i2].classList.remove("omnidb__workspace-resize-grid__column--enter");
       }
       v_connTabControl.selectedTab.tag.gridProperties.render();
-    } catch (e) {
+    } catch (e2) {
     }
   }
   function toggleExpandToPanelView(p_target_id) {
@@ -39622,7 +36441,7 @@
   function uiCopyTextToClipboard(p_value) {
     var v_escaped = document.createElement("span");
     v_escaped.textContent = p_value;
-    var v_safe_html = "<b>" + escapeHtml(t("common.text_copied")) + '</b><div class="mt-2 p-2 border-1 omnidb__theme-bg--light"><code>' + v_escaped.innerHTML + "</code></div>";
+    var v_safe_html = "<b>" + escapeHtml(t$1("common.text_copied")) + '</b><div class="mt-2 p-2 border-1 omnidb__theme-bg--light"><code>' + v_escaped.innerHTML + "</code></div>";
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(p_value).then(function() {
         showAlert$1(v_safe_html, null, null, true);
@@ -39732,7 +36551,7 @@
         v_connections_data.list_items = [];
         v_connections_data.technologies = p_return.v_data.v_technologies;
         var v_target_div = el("connection_card_list");
-        v_target_div.innerHTML = '<div id="connections_management_empty_all" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-plug"></i><h6>' + escapeHtml(t("connections.no_connections")) + '</h6><button id="bt_empty_all_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t("connections.new_connection")) + '</button></div><div id="connections_management_empty_with_public" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h6>' + escapeHtml(t("connections.no_connections_public_available")) + '</h6><button id="bt_empty_public_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t("connections.new_connection")) + '</button></div><div id="connections_management_empty_group" class="omnidb__connections__empty" style="display:none;"><h6>' + escapeHtml(t("connections.no_connections_in_group")) + '</h6><button id="bt_empty_group_manage_groups" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t("connections.manage_groups")) + "</button></div>";
+        v_target_div.innerHTML = '<div id="connections_management_empty_all" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-plug"></i><h6>' + escapeHtml(t$1("connections.no_connections")) + '</h6><button id="bt_empty_all_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t$1("connections.new_connection")) + '</button></div><div id="connections_management_empty_with_public" class="omnidb__connections__empty" style="display:none;"><i class="fas fa-arrow-up text-info"></i><h6>' + escapeHtml(t$1("connections.no_connections_public_available")) + '</h6><button id="bt_empty_public_new_connection" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t$1("connections.new_connection")) + '</button></div><div id="connections_management_empty_group" class="omnidb__connections__empty" style="display:none;"><h6>' + escapeHtml(t$1("connections.no_connections_in_group")) + '</h6><button id="bt_empty_group_manage_groups" type="button" class="btn btn-sm omnidb__theme__btn--primary">' + escapeHtml(t$1("connections.manage_groups")) + "</button></div>";
         v_target_div.querySelector("#bt_empty_all_new_connection").addEventListener(
           "click",
           () => newConnection()
@@ -39745,21 +36564,21 @@
           "click",
           () => manageGroup()
         );
-        v_target_div.oncontextmenu = function(e) {
+        v_target_div.oncontextmenu = function(e2) {
           if (v_target_div.classList.contains("omnidb__connections__list--connection-management")) return;
-          e.preventDefault();
+          e2.preventDefault();
           customMenu(
-            { x: e.clientX + 5, y: e.clientY + 5 },
+            { x: e2.clientX + 5, y: e2.clientY + 5 },
             [
               {
-                text: t("connections.new_connection"),
+                text: t$1("connections.new_connection"),
                 icon: "fas cm-all fa-plus",
                 action: function() {
                   newConnection();
                 }
               },
               {
-                text: t("common.refresh"),
+                text: t$1("common.refresh"),
                 icon: "fas cm-all fa-sync-alt",
                 action: function() {
                   showConnectionList(false, true);
@@ -39779,7 +36598,7 @@
           var v_subtitle;
           if (v_conn_obj2.technology == "terminal") {
             v_icon_html = '<i class="fas fa-terminal"></i>';
-            v_title = v_conn_obj2.alias && v_conn_obj2.alias !== "" ? v_conn_obj2.alias : t("connections.terminal");
+            v_title = v_conn_obj2.alias && v_conn_obj2.alias !== "" ? v_conn_obj2.alias : t$1("connections.terminal");
             v_subtitle = v_conn_obj2.tunnel.user + "@" + v_conn_obj2.tunnel.server + ":" + v_conn_obj2.tunnel.port;
           } else {
             v_icon_html = '<i class="technology-icon node-' + escapeHtml(v_conn_obj2.technology) + '"></i>';
@@ -39793,7 +36612,7 @@
             }
           }
           var v_env_meta = ENVIRONMENT_META[v_conn_obj2.environment];
-          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + '</span><span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-title-text">' + escapeHtml(v_title) + '</span></span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="' + escapeHtmlAttribute(t("connections.uses_ssh_tunnel")) + '"></i>' : "");
+          v_item_div.innerHTML = '<span class="omnidb__connections__list-item-icon">' + v_icon_html + '</span><span class="omnidb__connections__list-item-text"><span class="omnidb__connections__list-item-title">' + (v_env_meta ? '<span class="omnidb__connections__list-item-env ' + v_env_meta.dotClass + '" title="' + v_env_meta.label + '"></span>' : "") + '<span class="omnidb__connections__list-item-title-text">' + escapeHtml(v_title) + '</span></span><span class="omnidb__connections__list-item-subtitle">' + escapeHtml(v_subtitle) + "</span></span>" + (v_conn_obj2.tunnel && v_conn_obj2.tunnel.enabled ? '<i class="fas fa-key omnidb__connections__list-item-tunnel" title="' + escapeHtmlAttribute(t$1("connections.uses_ssh_tunnel")) + '"></i>' : "");
           var v_checkbox = document.createElement("input");
           v_checkbox.className = "connection-card-checkbox";
           v_checkbox.id = "connection_item_input_" + i3;
@@ -39825,20 +36644,20 @@
           v_item_div.addEventListener(
             "contextmenu",
             /* @__PURE__ */ (function(p_conn_obj) {
-              return function(e) {
+              return function(e2) {
                 if (v_target_div.classList.contains("omnidb__connections__list--connection-management")) return;
-                e.preventDefault();
-                e.stopPropagation();
+                e2.preventDefault();
+                e2.stopPropagation();
                 var v_options2 = [
                   {
-                    text: t("common.connect"),
+                    text: t$1("common.connect"),
                     icon: "fas cm-all fa-plug",
                     action: function() {
                       selectConnection(p_conn_obj);
                     }
                   },
                   {
-                    text: t("common.edit"),
+                    text: t$1("common.edit"),
                     icon: "fas cm-all fa-pen",
                     action: function() {
                       editConnection(p_conn_obj);
@@ -39847,14 +36666,14 @@
                 ];
                 if (p_conn_obj.locked !== true) {
                   v_options2.push({
-                    text: t("common.delete"),
+                    text: t$1("common.delete"),
                     icon: "fas cm-all fa-times",
                     action: function() {
                       deleteConnection(p_conn_obj);
                     }
                   });
                 }
-                customMenu({ x: e.clientX + 5, y: e.clientY + 5 }, v_options2, null);
+                customMenu({ x: e2.clientX + 5, y: e2.clientY + 5 }, v_options2, null);
               };
             })(v_conn_obj2)
           );
@@ -39954,16 +36773,16 @@
   }
   function bindConnectionDrag(p_item_div, p_list_div) {
     p_item_div.setAttribute("draggable", "true");
-    p_item_div.addEventListener("dragstart", function(e) {
+    p_item_div.addEventListener("dragstart", function(e2) {
       if (p_list_div.classList.contains("omnidb__connections__list--connection-management")) {
-        e.preventDefault();
+        e2.preventDefault();
         return;
       }
       v_conn_drag_item = p_item_div;
       v_conn_drag_start_order = currentConnectionOrder();
-      if (e.dataTransfer) {
-        e.dataTransfer.effectAllowed = "move";
-        e.dataTransfer.setData("text/plain", "");
+      if (e2.dataTransfer) {
+        e2.dataTransfer.effectAllowed = "move";
+        e2.dataTransfer.setData("text/plain", "");
       }
       setTimeout(function() {
         p_item_div.classList.add("omnidb__connections__list-item--dragging");
@@ -39980,20 +36799,20 @@
     });
   }
   function bindConnectionListDrop(p_list_div) {
-    p_list_div.addEventListener("dragover", function(e) {
+    p_list_div.addEventListener("dragover", function(e2) {
       if (v_conn_drag_item === null) return;
-      e.preventDefault();
-      if (e.dataTransfer) e.dataTransfer.dropEffect = "move";
-      var v_target = getConnectionDragTarget(p_list_div, e.clientY);
+      e2.preventDefault();
+      if (e2.dataTransfer) e2.dataTransfer.dropEffect = "move";
+      var v_target = getConnectionDragTarget(p_list_div, e2.clientY);
       if (v_target === null) {
         if (p_list_div.lastElementChild !== v_conn_drag_item) p_list_div.appendChild(v_conn_drag_item);
       } else if (v_target.previousElementSibling !== v_conn_drag_item) {
         p_list_div.insertBefore(v_conn_drag_item, v_target);
       }
     });
-    p_list_div.addEventListener("drop", function(e) {
+    p_list_div.addEventListener("drop", function(e2) {
       if (v_conn_drag_item === null) return;
-      e.preventDefault();
+      e2.preventDefault();
     });
   }
   function groupChange(p_value) {
@@ -40130,7 +36949,7 @@
   }
   function deleteGroup() {
     var v_group_id = parseInt(el("group_selector").value, 10);
-    showConfirm(t("connections.confirm_delete_group"), function() {
+    showConfirm(t$1("connections.confirm_delete_group"), function() {
       deleteGroupConfirm(v_group_id);
     });
   }
@@ -40153,7 +36972,7 @@
     var v_input = document.createElement("input");
     v_input.id = "group_name_input";
     v_input.className = "form-control";
-    v_input.placeholder = t("connections.group_name");
+    v_input.placeholder = t$1("connections.group_name");
     v_input.style.width = "100%";
     el("modal_message_content").appendChild(v_input);
     v_input.onkeydown = function() {
@@ -40181,7 +37000,7 @@
     var v_input = document.createElement("input");
     v_input.id = "group_name_input";
     v_input.className = "form-control";
-    v_input.placeholder = t("connections.group_name");
+    v_input.placeholder = t$1("connections.group_name");
     v_input.style.width = "100%";
     v_input.value = v_select.options[v_select.selectedIndex].text;
     el("modal_message_content").appendChild(v_input);
@@ -40214,7 +37033,7 @@
         select.innerHTML = "";
         var option = document.createElement("option");
         option.value = "-1";
-        option.textContent = t("connections.all_connections");
+        option.textContent = t$1("connections.all_connections");
         select.appendChild(option);
         var found = false;
         for (var i2 = 0; i2 < p_return.v_data.length; i2++) {
@@ -40277,7 +37096,7 @@
             v_input.id = "txt_test_password_prompt";
             v_input.className = "form-control";
             v_input.type = "password";
-            v_input.placeholder = t("common.password");
+            v_input.placeholder = t$1("common.password");
             v_input.style.marginBottom = "20px";
             v_input.style.marginTop = "20px";
             v_input.style.textAlign = "center";
@@ -40344,9 +37163,9 @@
     );
   }
   function deleteConnection(p_conn_obj) {
-    var v_name = p_conn_obj.alias && p_conn_obj.alias !== "" ? p_conn_obj.alias : t("connections.terminal");
+    var v_name = p_conn_obj.alias && p_conn_obj.alias !== "" ? p_conn_obj.alias : t$1("connections.terminal");
     showConfirm(
-      t("connections.confirm_delete_connection", { name: v_name }),
+      t$1("connections.confirm_delete_connection", { name: v_name }),
       function() {
         var input = JSON.stringify({
           id: p_conn_obj.id
@@ -40368,7 +37187,7 @@
       null,
       null,
       null,
-      t("common.delete")
+      t$1("common.delete")
     );
   }
   function importConnectionsFromPgpass() {
@@ -40383,15 +37202,15 @@
         }
         finishPgpassImport(p_result.entries || []);
       }).catch(function(p_err) {
-        showAlert$1(t("connections.pgpass_picker_unreachable", { error: p_err }));
+        showAlert$1(t$1("connections.pgpass_picker_unreachable", { error: p_err }));
       });
     } else {
       el("connections_pgpass_import_input").click();
     }
   }
-  function handlePgpassImportFileChosen(e) {
-    var v_file = e.target.files ? e.target.files[0] : null;
-    e.target.value = "";
+  function handlePgpassImportFileChosen(e2) {
+    var v_file = e2.target.files ? e2.target.files[0] : null;
+    e2.target.value = "";
     if (!v_file) return;
     var v_reader = new FileReader();
     v_reader.onload = function(p_event) {
@@ -40409,11 +37228,11 @@
   }
   function finishPgpassImport(p_entries) {
     if (p_entries.length === 0) {
-      showAlert$1(t("connections.pgpass_no_usable_entries"));
+      showAlert$1(t$1("connections.pgpass_no_usable_entries"));
       return;
     }
-    var v_existing = (v_connTabControl.tag.connections || []).filter(function(c) {
-      return c.v_db_type === "postgresql";
+    var v_existing = (v_connTabControl.tag.connections || []).filter(function(c2) {
+      return c2.v_db_type === "postgresql";
     });
     function matchesExisting(p_entry, p_already_queued) {
       function isSameConnection(p_server, p_port, p_database, p_username) {
@@ -40435,7 +37254,7 @@
     }
     var v_skipped = p_entries.length - v_to_import.length;
     if (v_to_import.length === 0) {
-      showAlert$1(t("connections.pgpass_no_new_connections"));
+      showAlert$1(t$1("connections.pgpass_no_new_connections"));
       return;
     }
     importPgpassEntriesSequentially(v_to_import, 0, 0, v_skipped);
@@ -40488,34 +37307,34 @@
     sqlite: "SQLite",
     firebird: "Firebird",
     get terminal() {
-      return t("connections.terminal");
+      return t$1("connections.terminal");
     }
   };
   var ENVIRONMENT_META = {
     production: {
       get label() {
-        return t("connections.environment_production");
+        return t$1("connections.environment_production");
       },
       dotClass: "omnidb__env-dot--production",
       tabClass: "omnidb__tab--env-production"
     },
     uat: {
       get label() {
-        return t("connections.environment_uat");
+        return t$1("connections.environment_uat");
       },
       dotClass: "omnidb__env-dot--uat",
       tabClass: "omnidb__tab--env-uat"
     },
     development: {
       get label() {
-        return t("connections.environment_development");
+        return t$1("connections.environment_development");
       },
       dotClass: "omnidb__env-dot--development",
       tabClass: "omnidb__tab--env-development"
     },
     archive: {
       get label() {
-        return t("connections.environment_archive");
+        return t$1("connections.environment_archive");
       },
       dotClass: "omnidb__env-dot--archive",
       tabClass: "omnidb__tab--env-archive"
@@ -40529,12 +37348,12 @@
   function adjustTechSelector() {
     var select = el("conn_form_type");
     select.innerHTML = "";
-    var v_sorted = v_connections_data.technologies.slice().sort(function(a, b) {
-      var v_rank_a = technologySortRank(a);
-      var v_rank_b = technologySortRank(b);
+    var v_sorted = v_connections_data.technologies.slice().sort(function(a2, b2) {
+      var v_rank_a = technologySortRank(a2);
+      var v_rank_b = technologySortRank(b2);
       if (v_rank_a !== v_rank_b) return v_rank_a - v_rank_b;
-      var v_name_a = TECHNOLOGY_DISPLAY_NAMES[a] || a;
-      var v_name_b = TECHNOLOGY_DISPLAY_NAMES[b] || b;
+      var v_name_a = TECHNOLOGY_DISPLAY_NAMES[a2] || a2;
+      var v_name_b = TECHNOLOGY_DISPLAY_NAMES[b2] || b2;
       return v_name_a.localeCompare(v_name_b);
     });
     for (var i2 = 0; i2 < v_sorted.length; i2++) {
@@ -40735,7 +37554,7 @@
     el("conn_form_ssh_password").value = "";
     el("conn_form_ssh_key").value = "";
     el("conn_form_ssh_key_input").value = null;
-    el("conn_form_ssh_key_input_label").textContent = t("connections.click_to_select");
+    el("conn_form_ssh_key_input_label").textContent = t$1("connections.click_to_select");
     el("conn_form_user_pass_check_icon")?.remove();
     el("conn_form_ssh_password_check_icon")?.remove();
     el("conn_form_ssh_key_check_icon")?.remove();
@@ -40784,10 +37603,10 @@
       }
     }
   }
-  function updateModalEditConnectionState(e) {
-    let v_e_target = e.target;
+  function updateModalEditConnectionState(e2) {
+    let v_e_target = e2.target;
     let v_e_target_id = v_e_target.getAttribute("id");
-    let v_e_value = e.target.value;
+    let v_e_value = e2.target.value;
     let v_disable_list = [];
     let v_enable_list = [];
     let v_form_cases = ["conn_form_type"];
@@ -40953,23 +37772,23 @@
       el("conn_form_button_save_connection").removeAttribute("disabled");
     }
   }
-  function updateConnectionKey(e) {
-    var file = e.target.files ? e.target.files[0] : false;
+  function updateConnectionKey(e2) {
+    var file = e2.target.files ? e2.target.files[0] : false;
     var v_input = el("conn_form_ssh_key");
     if (!file) {
       v_input.value = null;
-      el("conn_form_ssh_key_input_label").textContent = t("connections.click_to_select");
+      el("conn_form_ssh_key_input_label").textContent = t$1("connections.click_to_select");
       updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
       return;
     }
     var reader = new FileReader();
-    reader.onload = function(e2) {
+    reader.onload = function(e3) {
       var v_contents = (
         /** @type {FileReader} */
-        e2.target.result
+        e3.target.result
       );
       v_input.value = v_contents;
-      el("conn_form_ssh_key_input_label").textContent = t("connections.key_text_loaded");
+      el("conn_form_ssh_key_input_label").textContent = t$1("connections.key_text_loaded");
       updateModalEditConnectionState({ target: el("conn_form_ssh_key_input") });
     };
     reader.readAsText(file);
@@ -41315,10 +38134,10 @@
           }
           var v_step_btn_next = "";
           if (this.stepList[this.stepSelected].next_button && this.stepSelected < this.stepCounter - 1) {
-            v_step_btn_next += `<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ms-2">${t("common.next")}</button>`;
+            v_step_btn_next += `<button id="omnis_step_btn_next" type="button" class="btn btn-sm omnidb__theme__btn--primary ms-2">${t$1("common.next")}</button>`;
           }
           var v_step_btn_previous = "";
-          var v_step_btn_close = `<button id="omnis_step_btn_close" type="button" class="btn btn-sm btn-danger ml-auto">${t("tutorial.end_walkthrough")}</button>`;
+          var v_step_btn_close = `<button id="omnis_step_btn_close" type="button" class="btn btn-sm btn-danger ml-auto">${t$1("tutorial.end_walkthrough")}</button>`;
           var v_step_title = '<div class="mb-4 text-center" style="position: relative;">' + // '<div style="background: none; display: inline-block; height: 64px; width:64px;">' + v_animated_omnis + '</div>' +
           v_title + "</div>";
           var v_step_html = '<div class="omnis__step card">' + v_step_title + v_message + '<div class="omnis__step__footer card-footer d-flex align-items-center p-2">' + v_step_btn_previous + v_step_btn_next + v_step_btn_close + "</div></div>";
@@ -41408,9 +38227,9 @@
               v_control.divCardElement.style.top = v_target_position.y - v_control.divCardElement.offsetHeight - 20 + "px";
             }
           }
-        } catch (e) {
+        } catch (e2) {
           console.warn("omnis-ui-assistant couldnt process the positioning of the target. Details:");
-          console.warn(e);
+          console.warn(e2);
         }
       }
     };
@@ -41472,19 +38291,19 @@
       // Omnis Object
       p_omnis: v_omnis
     });
-    var v_button_inner_query_attr = ` disabled title="${t("tutorial.getting_started.open_connection_first")}" `;
+    var v_button_inner_query_attr = ` disabled title="${t$1("tutorial.getting_started.open_connection_first")}" `;
     if (v_connTabControl.selectedTab.tag.tabControl) {
       if (v_connTabControl.selectedTab.tag.tabControl.tabList.length > 0) {
         v_button_inner_query_attr = "";
       }
     }
-    var v_button_inner_query = `<li class="mb-2"><button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab"><i class="fas fa-list me-2"></i>${t("tutorial.getting_started.connection_tab_button")}</button></li>`;
+    var v_button_inner_query = `<li class="mb-2"><button ` + v_button_inner_query_attr + ` type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connection_tab"><i class="fas fa-list me-2"></i>${t$1("tutorial.getting_started.connection_tab_button")}</button></li>`;
     var v_tutorials = {
       main: [
         {
-          p_message: t("tutorial.main.nav_rail.message"),
+          p_message: t$1("tutorial.main.nav_rail.message"),
           p_target: document.getElementById("omnidb_section_nav"),
-          p_title: t("tutorial.title.navigation_rail")
+          p_title: t$1("tutorial.title.navigation_rail")
         },
         {
           p_callback_end: function() {
@@ -41498,41 +38317,41 @@
             );
           },
           p_clone_target: true,
-          p_message: t("tutorial.main.account.message"),
+          p_message: t$1("tutorial.main.account.message"),
           p_target: document.getElementById("omnidb_section_nav__account_menu"),
-          p_title: t("tutorial.main.account.title"),
+          p_title: t$1("tutorial.main.account.title"),
           p_update_delay: 350
         }
       ],
       utilities_menu: [
         {
-          p_message: t("tutorial.utilities_menu.nav_rail.message"),
+          p_message: t$1("tutorial.utilities_menu.nav_rail.message"),
           p_target: document.getElementById("omnidb_section_nav"),
-          p_title: t("tutorial.title.navigation_rail")
+          p_title: t$1("tutorial.title.navigation_rail")
         },
         {
           p_callback_start: function() {
             showConfigUser();
           },
           p_clone_target: true,
-          p_message: t("tutorial.utilities_menu.settings.message"),
+          p_message: t$1("tutorial.utilities_menu.settings.message"),
           p_next_button: false,
           p_target: function() {
             var v_target = document.getElementById("settings_category_account");
             return v_target;
           },
-          p_title: t("tutorial.utilities_menu.settings.title"),
+          p_title: t$1("tutorial.utilities_menu.settings.title"),
           p_update_delay: 350
         },
         {
           p_clone_target: true,
-          p_message: t("tutorial.utilities_menu.manage_users.message"),
+          p_message: t$1("tutorial.utilities_menu.manage_users.message"),
           p_next_button: false,
           p_target: function() {
             var v_target = document.getElementById("button_open_users");
             return v_target;
           },
-          p_title: t("tutorial.utilities_menu.manage_users.title"),
+          p_title: t$1("tutorial.utilities_menu.manage_users.title"),
           p_update_delay: 350
         },
         {
@@ -41544,31 +38363,31 @@
             }, 50);
           },
           p_clone_target: true,
-          p_message: t("tutorial.utilities_menu.add_user.message"),
+          p_message: t$1("tutorial.utilities_menu.add_user.message"),
           p_next_button: false,
           p_target: function() {
             var v_target = document.getElementById("omnidb_utilities_menu_btn_new_user");
             return v_target;
           },
-          p_title: t("tutorial.utilities_menu.add_user.title"),
+          p_title: t$1("tutorial.utilities_menu.add_user.title"),
           p_update_delay: 1e3
         },
         {
-          p_message: t("tutorial.utilities_menu.user_options.message"),
+          p_message: t$1("tutorial.utilities_menu.user_options.message"),
           p_target: function() {
             var v_target = document.getElementById("omnidb_user_content");
             return v_target;
           },
-          p_title: t("tutorial.utilities_menu.user_options.title"),
+          p_title: t$1("tutorial.utilities_menu.user_options.title"),
           p_update_delay: 350
         }
       ],
       connections_menu: [
         {
           p_clone_target: true,
-          p_message: t("tutorial.connections_menu.nav_rail.message"),
+          p_message: t$1("tutorial.connections_menu.nav_rail.message"),
           p_target: document.getElementById("omnidb_section_nav"),
-          p_title: t("tutorial.title.navigation_rail")
+          p_title: t$1("tutorial.title.navigation_rail")
         },
         {
           p_callback_after_update_start: function() {
@@ -41581,87 +38400,87 @@
             startConnectionManagement();
           },
           p_clone_target: true,
-          p_message: t("tutorial.shared.click_new_connection"),
+          p_message: t$1("tutorial.shared.click_new_connection"),
           p_next_button: false,
           p_target: function() {
             var v_target = document.getElementById("button_new_connection");
             return v_target;
           },
-          p_title: t("tutorial.title.add_connection"),
+          p_title: t$1("tutorial.title.add_connection"),
           p_update_delay: 1e3
         },
         {
-          p_message: t("tutorial.connections_menu.type.message"),
+          p_message: t$1("tutorial.connections_menu.type.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_type");
             return v_target;
           },
-          p_title: t("tutorial.title.connection_type"),
+          p_title: t$1("tutorial.title.connection_type"),
           p_update_delay: 300
         },
         {
-          p_message: t("tutorial.connections_menu.title_field.message"),
+          p_message: t$1("tutorial.connections_menu.title_field.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_title");
             return v_target;
           },
-          p_title: t("tutorial.title.title_field")
+          p_title: t$1("tutorial.title.title_field")
         },
         {
-          p_message: t("tutorial.connections_menu.server.message"),
+          p_message: t$1("tutorial.connections_menu.server.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_server");
             return v_target;
           },
-          p_title: t("tutorial.connections_menu.server.title")
+          p_title: t$1("tutorial.connections_menu.server.title")
         },
         {
-          p_message: t("tutorial.connections_menu.port.message"),
+          p_message: t$1("tutorial.connections_menu.port.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_port");
             return v_target;
           },
-          p_title: t("tutorial.connections_menu.port.title")
+          p_title: t$1("tutorial.connections_menu.port.title")
         },
         {
-          p_message: t("tutorial.connections_menu.database.message"),
+          p_message: t$1("tutorial.connections_menu.database.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_database");
             return v_target;
           },
-          p_title: t("tutorial.connections_menu.database.title")
+          p_title: t$1("tutorial.connections_menu.database.title")
         },
         {
-          p_message: t("tutorial.connections_menu.user.message"),
+          p_message: t$1("tutorial.connections_menu.user.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_user");
             return v_target;
           },
-          p_title: t("tutorial.connections_menu.user.title")
+          p_title: t$1("tutorial.connections_menu.user.title")
         },
         {
-          p_message: t("tutorial.connections_menu.user_password.message"),
+          p_message: t$1("tutorial.connections_menu.user_password.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_user_pass");
             return v_target;
           },
-          p_title: t("tutorial.connections_menu.user_password.title")
+          p_title: t$1("tutorial.connections_menu.user_password.title")
         },
         {
-          p_message: t("tutorial.shared.test_connection_message"),
+          p_message: t$1("tutorial.shared.test_connection_message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_button_test_connection");
             return v_target;
           },
-          p_title: t("tutorial.title.test_connection")
+          p_title: t$1("tutorial.title.test_connection")
         }
       ],
       terminal_connection: [
         {
           p_clone_target: true,
-          p_message: t("tutorial.terminal_connection.nav_rail.message"),
+          p_message: t$1("tutorial.terminal_connection.nav_rail.message"),
           p_target: document.getElementById("omnidb_section_nav"),
-          p_title: t("tutorial.terminal_connection.nav_rail.title")
+          p_title: t$1("tutorial.terminal_connection.nav_rail.title")
         },
         {
           p_callback_after_update_start: function() {
@@ -41674,141 +38493,141 @@
             startConnectionManagement();
           },
           p_clone_target: true,
-          p_message: t("tutorial.shared.click_new_connection"),
+          p_message: t$1("tutorial.shared.click_new_connection"),
           p_next_button: false,
           p_target: function() {
             var v_target = document.getElementById("button_new_connection");
             return v_target;
           },
-          p_title: t("tutorial.title.add_connection"),
+          p_title: t$1("tutorial.title.add_connection"),
           p_update_delay: 1e3
         },
         {
-          p_message: t("tutorial.terminal_connection.type.message"),
+          p_message: t$1("tutorial.terminal_connection.type.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_type");
             return v_target;
           },
-          p_title: t("tutorial.title.connection_type"),
+          p_title: t$1("tutorial.title.connection_type"),
           p_update_delay: 300
         },
         {
-          p_message: t("tutorial.terminal_connection.title_field.message"),
+          p_message: t$1("tutorial.terminal_connection.title_field.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_title");
             return v_target;
           },
-          p_title: t("tutorial.title.title_field")
+          p_title: t$1("tutorial.title.title_field")
         },
         {
-          p_message: t("tutorial.terminal_connection.ssh_params.message"),
+          p_message: t$1("tutorial.terminal_connection.ssh_params.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_use_tunnel");
             return v_target;
           },
-          p_title: t("tutorial.terminal_connection.ssh_params.title")
+          p_title: t$1("tutorial.terminal_connection.ssh_params.title")
         },
         {
-          p_message: t("tutorial.terminal_connection.ssh_server.message"),
+          p_message: t$1("tutorial.terminal_connection.ssh_server.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_ssh_server");
             return v_target;
           },
-          p_title: t("tutorial.terminal_connection.ssh_server.title")
+          p_title: t$1("tutorial.terminal_connection.ssh_server.title")
         },
         {
-          p_message: t("tutorial.terminal_connection.ssh_port.message"),
+          p_message: t$1("tutorial.terminal_connection.ssh_port.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_ssh_port");
             return v_target;
           },
-          p_title: t("tutorial.terminal_connection.ssh_port.title")
+          p_title: t$1("tutorial.terminal_connection.ssh_port.title")
         },
         {
-          p_message: t("tutorial.terminal_connection.ssh_user.message"),
+          p_message: t$1("tutorial.terminal_connection.ssh_user.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_ssh_user");
             return v_target;
           },
-          p_title: t("tutorial.terminal_connection.ssh_user.title")
+          p_title: t$1("tutorial.terminal_connection.ssh_user.title")
         },
         {
-          p_message: t("tutorial.terminal_connection.ssh_password.message"),
+          p_message: t$1("tutorial.terminal_connection.ssh_password.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_ssh_password");
             return v_target;
           },
-          p_title: t("tutorial.terminal_connection.ssh_password.title")
+          p_title: t$1("tutorial.terminal_connection.ssh_password.title")
         },
         {
-          p_message: t("tutorial.terminal_connection.ssh_key.message"),
+          p_message: t$1("tutorial.terminal_connection.ssh_key.message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_ssh_key_input_label");
             return v_target;
           },
-          p_title: t("tutorial.terminal_connection.ssh_key.title")
+          p_title: t$1("tutorial.terminal_connection.ssh_key.title")
         },
         {
-          p_message: t("tutorial.shared.test_connection_message"),
+          p_message: t$1("tutorial.shared.test_connection_message"),
           p_target: function() {
             var v_target = document.getElementById("conn_form_button_test_connection");
             return v_target;
           },
-          p_title: t("tutorial.title.test_connection")
+          p_title: t$1("tutorial.title.test_connection")
         }
       ],
       snippets: [
         {
           p_clone_target: true,
-          p_message: t("tutorial.snippets.panel.message"),
+          p_message: t$1("tutorial.snippets.panel.message"),
           p_target: document.getElementById("omnidb_section_nav"),
-          p_title: t("tutorial.snippets.panel.title")
+          p_title: t$1("tutorial.snippets.panel.title")
         },
         {
           // p_callback_after_update_start: function() {setTimeout(function(){var v_target = document.getElementById(v_connTabControl.snippet_tag.tabControl.selectedTab.tag.editorDivId);},50);},
           p_callback_start: function() {
             toggleSnippetPanel();
           },
-          p_message: t("tutorial.snippets.editor.message"),
+          p_message: t$1("tutorial.snippets.editor.message"),
           p_next_button: true,
           p_target: function() {
             var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
             return v_target;
           },
-          p_title: t("tutorial.snippets.editor.title"),
+          p_title: t$1("tutorial.snippets.editor.title"),
           p_update_delay: 600
         },
         {
-          p_message: t("tutorial.snippets.indent.message"),
+          p_message: t$1("tutorial.snippets.indent.message"),
           p_next_button: true,
           p_target: function() {
             var v_target = document.getElementById("a_" + v_connTabControl.snippet_tag.tabControl.selectedTab.tag.tab_id);
             return v_target;
           },
-          p_title: t("tutorial.snippets.indent.title")
+          p_title: t$1("tutorial.snippets.indent.title")
         },
         {
-          p_message: t("tutorial.snippets.saved.message"),
+          p_message: t$1("tutorial.snippets.saved.message"),
           p_next_button: false,
           p_target: function() {
             var v_target = document.getElementById(v_connTabControl.snippet_tag.divTree.getAttribute("id"));
             return v_target;
           },
-          p_title: t("tutorial.snippets.saved.title"),
+          p_title: t$1("tutorial.snippets.saved.title"),
           p_update_delay: 600
         }
       ],
       selecting_connection: [
         {
-          p_message: t("tutorial.selecting_connection.nav_rail.message"),
+          p_message: t$1("tutorial.selecting_connection.nav_rail.message"),
           p_target: document.getElementById("omnidb_section_nav"),
-          p_title: t("tutorial.title.navigation_rail")
+          p_title: t$1("tutorial.title.navigation_rail")
         },
         {
           p_callback_start: function() {
             switchSection("database");
           },
-          p_message: t("tutorial.selecting_connection.select.message"),
+          p_message: t$1("tutorial.selecting_connection.select.message"),
           p_position: function() {
             var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
             return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y };
@@ -41817,7 +38636,7 @@
             var v_target = v_connTabControl.tabList[v_connTabControl.tabList.length - 1].elementA;
             return v_target;
           },
-          p_title: t("tutorial.selecting_connection.select.title"),
+          p_title: t$1("tutorial.selecting_connection.select.title"),
           p_update_delay: 350
         }
       ],
@@ -41826,40 +38645,40 @@
           p_callback_start: function() {
             switchSection("database");
           },
-          p_message: t("tutorial.connection_tab.current.message"),
+          p_message: t$1("tutorial.connection_tab.current.message"),
           p_target: function() {
             var v_target = v_connTabControl.selectedTab.tag.divDetails;
             return v_target;
           },
-          p_title: t("tutorial.connection_tab.current.title"),
+          p_title: t$1("tutorial.connection_tab.current.title"),
           p_update_delay: 350
         },
         {
-          p_message: t("tutorial.connection_tab.tree.message"),
+          p_message: t$1("tutorial.connection_tab.tree.message"),
           p_target: function() {
             var v_target = v_connTabControl.selectedTab.tag.divTree;
             return v_target;
           },
-          p_title: t("tutorial.connection_tab.tree.title")
+          p_title: t$1("tutorial.connection_tab.tree.title")
         },
         {
-          p_message: t("tutorial.connection_tab.properties.message"),
+          p_message: t$1("tutorial.connection_tab.properties.message"),
           p_target: function() {
             var v_target = v_connTabControl.selectedTab.tag.divTreeTabs;
             return v_target;
           },
-          p_title: t("tutorial.connection_tab.properties.title")
+          p_title: t$1("tutorial.connection_tab.properties.title")
         },
         {
-          p_message: t("tutorial.connection_tab.inner_tabs.message"),
+          p_message: t$1("tutorial.connection_tab.inner_tabs.message"),
           p_target: function() {
             var v_target = v_connTabControl.selectedTab.tag.tabControl.tabList[0].elementA;
             return v_target;
           },
-          p_title: t("tutorial.connection_tab.inner_tabs.title")
+          p_title: t$1("tutorial.connection_tab.inner_tabs.title")
         },
         {
-          p_message: t("tutorial.connection_tab.actions.message"),
+          p_message: t$1("tutorial.connection_tab.actions.message"),
           p_position: function() {
             var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.elementDiv.querySelector(
               ".omnidb__tab-actions"
@@ -41872,10 +38691,10 @@
             );
             return v_target;
           },
-          p_title: t("tutorial.connection_tab.actions.title")
+          p_title: t$1("tutorial.connection_tab.actions.title")
         },
         {
-          p_message: t("tutorial.connection_tab.result.message"),
+          p_message: t$1("tutorial.connection_tab.result.message"),
           p_position: function() {
             var v_target = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result;
             return { x: v_target.getBoundingClientRect().x + 40, y: v_target.getBoundingClientRect().y + 40 };
@@ -41886,14 +38705,14 @@
             );
             return v_target;
           },
-          p_title: t("tutorial.connection_tab.result.title")
+          p_title: t$1("tutorial.connection_tab.result.title")
         }
       ]
     };
     let v_tutorial_link_creating_user = gv_desktopMode ? "" : `
 	<li class="mb-2">
 		<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="utilities_menu">
-			<i class="fas fa-user-plus me-2"></i>${t("tutorial.getting_started.create_user")}
+			<i class="fas fa-user-plus me-2"></i>${t$1("tutorial.getting_started.create_user")}
 		</button>
 	</li>`;
     v_tutorials.getting_started = [
@@ -41901,26 +38720,26 @@
         p_message: '<ol style="padding-left: 1.5rem;">' + v_tutorial_link_creating_user + `
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="connections_menu">
-						<i class="fas fa-plug me-2"></i>${t("tutorial.getting_started.create_connection")}
+						<i class="fas fa-plug me-2"></i>${t$1("tutorial.getting_started.create_connection")}
 					</button>
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="terminal_connection">
-						<i class="fas fa-terminal me-2"></i>${t("tutorial.getting_started.create_terminal")}
+						<i class="fas fa-terminal me-2"></i>${t$1("tutorial.getting_started.create_terminal")}
 					</button>
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="snippets">
-						<i class="fas fa-scroll me-2"></i>${t("tutorial.getting_started.snippets")}
+						<i class="fas fa-scroll me-2"></i>${t$1("tutorial.getting_started.snippets")}
 					</button>
 				</li>
 				<li class="mb-2">
 					<button type="button" class="btn omnidb__theme__btn--primary d-flex align-items-center" data-omnidb-action="start-tutorial" data-omnidb-arg="selecting_connection">
-						<i class="fas fa-plus me-2"></i>${t("tutorial.getting_started.using_connection")}
+						<i class="fas fa-plus me-2"></i>${t$1("tutorial.getting_started.using_connection")}
 					</button>
 				</li>
 				` + v_button_inner_query + "</ol>",
-        p_title: `<i class="fas fa-list me-2"></i> ${t("tutorial.getting_started.title")}`,
+        p_title: `<i class="fas fa-list me-2"></i> ${t$1("tutorial.getting_started.title")}`,
         // Anchors omnis (and this step's card) next to whatever launched
         // the tutorial -- the rail's lightbulb icon, typically -- instead
         // of the bottom-right corner default that applies when a step
@@ -41957,7 +38776,7 @@
   };
   function applyWindowTitle(p_name) {
     var v_key = SECTION_TITLE_KEYS[p_name];
-    var v_title = v_key ? "OmniDB - " + t(v_key) : "OmniDB";
+    var v_title = v_key ? "OmniDB - " + t$1(v_key) : "OmniDB";
     document.title = v_title;
     if (gv_desktopMode) {
       fetch("/notify_title/", {
@@ -42021,7 +38840,7 @@
       p_selectFunction: function() {
         switchSection("welcome");
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.welcome")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.welcome")) + "</h5>"
     });
     v_sectionNavTabs.connections = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-plug"></i>',
@@ -42030,7 +38849,7 @@
       p_selectFunction: function() {
         startConnectionManagement();
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connections")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.connections")) + "</h5>"
     });
     v_sectionNavTabs.database = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-database"></i>',
@@ -42039,7 +38858,7 @@
       p_selectFunction: function() {
         switchSection("database");
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("tree.databases_section")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("tree.databases_section")) + "</h5>"
     });
     v_sectionNavTabs.monitoring = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-chart-line"></i>',
@@ -42048,7 +38867,7 @@
       p_selectFunction: function() {
         switchSection("monitoring");
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.monitoring")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.monitoring")) + "</h5>"
     });
     v_sectionNavTabs.notify = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-bell"></i>',
@@ -42057,7 +38876,7 @@
       p_selectFunction: function() {
         switchSection("notify");
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.notify")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.notify")) + "</h5>"
     });
     v_sectionNavTabs.permissions = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-users"></i>',
@@ -42066,7 +38885,7 @@
       p_selectFunction: function() {
         switchSection("permissions");
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.permissions")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.permissions")) + "</h5>"
     });
     v_sectionNavTabs.connected_users = v_sectionNav.createTab({
       // fa-server, not fa-users: represents the server-side connections/
@@ -42078,7 +38897,7 @@
       p_selectFunction: function() {
         switchSection("connected_users");
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.connected_users")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.connected_users")) + "</h5>"
     });
     v_sectionNavTabs.snippets = v_sectionNav.createTab({
       p_icon: '<i class="fas fa-scroll"></i>',
@@ -42087,7 +38906,7 @@
       p_selectFunction: function() {
         toggleSnippetPanel();
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("tree.snippets_section")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("tree.snippets_section")) + "</h5>"
     });
     var v_spacer = document.createElement("div");
     v_spacer.className = "omnidb__section-nav__spacer";
@@ -42097,10 +38916,10 @@
       p_close: false,
       p_isDraggable: false,
       p_selectable: false,
-      p_clickFunction: function(e) {
-        startTutorial("getting_started", e.currentTarget);
+      p_clickFunction: function(e2) {
+        startTutorial("getting_started", e2.currentTarget);
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.getting_started")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.getting_started")) + "</h5>"
     });
     if (!gv_desktopMode) {
       initAccountMenu();
@@ -42112,7 +38931,7 @@
       p_selectFunction: function() {
         showConfigUser();
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.settings")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.settings")) + "</h5>"
     });
   }
   function initAccountMenu() {
@@ -42121,11 +38940,11 @@
       p_close: false,
       p_isDraggable: false,
       p_selectable: false,
-      p_clickFunction: function(e) {
-        e.stopPropagation();
+      p_clickFunction: function(e2) {
+        e2.stopPropagation();
         toggleAccountMenu();
       },
-      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t("nav.account")) + "</h5>"
+      p_tooltip_name: '<h5 class="my-1">' + escapeHtml(t$1("nav.account")) + "</h5>"
     });
     var v_menu = document.createElement("div");
     v_menu.id = "omnidb_section_nav__account_menu";
@@ -42133,7 +38952,7 @@
     var v_html = '<div class="omnidb__account-menu__version"><i class="fas fa-code-branch me-1"></i>' + escapeHtml(String(v_short_version)) + "</div>";
     if (!gv_desktopMode) {
       v_html += '<div class="omnidb__account-menu__username">' + escapeHtml(String(v_user_name)) + "</div>";
-      v_html += '<button id="omnidb_section_nav__link-signout" type="button" class="btn btn-sm omnidb__theme__btn--secondary w-100 mt-2"><i class="fas fa-sign-out-alt me-1"></i>' + escapeHtml(t("nav.sign_out")) + "</button>";
+      v_html += '<button id="omnidb_section_nav__link-signout" type="button" class="btn btn-sm omnidb__theme__btn--secondary w-100 mt-2"><i class="fas fa-sign-out-alt me-1"></i>' + escapeHtml(t$1("nav.sign_out")) + "</button>";
     }
     v_menu.innerHTML = v_html;
     document.body.appendChild(v_menu);
@@ -42146,9 +38965,9 @@
         }
       );
     }
-    document.addEventListener("click", function(e) {
-      if (!(e.target instanceof Node)) return;
-      if (!v_menu.contains(e.target) && !v_tab.elementA.contains(e.target)) {
+    document.addEventListener("click", function(e2) {
+      if (!(e2.target instanceof Node)) return;
+      if (!v_menu.contains(e2.target) && !v_tab.elementA.contains(e2.target)) {
         hideAccountMenu();
       }
     });
@@ -42475,10 +39294,10 @@
     }
   };
   const v_current_os = (function() {
-    const v = navigator.appVersion;
-    if (v.indexOf("Win") != -1) return "windows";
-    if (v.indexOf("Mac") != -1) return "macos";
-    if (v.indexOf("X11") != -1 || v.indexOf("Linux") != -1) return "linux";
+    const v2 = navigator.appVersion;
+    if (v2.indexOf("Win") != -1) return "windows";
+    if (v2.indexOf("Mac") != -1) return "macos";
+    if (v2.indexOf("X11") != -1 || v2.indexOf("Linux") != -1) return "linux";
     return "Unknown OS";
   })();
   function initShortcuts() {
@@ -42570,16 +39389,16 @@
           if (v_tab && v_tab.closeFunction) v_tab.closeFunction({ clientX: 0, clientY: 0 }, v_tab);
         }
       },
-      shortcut_autocomplete: function(e) {
+      shortcut_autocomplete: function(e2) {
         if (v_connTabControl.selectedTab.tag.mode == "connection") {
           if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query" || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console") {
             var v_editor = null;
             if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "query") {
               v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor;
-              autocomplete_start(v_editor, 0, e, true);
+              autocomplete_start(v_editor, 0, e2, true);
             } else if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.mode == "console") {
               v_editor = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor_input;
-              autocomplete_start(v_editor, 1, e, true);
+              autocomplete_start(v_editor, 1, e2, true);
             }
           }
         }
@@ -42703,7 +39522,7 @@
   }, Symbol.toStringTag, { value: "Module" }));
   function showAbout() {
     var v_version_line = document.getElementById("about_version_line");
-    if (v_version_line) v_version_line.textContent = t("modals.about.version_line", { version: v_version });
+    if (v_version_line) v_version_line.textContent = t$1("modals.about.version_line", { version: v_version });
     bootstrap.Modal.getOrCreateInstance(
       /** @type {HTMLElement} */
       document.getElementById("modal_about")
@@ -42836,8 +39655,8 @@
       for (var i2 = 0; i2 < v_connTabControl.tabList.length; i2++) {
         var v_tab = v_connTabControl.tabList[i2];
         if (v_tab.tag != null && v_tab.tag.monitoring != null) {
-          for (var k = 0; k < v_tab.tag.monitoring.units.length; k++) {
-            if (v_tab.tag.monitoring.units[k].type == "graph") adjustGraphTheme(v_tab.tag.monitoring.units[k].object);
+          for (var k2 = 0; k2 < v_tab.tag.monitoring.units.length; k2++) {
+            if (v_tab.tag.monitoring.units[k2].type == "graph") adjustGraphTheme(v_tab.tag.monitoring.units[k2].object);
           }
         }
       }
@@ -42944,9 +39763,9 @@
     );
     var v_start_x = event2.x;
     var v_start_width = v_sidebar.getBoundingClientRect().width;
-    var v_move = function(e) {
+    var v_move = function(e2) {
       var v_max_allowed_width = v_container.getBoundingClientRect().width - 50;
-      var v_pixel_value = v_start_width + (e.x - v_start_x);
+      var v_pixel_value = v_start_width + (e2.x - v_start_x);
       if (v_pixel_value < 180) v_pixel_value = 180;
       if (v_pixel_value > v_max_allowed_width) v_pixel_value = v_max_allowed_width;
       var v_width_value = v_pixel_value + "px";
@@ -43042,12 +39861,12 @@
     switchSection("settings");
   }
   function goToConnections() {
-    showConfirm(t("confirm.lose_changes"), function() {
+    showConfirm(t$1("confirm.lose_changes"), function() {
       window.open("../connections", "_self");
     });
   }
   function confirmSignout() {
-    showConfirm(t("confirm.sign_out"), function() {
+    showConfirm(t$1("confirm.sign_out"), function() {
       window.open("../logout", "_self");
     });
   }
@@ -43152,14 +39971,14 @@
       document.getElementById("txt_new_pwd")
     );
     if (v_pwd.value === "" || v_pwd.value !== v_confirm_pwd.value) {
-      showAlert$1(t("settings.password.mismatch"));
+      showAlert$1(t$1("settings.password.mismatch"));
       return;
     }
     persistConfigUserInternal(v_pwd.value, function() {
       v_pwd.value = "";
       v_confirm_pwd.value = "";
       updatePasswordButtonState();
-      showAlert$1(t("settings.password.changed"));
+      showAlert$1(t$1("settings.password.changed"));
     });
   }
   function saveShortcuts() {
@@ -43197,9 +40016,9 @@
     v_canEditContent = p_can_alter;
     var v_save_btn_attr = "";
     if (!v_canEditContent) {
-      v_save_btn_attr = ' disabled title="' + escapeHtmlAttribute(t("edit_data.no_primary_key")) + '" ';
+      v_save_btn_attr = ' disabled title="' + escapeHtmlAttribute(t$1("edit_data.no_primary_key")) + '" ';
     }
-    v_edit_modal.innerHTML = '<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;"><div class="modal-content"><div class="modal-header"><h4 class="mb-0">' + escapeHtml(t("connections.edit_data")) + '</h4><button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="' + escapeHtmlAttribute(t("common.close")) + '"><span aria-hidden="true">&times;</span></button></div><div id="modal_message_content" class="modal-body" style="white-space: pre-line;"><div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);"></div></div><div class="modal-footer"><button ' + v_save_btn_attr + ' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">' + escapeHtml(t("common.save")) + '</button><button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">' + escapeHtml(t("common.cancel")) + "</button></div></div></div>";
+    v_edit_modal.innerHTML = '<div id="modal_message_dialog" class="modal-dialog" role="document" style="width: 1200px;max-width: 90vw;"><div class="modal-content"><div class="modal-header"><h4 class="mb-0">' + escapeHtml(t$1("connections.edit_data")) + '</h4><button id="bt_edit_content_close" type="button" class="close" data-dismiss="modal" aria-label="' + escapeHtmlAttribute(t$1("common.close")) + '"><span aria-hidden="true">&times;</span></button></div><div id="modal_message_content" class="modal-body" style="white-space: pre-line;"><div id="txt_edit_content" style="width: 100%; height: 70vh; font-size: 12px; border: 1px solid rgb(195, 195, 195);"></div></div><div class="modal-footer"><button ' + v_save_btn_attr + ' id="bt_edit_content_save" type="button" class="btn omnidb__theme__btn--primary" data-dismiss="modal">' + escapeHtml(t$1("common.save")) + '</button><button id="bt_edit_content_cancel" type="button" class="btn omnidb__theme__btn--secondary" data-dismiss="modal">' + escapeHtml(t$1("common.cancel")) + "</button></div></div></div>";
     document.getElementById("bt_edit_content_close").addEventListener(
       "click",
       () => cancelEditContent()
@@ -43263,7 +40082,7 @@
         v_editContentObject.editor.getValue()
       );
     } else {
-      alert(t("edit_data.no_permissions"));
+      alert(t$1("edit_data.no_permissions"));
     }
     v_editContentObject.editor.setValue("");
   }
@@ -43386,7 +40205,7 @@
     v_tab_tag.tab_loading_span.style.display = "none";
     v_tab_tag.tab_check_span.style.display = "none";
     v_tab_tag.bt_cancel.style.display = "none";
-    v_tab_tag.query_info.innerHTML = t("common.canceled");
+    v_tab_tag.query_info.innerHTML = t$1("common.canceled");
     setTabStatus(v_tab_tag, 0);
     removeContext(v_tab_tag.context.v_context_code);
     SetAcked(v_tab_tag.context);
@@ -43432,16 +40251,16 @@
       }
     }
     v_bounds.push([v_start, v_text.length]);
-    var v_index = v_bounds.findIndex(function(b2) {
-      return v_cursor_index < b2[1];
+    var v_index = v_bounds.findIndex(function(b3) {
+      return v_cursor_index < b3[1];
     });
     if (v_index < 0) v_index = v_bounds.length - 1;
-    for (var f = v_index; f < v_bounds.length; f++) {
-      var v_stmt = v_text.substring(v_bounds[f][0], v_bounds[f][1]).trim().replace(/;\s*$/, "");
+    for (var f2 = v_index; f2 < v_bounds.length; f2++) {
+      var v_stmt = v_text.substring(v_bounds[f2][0], v_bounds[f2][1]).trim().replace(/;\s*$/, "");
       if (v_stmt != "") return v_stmt;
     }
-    for (var b = v_index - 1; b >= 0; b--) {
-      var v_stmt2 = v_text.substring(v_bounds[b][0], v_bounds[b][1]).trim().replace(/;\s*$/, "");
+    for (var b2 = v_index - 1; b2 >= 0; b2--) {
+      var v_stmt2 = v_text.substring(v_bounds[b2][0], v_bounds[b2][1]).trim().replace(/;\s*$/, "");
       if (v_stmt2 != "") return v_stmt2;
     }
     return "";
@@ -43472,10 +40291,10 @@
     }
     var v_upper = v_stripped.toUpperCase();
     if (/^(DROP|TRUNCATE)\b/.test(v_upper)) {
-      return t("query.destructive_warning");
+      return t$1("query.destructive_warning");
     }
     if (/^(DELETE|UPDATE)\b/.test(v_upper) && !/\bWHERE\b/.test(v_upper)) {
-      return t("query.no_where_clause_warning");
+      return t$1("query.no_where_clause_warning");
     }
     return null;
   }
@@ -43493,7 +40312,7 @@
   function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
     var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
     if (v_state != v_queryState.Idle) {
-      showAlert$1(t("common.tab_activity_in_progress"));
+      showAlert$1(t$1("common.tab_activity_in_progress"));
     } else {
       var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       v_tab_tag.tempData = [];
@@ -43502,7 +40321,7 @@
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_loading_span;
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_close_span;
       if (v_sql_value.trim() == "") {
-        showAlert$1(t("common.provide_a_string"));
+        showAlert$1(t$1("common.provide_a_string"));
       } else {
         if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex == null || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex != v_connTabControl.selectedTab.tag.selectedDatabaseIndex) {
           p_mode = 0;
@@ -43527,7 +40346,7 @@
         }
         v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_queryState.Executing;
         (/* @__PURE__ */ new Date()).getTime();
-        var d = /* @__PURE__ */ new Date(), dformat = [(d.getMonth() + 1).padLeft(), d.getDate().padLeft(), d.getFullYear()].join("/") + " " + [d.getHours().padLeft(), d.getMinutes().padLeft(), d.getSeconds().padLeft()].join(":");
+        var d2 = /* @__PURE__ */ new Date(), dformat = [(d2.getMonth() + 1).padLeft(), d2.getDate().padLeft(), d2.getFullYear()].join("/") + " " + [d2.getHours().padLeft(), d2.getMinutes().padLeft(), d2.getSeconds().padLeft()].join(":");
         v_tab_tag.tab_loading_span.style.display = "";
         v_tab_tag.bt_cancel.style.display = "inline-block";
         v_tab_tag.bt_fetch_more.style.display = "none";
@@ -43564,7 +40383,7 @@
           }
           v_context.tab_tag.div_result.innerHTML = "";
         }
-        v_context.tab_tag.query_info.innerHTML = t("query.start_time_running", { start: escapeHtml(String(dformat)) });
+        v_context.tab_tag.query_info.innerHTML = t$1("query.start_time_running", { start: escapeHtml(String(dformat)) });
         createRequest(v_queryRequestCodes.Query, v_message_data, v_context);
       }
     }
@@ -43594,29 +40413,29 @@
   }
   function setTabStatus(p_tab_tag, p_con_status) {
     if (p_con_status == 0) {
-      p_tab_tag.query_tab_status_text.innerHTML = t("query.status_not_connected");
+      p_tab_tag.query_tab_status_text.innerHTML = t$1("query.status_not_connected");
       p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-closed";
-      p_tab_tag.query_tab_status.title = t("query.status_not_connected");
+      p_tab_tag.query_tab_status.title = t$1("query.status_not_connected");
       p_tab_tag.query_tab_status.innerHTML = "";
     } else if (p_con_status == 1) {
-      p_tab_tag.query_tab_status_text.innerHTML = t("query.status_idle");
+      p_tab_tag.query_tab_status_text.innerHTML = t$1("query.status_idle");
       p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle position-relative";
-      p_tab_tag.query_tab_status.title = t("query.status_idle");
+      p_tab_tag.query_tab_status.title = t$1("query.status_idle");
       p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--idle"><span></span><span></span><span></span><span></span></span></div>';
     } else if (p_con_status == 2) {
-      p_tab_tag.query_tab_status_text.innerHTML = t("query.status_running");
+      p_tab_tag.query_tab_status_text.innerHTML = t$1("query.status_running");
       p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-running position-relative";
-      p_tab_tag.query_tab_status.title = t("query.status_running");
+      p_tab_tag.query_tab_status.title = t$1("query.status_running");
       p_tab_tag.query_tab_status.innerHTML = '<div style="position: absolute; width: 12px; height: 12px; overflow: visible; left: 0px; top: 0px; display: block;"><span class="omnis__circle-waves omnis__circle-waves--running"><span></span><span></span><span></span><span></span></span></div>';
     } else if (p_con_status == 3) {
-      p_tab_tag.query_tab_status_text.innerHTML = t("query.status_idle_in_transaction");
+      p_tab_tag.query_tab_status_text.innerHTML = t$1("query.status_idle_in_transaction");
       p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction";
-      p_tab_tag.query_tab_status.title = t("query.status_idle_in_transaction");
+      p_tab_tag.query_tab_status.title = t$1("query.status_idle_in_transaction");
       p_tab_tag.query_tab_status.innerHTML = "";
     } else if (p_con_status == 4) {
-      p_tab_tag.query_tab_status_text.innerHTML = t("query.status_idle_in_transaction_aborted");
+      p_tab_tag.query_tab_status_text.innerHTML = t$1("query.status_idle_in_transaction_aborted");
       p_tab_tag.query_tab_status.className = "fas fa-dot-circle tab-status tab-status-idle_in_transaction_aborted";
-      p_tab_tag.query_tab_status.title = t("query.status_idle_in_transaction_aborted");
+      p_tab_tag.query_tab_status.title = t$1("query.status_idle_in_transaction_aborted");
       p_tab_tag.query_tab_status.innerHTML = "";
     }
   }
@@ -43641,9 +40460,9 @@
     if (p_context.callback != null) {
       if (p_message.v_error) {
         v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
-        v_query_info.innerHTML = "<b>" + t("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+        v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
       } else {
-        v_query_info.innerHTML = "<b>" + t("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+        v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
         p_context.callback(p_message);
       }
     } else {
@@ -43660,7 +40479,7 @@
       }
       if (p_message.v_error) {
         v_div_result.innerHTML = '<div class="error_text">' + escapeHtml(p_message.v_data.message) + "</div>";
-        v_query_info.innerHTML = "<b>" + t("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+        v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
         if (p_message.v_data.position != null) {
           if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor && !p_context.has_selected_text) {
             v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(
@@ -43672,7 +40491,7 @@
         }
       } else {
         if (p_context.sel_value == 0) {
-          v_query_info.innerHTML = "<b>" + t("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+          v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
           v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_data) + "</div>";
         } else {
           if (v_data.v_data.length >= 50 && p_context.mode != 2) {
@@ -43694,12 +40513,12 @@
             v_div_result.innerHTML = "";
             window.scrollTo(0, 0);
             if (v_data.v_data.length == 0 && v_data.v_col_names.length == 0) {
-              v_query_info.innerHTML = "<b>" + t("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+              v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
               if (typeof p_message.v_data.v_status == "string")
                 v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
-              else v_div_result.innerHTML = '<div class="query_info">' + t("query.done") + "</div>";
+              else v_div_result.innerHTML = '<div class="query_info">' + t$1("query.done") + "</div>";
             } else {
-              v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + v_data.v_data.length + "</span><span> " + tn("query.rows_word", v_data.v_data.length) + "</span><span> " + t("query.in_word") + " </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>" + t("common.start_time") + "</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
+              v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + v_data.v_data.length + "</span><span> " + tn("query.rows_word", v_data.v_data.length) + "</span><span> " + t$1("query.in_word") + " </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>" + t$1("common.start_time") + "</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
               var columnProperties = [];
               for (var i2 = 0; i2 < v_data.v_col_names.length; i2++) {
                 var col = {};
@@ -43774,10 +40593,10 @@
                   },
                   items: {
                     copy: {
-                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.copy") + "</div>"
+                      name: '<div style="position: absolute;"><i class="fas fa-copy cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.copy") + "</div>"
                     },
                     view_data: {
-                      name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t("common.view_content") + "</div>"
+                      name: '<div style="position: absolute;"><i class="fas fa-edit cm-all" style="vertical-align: middle;"></i></div><div style="padding-left: 30px;">' + t$1("common.view_content") + "</div>"
                     }
                   }
                 },
@@ -43790,7 +40609,7 @@
             }
           } else if (p_context.mode == 1 || p_context.mode == 2) {
             v_new_data = p_context.tab_tag.ht.getSourceData();
-            v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + (v_new_data.length + v_data.v_data.length) + "</span><span> " + tn("query.rows_word", v_new_data.length + v_data.v_data.length) + "</span><span> " + t("query.in_word") + " </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>" + t("common.start_time") + "</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
+            v_query_info.innerHTML = "<span class='omnidb__query-info__value' style='font-weight: 900;'>" + (v_new_data.length + v_data.v_data.length) + "</span><span> " + tn("query.rows_word", v_new_data.length + v_data.v_data.length) + "</span><span> " + t$1("query.in_word") + " </span><span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_message.v_data.v_duration)) + "</span><br/><span>" + t$1("common.start_time") + "</span>: <span class='omnidb__query-info__value' style='font-weight: 600;'>" + escapeHtml(String(p_context.start_datetime)) + "</span>";
             for (var i2 = 0; i2 < v_data.v_data.length; i2++) {
               v_new_data.push(v_data.v_data[i2]);
             }
@@ -43798,9 +40617,9 @@
             v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollTop = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.div_result.childNodes[0].childNodes[0].scrollHeight;
           } else {
             if (p_context.tab_tag.ht != null)
-              v_query_info.innerHTML = "<b>" + t("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration)) + "<br/>" + t("common.status") + ": " + escapeHtml(p_message.v_data.v_status);
+              v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration)) + "<br/>" + t$1("common.status") + ": " + escapeHtml(p_message.v_data.v_status);
             else {
-              v_query_info.innerHTML = "<b>" + t("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
+              v_query_info.innerHTML = "<b>" + t$1("common.start_time") + "</b>: " + escapeHtml(String(p_context.start_datetime)) + " <b>" + t$1("common.duration") + "</b>: " + escapeHtml(String(p_message.v_data.v_duration));
               v_div_result.innerHTML = '<div class="query_info">' + escapeHtml(p_message.v_data.v_status) + "</div>";
             }
           }
@@ -43828,7 +40647,7 @@
       v_tab_tag.div_count_notices.style.display = "inline-block";
     }
     v_tab_tag.selectMessageTabFunc();
-    v_tab_tag.query_info.innerHTML = t("query.start_time_error", { start: escapeHtml(String(p_context.start_datetime)) });
+    v_tab_tag.query_info.innerHTML = t$1("query.start_time_error", { start: escapeHtml(String(p_context.start_datetime)) });
     v_tab_tag.tab_loading_span.style.display = "none";
     v_tab_tag.tab_check_span.style.display = "none";
     v_tab_tag.bt_cancel.style.display = "none";
@@ -43871,7 +40690,7 @@
       cm_node_root: {
         elements: [
           {
-            text: t("common.refresh"),
+            text: t$1("common.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeSnippets(node);
@@ -43882,14 +40701,14 @@
             }
           },
           {
-            text: t("tree.new_folder"),
+            text: t$1("tree.new_folder"),
             icon: "fas cm-all fa-folder",
             action: function(node) {
               newNodeSnippet(node, "node");
             }
           },
           {
-            text: t("snippets.add_snippet"),
+            text: t$1("snippets.add_snippet"),
             icon: "fas cm-all fa-plus",
             action: function(node) {
               newNodeSnippet(node, "snippet");
@@ -43900,7 +40719,7 @@
       cm_node: {
         elements: [
           {
-            text: t("common.refresh"),
+            text: t$1("common.refresh"),
             icon: "fas cm-all fa-sync-alt",
             action: function(node) {
               if (node.childNodes == 0) refreshTreeSnippets(node);
@@ -43911,28 +40730,28 @@
             }
           },
           {
-            text: t("tree.new_folder"),
+            text: t$1("tree.new_folder"),
             icon: "fas cm-all fa-folder",
             action: function(node) {
               newNodeSnippet(node, "node");
             }
           },
           {
-            text: t("snippets.add_snippet"),
+            text: t$1("snippets.add_snippet"),
             icon: "fas cm-all fa-plus",
             action: function(node) {
               newNodeSnippet(node, "snippet");
             }
           },
           {
-            text: t("tree.rename_folder"),
+            text: t$1("tree.rename_folder"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               renameNodeSnippet(node);
             }
           },
           {
-            text: t("tree.delete_folder"),
+            text: t$1("tree.delete_folder"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               deleteNodeSnippet(node);
@@ -43943,21 +40762,21 @@
       cm_snippet: {
         elements: [
           {
-            text: t("common.edit"),
+            text: t$1("common.edit"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               startEditSnippetText(node);
             }
           },
           {
-            text: t("common.rename"),
+            text: t$1("common.rename"),
             icon: "fas cm-all fa-edit",
             action: function(node) {
               renameNodeSnippet(node);
             }
           },
           {
-            text: t("common.delete"),
+            text: t$1("common.delete"),
             icon: "fas cm-all fa-times",
             action: function(node) {
               deleteNodeSnippet(node);
@@ -43972,7 +40791,7 @@
       refreshTreeSnippets(node);
     };
     var node1 = tree.createNode(
-      t("tree.snippets_section"),
+      t$1("tree.snippets_section"),
       false,
       "fas node-all fa-list-alt node-snippet-list",
       null,
@@ -43986,9 +40805,9 @@
     tree.drawTree();
     node1.expandNode();
     node1.elementLi.querySelector(":scope > a").style.display = "none";
-    document.getElementById(p_div).oncontextmenu = function(e) {
-      e.preventDefault();
-      tree.nodeContextMenu(e, node1);
+    document.getElementById(p_div).oncontextmenu = function(e2) {
+      e2.preventDefault();
+      tree.nodeContextMenu(e2, node1);
     };
     tree.clickNodeEvent = function(p_node) {
       var v_delete_button = document.getElementById("button_delete_snippet");
@@ -44137,8 +40956,8 @@
     );
   }
   function newNodeSnippet(p_node, p_mode) {
-    var v_placeholder = t("snippets.snippet_name_placeholder");
-    if (p_mode == "node") v_placeholder = t("tree.node_name_placeholder");
+    var v_placeholder = t$1("snippets.snippet_name_placeholder");
+    if (p_mode == "node") v_placeholder = t$1("tree.node_name_placeholder");
     showConfirm(
       "",
       function() {
@@ -44236,7 +41055,7 @@
   }
   function deleteNodeSnippet(p_node) {
     showConfirm(
-      t("tree.confirm_delete_node", { type: p_node.tag.type }),
+      t$1("tree.confirm_delete_node", { type: p_node.tag.type }),
       function() {
         execAjax$2(
           "/delete_node_snippet/",
@@ -44307,7 +41126,7 @@
     var v_elements = [];
     if (p_mode == "save") {
       v_elements.push({
-        text: t("snippets.new_snippet"),
+        text: t$1("snippets.new_snippet"),
         icon: "fas cm-all fa-save",
         action: function() {
           showConfirm(
@@ -44331,7 +41150,7 @@
               var v_input = document.createElement("input");
               v_input.id = "element_name";
               v_input.className = "form-control";
-              v_input.placeholder = t("snippets.snippet_name_placeholder");
+              v_input.placeholder = t$1("snippets.snippet_name_placeholder");
               v_input.style.width = "100%";
               document.getElementById("modal_message_content").appendChild(v_input);
               v_input.onkeydown = function() {
@@ -44360,7 +41179,7 @@
         if (p_mode == "save")
           v_elements.push({
             // customMenu renders `text` as markup; snippet/folder names are user-entered.
-            text: `<b>${escapeHtml(t("snippets.overwrite"))}</b> ` + escapeHtml(v_file.name),
+            text: `<b>${escapeHtml(t$1("snippets.overwrite"))}</b> ` + escapeHtml(v_file.name),
             icon: "fas cm-all fa-scroll",
             action: function() {
               showConfirm(
@@ -44383,9 +41202,9 @@
                     document.getElementById("modal_message_content")
                   );
                   var v_bold = document.createElement("b");
-                  v_bold.textContent = t("common.warning");
+                  v_bold.textContent = t$1("common.warning");
                   v_content_div.appendChild(v_bold);
-                  v_content_div.appendChild(document.createTextNode(t("snippets.confirm_overwrite_file_suffix", { name: v_file.name })));
+                  v_content_div.appendChild(document.createTextNode(t$1("snippets.confirm_overwrite_file_suffix", { name: v_file.name })));
                 }
               );
             }
@@ -44513,7 +41332,7 @@
     );
   }
   function removeUser(p_id) {
-    showConfirm(t("users.confirm_remove"), function() {
+    showConfirm(t$1("users.confirm_remove"), function() {
       removeUserConfirm(p_id);
     });
   }
@@ -44525,7 +41344,7 @@
     listUsers(true);
   }
   function removeNewUser(p_index) {
-    showConfirm(t("users.confirm_undo_add"), function() {
+    showConfirm(t$1("users.confirm_undo_add"), function() {
       removeNewUserConfirm(p_index);
     });
   }
@@ -44567,7 +41386,7 @@
     document.getElementById("div_users")?.classList.remove("isActive");
     document.getElementById("div_user_list").innerHTML = "";
   }
-  document.getElementById("modal_users").addEventListener("shown.bs.modal", function(e) {
+  document.getElementById("modal_users").addEventListener("shown.bs.modal", function(e2) {
     getUsers();
   });
   function changeUser(event2, p_row_index, p_col_index) {
@@ -44656,7 +41475,7 @@
                 v_users_update_html += "</ul></div>";
               }
               if (p_options.users_update.new.length > 0) {
-                v_users_update_html += `<div class="card p-4 mx-auto"><div><h5>${t("users.new_users_heading")}</h5></div><ul class="pl-4">`;
+                v_users_update_html += `<div class="card p-4 mx-auto"><div><h5>${t$1("users.new_users_heading")}</h5></div><ul class="pl-4">`;
                 for (let i3 = 0; i3 < p_options.users_update.new.length; i3++) {
                   v_users_update_html += '<li class="mt-2"> - ' + p_options.users_update.new[i3][0] + "</li>";
                 }
@@ -44673,25 +41492,25 @@
             // function *expression*, evaluated and thrown away, never called.
             // The form is display:none with a disabled submit button, so there
             // was nothing for it to prevent either way.
-            `<form class='d-none' autofill='false'><input id='fake_username' type='text' placeholder='User name' value=''><input id='fake_password' type='password' placeholder='Password' value=''><button type='submit' disabled aria-hidden='true'></button></form><form class='omnidb__user-list__form' autofill='false' autocomplete='disabled'><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''><div class='form-inline mb-4'><h5 class='me-2'>${t("users.select_user_heading")}</h5><select id='omnidb_user_select' class='form-control'>`
+            `<form class='d-none' autofill='false'><input id='fake_username' type='text' placeholder='User name' value=''><input id='fake_password' type='password' placeholder='Password' value=''><button type='submit' disabled aria-hidden='true'></button></form><form class='omnidb__user-list__form' autofill='false' autocomplete='disabled'><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-autofill-name' type='text' class='m-0 p-0' placeholder='Username' value=''><input tabIndex='-1' style='opacity:0;height:0px;overflow:hidden;pointer-events:none;' autofill='false' autocomplete='disabled' name='no-autofill' id='no-autofill-password' type='password' class='m-0 p-0' placeholder='Password' value=''><div class='form-inline mb-4'><h5 class='me-2'>${t$1("users.select_user_heading")}</h5><select id='omnidb_user_select' class='form-control'>`
           );
           if (p_options && p_options.focus_last) v_user_list_html += "<option value=''> </option>";
           else v_user_list_html += "<option value='' selected> </option>";
           for (var i2 = 0; i2 < v_user_list_data.length; i2++) {
             var v_user_item = v_user_list_data[i2];
-            var v_user_is_superuser = v_user_item[2] === 1 ? " " + t("users.superuser_suffix") : "";
+            var v_user_is_superuser = v_user_item[2] === 1 ? " " + t$1("users.superuser_suffix") : "";
             v_user_list_html += "<option value='" + i2 + "'>" + escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + "</option>";
             v_user_count++;
           }
           for (var i2 = 0; i2 < window.newUsersObject.newUsers.length; i2++) {
             var v_user_item = window.newUsersObject.newUsers[i2];
-            var v_user_is_superuser = v_user_item[2] === 1 ? " " + t("users.superuser_suffix") : "";
+            var v_user_is_superuser = v_user_item[2] === 1 ? " " + t$1("users.superuser_suffix") : "";
             var v_user_item_index = v_user_count + i2;
-            var v_user_item_name = v_user_item[0] === "" ? t("users.pending_info") : escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + " " + t("users.pending_save");
+            var v_user_item_name = v_user_item[0] === "" ? t$1("users.pending_info") : escapeHtml(v_user_item[0]) + escapeHtml(v_user_is_superuser) + " " + t$1("users.pending_save");
             var v_user_is_selected = p_options && p_options.focus_last && i2 + 1 == window.newUsersObject.newUsers.length ? " selected " : "";
             v_user_list_html += "<option class='bg-warning' value='" + v_user_item_index + "' " + v_user_is_selected + ">" + v_user_item_name + "</option>";
           }
-          v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ms-2'><i class='fas fa-user-plus'></i><span class='ms-2'>" + t("users.add_new_user") + "</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ms-1' style='visibility: hidden;'>" + t("common.save") + "</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
+          v_user_list_html += "</select><button id='omnidb_utilities_menu_btn_new_user' type='button' class='btn omnidb__theme__btn--primary ms-2'><i class='fas fa-user-plus'></i><span class='ms-2'>" + t$1("users.add_new_user") + "</span></button></div><div id='omnidb_user_content' class='row'>" + v_users_update_html + "</div><div class='text-center'><button type='button' id='div_save_users' class='btn btn-success ms-1' style='visibility: hidden;'>" + t$1("common.save") + "</button></div><button type='submit' disabled style='display: none' aria-hidden='true'></button></div>";
           v_user_list_element.innerHTML = v_user_list_html;
           document.getElementById("div_users")?.classList.add("isActive");
           window.scrollTo(0, 0);
@@ -44761,26 +41580,26 @@
       document.getElementById("omnidb_user_content")
     );
     if (v_index == "") {
-      v_user_div_content.innerHTML = `<div class='col-12 text-center'><h5 class='my-4'>${escapeHtml(t("users.no_user_selected"))}</h5></div>`;
+      v_user_div_content.innerHTML = `<div class='col-12 text-center'><h5 class='my-4'>${escapeHtml(t$1("users.no_user_selected"))}</h5></div>`;
     } else {
       var v_user_count = 0;
       for (var i2 = 0; i2 < v_usersObject.list.length; i2++) {
         var v_user_item = v_usersObject.list[i2];
         var v_superuser_checked = v_user_item[2] === 1 ? "checked" : "";
         if (i2 == v_index) {
-          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.username_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[0]) + `'></div><span class='ms-2'>${escapeHtml(t("users.superuser_label"))}</span><div class='ms-2 mb-2'><div class='omnidb__switch me-2' title='${escapeHtmlAttribute(t("users.superuser_toggle_tooltip"))}'><input type='checkbox' id='user_item_superuser_` + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.new_password_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[1]) + "'></div><span class='me-2 text-danger omnidb__user-list__close'><i id='bt_remove_user_" + i2 + "' title='" + escapeHtmlAttribute(t("users.remove_user_tooltip")) + "' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='disabled' name='notChromeUsername' id='user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t$1("users.username_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[0]) + `'></div><span class='ms-2'>${escapeHtml(t$1("users.superuser_label"))}</span><div class='ms-2 mb-2'><div class='omnidb__switch me-2' title='${escapeHtmlAttribute(t$1("users.superuser_toggle_tooltip"))}'><input type='checkbox' id='user_item_superuser_` + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='disabled' name='new-password' id='user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t$1("users.new_password_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[1]) + "'></div><span class='me-2 text-danger omnidb__user-list__close'><i id='bt_remove_user_" + i2 + "' title='" + escapeHtmlAttribute(t$1("users.remove_user_tooltip")) + "' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
           const rowIndex = i2;
           document.getElementById("user_item_username_" + rowIndex).addEventListener(
             "change",
-            (e) => changeUser(e, rowIndex, 0)
+            (e2) => changeUser(e2, rowIndex, 0)
           );
           document.getElementById("user_item_password_" + rowIndex).addEventListener(
             "change",
-            (e) => changeUser(e, rowIndex, 1)
+            (e2) => changeUser(e2, rowIndex, 1)
           );
           document.getElementById("user_item_superuser_" + rowIndex).addEventListener(
             "change",
-            (e) => changeUser(e, rowIndex, 2)
+            (e2) => changeUser(e2, rowIndex, 2)
           );
           document.getElementById("bt_remove_user_" + rowIndex).addEventListener(
             "click",
@@ -44798,11 +41617,11 @@
           document.getElementById("omnidb_user_content")
         );
         if (v_user_item_index == v_index) {
-          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='new_user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.username_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[0]) + `'></div><span class='ms-2'>${escapeHtml(t("users.superuser_label"))}</span><div class='ms-2 mb-2'><div class='omnidb__switch me-2' title='${escapeHtmlAttribute(t("users.superuser_toggle_tooltip"))}'><input type='checkbox' id='new_user_item_superuser_` + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='new_user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='new_user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t("users.new_password_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[1]) + "'></div><span class='me-2 text-danger omnidb__user-list__close'><i id='bt_remove_new_user_" + i2 + "' title='" + escapeHtmlAttribute(t("users.remove_user_tooltip")) + "' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
+          v_user_div_content.innerHTML = "<div class='col-12 mb-4'><div id='omnidb_user_item_" + i2 + "' class='omnidb__user-list__item card'><div class='d-flex align-items-center'><div class='input-group mb-2'><div class='input-group-prepend'><label for='new_user_item_username_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-user'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_username_" + i2 + "' type='text' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t$1("users.username_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[0]) + `'></div><span class='ms-2'>${escapeHtml(t$1("users.superuser_label"))}</span><div class='ms-2 mb-2'><div class='omnidb__switch me-2' title='${escapeHtmlAttribute(t$1("users.superuser_toggle_tooltip"))}'><input type='checkbox' id='new_user_item_superuser_` + i2 + "' class='omnidb__switch--input' " + v_superuser_checked + "><label for='new_user_item_superuser_" + i2 + "' class='omnidb__switch--label'><span><i class='fas fa-star'></i></span></label></div></div></div><div class='input-group w-100 mb-2'><div class='input-group-prepend'><label for='new_user_item_password_" + i2 + "' type='button' class='input-group-text'><i class='fas fa-key'></i></label></div><input autofill='false' autocomplete='off' name='off' id='new_user_item_password_" + i2 + "' type='password' class='form-control my-0' placeholder='" + escapeHtmlAttribute(t$1("users.new_password_placeholder")) + "' value='" + escapeHtmlAttribute(v_user_item[1]) + "'></div><span class='me-2 text-danger omnidb__user-list__close'><i id='bt_remove_new_user_" + i2 + "' title='" + escapeHtmlAttribute(t$1("users.remove_user_tooltip")) + "' class='fas fa-times action-grid action-close text-danger'></i></span></div></div>";
           const newRowIndex = i2;
-          document.getElementById("new_user_item_username_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
-          document.getElementById("new_user_item_password_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
-          document.getElementById("new_user_item_superuser_" + newRowIndex).addEventListener("change", (e) => changeNewUser(e, newRowIndex));
+          document.getElementById("new_user_item_username_" + newRowIndex).addEventListener("change", (e2) => changeNewUser(e2, newRowIndex));
+          document.getElementById("new_user_item_password_" + newRowIndex).addEventListener("change", (e2) => changeNewUser(e2, newRowIndex));
+          document.getElementById("new_user_item_superuser_" + newRowIndex).addEventListener("change", (e2) => changeNewUser(e2, newRowIndex));
           document.getElementById("bt_remove_new_user_" + newRowIndex).addEventListener(
             "click",
             () => removeNewUser(newRowIndex)
@@ -44897,6 +41716,8 @@
   const HEADER_HEIGHT = 28;
   const MIN_COL_WIDTH = 120;
   const RENDER_BUFFER_ROWS = 8;
+  const FIT_SAMPLE_ROWS = 1e3;
+  const MIN_FIT_WIDTH = 56;
   function htmlToText(html) {
     if (typeof html !== "string" || html === "") return "";
     if (!/[<&]/.test(html)) return html;
@@ -44929,8 +41750,8 @@
   function isEmptyRow(row) {
     if (!row) return true;
     for (let i2 = 0; i2 < row.length; i2++) {
-      const v = row[i2];
-      if (v !== null && v !== void 0 && v !== "") return false;
+      const v2 = row[i2];
+      if (v2 !== null && v2 !== void 0 && v2 !== "") return false;
     }
     return true;
   }
@@ -44986,7 +41807,7 @@
       return columns.map((col, index) => {
         const pinned = !!col.pinned || index < fixedLeft;
         return {
-          title: col.title || t("editor.default_column_title", { number: index + 1 }),
+          title: col.title || t$1("editor.default_column_title", { number: index + 1 }),
           width: col.width || MIN_COL_WIDTH,
           // The width the column wants on its own (initial / dragged by the
           // user); `width` is what's applied, i.e. baseWidth plus whatever
@@ -44998,7 +41819,12 @@
           verticalAlign: col.verticalAlign,
           pinned,
           renderer: col.renderer,
-          readOnly: !!col.readOnly
+          readOnly: !!col.readOnly,
+          // fitContent: width follows the widest header/cell text (see
+          // _fitContentColumns). grow: when any column has it, only those
+          // columns share out the spare space (see _smartSizeColumns).
+          fitContent: !!col.fitContent,
+          grow: !!col.grow
         };
       });
     }
@@ -45022,7 +41848,7 @@
     }
     _setRows(rows) {
       this._rows = rows;
-      this._displayOrder = rows.map((_, i2) => i2);
+      this._displayOrder = rows.map((_2, i2) => i2);
       if (this._sortColIndex >= 0) this._applySort();
     }
     _ensureSpareRow() {
@@ -45062,7 +41888,7 @@
       this.container.appendChild(this._scrollEl);
       this._onScroll = () => this._scheduleRender();
       this._scrollEl.addEventListener("scroll", this._onScroll);
-      this._onDocMouseMove = (e) => this._onResizeMouseMove(e);
+      this._onDocMouseMove = (e2) => this._onResizeMouseMove(e2);
       this._onDocMouseUp = () => this._onResizeMouseUp();
       document.addEventListener("mousemove", this._onDocMouseMove);
       document.addEventListener("mouseup", this._onDocMouseUp);
@@ -45088,16 +41914,16 @@
         if (tooltipText) th.title = tooltipText;
         if (!this._editable) {
           th.style.cursor = "pointer";
-          th.addEventListener("click", (e) => {
-            if (e.target && /** @type {HTMLElement} */
-            e.target.dataset.omnidbResize) return;
+          th.addEventListener("click", (e2) => {
+            if (e2.target && /** @type {HTMLElement} */
+            e2.target.dataset.omnidbResize) return;
             this._toggleSort(index);
           });
         }
         const handle = document.createElement("div");
         handle.dataset.omnidbResize = "1";
         handle.style.cssText = "position:absolute;top:0;right:0;width:6px;height:100%;cursor:col-resize;";
-        handle.addEventListener("mousedown", (e) => this._onResizeMouseDown(e, index));
+        handle.addEventListener("mousedown", (e2) => this._onResizeMouseDown(e2, index));
         th.appendChild(handle);
         this._headerRow.appendChild(th);
       });
@@ -45112,9 +41938,9 @@
     _layoutColumns() {
       this._colgroup.innerHTML = "";
       this._columns.forEach((col) => {
-        const c = document.createElement("col");
-        c.style.width = col.width + "px";
-        this._colgroup.appendChild(c);
+        const c2 = document.createElement("col");
+        c2.style.width = col.width + "px";
+        this._colgroup.appendChild(c2);
       });
       let cum = 0;
       Array.from(this._headerRow.children).forEach((th, index) => {
@@ -45136,6 +41962,35 @@
       this._renderedStart = -1;
       this._renderNow();
     }
+    // Sets the width of every `fitContent` column to its widest header / cell
+    // text (first FIT_SAMPLE_ROWS rows only, so a huge result stays cheap).
+    // Cell text is measured with canvas, not the DOM, since only a window of
+    // rows is ever rendered; HTML cells count as their text content.
+    _fitContentColumns() {
+      if (!this._columns.some((c2) => c2.fitContent) || !this._scrollEl || !this._headerRow) return;
+      const ctx = document.createElement("canvas").getContext("2d");
+      if (!ctx) return;
+      const th = this._headerRow.firstElementChild;
+      const headerStyle = getComputedStyle(th || this._scrollEl);
+      const bodyStyle = getComputedStyle(this._scrollEl);
+      const headerFont = headerStyle.font;
+      const bodyFont = bodyStyle.font;
+      const slack = 28;
+      this._columns.forEach((c2, i2) => {
+        if (!c2.fitContent) return;
+        ctx.font = headerFont;
+        let max = ctx.measureText(htmlToText(c2.title)).width + 12;
+        ctx.font = bodyFont;
+        const limit = Math.min(this._rows.length, FIT_SAMPLE_ROWS);
+        for (let r2 = 0; r2 < limit; r2++) {
+          const text = htmlToText(String(normalizeCellValue(this._rows[r2][i2]) ?? ""));
+          if (text) max = Math.max(max, ctx.measureText(text).width);
+        }
+        c2.baseWidth = Math.max(Math.ceil(max + slack), MIN_FIT_WIDTH);
+        c2.width = c2.baseWidth;
+      });
+      this._layoutColumns();
+    }
     // Re-fits the columns to the container: when their base widths add up to
     // less than the available width the spare space is shared out between them,
     // otherwise they keep their base widths (and the grid scrolls). Run on every
@@ -45146,15 +42001,18 @@
       const available = this._scrollEl.clientWidth;
       if (available <= 0) return;
       this._fitWidth = available;
-      const n = this._columns.length;
-      const totalBase = this._columns.reduce((sum, c) => sum + c.baseWidth, 0);
+      this._columns.length;
+      const totalBase = this._columns.reduce((sum, c2) => sum + c2.baseWidth, 0);
       const extra = Math.max(0, available - 2 - totalBase);
-      const share = Math.floor(extra / n);
+      const growing = this._columns.some((c2) => c2.grow);
+      const receivers = growing ? this._columns.filter((c2) => c2.grow) : this._columns;
+      const share = Math.floor(extra / receivers.length);
+      const lastReceiver = receivers[receivers.length - 1];
       let changed = false;
-      this._columns.forEach((c, i2) => {
-        const w = c.baseWidth + share + (i2 === n - 1 ? extra - share * n : 0);
-        if (w !== c.width) changed = true;
-        c.width = w;
+      this._columns.forEach((c2) => {
+        const w2 = receivers.includes(c2) ? c2.baseWidth + share + (c2 === lastReceiver ? extra - share * receivers.length : 0) : c2.baseWidth;
+        if (w2 !== c2.width) changed = true;
+        c2.width = w2;
       });
       if (changed) this._layoutColumns();
     }
@@ -45174,13 +42032,13 @@
     }
     _applySort() {
       if (this._sortColIndex < 0) {
-        this._displayOrder = this._rows.map((_, i2) => i2);
+        this._displayOrder = this._rows.map((_2, i2) => i2);
         return;
       }
       const col = this._sortColIndex;
       const dir = this._sortDir;
-      this._displayOrder = this._rows.map((_, i2) => i2);
-      this._displayOrder.sort((a, b) => dir * compareValues(this._rows[a][col], this._rows[b][col]));
+      this._displayOrder = this._rows.map((_2, i2) => i2);
+      this._displayOrder.sort((a2, b2) => dir * compareValues(this._rows[a2][col], this._rows[b2][col]));
     }
     // --- virtualized rendering ---------------------------------------------------
     // Scroll and resize fire far more often than the screen can usefully
@@ -45243,15 +42101,15 @@
       tr.addEventListener("mousedown", () => {
         this._selectDisplayRow(display);
       });
-      tr.addEventListener("contextmenu", (e) => {
+      tr.addEventListener("contextmenu", (e2) => {
         if (this.options.contextMenu) {
-          e.preventDefault();
+          e2.preventDefault();
           const td = (
             /** @type {HTMLElement} */
-            e.target.closest("td")
+            e2.target.closest("td")
           );
           const colIndex = td ? Array.from(tr.children).indexOf(td) : 0;
-          this._showContextMenu(e, display, colIndex < 0 ? 0 : colIndex);
+          this._showContextMenu(e2, display, colIndex < 0 ? 0 : colIndex);
         }
       });
       let cum = 0;
@@ -45340,10 +42198,10 @@
       input.select();
       this._editingCell = { display, colIndex, input, oldValue: currentValue };
       input.addEventListener("blur", () => this._commitEdit());
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") {
+      input.addEventListener("keydown", (e2) => {
+        if (e2.key === "Enter") {
           input.blur();
-        } else if (e.key === "Escape") {
+        } else if (e2.key === "Escape") {
           this._editingCell = null;
           this._renderedStart = -1;
           this._renderNow();
@@ -45368,14 +42226,14 @@
       this._renderNow();
     }
     // --- column resize ------------------------------------------------------------
-    _onResizeMouseDown(e, colIndex) {
-      e.preventDefault();
-      e.stopPropagation();
-      this._resizing = { colIndex, startX: e.clientX, startWidth: this._columns[colIndex].width };
+    _onResizeMouseDown(e2, colIndex) {
+      e2.preventDefault();
+      e2.stopPropagation();
+      this._resizing = { colIndex, startX: e2.clientX, startWidth: this._columns[colIndex].width };
     }
-    _onResizeMouseMove(e) {
+    _onResizeMouseMove(e2) {
       if (!this._resizing) return;
-      const delta = e.clientX - this._resizing.startX;
+      const delta = e2.clientX - this._resizing.startX;
       const col = this._columns[this._resizing.colIndex];
       col.width = Math.max(30, this._resizing.startWidth + delta);
       col.baseWidth = col.width;
@@ -45406,8 +42264,8 @@
       }
       document.body.appendChild(menu);
       this._contextMenuEl = menu;
-      const hideHandler = (e) => {
-        if (!menu.contains(e.target)) {
+      const hideHandler = (e2) => {
+        if (!menu.contains(e2.target)) {
           this._hideContextMenu();
           document.removeEventListener("click", hideHandler);
         }
@@ -45431,6 +42289,7 @@
       this._setRows(this._withSpareRows(this._stripTrailingEmptyRows(data)));
       this._selectedDisplay = -1;
       this._renderedStart = -1;
+      this._fitContentColumns();
       this._renderNow();
       setTimeout(() => this._smartSizeColumns(), 150);
     }
@@ -45444,7 +42303,7 @@
       const rowIndex = this._displayOrder[display];
       if (rowIndex === void 0) return [];
       const row = this._rows[rowIndex] || [];
-      return row.map((v) => normalizeCellValue(v));
+      return row.map((v2) => normalizeCellValue(v2));
     }
     getSelected() {
       if (this._selectedDisplay < 0) return [];
@@ -45468,7 +42327,7 @@
       const rowIndex = this._displayOrder[index];
       if (rowIndex === void 0) return;
       this._rows.splice(rowIndex, 1);
-      this._displayOrder = this._rows.map((_, i2) => i2);
+      this._displayOrder = this._rows.map((_2, i2) => i2);
       if (this._sortColIndex >= 0) this._applySort();
       this._renderedStart = -1;
       this._renderNow();
@@ -45492,7 +42351,7 @@
     }
     getSettings() {
       return {
-        columns: this._columns.map((c) => ({ width: c.width }))
+        columns: this._columns.map((c2) => ({ width: c2.width }))
       };
     }
     updateSettings(settings) {
@@ -45607,9 +42466,9 @@
   bind("button_delete_connection", "click", () => deleteSelectedConnection());
   bind("button_import_pgpass_connections", "click", () => importConnectionsFromPgpass());
   bind("connections_pgpass_import_input", "change", handlePgpassImportFileChosen);
-  bind("group_selector", "change", (e) => groupChange(
+  bind("group_selector", "change", (e2) => groupChange(
     /** @type {HTMLSelectElement} */
-    e.target.value
+    e2.target.value
   ));
   bind("button_new_group", "click", () => newGroup());
   bind("button_group_rename", "click", () => renameGroup());
@@ -45641,51 +42500,51 @@
   bindAll(
     ".omnidb__settings__list-item",
     "click",
-    (e) => selectSettingsCategory(
+    (e2) => selectSettingsCategory(
       /** @type {HTMLElement} */
-      e.currentTarget.getAttribute("data-category")
+      e2.currentTarget.getAttribute("data-category")
     )
   );
   bindAll(
     '#config_shortcuts button[id^="shortcut_"]',
     "click",
-    (e) => startSetShortcut(e.currentTarget)
+    (e2) => startSetShortcut(e2.currentTarget)
   );
-  bindAll('input[name="theme_preference"]', "change", (e) => {
+  bindAll('input[name="theme_preference"]', "change", (e2) => {
     changeTheme(
       /** @type {HTMLInputElement} */
-      e.target.value
+      e2.target.value
     );
     persistConfigUser();
   });
   bind(
     "sel_interface_font_size",
     "input",
-    (e) => updateFontSizeLabel(
+    (e2) => updateFontSizeLabel(
       /** @type {HTMLInputElement} */
-      e.target.value
+      e2.target.value
     )
   );
-  bind("sel_interface_font_size", "change", (e) => {
+  bind("sel_interface_font_size", "change", (e2) => {
     changeInterfaceFontSize(
       /** @type {HTMLInputElement} */
-      e.target.value
+      e2.target.value
     );
     persistConfigUser();
   });
-  bind("sel_language", "change", (e) => changeLanguagePreference(
+  bind("sel_language", "change", (e2) => changeLanguagePreference(
     /** @type {HTMLInputElement} */
-    e.target.value
+    e2.target.value
   ));
   bind("sel_csv_encoding", "change", () => persistConfigUser());
   bind("txt_csv_delimiter", "input", () => debouncedPersistConfigUser());
-  bind("link_autocomplete_all", "click", (e) => {
-    e.preventDefault();
+  bind("link_autocomplete_all", "click", (e2) => {
+    e2.preventDefault();
     setAllAutocompleteTypeCheckboxes(true);
     persistConfigUser();
   });
-  bind("link_autocomplete_none", "click", (e) => {
-    e.preventDefault();
+  bind("link_autocomplete_none", "click", (e2) => {
+    e2.preventDefault();
     setAllAutocompleteTypeCheckboxes(false);
     persistConfigUser();
   });
@@ -45694,14 +42553,14 @@
     updateIndentUnit();
     persistConfigUser();
   });
-  bindAll('input[name="comma_style"]', "change", (e) => {
+  bindAll('input[name="comma_style"]', "change", (e2) => {
     v_comma_style = /** @type {HTMLInputElement} */
-    e.target.value;
+    e2.target.value;
     persistConfigUser();
   });
-  bindAll('input[name="keyword_case"]', "change", (e) => {
+  bindAll('input[name="keyword_case"]', "change", (e2) => {
     v_keyword_case = /** @type {HTMLInputElement} */
-    e.target.value;
+    e2.target.value;
     persistConfigUser();
   });
   bind("txt_ruler_column", "input", () => debouncedPersistConfigUser());
