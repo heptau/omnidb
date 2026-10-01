@@ -7,6 +7,26 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- SQL editor tabs in the Database section now autosave: a new tab, its title and its text are persisted (new
+  `/save_tab/` route, debounced 0.5 s after every change) instead of only when a query was run, so they survive
+  a restart; the last selected query tab is remembered and re-selected on startup.
+- Desktop View menu now also lists Monitoring (Cmd/Ctrl+Shift+M) and Permissions (Cmd/Ctrl+Shift+P), matching
+  the section rail; translated in all menu languages.
+- The database tree's "selected DB" / "Active database" line is now one short, translated label (`tree.selected_db`)
+  in every engine; in PostgreSQL it is filled in as soon as the tree loads (it used to stay blank until the
+  database was changed) and switching database no longer rebuilds the line, which also dropped the autocomplete switch.
+- Result grids now re-fit their columns whenever the window/pane is resized: columns shrink back as well as grow
+  (a result with few columns no longer keeps a needless horizontal scrollbar after the window gets narrower), and they account for the vertical scrollbar appearing once rows render, so
+  a permanent horizontal scrollbar a few pixels wide no longer shows up (also in the Properties grid below the tree;
+  the collapsed table borders made the table half a pixel wider than its columns).
+- Running the first query in a tab no longer makes the whole Database section grow scrollbars: the toolbar's
+  result summary needs two lines, so the toolbar got 20 px taller after the query while the result pane's
+  (pixel-computed) height stayed the same; the summary now always reserves its two lines, and the Database section itself no longer shows scrollbars at
+  all (its trees, editors and grids scroll internally), like the Snippets section.
+- A newly added SQL editor tab now gets keyboard focus immediately, so you can type without clicking into it first.
+
 ## [5.4.2] - 2026-10-01
 
 ### Changed

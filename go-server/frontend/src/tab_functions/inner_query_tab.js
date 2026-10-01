@@ -50,6 +50,7 @@ import {
 	uiCopyTextToClipboard,
 } from "../workspace.js";
 import { jsonPostHeaders } from "../ajax_control_bridge.js";
+import { rememberActiveTab, scheduleTabSave } from "../tab_persistence.js";
 
 
 export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
@@ -82,6 +83,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 			if (this.tag != null && this.tag.editor != null) {
 				this.tag.editor.focus();
 				checkQueryStatus(this);
+				rememberActiveTab(this.tag);
 			}
 		},
 		p_closeFunction: function (e, p_tab) {
@@ -643,6 +645,24 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 		"click",
 		() => toggleExpandToPanelView("query_result_tabs_container" + v_tab.id),
 	);
+
+	// Autosave: persist title/editor text shortly after every change, not only
+	// when a query runs (a restored tab sets saved_* itself after filling the
+	// editor, so restoring doesn't write straight back what it just read).
+	v_tag.saved_snippet = "";
+	v_tag.saved_title = null;
+	v_tag.editor.session.on("change", () => scheduleTabSave(v_tag));
+	rememberActiveTab(v_tag);
+	if (!v_tab_db_id) scheduleTabSave(v_tag);
+
+	// The tab is selected (and its select handler run) before v_tab.tag and the
+	// editor exist, so that handler can't focus it -- do it here, so a new tab
+	// can be typed into straight away. Deferred once more because the click that
+	// created the tab (the "+" button) takes focus after this handler returns.
+	v_editor.focus();
+	setTimeout(() => {
+		if (!v_tag.closed && v_tab.selected) v_editor.focus();
+	}, 0);
 
 	// Selecting the `data` tab by default.
 	v_selectDataTabFunc();

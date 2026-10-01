@@ -208,6 +208,7 @@
   "modals.password.use_pgpass_file": "Použít soubor .pgpass…",
   "tree.keywords": "Klíčová slova",
   "tree.databases": "Databáze",
+  "tree.selected_db": "DB",
   "tree.databases_section": "Databáze",
   "tree.roles": "Role",
   "tree.tablespaces": "Tablespace",

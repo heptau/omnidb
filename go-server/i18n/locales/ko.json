@@ -205,6 +205,7 @@
   "modals.password.use_pgpass_file": ".pgpass 파일 사용…",
   "tree.keywords": "키워드",
   "tree.databases": "데이터베이스",
+  "tree.selected_db": "DB",
   "tree.databases_section": "데이터베이스",
   "tree.roles": "역할",
   "tree.tablespaces": "테이블스페이스",

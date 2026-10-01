@@ -205,6 +205,7 @@
   "modals.password.use_pgpass_file": ".pgpassファイルを使用…",
   "tree.keywords": "キーワード",
   "tree.databases": "データベース",
+  "tree.selected_db": "DB",
   "tree.databases_section": "データベース",
   "tree.roles": "ロール",
   "tree.tablespaces": "テーブルスペース",

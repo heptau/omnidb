@@ -383,6 +383,37 @@ func saveTab(db *sql.DB, userID int64, tabDBID *int64, connID int64, title, snip
 	return res.LastInsertId()
 }
 
+// saveTabContent is the autosave variant of saveTab: an update leaves last_used
+// alone (it also defines the order tabs are restored in, so an edit mustn't
+// reshuffle them), and a new row is only created for a connection the user can
+// actually see.
+func saveTabContent(db *sql.DB, userID int64, tabDBID *int64, connID int64, title, snippet string) (int64, error) {
+	if tabDBID != nil && *tabDBID != 0 {
+		res, err := db.Exec(
+			`update OmniDB_app_tab set snippet = ?, title = ? where id = ? and user_id = ?`,
+			snippet, title, *tabDBID, userID,
+		)
+		if err != nil {
+			return 0, err
+		}
+		if n, _ := res.RowsAffected(); n == 0 {
+			return 0, errors.New("tab not found")
+		}
+		return *tabDBID, nil
+	}
+	var visible int
+	if err := db.QueryRow(
+		`select count(*) from OmniDB_app_connection where id = ? and (public = 1 or user_id = ?)`,
+		connID, userID,
+	).Scan(&visible); err != nil {
+		return 0, err
+	}
+	if visible == 0 {
+		return 0, errors.New("connection not found")
+	}
+	return saveTab(db, userID, nil, connID, title, snippet)
+}
+
 // pageCount mirrors "ceil(v_count/settings.CH_CMDS_PER_PAGE)", floored at 1.
 func pageCount(count int) int {
 	pages := int(math.Ceil(float64(count) / float64(chCmdsPerPage)))

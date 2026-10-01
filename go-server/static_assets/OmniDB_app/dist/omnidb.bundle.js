@@ -115,7 +115,7 @@
       Object.assign(window, ns);
     }
   }
-  function execAjax$1(...args) {
+  function execAjax$2(...args) {
     return window.execAjax(...args);
   }
   function startLoading(...args) {
@@ -888,7 +888,7 @@
       "/check_session_message/",
       JSON.stringify({}),
       function(p_return) {
-        if (p_return.v_data != "") showAlert(p_return.v_data);
+        if (p_return.v_data != "") showAlert$1(p_return.v_data);
       },
       null,
       "box"
@@ -971,7 +971,7 @@
       v_button_yes.focus();
     }, 500);
   }
-  function showAlert(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
+  function showAlert$1(p_info, p_funcYes = null, p_large = null, p_is_html = false) {
     var v_create_content_function = function() {
       var v_content_div = el$2("modal_message_content");
       var v_button_yes = el$2("modal_message_yes");
@@ -1065,7 +1065,7 @@
     __proto__: null,
     checkSessionMessage,
     setMessageModalTitle,
-    showAlert,
+    showAlert: showAlert$1,
     showConfirm,
     showConfirm2,
     showConfirm3,
@@ -1298,7 +1298,7 @@
     var v_tab_id = "";
     if (p_send_tab_id) v_tab_id = v_connTabControl.selectedTab.id;
     v_modal_password_ok_after_hide_function = function() {
-      execAjax$1(
+      execAjax$2(
         "/renew_password/",
         JSON.stringify({ p_database_index, p_tab_id: v_tab_id, p_password: v_password }),
         function(p_return) {
@@ -5597,7 +5597,7 @@
     return v_channels;
   }
   function refreshNotifyChannels(p_tag) {
-    execAjax$1(
+    execAjax$2(
       "/get_notify_channels/",
       JSON.stringify({ p_conn_id: p_tag.connID }),
       function(p_return) {
@@ -5636,7 +5636,7 @@
     showConfirm(
       "",
       function() {
-        execAjax$1(
+        execAjax$2(
           "/add_notify_channel/",
           JSON.stringify({
             p_conn_id: p_tag.connID,
@@ -5678,7 +5678,7 @@
     );
   }
   function pauseChannel(p_tag, p_node) {
-    execAjax$1(
+    execAjax$2(
       "/pause_notify_channel/",
       JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
       function(p_return) {
@@ -5689,7 +5689,7 @@
     );
   }
   function resumeChannel(p_tag, p_node) {
-    execAjax$1(
+    execAjax$2(
       "/resume_notify_channel/",
       JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
       function(p_return) {
@@ -5704,7 +5704,7 @@
     showConfirm(
       t("notify.confirm_delete_channel"),
       function() {
-        execAjax$1(
+        execAjax$2(
           "/delete_notify_channel/",
           JSON.stringify({ p_id: p_node.tag.id, p_tab_id: p_tag.tab_id }),
           function(p_return) {
@@ -6329,7 +6329,7 @@
       p_table,
       p_schema
     });
-    execAjax$1(
+    execAjax$2(
       "/start_edit_data/",
       input,
       function(p_return) {
@@ -6411,7 +6411,7 @@
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_state = v_currTabTag.state;
     if (v_state != 0) {
-      showAlert(t("common.tab_activity_in_progress"));
+      showAlert$1(t("common.tab_activity_in_progress"));
     } else {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Querying;
       v_currTabTag.button_save.style.visibility = "hidden";
@@ -6448,7 +6448,7 @@
       setTimeout(function() {
         if (!v_context.acked) {
           cancelEditDataTab(v_context.tab_tag);
-          showAlert(t("query.no_response_from_server"));
+          showAlert$1(t("query.no_response_from_server"));
         }
       }, 1e4);
     }
@@ -6496,7 +6496,7 @@
       v_query_info.innerHTML = t("edit_data.response_time", { seconds: request_time / 1e3 });
     } else {
       if (v_currTabTag.editDataObject.pk.length == 0) {
-        if (v_currTabTag.editDataObject.firstRender) showAlert(t("edit_data.no_pk_readonly_warning"));
+        if (v_currTabTag.editDataObject.firstRender) showAlert$1(t("edit_data.no_pk_readonly_warning"));
         v_currTabTag.editDataObject.firstRender = false;
         v_currTabTag.editDataObject.hasPK = false;
       } else v_currTabTag.editDataObject.hasPK = true;
@@ -6669,7 +6669,7 @@
     var v_currTabTag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     var v_state = v_currTabTag.state;
     if (v_state != v_editDataState.Idle) {
-      showAlert(t("common.tab_activity_in_progress"));
+      showAlert$1(t("common.tab_activity_in_progress"));
     } else {
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state = v_editDataState.Saving;
       v_currTabTag.button_save.style.visibility = "hidden";
@@ -6790,7 +6790,7 @@
       v_currTabTag.bt_cancel.style.display = "";
     }
     if (v_has_error) {
-      showAlert(v_commands_log, null, null, true);
+      showAlert$1(v_commands_log, null, null, true);
     }
     v_currTabTag.editDataObject.ht.render();
     p_context.tab_tag.tab_loading_span.style.display = "none";
@@ -6823,14 +6823,14 @@
   var v_polling_started = false;
   function initKeepAlive() {
     setInterval(function() {
-      execAjax$1("/client_keep_alive/", JSON.stringify({}), function(p_return) {
+      execAjax$2("/client_keep_alive/", JSON.stringify({}), function(p_return) {
       }, null, "box", false);
     }, 6e4);
   }
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initKeepAlive);
   else setTimeout(initKeepAlive, 0);
   function call_polling(p_startup) {
-    v_polling_ajax = execAjax$1(
+    v_polling_ajax = execAjax$2(
       "/long_polling/",
       JSON.stringify({
         p_startup
@@ -6886,7 +6886,7 @@
         break;
       }
       case v_queryResponseCodes.SessionMissing: {
-        showAlert(t("errors.session_not_found_reload"));
+        showAlert$1(t("errors.session_not_found_reload"));
         break;
       }
       case v_queryResponseCodes.MessageException: {
@@ -7067,7 +7067,7 @@
     else if (v_polling_ajax.readyState == 0 || v_polling_ajax.readyState == 4) {
       call_polling(false);
     }
-    execAjax$1(
+    execAjax$2(
       "/create_request/",
       JSON.stringify({
         v_code: p_messageCode,
@@ -7107,7 +7107,7 @@
   };
   function deleteConsoleHistoryList() {
     showConfirm(t("console.confirm_clear_history"), function() {
-      execAjax$1(
+      execAjax$2(
         "/clear_console_list/",
         JSON.stringify({
           p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -7306,7 +7306,7 @@
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedTo.value;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputCommandContains.value;
-    execAjax$1(
+    execAjax$2(
       "/get_console_history/",
       JSON.stringify({
         p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.consoleHistory.inputStartedFrom.value,
@@ -7378,10 +7378,10 @@
     var v_content = v_tag.editor_input.getValue().trim();
     if (!p_check_command || v_content[0] == "\\") {
       if (v_tag.state != v_consoleState.Idle) {
-        showAlert(t("common.tab_activity_in_progress"));
+        showAlert$1(t("common.tab_activity_in_progress"));
       } else {
         if (v_content == "" && p_mode == 0) {
-          showAlert(t("common.provide_a_string"));
+          showAlert$1(t("common.provide_a_string"));
         } else {
           if (v_connTabControl.selectedTab.tag.consoleHistoryList)
             v_connTabControl.selectedTab.tag.consoleHistoryList.unshift(v_content);
@@ -7942,7 +7942,7 @@
     return v_named;
   }
   function fetchConnectedUsers(p_tag) {
-    execAjax$1(
+    execAjax$2(
       "/refresh_monitoring/",
       JSON.stringify({
         p_database_index: p_tag.connID,
@@ -8100,7 +8100,7 @@
           v_a.remove();
         },
         function() {
-          execAjax$1("/discard_export_file/", JSON.stringify({ v_filepath: p_data.v_filepath }), null, null, "box", false);
+          execAjax$2("/discard_export_file/", JSON.stringify({ v_filepath: p_data.v_filepath }), null, null, "box", false);
         },
         null,
         null,
@@ -8115,10 +8115,10 @@
     }).then(function(p_response) {
       return p_response.json();
     }).then(function(p_result) {
-      if (p_result.error) showAlert(t("editor.error_saving_file", { error: p_result.error }));
-      else if (p_result.path) showAlert(t("editor.file_exported_to", { path: p_result.path }));
+      if (p_result.error) showAlert$1(t("editor.error_saving_file", { error: p_result.error }));
+      else if (p_result.path) showAlert$1(t("editor.file_exported_to", { path: p_result.path }));
     }).catch(function(p_error) {
-      showAlert(t("editor.error_saving_file", { error: p_error }));
+      showAlert$1(t("editor.error_saving_file", { error: p_error }));
     });
   }
   var PERMISSIONS_STRIP_SLOT_ID = "permissions_panel_strip_slot";
@@ -8247,7 +8247,7 @@
   }
   var ROLE_FILTER_KINDS = ["all", "login", "group", "superuser", "expired"];
   function fetchRoles(p_tag) {
-    execAjax$1(
+    execAjax$2(
       "/get_roles_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID }),
       function(p_return) {
@@ -8519,7 +8519,7 @@
           document.getElementById("perm_role_name").value.trim()
         );
         if (v_name === "") {
-          showAlert(t("permissions.role_name_empty"));
+          showAlert$1(t("permissions.role_name_empty"));
           return;
         }
         var v_password = (
@@ -8527,17 +8527,17 @@
           document.getElementById("perm_role_password").value
         );
         var v_attrs = readRoleAttributeFields();
-        execAjax$1(
+        execAjax$2(
           "/create_role_postgresql/",
           JSON.stringify(
             Object.assign({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_name: v_name, p_password: v_password }, v_attrs)
           ),
           function() {
-            showAlert(t("permissions.role_created"));
+            showAlert$1(t("permissions.role_created"));
             fetchRoles(p_tag);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -8615,10 +8615,10 @@
       function() {
         var v_body = requestBody();
         if (!v_body) {
-          showAlert(t("permissions.role_name_empty"));
+          showAlert$1(t("permissions.role_name_empty"));
           return;
         }
-        execAjax$1(
+        execAjax$2(
           "/rename_role_postgresql/",
           JSON.stringify(v_body),
           function() {
@@ -8631,7 +8631,7 @@
             fetchRoles(p_tag);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -8740,7 +8740,7 @@
           var v_mine = ++v_token;
           v_text.value = "";
           var v_body = requestBody();
-          execAjax$1(
+          execAjax$2(
             "/export_permissions_postgresql/",
             JSON.stringify(v_body),
             function(p_return) {
@@ -8765,14 +8765,14 @@
           }, 1500);
         });
         v_save.addEventListener("click", function() {
-          execAjax$1(
+          execAjax$2(
             "/export_permissions_postgresql/",
             JSON.stringify(Object.assign(requestBody(), { p_file: true })),
             function(p_return) {
               deliverExportFile(p_return.v_data);
             },
             function(p_return) {
-              showAlert(p_return.v_data.message || p_return.v_data);
+              showAlert$1(p_return.v_data.message || p_return.v_data);
             },
             "box",
             true
@@ -8818,18 +8818,18 @@
       function() {
         var v_body = requestBody(false);
         if (!v_body) {
-          showAlert(t("permissions.role_name_empty"));
+          showAlert$1(t("permissions.role_name_empty"));
           return;
         }
-        execAjax$1(
+        execAjax$2(
           "/clone_role_postgresql/",
           JSON.stringify(v_body),
           function() {
-            showAlert(t("permissions.role_created"));
+            showAlert$1(t("permissions.role_created"));
             fetchRoles(p_tag);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           true
@@ -8891,7 +8891,7 @@
     );
   }
   function openAlterRoleAttributesDialog(p_tag, p_role_name) {
-    execAjax$1(
+    execAjax$2(
       "/get_role_attributes_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }),
       function(p_return) {
@@ -8900,17 +8900,17 @@
           "",
           function() {
             var v_attrs = readRoleAttributeFields();
-            execAjax$1(
+            execAjax$2(
               "/alter_role_attributes_postgresql/",
               JSON.stringify(
                 Object.assign({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }, v_attrs)
               ),
               function() {
-                showAlert(t("permissions.role_updated"));
+                showAlert$1(t("permissions.role_updated"));
                 fetchRoles(p_tag);
               },
               function(p_return2) {
-                showAlert(p_return2.v_data.message || p_return2.v_data);
+                showAlert$1(p_return2.v_data.message || p_return2.v_data);
               },
               "box",
               false
@@ -8949,7 +8949,7 @@
         );
       },
       function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
@@ -8982,18 +8982,18 @@
           document.getElementById("perm_change_pwd_role_confirm").value
         );
         if (v_password === "") {
-          showAlert(t("tree.password_empty"));
+          showAlert$1(t("tree.password_empty"));
           return;
         }
         if (v_password_confirm === "") {
-          showAlert(t("tree.password_confirmation_empty"));
+          showAlert$1(t("tree.password_confirmation_empty"));
           return;
         }
         if (v_password !== v_password_confirm) {
-          showAlert(t("tree.passwords_do_not_match"));
+          showAlert$1(t("tree.passwords_do_not_match"));
           return;
         }
-        execAjax$1(
+        execAjax$2(
           "/change_role_password_postgresql/",
           JSON.stringify({
             p_database_index: p_tag.connID,
@@ -9002,10 +9002,10 @@
             p_password: v_password
           }),
           function() {
-            showAlert(t("tree.password_changed_successfully"));
+            showAlert$1(t("tree.password_changed_successfully"));
           },
           function(p_return) {
-            showAlert(p_return.v_data.message);
+            showAlert$1(p_return.v_data.message);
           },
           "box",
           false
@@ -9138,7 +9138,7 @@
     }
   }
   function fetchAncestors(p_tag, p_col_state) {
-    execAjax$1(
+    execAjax$2(
       "/get_role_ancestors_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_col_state.role }),
       function(p_return) {
@@ -9163,7 +9163,7 @@
     );
   }
   function fetchDescendants(p_tag, p_col_state) {
-    execAjax$1(
+    execAjax$2(
       "/get_role_descendants_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_col_state.role }),
       function(p_return) {
@@ -9372,7 +9372,7 @@
       return !p_role.v_is_public && p_role.v_name !== v_role && v_existing_direct.indexOf(p_role.v_name) === -1;
     });
     if (v_candidates.length === 0) {
-      showAlert(t("permissions.no_grantable_roles"));
+      showAlert$1(t("permissions.no_grantable_roles"));
       return;
     }
     var v_picker = null;
@@ -9385,7 +9385,7 @@
           document.getElementById("perm_grant_admin_option").checked
         );
         if (v_picked.length === 0) {
-          showAlert(t("permissions.select_role_hint"));
+          showAlert$1(t("permissions.select_role_hint"));
           return;
         }
         var v_failed = false;
@@ -9395,7 +9395,7 @@
               p_done();
               return;
             }
-            execAjax$1(
+            execAjax$2(
               "/grant_role_membership_postgresql/",
               JSON.stringify(
                 Object.assign(
@@ -9412,7 +9412,7 @@
               p_done,
               function(p_return) {
                 v_failed = true;
-                showAlert(p_return.v_data.message || p_return.v_data);
+                showAlert$1(p_return.v_data.message || p_return.v_data);
                 p_done();
               },
               "box",
@@ -9487,7 +9487,7 @@
       p_callback(p_tag.serverMajor);
       return;
     }
-    execAjax$1(
+    execAjax$2(
       "/get_postgresql_version/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID }),
       function(p_return) {
@@ -9558,7 +9558,7 @@
     showFormDialog(
       "",
       function() {
-        execAjax$1(
+        execAjax$2(
           "/grant_role_membership_postgresql/",
           JSON.stringify(requestBody()),
           function() {
@@ -9566,7 +9566,7 @@
             else fetchDescendants(p_tag, p_col_state);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -9617,7 +9617,7 @@
       function() {
         var v_member = p_direction === "ancestor" ? p_col_state.role : p_other_role;
         var v_parent = p_direction === "ancestor" ? p_other_role : p_col_state.role;
-        execAjax$1(
+        execAjax$2(
           "/revoke_role_membership_postgresql/",
           JSON.stringify({
             p_database_index: p_tag.connID,
@@ -9630,7 +9630,7 @@
             else fetchDescendants(p_tag, p_col_state);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -9810,7 +9810,7 @@
       runSequentially(
         v_requests.map(function(p_request) {
           return function(p_done) {
-            execAjax$1(
+            execAjax$2(
               p_request.url,
               JSON.stringify(Object.assign({}, p_request.body, { p_preview: true })),
               function(p_return) {
@@ -9916,7 +9916,7 @@
     }
     var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID };
     if (p_database) v_body.p_database = p_database;
-    execAjax$1(
+    execAjax$2(
       "/get_schemas_postgresql/",
       JSON.stringify(v_body),
       function(p_return) {
@@ -9929,7 +9929,7 @@
         p_callback(v_schemas);
       },
       function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
@@ -9939,7 +9939,7 @@
     var v_body = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID };
     if (p_spec.needsSchema) v_body.p_schema = p_schema;
     if (p_database) v_body.p_database = p_database;
-    execAjax$1(
+    execAjax$2(
       p_spec.listEndpoint,
       JSON.stringify(v_body),
       function(p_return) {
@@ -9949,7 +9949,7 @@
         p_callback(v_items);
       },
       function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
@@ -10132,18 +10132,18 @@
       function() {
         var v_request = collect();
         if (v_request.error !== null) {
-          showAlert(v_request.error);
+          showAlert$1(v_request.error);
           return;
         }
         var v_done = v_request;
-        execAjax$1(
+        execAjax$2(
           v_done.url,
           JSON.stringify(v_done.body),
           function() {
             p_on_granted(v_done.database, v_done.type, v_done.object);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -10316,7 +10316,7 @@
         showError(p_return.v_data);
       }
     }
-    execAjax$1(
+    execAjax$2(
       "/get_role_server_grants_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_col_state.role }),
       function(p_return) {
@@ -10345,28 +10345,28 @@
     );
   }
   function fetchAllDatabases(p_tag, p_callback, p_on_error) {
-    execAjax$1(
+    execAjax$2(
       "/get_databases_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID }),
       function(p_return) {
         p_callback(p_return.v_data);
       },
       p_on_error || function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
     );
   }
   function fetchAllTablespaces(p_tag, p_callback, p_on_error) {
-    execAjax$1(
+    execAjax$2(
       "/get_tablespaces_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID }),
       function(p_return) {
         p_callback(p_return.v_data);
       },
       p_on_error || function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
@@ -10394,7 +10394,7 @@
     if (p_node.elementA) p_node.elementA.style.color = p_grant.v_privileges.length > 0 ? "" : "var(--text-secondary)";
   }
   function refreshServerLevelGrant(p_tag, p_col_state, p_object_type, p_identifier) {
-    execAjax$1(
+    execAjax$2(
       "/get_role_server_grants_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_col_state.role }),
       function(p_return) {
@@ -10407,7 +10407,7 @@
         updateNodeGrant(v_state.node, v_grant, p_object_type === "database" ? { kind: "database", database: p_identifier } : void 0);
       },
       function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
@@ -10591,7 +10591,7 @@
       }
     }
     var v_base = { p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_col_state.role, p_database };
-    execAjax$1(
+    execAjax$2(
       "/get_role_default_privileges_postgresql/",
       JSON.stringify(v_base),
       function(p_return) {
@@ -10602,7 +10602,7 @@
       "box",
       true
     );
-    execAjax$1(
+    execAjax$2(
       "/get_role_owned_objects_postgresql/",
       JSON.stringify(v_base),
       function(p_return) {
@@ -10613,7 +10613,7 @@
       "box",
       true
     );
-    execAjax$1(
+    execAjax$2(
       "/get_role_database_grants_postgresql/",
       JSON.stringify(v_base),
       function(p_return) {
@@ -10705,17 +10705,17 @@
       function() {
         var v_body = requestBody();
         if (!v_body) {
-          showAlert(t("permissions.select_owner_hint"));
+          showAlert$1(t("permissions.select_owner_hint"));
           return;
         }
-        execAjax$1(
+        execAjax$2(
           "/alter_object_owner_postgresql/",
           JSON.stringify(v_body),
           function() {
             if (v_needs_database && p_database) refreshDatabaseNode(p_tag, p_col_state, p_database);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -10896,7 +10896,7 @@
       function() {
         var v_collected = collect();
         if (v_collected.error !== null) {
-          showAlert(v_collected.error);
+          showAlert$1(v_collected.error);
           return;
         }
         var v_requests = v_collected.requests;
@@ -10904,12 +10904,12 @@
         runSequentially(
           v_requests.map(function(p_request) {
             return function(p_done) {
-              execAjax$1(
+              execAjax$2(
                 p_request.url,
                 JSON.stringify(p_request.body),
                 p_done,
                 function(p_return) {
-                  showAlert(p_return.v_data.message || p_return.v_data);
+                  showAlert$1(p_return.v_data.message || p_return.v_data);
                 },
                 "box",
                 false
@@ -11016,7 +11016,7 @@
     showConfirm(
       t("permissions.confirm_remove_default_privileges"),
       function() {
-        execAjax$1(
+        execAjax$2(
           "/alter_default_privileges_postgresql/",
           JSON.stringify({
             p_database_index: p_tag.connID,
@@ -11035,7 +11035,7 @@
             refreshDatabaseNode(p_tag, p_col_state, p_database);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -11116,12 +11116,12 @@
         if (v_requests.length === 0) return;
         var v_ops = v_requests.map(function(p_request) {
           return function(p_done) {
-            execAjax$1(
+            execAjax$2(
               p_request.url,
               JSON.stringify(p_request.body),
               p_done,
               function(p_return) {
-                showAlert(p_return.v_data.message || p_return.v_data);
+                showAlert$1(p_return.v_data.message || p_return.v_data);
               },
               "box",
               false
@@ -11242,7 +11242,7 @@
       p_object
     };
     if (objectTypeNeedsDatabase(p_object_type) && p_database) v_body.p_database = p_database;
-    execAjax$1(
+    execAjax$2(
       "/get_object_access_postgresql/",
       JSON.stringify(v_body),
       function(p_return) {
@@ -11269,7 +11269,7 @@
         );
       },
       function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
@@ -11352,14 +11352,14 @@
     return p_name.indexOf("pg_") === 0;
   }
   function confirmDropRole(p_tag, p_role_name) {
-    execAjax$1(
+    execAjax$2(
       "/get_role_dependencies_postgresql/",
       JSON.stringify({ p_database_index: p_tag.connID, p_tab_id: p_tag.tabID, p_role: p_role_name }),
       function(p_return) {
         openDropRoleDialog(p_tag, p_role_name, p_return.v_data);
       },
       function(p_return) {
-        showAlert(p_return.v_data.message || p_return.v_data);
+        showAlert$1(p_return.v_data.message || p_return.v_data);
       },
       "box",
       true
@@ -11390,14 +11390,14 @@
       function() {
         var v_body = requestBody();
         if (v_owned > 0 && !v_body.p_reassign_to) {
-          showAlert(t("permissions.select_owner_hint"));
+          showAlert$1(t("permissions.select_owner_hint"));
           return;
         }
-        execAjax$1(
+        execAjax$2(
           "/drop_role_postgresql/",
           JSON.stringify(v_body),
           function() {
-            showAlert(t("permissions.role_dropped"));
+            showAlert$1(t("permissions.role_dropped"));
             p_tag.selectedRole = null;
             p_tag.deleteRoleBtn.disabled = true;
             if (p_tag.column2 && p_tag.column2.role === p_role_name) closeColumn2(p_tag);
@@ -11405,7 +11405,7 @@
             fetchRoles(p_tag);
           },
           function(p_return) {
-            showAlert(p_return.v_data.message || p_return.v_data);
+            showAlert$1(p_return.v_data.message || p_return.v_data);
           },
           "box",
           false
@@ -11664,7 +11664,7 @@
       if (v_unit.div == p_div) {
         teardownMonitorUnit(v_unit);
         v_tab_tag.units.splice(i2, 1);
-        execAjax$1(
+        execAjax$2(
           "/hide_monitor_unit/",
           JSON.stringify({ p_saved_id: v_unit.saved_id }),
           function(p_return) {
@@ -11684,7 +11684,7 @@
       if (v_unit.div == p_div) {
         var v_interval = parseInt(v_unit.input_interval.value, 10);
         if (v_interval > 0) {
-          execAjax$1(
+          execAjax$2(
             "/update_saved_monitor_unit_interval/",
             JSON.stringify({ p_saved_id: v_unit.saved_id, p_interval: v_interval }),
             function(p_return) {
@@ -11897,7 +11897,7 @@
   function deleteMonitorUnit(p_unit_id) {
     showConfirm(t("monitoring.confirm_delete_unit"), function() {
       var input = JSON.stringify({ p_unit_id });
-      execAjax$1(
+      execAjax$2(
         "/delete_monitor_unit/",
         input,
         function(p_return) {
@@ -11920,7 +11920,7 @@
       p_tab_id: v_connTabControl.selectedTab.id,
       p_mode: 1
     });
-    execAjax$1(
+    execAjax$2(
       "/get_monitor_unit_list/",
       input1,
       function(p_return) {
@@ -11943,7 +11943,7 @@
     if (p_unit_id != null) {
       var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       var input2 = JSON.stringify({ p_unit_id });
-      execAjax$1(
+      execAjax$2(
         "/get_monitor_unit_details/",
         input2,
         function(p_return) {
@@ -11967,7 +11967,7 @@
   function saveMonitorScript() {
     var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
     if (v_tab_tag.input_unit_name.value.trim() == "") {
-      showAlert(t("monitoring.name_required"));
+      showAlert$1(t("monitoring.name_required"));
     } else {
       var v_interval = parseInt(v_tab_tag.input_interval.value, 10);
       var input = JSON.stringify({
@@ -11980,12 +11980,12 @@
         p_unit_script_data: v_tab_tag.editor_data.getValue(),
         p_unit_script_chart: v_tab_tag.editor.getValue()
       });
-      execAjax$1(
+      execAjax$2(
         "/save_monitor_unit/",
         input,
         function(p_return) {
           v_tab_tag.unit_id = p_return.v_data;
-          showAlert(t("monitoring.unit_saved"));
+          showAlert$1(t("monitoring.unit_saved"));
         },
         function(p_return) {
           if (p_return.v_data.password_timeout) {
@@ -12009,7 +12009,7 @@
     if (p_value != -1) {
       var v_element_item = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.template_list[p_value];
       var input = JSON.stringify({ p_unit_id: v_element_item.id, p_unit_plugin_name: v_element_item.plugin_name });
-      execAjax$1(
+      execAjax$2(
         "/get_monitor_unit_template/",
         input,
         function(p_return) {
@@ -12045,7 +12045,7 @@
         p_script_data: v_script_data,
         p_type: v_type
       });
-      execAjax$1(
+      execAjax$2(
         "/test_monitor_script/",
         input,
         function(p_return) {
@@ -12194,7 +12194,7 @@
       p_tab_id: p_tag.tab_id,
       p_mode: 0
     });
-    execAjax$1(
+    execAjax$2(
       "/get_monitor_unit_list/",
       input,
       function(p_return) {
@@ -12366,7 +12366,7 @@
         });
       }
     }
-    execAjax$1(
+    execAjax$2(
       "/save_monitor_unit_order/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -12388,7 +12388,7 @@
       p_database_index: p_tab_tag.connTabTag.selectedDatabaseIndex,
       p_tab_id: p_tab_tag.tab_id
     });
-    execAjax$1(
+    execAjax$2(
       "/get_monitor_units/",
       input,
       function(p_return) {
@@ -12483,7 +12483,7 @@
         p_tab_id: v_tab_tag.connTabTag.tab_id,
         p_ids: v_units
       });
-      execAjax$1(
+      execAjax$2(
         "/refresh_monitor_units/",
         input,
         function(p_return) {
@@ -13026,7 +13026,7 @@
       p_database_index: p_conn_tab.tag.selectedDatabaseIndex,
       p_tab_id: v_id
     });
-    execAjax$1(
+    execAjax$2(
       "/get_monitor_units/",
       input,
       function(p_return) {
@@ -14212,7 +14212,7 @@
     renew_autocomplete(p_value);
     v_autocomplete_object.ready = true;
     v_autocomplete_object.searching.style.display = "block";
-    execAjax$1(
+    execAjax$2(
       "/get_autocomplete_results/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -14931,7 +14931,7 @@
         var wordlist = [];
         if (v_completer_ready && prefix != "") {
           v_completer_ready = false;
-          execAjax$1(
+          execAjax$2(
             "/get_completions_table/",
             JSON.stringify({
               p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -15125,7 +15125,7 @@
   }, Symbol.toStringTag, { value: "Module" }));
   function deleteCommandList() {
     showConfirm(t("console.confirm_clear_command_history"), function() {
-      execAjax$1(
+      execAjax$2(
         "/clear_command_list/",
         JSON.stringify({
           p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -15318,7 +15318,7 @@
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFromLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedToLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedTo.value;
     v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContainsLastValue = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputCommandContains.value;
-    execAjax$1(
+    execAjax$2(
       "/get_command_list/",
       JSON.stringify({
         p_command_from: v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.commandHistory.inputStartedFrom.value,
@@ -16066,7 +16066,7 @@
   function getProperties(p_view, p_data) {
     var v_tab_tag = v_connTabControl.selectedTab.tag;
     v_tab_tag.divLoading.style.display = "block";
-    execAjax$1(
+    execAjax$2(
       p_view,
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -16325,18 +16325,18 @@
                     document.getElementById("change_pwd_role_confirm").value
                   );
                   if (v_password == "") {
-                    showAlert(t("tree.password_empty"));
+                    showAlert$1(t("tree.password_empty"));
                     return;
                   }
                   if (v_password_confirm == "") {
-                    showAlert(t("tree.password_confirmation_empty"));
+                    showAlert$1(t("tree.password_confirmation_empty"));
                     return;
                   }
                   if (v_password != v_password_confirm) {
-                    showAlert(t("tree.passwords_do_not_match"));
+                    showAlert$1(t("tree.passwords_do_not_match"));
                     return;
                   }
-                  execAjax$1(
+                  execAjax$2(
                     "/change_role_password_postgresql/",
                     JSON.stringify({
                       p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -16345,10 +16345,10 @@
                       p_password: v_password
                     }),
                     function(p_return) {
-                      showAlert(t("tree.password_changed_successfully"));
+                      showAlert$1(t("tree.password_changed_successfully"));
                     },
                     function(p_return) {
-                      showAlert(p_return.v_data.message);
+                      showAlert$1(p_return.v_data.message);
                     },
                     "box",
                     false
@@ -19134,7 +19134,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -19194,7 +19194,7 @@
               if (p_callback_stop) p_callback_stop();
             },
             function() {
-              execAjax$1(
+              execAjax$2(
                 "/change_active_database/",
                 JSON.stringify({
                   p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -19204,7 +19204,6 @@
                 function(p_return) {
                   (function() {
                     var v_det = v_connTabControl.selectedTab.tag.divDetails;
-                    v_det.innerHTML = "Active database: <b></b>";
                     v_det.querySelector("b").textContent = p_node.tag.database;
                   })();
                   if (v_connTabControl.selectedTab.tag.selectedDatabaseNode) {
@@ -19278,7 +19277,7 @@
       v_oid = p_node.tag.oid;
       v_position = 0;
     }
-    execAjax$1(
+    execAjax$2(
       "/get_object_description_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -19303,7 +19302,7 @@
     );
   }
   function exportDBMLPostgresql(p_node) {
-    execAjax$1(
+    execAjax$2(
       "/export_dbml_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -19720,7 +19719,7 @@
   function getTreeDetailsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tree_info_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -19728,6 +19727,8 @@
       }),
       function(p_return) {
         v_connTabControl.selectedTab.tag.selectedDatabase = p_return.v_data.v_database_return.v_database;
+        var v_det_name = v_connTabControl.selectedTab.tag.divDetails.querySelector("b");
+        if (v_det_name) v_det_name.textContent = v_connTabControl.selectedTab.tag.selectedDatabase;
         node.tree.contextMenu.cm_server.elements = [];
         node.tree.contextMenu.cm_server.elements.push({
           text: t("tree.refresh"),
@@ -19996,7 +19997,7 @@
   function getDatabaseObjectsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_database_objects_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20099,7 +20100,7 @@
     );
   }
   function getDatabasesPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_databases_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20142,7 +20143,7 @@
   function getTablespacesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tablespaces_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20179,7 +20180,7 @@
   function getRolesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_roles_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20218,7 +20219,7 @@
   function getExtensionsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_extensions_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20256,7 +20257,7 @@
   function getSchemasPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_schemas_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20512,7 +20513,7 @@
   function getTablesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tables_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20574,7 +20575,7 @@
   function getSequencesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_sequences_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20614,7 +20615,7 @@
   function getViewsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20668,7 +20669,7 @@
   function getViewsColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20760,7 +20761,7 @@
     );
   }
   function getViewDefinitionPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_view_definition_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20790,7 +20791,7 @@
   function getMaterializedViewsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_mviews_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20844,7 +20845,7 @@
   function getMaterializedViewsColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_mviews_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20938,7 +20939,7 @@
     );
   }
   function getMaterializedViewDefinitionPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_mview_definition_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -20968,7 +20969,7 @@
   function getColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21222,7 +21223,7 @@
   function getPKPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21270,7 +21271,7 @@
   function getPKColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21308,7 +21309,7 @@
   function getUniquesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21362,7 +21363,7 @@
   function getUniquesColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21402,7 +21403,7 @@
   function getIndexesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21458,7 +21459,7 @@
   function getIndexesColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21498,7 +21499,7 @@
   function getFKsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21574,7 +21575,7 @@
   function getFKsColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21648,7 +21649,7 @@
   function getChecksPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_checks_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21703,7 +21704,7 @@
   function getExcludesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_excludes_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21770,7 +21771,7 @@
   function getRulesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_rules_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21810,7 +21811,7 @@
     );
   }
   function getRuleDefinitionPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_rule_definition_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21841,7 +21842,7 @@
   function getTriggersPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_triggers_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21910,7 +21911,7 @@
   function getEventTriggersPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_eventtriggers_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -21985,7 +21986,7 @@
   function getInheritedsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_inheriteds_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22026,7 +22027,7 @@
   function getPartitionsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_partitions_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22067,7 +22068,7 @@
   function getStatisticsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_statistics_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22114,7 +22115,7 @@
   function getStatisticsColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_statistics_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22155,7 +22156,7 @@
   function getFunctionsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_functions_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22208,7 +22209,7 @@
   function getFunctionFieldsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_function_fields_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22273,7 +22274,7 @@
     );
   }
   function getFunctionDefinitionPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_function_definition_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22302,7 +22303,7 @@
   function getProceduresPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedures_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22355,7 +22356,7 @@
   function getProcedureFieldsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_fields_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22420,7 +22421,7 @@
     );
   }
   function getProcedureDefinitionPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_definition_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22449,7 +22450,7 @@
   function getTriggerFunctionsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_triggerfunctions_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22488,7 +22489,7 @@
     );
   }
   function getTriggerFunctionDefinitionPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_triggerfunction_definition_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22517,7 +22518,7 @@
   function getEventTriggerFunctionsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_eventtriggerfunctions_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22556,7 +22557,7 @@
     );
   }
   function getEventTriggerFunctionDefinitionPostgresql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_eventtriggerfunction_definition_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22585,7 +22586,7 @@
   function getAggregatesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_aggregates_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22640,7 +22641,7 @@
   function getPhysicalReplicationSlotsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_physicalreplicationslots_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22677,7 +22678,7 @@
   function getLogicalReplicationSlotsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_logicalreplicationslots_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22714,7 +22715,7 @@
   function getPublicationsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_publications_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22822,7 +22823,7 @@
   function getPublicationTablesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_publication_tables_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22860,7 +22861,7 @@
   function getSubscriptionsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_subscriptions_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22960,7 +22961,7 @@
   function getSubscriptionTablesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_subscription_tables_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -22998,7 +22999,7 @@
   function getForeignDataWrappersPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_foreign_data_wrappers_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23049,7 +23050,7 @@
   function getForeignServersPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_foreign_servers_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23145,7 +23146,7 @@
   function getUserMappingsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_user_mappings_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23202,7 +23203,7 @@
   function getForeignTablesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_foreign_tables_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23255,7 +23256,7 @@
   function getForeignColumnsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_foreign_columns_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23410,7 +23411,7 @@
   function getTypesPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_types_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23450,7 +23451,7 @@
   function getDomainsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_domains_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23490,7 +23491,7 @@
   function getPartitionedParentsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_partitions_parents_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23532,7 +23533,7 @@
   function getPartitionedChildrenPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_partitions_children_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23595,7 +23596,7 @@
   function getInheritedsParentsPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_inheriteds_parents_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23637,7 +23638,7 @@
   function getInheritedsChildrenPostgresql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_inheriteds_children_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23698,7 +23699,7 @@
     );
   }
   function TemplateSelectPostgresql(p_schema, p_table, p_kind) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23726,7 +23727,7 @@
     );
   }
   function TemplateInsertPostgresql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_insert_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23748,7 +23749,7 @@
     );
   }
   function TemplateUpdatePostgresql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_update_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23770,7 +23771,7 @@
     );
   }
   function TemplateSelectFunctionPostgresql(p_schema, p_function, p_functionid) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_function_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23793,7 +23794,7 @@
     );
   }
   function TemplateCallProcedurePostgresql(p_schema, p_procedure, p_procedureid) {
-    execAjax$1(
+    execAjax$2(
       "/template_call_procedure_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23854,7 +23855,7 @@
     return tmp2.join(".");
   }
   function postgresqlTerminateBackendConfirm(p_pid) {
-    execAjax$1(
+    execAjax$2(
       "/kill_backend_postgresql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -23895,7 +23896,7 @@
     if (v_selected_text != "") v_query = v_selected_text;
     else v_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
     if (v_query.trim() == "") {
-      showAlert(t("common.provide_a_string"));
+      showAlert$1(t("common.provide_a_string"));
     } else {
       if (v_explain_control.context === "default") {
         if (p_mode == 0) {
@@ -24064,6 +24065,150 @@
     refreshTreePostgresqlConfirm,
     tabSQLTemplate
   }, Symbol.toStringTag, { value: "Module" }));
+  function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+      var cookies = document.cookie.split(";");
+      for (var i2 = 0; i2 < cookies.length; i2++) {
+        var cookie = cookies[i2].trim();
+        if (cookie.substring(0, name.length + 1) === name + "=") {
+          cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+          break;
+        }
+      }
+    }
+    return cookieValue;
+  }
+  function csrfSafeMethod(method) {
+    return /^(GET|HEAD|OPTIONS|TRACE)$/.test(method);
+  }
+  var v_ajax_call = null;
+  var v_cancel_button = document.getElementById("bt_cancel_ajax");
+  function execAjax$1(p_url, p_data, p_successFunc, p_errorFunc, p_notifMode, p_loading, p_cancel_button, p_onAjaxErrorCallBack = false) {
+    if (v_cancel_button != null) {
+      v_cancel_button.style.display = "none";
+    }
+    var csrftoken = getCookie(v_csrf_cookie_name);
+    v_ajax_call = $.ajax({
+      url: v_url_folder + p_url,
+      data: {
+        data: p_data,
+        tab_token: ""
+      },
+      type: "post",
+      dataType: "json",
+      beforeSend: function(xhr, settings) {
+        if (!csrfSafeMethod(settings.type) && !this.crossDomain) {
+          xhr.setRequestHeader("X-CSRFToken", csrftoken);
+        }
+      },
+      success: function(p_return) {
+        if (p_return.v_error) {
+          if (p_return.v_error_id == 1) {
+            showAlert(t("errors.not_authenticated"));
+          } else if (p_errorFunc) {
+            p_errorFunc(p_return);
+          } else {
+            showAlert(p_return.v_data);
+          }
+        } else {
+          if (p_successFunc != null) {
+            p_successFunc(p_return);
+          }
+        }
+      },
+      error: function(msg) {
+        if (p_onAjaxErrorCallBack) {
+          p_onAjaxErrorCallBack(msg);
+        } else {
+          if (msg.readyState != 0) {
+            showAlert(t("errors.request_error"));
+          } else {
+            if (msg.statusText != "abort") {
+              reportOffline();
+            }
+          }
+        }
+      }
+    });
+    return v_ajax_call;
+  }
+  function reportOffline() {
+    showAlert(t("errors.webserver_shutdown"));
+    document.getElementById("ajax_status");
+  }
+  const AUTOSAVE_DELAY_MS = 500;
+  const LAST_TAB_KEY = "omnidb.lastQueryTab";
+  function scheduleTabSave(p_tag) {
+    if (p_tag.closed) return;
+    if (p_tag.save_timer) clearTimeout(p_tag.save_timer);
+    p_tag.save_timer = setTimeout(function() {
+      p_tag.save_timer = null;
+      saveTabNow(p_tag);
+    }, AUTOSAVE_DELAY_MS);
+  }
+  function saveTabNow(p_tag) {
+    if (p_tag.closed || !p_tag.editor) return;
+    if (p_tag.save_in_flight) {
+      p_tag.save_pending = true;
+      return;
+    }
+    var v_snippet = p_tag.editor.getValue();
+    var v_title = p_tag.tab_title_span.textContent;
+    if (v_snippet === p_tag.saved_snippet && v_title === p_tag.saved_title) return;
+    p_tag.save_in_flight = true;
+    execAjax$1(
+      "/save_tab/",
+      JSON.stringify({
+        p_tab_db_id: p_tag.tab_db_id || null,
+        p_conn_id: p_tag.connTab.tag.selectedDatabaseIndex,
+        p_title: v_title,
+        p_snippet: v_snippet
+      }),
+      function(p_return) {
+        p_tag.save_in_flight = false;
+        p_tag.saved_snippet = v_snippet;
+        p_tag.saved_title = v_title;
+        var v_id = p_return.v_data.tab_db_id;
+        if (p_tag.closed) {
+          if (!p_tag.tab_db_id) createRequest(v_queryRequestCodes.CloseTab, [{ tab_id: p_tag.tab_id, tab_db_id: v_id }]);
+          return;
+        }
+        if (!p_tag.tab_db_id) p_tag.tab_db_id = v_id;
+        if (p_tag.save_pending) {
+          p_tag.save_pending = false;
+          saveTabNow(p_tag);
+        }
+      },
+      function() {
+        p_tag.save_in_flight = false;
+        p_tag.save_pending = false;
+      },
+      "box",
+      false,
+      null,
+      function() {
+        p_tag.save_in_flight = false;
+        p_tag.save_pending = false;
+      }
+    );
+  }
+  function rememberActiveTab(p_tag) {
+    try {
+      localStorage.setItem(
+        LAST_TAB_KEY,
+        JSON.stringify({ conn: p_tag.connTab.tag.selectedDatabaseIndex, tab_db_id: p_tag.tab_db_id || null })
+      );
+    } catch (e) {
+    }
+  }
+  function recallActiveTab() {
+    try {
+      return JSON.parse(localStorage.getItem(LAST_TAB_KEY) || "null");
+    } catch (e) {
+      return null;
+    }
+  }
   var v_createQueryTabFunction = function(p_table, p_tab_db_id) {
     v_connTabControl.selectedTab.tag.tabControl.removeLastTab();
     var v_name = t("common.query");
@@ -24083,6 +24228,7 @@
         if (this.tag != null && this.tag.editor != null) {
           this.tag.editor.focus();
           checkQueryStatus(this);
+          rememberActiveTab(this.tag);
         }
       },
       p_closeFunction: function(e, p_tab) {
@@ -24277,12 +24423,12 @@
           return p_response.json();
         }).then(function(p_result) {
           if (p_result.error) {
-            showAlert(t("editor.error_saving_file", { error: p_result.error }));
+            showAlert$1(t("editor.error_saving_file", { error: p_result.error }));
           } else if (p_result.path) {
-            showAlert(t("editor.file_exported_to", { path: p_result.path }));
+            showAlert$1(t("editor.file_exported_to", { path: p_result.path }));
           }
         }).catch(function(p_error) {
-          showAlert(t("editor.error_saving_file", { error: p_error }));
+          showAlert$1(t("editor.error_saving_file", { error: p_error }));
         });
       };
       var v_exp_query = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.getValue();
@@ -24440,6 +24586,15 @@
       "click",
       () => toggleExpandToPanelView("query_result_tabs_container" + v_tab.id)
     );
+    v_tag.saved_snippet = "";
+    v_tag.saved_title = null;
+    v_tag.editor.session.on("change", () => scheduleTabSave(v_tag));
+    rememberActiveTab(v_tag);
+    if (!v_tab_db_id) scheduleTabSave(v_tag);
+    v_editor.focus();
+    setTimeout(() => {
+      if (!v_tag.closed && v_tab.selected) v_editor.focus();
+    }, 0);
     v_selectDataTabFunc();
     var v_add_tab = v_connTabControl.selectedTab.tag.tabControl.createTab({
       p_icon: '<i class="fas fa-plus"></i>',
@@ -24640,7 +24795,7 @@
     switchSection("database");
     if (v_connTabControl.tag.connections.length == 0) {
       v_connTabControl.selectTabIndex(v_connTabControl.tabList.length - 2);
-      showAlert(t("connections.create_connections_first"));
+      showAlert$1(t("connections.create_connections_first"));
     } else {
       let v_conn = v_connTabControl.tag.connections[0];
       for (let i2 = 0; i2 < v_connTabControl.tag.connections.length; i2++) {
@@ -24695,6 +24850,9 @@
           refreshNotifyPaneIfActive();
           refreshConnectedUsersPaneIfActive();
           refreshMonitoringPaneIfActive();
+          if (this.tag != null && this.tag.tabControl != null && this.tag.tabControl.selectedTab?.tag?.mode == "query") {
+            rememberActiveTab(this.tag.tabControl.selectedTab.tag);
+          }
         },
         p_close: true,
         p_closeFunction: function(e, p_tab) {
@@ -25035,10 +25193,10 @@
       return p_response.json();
     }).then(function(p_result) {
       if (p_result && p_result.error) {
-        showAlert(t("workspace.error_opening_link_detail", { error: p_result.error }));
+        showAlert$1(t("workspace.error_opening_link_detail", { error: p_result.error }));
       }
     }).catch(function() {
-      showAlert(t("workspace.error_opening_link"));
+      showAlert$1(t("workspace.error_opening_link"));
     });
   };
   var v_createWebsiteTabFunction = function(p_name, p_site) {
@@ -26404,7 +26562,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -26580,7 +26738,7 @@
   function getTreeDetailsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tree_info_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -26757,7 +26915,7 @@
   function getTablespacesOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tablespaces_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -26793,7 +26951,7 @@
   function getRolesOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_roles_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -26829,7 +26987,7 @@
   function getTablesOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tables_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -26887,7 +27045,7 @@
   function getSequencesOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_sequences_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -26924,7 +27082,7 @@
   function getViewsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -26973,7 +27131,7 @@
   function getViewsColumnsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_columns_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27053,7 +27211,7 @@
     );
   }
   function getViewDefinitionOracle(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_view_definition_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27083,7 +27241,7 @@
   function getColumnsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_columns_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27232,7 +27390,7 @@
   function getPKOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27277,7 +27435,7 @@
   function getPKColumnsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_columns_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27312,7 +27470,7 @@
   function getUniquesOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27362,7 +27520,7 @@
   function getUniquesColumnsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_columns_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27399,7 +27557,7 @@
   function getIndexesOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27450,7 +27608,7 @@
   function getIndexesColumnsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_columns_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27487,7 +27645,7 @@
   function getFKsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27551,7 +27709,7 @@
   function getFKsColumnsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_columns_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27613,7 +27771,7 @@
   function getFunctionsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_functions_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27662,7 +27820,7 @@
   function getFunctionFieldsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_function_fields_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27718,7 +27876,7 @@
     );
   }
   function getFunctionDefinitionOracle(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_function_definition_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27747,7 +27905,7 @@
   function getProceduresOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedures_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27796,7 +27954,7 @@
   function getProcedureFieldsOracle(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_fields_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27852,7 +28010,7 @@
     );
   }
   function getProcedureDefinitionOracle(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_definition_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27879,7 +28037,7 @@
     );
   }
   function TemplateSelectOracle(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27905,7 +28063,7 @@
     );
   }
   function TemplateInsertOracle(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_insert_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27927,7 +28085,7 @@
     );
   }
   function TemplateUpdateOracle(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_update_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -27981,7 +28139,7 @@
     }
   }
   function oracleTerminateBackendConfirm(p_pid) {
-    execAjax$1(
+    execAjax$2(
       "/kill_backend_oracle/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -28944,7 +29102,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -29087,7 +29245,7 @@
   function getTreeDetailsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tree_info_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29262,7 +29420,7 @@
   function getDatabasesMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_databases_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29304,7 +29462,7 @@
   function getRolesMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_roles_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29341,7 +29499,7 @@
   function getTablesMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tables_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29401,7 +29559,7 @@
   function getSequencesMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_sequences_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29437,7 +29595,7 @@
   function getViewsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29488,7 +29646,7 @@
   function getViewsColumnsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_columns_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29571,7 +29729,7 @@
     );
   }
   function getViewDefinitionMariadb(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_view_definition_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29601,7 +29759,7 @@
   function getColumnsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_columns_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29758,7 +29916,7 @@
   function getPKMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29805,7 +29963,7 @@
   function getPKColumnsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_columns_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29840,7 +29998,7 @@
   function getUniquesMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29892,7 +30050,7 @@
   function getUniquesColumnsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_columns_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29929,7 +30087,7 @@
   function getIndexesMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -29981,7 +30139,7 @@
   function getIndexesColumnsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_columns_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30018,7 +30176,7 @@
   function getFKsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30083,7 +30241,7 @@
   function getFKsColumnsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_columns_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30145,7 +30303,7 @@
   function getFunctionsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_functions_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30195,7 +30353,7 @@
   function getFunctionFieldsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_function_fields_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30251,7 +30409,7 @@
     );
   }
   function getFunctionDefinitionMariadb(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_function_definition_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30280,7 +30438,7 @@
   function getProceduresMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedures_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30331,7 +30489,7 @@
   function getProcedureFieldsMariadb(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_fields_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30387,7 +30545,7 @@
     );
   }
   function getProcedureDefinitionMariadb(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_definition_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30414,7 +30572,7 @@
     );
   }
   function TemplateSelectMariadb(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30440,7 +30598,7 @@
     );
   }
   function TemplateInsertMariadb(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_insert_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30462,7 +30620,7 @@
     );
   }
   function TemplateUpdateMariadb(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_update_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -30522,7 +30680,7 @@
     return tmp2.join(".");
   }
   function mariadbTerminateBackendConfirm(p_pid) {
-    execAjax$1(
+    execAjax$2(
       "/kill_backend_mariadb/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31175,7 +31333,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -31303,7 +31461,7 @@
   function getTreeDetailsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tree_info_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31411,7 +31569,7 @@
   function getTablesMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tables_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31463,7 +31621,7 @@
   function getViewsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31511,7 +31669,7 @@
   function getViewsColumnsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_columns_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31563,7 +31721,7 @@
     );
   }
   function getViewDefinitionMssql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_view_definition_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31593,7 +31751,7 @@
   function getColumnsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_columns_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31714,7 +31872,7 @@
   function getPKMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31759,7 +31917,7 @@
   function getPKColumnsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_columns_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31794,7 +31952,7 @@
   function getUniquesMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31844,7 +32002,7 @@
   function getUniquesColumnsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_columns_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31881,7 +32039,7 @@
   function getIndexesMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31932,7 +32090,7 @@
   function getIndexesColumnsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_columns_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -31969,7 +32127,7 @@
   function getFKsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32033,7 +32191,7 @@
   function getFKsColumnsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_columns_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32097,7 +32255,7 @@
   function getFunctionsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_functions_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32146,7 +32304,7 @@
   function getFunctionFieldsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_function_fields_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32188,7 +32346,7 @@
     );
   }
   function getFunctionDefinitionMssql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_function_definition_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32218,7 +32376,7 @@
   function getProceduresMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedures_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32267,7 +32425,7 @@
   function getProcedureFieldsMssql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_fields_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32309,7 +32467,7 @@
     );
   }
   function getProcedureDefinitionMssql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_definition_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32337,7 +32495,7 @@
     );
   }
   function TemplateSelectMssql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32363,7 +32521,7 @@
     );
   }
   function TemplateInsertMssql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_insert_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32385,7 +32543,7 @@
     );
   }
   function TemplateUpdateMssql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_update_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -32435,7 +32593,7 @@
     }
   }
   function mssqlTerminateBackendConfirm(p_pid) {
-    execAjax$1(
+    execAjax$2(
       "/kill_backend_mssql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33056,7 +33214,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -33180,7 +33338,7 @@
   function getTreeDetailsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tree_info_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33288,7 +33446,7 @@
   function getTablesFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tables_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33339,7 +33497,7 @@
   function getViewsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33386,7 +33544,7 @@
   function getViewsColumnsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_columns_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33437,7 +33595,7 @@
     );
   }
   function getViewDefinitionFirebird(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_view_definition_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33466,7 +33624,7 @@
   function getColumnsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_columns_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33586,7 +33744,7 @@
   function getPKFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33630,7 +33788,7 @@
   function getPKColumnsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_columns_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33664,7 +33822,7 @@
   function getUniquesFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33713,7 +33871,7 @@
   function getUniquesColumnsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_columns_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33749,7 +33907,7 @@
   function getIndexesFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33799,7 +33957,7 @@
   function getIndexesColumnsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_columns_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33835,7 +33993,7 @@
   function getFKsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33898,7 +34056,7 @@
   function getFKsColumnsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_columns_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -33961,7 +34119,7 @@
   function getFunctionsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_functions_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34009,7 +34167,7 @@
   function getFunctionFieldsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_function_fields_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34050,7 +34208,7 @@
     );
   }
   function getFunctionDefinitionFirebird(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_function_definition_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34079,7 +34237,7 @@
   function getProceduresFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedures_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34127,7 +34285,7 @@
   function getProcedureFieldsFirebird(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_fields_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34168,7 +34326,7 @@
     );
   }
   function getProcedureDefinitionFirebird(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_definition_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34195,7 +34353,7 @@
     );
   }
   function TemplateSelectFirebird(p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34220,7 +34378,7 @@
     );
   }
   function TemplateInsertFirebird(p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_insert_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34241,7 +34399,7 @@
     );
   }
   function TemplateUpdateFirebird(p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_update_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -34290,7 +34448,7 @@
     }
   }
   function firebirdTerminateBackendConfirm(p_pid) {
-    execAjax$1(
+    execAjax$2(
       "/kill_backend_firebird/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35204,7 +35362,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection."><input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input"><label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -35338,7 +35496,7 @@
   function getTreeDetailsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tree_info_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35496,7 +35654,7 @@
   function getDatabasesMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_databases_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35538,7 +35696,7 @@
   function getRolesMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_roles_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35575,7 +35733,7 @@
   function getTablesMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tables_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35635,7 +35793,7 @@
   function getViewsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35686,7 +35844,7 @@
   function getViewsColumnsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_columns_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35769,7 +35927,7 @@
     );
   }
   function getViewDefinitionMysql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_view_definition_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35799,7 +35957,7 @@
   function getColumnsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_columns_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -35956,7 +36114,7 @@
   function getPKMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36003,7 +36161,7 @@
   function getPKColumnsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_columns_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36038,7 +36196,7 @@
   function getUniquesMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36090,7 +36248,7 @@
   function getUniquesColumnsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_columns_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36127,7 +36285,7 @@
   function getIndexesMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36179,7 +36337,7 @@
   function getIndexesColumnsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_columns_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36216,7 +36374,7 @@
   function getFKsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36281,7 +36439,7 @@
   function getFKsColumnsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_columns_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36343,7 +36501,7 @@
   function getFunctionsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_functions_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36393,7 +36551,7 @@
   function getFunctionFieldsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_function_fields_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36449,7 +36607,7 @@
     );
   }
   function getFunctionDefinitionMysql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_function_definition_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36478,7 +36636,7 @@
   function getProceduresMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedures_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36529,7 +36687,7 @@
   function getProcedureFieldsMysql(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_fields_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36585,7 +36743,7 @@
     );
   }
   function getProcedureDefinitionMysql(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_procedure_definition_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36612,7 +36770,7 @@
     );
   }
   function TemplateSelectMysql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36638,7 +36796,7 @@
     );
   }
   function TemplateInsertMysql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_insert_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36660,7 +36818,7 @@
     );
   }
   function TemplateUpdateMysql(p_schema, p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_update_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -36714,7 +36872,7 @@
     }
   }
   function mysqlTerminateBackendConfirm(p_pid) {
-    execAjax$1(
+    execAjax$2(
       "/kill_backend_mysql/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37201,7 +37359,7 @@
     var tree = createTree(p_div, "#fcfdfd", context_menu);
     v_connTabControl.selectedTab.tag.tree = tree;
     let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
-    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>selected DB: <b>' + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection.">    <input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input">    <label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
+    v_connTabControl.selectedTab.tag.divDetails.innerHTML = '<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": <b>" + escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) + '</b><div class="omnidb__switch omnidb__switch--sm float-end" title="Toggle autocomplete.\nSwitch OFF disables the autocomplete on the inner tabs for this connection.">    <input type="checkbox" ' + v_autocomplete_switch_status + ' id="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--input">    <label for="autocomplete_toggler_' + v_connTabControl.selectedTab.tag.tab_id + '" class="omnidb__switch--label"><span><i class="fas fa-spell-check"></i></span></label></div>';
     document.getElementById("autocomplete_toggler_" + v_connTabControl.selectedTab.tag.tab_id).addEventListener("change", (event2) => toggleConnectionAutocomplete(
       /** @type {HTMLElement} */
       event2.target.id
@@ -37288,7 +37446,7 @@
   function getTreeDetailsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tree_info_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37379,7 +37537,7 @@
   function getTablesSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_tables_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37439,7 +37597,7 @@
   function getColumnsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_columns_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37601,7 +37759,7 @@
   function getPKSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37646,7 +37804,7 @@
   function getPKColumnsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_pk_columns_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37683,7 +37841,7 @@
   function getFKsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37755,7 +37913,7 @@
   function getFKsColumnsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_fks_columns_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37826,7 +37984,7 @@
   function getUniquesSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37876,7 +38034,7 @@
   function getUniquesColumnsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_uniques_columns_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37914,7 +38072,7 @@
   function getIndexesSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -37965,7 +38123,7 @@
   function getIndexesColumnsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_indexes_columns_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38003,7 +38161,7 @@
   function getViewsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38053,7 +38211,7 @@
   function getViewsColumnsSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_views_columns_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38141,7 +38299,7 @@
     );
   }
   function getViewDefinitionSqlite(node) {
-    execAjax$1(
+    execAjax$2(
       "/get_view_definition_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38170,7 +38328,7 @@
   function getTriggersSqlite(node) {
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_triggers_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38207,7 +38365,7 @@
     );
   }
   function TemplateSelectSqlite(p_table, p_kind) {
-    execAjax$1(
+    execAjax$2(
       "/template_select_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38234,7 +38392,7 @@
     );
   }
   function TemplateInsertSqlite(p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_insert_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38255,7 +38413,7 @@
     );
   }
   function TemplateUpdateSqlite(p_table) {
-    execAjax$1(
+    execAjax$2(
       "/template_update_sqlite/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38401,7 +38559,7 @@
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", initWorkspace);
   else setTimeout(initWorkspace, 0);
   function getDatabaseList(p_init, p_callback) {
-    execAjax$1(
+    execAjax$2(
       "/get_database_list/",
       JSON.stringify({}),
       function(p_return) {
@@ -38411,6 +38569,7 @@
         if (p_init) {
           if (v_connTabControl.tag.connections.length > 0) {
             var v_current_parent = null;
+            var v_restored = [];
             if (p_return.v_data.v_existing_tabs.length > 0) ;
             for (var i2 = 0; i2 < p_return.v_data.v_existing_tabs.length; i2++) {
               if (v_current_parent == null || v_current_parent != p_return.v_data.v_existing_tabs[i2].index) {
@@ -38451,8 +38610,28 @@
               v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(
                 p_return.v_data.v_existing_tabs[i2].snippet
               );
+              var v_restored_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+              if (v_restored_tag.save_timer) clearTimeout(v_restored_tag.save_timer);
+              v_restored_tag.save_timer = null;
+              v_restored_tag.saved_snippet = p_return.v_data.v_existing_tabs[i2].snippet;
+              v_restored_tag.saved_title = v_restored_tag.tab_title_span.textContent;
+              v_restored.push({
+                conn: v_connTabControl.selectedTab,
+                inner: v_connTabControl.selectedTab.tag.tabControl.selectedTab
+              });
               v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
               v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+            }
+            var v_last = recallActiveTab();
+            if (v_last) {
+              for (var r = 0; r < v_restored.length; r++) {
+                var v_cand = v_restored[r];
+                if (v_cand.inner.tag.tab_db_id === v_last.tab_db_id && v_cand.conn.tag.selectedDatabaseIndex === v_last.conn) {
+                  v_connTabControl.selectTab(v_cand.conn);
+                  v_cand.conn.tag.tabControl.selectTab(v_cand.inner);
+                  break;
+                }
+              }
             }
           }
         }
@@ -38473,7 +38652,7 @@
   }
   function changeActiveDatabaseThreadSafe(p_data) {
     v_connTabControl.tag.change_active_database_call_running = true;
-    execAjax$1(
+    execAjax$2(
       "/change_active_database/",
       JSON.stringify(p_data),
       function(p_return) {
@@ -38528,7 +38707,7 @@
       var v_tab = v_connTabControl.selectedTab.tag.tabControl.tabList[i2];
       if (v_tab.tag != null) {
         if (v_tab.tag.mode == "edit" || v_tab.tag.mode == "alter" || v_tab.tag.mode == "data_mining") {
-          showAlert(
+          showAlert$1(
             t("workspace.close_tabs_warning", {
               edit_data: t("connections.edit_data"),
               alter_table: t("tree.alter_table"),
@@ -38563,7 +38742,7 @@
     });
   }
   function drawGraph(p_all, p_schema) {
-    execAjax$1(
+    execAjax$2(
       "/draw_graph/",
       JSON.stringify({
         p_database_index: v_connTabControl.selectedTab.tag.selectedDatabaseIndex,
@@ -38740,12 +38919,15 @@
   }
   function renameTabConfirm(p_tab, p_name) {
     p_tab.tag.tab_title_span.textContent = p_name;
+    if (p_tab.tag.mode == "query") saveTabNow(p_tab.tag);
   }
   function removeTab(p_tab) {
     if (p_tab.tag.ht != null) {
       p_tab.tag.ht.destroy();
       p_tab.tag.div_result.innerHTML = "";
     }
+    p_tab.tag.closed = true;
+    if (p_tab.tag.save_timer) clearTimeout(p_tab.tag.save_timer);
     if (p_tab.tag.editor != null) p_tab.tag.editor.destroy();
     if (p_tab.tag.mode == "query" || p_tab.tag.mode == "edit" || p_tab.tag.mode == "console" || p_tab.tag.mode == "outer_terminal") {
       var v_message_data = { tab_id: p_tab.tag.tab_id, tab_db_id: null };
@@ -39094,9 +39276,9 @@
     if (v_mode) {
       var v_sql_value = v_editor.getValue();
       if (v_sql_value.trim() == "") {
-        showAlert(t("common.provide_a_string"));
+        showAlert$1(t("common.provide_a_string"));
       } else {
-        execAjax$1(
+        execAjax$2(
           "/indent_sql/",
           JSON.stringify({
             p_sql: v_sql_value,
@@ -39473,9 +39655,9 @@
     var v_safe_html = "<b>" + escapeHtml(t("common.text_copied")) + '</b><div class="mt-2 p-2 border-1 omnidb__theme-bg--light"><code>' + v_escaped.innerHTML + "</code></div>";
     if (navigator.clipboard && window.isSecureContext) {
       navigator.clipboard.writeText(p_value).then(function() {
-        showAlert(v_safe_html, null, null, true);
+        showAlert$1(v_safe_html, null, null, true);
       }).catch(function() {
-        showAlert(v_safe_html, null, null, true);
+        showAlert$1(v_safe_html, null, null, true);
       });
       return;
     }
@@ -39490,7 +39672,7 @@
     v_text_area.setSelectionRange(0, 9999999);
     document.execCommand("copy");
     document.body.removeChild(v_text_area);
-    showAlert(v_safe_html, null, null, true);
+    showAlert$1(v_safe_html, null, null, true);
   }
   function toggleConnectionAutocomplete(p_toggler_id) {
     let checked = (
@@ -39573,7 +39755,7 @@
         v_conn_id_list.push(v_tab.tag.connId);
     }
     var input = JSON.stringify({ p_conn_id_list: v_conn_id_list });
-    execAjax$1(
+    execAjax$2(
       "/get_connections/",
       input,
       function(p_return) {
@@ -39788,7 +39970,7 @@
       }
     }
     v_connections_data.list_items = v_sorted;
-    execAjax$1(
+    execAjax$2(
       "/save_connection_order/",
       JSON.stringify({ p_conn_id_list: v_order }),
       function() {
@@ -39935,7 +40117,7 @@
       });
       v_conn_obj2.checkbox.checked = false;
     }
-    execAjax$1(
+    execAjax$2(
       "/save_group_connections/",
       JSON.stringify({
         // parseInt because a <select>'s value is a string and the backend
@@ -39953,7 +40135,7 @@
     );
   }
   function newGroupConfirm(p_name) {
-    execAjax$1(
+    execAjax$2(
       "/new_group/",
       JSON.stringify({ p_name }),
       function(p_return) {
@@ -39965,7 +40147,7 @@
     );
   }
   function renameGroupConfirm(p_id, p_name) {
-    execAjax$1(
+    execAjax$2(
       "/edit_group/",
       JSON.stringify({ p_id, p_name }),
       function(p_return) {
@@ -39983,7 +40165,7 @@
     });
   }
   function deleteGroupConfirm(p_group_id) {
-    execAjax$1(
+    execAjax$2(
       "/delete_group/",
       JSON.stringify({ p_id: p_group_id }),
       function(p_return) {
@@ -40052,7 +40234,7 @@
     }, 500);
   }
   function getGroups() {
-    execAjax$1(
+    execAjax$2(
       "/get_groups/",
       JSON.stringify({}),
       function(p_return) {
@@ -40105,11 +40287,11 @@
         key: el("conn_form_ssh_key").value
       }
     });
-    execAjax$1(
+    execAjax$2(
       "/test_connection/",
       input,
       function(p_return) {
-        showAlert(p_return.v_data);
+        showAlert$1(p_return.v_data);
       },
       function(p_return) {
         showConfirm(
@@ -40173,7 +40355,7 @@
         key: el("conn_form_ssh_key").value
       }
     });
-    execAjax$1(
+    execAjax$2(
       "/save_connection/",
       input,
       function(p_return) {
@@ -40199,7 +40381,7 @@
         var input = JSON.stringify({
           id: p_conn_obj.id
         });
-        execAjax$1(
+        execAjax$2(
           "/delete_connection/",
           input,
           function(p_return) {
@@ -40226,12 +40408,12 @@
       }).then(function(p_result) {
         if (p_result.cancelled) return;
         if (p_result.error) {
-          showAlert(p_result.error);
+          showAlert$1(p_result.error);
           return;
         }
         finishPgpassImport(p_result.entries || []);
       }).catch(function(p_err) {
-        showAlert(t("connections.pgpass_picker_unreachable", { error: p_err }));
+        showAlert$1(t("connections.pgpass_picker_unreachable", { error: p_err }));
       });
     } else {
       el("connections_pgpass_import_input").click();
@@ -40257,7 +40439,7 @@
   }
   function finishPgpassImport(p_entries) {
     if (p_entries.length === 0) {
-      showAlert(t("connections.pgpass_no_usable_entries"));
+      showAlert$1(t("connections.pgpass_no_usable_entries"));
       return;
     }
     var v_existing = (v_connTabControl.tag.connections || []).filter(function(c) {
@@ -40283,7 +40465,7 @@
     }
     var v_skipped = p_entries.length - v_to_import.length;
     if (v_to_import.length === 0) {
-      showAlert(t("connections.pgpass_no_new_connections"));
+      showAlert$1(t("connections.pgpass_no_new_connections"));
       return;
     }
     importPgpassEntriesSequentially(v_to_import, 0, 0, v_skipped);
@@ -40296,12 +40478,12 @@
       var v_message = tn("connections.pgpass_imported", v_imported);
       if (p_skipped > 0) v_message += " " + tn("connections.pgpass_skipped", p_skipped);
       if (p_failed > 0) v_message += " " + tn("connections.pgpass_failed", p_failed);
-      showAlert(v_message);
+      showAlert$1(v_message);
       return;
     }
     var v_entry = p_entries[p_index];
     var v_connstring = "postgresql://" + encodeURIComponent(v_entry.username) + "@" + v_entry.hostname + ":" + v_entry.port + "/" + encodeURIComponent(v_entry.database);
-    execAjax$1(
+    execAjax$2(
       "/save_connection/",
       JSON.stringify({
         id: -1,
@@ -42961,7 +43143,7 @@
       p_autocomplete_disabled_types: v_autocomplete_disabled_types,
       p_language: v_language_preference
     });
-    execAjax$1("/save_config_user/", input, function(p_return) {
+    execAjax$2("/save_config_user/", input, function(p_return) {
       applyEditorTabSize();
       if (p_callback) p_callback();
     });
@@ -43000,14 +43182,14 @@
       document.getElementById("txt_new_pwd")
     );
     if (v_pwd.value === "" || v_pwd.value !== v_confirm_pwd.value) {
-      showAlert(t("settings.password.mismatch"));
+      showAlert$1(t("settings.password.mismatch"));
       return;
     }
     persistConfigUserInternal(v_pwd.value, function() {
       v_pwd.value = "";
       v_confirm_pwd.value = "";
       updatePasswordButtonState();
-      showAlert(t("settings.password.changed"));
+      showAlert$1(t("settings.password.changed"));
     });
   }
   function saveShortcuts() {
@@ -43021,7 +43203,7 @@
       p_shortcuts: v_shortcut_list,
       p_current_os: v_current_os
     });
-    execAjax$1("/save_shortcuts/", input, function(p_return) {
+    execAjax$2("/save_shortcuts/", input, function(p_return) {
     });
   }
   function aceModeForDataType(p_data_type) {
@@ -43341,7 +43523,7 @@
   function executeQuerySQL(p_mode, p_all_data, p_query, p_callback, p_log_query, p_save_query, p_cmd_type, p_clear_data, p_tab_title) {
     var v_state = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.state;
     if (v_state != v_queryState.Idle) {
-      showAlert(t("common.tab_activity_in_progress"));
+      showAlert$1(t("common.tab_activity_in_progress"));
     } else {
       var v_tab_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
       v_tab_tag.tempData = [];
@@ -43350,7 +43532,7 @@
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_loading_span;
       v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.tab_close_span;
       if (v_sql_value.trim() == "") {
-        showAlert(t("common.provide_a_string"));
+        showAlert$1(t("common.provide_a_string"));
       } else {
         if (v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex == null || v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.currDatabaseIndex != v_connTabControl.selectedTab.tag.selectedDatabaseIndex) {
           p_mode = 0;
@@ -43703,7 +43885,7 @@
   }, Symbol.toStringTag, { value: "Module" }));
   var i;
   function getAllSnippets() {
-    execAjax$1(
+    execAjax$2(
       "/get_all_snippets/",
       JSON.stringify({}),
       function(p_return) {
@@ -43858,7 +44040,7 @@
     if (v_delete_button != null) v_delete_button.setAttribute("disabled", "disabled");
     node.removeChildNodes();
     node.createChildNode("", false, "node-spin", null, null);
-    execAjax$1(
+    execAjax$2(
       "/get_node_children/",
       JSON.stringify({ p_sn_id_parent: node.tag.id }),
       function(p_return) {
@@ -43955,7 +44137,7 @@
     return v_node2;
   }
   function saveSnippetTextConfirm(p_save_object, p_text, p_callback) {
-    execAjax$1(
+    execAjax$2(
       "/save_snippet_text/",
       JSON.stringify({
         p_id: p_save_object.v_id,
@@ -43990,7 +44172,7 @@
     showConfirm(
       "",
       function() {
-        execAjax$1(
+        execAjax$2(
           "/new_node_snippet/",
           JSON.stringify({
             p_sn_id_parent: p_node.tag.id,
@@ -44038,7 +44220,7 @@
     showConfirm(
       "",
       function() {
-        execAjax$1(
+        execAjax$2(
           "/rename_node_snippet/",
           JSON.stringify({
             p_id: p_node.tag.id,
@@ -44086,7 +44268,7 @@
     showConfirm(
       t("tree.confirm_delete_node", { type: p_node.tag.type }),
       function() {
-        execAjax$1(
+        execAjax$2(
           "/delete_node_snippet/",
           JSON.stringify({ p_id: p_node.tag.id, p_mode: p_node.tag.type }),
           function(p_return) {
@@ -44123,7 +44305,7 @@
     } else {
       v_connTabControl.tag.createSnippetTextTab(p_node.tag);
     }
-    execAjax$1(
+    execAjax$2(
       "/get_snippet_text/",
       JSON.stringify({ p_st_id: p_node.tag.id }),
       function(p_return) {
@@ -44140,7 +44322,7 @@
     );
   }
   function executeSnippet(p_id, p_editor) {
-    execAjax$1(
+    execAjax$2(
       "/get_snippet_text/",
       JSON.stringify({ p_st_id: p_id }),
       function(p_return) {
@@ -44323,7 +44505,7 @@
     activateHook
   }, Symbol.toStringTag, { value: "Module" }));
   function newUserConfirm() {
-    execAjax$1(
+    execAjax$2(
       "/new_user/",
       JSON.stringify({ p_data: window.newUsersObject.newUsers }),
       function(p_return) {
@@ -44348,7 +44530,7 @@
   }
   function removeUserConfirm(p_id) {
     var input = JSON.stringify({ p_id });
-    execAjax$1(
+    execAjax$2(
       "/remove_user/",
       input,
       function(p_return) {
@@ -44396,7 +44578,7 @@
       new: window.newUsersObject.newUsers
     };
     var input = JSON.stringify({ p_data: v_data, p_user_id_list: v_user_id_list });
-    execAjax$1(
+    execAjax$2(
       "/save_users/",
       input,
       function() {
@@ -44485,7 +44667,7 @@
       if (window.newUsersObject.newUsers == void 0) {
         window.newUsersObject.newUsers = [];
       }
-      execAjax$1(
+      execAjax$2(
         "/get_users/",
         JSON.stringify({}),
         function(p_return) {
@@ -44817,6 +44999,7 @@
       this._bottomSpacer = null;
       this._bottomSpacerCell = null;
       this._resizeObserver = null;
+      this._fitWidth = 0;
       this._onScroll = null;
       this._onDocMouseMove = null;
       this._onDocMouseUp = null;
@@ -44835,6 +45018,10 @@
         return {
           title: col.title || t("editor.default_column_title", { number: index + 1 }),
           width: col.width || MIN_COL_WIDTH,
+          // The width the column wants on its own (initial / dragged by the
+          // user); `width` is what's applied, i.e. baseWidth plus whatever
+          // share of spare space _smartSizeColumns hands out right now.
+          baseWidth: col.width || MIN_COL_WIDTH,
           titleHtml: !!col.titleHtml,
           tooltip: col.tooltip,
           align: col.align,
@@ -44909,7 +45096,10 @@
       this._onDocMouseUp = () => this._onResizeMouseUp();
       document.addEventListener("mousemove", this._onDocMouseMove);
       document.addEventListener("mouseup", this._onDocMouseUp);
-      this._resizeObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => this._scheduleRender()) : null;
+      this._resizeObserver = typeof ResizeObserver !== "undefined" ? new ResizeObserver(() => {
+        this._smartSizeColumns();
+        this._scheduleRender();
+      }) : null;
       if (this._resizeObserver) this._resizeObserver.observe(this._scrollEl);
     }
     _buildHeader() {
@@ -44976,17 +45166,27 @@
       this._renderedStart = -1;
       this._renderNow();
     }
+    // Re-fits the columns to the container: when their base widths add up to
+    // less than the available width the spare space is shared out between them,
+    // otherwise they keep their base widths (and the grid scrolls). Run on every
+    // container resize, so columns also shrink back again -- not only grow --
+    // instead of leaving a needless horizontal scrollbar behind.
     _smartSizeColumns() {
       if (this._columns.length === 0) return;
       const available = this._scrollEl.clientWidth;
-      const totalMin = this._columns.reduce((sum, c) => sum + c.width, 0);
-      const totalDefaultMin = this._columns.length * MIN_COL_WIDTH;
-      if (totalDefaultMin > available) return;
-      if (totalMin >= available) return;
-      const extra = available - totalMin;
-      const share = Math.floor(extra / this._columns.length);
-      this._columns.forEach((c) => c.width += share);
-      this._layoutColumns();
+      if (available <= 0) return;
+      this._fitWidth = available;
+      const n = this._columns.length;
+      const totalBase = this._columns.reduce((sum, c) => sum + c.baseWidth, 0);
+      const extra = Math.max(0, available - 2 - totalBase);
+      const share = Math.floor(extra / n);
+      let changed = false;
+      this._columns.forEach((c, i2) => {
+        const w = c.baseWidth + share + (i2 === n - 1 ? extra - share * n : 0);
+        if (w !== c.width) changed = true;
+        c.width = w;
+      });
+      if (changed) this._layoutColumns();
     }
     // --- sorting ---------------------------------------------------------------
     _toggleSort(colIndex) {
@@ -45033,6 +45233,7 @@
         this._rafHandle = null;
       }
       this._renderVisible();
+      if (this._scrollEl.clientWidth !== this._fitWidth) this._smartSizeColumns();
     }
     _renderVisible() {
       if (!this._scrollEl.isConnected) return;
@@ -45207,6 +45408,7 @@
       const delta = e.clientX - this._resizing.startX;
       const col = this._columns[this._resizing.colIndex];
       col.width = Math.max(30, this._resizing.startWidth + delta);
+      col.baseWidth = col.width;
       this._layoutColumns();
     }
     _onResizeMouseUp() {
@@ -45328,6 +45530,7 @@
       settings.columns.forEach((col, i2) => {
         if (typeof col.width !== "number" || !this._columns[i2]) return;
         this._columns[i2].width = col.width;
+        this._columns[i2].baseWidth = col.width;
       });
       this._layoutColumns();
     }

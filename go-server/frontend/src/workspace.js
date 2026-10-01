@@ -40,6 +40,7 @@ import { createRequest } from "./long_polling.js";
 import { showAlert, showConfirm } from "./notification_control.js";
 import { showPasswordPrompt } from "./passwords.js";
 import { checkQueryStatus, escapeHtml, v_queryRequestCodes } from "./query.js";
+import { recallActiveTab, saveTabNow } from "./tab_persistence.js";
 import { initSectionSwitcher, isSectionActive, switchSection } from "./section_switcher.js";
 import { getConnectedUsersRowData } from "./panel_functions/outer_connected_users_panel.js";
 import { refreshOuterConnectionHeights } from "./tab_functions/outer_connection_tab.js";
@@ -192,6 +193,8 @@ export function getDatabaseList(p_init, p_callback) {
 					//Create existing tabs
 					var v_current_parent = null;
 					var v_has_old_tabs = false;
+					/** @type {any[]} */
+					var v_restored = [];
 					if (p_return.v_data.v_existing_tabs.length > 0) {
 						v_has_old_tabs = true;
 					}
@@ -238,8 +241,33 @@ export function getDatabaseList(p_init, p_callback) {
 						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.setValue(
 							p_return.v_data.v_existing_tabs[i].snippet,
 						);
+						var v_restored_tag = v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag;
+						if (v_restored_tag.save_timer) clearTimeout(v_restored_tag.save_timer);
+						v_restored_tag.save_timer = null;
+						v_restored_tag.saved_snippet = p_return.v_data.v_existing_tabs[i].snippet;
+						v_restored_tag.saved_title = v_restored_tag.tab_title_span.textContent;
+						v_restored.push({
+							conn: v_connTabControl.selectedTab,
+							inner: v_connTabControl.selectedTab.tag.tabControl.selectedTab,
+						});
 						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.clearSelection();
 						v_connTabControl.selectedTab.tag.tabControl.selectedTab.tag.editor.gotoLine(0, 0, true);
+					}
+
+					// Re-select the query tab that was active last time.
+					var v_last = recallActiveTab();
+					if (v_last) {
+						for (var r = 0; r < v_restored.length; r++) {
+							var v_cand = v_restored[r];
+							if (
+								v_cand.inner.tag.tab_db_id === v_last.tab_db_id &&
+								v_cand.conn.tag.selectedDatabaseIndex === v_last.conn
+							) {
+								v_connTabControl.selectTab(v_cand.conn);
+								v_cand.conn.tag.tabControl.selectTab(v_cand.inner);
+								break;
+							}
+						}
 					}
 
 					if (!v_has_old_tabs) {
@@ -588,6 +616,7 @@ export function renameTab(p_tab) {
 /// </summary>
 export function renameTabConfirm(p_tab, p_name) {
 	p_tab.tag.tab_title_span.textContent = p_name;
+	if (p_tab.tag.mode == "query") saveTabNow(p_tab.tag);
 }
 
 /// <summary>
@@ -599,6 +628,8 @@ export function removeTab(p_tab) {
 		p_tab.tag.div_result.innerHTML = "";
 	}
 
+	p_tab.tag.closed = true;
+	if (p_tab.tag.save_timer) clearTimeout(p_tab.tag.save_timer);
 	if (p_tab.tag.editor != null) p_tab.tag.editor.destroy();
 
 	if (

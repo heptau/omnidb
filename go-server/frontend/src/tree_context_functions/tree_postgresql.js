@@ -3128,7 +3128,7 @@ export function getTreePostgresql(p_div) {
 	v_connTabControl.selectedTab.tag.tree = tree;
 	let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
 	v_connTabControl.selectedTab.tag.divDetails.innerHTML =
-		'<i class="fas fa-server me-1"></i>selected DB: ' +
+		'<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": " +
 		"<b>" +
 		escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) +
 		"</b>" +
@@ -3239,7 +3239,7 @@ export function checkCurrentDatabase(p_node, p_complete_check, p_callback_contin
 							function (p_return) {
 								(function () {
 									var v_det = v_connTabControl.selectedTab.tag.divDetails;
-									v_det.innerHTML = "Active database: <b></b>";
+									// Only the name changes -- rebuilding the whole div would drop the autocomplete switch.
 									v_det.querySelector("b").textContent = p_node.tag.database;
 								})();
 
@@ -3854,6 +3854,10 @@ export function getTreeDetailsPostgresql(node) {
 			// "itself" never converges since nothing ever changes the value it's
 			// being compared against.
 			v_connTabControl.selectedTab.tag.selectedDatabase = p_return.v_data.v_database_return.v_database;
+			// The details line was drawn before this live name was known (it
+			// showed the saved connection's, often blank, database): refresh it.
+			var v_det_name = v_connTabControl.selectedTab.tag.divDetails.querySelector("b");
+			if (v_det_name) v_det_name.textContent = v_connTabControl.selectedTab.tag.selectedDatabase;
 
 			node.tree.contextMenu.cm_server.elements = [];
 			node.tree.contextMenu.cm_server.elements.push({

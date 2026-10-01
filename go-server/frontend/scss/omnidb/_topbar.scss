@@ -905,7 +905,11 @@
  * to scroll at this level (the tree and the editor already scroll
  * internally on their own), so hidden just silently absorbs the slop.
  */
-#omnidb__section_snippets {
+#omnidb__section_snippets,
+/* Database section: the query tab's heights are pixel math too (result pane
+ * height from its top edge), so any later change in the toolbar's height popped
+ * both scrollbars in. Its trees, editors and grids all scroll internally. */
+#omnidb__section_database {
 	overflow: hidden;
 }
 

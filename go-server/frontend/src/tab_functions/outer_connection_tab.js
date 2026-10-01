@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { rememberActiveTab } from "../tab_persistence.js";
 import { endLoading } from "../ajax_control_bridge.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { editCellData } from "../header_actions.js";
@@ -175,6 +176,9 @@ export var v_createConnTabFunction = function (p_index, p_create_query_tab = tru
 				refreshNotifyPaneIfActive();
 				refreshConnectedUsersPaneIfActive();
 				refreshMonitoringPaneIfActive();
+				if (this.tag != null && this.tag.tabControl != null && this.tag.tabControl.selectedTab?.tag?.mode == "query") {
+					rememberActiveTab(this.tag.tabControl.selectedTab.tag);
+				}
 			},
 			p_close: true,
 			p_closeFunction: function (e, p_tab) {

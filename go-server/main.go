@@ -477,6 +477,7 @@ func run() error {
 	mux.Handle("/clear_console_list/", handleClearConsoleList(upstream))
 	mux.Handle("/get_database_list/", handleGetDatabaseList(upstream))
 	mux.Handle("/change_active_database/", handleChangeActiveDatabase(upstream))
+	mux.Handle("/save_tab/", handleSaveTab(upstream))
 	mux.Handle("/save_config_user/", handleSaveConfigUser(upstream))
 	// users.py — superuser-only user management, unblocked by Fáze 7's
 	// native Django-compatible PBKDF2 hashing (previously deferred since a

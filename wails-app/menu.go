@@ -72,15 +72,17 @@ func (a *App) buildMenu(lang string) *menu.Menu {
 	// something fixed system-wide (Cmd+C copy, Cmd+S save, Cmd+M minimize) —
 	// overriding those natively would be surprising. Shift avoids both.
 	// Same order as the vertical section-nav rail (section_switcher.js's
-	// SECTION_NAMES): Welcome, Connections, Database, Notify, Connected
-	// Users, Snippets. Settings is deliberately not repeated here — it
+	// SECTION_NAMES): Welcome, Connections, Database, Monitoring, Notify,
+	// Permissions, Connected Users, Snippets. Settings is deliberately not repeated here — it
 	// already has its own entry (and its own Cmd/Ctrl+, accelerator) in the
 	// OmniDB app menu above.
 	viewMenu := menu.NewMenu()
 	viewMenu.AddText(t("welcome"), keys.Combo("w", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('welcome')"))
 	viewMenu.AddText(t("connections"), keys.Combo("c", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("startConnectionManagement()"))
 	viewMenu.AddText(t("database"), keys.Combo("d", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('database')"))
+	viewMenu.AddText(t("monitoring"), keys.Combo("m", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('monitoring')"))
 	viewMenu.AddText(t("notify"), keys.Combo("n", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('notify')"))
+	viewMenu.AddText(t("permissions"), keys.Combo("p", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('permissions')"))
 	viewMenu.AddText(t("connected_users"), keys.Combo("u", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("switchSection('connected_users')"))
 	viewMenu.AddText(t("snippets"), keys.Combo("s", keys.CmdOrCtrlKey, keys.ShiftKey), a.execJS("toggleSnippetPanel()"))
 	viewMenu.AddSeparator()

@@ -1651,6 +1651,10 @@ button.close {
 .omnidb__query-info {
 	display: inline-block;
 	line-height: 1.2;
+	// Always room for the two-line result summary (rows/time + start time): the
+	// toolbar mustn't grow when the first query finishes, because the result pane's
+	// height is computed from where its top edge sits and isn't redone afterwards.
+	min-height: 2.4em;
 	margin-left: 5px;
 	vertical-align: middle;
 }

@@ -2093,6 +2093,7 @@ button.close {
 .omnidb__query-info {
   display: inline-block;
   line-height: 1.2;
+  min-height: 2.4em;
   margin-left: 5px;
   vertical-align: middle;
 }
@@ -7077,7 +7078,8 @@ select.form-control {
  * to scroll at this level (the tree and the editor already scroll
  * internally on their own), so hidden just silently absorbs the slop.
  */
-#omnidb__section_snippets {
+#omnidb__section_snippets,
+#omnidb__section_database {
   overflow: hidden;
 }
 

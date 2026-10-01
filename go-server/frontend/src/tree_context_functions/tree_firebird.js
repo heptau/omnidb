@@ -628,7 +628,7 @@ export function getTreeFirebird(p_div) {
 	v_connTabControl.selectedTab.tag.tree = tree;
 	let v_autocomplete_switch_status = v_connTabControl.selectedTab.tag.enable_autocomplete !== false ? " checked " : "";
 	v_connTabControl.selectedTab.tag.divDetails.innerHTML =
-		'<i class="fas fa-server me-1"></i>selected DB: ' +
+		'<i class="fas fa-server me-1"></i>' + escapeHtml(t("tree.selected_db")) + ": " +
 		"<b>" +
 		escapeHtml(v_connTabControl.selectedTab.tag.selectedDatabase) +
 		"</b>" +

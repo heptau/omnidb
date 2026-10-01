@@ -162,6 +162,8 @@ export class VirtualGrid {
 		this._bottomSpacerCell = null;
 		/** @type {any} */
 		this._resizeObserver = null;
+		/** @type {number} */
+		this._fitWidth = 0;
 		/** @type {any} */
 		this._onScroll = null;
 		/** @type {any} */
@@ -191,6 +193,10 @@ export class VirtualGrid {
 			return {
 				title: col.title || t("editor.default_column_title", { number: index + 1 }),
 				width: col.width || MIN_COL_WIDTH,
+				// The width the column wants on its own (initial / dragged by the
+				// user); `width` is what's applied, i.e. baseWidth plus whatever
+				// share of spare space _smartSizeColumns hands out right now.
+				baseWidth: col.width || MIN_COL_WIDTH,
 				titleHtml: !!col.titleHtml,
 				tooltip: col.tooltip,
 				align: col.align,
@@ -295,7 +301,10 @@ export class VirtualGrid {
 
 		this._resizeObserver =
 			typeof ResizeObserver !== "undefined"
-				? new ResizeObserver(() => this._scheduleRender())
+				? new ResizeObserver(() => {
+						this._smartSizeColumns();
+						this._scheduleRender();
+					})
 				: null;
 		if (this._resizeObserver) this._resizeObserver.observe(this._scrollEl);
 	}
@@ -388,18 +397,29 @@ export class VirtualGrid {
 		this._renderNow();
 	}
 
+	// Re-fits the columns to the container: when their base widths add up to
+	// less than the available width the spare space is shared out between them,
+	// otherwise they keep their base widths (and the grid scrolls). Run on every
+	// container resize, so columns also shrink back again -- not only grow --
+	// instead of leaving a needless horizontal scrollbar behind.
 	_smartSizeColumns() {
 		if (this._columns.length === 0) return;
 		const available = this._scrollEl.clientWidth;
-		const totalMin = this._columns.reduce((sum, c) => sum + c.width, 0);
-		const totalDefaultMin = this._columns.length * MIN_COL_WIDTH;
-		if (totalDefaultMin > available) return; // not enough room — let horizontal scroll happen instead
-		if (totalMin >= available) return;
-
-		const extra = available - totalMin;
-		const share = Math.floor(extra / this._columns.length);
-		this._columns.forEach((c) => (c.width += share));
-		this._layoutColumns();
+		if (available <= 0) return;
+		this._fitWidth = available;
+		const n = this._columns.length;
+		const totalBase = this._columns.reduce((sum, c) => sum + c.baseWidth, 0);
+		// border-collapse makes the table half a border wider than its <col>s add up
+		// to, so leave a couple of pixels spare or it always overflows by a hair.
+		const extra = Math.max(0, available - 2 - totalBase);
+		const share = Math.floor(extra / n);
+		let changed = false;
+		this._columns.forEach((c, i) => {
+			const w = c.baseWidth + share + (i === n - 1 ? extra - share * n : 0);
+			if (w !== c.width) changed = true;
+			c.width = w;
+		});
+		if (changed) this._layoutColumns();
 	}
 
 	// --- sorting ---------------------------------------------------------------
@@ -452,6 +472,10 @@ export class VirtualGrid {
 			this._rafHandle = null;
 		}
 		this._renderVisible();
+		// Rendering rows can make the vertical scrollbar appear/disappear, which
+		// changes the usable width without resizing the observed element itself --
+		// re-fit then, or the columns end up a scrollbar's width too wide.
+		if (this._scrollEl.clientWidth !== this._fitWidth) this._smartSizeColumns();
 	}
 
 	_renderVisible() {
@@ -667,6 +691,7 @@ export class VirtualGrid {
 		const delta = e.clientX - this._resizing.startX;
 		const col = this._columns[this._resizing.colIndex];
 		col.width = Math.max(30, this._resizing.startWidth + delta);
+		col.baseWidth = col.width;
 		this._layoutColumns();
 	}
 
@@ -817,6 +842,7 @@ export class VirtualGrid {
 		settings.columns.forEach((col, i) => {
 			if (typeof col.width !== "number" || !this._columns[i]) return;
 			this._columns[i].width = col.width;
+			this._columns[i].baseWidth = col.width;
 		});
 		this._layoutColumns();
 	}

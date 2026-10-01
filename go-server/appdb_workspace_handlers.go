@@ -371,6 +371,41 @@ func handleChangeActiveDatabase(upstream *url.URL) http.HandlerFunc {
 	}
 }
 
+type saveTabRequest struct {
+	PTabDBID *int64 `json:"p_tab_db_id"`
+	PConnID  int64  `json:"p_conn_id"`
+	PTitle   string `json:"p_title"`
+	PSnippet string `json:"p_snippet"`
+}
+
+// handleSaveTab autosaves a query tab's title and editor text, so edits
+// survive without the query ever having been run.
+func handleSaveTab(upstream *url.URL) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		db, who, ok := resolveAppDBRequest(w, r, upstream)
+		if !ok {
+			return
+		}
+		defer db.Close()
+		raw, err := readFormData(r)
+		if err != nil || raw == "" {
+			writeBadRequest(w)
+			return
+		}
+		var req saveTabRequest
+		if err := json.Unmarshal([]byte(raw), &req); err != nil {
+			writeBadRequest(w)
+			return
+		}
+		id, err := saveTabContent(db, int64(who.UserID), req.PTabDBID, req.PConnID, req.PTitle, req.PSnippet)
+		if err != nil {
+			writeDatabaseError(w, err.Error())
+			return
+		}
+		writeEnvelope(w, map[string]any{"tab_db_id": id}, false, -1)
+	}
+}
+
 type saveConfigUserRequest struct {
 	PFontSize                  string `json:"p_font_size"`
 	PTheme                     string `json:"p_theme"`

@@ -208,6 +208,7 @@
   "modals.password.use_pgpass_file": "Utilizar ficheiro .pgpass…",
   "tree.keywords": "Palavras-chave",
   "tree.databases": "Bases de dados",
+  "tree.selected_db": "BD",
   "tree.databases_section": "Base de dados",
   "tree.roles": "Roles",
   "tree.tablespaces": "Tablespaces",
