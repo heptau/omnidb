@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [5.4.3] - 2026-10-02
+
 ### Fixed
 
 - The "+" connection menu in the Database section now lists just the connection name with the database-type icon
