@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -26,6 +27,9 @@ import (
 //     column(s) are one series each (series name = column name) — matches
 //     go-server/static_assets/OmniDB_app/js/monitoring.js's replace-mode
 //     rendering (diffs datasets/labels by name, see its "chart" branch).
+//     Alternatively long format — exactly three columns (label, series,
+//     value) — pivoted into one dataset per series, see
+//     buildCustomMonitorChart.
 //   - timeseries: exactly one row, one or more numeric columns, each column
 //     becomes one continuously-appended line series — same shape every
 //     built-in unit in monitoring_units.go already produces via dataResult.
@@ -188,41 +192,81 @@ func buildCustomMonitorTimeseries(rows *sql.Rows, cols []string, previous map[st
 	return map[string]any{"labels": labels, "datasets": datasets}, nil
 }
 
-// buildCustomMonitorChart expects one row per category: the first column is
-// the label, remaining column(s) are one series each across all rows —
-// matches monitoring.js's "chart" replace-mode branch, which reads
-// v_object.labels/v_object.datasets directly (flat, not nested under
-// v_object.data) on every call after the first.
+// buildCustomMonitorChart accepts two row shapes:
+//   - wide: one row per category, the first column is the label, remaining
+//     column(s) are one series each across all rows — matches
+//     monitoring.js's "chart" replace-mode branch, which reads
+//     v_object.labels/v_object.datasets directly (flat, not nested under
+//     v_object.data) on every call after the first.
+//   - long: exactly three columns (label, series, value), one row per
+//     label+series pair, pivoted here into one dataset per distinct series.
+//     Lets a query produce a dynamic set of series (e.g. one per table)
+//     that plain SQL can't express as columns. See isLongFormatChart.
 func buildCustomMonitorChart(rows *sql.Rows, cols []string, chartType string, previous map[string]any) (map[string]any, error) {
 	if len(cols) < 2 {
 		return nil, fmt.Errorf("chart query must return at least 2 columns: a label column followed by one or more value columns")
 	}
-	seriesNames := cols[1:]
-	labels := make([]any, 0)
-	seriesData := make([][]any, len(seriesNames))
-	for i := range seriesData {
-		seriesData[i] = make([]any, 0)
-	}
 
-	rowCount := 0
+	allRows := make([][]any, 0)
 	for rows.Next() {
-		if rowCount >= customMonitorGridRowLimit {
+		if len(allRows) >= customMonitorGridRowLimit {
 			break
 		}
 		values, err := scanCustomMonitorRow(rows, len(cols))
 		if err != nil {
 			return nil, err
 		}
-		labels = append(labels, values[0])
-		for i := range seriesNames {
-			seriesData[i] = append(seriesData[i], values[i+1])
-		}
-		rowCount++
+		allRows = append(allRows, values)
 	}
 	if err := rows.Err(); err != nil {
 		return nil, err
 	}
 
+	effectiveType := chartType
+	if effectiveType == "" {
+		effectiveType = "bar"
+	}
+
+	var labels []any
+	var datasets []any
+	longFormat := isLongFormatChart(cols, allRows)
+	if longFormat {
+		labels, datasets = pivotLongFormatChart(allRows, effectiveType)
+	} else {
+		labels, datasets = wideFormatChart(cols, allRows)
+	}
+
+	if previous == nil {
+		return map[string]any{
+			"type": effectiveType,
+			"data": map[string]any{"labels": labels, "datasets": datasets},
+			"options": map[string]any{
+				"responsive": true,
+				"plugins": map[string]any{
+					// Long format's series are discovered from the data, so the
+					// legend is the only place their names show up.
+					"legend": map[string]any{"display": longFormat},
+					"title":  mkTitle(false, ""),
+				},
+			},
+		}, nil
+	}
+	return map[string]any{"labels": labels, "datasets": datasets}, nil
+}
+
+func wideFormatChart(cols []string, allRows [][]any) ([]any, []any) {
+	seriesNames := cols[1:]
+	labels := make([]any, len(allRows))
+	seriesData := make([][]any, len(seriesNames))
+	for i := range seriesData {
+		seriesData[i] = make([]any, len(allRows))
+	}
+	for r, values := range allRows {
+		labels[r] = values[0]
+		for i := range seriesNames {
+			seriesData[i][r] = values[i+1]
+		}
+	}
 	datasets := make([]any, len(seriesNames))
 	for i, name := range seriesNames {
 		datasets[i] = map[string]any{
@@ -231,25 +275,80 @@ func buildCustomMonitorChart(rows *sql.Rows, cols []string, chartType string, pr
 			"data":            seriesData[i],
 		}
 	}
+	return labels, datasets
+}
 
-	if previous == nil {
-		effectiveType := chartType
-		if effectiveType == "" {
-			effectiveType = "bar"
-		}
-		return map[string]any{
-			"type": effectiveType,
-			"data": map[string]any{"labels": labels, "datasets": datasets},
-			"options": map[string]any{
-				"responsive": true,
-				"plugins": map[string]any{
-					"legend": map[string]any{"display": false},
-					"title":  mkTitle(false, ""),
-				},
-			},
-		}, nil
+// isLongFormatChart reports whether a chart result is in long format:
+// exactly three columns whose middle column holds text that isn't a number
+// in every row. A wide-format query's value columns are numeric (some
+// drivers, e.g. pgx's NUMERIC, deliver numbers as strings, hence the parse
+// check), so a non-numeric middle column can't be a plottable series.
+func isLongFormatChart(cols []string, allRows [][]any) bool {
+	if len(cols) != 3 || len(allRows) == 0 {
+		return false
 	}
-	return map[string]any{"labels": labels, "datasets": datasets}, nil
+	for _, values := range allRows {
+		s, ok := values[1].(string)
+		if !ok {
+			return false
+		}
+		if _, err := strconv.ParseFloat(strings.TrimSpace(s), 64); err == nil {
+			return false
+		}
+	}
+	return true
+}
+
+// pivotLongFormatChart turns (label, series, value) rows into one dataset
+// per distinct series, both labels and series kept in first-seen order so
+// the query's ORDER BY decides the layout. A series has null for every
+// label it has no row for; skipNull stops bar charts from reserving an
+// empty slot for those. Each series gets one color (so e.g. all partitions
+// of one table share it), except pie/doughnut, where every slice needs its
+// own color to be told apart.
+func pivotLongFormatChart(allRows [][]any, chartType string) ([]any, []any) {
+	labels := make([]any, 0)
+	labelIndex := map[string]int{}
+	seriesNames := make([]string, 0)
+	seriesIndex := map[string]int{}
+	for _, values := range allRows {
+		lk := fmt.Sprint(values[0])
+		if _, ok := labelIndex[lk]; !ok {
+			labelIndex[lk] = len(labels)
+			labels = append(labels, values[0])
+		}
+		sk := values[1].(string)
+		if _, ok := seriesIndex[sk]; !ok {
+			seriesIndex[sk] = len(seriesNames)
+			seriesNames = append(seriesNames, sk)
+		}
+	}
+
+	seriesData := make([][]any, len(seriesNames))
+	for i := range seriesData {
+		seriesData[i] = make([]any, len(labels))
+	}
+	for _, values := range allRows {
+		seriesData[seriesIndex[values[1].(string)]][labelIndex[fmt.Sprint(values[0])]] = values[2]
+	}
+
+	perSlice := chartType == "pie" || chartType == "doughnut"
+	datasets := make([]any, len(seriesNames))
+	for i, name := range seriesNames {
+		ds := map[string]any{
+			"label":    name,
+			"data":     seriesData[i],
+			"skipNull": true,
+		}
+		if perSlice {
+			ds["backgroundColor"] = chartSliceColors(len(labels), i)
+		} else {
+			ds["backgroundColor"] = chartColorAt(i, 0.6)
+			ds["borderColor"] = chartColorAt(i, 1)
+		}
+		datasets[i] = ds
+	}
+	return labels, datasets
 }
 
 // chartPalette is a small, fixed set of colors cycled for custom-unit

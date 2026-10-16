@@ -13,6 +13,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   `application_name` (a value set in the connection string or `PGAPPNAME` wins), SQL Server `app name` (also
   overridable in the connection string), MySQL/MariaDB `program_name` connection attribute and Oracle `PROGRAM`.
   Firebird and SQLite have no such setting.
+- Monitoring: custom Chart units also accept a long-format query — exactly three columns (label, series, value), one
+  row per label and series — so the set of series can come from the data (e.g. one series per partitioned table,
+  one bar per partition). Each series gets a single color and a legend entry, colors stay distinct across refreshes
+  when series appear or disappear, and bars don't reserve empty slots for series without a value at that label.
+  Existing chart queries are unaffected: a query counts as long format only when its middle column is non-numeric.
 
 ### Changed
 

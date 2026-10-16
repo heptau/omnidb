@@ -9396,7 +9396,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                         var dataset = v_unit.object.data.datasets[k2];
                         if (return_dataset.label == dataset.label) {
                           var new_dataset = dataset;
-                          if (return_dataset.backgroundColor && return_dataset.backgroundColor.length) {
+                          if (Array.isArray(return_dataset.backgroundColor) && return_dataset.backgroundColor.length) {
                             var v_color_list = [];
                             for (var l2 = 0; l2 < v_return_unit.v_object.labels.length; l2++) {
                               var v_found_label = false;
@@ -9413,6 +9413,12 @@ ${t2 ? `    <#ArrowNext [${t2}] />
                               }
                             }
                             new_dataset.backgroundColor = v_color_list;
+                          } else if (typeof return_dataset.backgroundColor === "string") {
+                            if (new_dataset.backgroundColor !== return_dataset.backgroundColor) {
+                              v_need_rebuild_legend = true;
+                            }
+                            new_dataset.backgroundColor = return_dataset.backgroundColor;
+                            new_dataset.borderColor = return_dataset.borderColor;
                           }
                           new_dataset.data = return_dataset.data;
                           dataset = new_dataset;

@@ -232,6 +232,20 @@ graf velikostí databází:</p>
        round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
 FROM pg_catalog.pg_database
 WHERE datname NOT IN ('template0', 'template1')</code></pre>
+<p>Případně dotaz v <em>dlouhém formátu</em>: přesně tři sloupce — popisek, název řady, hodnota —
+s jedním řádkem na každou dvojici popisek a řada. Každá různá hodnota prostředního sloupce se stane
+jednou řadou s vlastní barvou a položkou v legendě, takže řady mohou vzniknout až z dat. Od tvaru
+výše se pozná podle toho, že prostřední sloupec není číselný. Například všechny partitions všech
+partitionovaných tabulek, velikost vztažená k největší partition dané tabulky, obarvené podle tabulky:</p>
+<pre><code class="language-sql">SELECT p.relname || ' ' || c.relname AS partition,
+       p.relname AS table_name,
+       round(100.0 * pg_catalog.pg_total_relation_size(c.oid)
+             / nullif(max(pg_catalog.pg_total_relation_size(c.oid)) OVER (PARTITION BY p.oid), 0), 1)::float8 AS pct
+FROM pg_catalog.pg_partitioned_table pt
+JOIN pg_catalog.pg_class p ON p.oid = pt.partrelid
+JOIN pg_catalog.pg_inherits i ON i.inhparent = p.oid
+JOIN pg_catalog.pg_class c ON c.oid = i.inhrelid
+ORDER BY p.relname, c.relname</code></pre>
 </li>
 <li>
 <p><strong>Časová řada</strong>: přesně jeden řádek — každý číselný sloupec se stává jednou

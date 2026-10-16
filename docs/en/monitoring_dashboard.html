@@ -231,6 +231,21 @@ example, a pie chart of database sizes:</p>
        round(pg_catalog.pg_database_size(datname) / 1048576.0, 2) AS size_mb
 FROM pg_catalog.pg_database
 WHERE datname NOT IN ('template0', 'template1')</code></pre>
+<p>Alternatively, a <em>long-format</em> query: exactly three columns — label, series name,
+value — with one row per label and series. Each distinct value of the middle column becomes one
+series with its own color and legend entry, so the set of series can come from the data itself.
+A non-numeric middle column is what tells it apart from the shape above. For example, every
+partition of every partitioned table, sized relative to the largest partition of its table and
+colored by table:</p>
+<pre><code class="language-sql">SELECT p.relname || ' ' || c.relname AS partition,
+       p.relname AS table_name,
+       round(100.0 * pg_catalog.pg_total_relation_size(c.oid)
+             / nullif(max(pg_catalog.pg_total_relation_size(c.oid)) OVER (PARTITION BY p.oid), 0), 1)::float8 AS pct
+FROM pg_catalog.pg_partitioned_table pt
+JOIN pg_catalog.pg_class p ON p.oid = pt.partrelid
+JOIN pg_catalog.pg_inherits i ON i.inhparent = p.oid
+JOIN pg_catalog.pg_class c ON c.oid = i.inhrelid
+ORDER BY p.relname, c.relname</code></pre>
 </li>
 <li>
 <p><strong>Timeseries</strong>: exactly one row — each numeric column becomes one

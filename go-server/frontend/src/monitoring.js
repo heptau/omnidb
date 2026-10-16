@@ -1334,7 +1334,7 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 												var new_dataset = dataset;
 
 												//rebuild color list if it exists
-												if (return_dataset.backgroundColor && return_dataset.backgroundColor.length) {
+												if (Array.isArray(return_dataset.backgroundColor) && return_dataset.backgroundColor.length) {
 													var v_color_list = [];
 													for (var l = 0; l < v_return_unit.v_object.labels.length; l++) {
 														var v_found_label = false;
@@ -1355,6 +1355,16 @@ export function refreshMonitorDashboard(p_loading, p_tab_tag, p_div) {
 														}
 													}
 													new_dataset.backgroundColor = v_color_list;
+												} else if (typeof return_dataset.backgroundColor === "string") {
+													// One color per series (custom long-format charts): the server
+													// assigns colors by series order, which shifts when a series
+													// appears or disappears -- take its colors so two series never
+													// end up sharing one.
+													if (new_dataset.backgroundColor !== return_dataset.backgroundColor) {
+														v_need_rebuild_legend = true;
+													}
+													new_dataset.backgroundColor = return_dataset.backgroundColor;
+													new_dataset.borderColor = return_dataset.borderColor;
 												}
 												new_dataset.data = return_dataset.data;
 

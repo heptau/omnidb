@@ -166,3 +166,63 @@ func TestRunCustomMonitorQueryUnknownType(t *testing.T) {
 		t.Error("expected an error for an unsupported unit type (graph), got nil")
 	}
 }
+
+func TestRunCustomMonitorQueryChartLongFormat(t *testing.T) {
+	db := openTestSQLite(t)
+	if _, err := db.Exec(`CREATE TABLE parts (part TEXT, tbl TEXT, pct REAL)`); err != nil {
+		t.Fatalf("create table: %v", err)
+	}
+	if _, err := db.Exec(`INSERT INTO parts VALUES ('a1', 'a', 100), ('a2', 'a', 50), ('b1', 'b', 100)`); err != nil {
+		t.Fatalf("insert: %v", err)
+	}
+
+	object, err := runCustomMonitorQuery(db, "chart", "bar", "SELECT part, tbl, pct FROM parts ORDER BY tbl, part", nil)
+	if err != nil {
+		t.Fatalf("runCustomMonitorQuery: %v", err)
+	}
+	data := object["data"].(map[string]any)
+	labels := data["labels"].([]any)
+	if len(labels) != 3 || labels[0] != "a1" || labels[2] != "b1" {
+		t.Errorf("unexpected labels: %#v", labels)
+	}
+	datasets := data["datasets"].([]any)
+	if len(datasets) != 2 {
+		t.Fatalf("expected 2 datasets (one per series), got %d", len(datasets))
+	}
+	a := datasets[0].(map[string]any)
+	b := datasets[1].(map[string]any)
+	if a["label"] != "a" || b["label"] != "b" {
+		t.Errorf("unexpected series names: %#v, %#v", a["label"], b["label"])
+	}
+	aData := a["data"].([]any)
+	if aData[0] != 100.0 || aData[1] != 50.0 || aData[2] != nil {
+		t.Errorf("unexpected series a data: %#v", aData)
+	}
+	bData := b["data"].([]any)
+	if bData[0] != nil || bData[1] != nil || bData[2] != 100.0 {
+		t.Errorf("unexpected series b data: %#v", bData)
+	}
+	if _, ok := a["backgroundColor"].(string); !ok {
+		t.Errorf("expected one color per series for a bar chart, got %#v", a["backgroundColor"])
+	}
+	if a["backgroundColor"] == b["backgroundColor"] {
+		t.Error("expected different series to get different colors")
+	}
+	if a["skipNull"] != true {
+		t.Errorf("expected skipNull on long-format datasets, got %#v", a["skipNull"])
+	}
+}
+
+func TestRunCustomMonitorQueryChartThreeNumericColumnsStaysWide(t *testing.T) {
+	db := openTestSQLite(t)
+	// A numeric middle column (even as text, as pgx delivers NUMERIC) is a
+	// wide-format value series, not a long-format series name.
+	object, err := runCustomMonitorQuery(db, "chart", "bar", "SELECT 'x' AS l, '1.5' AS v1, 2 AS v2", nil)
+	if err != nil {
+		t.Fatalf("runCustomMonitorQuery: %v", err)
+	}
+	datasets := object["data"].(map[string]any)["datasets"].([]any)
+	if len(datasets) != 2 || datasets[0].(map[string]any)["label"] != "v1" {
+		t.Errorf("expected wide format with series v1, v2, got %#v", datasets)
+	}
+}
