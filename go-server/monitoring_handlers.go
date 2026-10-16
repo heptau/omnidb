@@ -617,12 +617,32 @@ func handleUpdateSavedMonitorUnitInterval(upstream *url.URL) http.HandlerFunc {
 }
 
 type refreshUnitRequestItem struct {
-	SavedID    int64          `json:"saved_id"`
-	ID         int64          `json:"id"`
-	Sequence   int            `json:"sequence"`
-	Interval   json.Number    `json:"interval"`
-	PluginName string         `json:"plugin_name"`
-	ObjectData map[string]any `json:"object_data"`
+	SavedID    int64             `json:"saved_id"`
+	ID         int64             `json:"id"`
+	Sequence   int               `json:"sequence"`
+	Interval   json.Number       `json:"interval"`
+	PluginName string            `json:"plugin_name"`
+	ObjectData monitorObjectData `json:"object_data"`
+}
+
+// monitorObjectData is the previous-refresh state monitoring.js echoes back
+// per unit. It's only ever meaningful as a JSON object (chart/timeseries
+// units), but a grid unit's echo is its row array (monitoring.js stores
+// v_object.data, which for a grid is the rows) — decoding that strictly into
+// a map failed the whole request with "Invalid or missing request data." on
+// every refresh after a custom grid unit's first load. Anything that isn't
+// an object decodes to nil, i.e. "no previous state", which is all a grid
+// needs anyway.
+type monitorObjectData map[string]any
+
+func (m *monitorObjectData) UnmarshalJSON(b []byte) error {
+	var v any
+	if err := json.Unmarshal(b, &v); err != nil {
+		return err
+	}
+	obj, _ := v.(map[string]any)
+	*m = obj
+	return nil
 }
 
 type refreshMonitorUnitsRequest struct {

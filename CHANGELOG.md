@@ -66,6 +66,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   column moved to the end. The grid supports this through two new column options, `fitContent` and `grow`. The
   search box sits on its own line below the time range.
 
+### Fixed
+
+- Monitoring: a custom unit of type Grid broke every dashboard refresh after its first load with "Invalid or missing
+  request data." (for all units refreshed in the same request, not just the grid) — the refresh request now accepts
+  the grid's echoed row data instead of rejecting it.
+
 ## [5.4.3] - 2026-10-02
 
 ### Fixed
