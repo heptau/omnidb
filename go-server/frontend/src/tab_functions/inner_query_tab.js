@@ -31,6 +31,7 @@ SOFTWARE.
 import { autocomplete_keydown, autocomplete_start, autocomplete_update_editor_cursor } from "../autocomplete.js";
 import { closeCommandHistory, showCommandList } from "../command_history.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
+import { installEditorFolding } from "../editor_folding.js";
 import { customMenu } from "../custom_menu.js";
 import { showAlert } from "../notification_control.js";
 import { t } from "../i18n.js";
@@ -342,6 +343,7 @@ export var v_createQueryTabFunction = function (p_table, p_tab_db_id) {
 	v_editor.session.setTabSize(v_indent_size || 4);
 	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
 	v_editor.setOption("printMarginColumn", v_ruler_column || 128);
+	installEditorFolding(v_editor);
 
 	// Setting custom keyboard shortcuts callbacks.
 	var v_ace_text_input = /** @type {HTMLElement} */ (document.getElementById("txt_query_" + v_tab.id)).querySelector(

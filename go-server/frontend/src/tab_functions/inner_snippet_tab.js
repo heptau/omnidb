@@ -28,6 +28,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 */
 
+import { installEditorFolding } from "../editor_folding.js";
 import { beforeCloseTab } from "../create_tab_functions.js";
 import { saveSnippetText } from "../tree_context_functions/tree_snippets.js";
 import { indentSQL, refreshHeights, removeTab } from "../workspace.js";
@@ -163,6 +164,7 @@ export var v_createSnippetTextTabFunction = function (p_snippet = null) {
 	v_editor.session.setTabSize(v_indent_size || 4);
 	v_editor.session.setUseSoftTabs(v_indent_char !== 'tab');
 	v_editor.setOption("printMarginColumn", v_ruler_column || 128);
+	installEditorFolding(v_editor);
 
 	v_editor.commands.bindKey("ctrl-space", null);
 

@@ -9,6 +9,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- SQL editor: multi-line statements get a fold widget in the gutter (on top of the existing bracket and block-comment
+  folding), and Alt+J selects the next occurrence of the word under the cursor (Alt+Shift+J the previous one) for
+  multi-cursor editing. Applies to query and snippet editors.
 - Edit Data grid context menu: "Duplicate row" copies the row into a new pending insert (primary key columns are left
   empty so the database can generate them).
 - Result grid context menu: "Copy row as INSERT / JSON / Markdown / CSV" (values quoted per type, `NULL` kept; the INSERT targets the

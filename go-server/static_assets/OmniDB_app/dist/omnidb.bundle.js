@@ -12297,6 +12297,93 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     refreshCommandList,
     showCommandList
   }, Symbol.toStringTag, { value: "Module" }));
+  function statementFoldRanges(text) {
+    const ranges = /* @__PURE__ */ new Map();
+    let state = "normal";
+    let row = 0;
+    let column = 0;
+    let startRow = -1;
+    let lastRow = -1;
+    let lastColumn = 0;
+    const close = (endRow, endColumn) => {
+      if (startRow >= 0 && endRow > startRow) ranges.set(startRow, { endRow, endColumn });
+      startRow = -1;
+    };
+    for (let i2 = 0; i2 < text.length; i2++) {
+      const ch = text[i2];
+      const next = text[i2 + 1];
+      if (ch === "\n") {
+        if (state === "line_comment") state = "normal";
+        row++;
+        column = 0;
+        continue;
+      }
+      const here = column;
+      column++;
+      if (state === "normal") {
+        if (ch === "-" && next === "-") {
+          state = "line_comment";
+        } else if (ch === "/" && next === "*") {
+          state = "block_comment";
+          i2++;
+          column++;
+        } else if (/\s/.test(ch)) ;
+        else {
+          if (startRow < 0) startRow = row;
+          lastRow = row;
+          lastColumn = here + 1;
+          if (ch === "'") state = "single";
+          else if (ch === '"') state = "double";
+          else if (ch === ";") close(row, here + 1);
+        }
+      } else if (state === "single") {
+        lastRow = row;
+        lastColumn = here + 1;
+        if (ch === "'") state = "normal";
+      } else if (state === "double") {
+        lastRow = row;
+        lastColumn = here + 1;
+        if (ch === '"') state = "normal";
+      } else if (state === "block_comment") {
+        if (ch === "*" && next === "/") {
+          state = "normal";
+          i2++;
+          column++;
+        }
+      }
+    }
+    close(lastRow, lastColumn);
+    return ranges;
+  }
+  function installEditorFolding(editor) {
+    const session = editor.session;
+    let cache = null;
+    session.on("change", () => {
+      cache = null;
+    });
+    const ranges = () => cache ??= statementFoldRanges(session.getValue());
+    const apply = () => {
+      const base = session.getMode().foldingRules;
+      if (!base || base.$omnidbStatements) return;
+      const Range2 = ace.require("ace/range").Range;
+      const wrapper = {
+        $omnidbStatements: true,
+        getFoldWidget(s2, style, row) {
+          return ranges().has(row) ? "start" : base.getFoldWidget(s2, style, row);
+        },
+        getFoldWidgetRange(s2, style, row, forceMultiline) {
+          const stmt = ranges().get(row);
+          if (stmt) return new Range2(row, s2.getLine(row).length, stmt.endRow, stmt.endColumn);
+          return base.getFoldWidgetRange(s2, style, row, forceMultiline);
+        }
+      };
+      session.$setFolding(wrapper);
+    };
+    apply();
+    session.on("changeMode", apply);
+    editor.commands.bindKey("Alt-J", "selectMoreAfter");
+    editor.commands.bindKey("Alt-Shift-J", "selectMoreBefore");
+  }
   var v_grid_col, v_grid_row;
   function legereEscapeHtml(p_text) {
     var v_div = document.createElement("div");
@@ -21284,6 +21371,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     v_editor.session.setTabSize(v_indent_size || 4);
     v_editor.session.setUseSoftTabs(v_indent_char !== "tab");
     v_editor.setOption("printMarginColumn", v_ruler_column || 128);
+    installEditorFolding(v_editor);
     var v_ace_text_input = (
       /** @type {HTMLElement} */
       document.getElementById("txt_query_" + v_tab.id).querySelector(
@@ -21666,6 +21754,7 @@ ${t2 ? `    <#ArrowNext [${t2}] />
     v_editor.session.setTabSize(v_indent_size || 4);
     v_editor.session.setUseSoftTabs(v_indent_char !== "tab");
     v_editor.setOption("printMarginColumn", v_ruler_column || 128);
+    installEditorFolding(v_editor);
     v_editor.commands.bindKey("ctrl-space", null);
     v_editor.commands.bindKey("Cmd-,", null);
     v_editor.commands.bindKey("Ctrl-,", null);
